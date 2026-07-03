@@ -1,13 +1,13 @@
-const express = require("express");
+const app = require("./src/app");
+const connectDB = require("./src/database/db");
 require("dotenv").config();
 
-const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("🦅 GARUDA AI Server is Running Successfully!");
-});
+(async () => {
+    await connectDB();
 
-app.listen(PORT, () => {
-  console.log(`🚀 GARUDA AI running on http://localhost:${PORT}`);
-});
+    app.listen(PORT, () => {
+        console.log(`?? GARUDA AI running on http://localhost:${PORT}`);
+    });
+})();
