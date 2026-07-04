@@ -52,18 +52,101 @@ const splitSentences = (text = "") =>
     .map(sentence => sentence.trim())
     .filter(isReadableSentence);
 
-const scoreSentence = (sentence, keywords = []) => {
+const detectIntent = (question = "") => {
+  const query = normalizeKey(question);
+
+  if (/\b(what is|define|meaning|means|kya hai|matlab)\b/i.test(query)) return "definition";
+  if (/\b(benefit|benefits|advantage|feature|features|coverage)\b/i.test(query)) return "benefit";
+  if (/\b(eligible|eligibility|age|entry age|who can)\b/i.test(query)) return "eligibility";
+  if (/\b(premium|pay|payment|price|cost)\b/i.test(query)) return "premium";
+  if (/\b(claim|settlement|nominee|death)\b/i.test(query)) return "claim";
+  if (/\b(tax|deduction|section 80c|section 10)\b/i.test(query)) return "tax";
+
+  return "general";
+};
+
+const getIntentBoost = (sentence = "", intent = "general") => {
+  const text = normalizeKey(sentence);
+
+  const rules = {
+    definition: [
+      /\bmeans\b/,
+      /\brefers to\b/,
+      /\bis the\b/,
+      /\bpayable\b/,
+      /\bat the end of\b/,
+      /\bsurvives to the end\b/
+    ],
+    benefit: [
+      /\bbenefit\b/,
+      /\bpayable\b/,
+      /\bpaid\b/,
+      /\bprovided\b/,
+      /\boffered\b/
+    ],
+    eligibility: [
+      /\bminimum age\b/,
+      /\bmaximum age\b/,
+      /\bentry age\b/,
+      /\beligibility\b/
+    ],
+    premium: [
+      /\bpremium\b/,
+      /\bpay\b/,
+      /\bpayment\b/,
+      /\bsingle premium\b/
+    ],
+    claim: [
+      /\bdeath benefit\b/,
+      /\bclaim\b/,
+      /\bnominee\b/,
+      /\bsettlement\b/
+    ],
+    tax: [
+      /\btax\b/,
+      /\bdeduction\b/,
+      /\bsection\b/
+    ],
+    general: []
+  };
+
+  return (rules[intent] || []).reduce((score, pattern) => {
+    return pattern.test(text) ? score + 3 : score;
+  }, 0);
+};
+
+const getNoisePenalty = (sentence = "") => {
+  const text = cleanText(sentence);
+  let penalty = 0;
+
+  if (/\bscenario\s*\d+\b/i.test(text)) penalty += 4;
+  if (/\bIRR\b/i.test(text)) penalty += 3;
+  if (/\bCancer Care Benefit\b/i.test(text)) penalty += 3;
+  if (/\bChildbirth\b/i.test(text)) penalty += 2;
+  if (text.endsWith("Sing")) penalty += 5;
+
+  return penalty;
+};
+
+const scoreSentence = (sentence, keywords = [], intent = "general") => {
   const lower = normalizeKey(sentence);
-  return keywords.reduce((total, word) => {
+
+  const keywordScore = keywords.reduce((total, word) => {
     if (lower.includes(word)) return total + 2;
     return total;
   }, 0);
+
+  const intentBoost = getIntentBoost(sentence, intent);
+  const noisePenalty = getNoisePenalty(sentence);
+
+  return keywordScore + intentBoost - noisePenalty;
 };
 
 const createCitationId = (index) => `S${index + 1}`;
 
 const buildCitationEngine = (question, chunks = []) => {
   const keywords = getKeywords(question);
+  const intent = detectIntent(question);
   const citations = [];
   const seenSentences = new Set();
   const seenSources = new Set();
@@ -72,7 +155,7 @@ const buildCitationEngine = (question, chunks = []) => {
     const sentences = splitSentences(chunk.text)
       .map(sentence => ({
         text: sentence,
-        score: scoreSentence(sentence, keywords),
+        score: scoreSentence(sentence, keywords, intent),
         sourceFile: chunk.sourceFile,
         page: chunk.page || null,
         category: chunk.category || "ABSLI",
