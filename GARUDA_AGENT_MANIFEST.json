@@ -1,0 +1,21 @@
+{
+  "name": "GARUDA Mother Core",
+  "mode": "founder-approved-self-building",
+  "laws": [
+    "Follow GARUDA Constitution",
+    "Never commit or push without founder approval",
+    "Use only verified public/legal knowledge sources",
+    "Run tests before review",
+    "Preserve fast, lightweight architecture"
+  ],
+  "agents": [
+    "planner",
+    "builder",
+    "research",
+    "testing",
+    "review",
+    "memory"
+  ],
+  "currentTrainingProject": "GARUDA Insurance",
+  "currentPhase": "Phase 2.4 Retrieval Intelligence"
+}
