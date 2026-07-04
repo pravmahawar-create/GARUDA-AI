@@ -7,48 +7,48 @@ function write(file, content) {
   console.log("Wrote:", file);
 }
 
-console.log("GARUDA Mother Builder v6");
-console.log("========================");
+console.log("GARUDA Mother Builder v7 - Safe Auto Execution");
+console.log("==============================================");
 
-write("src/motherCore/agents/builderAgent.js", `function createBuildIntent(agentReport) {
-  const planner = agentReport.planner || {};
-  const priorityTask = planner.priorityTask || {};
-  const safeActions = [];
+write("src/motherCore/executor/safeExecutor.js", `const fs = require("fs");
+const path = require("path");
 
-  if (priorityTask.type === "mother_core_expansion") {
-    safeActions.push({
-      id: "GARUDA-BUILD-001",
-      action: "prepare_builder_execution_engine",
-      status: "ready",
-      risk: "low",
-      requiresFounderApproval: false,
-      description: "Builder Execution Engine active hai aur safe build intents create kar sakta hai."
-    });
+function ensureFile(file, content) {
+  const full = path.join(process.cwd(), file);
+  fs.mkdirSync(path.dirname(full), { recursive: true });
+
+  if (!fs.existsSync(full)) {
+    fs.writeFileSync(full, content);
+    return { file, action: "created", changed: true };
   }
 
-  return {
-    engine: "GARUDA Builder Execution Engine v1",
-    status: safeActions.length ? "ready" : "idle",
-    safeActions,
-    blockedActions: [],
-    note: "Builder risky changes direct execute nahi karega; pehle safe build intent generate karega."
-  };
+  return { file, action: "exists", changed: false };
 }
 
-module.exports = { createBuildIntent };
-`);
+function executeSafeActions(planner) {
+  const results = [];
 
-write("scripts/garuda-agent.js", `const fs = require("fs");
-const path = require("path");
-const { execSync } = require("child_process");
-const { scanRepository } = require("../src/motherCore/scanner/scannerEngine");
-const { createTaskQueue } = require("../src/motherCore/tasks/taskQueueEngine");
-const { validateProject } = require("../src/motherCore/testing/validatorEngine");
-const { createPlan } = require("../src/motherCore/agents/plannerAgent");
-const { createBuildIntent } = require("../src/motherCore/agents/builderAgent");
-const { saveMemorySnapshot } = require("../src/motherCore/memory/projectMemory");
+  if (planner.priorityTask && planner.priorityTask.type === "mother_core_expansion") {
+    results.push(ensureFile("src/motherCore/approval/approvalPolicy.js", \`function requiresFounderApproval(action) {
+  if (!action) return true;
 
-const root = process.cwd();
+  const riskyTypes = [
+    "delete_file",
+    "git_commit",
+    "git_push",
+    "env_change",
+    "dependency_install",
+    "security_sensitive_change",
+    "database_migration"
+  ];
+
+  return riskyTypes.includes(action.type) || action.requiresFounderApproval === true;
+}
+
+module.exports = { requiresFounderApproval };
+\`));
+
+    results.push(ensureFile("src/motherCore/git/gitStatusEngine.js", \`const { execSync } = require("child_process");
 
 function run(cmd) {
   try {
@@ -58,41 +58,80 @@ function run(cmd) {
   }
 }
 
-const branch = run("git branch --show-current");
-const commit = run("git rev-parse --short HEAD");
-const status = run("git status --short");
+function getGitStatus() {
+  return {
+    branch: run("git branch --show-current").output || "unknown",
+    commit: run("git rev-parse --short HEAD").output || "unknown",
+    status: run("git status --short").output || "",
+    clean: !run("git status --short").output
+  };
+}
+
+module.exports = { getGitStatus };
+\`));
+  }
+
+  return {
+    engine: "GARUDA Safe Executor v1",
+    executed: results,
+    changedFiles: results.filter(item => item.changed).length
+  };
+}
+
+module.exports = { executeSafeActions };
+`);
+
+write("scripts/garuda-agent.js", `const fs = require("fs");
+const path = require("path");
+const { scanRepository } = require("../src/motherCore/scanner/scannerEngine");
+const { createTaskQueue } = require("../src/motherCore/tasks/taskQueueEngine");
+const { validateProject } = require("../src/motherCore/testing/validatorEngine");
+const { createPlan } = require("../src/motherCore/agents/plannerAgent");
+const { createBuildIntent } = require("../src/motherCore/agents/builderAgent");
+const { executeSafeActions } = require("../src/motherCore/executor/safeExecutor");
+const { saveMemorySnapshot } = require("../src/motherCore/memory/projectMemory");
+
+const root = process.cwd();
 
 const scanReport = scanRepository(root);
 const taskQueue = createTaskQueue(scanReport);
 const validator = validateProject(scanReport);
 
-const planningBase = {
-  engine: "GARUDA Mother Core Agent v6",
-  branch: branch.output || "unknown",
-  commit: commit.output || "unknown",
+const baseReport = {
+  engine: "GARUDA Mother Core Agent v7",
   generatedAt: new Date().toISOString(),
-  gitClean: !status.output,
   scanner: scanReport,
   taskQueue,
   validator
 };
 
-const planner = createPlan(planningBase);
-const builder = createBuildIntent({ ...planningBase, planner });
+const planner = createPlan(baseReport);
+const builder = createBuildIntent({ ...baseReport, planner });
+const executor = validator.status === "passed"
+  ? executeSafeActions(planner)
+  : { engine: "GARUDA Safe Executor v1", executed: [], changedFiles: 0, blocked: "validation_failed" };
 
 const report = {
-  ...planningBase,
+  ...baseReport,
   planner,
   builder,
-  decision: validator.status === "failed"
-    ? "Validation failed. Fix syntax errors before next build."
+  executor,
+  decision: executor.changedFiles > 0
+    ? "Safe Mother Core files auto-created."
     : planner.priorityTask.title,
-  nextAction: builder.safeActions[0] ? builder.safeActions[0].action : planner.plan[0]
+  nextAction: executor.changedFiles > 0
+    ? "Re-run npm run garuda:agent for validation."
+    : "Continue next safe build action."
 };
 
-const memory = saveMemorySnapshot(report);
+const memory = saveMemorySnapshot({
+  ...report,
+  branch: "phase-2.4-retrieval-intelligence",
+  commit: "local",
+  gitClean: false
+});
+
 report.memory = {
-  engine: memory.engine,
   totalRuns: memory.runs.length,
   latest: memory.latest
 };
@@ -100,23 +139,17 @@ report.memory = {
 fs.mkdirSync(path.join(root, "reports"), { recursive: true });
 fs.writeFileSync(path.join(root, "reports", "mother-core-agent-report.json"), JSON.stringify(report, null, 2));
 
-console.log("GARUDA MOTHER CORE AGENT v6");
+console.log("GARUDA MOTHER CORE AGENT v7");
 console.log("===========================");
-console.log("Branch:", report.branch);
-console.log("Commit:", report.commit);
-console.log("Git Clean:", report.gitClean ? "YES" : "NO");
-console.log("");
 console.log("Scanner:", scanReport.summary.findings, "findings");
 console.log("Validator:", validator.status, "| Failed:", validator.failedChecks);
 console.log("Planner:", planner.priorityTask.title);
-console.log("Builder:", builder.status, "| Safe Actions:", builder.safeActions.length);
-console.log("Memory Runs:", report.memory.totalRuns);
-console.log("");
+console.log("Builder:", builder.status);
+console.log("Safe Executor changed files:", executor.changedFiles);
 console.log("Decision:", report.decision);
 console.log("Next Action:", report.nextAction);
 console.log("Report saved: reports/mother-core-agent-report.json");
 `);
 
 console.log("");
-console.log("Mother Builder v6 completed.");
-console.log("Next: npm run build:mother && npm run garuda:agent");
+console.log("Mother Builder v7 completed.");
