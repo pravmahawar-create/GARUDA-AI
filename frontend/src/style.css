@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top, #15543f, #05070d 60%);
+  color: white;
+}
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.hero {
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid #d4af37;
+  border-radius: 999px;
+  color: #ffd86b;
+}
+
+h1 {
+  font-size: 90px;
+  letter-spacing: 12px;
+  margin: 24px 0 10px;
+}
+
+p {
+  font-size: 22px;
+  color: #d8dde8;
+}
+
+button {
+  margin-top: 26px;
+  padding: 16px 28px;
+  border-radius: 16px;
+  border: 0;
+  background: #d4af37;
+  font-weight: bold;
+}

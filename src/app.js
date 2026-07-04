@@ -1,10 +1,12 @@
-﻿const express = require("express");
+const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 const healthResponse = (req, res) => {
   res.json({
@@ -17,7 +19,7 @@ const healthResponse = (req, res) => {
 };
 
 app.get("/", (req, res) => {
-  res.send("GARUDA AI Backend is running...");
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
 app.get("/health", healthResponse);

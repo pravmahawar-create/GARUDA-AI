@@ -6,9 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
+    "dev": "concurrently \"npm start\" \"npm run dev:frontend\"",
+    "dev:frontend": "vite --host 0.0.0.0",
     "test:rag": "node scripts/test-rag.js",
     "garuda": "node scripts/garuda-dev.js",
-    "build:garuda": "node scripts/garuda-build.js",
+    "build:garuda": "node scripts/build-garuda.js",
     "build:mother": "node scripts/garuda-mother-build.js",
     "garuda:agent": "node scripts/garuda-agent.js",
     "garuda:scan": "node scripts/garuda-scan.js"
@@ -26,11 +28,16 @@
   },
   "homepage": "https://github.com/pravmahawar-create/GARUDA-AI#readme",
   "dependencies": {
+    "concurrently": "^10.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "mongoose": "^9.7.3",
     "multer": "^2.2.0",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "vite": "^8.1.3",
+    "@vitejs/plugin-react": "^5.1.0"
   }
 }
