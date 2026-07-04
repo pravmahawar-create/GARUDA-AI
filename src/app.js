@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 const cors = require("cors");
 
 const app = express();
@@ -17,12 +17,13 @@ const healthResponse = (req, res) => {
 };
 
 app.get("/", (req, res) => {
-  res.send("?? GARUDA AI Backend is running...");
+  res.send("GARUDA AI Backend is running...");
 });
 
 app.get("/health", healthResponse);
 app.get("/api/health", healthResponse);
 
 app.use("/api/knowledge", require("./routes/knowledgeRoutes"));
+app.use("/api/rag", require("./routes/ragRoutes"));
 
 module.exports = app;
