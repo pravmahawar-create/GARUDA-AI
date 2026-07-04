@@ -1,4 +1,5 @@
 const knowledgeService = require("../services/knowledgeService");
+const llmAdapter = require("./llmAdapter");
 
 const MAX_CONTEXT_CHARS = 7000;
 const MAX_CITATIONS = 5;
@@ -249,16 +250,32 @@ exports.generateAnswer = async (question) => {
   }
 
   const citations = buildCitationEngine(cleanQuestion, retrievedChunks);
-  const answer = buildReadableAnswer(citations);
   const context = buildCleanContext(citations);
   const sources = buildSources(citations);
 
+  const llmResult = await llmAdapter.generateAnswer({
+    query: cleanQuestion,
+    context: citations,
+    systemPrompt: "You are GARUDA AI. Answer only from verified retrieved ABSLI context.",
+    metadata: {
+      engine: "garuda-rag",
+      phase: "2.3-llm-adapter"
+    }
+  });
+
   return {
     question: cleanQuestion,
-    answer,
+    answer: llmResult.answer || buildReadableAnswer(citations),
     confidence: citations.length >= 3 ? "medium" : "low",
+    provider: llmResult.provider,
+    model: llmResult.model,
+    grounded: llmResult.grounded,
+    warnings: llmResult.warnings || [],
     sources,
-    citations,
+    citations: llmResult.citations || citations,
     context
   };
 };
+
+
+

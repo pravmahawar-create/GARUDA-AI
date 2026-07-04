@@ -8,3 +8,4 @@ uploads/
 *.backup
 
 data/
+*.backup.js

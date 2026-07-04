@@ -1,4 +1,4 @@
-const knowledgeService = require("../services/knowledgeService");
+const ragEngine = require("../rag/engine");
 
 exports.search = async (req, res) => {
   try {
@@ -11,19 +11,16 @@ exports.search = async (req, res) => {
       });
     }
 
-    const results = await knowledgeService.searchKnowledge(query);
+    const response = await ragEngine.generateAnswer(query);
 
     return res.json({
       success: true,
-      query,
-      count: results.length,
-      results
+      ...response
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(error.statusCode || 500).json({
       success: false,
-      message: "Knowledge search failed",
-      error: error.message
+      message: error.message || "Knowledge search failed"
     });
   }
 };
