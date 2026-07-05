@@ -7,7 +7,7 @@ function App() {
   const [health, setHealth] = useState("checking");
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([
-    { role: "garuda", text: "Welcome back, Praveen. GARUDA Genesis is online." }
+    { role: "garuda", text: "Welcome back, Founder. GARUDA is awake." }
   ]);
   const [loading, setLoading] = useState(false);
 
@@ -39,93 +39,69 @@ function App() {
   }
 
   return (
-    <main className="garuda-os">
-      <aside className="sidebar">
-        <div className="brandMark">GARUDA</div>
-        <p className="brandSub">Personal AI Operating System</p>
+    <main className="kingdomOS">
+      <section className="kingdomHero">
+        <div className="sunGlow"></div>
+        <div className="mountains"></div>
+        <div className="portalGlass">
+          <p className="eyebrow">GARUDA KINGDOM PORTAL</p>
+          <h1>GARUDA</h1>
+          <p className="tagline">One Command. Infinite Intelligence.</p>
+          <div className="founderLine">Welcome back, Founder</div>
+        </div>
+      </section>
 
-        <nav className="nav">
+      <section className="osGrid">
+        <aside className="leftDock">
+          <div className="logoBlock">
+            <strong>GARUDA</strong>
+            <span>AI Operating System</span>
+          </div>
+
           <button className="active">Companion</button>
           <button>Insurance AI</button>
-          <button>Knowledge Universe</button>
+          <button>Knowledge</button>
           <button>Mother Core</button>
-          <button>Revenue Engine</button>
-        </nav>
+          <button>Revenue Universe</button>
 
-        <div className="miniStatus">
-          <span className="pulse"></span>
-          Backend {health}
-        </div>
-      </aside>
+          <div className="liveStatus">Backend: {health}</div>
+        </aside>
 
-      <section className="workspace">
-        <header className="portalHeader">
-          <div>
-            <p className="eyebrow">GARUDA Genesis</p>
-            <h1>Welcome back, Founder.</h1>
-            <p className="subtitle">Command your AI universe from one intelligent cockpit.</p>
+        <section className="chatCore">
+          <div className="chatTop">
+            <div>
+              <p>GARUDA Companion</p>
+              <h2>Ask GARUDA</h2>
+            </div>
+            <span>{loading ? "Thinking" : "Ready"}</span>
           </div>
-          <div className="coreSeal">G</div>
-        </header>
 
-        <section className="missionGrid">
-          <div className="missionCard primary">
-            <p>Companion</p>
-            <h3>Online</h3>
+          <div className="messages">
+            {messages.map((m, i) => (
+              <div key={i} className={"bubble " + m.role}>{m.text}</div>
+            ))}
+            {loading && <div className="bubble garuda">GARUDA is thinking...</div>}
           </div>
-          <div className="missionCard">
-            <p>MongoDB</p>
-            <h3>{health}</h3>
-          </div>
-          <div className="missionCard">
-            <p>RAG Engine</p>
-            <h3>Ready</h3>
-          </div>
-          <div className="missionCard">
-            <p>Knowledge</p>
-            <h3>47 Docs</h3>
+
+          <div className="composer">
+            <input
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && askGaruda()}
+              placeholder="Ask GARUDA..."
+            />
+            <button onClick={askGaruda}>Ask</button>
           </div>
         </section>
 
-        <section className="commandCenter">
-          <div className="chatPanel">
-            <div className="chatHeader">
-              <div>
-                <p>GARUDA Companion</p>
-                <strong>Ask from ABSLI knowledge base</strong>
-              </div>
-              <span>{loading ? "Thinking" : "Ready"}</span>
-            </div>
-
-            <div className="messages">
-              {messages.map((message, index) => (
-                <div key={index} className={"bubble " + message.role}>
-                  {message.text}
-                </div>
-              ))}
-              {loading && <div className="bubble garuda">GARUDA is thinking...</div>}
-            </div>
-
-            <div className="composer">
-              <input
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                onKeyDown={(event) => event.key === "Enter" && askGaruda()}
-                placeholder="Ask GARUDA about insurance, policy, or knowledge..."
-              />
-              <button onClick={askGaruda}>Ask</button>
-            </div>
-          </div>
-
-          <aside className="motherPanel">
-            <p className="panelTitle">Mother Core</p>
-            <div><span></span> Scanner Active</div>
-            <div><span></span> Planner Ready</div>
-            <div><span></span> Builder Online</div>
-            <div><span></span> Validator Passed</div>
-            <div><span></span> Memory Loaded</div>
-          </aside>
-        </section>
+        <aside className="motherCore">
+          <p className="panelTitle">Mother Core</p>
+          <div><span></span> Scanner Online</div>
+          <div><span></span> Thinker Active</div>
+          <div><span></span> Decision Engine</div>
+          <div><span></span> Builder Ready</div>
+          <div><span></span> Memory Loading</div>
+        </aside>
       </section>
     </main>
   );
