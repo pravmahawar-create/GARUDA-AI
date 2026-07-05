@@ -1,0 +1,2 @@
+// decision.js
+module.exports = {};
