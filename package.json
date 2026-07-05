@@ -12,6 +12,7 @@
     "garuda": "node scripts/garuda-dev.js",
     "build:garuda": "node scripts/build-garuda.js",
     "build:mother": "node scripts/garuda-mother-build.js",
+    "mother": "node scripts/mother/mother.js",
     "garuda:agent": "node scripts/garuda-agent.js",
     "garuda:scan": "node scripts/garuda-scan.js"
   },
