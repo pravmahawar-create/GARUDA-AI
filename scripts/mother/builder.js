@@ -15,5 +15,3 @@ function build() {
 }
 
 module.exports = { build };
-
-build();

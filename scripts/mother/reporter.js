@@ -10,5 +10,3 @@ function report() {
 }
 
 module.exports = { report };
-
-report();

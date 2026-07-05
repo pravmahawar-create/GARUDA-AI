@@ -3,15 +3,29 @@ const { execSync } = require("child_process");
 function scan() {
   console.log("[Scanner] Starting...");
 
+  const result = {
+    clean: true,
+    changes: []
+  };
+
   try {
-    const status = execSync("git status --short", {
+    const output = execSync("git status --short", {
       encoding: "utf8"
     }).trim();
 
-    console.log(status || "Working tree clean");
+    if (output) {
+      result.clean = false;
+      result.changes = output.split("\n");
+
+      result.changes.forEach(line => console.log(line));
+    } else {
+      console.log("Working tree clean");
+    }
   } catch {
     console.log("Scanner failed.");
   }
+
+  return result;
 }
 
 module.exports = { scan };

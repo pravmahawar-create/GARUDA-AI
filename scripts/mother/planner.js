@@ -15,4 +15,3 @@ function plan() {
 }
 
 module.exports = { plan };
-plan();
