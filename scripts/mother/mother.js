@@ -1,28 +1,38 @@
 const { scan } = require("./scanner");
+const { think } = require("./thinker");
+const { decide } = require("./decision");
 const { plan } = require("./planner");
 const { build } = require("./builder");
 const { validate } = require("./validator");
 const { report } = require("./reporter");
-const { think } = require("./thinker");
 
 class Mother {
   start() {
     console.log("🦅 GARUDA Mother Started\n");
 
+    // STEP 1 - Scan Project
     const scanResult = scan();
 
-   const decisions = think({
-  projectClean: scanResult.clean,
-  buildRequired: true,
-  validateRequired: true
-});
+    // STEP 2 - Think
+    const decisions = think({
+      projectClean: scanResult.clean,
+      buildRequired: true,
+      validateRequired: true
+    });
 
-    plan(decisions);
+    // STEP 3 - Decide
+    const executionPlan = decide(scanResult, decisions);
 
+    // STEP 4 - Plan
+    plan(executionPlan);
+
+    // STEP 5 - Build
     build();
 
+    // STEP 6 - Validate
     validate();
 
+    // STEP 7 - Report
     report();
 
     console.log("\n🦅 GARUDA Mother Finished");
