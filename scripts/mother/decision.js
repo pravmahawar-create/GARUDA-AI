@@ -1,15 +1,23 @@
+function toAction(item) {
+  if (typeof item === "string") return item;
+  if (item && typeof item.recommendation === "string") return item.recommendation;
+  return "Review unknown decision";
+}
+
 function decide(context = {}, decisions = []) {
   console.log("[Decision] Starting...");
 
   const plan = [];
 
-  if (!context.clean && !decisions.includes("Commit pending changes")) {
+  if (!context.clean) {
     plan.push("Commit pending changes");
   }
 
   decisions.forEach((item) => {
-    if (!plan.includes(item)) {
-      plan.push(item);
+    const action = toAction(item);
+
+    if (!plan.includes(action)) {
+      plan.push(action);
     }
   });
 

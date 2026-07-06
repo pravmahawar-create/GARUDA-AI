@@ -1,7 +1,11 @@
+function createFinding(severity, category, reason, recommendation) {
+  return { severity, category, reason, recommendation };
+}
+
 function think(state = {}) {
   console.log("[Thinker] Starting...");
 
-  const decisions = [];
+  const findings = [];
 
   const summary = state.summary || {
     modified: 0,
@@ -11,45 +15,85 @@ function think(state = {}) {
   };
 
   if (!state.projectClean) {
-    decisions.push("Commit pending changes");
+    findings.push(createFinding(
+      "high",
+      "git",
+      "Working tree has pending changes.",
+      "Review and commit pending changes after validation."
+    ));
   }
 
   if (summary.untracked > 0) {
-    decisions.push("Review new files before commit");
+    findings.push(createFinding(
+      "medium",
+      "git",
+      "New untracked files detected.",
+      "Review new files before commit."
+    ));
   }
 
   if (summary.deleted > 0) {
-    decisions.push("Verify deleted files");
+    findings.push(createFinding(
+      "high",
+      "safety",
+      "Deleted files detected.",
+      "Verify deleted files before continuing."
+    ));
   }
 
   if (summary.modified > 5) {
-    decisions.push("Large change set detected");
+    findings.push(createFinding(
+      "medium",
+      "risk",
+      "Large change set detected.",
+      "Split changes into smaller validated commits."
+    ));
   }
 
   if (summary.renamed > 0) {
-    decisions.push("Verify renamed files");
+    findings.push(createFinding(
+      "medium",
+      "git",
+      "Renamed files detected.",
+      "Verify renamed files before commit."
+    ));
   }
 
   if (state.tasks && state.tasks.length) {
-    decisions.push(...state.tasks);
-  } else {
-    if (state.buildRequired) {
-      decisions.push("Run Builder");
-    }
-
-    if (state.validateRequired) {
-      decisions.push("Run Validator");
-    }
+    state.tasks.forEach((task) => {
+      findings.push(createFinding(
+        "medium",
+        "goal",
+        `Goal task identified: ${task}`,
+        task
+      ));
+    });
   }
 
-  const unique = [...new Set(decisions)];
+  if (state.constitution && state.constitution.laws) {
+    findings.push(createFinding(
+      "critical",
+      "governance",
+      `${state.constitution.laws.length} constitution laws loaded.`,
+      "Apply constitution checks before autonomous code changes."
+    ));
+  }
 
-  console.log("[Thinker] Decision:");
-  unique.forEach((item, index) => {
-    console.log(`${index + 1}. ${item}`);
+  if (findings.length === 0) {
+    findings.push(createFinding(
+      "low",
+      "idle",
+      "No major issues detected.",
+      "System Idle"
+    ));
+  }
+
+  console.log("[Thinker] Findings:");
+  findings.forEach((item, index) => {
+    console.log(`${index + 1}. [${item.severity}] ${item.recommendation}`);
   });
 
-  return unique;
+  return findings;
 }
 
 module.exports = { think };
