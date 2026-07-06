@@ -1,0 +1,26 @@
+name: GARUDA Autopilot Check
+
+on:
+  push:
+    branches:
+      - phase-2.4-retrieval-intelligence
+  workflow_dispatch:
+
+jobs:
+  autopilot-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GARUDA
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run GARUDA Mother Test
+        run: npm test

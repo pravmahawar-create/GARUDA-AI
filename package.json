@@ -4,7 +4,7 @@
   "description": "AI Operating System for ABSLI Life Insurance",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run mother",
     "start": "node server.js",
     "dev": "concurrently \"npm start\" \"npm run dev:frontend\"",
     "dev:frontend": "vite --host 0.0.0.0",
