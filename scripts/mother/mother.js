@@ -5,28 +5,31 @@ const { plan } = require("./planner");
 const { build } = require("./builder");
 const { validate } = require("./validator");
 const { report } = require("./reporter");
+
 const { understandGoal } = require("./goalEngine");
 const { decompose } = require("./taskDecomposer");
+const { prioritize } = require("./priorityEngine");
 
 class Mother {
   start() {
     console.log("🦅 GARUDA Mother Started\n");
 
-    // STEP 0 - Understand Founder Goal
+    // STEP 0 - Founder Goal
     const goal = understandGoal("make mother brain more autonomous");
-    const tasks = decompose(goal);
+    const tasks = prioritize(decompose(goal));
 
     console.log("[Goal]", goal);
     console.log("[Tasks]", tasks);
 
-    // STEP 1 - Scan Project
+    // STEP 1 - Scan
     const scanResult = scan();
 
     // STEP 2 - Think
     const decisions = think({
       projectClean: scanResult.clean,
       buildRequired: true,
-      validateRequired: true
+      validateRequired: true,
+      tasks
     });
 
     // STEP 3 - Decide
