@@ -1,26 +1,28 @@
-function think(context = {}) {
+function think(state = {}) {
   console.log("[Thinker] Starting...");
 
   const decisions = [];
 
-  if (context.projectClean === false) {
-    decisions.push("Run Scanner");
+  if (!state.projectClean) {
+    decisions.push("Commit pending changes");
   }
 
-  if (context.buildRequired === true) {
-    decisions.push("Run Builder");
-  }
+  if (state.tasks && state.tasks.length) {
+    decisions.push(...state.tasks);
+  } else {
+    if (state.buildRequired) {
+      decisions.push("Run Builder");
+    }
 
-  if (context.validateRequired === true) {
-    decisions.push("Run Validator");
-  }
-
-  if (decisions.length === 0) {
-    decisions.push("No action required");
+    if (state.validateRequired) {
+      decisions.push("Run Validator");
+    }
   }
 
   console.log("[Thinker] Decision:");
-  decisions.forEach((d, i) => console.log(`${i + 1}. ${d}`));
+  decisions.forEach((item, index) => {
+    console.log(`${index + 1}. ${item}`);
+  });
 
   return decisions;
 }
