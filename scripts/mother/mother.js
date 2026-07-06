@@ -14,17 +14,14 @@ class Mother {
   start() {
     console.log("🦅 GARUDA Mother Started\n");
 
-    // STEP 0 - Founder Goal
     const goal = understandGoal("make mother brain more autonomous");
     const tasks = prioritize(decompose(goal));
 
     console.log("[Goal]", goal);
     console.log("[Tasks]", tasks);
 
-    // STEP 1 - Scan
     const scanResult = scan();
 
-    // STEP 2 - Think
     const decisions = think({
       projectClean: scanResult.clean,
       buildRequired: true,
@@ -32,19 +29,14 @@ class Mother {
       tasks
     });
 
-    // STEP 3 - Decide
     const executionPlan = decide(scanResult, decisions);
 
-    // STEP 4 - Plan
-    plan(executionPlan);
+    const plannedTasks = plan(executionPlan);
 
-    // STEP 5 - Build
     build();
 
-    // STEP 6 - Validate
-    validate();
+    validate(plannedTasks);
 
-    // STEP 7 - Report
     report();
 
     console.log("\n🦅 GARUDA Mother Finished");
