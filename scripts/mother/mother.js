@@ -5,10 +5,19 @@ const { plan } = require("./planner");
 const { build } = require("./builder");
 const { validate } = require("./validator");
 const { report } = require("./reporter");
+const { understandGoal } = require("./goalEngine");
+const { decompose } = require("./taskDecomposer");
 
 class Mother {
   start() {
     console.log("🦅 GARUDA Mother Started\n");
+
+    // STEP 0 - Understand Founder Goal
+    const goal = understandGoal("make mother brain more autonomous");
+    const tasks = decompose(goal);
+
+    console.log("[Goal]", goal);
+    console.log("[Tasks]", tasks);
 
     // STEP 1 - Scan Project
     const scanResult = scan();
