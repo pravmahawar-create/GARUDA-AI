@@ -2,6 +2,7 @@ const { scan } = require("./scanner");
 const { think } = require("./thinker");
 const { decide } = require("./decision");
 const { plan } = require("./planner");
+const { execute } = require("./executor");
 const { build } = require("./builder");
 const { validate } = require("./validator");
 const { report } = require("./reporter");
@@ -33,8 +34,10 @@ class Mother {
     const executionPlan = decide(scanResult, decisions);
     const plannedTasks = plan(executionPlan);
 
+    const executedTasks = execute(plannedTasks);
+
     build();
-    validate(plannedTasks);
+    validate(executedTasks);
     report();
 
     console.log("\n🦅 GARUDA Mother Finished");
@@ -42,3 +45,4 @@ class Mother {
 }
 
 new Mother().start();
+
