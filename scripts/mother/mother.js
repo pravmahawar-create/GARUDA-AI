@@ -7,6 +7,7 @@ const { build } = require("./builder");
 const { validate } = require("./validator");
 const { report } = require("./reporter");
 const { loadConstitution } = require("./constitution");
+const { getContext } = require("./context");
 
 const { understandGoal } = require("./goalEngine");
 const { decompose } = require("./taskDecomposer");
@@ -17,7 +18,10 @@ class Mother {
     console.log("🦅 GARUDA Mother Started\n");
 
     const constitution = loadConstitution();
+    const context = getContext();
+
     console.log("[Constitution]", constitution.laws.length + " laws loaded");
+    console.log("[Context]", context.platform, context.node);
 
     const goal = understandGoal("make mother brain more autonomous");
     const tasks = prioritize(decompose(goal));
@@ -49,5 +53,6 @@ class Mother {
 }
 
 new Mother().start();
+
 
 
