@@ -1,17 +1,24 @@
-function plan() {
+function plan(executionPlan = []) {
   console.log("[Planner] Starting...");
 
-  const tasks = [
-    "Check project state",
-    "Run Builder",
-    "Validate output"
-  ];
+  if (!Array.isArray(executionPlan) || executionPlan.length === 0) {
+    console.log("No execution plan available.");
+    return [];
+  }
 
-  tasks.forEach((task, index) => {
-    console.log(`${index + 1}. ${task}`);
+  const finalPlan = executionPlan.map((task, index) => ({
+    step: index + 1,
+    task,
+    status: "PENDING"
+  }));
+
+  console.log("[Planner] Execution Plan:");
+
+  finalPlan.forEach((item) => {
+    console.log(`${item.step}. ${item.task} [${item.status}]`);
   });
 
-  return tasks;
+  return finalPlan;
 }
 
 module.exports = { plan };
