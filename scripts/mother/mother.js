@@ -24,19 +24,17 @@ class Mother {
 
     const decisions = think({
       projectClean: scanResult.clean,
+      summary: scanResult.summary,
       buildRequired: true,
       validateRequired: true,
       tasks
     });
 
     const executionPlan = decide(scanResult, decisions);
-
     const plannedTasks = plan(executionPlan);
 
     build();
-
     validate(plannedTasks);
-
     report();
 
     console.log("\n🦅 GARUDA Mother Finished");
