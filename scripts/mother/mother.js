@@ -6,6 +6,7 @@ const { execute } = require("./executor");
 const { build } = require("./builder");
 const { validate } = require("./validator");
 const { report } = require("./reporter");
+const { loadConstitution } = require("./constitution");
 
 const { understandGoal } = require("./goalEngine");
 const { decompose } = require("./taskDecomposer");
@@ -14,6 +15,9 @@ const { prioritize } = require("./priorityEngine");
 class Mother {
   start() {
     console.log("🦅 GARUDA Mother Started\n");
+
+    const constitution = loadConstitution();
+    console.log("[Constitution]", constitution.laws.length + " laws loaded");
 
     const goal = understandGoal("make mother brain more autonomous");
     const tasks = prioritize(decompose(goal));
@@ -45,4 +49,5 @@ class Mother {
 }
 
 new Mother().start();
+
 
