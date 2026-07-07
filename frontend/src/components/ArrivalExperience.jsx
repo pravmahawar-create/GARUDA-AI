@@ -13,19 +13,39 @@ export default function ArrivalExperience({ onEnter }) {
 
   return (
     <div className={`kingdom-arrival ${isTransitioning ? "kingdom-arrival--exit" : ""}`}>
-      <div className="kingdom-arrival__aurora" />
-      <div className="kingdom-arrival__wind kingdom-arrival__wind--one" />
-      <div className="kingdom-arrival__wind kingdom-arrival__wind--two" />
-      <span className="kingdom-arrival__particle kingdom-arrival__particle--one" />
-      <span className="kingdom-arrival__particle kingdom-arrival__particle--two" />
-      <span className="kingdom-arrival__particle kingdom-arrival__particle--three" />
-      <div className="kingdom-arrival__flash" />
+      <div className="kingdom-arrival__background-layer" aria-hidden="true">
+        <div className="kingdom-arrival__aurora" />
+        <div className="kingdom-arrival__mist kingdom-arrival__mist--one" />
+        <div className="kingdom-arrival__mist kingdom-arrival__mist--two" />
+        <div className="kingdom-arrival__kingdom-glow" />
+      </div>
 
-      <div className="kingdom-arrival__content">
+      <div className="kingdom-arrival__atmosphere-layer" aria-hidden="true">
+        <div className="kingdom-arrival__wind kingdom-arrival__wind--one" />
+        <div className="kingdom-arrival__wind kingdom-arrival__wind--two" />
+        <span className="kingdom-arrival__particle kingdom-arrival__particle--one" />
+        <span className="kingdom-arrival__particle kingdom-arrival__particle--two" />
+        <span className="kingdom-arrival__particle kingdom-arrival__particle--three" />
+      </div>
+
+      <div className="kingdom-arrival__weather-layer" aria-hidden="true">
+        <div className="kingdom-arrival__flash" />
+        <div className="kingdom-arrival__flash kingdom-arrival__flash--secondary" />
+      </div>
+
+      <div className="kingdom-arrival__sigil-layer" aria-hidden="true">
         <div className="kingdom-arrival__sigil" aria-label="GARUDA sigil">
           <BrandAssetImage kind="sigil" alt="GARUDA sigil" className="kingdom-arrival__sigil-image" />
         </div>
+      </div>
 
+      <div className="kingdom-arrival__kingdom-layer" aria-hidden="true">
+        <div className="kingdom-arrival__guardian" />
+      </div>
+
+      <div className="kingdom-arrival__transition-layer" />
+
+      <div className="kingdom-arrival__content">
         <p className="eyebrow">Royal access protocol</p>
         <h1>GARUDA THE KING</h1>
         <h2>Welcome to the World of GARUDA</h2>
