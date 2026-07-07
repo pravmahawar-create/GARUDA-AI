@@ -5,6 +5,11 @@ export async function checkHealth() {
   return res.json();
 }
 
+export async function getDashboardSnapshot() {
+  const res = await fetch(`${API_BASE}/api/dashboard/snapshot`);
+  return res.json();
+}
+
 export async function askRag(question) {
   const res = await fetch(`${API_BASE}/api/rag/answer`, {
     method: "POST",
