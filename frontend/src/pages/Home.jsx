@@ -7,6 +7,7 @@ import RightPanel from "../components/RightPanel";
 import CommandCenter from "../components/CommandCenter";
 import ArrivalExperience from "../components/ArrivalExperience";
 import AgentDebugPanel from "../components/AgentDebugPanel";
+import IntelligencePanel from "../components/IntelligencePanel";
 import selfBuildEngine from "../selfbuild/SelfBuildEngine";
 import { checkHealth, askRag, getDashboardSnapshot } from "../services/api";
 
@@ -113,6 +114,7 @@ export default function Home() {
       <section className="workspace">
         <TopBar />
         <AgentDebugPanel />
+        <IntelligencePanel />
 
         <div className="dashboard-grid">
           <div className="primary-column">
