@@ -6,6 +6,7 @@ import MetricCard from "../components/MetricCard";
 import RightPanel from "../components/RightPanel";
 import CommandCenter from "../components/CommandCenter";
 import ArrivalExperience from "../components/ArrivalExperience";
+import AgentDebugPanel from "../components/AgentDebugPanel";
 import { checkHealth, askRag, getDashboardSnapshot } from "../services/api";
 
 export default function Home() {
@@ -99,6 +100,7 @@ export default function Home() {
 
       <section className="workspace">
         <TopBar />
+        <AgentDebugPanel />
 
         <div className="dashboard-grid">
           <div className="primary-column">

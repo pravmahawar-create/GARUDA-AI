@@ -200,6 +200,18 @@ body {
   box-shadow: 0 0 20px #32ff7e;
 }
 
+.agent-debug-panel {
+  display: none;
+  margin: 0 0 16px auto;
+  max-width: 360px;
+  padding: 14px 16px;
+  border: 1px solid rgba(247,217,107,.2);
+  border-radius: 16px;
+  background: rgba(5,12,24,.8);
+  color: #e8eef8;
+  font-size: 13px;
+}
+
 @media (max-width: 900px) {
   .kingdomOS {
     padding: 14px;
