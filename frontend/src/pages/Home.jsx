@@ -10,6 +10,7 @@ import AgentDebugPanel from "../components/AgentDebugPanel";
 import IntelligencePanel from "../components/IntelligencePanel";
 import EngineeringPlannerPanel from "../components/EngineeringPlannerPanel";
 import MotherBrainPanel from "../components/MotherBrainPanel";
+import LearningPanel from "../components/LearningPanel";
 import selfBuildEngine from "../selfbuild/SelfBuildEngine";
 import { checkHealth, askRag, getDashboardSnapshot } from "../services/api";
 
@@ -119,6 +120,7 @@ export default function Home() {
         <IntelligencePanel />
         <EngineeringPlannerPanel />
         <MotherBrainPanel />
+        <LearningPanel />
 
         <div className="dashboard-grid">
           <div className="primary-column">
