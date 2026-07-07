@@ -1,0 +1,6 @@
+<svg width="280" height="280" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+  <rect width="280" height="280" rx="30" fill="#05070b" stroke="#f5d76e" stroke-width="2" />
+  <path d="M140 54 C118 54 100 72 100 94 C100 118 118 136 140 136 C162 136 180 118 180 94 C180 72 162 54 140 54 Z" fill="none" stroke="#f5d76e" stroke-width="3" />
+  <path d="M98 144 C100 112 116 92 140 92 C164 92 180 112 182 144 L192 206 L148 194 L140 228 L132 194 L88 206 Z" fill="#f5d76e" opacity="0.76" />
+  <text x="140" y="244" text-anchor="middle" fill="#f7f2dc" font-family="Segoe UI, sans-serif" font-size="15">GUARDIAN SILHOUETTE</text>
+</svg>

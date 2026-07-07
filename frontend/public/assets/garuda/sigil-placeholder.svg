@@ -1,0 +1,6 @@
+<svg width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+  <rect width="220" height="220" rx="36" fill="#05070b" stroke="#f5d76e" stroke-width="2" />
+  <circle cx="110" cy="110" r="76" fill="none" stroke="#f5d76e" stroke-width="4" opacity="0.8" />
+  <path d="M110 44 L136 90 L184 97 L148 128 L158 176 L110 151 L62 176 L72 128 L36 97 L84 90 Z" fill="#f5d76e" opacity="0.95" />
+  <text x="110" y="196" text-anchor="middle" fill="#f7f2dc" font-family="Segoe UI, sans-serif" font-size="16">GARUDA SIGIL</text>
+</svg>
