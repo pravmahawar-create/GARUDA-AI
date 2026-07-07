@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import AssetImage from "./AssetImage";
+import BrandAssetManagerImage from "./BrandAssetManagerImage";
 
 export default function ArrivalExperience({ onEnter }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -51,14 +51,14 @@ export default function ArrivalExperience({ onEnter }) {
 
       <div className="kingdom-arrival__sigil-layer kingdom-arrival__sigil-layer--visual" aria-hidden="true">
         <div className="kingdom-arrival__sigil" aria-label="GARUDA sigil">
-          <AssetImage kind="sigil" alt="GARUDA sigil" className="kingdom-arrival__sigil-image" />
+          <BrandAssetManagerImage kind="sigil" alt="GARUDA sigil" className="kingdom-arrival__sigil-image" />
         </div>
       </div>
 
       <div className="kingdom-arrival__kingdom-layer kingdom-arrival__kingdom-layer--visual" aria-hidden="true">
         <div className="kingdom-arrival__guardian" />
         <div className="kingdom-arrival__kingdom-asset">
-          <AssetImage kind="kingdom" alt="Kingdom background" className="kingdom-arrival__kingdom-image" />
+          <BrandAssetManagerImage kind="kingdom" alt="Kingdom background" className="kingdom-arrival__kingdom-image" />
         </div>
       </div>
 
