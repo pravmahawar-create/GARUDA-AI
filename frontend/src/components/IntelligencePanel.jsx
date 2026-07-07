@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
-import continuousThinkingEngine from "../intelligence/ContinuousThinkingEngine";
+import thinkingScheduler from "../intelligence/ThinkingScheduler";
 
 export default function IntelligencePanel() {
   const [state, setState] = useState(null);
 
   useEffect(() => {
+    thinkingScheduler.startThinking();
     const timer = window.setInterval(() => {
-      setState(continuousThinkingEngine.think({
-        projectArchitecture: "modular frontend and service layers",
-        revenueOpportunities: ["premium workflow automation"],
-        userExperience: "stable"
-      }));
-    }, 3500);
+      setState(thinkingScheduler.getThinkingStatus());
+    }, 2000);
 
-    return () => window.clearInterval(timer);
+    setState(thinkingScheduler.getThinkingStatus());
+
+    return () => {
+      window.clearInterval(timer);
+      thinkingScheduler.stopThinking();
+    };
   }, []);
 
   if (!state) return null;
@@ -21,12 +23,14 @@ export default function IntelligencePanel() {
   return (
     <aside className="intelligence-panel" aria-label="Continuous intelligence panel">
       <h3>Intelligence Panel</h3>
-      <p><strong>Status:</strong> {state.thinkingStatus}</p>
-      <p><strong>Observation:</strong> {state.observation?.status || "observing"}</p>
-      <p><strong>Latest Idea:</strong> {state.idea?.title || "No new ideas yet"}</p>
-      <p><strong>Latest Opportunities:</strong> {state.opportunities?.businessOpportunities?.join(", ") || "None"}</p>
-      <p><strong>Score:</strong> {state.intelligenceScores?.overallIntelligenceScore || 0}</p>
-      <p><strong>Pipeline:</strong> {state.strategy?.nextStep || "Awaiting founder review"}</p>
+      <p><strong>Status:</strong> {state.status}</p>
+      <p><strong>Observation:</strong> {state.currentObservation?.status || "observing"}</p>
+      <p><strong>Latest Recommendation:</strong> {state.currentRecommendation?.title || "No recommendation yet"}</p>
+      <p><strong>Current Opportunity:</strong> {state.currentOpportunity || "None"}</p>
+      <p><strong>Thinking Queue Size:</strong> {state.thinkingQueueSize || 0}</p>
+      <p><strong>Intelligence Score:</strong> {state.intelligenceScores?.overallIntelligenceScore || 0}</p>
+      <p><strong>Last Thinking Cycle:</strong> {state.lastCycle ? new Date(state.lastCycle).toLocaleTimeString() : "Pending"}</p>
+      <p><strong>Pending Founder Approvals:</strong> {state.pendingFounderApprovals || 0}</p>
     </aside>
   );
 }

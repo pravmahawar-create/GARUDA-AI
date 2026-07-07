@@ -4,18 +4,24 @@
 
 GARUDA continuously observes the application environment, understands the current state, detects patterns, and prepares recommendations while staying non-disruptive to the user.
 
-## Learning cycle
+## Scheduler
 
-The intelligence layer follows an observe-understand-detect-patterns-find-opportunities-generate-ideas-store-recommendation workflow. It is designed to prepare improvements without executing them automatically.
+The ThinkingScheduler runs a background cycle every 45 seconds while the application is active. It observes, analyzes, detects patterns, generates ideas, scores opportunities, updates intelligence scores, and stores recommendations for founder review.
 
-## Opportunity discovery
+## Thinking cycle
 
-The engine can scan for future opportunities across business, content, affiliate, AI services, automation, software, marketing, and growth surfaces.
+The live thinking cycle follows this sequence:
 
-## Idea pipeline
+Observe → Analyze → Detect Patterns → Generate Ideas → Score Opportunities → Update Intelligence Scores → Store Recommendation → Await Founder Approval
 
-GARUDA prepares small improvements, medium improvements, major features, future vision ideas, and experimental concepts. Every idea carries benefit, risk, difficulty, estimated time, and dependencies.
+## Queue and memory
 
-## Founder approval workflow
+The scheduler maintains a thinking queue, a processing queue, completed ideas, and pending approvals. Recommendations are stored in memory with title, description, category, priority, benefit, risk, difficulty, estimated time, dependencies, confidence score, and creation timestamp.
 
-Every recommendation remains advisory until Founder approval is granted. Critical changes are never executed automatically.
+## Score calculation
+
+Intelligence scores are updated dynamically for observation, learning, prediction, innovation, planning, architecture, opportunity, and overall intelligence.
+
+## Approval workflow
+
+Every recommendation remains advisory until Founder approval is granted. The system does not modify project files, execute code changes, commit, delete files, or push to GitHub without explicit approval.
