@@ -1,8 +1,33 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import BrandAssetManagerImage from "./BrandAssetManagerImage";
+import FogLayer from "./ArrivalEngine/FogLayer";
+import ParticleLayer from "./ArrivalEngine/ParticleLayer";
+import LightningLayer from "./ArrivalEngine/LightningLayer";
+import CloudLayer from "./ArrivalEngine/CloudLayer";
+import GarudaSilhouette from "./ArrivalEngine/GarudaSilhouette";
+import CameraController from "./ArrivalEngine/CameraController";
+import { getTimelinePhase } from "./ArrivalEngine/TimelineController";
 
 export default function ArrivalExperience({ onEnter }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [time, setTime] = useState(0);
+
+  useEffect(() => {
+    let frameId;
+    let start;
+
+    const tick = (timestamp) => {
+      if (!start) start = timestamp;
+      const elapsed = (timestamp - start) / 1000;
+      setTime(elapsed);
+      frameId = window.requestAnimationFrame(tick);
+    };
+
+    frameId = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frameId);
+  }, []);
+
+  const phase = useMemo(() => getTimelinePhase(time), [time]);
 
   const layers = useMemo(
     () => [
@@ -23,6 +48,11 @@ export default function ArrivalExperience({ onEnter }) {
     }, 260);
   }
 
+  function KingdomReveal() {}
+  function GarudaLanding() {}
+  function FounderWelcome() {}
+  function DashboardTransition() {}
+
   return (
     <div className={`kingdom-arrival ${isTransitioning ? "kingdom-arrival--exit" : ""}`}>
       {layers.map((layer) => (
@@ -40,14 +70,13 @@ export default function ArrivalExperience({ onEnter }) {
       <div className="kingdom-arrival__atmosphere-layer kingdom-arrival__atmosphere-layer--visual" aria-hidden="true">
         <div className="kingdom-arrival__wind kingdom-arrival__wind--one" />
         <div className="kingdom-arrival__wind kingdom-arrival__wind--two" />
-        <span className="kingdom-arrival__particle kingdom-arrival__particle--one" />
-        <span className="kingdom-arrival__particle kingdom-arrival__particle--two" />
-        <span className="kingdom-arrival__particle kingdom-arrival__particle--three" />
+        <FogLayer time={time} />
+        <ParticleLayer time={time} />
       </div>
 
       <div className="kingdom-arrival__weather-layer kingdom-arrival__weather-layer--visual" aria-hidden="true">
-        <div className="kingdom-arrival__flash" />
-        <div className="kingdom-arrival__flash kingdom-arrival__flash--secondary" />
+        <LightningLayer time={time} />
+        <CloudLayer time={time} />
       </div>
 
       <div className="kingdom-arrival__sigil-layer kingdom-arrival__sigil-layer--visual" aria-hidden="true">
@@ -57,10 +86,13 @@ export default function ArrivalExperience({ onEnter }) {
       </div>
 
       <div className="kingdom-arrival__kingdom-layer kingdom-arrival__kingdom-layer--visual" aria-hidden="true">
-        <div className="kingdom-arrival__guardian" />
-        <div className="kingdom-arrival__kingdom-asset">
-          <BrandAssetManagerImage kind="kingdom" alt="Kingdom background" className="kingdom-arrival__kingdom-image" />
-        </div>
+        <CameraController time={time}>
+          <div className="kingdom-arrival__guardian" />
+          <GarudaSilhouette time={time} />
+          <div className="kingdom-arrival__kingdom-asset">
+            <BrandAssetManagerImage kind="kingdom" alt="Kingdom background" className="kingdom-arrival__kingdom-image" />
+          </div>
+        </CameraController>
       </div>
 
       <div className="kingdom-arrival__transition-layer" aria-hidden="true" />
@@ -74,6 +106,10 @@ export default function ArrivalExperience({ onEnter }) {
         <button className="kingdom-arrival__button" onClick={handleEnter}>
           Enter GARUDA OS
         </button>
+      </div>
+
+      <div className="arrival-engine__phase" aria-hidden="true">
+        <span>{phase?.id}</span>
       </div>
     </div>
   );
