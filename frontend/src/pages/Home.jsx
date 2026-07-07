@@ -7,6 +7,7 @@ import RightPanel from "../components/RightPanel";
 import CommandCenter from "../components/CommandCenter";
 import ArrivalExperience from "../components/ArrivalExperience";
 import AgentDebugPanel from "../components/AgentDebugPanel";
+import selfBuildEngine from "../selfbuild/SelfBuildEngine";
 import { checkHealth, askRag, getDashboardSnapshot } from "../services/api";
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [hasEntered, setHasEntered] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
+  const [selfBuildState, setSelfBuildState] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -43,6 +45,16 @@ export default function Home() {
     }
 
     loadDashboard();
+
+    try {
+      setSelfBuildState(selfBuildEngine.analyze({
+        projectStructure: ["frontend", "src", "scripts", "docs", "data"],
+        modules: ["arrival", "dashboard", "knowledge", "rag", "mother"],
+        dependencies: ["react", "vite", "express", "mongoose", "framer-motion"]
+      }));
+    } catch {
+      setSelfBuildState(null);
+    }
 
     return () => {
       active = false;
@@ -122,6 +134,16 @@ export default function Home() {
                 <button className="hero-panel__button">View Blueprint</button>
               </div>
             </motion.header>
+
+            {selfBuildState ? (
+              <section className="selfbuild-panel" aria-label="Self-build intelligence panel">
+                <p className="eyebrow">SELF-BUILDING INTELLIGENCE</p>
+                <p>Architecture Score: {selfBuildState.intelligenceScores?.architectureScore ?? 0}</p>
+                <p>Code Quality Score: {selfBuildState.intelligenceScores?.codeQualityScore ?? 0}</p>
+                <p>Knowledge Score: {selfBuildState.intelligenceScores?.knowledgeScore ?? 0}</p>
+                <p>Founder approval required before implementation.</p>
+              </section>
+            ) : null}
 
             <section className="metrics-grid">
               {metricCards.map((card) => (
