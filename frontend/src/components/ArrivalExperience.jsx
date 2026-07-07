@@ -33,6 +33,7 @@ export default function ArrivalExperience({ onEnter }) {
         <div className="kingdom-arrival__aurora" />
         <div className="kingdom-arrival__mist kingdom-arrival__mist--one" />
         <div className="kingdom-arrival__mist kingdom-arrival__mist--two" />
+        <div className="kingdom-arrival__mist kingdom-arrival__mist--three" />
         <div className="kingdom-arrival__kingdom-glow" />
       </div>
 
