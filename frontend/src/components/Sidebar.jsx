@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import BrandAssetImage from "./BrandAssetImage";
 
 const navItems = [
   { icon: "◈", label: "Dashboard" },
@@ -14,7 +15,11 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar__brand">
-        <div className="sidebar__mark">G</div>
+        <BrandAssetImage
+          kind="branding"
+          alt="GARUDA brand mark"
+          className="sidebar__mark"
+        />
         <div>
           <h2>GARUDA</h2>
           <span>AI Operating System</span>

@@ -1,0 +1,7 @@
+<svg width="320" height="180" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="180" rx="24" fill="#03060a" stroke="#f5d76e" stroke-width="1.5" />
+  <rect x="32" y="32" width="256" height="116" rx="18" fill="rgba(245,215,110,0.08)" stroke="rgba(245,215,110,0.3)" />
+  <circle cx="160" cy="90" r="42" fill="none" stroke="#f5d76e" stroke-width="3" opacity="0.7" />
+  <path d="M160 52 L176 82 L212 88 L184 110 L194 146 L160 128 L126 146 L136 110 L108 88 L144 82 Z" fill="#f5d76e" opacity="0.85" />
+  <text x="160" y="160" text-anchor="middle" fill="#f7f2dc" font-family="Segoe UI, sans-serif" font-size="16">KINGDOM EXPERIENCE</text>
+</svg>

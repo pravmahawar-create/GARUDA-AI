@@ -67,8 +67,8 @@ input {
 }
 
 .arrival-portal__sigil {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   margin: 0 auto 18px;
   border-radius: 50%;
   display: grid;
@@ -77,6 +77,15 @@ input {
   background: radial-gradient(circle, rgba(245, 215, 110, 0.16), rgba(5, 8, 14, 0.94));
   box-shadow: 0 0 40px rgba(245, 215, 110, 0.18);
   animation: pulse 3.2s ease-in-out infinite;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.arrival-portal__sigil-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .arrival-portal__sigil::before,
@@ -178,16 +187,14 @@ input {
 }
 
 .sidebar__mark {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
+  width: 52px;
+  height: 52px;
+  display: block;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-strong));
-  color: #04070a;
-  font-weight: 900;
-  font-size: 1.2rem;
+  object-fit: contain;
   box-shadow: 0 0 25px rgba(245, 215, 110, 0.25);
+  background: rgba(5, 7, 11, 0.95);
+  padding: 4px;
 }
 
 .sidebar__brand h2 {

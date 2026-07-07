@@ -5,6 +5,7 @@ import TopBar from "../components/TopBar";
 import MetricCard from "../components/MetricCard";
 import RightPanel from "../components/RightPanel";
 import CommandCenter from "../components/CommandCenter";
+import BrandAssetImage from "../components/BrandAssetImage";
 import { checkHealth, askRag, getDashboardSnapshot } from "../services/api";
 
 export default function Home() {
@@ -94,7 +95,11 @@ export default function Home() {
         <div className="arrival-portal__aurora" />
         <div className="arrival-portal__content">
           <div className="arrival-portal__sigil" aria-label="GARUDA sigil">
-            <span className="arrival-portal__sigil-core">G</span>
+            <BrandAssetImage
+              kind="sigil"
+              alt="GARUDA sigil"
+              className="arrival-portal__sigil-image"
+            />
           </div>
           <p className="eyebrow">Royal access protocol</p>
           <h1>GARUDA THE KING</h1>
