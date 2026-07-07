@@ -5,7 +5,7 @@ import TopBar from "../components/TopBar";
 import MetricCard from "../components/MetricCard";
 import RightPanel from "../components/RightPanel";
 import CommandCenter from "../components/CommandCenter";
-import BrandAssetImage from "../components/BrandAssetImage";
+import ArrivalExperience from "../components/ArrivalExperience";
 import { checkHealth, askRag, getDashboardSnapshot } from "../services/api";
 
 export default function Home() {
@@ -90,28 +90,7 @@ export default function Home() {
   ];
 
   if (!hasEntered) {
-    return (
-      <div className="arrival-portal">
-        <div className="arrival-portal__aurora" />
-        <div className="arrival-portal__content">
-          <div className="arrival-portal__sigil" aria-label="GARUDA sigil">
-            <BrandAssetImage
-              kind="sigil"
-              alt="GARUDA sigil"
-              className="arrival-portal__sigil-image"
-            />
-          </div>
-          <p className="eyebrow">Royal access protocol</p>
-          <h1>GARUDA THE KING</h1>
-          <h2>Welcome to the World of GARUDA</h2>
-          <p className="arrival-portal__tagline">One Command. Infinite Intelligence.</p>
-          <p className="arrival-portal__welcome">Namaste Praveen. Founder access verified.</p>
-          <button className="arrival-portal__button" onClick={() => setHasEntered(true)}>
-            Enter GARUDA OS
-          </button>
-        </div>
-      </div>
-    );
+    return <ArrivalExperience onEnter={() => setHasEntered(true)} />;
   }
 
   return (
