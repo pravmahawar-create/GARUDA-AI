@@ -15,7 +15,9 @@
     "mother": "node scripts/mother/mother.js",
     "garuda:agent": "node scripts/garuda-agent.js",
     "garuda:scan": "node scripts/garuda-scan.js",
-    "autopilot": "node scripts/mother/autopilot.js"
+    "autopilot": "node scripts/mother/autopilot.js",
+    "dev:agent": "node scripts/dev-agent/dev-agent.js",
+    "dev:status": "node scripts/dev-agent/status.js"
   },
   "repository": {
     "type": "git",

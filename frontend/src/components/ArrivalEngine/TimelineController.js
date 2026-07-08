@@ -11,10 +11,16 @@ export const arrivalTimeline = {
     { id: "push", start: 7.5, end: 8.5 },
     { id: "wings", start: 8.5, end: 9.5 },
     { id: "gold", start: 9.5, end: 10.5 },
-    { id: "kingdom", start: 10.5, end: 12 }]
+    { id: "kingdom", start: 10.5, end: 12 }
   ]
 };
 
 export function getTimelinePhase(currentTime) {
-  return arrivalTimeline.phases.find((phase) => currentTime >= phase.start && currentTime < phase.end) || arrivalTimeline.phases[arrivalTimeline.phases.length - 1];
+  return (
+    arrivalTimeline.phases.find(
+      (phase) =>
+        currentTime >= phase.start &&
+        currentTime < phase.end
+    ) || arrivalTimeline.phases[arrivalTimeline.phases.length - 1]
+  );
 }

@@ -9,3 +9,7 @@ uploads/
 
 data/
 *.backup.js
+.aider*
+.env
+.env
+.env
