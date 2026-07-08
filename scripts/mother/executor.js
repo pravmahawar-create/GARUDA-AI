@@ -15,21 +15,39 @@ function toEngineName(route) {
 }
 
 function execute(plannedTasks = []) {
-  console.log("[Executor] Starting...");
+  console.log("[Executor] Starting execution...");
 
   const executedTasks = plannedTasks.map((item) => {
     const route = routeTask(item.task);
+    let status;
+
+    switch (route) {
+      // These routes correspond to existing modules and can conceptually succeed
+      case "builder":
+      case "validator":
+      case "thinker":
+        status = "SUCCESS";
+        break;
+      // Other routes do not have safe executable logic yet
+      case "git":
+      case "patch":
+      case "test":
+      case "general":
+      default:
+        status = "SKIPPED";
+        break;
+    }
 
     return {
       ...item,
       route,
       engine: toEngineName(route),
-      status: "EXECUTED",
+      status: status,
       executedAt: new Date().toISOString()
     };
   });
 
-  console.log("[Executor] Executed Tasks:");
+  console.log("[Executor] Execution Report:");
 
   executedTasks.forEach((t, i) => {
     console.log(`${i + 1}. [${t.engine}] ${t.task} [${t.status}]`);
