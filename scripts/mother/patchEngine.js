@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { evaluateConstitutionGate } = require("./constitution");
 
 function ensureBackupDir() {
   const dir = "scripts/mother/backups";
@@ -21,6 +22,16 @@ function createBackup(filePath, original) {
 }
 
 function patchFile({ filePath, find, replace, requireApproval = true }) {
+  const constitutionGate = evaluateConstitutionGate("patch");
+  if (!constitutionGate.allowed) {
+    return {
+      success: false,
+      filePath,
+      status: "BLOCKED_BY_CONSTITUTION",
+      reason: "constitution_validation_failed"
+    };
+  }
+
   if (requireApproval) {
     return {
       success: false,

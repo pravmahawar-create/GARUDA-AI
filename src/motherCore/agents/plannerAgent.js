@@ -1,6 +1,33 @@
+function toPriority(severity = "medium") {
+  if (severity === "critical" || severity === "high") return "P1";
+  if (severity === "medium") return "P2";
+  return "P3";
+}
+
+function uniquePlanItems(items = []) {
+  return [...new Set(items.filter(Boolean))];
+}
+
+function toPriorityTaskFromFinding(finding = {}, index = 1) {
+  const recommendation = typeof finding.recommendation === "string"
+    ? finding.recommendation.trim()
+    : "Review runtime finding";
+
+  return {
+    id: "GARUDA-PLAN-DYN-" + String(index).padStart(3, "0"),
+    title: recommendation,
+    priority: toPriority(finding.severity),
+    type: finding.category || "context_improvement"
+  };
+}
+
 function createPlan(agentReport) {
   const tasks = agentReport.taskQueue || [];
-  const validator = agentReport.validator || { status: "unknown" };
+  const validator = agentReport.validator || { status: "unknown", failedChecks: 0 };
+  const thinkerFindings = Array.isArray(agentReport.thinkerFindings) ? agentReport.thinkerFindings : [];
+  const goal = agentReport.goal || { intent: "unknown", domain: "general" };
+  const goalTasks = Array.isArray(agentReport.goalTasks) ? agentReport.goalTasks : [];
+  const summary = agentReport.scanner && agentReport.scanner.summary ? agentReport.scanner.summary : { findings: 0 };
 
   if (validator.status === "failed") {
     return {
@@ -8,15 +35,15 @@ function createPlan(agentReport) {
       status: "blocked_by_validation",
       priorityTask: {
         id: "GARUDA-PLAN-VALIDATION",
-        title: "Fix failed validation checks",
+        title: `Repair validator failures (${validator.failedChecks || 0} checks failed)`,
         priority: "P1",
         type: "validation_repair"
       },
-      plan: [
+      plan: uniquePlanItems([
         "Inspect failed Validator Engine checks.",
-        "Fix syntax or broken module issues.",
-        "Re-run npm run garuda:agent."
-      ]
+        "Repair syntax or module integrity issues.",
+        "Re-run validator pipeline before execution."
+      ])
     };
   }
 
@@ -25,29 +52,45 @@ function createPlan(agentReport) {
       engine: "GARUDA Planner Engine v2",
       status: "tasks_detected",
       priorityTask: tasks[0],
-      plan: [
-        "Resolve highest priority scanner task.",
-        "Re-run Mother Core Agent.",
+      plan: uniquePlanItems([
+        tasks[0].title,
+        `Resolve scanner findings (${summary.findings || tasks.length} open).`,
+        "Re-run Mother Core Agent for updated planning context.",
         "Validate repository health."
-      ]
+      ])
     };
   }
 
+  const rankedFindings = thinkerFindings
+    .slice()
+    .sort((a, b) => {
+      const order = { critical: 4, high: 3, medium: 2, low: 1 };
+      return (order[b.severity] || 0) - (order[a.severity] || 0);
+    });
+
+  const topFinding = rankedFindings[0];
+  const priorityTask = topFinding
+    ? toPriorityTaskFromFinding(topFinding)
+    : {
+        id: "GARUDA-PLAN-DYN-000",
+        title: `Advance ${goal.domain || "system"} goal: ${goal.intent || "stabilize_runtime"}`,
+        priority: "P2",
+        type: "goal_progress"
+      };
+
+  const planFromFindings = rankedFindings.slice(0, 3).map((finding) => finding.recommendation);
+  const planFromGoal = goalTasks.slice(0, 2);
+
   return {
     engine: "GARUDA Planner Engine v2",
-    status: "ready",
-    priorityTask: {
-      id: "GARUDA-PLAN-002",
-      title: "Expand Mother Core with Builder Execution Engine",
-      priority: "P1",
-      type: "mother_core_expansion"
-    },
-    plan: [
-      "Create Builder Execution Engine.",
-      "Allow Mother Core to select safe build actions.",
-      "Generate structured build reports.",
-      "Require founder approval before risky actions."
-    ]
+    status: rankedFindings.length ? "context_driven_ready" : "goal_driven_ready",
+    priorityTask,
+    plan: uniquePlanItems([
+      priorityTask.title,
+      ...planFromFindings,
+      ...planFromGoal,
+      "Run validation before any risky action."
+    ])
   };
 }
 

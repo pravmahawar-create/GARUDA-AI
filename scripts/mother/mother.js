@@ -42,11 +42,35 @@ class Mother {
     const executionPlan = decide(scanResult, decisions);
     const plannedTasks = plan(executionPlan);
 
-    const executedTasks = execute(plannedTasks);
+    const preflight = validate(plannedTasks);
+    const cycle = {
+      goal,
+      context,
+      scanResult,
+      decisions,
+      executionPlan,
+      plannedTasks,
+      validation: preflight,
+      executedTasks: [],
+      governance: {
+        status: preflight.passed ? "ready" : "blocked_by_validation"
+      },
+      nextAction: preflight.passed
+        ? "continue_safe_execution"
+        : "fix_validation_issues"
+    };
 
-    build();
-    validate(executedTasks);
-    report();
+    if (preflight.passed) {
+      cycle.executedTasks = execute(plannedTasks);
+      cycle.validation = validate(cycle.executedTasks);
+      cycle.governance.status = cycle.executedTasks.some((task) => task.status === "BLOCKED_BY_APPROVAL")
+        ? "approval_required"
+        : "approved_for_safe_execution";
+
+      build();
+    }
+
+    report(cycle);
 
     console.log("\n🦅 GARUDA Mother Finished");
   }

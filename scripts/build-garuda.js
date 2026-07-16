@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { evaluateConstitutionGate } = require("./mother/constitution");
 
 const PROTECTED_FILES = [
   "frontend/src/App.jsx",
@@ -12,6 +13,13 @@ function exists(file) {
 
 function writeIfMissing(file, content) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
+
+  const constitutionGate = evaluateConstitutionGate("file_write");
+  if (!constitutionGate.allowed) {
+    console.log("BLOCKED_BY_CONSTITUTION:", file, "constitution_validation_failed");
+    process.exitCode = 1;
+    return;
+  }
 
   if (PROTECTED_FILES.includes(file) && exists(file)) {
     console.log("SKIPPED protected file:", file);

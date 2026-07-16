@@ -1,9 +1,21 @@
 const fs = require("fs");
 const path = require("path");
+const { evaluateConstitutionGate } = require("../../../scripts/mother/constitution");
 
 function ensureFile(file, content) {
   const full = path.join(process.cwd(), file);
   fs.mkdirSync(path.dirname(full), { recursive: true });
+
+  const constitutionGate = evaluateConstitutionGate("file_write");
+  if (!constitutionGate.allowed) {
+    return {
+      file,
+      action: "blocked",
+      changed: false,
+      status: "BLOCKED_BY_CONSTITUTION",
+      reason: "constitution_validation_failed"
+    };
+  }
 
   if (!fs.existsSync(full)) {
     fs.writeFileSync(full, content);

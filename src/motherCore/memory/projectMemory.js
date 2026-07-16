@@ -20,6 +20,25 @@ function saveMemorySnapshot(snapshot) {
 
   const memory = loadMemory();
   memory.updatedAt = new Date().toISOString();
+
+  const executionStatusSummary = {
+    SUCCESS: 0,
+    SKIPPED: 0,
+    FAILED: 0,
+    BLOCKED_BY_APPROVAL: 0
+  };
+
+  const executed = snapshot.executor && Array.isArray(snapshot.executor.executed)
+    ? snapshot.executor.executed
+    : [];
+
+  executed.forEach((item) => {
+    const status = item && item.status;
+    if (executionStatusSummary[status] !== undefined) {
+      executionStatusSummary[status] += 1;
+    }
+  });
+
   memory.runs.push({
     timestamp: new Date().toISOString(),
     branch: snapshot.branch,
@@ -31,7 +50,14 @@ function saveMemorySnapshot(snapshot) {
     failedChecks: snapshot.validator.failedChecks,
     plannerStatus: snapshot.planner.status,
     decision: snapshot.decision,
-    nextAction: snapshot.nextAction
+    nextAction: snapshot.nextAction,
+    phase: snapshot.runtimeContext && snapshot.runtimeContext.phase ? snapshot.runtimeContext.phase : null,
+    module: snapshot.runtimeContext && snapshot.runtimeContext.module ? snapshot.runtimeContext.module : null,
+    moduleId: snapshot.runtimeContext && snapshot.runtimeContext.moduleId ? snapshot.runtimeContext.moduleId : null,
+    governanceStatus: snapshot.runtimeContext && snapshot.runtimeContext.governanceEnabled
+      ? "enabled"
+      : "disabled",
+    executionStatusSummary
   });
 
   memory.latest = memory.runs[memory.runs.length - 1];

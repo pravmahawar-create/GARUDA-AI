@@ -1,4 +1,6 @@
 const { routeTask } = require("./router");
+const { requiresFounderApproval } = require("../../src/motherCore/approval/approvalPolicy");
+const { evaluateConstitutionGate } = require("./constitution");
 
 function toEngineName(route) {
   const names = {
@@ -16,26 +18,46 @@ function toEngineName(route) {
 
 function execute(plannedTasks = []) {
   console.log("[Executor] Starting execution...");
+  const constitutionSensitiveRoutes = new Set(["git", "patch", "builder"]);
 
   const executedTasks = plannedTasks.map((item) => {
     const route = routeTask(item.task);
-    let status;
+    const action = {
+      type: route === "git" ? "git_commit" : route,
+      requiresFounderApproval: route === "git" || route === "patch"
+    };
+    const blockedByApproval = requiresFounderApproval(action) && action.requiresFounderApproval;
+    const constitutionGate = constitutionSensitiveRoutes.has(route)
+      ? evaluateConstitutionGate(route)
+      : { allowed: true };
+    let status = "FAILED";
+    let reason = "execution_error";
 
-    switch (route) {
-      // These routes correspond to existing modules and can conceptually succeed
-      case "builder":
-      case "validator":
-      case "thinker":
-        status = "SUCCESS";
-        break;
-      // Other routes do not have safe executable logic yet
-      case "git":
-      case "patch":
-      case "test":
-      case "general":
-      default:
-        status = "SKIPPED";
-        break;
+    if (!constitutionGate.allowed) {
+      status = "BLOCKED_BY_CONSTITUTION";
+      reason = "constitution_validation_failed";
+    } else if (blockedByApproval) {
+      status = "BLOCKED_BY_APPROVAL";
+      reason = "founder_approval_required";
+    } else {
+      switch (route) {
+        // These routes correspond to existing modules and can conceptually succeed
+        case "builder":
+        case "validator":
+        case "thinker":
+          status = "SUCCESS";
+          reason = "executed_by_available_engine";
+          break;
+        // Other routes do not have safe executable logic yet
+        case "git":
+        case "patch":
+        case "test":
+        case "general":
+        default:
+          status = "SKIPPED";
+          reason = "no_safe_execution_path";
+          break;
+      }
     }
 
     return {
@@ -43,6 +65,7 @@ function execute(plannedTasks = []) {
       route,
       engine: toEngineName(route),
       status: status,
+      reason,
       executedAt: new Date().toISOString()
     };
   });
