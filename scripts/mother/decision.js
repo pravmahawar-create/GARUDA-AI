@@ -8,15 +8,14 @@ function decide(context = {}, decisions = []) {
   console.log("[Decision] Starting...");
 
   const plan = [];
+  const forbiddenPattern = /\b(commit|push|deploy)\b/i;
 
-  if (!context.clean) {
-    plan.push("Commit pending changes");
-  }
+  // Governance rule: never recommend commit/push/deploy from autonomous planning.
 
   decisions.forEach((item) => {
     const action = toAction(item);
 
-    if (!plan.includes(action)) {
+    if (!forbiddenPattern.test(action) && !plan.includes(action)) {
       plan.push(action);
     }
   });

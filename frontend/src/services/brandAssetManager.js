@@ -1,80 +1,42 @@
+import { getFounderBrandAssets } from "./founderAssetResolver";
+
+const founderAssets = getFounderBrandAssets();
+
 const brandAssetMap = {
   sigil: {
-    candidates: [
-      "/assets/garuda/sigil.png",
-      "/assets/garuda/sigil.webp",
-      "/assets/garuda/sigil.svg",
-      "/assets/sigil/sigil.png",
-      "/assets/sigil/sigil.svg",
-      "/assets/sigil/garuda-sigil.png",
-      "/assets/sigil/garuda-sigil.svg"
-    ],
-    fallback: "/assets/garuda/sigil-placeholder.svg"
+    candidates: founderAssets.sigil.candidates,
+    fallback: founderAssets.sigil.fallback
   },
   branding: {
-    candidates: [
-      "/assets/garuda/branding.png",
-      "/assets/garuda/branding.webp",
-      "/assets/garuda/branding.svg",
-      "/assets/branding/branding.png",
-      "/assets/branding/branding.svg",
-      "/assets/branding/garuda-branding.png",
-      "/assets/branding/garuda-branding.svg"
-    ],
-    fallback: "/assets/garuda/garuda-placeholder.svg"
+    candidates: founderAssets.logo.candidates,
+    fallback: founderAssets.logo.fallback
   },
   kingdom: {
-    candidates: [
-      "/assets/kingdom/kingdom.png",
-      "/assets/kingdom/kingdom.webp",
-      "/assets/kingdom/kingdom.svg",
-      "/assets/kingdom/arrival-portal.png",
-      "/assets/kingdom/arrival-portal.svg",
-      "/assets/kingdom/kingdom-placeholder.svg"
-    ],
-    fallback: "/assets/kingdom/kingdom-placeholder.svg"
+    candidates: founderAssets.kingdom.candidates,
+    fallback: founderAssets.kingdom.fallback
   },
   garuda: {
-    candidates: [
-      "/assets/garuda/garuda.png",
-      "/assets/garuda/garuda.webp",
-      "/assets/garuda/garuda.svg",
-      "/assets/garuda/garuda-placeholder.svg"
-    ],
-    fallback: "/assets/garuda/garuda-placeholder.svg"
+    candidates: founderAssets.logo.candidates,
+    fallback: founderAssets.logo.fallback
   },
   guardian: {
     candidates: [
-      "/assets/garuda/guardian.png",
-      "/assets/garuda/guardian.webp",
-      "/assets/garuda/guardian.svg",
       "/assets/garuda/guardian-placeholder.svg"
     ],
     fallback: "/assets/garuda/guardian-placeholder.svg"
   },
   creative: {
     candidates: [
-      "/assets/creative/creative.png",
-      "/assets/creative/creative.svg",
-      "/assets/creative/creative-studio.png",
-      "/assets/creative/creative-studio.svg"
+      "/assets/creative/creative-placeholder.svg"
     ],
     fallback: "/assets/garuda/garuda-placeholder.svg"
   },
   audio: {
-    candidates: [
-      "/assets/audio/ambient.mp3",
-      "/assets/audio/ambient.wav",
-      "/assets/audio/ambient.ogg"
-    ],
+    candidates: [],
     fallback: ""
   },
   video: {
-    candidates: [
-      "/assets/video/arrival.webm",
-      "/assets/video/arrival.mp4",
-      "/assets/video/arrival.mov"
-    ],
+    candidates: [],
     fallback: ""
   }
 };

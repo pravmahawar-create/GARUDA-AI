@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "bibleVersion": "1.0.0",
+  "chapterId": "00_MASTER_INDEX",
+  "title": "Master Index",
+  "status": "active",
+  "authorityLevel": "founder_locked",
+  "sourceReferences": [
+    {
+      "path": "GARUDA_BIBLE/README.md",
+      "note": "Bible index and chapter list"
+    }
+  ],
+  "rules": [
+    {
+      "ruleId": "CH00_RULE_001",
+      "statement": "GARUDA Bible is the single source of truth for runtime governance.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH00_RULE_002",
+      "statement": "Authority order is Constitution > Founder Locked Decisions > Current Architecture > Roadmap > Historical Reports.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    }
+  ],
+  "chapters": [
+    "00_MASTER_INDEX",
+    "01_IDENTITY",
+    "02_CONSTITUTION",
+    "03_FOUNDER_PRINCIPLES",
+    "04_SYSTEM_ARCHITECTURE",
+    "05_BRAIN_STANDARD",
+    "06_WORKER_STANDARD",
+    "07_ENGINEERING_STANDARD",
+    "08_MEMORY_STANDARD",
+    "09_ROADMAP",
+    "10_DECISION_REGISTRY"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "bibleVersion": "1.0.0",
+  "chapterId": "05_BRAIN_STANDARD",
+  "title": "Brain Standard",
+  "status": "active",
+  "authorityLevel": "architecture",
+  "sourceReferences": [
+    {
+      "path": "scripts/dev-agent/core/BrainRegistry.js",
+      "note": "Trusted worker definitions"
+    },
+    {
+      "path": "scripts/dev-agent/core/MultiBrainPlanner.js",
+      "note": "Brain planning orchestration"
+    }
+  ],
+  "rules": [
+    {
+      "ruleId": "CH05_RULE_001",
+      "statement": "Every brain must declare capabilities, allowed actions, and blocked actions.",
+      "priority": "P0",
+      "appliesTo": ["architect", "frontend", "backend", "tester", "reviewer", "documentation"]
+    },
+    {
+      "ruleId": "CH05_RULE_002",
+      "statement": "All brains operate in approval-required mode for write-affecting outcomes.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_003",
+      "statement": "Brain outputs must be reviewable and traceable in reports.",
+      "priority": "P1",
+      "appliesTo": ["reviewer", "documentation"]
+    }
+  ]
+}

@@ -126,7 +126,7 @@ const report = {
 
 const memory = saveMemorySnapshot({
   ...report,
-  branch: "phase-2.4-retrieval-intelligence",
+  branch: "phase-2.6-arrival-brand-experience",
   commit: "local",
   gitClean: false
 });

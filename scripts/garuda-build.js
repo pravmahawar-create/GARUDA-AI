@@ -191,7 +191,7 @@ function writeFile(filePath, content) {
 
 console.log("GARUDA Build Orchestrator");
 console.log("========================");
-console.log("Target: Phase 2.4 Retrieval Intelligence");
+console.log("Target: Phase 2.6 Arrival and Brand Experience");
 console.log("");
 
 for (const [filePath, content] of Object.entries(files)) {

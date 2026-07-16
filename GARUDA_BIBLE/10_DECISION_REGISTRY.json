@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "bibleVersion": "1.0.0",
+  "chapterId": "10_DECISION_REGISTRY",
+  "title": "Decision Registry",
+  "status": "active",
+  "authorityLevel": "historical_report",
+  "sourceReferences": [
+    {
+      "path": "GARUDA_AGENT_MANIFEST.json",
+      "note": "Active phase and module context"
+    },
+    {
+      "path": "GARUDA_ROADMAP.md",
+      "note": "Roadmap phase context"
+    },
+    {
+      "path": "reports/mother-core-agent-report.json",
+      "note": "Historical runtime evidence"
+    }
+  ],
+  "rules": [
+    {
+      "ruleId": "CH10_RULE_001",
+      "statement": "Decisions must record conflicts and apply authority precedence for resolution.",
+      "priority": "P0",
+      "appliesTo": ["mother", "review", "documentation"]
+    },
+    {
+      "ruleId": "CH10_RULE_002",
+      "statement": "Historical reports inform context but do not override Constitution or founder-locked decisions.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    }
+  ],
+  "decisions": [
+    {
+      "decisionId": "DEC-001",
+      "title": "Mother remains the single founder-facing runtime",
+      "status": "active",
+      "authorityLevel": "founder_locked",
+      "effectiveFrom": "2026-07-16",
+      "rationale": "Unified governance and minimized founder keyboard usage."
+    },
+    {
+      "decisionId": "DEC-002",
+      "title": "When roadmap and manifest phase differ, use authority precedence",
+      "status": "active",
+      "authorityLevel": "historical_report",
+      "effectiveFrom": "2026-07-16",
+      "rationale": "Protect runtime from conflicting metadata sources."
+    }
+  ]
+}

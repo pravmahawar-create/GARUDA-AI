@@ -1,0 +1,16 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" fill="#03060a" />
+  <rect x="0" y="0" width="1400" height="900" fill="url(#bg)" />
+  <rect x="0" y="620" width="1400" height="280" fill="#060b12" />
+  <path d="M0 660 C220 620 380 600 580 620 C840 650 1060 740 1400 690 L1400 900 L0 900 Z" fill="#07111d" />
+  <path d="M0 720 C260 670 420 650 620 670 C900 700 1120 780 1400 740 L1400 900 L0 900 Z" fill="#08131f" />
+  <circle cx="1080" cy="240" r="108" fill="rgba(245,215,110,0.1)" stroke="rgba(245,215,110,0.2)" stroke-width="3" />
+  <path d="M1080 132 L1112 210 L1190 220 L1128 270 L1144 348 L1080 312 L1016 348 L1032 270 L970 220 L1048 210 Z" fill="#f5d76e" opacity="0.8" />
+  <text x="700" y="844" text-anchor="middle" fill="#f7f2dc" font-family="Segoe UI, sans-serif" font-size="28">KINGDOM BACKGROUND</text>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#02040a" />
+      <stop offset="100%" stop-color="#0a1422" />
+    </linearGradient>
+  </defs>
+</svg>

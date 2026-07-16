@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "bibleVersion": "1.0.0",
+  "chapterId": "06_WORKER_STANDARD",
+  "title": "Worker Standard",
+  "status": "active",
+  "authorityLevel": "architecture",
+  "sourceReferences": [
+    {
+      "path": "scripts/dev-agent/core/WorkerDispatcher.js",
+      "note": "Worker selection baseline"
+    },
+    {
+      "path": "scripts/dev-agent/workers/LocalBrainWorker.js",
+      "note": "Local worker behavior"
+    }
+  ],
+  "rules": [
+    {
+      "ruleId": "CH06_RULE_001",
+      "statement": "Worker routing must be local-first and deterministic-first wherever feasible.",
+      "priority": "P0",
+      "appliesTo": ["mother", "planner", "builder"]
+    },
+    {
+      "ruleId": "CH06_RULE_002",
+      "statement": "Worker tasks must include explicit allowed and blocked action lists.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH06_RULE_003",
+      "statement": "Paid workers remain blocked unless founder policy explicitly changes.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    }
+  ]
+}

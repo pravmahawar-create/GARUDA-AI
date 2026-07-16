@@ -1,18 +1,29 @@
 import React, { useEffect, useMemo, useState } from "react";
 import BrandAssetManagerImage from "./BrandAssetManagerImage";
-import FogLayer from "./ArrivalEngine/FogLayer";
-import ParticleLayer from "./ArrivalEngine/ParticleLayer";
-import LightningLayer from "./ArrivalEngine/LightningLayer";
-import CloudLayer from "./ArrivalEngine/CloudLayer";
-import GarudaSilhouette from "./ArrivalEngine/GarudaSilhouette";
-import CameraController from "./ArrivalEngine/CameraController";
-import { getTimelinePhase } from "./ArrivalEngine/TimelineController";
 
 export default function ArrivalExperience({ onEnter }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [time, setTime] = useState(0);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const applyPreference = () => setPrefersReducedMotion(mediaQuery.matches);
+
+    applyPreference();
+    mediaQuery.addEventListener("change", applyPreference);
+
+    return () => {
+      mediaQuery.removeEventListener("change", applyPreference);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setTime(8);
+      return undefined;
+    }
+
     let frameId;
     let start;
 
@@ -25,58 +36,62 @@ export default function ArrivalExperience({ onEnter }) {
 
     frameId = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frameId);
-  }, []);
-
-  const phase = useMemo(() => getTimelinePhase(time), [time]);
-
-  const layers = useMemo(
-    () => [
-      { id: "background", className: "kingdom-arrival__background-layer" },
-      { id: "atmosphere", className: "kingdom-arrival__atmosphere-layer" },
-      { id: "weather", className: "kingdom-arrival__weather-layer" },
-      { id: "sigil", className: "kingdom-arrival__sigil-layer" },
-      { id: "kingdom", className: "kingdom-arrival__kingdom-layer" },
-      { id: "transition", className: "kingdom-arrival__transition-layer" }
-    ],
-    []
-  );
+  }, [prefersReducedMotion]);
 
   function handleEnter() {
+    if (isTransitioning) return;
     setIsTransitioning(true);
     window.setTimeout(() => {
       onEnter();
-    }, 260);
+    }, 560);
   }
 
-  function KingdomReveal() {}
-  function GarudaLanding() {}
-  function FounderWelcome() {}
-  function DashboardTransition() {}
+  const progress = useMemo(() => {
+    if (time <= 2.8) return 0;
+    if (time >= 7.2) return 100;
+    return Math.round(((time - 2.8) / (7.2 - 2.8)) * 100);
+  }, [time]);
+
+  const welcomeVisible = time >= 2;
+  const initVisible = time >= 3.4;
+  const portalVisible = time >= 5.6;
+  const enterReady = time >= 7.2;
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      if (!enterReady || isTransitioning) return;
+      event.preventDefault();
+      handleEnter();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [enterReady, isTransitioning]);
+
+  const particleNodes = useMemo(
+    () => new Array(14).fill(0).map((_, index) => ({ id: `particle-${index + 1}` })),
+    []
+  );
 
   return (
-    <div className={`kingdom-arrival ${isTransitioning ? "kingdom-arrival--exit" : ""}`}>
-      {layers.map((layer) => (
-        <div key={layer.id} className={layer.className} aria-hidden="true" />
-      ))}
-
+    <div
+      className={`kingdom-arrival kingdom-arrival--v2 ${isTransitioning ? "kingdom-arrival--exit" : ""}`}
+      data-enter={enterReady ? "ready" : "loading"}
+      data-portal={portalVisible ? "open" : "closed"}
+      data-motion={prefersReducedMotion ? "reduced" : "full"}
+    >
       <div className="kingdom-arrival__background-layer kingdom-arrival__background-layer--visual" aria-hidden="true">
-        <div className="kingdom-arrival__aurora" />
-        <div className="kingdom-arrival__mist kingdom-arrival__mist--one" />
-        <div className="kingdom-arrival__mist kingdom-arrival__mist--two" />
-        <div className="kingdom-arrival__mist kingdom-arrival__mist--three" />
-        <div className="kingdom-arrival__kingdom-glow" />
+        <BrandAssetManagerImage kind="kingdom" alt="GARUDA Kingdom Portal artwork" className="kingdom-arrival__bg-image" />
+        <div className="kingdom-arrival__readability-overlay" />
+        <div className="kingdom-arrival__artwork-mask" />
+        <div className="kingdom-arrival__vignette" />
       </div>
 
       <div className="kingdom-arrival__atmosphere-layer kingdom-arrival__atmosphere-layer--visual" aria-hidden="true">
-        <div className="kingdom-arrival__wind kingdom-arrival__wind--one" />
-        <div className="kingdom-arrival__wind kingdom-arrival__wind--two" />
-        <FogLayer time={time} />
-        <ParticleLayer time={time} />
-      </div>
-
-      <div className="kingdom-arrival__weather-layer kingdom-arrival__weather-layer--visual" aria-hidden="true">
-        <LightningLayer time={time} />
-        <CloudLayer time={time} />
+        {particleNodes.map((particle, index) => (
+          <span key={particle.id} className={`kingdom-arrival__particle-dot kingdom-arrival__particle-dot--${(index % 7) + 1}`} />
+        ))}
       </div>
 
       <div className="kingdom-arrival__sigil-layer kingdom-arrival__sigil-layer--visual" aria-hidden="true">
@@ -86,30 +101,27 @@ export default function ArrivalExperience({ onEnter }) {
       </div>
 
       <div className="kingdom-arrival__kingdom-layer kingdom-arrival__kingdom-layer--visual" aria-hidden="true">
-        <CameraController time={time}>
-          <div className="kingdom-arrival__guardian" />
-          <GarudaSilhouette time={time} />
-          <div className="kingdom-arrival__kingdom-asset">
-            <BrandAssetManagerImage kind="kingdom" alt="Kingdom background" className="kingdom-arrival__kingdom-image" />
-          </div>
-        </CameraController>
+        <div className="kingdom-arrival__portal-gate">
+          <div className="kingdom-arrival__portal-door kingdom-arrival__portal-door--left" />
+          <div className="kingdom-arrival__portal-door kingdom-arrival__portal-door--right" />
+        </div>
+        <div className="kingdom-arrival__portal-arch" />
+        <div className="kingdom-arrival__portal-floor" />
       </div>
 
-      <div className="kingdom-arrival__transition-layer" aria-hidden="true" />
+      <div className="kingdom-arrival__content kingdom-arrival__content--minimal">
+        {welcomeVisible ? <h1>Welcome Back, Founder.</h1> : null}
+        {initVisible ? <p className="kingdom-arrival__status">Initializing Mother Brain...</p> : null}
 
-      <div className="kingdom-arrival__content">
-        <p className="eyebrow">Royal access protocol</p>
-        <h1>GARUDA THE KING</h1>
-        <h2>Welcome to the World of GARUDA</h2>
-        <p className="kingdom-arrival__tagline">One Command. Infinite Intelligence.</p>
-        <p className="kingdom-arrival__welcome">Namaste Praveen. Founder access verified.</p>
-        <button className="kingdom-arrival__button" onClick={handleEnter}>
-          Enter GARUDA OS
-        </button>
-      </div>
+        <div className="kingdom-arrival__progress" aria-hidden="true">
+          <span className="kingdom-arrival__progress-fill" style={{ width: `${progress}%` }} />
+        </div>
 
-      <div className="arrival-engine__phase" aria-hidden="true">
-        <span>{phase?.id}</span>
+        {enterReady ? (
+          <button className="kingdom-arrival__button" onClick={handleEnter} aria-label="Enter GARUDA">
+            ENTER GARUDA
+          </button>
+        ) : null}
       </div>
     </div>
   );

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "bibleVersion": "1.0.0",
+  "chapterId": "08_MEMORY_STANDARD",
+  "title": "Memory Standard",
+  "status": "active",
+  "authorityLevel": "architecture",
+  "sourceReferences": [
+    {
+      "path": "scripts/dev-agent/core/ProjectMemoryEngine.js",
+      "note": "Project memory storage and duplicate detection"
+    },
+    {
+      "path": "data/dev-agent/project-memory.json",
+      "note": "Runtime memory records"
+    }
+  ],
+  "rules": [
+    {
+      "ruleId": "CH08_RULE_001",
+      "statement": "Project memory must support duplicate goal detection and resume detection.",
+      "priority": "P0",
+      "appliesTo": ["mother", "memory"]
+    },
+    {
+      "ruleId": "CH08_RULE_002",
+      "statement": "Memory entries must include workflow and approval status metadata.",
+      "priority": "P1",
+      "appliesTo": ["mother", "memory", "review"]
+    },
+    {
+      "ruleId": "CH08_RULE_003",
+      "statement": "Memory updates must not expose secrets or unrelated private data.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    }
+  ]
+}

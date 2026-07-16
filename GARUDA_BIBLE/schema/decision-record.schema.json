@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "decision-record.schema.json",
+  "title": "GARUDA Decision Record",
+  "type": "object",
+  "required": ["decisionId", "title", "status", "authorityLevel", "effectiveFrom"],
+  "properties": {
+    "decisionId": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "enum": ["active", "superseded", "deprecated", "proposed"] },
+    "authorityLevel": {
+      "type": "string",
+      "enum": ["constitution", "founder_locked", "architecture", "roadmap", "historical_report"]
+    },
+    "effectiveFrom": { "type": "string", "minLength": 1 },
+    "supersedes": { "type": "string" },
+    "rationale": { "type": "string" },
+    "sourceReferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string" },
+          "note": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

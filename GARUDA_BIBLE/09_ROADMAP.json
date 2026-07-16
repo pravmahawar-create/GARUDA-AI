@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "bibleVersion": "1.0.0",
+  "chapterId": "09_ROADMAP",
+  "title": "Roadmap",
+  "status": "active",
+  "authorityLevel": "roadmap",
+  "sourceReferences": [
+    {
+      "path": "GARUDA_ROADMAP.md",
+      "note": "Completed, current, and next phases"
+    }
+  ],
+  "rules": [
+    {
+      "ruleId": "CH09_RULE_001",
+      "statement": "Roadmap chapter tracks completed, current, and next initiatives without mislabeling planned work as complete.",
+      "priority": "P1",
+      "appliesTo": ["documentation", "review", "mother"]
+    },
+    {
+      "ruleId": "CH09_RULE_002",
+      "statement": "When roadmap and active runtime state diverge, higher authority chapters take precedence.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    }
+  ],
+  "states": {
+    "completed": [
+      "Phase 1: Backend + MongoDB + Knowledge Import",
+      "Phase 2.3: Provider-agnostic LLM Adapter",
+      "Phase 2.6: Arrival and Brand Experience",
+      "Dev Toolkit",
+      "Project Intelligence",
+      "Builder v1"
+    ],
+    "current": [
+      "Phase 4.2: Self-Engineering Agent",
+      "Mother Core Foundation"
+    ],
+    "next": [
+      "Constitution-aware Builder",
+      "Planner Agent",
+      "Builder Agent",
+      "Testing Agent",
+      "Review Agent",
+      "Research Agent"
+    ]
+  }
+}

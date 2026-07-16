@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0.0",
+  "bibleVersion": "1.0.0",
+  "chapterId": "04_SYSTEM_ARCHITECTURE",
+  "title": "System Architecture",
+  "status": "active",
+  "authorityLevel": "architecture",
+  "sourceReferences": [
+    {
+      "path": "scripts/mother/mother.js",
+      "note": "Unified mother runtime orchestration"
+    },
+    {
+      "path": "scripts/dev-agent/core/EngineeringManager.js",
+      "note": "Engineering orchestration"
+    },
+    {
+      "path": "scripts/dev-agent/core/BrainCoordinator.js",
+      "note": "Multi-brain coordination"
+    }
+  ],
+  "rules": [
+    {
+      "ruleId": "CH04_RULE_001",
+      "statement": "Mother is the only founder-facing runtime entrypoint.",
+      "priority": "P0",
+      "appliesTo": ["mother"]
+    },
+    {
+      "ruleId": "CH04_RULE_002",
+      "statement": "Runtime orchestration must preserve approval gates and read-only planning before writes.",
+      "priority": "P0",
+      "appliesTo": ["mother", "planner", "builder"]
+    },
+    {
+      "ruleId": "CH04_RULE_003",
+      "statement": "Architecture documentation must distinguish implemented, partial, and planned systems.",
+      "priority": "P1",
+      "appliesTo": ["documentation", "review"]
+    }
+  ],
+  "implementationState": {
+    "implemented": [
+      "Mother runtime",
+      "Engineering manager",
+      "Multi-brain planner",
+      "Brain coordinator",
+      "Development approval gate",
+      "Project memory engine"
+    ],
+    "partiallyImplemented": [
+      "Bible-driven routing and prompt preparation"
+    ],
+    "planned": [
+      "Extended worker adapters"
+    ]
+  }
+}

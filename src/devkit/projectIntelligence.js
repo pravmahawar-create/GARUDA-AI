@@ -28,6 +28,10 @@ function getGitSummary() {
 }
 
 function detectPhase(branch = "") {
+  if (branch.includes("phase-2.6")) {
+    return "Phase 2.6 Arrival and Brand Experience";
+  }
+
   if (branch.includes("phase-2.4")) {
     return "Phase 2.4 Retrieval Intelligence";
   }
@@ -42,6 +46,10 @@ function detectPhase(branch = "") {
 function getRecommendedNextAction({ branch, gitStatus }) {
   if (!gitStatus.clean) {
     return "Review current working tree before continuing. Run: git status";
+  }
+
+  if (branch.includes("phase-2.6")) {
+    return "Validate founder-approved brand assets and arrival runtime stability, then hand off to current execution phase.";
   }
 
   if (branch.includes("phase-2.4")) {

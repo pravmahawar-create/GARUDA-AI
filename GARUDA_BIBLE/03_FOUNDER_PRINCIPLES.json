@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0.0",
+  "bibleVersion": "1.0.0",
+  "chapterId": "03_FOUNDER_PRINCIPLES",
+  "title": "Founder Principles",
+  "status": "active",
+  "authorityLevel": "founder_locked",
+  "sourceReferences": [
+    {
+      "path": "GARUDA_AGENT_MANIFEST.json",
+      "note": "Founder approval mode required"
+    }
+  ],
+  "rules": [
+    {
+      "ruleId": "CH03_RULE_001",
+      "statement": "Founder approval is required before write operations that change source, commits, pushes, deploys, or paid API use.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH03_RULE_002",
+      "statement": "Founder keyboard usage should be minimized to goal, approval, or rejection.",
+      "priority": "P1",
+      "appliesTo": ["mother", "planner", "builder"]
+    },
+    {
+      "ruleId": "CH03_RULE_003",
+      "statement": "Local capability must be preferred before external AI workers.",
+      "priority": "P0",
+      "appliesTo": ["mother", "planner", "builder", "review"]
+    },
+    {
+      "ruleId": "CH03_RULE_004",
+      "statement": "No paid APIs are allowed in standard execution mode.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "bibleVersion": "1.0.0",
+  "chapterId": "07_ENGINEERING_STANDARD",
+  "title": "Engineering Standard",
+  "status": "active",
+  "authorityLevel": "architecture",
+  "sourceReferences": [
+    {
+      "path": "scripts/mother/mother.js",
+      "note": "Founder-facing runtime flow"
+    },
+    {
+      "path": "scripts/mother/reporter.js",
+      "note": "Engineering report generation"
+    }
+  ],
+  "rules": [
+    {
+      "ruleId": "CH07_RULE_001",
+      "statement": "Inspect existing code before edits and reuse modules before creating new ones.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH07_RULE_002",
+      "statement": "Never claim validation that was not actually run.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH07_RULE_003",
+      "statement": "No commit, push, deploy, or paid API usage without explicit founder permission.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH07_RULE_004",
+      "statement": "Generate concise machine-readable reports for each cycle.",
+      "priority": "P1",
+      "appliesTo": ["documentation", "review", "mother"]
+    }
+  ]
+}

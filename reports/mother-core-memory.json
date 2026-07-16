@@ -191,12 +191,35 @@
         "FAILED": 0,
         "BLOCKED_BY_APPROVAL": 0
       }
+    },
+    {
+      "timestamp": "2026-07-16T11:22:56.835Z",
+      "branch": "Phase 2.6 Arrival and Brand Experience",
+      "commit": "local",
+      "gitClean": false,
+      "filesScanned": 263,
+      "findings": 0,
+      "validationStatus": "passed",
+      "failedChecks": 0,
+      "plannerStatus": "context_driven_ready",
+      "decision": "Apply constitution checks before autonomous code changes.",
+      "nextAction": "Apply constitution checks before autonomous code changes.",
+      "phase": "Phase 2.6 Arrival and Brand Experience",
+      "module": "Phase 0 Module 1",
+      "moduleId": "phase-0-module-1-governed-execution",
+      "governanceStatus": "enabled",
+      "executionStatusSummary": {
+        "SUCCESS": 0,
+        "SKIPPED": 0,
+        "FAILED": 0,
+        "BLOCKED_BY_APPROVAL": 0
+      }
     }
   ],
-  "updatedAt": "2026-07-16T11:04:37.798Z",
+  "updatedAt": "2026-07-16T11:22:56.835Z",
   "latest": {
-    "timestamp": "2026-07-16T11:04:37.798Z",
-    "branch": "Phase 2.4 Retrieval Intelligence",
+    "timestamp": "2026-07-16T11:22:56.835Z",
+    "branch": "Phase 2.6 Arrival and Brand Experience",
     "commit": "local",
     "gitClean": false,
     "filesScanned": 263,
@@ -206,7 +229,7 @@
     "plannerStatus": "context_driven_ready",
     "decision": "Apply constitution checks before autonomous code changes.",
     "nextAction": "Apply constitution checks before autonomous code changes.",
-    "phase": "Phase 2.4 Retrieval Intelligence",
+    "phase": "Phase 2.6 Arrival and Brand Experience",
     "module": "Phase 0 Module 1",
     "moduleId": "phase-0-module-1-governed-execution",
     "governanceStatus": "enabled",
