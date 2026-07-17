@@ -1,4 +1,4 @@
-class CostOptimizer {
+class CostGuard {
   classify(input = {}) {
     const complexity = Number(input.complexity || 0);
     const fileCount = Number(input.fileCount || 0);
@@ -69,5 +69,5 @@ class CostOptimizer {
   }
 }
 
-module.exports = CostOptimizer;
-module.exports.CostOptimizer = CostOptimizer;
+module.exports = CostGuard;
+module.exports.CostGuard = CostGuard;

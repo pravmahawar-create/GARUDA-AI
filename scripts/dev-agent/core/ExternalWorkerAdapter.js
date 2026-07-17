@@ -23,7 +23,14 @@ const MAX_TIMEOUT_MS = 600000;
 const DEFAULT_WORKER_COMMANDS = Object.freeze({
   aider: {
     command: "aider",
-    args: ["--message", "{prompt}", "--no-auto-commits"]
+    args: [
+      "--model",
+      "gemini/gemini-2.5-flash",
+      "--message",
+      "{prompt}",
+      "--no-auto-commits",
+      "--no-gitignore"
+    ]
   },
   gemini: {
     command: "gemini",
@@ -300,74 +307,120 @@ class ExternalWorkerAdapter {
       };
     }
 
-    const commandDefinition = resolveWorkerCommand(
+    const context = request.context || {};
+    const configuredFallbacks = Array.isArray(context.fallbackWorkers)
+      ? context.fallbackWorkers
+      : [];
+
+    const routingFallbacks =
+      context.workerRoutingMetadata &&
+      Array.isArray(context.workerRoutingMetadata.selectedWorkerOrder)
+        ? context.workerRoutingMetadata.selectedWorkerOrder
+        : [];
+
+    const candidates = [
       request.worker,
-      request
-    );
+      ...configuredFallbacks,
+      ...routingFallbacks,
+      "aider",
+      "gemini",
+      "copilot"
+    ].filter((worker, index, list) => {
+      return (
+        worker &&
+        worker !== "local_brain_worker" &&
+        SUPPORTED_WORKERS.includes(worker) &&
+        list.indexOf(worker) === index
+      );
+    });
 
-    if (!commandDefinition) {
-      return {
-        success: false,
-        executed: false,
-        skipped: true,
-        reason: "worker_command_not_configured",
-        request
+    const unavailableWorkers = [];
+
+    for (const candidate of candidates) {
+      const candidateRequest = {
+        ...request,
+        worker: candidate
       };
-    }
 
-    if (
-      !commandExists(
-        commandDefinition.command,
-        commandDefinition.cwd
-      )
-    ) {
-      return {
-        success: false,
-        executed: false,
-        skipped: true,
-        reason: "worker_cli_not_found",
-        command: commandDefinition.command,
-        request
-      };
-    }
+      const commandDefinition = resolveWorkerCommand(
+        candidate,
+        candidateRequest
+      );
 
-    const timeout = normalizeTimeout(
-      request.context && request.context.timeoutMs
-    );
-
-    const execution = spawnSync(
-      commandDefinition.command,
-      commandDefinition.args,
-      {
-        cwd: commandDefinition.cwd,
-        env: commandDefinition.env,
-        encoding: "utf8",
-        windowsHide: true,
-        timeout,
-        maxBuffer: 10 * 1024 * 1024,
-        shell: false
+      if (!commandDefinition) {
+        unavailableWorkers.push({
+          worker: candidate,
+          reason: "worker_command_not_configured"
+        });
+        continue;
       }
-    );
 
-    const result = sanitizeExecutionResult(execution);
-    const success =
-      result.exitCode === 0 &&
-      !result.error;
+      if (
+        !commandExists(
+          commandDefinition.command,
+          commandDefinition.cwd
+        )
+      ) {
+        unavailableWorkers.push({
+          worker: candidate,
+          command: commandDefinition.command,
+          reason: "worker_cli_not_found"
+        });
+        continue;
+      }
+
+      const timeout = normalizeTimeout(
+        candidateRequest.context &&
+        candidateRequest.context.timeoutMs
+      );
+
+      const execution = spawnSync(
+        commandDefinition.command,
+        commandDefinition.args,
+        {
+          cwd: commandDefinition.cwd,
+          env: commandDefinition.env,
+          encoding: "utf8",
+          windowsHide: true,
+          timeout,
+          maxBuffer: 10 * 1024 * 1024,
+          shell: false
+        }
+      );
+
+      const result = sanitizeExecutionResult(execution);
+      const success =
+        result.exitCode === 0 &&
+        !result.error;
+
+      return {
+        success,
+        executed: true,
+        skipped: false,
+        reason: success
+          ? "external_worker_executed"
+          : "external_worker_execution_failed",
+        worker: candidate,
+        requestedWorker: request.worker,
+        fallbackUsed: candidate !== request.worker,
+        unavailableWorkers,
+        command: commandDefinition.command,
+        args: commandDefinition.args.map((arg) =>
+          arg === candidateRequest.prompt ? "[PROMPT]" : arg
+        ),
+        timeout,
+        result,
+        request: candidateRequest
+      };
+    }
 
     return {
-      success,
-      executed: true,
-      skipped: false,
-      reason: success
-        ? "external_worker_executed"
-        : "external_worker_execution_failed",
-      worker: request.worker,
-      command: commandDefinition.command,
-      args: commandDefinition.args.map((arg) =>
-        arg === request.prompt ? "[PROMPT]" : arg
-      ),
-      timeout,
-      result,
+      success: false,
+      executed: false,
+      skipped: true,
+      reason: "no_external_worker_cli_available",
+      requestedWorker: request.worker,
+      unavailableWorkers,
       request
     };
   }

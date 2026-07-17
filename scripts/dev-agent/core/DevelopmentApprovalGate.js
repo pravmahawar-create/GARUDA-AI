@@ -1,6 +1,7 @@
-class DevelopmentApprovalGate {
+class ApprovalGate {
   constructor(defaultState = {}) {
     this.defaultState = defaultState;
+
     this.blockedActions = [
       "file_write",
       "code_patch",
@@ -15,7 +16,7 @@ class DevelopmentApprovalGate {
     const founderApproved = Boolean(
       context.founderApprovalToken ||
       context.founderApproved ||
-      context.approvalState?.founderApproved ||
+      (context.approvalState && context.approvalState.founderApproved) ||
       this.defaultState.founderApprovalToken ||
       this.defaultState.founderApproved
     );
@@ -26,8 +27,9 @@ class DevelopmentApprovalGate {
         status: "BLOCKED_BY_APPROVAL",
         reason: "founder_approval_required",
         founderApprovalRequired: true,
-        blockedActions: this.blockedActions.slice(),
-        blockedReason: "Explicit founder approval token or state is required before writes, commits, deploys, or paid API calls."
+        blockedActions: [...this.blockedActions],
+        blockedReason:
+          "Explicit founder approval token or state is required before writes, commits, deploys, or paid API calls."
       };
     }
 
@@ -36,18 +38,21 @@ class DevelopmentApprovalGate {
       status: "APPROVED",
       reason: "founder_approval_present",
       founderApprovalRequired: true,
-      blockedActions: this.blockedActions.slice(),
+      blockedActions: [],
       blockedReason: "None"
     };
   }
 
   canWrite(context = {}) {
-    return this.evaluate(context);
+    return this.evaluate(context).allowed;
   }
 }
 
-const developmentApprovalGate = new DevelopmentApprovalGate();
+const approvalGate = new ApprovalGate();
 
-module.exports = DevelopmentApprovalGate;
-module.exports.DevelopmentApprovalGate = DevelopmentApprovalGate;
-module.exports.developmentApprovalGate = developmentApprovalGate;
+module.exports = ApprovalGate;
+module.exports.ApprovalGate = ApprovalGate;
+module.exports.approvalGate = approvalGate;
+
+// Backward compatibility
+module.exports.developmentApprovalGate = approvalGate;

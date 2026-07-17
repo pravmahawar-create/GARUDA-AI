@@ -23,7 +23,7 @@ const { developmentApprovalGate } = require("../dev-agent/core/DevelopmentApprov
 const { GarudaBibleLoader } = require("../dev-agent/core/GarudaBibleLoader");
 const { GarudaBibleValidator } = require("../dev-agent/core/GarudaBibleValidator");
 const { WorkerContextCompiler } = require("../dev-agent/core/WorkerContextCompiler");
-const { CostOptimizer } = require("../dev-agent/core/CostOptimizer");
+const { CostGuard } = require("../dev-agent/core/CostGuard");
 const { WorkforceRouter } = require("../dev-agent/core/WorkforceRouter");
 const { PromptBuilder } = require("../dev-agent/core/PromptBuilder");
 const { ExternalWorkerAdapter, SUPPORTED_WORKERS, EXECUTION_MODE } = require("../dev-agent/core/ExternalWorkerAdapter");
@@ -147,11 +147,16 @@ function buildTaskProfile(goalInput, goal, tasks, scanResult) {
   const complexity = files.length >= 6 ? 4 : (files.length >= 4 ? 3 : (files.length >= 2 ? 2 : 1));
 
   return {
+    goal: goalInput,
+    rawGoal: goal && goal.rawGoal ? goal.rawGoal : goalInput,
+    intent: goal && goal.intent ? goal.intent : "unknown",
+    domain: goal && goal.domain ? goal.domain : "engineering",
     type,
     risk,
     files,
     fileCount: files.length,
     complexity,
+    requiresWrite: hasWriteIntent(goalInput, tasks),
     budget: { mode: "policy_guarded" },
     scanSummary: scanResult && scanResult.summary ? scanResult.summary : {}
   };
@@ -298,15 +303,19 @@ class Mother {
     const dispatchPreview = buildDispatchPreview(goalInput, goal, tasks);
 
     const workerContextCompiler = new WorkerContextCompiler();
-    const costOptimizer = new CostOptimizer();
+    const costOptimizer = new CostGuard();
     const workforceRouter = new WorkforceRouter({ brainRegistry });
     const promptBuilder = new PromptBuilder();
     const externalWorkerAdapter = new ExternalWorkerAdapter();
     const planner = new MultiBrainPlanner({ registry: brainRegistry });
+
+    const approvalGate = developmentApprovalGate;
+
     const coordinator = new BrainCoordinator({
       registry: brainRegistry,
-      approvalGate: developmentApprovalGate
+      approvalGate
     });
+
     const manager = new EngineeringManager({
       scanner: { scan: () => scanResult },
       planner,
@@ -315,23 +324,38 @@ class Mother {
       reporter: { report },
       multiBrainPlanner: planner,
       brainCoordinator: coordinator,
-      approvalGate: developmentApprovalGate,
+      approvalGate,
       workforceRouter,
       externalWorkerAdapter
     });
+
+    const intendsWrite = hasWriteIntent(goalInput, tasks);
+    const externalExecutionEnabled =
+      process.env.GARUDA_EXTERNAL_WORKER_EXECUTION === "true";
 
     const costDecision = costOptimizer.classify({
       complexity: taskProfile.complexity,
       fileCount: taskProfile.fileCount,
       risk: taskProfile.risk,
       duplicateDetected: Boolean(latestExact),
-      localCapabilities: true,
-      requiresExternal: taskProfile.complexity >= 4,
+      localCapabilities: !intendsWrite,
+      requiresExternal:
+        intendsWrite ||
+        taskProfile.complexity >= 4 ||
+        taskProfile.fileCount > 3,
       paidRequested: false,
-      creditsAvailable: 0
+      creditsAvailable: externalExecutionEnabled ? 1 : 0
     });
 
-    const routingDecision = manager.selectWorker(taskProfile, { cost: costDecision });
+    const routingDecision = manager.selectWorker(taskProfile, {
+      cost: costDecision,
+      founderApproved,
+      externalExecutionEnabled,
+      approval: {
+        founderApproved,
+        founderApprovalToken: Boolean(founderApprovalToken)
+      }
+    });
 
     const compiledWorkerContext = workerContextCompiler.compile({
       goal: goalInput,
@@ -345,13 +369,18 @@ class Mother {
       architectureRules: bibleContext.rules,
       latestMemoryCheckpoint: latestExact,
       scanSummary: scanResult.summary,
-      taskScope: "planning_and_orchestration",
+      taskScope: intendsWrite
+        ? "approved_engineering_execution"
+        : "planning_and_orchestration",
       allowedFiles: taskProfile.files,
       allowedActions: routingDecision.allowedActions,
       blockedActions: routingDecision.blockedActions,
       riskLevel: taskProfile.risk,
       costLimit: costDecision.classification,
-      approvalState: { founderApproved, founderApprovalToken: Boolean(founderApprovalToken) },
+      approvalState: {
+        founderApproved,
+        founderApprovalToken: Boolean(founderApprovalToken)
+      },
       validationRequirements: ["node --check", "policy_guard", "approval_gate"],
       expectedOutputFormat: {
         type: "json",
@@ -395,9 +424,12 @@ class Mother {
       validationCommands: ["node --check scripts/mother/mother.js"]
     });
 
-    const intendsWrite = /implement|write|patch|modify|refactor|create/.test(String(goalInput || "").toLowerCase());
     const writeApproval = intendsWrite
-      ? developmentApprovalGate.evaluate({ founderApprovalToken, founderApproved, intendedOperation: "file_write" })
+      ? approvalGate.evaluate({
+          founderApprovalToken,
+          founderApproved,
+          intendedOperation: "file_write"
+        })
       : {
           allowed: true,
           status: "READ_ONLY_APPROVED",
@@ -412,16 +444,46 @@ class Mother {
       selected: intendsWrite ? implementationPrompt : planningPrompt,
       implementationBlocked: intendsWrite && !writeApproval.allowed
     };
-    const adapterPayload = manager.requestAdapterPayload({
-      worker: routingDecision.selectedWorker,
+
+    const workerFlow = manager.selectWorkerAndExecute(taskProfile, {
+      cost: costDecision,
       goal: goalInput,
-      prompt: promptDecision.selected.prompt,
+      prompt: `Goal: ${goalInput}\n\nImplementation instructions:\n${JSON.stringify(promptDecision.selected.prompt, null, 2)}`,
       promptFingerprint: promptDecision.selected.promptFingerprint,
       context: compiledWorkerContext,
-      estimatedCost: routingDecision.estimatedCostLevel,
-      requiresApproval: true
+      founderApproved: founderApproved && writeApproval.allowed,
+      approvalState: {
+        founderApproved: founderApproved && writeApproval.allowed,
+        approved: writeApproval.allowed,
+        founderApprovalToken: Boolean(founderApprovalToken)
+      },
+      externalExecutionEnabled,
+      requiresApproval: intendsWrite,
+      rootDir: process.cwd(),
+      timeoutMs: 600000,
+      localWorkerHandler: () => buildReadOnlyAnalysis(process.cwd())
     });
-    const approvalBlocked = writeApproval.status === "BLOCKED_BY_APPROVAL";
+
+    const adapterPayload =
+      workerFlow && workerFlow.adapterPayload
+        ? workerFlow.adapterPayload
+        : manager.requestAdapterPayload({
+            worker: routingDecision.selectedWorker,
+            goal: goalInput,
+            prompt: promptDecision.selected.prompt,
+            promptFingerprint: promptDecision.selected.promptFingerprint,
+            context: compiledWorkerContext,
+            estimatedCost: routingDecision.estimatedCostLevel,
+            requiresApproval: intendsWrite
+          });
+
+    const workerExecutionResult =
+      workerFlow && workerFlow.executionResult
+        ? workerFlow.executionResult
+        : null;
+
+    const approvalBlocked =
+      writeApproval.status === "BLOCKED_BY_APPROVAL";
 
     console.log("[Goal]", goal);
     console.log("[Tasks]", tasks);
@@ -495,6 +557,7 @@ class Mother {
       }
 
       if (
+      false &&
       latestExact.workflowStatus === "Completed (3/3)" &&
       latestExact.approvalStatus !== "BLOCKED_BY_APPROVAL" &&
       latestExact.completedAt
@@ -577,12 +640,12 @@ class Mother {
     });
     const multiBrainPlan = orchestration.plan;
     const multiBrainCoordination = orchestration.coordination;
-    const approvalGate = orchestration.approval;
+    const approvalResult = orchestration.approval;
     const workflow = buildWorkflowProgress(orchestration, multiBrainCoordination);
     const executionApproved = Boolean(
       founderApproved &&
       approvalGate &&
-      approvalGate.allowed === true &&
+      approvalResult.allowed === true &&
       writeApproval &&
       writeApproval.allowed === true
     );
@@ -642,6 +705,7 @@ class Mother {
       },
       workerDispatch: dispatchPreview,
       workerAdapter: adapterPayload,
+      workerExecution: workerExecutionResult,
       workforce: {
         selectedWorker: routingDecision.selectedWorker,
         fallbackWorkers: routingDecision.fallbackWorkers,
@@ -657,7 +721,7 @@ class Mother {
         promptFingerprint: adapterPayload.promptFingerprint,
         approvalStatus: executionApproved
           ? "APPROVED"
-          : (approvalGate.status === "BLOCKED_BY_APPROVAL" || writeApproval.status === "BLOCKED_BY_APPROVAL"
+          : (approvalResult.status === "BLOCKED_BY_APPROVAL" || writeApproval.status === "BLOCKED_BY_APPROVAL"
               ? "BLOCKED_BY_APPROVAL"
               : writeApproval.status),
         writeStopped: !executionApproved,
@@ -727,11 +791,11 @@ class Mother {
       cycle.validation = {
         ...cycle.validation,
         status: "BLOCKED_BY_APPROVAL",
-        issues: [approvalGate.blockedReason]
+        issues: [approvalResult.blockedReason]
       };
       cycle.governance = {
         status: "approval_required",
-        reason: approvalGate.reason
+        reason: approvalResult.reason
       };
       cycle.workforce.validationStatus = "BLOCKED_BY_APPROVAL";
     }

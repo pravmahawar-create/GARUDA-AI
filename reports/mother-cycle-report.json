@@ -1,11 +1,11 @@
 {
   "engine": "GARUDA Mother Reporter v1",
-  "generatedAt": "2026-07-17T07:31:25.326Z",
+  "generatedAt": "2026-07-17T12:34:30.279Z",
   "scan": {
     "clean": false,
     "summary": {
-      "modified": 3,
-      "untracked": 0,
+      "modified": 9,
+      "untracked": 1,
       "deleted": 0,
       "renamed": 0
     }
@@ -183,11 +183,11 @@
       "cline",
       "copilot"
     ],
-    "routingReason": "Architecture/high-complexity work prefers LocalBrainWorker first.",
-    "selectionReason": "Architecture/high-complexity work prefers LocalBrainWorker first.",
+    "routingReason": "Cost class \"free_external_execution\" does not permit external worker execution.",
+    "selectionReason": "Cost class \"free_external_execution\" does not permit external worker execution.",
     "externalAIRequired": false,
-    "estimatedCost": "zero_external_cost",
-    "estimatedCostLevel": "zero_external_cost",
+    "estimatedCost": "free_external_execution",
+    "estimatedCostLevel": "free_external_execution",
     "adapterStatus": "LOCAL_EXECUTION_READY",
     "executionMode": "LOCAL_EXECUTION",
     "loadedBibleChapters": [
@@ -197,8 +197,8 @@
       "05_BRAIN_STANDARD",
       "07_ENGINEERING_STANDARD"
     ],
-    "promptType": "planning",
-    "promptFingerprint": "dfc162b88ef68df4adf184ee0b44e6c56fe073af",
+    "promptType": "implementation",
+    "promptFingerprint": "89b60e46570cbc3f98fe9aff5fe6a07b895e894d",
     "approvalStatus": "APPROVED",
     "writeStopped": false,
     "validationStatus": "PASSED"
@@ -229,538 +229,7 @@
   "workerAdapter": {
     "worker": "local_brain_worker",
     "goal": "make mother brain more autonomous",
-    "prompt": {
-      "type": "planning",
-      "mode": "development_director",
-      "role": "local_brain_worker",
-      "goal": "make mother brain more autonomous",
-      "existingModulesToReuse": [
-        "Mother",
-        "GarudaBibleLoader",
-        "GarudaBibleValidator",
-        "ProjectMemoryEngine",
-        "EngineeringManager",
-        "WorkerDispatcher",
-        "BrainRegistry",
-        "MultiBrainPlanner",
-        "BrainCoordinator",
-        "DevelopmentApprovalGate",
-        "LocalBrainWorker"
-      ],
-      "filesInScope": [
-        "analyze_current_mother_architecture",
-        "find_missing_brain_modules",
-        "generate_implementation_plan",
-        "run_validation"
-      ],
-      "requiredContext": {
-        "goal": "make mother brain more autonomous",
-        "adapter": {
-          "supportedWorkers": [
-            "local_brain_worker",
-            "aider",
-            "gemini",
-            "cline",
-            "copilot"
-          ],
-          "executionMode": "LOCAL_EXECUTION",
-          "selectedWorker": "local_brain_worker",
-          "fallbackWorkers": [
-            "aider",
-            "gemini",
-            "cline",
-            "copilot"
-          ]
-        },
-        "bible": {
-          "version": {
-            "bibleVersion": "1.0.0",
-            "schemaVersion": "1.0.0"
-          },
-          "chapters": [
-            "02_CONSTITUTION",
-            "03_FOUNDER_PRINCIPLES",
-            "04_SYSTEM_ARCHITECTURE",
-            "05_BRAIN_STANDARD",
-            "07_ENGINEERING_STANDARD"
-          ],
-          "constitutionRules": [
-            "GARUDA must follow founder-approved architecture.",
-            "GARUDA must not self-modify permanently without founder approval.",
-            "Every generated code change must pass tests before commit.",
-            "Every knowledge update must come from verified, public, legal sources.",
-            "GARUDA must remain modular, scalable, and lightweight.",
-            "GARUDA must never use confidential or unauthorized data.",
-            "GARUDA Builder may generate and patch code, but must report changes clearly.",
-            "GARUDA must preserve clean Git history.",
-            "GARUDA must prioritize production-grade architecture over shortcuts.",
-            "Founder approval is required before commit and push."
-          ],
-          "architectureRules": [
-            {
-              "ruleId": "CH02_RULE_001",
-              "statement": "GARUDA must follow founder-approved architecture.",
-              "priority": "P0",
-              "appliesTo": [
-                "all"
-              ]
-            },
-            {
-              "ruleId": "CH02_RULE_002",
-              "statement": "GARUDA must not self-modify permanently without founder approval.",
-              "priority": "P0",
-              "appliesTo": [
-                "all"
-              ]
-            },
-            {
-              "ruleId": "CH02_RULE_003",
-              "statement": "Every generated code change must pass tests before commit.",
-              "priority": "P1",
-              "appliesTo": [
-                "builder",
-                "testing",
-                "review"
-              ]
-            },
-            {
-              "ruleId": "CH02_RULE_004",
-              "statement": "Founder approval is required before commit and push.",
-              "priority": "P0",
-              "appliesTo": [
-                "all"
-              ]
-            },
-            {
-              "ruleId": "CH03_RULE_001",
-              "statement": "Founder approval is required before write operations that change source, commits, pushes, deploys, or paid API use.",
-              "priority": "P0",
-              "appliesTo": [
-                "all"
-              ]
-            },
-            {
-              "ruleId": "CH03_RULE_002",
-              "statement": "Founder keyboard usage should be minimized to goal, approval, or rejection.",
-              "priority": "P1",
-              "appliesTo": [
-                "mother",
-                "planner",
-                "builder"
-              ]
-            },
-            {
-              "ruleId": "CH03_RULE_003",
-              "statement": "Local capability must be preferred before external AI workers.",
-              "priority": "P0",
-              "appliesTo": [
-                "mother",
-                "planner",
-                "builder",
-                "review"
-              ]
-            },
-            {
-              "ruleId": "CH03_RULE_004",
-              "statement": "No paid APIs are allowed in standard execution mode.",
-              "priority": "P0",
-              "appliesTo": [
-                "all"
-              ]
-            },
-            {
-              "ruleId": "CH04_RULE_001",
-              "statement": "Mother is the only founder-facing runtime entrypoint.",
-              "priority": "P0",
-              "appliesTo": [
-                "mother"
-              ]
-            },
-            {
-              "ruleId": "CH04_RULE_002",
-              "statement": "Runtime orchestration must preserve approval gates and read-only planning before writes.",
-              "priority": "P0",
-              "appliesTo": [
-                "mother",
-                "planner",
-                "builder"
-              ]
-            },
-            {
-              "ruleId": "CH04_RULE_003",
-              "statement": "Architecture documentation must distinguish implemented, partial, and planned systems.",
-              "priority": "P1",
-              "appliesTo": [
-                "documentation",
-                "review"
-              ]
-            },
-            {
-              "ruleId": "CH05_RULE_001",
-              "statement": "Every brain must declare capabilities, allowed actions, and blocked actions.",
-              "priority": "P0",
-              "appliesTo": [
-                "architect",
-                "frontend",
-                "backend",
-                "tester",
-                "reviewer",
-                "documentation"
-              ]
-            },
-            {
-              "ruleId": "CH05_RULE_002",
-              "statement": "All brains operate in approval-required mode for write-affecting outcomes.",
-              "priority": "P0",
-              "appliesTo": [
-                "all"
-              ]
-            },
-            {
-              "ruleId": "CH05_RULE_003",
-              "statement": "Brain outputs must be reviewable and traceable in reports.",
-              "priority": "P1",
-              "appliesTo": [
-                "reviewer",
-                "documentation"
-              ]
-            },
-            {
-              "ruleId": "CH07_RULE_001",
-              "statement": "Inspect existing code before edits and reuse modules before creating new ones.",
-              "priority": "P0",
-              "appliesTo": [
-                "all"
-              ]
-            },
-            {
-              "ruleId": "CH07_RULE_002",
-              "statement": "Never claim validation that was not actually run.",
-              "priority": "P0",
-              "appliesTo": [
-                "all"
-              ]
-            },
-            {
-              "ruleId": "CH07_RULE_003",
-              "statement": "No commit, push, deploy, or paid API usage without explicit founder permission.",
-              "priority": "P0",
-              "appliesTo": [
-                "all"
-              ]
-            },
-            {
-              "ruleId": "CH07_RULE_004",
-              "statement": "Generate concise machine-readable reports for each cycle.",
-              "priority": "P1",
-              "appliesTo": [
-                "documentation",
-                "review",
-                "mother"
-              ]
-            }
-          ]
-        },
-        "memory": {
-          "goal": "make mother brain more autonomous",
-          "normalizedGoal": "make mother brain more autonomous",
-          "createdAt": "2026-07-17T06:43:58.539Z",
-          "completedAt": "2026-07-17T06:43:58.539Z",
-          "selectedBrains": [
-            "architect",
-            "reviewer",
-            "documentation"
-          ],
-          "taskPlan": {
-            "tasks": [
-              {
-                "id": "make-mother-brain-more-autonomous-01",
-                "title": "Scan the repository and identify the current implementation surface",
-                "workerType": "architect",
-                "dependencies": [],
-                "allowedActions": [
-                  "read",
-                  "analyze",
-                  "map_dependencies"
-                ],
-                "blockedActions": [
-                  "commit",
-                  "merge",
-                  "deploy",
-                  "paid_api",
-                  "write_source"
-                ],
-                "approvalRequired": true
-              },
-              {
-                "id": "make-mother-brain-more-autonomous-04",
-                "title": "Define validation checks and read-only test strategy",
-                "workerType": "tester",
-                "dependencies": [
-                  "make-mother-brain-more-autonomous-01"
-                ],
-                "allowedActions": [
-                  "read",
-                  "run_tests",
-                  "run_syntax_checks",
-                  "verify_quality"
-                ],
-                "blockedActions": [
-                  "commit",
-                  "merge",
-                  "deploy",
-                  "paid_api",
-                  "write_source"
-                ],
-                "approvalRequired": true
-              },
-              {
-                "id": "make-mother-brain-more-autonomous-05",
-                "title": "Review the merged proposal for safety and approval boundaries",
-                "workerType": "reviewer",
-                "dependencies": [
-                  "make-mother-brain-more-autonomous-04"
-                ],
-                "allowedActions": [
-                  "read",
-                  "review",
-                  "validate",
-                  "approve_readonly"
-                ],
-                "blockedActions": [
-                  "commit",
-                  "merge",
-                  "deploy",
-                  "paid_api",
-                  "write_source"
-                ],
-                "approvalRequired": true
-              },
-              {
-                "id": "make-mother-brain-more-autonomous-06",
-                "title": "Prepare a founder-facing implementation report",
-                "workerType": "documentation",
-                "dependencies": [
-                  "make-mother-brain-more-autonomous-05"
-                ],
-                "allowedActions": [
-                  "read",
-                  "summarize",
-                  "draft_docs",
-                  "prepare_reports"
-                ],
-                "blockedActions": [
-                  "commit",
-                  "merge",
-                  "deploy",
-                  "paid_api",
-                  "write_source"
-                ],
-                "approvalRequired": true
-              }
-            ],
-            "dependencyOrder": [
-              "make-mother-brain-more-autonomous-01",
-              "make-mother-brain-more-autonomous-04",
-              "make-mother-brain-more-autonomous-05",
-              "make-mother-brain-more-autonomous-06"
-            ]
-          },
-          "validationStatus": "BLOCKED_BY_APPROVAL",
-          "workflowStatus": "Completed (3/3)",
-          "approvalStatus": "BLOCKED_BY_APPROVAL",
-          "filesCreated": [],
-          "filesModified": [],
-          "failures": [
-            {
-              "taskId": "make-mother-brain-more-autonomous-01",
-              "reason": "proposal_contains_blocked_actions",
-              "reviewer": "reviewer"
-            },
-            {
-              "taskId": "make-mother-brain-more-autonomous-04",
-              "reason": "proposal_contains_blocked_actions",
-              "reviewer": "reviewer"
-            },
-            {
-              "taskId": "make-mother-brain-more-autonomous-05",
-              "reason": "proposal_contains_blocked_actions",
-              "reviewer": "reviewer"
-            },
-            {
-              "taskId": "make-mother-brain-more-autonomous-06",
-              "reason": "proposal_contains_blocked_actions",
-              "reviewer": "reviewer"
-            }
-          ],
-          "nextAction": "await_founder_approval",
-          "planFingerprint": "cbaf89cbd2e5b327a68ceae9e0df26c73e9c9769"
-        },
-        "scanSummary": {
-          "modified": 3,
-          "untracked": 0,
-          "deleted": 0,
-          "renamed": 0
-        },
-        "taskScope": "planning_and_orchestration",
-        "allowedFiles": [
-          "analyze_current_mother_architecture",
-          "find_missing_brain_modules",
-          "generate_implementation_plan",
-          "run_validation"
-        ],
-        "allowedActions": [
-          "read",
-          "discuss",
-          "propose_plan",
-          "analyze",
-          "plan"
-        ],
-        "blockedActions": [
-          "write_code",
-          "deploy",
-          "merge",
-          "final_commit",
-          "commit",
-          "push",
-          "paid_api"
-        ],
-        "riskLevel": "high",
-        "costLimit": "zero_external_cost",
-        "approvalState": {
-          "founderApproved": true,
-          "founderApprovalToken": false
-        },
-        "validationRequirements": [
-          "node --check",
-          "policy_guard",
-          "approval_gate"
-        ],
-        "expectedOutputFormat": {
-          "type": "json",
-          "keys": [
-            "summary",
-            "proposedChanges",
-            "risks",
-            "validationPlan",
-            "nextAction"
-          ]
-        }
-      },
-      "constraints": [
-        "Inspect before edit",
-        "Reuse before create",
-        "Never duplicate completed modules",
-        "No paid APIs",
-        "No commit",
-        "No push",
-        "No deploy",
-        "Stop before writes unless Founder approval explicitly permits the requested write",
-        "Report every proposed or modified file",
-        "Never claim validation that was not actually run",
-        "Planning prompts must be read-only"
-      ],
-      "allowedActions": [
-        "read",
-        "analyze",
-        "plan",
-        "summarize"
-      ],
-      "blockedActions": [
-        "write_code",
-        "deploy",
-        "merge",
-        "final_commit",
-        "commit",
-        "push",
-        "paid_api"
-      ],
-      "founderApprovalStatus": "NOT_REQUIRED_FOR_READ_ONLY",
-      "workerRoutingMetadata": {
-        "capabilityRegistry": {
-          "local_brain_worker": {
-            "class": "local",
-            "capabilities": [
-              "read",
-              "analyze",
-              "plan",
-              "summarize",
-              "run_syntax_checks"
-            ]
-          },
-          "aider": {
-            "class": "external_adapter",
-            "capabilities": [
-              "read",
-              "analyze",
-              "plan",
-              "patch_small_scope"
-            ]
-          },
-          "gemini": {
-            "class": "external_adapter",
-            "capabilities": [
-              "read",
-              "analyze",
-              "plan",
-              "summarize"
-            ]
-          },
-          "cline": {
-            "class": "external_adapter",
-            "capabilities": [
-              "read",
-              "analyze",
-              "plan",
-              "review"
-            ]
-          },
-          "copilot": {
-            "class": "external_adapter",
-            "capabilities": [
-              "read",
-              "analyze",
-              "plan",
-              "review"
-            ]
-          }
-        },
-        "defaultWorkerPriority": [
-          "local_brain_worker",
-          "aider",
-          "gemini",
-          "cline",
-          "copilot"
-        ],
-        "selectedWorkerOrder": [
-          "local_brain_worker",
-          "aider",
-          "gemini",
-          "cline",
-          "copilot"
-        ],
-        "selectedWorkerAlias": "local_brain_worker",
-        "localWorkerDefault": true
-      },
-      "validationCommands": [
-        "node --check scripts/mother/mother.js"
-      ],
-      "expectedResponseFormat": {
-        "format": "json",
-        "sections": [
-          "summary",
-          "changes",
-          "risks",
-          "validation",
-          "nextAction"
-        ]
-      },
-      "stopConditions": [
-        "missing_required_context",
-        "policy_violation_detected",
-        "approval_required_before_write"
-      ]
-    },
+    "prompt": "Goal: make mother brain more autonomous\n\nImplementation instructions:\n{\n  \"type\": \"implementation\",\n  \"mode\": \"development_director\",\n  \"role\": \"local_brain_worker\",\n  \"goal\": \"make mother brain more autonomous\",\n  \"existingModulesToReuse\": [\n    \"Mother\",\n    \"GarudaBibleLoader\",\n    \"GarudaBibleValidator\",\n    \"ProjectMemoryEngine\",\n    \"EngineeringManager\",\n    \"WorkerDispatcher\",\n    \"BrainRegistry\",\n    \"MultiBrainPlanner\",\n    \"BrainCoordinator\",\n    \"DevelopmentApprovalGate\",\n    \"LocalBrainWorker\"\n  ],\n  \"filesInScope\": [\n    \"analyze_current_mother_architecture\",\n    \"find_missing_brain_modules\",\n    \"generate_implementation_plan\",\n    \"run_validation\"\n  ],\n  \"requiredContext\": {\n    \"goal\": \"make mother brain more autonomous\",\n    \"adapter\": {\n      \"supportedWorkers\": [\n        \"local_brain_worker\",\n        \"aider\",\n        \"gemini\",\n        \"cline\",\n        \"copilot\"\n      ],\n      \"executionMode\": \"LOCAL_EXECUTION\",\n      \"selectedWorker\": \"local_brain_worker\",\n      \"fallbackWorkers\": [\n        \"aider\",\n        \"gemini\",\n        \"cline\",\n        \"copilot\"\n      ]\n    },\n    \"bible\": {\n      \"version\": {\n        \"bibleVersion\": \"1.0.0\",\n        \"schemaVersion\": \"1.0.0\"\n      },\n      \"chapters\": [\n        \"02_CONSTITUTION\",\n        \"03_FOUNDER_PRINCIPLES\",\n        \"04_SYSTEM_ARCHITECTURE\",\n        \"05_BRAIN_STANDARD\",\n        \"07_ENGINEERING_STANDARD\"\n      ],\n      \"constitutionRules\": [\n        \"GARUDA must follow founder-approved architecture.\",\n        \"GARUDA must not self-modify permanently without founder approval.\",\n        \"Every generated code change must pass tests before commit.\",\n        \"Every knowledge update must come from verified, public, legal sources.\",\n        \"GARUDA must remain modular, scalable, and lightweight.\",\n        \"GARUDA must never use confidential or unauthorized data.\",\n        \"GARUDA Builder may generate and patch code, but must report changes clearly.\",\n        \"GARUDA must preserve clean Git history.\",\n        \"GARUDA must prioritize production-grade architecture over shortcuts.\",\n        \"Founder approval is required before commit and push.\"\n      ],\n      \"architectureRules\": [\n        {\n          \"ruleId\": \"CH02_RULE_001\",\n          \"statement\": \"GARUDA must follow founder-approved architecture.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_002\",\n          \"statement\": \"GARUDA must not self-modify permanently without founder approval.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_003\",\n          \"statement\": \"Every generated code change must pass tests before commit.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"builder\",\n            \"testing\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_004\",\n          \"statement\": \"Founder approval is required before commit and push.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_001\",\n          \"statement\": \"Founder approval is required before write operations that change source, commits, pushes, deploys, or paid API use.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_002\",\n          \"statement\": \"Founder keyboard usage should be minimized to goal, approval, or rejection.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_003\",\n          \"statement\": \"Local capability must be preferred before external AI workers.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_004\",\n          \"statement\": \"No paid APIs are allowed in standard execution mode.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_001\",\n          \"statement\": \"Mother is the only founder-facing runtime entrypoint.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_002\",\n          \"statement\": \"Runtime orchestration must preserve approval gates and read-only planning before writes.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_003\",\n          \"statement\": \"Architecture documentation must distinguish implemented, partial, and planned systems.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"documentation\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_001\",\n          \"statement\": \"Every brain must declare capabilities, allowed actions, and blocked actions.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"architect\",\n            \"frontend\",\n            \"backend\",\n            \"tester\",\n            \"reviewer\",\n            \"documentation\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_002\",\n          \"statement\": \"All brains operate in approval-required mode for write-affecting outcomes.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_003\",\n          \"statement\": \"Brain outputs must be reviewable and traceable in reports.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"reviewer\",\n            \"documentation\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_001\",\n          \"statement\": \"Inspect existing code before edits and reuse modules before creating new ones.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_002\",\n          \"statement\": \"Never claim validation that was not actually run.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_003\",\n          \"statement\": \"No commit, push, deploy, or paid API usage without explicit founder permission.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_004\",\n          \"statement\": \"Generate concise machine-readable reports for each cycle.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"documentation\",\n            \"review\",\n            \"mother\"\n          ]\n        }\n      ]\n    },\n    \"memory\": {\n      \"goal\": \"make mother brain more autonomous\",\n      \"normalizedGoal\": \"make mother brain more autonomous\",\n      \"createdAt\": \"2026-07-17T06:43:58.539Z\",\n      \"completedAt\": \"2026-07-17T06:43:58.539Z\",\n      \"selectedBrains\": [\n        \"architect\",\n        \"reviewer\",\n        \"documentation\"\n      ],\n      \"taskPlan\": {\n        \"tasks\": [\n          {\n            \"id\": \"make-mother-brain-more-autonomous-01\",\n            \"title\": \"Scan the repository and identify the current implementation surface\",\n            \"workerType\": \"architect\",\n            \"dependencies\": [],\n            \"allowedActions\": [\n              \"read\",\n              \"analyze\",\n              \"map_dependencies\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-04\",\n            \"title\": \"Define validation checks and read-only test strategy\",\n            \"workerType\": \"tester\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-01\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"run_tests\",\n              \"run_syntax_checks\",\n              \"verify_quality\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-05\",\n            \"title\": \"Review the merged proposal for safety and approval boundaries\",\n            \"workerType\": \"reviewer\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-04\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"review\",\n              \"validate\",\n              \"approve_readonly\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-06\",\n            \"title\": \"Prepare a founder-facing implementation report\",\n            \"workerType\": \"documentation\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-05\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"summarize\",\n              \"draft_docs\",\n              \"prepare_reports\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          }\n        ],\n        \"dependencyOrder\": [\n          \"make-mother-brain-more-autonomous-01\",\n          \"make-mother-brain-more-autonomous-04\",\n          \"make-mother-brain-more-autonomous-05\",\n          \"make-mother-brain-more-autonomous-06\"\n        ]\n      },\n      \"validationStatus\": \"BLOCKED_BY_APPROVAL\",\n      \"workflowStatus\": \"Completed (3/3)\",\n      \"approvalStatus\": \"BLOCKED_BY_APPROVAL\",\n      \"filesCreated\": [],\n      \"filesModified\": [],\n      \"failures\": [\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-01\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-04\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-05\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-06\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        }\n      ],\n      \"nextAction\": \"await_founder_approval\",\n      \"planFingerprint\": \"cbaf89cbd2e5b327a68ceae9e0df26c73e9c9769\"\n    },\n    \"scanSummary\": {\n      \"modified\": 9,\n      \"untracked\": 1,\n      \"deleted\": 0,\n      \"renamed\": 0\n    },\n    \"taskScope\": \"approved_engineering_execution\",\n    \"allowedFiles\": [\n      \"analyze_current_mother_architecture\",\n      \"find_missing_brain_modules\",\n      \"generate_implementation_plan\",\n      \"run_validation\"\n    ],\n    \"allowedActions\": [\n      \"read\",\n      \"discuss\",\n      \"propose_plan\",\n      \"analyze\",\n      \"plan\"\n    ],\n    \"blockedActions\": [\n      \"write_code\",\n      \"deploy\",\n      \"merge\",\n      \"final_commit\",\n      \"commit\",\n      \"push\",\n      \"paid_api\"\n    ],\n    \"riskLevel\": \"high\",\n    \"costLimit\": \"free_external_execution\",\n    \"approvalState\": {\n      \"founderApproved\": true,\n      \"founderApprovalToken\": false\n    },\n    \"validationRequirements\": [\n      \"node --check\",\n      \"policy_guard\",\n      \"approval_gate\"\n    ],\n    \"expectedOutputFormat\": {\n      \"type\": \"json\",\n      \"keys\": [\n        \"summary\",\n        \"proposedChanges\",\n        \"risks\",\n        \"validationPlan\",\n        \"nextAction\"\n      ]\n    }\n  },\n  \"constraints\": [\n    \"Inspect before edit\",\n    \"Reuse before create\",\n    \"Never duplicate completed modules\",\n    \"No paid APIs\",\n    \"No commit\",\n    \"No push\",\n    \"No deploy\",\n    \"Stop before writes unless Founder approval explicitly permits the requested write\",\n    \"Report every proposed or modified file\",\n    \"Never claim validation that was not actually run\"\n  ],\n  \"allowedActions\": [\n    \"read\",\n    \"discuss\",\n    \"propose_plan\",\n    \"analyze\",\n    \"plan\"\n  ],\n  \"blockedActions\": [\n    \"write_code\",\n    \"deploy\",\n    \"merge\",\n    \"final_commit\",\n    \"commit\",\n    \"push\",\n    \"paid_api\"\n  ],\n  \"founderApprovalStatus\": \"APPROVED\",\n  \"workerRoutingMetadata\": {\n    \"capabilityRegistry\": {\n      \"local_brain_worker\": {\n        \"class\": \"local\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"summarize\",\n          \"run_syntax_checks\"\n        ]\n      },\n      \"aider\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"patch_small_scope\"\n        ]\n      },\n      \"gemini\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"summarize\"\n        ]\n      },\n      \"cline\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"review\"\n        ]\n      },\n      \"copilot\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"review\"\n        ]\n      }\n    },\n    \"defaultWorkerPriority\": [\n      \"local_brain_worker\",\n      \"aider\",\n      \"gemini\",\n      \"cline\",\n      \"copilot\"\n    ],\n    \"selectedWorkerOrder\": [\n      \"local_brain_worker\",\n      \"aider\",\n      \"gemini\",\n      \"cline\",\n      \"copilot\"\n    ],\n    \"selectedWorkerAlias\": \"local_brain_worker\",\n    \"localWorkerDefault\": true\n  },\n  \"validationCommands\": [\n    \"node --check scripts/mother/mother.js\"\n  ],\n  \"expectedResponseFormat\": {\n    \"format\": \"json\",\n    \"sections\": [\n      \"summary\",\n      \"changes\",\n      \"risks\",\n      \"validation\",\n      \"nextAction\"\n    ]\n  },\n  \"stopConditions\": [\n    \"missing_required_context\",\n    \"policy_violation_detected\",\n    \"approval_required_before_write\"\n  ]\n}",
     "context": {
       "goal": "make mother brain more autonomous",
       "adapter": {
@@ -1105,12 +574,12 @@
         "planFingerprint": "cbaf89cbd2e5b327a68ceae9e0df26c73e9c9769"
       },
       "scanSummary": {
-        "modified": 3,
-        "untracked": 0,
+        "modified": 9,
+        "untracked": 1,
         "deleted": 0,
         "renamed": 0
       },
-      "taskScope": "planning_and_orchestration",
+      "taskScope": "approved_engineering_execution",
       "allowedFiles": [
         "analyze_current_mother_architecture",
         "find_missing_brain_modules",
@@ -1134,9 +603,10 @@
         "paid_api"
       ],
       "riskLevel": "high",
-      "costLimit": "zero_external_cost",
+      "costLimit": "free_external_execution",
       "approvalState": {
         "founderApproved": true,
+        "approved": true,
         "founderApprovalToken": false
       },
       "validationRequirements": [
@@ -1154,31 +624,1494 @@
           "nextAction"
         ]
       },
-      "prompt": {
-        "type": "planning",
-        "mode": "development_director",
-        "role": "local_brain_worker",
+      "prompt": "Goal: make mother brain more autonomous\n\nImplementation instructions:\n{\n  \"type\": \"implementation\",\n  \"mode\": \"development_director\",\n  \"role\": \"local_brain_worker\",\n  \"goal\": \"make mother brain more autonomous\",\n  \"existingModulesToReuse\": [\n    \"Mother\",\n    \"GarudaBibleLoader\",\n    \"GarudaBibleValidator\",\n    \"ProjectMemoryEngine\",\n    \"EngineeringManager\",\n    \"WorkerDispatcher\",\n    \"BrainRegistry\",\n    \"MultiBrainPlanner\",\n    \"BrainCoordinator\",\n    \"DevelopmentApprovalGate\",\n    \"LocalBrainWorker\"\n  ],\n  \"filesInScope\": [\n    \"analyze_current_mother_architecture\",\n    \"find_missing_brain_modules\",\n    \"generate_implementation_plan\",\n    \"run_validation\"\n  ],\n  \"requiredContext\": {\n    \"goal\": \"make mother brain more autonomous\",\n    \"adapter\": {\n      \"supportedWorkers\": [\n        \"local_brain_worker\",\n        \"aider\",\n        \"gemini\",\n        \"cline\",\n        \"copilot\"\n      ],\n      \"executionMode\": \"LOCAL_EXECUTION\",\n      \"selectedWorker\": \"local_brain_worker\",\n      \"fallbackWorkers\": [\n        \"aider\",\n        \"gemini\",\n        \"cline\",\n        \"copilot\"\n      ]\n    },\n    \"bible\": {\n      \"version\": {\n        \"bibleVersion\": \"1.0.0\",\n        \"schemaVersion\": \"1.0.0\"\n      },\n      \"chapters\": [\n        \"02_CONSTITUTION\",\n        \"03_FOUNDER_PRINCIPLES\",\n        \"04_SYSTEM_ARCHITECTURE\",\n        \"05_BRAIN_STANDARD\",\n        \"07_ENGINEERING_STANDARD\"\n      ],\n      \"constitutionRules\": [\n        \"GARUDA must follow founder-approved architecture.\",\n        \"GARUDA must not self-modify permanently without founder approval.\",\n        \"Every generated code change must pass tests before commit.\",\n        \"Every knowledge update must come from verified, public, legal sources.\",\n        \"GARUDA must remain modular, scalable, and lightweight.\",\n        \"GARUDA must never use confidential or unauthorized data.\",\n        \"GARUDA Builder may generate and patch code, but must report changes clearly.\",\n        \"GARUDA must preserve clean Git history.\",\n        \"GARUDA must prioritize production-grade architecture over shortcuts.\",\n        \"Founder approval is required before commit and push.\"\n      ],\n      \"architectureRules\": [\n        {\n          \"ruleId\": \"CH02_RULE_001\",\n          \"statement\": \"GARUDA must follow founder-approved architecture.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_002\",\n          \"statement\": \"GARUDA must not self-modify permanently without founder approval.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_003\",\n          \"statement\": \"Every generated code change must pass tests before commit.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"builder\",\n            \"testing\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_004\",\n          \"statement\": \"Founder approval is required before commit and push.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_001\",\n          \"statement\": \"Founder approval is required before write operations that change source, commits, pushes, deploys, or paid API use.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_002\",\n          \"statement\": \"Founder keyboard usage should be minimized to goal, approval, or rejection.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_003\",\n          \"statement\": \"Local capability must be preferred before external AI workers.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_004\",\n          \"statement\": \"No paid APIs are allowed in standard execution mode.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_001\",\n          \"statement\": \"Mother is the only founder-facing runtime entrypoint.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_002\",\n          \"statement\": \"Runtime orchestration must preserve approval gates and read-only planning before writes.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_003\",\n          \"statement\": \"Architecture documentation must distinguish implemented, partial, and planned systems.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"documentation\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_001\",\n          \"statement\": \"Every brain must declare capabilities, allowed actions, and blocked actions.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"architect\",\n            \"frontend\",\n            \"backend\",\n            \"tester\",\n            \"reviewer\",\n            \"documentation\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_002\",\n          \"statement\": \"All brains operate in approval-required mode for write-affecting outcomes.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_003\",\n          \"statement\": \"Brain outputs must be reviewable and traceable in reports.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"reviewer\",\n            \"documentation\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_001\",\n          \"statement\": \"Inspect existing code before edits and reuse modules before creating new ones.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_002\",\n          \"statement\": \"Never claim validation that was not actually run.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_003\",\n          \"statement\": \"No commit, push, deploy, or paid API usage without explicit founder permission.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_004\",\n          \"statement\": \"Generate concise machine-readable reports for each cycle.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"documentation\",\n            \"review\",\n            \"mother\"\n          ]\n        }\n      ]\n    },\n    \"memory\": {\n      \"goal\": \"make mother brain more autonomous\",\n      \"normalizedGoal\": \"make mother brain more autonomous\",\n      \"createdAt\": \"2026-07-17T06:43:58.539Z\",\n      \"completedAt\": \"2026-07-17T06:43:58.539Z\",\n      \"selectedBrains\": [\n        \"architect\",\n        \"reviewer\",\n        \"documentation\"\n      ],\n      \"taskPlan\": {\n        \"tasks\": [\n          {\n            \"id\": \"make-mother-brain-more-autonomous-01\",\n            \"title\": \"Scan the repository and identify the current implementation surface\",\n            \"workerType\": \"architect\",\n            \"dependencies\": [],\n            \"allowedActions\": [\n              \"read\",\n              \"analyze\",\n              \"map_dependencies\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-04\",\n            \"title\": \"Define validation checks and read-only test strategy\",\n            \"workerType\": \"tester\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-01\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"run_tests\",\n              \"run_syntax_checks\",\n              \"verify_quality\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-05\",\n            \"title\": \"Review the merged proposal for safety and approval boundaries\",\n            \"workerType\": \"reviewer\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-04\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"review\",\n              \"validate\",\n              \"approve_readonly\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-06\",\n            \"title\": \"Prepare a founder-facing implementation report\",\n            \"workerType\": \"documentation\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-05\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"summarize\",\n              \"draft_docs\",\n              \"prepare_reports\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          }\n        ],\n        \"dependencyOrder\": [\n          \"make-mother-brain-more-autonomous-01\",\n          \"make-mother-brain-more-autonomous-04\",\n          \"make-mother-brain-more-autonomous-05\",\n          \"make-mother-brain-more-autonomous-06\"\n        ]\n      },\n      \"validationStatus\": \"BLOCKED_BY_APPROVAL\",\n      \"workflowStatus\": \"Completed (3/3)\",\n      \"approvalStatus\": \"BLOCKED_BY_APPROVAL\",\n      \"filesCreated\": [],\n      \"filesModified\": [],\n      \"failures\": [\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-01\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-04\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-05\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-06\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        }\n      ],\n      \"nextAction\": \"await_founder_approval\",\n      \"planFingerprint\": \"cbaf89cbd2e5b327a68ceae9e0df26c73e9c9769\"\n    },\n    \"scanSummary\": {\n      \"modified\": 9,\n      \"untracked\": 1,\n      \"deleted\": 0,\n      \"renamed\": 0\n    },\n    \"taskScope\": \"approved_engineering_execution\",\n    \"allowedFiles\": [\n      \"analyze_current_mother_architecture\",\n      \"find_missing_brain_modules\",\n      \"generate_implementation_plan\",\n      \"run_validation\"\n    ],\n    \"allowedActions\": [\n      \"read\",\n      \"discuss\",\n      \"propose_plan\",\n      \"analyze\",\n      \"plan\"\n    ],\n    \"blockedActions\": [\n      \"write_code\",\n      \"deploy\",\n      \"merge\",\n      \"final_commit\",\n      \"commit\",\n      \"push\",\n      \"paid_api\"\n    ],\n    \"riskLevel\": \"high\",\n    \"costLimit\": \"free_external_execution\",\n    \"approvalState\": {\n      \"founderApproved\": true,\n      \"founderApprovalToken\": false\n    },\n    \"validationRequirements\": [\n      \"node --check\",\n      \"policy_guard\",\n      \"approval_gate\"\n    ],\n    \"expectedOutputFormat\": {\n      \"type\": \"json\",\n      \"keys\": [\n        \"summary\",\n        \"proposedChanges\",\n        \"risks\",\n        \"validationPlan\",\n        \"nextAction\"\n      ]\n    }\n  },\n  \"constraints\": [\n    \"Inspect before edit\",\n    \"Reuse before create\",\n    \"Never duplicate completed modules\",\n    \"No paid APIs\",\n    \"No commit\",\n    \"No push\",\n    \"No deploy\",\n    \"Stop before writes unless Founder approval explicitly permits the requested write\",\n    \"Report every proposed or modified file\",\n    \"Never claim validation that was not actually run\"\n  ],\n  \"allowedActions\": [\n    \"read\",\n    \"discuss\",\n    \"propose_plan\",\n    \"analyze\",\n    \"plan\"\n  ],\n  \"blockedActions\": [\n    \"write_code\",\n    \"deploy\",\n    \"merge\",\n    \"final_commit\",\n    \"commit\",\n    \"push\",\n    \"paid_api\"\n  ],\n  \"founderApprovalStatus\": \"APPROVED\",\n  \"workerRoutingMetadata\": {\n    \"capabilityRegistry\": {\n      \"local_brain_worker\": {\n        \"class\": \"local\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"summarize\",\n          \"run_syntax_checks\"\n        ]\n      },\n      \"aider\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"patch_small_scope\"\n        ]\n      },\n      \"gemini\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"summarize\"\n        ]\n      },\n      \"cline\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"review\"\n        ]\n      },\n      \"copilot\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"review\"\n        ]\n      }\n    },\n    \"defaultWorkerPriority\": [\n      \"local_brain_worker\",\n      \"aider\",\n      \"gemini\",\n      \"cline\",\n      \"copilot\"\n    ],\n    \"selectedWorkerOrder\": [\n      \"local_brain_worker\",\n      \"aider\",\n      \"gemini\",\n      \"cline\",\n      \"copilot\"\n    ],\n    \"selectedWorkerAlias\": \"local_brain_worker\",\n    \"localWorkerDefault\": true\n  },\n  \"validationCommands\": [\n    \"node --check scripts/mother/mother.js\"\n  ],\n  \"expectedResponseFormat\": {\n    \"format\": \"json\",\n    \"sections\": [\n      \"summary\",\n      \"changes\",\n      \"risks\",\n      \"validation\",\n      \"nextAction\"\n    ]\n  },\n  \"stopConditions\": [\n    \"missing_required_context\",\n    \"policy_violation_detected\",\n    \"approval_required_before_write\"\n  ]\n}",
+      "promptFingerprint": "89b60e46570cbc3f98fe9aff5fe6a07b895e894d",
+      "estimatedCost": "free_external_execution",
+      "requiresApproval": false,
+      "founderApproved": true,
+      "timeoutMs": 600000,
+      "rootDir": "C:\\Users\\hp\\OneDrive\\GARUDA\\GARUDA-AI"
+    },
+    "estimatedCost": "free_external_execution",
+    "requiresApproval": false,
+    "executionMode": "LOCAL_EXECUTION",
+    "promptFingerprint": "89b60e46570cbc3f98fe9aff5fe6a07b895e894d",
+    "adapterStatus": "LOCAL_EXECUTION_READY",
+    "executionReady": true,
+    "externalExecutionEnabled": true,
+    "founderApproved": true,
+    "createdAt": "2026-07-17T12:34:29.549Z"
+  },
+  "workerExecution": {
+    "worker": "local_brain_worker",
+    "goal": "make mother brain more autonomous",
+    "success": true,
+    "executed": true,
+    "skipped": false,
+    "reason": "local_worker_executed",
+    "result": {
+      "success": true,
+      "executed": true,
+      "skipped": false,
+      "reason": "local_worker_executed",
+      "worker": "local_brain_worker",
+      "output": {
+        "projectStructure": [
+          {
+            "name": ".aider.chat.history.md",
+            "path": ".aider.chat.history.md",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": ".aider.input.history",
+            "path": ".aider.input.history",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": ".aider.tags.cache.v4",
+            "path": ".aider.tags.cache.v4",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "4a",
+            "path": ".aider.tags.cache.v4/4a",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "9e",
+            "path": ".aider.tags.cache.v4/4a/9e",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "cache.db",
+            "path": ".aider.tags.cache.v4/cache.db",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "cache.db-shm",
+            "path": ".aider.tags.cache.v4/cache.db-shm",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "cache.db-wal",
+            "path": ".aider.tags.cache.v4/cache.db-wal",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": ".env",
+            "path": ".env",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": ".github",
+            "path": ".github",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "workflows",
+            "path": ".github/workflows",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "garuda-autopilot.yml",
+            "path": ".github/workflows/garuda-autopilot.yml",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": ".gitignore",
+            "path": ".gitignore",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "data",
+            "path": "data",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "dev-agent",
+            "path": "data/dev-agent",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "project-memory.backup.json",
+            "path": "data/dev-agent/project-memory.backup.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "project-memory.backup2.json",
+            "path": "data/dev-agent/project-memory.backup2.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "project-memory.json",
+            "path": "data/dev-agent/project-memory.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "knowledge-index.json",
+            "path": "data/knowledge-index.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "docs",
+            "path": "docs",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "AI_WORKFORCE.md",
+            "path": "docs/AI_WORKFORCE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "AUTONOMOUS_ENGINEERING_PLANNER.md",
+            "path": "docs/AUTONOMOUS_ENGINEERING_PLANNER.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "CONTINUOUS_INTELLIGENCE.md",
+            "path": "docs/CONTINUOUS_INTELLIGENCE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "CREATIVE_STUDIO.md",
+            "path": "docs/CREATIVE_STUDIO.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "GARUDA_CONSTITUTION.md",
+            "path": "docs/GARUDA_CONSTITUTION.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "GARUDA_VISION.md",
+            "path": "docs/GARUDA_VISION.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "LEARNING_ENGINE.md",
+            "path": "docs/LEARNING_ENGINE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "MOTHER_BRAIN.md",
+            "path": "docs/MOTHER_BRAIN.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "MOTHER_BRAIN_ORCHESTRATOR.md",
+            "path": "docs/MOTHER_BRAIN_ORCHESTRATOR.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "MULTI_AGENT_ARCHITECTURE.md",
+            "path": "docs/MULTI_AGENT_ARCHITECTURE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "REVENUE_UNIVERSE.md",
+            "path": "docs/REVENUE_UNIVERSE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "ROADMAP.md",
+            "path": "docs/ROADMAP.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "frontend",
+            "path": "frontend",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "index.html",
+            "path": "frontend/index.html",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "public",
+            "path": "frontend/public",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "assets",
+            "path": "frontend/public/assets",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "favicon",
+            "path": "frontend/public/favicon",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "src",
+            "path": "frontend/src",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "agents",
+            "path": "frontend/src/agents",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "App.jsx",
+            "path": "frontend/src/App.jsx",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "assets",
+            "path": "frontend/src/assets",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "components",
+            "path": "frontend/src/components",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "config",
+            "path": "frontend/src/config",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "evolution",
+            "path": "frontend/src/evolution",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "features",
+            "path": "frontend/src/features",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "intelligence",
+            "path": "frontend/src/intelligence",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "layout",
+            "path": "frontend/src/layout",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "learning",
+            "path": "frontend/src/learning",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "mother",
+            "path": "frontend/src/mother",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "pages",
+            "path": "frontend/src/pages",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "planner",
+            "path": "frontend/src/planner",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "selfbuild",
+            "path": "frontend/src/selfbuild",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "services",
+            "path": "frontend/src/services",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "style.css",
+            "path": "frontend/src/style.css",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "styles",
+            "path": "frontend/src/styles",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "theme",
+            "path": "frontend/src/theme",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "GARUDA_AGENT_MANIFEST.json",
+            "path": "GARUDA_AGENT_MANIFEST.json",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "GARUDA_BIBLE",
+            "path": "GARUDA_BIBLE",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "00_MASTER_INDEX.json",
+            "path": "GARUDA_BIBLE/00_MASTER_INDEX.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "00_MASTER_INDEX.md",
+            "path": "GARUDA_BIBLE/00_MASTER_INDEX.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "01_IDENTITY.json",
+            "path": "GARUDA_BIBLE/01_IDENTITY.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "01_IDENTITY.md",
+            "path": "GARUDA_BIBLE/01_IDENTITY.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "02_CONSTITUTION.json",
+            "path": "GARUDA_BIBLE/02_CONSTITUTION.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "02_CONSTITUTION.md",
+            "path": "GARUDA_BIBLE/02_CONSTITUTION.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "03_FOUNDER_PRINCIPLES.json",
+            "path": "GARUDA_BIBLE/03_FOUNDER_PRINCIPLES.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "03_FOUNDER_PRINCIPLES.md",
+            "path": "GARUDA_BIBLE/03_FOUNDER_PRINCIPLES.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "04_SYSTEM_ARCHITECTURE.json",
+            "path": "GARUDA_BIBLE/04_SYSTEM_ARCHITECTURE.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "04_SYSTEM_ARCHITECTURE.md",
+            "path": "GARUDA_BIBLE/04_SYSTEM_ARCHITECTURE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "05_BRAIN_STANDARD.json",
+            "path": "GARUDA_BIBLE/05_BRAIN_STANDARD.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "05_BRAIN_STANDARD.md",
+            "path": "GARUDA_BIBLE/05_BRAIN_STANDARD.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "06_WORKER_STANDARD.json",
+            "path": "GARUDA_BIBLE/06_WORKER_STANDARD.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "06_WORKER_STANDARD.md",
+            "path": "GARUDA_BIBLE/06_WORKER_STANDARD.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "07_ENGINEERING_STANDARD.json",
+            "path": "GARUDA_BIBLE/07_ENGINEERING_STANDARD.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "07_ENGINEERING_STANDARD.md",
+            "path": "GARUDA_BIBLE/07_ENGINEERING_STANDARD.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "08_MEMORY_STANDARD.json",
+            "path": "GARUDA_BIBLE/08_MEMORY_STANDARD.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "08_MEMORY_STANDARD.md",
+            "path": "GARUDA_BIBLE/08_MEMORY_STANDARD.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "09_ROADMAP.json",
+            "path": "GARUDA_BIBLE/09_ROADMAP.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "09_ROADMAP.md",
+            "path": "GARUDA_BIBLE/09_ROADMAP.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "10_DECISION_REGISTRY.json",
+            "path": "GARUDA_BIBLE/10_DECISION_REGISTRY.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "10_DECISION_REGISTRY.md",
+            "path": "GARUDA_BIBLE/10_DECISION_REGISTRY.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "README.md",
+            "path": "GARUDA_BIBLE/README.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "schema",
+            "path": "GARUDA_BIBLE/schema",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "brain-definition.schema.json",
+            "path": "GARUDA_BIBLE/schema/brain-definition.schema.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "decision-record.schema.json",
+            "path": "GARUDA_BIBLE/schema/decision-record.schema.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "garuda-bible.schema.json",
+            "path": "GARUDA_BIBLE/schema/garuda-bible.schema.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "garuda-chapter.schema.json",
+            "path": "GARUDA_BIBLE/schema/garuda-chapter.schema.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "worker-definition.schema.json",
+            "path": "GARUDA_BIBLE/schema/worker-definition.schema.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "GARUDA_CONSTITUTION.md",
+            "path": "GARUDA_CONSTITUTION.md",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "GARUDA_ROADMAP.md",
+            "path": "GARUDA_ROADMAP.md",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "knowledge-base",
+            "path": "knowledge-base",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "LICENSE",
+            "path": "LICENSE",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "package-lock.json",
+            "path": "package-lock.json",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "package.json",
+            "path": "package.json",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "public",
+            "path": "public",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "app.html",
+            "path": "public/app.html",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "app.js",
+            "path": "public/app.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "index.html",
+            "path": "public/index.html",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "style.css",
+            "path": "public/style.css",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "README.md",
+            "path": "README.md",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "scripts",
+            "path": "scripts",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "build-garuda.js",
+            "path": "scripts/build-garuda.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "builders",
+            "path": "scripts/builders",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "api.builder.js",
+            "path": "scripts/builders/api.builder.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "ui.builder.js",
+            "path": "scripts/builders/ui.builder.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "dev-agent",
+            "path": "scripts/dev-agent",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "core",
+            "path": "scripts/dev-agent/core",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "memory",
+            "path": "scripts/dev-agent/memory",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "pipeline",
+            "path": "scripts/dev-agent/pipeline",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "providers",
+            "path": "scripts/dev-agent/providers",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "run-bible.js",
+            "path": "scripts/dev-agent/run-bible.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "run-memory.js",
+            "path": "scripts/dev-agent/run-memory.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "run-multibrain.js",
+            "path": "scripts/dev-agent/run-multibrain.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "workers",
+            "path": "scripts/dev-agent/workers",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "garuda-agent.js",
+            "path": "scripts/garuda-agent.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "garuda-build.js",
+            "path": "scripts/garuda-build.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "garuda-dev.js",
+            "path": "scripts/garuda-dev.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "garuda-mother-build.js",
+            "path": "scripts/garuda-mother-build.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "garuda-scan.js",
+            "path": "scripts/garuda-scan.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "importKnowledgeToMongo.js",
+            "path": "scripts/importKnowledgeToMongo.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "index-pdfs.js",
+            "path": "scripts/index-pdfs.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "mother",
+            "path": "scripts/mother",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "autopilot.js",
+            "path": "scripts/mother/autopilot.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "backups",
+            "path": "scripts/mother/backups",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "bootstrap.js",
+            "path": "scripts/mother/bootstrap.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "builder.js",
+            "path": "scripts/mother/builder.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "constitution.js",
+            "path": "scripts/mother/constitution.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "context.js",
+            "path": "scripts/mother/context.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "decision.js",
+            "path": "scripts/mother/decision.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "executor.js",
+            "path": "scripts/mother/executor.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "goalEngine.js",
+            "path": "scripts/mother/goalEngine.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "memory.js",
+            "path": "scripts/mother/memory.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "mother.js",
+            "path": "scripts/mother/mother.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "patchEngine.js",
+            "path": "scripts/mother/patchEngine.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "planner.js",
+            "path": "scripts/mother/planner.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "priorityEngine.js",
+            "path": "scripts/mother/priorityEngine.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "reporter.js",
+            "path": "scripts/mother/reporter.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "router.js",
+            "path": "scripts/mother/router.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "scanner.js",
+            "path": "scripts/mother/scanner.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "taskDecomposer.js",
+            "path": "scripts/mother/taskDecomposer.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "taskQueue.js",
+            "path": "scripts/mother/taskQueue.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "thinker.js",
+            "path": "scripts/mother/thinker.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "validator.js",
+            "path": "scripts/mother/validator.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "test-rag.js",
+            "path": "scripts/test-rag.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "server.js",
+            "path": "server.js",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "src",
+            "path": "src",
+            "type": "directory",
+            "depth": 0
+          },
+          {
+            "name": "ai",
+            "path": "src/ai",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "engine.js",
+            "path": "src/ai/engine.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "app.js",
+            "path": "src/app.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "builder",
+            "path": "src/builder",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "fileSystem.js",
+            "path": "src/builder/fileSystem.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "patchEngine.js",
+            "path": "src/builder/patchEngine.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "retrievalIntegration.js",
+            "path": "src/builder/retrievalIntegration.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "config",
+            "path": "src/config",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "controllers",
+            "path": "src/controllers",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "dashboardController.js",
+            "path": "src/controllers/dashboardController.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "documentController.js",
+            "path": "src/controllers/documentController.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "healthController.js",
+            "path": "src/controllers/healthController.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "knowledgeController.js",
+            "path": "src/controllers/knowledgeController.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "knowledgeController.phase2.3.backup.js",
+            "path": "src/controllers/knowledgeController.phase2.3.backup.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "ragController.js",
+            "path": "src/controllers/ragController.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "database",
+            "path": "src/database",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "db.js",
+            "path": "src/database/db.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "devkit",
+            "path": "src/devkit",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "projectIntelligence.js",
+            "path": "src/devkit/projectIntelligence.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "index.js",
+            "path": "src/index.js",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "knowledge",
+            "path": "src/knowledge",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "index.js",
+            "path": "src/knowledge/index.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "middleware",
+            "path": "src/middleware",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "upload.js",
+            "path": "src/middleware/upload.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "models",
+            "path": "src/models",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "Knowledge.js",
+            "path": "src/models/Knowledge.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "motherCore",
+            "path": "src/motherCore",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "agents",
+            "path": "src/motherCore/agents",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "approval",
+            "path": "src/motherCore/approval",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "executor",
+            "path": "src/motherCore/executor",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "git",
+            "path": "src/motherCore/git",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "memory",
+            "path": "src/motherCore/memory",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "planning",
+            "path": "src/motherCore/planning",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "research",
+            "path": "src/motherCore/research",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "scanner",
+            "path": "src/motherCore/scanner",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "tasks",
+            "path": "src/motherCore/tasks",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "testing",
+            "path": "src/motherCore/testing",
+            "type": "directory",
+            "depth": 2
+          },
+          {
+            "name": "rag",
+            "path": "src/rag",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "engine.engine.phase2.2.backup.js",
+            "path": "src/rag/engine.engine.phase2.2.backup.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "engine.js",
+            "path": "src/rag/engine.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "engine.js.backup",
+            "path": "src/rag/engine.js.backup",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "engine.semantic.v1.backup",
+            "path": "src/rag/engine.semantic.v1.backup",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "llmAdapter.js",
+            "path": "src/rag/llmAdapter.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "retrieval",
+            "path": "src/retrieval",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "hybridRetriever.js",
+            "path": "src/retrieval/hybridRetriever.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "intentDetector.js",
+            "path": "src/retrieval/intentDetector.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "productAliasEngine.js",
+            "path": "src/retrieval/productAliasEngine.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "queryExpander.js",
+            "path": "src/retrieval/queryExpander.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "queryNormalizer.js",
+            "path": "src/retrieval/queryNormalizer.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "retrievalRanker.js",
+            "path": "src/retrieval/retrievalRanker.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "routes",
+            "path": "src/routes",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "dashboardRoutes.js",
+            "path": "src/routes/dashboardRoutes.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "documentRoutes.js",
+            "path": "src/routes/documentRoutes.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "index.js",
+            "path": "src/routes/index.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "knowledgeRoutes.js",
+            "path": "src/routes/knowledgeRoutes.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "ragRoutes.js",
+            "path": "src/routes/ragRoutes.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "services",
+            "path": "src/services",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "dashboardService.js",
+            "path": "src/services/dashboardService.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "documentService.js",
+            "path": "src/services/documentService.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "healthService.js",
+            "path": "src/services/healthService.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "knowledgeService.js",
+            "path": "src/services/knowledgeService.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "knowledgeService.phase2.3.backup.js",
+            "path": "src/services/knowledgeService.phase2.3.backup.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "knowledgeService.phase2.4.backup.js",
+            "path": "src/services/knowledgeService.phase2.4.backup.js",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "utils",
+            "path": "src/utils",
+            "type": "directory",
+            "depth": 1
+          },
+          {
+            "name": "vite.config.js",
+            "path": "vite.config.js",
+            "type": "file",
+            "depth": 0
+          }
+        ],
+        "fileSample": [
+          {
+            "name": ".aider.chat.history.md",
+            "path": ".aider.chat.history.md",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": ".aider.input.history",
+            "path": ".aider.input.history",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "6f7b378c701f55f9c91ee73ec280.val",
+            "path": ".aider.tags.cache.v4/4a/9e/6f7b378c701f55f9c91ee73ec280.val",
+            "type": "file",
+            "depth": 3
+          },
+          {
+            "name": "cache.db",
+            "path": ".aider.tags.cache.v4/cache.db",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "cache.db-shm",
+            "path": ".aider.tags.cache.v4/cache.db-shm",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "cache.db-wal",
+            "path": ".aider.tags.cache.v4/cache.db-wal",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": ".env",
+            "path": ".env",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "garuda-autopilot.yml",
+            "path": ".github/workflows/garuda-autopilot.yml",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": ".gitignore",
+            "path": ".gitignore",
+            "type": "file",
+            "depth": 0
+          },
+          {
+            "name": "project-memory.backup.json",
+            "path": "data/dev-agent/project-memory.backup.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "project-memory.backup2.json",
+            "path": "data/dev-agent/project-memory.backup2.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "project-memory.json",
+            "path": "data/dev-agent/project-memory.json",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "knowledge-index.json",
+            "path": "data/knowledge-index.json",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "AI_WORKFORCE.md",
+            "path": "docs/AI_WORKFORCE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "AUTONOMOUS_ENGINEERING_PLANNER.md",
+            "path": "docs/AUTONOMOUS_ENGINEERING_PLANNER.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "CONTINUOUS_INTELLIGENCE.md",
+            "path": "docs/CONTINUOUS_INTELLIGENCE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "CREATIVE_STUDIO.md",
+            "path": "docs/CREATIVE_STUDIO.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "GARUDA_CONSTITUTION.md",
+            "path": "docs/GARUDA_CONSTITUTION.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "GARUDA_VISION.md",
+            "path": "docs/GARUDA_VISION.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "LEARNING_ENGINE.md",
+            "path": "docs/LEARNING_ENGINE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "MOTHER_BRAIN.md",
+            "path": "docs/MOTHER_BRAIN.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "MOTHER_BRAIN_ORCHESTRATOR.md",
+            "path": "docs/MOTHER_BRAIN_ORCHESTRATOR.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "MULTI_AGENT_ARCHITECTURE.md",
+            "path": "docs/MULTI_AGENT_ARCHITECTURE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "REVENUE_UNIVERSE.md",
+            "path": "docs/REVENUE_UNIVERSE.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "ROADMAP.md",
+            "path": "docs/ROADMAP.md",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "index.html",
+            "path": "frontend/index.html",
+            "type": "file",
+            "depth": 1
+          },
+          {
+            "name": "BRAND_ASSETS_README.md",
+            "path": "frontend/public/assets/BRAND_ASSETS_README.md",
+            "type": "file",
+            "depth": 3
+          },
+          {
+            "name": "garuda-sigil-icon.svg",
+            "path": "frontend/public/favicon/garuda-sigil-icon.svg",
+            "type": "file",
+            "depth": 3
+          },
+          {
+            "name": "AgentManager.js",
+            "path": "frontend/src/agents/AgentManager.js",
+            "type": "file",
+            "depth": 3
+          },
+          {
+            "name": "App.jsx",
+            "path": "frontend/src/App.jsx",
+            "type": "file",
+            "depth": 2
+          }
+        ],
+        "reportDraft": {
+          "role": "architect",
+          "summary": "Mother read-only local analysis complete.",
+          "generatedAt": "2026-07-17T12:34:29.572Z",
+          "readOnly": true
+        }
+      },
+      "request": {
+        "worker": "local_brain_worker",
         "goal": "make mother brain more autonomous",
-        "existingModulesToReuse": [
-          "Mother",
-          "GarudaBibleLoader",
-          "GarudaBibleValidator",
-          "ProjectMemoryEngine",
-          "EngineeringManager",
-          "WorkerDispatcher",
-          "BrainRegistry",
-          "MultiBrainPlanner",
-          "BrainCoordinator",
-          "DevelopmentApprovalGate",
-          "LocalBrainWorker"
-        ],
-        "filesInScope": [
-          "analyze_current_mother_architecture",
-          "find_missing_brain_modules",
-          "generate_implementation_plan",
-          "run_validation"
-        ],
-        "requiredContext": {
+        "prompt": "Goal: make mother brain more autonomous\n\nImplementation instructions:\n{\n  \"type\": \"implementation\",\n  \"mode\": \"development_director\",\n  \"role\": \"local_brain_worker\",\n  \"goal\": \"make mother brain more autonomous\",\n  \"existingModulesToReuse\": [\n    \"Mother\",\n    \"GarudaBibleLoader\",\n    \"GarudaBibleValidator\",\n    \"ProjectMemoryEngine\",\n    \"EngineeringManager\",\n    \"WorkerDispatcher\",\n    \"BrainRegistry\",\n    \"MultiBrainPlanner\",\n    \"BrainCoordinator\",\n    \"DevelopmentApprovalGate\",\n    \"LocalBrainWorker\"\n  ],\n  \"filesInScope\": [\n    \"analyze_current_mother_architecture\",\n    \"find_missing_brain_modules\",\n    \"generate_implementation_plan\",\n    \"run_validation\"\n  ],\n  \"requiredContext\": {\n    \"goal\": \"make mother brain more autonomous\",\n    \"adapter\": {\n      \"supportedWorkers\": [\n        \"local_brain_worker\",\n        \"aider\",\n        \"gemini\",\n        \"cline\",\n        \"copilot\"\n      ],\n      \"executionMode\": \"LOCAL_EXECUTION\",\n      \"selectedWorker\": \"local_brain_worker\",\n      \"fallbackWorkers\": [\n        \"aider\",\n        \"gemini\",\n        \"cline\",\n        \"copilot\"\n      ]\n    },\n    \"bible\": {\n      \"version\": {\n        \"bibleVersion\": \"1.0.0\",\n        \"schemaVersion\": \"1.0.0\"\n      },\n      \"chapters\": [\n        \"02_CONSTITUTION\",\n        \"03_FOUNDER_PRINCIPLES\",\n        \"04_SYSTEM_ARCHITECTURE\",\n        \"05_BRAIN_STANDARD\",\n        \"07_ENGINEERING_STANDARD\"\n      ],\n      \"constitutionRules\": [\n        \"GARUDA must follow founder-approved architecture.\",\n        \"GARUDA must not self-modify permanently without founder approval.\",\n        \"Every generated code change must pass tests before commit.\",\n        \"Every knowledge update must come from verified, public, legal sources.\",\n        \"GARUDA must remain modular, scalable, and lightweight.\",\n        \"GARUDA must never use confidential or unauthorized data.\",\n        \"GARUDA Builder may generate and patch code, but must report changes clearly.\",\n        \"GARUDA must preserve clean Git history.\",\n        \"GARUDA must prioritize production-grade architecture over shortcuts.\",\n        \"Founder approval is required before commit and push.\"\n      ],\n      \"architectureRules\": [\n        {\n          \"ruleId\": \"CH02_RULE_001\",\n          \"statement\": \"GARUDA must follow founder-approved architecture.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_002\",\n          \"statement\": \"GARUDA must not self-modify permanently without founder approval.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_003\",\n          \"statement\": \"Every generated code change must pass tests before commit.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"builder\",\n            \"testing\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_004\",\n          \"statement\": \"Founder approval is required before commit and push.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_001\",\n          \"statement\": \"Founder approval is required before write operations that change source, commits, pushes, deploys, or paid API use.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_002\",\n          \"statement\": \"Founder keyboard usage should be minimized to goal, approval, or rejection.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_003\",\n          \"statement\": \"Local capability must be preferred before external AI workers.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_004\",\n          \"statement\": \"No paid APIs are allowed in standard execution mode.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_001\",\n          \"statement\": \"Mother is the only founder-facing runtime entrypoint.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_002\",\n          \"statement\": \"Runtime orchestration must preserve approval gates and read-only planning before writes.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_003\",\n          \"statement\": \"Architecture documentation must distinguish implemented, partial, and planned systems.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"documentation\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_001\",\n          \"statement\": \"Every brain must declare capabilities, allowed actions, and blocked actions.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"architect\",\n            \"frontend\",\n            \"backend\",\n            \"tester\",\n            \"reviewer\",\n            \"documentation\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_002\",\n          \"statement\": \"All brains operate in approval-required mode for write-affecting outcomes.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_003\",\n          \"statement\": \"Brain outputs must be reviewable and traceable in reports.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"reviewer\",\n            \"documentation\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_001\",\n          \"statement\": \"Inspect existing code before edits and reuse modules before creating new ones.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_002\",\n          \"statement\": \"Never claim validation that was not actually run.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_003\",\n          \"statement\": \"No commit, push, deploy, or paid API usage without explicit founder permission.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_004\",\n          \"statement\": \"Generate concise machine-readable reports for each cycle.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"documentation\",\n            \"review\",\n            \"mother\"\n          ]\n        }\n      ]\n    },\n    \"memory\": {\n      \"goal\": \"make mother brain more autonomous\",\n      \"normalizedGoal\": \"make mother brain more autonomous\",\n      \"createdAt\": \"2026-07-17T06:43:58.539Z\",\n      \"completedAt\": \"2026-07-17T06:43:58.539Z\",\n      \"selectedBrains\": [\n        \"architect\",\n        \"reviewer\",\n        \"documentation\"\n      ],\n      \"taskPlan\": {\n        \"tasks\": [\n          {\n            \"id\": \"make-mother-brain-more-autonomous-01\",\n            \"title\": \"Scan the repository and identify the current implementation surface\",\n            \"workerType\": \"architect\",\n            \"dependencies\": [],\n            \"allowedActions\": [\n              \"read\",\n              \"analyze\",\n              \"map_dependencies\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-04\",\n            \"title\": \"Define validation checks and read-only test strategy\",\n            \"workerType\": \"tester\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-01\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"run_tests\",\n              \"run_syntax_checks\",\n              \"verify_quality\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-05\",\n            \"title\": \"Review the merged proposal for safety and approval boundaries\",\n            \"workerType\": \"reviewer\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-04\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"review\",\n              \"validate\",\n              \"approve_readonly\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-06\",\n            \"title\": \"Prepare a founder-facing implementation report\",\n            \"workerType\": \"documentation\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-05\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"summarize\",\n              \"draft_docs\",\n              \"prepare_reports\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          }\n        ],\n        \"dependencyOrder\": [\n          \"make-mother-brain-more-autonomous-01\",\n          \"make-mother-brain-more-autonomous-04\",\n          \"make-mother-brain-more-autonomous-05\",\n          \"make-mother-brain-more-autonomous-06\"\n        ]\n      },\n      \"validationStatus\": \"BLOCKED_BY_APPROVAL\",\n      \"workflowStatus\": \"Completed (3/3)\",\n      \"approvalStatus\": \"BLOCKED_BY_APPROVAL\",\n      \"filesCreated\": [],\n      \"filesModified\": [],\n      \"failures\": [\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-01\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-04\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-05\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-06\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        }\n      ],\n      \"nextAction\": \"await_founder_approval\",\n      \"planFingerprint\": \"cbaf89cbd2e5b327a68ceae9e0df26c73e9c9769\"\n    },\n    \"scanSummary\": {\n      \"modified\": 9,\n      \"untracked\": 1,\n      \"deleted\": 0,\n      \"renamed\": 0\n    },\n    \"taskScope\": \"approved_engineering_execution\",\n    \"allowedFiles\": [\n      \"analyze_current_mother_architecture\",\n      \"find_missing_brain_modules\",\n      \"generate_implementation_plan\",\n      \"run_validation\"\n    ],\n    \"allowedActions\": [\n      \"read\",\n      \"discuss\",\n      \"propose_plan\",\n      \"analyze\",\n      \"plan\"\n    ],\n    \"blockedActions\": [\n      \"write_code\",\n      \"deploy\",\n      \"merge\",\n      \"final_commit\",\n      \"commit\",\n      \"push\",\n      \"paid_api\"\n    ],\n    \"riskLevel\": \"high\",\n    \"costLimit\": \"free_external_execution\",\n    \"approvalState\": {\n      \"founderApproved\": true,\n      \"founderApprovalToken\": false\n    },\n    \"validationRequirements\": [\n      \"node --check\",\n      \"policy_guard\",\n      \"approval_gate\"\n    ],\n    \"expectedOutputFormat\": {\n      \"type\": \"json\",\n      \"keys\": [\n        \"summary\",\n        \"proposedChanges\",\n        \"risks\",\n        \"validationPlan\",\n        \"nextAction\"\n      ]\n    }\n  },\n  \"constraints\": [\n    \"Inspect before edit\",\n    \"Reuse before create\",\n    \"Never duplicate completed modules\",\n    \"No paid APIs\",\n    \"No commit\",\n    \"No push\",\n    \"No deploy\",\n    \"Stop before writes unless Founder approval explicitly permits the requested write\",\n    \"Report every proposed or modified file\",\n    \"Never claim validation that was not actually run\"\n  ],\n  \"allowedActions\": [\n    \"read\",\n    \"discuss\",\n    \"propose_plan\",\n    \"analyze\",\n    \"plan\"\n  ],\n  \"blockedActions\": [\n    \"write_code\",\n    \"deploy\",\n    \"merge\",\n    \"final_commit\",\n    \"commit\",\n    \"push\",\n    \"paid_api\"\n  ],\n  \"founderApprovalStatus\": \"APPROVED\",\n  \"workerRoutingMetadata\": {\n    \"capabilityRegistry\": {\n      \"local_brain_worker\": {\n        \"class\": \"local\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"summarize\",\n          \"run_syntax_checks\"\n        ]\n      },\n      \"aider\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"patch_small_scope\"\n        ]\n      },\n      \"gemini\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"summarize\"\n        ]\n      },\n      \"cline\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"review\"\n        ]\n      },\n      \"copilot\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"review\"\n        ]\n      }\n    },\n    \"defaultWorkerPriority\": [\n      \"local_brain_worker\",\n      \"aider\",\n      \"gemini\",\n      \"cline\",\n      \"copilot\"\n    ],\n    \"selectedWorkerOrder\": [\n      \"local_brain_worker\",\n      \"aider\",\n      \"gemini\",\n      \"cline\",\n      \"copilot\"\n    ],\n    \"selectedWorkerAlias\": \"local_brain_worker\",\n    \"localWorkerDefault\": true\n  },\n  \"validationCommands\": [\n    \"node --check scripts/mother/mother.js\"\n  ],\n  \"expectedResponseFormat\": {\n    \"format\": \"json\",\n    \"sections\": [\n      \"summary\",\n      \"changes\",\n      \"risks\",\n      \"validation\",\n      \"nextAction\"\n    ]\n  },\n  \"stopConditions\": [\n    \"missing_required_context\",\n    \"policy_violation_detected\",\n    \"approval_required_before_write\"\n  ]\n}",
+        "context": {
           "goal": "make mother brain more autonomous",
           "adapter": {
             "supportedWorkers": [
@@ -1522,12 +2455,12 @@
             "planFingerprint": "cbaf89cbd2e5b327a68ceae9e0df26c73e9c9769"
           },
           "scanSummary": {
-            "modified": 3,
-            "untracked": 0,
+            "modified": 9,
+            "untracked": 1,
             "deleted": 0,
             "renamed": 0
           },
-          "taskScope": "planning_and_orchestration",
+          "taskScope": "approved_engineering_execution",
           "allowedFiles": [
             "analyze_current_mother_architecture",
             "find_missing_brain_modules",
@@ -1551,10 +2484,11 @@
             "paid_api"
           ],
           "riskLevel": "high",
-          "costLimit": "zero_external_cost",
+          "costLimit": "free_external_execution",
           "approvalState": {
             "founderApproved": true,
-            "founderApprovalToken": false
+            "founderApprovalToken": false,
+            "approved": true
           },
           "validationRequirements": [
             "node --check",
@@ -1570,137 +2504,29 @@
               "validationPlan",
               "nextAction"
             ]
-          }
-        },
-        "constraints": [
-          "Inspect before edit",
-          "Reuse before create",
-          "Never duplicate completed modules",
-          "No paid APIs",
-          "No commit",
-          "No push",
-          "No deploy",
-          "Stop before writes unless Founder approval explicitly permits the requested write",
-          "Report every proposed or modified file",
-          "Never claim validation that was not actually run",
-          "Planning prompts must be read-only"
-        ],
-        "allowedActions": [
-          "read",
-          "analyze",
-          "plan",
-          "summarize"
-        ],
-        "blockedActions": [
-          "write_code",
-          "deploy",
-          "merge",
-          "final_commit",
-          "commit",
-          "push",
-          "paid_api"
-        ],
-        "founderApprovalStatus": "NOT_REQUIRED_FOR_READ_ONLY",
-        "workerRoutingMetadata": {
-          "capabilityRegistry": {
-            "local_brain_worker": {
-              "class": "local",
-              "capabilities": [
-                "read",
-                "analyze",
-                "plan",
-                "summarize",
-                "run_syntax_checks"
-              ]
-            },
-            "aider": {
-              "class": "external_adapter",
-              "capabilities": [
-                "read",
-                "analyze",
-                "plan",
-                "patch_small_scope"
-              ]
-            },
-            "gemini": {
-              "class": "external_adapter",
-              "capabilities": [
-                "read",
-                "analyze",
-                "plan",
-                "summarize"
-              ]
-            },
-            "cline": {
-              "class": "external_adapter",
-              "capabilities": [
-                "read",
-                "analyze",
-                "plan",
-                "review"
-              ]
-            },
-            "copilot": {
-              "class": "external_adapter",
-              "capabilities": [
-                "read",
-                "analyze",
-                "plan",
-                "review"
-              ]
-            }
           },
-          "defaultWorkerPriority": [
-            "local_brain_worker",
-            "aider",
-            "gemini",
-            "cline",
-            "copilot"
-          ],
-          "selectedWorkerOrder": [
-            "local_brain_worker",
-            "aider",
-            "gemini",
-            "cline",
-            "copilot"
-          ],
-          "selectedWorkerAlias": "local_brain_worker",
-          "localWorkerDefault": true
+          "prompt": "Goal: make mother brain more autonomous\n\nImplementation instructions:\n{\n  \"type\": \"implementation\",\n  \"mode\": \"development_director\",\n  \"role\": \"local_brain_worker\",\n  \"goal\": \"make mother brain more autonomous\",\n  \"existingModulesToReuse\": [\n    \"Mother\",\n    \"GarudaBibleLoader\",\n    \"GarudaBibleValidator\",\n    \"ProjectMemoryEngine\",\n    \"EngineeringManager\",\n    \"WorkerDispatcher\",\n    \"BrainRegistry\",\n    \"MultiBrainPlanner\",\n    \"BrainCoordinator\",\n    \"DevelopmentApprovalGate\",\n    \"LocalBrainWorker\"\n  ],\n  \"filesInScope\": [\n    \"analyze_current_mother_architecture\",\n    \"find_missing_brain_modules\",\n    \"generate_implementation_plan\",\n    \"run_validation\"\n  ],\n  \"requiredContext\": {\n    \"goal\": \"make mother brain more autonomous\",\n    \"adapter\": {\n      \"supportedWorkers\": [\n        \"local_brain_worker\",\n        \"aider\",\n        \"gemini\",\n        \"cline\",\n        \"copilot\"\n      ],\n      \"executionMode\": \"LOCAL_EXECUTION\",\n      \"selectedWorker\": \"local_brain_worker\",\n      \"fallbackWorkers\": [\n        \"aider\",\n        \"gemini\",\n        \"cline\",\n        \"copilot\"\n      ]\n    },\n    \"bible\": {\n      \"version\": {\n        \"bibleVersion\": \"1.0.0\",\n        \"schemaVersion\": \"1.0.0\"\n      },\n      \"chapters\": [\n        \"02_CONSTITUTION\",\n        \"03_FOUNDER_PRINCIPLES\",\n        \"04_SYSTEM_ARCHITECTURE\",\n        \"05_BRAIN_STANDARD\",\n        \"07_ENGINEERING_STANDARD\"\n      ],\n      \"constitutionRules\": [\n        \"GARUDA must follow founder-approved architecture.\",\n        \"GARUDA must not self-modify permanently without founder approval.\",\n        \"Every generated code change must pass tests before commit.\",\n        \"Every knowledge update must come from verified, public, legal sources.\",\n        \"GARUDA must remain modular, scalable, and lightweight.\",\n        \"GARUDA must never use confidential or unauthorized data.\",\n        \"GARUDA Builder may generate and patch code, but must report changes clearly.\",\n        \"GARUDA must preserve clean Git history.\",\n        \"GARUDA must prioritize production-grade architecture over shortcuts.\",\n        \"Founder approval is required before commit and push.\"\n      ],\n      \"architectureRules\": [\n        {\n          \"ruleId\": \"CH02_RULE_001\",\n          \"statement\": \"GARUDA must follow founder-approved architecture.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_002\",\n          \"statement\": \"GARUDA must not self-modify permanently without founder approval.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_003\",\n          \"statement\": \"Every generated code change must pass tests before commit.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"builder\",\n            \"testing\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH02_RULE_004\",\n          \"statement\": \"Founder approval is required before commit and push.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_001\",\n          \"statement\": \"Founder approval is required before write operations that change source, commits, pushes, deploys, or paid API use.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_002\",\n          \"statement\": \"Founder keyboard usage should be minimized to goal, approval, or rejection.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_003\",\n          \"statement\": \"Local capability must be preferred before external AI workers.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH03_RULE_004\",\n          \"statement\": \"No paid APIs are allowed in standard execution mode.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_001\",\n          \"statement\": \"Mother is the only founder-facing runtime entrypoint.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_002\",\n          \"statement\": \"Runtime orchestration must preserve approval gates and read-only planning before writes.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"mother\",\n            \"planner\",\n            \"builder\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH04_RULE_003\",\n          \"statement\": \"Architecture documentation must distinguish implemented, partial, and planned systems.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"documentation\",\n            \"review\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_001\",\n          \"statement\": \"Every brain must declare capabilities, allowed actions, and blocked actions.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"architect\",\n            \"frontend\",\n            \"backend\",\n            \"tester\",\n            \"reviewer\",\n            \"documentation\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_002\",\n          \"statement\": \"All brains operate in approval-required mode for write-affecting outcomes.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH05_RULE_003\",\n          \"statement\": \"Brain outputs must be reviewable and traceable in reports.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"reviewer\",\n            \"documentation\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_001\",\n          \"statement\": \"Inspect existing code before edits and reuse modules before creating new ones.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_002\",\n          \"statement\": \"Never claim validation that was not actually run.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_003\",\n          \"statement\": \"No commit, push, deploy, or paid API usage without explicit founder permission.\",\n          \"priority\": \"P0\",\n          \"appliesTo\": [\n            \"all\"\n          ]\n        },\n        {\n          \"ruleId\": \"CH07_RULE_004\",\n          \"statement\": \"Generate concise machine-readable reports for each cycle.\",\n          \"priority\": \"P1\",\n          \"appliesTo\": [\n            \"documentation\",\n            \"review\",\n            \"mother\"\n          ]\n        }\n      ]\n    },\n    \"memory\": {\n      \"goal\": \"make mother brain more autonomous\",\n      \"normalizedGoal\": \"make mother brain more autonomous\",\n      \"createdAt\": \"2026-07-17T06:43:58.539Z\",\n      \"completedAt\": \"2026-07-17T06:43:58.539Z\",\n      \"selectedBrains\": [\n        \"architect\",\n        \"reviewer\",\n        \"documentation\"\n      ],\n      \"taskPlan\": {\n        \"tasks\": [\n          {\n            \"id\": \"make-mother-brain-more-autonomous-01\",\n            \"title\": \"Scan the repository and identify the current implementation surface\",\n            \"workerType\": \"architect\",\n            \"dependencies\": [],\n            \"allowedActions\": [\n              \"read\",\n              \"analyze\",\n              \"map_dependencies\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-04\",\n            \"title\": \"Define validation checks and read-only test strategy\",\n            \"workerType\": \"tester\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-01\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"run_tests\",\n              \"run_syntax_checks\",\n              \"verify_quality\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-05\",\n            \"title\": \"Review the merged proposal for safety and approval boundaries\",\n            \"workerType\": \"reviewer\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-04\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"review\",\n              \"validate\",\n              \"approve_readonly\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          },\n          {\n            \"id\": \"make-mother-brain-more-autonomous-06\",\n            \"title\": \"Prepare a founder-facing implementation report\",\n            \"workerType\": \"documentation\",\n            \"dependencies\": [\n              \"make-mother-brain-more-autonomous-05\"\n            ],\n            \"allowedActions\": [\n              \"read\",\n              \"summarize\",\n              \"draft_docs\",\n              \"prepare_reports\"\n            ],\n            \"blockedActions\": [\n              \"commit\",\n              \"merge\",\n              \"deploy\",\n              \"paid_api\",\n              \"write_source\"\n            ],\n            \"approvalRequired\": true\n          }\n        ],\n        \"dependencyOrder\": [\n          \"make-mother-brain-more-autonomous-01\",\n          \"make-mother-brain-more-autonomous-04\",\n          \"make-mother-brain-more-autonomous-05\",\n          \"make-mother-brain-more-autonomous-06\"\n        ]\n      },\n      \"validationStatus\": \"BLOCKED_BY_APPROVAL\",\n      \"workflowStatus\": \"Completed (3/3)\",\n      \"approvalStatus\": \"BLOCKED_BY_APPROVAL\",\n      \"filesCreated\": [],\n      \"filesModified\": [],\n      \"failures\": [\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-01\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-04\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-05\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        },\n        {\n          \"taskId\": \"make-mother-brain-more-autonomous-06\",\n          \"reason\": \"proposal_contains_blocked_actions\",\n          \"reviewer\": \"reviewer\"\n        }\n      ],\n      \"nextAction\": \"await_founder_approval\",\n      \"planFingerprint\": \"cbaf89cbd2e5b327a68ceae9e0df26c73e9c9769\"\n    },\n    \"scanSummary\": {\n      \"modified\": 9,\n      \"untracked\": 1,\n      \"deleted\": 0,\n      \"renamed\": 0\n    },\n    \"taskScope\": \"approved_engineering_execution\",\n    \"allowedFiles\": [\n      \"analyze_current_mother_architecture\",\n      \"find_missing_brain_modules\",\n      \"generate_implementation_plan\",\n      \"run_validation\"\n    ],\n    \"allowedActions\": [\n      \"read\",\n      \"discuss\",\n      \"propose_plan\",\n      \"analyze\",\n      \"plan\"\n    ],\n    \"blockedActions\": [\n      \"write_code\",\n      \"deploy\",\n      \"merge\",\n      \"final_commit\",\n      \"commit\",\n      \"push\",\n      \"paid_api\"\n    ],\n    \"riskLevel\": \"high\",\n    \"costLimit\": \"free_external_execution\",\n    \"approvalState\": {\n      \"founderApproved\": true,\n      \"founderApprovalToken\": false\n    },\n    \"validationRequirements\": [\n      \"node --check\",\n      \"policy_guard\",\n      \"approval_gate\"\n    ],\n    \"expectedOutputFormat\": {\n      \"type\": \"json\",\n      \"keys\": [\n        \"summary\",\n        \"proposedChanges\",\n        \"risks\",\n        \"validationPlan\",\n        \"nextAction\"\n      ]\n    }\n  },\n  \"constraints\": [\n    \"Inspect before edit\",\n    \"Reuse before create\",\n    \"Never duplicate completed modules\",\n    \"No paid APIs\",\n    \"No commit\",\n    \"No push\",\n    \"No deploy\",\n    \"Stop before writes unless Founder approval explicitly permits the requested write\",\n    \"Report every proposed or modified file\",\n    \"Never claim validation that was not actually run\"\n  ],\n  \"allowedActions\": [\n    \"read\",\n    \"discuss\",\n    \"propose_plan\",\n    \"analyze\",\n    \"plan\"\n  ],\n  \"blockedActions\": [\n    \"write_code\",\n    \"deploy\",\n    \"merge\",\n    \"final_commit\",\n    \"commit\",\n    \"push\",\n    \"paid_api\"\n  ],\n  \"founderApprovalStatus\": \"APPROVED\",\n  \"workerRoutingMetadata\": {\n    \"capabilityRegistry\": {\n      \"local_brain_worker\": {\n        \"class\": \"local\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"summarize\",\n          \"run_syntax_checks\"\n        ]\n      },\n      \"aider\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"patch_small_scope\"\n        ]\n      },\n      \"gemini\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"summarize\"\n        ]\n      },\n      \"cline\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"review\"\n        ]\n      },\n      \"copilot\": {\n        \"class\": \"external_adapter\",\n        \"capabilities\": [\n          \"read\",\n          \"analyze\",\n          \"plan\",\n          \"review\"\n        ]\n      }\n    },\n    \"defaultWorkerPriority\": [\n      \"local_brain_worker\",\n      \"aider\",\n      \"gemini\",\n      \"cline\",\n      \"copilot\"\n    ],\n    \"selectedWorkerOrder\": [\n      \"local_brain_worker\",\n      \"aider\",\n      \"gemini\",\n      \"cline\",\n      \"copilot\"\n    ],\n    \"selectedWorkerAlias\": \"local_brain_worker\",\n    \"localWorkerDefault\": true\n  },\n  \"validationCommands\": [\n    \"node --check scripts/mother/mother.js\"\n  ],\n  \"expectedResponseFormat\": {\n    \"format\": \"json\",\n    \"sections\": [\n      \"summary\",\n      \"changes\",\n      \"risks\",\n      \"validation\",\n      \"nextAction\"\n    ]\n  },\n  \"stopConditions\": [\n    \"missing_required_context\",\n    \"policy_violation_detected\",\n    \"approval_required_before_write\"\n  ]\n}",
+          "promptFingerprint": "89b60e46570cbc3f98fe9aff5fe6a07b895e894d",
+          "estimatedCost": "free_external_execution",
+          "requiresApproval": false,
+          "founderApproved": true,
+          "timeoutMs": 600000,
+          "rootDir": "C:\\Users\\hp\\OneDrive\\GARUDA\\GARUDA-AI"
         },
-        "validationCommands": [
-          "node --check scripts/mother/mother.js"
-        ],
-        "expectedResponseFormat": {
-          "format": "json",
-          "sections": [
-            "summary",
-            "changes",
-            "risks",
-            "validation",
-            "nextAction"
-          ]
-        },
-        "stopConditions": [
-          "missing_required_context",
-          "policy_violation_detected",
-          "approval_required_before_write"
-        ]
-      },
-      "promptFingerprint": "dfc162b88ef68df4adf184ee0b44e6c56fe073af",
-      "estimatedCost": "zero_external_cost",
-      "requiresApproval": true
-    },
-    "estimatedCost": "zero_external_cost",
-    "requiresApproval": false,
-    "executionMode": "LOCAL_EXECUTION",
-    "promptFingerprint": "dfc162b88ef68df4adf184ee0b44e6c56fe073af",
-    "adapterStatus": "LOCAL_EXECUTION_READY",
-    "executionReady": true,
-    "externalExecutionEnabled": false,
-    "founderApproved": true
+        "estimatedCost": "free_external_execution",
+        "requiresApproval": false,
+        "executionMode": "LOCAL_EXECUTION",
+        "promptFingerprint": "89b60e46570cbc3f98fe9aff5fe6a07b895e894d",
+        "adapterStatus": "LOCAL_EXECUTION_READY",
+        "executionReady": true,
+        "externalExecutionEnabled": true,
+        "founderApproved": true,
+        "createdAt": "2026-07-17T12:34:29.549Z"
+      }
+    }
   },
   "promptSummary": {
-    "type": "planning",
+    "type": "implementation",
     "role": "local_brain_worker",
     "goal": "make mother brain more autonomous",
     "filesInScope": [
@@ -1718,9 +2544,10 @@
     ],
     "allowedActions": [
       "read",
+      "discuss",
+      "propose_plan",
       "analyze",
-      "plan",
-      "summarize"
+      "plan"
     ],
     "blockedActions": [
       "write_code",
@@ -1731,13 +2558,13 @@
       "push",
       "paid_api"
     ],
-    "founderApprovalStatus": "NOT_REQUIRED_FOR_READ_ONLY"
+    "founderApprovalStatus": "APPROVED"
   },
   "contextSummary": {
     "rulesCount": 18,
     "chapterCount": 5,
-    "costClassification": "zero_external_cost",
-    "costReason": "Similar validated memory record exists. Reuse previous results."
+    "costClassification": "free_external_execution",
+    "costReason": "External execution is allowed only through configured free credits."
   },
   "executionResults": [
     {
@@ -1746,7 +2573,7 @@
       "route": "thinker",
       "status": "SUCCESS",
       "reason": "executed_by_available_engine",
-      "executedAt": "2026-07-17T07:31:24.719Z",
+      "executedAt": "2026-07-17T12:34:29.642Z",
       "approvalState": {
         "required": false,
         "approved": true
@@ -1780,7 +2607,7 @@
       "route": "general",
       "status": "SUCCESS",
       "reason": "executed_by_available_engine",
-      "executedAt": "2026-07-17T07:31:24.745Z",
+      "executedAt": "2026-07-17T12:34:29.662Z",
       "approvalState": {
         "required": false,
         "approved": true
@@ -1820,8 +2647,38 @@
               "depth": 0
             },
             {
+              "name": "4a",
+              "path": ".aider.tags.cache.v4/4a",
+              "type": "directory",
+              "depth": 1
+            },
+            {
+              "name": "9e",
+              "path": ".aider.tags.cache.v4/4a/9e",
+              "type": "directory",
+              "depth": 2
+            },
+            {
+              "name": "6f7b378c701f55f9c91ee73ec280.val",
+              "path": ".aider.tags.cache.v4/4a/9e/6f7b378c701f55f9c91ee73ec280.val",
+              "type": "file",
+              "depth": 3
+            },
+            {
               "name": "cache.db",
               "path": ".aider.tags.cache.v4/cache.db",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-shm",
+              "path": ".aider.tags.cache.v4/cache.db-shm",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-wal",
+              "path": ".aider.tags.cache.v4/cache.db-wal",
               "type": "file",
               "depth": 1
             },
@@ -3206,6 +4063,12 @@
               "depth": 3
             },
             {
+              "name": "CostGuard.js",
+              "path": "scripts/dev-agent/core/CostGuard.js",
+              "type": "file",
+              "depth": 3
+            },
+            {
               "name": "CostOptimizer.js",
               "path": "scripts/dev-agent/core/CostOptimizer.js",
               "type": "file",
@@ -3988,8 +4851,26 @@
               "depth": 0
             },
             {
+              "name": "6f7b378c701f55f9c91ee73ec280.val",
+              "path": ".aider.tags.cache.v4/4a/9e/6f7b378c701f55f9c91ee73ec280.val",
+              "type": "file",
+              "depth": 3
+            },
+            {
               "name": "cache.db",
               "path": ".aider.tags.cache.v4/cache.db",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-shm",
+              "path": ".aider.tags.cache.v4/cache.db-shm",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-wal",
+              "path": ".aider.tags.cache.v4/cache.db-wal",
               "type": "file",
               "depth": 1
             },
@@ -4556,30 +5437,12 @@
               "path": "frontend/src/style.css",
               "type": "file",
               "depth": 2
-            },
-            {
-              "name": "garuda-ui.css",
-              "path": "frontend/src/styles/garuda-ui.css",
-              "type": "file",
-              "depth": 3
-            },
-            {
-              "name": "GARUDA_AGENT_MANIFEST.json",
-              "path": "GARUDA_AGENT_MANIFEST.json",
-              "type": "file",
-              "depth": 0
-            },
-            {
-              "name": "00_MASTER_INDEX.json",
-              "path": "GARUDA_BIBLE/00_MASTER_INDEX.json",
-              "type": "file",
-              "depth": 1
             }
           ],
           "report": {
             "role": "executor",
             "summary": "Local Brain inspected the current project for missing brain or module coverage.",
-            "generatedAt": "2026-07-17T07:31:24.745Z",
+            "generatedAt": "2026-07-17T12:34:29.662Z",
             "readOnly": true
           }
         }
@@ -4591,7 +5454,7 @@
       "route": "general",
       "status": "SUCCESS",
       "reason": "executed_by_available_engine",
-      "executedAt": "2026-07-17T07:31:24.756Z",
+      "executedAt": "2026-07-17T12:34:29.668Z",
       "approvalState": {
         "required": false,
         "approved": true
@@ -4614,7 +5477,7 @@
           "report": {
             "role": "executor",
             "summary": "Implementation planning completed for task: Generate implementation plan",
-            "generatedAt": "2026-07-17T07:31:24.745Z",
+            "generatedAt": "2026-07-17T12:34:29.662Z",
             "readOnly": true
           },
           "projectStructure": [
@@ -4637,8 +5500,32 @@
               "depth": 0
             },
             {
+              "name": "4a",
+              "path": ".aider.tags.cache.v4/4a",
+              "type": "directory",
+              "depth": 1
+            },
+            {
+              "name": "9e",
+              "path": ".aider.tags.cache.v4/4a/9e",
+              "type": "directory",
+              "depth": 2
+            },
+            {
               "name": "cache.db",
               "path": ".aider.tags.cache.v4/cache.db",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-shm",
+              "path": ".aider.tags.cache.v4/cache.db-shm",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-wal",
+              "path": ".aider.tags.cache.v4/cache.db-wal",
               "type": "file",
               "depth": 1
             },
@@ -5864,7 +6751,7 @@
       "route": "validator",
       "status": "SUCCESS",
       "reason": "executed_by_available_engine",
-      "executedAt": "2026-07-17T07:31:24.756Z",
+      "executedAt": "2026-07-17T12:34:29.668Z",
       "approvalState": {
         "required": false,
         "approved": true
@@ -5912,7 +6799,7 @@
         "required": false,
         "approved": true
       },
-      "executedAt": "2026-07-17T07:31:24.719Z"
+      "executedAt": "2026-07-17T12:34:29.642Z"
     },
     {
       "step": 2,
@@ -5945,8 +6832,38 @@
               "depth": 0
             },
             {
+              "name": "4a",
+              "path": ".aider.tags.cache.v4/4a",
+              "type": "directory",
+              "depth": 1
+            },
+            {
+              "name": "9e",
+              "path": ".aider.tags.cache.v4/4a/9e",
+              "type": "directory",
+              "depth": 2
+            },
+            {
+              "name": "6f7b378c701f55f9c91ee73ec280.val",
+              "path": ".aider.tags.cache.v4/4a/9e/6f7b378c701f55f9c91ee73ec280.val",
+              "type": "file",
+              "depth": 3
+            },
+            {
               "name": "cache.db",
               "path": ".aider.tags.cache.v4/cache.db",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-shm",
+              "path": ".aider.tags.cache.v4/cache.db-shm",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-wal",
+              "path": ".aider.tags.cache.v4/cache.db-wal",
               "type": "file",
               "depth": 1
             },
@@ -7331,6 +8248,12 @@
               "depth": 3
             },
             {
+              "name": "CostGuard.js",
+              "path": "scripts/dev-agent/core/CostGuard.js",
+              "type": "file",
+              "depth": 3
+            },
+            {
               "name": "CostOptimizer.js",
               "path": "scripts/dev-agent/core/CostOptimizer.js",
               "type": "file",
@@ -8113,8 +9036,26 @@
               "depth": 0
             },
             {
+              "name": "6f7b378c701f55f9c91ee73ec280.val",
+              "path": ".aider.tags.cache.v4/4a/9e/6f7b378c701f55f9c91ee73ec280.val",
+              "type": "file",
+              "depth": 3
+            },
+            {
               "name": "cache.db",
               "path": ".aider.tags.cache.v4/cache.db",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-shm",
+              "path": ".aider.tags.cache.v4/cache.db-shm",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-wal",
+              "path": ".aider.tags.cache.v4/cache.db-wal",
               "type": "file",
               "depth": 1
             },
@@ -8681,30 +9622,12 @@
               "path": "frontend/src/style.css",
               "type": "file",
               "depth": 2
-            },
-            {
-              "name": "garuda-ui.css",
-              "path": "frontend/src/styles/garuda-ui.css",
-              "type": "file",
-              "depth": 3
-            },
-            {
-              "name": "GARUDA_AGENT_MANIFEST.json",
-              "path": "GARUDA_AGENT_MANIFEST.json",
-              "type": "file",
-              "depth": 0
-            },
-            {
-              "name": "00_MASTER_INDEX.json",
-              "path": "GARUDA_BIBLE/00_MASTER_INDEX.json",
-              "type": "file",
-              "depth": 1
             }
           ],
           "report": {
             "role": "executor",
             "summary": "Local Brain inspected the current project for missing brain or module coverage.",
-            "generatedAt": "2026-07-17T07:31:24.745Z",
+            "generatedAt": "2026-07-17T12:34:29.662Z",
             "readOnly": true
           }
         }
@@ -8713,7 +9636,7 @@
         "required": false,
         "approved": true
       },
-      "executedAt": "2026-07-17T07:31:24.745Z"
+      "executedAt": "2026-07-17T12:34:29.662Z"
     },
     {
       "step": 3,
@@ -8729,7 +9652,7 @@
           "report": {
             "role": "executor",
             "summary": "Implementation planning completed for task: Generate implementation plan",
-            "generatedAt": "2026-07-17T07:31:24.745Z",
+            "generatedAt": "2026-07-17T12:34:29.662Z",
             "readOnly": true
           },
           "projectStructure": [
@@ -8752,8 +9675,32 @@
               "depth": 0
             },
             {
+              "name": "4a",
+              "path": ".aider.tags.cache.v4/4a",
+              "type": "directory",
+              "depth": 1
+            },
+            {
+              "name": "9e",
+              "path": ".aider.tags.cache.v4/4a/9e",
+              "type": "directory",
+              "depth": 2
+            },
+            {
               "name": "cache.db",
               "path": ".aider.tags.cache.v4/cache.db",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-shm",
+              "path": ".aider.tags.cache.v4/cache.db-shm",
+              "type": "file",
+              "depth": 1
+            },
+            {
+              "name": "cache.db-wal",
+              "path": ".aider.tags.cache.v4/cache.db-wal",
               "type": "file",
               "depth": 1
             },
@@ -9976,7 +10923,7 @@
         "required": false,
         "approved": true
       },
-      "executedAt": "2026-07-17T07:31:24.756Z"
+      "executedAt": "2026-07-17T12:34:29.668Z"
     },
     {
       "step": 4,
@@ -9996,7 +10943,7 @@
         "required": false,
         "approved": true
       },
-      "executedAt": "2026-07-17T07:31:24.756Z"
+      "executedAt": "2026-07-17T12:34:29.668Z"
     }
   ]
 }

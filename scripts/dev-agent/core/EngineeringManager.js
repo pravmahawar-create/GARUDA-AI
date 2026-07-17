@@ -1,22 +1,42 @@
 class EngineeringManager {
   /**
    * Constructs an EngineeringManager instance.
-   * @param {object} dependencies - Injected dependencies.
-   * @param {object} dependencies.scanner - Component responsible for scanning project aspects.
-   * @param {object} dependencies.planner - Component responsible for generating engineering plans.
-   * @param {object} dependencies.dispatcher - Component related to dispatching tasks (not used for direct execution here).
-   * @param {object} dependencies.validator - Component responsible for validating development goals.
-   * @param {object} dependencies.reporter - Component related to reporting (not used for direct reporting here).
+   *
+   * @param {object} dependencies
+   * @param {object} dependencies.scanner
+   * @param {object} dependencies.planner
+   * @param {object} dependencies.dispatcher
+   * @param {object} dependencies.validator
+   * @param {object} dependencies.reporter
+   * @param {object} dependencies.multiBrainPlanner
+   * @param {object} dependencies.brainCoordinator
+   * @param {object} dependencies.approvalGate
+   * @param {object} dependencies.workforceRouter
+   * @param {object} dependencies.externalWorkerAdapter
    */
-  constructor({ scanner, planner, dispatcher, validator, reporter, multiBrainPlanner, brainCoordinator, approvalGate, workforceRouter, externalWorkerAdapter }) {
+  constructor({
+    scanner,
+    planner,
+    dispatcher,
+    validator,
+    reporter,
+    multiBrainPlanner,
+    brainCoordinator,
+    approvalGate,
+    workforceRouter,
+    externalWorkerAdapter
+  }) {
     if (!scanner || !planner || !validator) {
-      throw new Error('EngineeringManager requires scanner, planner, and validator dependencies.');
+      throw new Error(
+        "EngineeringManager requires scanner, planner, and validator dependencies."
+      );
     }
+
     this.scanner = scanner;
     this.planner = planner;
-    this.dispatcher = dispatcher;
+    this.dispatcher = dispatcher || null;
     this.validator = validator;
-    this.reporter = reporter;
+    this.reporter = reporter || null;
     this.multiBrainPlanner = multiBrainPlanner || null;
     this.brainCoordinator = brainCoordinator || null;
     this.approvalGate = approvalGate || null;
@@ -25,56 +45,147 @@ class EngineeringManager {
   }
 
   /**
-   * Selects worker routing using the injected WorkforceRouter.
-   * This is routing/configuration only and does not execute external workers.
+   * Selects a worker using WorkforceRouter.
    *
    * @param {object} taskProfile
    * @param {object} options
-   * @param {object} options.cost
    * @returns {object}
    */
   selectWorker(taskProfile = {}, options = {}) {
-    if (!this.workforceRouter || typeof this.workforceRouter.route !== 'function') {
-      throw new Error('WorkforceRouter is not configured on EngineeringManager.');
+    if (
+      !this.workforceRouter ||
+      typeof this.workforceRouter.route !== "function"
+    ) {
+      throw new Error(
+        "WorkforceRouter is not configured on EngineeringManager."
+      );
     }
 
     return this.workforceRouter.route(taskProfile, options);
   }
 
   /**
-   * Builds a preview-only adapter request payload for the selected worker.
-   * This does not execute workers and never performs networking.
+   * Builds an adapter request without executing it.
    *
    * @param {object} input
-   * @param {string} input.worker
-   * @param {string} input.goal
-   * @param {object|string} input.prompt
-   * @param {object} input.context
    * @returns {object}
    */
   requestAdapterPayload(input = {}) {
-    if (!this.externalWorkerAdapter || typeof this.externalWorkerAdapter.buildRequest !== 'function') {
-      throw new Error('ExternalWorkerAdapter is not configured on EngineeringManager.');
+    if (
+      !this.externalWorkerAdapter ||
+      typeof this.externalWorkerAdapter.buildRequest !== "function"
+    ) {
+      throw new Error(
+        "ExternalWorkerAdapter is not configured on EngineeringManager."
+      );
     }
 
-    return this.externalWorkerAdapter.buildRequest(input.worker, input.goal, {
-      ...(input.context || {}),
-      prompt: input.prompt,
-      promptFingerprint: input.promptFingerprint,
-      estimatedCost: input.estimatedCost,
-      requiresApproval: input.requiresApproval
-    });
+    return this.externalWorkerAdapter.buildRequest(
+      input.worker,
+      input.goal,
+      {
+        ...(input.context || {}),
+        prompt: input.prompt,
+        promptFingerprint: input.promptFingerprint,
+        estimatedCost: input.estimatedCost,
+        requiresApproval: input.requiresApproval,
+        founderApproved: input.founderApproved,
+        approvalState: input.approvalState,
+        localWorkerHandler: input.localWorkerHandler,
+        timeoutMs: input.timeoutMs,
+        workerCommands: input.workerCommands,
+        environment: input.environment,
+        rootDir: input.rootDir
+      }
+    );
   }
 
   /**
-   * Runs worker selection and prepares a preview-only adapter payload in one managed flow.
+   * Executes the selected worker through ExternalWorkerAdapter.
+   *
+   * External workers remain preview-only unless:
+   * 1. Founder approval is present.
+   * 2. GARUDA_EXTERNAL_WORKER_EXECUTION=true.
+   *
+   * @param {object} input
+   * @returns {object}
+   */
+  executeWorker(input = {}) {
+    if (
+      !this.externalWorkerAdapter ||
+      typeof this.externalWorkerAdapter.execute !== "function"
+    ) {
+      throw new Error(
+        "ExternalWorkerAdapter execution is not configured on EngineeringManager."
+      );
+    }
+
+    const worker = String(input.worker || "").trim();
+
+    if (!worker) {
+      throw new Error("A worker must be selected before execution.");
+    }
+
+    const executionContext = {
+      ...(input.context || {}),
+      prompt: input.prompt || "",
+      promptFingerprint: input.promptFingerprint,
+      estimatedCost: input.estimatedCost,
+      requiresApproval: input.requiresApproval !== false,
+      founderApproved: input.founderApproved === true,
+      approvalState: {
+        ...((input.context && input.context.approvalState) || {}),
+        ...(input.approvalState || {}),
+        founderApproved:
+          input.founderApproved === true ||
+          Boolean(
+            input.approvalState &&
+            input.approvalState.founderApproved
+          )
+      },
+      localWorkerHandler: input.localWorkerHandler,
+      timeoutMs: input.timeoutMs,
+      workerCommands: input.workerCommands,
+      environment: input.environment,
+      rootDir:
+        input.rootDir ||
+        (input.context && input.context.rootDir) ||
+        process.cwd()
+    };
+
+    const result = this.externalWorkerAdapter.execute(
+      worker,
+      input.goal || "",
+      executionContext
+    );
+
+    return {
+      worker,
+      goal: input.goal || "",
+      success: Boolean(result && result.success),
+      executed: Boolean(result && result.executed),
+      skipped: Boolean(result && result.skipped),
+      reason:
+        result && result.reason
+          ? result.reason
+          : "unknown_execution_result",
+      result
+    };
+  }
+
+  /**
+   * Selects a worker and prepares a request without execution.
    *
    * @param {object} taskProfile
    * @param {object} options
    * @returns {{ routingDecision: object, adapterPayload: object }}
    */
   selectWorkerAndPrepareAdapter(taskProfile = {}, options = {}) {
-    const routingDecision = this.selectWorker(taskProfile, { cost: options.cost || {} });
+    const routingDecision = this.selectWorker(taskProfile, {
+      ...options,
+      cost: options.cost || {}
+    });
+
     const adapterPayload = this.requestAdapterPayload({
       worker: routingDecision.selectedWorker,
       goal: options.goal || "",
@@ -82,83 +193,173 @@ class EngineeringManager {
       promptFingerprint: options.promptFingerprint,
       context: options.context || {},
       estimatedCost: routingDecision.estimatedCostLevel,
-      requiresApproval: options.requiresApproval !== false
+      requiresApproval: options.requiresApproval !== false,
+      founderApproved:
+        options.founderApproved === true ||
+        routingDecision.founderApproved === true,
+      approvalState: options.approvalState,
+      localWorkerHandler: options.localWorkerHandler,
+      timeoutMs: options.timeoutMs,
+      workerCommands: options.workerCommands,
+      environment: options.environment,
+      rootDir: options.rootDir
     });
 
-    return { routingDecision, adapterPayload };
+    return {
+      routingDecision,
+      adapterPayload
+    };
   }
 
   /**
-   * Accepts a development goal, validates it, and coordinates the planning process
-   * to build and return an execution plan.
+   * Selects and executes a worker in one managed flow.
    *
-   * @param {object} developmentGoal - The goal for development, e.g., { type: 'feature', description: 'Implement user authentication' }.
-   * @returns {object} An execution object (plan) detailing the steps required to achieve the goal.
-   * @throws {Error} If the development goal is invalid or if planning fails.
+   * @param {object} taskProfile
+   * @param {object} options
+   * @returns {{
+   *   routingDecision: object,
+   *   adapterPayload: object,
+   *   executionResult: object
+   * }}
+   */
+  selectWorkerAndExecute(taskProfile = {}, options = {}) {
+    const routingDecision = this.selectWorker(taskProfile, {
+      ...options,
+      cost: options.cost || {}
+    });
+
+    const commonInput = {
+      worker: routingDecision.selectedWorker,
+      goal: options.goal || "",
+      prompt: options.prompt,
+      promptFingerprint: options.promptFingerprint,
+      context: options.context || {},
+      estimatedCost: routingDecision.estimatedCostLevel,
+      requiresApproval: routingDecision.approvalRequired !== false,
+      founderApproved:
+        options.founderApproved === true ||
+        routingDecision.founderApproved === true,
+      approvalState: options.approvalState,
+      localWorkerHandler: options.localWorkerHandler,
+      timeoutMs: options.timeoutMs,
+      workerCommands: options.workerCommands,
+      environment: options.environment,
+      rootDir: options.rootDir
+    };
+
+    const adapterPayload = this.requestAdapterPayload(commonInput);
+    const executionResult = this.executeWorker(commonInput);
+
+    return {
+      routingDecision,
+      adapterPayload,
+      executionResult
+    };
+  }
+
+  /**
+   * Accepts a development goal, validates it, scans the project,
+   * and returns a planning object.
+   *
+   * @param {object} developmentGoal
+   * @returns {Promise<object>}
    */
   async manageDevelopmentGoal(developmentGoal) {
-    if (!developmentGoal || typeof developmentGoal !== 'object') {
-      throw new Error('A valid development goal object must be provided.');
+    if (!developmentGoal || typeof developmentGoal !== "object") {
+      throw new Error(
+        "A valid development goal object must be provided."
+      );
     }
 
     if (!this.validator.validateGoal(developmentGoal)) {
-      throw new Error('Invalid development goal provided by the validator.');
+      throw new Error(
+        "Invalid development goal provided by the validator."
+      );
     }
 
-    const projectAnalysis = await this.scanner.scan(developmentGoal);
+    const projectAnalysis = await this.scanner.scan(
+      developmentGoal
+    );
+
     if (!projectAnalysis) {
-      throw new Error('Failed to perform project analysis during scanning.');
+      throw new Error(
+        "Failed to perform project analysis during scanning."
+      );
     }
 
-    const engineeringPlan = await this.planner.plan(projectAnalysis, developmentGoal);
+    const engineeringPlan = await this.planner.plan(
+      projectAnalysis,
+      developmentGoal
+    );
+
     if (!engineeringPlan) {
-      throw new Error('Failed to generate engineering plan.');
+      throw new Error(
+        "Failed to generate engineering plan."
+      );
     }
 
-    const executionObject = {
+    return {
       goal: developmentGoal,
       analysis: projectAnalysis,
-      plan: engineeringPlan,
+      plan: engineeringPlan
     };
-
-    return executionObject;
   }
 
   /**
-   * Coordinates a founder-approved multibrain planning workflow in read-only mode.
-   * It generates a task plan, dispatches tasks to local worker brains, validates proposals,
-   * and stops before any write operation unless explicit founder approval is present.
+   * Coordinates a founder-approved multi-brain planning workflow.
    *
    * @param {string|object} founderGoal
    * @param {object} options
-   * @param {object} options.context - Additional context for planning.
-   * @param {object} options.approval - Approval context passed to the approval gate.
-   * @returns {object}
+   * @returns {Promise<object>}
    */
   async manageMultiBrainGoal(founderGoal, options = {}) {
-    if (!this.multiBrainPlanner || !this.brainCoordinator || !this.approvalGate) {
-      throw new Error('Multi-brain orchestration dependencies are not configured.');
+    if (
+      !this.multiBrainPlanner ||
+      !this.brainCoordinator ||
+      !this.approvalGate
+    ) {
+      throw new Error(
+        "Multi-brain orchestration dependencies are not configured."
+      );
     }
 
-    const goalText = typeof founderGoal === 'string'
-      ? founderGoal.trim()
-      : String(founderGoal && founderGoal.rawGoal ? founderGoal.rawGoal : '').trim();
+    const goalText =
+      typeof founderGoal === "string"
+        ? founderGoal.trim()
+        : String(
+            founderGoal && founderGoal.rawGoal
+              ? founderGoal.rawGoal
+              : ""
+          ).trim();
 
     if (!goalText) {
-      throw new Error('A founder-approved multibrain goal must be provided.');
+      throw new Error(
+        "A founder-approved multibrain goal must be provided."
+      );
     }
 
-    const scanResult = this.scanner && typeof this.scanner.scan === 'function'
-      ? await this.scanner.scan({ goal: goalText, mode: 'multibrain_readonly' })
-      : null;
+    const scanResult =
+      this.scanner &&
+      typeof this.scanner.scan === "function"
+        ? await this.scanner.scan({
+            goal: goalText,
+            mode: "multibrain_readonly"
+          })
+        : null;
 
     const plan = this.multiBrainPlanner.plan(goalText, {
       ...(options.context || {}),
       scan: scanResult || {}
     });
 
-    const approval = this.approvalGate.evaluate(options.approval || {});
-    const coordination = this.brainCoordinator.coordinate(plan, options.approval || {});
+    const approval = this.approvalGate.evaluate(
+      options.approval || {}
+    );
+
+    const coordination = this.brainCoordinator.coordinate(
+      plan,
+      options.approval || {}
+    );
 
     return {
       goal: goalText,
@@ -172,32 +373,39 @@ class EngineeringManager {
   }
 
   /**
-   * Development Director mode wrapper.
-   * Keeps multibrain orchestration in read-only director mode and never assumes write execution.
+   * Development Director wrapper.
    *
    * @param {string|object} founderGoal
    * @param {object} options
-   * @returns {object}
+   * @returns {Promise<object>}
    */
-  async manageDevelopmentDirectorGoal(founderGoal, options = {}) {
-    const orchestration = await this.manageMultiBrainGoal(founderGoal, {
-      ...options,
-      context: {
-        ...(options.context || {}),
-        mode: 'development_director',
-        readOnly: true
-      },
-      approval: {
-        ...(options.approval || {}),
-        intendedOperation: options.approval && options.approval.intendedOperation
-          ? options.approval.intendedOperation
-          : 'development_director_readonly'
+  async manageDevelopmentDirectorGoal(
+    founderGoal,
+    options = {}
+  ) {
+    const orchestration = await this.manageMultiBrainGoal(
+      founderGoal,
+      {
+        ...options,
+        context: {
+          ...(options.context || {}),
+          mode: "development_director",
+          readOnly: true
+        },
+        approval: {
+          ...(options.approval || {}),
+          intendedOperation:
+            options.approval &&
+            options.approval.intendedOperation
+              ? options.approval.intendedOperation
+              : "development_director_readonly"
+        }
       }
-    });
+    );
 
     return {
       ...orchestration,
-      mode: 'development_director',
+      mode: "development_director",
       readOnly: true
     };
   }
