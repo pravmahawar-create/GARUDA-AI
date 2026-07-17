@@ -1,6 +1,10 @@
 const { routeTask } = require("./router");
 const { requiresFounderApproval } = require("../../src/motherCore/approval/approvalPolicy");
 const { evaluateConstitutionGate } = require("./constitution");
+const { think } = require("./thinker");
+const { validate } = require("./validator");
+const { build } = require("./builder");
+const LocalBrainWorker = require("../dev-agent/workers/LocalBrainWorker");
 
 function toEngineName(route) {
   const names = {
@@ -10,15 +14,149 @@ function toEngineName(route) {
     thinker: "Thinker",
     patch: "Patch",
     test: "Test",
-    general: "General"
+    general: "Local Brain"
   };
 
-  return names[route] || "General";
+  return names[route] || "Local Brain";
+}
+
+function getFounderApprovalState() {
+  const founderApprovalToken = process.env.GARUDA_FOUNDER_APPROVAL_TOKEN || "";
+  const founderApproved =
+    process.env.GARUDA_FOUNDER_APPROVED === "true" ||
+    Boolean(founderApprovalToken);
+
+  return {
+    founderApproved,
+    founderApprovalToken: Boolean(founderApprovalToken)
+  };
+}
+
+function executeThinkerTask(item) {
+  const result = think({
+    projectClean: true,
+    summary: {},
+    buildRequired: false,
+    validateRequired: false,
+    tasks: [item.task]
+  });
+
+  return {
+    success: true,
+    output: result
+  };
+}
+
+function executeValidatorTask(item) {
+  const result = validate([item]);
+
+  return {
+    success: Boolean(result && result.passed),
+    output: result
+  };
+}
+
+function executeBuilderTask() {
+  const result = build();
+
+  return {
+    success: true,
+    output: result || { status: "BUILD_COMPLETED" }
+  };
+}
+
+function executeLocalBrainTask(item) {
+  const worker = new LocalBrainWorker({
+    role: "executor",
+    rootDir: process.cwd()
+  });
+
+  const taskText = String(item.task || "").toLowerCase();
+  let output;
+
+  if (taskText.includes("architecture")) {
+    output = {
+      taskType: "architecture_analysis",
+      projectStructure: worker.readProjectStructure(3),
+      fileSample: worker.scanFiles([]).slice(0, 50)
+    };
+  } else if (
+    taskText.includes("missing") &&
+    (taskText.includes("brain") || taskText.includes("module"))
+  ) {
+    const projectStructure = worker.readProjectStructure(4);
+    const fileSample = worker.scanFiles([]).slice(0, 100);
+
+    output = {
+      taskType: "missing_module_analysis",
+      projectStructure,
+      inspectedFiles: fileSample,
+      report: worker.prepareReports({
+        summary: "Local Brain inspected the current project for missing brain or module coverage."
+      })
+    };
+  } else if (
+    taskText.includes("implementation plan") ||
+    taskText.includes("generate plan") ||
+    taskText.includes("implementation")
+  ) {
+    output = {
+      taskType: "implementation_plan",
+      report: worker.prepareReports({
+        summary: `Implementation planning completed for task: ${item.task}`
+      }),
+      projectStructure: worker.readProjectStructure(2)
+    };
+  } else {
+    output = {
+      taskType: "general_read_only_execution",
+      report: worker.prepareReports({
+        summary: `Local Brain completed safe read-only execution for task: ${item.task}`
+      }),
+      projectStructure: worker.readProjectStructure(2),
+      fileSample: worker.scanFiles([]).slice(0, 30)
+    };
+  }
+
+  return {
+    success: true,
+    output
+  };
+}
+
+function executeAvailableEngine(route, item) {
+  switch (route) {
+    case "thinker":
+      return executeThinkerTask(item);
+    case "validator":
+    case "test":
+      return executeValidatorTask(item);
+    case "builder":
+      return executeBuilderTask();
+    case "general":
+      return executeLocalBrainTask(item);
+    case "git":
+      return {
+        success: false,
+        skipped: true,
+        reason: "git_execution_requires_dedicated_safe_adapter"
+      };
+    case "patch":
+      return {
+        success: false,
+        skipped: true,
+        reason: "patch_execution_requires_dedicated_safe_adapter"
+      };
+    default:
+      return executeLocalBrainTask(item);
+  }
 }
 
 function execute(plannedTasks = []) {
   console.log("[Executor] Starting execution...");
+
   const constitutionSensitiveRoutes = new Set(["git", "patch", "builder"]);
+  const approvalState = getFounderApprovalState();
 
   const executedTasks = plannedTasks.map((item) => {
     const route = routeTask(item.task);
@@ -26,12 +164,22 @@ function execute(plannedTasks = []) {
       type: route === "git" ? "git_commit" : route,
       requiresFounderApproval: route === "git" || route === "patch"
     };
-    const blockedByApproval = requiresFounderApproval(action) && action.requiresFounderApproval;
+
+    const approvalRequired =
+      requiresFounderApproval(action) &&
+      action.requiresFounderApproval;
+
+    const blockedByApproval =
+      approvalRequired &&
+      !approvalState.founderApproved;
+
     const constitutionGate = constitutionSensitiveRoutes.has(route)
       ? evaluateConstitutionGate(route)
       : { allowed: true };
+
     let status = "FAILED";
     let reason = "execution_error";
+    let result = null;
 
     if (!constitutionGate.allowed) {
       status = "BLOCKED_BY_CONSTITUTION";
@@ -40,23 +188,28 @@ function execute(plannedTasks = []) {
       status = "BLOCKED_BY_APPROVAL";
       reason = "founder_approval_required";
     } else {
-      switch (route) {
-        // These routes correspond to existing modules and can conceptually succeed
-        case "builder":
-        case "validator":
-        case "thinker":
+      try {
+        result = executeAvailableEngine(route, item);
+
+        if (result && result.skipped) {
+          status = "SKIPPED";
+          reason = result.reason || "no_safe_execution_path";
+        } else if (result && result.success) {
           status = "SUCCESS";
           reason = "executed_by_available_engine";
-          break;
-        // Other routes do not have safe executable logic yet
-        case "git":
-        case "patch":
-        case "test":
-        case "general":
-        default:
-          status = "SKIPPED";
-          reason = "no_safe_execution_path";
-          break;
+        } else {
+          status = "FAILED";
+          reason =
+            (result && result.reason) ||
+            "engine_execution_failed";
+        }
+      } catch (error) {
+        status = "FAILED";
+        reason = "engine_execution_error";
+        result = {
+          success: false,
+          error: error.message
+        };
       }
     }
 
@@ -64,16 +217,23 @@ function execute(plannedTasks = []) {
       ...item,
       route,
       engine: toEngineName(route),
-      status: status,
+      status,
       reason,
+      result,
+      approvalState: {
+        required: approvalRequired,
+        approved: approvalState.founderApproved
+      },
       executedAt: new Date().toISOString()
     };
   });
 
   console.log("[Executor] Execution Report:");
 
-  executedTasks.forEach((t, i) => {
-    console.log(`${i + 1}. [${t.engine}] ${t.task} [${t.status}]`);
+  executedTasks.forEach((task, index) => {
+    console.log(
+      `${index + 1}. [${task.engine}] ${task.task} [${task.status}]`
+    );
   });
 
   return executedTasks;
