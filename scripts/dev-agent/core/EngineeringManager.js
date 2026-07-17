@@ -1,3 +1,5 @@
+const EngineeringDirector = require("./EngineeringDirector");
+
 class EngineeringManager {
   /**
    * Constructs an EngineeringManager instance.
@@ -13,6 +15,7 @@ class EngineeringManager {
    * @param {object} dependencies.approvalGate
    * @param {object} dependencies.workforceRouter
    * @param {object} dependencies.externalWorkerAdapter
+   * @param {object} dependencies.engineeringDirector
    */
   constructor({
     scanner,
@@ -24,7 +27,8 @@ class EngineeringManager {
     brainCoordinator,
     approvalGate,
     workforceRouter,
-    externalWorkerAdapter
+    externalWorkerAdapter,
+    engineeringDirector
   }) {
     if (!scanner || !planner || !validator) {
       throw new Error(
@@ -42,6 +46,8 @@ class EngineeringManager {
     this.approvalGate = approvalGate || null;
     this.workforceRouter = workforceRouter || null;
     this.externalWorkerAdapter = externalWorkerAdapter || null;
+    this.engineeringDirector =
+      engineeringDirector || new EngineeringDirector();
   }
 
   /**
@@ -375,6 +381,9 @@ class EngineeringManager {
   /**
    * Development Director wrapper.
    *
+   * Builds the engineering roadmap first, then passes it into the
+   * multi-brain planning and coordination workflow.
+   *
    * @param {string|object} founderGoal
    * @param {object} options
    * @returns {Promise<object>}
@@ -383,14 +392,40 @@ class EngineeringManager {
     founderGoal,
     options = {}
   ) {
+    if (
+      !this.engineeringDirector ||
+      typeof this.engineeringDirector.plan !== "function"
+    ) {
+      throw new Error(
+        "EngineeringDirector is not configured on EngineeringManager."
+      );
+    }
+
+    const directorContext = {
+      ...(options.context || {}),
+      mode: "development_director",
+      readOnly: true
+    };
+
+    const roadmap = this.engineeringDirector.plan(
+      founderGoal,
+      directorContext
+    );
+
+    if (!roadmap) {
+      throw new Error(
+        "EngineeringDirector failed to generate an engineering roadmap."
+      );
+    }
+
     const orchestration = await this.manageMultiBrainGoal(
       founderGoal,
       {
         ...options,
         context: {
-          ...(options.context || {}),
-          mode: "development_director",
-          readOnly: true
+          ...directorContext,
+          engineeringRoadmap: roadmap,
+          directorFingerprint: roadmap.fingerprint || null
         },
         approval: {
           ...(options.approval || {}),
@@ -405,6 +440,8 @@ class EngineeringManager {
 
     return {
       ...orchestration,
+      roadmap,
+      engineeringRoadmap: roadmap,
       mode: "development_director",
       readOnly: true
     };
