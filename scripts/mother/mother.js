@@ -40,21 +40,38 @@ function buildReadOnlyAnalysis(rootDir) {
 }
 
 function buildWorkflowProgress(orchestration, coordination) {
-  const stepOneDone = Boolean(orchestration && orchestration.plan);
-  const stepTwoDone = Boolean(orchestration && orchestration.coordination);
-  const stepThreeDone = Boolean(
+  const planned = Boolean(orchestration && orchestration.plan);
+  const coordinated = Boolean(orchestration && orchestration.coordination);
+
+  const approvalBlocked = Boolean(
     coordination &&
     coordination.writeStopped === true &&
     coordination.approval &&
     coordination.approval.status === "BLOCKED_BY_APPROVAL"
   );
 
-  const completedSteps = [stepOneDone, stepTwoDone, stepThreeDone].filter(Boolean).length;
+  if (approvalBlocked) {
+    return {
+      completedSteps: 2,
+      totalSteps: 3,
+      status: "Waiting for Founder Approval"
+    };
+  }
+
+  const completedSteps = [planned, coordinated].filter(Boolean).length;
+
+  if (completedSteps === 2) {
+    return {
+      completedSteps: 2,
+      totalSteps: 3,
+      status: "Ready for Execution"
+    };
+  }
 
   return {
     completedSteps,
     totalSteps: 3,
-    status: completedSteps === 3 ? "Completed (3/3)" : `In Progress (${completedSteps}/3)`
+    status: `In Progress (${completedSteps}/3)`
   };
 }
 
@@ -412,7 +429,7 @@ class Mother {
     if (latestExact) {
       const isIncomplete = latestExact.workflowStatus !== "Completed (3/3)" || !latestExact.completedAt;
 
-      if (isIncomplete) {
+      if (isIncomplete && !founderApproved) {
         const resumePayload = {
           status: "RESUME_AVAILABLE",
           goal: goalInput,
@@ -473,7 +490,15 @@ class Mother {
         return;
       }
 
-      if (latestExact.workflowStatus === "Completed (3/3)") {
+      if (isIncomplete && founderApproved) {
+        console.log("[Memory] Founder approval detected. Resuming interrupted goal execution.");
+      }
+
+      if (
+      latestExact.workflowStatus === "Completed (3/3)" &&
+      latestExact.approvalStatus !== "BLOCKED_BY_APPROVAL" &&
+      latestExact.completedAt
+    ) {
         const completedPayload = {
           status: "ALREADY_COMPLETED",
           goal: goalInput,
@@ -554,6 +579,13 @@ class Mother {
     const multiBrainCoordination = orchestration.coordination;
     const approvalGate = orchestration.approval;
     const workflow = buildWorkflowProgress(orchestration, multiBrainCoordination);
+    const executionApproved = Boolean(
+      founderApproved &&
+      approvalGate &&
+      approvalGate.allowed === true &&
+      writeApproval &&
+      writeApproval.allowed === true
+    );
 
     const decisions = think({
       projectClean: scanResult.clean,
@@ -579,11 +611,11 @@ class Mother {
       executedTasks: [],
       governance: {
         status: preflight.passed
-          ? (approvalGate.allowed ? "ready" : "approval_required")
+          ? (executionApproved ? "ready" : "approval_required")
           : "blocked_by_validation"
       },
       nextAction: preflight.passed
-        ? (approvalGate.allowed ? "continue_safe_execution" : "await_founder_approval")
+        ? (executionApproved ? "continue_safe_execution" : "await_founder_approval")
         : "fix_validation_issues",
       bible: {
         validationStatus: "PASSED",
@@ -623,8 +655,12 @@ class Mother {
         loadedBibleChapters: bibleContext.chapterSummaries.map((chapter) => chapter.chapterId),
         promptType: promptDecision.promptType,
         promptFingerprint: adapterPayload.promptFingerprint,
-        approvalStatus: writeIntentDetected ? "BLOCKED_BY_APPROVAL" : (approvalGate.status === "BLOCKED_BY_APPROVAL" ? "BLOCKED_BY_APPROVAL" : writeApproval.status),
-        writeStopped: writeIntentDetected || promptDecision.implementationBlocked || approvalBlocked || approvalGate.status === "BLOCKED_BY_APPROVAL",
+        approvalStatus: executionApproved
+          ? "APPROVED"
+          : (approvalGate.status === "BLOCKED_BY_APPROVAL" || writeApproval.status === "BLOCKED_BY_APPROVAL"
+              ? "BLOCKED_BY_APPROVAL"
+              : writeApproval.status),
+        writeStopped: !executionApproved,
         validationStatus: preflight.passed ? "PENDING_EXECUTION" : "PRECHECK_FAILED"
       },
       promptSummary: promptDecision.selected.safeSummary,
@@ -636,7 +672,7 @@ class Mother {
       }
     };
 
-    if (writeIntentDetected || promptDecision.implementationBlocked) {
+    if ((writeIntentDetected || promptDecision.implementationBlocked) && !executionApproved) {
       cycle.validation = {
         ...cycle.validation,
         status: "BLOCKED_BY_APPROVAL",
@@ -654,16 +690,40 @@ class Mother {
       cycle.workforce.validationStatus = "BLOCKED_BY_APPROVAL";
       cycle.workforce.writeStopped = true;
       cycle.workforce.approvalStatus = "BLOCKED_BY_APPROVAL";
-    } else if (preflight.passed && approvalGate.allowed) {
+    } else if (preflight.passed && executionApproved) {
       cycle.executedTasks = execute(plannedTasks);
       cycle.validation = validate(cycle.executedTasks);
-      cycle.governance.status = cycle.executedTasks.some((task) => task.status === "BLOCKED_BY_APPROVAL")
-        ? "approval_required"
-        : "approved_for_safe_execution";
-      cycle.workforce.validationStatus = cycle.validation && cycle.validation.passed ? "PASSED" : "FAILED";
 
-      build();
-    } else if (preflight.passed && !approvalGate.allowed) {
+      const executionBlocked = cycle.executedTasks.some(
+        (task) => task && task.status === "BLOCKED_BY_APPROVAL"
+      );
+      const executionPassed = Boolean(cycle.validation && cycle.validation.passed) && !executionBlocked;
+
+      cycle.governance.status = executionBlocked
+        ? "approval_required"
+        : (executionPassed ? "approved_for_safe_execution" : "blocked_by_validation");
+      cycle.nextAction = executionPassed ? "execution_completed" : "fix_execution_issues";
+      cycle.workforce.validationStatus = executionBlocked
+        ? "BLOCKED_BY_APPROVAL"
+        : (executionPassed ? "PASSED" : "FAILED");
+      cycle.workforce.approvalStatus = "APPROVED";
+      cycle.workforce.writeStopped = executionBlocked;
+
+      if (executionPassed) {
+        build();
+        cycle.multiBrain.workflow = {
+          status: "Completed (3/3)",
+          completedSteps: 3,
+          totalSteps: 3
+        };
+        cycle.multiBrain.writeStopped = false;
+        cycle.multiBrain.stopReason = null;
+        cycle.multiBrain.validation = {
+          status: "PASSED",
+          approvalStatus: "APPROVED"
+        };
+      }
+    } else if (preflight.passed && !executionApproved) {
       cycle.validation = {
         ...cycle.validation,
         status: "BLOCKED_BY_APPROVAL",
@@ -679,15 +739,21 @@ class Mother {
     const memorySave = memoryEngine.saveRecord({
       goal: goalInput,
       createdAt: new Date().toISOString(),
-      completedAt: workflow.status === "Completed (3/3)" ? new Date().toISOString() : null,
+      completedAt:
+        cycle.multiBrain.workflow.status === "Completed (3/3)" &&
+        cycle.workforce.approvalStatus === "APPROVED" &&
+        cycle.workforce.validationStatus === "PASSED" &&
+        cycle.multiBrain.writeStopped === false
+          ? new Date().toISOString()
+          : null,
       selectedBrains: multiBrainCoordination.selectedBrains,
       taskPlan: {
         tasks: multiBrainCoordination.tasks,
         dependencyOrder: multiBrainPlan.dependencyOrder
       },
-      validationStatus: multiBrainCoordination.validationStatus,
-      workflowStatus: workflow.status,
-      approvalStatus: multiBrainCoordination.approval.status,
+      validationStatus: cycle.workforce.validationStatus,
+      workflowStatus: cycle.multiBrain.workflow.status,
+      approvalStatus: cycle.workforce.approvalStatus,
       filesCreated: multiBrainCoordination.filesCreated || [],
       filesModified: multiBrainCoordination.filesModified || [],
       failures: multiBrainCoordination.failures || [],
@@ -707,7 +773,3 @@ class Mother {
 }
 
 new Mother().start();
-
-
-
-
