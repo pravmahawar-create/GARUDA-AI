@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Knowledge = require("../models/Knowledge");
 const { getHealthStatus } = require("./healthService");
+const { getRevenueMetrics } = require("./revenueService");
 
 function readJsonReport(relativePath) {
   try {
@@ -13,13 +14,14 @@ function readJsonReport(relativePath) {
   }
 }
 
-function buildDashboardPayload({ healthStatus, knowledgeCount, agentReport, scanReport }) {
+function buildDashboardPayload({ healthStatus, knowledgeCount, agentReport, scanReport, revenueMetrics }) {
   const agentData = agentReport || {};
   const scanData = scanReport || {};
   const scanner = agentData.scanner || {};
   const planner = agentData.planner || {};
   const builder = agentData.builder || {};
   const validator = agentData.validator || {};
+  const metrics = revenueMetrics || {};
 
   return {
     success: true,
@@ -30,11 +32,16 @@ function buildDashboardPayload({ healthStatus, knowledgeCount, agentReport, scan
     },
     metrics: {
       revenue: {
-        current: 0,
+        current: metrics.receivedRevenue || 0,
         currency: "INR",
         target: 0,
-        trend: "+0%",
-        source: "backend"
+        trend: metrics.trend || "+0%",
+        source: "database",
+        mtdRevenue: metrics.mtdRevenue || 0,
+        prevMonthRevenue: metrics.prevMonthRevenue || 0,
+        pendingRevenue: metrics.pendingRevenue || 0,
+        refundedRevenue: metrics.refundedRevenue || 0,
+        totalRecords: metrics.totalRecords || 0
       },
       knowledgeCore: {
         count: knowledgeCount || 0,
@@ -64,11 +71,18 @@ function buildDashboardPayload({ healthStatus, knowledgeCount, agentReport, scan
 async function getDashboardSnapshot() {
   const healthStatus = getHealthStatus();
   let knowledgeCount = 0;
+  let revenueMetrics = null;
 
   try {
     knowledgeCount = await Knowledge.countDocuments();
   } catch (error) {
     knowledgeCount = 0;
+  }
+
+  try {
+    revenueMetrics = await getRevenueMetrics();
+  } catch (error) {
+    revenueMetrics = null;
   }
 
   const agentReport = readJsonReport("reports/mother-core-agent-report.json");
@@ -78,7 +92,8 @@ async function getDashboardSnapshot() {
     healthStatus,
     knowledgeCount,
     agentReport,
-    scanReport
+    scanReport,
+    revenueMetrics
   });
 }
 

@@ -1,0 +1,15 @@
+const express = require("express");
+const revenueController = require("../controllers/revenueController");
+
+const router = express.Router();
+
+router.get("/", revenueController.list);
+router.post("/", revenueController.create);
+router.patch("/:id", revenueController.update);
+router.delete("/:id", revenueController.remove);
+
+router.get("/metrics", revenueController.metrics);
+router.get("/analytics", revenueController.analytics);
+router.get("/settlement", revenueController.settlement);
+
+module.exports = router;

@@ -28,5 +28,6 @@ app.get("/api/health", healthResponse);
 app.use("/api/knowledge", require("./routes/knowledgeRoutes"));
 app.use("/api/rag", require("./routes/ragRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
+app.use("/api/revenue", require("./routes/revenueRoutes"));
 
 module.exports = app;
