@@ -178,11 +178,13 @@ class Mother {
   async start() {
     console.log("🦅 GARUDA Mother Started\n");
 
-    const goalInput = process.argv.slice(2).join(" ").trim() || "make mother brain more autonomous";
-    const constitution = loadConstitution();
-    const context = getContext();
-    const founderApprovalToken = process.env.GARUDA_FOUNDER_APPROVAL_TOKEN || "";
-    const founderApproved = process.env.GARUDA_FOUNDER_APPROVED === "true" || Boolean(founderApprovalToken);
+    const {
+      goalInput,
+      constitution,
+      context,
+      founderApprovalToken,
+      founderApproved
+    } = this._initializeCoreComponents();
 
     if (!constitution || !Array.isArray(constitution.laws) || constitution.laws.length === 0) {
       const errorPayload = {
@@ -205,8 +207,8 @@ class Mother {
         },
         persistReport: false
       });
-      console.log("\n🦅 GARUDA Mother Finished");
-      return;
+    console.log("\n🦅 GARUDA Mother Finished");
+    return;
     }
 
     const bibleLoader = new GarudaBibleLoader();
@@ -833,6 +835,15 @@ class Mother {
     report(cycle);
 
     console.log("\n🦅 GARUDA Mother Finished");
+  }
+
+  _initializeCoreComponents() {
+    const goalInput = process.argv.slice(2).join(" ").trim() || "make mother brain more autonomous";
+    const constitution = loadConstitution();
+    const context = getContext();
+    const founderApprovalToken = process.env.GARUDA_FOUNDER_APPROVAL_TOKEN || "";
+    const founderApproved = process.env.GARUDA_FOUNDER_APPROVED === "true" || Boolean(founderApprovalToken);
+    return { goalInput, constitution, context, founderApprovalToken, founderApproved };
   }
 }
 
