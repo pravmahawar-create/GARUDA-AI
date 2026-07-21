@@ -32,9 +32,9 @@ function buildWorkPackages(plan, scope) {
     acceptanceCriteria: index === 2 ? scope.acceptanceCriteria : []
   }));
 }
-function evidencePacket(loop) {
+function evidencePacket(loop, revisionNumber = 1) {
   return {
-    engine: loop.engine, loopId: loop.loopId, status: loop.status, planId: loop.planId,
+    engine: loop.engine, loopId: loop.loopId, status: loop.status, planId: loop.planId, revisionNumber,
     attempts: loop.attempts, artifactHashes: loop.finalArtifact ? loop.finalArtifact.artifacts : [],
     validationEvidence: loop.finalArtifact ? loop.finalArtifact.evidence : [],
     finalPatchSha256: loop.finalPatchSha256, finalReviewId: loop.finalReviewId,
@@ -52,7 +52,9 @@ function preparePreview(missionInput, scopeInput, options = {}) {
   const scope = normalizeScope(scopeInput);
   const missionId = String(mission._id || mission.id || mission.missionKey || "");
   if (!missionId) fail("Mission identity is required", 409);
-  const safeName = slug(`${mission.capability && mission.capability.id}-${missionId}`);
+  const revisionNumber = Math.min(3, Math.max(1, Number(options.revisionNumber) || 1));
+  const safeBase = slug(`${mission.capability && mission.capability.id}-${missionId}`);
+  const safeName = `${safeBase.slice(0, 44)}-r${revisionNumber}`;
   const requiredFields = scope.requiredInputs.map((item) => slug(item).replace(/-/g, "_")).filter(Boolean);
   if (new Set(requiredFields).size !== requiredFields.length) fail("requiredInputs become duplicate contract fields after normalization");
   const loop = new GovernedEngineeringLoop({ rootDir: options.rootDir || process.cwd(), maxAttempts: scope.maxAttempts }).run({
@@ -69,10 +71,11 @@ function preparePreview(missionInput, scopeInput, options = {}) {
   const status = ({ READY_FOR_FOUNDER_REVIEW: "ready_for_founder_review", CHANGES_REQUIRED: "changes_required", REJECTED: "rejected" })[loop.status] || "blocked";
   return {
     status,
-    boundedScope: { ...scope, approvedBy: "founder", approvedAt: new Date().toISOString(), scopeHash: crypto.createHash("sha256").update(JSON.stringify(scope)).digest("hex") },
+    revisionNumber,
+    boundedScope: { ...scope, revisionResponse: options.revisionResponse || null, approvedBy: "founder", approvedAt: new Date().toISOString(), scopeHash: crypto.createHash("sha256").update(JSON.stringify(scope)).digest("hex") },
     architecturePlan: loop.plan,
     workPackages: buildWorkPackages(loop.plan, scope),
-    executionEvidence: evidencePacket(loop)
+    executionEvidence: evidencePacket(loop, revisionNumber)
   };
 }
 async function prepareMission(missionId, scopeInput, context = {}) {
@@ -83,8 +86,44 @@ async function prepareMission(missionId, scopeInput, context = {}) {
   if (!mongoose.Types.ObjectId.isValid(String(missionId || ""))) fail("Invalid execution mission id", 400);
   const mission = await RevenueExecutionMission.findById(missionId);
   if (!mission) fail("Execution mission not found", 404);
-  Object.assign(mission, preparePreview(mission, scopeInput, { rootDir: context.rootDir }));
+  Object.assign(mission, preparePreview(mission, scopeInput, { rootDir: context.rootDir, revisionNumber: 1 }));
   await mission.save();
   return mission.toJSON();
 }
-module.exports = { buildWorkPackages, evidencePacket, normalizeScope, prepareMission, preparePreview };
+function buildResubmissionPreview(missionInput, scopeInput, responseInput, options = {}) {
+  const mission = missionInput && typeof missionInput.toObject === "function" ? missionInput.toObject() : missionInput || {};
+  if (mission.status !== "changes_required" || mission.founderDecision?.decision !== "request_changes") fail("Only Founder-requested changes can be resubmitted", 409);
+  const currentRevision = Number(mission.revisionNumber) || 1;
+  if (currentRevision >= 3) fail("Maximum three evidence revisions reached", 409);
+  const responseToFounder = text(responseInput, "responseToFounder", 2000);
+  const history = Array.isArray(mission.revisionHistory) ? [...mission.revisionHistory] : [];
+  history.push({
+    revisionNumber: currentRevision,
+    scopeHash: mission.boundedScope?.scopeHash || null,
+    loopId: mission.executionEvidence?.loopId || null,
+    finalPatchSha256: mission.executionEvidence?.finalPatchSha256 || null,
+    founderDecisionHash: mission.founderDecision?.decisionHash || null,
+    founderNotes: mission.founderDecision?.notes || "",
+    responseToFounder,
+    archivedAt: new Date().toISOString()
+  });
+  return {
+    ...preparePreview(mission, scopeInput, { rootDir: options.rootDir, allowReplay: true, revisionNumber: currentRevision + 1, revisionResponse: responseToFounder }),
+    founderDecision: null,
+    revisionHistory: history
+  };
+}
+async function resubmitMission(missionId, input = {}, context = {}) {
+  const mongoose = require("mongoose");
+  const { RevenueExecutionMission } = require("../models/RevenueExecutionMission");
+  const { founderApprovalGranted } = require("./revenueConversionService");
+  if (!founderApprovalGranted(context.founderApproved)) fail("Founder approval is required to resubmit corrected scope", 403);
+  if (!mongoose.Types.ObjectId.isValid(String(missionId || ""))) fail("Invalid execution mission id", 400);
+  const mission = await RevenueExecutionMission.findById(missionId);
+  if (!mission) fail("Execution mission not found", 404);
+  const { responseToFounder, ...scope } = input;
+  Object.assign(mission, buildResubmissionPreview(mission, scope, responseToFounder, { rootDir: context.rootDir }));
+  await mission.save();
+  return mission.toJSON();
+}
+module.exports = { buildResubmissionPreview, buildWorkPackages, evidencePacket, normalizeScope, prepareMission, preparePreview, resubmitMission };

@@ -14,6 +14,8 @@ const revenueExecutionMissionSchema = new mongoose.Schema(
     workPackages: { type: [mongoose.Schema.Types.Mixed], default: [] },
     executionEvidence: { type: mongoose.Schema.Types.Mixed, default: null },
     founderDecision: { type: mongoose.Schema.Types.Mixed, default: null },
+    revisionNumber: { type: Number, default: 0, min: 0, max: 3 },
+    revisionHistory: { type: [mongoose.Schema.Types.Mixed], default: [] },
     executionPath: { type: [String], required: true },
     governance: { type: mongoose.Schema.Types.Mixed, required: true },
     approvalEvidence: { type: mongoose.Schema.Types.Mixed, required: true },

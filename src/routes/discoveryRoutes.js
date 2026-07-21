@@ -9,4 +9,5 @@ router.get("/execution-missions", controller.listExecutionMissions);
 router.post("/execution-missions/:id/prepare", controller.prepareExecutionMission);
 router.post("/execution-missions/:id/decision", controller.decideExecutionMission);
 router.get("/execution-missions/:id/decisions", controller.listExecutionMissionDecisions);
+router.post("/execution-missions/:id/resubmit", controller.resubmitExecutionMission);
 module.exports = router;

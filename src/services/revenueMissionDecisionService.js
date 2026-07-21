@@ -24,7 +24,7 @@ function buildDecisionRecord(missionInput, input = {}, previousDecisionHash = nu
   const evidence = validateMission(mission, normalized.decision);
   const missionId = String(mission._id || mission.id || "");
   if (!missionId) fail("Mission identity is required", 409);
-  const evidenceHash = hash({ loopId: evidence.loopId, finalPatchSha256: evidence.finalPatchSha256, finalReviewId: evidence.finalReviewId, reviewerVerdict: evidence.reviewerVerdict });
+  const evidenceHash = hash({ revisionNumber: evidence.revisionNumber || mission.revisionNumber || 1, loopId: evidence.loopId, finalPatchSha256: evidence.finalPatchSha256, finalReviewId: evidence.finalReviewId, reviewerVerdict: evidence.reviewerVerdict });
   const payload = {
     engine: "GARUDA Revenue Mission Founder Decision v1", missionId, evidenceHash,
     decision: normalized.decision, notes: normalized.notes, actor: "founder",

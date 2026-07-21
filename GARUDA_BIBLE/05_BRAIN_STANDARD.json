@@ -127,6 +127,12 @@
       "statement": "Founder mission decisions must be bound to verified execution evidence and preserved as immutable hash-chained audit records; a decision changes mission state but grants no external, financial, source, Git, deployment, or delivery authority.",
       "priority": "P0",
       "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_013",
+      "statement": "Founder-requested changes may be resubmitted only as a fresh bounded evidence revision; prior scope, evidence, decision, and response identities remain archived, rejected missions stay closed, and total revisions are capped at three.",
+      "priority": "P0",
+      "appliesTo": ["architect", "engineering", "tester", "reviewer"]
     }
   ]
 }
