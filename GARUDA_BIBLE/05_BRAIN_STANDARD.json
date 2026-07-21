@@ -29,6 +29,10 @@
     {
       "path": "scripts/dev-agent/core/EngineeringProposalPolicy.js",
       "note": "Allow-listed structured proposal schema; raw provider code is rejected"
+    },
+    {
+      "path": "scripts/dev-agent/core/ReviewerBrain.js",
+      "note": "Independent artifact, patch, evidence, and governance verification"
     }
   ],
   "rules": [
@@ -67,6 +71,12 @@
       "statement": "Engineering intelligence providers may propose bounded artifacts but may not write source, execute commands, perform Git actions, or bypass isolated Tester Brain validation and Founder approval.",
       "priority": "P0",
       "appliesTo": ["engineering"]
+    },
+    {
+      "ruleId": "CH05_RULE_007",
+      "statement": "Reviewer Brain approval is a technical verdict only and never authorizes source application, commit, push, deploy, or replacement of Founder approval.",
+      "priority": "P0",
+      "appliesTo": ["reviewer"]
     }
   ]
 }

@@ -47,10 +47,10 @@ const TRUSTED_WORKERS = [
   {
     type: "reviewer",
     label: "Reviewer Brain",
-    capabilities: ["proposal_review", "risk_assessment", "approval_gate_check", "merge_readiness_review"],
+    capabilities: ["proposal_review", "artifact_hash_verification", "test_evidence_verification", "risk_assessment", "approval_gate_check", "merge_readiness_review"],
     riskLevel: "low",
     approvalRequired: true,
-    allowedActions: ["read", "review", "validate", "approve_readonly"],
+    allowedActions: ["read", "review", "validate", "verify_hashes", "verify_test_evidence", "approve_readonly"],
     blockedActions: ["commit", "merge", "deploy", "paid_api", "write_source", "push"]
   },
   {

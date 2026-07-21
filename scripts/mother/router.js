@@ -2,6 +2,7 @@ function routeTask(task = "") {
   const normalized = task.toLowerCase();
 
   if (normalized.includes("revenue")) return "revenue";
+  if (normalized.includes("review engineering") || normalized.includes("review artifact")) return "review";
   if (normalized.includes("engineering artifact") || normalized.includes("scaffold validator")) return "engineering";
   if (normalized.includes("commit")) return "git";
   if (normalized.includes("build")) return "builder";
