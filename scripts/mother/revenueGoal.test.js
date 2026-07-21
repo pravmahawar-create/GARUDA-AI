@@ -3,6 +3,7 @@ const { understandGoal } = require("./goalEngine");
 const { decompose } = require("./taskDecomposer");
 const { routeTask } = require("./router");
 const { execute } = require("./executor");
+const { buildExecutionResultSummary } = require("./reporter");
 
 const goal = understandGoal(
   "Continue Revenue Model development and integrate the Revenue Engine with Mother Brain autonomous execution"
@@ -32,5 +33,10 @@ assert.deepStrictEqual(
   executedTasks.map((item) => item.result.output.taskType),
   ["revenue_analysis", "revenue_integration_plan", "revenue_validation"]
 );
+
+const revenueSummary = buildExecutionResultSummary(executedTasks[0]);
+assert.strictEqual(revenueSummary.revenueEngineReady, true);
+assert.strictEqual(revenueSummary.inspectedModuleCount, 4);
+assert.deepStrictEqual(revenueSummary.issues, []);
 
 console.log("Revenue goal routing test passed.");

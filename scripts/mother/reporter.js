@@ -67,6 +67,15 @@ function buildExecutionResultSummary(task = {}) {
       : Array.isArray(output.fileSample)
         ? output.fileSample.length
         : null,
+    revenueEngineReady:
+      typeof output.revenueEngineReady === "boolean"
+        ? output.revenueEngineReady
+        : null,
+    inspectedModuleCount:
+      Number.isInteger(output.inspectedModuleCount)
+        ? output.inspectedModuleCount
+        : null,
+    issues: Array.isArray(output.issues) ? output.issues : null,
     hasProjectStructure: Boolean(output.projectStructure),
     validationPassed:
       output.passed === true
@@ -337,3 +346,4 @@ workerExecution: cycle.workerExecution || null,
 }
 
 module.exports = { report };
+module.exports.buildExecutionResultSummary = buildExecutionResultSummary;
