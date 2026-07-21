@@ -1,0 +1,15 @@
+const assert = require("assert");
+const service = require("./revenueMissionDecisionService");
+const mission = { id: "mission-1", status: "ready_for_founder_review", executionEvidence: { loopId: "loop-1", finalPatchSha256: "patch-1", finalReviewId: "review-1", reviewerVerdict: "APPROVE", sourceTreeModified: false, authorizesSourceApply: false, authorizesCommitPushDeploy: false, authorizesExternalAction: false } };
+const first = service.buildDecisionRecord(mission, { decision: "approved" }, null, new Date("2026-01-01T00:00:00.000Z"));
+assert.strictEqual(first.actor, "founder");
+assert.strictEqual(first.previousDecisionHash, null);
+assert.strictEqual(first.governance.authorizesExternalAction, false);
+assert.strictEqual(service.missionStatus("approved"), "founder_approved");
+const changed = service.buildDecisionRecord(mission, { decision: "request_changes", notes: "Add stronger acceptance evidence" }, first.decisionHash, new Date("2026-01-02T00:00:00.000Z"));
+assert.strictEqual(changed.previousDecisionHash, first.decisionHash);
+assert.notStrictEqual(changed.decisionHash, first.decisionHash);
+assert.throws(() => service.normalizeDecision({ decision: "request_changes" }), /Notes are required/);
+assert.throws(() => service.buildDecisionRecord({ ...mission, status: "blocked" }, { decision: "approved" }), /not ready/);
+assert.throws(() => service.buildDecisionRecord({ ...mission, executionEvidence: { ...mission.executionEvidence, reviewerVerdict: "REQUEST_CHANGES" } }, { decision: "approved" }), /Reviewer verdict/);
+console.log("Revenue mission Founder decision audit validation passed.");

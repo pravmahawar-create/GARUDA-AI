@@ -49,6 +49,10 @@
     {
       "path": "src/services/revenueMissionOrchestratorService.js",
       "note": "Founder-approved bounded scope to governed work packages and execution evidence"
+    },
+    {
+      "path": "src/services/revenueMissionDecisionService.js",
+      "note": "Evidence-bound Founder decision gate with immutable hash-chained audit records"
     }
   ],
   "rules": [
@@ -117,6 +121,12 @@
       "statement": "Revenue work packages run through the governed Architect, Engineering, Tester, and Reviewer evidence chain; a technical result remains a Founder review checkpoint and never authorizes source, Git, deployment, outreach, contract, spending, payment, or delivery actions.",
       "priority": "P0",
       "appliesTo": ["architect", "engineering", "tester", "reviewer"]
+    },
+    {
+      "ruleId": "CH05_RULE_012",
+      "statement": "Founder mission decisions must be bound to verified execution evidence and preserved as immutable hash-chained audit records; a decision changes mission state but grants no external, financial, source, Git, deployment, or delivery authority.",
+      "priority": "P0",
+      "appliesTo": ["all"]
     }
   ]
 }
