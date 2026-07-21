@@ -4,4 +4,6 @@ const router = express.Router();
 router.get("/candidates", controller.list);
 router.post("/run", controller.run);
 router.patch("/candidates/:id/decision", controller.decide);
+router.post("/candidates/:id/execution-mission", controller.createExecutionMission);
+router.get("/execution-missions", controller.listExecutionMissions);
 module.exports = router;

@@ -41,6 +41,10 @@
     {
       "path": "scripts/dev-agent/core/GovernedEngineeringLoop.js",
       "note": "Bounded Architect, Engineering, Tester, Reviewer correction loop"
+    },
+    {
+      "path": "src/services/revenueExecutionMissionService.js",
+      "note": "Founder-approved, verified GARUDA opportunity to governed execution mission bridge"
     }
   ],
   "rules": [
@@ -97,6 +101,12 @@
       "statement": "Correction loops are attempt-bounded, stop immediately on Reviewer rejection, accept only allow-listed structured revisions, and never authorize source or Git actions.",
       "priority": "P0",
       "appliesTo": ["architect", "engineering", "tester", "reviewer"]
+    },
+    {
+      "ruleId": "CH05_RULE_010",
+      "statement": "Revenue execution missions require an approved GARUDA-deliverable candidate, complete verification, a currently verified commercial capability, and bounded scope before Engineering begins.",
+      "priority": "P0",
+      "appliesTo": ["architect", "engineering", "reviewer"]
     }
   ]
 }

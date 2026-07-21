@@ -14,3 +14,4 @@ Defines required brain contract: capability map, policy controls, and reviewabil
 - Reviewer Brain independently verifies patch and artifact hashes, real test evidence, and governance flags; its approval is technical only and cannot authorize source, Git, or deployment actions.
 - Architect Brain converts bounded goals into dependency-ordered, risk-aware, read-only plans and may hand off only allow-listed structured Engineering specifications.
 - Governed correction loops allow at most three attempts, stop on rejection, accept only structured revisions, preserve evidence per attempt, and still require Founder approval.
+- Revenue execution missions begin only from Founder-approved, fully verified GARUDA-deliverable candidates with a currently verified commercial capability; bounded scope is required before Engineering begins.
