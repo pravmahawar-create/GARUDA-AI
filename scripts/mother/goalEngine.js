@@ -23,6 +23,14 @@ function understandGoal(goal = "") {
     "validator",
     "reporter"
   ];
+  const revenueKeywords = [
+    "revenue",
+    "income",
+    "earning",
+    "earnings",
+    "settlement",
+    "payout"
+  ];
 
   const result = {
     rawGoal: goal,
@@ -53,6 +61,14 @@ function understandGoal(goal = "") {
   if (engineeringKeywords.some((keyword) => text.includes(keyword))) {
     result.domain = "engineering";
     result.intent = "improve_engineering_system";
+    result.priority = "critical";
+  }
+
+  // Revenue must win over generic Mother/engineering matches so a goal such as
+  // "integrate Revenue Engine with Mother Brain" reaches the revenue workflow.
+  if (revenueKeywords.some((keyword) => text.includes(keyword))) {
+    result.domain = "revenue";
+    result.intent = "develop_revenue_model";
     result.priority = "critical";
   }
 

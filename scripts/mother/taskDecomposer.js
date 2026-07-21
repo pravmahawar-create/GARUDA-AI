@@ -2,6 +2,12 @@ function decompose(goal) {
   const tasks = [];
 
   switch (goal.intent) {
+    case "develop_revenue_model":
+      tasks.push("Analyze existing Revenue Engine");
+      tasks.push("Plan Revenue Engine integration with Mother Brain");
+      tasks.push("Validate Revenue Engine integration");
+      break;
+
     case "improve_autonomy":
       tasks.push("Analyze current Mother architecture");
       tasks.push("Find missing brain modules");
