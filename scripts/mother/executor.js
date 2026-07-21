@@ -6,6 +6,7 @@ const { validate } = require("./validator");
 const { build } = require("./builder");
 const { executeRevenueTask } = require("./revenueEngine");
 const LocalBrainWorker = require("../dev-agent/workers/LocalBrainWorker");
+const EngineeringBrain = require("../dev-agent/core/EngineeringBrain");
 
 function toEngineName(route) {
   const names = {
@@ -16,6 +17,7 @@ function toEngineName(route) {
     patch: "Patch",
     test: "Test",
     revenue: "Revenue",
+    engineering: "Engineering",
     general: "Local Brain"
   };
 
@@ -66,6 +68,13 @@ function executeTestTask(item) {
   }
   const evidence = worker.runExistingTests(testFiles);
   return { success: evidence.every((item) => item.status === "PASSED"), output: { status: evidence.every((item) => item.status === "PASSED") ? "PASSED" : "FAILED", evidence } };
+}
+
+function executeEngineeringTask(item) {
+  if (!item.artifactSpec) return { success: false, skipped: true, reason: "engineering_task_requires_artifact_spec" };
+  const brain = new EngineeringBrain({ rootDir: process.cwd() });
+  const output = brain.build(item.artifactSpec);
+  return { success: output.status === "ARTIFACT_READY_FOR_REVIEW" && output.sourceTreeModified === false, output };
 }
 
 function executeBuilderTask() {
@@ -148,6 +157,8 @@ function executeAvailableEngine(route, item) {
       return executeBuilderTask();
     case "revenue":
       return executeRevenueTask(item.task, { rootDir: process.cwd() });
+    case "engineering":
+      return executeEngineeringTask(item);
     case "general":
       return executeLocalBrainTask(item);
     case "git":

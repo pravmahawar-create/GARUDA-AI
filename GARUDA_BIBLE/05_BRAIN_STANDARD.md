@@ -9,3 +9,4 @@ Defines required brain contract: capability map, policy controls, and reviewabil
 - Traceable outputs in reports.
 - Execution success requires real artifact or command evidence; report-only completion is not success.
 - Test execution uses explicit targets, no shell, bounded timeouts, and captured exit evidence.
+- Engineering artifacts are generated in an isolated workspace, remain new-file-only in v1, and require Founder approval before source application.

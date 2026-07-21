@@ -17,6 +17,10 @@
     {
       "path": "scripts/dev-agent/core/SafeCommandRunner.js",
       "note": "Bounded real command execution and evidence"
+    },
+    {
+      "path": "scripts/dev-agent/core/EngineeringBrain.js",
+      "note": "Isolated, new-file-only engineering artifact generation"
     }
   ],
   "rules": [
@@ -24,7 +28,7 @@
       "ruleId": "CH05_RULE_001",
       "statement": "Every brain must declare capabilities, allowed actions, and blocked actions.",
       "priority": "P0",
-      "appliesTo": ["architect", "frontend", "backend", "tester", "reviewer", "documentation"]
+      "appliesTo": ["architect", "frontend", "backend", "engineering", "tester", "reviewer", "documentation"]
     },
     {
       "ruleId": "CH05_RULE_002",
