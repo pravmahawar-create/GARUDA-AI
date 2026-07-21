@@ -6,7 +6,7 @@ const REVENUE_MODULES = Object.freeze([
   { name: "revenue-orchestrator", file: "src/services/revenueOrchestratorService.js", markers: ["matchDemand", "human_opportunity_channel_only", "automaticApplicationAllowed"] },
   { name: "capability-controller", file: "src/controllers/capabilityController.js", markers: ["capabilityRegistry", "revenueOrchestrator", "exports.match"] },
   { name: "capability-routes", file: "src/routes/capabilityRoutes.js", markers: ["controller.list", "controller.summary", "controller.match"] },
-  { name: "discovery-model", file: "src/models/DiscoveryCandidate.js", markers: ["DiscoveryCandidate", "requiresFounderApproval", "sourceAttribution"] },
+  { name: "discovery-model", file: "src/models/DiscoveryCandidate.js", markers: ["DiscoveryCandidate", "requiresFounderApproval", "sourceAttribution", "OPPORTUNITY_CHANNELS", "opportunityChannel"] },
   { name: "discovery-service", file: "src/services/opportunityDiscoveryService.js", markers: ["runDiscoveryCycle", "scoreCandidate", "inspectCandidate", "REMOTIVE_URL"] },
   { name: "discovery-worker", file: "src/workers/discoveryWorker.js", markers: ["startDiscoveryWorker", "setInterval", "DISCOVERY_ENABLED"] },
   { name: "discovery-routes", file: "src/routes/discoveryRoutes.js", markers: ["controller.list", "controller.run"] },

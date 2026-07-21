@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+const OPPORTUNITY_CHANNELS = [
+  "garuda_deliverable",
+  "human_opportunity_only",
+  "no_verified_capability_match"
+];
+
 const discoveryCandidateSchema = new mongoose.Schema(
   {
     missionId: { type: mongoose.Schema.Types.ObjectId, ref: "IncomeGoal", required: true, index: true },
@@ -15,6 +21,22 @@ const discoveryCandidateSchema = new mongoose.Schema(
     salaryText: { type: String, default: "", trim: true },
     tags: { type: [String], default: [] },
     score: { type: Number, required: true, min: 0, max: 100, index: true },
+    opportunityChannel: {
+      type: String,
+      enum: OPPORTUNITY_CHANNELS,
+      default: "no_verified_capability_match",
+      index: true
+    },
+    capabilityAssessment: {
+      selfEarningEligible: { type: Boolean, default: false },
+      humanIdentityRequired: { type: Boolean, default: false },
+      decision: { type: String, default: "no_verified_capability_match", trim: true },
+      matches: {
+        type: [{ capabilityId: String, universe: String, name: String, score: Number }],
+        default: []
+      },
+      assessedAt: { type: Date, default: null }
+    },
     verification: {
       sourceVerified: { type: Boolean, default: false },
       originalLinkPresent: { type: Boolean, default: false },
@@ -37,4 +59,7 @@ const discoveryCandidateSchema = new mongoose.Schema(
 discoveryCandidateSchema.index({ missionId: 1, source: 1, externalId: 1 }, { unique: true });
 discoveryCandidateSchema.set("toJSON", { versionKey: false, transform: (_doc, ret) => { ret.id = String(ret._id); ret.missionId = String(ret.missionId); delete ret._id; } });
 
-module.exports = { DiscoveryCandidate: mongoose.model("DiscoveryCandidate", discoveryCandidateSchema) };
+module.exports = {
+  DiscoveryCandidate: mongoose.model("DiscoveryCandidate", discoveryCandidateSchema),
+  OPPORTUNITY_CHANNELS
+};

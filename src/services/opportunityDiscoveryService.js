@@ -1,7 +1,8 @@
-const { DiscoveryCandidate } = require("../models/DiscoveryCandidate");
+const { DiscoveryCandidate, OPPORTUNITY_CHANNELS } = require("../models/DiscoveryCandidate");
 const { IncomeGoal } = require("../models/IncomeGoal");
 const mongoose = require("mongoose");
 const { founderApprovalGranted } = require("./revenueConversionService");
+const revenueOrchestrator = require("./revenueOrchestratorService");
 
 const REMOTIVE_URL = "https://remotive.com/api/remote-jobs?limit=100";
 const SOURCE_TIMEOUT_MS = 10000;
@@ -34,6 +35,13 @@ function scoreCandidate(raw = {}) {
 
 function normalizeRemotiveJob(job, missionId) {
   const inspection = inspectCandidate(job);
+  const assessment = revenueOrchestrator.matchDemand({
+    title: job.title,
+    description: job.description,
+    category: job.job_type || job.category,
+    tags: job.tags,
+    source: "remotive"
+  });
   return {
     missionId,
     source: "remotive",
@@ -48,6 +56,23 @@ function normalizeRemotiveJob(job, missionId) {
     salaryText: plainText(job.salary),
     tags: Array.isArray(job.tags) ? job.tags.map(plainText).filter(Boolean).slice(0, 20) : [],
     score: scoreCandidate(job),
+    opportunityChannel: assessment.selfEarningEligible
+      ? "garuda_deliverable"
+      : assessment.humanIdentityRequired
+        ? "human_opportunity_only"
+        : "no_verified_capability_match",
+    capabilityAssessment: {
+      selfEarningEligible: assessment.selfEarningEligible,
+      humanIdentityRequired: assessment.humanIdentityRequired,
+      decision: assessment.decision,
+      matches: assessment.matches.slice(0, 5).map((match) => ({
+        capabilityId: match.id,
+        universe: match.universe,
+        name: match.name,
+        score: match.score
+      })),
+      assessedAt: new Date()
+    },
     verification: {
       sourceVerified: true,
       originalLinkPresent: /^https:\/\//i.test(String(job.url || "")),
@@ -78,7 +103,14 @@ async function fetchRemotiveJobs() {
 async function runDiscoveryCycle(options = {}) {
   const intervalMs = Number(options.intervalMs || process.env.DISCOVERY_INTERVAL_MS || 900000);
   const missions = await IncomeGoal.find({ status: "active", "missionPolicy.continuousDiscovery": true });
-  const summary = { missionsScanned: missions.length, fetched: 0, ranked: 0, rejected: 0, errors: [] };
+  const summary = {
+    missionsScanned: missions.length,
+    fetched: 0,
+    ranked: 0,
+    rejected: 0,
+    channels: Object.fromEntries(OPPORTUNITY_CHANNELS.map((channel) => [channel, 0])),
+    errors: []
+  };
   if (!missions.length) return summary;
   let jobs;
   try { jobs = await fetchRemotiveJobs(); summary.fetched = jobs.length; }
@@ -99,6 +131,7 @@ async function runDiscoveryCycle(options = {}) {
         result = await DiscoveryCandidate.updateOne(identity, { $set: update.refreshable, $setOnInsert: update.insertOnly }, { upsert: true });
       }
       if (result.upsertedCount) cycleCount += 1;
+      summary.channels[candidate.opportunityChannel] += 1;
       if (candidate.status === "ranked") summary.ranked += 1; else summary.rejected += 1;
     }
     const totalCandidateCount = await DiscoveryCandidate.countDocuments({ missionId: mission._id, status: "ranked" });
@@ -110,6 +143,12 @@ async function runDiscoveryCycle(options = {}) {
 async function listCandidates(filters = {}) {
   const query = {};
   if (filters.missionId) query.missionId = filters.missionId;
+  if (filters.channel) {
+    if (!OPPORTUNITY_CHANNELS.includes(filters.channel)) {
+      throw Object.assign(new Error(`channel must be one of: ${OPPORTUNITY_CHANNELS.join(", ")}`), { statusCode: 400 });
+    }
+    query.opportunityChannel = filters.channel;
+  }
   query.status = filters.status || "ranked";
   const limit = Math.min(100, Math.max(1, Number(filters.limit) || 50));
   const items = await DiscoveryCandidate.find(query).sort({ score: -1, publishedAt: -1 }).limit(limit);
@@ -134,4 +173,4 @@ async function decideCandidate(id, payload = {}, context = {}) {
   return candidate.toJSON();
 }
 
-module.exports = { PROHIBITED_TERMS, REMOTIVE_URL, SCAM_TERMS, decideCandidate, inspectCandidate, listCandidates, normalizeRemotiveJob, runDiscoveryCycle, scoreCandidate, splitCandidateForDecisionPreservation, validateCandidateDecision };
+module.exports = { OPPORTUNITY_CHANNELS, PROHIBITED_TERMS, REMOTIVE_URL, SCAM_TERMS, decideCandidate, inspectCandidate, listCandidates, normalizeRemotiveJob, runDiscoveryCycle, scoreCandidate, splitCandidateForDecisionPreservation, validateCandidateDecision };
