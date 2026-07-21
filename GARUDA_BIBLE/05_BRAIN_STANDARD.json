@@ -21,6 +21,14 @@
     {
       "path": "scripts/dev-agent/core/EngineeringBrain.js",
       "note": "Isolated, new-file-only engineering artifact generation"
+    },
+    {
+      "path": "scripts/dev-agent/core/EngineeringIntelligenceProvider.js",
+      "note": "Replaceable proposal-only intelligence contract with no direct system authority"
+    },
+    {
+      "path": "scripts/dev-agent/core/EngineeringProposalPolicy.js",
+      "note": "Allow-listed structured proposal schema; raw provider code is rejected"
     }
   ],
   "rules": [
@@ -53,6 +61,12 @@
       "statement": "Test execution requires explicit in-workspace targets, bounded timeouts, shell-disabled invocation, and captured exit evidence.",
       "priority": "P0",
       "appliesTo": ["tester"]
+    },
+    {
+      "ruleId": "CH05_RULE_006",
+      "statement": "Engineering intelligence providers may propose bounded artifacts but may not write source, execute commands, perform Git actions, or bypass isolated Tester Brain validation and Founder approval.",
+      "priority": "P0",
+      "appliesTo": ["engineering"]
     }
   ]
 }

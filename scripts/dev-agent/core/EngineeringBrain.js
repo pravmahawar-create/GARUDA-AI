@@ -54,8 +54,39 @@ function newFilePatch(relativePath, content) {
 }
 
 class EngineeringBrain {
-  constructor({ rootDir = process.cwd() } = {}) {
+  constructor({ rootDir = process.cwd(), intelligenceProvider = null } = {}) {
     this.rootDir = fs.realpathSync(rootDir);
+    this.intelligenceProvider = intelligenceProvider;
+  }
+
+  validateArtifacts(artifacts, testFiles, metadata = {}) {
+    for (const artifact of artifacts) {
+      if (fs.existsSync(path.join(this.rootDir, artifact.path))) throw new Error(`New-file-only policy rejected existing target: ${artifact.path}`);
+    }
+    const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "garuda-engineering-"));
+    artifacts.forEach((artifact) => {
+      const target = path.join(workspace, artifact.path);
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      fs.writeFileSync(target, artifact.content, "utf8");
+      artifact.sha256 = crypto.createHash("sha256").update(artifact.content).digest("hex");
+    });
+    const runner = new SafeCommandRunner({ rootDir: workspace });
+    const evidence = [...artifacts.map((artifact) => runner.runSyntaxCheck(artifact.path)), ...testFiles.map((testFile) => runner.runNodeTest(testFile))];
+    const passed = evidence.every((item) => item.status === "PASSED" && item.targetModified === false);
+    const patch = artifacts.map((artifact) => newFilePatch(artifact.path, artifact.content)).join("\n");
+    return {
+      engine: "GARUDA Engineering Brain v1",
+      status: passed ? "ARTIFACT_READY_FOR_REVIEW" : "VALIDATION_FAILED",
+      workspace,
+      artifacts: artifacts.map(({ path: artifactPath, kind, sha256 }) => ({ path: artifactPath, kind: kind || "generated", sha256 })),
+      patch,
+      patchSha256: crypto.createHash("sha256").update(patch).digest("hex"),
+      evidence,
+      sourceTreeModified: artifacts.some((artifact) => fs.existsSync(path.join(this.rootDir, artifact.path))),
+      requiresFounderApprovalToApply: true,
+      commitPushDeployAllowed: false,
+      ...metadata
+    };
   }
 
   buildRequiredFieldsValidator(spec = {}) {
@@ -63,41 +94,34 @@ class EngineeringBrain {
     const modulePath = normalizeRelativePath(spec.modulePath);
     const testPath = normalizeRelativePath(spec.testPath, { testFile: true });
     const requiredFields = normalizeFields(spec.requiredFields);
-    for (const target of [modulePath, testPath]) {
-      if (fs.existsSync(path.join(this.rootDir, target))) throw new Error(`New-file-only policy rejected existing target: ${target}`);
-    }
-
-    const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "garuda-engineering-"));
     const moduleContent = renderRequiredFieldsValidator(requiredFields);
     const testContent = renderValidatorTest(modulePath, testPath, requiredFields);
     const artifacts = [
-      { path: modulePath, content: moduleContent },
-      { path: testPath, content: testContent }
+      { path: modulePath, kind: "module", content: moduleContent },
+      { path: testPath, kind: "test", content: testContent }
     ];
-    artifacts.forEach((artifact) => {
-      const target = path.join(workspace, artifact.path);
-      fs.mkdirSync(path.dirname(target), { recursive: true });
-      fs.writeFileSync(target, artifact.content, "utf8");
-      artifact.sha256 = crypto.createHash("sha256").update(artifact.content).digest("hex");
-    });
+    return this.validateArtifacts(artifacts, [testPath], { template: spec.template, intelligenceUsed: false });
+  }
 
-    const runner = new SafeCommandRunner({ rootDir: workspace });
-    const evidence = [runner.runSyntaxCheck(modulePath), runner.runSyntaxCheck(testPath), runner.runNodeTest(testPath)];
-    const passed = evidence.every((item) => item.status === "PASSED" && item.targetModified === false);
-    const patch = artifacts.map((artifact) => newFilePatch(artifact.path, artifact.content)).join("\n");
-
+  buildFromIntelligence(request = {}) {
+    if (!this.intelligenceProvider || typeof this.intelligenceProvider.propose !== "function") throw new Error("Engineering intelligence provider is not configured");
+    const metadata = typeof this.intelligenceProvider.getMetadata === "function" ? this.intelligenceProvider.getMetadata() : null;
+    if (!metadata || metadata.directWriteAllowed !== false || metadata.commandExecutionAllowed !== false || metadata.gitActionsAllowed !== false) {
+      throw new Error("Engineering intelligence provider violates capability isolation contract");
+    }
+    const proposal = this.intelligenceProvider.propose(Object.freeze({ ...request }));
+    if (proposal && typeof proposal.then === "function") throw new Error("Async providers require a dedicated bounded adapter");
+    const { validateProposal } = require("./EngineeringProposalPolicy");
+    const validated = validateProposal(proposal);
+    const result = this.buildRequiredFieldsValidator(validated.artifactSpec);
     return {
-      engine: "GARUDA Engineering Brain v1",
-      status: passed ? "ARTIFACT_READY_FOR_REVIEW" : "VALIDATION_FAILED",
-      template: spec.template,
-      workspace,
-      artifacts: artifacts.map(({ path: artifactPath, sha256 }) => ({ path: artifactPath, sha256 })),
-      patch,
-      patchSha256: crypto.createHash("sha256").update(patch).digest("hex"),
-      evidence,
-      sourceTreeModified: [modulePath, testPath].some((target) => fs.existsSync(path.join(this.rootDir, target))),
-      requiresFounderApprovalToApply: true,
-      commitPushDeployAllowed: false
+      ...result,
+      intelligenceUsed: true,
+      intentId: validated.intentId,
+      proposalSummary: validated.summary,
+      proposalConfidence: validated.confidence,
+      proposalPolicy: validated.policy,
+      provider: metadata
     };
   }
 
@@ -111,3 +135,4 @@ module.exports.EngineeringBrain = EngineeringBrain;
 module.exports.ALLOWED_ROOTS = ALLOWED_ROOTS;
 module.exports.newFilePatch = newFilePatch;
 module.exports.normalizeRelativePath = normalizeRelativePath;
+module.exports.normalizeFields = normalizeFields;
