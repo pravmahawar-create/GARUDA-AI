@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const SafeCommandRunner = require("../core/SafeCommandRunner");
 
 function walkDirectory(rootDir, depth = 2, currentDepth = 0, entries = []) {
   if (!fs.existsSync(rootDir) || currentDepth > depth) {
@@ -33,9 +34,10 @@ function walkDirectory(rootDir, depth = 2, currentDepth = 0, entries = []) {
 }
 
 class LocalBrainWorker {
-  constructor({ role = "general", rootDir = process.cwd() } = {}) {
+  constructor({ role = "general", rootDir = process.cwd(), commandRunner = null } = {}) {
     this.role = role;
     this.rootDir = rootDir;
+    this.commandRunner = commandRunner || new SafeCommandRunner({ rootDir });
   }
 
   readProjectStructure(depth = 2) {
@@ -73,24 +75,20 @@ class LocalBrainWorker {
   runSyntaxChecks(files = []) {
     const normalizedFiles = Array.isArray(files) ? files : [files];
     return normalizedFiles.map((filePath) => {
-      const absolutePath = path.isAbsolute(filePath) ? filePath : path.join(process.cwd(), filePath);
-      const exists = fs.existsSync(absolutePath);
-
-      return {
-        filePath,
-        exists,
-        status: exists ? "NOT_RUN" : "MISSING",
-        reason: exists ? "syntax_check_available" : "file_not_found"
-      };
+      try { return this.commandRunner.runSyntaxCheck(filePath); }
+      catch (error) { return { targetFile: filePath, status: "FAILED", error: { code: "TARGET_REJECTED", message: error.message }, shellUsed: false }; }
     });
   }
 
-  runExistingTests(command = "npm test") {
-    return {
-      command,
-      status: "NOT_EXECUTED",
-      reason: "read_only_analysis_only"
-    };
+  runExistingTests(files = []) {
+    const normalizedFiles = Array.isArray(files) ? files : [files];
+    if (!normalizedFiles.filter(Boolean).length) {
+      return [{ status: "FAILED", error: { code: "TEST_TARGET_REQUIRED", message: "Explicit *.test.js targets are required" }, shellUsed: false }];
+    }
+    return normalizedFiles.map((filePath) => {
+      try { return this.commandRunner.runNodeTest(filePath); }
+      catch (error) { return { targetFile: filePath, status: "FAILED", error: { code: "TARGET_REJECTED", message: error.message }, shellUsed: false }; }
+    });
   }
 
   prepareReports(payload = {}) {

@@ -58,6 +58,16 @@ function executeValidatorTask(item) {
   };
 }
 
+function executeTestTask(item) {
+  const worker = new LocalBrainWorker({ role: "tester", rootDir: process.cwd() });
+  const testFiles = Array.isArray(item.testFiles) ? item.testFiles : Array.isArray(item.files) ? item.files.filter((file) => /\.test\.(c?js|mjs)$/i.test(file)) : [];
+  if (!testFiles.length) {
+    return { success: false, skipped: true, reason: "test_task_requires_explicit_test_files", output: { status: "NOT_EXECUTED", evidence: [] } };
+  }
+  const evidence = worker.runExistingTests(testFiles);
+  return { success: evidence.every((item) => item.status === "PASSED"), output: { status: evidence.every((item) => item.status === "PASSED") ? "PASSED" : "FAILED", evidence } };
+}
+
 function executeBuilderTask() {
   const result = build();
 
@@ -131,8 +141,9 @@ function executeAvailableEngine(route, item) {
     case "thinker":
       return executeThinkerTask(item);
     case "validator":
-    case "test":
       return executeValidatorTask(item);
+    case "test":
+      return executeTestTask(item);
     case "builder":
       return executeBuilderTask();
     case "revenue":

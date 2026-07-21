@@ -13,6 +13,10 @@
     {
       "path": "scripts/dev-agent/core/MultiBrainPlanner.js",
       "note": "Brain planning orchestration"
+    },
+    {
+      "path": "scripts/dev-agent/core/SafeCommandRunner.js",
+      "note": "Bounded real command execution and evidence"
     }
   ],
   "rules": [
@@ -33,6 +37,18 @@
       "statement": "Brain outputs must be reviewable and traceable in reports.",
       "priority": "P1",
       "appliesTo": ["reviewer", "documentation"]
+    },
+    {
+      "ruleId": "CH05_RULE_004",
+      "statement": "A brain may report execution success only when a real artifact or command result is supported by verifiable evidence.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_005",
+      "statement": "Test execution requires explicit in-workspace targets, bounded timeouts, shell-disabled invocation, and captured exit evidence.",
+      "priority": "P0",
+      "appliesTo": ["tester"]
     }
   ]
 }

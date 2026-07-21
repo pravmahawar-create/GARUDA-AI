@@ -29,7 +29,7 @@ const TRUSTED_WORKERS = [
   {
     type: "tester",
     label: "Tester Brain",
-    capabilities: ["syntax_checks", "test_inventory", "quality_gate_analysis", "risk_verification"],
+    capabilities: ["syntax_checks", "real_test_execution", "execution_evidence", "quality_gate_analysis", "risk_verification"],
     riskLevel: "low",
     approvalRequired: true,
     allowedActions: ["read", "run_tests", "run_syntax_checks", "verify_quality"],
