@@ -3,6 +3,26 @@ const path = require("path");
 
 const REVENUE_MODULES = Object.freeze([
   {
+    name: "income-goal-model",
+    file: "src/models/IncomeGoal.js",
+    markers: ["IncomeGoal", "INCOME_GOAL_STATUSES", "milestones"]
+  },
+  {
+    name: "income-goal-service",
+    file: "src/services/incomeGoalService.js",
+    markers: ["DEFAULT_TARGET_AMOUNT", "buildMissionPlan", "createIncomeGoal", "lawfulOnly", "continuousDiscovery", "mobile_first"]
+  },
+  {
+    name: "income-goal-controller",
+    file: "src/controllers/incomeGoalController.js",
+    markers: ["incomeGoalService", "exports.preview", "exports.create"]
+  },
+  {
+    name: "income-goal-routes",
+    file: "src/routes/incomeGoalRoutes.js",
+    markers: ["incomeGoalController", "router.post", "router.get"]
+  },
+  {
     name: "opportunity-model",
     file: "src/models/Opportunity.js",
     markers: ["Opportunity", "OPP_STAGES"]

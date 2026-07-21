@@ -30,5 +30,6 @@ app.use("/api/rag", require("./routes/ragRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/opportunities", require("./routes/opportunityRoutes"));
 app.use("/api/revenue", require("./routes/revenueRoutes"));
+app.use("/api/income-goals", require("./routes/incomeGoalRoutes"));
 
 module.exports = app;
