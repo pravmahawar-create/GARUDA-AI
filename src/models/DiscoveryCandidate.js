@@ -24,6 +24,11 @@ const discoveryCandidateSchema = new mongoose.Schema(
     status: { type: String, enum: ["ranked", "rejected", "approved", "dismissed"], default: "ranked", index: true },
     requiresFounderApproval: { type: Boolean, default: true, immutable: true },
     rejectionReasons: { type: [String], default: [] },
+    decision: {
+      actor: { type: String, default: "", trim: true },
+      note: { type: String, default: "", trim: true },
+      decidedAt: { type: Date, default: null }
+    },
     discoveredAt: { type: Date, default: () => new Date() }
   },
   { timestamps: true }

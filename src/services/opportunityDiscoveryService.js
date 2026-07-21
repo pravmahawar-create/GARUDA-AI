@@ -1,5 +1,7 @@
 const { DiscoveryCandidate } = require("../models/DiscoveryCandidate");
 const { IncomeGoal } = require("../models/IncomeGoal");
+const mongoose = require("mongoose");
+const { founderApprovalGranted } = require("./revenueConversionService");
 
 const REMOTIVE_URL = "https://remotive.com/api/remote-jobs?limit=100";
 const SOURCE_TIMEOUT_MS = 10000;
@@ -101,4 +103,22 @@ async function listCandidates(filters = {}) {
   return items.map((item) => item.toJSON());
 }
 
-module.exports = { PROHIBITED_TERMS, REMOTIVE_URL, SCAM_TERMS, inspectCandidate, listCandidates, normalizeRemotiveJob, runDiscoveryCycle, scoreCandidate };
+function validateCandidateDecision(status, founderApproved) {
+  if (!["approved", "dismissed"].includes(status)) throw Object.assign(new Error("status must be approved or dismissed"), { statusCode: 400 });
+  if (!founderApprovalGranted(founderApproved)) throw Object.assign(new Error("Founder approval is required for candidate decisions"), { statusCode: 403 });
+  return status;
+}
+
+async function decideCandidate(id, payload = {}, context = {}) {
+  validateCandidateDecision(payload.status, context.founderApproved);
+  if (!mongoose.Types.ObjectId.isValid(String(id || ""))) throw Object.assign(new Error("Invalid candidate id"), { statusCode: 400 });
+  const candidate = await DiscoveryCandidate.findById(id);
+  if (!candidate) throw Object.assign(new Error("Discovery candidate not found"), { statusCode: 404 });
+  if (candidate.status !== "ranked") throw Object.assign(new Error(`Candidate is already ${candidate.status}`), { statusCode: 409 });
+  candidate.status = payload.status;
+  candidate.decision = { actor: context.actor || "founder", note: String(payload.note || "").trim(), decidedAt: new Date() };
+  await candidate.save();
+  return candidate.toJSON();
+}
+
+module.exports = { PROHIBITED_TERMS, REMOTIVE_URL, SCAM_TERMS, decideCandidate, inspectCandidate, listCandidates, normalizeRemotiveJob, runDiscoveryCycle, scoreCandidate, validateCandidateDecision };
