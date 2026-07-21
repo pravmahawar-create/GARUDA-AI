@@ -12,3 +12,4 @@ Defines required brain contract: capability map, policy controls, and reviewabil
 - Engineering artifacts are generated in an isolated workspace, remain new-file-only in v1, and require Founder approval before source application.
 - Intelligence providers are proposal-only adapters: raw provider code is rejected, and allow-listed structured specifications must pass path, isolated execution, and Founder approval gates before they can affect GARUDA source.
 - Reviewer Brain independently verifies patch and artifact hashes, real test evidence, and governance flags; its approval is technical only and cannot authorize source, Git, or deployment actions.
+- Architect Brain converts bounded goals into dependency-ordered, risk-aware, read-only plans and may hand off only allow-listed structured Engineering specifications.

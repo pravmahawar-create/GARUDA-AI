@@ -2,10 +2,10 @@ const TRUSTED_WORKERS = [
   {
     type: "architect",
     label: "Architect Brain",
-    capabilities: ["system_mapping", "task_decomposition", "dependency_planning", "risk_review"],
+    capabilities: ["system_mapping", "structured_goal_planning", "task_decomposition", "dependency_planning", "bounded_engineering_handoff", "risk_review"],
     riskLevel: "medium",
     approvalRequired: true,
-    allowedActions: ["read", "analyze", "decompose", "design", "map_dependencies"],
+    allowedActions: ["read", "analyze", "decompose", "design", "map_dependencies", "propose_bounded_spec"],
     blockedActions: ["commit", "merge", "deploy", "paid_api", "write_source", "push"]
   },
   {

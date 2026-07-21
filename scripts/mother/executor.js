@@ -8,6 +8,7 @@ const { executeRevenueTask } = require("./revenueEngine");
 const LocalBrainWorker = require("../dev-agent/workers/LocalBrainWorker");
 const EngineeringBrain = require("../dev-agent/core/EngineeringBrain");
 const ReviewerBrain = require("../dev-agent/core/ReviewerBrain");
+const ArchitectBrain = require("../dev-agent/core/ArchitectBrain");
 
 function toEngineName(route) {
   const names = {
@@ -20,6 +21,7 @@ function toEngineName(route) {
     revenue: "Revenue",
     engineering: "Engineering",
     review: "Reviewer",
+    architect: "Architect",
     general: "Local Brain"
   };
 
@@ -83,6 +85,12 @@ function executeReviewerTask(item) {
   if (!item.reviewInput) return { success: false, skipped: true, reason: "review_task_requires_engineering_output" };
   const output = new ReviewerBrain().review(item.reviewInput);
   return { success: output.verdict === "APPROVE", output, reason: output.verdict === "REQUEST_CHANGES" ? "review_requested_changes" : output.verdict === "REJECT" ? "review_rejected" : undefined };
+}
+
+function executeArchitectTask(item) {
+  if (!item.architectureRequest) return { success: false, skipped: true, reason: "architect_task_requires_structured_request" };
+  const output = new ArchitectBrain().plan(item.architectureRequest);
+  return { success: output.status === "PLAN_READY_FOR_REVIEW" && output.governance.sourceWriteAllowed === false, output };
 }
 
 function executeBuilderTask() {
@@ -169,6 +177,8 @@ function executeAvailableEngine(route, item) {
       return executeEngineeringTask(item);
     case "review":
       return executeReviewerTask(item);
+    case "architect":
+      return executeArchitectTask(item);
     case "general":
       return executeLocalBrainTask(item);
     case "git":

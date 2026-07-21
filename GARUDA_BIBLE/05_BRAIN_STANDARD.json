@@ -33,6 +33,10 @@
     {
       "path": "scripts/dev-agent/core/ReviewerBrain.js",
       "note": "Independent artifact, patch, evidence, and governance verification"
+    },
+    {
+      "path": "scripts/dev-agent/core/ArchitectBrain.js",
+      "note": "Read-only structured goals, dependency plans, risks, and bounded Engineering handoffs"
     }
   ],
   "rules": [
@@ -77,6 +81,12 @@
       "statement": "Reviewer Brain approval is a technical verdict only and never authorizes source application, commit, push, deploy, or replacement of Founder approval.",
       "priority": "P0",
       "appliesTo": ["reviewer"]
+    },
+    {
+      "ruleId": "CH05_RULE_008",
+      "statement": "Architect Brain plans are read-only and may hand off only allow-listed structured specifications; plans never authorize implementation or external action.",
+      "priority": "P0",
+      "appliesTo": ["architect"]
     }
   ]
 }
