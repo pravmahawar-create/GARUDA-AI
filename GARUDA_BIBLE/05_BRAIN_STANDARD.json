@@ -37,6 +37,10 @@
     {
       "path": "scripts/dev-agent/core/ArchitectBrain.js",
       "note": "Read-only structured goals, dependency plans, risks, and bounded Engineering handoffs"
+    },
+    {
+      "path": "scripts/dev-agent/core/GovernedEngineeringLoop.js",
+      "note": "Bounded Architect, Engineering, Tester, Reviewer correction loop"
     }
   ],
   "rules": [
@@ -87,6 +91,12 @@
       "statement": "Architect Brain plans are read-only and may hand off only allow-listed structured specifications; plans never authorize implementation or external action.",
       "priority": "P0",
       "appliesTo": ["architect"]
+    },
+    {
+      "ruleId": "CH05_RULE_009",
+      "statement": "Correction loops are attempt-bounded, stop immediately on Reviewer rejection, accept only allow-listed structured revisions, and never authorize source or Git actions.",
+      "priority": "P0",
+      "appliesTo": ["architect", "engineering", "tester", "reviewer"]
     }
   ]
 }

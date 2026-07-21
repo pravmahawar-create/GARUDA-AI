@@ -29,7 +29,7 @@ const TRUSTED_WORKERS = [
   {
     type: "engineering",
     label: "Engineering Brain",
-    capabilities: ["isolated_artifact_generation", "template_scaffolding", "intelligence_proposal_review", "patch_evidence", "tester_brain_validation"],
+    capabilities: ["isolated_artifact_generation", "template_scaffolding", "intelligence_proposal_review", "bounded_correction_loop", "patch_evidence", "tester_brain_validation"],
     riskLevel: "medium",
     approvalRequired: true,
     allowedActions: ["read", "request_bounded_proposal", "validate_proposal", "create_isolated_artifact", "generate_patch", "request_test_validation"],

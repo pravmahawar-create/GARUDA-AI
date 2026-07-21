@@ -13,3 +13,4 @@ Defines required brain contract: capability map, policy controls, and reviewabil
 - Intelligence providers are proposal-only adapters: raw provider code is rejected, and allow-listed structured specifications must pass path, isolated execution, and Founder approval gates before they can affect GARUDA source.
 - Reviewer Brain independently verifies patch and artifact hashes, real test evidence, and governance flags; its approval is technical only and cannot authorize source, Git, or deployment actions.
 - Architect Brain converts bounded goals into dependency-ordered, risk-aware, read-only plans and may hand off only allow-listed structured Engineering specifications.
+- Governed correction loops allow at most three attempts, stop on rejection, accept only structured revisions, preserve evidence per attempt, and still require Founder approval.
