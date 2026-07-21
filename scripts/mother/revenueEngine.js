@@ -3,6 +3,26 @@ const path = require("path");
 
 const REVENUE_MODULES = Object.freeze([
   {
+    name: "opportunity-model",
+    file: "src/models/Opportunity.js",
+    markers: ["Opportunity", "OPP_STAGES"]
+  },
+  {
+    name: "opportunity-service",
+    file: "src/services/opportunityService.js",
+    markers: ["createOpportunity", "getOpportunityMetrics", "validateOpportunityInput"]
+  },
+  {
+    name: "opportunity-controller",
+    file: "src/controllers/opportunityController.js",
+    markers: ["opportunityService", "exports.create", "exports.metrics"]
+  },
+  {
+    name: "opportunity-routes",
+    file: "src/routes/opportunityRoutes.js",
+    markers: ["opportunityController", "router.post", "router.get"]
+  },
+  {
     name: "model",
     file: "src/models/RevenueRecord.js",
     markers: ["RevenueRecord", "REVENUE_STATUSES"]

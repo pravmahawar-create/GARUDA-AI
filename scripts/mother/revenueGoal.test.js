@@ -36,7 +36,7 @@ assert.deepStrictEqual(
 
 const revenueSummary = buildExecutionResultSummary(executedTasks[0]);
 assert.strictEqual(revenueSummary.revenueEngineReady, true);
-assert.strictEqual(revenueSummary.inspectedModuleCount, 4);
+assert.strictEqual(revenueSummary.inspectedModuleCount, 8);
 assert.deepStrictEqual(revenueSummary.issues, []);
 
 console.log("Revenue goal routing test passed.");
