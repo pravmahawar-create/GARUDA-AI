@@ -33,6 +33,11 @@ const REVENUE_MODULES = Object.freeze([
     markers: ["createRevenue", "getRevenueMetrics", "getSettlementSummary"]
   },
   {
+    name: "conversion-service",
+    file: "src/services/revenueConversionService.js",
+    markers: ["previewConversion", "executeConversion", "founderApprovalGranted"]
+  },
+  {
     name: "controller",
     file: "src/controllers/revenueController.js",
     markers: ["revenueService", "exports.metrics", "exports.settlement"]

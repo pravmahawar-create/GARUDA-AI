@@ -1,4 +1,5 @@
 const revenueService = require("../services/revenueService");
+const revenueConversionService = require("../services/revenueConversionService");
 
 function sendError(res, error, fallback) {
   return res.status(error.statusCode || 500).json({
@@ -91,5 +92,30 @@ exports.settlement = async (_req, res) => {
     });
   } catch (error) {
     return sendError(res, error, "Failed to compute settlement summary");
+  }
+};
+
+exports.previewConversion = async (req, res) => {
+  try {
+    const preview = await revenueConversionService.previewConversion(
+      req.params.opportunityId,
+      req.body || {}
+    );
+    return res.json({ success: true, data: preview });
+  } catch (error) {
+    return sendError(res, error, "Failed to preview revenue conversion");
+  }
+};
+
+exports.executeConversion = async (req, res) => {
+  try {
+    const result = await revenueConversionService.executeConversion(
+      req.params.opportunityId,
+      req.body || {},
+      { founderApproved: req.get("x-garuda-founder-approved") }
+    );
+    return res.status(201).json({ success: true, data: result });
+  } catch (error) {
+    return sendError(res, error, "Failed to execute revenue conversion");
   }
 };

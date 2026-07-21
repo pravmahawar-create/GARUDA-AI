@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get("/", revenueController.list);
 router.post("/", revenueController.create);
+router.post("/conversion/:opportunityId/preview", revenueController.previewConversion);
+router.post("/conversion/:opportunityId/execute", revenueController.executeConversion);
 router.patch("/:id", revenueController.update);
 router.delete("/:id", revenueController.remove);
 
