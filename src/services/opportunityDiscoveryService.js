@@ -60,6 +60,14 @@ function normalizeRemotiveJob(job, missionId) {
   };
 }
 
+function splitCandidateForDecisionPreservation(candidate) {
+  const { status, rejectionReasons, requiresFounderApproval, ...refreshable } = candidate;
+  return {
+    refreshable,
+    insertOnly: { status, rejectionReasons, requiresFounderApproval, discoveredAt: new Date() }
+  };
+}
+
 async function fetchRemotiveJobs() {
   const response = await fetch(REMOTIVE_URL, { headers: { accept: "application/json", "user-agent": "GARUDA-Revenue-Universe/1.0" }, signal: AbortSignal.timeout(SOURCE_TIMEOUT_MS) });
   if (!response.ok) throw new Error(`Remotive source returned HTTP ${response.status}`);
@@ -84,7 +92,12 @@ async function runDiscoveryCycle(options = {}) {
     let cycleCount = 0;
     for (const job of jobs) {
       const candidate = normalizeRemotiveJob(job, mission._id);
-      const result = await DiscoveryCandidate.updateOne({ missionId: mission._id, source: candidate.source, externalId: candidate.externalId }, { $set: candidate, $setOnInsert: { discoveredAt: new Date() } }, { upsert: true });
+      const identity = { missionId: mission._id, source: candidate.source, externalId: candidate.externalId };
+      let result = await DiscoveryCandidate.updateOne({ ...identity, status: { $in: ["ranked", "rejected"] } }, { $set: candidate });
+      if (!result.matchedCount) {
+        const update = splitCandidateForDecisionPreservation(candidate);
+        result = await DiscoveryCandidate.updateOne(identity, { $set: update.refreshable, $setOnInsert: update.insertOnly }, { upsert: true });
+      }
       if (result.upsertedCount) cycleCount += 1;
       if (candidate.status === "ranked") summary.ranked += 1; else summary.rejected += 1;
     }
@@ -121,4 +134,4 @@ async function decideCandidate(id, payload = {}, context = {}) {
   return candidate.toJSON();
 }
 
-module.exports = { PROHIBITED_TERMS, REMOTIVE_URL, SCAM_TERMS, decideCandidate, inspectCandidate, listCandidates, normalizeRemotiveJob, runDiscoveryCycle, scoreCandidate, validateCandidateDecision };
+module.exports = { PROHIBITED_TERMS, REMOTIVE_URL, SCAM_TERMS, decideCandidate, inspectCandidate, listCandidates, normalizeRemotiveJob, runDiscoveryCycle, scoreCandidate, splitCandidateForDecisionPreservation, validateCandidateDecision };

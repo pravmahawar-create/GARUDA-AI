@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { inspectCandidate, normalizeRemotiveJob, scoreCandidate, validateCandidateDecision } = require("./opportunityDiscoveryService");
+const { inspectCandidate, normalizeRemotiveJob, scoreCandidate, splitCandidateForDecisionPreservation, validateCandidateDecision } = require("./opportunityDiscoveryService");
 
 assert.strictEqual(inspectCandidate({ title: "Remote developer", url: "https://example.com/job" }).accepted, true);
 assert.strictEqual(inspectCandidate({ title: "Online casino promoter", url: "https://example.com/job" }).accepted, false);
@@ -16,5 +16,9 @@ assert.strictEqual(validateCandidateDecision("approved", "true"), "approved");
 assert.strictEqual(validateCandidateDecision("dismissed", true), "dismissed");
 assert.throws(() => validateCandidateDecision("approved", false), /Founder approval/);
 assert.throws(() => validateCandidateDecision("executed", true), /approved or dismissed/);
+const safeUpdate = splitCandidateForDecisionPreservation(candidate);
+assert.strictEqual(safeUpdate.refreshable.status, undefined);
+assert.strictEqual(safeUpdate.insertOnly.status, "ranked");
+assert.strictEqual(safeUpdate.insertOnly.requiresFounderApproval, true);
 
 console.log("Opportunity discovery validation test passed.");
