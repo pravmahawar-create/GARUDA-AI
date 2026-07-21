@@ -45,6 +45,14 @@ const incomeGoalSchema = new mongoose.Schema(
       idleOnOpportunityGap: { type: Boolean, default: false, immutable: true },
       controlRoom: { type: String, enum: ["mobile_first"], default: "mobile_first", immutable: true }
     },
+    discovery: {
+      status: { type: String, enum: ["waiting", "running", "healthy", "degraded"], default: "waiting" },
+      lastCycleAt: { type: Date, default: null },
+      nextCycleAt: { type: Date, default: null },
+      lastCandidateCount: { type: Number, default: 0, min: 0 },
+      totalCandidateCount: { type: Number, default: 0, min: 0 },
+      lastError: { type: String, default: "", trim: true }
+    },
     milestones: { type: [milestoneSchema], default: [] },
     auditTrail: { type: [auditEntrySchema], default: [] }
   },

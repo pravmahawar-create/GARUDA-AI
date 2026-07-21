@@ -31,5 +31,6 @@ app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/opportunities", require("./routes/opportunityRoutes"));
 app.use("/api/revenue", require("./routes/revenueRoutes"));
 app.use("/api/income-goals", require("./routes/incomeGoalRoutes"));
+app.use("/api/discovery", require("./routes/discoveryRoutes"));
 
 module.exports = app;

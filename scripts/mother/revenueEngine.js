@@ -2,6 +2,10 @@ const fs = require("fs");
 const path = require("path");
 
 const REVENUE_MODULES = Object.freeze([
+  { name: "discovery-model", file: "src/models/DiscoveryCandidate.js", markers: ["DiscoveryCandidate", "requiresFounderApproval", "sourceAttribution"] },
+  { name: "discovery-service", file: "src/services/opportunityDiscoveryService.js", markers: ["runDiscoveryCycle", "scoreCandidate", "inspectCandidate", "REMOTIVE_URL"] },
+  { name: "discovery-worker", file: "src/workers/discoveryWorker.js", markers: ["startDiscoveryWorker", "setInterval", "DISCOVERY_ENABLED"] },
+  { name: "discovery-routes", file: "src/routes/discoveryRoutes.js", markers: ["controller.list", "controller.run"] },
   {
     name: "income-goal-model",
     file: "src/models/IncomeGoal.js",
