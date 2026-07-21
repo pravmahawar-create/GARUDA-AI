@@ -81,7 +81,8 @@ const DEFAULT_WORKER_PRIORITY = Object.freeze([
 
 const FREE_EXTERNAL_COST_CLASSES = new Set([
   "zero_external_cost",
-  "free_external_allowed"
+  "free_external_allowed",
+  "free_external_execution"
 ]);
 
 const BLOCKED_EXTERNAL_COST_CLASSES = new Set([
