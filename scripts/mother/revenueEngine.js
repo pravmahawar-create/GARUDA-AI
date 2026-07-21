@@ -38,6 +38,16 @@ const REVENUE_MODULES = Object.freeze([
     markers: ["previewConversion", "executeConversion", "founderApprovalGranted"]
   },
   {
+    name: "settlement-model",
+    file: "src/models/SettlementLedger.js",
+    markers: ["SettlementLedger", "SETTLEMENT_STATUSES", "auditTrail"]
+  },
+  {
+    name: "settlement-service",
+    file: "src/services/settlementService.js",
+    markers: ["previewSettlement", "createSettlement", "updateSettlementStatus", "assessPayoutEligibility"]
+  },
+  {
     name: "controller",
     file: "src/controllers/revenueController.js",
     markers: ["revenueService", "exports.metrics", "exports.settlement"]

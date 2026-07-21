@@ -1,5 +1,6 @@
 const revenueService = require("../services/revenueService");
 const revenueConversionService = require("../services/revenueConversionService");
+const settlementService = require("../services/settlementService");
 
 function sendError(res, error, fallback) {
   return res.status(error.statusCode || 500).json({
@@ -117,5 +118,40 @@ exports.executeConversion = async (req, res) => {
     return res.status(201).json({ success: true, data: result });
   } catch (error) {
     return sendError(res, error, "Failed to execute revenue conversion");
+  }
+};
+
+exports.previewSettlement = async (req, res) => {
+  try {
+    const preview = await settlementService.previewSettlement(req.params.revenueRecordId, req.body || {});
+    return res.json({ success: true, data: preview });
+  } catch (error) {
+    return sendError(res, error, "Failed to preview settlement");
+  }
+};
+
+exports.createSettlement = async (req, res) => {
+  try {
+    const ledger = await settlementService.createSettlement(req.params.revenueRecordId, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") });
+    return res.status(201).json({ success: true, data: ledger });
+  } catch (error) {
+    return sendError(res, error, "Failed to create settlement");
+  }
+};
+
+exports.listSettlements = async (req, res) => {
+  try {
+    return res.json({ success: true, data: await settlementService.listSettlements(req.query || {}) });
+  } catch (error) {
+    return sendError(res, error, "Failed to list settlements");
+  }
+};
+
+exports.updateSettlementStatus = async (req, res) => {
+  try {
+    const ledger = await settlementService.updateSettlementStatus(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") });
+    return res.json({ success: true, data: ledger });
+  } catch (error) {
+    return sendError(res, error, "Failed to update settlement");
   }
 };
