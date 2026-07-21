@@ -4,6 +4,7 @@ const { evaluateConstitutionGate } = require("./constitution");
 const { think } = require("./thinker");
 const { validate } = require("./validator");
 const { build } = require("./builder");
+const { executeRevenueTask } = require("./revenueEngine");
 const LocalBrainWorker = require("../dev-agent/workers/LocalBrainWorker");
 
 function toEngineName(route) {
@@ -14,6 +15,7 @@ function toEngineName(route) {
     thinker: "Thinker",
     patch: "Patch",
     test: "Test",
+    revenue: "Revenue",
     general: "Local Brain"
   };
 
@@ -133,6 +135,8 @@ function executeAvailableEngine(route, item) {
       return executeValidatorTask(item);
     case "builder":
       return executeBuilderTask();
+    case "revenue":
+      return executeRevenueTask(item.task, { rootDir: process.cwd() });
     case "general":
       return executeLocalBrainTask(item);
     case "git":
