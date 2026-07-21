@@ -1,0 +1,18 @@
+const assert = require("assert");
+const orchestrator = require("./revenueMissionOrchestratorService");
+const mission = { id: "mission-1", missionKey: "candidate:approved-1", status: "awaiting_bounded_scope", opportunity: { title: "Build a verified reporting validator" }, capability: { id: "engineering", name: "Engineering", universe: "engineering" } };
+const scope = { deliverableType: "validated software artifact", requiredInputs: ["source record", "acceptance rules"], acceptanceCriteria: ["syntax evidence passes", "real test evidence passes"], constraints: ["no external delivery", "no Git or deployment action"], maxAttempts: 2 };
+const prepared = orchestrator.preparePreview(mission, scope, { rootDir: process.cwd() });
+assert.strictEqual(prepared.status, "ready_for_founder_review");
+assert.strictEqual(prepared.boundedScope.approvedBy, "founder");
+assert.ok(prepared.boundedScope.scopeHash);
+assert.ok(prepared.workPackages.length >= 6);
+assert.deepStrictEqual(prepared.executionEvidence.reviewerVerdict, "APPROVE");
+assert.strictEqual(prepared.executionEvidence.sourceTreeModified, false);
+assert.strictEqual(prepared.executionEvidence.authorizesSourceApply, false);
+assert.strictEqual(prepared.executionEvidence.authorizesCommitPushDeploy, false);
+assert.strictEqual(prepared.executionEvidence.authorizesExternalAction, false);
+assert.ok(prepared.executionEvidence.validationEvidence.some((item) => item.status === "PASSED"));
+assert.throws(() => orchestrator.preparePreview({ ...mission, status: "ready_for_founder_review" }, scope), /not awaiting bounded scope/);
+assert.throws(() => orchestrator.normalizeScope({ ...scope, requiredInputs: [] }), /requiredInputs/);
+console.log("Revenue execution task orchestration validation passed.");

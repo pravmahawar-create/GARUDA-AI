@@ -15,3 +15,4 @@ Defines required brain contract: capability map, policy controls, and reviewabil
 - Architect Brain converts bounded goals into dependency-ordered, risk-aware, read-only plans and may hand off only allow-listed structured Engineering specifications.
 - Governed correction loops allow at most three attempts, stop on rejection, accept only structured revisions, preserve evidence per attempt, and still require Founder approval.
 - Revenue execution missions begin only from Founder-approved, fully verified GARUDA-deliverable candidates with a currently verified commercial capability; bounded scope is required before Engineering begins.
+- Founder-approved bounded scopes become dependency-ordered work packages and run only inside the governed Architect → Engineering → Tester → Reviewer evidence loop; completion remains a Founder review checkpoint and never authorizes source, Git, deployment, outreach, contract, spending, payment, or delivery actions.

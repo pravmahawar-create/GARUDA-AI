@@ -6,4 +6,5 @@ router.post("/run", controller.run);
 router.patch("/candidates/:id/decision", controller.decide);
 router.post("/candidates/:id/execution-mission", controller.createExecutionMission);
 router.get("/execution-missions", controller.listExecutionMissions);
+router.post("/execution-missions/:id/prepare", controller.prepareExecutionMission);
 module.exports = router;

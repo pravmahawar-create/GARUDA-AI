@@ -45,6 +45,10 @@
     {
       "path": "src/services/revenueExecutionMissionService.js",
       "note": "Founder-approved, verified GARUDA opportunity to governed execution mission bridge"
+    },
+    {
+      "path": "src/services/revenueMissionOrchestratorService.js",
+      "note": "Founder-approved bounded scope to governed work packages and execution evidence"
     }
   ],
   "rules": [
@@ -107,6 +111,12 @@
       "statement": "Revenue execution missions require an approved GARUDA-deliverable candidate, complete verification, a currently verified commercial capability, and bounded scope before Engineering begins.",
       "priority": "P0",
       "appliesTo": ["architect", "engineering", "reviewer"]
+    },
+    {
+      "ruleId": "CH05_RULE_011",
+      "statement": "Revenue work packages run through the governed Architect, Engineering, Tester, and Reviewer evidence chain; a technical result remains a Founder review checkpoint and never authorizes source, Git, deployment, outreach, contract, spending, payment, or delivery actions.",
+      "priority": "P0",
+      "appliesTo": ["architect", "engineering", "tester", "reviewer"]
     }
   ]
 }
