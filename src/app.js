@@ -37,5 +37,6 @@ app.use("/api/revenue", require("./routes/revenueRoutes"));
 app.use("/api/income-goals", require("./routes/incomeGoalRoutes"));
 app.use("/api/discovery", require("./routes/discoveryRoutes"));
 app.use("/api/capabilities", require("./routes/capabilityRoutes"));
+app.use("/api/affiliate-pilot", require("./routes/affiliateRoutes"));
 
 module.exports = app;

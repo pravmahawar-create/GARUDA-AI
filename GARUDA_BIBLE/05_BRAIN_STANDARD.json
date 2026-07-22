@@ -215,6 +215,24 @@
       "statement": "Proposal approval and submission recording must revalidate the current source snapshot; a changed, missing, or stale snapshot invalidates the pre-submission case and revokes its handoff.",
       "priority": "P0",
       "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_023",
+      "statement": "Affiliate offer intake requires a current official source, seller promotion rules, secure authorized-operator tracking link, current platform terms, regional eligibility, and an authorized eligible operator; GARUDA stores no account credential.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_024",
+      "statement": "Affiliate campaign preparation requires a clear material-connection disclosure and blocks age-restricted categories, deceptive guarantees, fake reviews, self-referrals, fake or incentivized traffic, spam, and automatic external publishing.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_025",
+      "statement": "Affiliate clicks are not income; commission requires matching provider conversion and commission evidence, and received earnings require matching provider payout and destination receipt evidence.",
+      "priority": "P0",
+      "appliesTo": ["all"]
     }
   ]
 }
