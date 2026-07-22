@@ -6,6 +6,7 @@ const deliverableWorkspaceService = require("../services/revenueDeliverableWorks
 const autonomousTaskRunner = require("../services/autonomousRevenueTaskRunnerService");
 const externalActionService = require("../services/revenueExternalActionService");
 const mvpReadinessService = require("../services/revenueMvpReadinessService");
+const connectorRegistry = require("../services/revenueConnectorRegistryService");
 
 function sendError(res, error, fallback) { return res.status(error.statusCode || 500).json({ success: false, message: error.message || fallback }); }
 exports.list = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.listCandidates(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list discovery candidates"); } };
@@ -27,3 +28,6 @@ exports.decideExternalActionRequest = async (req, res) => { try { return res.jso
 exports.listExternalActionDecisions = async (req, res) => { try { return res.json({ success: true, data: await externalActionService.listDecisions(req.params.requestId) }); } catch (error) { return sendError(res, error, "Failed to list external action decisions"); } };
 exports.recordExternalActionCompletion = async (req, res) => { try { return res.json({ success: true, data: await externalActionService.recordCompletion(req.params.requestId, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to record external action completion"); } };
 exports.getMvpReadiness = async (req, res) => { try { return res.json({ success: true, data: await mvpReadinessService.getReadiness(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to assess revenue MVP readiness"); } };
+exports.listRevenueConnectors = async (_req, res) => res.json({ success: true, data: connectorRegistry.listConnectors() });
+exports.dispatchExternalAction = async (req, res) => { try { return res.json({ success: true, data: await connectorRegistry.dispatch(req.params.requestId, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to validate connector dispatch"); } };
+exports.listConnectorDispatches = async (req, res) => { try { return res.json({ success: true, data: await connectorRegistry.listDispatches(req.params.requestId) }); } catch (error) { return sendError(res, error, "Failed to list connector dispatches"); } };

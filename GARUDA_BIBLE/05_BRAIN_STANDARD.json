@@ -65,6 +65,10 @@
     {
       "path": "src/services/revenueExternalActionService.js",
       "note": "Action-specific Founder approval, immutable decision evidence, controlled handoff, and external completion receipt"
+    },
+    {
+      "path": "src/services/revenueConnectorRegistryService.js",
+      "note": "Allow-listed action-compatible connector registry with idempotent dispatch and signed provider receipts"
     }
   ],
   "rules": [
@@ -173,6 +177,12 @@
     {
       "ruleId": "CH05_RULE_018",
       "statement": "GARUDA may claim revenue readiness only from truthful workflow evidence and may claim received income only after explicit payment verification.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_019",
+      "statement": "Connector dispatch requires an allow-listed action-compatible adapter, an action-specific Founder approval, bound decision and handoff hashes, an idempotency key, and an immutable provider receipt; sandbox validation performs no external side effect.",
       "priority": "P0",
       "appliesTo": ["all"]
     }

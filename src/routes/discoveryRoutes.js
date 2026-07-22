@@ -20,4 +20,7 @@ router.post("/execution-missions/:id/action-requests/:requestId/decision", contr
 router.get("/execution-missions/:id/action-requests/:requestId/decisions", controller.listExternalActionDecisions);
 router.post("/execution-missions/:id/action-requests/:requestId/completion", controller.recordExternalActionCompletion);
 router.get("/execution-missions/:id/mvp-readiness", controller.getMvpReadiness);
+router.get("/connectors", controller.listRevenueConnectors);
+router.post("/execution-missions/:id/action-requests/:requestId/dispatch", controller.dispatchExternalAction);
+router.get("/execution-missions/:id/action-requests/:requestId/dispatches", controller.listConnectorDispatches);
 module.exports = router;
