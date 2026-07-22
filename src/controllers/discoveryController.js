@@ -2,6 +2,7 @@ const discoveryService = require("../services/opportunityDiscoveryService");
 const executionMissionService = require("../services/revenueExecutionMissionService");
 const missionOrchestrator = require("../services/revenueMissionOrchestratorService");
 const missionDecisionService = require("../services/revenueMissionDecisionService");
+const deliverableWorkspaceService = require("../services/revenueDeliverableWorkspaceService");
 
 function sendError(res, error, fallback) { return res.status(error.statusCode || 500).json({ success: false, message: error.message || fallback }); }
 exports.list = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.listCandidates(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list discovery candidates"); } };
@@ -13,3 +14,5 @@ exports.prepareExecutionMission = async (req, res) => { try { return res.json({ 
 exports.decideExecutionMission = async (req, res) => { try { return res.json({ success: true, data: await missionDecisionService.decideMission(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to decide execution mission"); } };
 exports.listExecutionMissionDecisions = async (req, res) => { try { return res.json({ success: true, data: await missionDecisionService.listDecisions(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to list mission decisions"); } };
 exports.resubmitExecutionMission = async (req, res) => { try { return res.json({ success: true, data: await missionOrchestrator.resubmitMission(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to resubmit corrected execution mission"); } };
+exports.transitionExecutionTask = async (req, res) => { try { return res.json({ success: true, data: await deliverableWorkspaceService.transitionTask(req.params.id, req.params.taskId, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to update execution task"); } };
+exports.listExecutionTaskEvents = async (req, res) => { try { return res.json({ success: true, data: await deliverableWorkspaceService.listTaskEvents(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to list execution task events"); } };
