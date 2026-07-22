@@ -7,6 +7,7 @@ const autonomousTaskRunner = require("../services/autonomousRevenueTaskRunnerSer
 const externalActionService = require("../services/revenueExternalActionService");
 const mvpReadinessService = require("../services/revenueMvpReadinessService");
 const connectorRegistry = require("../services/revenueConnectorRegistryService");
+const pilotLedgerService = require("../services/revenuePilotLedgerService");
 
 function sendError(res, error, fallback) { return res.status(error.statusCode || 500).json({ success: false, message: error.message || fallback }); }
 exports.list = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.listCandidates(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list discovery candidates"); } };
@@ -31,3 +32,6 @@ exports.getMvpReadiness = async (req, res) => { try { return res.json({ success:
 exports.listRevenueConnectors = async (_req, res) => res.json({ success: true, data: connectorRegistry.listConnectors() });
 exports.dispatchExternalAction = async (req, res) => { try { return res.json({ success: true, data: await connectorRegistry.dispatch(req.params.requestId, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to validate connector dispatch"); } };
 exports.listConnectorDispatches = async (req, res) => { try { return res.json({ success: true, data: await connectorRegistry.listDispatches(req.params.requestId) }); } catch (error) { return sendError(res, error, "Failed to list connector dispatches"); } };
+exports.getDeploymentReadiness = async (_req, res) => res.json({ success: true, data: pilotLedgerService.deploymentReadiness() });
+exports.recordVerifiedEarning = async (req, res) => { try { return res.status(201).json({ success: true, data: await pilotLedgerService.recordVerifiedEarning(req.params.requestId, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to record verified earning"); } };
+exports.listPilotLedger = async (req, res) => { try { return res.json({ success: true, data: await pilotLedgerService.listLedger(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to list pilot ledger"); } };

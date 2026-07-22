@@ -23,4 +23,7 @@ router.get("/execution-missions/:id/mvp-readiness", controller.getMvpReadiness);
 router.get("/connectors", controller.listRevenueConnectors);
 router.post("/execution-missions/:id/action-requests/:requestId/dispatch", controller.dispatchExternalAction);
 router.get("/execution-missions/:id/action-requests/:requestId/dispatches", controller.listConnectorDispatches);
+router.get("/deployment-readiness", controller.getDeploymentReadiness);
+router.post("/execution-missions/:id/action-requests/:requestId/verified-earning", controller.recordVerifiedEarning);
+router.get("/execution-missions/:id/pilot-ledger", controller.listPilotLedger);
 module.exports = router;
