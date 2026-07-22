@@ -1,0 +1,16 @@
+const assert = require("assert");
+const service = require("./autonomousRevenueTaskRunnerService");
+const mission = { id: "mission-1", status: "founder_approved", architecturePlan: { planId: "b".repeat(64) }, executionEvidence: {}, workPackages: [{ id: "task-1", brain: "architect", status: "planned", dependencies: [] }, { id: "task-2", brain: "tester", status: "planned", dependencies: ["task-1"] }] };
+const first = service.runPreview(mission, { now: new Date("2026-01-01T00:00:00.000Z") });
+assert.strictEqual(first.status, "completed");
+assert.strictEqual(first.mission.workPackages[0].status, "completed");
+assert.strictEqual(first.run.governance.externalActionsAuthorized, false);
+let tries = 0;
+const recovered = service.runPreview({ ...mission, workPackages: [{ ...mission.workPackages[0], status: "completed" }, mission.workPackages[1]] }, { evidenceProvider: () => { tries += 1; if (tries < 3) throw new Error("temporary"); return [{ kind: "test", label: "Passed", reference: "garuda://test/1", sha256: null }]; } });
+assert.strictEqual(recovered.status, "completed");
+assert.strictEqual(recovered.run.attempts, 3);
+const blocked = service.runPreview({ ...mission, workPackages: [{ ...mission.workPackages[0], status: "completed" }, mission.workPackages[1]] }, { maxAttempts: 2, evidenceProvider: () => { throw new Error("missing"); } });
+assert.strictEqual(blocked.status, "blocked");
+assert.strictEqual(blocked.mission.workPackages[1].status, "blocked");
+assert.throws(() => service.runPreview({ ...mission, status: "ready_for_founder_review" }), /Founder-approved/);
+console.log("Autonomous revenue task runner, retry, recovery, and evidence packaging validation passed.");

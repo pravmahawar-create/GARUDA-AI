@@ -3,6 +3,7 @@ const executionMissionService = require("../services/revenueExecutionMissionServ
 const missionOrchestrator = require("../services/revenueMissionOrchestratorService");
 const missionDecisionService = require("../services/revenueMissionDecisionService");
 const deliverableWorkspaceService = require("../services/revenueDeliverableWorkspaceService");
+const autonomousTaskRunner = require("../services/autonomousRevenueTaskRunnerService");
 
 function sendError(res, error, fallback) { return res.status(error.statusCode || 500).json({ success: false, message: error.message || fallback }); }
 exports.list = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.listCandidates(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list discovery candidates"); } };
@@ -16,3 +17,5 @@ exports.listExecutionMissionDecisions = async (req, res) => { try { return res.j
 exports.resubmitExecutionMission = async (req, res) => { try { return res.json({ success: true, data: await missionOrchestrator.resubmitMission(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to resubmit corrected execution mission"); } };
 exports.transitionExecutionTask = async (req, res) => { try { return res.json({ success: true, data: await deliverableWorkspaceService.transitionTask(req.params.id, req.params.taskId, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to update execution task"); } };
 exports.listExecutionTaskEvents = async (req, res) => { try { return res.json({ success: true, data: await deliverableWorkspaceService.listTaskEvents(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to list execution task events"); } };
+exports.runExecutionTask = async (req, res) => { try { return res.json({ success: true, data: await autonomousTaskRunner.runMission(req.params.id, { maxAttempts: req.body?.maxAttempts, founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to run autonomous execution task"); } };
+exports.listExecutionTaskRuns = async (req, res) => { try { return res.json({ success: true, data: await autonomousTaskRunner.listRuns(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to list autonomous task runs"); } };

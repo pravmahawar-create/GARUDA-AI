@@ -12,4 +12,6 @@ router.get("/execution-missions/:id/decisions", controller.listExecutionMissionD
 router.post("/execution-missions/:id/resubmit", controller.resubmitExecutionMission);
 router.patch("/execution-missions/:id/tasks/:taskId", controller.transitionExecutionTask);
 router.get("/execution-missions/:id/task-events", controller.listExecutionTaskEvents);
+router.post("/execution-missions/:id/auto-run", controller.runExecutionTask);
+router.get("/execution-missions/:id/task-runs", controller.listExecutionTaskRuns);
 module.exports = router;

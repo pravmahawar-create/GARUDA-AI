@@ -57,6 +57,10 @@
     {
       "path": "src/services/revenueDeliverableWorkspaceService.js",
       "note": "Founder-approved deliverable workspace with dependency-aware task states and evidence-bound completion"
+    },
+    {
+      "path": "src/services/autonomousRevenueTaskRunnerService.js",
+      "note": "Continuous dependency-aware internal runner with bounded retries, recovery, and verified evidence packaging"
     }
   ],
   "rules": [
@@ -143,6 +147,12 @@
       "statement": "Deliverable workspace tasks use dependency-aware governed state transitions; completion requires recorded evidence, events remain hash-chained, and workspace progress never authorizes outreach, application, contract, spending, payment, deployment, or delivery.",
       "priority": "P0",
       "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_015",
+      "statement": "Autonomous revenue task runs may reconcile only Founder-approved internal work against existing verifiable evidence; retries are capped at three, missing evidence blocks rather than fabricates completion, and no run authorizes external, financial, source, Git, deployment, or delivery action.",
+      "priority": "P0",
+      "appliesTo": ["architect", "engineering", "tester", "reviewer", "documentation"]
     }
   ]
 }
