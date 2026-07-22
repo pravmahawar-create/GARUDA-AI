@@ -73,5 +73,13 @@ async function runEligibleCycle(options = {}) {
   for (const mission of missions) { try { results.push(await runMission(mission._id, { ...options, trustedInternal: true })); } catch (error) { results.push({ status: "error", missionId: String(mission._id), error: error.message }); } }
   return { scanned: missions.length, completed: results.filter((item) => item.status === "completed").length, blocked: results.filter((item) => item.status === "blocked").length, results };
 }
+async function runMissionToCompletion(missionId, options = {}) {
+  const { founderApprovalGranted } = require("./revenueConversionService");
+  if (!founderApprovalGranted(options.founderApproved)) fail("Founder approval is required to start one-tap internal execution", 403);
+  const results = [];
+  for (let step = 0; step < 50; step += 1) { const result = await runMission(missionId, { maxAttempts: options.maxAttempts, trustedInternal: true }); results.push(result); if (["mission_complete", "idle", "blocked"].includes(result.status)) break; }
+  const final = results[results.length - 1];
+  return { status: final?.status || "idle", mission: final?.mission || null, runs: results.filter((item) => item.run).map((item) => item.run), governance: { singleFounderApproval: true, internalOnly: true, externalActionStillRequiresSeparateApproval: true } };
+}
 async function listRuns(missionId) { const { RevenueAutonomousTaskRun } = require("../models/RevenueAutonomousTaskRun"); return RevenueAutonomousTaskRun.find({ missionId }).sort({ createdAt: 1 }).lean(); }
-module.exports = { eligibleTask, listRuns, runEligibleCycle, runMission, runPreview, verifiedEvidence };
+module.exports = { eligibleTask, listRuns, runEligibleCycle, runMission, runMissionToCompletion, runPreview, verifiedEvidence };

@@ -13,6 +13,7 @@ router.post("/execution-missions/:id/resubmit", controller.resubmitExecutionMiss
 router.patch("/execution-missions/:id/tasks/:taskId", controller.transitionExecutionTask);
 router.get("/execution-missions/:id/task-events", controller.listExecutionTaskEvents);
 router.post("/execution-missions/:id/auto-run", controller.runExecutionTask);
+router.post("/execution-missions/:id/auto-run-all", controller.runExecutionMissionToCompletion);
 router.get("/execution-missions/:id/task-runs", controller.listExecutionTaskRuns);
 router.post("/execution-missions/:id/action-requests", controller.createExternalActionRequest);
 router.get("/execution-missions/:id/action-requests", controller.listExternalActionRequests);
@@ -26,4 +27,7 @@ router.get("/execution-missions/:id/action-requests/:requestId/dispatches", cont
 router.get("/deployment-readiness", controller.getDeploymentReadiness);
 router.post("/execution-missions/:id/action-requests/:requestId/verified-earning", controller.recordVerifiedEarning);
 router.get("/execution-missions/:id/pilot-ledger", controller.listPilotLedger);
+router.get("/payments/razorpay-test/readiness", controller.getRazorpayTestReadiness);
+router.post("/payments/razorpay-test/links", controller.prepareRazorpayTestLink);
+router.post("/payments/razorpay-test/webhook", controller.verifyRazorpayTestWebhook);
 module.exports = router;
