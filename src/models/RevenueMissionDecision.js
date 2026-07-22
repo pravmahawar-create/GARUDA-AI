@@ -17,12 +17,11 @@ const revenueMissionDecisionSchema = new mongoose.Schema(
 );
 
 revenueMissionDecisionSchema.index({ missionId: 1, evidenceHash: 1 }, { unique: true });
-revenueMissionDecisionSchema.pre("save", function immutableSave(next) {
-  if (!this.isNew) return next(new Error("Revenue mission decision records are immutable"));
-  return next();
+revenueMissionDecisionSchema.pre("save", function immutableSave() {
+  if (!this.isNew) throw new Error("Revenue mission decision records are immutable");
 });
 for (const operation of ["updateOne", "updateMany", "findOneAndUpdate", "replaceOne", "deleteOne", "deleteMany", "findOneAndDelete"]) {
-  revenueMissionDecisionSchema.pre(operation, function immutableMutation(next) { next(new Error("Revenue mission decision records are immutable")); });
+  revenueMissionDecisionSchema.pre(operation, function immutableMutation() { throw new Error("Revenue mission decision records are immutable"); });
 }
 revenueMissionDecisionSchema.set("toJSON", { versionKey: false, transform: (_doc, ret) => { ret.id = String(ret._id); ret.missionId = String(ret.missionId); delete ret._id; } });
 
