@@ -135,7 +135,8 @@ function buildConfirmedWorkIntake(candidateInput, input = {}, now = new Date(), 
     clientIdentityVerified: true,
     evidenceReviewedByFounder: true,
     workAuthorizationConfirmed: true,
-    termsAcceptedByClient: true
+    termsAcceptedByClient: true,
+    acquisitionEvidence: options.acquisitionEvidence || null
   };
   const brief = {
     title: text(briefInput.title, "brief.title", 300),
@@ -180,6 +181,13 @@ function validateConfirmedIntake(intakeInput, candidateId) {
   if (intake.listing?.classification !== "public_listing_not_contract") fail("Listing truth classification is missing", 409);
   if (intake.engagement?.verified !== true || intake.engagement?.workAuthorizationConfirmed !== true || intake.engagement?.termsAcceptedByClient !== true) fail("Client work authorization is not verified", 409);
   if (!EVIDENCE_KINDS.includes(String(intake.engagement?.evidenceKind || ""))) fail("Accepted work evidence is missing", 409);
+  if (intake.engagement?.acquisitionEvidence) {
+    const evidence = intake.engagement.acquisitionEvidence;
+    if (!String(evidence.acquisitionCaseId || "").trim()) fail("Acquisition case identity is missing", 409);
+    for (const name of ["proposalHash", "decisionHash", "handoffHash", "submissionReceiptHash", "clientResponseHash"]) {
+      if (!/^[a-f0-9]{64}$/.test(String(evidence[name] || ""))) fail(`Acquisition ${name} evidence is incomplete`, 409);
+    }
+  }
   if (!intake.brief?.price?.amount || !intake.brief?.deadline || !(intake.brief?.acceptanceCriteria || []).length) fail("Confirmed price, deadline, and acceptance criteria are required", 409);
   const expectedTruthHash = hash({
     candidateId: String(intake.candidateId),
@@ -267,7 +275,16 @@ async function verifyAndCreateMission(candidateId, input = {}, context = {}) {
   const { RevenueWorkIntake } = require("../models/RevenueWorkIntake");
   if (!founderApprovalGranted(context.founderApproved)) fail("Founder approval is required to verify real work and create a mission", 403);
   const candidate = await requireCandidate(candidateId);
-  const preview = buildConfirmedWorkIntake(candidate, input, new Date(), { rootDir: context.rootDir });
+  const { RevenueAcquisitionCase } = require("../models/RevenueAcquisitionCase");
+  const acquisition = await RevenueAcquisitionCase.findOne({ candidateId: candidate._id });
+  if (acquisition) {
+    if (!context.acquisitionEvidence) fail("This public lead has an acquisition case; verify its recorded award before mission creation", 409);
+    if (String(context.acquisitionEvidence.acquisitionCaseId) !== String(acquisition._id)) fail("Acquisition evidence does not belong to this candidate", 409);
+    if (acquisition.status !== "response_received" || acquisition.latestResponse?.responseType !== "award_offer" || acquisition.latestResponse?.responseHash !== context.acquisitionEvidence.clientResponseHash) {
+      fail("Recorded acquisition evidence does not contain a verified award response", 409);
+    }
+  }
+  const preview = buildConfirmedWorkIntake(candidate, input, new Date(), { rootDir: context.rootDir, acquisitionEvidence: context.acquisitionEvidence || null });
   let intake = await RevenueWorkIntake.findOne({ candidateId: candidate._id });
   if (intake?.executionMissionId && intake.truthHash !== preview.truthHash) fail("Verified terms cannot be replaced after mission creation; create a separately reviewed intake instead", 409);
   const sameTruth = intake?.truthHash === preview.truthHash && ["work_confirmed", "mission_created"].includes(intake.status);

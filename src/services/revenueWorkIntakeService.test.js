@@ -60,6 +60,19 @@ assert.throws(() => service.buildConfirmedWorkIntake(candidate, { ...realInput, 
 assert.throws(() => service.buildConfirmedWorkIntake(candidate, { ...realInput, brief: { ...realInput.brief, price: { amount: 0, currency: "INR" } } }, now, { rootDir }), /positive finite/);
 assert.throws(() => service.validateConfirmedIntake({ status: "handoff_ready", candidateId: candidate._id }, candidate._id), /real-work intake/);
 
+const acquisitionEvidence = {
+  acquisitionCaseId: "507f1f77bcf86cd799439012",
+  proposalHash: "1".repeat(64),
+  decisionHash: "2".repeat(64),
+  handoffHash: "3".repeat(64),
+  submissionReceiptHash: "4".repeat(64),
+  clientResponseHash: "5".repeat(64)
+};
+const acquiredIntake = service.buildConfirmedWorkIntake(candidate, realInput, now, { rootDir, acquisitionEvidence });
+assert.deepStrictEqual(acquiredIntake.engagement.acquisitionEvidence, acquisitionEvidence);
+assert.doesNotThrow(() => service.validateConfirmedIntake(acquiredIntake, candidate._id));
+assert.throws(() => service.validateConfirmedIntake({ ...acquiredIntake, engagement: { ...acquiredIntake.engagement, acquisitionEvidence: { ...acquisitionEvidence, clientResponseHash: "invalid" } } }, candidate._id), /clientResponseHash/);
+
 const handoff = service.buildHandoffPreview(candidate, { handoffType: "quotation", destination: "Verified client platform", summary: "Submit the bounded quotation for client review", founderAuthorized: true, attestation: { productionData: true, noPlaceholderData: true } }, now, { rootDir });
 assert.strictEqual(handoff.status, "handoff_ready");
 assert.strictEqual(handoff.handoff.governance.externalExecutionPerformed, false);
