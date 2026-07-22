@@ -1,23 +1,30 @@
 const assert = require("assert");
 const path = require("path");
 const service = require("./revenueWorkIntakeService");
+const { classifySourceTruth } = require("./revenueSourceTruthService");
 
 const rootDir = path.resolve(__dirname, "../..");
 const now = new Date("2026-07-22T10:00:00.000Z");
-const candidate = {
+const candidateBase = {
   _id: "507f1f77bcf86cd799439011",
   missionId: "507f191e810c19729de860ea",
   status: "approved",
   title: "Production API integration",
   company: "Verified Client",
-  source: "verified-source",
-  url: "https://example.com/opportunity/1",
+  description: "Request for proposal with a fixed price, scope of work, project milestone, delivery deadline, and acceptance criteria.",
+  source: "verified_client_portal",
+  sourceAttribution: "Verified client portal",
+  externalId: "opportunity-1",
+  category: "contract_project",
+  location: "Remote",
+  url: "https://client.example/opportunity/1",
+  tags: ["Node", "API", "Testing"],
   score: 91,
   opportunityChannel: "garuda_deliverable",
-  verification: { sourceVerified: true, originalLinkPresent: true, prohibitedContentClear: true, scamSignalsClear: true },
   capabilityAssessment: { selfEarningEligible: true, humanIdentityRequired: false, matches: [{ capabilityId: "engineering.software-implementation", score: 91 }] },
   decision: { actor: "founder", decidedAt: "2026-07-21T12:00:00.000Z" }
 };
+const candidate = { ...candidateBase, verification: { ...classifySourceTruth(candidateBase, now), prohibitedContentClear: true, scamSignalsClear: true } };
 
 const realInput = {
   engagement: {

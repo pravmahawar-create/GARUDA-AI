@@ -34,6 +34,13 @@ assert.strictEqual(humanJob.selfEarningEligible, false);
 assert.strictEqual(humanJob.humanIdentityRequired, true);
 assert.strictEqual(humanJob.decision, "human_opportunity_channel_only");
 
+const talentNetwork = orchestrator.matchDemand({
+  title: "Senior Independent AI Engineer / Architect",
+  description: "Apply to join a vetted talent network using your LinkedIn, portfolio, years of experience, and technical evaluation"
+}, { rootDir, minimumScore: 20 });
+assert.strictEqual(talentNetwork.selfEarningEligible, false);
+assert.strictEqual(talentNetwork.humanIdentityRequired, true);
+
 const unmatched = orchestrator.matchDemand({
   title: "Specialist underwater welding service"
 }, { rootDir, minimumScore: 20 });

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const EVENT_TYPES = [
   "proposal_drafted",
+  "source_invalidated",
   "founder_handoff_approved",
   "submission_recorded",
   "client_response_recorded",

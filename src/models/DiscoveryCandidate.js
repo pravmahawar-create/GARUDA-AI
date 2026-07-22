@@ -13,6 +13,7 @@ const discoveryCandidateSchema = new mongoose.Schema(
     externalId: { type: String, required: true, trim: true },
     title: { type: String, required: true, trim: true },
     company: { type: String, default: "", trim: true },
+    description: { type: String, default: "", trim: true },
     category: { type: String, default: "remote_job", trim: true },
     location: { type: String, default: "Worldwide", trim: true },
     url: { type: String, required: true, trim: true },
@@ -41,7 +42,19 @@ const discoveryCandidateSchema = new mongoose.Schema(
       sourceVerified: { type: Boolean, default: false },
       originalLinkPresent: { type: Boolean, default: false },
       prohibitedContentClear: { type: Boolean, default: false },
-      scamSignalsClear: { type: Boolean, default: false }
+      scamSignalsClear: { type: Boolean, default: false },
+      listingSpecific: { type: Boolean, default: false },
+      listingKind: {
+        type: String,
+        enum: ["specific_client_work", "human_role_listing", "talent_network_recruitment", "generic_marketplace_page", "unverified_general_listing"],
+        default: "unverified_general_listing"
+      },
+      directClientWorkEvidence: { type: Boolean, default: false },
+      humanIdentityGateClear: { type: Boolean, default: false },
+      garudaExecutionEligible: { type: Boolean, default: false },
+      sourceRecordHash: { type: String, default: "", trim: true },
+      verifiedAt: { type: Date, default: null },
+      rejectionReasons: { type: [String], default: [] }
     },
     status: { type: String, enum: ["ranked", "rejected", "approved", "dismissed"], default: "ranked", index: true },
     requiresFounderApproval: { type: Boolean, default: true, immutable: true },

@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const ArchitectBrain = require("../../scripts/dev-agent/core/ArchitectBrain");
 const capabilityRegistry = require("./capabilityRegistryService");
+const { assertCurrentSourceTruth } = require("./revenueSourceTruthService");
 
 function fail(message, statusCode = 400) {
   throw Object.assign(new Error(message), { statusCode });
@@ -18,8 +19,8 @@ function validateApprovedCandidate(candidateInput, options = {}) {
   const assessment = candidate.capabilityAssessment || {};
   if (assessment.selfEarningEligible !== true || assessment.humanIdentityRequired === true) fail("Candidate is not eligible for GARUDA self-execution", 409);
   const verification = candidate.verification || {};
-  const verificationPassed = verification.sourceVerified === true && verification.originalLinkPresent === true && verification.prohibitedContentClear === true && verification.scamSignalsClear === true;
-  if (!verificationPassed) fail("Candidate verification gates are incomplete", 409);
+  if (verification.prohibitedContentClear !== true || verification.scamSignalsClear !== true) fail("Candidate safety verification gates are incomplete", 409);
+  assertCurrentSourceTruth(candidate, options.now ? new Date(options.now) : new Date(), { maxAgeMs: options.sourceTruthMaxAgeMs });
   if (!/^https:\/\//i.test(String(candidate.url || ""))) fail("Candidate requires a secure original source link", 409);
   const matches = Array.isArray(assessment.matches) ? assessment.matches : [];
   if (!matches.length || !matches[0].capabilityId) fail("Candidate has no verified capability match", 409);

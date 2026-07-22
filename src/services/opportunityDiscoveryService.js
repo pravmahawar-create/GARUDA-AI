@@ -3,6 +3,7 @@ const { IncomeGoal } = require("../models/IncomeGoal");
 const mongoose = require("mongoose");
 const { founderApprovalGranted } = require("./revenueConversionService");
 const revenueOrchestrator = require("./revenueOrchestratorService");
+const { classifySourceTruth } = require("./revenueSourceTruthService");
 
 const REMOTIVE_URL = "https://remotive.com/api/remote-jobs?limit=100";
 const SOURCE_TIMEOUT_MS = 10000;
@@ -35,36 +36,45 @@ function scoreCandidate(raw = {}) {
 
 function normalizeRemotiveJob(job, missionId) {
   const inspection = inspectCandidate(job);
-  const assessment = revenueOrchestrator.matchDemand({
-    title: job.title,
-    description: job.description,
-    category: job.job_type || job.category,
-    tags: job.tags,
-    source: "remotive"
-  });
-  return {
-    missionId,
+  const sourceRecord = {
     source: "remotive",
     externalId: String(job.id),
     title: plainText(job.title),
     company: plainText(job.company_name),
-    category: plainText(job.category || "remote_job"),
+    description: plainText(job.description).slice(0, 12000),
+    category: plainText(job.job_type || job.category || "remote_job"),
     location: plainText(job.candidate_required_location || "Worldwide"),
     url: String(job.url || ""),
     sourceAttribution: "Remotive",
     publishedAt: job.publication_date || null,
     salaryText: plainText(job.salary),
-    tags: Array.isArray(job.tags) ? job.tags.map(plainText).filter(Boolean).slice(0, 20) : [],
+    tags: Array.isArray(job.tags) ? job.tags.map(plainText).filter(Boolean).slice(0, 20) : []
+  };
+  const sourceTruth = classifySourceTruth(sourceRecord);
+  const assessment = revenueOrchestrator.matchDemand({
+    title: sourceRecord.title,
+    description: sourceRecord.description,
+    category: sourceRecord.category,
+    tags: sourceRecord.tags,
+    source: "remotive"
+  });
+  const humanIdentityRequired = assessment.humanIdentityRequired || sourceTruth.humanIdentityGateClear !== true;
+  const selfEarningEligible = assessment.matches.length > 0 && sourceTruth.garudaExecutionEligible === true && !humanIdentityRequired;
+  return {
+    missionId,
+    ...sourceRecord,
     score: scoreCandidate(job),
-    opportunityChannel: assessment.selfEarningEligible
+    opportunityChannel: selfEarningEligible
       ? "garuda_deliverable"
-      : assessment.humanIdentityRequired
+      : humanIdentityRequired
         ? "human_opportunity_only"
         : "no_verified_capability_match",
     capabilityAssessment: {
-      selfEarningEligible: assessment.selfEarningEligible,
-      humanIdentityRequired: assessment.humanIdentityRequired,
-      decision: assessment.decision,
+      selfEarningEligible,
+      humanIdentityRequired,
+      decision: sourceTruth.garudaExecutionEligible !== true
+        ? `source_truth:${sourceTruth.listingKind}`
+        : assessment.decision,
       matches: assessment.matches.slice(0, 5).map((match) => ({
         capabilityId: match.id,
         universe: match.universe,
@@ -74,8 +84,9 @@ function normalizeRemotiveJob(job, missionId) {
       assessedAt: new Date()
     },
     verification: {
-      sourceVerified: true,
-      originalLinkPresent: /^https:\/\//i.test(String(job.url || "")),
+      ...sourceTruth,
+      sourceVerified: sourceTruth.sourceVerified,
+      originalLinkPresent: sourceTruth.originalLinkPresent,
       prohibitedContentClear: !inspection.rejectionReasons.includes("prohibited_or_age_restricted_category"),
       scamSignalsClear: !inspection.rejectionReasons.includes("scam_signal_detected")
     },

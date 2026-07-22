@@ -13,6 +13,7 @@ const workIntakeService = require("../services/revenueWorkIntakeService");
 const productionDeliveryService = require("../services/revenueProductionDeliveryService");
 const paymentReceiptService = require("../services/revenuePaymentReceiptService");
 const acquisitionService = require("../services/revenueAcquisitionService");
+const continuousAttemptService = require("../services/continuousRevenueAttemptService");
 
 function sendError(res, error, fallback) { return res.status(error.statusCode || 500).json({ success: false, message: error.message || fallback }); }
 exports.list = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.listCandidates(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list discovery candidates"); } };
@@ -24,6 +25,8 @@ exports.getWorkIntake = async (req, res) => { try { return res.json({ success: t
 exports.prepareWorkIntakeHandoff = async (req, res) => { try { return res.status(201).json({ success: true, data: await workIntakeService.prepareHandoff(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to prepare authorized application or quotation handoff"); } };
 exports.verifyWorkIntakeAndCreateMission = async (req, res) => { try { return res.status(201).json({ success: true, data: await workIntakeService.verifyAndCreateMission(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to verify real work and create mission"); } };
 exports.listAcquisitions = async (req, res) => { try { return res.json({ success: true, data: await acquisitionService.listCases(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list acquisition cases"); } };
+exports.listAttemptStatus = async (_req, res) => { try { return res.json({ success: true, data: await continuousAttemptService.listAttemptStatus() }); } catch (error) { return sendError(res, error, "Failed to list continuous revenue attempt status"); } };
+exports.runAttemptCycle = async (_req, res) => { try { const discovery = await discoveryService.runDiscoveryCycle(); const acquisition = await continuousAttemptService.runContinuousAttemptCycle(); return res.json({ success: true, data: { discovery, acquisition } }); } catch (error) { return sendError(res, error, "Failed to run continuous revenue attempt cycle"); } };
 exports.getAcquisition = async (req, res) => { try { return res.json({ success: true, data: await acquisitionService.getByCandidate(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to get acquisition case"); } };
 exports.draftAcquisitionProposal = async (req, res) => { try { return res.status(201).json({ success: true, data: await acquisitionService.draftProposal(req.params.id, req.body || {}) }); } catch (error) { return sendError(res, error, "Failed to draft truthful acquisition proposal"); } };
 exports.approveAcquisitionHandoff = async (req, res) => { try { return res.json({ success: true, data: await acquisitionService.approveHandoff(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to approve acquisition handoff"); } };

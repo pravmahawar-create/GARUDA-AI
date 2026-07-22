@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const ACQUISITION_STATUSES = [
   "proposal_drafted",
   "changes_requested",
+  "source_invalidated",
   "handoff_ready",
   "submitted",
   "response_received",

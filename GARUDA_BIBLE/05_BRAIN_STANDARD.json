@@ -69,6 +69,18 @@
     {
       "path": "src/services/revenueConnectorRegistryService.js",
       "note": "Allow-listed action-compatible connector registry with idempotent dispatch and signed provider receipts"
+    },
+    {
+      "path": "src/services/revenueSourceTruthService.js",
+      "note": "Fresh canonical source-snapshot classification for specific direct client work and human-identity gate rejection"
+    },
+    {
+      "path": "src/services/continuousRevenueAttemptService.js",
+      "note": "Continuous internal discovery assessment, grounded drafting, stale-case invalidation, and auditable cycle status"
+    },
+    {
+      "path": "src/workers/revenueAcquisitionWorker.js",
+      "note": "Bounded continuous acquisition cadence with no automatic external side effects"
     }
   ],
   "rules": [
@@ -183,6 +195,24 @@
     {
       "ruleId": "CH05_RULE_019",
       "statement": "Connector dispatch requires an allow-listed action-compatible adapter, an action-specific Founder approval, bound decision and handoff hashes, an idempotency key, and an immutable provider receipt; sandbox validation performs no external side effect.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_020",
+      "statement": "Revenue acquisition must run continuously on a bounded cadence for internal discovery, source verification, capability matching, grounded drafting, stale-case invalidation, and audit reporting; continuous operation never grants automatic outreach or submission authority.",
+      "priority": "P0",
+      "appliesTo": ["all"]
+    },
+    {
+      "ruleId": "CH05_RULE_021",
+      "statement": "A revenue source is GARUDA-executable only when its canonical snapshot is fresh, secure, specific direct client work and contains no human identity, CV, profile, interview, employment, or personal-experience gate; recruitment and talent-network listings are not client missions.",
+      "priority": "P0",
+      "appliesTo": ["architect", "engineering", "reviewer", "documentation"]
+    },
+    {
+      "ruleId": "CH05_RULE_022",
+      "statement": "Proposal approval and submission recording must revalidate the current source snapshot; a changed, missing, or stale snapshot invalidates the pre-submission case and revokes its handoff.",
       "priority": "P0",
       "appliesTo": ["all"]
     }

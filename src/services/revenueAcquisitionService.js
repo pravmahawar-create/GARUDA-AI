@@ -26,6 +26,15 @@ function list(value, name, maxItems = 20) {
   return result;
 }
 
+function sourceRequirements(candidate = {}) {
+  const description = String(candidate.description || "").replace(/\s+/g, " ").trim();
+  const sentences = description.split(/(?<=[.!?])\s+/).map((item) => item.trim()).filter(Boolean);
+  const requirementSignals = /\b(require|required|must|deliver|build|implement|test|acceptance|deadline|milestone|scope)\b/i;
+  const grounded = sentences.filter((item) => requirementSignals.test(item)).slice(0, 5).map((item) => item.slice(0, 500));
+  const tags = Array.isArray(candidate.tags) ? candidate.tags.map((item) => String(item).trim()).filter(Boolean).slice(0, 10) : [];
+  return grounded.length ? grounded : tags.length ? tags.map((item) => `Source tag: ${item}`) : [String(candidate.title || "Verified source listing").trim()];
+}
+
 function isoPast(value, name, now = new Date()) {
   const parsed = new Date(value);
   if (!Number.isFinite(parsed.getTime())) fail(`${name} must be a valid date`);
@@ -59,7 +68,12 @@ function candidateContext(candidateInput, options = {}) {
       source: text(candidate.source, "candidate.source", 120),
       sourceAttribution: text(candidate.sourceAttribution || candidate.source, "candidate.sourceAttribution", 160),
       originalUrl: text(candidate.url, "candidate.url", 1000),
-      classification: "public_listing_not_contract"
+      description: String(candidate.description || "").trim().slice(0, 12000),
+      publishedAt: candidate.publishedAt || null,
+      classification: "public_listing_not_contract",
+      listingKind: candidate.verification.listingKind,
+      sourceRecordHash: candidate.verification.sourceRecordHash,
+      sourceVerifiedAt: new Date(candidate.verification.verifiedAt).toISOString()
     }
   };
 }
@@ -73,7 +87,11 @@ function sourceRulesFor(candidate) {
     platformTermsReviewRequired: true,
     authorizedEligibleAccountRequired: true,
     credentialsStoredByGaruda: false,
-    publicListingConfirmsContract: false
+    publicListingConfirmsContract: false,
+    listingKind: candidate.verification?.listingKind || "unverified_general_listing",
+    sourceRecordHash: candidate.verification?.sourceRecordHash || "",
+    sourceVerifiedAt: candidate.verification?.verifiedAt || null,
+    sourceSnapshotMustRemainCurrent: true
   };
 }
 
@@ -85,7 +103,7 @@ function defaultDeliverables(match) {
 }
 
 function buildProposal(candidateInput, input = {}, now = new Date(), options = {}) {
-  const context = candidateContext(candidateInput, options);
+  const context = candidateContext(candidateInput, { ...options, now });
   const proposalType = String(input.proposalType || "application").trim().toLowerCase();
   if (!PROPOSAL_TYPES.includes(proposalType)) fail(`proposalType must be one of: ${PROPOSAL_TYPES.join(", ")}`);
   const deliverables = Array.isArray(input.deliverables) && input.deliverables.length
@@ -101,11 +119,15 @@ function buildProposal(candidateInput, input = {}, now = new Date(), options = {
     fail("commercialOffer.deliveryDays must be an integer from 1 to 365");
   }
   const preparedAt = now.toISOString();
+  const groundedRequirements = sourceRequirements(context.candidate);
+  const sourceSummary = context.listing.description
+    ? context.listing.description.slice(0, 800)
+    : `${context.listing.title}${context.listing.company ? ` at ${context.listing.company}` : ""}`;
   const payload = {
     candidateId: context.candidateId,
     proposalType,
     title: `GARUDA proposal for ${context.listing.title}`,
-    summary: String(input.summary || "").trim() || `GARUDA can prepare a bounded ${context.match.name || context.match.capabilityId} work package for this opportunity, with validation evidence and a governed delivery handoff.`,
+    summary: String(input.summary || "").trim() || `Prepare a bounded ${context.match.name || context.match.capabilityId} work package for ${context.listing.company || "the verified client"}, grounded only in the current source snapshot for “${context.listing.title}”.`,
     capability: {
       id: context.match.capabilityId,
       name: context.match.name || context.match.capabilityId,
@@ -114,9 +136,17 @@ function buildProposal(candidateInput, input = {}, now = new Date(), options = {
     },
     deliverables,
     acceptanceCriteria,
+    grounding: {
+      listingKind: context.listing.listingKind,
+      sourceRecordHash: context.listing.sourceRecordHash,
+      sourceVerifiedAt: context.listing.sourceVerifiedAt,
+      originalUrl: context.listing.originalUrl,
+      sourceSummary,
+      sourceRequirements: groundedRequirements
+    },
     commercialOffer,
     requestedClientConfirmation: ["Exact brief and required inputs", "Price and currency", "Deadline", "Acceptance criteria", "Authority to start work"],
-    truthfulClaims: ["No human identity is impersonated", "No prior-client or experience claim is invented", "Public listing is not represented as a contract"],
+    truthfulClaims: ["No human identity is impersonated", "No prior-client or experience claim is invented", "Public listing is not represented as a contract", "Proposal is bound to a current specific-client-work source snapshot"],
     preparedAt,
     governance: {
       internalDraftOnly: true,
@@ -143,6 +173,15 @@ function buildProposal(candidateInput, input = {}, now = new Date(), options = {
       verifiedAwardRequiredBeforeMission: true
     }
   };
+}
+
+function assertCaseSourceCurrent(caseInput, candidateInput, now = new Date(), options = {}) {
+  const record = caseInput?.toObject ? caseInput.toObject() : caseInput || {};
+  const { assertCurrentSourceTruth } = require("./revenueSourceTruthService");
+  const { verification } = assertCurrentSourceTruth(candidateInput, now, options);
+  const proposalHash = String(record.proposal?.grounding?.sourceRecordHash || "");
+  if (!proposalHash || proposalHash !== verification.sourceRecordHash) fail("Proposal source snapshot is stale; generate a fresh grounded proposal", 409);
+  return true;
 }
 
 function assertHash(value, name) {
@@ -304,7 +343,7 @@ async function draftProposal(candidateId, input = {}, context = {}) {
   const candidate = await requireCandidate(candidateId);
   const preview = buildProposal(candidate, input, new Date(), { rootDir: context.rootDir });
   let record = await RevenueAcquisitionCase.findOne({ candidateId: candidate._id });
-  if (record && !["proposal_drafted", "changes_requested"].includes(record.status)) fail("Submitted acquisition evidence cannot be replaced by a new draft", 409);
+  if (record && !["proposal_drafted", "changes_requested", "source_invalidated"].includes(record.status)) fail("Submitted acquisition evidence cannot be replaced by a new draft", 409);
   const changed = record?.proposal?.proposalHash !== preview.proposal.proposalHash;
   if (!record) record = await RevenueAcquisitionCase.create(preview);
   else {
@@ -318,10 +357,38 @@ async function draftProposal(candidateId, input = {}, context = {}) {
   return getByCandidate(candidateId);
 }
 
+async function invalidateOpenCase(candidateId, reason = "Source truth is no longer current", now = new Date()) {
+  const record = await requireCase(candidateId);
+  if (record.status === "source_invalidated") return getByCandidate(candidateId);
+  if (!["proposal_drafted", "changes_requested", "handoff_ready"].includes(record.status)) {
+    fail("Only a pre-submission acquisition case can be source-invalidated automatically", 409);
+  }
+  record.status = "source_invalidated";
+  record.founderApproval = null;
+  record.handoff = null;
+  record.governance = {
+    ...(record.governance || {}),
+    sourceInvalidated: true,
+    sourceInvalidatedAt: now.toISOString(),
+    sourceInvalidationReason: text(reason, "reason", 1000),
+    externalHandoffAllowed: false
+  };
+  await record.save();
+  await appendAudit(record, "source_invalidated", "garuda", {
+    proposalHash: record.proposal?.proposalHash || null,
+    sourceRecordHash: record.proposal?.grounding?.sourceRecordHash || null,
+    reason: record.governance.sourceInvalidationReason,
+    externalSubmissionPerformed: false
+  }, now);
+  return getByCandidate(candidateId);
+}
+
 async function approveHandoff(candidateId, input = {}, context = {}) {
   const { founderApprovalGranted } = require("./revenueConversionService");
   if (!founderApprovalGranted(context.founderApproved)) fail("Founder approval is required for this exact proposal handoff", 403);
   const record = await requireCase(candidateId);
+  const candidate = await requireCandidate(candidateId);
+  assertCaseSourceCurrent(record, candidate);
   const result = buildApprovedHandoff(record, input);
   record.founderApproval = result.founderApproval;
   record.handoff = result.handoff;
@@ -335,6 +402,8 @@ async function recordSubmission(candidateId, input = {}, context = {}) {
   const { founderApprovalGranted } = require("./revenueConversionService");
   if (!founderApprovalGranted(context.founderApproved)) fail("Founder verification is required to record real submission", 403);
   const record = await requireCase(candidateId);
+  const candidate = await requireCandidate(candidateId);
+  assertCaseSourceCurrent(record, candidate);
   const receipt = buildSubmissionReceipt(record, input);
   record.submissionReceipt = receipt;
   record.status = "submitted";
@@ -414,6 +483,7 @@ module.exports = {
   RESPONSE_TYPES,
   SUBMISSION_CHANNELS,
   approveHandoff,
+  assertCaseSourceCurrent,
   buildApprovedHandoff,
   buildAuditEvent,
   buildClientResponse,
@@ -422,6 +492,7 @@ module.exports = {
   draftProposal,
   getByCandidate,
   hash,
+  invalidateOpenCase,
   listCases,
   recordResponse,
   recordSubmission,

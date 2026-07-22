@@ -53,6 +53,16 @@ const incomeGoalSchema = new mongoose.Schema(
       totalCandidateCount: { type: Number, default: 0, min: 0 },
       lastError: { type: String, default: "", trim: true }
     },
+    acquisitionLoop: {
+      status: { type: String, enum: ["waiting", "running", "healthy", "degraded"], default: "waiting" },
+      lastCycleAt: { type: Date, default: null },
+      nextCycleAt: { type: Date, default: null },
+      approvedCandidatesScanned: { type: Number, default: 0, min: 0 },
+      internalDraftsPrepared: { type: Number, default: 0, min: 0 },
+      staleCasesInvalidated: { type: Number, default: 0, min: 0 },
+      blockedByTruthGate: { type: Number, default: 0, min: 0 },
+      lastError: { type: String, default: "", trim: true }
+    },
     milestones: { type: [milestoneSchema], default: [] },
     auditTrail: { type: [auditEntrySchema], default: [] }
   },

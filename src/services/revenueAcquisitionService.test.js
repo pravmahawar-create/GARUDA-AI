@@ -1,31 +1,42 @@
 const assert = require("assert");
 const path = require("path");
 const service = require("./revenueAcquisitionService");
+const { classifySourceTruth } = require("./revenueSourceTruthService");
 
 const rootDir = path.resolve(__dirname, "../..");
 const now = new Date("2026-07-22T10:00:00.000Z");
-const candidate = {
+const candidateBase = {
   _id: "507f1f77bcf86cd799439011",
   missionId: "507f191e810c19729de860ea",
   status: "approved",
   title: "Bounded production API delivery",
   company: "Prospective Client",
-  source: "verified_public_source",
-  sourceAttribution: "Verified public source",
-  url: "https://example.com/opportunity/1",
+  description: "Request for proposal with a fixed price, scope of work, project milestone, delivery deadline, and acceptance criteria for a tested Node API.",
+  source: "verified_client_portal",
+  sourceAttribution: "Verified client portal",
+  externalId: "opportunity-1",
+  category: "contract_project",
+  location: "Remote",
+  url: "https://client.example/opportunity/1",
+  tags: ["Node", "API", "Testing"],
   score: 92,
   opportunityChannel: "garuda_deliverable",
-  verification: { sourceVerified: true, originalLinkPresent: true, prohibitedContentClear: true, scamSignalsClear: true },
   capabilityAssessment: { selfEarningEligible: true, humanIdentityRequired: false, matches: [{ capabilityId: "engineering.software-implementation", name: "Governed software implementation", universe: "Engineering", score: 92 }] },
   decision: { actor: "founder", decidedAt: "2026-07-22T09:00:00.000Z" }
 };
+const candidate = { ...candidateBase, verification: { ...classifySourceTruth(candidateBase, now), prohibitedContentClear: true, scamSignalsClear: true } };
 
 const draft = service.buildProposal(candidate, { proposalType: "application" }, now, { rootDir });
 assert.strictEqual(draft.status, "proposal_drafted");
 assert.strictEqual(draft.listing.classification, "public_listing_not_contract");
 assert.strictEqual(draft.sourceRules.applicationMode, "manual_handoff_only");
 assert.strictEqual(draft.proposal.governance.externalSubmissionPerformed, false);
+assert.strictEqual(draft.proposal.grounding.sourceRecordHash, candidate.verification.sourceRecordHash);
+assert.strictEqual(draft.proposal.grounding.listingKind, "specific_client_work");
+assert.ok(draft.proposal.grounding.sourceRequirements.length > 0);
 assert.match(draft.proposal.proposalHash, /^[a-f0-9]{64}$/);
+assert.doesNotThrow(() => service.assertCaseSourceCurrent(draft, candidate, new Date("2026-07-22T10:01:00.000Z")));
+assert.throws(() => service.assertCaseSourceCurrent(draft, { ...candidate, title: "Changed source title" }, new Date("2026-07-22T10:01:00.000Z")), /listing changed/);
 
 const quotation = service.buildProposal(candidate, { proposalType: "quotation", commercialOffer: { amount: 1500, currency: "USD", deliveryDays: 14 } }, now, { rootDir });
 assert.deepStrictEqual(quotation.proposal.commercialOffer, { amount: 1500, currency: "USD", deliveryDays: 14 });

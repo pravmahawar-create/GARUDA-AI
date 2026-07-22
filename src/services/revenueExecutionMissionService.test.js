@@ -2,28 +2,37 @@ const assert = require("assert");
 const path = require("path");
 const { buildMissionPreview, validateApprovedCandidate } = require("./revenueExecutionMissionService");
 const { hash } = require("./revenueWorkIntakeService");
+const { classifySourceTruth } = require("./revenueSourceTruthService");
 
 const rootDir = path.resolve(__dirname, "../..");
 function candidate(overrides = {}) {
-  return {
+  const base = {
     _id: "507f1f77bcf86cd799439011",
     missionId: "507f191e810c19729de860ea",
     status: "approved",
     title: "Build a governed Node API integration",
     company: "Example",
-    source: "verified-source",
-    url: "https://example.com/opportunity/1",
+    description: "Request for proposal with a fixed price, scope of work, project milestone, delivery deadline, and acceptance criteria.",
+    source: "verified_client_portal",
+    sourceAttribution: "Verified client portal",
+    externalId: "opportunity-1",
+    category: "contract_project",
+    location: "Remote",
+    url: "https://client.example/opportunity/1",
+    tags: ["Node", "API", "Testing"],
     score: 88,
     opportunityChannel: "garuda_deliverable",
-    verification: { sourceVerified: true, originalLinkPresent: true, prohibitedContentClear: true, scamSignalsClear: true },
     capabilityAssessment: {
       selfEarningEligible: true,
       humanIdentityRequired: false,
       matches: [{ capabilityId: "engineering.software-implementation", universe: "engineering", name: "Governed software implementation", score: 80 }]
     },
-    decision: { actor: "founder", decidedAt: new Date("2026-07-21T12:00:00.000Z") },
-    ...overrides
+    decision: { actor: "founder", decidedAt: new Date("2026-07-21T12:00:00.000Z") }
   };
+  const merged = { ...base, ...overrides };
+  return overrides.verification
+    ? merged
+    : { ...merged, verification: { ...classifySourceTruth(merged), prohibitedContentClear: true, scamSignalsClear: true } };
 }
 
 const workIntake = {

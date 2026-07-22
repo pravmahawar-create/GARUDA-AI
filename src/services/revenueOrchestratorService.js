@@ -2,7 +2,9 @@ const capabilityRegistry = require("./capabilityRegistryService");
 
 const HUMAN_IDENTITY_SIGNALS = [
   "employee", "employment", "full time", "full-time", "part time", "part-time",
-  "resume", "cv", "interview", "degree", "years experience", "work authorization"
+  "resume", "cv", "interview", "degree", "years experience", "years of experience",
+  "work authorization", "linkedin", "portfolio", "background check", "coding challenge",
+  "technical evaluation", "apply to join", "talent network", "vetted network", "your rate"
 ];
 
 function normalizeText(value = "") {

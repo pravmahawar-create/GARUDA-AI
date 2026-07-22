@@ -9,6 +9,8 @@ router.get("/candidates/:id/work-intake", controller.getWorkIntake);
 router.post("/candidates/:id/work-intake/handoff", controller.prepareWorkIntakeHandoff);
 router.post("/candidates/:id/work-intake/mission", controller.verifyWorkIntakeAndCreateMission);
 router.get("/acquisitions", controller.listAcquisitions);
+router.get("/attempts/status", controller.listAttemptStatus);
+router.post("/attempts/run", controller.runAttemptCycle);
 router.get("/candidates/:id/acquisition", controller.getAcquisition);
 router.post("/candidates/:id/acquisition/draft", controller.draftAcquisitionProposal);
 router.post("/candidates/:id/acquisition/handoff-approval", controller.approveAcquisitionHandoff);
