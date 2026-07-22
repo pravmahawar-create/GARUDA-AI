@@ -1,12 +1,20 @@
 const crypto = require("crypto");
-const { ACTION_TYPES } = require("../models/RevenueExternalActionRequest");
+const ACTION_TYPES = ["outreach", "application", "contract", "delivery", "deployment", "payment_verification"];
 function fail(message, statusCode = 400) { throw Object.assign(new Error(message), { statusCode }); }
 function hash(value) { return crypto.createHash("sha256").update(JSON.stringify(value)).digest("hex"); }
 function text(value, name, max = 1000, required = false) { const result = String(value || "").trim(); if (required && !result) fail(`${name} is required`); if (result.length > max) fail(`${name} exceeds ${max} characters`); return result; }
 function missionObject(value) { return value && typeof value.toObject === "function" ? value.toObject() : value || {}; }
+function assertVerifiedEngagement(missionInput) {
+  const mission = missionObject(missionInput);
+  const verification = mission.opportunity?.engagementVerification || {};
+  if (verification.verified !== true || !String(verification.reference || "").trim()) {
+    fail("External action is locked: a discovered listing is not a verified client engagement or contract", 409);
+  }
+  return mission;
+}
 function assertMissionReady(missionInput) { const mission = missionObject(missionInput); if (mission.status !== "founder_approved") fail("External action requires a Founder-approved mission", 409); if (mission.deliverableWorkspace?.status !== "complete") fail("External action requires a complete deliverable workspace", 409); if (!(mission.workPackages || []).length || !(mission.workPackages || []).every((item) => item.status === "completed" && (item.evidence || []).length)) fail("External action requires evidence for every work package", 409); return mission; }
 function buildRequest(missionInput, input = {}, now = new Date()) {
-  const mission = assertMissionReady(missionInput); const actionType = text(input.actionType, "actionType", 40, true);
+  const mission = assertVerifiedEngagement(assertMissionReady(missionInput)); const actionType = text(input.actionType, "actionType", 40, true);
   if (!ACTION_TYPES.includes(actionType)) fail(`actionType must be one of: ${ACTION_TYPES.join(", ")}`);
   const deliverables = (mission.workPackages || []).flatMap((task) => (task.evidence || []).map((item) => ({ taskId: task.id, kind: item.kind, label: item.label, reference: item.reference, sha256: item.sha256 || null }))).slice(0, 50);
   const evidenceHash = hash({ missionHash: mission.missionHash, founderDecision: mission.founderDecision?.decisionHash, deliverables });
@@ -29,4 +37,4 @@ async function findRequest(id) { const mongoose = require("mongoose"); const { R
 async function decideRequest(id, input = {}, context = {}) { const { founderApprovalGranted } = require("./revenueConversionService"); const { RevenueExternalActionDecision } = require("../models/RevenueExternalActionDecision"); if (!founderApprovalGranted(context.founderApproved)) fail("Founder approval is required for action decision", 403); const request = await findRequest(id); const previous = await RevenueExternalActionDecision.findOne({ actionRequestId: request._id }).sort({ decidedAt: -1 }); const decision = buildDecision(request, input, previous?.decisionHash); await RevenueExternalActionDecision.create(decision); request.status = decision.decision === "approved" ? "handoff_ready" : decision.decision === "request_changes" ? "changes_required" : "rejected"; request.latestDecisionHash = decision.decisionHash; request.handoffPackage = decision.decision === "approved" ? buildHandoff(request) : null; await request.save(); return { request: request.toJSON(), decision }; }
 async function recordCompletion(id, input = {}, context = {}) { const { founderApprovalGranted } = require("./revenueConversionService"); if (!founderApprovalGranted(context.founderApproved)) fail("Founder approval is required to record external completion", 403); const request = await findRequest(id); request.completionReceipt = buildCompletionReceipt(request, input); request.status = "externally_completed"; await request.save(); return request.toJSON(); }
 async function listDecisions(id) { const { RevenueExternalActionDecision } = require("../models/RevenueExternalActionDecision"); return (await RevenueExternalActionDecision.find({ actionRequestId: id }).sort({ decidedAt: 1 })).map((item) => item.toJSON()); }
-module.exports = { assertMissionReady, buildCompletionReceipt, buildDecision, buildHandoff, buildRequest, createRequest, decideRequest, hash, listDecisions, listRequests, recordCompletion };
+module.exports = { assertMissionReady, assertVerifiedEngagement, buildCompletionReceipt, buildDecision, buildHandoff, buildRequest, createRequest, decideRequest, hash, listDecisions, listRequests, recordCompletion };
