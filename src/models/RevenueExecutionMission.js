@@ -14,6 +14,7 @@ const revenueExecutionMissionSchema = new mongoose.Schema(
     boundedScope: { type: mongoose.Schema.Types.Mixed, default: null },
     workPackages: { type: [mongoose.Schema.Types.Mixed], default: [] },
     deliverableWorkspace: { type: mongoose.Schema.Types.Mixed, default: null },
+    productionDelivery: { type: mongoose.Schema.Types.Mixed, default: null },
     executionEvidence: { type: mongoose.Schema.Types.Mixed, default: null },
     founderDecision: { type: mongoose.Schema.Types.Mixed, default: null },
     revisionNumber: { type: Number, default: 0, min: 0, max: 3 },

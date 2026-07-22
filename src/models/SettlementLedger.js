@@ -23,6 +23,9 @@ const settlementLedgerSchema = new mongoose.Schema(
       unique: true,
       index: true
     },
+    executionMissionId: { type: mongoose.Schema.Types.ObjectId, ref: "RevenueExecutionMission", index: true, sparse: true },
+    paymentEventKey: { type: String, unique: true, sparse: true, index: true },
+    verificationEvidence: { type: mongoose.Schema.Types.Mixed, default: null },
     grossAmount: { type: Number, required: true, min: 0 },
     feeAmount: { type: Number, required: true, min: 0, default: 0 },
     netAmount: { type: Number, required: true, min: 0 },
@@ -45,6 +48,7 @@ settlementLedgerSchema.set("toJSON", {
   transform: (_doc, ret) => {
     ret.id = String(ret._id);
     ret.revenueRecordId = String(ret.revenueRecordId);
+    if (ret.executionMissionId) ret.executionMissionId = String(ret.executionMissionId);
     delete ret._id;
     return ret;
   }

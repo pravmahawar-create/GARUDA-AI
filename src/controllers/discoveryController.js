@@ -10,6 +10,8 @@ const connectorRegistry = require("../services/revenueConnectorRegistryService")
 const pilotLedgerService = require("../services/revenuePilotLedgerService");
 const razorpayTestService = require("../services/razorpayTestPaymentService");
 const workIntakeService = require("../services/revenueWorkIntakeService");
+const productionDeliveryService = require("../services/revenueProductionDeliveryService");
+const paymentReceiptService = require("../services/revenuePaymentReceiptService");
 
 function sendError(res, error, fallback) { return res.status(error.statusCode || 500).json({ success: false, message: error.message || fallback }); }
 exports.list = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.listCandidates(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list discovery candidates"); } };
@@ -45,3 +47,16 @@ exports.listPilotLedger = async (req, res) => { try { return res.json({ success:
 exports.getRazorpayTestReadiness = async (_req, res) => res.json({ success: true, data: razorpayTestService.readiness() });
 exports.prepareRazorpayTestLink = async (req, res) => { try { return res.status(201).json({ success: true, data: razorpayTestService.prepareTestPaymentLink(req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to prepare Razorpay test payment link"); } };
 exports.verifyRazorpayTestWebhook = async (req, res) => { try { return res.json({ success: true, data: razorpayTestService.verifyWebhook(req.body?.rawBody, req.get("x-razorpay-signature"), process.env.RAZORPAY_WEBHOOK_SECRET_TEST) }); } catch (error) { return sendError(res, error, "Failed to verify Razorpay test webhook"); } };
+exports.getProductionDelivery = async (req, res) => { try { return res.json({ success: true, data: await productionDeliveryService.getByMission(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to get production delivery"); } };
+exports.recordProductionQuality = async (req, res) => { try { return res.status(201).json({ success: true, data: await productionDeliveryService.recordQuality(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to record production quality evidence"); } };
+exports.approveFinalDelivery = async (req, res) => { try { return res.json({ success: true, data: await productionDeliveryService.approveFinal(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to approve final delivery"); } };
+exports.prepareProductionDeliveryHandoff = async (req, res) => { try { return res.json({ success: true, data: await productionDeliveryService.prepareHandoff(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to prepare authorized delivery handoff"); } };
+exports.recordProductionDeliveryReceipt = async (req, res) => { try { return res.json({ success: true, data: await productionDeliveryService.recordDelivery(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to record delivery receipt"); } };
+exports.recordClientAcceptance = async (req, res) => { try { return res.json({ success: true, data: await productionDeliveryService.recordClientAcceptance(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to record client acceptance"); } };
+exports.getPaymentAccountReadiness = async (_req, res) => res.json({ success: true, data: paymentReceiptService.accountReadiness() });
+exports.verifyProductionPaymentWebhook = async (req, res) => {
+  try {
+    const verification = paymentReceiptService.verifySignedWebhook(req.rawBody, req.get("x-garuda-payment-signature"));
+    return res.json({ success: true, data: await productionDeliveryService.recordVerifiedPayment(req.params.id, verification, { trustedSignedWebhook: true }) });
+  } catch (error) { return sendError(res, error, "Failed to verify production payment receipt"); }
+};
