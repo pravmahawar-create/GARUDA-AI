@@ -14,4 +14,10 @@ router.patch("/execution-missions/:id/tasks/:taskId", controller.transitionExecu
 router.get("/execution-missions/:id/task-events", controller.listExecutionTaskEvents);
 router.post("/execution-missions/:id/auto-run", controller.runExecutionTask);
 router.get("/execution-missions/:id/task-runs", controller.listExecutionTaskRuns);
+router.post("/execution-missions/:id/action-requests", controller.createExternalActionRequest);
+router.get("/execution-missions/:id/action-requests", controller.listExternalActionRequests);
+router.post("/execution-missions/:id/action-requests/:requestId/decision", controller.decideExternalActionRequest);
+router.get("/execution-missions/:id/action-requests/:requestId/decisions", controller.listExternalActionDecisions);
+router.post("/execution-missions/:id/action-requests/:requestId/completion", controller.recordExternalActionCompletion);
+router.get("/execution-missions/:id/mvp-readiness", controller.getMvpReadiness);
 module.exports = router;

@@ -4,6 +4,8 @@ const missionOrchestrator = require("../services/revenueMissionOrchestratorServi
 const missionDecisionService = require("../services/revenueMissionDecisionService");
 const deliverableWorkspaceService = require("../services/revenueDeliverableWorkspaceService");
 const autonomousTaskRunner = require("../services/autonomousRevenueTaskRunnerService");
+const externalActionService = require("../services/revenueExternalActionService");
+const mvpReadinessService = require("../services/revenueMvpReadinessService");
 
 function sendError(res, error, fallback) { return res.status(error.statusCode || 500).json({ success: false, message: error.message || fallback }); }
 exports.list = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.listCandidates(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list discovery candidates"); } };
@@ -19,3 +21,9 @@ exports.transitionExecutionTask = async (req, res) => { try { return res.json({ 
 exports.listExecutionTaskEvents = async (req, res) => { try { return res.json({ success: true, data: await deliverableWorkspaceService.listTaskEvents(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to list execution task events"); } };
 exports.runExecutionTask = async (req, res) => { try { return res.json({ success: true, data: await autonomousTaskRunner.runMission(req.params.id, { maxAttempts: req.body?.maxAttempts, founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to run autonomous execution task"); } };
 exports.listExecutionTaskRuns = async (req, res) => { try { return res.json({ success: true, data: await autonomousTaskRunner.listRuns(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to list autonomous task runs"); } };
+exports.createExternalActionRequest = async (req, res) => { try { return res.status(201).json({ success: true, data: await externalActionService.createRequest(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to create external action request"); } };
+exports.listExternalActionRequests = async (req, res) => { try { return res.json({ success: true, data: await externalActionService.listRequests(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to list external action requests"); } };
+exports.decideExternalActionRequest = async (req, res) => { try { return res.json({ success: true, data: await externalActionService.decideRequest(req.params.requestId, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to decide external action request"); } };
+exports.listExternalActionDecisions = async (req, res) => { try { return res.json({ success: true, data: await externalActionService.listDecisions(req.params.requestId) }); } catch (error) { return sendError(res, error, "Failed to list external action decisions"); } };
+exports.recordExternalActionCompletion = async (req, res) => { try { return res.json({ success: true, data: await externalActionService.recordCompletion(req.params.requestId, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to record external action completion"); } };
+exports.getMvpReadiness = async (req, res) => { try { return res.json({ success: true, data: await mvpReadinessService.getReadiness(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to assess revenue MVP readiness"); } };
