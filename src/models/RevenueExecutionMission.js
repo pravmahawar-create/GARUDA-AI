@@ -8,6 +8,7 @@ const revenueExecutionMissionSchema = new mongoose.Schema(
     incomeGoalId: { type: mongoose.Schema.Types.ObjectId, ref: "IncomeGoal", required: true, index: true },
     status: { type: String, enum: ["awaiting_bounded_scope", "ready_for_founder_review", "founder_approved", "changes_required", "rejected", "blocked"], default: "awaiting_bounded_scope", index: true },
     opportunity: { type: mongoose.Schema.Types.Mixed, required: true },
+    realWorkIntake: { type: mongoose.Schema.Types.Mixed, required: true },
     capability: { type: mongoose.Schema.Types.Mixed, required: true },
     architecturePlan: { type: mongoose.Schema.Types.Mixed, required: true },
     boundedScope: { type: mongoose.Schema.Types.Mixed, default: null },

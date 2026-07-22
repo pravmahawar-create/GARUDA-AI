@@ -33,6 +33,8 @@ function buildMissionPreview(candidateInput, options = {}) {
   const candidateId = String(candidate._id || candidate.id || "");
   const incomeGoalId = String(candidate.missionId || "");
   if (!candidateId || !incomeGoalId) fail("Candidate identity and income mission are required", 409);
+  const { validateConfirmedIntake } = require("./revenueWorkIntakeService");
+  const intake = validateConfirmedIntake(options.workIntake, candidateId);
   const missionKey = `candidate:${candidateId}`;
   const architecturePlan = new ArchitectBrain().plan({
     goalId: `revenue-${candidateId}`,
@@ -50,7 +52,26 @@ function buildMissionPreview(candidateInput, options = {}) {
       company: String(candidate.company || ""),
       source: String(candidate.source || ""),
       originalUrl: String(candidate.url || ""),
-      score: Number(candidate.score) || 0
+      score: Number(candidate.score) || 0,
+      listingClassification: "public_listing_not_contract",
+      engagementVerification: {
+        verified: true,
+        reference: String(intake.engagement.reference),
+        evidenceKind: String(intake.engagement.evidenceKind),
+        verifiedAt: String(intake.engagement.verifiedAt),
+        workAuthorizationConfirmed: true,
+        termsAcceptedByClient: true,
+        truthHash: String(intake.truthHash)
+      },
+      brief: intake.brief
+    },
+    realWorkIntake: {
+      id: String(intake._id || intake.id || ""),
+      status: String(intake.status),
+      truthHash: String(intake.truthHash),
+      lastAuditHash: intake.lastAuditHash || null,
+      listingClassification: "public_listing_not_contract",
+      workAuthorizationConfirmed: true
     },
     capability: {
       id: capability.id,
@@ -77,7 +98,9 @@ function buildMissionPreview(candidateInput, options = {}) {
       automaticDeliveryAllowed: false,
       sourceApplyAllowed: false,
       commitPushDeployAllowed: false,
-      founderApprovalRequiredForExternalActions: true
+      founderApprovalRequiredForExternalActions: true,
+      verifiedRealWorkRequired: true,
+      listingAloneNeverCreatesMission: true
     }
   };
   const hashPayload = {
@@ -85,6 +108,7 @@ function buildMissionPreview(candidateInput, options = {}) {
     candidateId,
     incomeGoalId,
     opportunity: payload.opportunity,
+    realWorkIntake: payload.realWorkIntake,
     capability: payload.capability,
     architecturePlanId: architecturePlan.planId,
     approvalEvidence: payload.approvalEvidence,
@@ -102,13 +126,34 @@ async function createFromApprovedCandidate(candidateId, context = {}) {
   if (!mongoose.Types.ObjectId.isValid(String(candidateId || ""))) fail("Invalid candidate id", 400);
   const candidate = await DiscoveryCandidate.findById(candidateId);
   if (!candidate) fail("Discovery candidate not found", 404);
-  const preview = buildMissionPreview(candidate, { rootDir: context.rootDir });
+  const { RevenueWorkIntake } = require("../models/RevenueWorkIntake");
+  const workIntake = context.workIntake || await RevenueWorkIntake.findOne({ candidateId: candidate._id });
+  const preview = buildMissionPreview(candidate, { rootDir: context.rootDir, workIntake });
+  const existing = await RevenueExecutionMission.findOne({ candidateId: candidate._id });
+  if (existing) {
+    if (existing.realWorkIntake?.truthHash !== preview.realWorkIntake.truthHash) fail("An existing listing-only or stale mission cannot be promoted without matching verified real-work evidence", 409);
+    return { ...existing.toJSON(), truthStatus: "verified_real_work" };
+  }
+  const { preparePreview } = require("./revenueMissionOrchestratorService");
+  const prepared = preparePreview(preview, {
+    deliverableType: workIntake.brief.deliverableType,
+    requiredInputs: workIntake.brief.requiredInputs,
+    acceptanceCriteria: workIntake.brief.acceptanceCriteria,
+    constraints: [
+      "Execute only against the verified real-work intake",
+      "No external action without separate Founder approval",
+      `Confirmed deadline: ${workIntake.brief.deadline}`,
+      `Confirmed price: ${workIntake.brief.price.currency} ${workIntake.brief.price.amount}`
+    ],
+    maxAttempts: 2
+  }, { rootDir: context.rootDir, revisionNumber: 1 });
+  const record = { ...preview, ...prepared };
   const stored = await RevenueExecutionMission.findOneAndUpdate(
     { candidateId: candidate._id },
-    { $setOnInsert: preview },
+    { $setOnInsert: record },
     { new: true, upsert: true, runValidators: true }
   );
-  return stored.toJSON();
+  return { ...stored.toJSON(), truthStatus: "verified_real_work" };
 }
 
 async function listMissions(filters = {}) {
@@ -118,7 +163,10 @@ async function listMissions(filters = {}) {
   if (filters.incomeGoalId) query.incomeGoalId = filters.incomeGoalId;
   const limit = Math.min(100, Math.max(1, Number(filters.limit) || 50));
   const items = await RevenueExecutionMission.find(query).sort({ createdAt: -1 }).limit(limit);
-  return items.map((item) => item.toJSON());
+  return items.map((item) => {
+    const mission = item.toJSON();
+    return { ...mission, truthStatus: mission.realWorkIntake?.truthHash ? "verified_real_work" : "listing_only_not_contract" };
+  });
 }
 
 module.exports = { buildMissionPreview, createFromApprovedCandidate, listMissions, validateApprovedCandidate };

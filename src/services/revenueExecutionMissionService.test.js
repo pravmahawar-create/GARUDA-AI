@@ -1,6 +1,7 @@
 const assert = require("assert");
 const path = require("path");
 const { buildMissionPreview, validateApprovedCandidate } = require("./revenueExecutionMissionService");
+const { hash } = require("./revenueWorkIntakeService");
 
 const rootDir = path.resolve(__dirname, "../..");
 function candidate(overrides = {}) {
@@ -25,7 +26,20 @@ function candidate(overrides = {}) {
   };
 }
 
-const preview = buildMissionPreview(candidate(), { rootDir });
+const workIntake = {
+  id: "507f1f77bcf86cd799439012",
+  candidateId: "507f1f77bcf86cd799439011",
+  incomeGoalId: "507f191e810c19729de860ea",
+  status: "work_confirmed",
+  truthHash: "",
+  lastAuditHash: "e".repeat(64),
+  listing: { classification: "public_listing_not_contract" },
+  engagement: { verified: true, reference: "award-verified-001", evidenceKind: "platform_award", verifiedAt: "2026-07-21T13:00:00.000Z", workAuthorizationConfirmed: true, termsAcceptedByClient: true },
+  brief: { title: "Verified API delivery", deliverableType: "Node API integration", scopeSummary: "Implement the client-confirmed integration.", requiredInputs: ["API specification"], price: { amount: 75000, currency: "INR" }, deadline: "2026-08-21T13:00:00.000Z", acceptanceCriteria: ["All agreed API acceptance checks pass"] }
+};
+workIntake.truthHash = hash({ candidateId: workIntake.candidateId, incomeGoalId: workIntake.incomeGoalId, listing: workIntake.listing, engagement: workIntake.engagement, brief: workIntake.brief, attestation: { productionData: true, noPlaceholderData: true } });
+
+const preview = buildMissionPreview(candidate(), { rootDir, workIntake });
 assert.strictEqual(preview.status, "awaiting_bounded_scope");
 assert.strictEqual(preview.capability.id, "engineering.software-implementation");
 assert.strictEqual(preview.architecturePlan.status, "PLAN_READY_FOR_REVIEW");
@@ -34,8 +48,12 @@ assert.deepStrictEqual(preview.executionPath, ["architect", "engineering", "test
 assert.strictEqual(preview.governance.automaticOutreachAllowed, false);
 assert.strictEqual(preview.governance.automaticContractAcceptanceAllowed, false);
 assert.strictEqual(preview.governance.commitPushDeployAllowed, false);
+assert.strictEqual(preview.governance.listingAloneNeverCreatesMission, true);
+assert.strictEqual(preview.opportunity.listingClassification, "public_listing_not_contract");
+assert.strictEqual(preview.realWorkIntake.truthHash, workIntake.truthHash);
 assert.match(preview.missionHash, /^[a-f0-9]{64}$/);
-assert.strictEqual(buildMissionPreview(candidate(), { rootDir }).missionHash, preview.missionHash);
+assert.strictEqual(buildMissionPreview(candidate(), { rootDir, workIntake }).missionHash, preview.missionHash);
+assert.throws(() => buildMissionPreview(candidate(), { rootDir }), /real-work intake/);
 
 assert.throws(() => validateApprovedCandidate(candidate({ status: "ranked" }), { rootDir }), /Founder-approved/);
 assert.throws(() => validateApprovedCandidate(candidate({ opportunityChannel: "human_opportunity_only" }), { rootDir }), /GARUDA-deliverable/);

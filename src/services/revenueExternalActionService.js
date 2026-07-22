@@ -7,7 +7,19 @@ function missionObject(value) { return value && typeof value.toObject === "funct
 function assertVerifiedEngagement(missionInput) {
   const mission = missionObject(missionInput);
   const verification = mission.opportunity?.engagementVerification || {};
-  if (verification.verified !== true || !String(verification.reference || "").trim()) {
+  const intake = mission.realWorkIntake || {};
+  const truthHash = String(intake.truthHash || "");
+  const verificationHash = String(verification.truthHash || "");
+  if (
+    verification.verified !== true ||
+    verification.workAuthorizationConfirmed !== true ||
+    verification.termsAcceptedByClient !== true ||
+    intake.workAuthorizationConfirmed !== true ||
+    intake.listingClassification !== "public_listing_not_contract" ||
+    !String(verification.reference || "").trim() ||
+    !/^[a-f0-9]{64}$/.test(truthHash) ||
+    truthHash !== verificationHash
+  ) {
     fail("External action is locked: a discovered listing is not a verified client engagement or contract", 409);
   }
   return mission;
