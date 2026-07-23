@@ -14,7 +14,10 @@ function normalizeEvidence(value) {
   return value.map((item, index) => {
     const kind = cleanText(item && item.kind, `evidence[${index}].kind`, 40, true);
     if (!["artifact", "test", "review", "reference"].includes(kind)) fail(`evidence[${index}].kind is not allowed`);
-    return { kind, label: cleanText(item.label, `evidence[${index}].label`, 160, true), reference: cleanText(item.reference, `evidence[${index}].reference`, 500, true), sha256: cleanText(item.sha256, `evidence[${index}].sha256`, 64) || null };
+    const sha256 = cleanText(item.sha256, `evidence[${index}].sha256`, 64) || null;
+    if (sha256 && !/^[a-f0-9]{64}$/i.test(sha256)) fail(`evidence[${index}].sha256 must be a SHA-256 hash`);
+    if (kind === "artifact" && !sha256) fail(`evidence[${index}].sha256 is required for artifact evidence`);
+    return { kind, label: cleanText(item.label, `evidence[${index}].label`, 160, true), reference: cleanText(item.reference, `evidence[${index}].reference`, 500, true), sha256: sha256 && sha256.toLowerCase() };
   });
 }
 function assertTransition(task, toStatus) {

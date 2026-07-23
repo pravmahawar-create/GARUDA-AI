@@ -12,5 +12,6 @@ assert.strictEqual(recovered.run.attempts, 3);
 const blocked = service.runPreview({ ...mission, workPackages: [{ ...mission.workPackages[0], status: "completed" }, mission.workPackages[1]] }, { maxAttempts: 2, evidenceProvider: () => { throw new Error("missing"); } });
 assert.strictEqual(blocked.status, "blocked");
 assert.strictEqual(blocked.mission.workPackages[1].status, "blocked");
+assert.throws(() => service.verifiedEvidence({ ...mission, architecturePlan: { planId: "not-a-sha" } }, mission.workPackages[0]), /SHA-256/);
 assert.throws(() => service.runPreview({ ...mission, status: "ready_for_founder_review" }), /Founder-approved/);
 console.log("Autonomous revenue task runner, retry, recovery, and evidence packaging validation passed.");

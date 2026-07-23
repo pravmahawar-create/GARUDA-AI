@@ -19,5 +19,7 @@ assert.strictEqual(completed.deliverableWorkspace.externalActionsAuthorized, fal
 assert.doesNotThrow(() => service.applyEventPreview({ ...mission, workPackages: completed.workPackages }, "task-2", { toStatus: "ready", actor: "garuda" }));
 assert.throws(() => service.applyEventPreview(mission, "task-2", { toStatus: "ready" }), /dependencies/);
 assert.throws(() => service.applyEventPreview({ ...mission, workPackages: started.workPackages }, "task-1", { toStatus: "completed" }), /evidence/);
+assert.throws(() => service.applyEventPreview({ ...mission, workPackages: started.workPackages }, "task-1", { toStatus: "completed", evidence: [{ kind: "artifact", label: "Bad hash", reference: "workspace://mission-1/task-1/bad", sha256: "not-a-hash" }] }), /SHA-256/);
+assert.throws(() => service.applyEventPreview({ ...mission, workPackages: started.workPackages }, "task-1", { toStatus: "completed", evidence: [{ kind: "artifact", label: "Missing hash", reference: "workspace://mission-1/task-1/missing" }] }), /required for artifact/);
 assert.throws(() => service.applyEventPreview({ ...mission, status: "ready_for_founder_review" }, "task-1", { toStatus: "ready" }), /Founder-approved/);
 console.log("Revenue deliverable workspace task lifecycle validation passed.");

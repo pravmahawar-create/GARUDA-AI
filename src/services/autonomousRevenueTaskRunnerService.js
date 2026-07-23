@@ -2,7 +2,13 @@ const crypto = require("crypto");
 const workspace = require("./revenueDeliverableWorkspaceService");
 
 function fail(message, statusCode = 400) { throw Object.assign(new Error(message), { statusCode }); }
-function artifact(label, reference, sha256 = null, kind = "artifact") { if (!reference) throw new Error(`${label} evidence is unavailable`); return { kind, label, reference: String(reference), sha256 }; }
+function artifact(label, reference, sha256 = null, kind = "artifact") {
+  if (!reference) throw new Error(`${label} evidence is unavailable`);
+  const hash = sha256 === null || sha256 === undefined ? null : String(sha256).trim().toLowerCase();
+  if (hash && !/^[a-f0-9]{64}$/.test(hash)) throw new Error(`${label} evidence hash must be a SHA-256 hash`);
+  if (kind === "artifact" && !hash) throw new Error(`${label} artifact evidence requires a SHA-256 hash`);
+  return { kind, label, reference: String(reference), sha256: hash };
+}
 function verifiedEvidence(mission, task) {
   const packet = mission.executionEvidence || {};
   if (task.brain === "architect") { if (!mission.architecturePlan?.planId) throw new Error("Architecture plan evidence is unavailable"); return [artifact("Architecture plan", `garuda://architecture/${mission.architecturePlan.planId}`, mission.architecturePlan.planId)]; }
