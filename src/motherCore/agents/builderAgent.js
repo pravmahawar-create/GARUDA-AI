@@ -7,10 +7,10 @@ function createBuildIntent(agentReport) {
     safeActions.push({
       id: "GARUDA-BUILD-001",
       action: "prepare_builder_execution_engine",
-      status: "ready",
+      status: "approval_required",
       risk: "low",
-      requiresFounderApproval: false,
-      description: "Builder Execution Engine active hai aur safe build intents create kar sakta hai."
+      requiresFounderApproval: true,
+      description: "Builder Execution Engine evidence-backed build intent prepare kar sakta hai; source changes Founder approval ke bina execute nahi honge."
     });
   }
 
