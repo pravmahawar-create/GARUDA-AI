@@ -14,7 +14,7 @@ import LearningPanel from "../components/LearningPanel";
 import selfBuildEngine from "../selfbuild/SelfBuildEngine";
 import { checkHealth, askRag, getDashboardSnapshot } from "../services/api";
 
-const REVENUE_APP_URL = import.meta.env.VITE_REVENUE_APP_URL || "http://localhost:3000";
+const REVENUE_APP_URL = import.meta.env.VITE_REVENUE_APP_URL || "https://garuda-emergent-revenue.vercel.app/dashboard";
 
 export default function Home() {
   const [health, setHealth] = useState("checking");
