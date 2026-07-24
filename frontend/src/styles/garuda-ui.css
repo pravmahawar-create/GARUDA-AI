@@ -161,7 +161,7 @@ input {
   box-shadow: 0 14px 34px rgba(245, 215, 110, 0.26);
 }
 
-.kingdom-arrival {
+.garuda-arrival {
   position: relative;
   min-height: 100vh;
   display: grid;
@@ -173,37 +173,22 @@ input {
   isolation: isolate;
 }
 
-.kingdom-arrival--exit {
+.garuda-arrival--exit {
   animation: kingdomFadeOut 0.26s ease forwards;
 }
 
-.kingdom-arrival__background-layer,
-.kingdom-arrival__atmosphere-layer,
-.kingdom-arrival__weather-layer,
-.kingdom-arrival__sigil-layer,
-.kingdom-arrival__kingdom-layer,
-.kingdom-arrival__transition-layer {
+.garuda-arrival__background-layer,
+.garuda-arrival__atmosphere-layer {
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-.kingdom-arrival__background-layer {
+.garuda-arrival__background-layer {
   background: linear-gradient(135deg, #010204 0%, #05070b 40%, #000000 100%);
 }
 
-.kingdom-arrival__bg-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  opacity: 0.58;
-  filter: saturate(0.72) brightness(0.58) contrast(1.08);
-}
-
-.kingdom-arrival__readability-overlay {
+.garuda-arrival__overlay {
   position: absolute;
   inset: 0;
   background:
@@ -211,60 +196,7 @@ input {
     linear-gradient(180deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.5) 100%);
 }
 
-.kingdom-arrival__background-layer--visual,
-.kingdom-arrival__atmosphere-layer--visual,
-.kingdom-arrival__weather-layer--visual,
-.kingdom-arrival__sigil-layer--visual,
-.kingdom-arrival__kingdom-layer--visual {
-  will-change: transform, opacity;
-}
-
-.kingdom-arrival__aurora {
-  position: absolute;
-  inset: -10%;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(245, 215, 110, 0.09), transparent 18%),
-    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05), transparent 15%),
-    radial-gradient(circle at 50% 80%, rgba(245, 215, 110, 0.07), transparent 24%);
-  filter: blur(24px);
-  animation: drift 9s ease-in-out infinite alternate;
-  opacity: 0.95;
-}
-
-.kingdom-arrival__mist {
-  position: absolute;
-  inset: auto -10% -10% -10%;
-  height: 40%;
-  background: radial-gradient(circle at 50% 50%, rgba(245, 215, 110, 0.16), transparent 70%);
-  filter: blur(38px);
-  opacity: 0.48;
-  animation: fogDrift 12s ease-in-out infinite;
-}
-
-.kingdom-arrival__mist--two {
-  inset: -8% -6% auto -6%;
-  height: 24%;
-  animation-direction: reverse;
-  opacity: 0.3;
-}
-
-.kingdom-arrival__mist--three {
-  inset: 18% auto 8% -16%;
-  height: 28%;
-  opacity: 0.22;
-  animation-duration: 14s;
-}
-
-.kingdom-arrival__kingdom-glow {
-  position: absolute;
-  inset: 8% 8% 13% 8%;
-  border-radius: 50%;
-  border: 1px solid rgba(245, 215, 110, 0.08);
-  box-shadow: inset 0 0 120px rgba(245, 215, 110, 0.06);
-  animation: glowPulse 10s ease-in-out infinite;
-}
-
-.kingdom-arrival__vignette {
+.garuda-arrival__vignette {
   position: absolute;
   inset: 0;
   background:
@@ -273,30 +205,7 @@ input {
   opacity: 0.78;
 }
 
-.kingdom-arrival__wind {
-  position: absolute;
-  inset: -10% -20% auto;
-  height: 72%;
-  border-radius: 50%;
-  border: 1px solid rgba(245, 215, 110, 0.22);
-  box-shadow: inset 0 0 62px rgba(245, 215, 110, 0.12);
-  filter: blur(1px);
-  opacity: 0.88;
-  animation: windDrift 8s linear infinite;
-}
-
-.kingdom-arrival__wind--one {
-  left: -20%;
-  transform: rotate(-12deg);
-}
-
-.kingdom-arrival__wind--two {
-  right: -20%;
-  transform: rotate(12deg);
-  animation-direction: reverse;
-}
-
-.kingdom-arrival__particle {
+.garuda-arrival__particle-dot {
   position: absolute;
   width: 3px;
   height: 3px;
@@ -306,238 +215,13 @@ input {
   animation: particleFloat 5s ease-in-out infinite;
 }
 
-.kingdom-arrival__particle--one { top: 18%; left: 24%; animation-delay: 0s; }
-.kingdom-arrival__particle--two { top: 34%; right: 20%; animation-delay: 1.2s; }
-.kingdom-arrival__particle--three { bottom: 24%; left: 35%; animation-delay: 2.4s; }
-
-.kingdom-arrival__flash {
-  position: absolute;
-  inset: -30%;
-  background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.16) 20%, transparent 44%, rgba(245, 215, 110, 0.14) 60%, transparent 100%);
-  transform: rotate(-16deg);
-  opacity: 0;
-  animation: lightningFlash 4.2s ease-in-out 0.5s forwards;
-  pointer-events: none;
-  filter: blur(0.4px);
-}
-
-.kingdom-arrival__flash--secondary {
-  animation-delay: 2.2s;
-  opacity: 0.6;
-  transform: rotate(16deg) scale(0.86);
-}
-
-.kingdom-arrival__sigil-layer {
-  display: grid;
-  place-items: center;
-}
-
-.kingdom-arrival__sigil {
-  width: 156px;
-  height: 156px;
-  margin: 0 auto 18px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(245, 215, 110, 0.34);
-  background: radial-gradient(circle, rgba(245, 215, 110, 0.16), rgba(5, 8, 14, 0.96));
-  box-shadow: 0 0 48px rgba(245, 215, 110, 0.16);
-  overflow: hidden;
-  padding: 14px;
-  transform: scale(0.82);
-  opacity: 0;
-  animation: sigilReveal 1.3s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
-}
-
-.kingdom-arrival__sigil-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 0 18px rgba(245, 215, 110, 0.26));
-}
-
-.kingdom-arrival__kingdom-layer {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding-bottom: 8%;
-}
-
-.kingdom-arrival__guardian {
-  position: absolute;
-  left: 50%;
-  bottom: 8%;
-  width: min(280px, 54vw);
-  height: min(280px, 54vw);
-  border-radius: 50%;
-  border: 1px solid rgba(245, 215, 110, 0.14);
-  background:
-    radial-gradient(circle at 50% 35%, rgba(245, 215, 110, 0.18), transparent 28%),
-    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
-  opacity: 0.6;
-  filter: blur(0.22px);
-  animation: guardianFade 9s ease-in-out infinite;
-  transform: translateX(-50%);
-}
-
-.kingdom-arrival__portal-arch {
-  position: absolute;
-  left: 50%;
-  bottom: 7%;
-  width: min(640px, 86vw);
-  height: min(460px, 62vw);
-  transform: translateX(-50%);
-  border-radius: 50% 50% 14% 14%;
-  border: 1px solid rgba(245, 215, 110, 0.2);
-  box-shadow:
-    0 0 0 1px rgba(245, 215, 110, 0.07),
-    0 0 50px rgba(245, 215, 110, 0.12),
-    inset 0 0 60px rgba(245, 215, 110, 0.08);
-  opacity: 0.55;
-  animation: archPulse 7s ease-in-out infinite;
-}
-
-.kingdom-arrival__portal-floor {
-  position: absolute;
-  left: 50%;
-  bottom: 2%;
-  width: min(760px, 94vw);
-  height: min(170px, 22vw);
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at center, rgba(245, 215, 110, 0.2), rgba(245, 215, 110, 0.03) 56%, transparent 74%);
-  filter: blur(1px);
-  opacity: 0.62;
-}
-
-.kingdom-arrival__kingdom-asset {
-  position: absolute;
-  inset: 0;
-  opacity: 0.46;
-  transform: scale(1.02);
-  animation: kingdomFloat 14s ease-in-out infinite alternate;
-}
-
-.kingdom-arrival__kingdom-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  filter: saturate(0.85) brightness(0.7);
-}
-
-.kingdom-arrival__transition-layer {
-  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.12) 100%);
-  opacity: 0.7;
-  animation: cinematicFade 8s ease-in-out infinite alternate;
-}
-
-.kingdom-arrival__shutter {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 22%;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.68), rgba(0, 0, 0, 0));
-  opacity: 0.3;
-  animation: shutterBreathe 6s ease-in-out infinite;
-}
-
-.kingdom-arrival__shutter--left {
-  left: 0;
-}
-
-.kingdom-arrival__shutter--right {
-  right: 0;
-  transform: scaleX(-1);
-}
-
-.kingdom-arrival__cinematic-line {
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  top: 18%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(245, 215, 110, 0.45) 50%, transparent 100%);
-  opacity: 0.35;
-  animation: cinematicSweep 5.2s ease-in-out infinite;
-}
-
-.kingdom-arrival__splash-emblem {
-  position: absolute;
-  right: 4.8%;
-  top: 9%;
-  width: clamp(64px, 8vw, 110px);
-  height: clamp(64px, 8vw, 110px);
-  border-radius: 50%;
-  border: 1px solid rgba(245, 215, 110, 0.35);
-  background: radial-gradient(circle, rgba(245, 215, 110, 0.2), rgba(5, 7, 11, 0.9));
-  box-shadow: 0 0 26px rgba(245, 215, 110, 0.28);
-  opacity: 0;
-  transform: scale(0.78);
-  animation: sigilReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
-}
-
-.kingdom-arrival__sigil::before,
-.kingdom-arrival__sigil::after {
-  content: "";
-  position: absolute;
-  inset: -12%;
-  border-radius: 50%;
-  border: 1px solid rgba(245, 215, 110, 0.24);
-  opacity: 0.42;
-  animation: sigilBreath 4.4s ease-in-out infinite;
-}
-
-.kingdom-arrival__sigil::after {
-  inset: -24%;
-  opacity: 0.24;
-  animation-delay: 0.8s;
-}
-
-.kingdom-arrival__splash-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  padding: 9px;
-}
-
-.kingdom-arrival__portal-gate {
-  position: absolute;
-  left: 50%;
-  bottom: 8%;
-  width: min(520px, 78vw);
-  height: min(360px, 54vw);
-  transform: translateX(-50%);
-  border-radius: 50% 50% 14% 14%;
-  overflow: hidden;
-  border: 1px solid rgba(245, 215, 110, 0.18);
-  box-shadow: inset 0 0 50px rgba(245, 215, 110, 0.09);
-}
-
-.kingdom-arrival__portal-door {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  background:
-    linear-gradient(180deg, rgba(12, 14, 20, 0.98), rgba(5, 7, 11, 0.98)),
-    linear-gradient(90deg, rgba(245, 215, 110, 0.12), rgba(245, 215, 110, 0));
-  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
-}
-
-.kingdom-arrival__portal-door--left {
-  left: 0;
-  border-right: 1px solid rgba(245, 215, 110, 0.2);
-}
-
-.kingdom-arrival__portal-door--right {
-  right: 0;
-  border-left: 1px solid rgba(245, 215, 110, 0.2);
-  transform-origin: right center;
-}
+.garuda-arrival__particle-dot--1 { top: 18%; left: 24%; animation-delay: 0s; }
+.garuda-arrival__particle-dot--2 { top: 34%; right: 20%; animation-delay: 1.2s; }
+.garuda-arrival__particle-dot--3 { bottom: 24%; left: 35%; animation-delay: 2.4s; }
+.garuda-arrival__particle-dot--4 { top: 60%; right: 40%; animation-delay: 3.1s; }
+.garuda-arrival__particle-dot--5 { bottom: 15%; right: 15%; animation-delay: 0.8s; }
+.garuda-arrival__particle-dot--6 { top: 25%; left: 70%; animation-delay: 1.9s; }
+.garuda-arrival__particle-dot--7 { bottom: 40%; left: 12%; animation-delay: 2.7s; }
 
 .arrival-engine__fog-layer,
 .arrival-engine__particle-layer,

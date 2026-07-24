@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import BrandAssetManagerImage from "./BrandAssetManagerImage";
 
 export default function ArrivalExperience({ onEnter }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [time, setTime] = useState(0);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -18,56 +16,25 @@ export default function ArrivalExperience({ onEnter }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      setTime(8);
-      return undefined;
-    }
-
-    let frameId;
-    let start;
-
-    const tick = (timestamp) => {
-      if (!start) start = timestamp;
-      const elapsed = (timestamp - start) / 1000;
-      setTime(elapsed);
-      frameId = window.requestAnimationFrame(tick);
-    };
-
-    frameId = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frameId);
-  }, [prefersReducedMotion]);
-
   function handleEnter() {
     if (isTransitioning) return;
     setIsTransitioning(true);
     window.setTimeout(() => {
       onEnter();
-    }, 560);
+    }, 300);
   }
-
-  const progress = useMemo(() => {
-    if (time <= 2.8) return 0;
-    if (time >= 7.2) return 100;
-    return Math.round(((time - 2.8) / (7.2 - 2.8)) * 100);
-  }, [time]);
-
-  const welcomeVisible = time >= 2;
-  const initVisible = time >= 3.4;
-  const portalVisible = time >= 5.6;
-  const enterReady = time >= 7.2;
 
   useEffect(() => {
     const onKeyDown = (event) => {
       if (event.key !== "Enter" && event.key !== " ") return;
-      if (!enterReady || isTransitioning) return;
+      if (isTransitioning) return;
       event.preventDefault();
       handleEnter();
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [enterReady, isTransitioning]);
+  }, [isTransitioning]);
 
   const particleNodes = useMemo(
     () => new Array(14).fill(0).map((_, index) => ({ id: `particle-${index + 1}` })),
@@ -76,52 +43,65 @@ export default function ArrivalExperience({ onEnter }) {
 
   return (
     <div
-      className={`kingdom-arrival kingdom-arrival--v2 ${isTransitioning ? "kingdom-arrival--exit" : ""}`}
-      data-enter={enterReady ? "ready" : "loading"}
-      data-portal={portalVisible ? "open" : "closed"}
+      className={`garuda-arrival ${isTransitioning ? "garuda-arrival--exit" : ""}`}
+      data-enter="ready"
       data-motion={prefersReducedMotion ? "reduced" : "full"}
+      style={{
+        background: "radial-gradient(circle at center, #111827 0%, #030712 100%)",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999
+      }}
     >
-      <div className="kingdom-arrival__background-layer kingdom-arrival__background-layer--visual" aria-hidden="true">
-        <BrandAssetManagerImage kind="kingdom" alt="GARUDA Kingdom Portal artwork" className="kingdom-arrival__bg-image" />
-        <div className="kingdom-arrival__readability-overlay" />
-        <div className="kingdom-arrival__artwork-mask" />
-        <div className="kingdom-arrival__vignette" />
+      {/* Background Layer with Dark Vignette & Overlay */}
+      <div className="garuda-arrival__background-layer" aria-hidden="true">
+        <div className="garuda-arrival__overlay" />
+        <div className="garuda-arrival__vignette" />
       </div>
 
-      <div className="kingdom-arrival__atmosphere-layer kingdom-arrival__atmosphere-layer--visual" aria-hidden="true">
+      {/* Subtle Premium Animated Particle Atmosphere */}
+      <div className="garuda-arrival__atmosphere-layer" aria-hidden="true">
         {particleNodes.map((particle, index) => (
-          <span key={particle.id} className={`kingdom-arrival__particle-dot kingdom-arrival__particle-dot--${(index % 7) + 1}`} />
+          <span key={particle.id} className={`garuda-arrival__particle-dot garuda-arrival__particle-dot--${(index % 7) + 1}`} />
         ))}
       </div>
 
-      <div className="kingdom-arrival__sigil-layer kingdom-arrival__sigil-layer--visual" aria-hidden="true">
-        <div className="kingdom-arrival__sigil" aria-label="GARUDA sigil">
-          <BrandAssetManagerImage kind="sigil" alt="GARUDA sigil" className="kingdom-arrival__sigil-image" />
-        </div>
-      </div>
+      {/* Opening Experience Content */}
+      <div className="garuda-arrival__content" style={{ textAlign: "center", zIndex: 10, maxWidth: "600px", padding: "2rem" }}>
+        <h1 style={{ fontSize: "3.5rem", fontWeight: 800, letterSpacing: "0.18em", color: "#ffffff", margin: "0 0 0.5rem 0", textTransform: "uppercase" }}>
+          GARUDA
+        </h1>
+        <h2 style={{ color: "#fbbf24", letterSpacing: "0.22em", fontSize: "1.1rem", fontWeight: 700, margin: "0 0 1.25rem 0", textTransform: "uppercase" }}>
+          AI OPERATING SYSTEM
+        </h2>
+        <p style={{ color: "#9ca3af", fontSize: "1.15rem", letterSpacing: "0.08em", margin: "0 0 2.25rem 0" }}>
+          Build. Deploy. Scale.
+        </p>
 
-      <div className="kingdom-arrival__kingdom-layer kingdom-arrival__kingdom-layer--visual" aria-hidden="true">
-        <div className="kingdom-arrival__portal-gate">
-          <div className="kingdom-arrival__portal-door kingdom-arrival__portal-door--left" />
-          <div className="kingdom-arrival__portal-door kingdom-arrival__portal-door--right" />
-        </div>
-        <div className="kingdom-arrival__portal-arch" />
-        <div className="kingdom-arrival__portal-floor" />
-      </div>
-
-      <div className="kingdom-arrival__content kingdom-arrival__content--minimal">
-        {welcomeVisible ? <h1>Welcome Back, Founder.</h1> : null}
-        {initVisible ? <p className="kingdom-arrival__status">Initializing Mother Brain...</p> : null}
-
-        <div className="kingdom-arrival__progress" aria-hidden="true">
-          <span className="kingdom-arrival__progress-fill" style={{ width: `${progress}%` }} />
-        </div>
-
-        {enterReady ? (
-          <button className="kingdom-arrival__button" onClick={handleEnter} aria-label="Enter GARUDA">
-            ENTER GARUDA
-          </button>
-        ) : null}
+        <button
+          className="garuda-arrival__button"
+          onClick={handleEnter}
+          aria-label="ENTER GARUDA"
+          style={{
+            background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
+            color: "#000000",
+            border: "none",
+            padding: "0.9rem 2.25rem",
+            fontSize: "1rem",
+            fontWeight: 800,
+            letterSpacing: "0.15em",
+            borderRadius: "6px",
+            cursor: "pointer",
+            boxShadow: "0 0 20px rgba(251, 191, 36, 0.35)",
+            transition: "all 0.25s ease"
+          }}
+        >
+          ENTER GARUDA
+        </button>
       </div>
     </div>
   );

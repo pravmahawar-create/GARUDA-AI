@@ -27,20 +27,6 @@ function resolveDetected(preferredFileNames = [], publicCandidates = [], gracefu
 }
 
 export function getFounderBrandAssets() {
-  const sigil = resolveDetected(
-    ["garuda-sigil.png", "garuda-sigil.webp", "garuda-sigil.svg"],
-    [
-      "/assets/sigil/garuda-sigil.png",
-      "/assets/sigil/garuda-sigil.webp",
-      "/assets/sigil/garuda-sigil.svg",
-      "/assets/icons/garuda-sigil-icon.svg",
-      "/assets/splash/garuda-sigil-splash.svg",
-      "/assets/garuda/sigil-placeholder.svg",
-      "/assets/sigil/sigil-placeholder.svg"
-    ],
-    "/assets/sigil/sigil-placeholder.svg"
-  );
-
   const logo = resolveDetected(
     ["garuda-logo.png", "garuda-logo.webp", "garuda-logo.svg", "garuda-primary-identity.svg"],
     [
@@ -54,19 +40,5 @@ export function getFounderBrandAssets() {
     "/assets/branding/branding-placeholder.svg"
   );
 
-  const kingdom = resolveDetected(
-    ["kingdom-bg.jpg", "kingdom-bg.jpeg", "kingdom-bg.png", "kingdom-bg.webp", "kingdom-bg.svg", "garuda-kingdom-artwork.svg"],
-    [
-      "/assets/kingdom/kingdom-bg.jpg",
-      "/assets/kingdom/kingdom-bg.jpeg",
-      "/assets/kingdom/kingdom-bg.png",
-      "/assets/kingdom/kingdom-bg.webp",
-      "/assets/kingdom/kingdom-bg.svg",
-      "/assets/kingdom/garuda-kingdom-artwork.svg",
-      "/assets/kingdom/kingdom-placeholder.svg"
-    ],
-    "/assets/kingdom/kingdom-placeholder.svg"
-  );
-
-  return { sigil, logo, kingdom };
+  return { logo };
 }
