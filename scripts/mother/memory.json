@@ -1,0 +1,36 @@
+{
+  "records": [
+    {
+      "goal": "Sprint 3 Governed Memory Integration Test Goal",
+      "selectedBrains": [
+        "architect",
+        "builder"
+      ],
+      "taskPlan": {
+        "dependencyOrder": [
+          "t1",
+          "t2"
+        ],
+        "tasks": [
+          {
+            "id": "t1",
+            "title": "Setup Memory",
+            "workerType": "builder"
+          },
+          {
+            "id": "t2",
+            "title": "Verify Memory",
+            "workerType": "validator",
+            "dependencies": [
+              "t1"
+            ]
+          }
+        ]
+      },
+      "workflowStatus": "Completed (3/3)",
+      "validationStatus": "PASSED",
+      "approvalStatus": "APPROVED",
+      "completedAt": "2026-07-24T10:46:01.982Z"
+    }
+  ]
+}

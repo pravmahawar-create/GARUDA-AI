@@ -559,11 +559,10 @@ class Mother {
       }
 
       if (
-      false &&
-      latestExact.workflowStatus === "Completed (3/3)" &&
-      latestExact.approvalStatus !== "BLOCKED_BY_APPROVAL" &&
-      latestExact.completedAt
-    ) {
+        latestExact.workflowStatus === "Completed (3/3)" &&
+        latestExact.approvalStatus !== "BLOCKED_BY_APPROVAL" &&
+        latestExact.completedAt
+      ) {
         const completedPayload = {
           status: "ALREADY_COMPLETED",
           goal: goalInput,
@@ -847,4 +846,10 @@ class Mother {
   }
 }
 
-new Mother().start();
+if (require.main === module) {
+  new Mother().start();
+}
+
+module.exports = { Mother };
+
+

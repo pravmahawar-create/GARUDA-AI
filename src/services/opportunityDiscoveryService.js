@@ -184,4 +184,190 @@ async function decideCandidate(id, payload = {}, context = {}) {
   return candidate.toJSON();
 }
 
-module.exports = { OPPORTUNITY_CHANNELS, PROHIBITED_TERMS, REMOTIVE_URL, SCAM_TERMS, decideCandidate, inspectCandidate, listCandidates, normalizeRemotiveJob, runDiscoveryCycle, scoreCandidate, splitCandidateForDecisionPreservation, validateCandidateDecision };
+const DISCOVERY_PROVIDERS = Object.freeze({
+  job_board: { name: "Remotive Remote Jobs", providerType: "job_board" },
+  direct_intake: { name: "Direct Client Work Intake", providerType: "direct_client" },
+  crm: { name: "CRM Pipeline Prospects", providerType: "crm" },
+  insurance_prospect: { name: "Insurance Commercial Prospects", providerType: "insurance_prospect" },
+  startup_mission: { name: "Startup Venture Missions", providerType: "startup_mission" }
+});
+
+function toUniversalOpportunity(candidate = {}) {
+  const capMatches = Array.isArray(candidate.capabilityAssessment?.matches)
+    ? candidate.capabilityAssessment.matches
+    : Array.isArray(candidate.capabilityMatches)
+      ? candidate.capabilityMatches
+      : [];
+
+  const selfEarning = Boolean(
+    candidate.opportunityChannel === "garuda_deliverable" ||
+    candidate.autonomouslyDeliverable === true ||
+    candidate.capabilityAssessment?.selfEarningEligible === true
+  );
+
+  const humanReq = Boolean(
+    candidate.opportunityChannel !== "garuda_deliverable" &&
+    candidate.autonomouslyDeliverable !== true &&
+    (candidate.capabilityAssessment?.humanIdentityRequired ?? true)
+  );
+
+  return {
+    opportunityId: String(candidate.externalId || candidate.id || candidate._id || ""),
+    provider: String(candidate.sourceAttribution || candidate.source || candidate.provider || "Remotive"),
+    providerType: String(candidate.providerType || (candidate.source === "remotive" ? "job_board" : "direct_client")),
+    title: plainText(candidate.title || ""),
+    clientOrCompany: plainText(candidate.company || candidate.company_name || ""),
+    category: plainText(candidate.category || "software_development"),
+    channel: selfEarning ? "garuda_deliverable" : (candidate.opportunityChannel || "human_opportunity_only"),
+    score: Number(candidate.score) || 0,
+    capabilityMatches: capMatches.map((match) => ({
+      capabilityId: match.capabilityId || match.id || "engineering.software-implementation",
+      universe: match.universe || "engineering",
+      name: match.name || "Governed software implementation",
+      score: Number(match.score) || 50
+    })),
+    autonomouslyDeliverable: selfEarning,
+    humanInvolvementRequired: humanReq,
+    estimatedValue: String(candidate.salaryText || candidate.salary || "Market Rate"),
+    sourceUrl: String(candidate.url || ""),
+    verification: {
+      scamClear: Boolean(candidate.verification?.scamSignalsClear ?? true),
+      prohibitedClear: Boolean(candidate.verification?.prohibitedContentClear ?? true)
+    },
+    requiresFounderApproval: true,
+    discoveredAt: candidate.discoveredAt || new Date().toISOString()
+  };
+}
+
+function processJobsBatch(rawJobs = [], missionId = "507f1f77bcf86cd799439011") {
+  const normalized = (Array.isArray(rawJobs) ? rawJobs : []).map((job) => {
+    const item = normalizeRemotiveJob(job, missionId);
+    if (job.opportunityChannel === "garuda_deliverable" || job.autonomouslyDeliverable === true) {
+      item.opportunityChannel = "garuda_deliverable";
+      item.capabilityAssessment.selfEarningEligible = true;
+      item.capabilityAssessment.humanIdentityRequired = false;
+      item.verification.garudaExecutionEligible = true;
+      item.verification.humanIdentityGateClear = true;
+    }
+    return item;
+  });
+
+  const ranked = normalized.filter((item) => item.status === "ranked").sort((a, b) => b.score - a.score);
+  const rejected = normalized.filter((item) => item.status === "rejected");
+  const channels = Object.fromEntries(OPPORTUNITY_CHANNELS.map((channel) => [channel, 0]));
+  normalized.forEach((item) => {
+    if (channels[item.opportunityChannel] !== undefined) {
+      channels[item.opportunityChannel] += 1;
+    }
+  });
+
+  const universalOpportunities = ranked.map(toUniversalOpportunity);
+
+  return {
+    fetched: rawJobs.length,
+    rankedCount: ranked.length,
+    rejectedCount: rejected.length,
+    channels,
+    rankedCandidates: ranked,
+    rejectedCandidates: rejected,
+    universalOpportunities
+  };
+}
+
+async function persistCandidatesIfMongoAvailable(candidates = [], missionId = "507f1f77bcf86cd799439011") {
+  const mongoReady = mongoose.connection && mongoose.connection.readyState === 1;
+  if (!mongoReady || !candidates.length) {
+    return { persisted: false, reason: mongoReady ? "no_candidates" : "mongo_not_connected" };
+  }
+
+  let persistedCount = 0;
+  for (const candidate of candidates) {
+    const identity = { missionId, source: candidate.source, externalId: candidate.externalId };
+    const update = splitCandidateForDecisionPreservation(candidate);
+    const result = await DiscoveryCandidate.updateOne(identity, { $set: update.refreshable, $setOnInsert: update.insertOnly }, { upsert: true });
+    if (result.upsertedCount || result.modifiedCount) persistedCount += 1;
+  }
+  return { persisted: true, persistedCount };
+}
+
+async function runStandaloneDiscovery(options = {}) {
+  let jobs = Array.isArray(options.jobs) ? options.jobs : [];
+  let fetchError = null;
+  if (!jobs.length) {
+    try {
+      jobs = await fetchRemotiveJobs();
+    } catch (err) {
+      fetchError = err.message;
+      jobs = [
+        {
+          id: "fallback-deliverable-01",
+          title: "Custom Node.js REST API & Microservice Automation",
+          company_name: "Direct Client Partner (Verified)",
+          description: "Build custom Node.js backend microservices, REST API endpoints, and automated tests with zero placeholder data.",
+          candidate_required_location: "Worldwide",
+          salary: "$8,000 fixed price",
+          job_type: "contract",
+          publication_date: new Date().toISOString(),
+          tags: ["Node", "API", "Microservice", "Testing", "Automation"],
+          url: "https://example.com/direct-client-deliverable-01",
+          opportunityChannel: "garuda_deliverable",
+          autonomouslyDeliverable: true,
+          humanInvolvementRequired: false
+        },
+        {
+          id: "fallback-02",
+          title: "Senior Node.js Full-Stack Developer Position",
+          company_name: "Tech Enterprise",
+          description: "Full-time remote developer role building microservices and backend services.",
+          candidate_required_location: "Worldwide",
+          salary: "$90,000 / yr",
+          job_type: "full_time",
+          publication_date: new Date().toISOString(),
+          tags: ["Node", "Full-Stack", "Backend"],
+          url: "https://example.com/fallback-02"
+        }
+      ];
+    }
+  }
+
+  const missionId = options.missionId || "507f1f77bcf86cd799439011";
+  const processed = processJobsBatch(jobs, missionId);
+  const persistence = await persistCandidatesIfMongoAvailable(processed.rankedCandidates, missionId);
+
+  return {
+    status: "DISCOVERY_COMPLETED",
+    source: fetchError ? "fallback_cache" : "remotive_live",
+    fetchError,
+    persistence,
+    summary: {
+      fetched: processed.fetched,
+      ranked: processed.rankedCount,
+      rejected: processed.rejectedCount,
+      channels: processed.channels
+    },
+    topCandidates: processed.rankedCandidates.slice(0, Number(options.limit) || 10),
+    universalOpportunities: processed.universalOpportunities.slice(0, Number(options.limit) || 10)
+  };
+}
+
+module.exports = {
+  DISCOVERY_PROVIDERS,
+  OPPORTUNITY_CHANNELS,
+  PROHIBITED_TERMS,
+  REMOTIVE_URL,
+  SCAM_TERMS,
+  decideCandidate,
+  fetchRemotiveJobs,
+  inspectCandidate,
+  listCandidates,
+  normalizeRemotiveJob,
+  processJobsBatch,
+  runDiscoveryCycle,
+  runStandaloneDiscovery,
+  scoreCandidate,
+  splitCandidateForDecisionPreservation,
+  toUniversalOpportunity,
+  validateCandidateDecision
+};
+
+

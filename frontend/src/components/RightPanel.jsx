@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function RightPanel({ health, healthMessage, knowledgeCount, motherBrain = {} }) {
+export default function RightPanel({ health, healthMessage, knowledgeCount, motherBrain = {}, onSelectNav }) {
   const normalizedHealth = String(health || "").toLowerCase();
   const isHealthy = ["online", "ok", "healthy", "running", "ready"].includes(normalizedHealth);
   const statusText = normalizedHealth === "checking" ? "Checking" : isHealthy ? "Healthy" : "Offline";
@@ -59,7 +59,14 @@ export default function RightPanel({ health, healthMessage, knowledgeCount, moth
 
       <section className="panel-card">
         <p className="eyebrow">Quick Access</p>
-        <a className="quick-action" href="#">Open Revenue Universe</a>
+        <button
+          type="button"
+          className="quick-action"
+          style={{ background: "none", border: "none", color: "inherit", font: "inherit", cursor: "pointer", textAlign: "left", width: "100%" }}
+          onClick={() => onSelectNav?.("Revenue Universe")}
+        >
+          Open Revenue Universe
+        </button>
         <a className="quick-action" href="#">Review mother plan</a>
         <a className="quick-action" href="#">Launch creative sprint</a>
       </section>

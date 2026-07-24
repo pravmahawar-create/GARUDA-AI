@@ -1,19 +1,29 @@
 function routeTask(task = "") {
-  const normalized = task.toLowerCase();
+  const normalized = String(task).toLowerCase().trim();
+  if (!normalized) return "general";
 
-  if (normalized.includes("architect plan") || normalized.includes("architecture plan")) return "architect";
-  if (normalized.includes("engineering loop") || normalized.includes("correction loop")) return "engineering_loop";
-  if (normalized.includes("revenue")) return "revenue";
-  if (normalized.includes("review engineering") || normalized.includes("review artifact")) return "review";
-  if (normalized.includes("engineering artifact") || normalized.includes("scaffold validator")) return "engineering";
-  if (normalized.includes("commit")) return "git";
-  if (normalized.includes("build")) return "builder";
-  if (normalized.includes("valid")) return "validator";
-  if (normalized.includes("analy")) return "thinker";
-  if (normalized.includes("patch")) return "patch";
-  if (normalized.includes("test")) return "test";
+  // Specialized compound routes
+  if (/\b(architect plan|architecture plan|system architecture)\b/i.test(normalized)) return "architect";
+  if (/\b(engineering loop|correction loop|governed loop)\b/i.test(normalized)) return "engineering_loop";
+  if (/\b(review engineering|review artifact|code review)\b/i.test(normalized)) return "review";
+  if (/\b(engineering artifact|scaffold validator|scaffold)\b/i.test(normalized)) return "engineering";
+
+  // Core Intent classification
+  if (/\b(revenue|income|earning|settlement|payout|opportunity|proposal|quotation|intake|crm)\b/i.test(normalized)) return "revenue";
+  if (/\b(knowledge|rag|retrieval|embedding|document)\b/i.test(normalized)) return "knowledge";
+  if (/\b(mother|autonomy|brain|orchestrat)\b/i.test(normalized)) return "mother";
+  if (/\b(git|commit|push|repository)\b/i.test(normalized)) return "git";
+  if (/\b(builder|build|compile)\b/i.test(normalized)) return "builder";
+  if (/\b(patch|modify file|backup)\b/i.test(normalized)) return "patch";
+
+  // Disambiguate Testing vs Validation vs Analysis
+  if (/\b(test|tests|testing|spec|unit test|integration test)\b/i.test(normalized)) return "test";
+  if (/\b(validat\w*|valid|verify|check)\b/i.test(normalized)) return "validator";
+  if (/\b(analy\w*|think|inspect)\b/i.test(normalized)) return "thinker";
+
 
   return "general";
 }
 
 module.exports = { routeTask };
+

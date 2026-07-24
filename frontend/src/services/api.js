@@ -19,3 +19,4 @@ export async function askRag(question) {
 
   return res.json();
 }
+

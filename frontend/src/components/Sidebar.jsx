@@ -11,7 +11,7 @@ const navItems = [
   { icon: "◎", label: "Settings" }
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onSelectNav }) {
   const [activeItem, setActiveItem] = useState("Dashboard");
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -23,6 +23,9 @@ export default function Sidebar() {
   function handleSelect(label) {
     setActiveItem(label);
     setIsExpanded(false);
+    if (typeof onSelectNav === "function") {
+      onSelectNav(label);
+    }
   }
 
   return (

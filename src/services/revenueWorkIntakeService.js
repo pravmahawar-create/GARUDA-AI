@@ -72,7 +72,7 @@ function candidateContext(candidateInput, options = {}) {
 }
 
 function buildHandoffPreview(candidateInput, input = {}, now = new Date(), options = {}) {
-  const context = candidateContext(candidateInput, options);
+  const context = candidateContext(candidateInput, { ...options, now });
   requireProductionAttestation(input);
   const handoffType = text(input.handoffType, "handoffType", 40).toLowerCase();
   if (!HANDOFF_TYPES.includes(handoffType)) fail(`handoffType must be one of: ${HANDOFF_TYPES.join(", ")}`);
@@ -109,7 +109,8 @@ function buildHandoffPreview(candidateInput, input = {}, now = new Date(), optio
 }
 
 function buildConfirmedWorkIntake(candidateInput, input = {}, now = new Date(), options = {}) {
-  const context = candidateContext(candidateInput, options);
+  const context = candidateContext(candidateInput, { ...options, now });
+
   const attestation = requireProductionAttestation(input);
   const engagementInput = input.engagement || {};
   const briefInput = input.brief || {};

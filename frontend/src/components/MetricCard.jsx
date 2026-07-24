@@ -1,13 +1,15 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export default function MetricCard({ icon, title, value, detail, tone = "gold" }) {
+export default function MetricCard({ icon, title, value, detail, tone = "gold", onClick }) {
   return (
     <motion.article
       className={`metric-card metric-card--${tone}`}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
+      onClick={onClick}
+      style={{ cursor: onClick ? "pointer" : "default" }}
     >
       <div className="metric-card__icon">{icon}</div>
       <div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
@@ -14,6 +14,8 @@ import LearningPanel from "../components/LearningPanel";
 import selfBuildEngine from "../selfbuild/SelfBuildEngine";
 import { checkHealth, askRag, getDashboardSnapshot } from "../services/api";
 
+const REVENUE_APP_URL = import.meta.env.VITE_REVENUE_APP_URL || "http://localhost:3000";
+
 export default function Home() {
   const [health, setHealth] = useState("checking");
   const [healthMessage, setHealthMessage] = useState("Awaiting backend response...");
@@ -25,6 +27,26 @@ export default function Home() {
   const [hasEntered, setHasEntered] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
   const [selfBuildState, setSelfBuildState] = useState(null);
+  const [activeNav, setActiveNav] = useState("Dashboard");
+
+  const commandCenterRef = useRef(null);
+  const metricsGridRef = useRef(null);
+
+  const handleRequestProposal = () => {
+    commandCenterRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleViewCapabilities = () => {
+    metricsGridRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSelectNav = (label) => {
+    if (label === "Revenue Universe") {
+      window.location.href = REVENUE_APP_URL;
+      return;
+    }
+    setActiveNav(label);
+  };
 
   useEffect(() => {
     let active = true;
@@ -95,8 +117,6 @@ export default function Home() {
   const knowledgeCount = dashboardData?.metrics?.knowledgeCore?.count ?? 0;
   const scannerStatus = dashboardData?.metrics?.motherBrain?.scanner?.status || "offline";
   const plannerStatus = dashboardData?.metrics?.motherBrain?.planner?.status || "offline";
-  const builderStatus = dashboardData?.metrics?.motherBrain?.builder?.status || "offline";
-  const validatorStatus = dashboardData?.metrics?.motherBrain?.validator?.status || "offline";
   const motherBrain = dashboardData?.metrics?.motherBrain || {};
 
   const metricCards = [
@@ -112,7 +132,7 @@ export default function Home() {
 
   return (
     <div className="garuda-shell">
-      <Sidebar />
+      <Sidebar onSelectNav={handleSelectNav} />
 
       <section className="workspace">
         <TopBar />
@@ -131,15 +151,25 @@ export default function Home() {
               transition={{ duration: 0.35 }}
             >
               <div className="hero-panel__content">
-                <p className="eyebrow">GARUDA AI OPERATING SYSTEM</p>
-                <h1>Command the empire. Let intelligence execute.</h1>
+                <p className="eyebrow">GARUDA AI COMMERCIAL OPERATIONS</p>
+                <h1>Autonomous Intelligence.<br />Human Accountability.</h1>
                 <p>
-                  A luxury operating environment for strategy, execution, knowledge, and growth.
+                  Fixed-price AI engineering, automation, API integration, and technical documentation delivered under Founder supervision.
                 </p>
               </div>
               <div className="hero-panel__actions">
-                <button className="hero-panel__button hero-panel__button--primary">Launch Mission</button>
-                <button className="hero-panel__button">View Blueprint</button>
+                <button
+                  className="hero-panel__button hero-panel__button--primary"
+                  onClick={handleRequestProposal}
+                >
+                  Request Fixed-Price Proposal
+                </button>
+                <button
+                  className="hero-panel__button"
+                  onClick={handleViewCapabilities}
+                >
+                  View Capabilities
+                </button>
               </div>
             </motion.header>
 
@@ -153,19 +183,25 @@ export default function Home() {
               </section>
             ) : null}
 
-            <section className="metrics-grid">
+            <section className="metrics-grid" ref={metricsGridRef}>
               {metricCards.map((card) => (
-                <MetricCard key={card.title} {...card} />
+                <MetricCard
+                  key={card.title}
+                  {...card}
+                  onClick={card.title === "Revenue Universe" ? () => handleSelectNav("Revenue Universe") : undefined}
+                />
               ))}
             </section>
 
-            <CommandCenter
-              messages={messages}
-              question={question}
-              loading={loading}
-              onQuestionChange={setQuestion}
-              onSend={askGaruda}
-            />
+            <div ref={commandCenterRef}>
+              <CommandCenter
+                messages={messages}
+                question={question}
+                loading={loading}
+                onQuestionChange={setQuestion}
+                onSend={askGaruda}
+              />
+            </div>
           </div>
 
           <RightPanel
@@ -173,6 +209,7 @@ export default function Home() {
             healthMessage={healthMessage}
             knowledgeCount={knowledgeCount}
             motherBrain={motherBrain}
+            onSelectNav={handleSelectNav}
           />
         </div>
       </section>
