@@ -1,0 +1,35 @@
+const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
+const { spawnSync } = require("child_process");
+
+const LIFECYCLE = ["inspect", "implement", "test", "validate", "package", "checkpoint", "report", "await_approval"];
+const FOUNDER_WORKFLOW = Object.freeze({ founderNormallyDoes: ["approve", "review", "receive_reports"], engineeringDetermines: ["repository", "paths", "execution_order", "commands", "testing", "packaging"], stopOnlyFor: ["irreversible_action", "architecture_decision", "commit_push_approval", "genuine_blocker"] });
+function hash(value) { return crypto.createHash("sha256").update(JSON.stringify(value)).digest("hex"); }
+function safeArray(value, name) { if (!Array.isArray(value)) throw new Error(`${name} must be an array`); return value.map((item) => String(item || "").trim()).filter(Boolean); }
+function iso(value) { const date = value ? new Date(value) : new Date(); if (Number.isNaN(date.getTime())) throw new Error("timestamp must be valid"); return date.toISOString(); }
+function command(executable, args = [], cwd) { const result = spawnSync(executable, args, { cwd, shell: false, encoding: "utf8", windowsHide: true, timeout: 10000 }); return { executable, args, available: !result.error, status: !result.error && result.status === 0 ? "PASS" : "FAIL", exitCode: typeof result.status === "number" ? result.status : null, output: String(result.stdout || result.stderr || result.error?.message || "").trim().slice(0, 500), diagnostic: result.error ? result.error.code || result.error.message : null }; }
+
+class ProductionBatchLifecycle {
+  constructor({ rootDir = process.cwd(), checkpointDirectory = "reports/engineering-checkpoints" } = {}) { this.rootDir = path.resolve(rootDir); this.checkpointDirectory = path.resolve(this.rootDir, checkpointDirectory); }
+  validateEnvironment({ mongoRequired = false } = {}) {
+    const tools = { git: command("git", ["--version"], this.rootDir), node: command(process.execPath, ["--version"], this.rootDir), npm: command("npm", ["--version"], this.rootDir), python: command("python", ["--version"], this.rootDir), mongo: command("mongosh", ["--version"], this.rootDir) };
+    const remote = command("git", ["remote", "get-url", "origin"], this.rootDir);
+    const helper = command("git", ["config", "--get", "credential.helper"], this.rootDir);
+    const githubAuthentication = remote.status === "PASS" && /github\.com/i.test(remote.output) && helper.status === "PASS" ? { status: "CONFIGURED_NOT_VERIFIED", diagnostic: "Credential helper is configured; authenticated push is intentionally not attempted by validation.", action: "Run a governed push after Founder approval to verify GitHub credentials." } : { status: "ACTION_REQUIRED", diagnostic: "GitHub remote or credential helper is unavailable.", action: "Configure GitHub authentication before an approved push." };
+    const required = [tools.git, tools.node, tools.npm, tools.python].filter((item) => item.status !== "PASS");
+    if (mongoRequired && tools.mongo.status !== "PASS") required.push(tools.mongo);
+    return { engine: "GARUDA Autonomous Engineering Constitution v1", checkedAt: new Date().toISOString(), status: required.length ? "ACTION_REQUIRED" : "READY", tools, githubAuthentication, mongo: mongoRequired ? { required: true, status: tools.mongo.status } : { required: false, status: tools.mongo.status === "PASS" ? "AVAILABLE" : "NOT_REQUIRED" }, actionableDiagnostics: required.map((item) => `${item.executable} is required: ${item.output || item.diagnostic}`), governance: { networkAuthenticationNotTested: true, destructiveActionsPerformed: false } };
+  }
+  buildCheckpoint(input = {}) {
+    const title = String(input.batchTitle || "").trim(); if (!title) throw new Error("batchTitle is required");
+    const changedFiles = safeArray(input.changedFiles || [], "changedFiles"); const executedTests = safeArray(input.executedTests || [], "executedTests");
+    const payload = { schemaVersion: 1, engine: "GARUDA Autonomous Engineering Constitution v1", batchTitle: title, completedWork: safeArray(input.completedWork || [], "completedWork"), changedFiles, executedTests, buildStatus: String(input.buildStatus || "NOT_RUN"), packagePath: String(input.packagePath || "").trim() || null, nextRecommendedTask: String(input.nextRecommendedTask || "Founder review and approval").trim(), timestamp: iso(input.timestamp), lifecycle: LIFECYCLE, founderWorkflow: FOUNDER_WORKFLOW, governance: { sourceApplyAuthorized: false, commitPushAuthorized: false, externalActionAuthorized: false, financialActionAuthorized: false } };
+    return { ...payload, checkpointId: hash(payload) };
+  }
+  writeCheckpoint(input) { const checkpoint = this.buildCheckpoint(input); fs.mkdirSync(this.checkpointDirectory, { recursive: true }); const envelope = { checkpoint, sha256: hash(checkpoint) }; const file = path.join(this.checkpointDirectory, `${checkpoint.timestamp.replace(/[:.]/g, "-")}-${checkpoint.checkpointId.slice(0, 12)}.json`); fs.writeFileSync(file, JSON.stringify(envelope, null, 2) + "\n"); fs.writeFileSync(path.join(this.checkpointDirectory, "latest.json"), JSON.stringify(envelope, null, 2) + "\n"); return { checkpoint, file }; }
+  loadLatestValidCheckpoint() { const file = path.join(this.checkpointDirectory, "latest.json"); if (!fs.existsSync(file)) return null; try { const envelope = JSON.parse(fs.readFileSync(file, "utf8")); if (!envelope.checkpoint || envelope.sha256 !== hash(envelope.checkpoint) || envelope.checkpoint.schemaVersion !== 1 || !envelope.checkpoint.checkpointId) return null; const { checkpointId, ...payload } = envelope.checkpoint; if (checkpointId !== hash(payload)) return null; return { checkpoint: envelope.checkpoint, file }; } catch (_) { return null; } }
+  resume() { const latest = this.loadLatestValidCheckpoint(); return latest ? { status: "RESUME_READY", checkpoint: latest.checkpoint, checkpointPath: latest.file, nextAction: latest.checkpoint.nextRecommendedTask, skippedAudit: true, governance: { repeatFullAudit: false, requiresFounderApprovalForIrreversibleAction: true } } : { status: "NO_VALID_CHECKPOINT", checkpoint: null, nextAction: "Inspect current workspace and begin governed lifecycle", skippedAudit: false }; }
+  generateReport(checkpoint) { const item = checkpoint || this.loadLatestValidCheckpoint()?.checkpoint; if (!item) throw new Error("A valid checkpoint is required for report generation"); return [`# ${item.batchTitle}`, "", "## Production status", `- Build: ${item.buildStatus}`, `- Package: ${item.packagePath || "not created"}`, `- Timestamp: ${item.timestamp}`, "", "## Completed work", ...item.completedWork.map((value) => `- ${value}`), "", "## Changed files", ...item.changedFiles.map((value) => `- ${value}`), "", "## Executed tests", ...item.executedTests.map((value) => `- ${value}`), "", "## Next recommended task", item.nextRecommendedTask, "", "Await Founder approval before commit, push, deployment, external action, or financial action."].join("\n"); }
+}
+module.exports = { FOUNDER_WORKFLOW, LIFECYCLE, ProductionBatchLifecycle };

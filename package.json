@@ -22,7 +22,9 @@
     "garuda:scan": "node scripts/garuda-scan.js",
     "autopilot": "node scripts/mother/autopilot.js",
     "dev:agent": "node scripts/dev-agent/dev-agent.js",
-    "dev:status": "node scripts/dev-agent/status.js"
+    "dev:status": "node scripts/dev-agent/status.js",
+    "engineering:environment": "node scripts/dev-agent/run-production-batch.js environment",
+    "engineering:resume": "node scripts/dev-agent/run-production-batch.js resume"
   },
   "repository": {
     "type": "git",
