@@ -127,7 +127,14 @@ export default function Home() {
   ];
 
   if (!hasEntered) {
-    return <ArrivalExperience onEnter={() => setHasEntered(true)} />;
+    return (
+      <ArrivalExperience
+        onEnter={() => {
+          setHasEntered(true);
+          window.scrollTo(0, 0);
+        }}
+      />
+    );
   }
 
   return (
