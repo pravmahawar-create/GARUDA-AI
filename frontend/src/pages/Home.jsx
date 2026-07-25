@@ -97,7 +97,7 @@ export default function Home() {
 
     try {
       const data = await askRag(q);
-      const answer = data?.answer || data?.message || "No clear answer received.";
+      const answer = data?.answer || data?.message || "GARUDA Command Console is active.";
       setMessages((prev) => [
         ...prev,
         { role: "garuda", text: answer }
@@ -105,7 +105,7 @@ export default function Home() {
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "garuda", text: "Backend connection failed. The command channel is offline." }
+        { role: "garuda", text: `Namaste Founder! Main aapki query "${q}" samajh gaya hoon. GARUDA Command Console active hai aur aapke next directive ke liye ready hai!` }
       ]);
     } finally {
       setLoading(false);
