@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 export default function CommandCenter({ messages, question, loading, onQuestionChange, onSend }) {
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <motion.section
       className="command-center"
@@ -23,6 +29,7 @@ export default function CommandCenter({ messages, question, loading, onQuestionC
             {message.text}
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className="composer">
