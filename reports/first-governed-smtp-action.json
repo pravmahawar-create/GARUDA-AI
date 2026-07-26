@@ -1,28 +1,33 @@
 {
-  "timestamp": "2026-07-26T13:49:46.843Z",
-  "missionCandidateId": "PROPOSED_SMTP_001",
+  "timestamp": "2026-07-26T13:52:20.027Z",
+  "missionCandidateId": "LIVE_SMTP_PILOT_001",
   "connectorId": "generic_email",
-  "authenticationStatus": "configured_authenticated",
+  "authenticationStatus": "authentication_failed",
   "redactedSender": "g***i@gmail.com",
-  "proposedAction": {
+  "executedAction": {
     "recipient": "garudaos.ai@gmail.com",
     "subject": "GARUDA First Governed SMTP Test",
-    "body": "GARUDA SMTP connector successfully completed its first founder-authorized governed live test.\n\nThis message confirms:\n- authenticated connector execution\n- founder-controlled authorization\n- truthful audit recording\n- no customer outreach\n- no payment or settlement action\n\nJAI GARUDA.",
     "connector": "generic_email (SMTP)",
-    "executionPackageHash": "a1b0657b365f0d3ba091fba03e186c98d340e022abbd139dad730895ff220f94",
+    "executionPackageHash": "275f7a50646c3ea50ef73623b9081d84f154bcdfc873d28157bb9cfe68b90d0c",
     "sideEffectClassification": "Live Outbound Email Dispatch (Self-Test Only)",
-    "idempotencyKey": "09cf9c4530e61b08a3830d00b3ff1bffb6bf0688f42a368200ee15b529409881"
+    "idempotencyKey": "4b53a68e002844d543479fb01e15bb1f225fdab4cf66952cef381b593ee6cd79"
   },
   "founderAuthorizationGate": {
     "requiredPhrase": "FOUNDER APPROVED FIRST SMTP SELF-TEST",
-    "authorizationGrantedInSession": false,
-    "status": "awaiting_founder_authorization"
+    "authorizationGrantedInSession": true,
+    "status": "authorized_execution_attempted"
   },
   "executionResult": {
-    "smtpExecutionStatus": "blocked_awaiting_founder_authorization",
-    "providerAcceptance": "none",
+    "smtpExecutionStatus": "failed",
+    "providerAcceptance": "rejected_by_provider",
+    "failureCode": "SMTP_535_BAD_CREDENTIALS",
+    "errorMessage": "SMTP Server Error (535): 535-5.7.8 Username and Password not accepted. For more information, go to\r\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials a92af1059eb24-13e585ae882sm10671625c88.6 - gsmtp",
+    "providerResponseId": null,
     "emailsSent": 0,
     "networkSideEffectsExecuted": 0
+  },
+  "duplicatePrevention": {
+    "idempotencyTestPassed": true
   },
   "securityAndGovernance": {
     "secretsExposed": 0,
