@@ -1,16 +1,16 @@
 {
-  "date": "2026-07-26T06:50:03.286Z",
-  "gitCommit": "87fffaf",
+  "date": "2026-07-26T06:55:32.928Z",
+  "gitCommit": "90505b2",
   "totalScenarios": 100,
-  "passed": 53,
-  "failed": 47,
+  "passed": 56,
+  "failed": 44,
   "accuracy": {
     "qualification": "99.00%",
-    "classification": "89.00%",
+    "classification": "98.00%",
     "capability": "58.00%",
-    "feasibility": "98.00%",
-    "risk": "99.00%",
-    "overall": "53.00%"
+    "feasibility": "99.00%",
+    "risk": "100.00%",
+    "overall": "56.00%"
   },
   "failureBreakdown": [
     {
@@ -180,7 +180,7 @@
       },
       "actual": {
         "qualification": "qualified",
-        "category": "Marketing",
+        "category": "Fiverr Creative",
         "capabilities": [
           "creative.vector-design",
           "knowledge.research-synthesis"
@@ -189,8 +189,8 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "whichEngineFailed": "Capability",
+      "reason": "Mismatched engine outputs: Capability"
     },
     {
       "scenarioId": "SCENARIO_014",
@@ -244,31 +244,6 @@
       "reason": "Mismatched engine outputs: Capability"
     },
     {
-      "scenarioId": "SCENARIO_016",
-      "expected": {
-        "qualification": "qualified",
-        "category": "AI Automation",
-        "capabilities": [
-          "automation.workflow-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Data Entry",
-        "capabilities": [
-          "automation.workflow-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Classifier",
-      "reason": "Mismatched engine outputs: Classifier"
-    },
-    {
       "scenarioId": "SCENARIO_018",
       "expected": {
         "qualification": "qualified",
@@ -283,7 +258,7 @@
       },
       "actual": {
         "qualification": "qualified",
-        "category": "Upwork Software",
+        "category": "AI Automation",
         "capabilities": [
           "automation.spreadsheet-automation",
           "engineering.software-implementation"
@@ -292,33 +267,8 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_019",
-      "expected": {
-        "qualification": "qualified",
-        "category": "AI Automation",
-        "capabilities": [
-          "automation.workflow-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Marketing",
-        "capabilities": [
-          "automation.workflow-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Classifier",
-      "reason": "Mismatched engine outputs: Classifier"
+      "whichEngineFailed": "Capability",
+      "reason": "Mismatched engine outputs: Capability"
     },
     {
       "scenarioId": "SCENARIO_021",
@@ -413,14 +363,14 @@
       },
       "actual": {
         "qualification": "qualified",
-        "category": "Upwork Software",
+        "category": "Legal Research",
         "capabilities": [],
         "feasibility": "feasible",
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "whichEngineFailed": "Capability",
+      "reason": "Mismatched engine outputs: Capability"
     },
     {
       "scenarioId": "SCENARIO_026",
@@ -524,6 +474,31 @@
       },
       "whichEngineFailed": "Capability",
       "reason": "Mismatched engine outputs: Capability"
+    },
+    {
+      "scenarioId": "SCENARIO_035",
+      "expected": {
+        "qualification": "qualified",
+        "category": "Insurance",
+        "capabilities": [
+          "knowledge.research-synthesis"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "actual": {
+        "qualification": "qualified",
+        "category": "Legal Research",
+        "capabilities": [
+          "knowledge.research-synthesis"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "whichEngineFailed": "Classifier",
+      "reason": "Mismatched engine outputs: Classifier"
     },
     {
       "scenarioId": "SCENARIO_036",
@@ -665,7 +640,7 @@
       },
       "actual": {
         "qualification": "qualified",
-        "category": "Upwork Software",
+        "category": "Customer Support",
         "capabilities": [
           "engineering.api-integration"
         ],
@@ -673,8 +648,8 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "whichEngineFailed": "Capability",
+      "reason": "Mismatched engine outputs: Capability"
     },
     {
       "scenarioId": "SCENARIO_042",
@@ -701,56 +676,6 @@
       },
       "whichEngineFailed": "Capability",
       "reason": "Mismatched engine outputs: Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_045",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Data Entry",
-        "capabilities": [
-          "automation.spreadsheet-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Upwork Software",
-        "capabilities": [
-          "automation.spreadsheet-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Classifier",
-      "reason": "Mismatched engine outputs: Classifier"
-    },
-    {
-      "scenarioId": "SCENARIO_046",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Data Entry",
-        "capabilities": [
-          "automation.spreadsheet-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Physical Onsite",
-        "capabilities": [
-          "automation.spreadsheet-automation"
-        ],
-        "feasibility": "blocked",
-        "riskLevel": "high",
-        "decision": "escalate"
-      },
-      "whichEngineFailed": "Classifier, Feasibility, Risk, Decision",
-      "reason": "Mismatched engine outputs: Classifier, Feasibility, Risk, Decision"
     },
     {
       "scenarioId": "SCENARIO_047",
@@ -830,6 +755,31 @@
       "reason": "Mismatched engine outputs: Capability"
     },
     {
+      "scenarioId": "SCENARIO_055",
+      "expected": {
+        "qualification": "qualified",
+        "category": "Translation",
+        "capabilities": [
+          "knowledge.research-synthesis"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "medium",
+        "decision": "approve"
+      },
+      "actual": {
+        "qualification": "qualified",
+        "category": "Legal Research",
+        "capabilities": [
+          "knowledge.research-synthesis"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "medium",
+        "decision": "approve"
+      },
+      "whichEngineFailed": "Classifier",
+      "reason": "Mismatched engine outputs: Classifier"
+    },
+    {
       "scenarioId": "SCENARIO_057",
       "expected": {
         "qualification": "qualified",
@@ -870,7 +820,7 @@
       },
       "actual": {
         "qualification": "qualified",
-        "category": "Upwork Software",
+        "category": "Marketing",
         "capabilities": [
           "ai.agent-engineering"
         ],
@@ -878,8 +828,8 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "whichEngineFailed": "Capability",
+      "reason": "Mismatched engine outputs: Capability"
     },
     {
       "scenarioId": "SCENARIO_060",
@@ -1146,7 +1096,7 @@
       },
       "actual": {
         "qualification": "qualified",
-        "category": "Marketing",
+        "category": "Low Risk Projects",
         "capabilities": [
           "creative.vector-design",
           "knowledge.research-synthesis"
@@ -1155,35 +1105,8 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_097",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Low Risk Projects",
-        "capabilities": [
-          "automation.spreadsheet-automation",
-          "engineering.software-implementation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Data Entry",
-        "capabilities": [
-          "automation.spreadsheet-automation",
-          "engineering.software-implementation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Classifier",
-      "reason": "Mismatched engine outputs: Classifier"
+      "whichEngineFailed": "Capability",
+      "reason": "Mismatched engine outputs: Capability"
     },
     {
       "scenarioId": "SCENARIO_100",

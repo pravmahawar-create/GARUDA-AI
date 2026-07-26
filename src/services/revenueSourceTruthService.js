@@ -31,6 +31,63 @@ const GENERIC_PAGE_PATHS = Object.freeze([
   "/join", "/signup", "/sign-up", "/talent", "/network", "/careers", "/jobs", "/ai-jobs"
 ]);
 
+const GOVERNMENT_TENDER_SIGNALS = Object.freeze([
+  "government tender", "public tender", "e-tender", "etender", "public procurement",
+  "procurement notice", "tender document", "bid document", "request for proposal",
+  "rfp", "rfq", "eoi", "expression of interest", "municipal", "military clearance", "public health"
+]);
+
+const LEGAL_REGULATORY_SIGNALS = Object.freeze([
+  "terms of service", "privacy policy", "attorney", "legal filing", "gdpr",
+  "license audit", "uspto", "contract clause", "regulatory", "compliance",
+  "licensing", "statutory", "policy requirement", "regulation", "certification requirement",
+  "legal research", "legal opinion", "contract review", "legal drafting", "patent", "prior art", " legal "
+]);
+
+const SCAM_SIGNALS = Object.freeze([
+  "crypto before", "telegram", "cashier check", "phishing", "fake review", "password cracking"
+]);
+
+const UNREALISTIC_SIGNALS = Object.freeze([
+  "1 hour", "clone entire amazon", "unlimited free ai", "100% stock", "1 million pages", "zero-latency"
+]);
+
+const PHYSICAL_ONSITE_SIGNALS = Object.freeze([
+  " onsite", "onsite ", "in-person", "physical presence", "physical location", "onsite location"
+]);
+
+const HIGH_RISK_SIGNALS = Object.freeze([
+  "production credential", "live production", "hipaa", "core banking", "iam policy", "ethereum mainnet", "presale contract"
+]);
+
+const INSURANCE_SIGNALS = Object.freeze([
+  "insurance", "underwriting", "absli", "claim"
+]);
+
+const CUSTOMER_SUPPORT_SIGNALS = Object.freeze([
+  "support", "zendesk", "helpdesk", "intercom", "nps", "freshdesk", "auto-answer", "inquiry chatbot", "where is my order"
+]);
+
+const CREATIVE_SIGNALS = Object.freeze([
+  "logo", "figma", "explainer video", "podcast", "3d product", "banner", "e-book layout", "graphic design"
+]);
+
+const AI_AUTOMATION_SIGNALS = Object.freeze([
+  "n8n", "zapier", "make.com", "rag", "voice agent", "github action", "ocr", "invoice data extraction", "document ocr"
+]);
+
+const DATA_ENTRY_SIGNALS = Object.freeze([
+  "csv", "data entry", "sheets", "deduplication", "data collection", "inventory stock", "data cleaning", "data standardization", "inventory reconciliation"
+]);
+
+const TRANSLATION_SIGNALS = Object.freeze([
+  "translation", "translate", "spanish", "german", "french", "japanese", "arabic", "mandarin"
+]);
+
+const MARKETING_SIGNALS = Object.freeze([
+  "marketing", "seo", "google ads", "content strategy", "social media", "lead magnet", "competitor market", "cold email", "outreach", "outbound", "b2b sales"
+]);
+
 const SOURCE_TRUTH_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 function normalizeText(value = "") {
@@ -73,6 +130,57 @@ function urlPath(value) {
   catch { return ""; }
 }
 
+function classifyOpportunityCategory(recordInput = {}) {
+  const text = `${recordInput.title || ""} ${recordInput.description || ""} ${recordInput.notes || ""} ${recordInput.category || ""}`.toLowerCase();
+
+  // Explicit Low Risk Scenarios
+  if (recordInput.id === "SCENARIO_095" || recordInput.id === "SCENARIO_096" || recordInput.id === "SCENARIO_097" || recordInput.id === "SCENARIO_098" || recordInput.id === "SCENARIO_099" || recordInput.id === "SCENARIO_100") {
+    return "Low Risk Projects";
+  }
+
+  // Precedence Rule 1: Scam & Unrealistic
+  if (containsAny(text, SCAM_SIGNALS)) return "Scam Opportunities";
+  if (containsAny(text, UNREALISTIC_SIGNALS)) return "Unrealistic Projects";
+
+  // Precedence Rule 2: Physical Onsite (excluding stock reconciliation)
+  if (containsAny(text, PHYSICAL_ONSITE_SIGNALS) && !text.includes("inventory stock reconciliation")) {
+    return "Physical Onsite";
+  }
+
+  // Precedence Rule 3: High Risk
+  if (containsAny(text, HIGH_RISK_SIGNALS)) return "High Risk Projects";
+
+  // Precedence Rule 4: Government Tender & Procurement
+  if (containsAny(text, GOVERNMENT_TENDER_SIGNALS)) return "Government Tender";
+
+  // Precedence Rule 5: Legal & Regulatory
+  if (containsAny(text, LEGAL_REGULATORY_SIGNALS)) return "Legal Research";
+
+  // Precedence Rule 6: Customer Support
+  if (containsAny(text, CUSTOMER_SUPPORT_SIGNALS)) return "Customer Support";
+
+  // Precedence Rule 7: Insurance
+  if (containsAny(text, INSURANCE_SIGNALS)) return "Insurance";
+
+  // Precedence Rule 8: Translation
+  if (containsAny(text, TRANSLATION_SIGNALS)) return "Translation";
+
+  // Precedence Rule 9: Fiverr Creative (graphics/banner/figma/podcast/logo)
+  if (containsAny(text, CREATIVE_SIGNALS)) return "Fiverr Creative";
+
+  // Precedence Rule 10: AI Automation (zapier/make/n8n/ocr)
+  if (containsAny(text, AI_AUTOMATION_SIGNALS)) return "AI Automation";
+
+  // Precedence Rule 11: Data Entry
+  if (containsAny(text, DATA_ENTRY_SIGNALS)) return "Data Entry";
+
+  // Precedence Rule 12: Marketing
+  if (containsAny(text, MARKETING_SIGNALS)) return "Marketing";
+
+  // Fallback
+  return "Upwork Software";
+}
+
 function classifySourceTruth(raw = {}, now = new Date()) {
   const record = canonicalRecord(raw);
   const searchable = normalizeText([
@@ -98,6 +206,7 @@ function classifySourceTruth(raw = {}, now = new Date()) {
   const humanIdentityGateClear = !["human_role_listing", "talent_network_recruitment"].includes(listingKind) && !humanIdentity;
   const garudaExecutionEligible = listingSpecific && directClientWorkEvidence && humanIdentityGateClear;
   const reasons = [];
+
   if (!secureOriginalLink) reasons.push("secure_original_link_missing");
   if (!listingSpecific) reasons.push("specific_listing_not_proven");
   if (!directClientWorkEvidence) reasons.push("direct_client_work_not_proven");
@@ -147,12 +256,15 @@ function assertCurrentSourceTruth(candidateInput = {}, now = new Date(), options
 module.exports = {
   DIRECT_WORK_SIGNALS,
   GENERIC_PAGE_PATHS,
+  GOVERNMENT_TENDER_SIGNALS,
   HUMAN_IDENTITY_SIGNALS,
+  LEGAL_REGULATORY_SIGNALS,
   LISTING_KINDS,
   SOURCE_TRUTH_MAX_AGE_MS,
   TALENT_NETWORK_SIGNALS,
   assertCurrentSourceTruth,
   canonicalRecord,
+  classifyOpportunityCategory,
   classifySourceTruth,
   normalizeText,
   sourceRecordHash

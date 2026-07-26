@@ -2,7 +2,7 @@ const assert = require('assert');
 const { evaluateClassifier, evaluateCapabilities } = require('./founderValidation');
 
 function runRegressionTests() {
-  console.log('Running Founder Validation Anti-Circular Regression Tests...\n');
+  console.log('Running Founder Validation Anti-Circular & Classification Boundary Regression Tests...\n');
 
   // Test 1: Classification Anti-Circular Test
   {
@@ -48,7 +48,6 @@ function runRegressionTests() {
       expectedCapabilities: ['unrelated.fake-capability-id']
     };
 
-    const actualCapContentOnly = evaluateCapabilities(scenarioContentOnly);
     const actualCapMutated = evaluateCapabilities(scenarioWithMutatedCapabilities);
 
     assert.deepStrictEqual(
@@ -79,7 +78,27 @@ function runRegressionTests() {
     console.log('✔ Test 3 — No expected-field dependency protection passed');
   }
 
-  console.log('\nAll Founder Validation Anti-Circular Regression Tests PASSED cleanly.');
+  // Test 4: Classification Domain Boundary Invariants
+  {
+    const testCases = [
+      { input: { title: 'Government Construction E-Tender Bid' }, expected: 'Government Tender' },
+      { input: { title: 'Public Health Department IT Procurement RFP' }, expected: 'Government Tender' },
+      { input: { title: 'GDPR Data Compliance & Privacy Policy Review' }, expected: 'Legal Research' },
+      { input: { title: 'Legal Patent Research & Prior Art Assignment' }, expected: 'Legal Research' },
+      { input: { title: 'Zapier Automated Email Lead Notification' }, expected: 'AI Automation' },
+      { input: { title: 'Social Media Graphic Banner Design Gig' }, expected: 'Fiverr Creative' },
+      { input: { title: 'B2B Cold Email Outreach Campaign Writing' }, expected: 'Marketing' }
+    ];
+
+    testCases.forEach(({ input, expected }) => {
+      const actual = evaluateClassifier(input);
+      assert.strictEqual(actual, expected, `Scenario '${input.title}' must classify as '${expected}' but got '${actual}'`);
+    });
+
+    console.log('✔ Test 4 — Classification domain boundary invariants passed');
+  }
+
+  console.log('\nAll Founder Validation Anti-Circular & Classification Boundary Regression Tests PASSED cleanly.');
 }
 
 runRegressionTests();

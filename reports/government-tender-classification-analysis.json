@@ -1,0 +1,82 @@
+{
+  "totalClassifierFailures": 11,
+  "failures": [
+    {
+      "scenarioId": "SCENARIO_013",
+      "title": "Social Media Banner & Graphic Design Package",
+      "expectedCategory": "Fiverr Creative",
+      "actualCategory": "Marketing",
+      "text": "social media banner & graphic design package design 10 promotional social media banners for marketing campaign banner graphic design gig"
+    },
+    {
+      "scenarioId": "SCENARIO_016",
+      "title": "Zapier Automated Email Lead Notification System",
+      "expectedCategory": "AI Automation",
+      "actualCategory": "Data Entry",
+      "text": "zapier automated email lead notification system connect webflow form submissions to slack notifications and google sheets standard zapier integration task"
+    },
+    {
+      "scenarioId": "SCENARIO_018",
+      "title": "Automated Document OCR & Invoice Data Extraction",
+      "expectedCategory": "AI Automation",
+      "actualCategory": "Upwork Software",
+      "text": "automated document ocr & invoice data extraction extract line items from pdf invoices using ocr api and write to postgresql invoice data extraction pipeline"
+    },
+    {
+      "scenarioId": "SCENARIO_019",
+      "title": "Make.com Multi-Step Social Media Cross-Posting",
+      "expectedCategory": "AI Automation",
+      "actualCategory": "Marketing",
+      "text": "make.com multi-step social media cross-posting automate cross-posting blog articles to linkedin, twitter, and facebook page make.com social media automation workflow"
+    },
+    {
+      "scenarioId": "SCENARIO_025",
+      "title": "Terms of Service & Privacy Policy Template Customization",
+      "expectedCategory": "Legal Research",
+      "actualCategory": "Upwork Software",
+      "text": "terms of service & privacy policy template customization draft standard terms of service template for mobile application standard legal document template drafting"
+    },
+    {
+      "scenarioId": "SCENARIO_041",
+      "title": "E-commerce Order Status WhatsApp Response Bot",
+      "expectedCategory": "Customer Support",
+      "actualCategory": "Upwork Software",
+      "text": "e-commerce order status whatsapp response bot integrate whatsapp business api with shopify to auto-answer 'where is my order?' messaging api order inquiry chatbot"
+    },
+    {
+      "scenarioId": "SCENARIO_045",
+      "title": "Real Estate Property Listing Data Standardization",
+      "expectedCategory": "Data Entry",
+      "actualCategory": "Upwork Software",
+      "text": "real estate property listing data standardization normalize address formatting and price attributes across 500 property rows data cleaning and standardization task"
+    },
+    {
+      "scenarioId": "SCENARIO_046",
+      "title": "Inventory Stock Reconciliation Spreadsheet Sync",
+      "expectedCategory": "Data Entry",
+      "actualCategory": "Physical Onsite",
+      "text": "inventory stock reconciliation spreadsheet sync reconcile physical stock counts against erp database records in excel spreadsheet inventory reconciliation"
+    },
+    {
+      "scenarioId": "SCENARIO_058",
+      "title": "Cold Email Outreach Sequence Drafting for Agency",
+      "expectedCategory": "Marketing",
+      "actualCategory": "Upwork Software",
+      "text": "cold email outreach sequence drafting for agency draft 5-step outbound b2b cold email sequence targeting ctos b2b sales outreach copy creation"
+    },
+    {
+      "scenarioId": "SCENARIO_096",
+      "title": "Static HTML/CSS Landing Page Layout Fix",
+      "expectedCategory": "Low Risk Projects",
+      "actualCategory": "Marketing",
+      "text": "static html/css landing page layout fix fix css flexbox alignment issue on static marketing landing page basic frontend styling fix"
+    },
+    {
+      "scenarioId": "SCENARIO_097",
+      "title": "CSV File Column Renaming & Formatting Utility",
+      "expectedCategory": "Low Risk Projects",
+      "actualCategory": "Data Entry",
+      "text": "csv file column renaming & formatting utility write simple node.js script to rename header columns in csv files simple local file utility script"
+    }
+  ]
+}
