@@ -38,6 +38,46 @@ function scoreCapability(capability, demand = {}) {
   return { score: Math.min(100, score), matchedTags };
 }
 
+function compareTieBreak(a, b, demand = {}) {
+  // 1. Primary score comparison
+  if (b.score !== a.score) return b.score - a.score;
+
+  const titleText = normalizeText(demand.title || "");
+  const descText = normalizeText(demand.description || "");
+
+  // 2. Exact capability name match in title or description
+  const normNameA = normalizeText(a.name);
+  const normNameB = normalizeText(b.name);
+  const nameInTitleA = titleText.includes(normNameA) ? 2 : descText.includes(normNameA) ? 1 : 0;
+  const nameInTitleB = titleText.includes(normNameB) ? 2 : descText.includes(normNameB) ? 1 : 0;
+  if (nameInTitleB !== nameInTitleA) return nameInTitleB - nameInTitleA;
+
+  // 3. Exact tag match count
+  const matchCountA = (a.matchedTags || []).length;
+  const matchCountB = (b.matchedTags || []).length;
+  if (matchCountB !== matchCountA) return matchCountB - matchCountA;
+
+  // 4. Exact phrase match length (total character length of matched tags)
+  const phraseLenA = (a.matchedTags || []).reduce((acc, t) => acc + t.length, 0);
+  const phraseLenB = (b.matchedTags || []).reduce((acc, t) => acc + t.length, 0);
+  if (phraseLenB !== phraseLenA) return phraseLenB - phraseLenA;
+
+  // 5. Domain category match in title or description
+  const normCatA = normalizeText(a.category);
+  const normCatB = normalizeText(b.category);
+  const catInTitleA = titleText.includes(normCatA) ? 2 : descText.includes(normCatA) ? 1 : 0;
+  const catInTitleB = titleText.includes(normCatB) ? 2 : descText.includes(normCatB) ? 1 : 0;
+  if (catInTitleB !== catInTitleA) return catInTitleB - catInTitleA;
+
+  // 6. Confidence score
+  const confA = a.confidenceScore || 0;
+  const confB = b.confidenceScore || 0;
+  if (confB !== confA) return confB - confA;
+
+  // 7. Alphabetical order (LAST fallback ONLY)
+  return a.name.localeCompare(b.name);
+}
+
 function matchDemand(demand = {}, options = {}) {
   if (!String(demand.title || "").trim()) {
     throw Object.assign(new Error("title is required for capability matching"), { statusCode: 400 });
@@ -49,7 +89,7 @@ function matchDemand(demand = {}, options = {}) {
   const matches = capabilities
     .map((capability) => ({ ...capability, ...scoreCapability(capability, demand) }))
     .filter((capability) => capability.score >= minimumScore)
-    .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+    .sort((a, b) => compareTieBreak(a, b, demand));
 
   const traceEnabled = Boolean(options.trace || process.env.TRACE_MODE === "true");
   let trace = undefined;
@@ -76,7 +116,7 @@ function matchDemand(demand = {}, options = {}) {
           lossReason: score < minimumScore
             ? `Score (${score}) below minimumScore (${minimumScore})`
             : cap.id !== winningCapability
-            ? `Score (${score}) lower than winner score (${topScore})`
+            ? `Score (${score}) lower or lost tie-break to winner (${winningCapability})`
             : undefined
         };
       })

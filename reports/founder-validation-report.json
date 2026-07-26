@@ -1,6 +1,6 @@
 {
-  "date": "2026-07-26T06:39:19.491Z",
-  "gitCommit": "1d39ba2",
+  "date": "2026-07-26T06:42:17.702Z",
+  "gitCommit": "0dc984e",
   "totalScenarios": 100,
   "passed": 52,
   "failed": 48,
@@ -106,8 +106,8 @@
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
-          "creative.3d-rendering",
-          "creative.motion-graphics"
+          "creative.motion-graphics",
+          "creative.vector-design"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
@@ -949,8 +949,8 @@
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
-          "ai.agent-engineering",
-          "automation.workflow-automation"
+          "automation.workflow-automation",
+          "writing.proposal-writing"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
@@ -975,7 +975,7 @@
         "qualification": "qualified",
         "category": "Government Tender",
         "capabilities": [
-          "ai.agent-engineering",
+          "engineering.api-integration",
           "engineering.software-implementation"
         ],
         "feasibility": "feasible",

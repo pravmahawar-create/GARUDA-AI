@@ -1,0 +1,742 @@
+{
+  "totalTieBreakCases": 21,
+  "tieBreakCases": [
+    {
+      "scenarioId": "SCENARIO_013",
+      "title": "Social Media Banner & Graphic Design Package",
+      "expectedCapability": "documentation.technical-documentation",
+      "actualWinner": "knowledge.research-synthesis",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "market",
+            "marketing"
+          ]
+        },
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "design",
+            "banner"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": "documentation.technical-documentation",
+      "reason": "Equal score tie-break between generic capabilities (knowledge.research-synthesis, creative.vector-design)"
+    },
+    {
+      "scenarioId": "SCENARIO_016",
+      "title": "Zapier Automated Email Lead Notification System",
+      "expectedCapability": "automation.workflow-automation",
+      "actualWinner": "automation.workflow-automation",
+      "equalScoreCount": 6,
+      "equalScoreCandidates": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 20,
+          "matchedTags": [
+            "zapier"
+          ]
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "sheets"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "automation.workflow-automation",
+      "reason": "Expected capability automation.workflow-automation has equal score (20) but lost due to alphabetical sorting"
+    },
+    {
+      "scenarioId": "SCENARIO_018",
+      "title": "Automated Document OCR & Invoice Data Extraction",
+      "expectedCapability": "ai.agent-engineering",
+      "actualWinner": "automation.spreadsheet-automation",
+      "equalScoreCount": 4,
+      "equalScoreCandidates": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": "ai.agent-engineering",
+      "reason": "Equal score tie-break between generic capabilities (engineering.software-implementation, engineering.api-integration, automation.spreadsheet-automation, documentation.technical-documentation)"
+    },
+    {
+      "scenarioId": "SCENARIO_020",
+      "title": "AI Voice Agent Twilio Integration for Appointment Booking",
+      "expectedCapability": "ai.agent-engineering",
+      "actualWinner": "ai.agent-engineering",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 40,
+          "matchedTags": [
+            "api",
+            "integration"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 40,
+          "matchedTags": [
+            "ai",
+            "agent"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "ai.agent-engineering",
+      "reason": "Expected capability ai.agent-engineering has equal score (40) but lost due to alphabetical sorting"
+    },
+    {
+      "scenarioId": "SCENARIO_021",
+      "title": "Automated Code Review Bot for GitHub Pull Requests",
+      "expectedCapability": "ai.agent-engineering",
+      "actualWinner": "ai.agent-engineering",
+      "equalScoreCount": 5,
+      "equalScoreCandidates": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "analysis"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "llm"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "ai.agent-engineering",
+      "reason": "Expected capability ai.agent-engineering has equal score (20) but lost due to alphabetical sorting"
+    },
+    {
+      "scenarioId": "SCENARIO_022",
+      "title": "EU GDPR Data Compliance Policy Review",
+      "expectedCapability": "documentation.technical-documentation",
+      "actualWinner": "automation.spreadsheet-automation",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ]
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "summary"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": "documentation.technical-documentation",
+      "reason": "Equal score tie-break between generic capabilities (automation.spreadsheet-automation, knowledge.research-synthesis)"
+    },
+    {
+      "scenarioId": "SCENARIO_023",
+      "title": "Open Source Software License Audit Report",
+      "expectedCapability": "engineering.repository-audit",
+      "actualWinner": "engineering.software-implementation",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "software"
+          ]
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "report"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": "engineering.repository-audit",
+      "reason": "Equal score tie-break between generic capabilities (engineering.software-implementation, knowledge.research-synthesis)"
+    },
+    {
+      "scenarioId": "SCENARIO_032",
+      "title": "Underwriting Risk Assessment Matrix Generator",
+      "expectedCapability": "documentation.technical-documentation",
+      "actualWinner": "ai.agent-engineering",
+      "equalScoreCount": 3,
+      "equalScoreCandidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "report"
+          ]
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "writing"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": "documentation.technical-documentation",
+      "reason": "Equal score tie-break between generic capabilities (knowledge.research-synthesis, writing.proposal-writing, ai.agent-engineering)"
+    },
+    {
+      "scenarioId": "SCENARIO_037",
+      "title": "Support Knowledge Base Article Writing",
+      "expectedCapability": "documentation.technical-documentation",
+      "actualWinner": "ai.agent-engineering",
+      "equalScoreCount": 3,
+      "equalScoreCandidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "knowledge"
+          ]
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "writing"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": "documentation.technical-documentation",
+      "reason": "Equal score tie-break between generic capabilities (knowledge.research-synthesis, writing.proposal-writing, ai.agent-engineering)"
+    },
+    {
+      "scenarioId": "SCENARIO_041",
+      "title": "E-commerce Order Status WhatsApp Response Bot",
+      "expectedCapability": "ai.agent-engineering",
+      "actualWinner": "engineering.software-implementation",
+      "equalScoreCount": 3,
+      "equalScoreCandidates": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": "ai.agent-engineering",
+      "reason": "Equal score tie-break between generic capabilities (engineering.software-implementation, engineering.api-integration, documentation.technical-documentation)"
+    },
+    {
+      "scenarioId": "SCENARIO_055",
+      "title": "Medical Device Regulatory Summary Translation",
+      "expectedCapability": "knowledge.research-synthesis",
+      "actualWinner": "localization.translation-services",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "summary",
+            "translation"
+          ]
+        },
+        {
+          "id": "localization.translation-services",
+          "name": "Multi-Language Document & UI Translation",
+          "score": 40,
+          "matchedTags": [
+            "translation",
+            "translate"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "knowledge.research-synthesis",
+      "reason": "Expected capability knowledge.research-synthesis has equal score (40) but lost due to alphabetical sorting"
+    },
+    {
+      "scenarioId": "SCENARIO_061",
+      "title": "Social Media Monthly Content Calendar & Copywriting",
+      "expectedCapability": "writing.proposal-writing",
+      "actualWinner": "knowledge.research-synthesis",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "content"
+          ]
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "writing"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "writing.proposal-writing",
+      "reason": "Expected capability writing.proposal-writing has equal score (20) but lost due to alphabetical sorting"
+    },
+    {
+      "scenarioId": "SCENARIO_062",
+      "title": "Lead Magnet E-book Writing on AI Workflows",
+      "expectedCapability": "documentation.technical-documentation",
+      "actualWinner": "automation.workflow-automation",
+      "equalScoreCount": 3,
+      "equalScoreCandidates": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 20,
+          "matchedTags": [
+            "workflow"
+          ]
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "writing"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": "documentation.technical-documentation",
+      "reason": "Equal score tie-break between generic capabilities (automation.workflow-automation, writing.proposal-writing, ai.agent-engineering)"
+    },
+    {
+      "scenarioId": "SCENARIO_069",
+      "title": "Public Health System Data Integration Proposal",
+      "expectedCapability": "documentation.technical-documentation",
+      "actualWinner": "documentation.technical-documentation",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 40,
+          "matchedTags": [
+            "technical",
+            "architecture"
+          ]
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 40,
+          "matchedTags": [
+            "proposal",
+            "rfp"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "documentation.technical-documentation",
+      "reason": "Expected capability documentation.technical-documentation has equal score (40) but lost due to alphabetical sorting"
+    },
+    {
+      "scenarioId": "SCENARIO_084",
+      "title": "Unlimited Free AI Server Infrastructure Without Hosting Cost",
+      "expectedCapability": null,
+      "actualWinner": "creative.3d-rendering",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "model"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": null,
+      "reason": "Equal score tie-break between generic capabilities (ai.agent-engineering, creative.3d-rendering)"
+    },
+    {
+      "scenarioId": "SCENARIO_085",
+      "title": "100% Stock Market Profit Prediction Algorithm Guarantee",
+      "expectedCapability": null,
+      "actualWinner": "ai.agent-engineering",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "market"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": null,
+      "reason": "Equal score tie-break between generic capabilities (knowledge.research-synthesis, ai.agent-engineering)"
+    },
+    {
+      "scenarioId": "SCENARIO_088",
+      "title": "Direct Production Database Migration with Master Admin Key",
+      "expectedCapability": "engineering.software-implementation",
+      "actualWinner": "creative.3d-rendering",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ]
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "product"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": false,
+      "correctWinner": "engineering.software-implementation",
+      "reason": "Equal score tie-break between generic capabilities (automation.spreadsheet-automation, creative.3d-rendering)"
+    },
+    {
+      "scenarioId": "SCENARIO_089",
+      "title": "Live Production Payment Gateway Key Integration",
+      "expectedCapability": "engineering.api-integration",
+      "actualWinner": "creative.3d-rendering",
+      "equalScoreCount": 3,
+      "equalScoreCandidates": [
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "integration"
+          ]
+        },
+        {
+          "id": "testing.quality-assurance",
+          "name": "Automated QA Test Suite & Validation",
+          "score": 20,
+          "matchedTags": [
+            "integration"
+          ]
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "product"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "engineering.api-integration",
+      "reason": "Expected capability engineering.api-integration has equal score (20) but lost due to alphabetical sorting"
+    },
+    {
+      "scenarioId": "SCENARIO_091",
+      "title": "Core Banking API Middleware Deployment",
+      "expectedCapability": "engineering.api-integration",
+      "actualWinner": "engineering.software-implementation",
+      "equalScoreCount": 3,
+      "equalScoreCandidates": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "engineering.api-integration",
+      "reason": "Expected capability engineering.api-integration has equal score (20) but lost due to alphabetical sorting"
+    },
+    {
+      "scenarioId": "SCENARIO_095",
+      "title": "Markdown Documentation Formatting & Readme Update",
+      "expectedCapability": "documentation.technical-documentation",
+      "actualWinner": "knowledge.research-synthesis",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "documentation"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "documentation"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "documentation.technical-documentation",
+      "reason": "Expected capability documentation.technical-documentation has equal score (20) but lost due to alphabetical sorting"
+    },
+    {
+      "scenarioId": "SCENARIO_097",
+      "title": "CSV File Column Renaming & Formatting Utility",
+      "expectedCapability": "automation.spreadsheet-automation",
+      "actualWinner": "automation.spreadsheet-automation",
+      "equalScoreCount": 2,
+      "equalScoreCandidates": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "node"
+          ]
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "csv"
+          ]
+        }
+      ],
+      "currentTieBreakRule": "Alphabetical order on capability name",
+      "isExpectedInTiedSet": true,
+      "correctWinner": "automation.spreadsheet-automation",
+      "reason": "Expected capability automation.spreadsheet-automation has equal score (20) but lost due to alphabetical sorting"
+    }
+  ]
+}
