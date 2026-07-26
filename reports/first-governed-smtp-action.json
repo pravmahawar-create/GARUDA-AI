@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-26T13:52:20.027Z",
+  "timestamp": "2026-07-26T13:54:47.524Z",
   "missionCandidateId": "LIVE_SMTP_PILOT_001",
   "connectorId": "generic_email",
   "authenticationStatus": "authentication_failed",
@@ -8,9 +8,9 @@
     "recipient": "garudaos.ai@gmail.com",
     "subject": "GARUDA First Governed SMTP Test",
     "connector": "generic_email (SMTP)",
-    "executionPackageHash": "275f7a50646c3ea50ef73623b9081d84f154bcdfc873d28157bb9cfe68b90d0c",
+    "executionPackageHash": "e9ca44d8f4bd13e23b494114683b0e1943a62a9b897e1112f45a5a7f03dc9638",
     "sideEffectClassification": "Live Outbound Email Dispatch (Self-Test Only)",
-    "idempotencyKey": "4b53a68e002844d543479fb01e15bb1f225fdab4cf66952cef381b593ee6cd79"
+    "idempotencyKey": "07acda475f1d1bed492d5cf3b3788efbd2926f6db2250fcb2484e5c5496effb3"
   },
   "founderAuthorizationGate": {
     "requiredPhrase": "FOUNDER APPROVED FIRST SMTP SELF-TEST",
@@ -20,8 +20,8 @@
   "executionResult": {
     "smtpExecutionStatus": "failed",
     "providerAcceptance": "rejected_by_provider",
-    "failureCode": "SMTP_535_BAD_CREDENTIALS",
-    "errorMessage": "SMTP Server Error (535): 535-5.7.8 Username and Password not accepted. For more information, go to\r\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials a92af1059eb24-13e585ae882sm10671625c88.6 - gsmtp",
+    "failureCode": "SMTP_AUTHENTICATION_ERROR",
+    "errorMessage": "SMTP Server Error (535): 535-5.7.8 Username and Password not accepted. For more information, go to\r\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5a478bee46e88-314bc548f5dsm24579565eec.17 - gsmtp",
     "providerResponseId": null,
     "emailsSent": 0,
     "networkSideEffectsExecuted": 0
