@@ -1,0 +1,29 @@
+{
+  "totalGaps": 4,
+  "capabilityGaps": [
+    {
+      "category": "Creative & Design",
+      "gapType": "Missing Capability in Registry",
+      "details": "Graphic design, 3D CAD rendering, motion graphics, audio post-production capabilities missing from capabilityRegistryService.js",
+      "remedy": "Define creative.vector-design, creative.motion-graphics, creative.3d-rendering in capability registry"
+    },
+    {
+      "category": "Language & Localization",
+      "gapType": "Missing Capability in Registry",
+      "details": "Translation & localization capabilities for multi-language documents missing from registry",
+      "remedy": "Define localization.translation-services capability in registry"
+    },
+    {
+      "category": "Software & Database",
+      "gapType": "Keyword & Tag Weakness",
+      "details": "Keywords like \"query\", \"audit\", \"optimization\", \"docker\", \"auth0\" lack tag matching weight in capabilityRegistryService.js",
+      "remedy": "Expand tags for engineering.repository-audit, engineering.software-implementation, engineering.api-integration"
+    },
+    {
+      "category": "Marketing & Content",
+      "gapType": "Tag Weight & Scoring Weakness",
+      "details": "Marketing strategy, copywriting, SEO keywords score below minimumScore threshold (20)",
+      "remedy": "Add tags \"marketing\", \"seo\", \"outreach\", \"content\" to writing.proposal-writing & knowledge.research-synthesis"
+    }
+  ]
+}

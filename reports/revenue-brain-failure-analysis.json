@@ -1,21 +1,16 @@
 {
-  "date": "2026-07-26T06:23:50.235Z",
-  "gitCommit": "648c021",
-  "totalScenarios": 100,
-  "passed": 52,
-  "failed": 48,
-  "accuracy": {
-    "qualification": "99.00%",
-    "classification": "89.00%",
-    "capability": "56.00%",
-    "feasibility": "98.00%",
-    "risk": "99.00%",
-    "overall": "52.00%"
+  "totalFailures": 54,
+  "rootCauseDistribution": {
+    "C. Capability mapping incorrect": 31,
+    "B. Capability missing": 12,
+    "D. Classification weakness": 10,
+    "E. Requirement extraction weakness": 1
   },
-  "failureBreakdown": [
+  "failures": [
     {
       "scenarioId": "SCENARIO_003",
-      "expected": {
+      "category": "Upwork Software",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Upwork Software",
         "capabilities": [
@@ -26,7 +21,7 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Upwork Software",
         "capabilities": [
@@ -36,12 +31,73 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+    },
+    {
+      "scenarioId": "SCENARIO_005",
+      "category": "Upwork Software",
+      "expectedResult": {
+        "qualification": "qualified",
+        "category": "Upwork Software",
+        "capabilities": [
+          "engineering.software-implementation"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "actualResult": {
+        "qualification": "qualified",
+        "category": "Upwork Software",
+        "capabilities": [
+          "ai.agent-engineering",
+          "engineering.api-integration"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+    },
+    {
+      "scenarioId": "SCENARIO_006",
+      "category": "Upwork Software",
+      "expectedResult": {
+        "qualification": "qualified",
+        "category": "Upwork Software",
+        "capabilities": [
+          "engineering.api-integration",
+          "engineering.software-implementation"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "actualResult": {
+        "qualification": "qualified",
+        "category": "Upwork Software",
+        "capabilities": [
+          "engineering.api-integration"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_008",
-      "expected": {
+      "category": "Fiverr Creative",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
@@ -51,7 +107,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
@@ -61,12 +117,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
     },
     {
       "scenarioId": "SCENARIO_009",
-      "expected": {
+      "category": "Fiverr Creative",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
@@ -76,7 +135,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [],
@@ -84,12 +143,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
     },
     {
       "scenarioId": "SCENARIO_010",
-      "expected": {
+      "category": "Fiverr Creative",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
@@ -99,7 +161,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
@@ -109,12 +171,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
     },
     {
       "scenarioId": "SCENARIO_011",
-      "expected": {
+      "category": "Fiverr Creative",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
@@ -124,7 +189,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [],
@@ -132,12 +197,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
     },
     {
       "scenarioId": "SCENARIO_012",
-      "expected": {
+      "category": "Fiverr Creative",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
@@ -147,7 +215,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [],
@@ -155,12 +223,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
     },
     {
       "scenarioId": "SCENARIO_013",
-      "expected": {
+      "category": "Fiverr Creative",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
@@ -170,7 +241,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
@@ -181,12 +252,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "failedEngine": "Classifier, Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
     },
     {
       "scenarioId": "SCENARIO_014",
-      "expected": {
+      "category": "Fiverr Creative",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
@@ -196,7 +270,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [],
@@ -204,12 +278,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
     },
     {
       "scenarioId": "SCENARIO_015",
-      "expected": {
+      "category": "AI Automation",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "AI Automation",
         "capabilities": [
@@ -220,7 +297,7 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "AI Automation",
         "capabilities": [
@@ -230,12 +307,15 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_016",
-      "expected": {
+      "category": "AI Automation",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "AI Automation",
         "capabilities": [
@@ -245,7 +325,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Data Entry",
         "capabilities": [
@@ -255,12 +335,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier",
-      "reason": "Mismatched engine outputs: Classifier"
+      "failedEngine": "Classifier",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_018",
-      "expected": {
+      "category": "AI Automation",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "AI Automation",
         "capabilities": [
@@ -271,7 +354,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Upwork Software",
         "capabilities": [
@@ -282,12 +365,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "failedEngine": "Classifier, Capability",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_019",
-      "expected": {
+      "category": "AI Automation",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "AI Automation",
         "capabilities": [
@@ -297,7 +383,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [],
@@ -305,12 +391,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "failedEngine": "Classifier, Capability",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_021",
-      "expected": {
+      "category": "AI Automation",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "AI Automation",
         "capabilities": [
@@ -321,7 +410,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "AI Automation",
         "capabilities": [
@@ -331,12 +420,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_022",
-      "expected": {
+      "category": "Legal Research",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Legal Research",
         "capabilities": [
@@ -347,7 +439,7 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Legal Research",
         "capabilities": [
@@ -357,12 +449,15 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_023",
-      "expected": {
+      "category": "Legal Research",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Legal Research",
         "capabilities": [
@@ -373,7 +468,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Legal Research",
         "capabilities": [
@@ -383,12 +478,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_025",
-      "expected": {
+      "category": "Legal Research",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Legal Research",
         "capabilities": [
@@ -399,7 +497,7 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Upwork Software",
         "capabilities": [],
@@ -407,12 +505,15 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "failedEngine": "Classifier, Capability",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_026",
-      "expected": {
+      "category": "Legal Research",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Legal Research",
         "capabilities": [
@@ -422,7 +523,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Legal Research",
         "capabilities": [
@@ -433,12 +534,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_027",
-      "expected": {
+      "category": "Legal Research",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Legal Research",
         "capabilities": [
@@ -448,7 +552,7 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Legal Research",
         "capabilities": [
@@ -458,12 +562,15 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_032",
-      "expected": {
+      "category": "Insurance",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Insurance",
         "capabilities": [
@@ -474,7 +581,7 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Insurance",
         "capabilities": [
@@ -484,12 +591,15 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_033",
-      "expected": {
+      "category": "Insurance",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Insurance",
         "capabilities": [
@@ -499,7 +609,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Insurance",
         "capabilities": [
@@ -509,12 +619,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_034",
-      "expected": {
+      "category": "Insurance",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Insurance",
         "capabilities": [
@@ -525,7 +638,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Insurance",
         "capabilities": [
@@ -535,12 +648,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_036",
-      "expected": {
+      "category": "Customer Support",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -551,7 +667,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -561,12 +677,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_037",
-      "expected": {
+      "category": "Customer Support",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -577,7 +696,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -587,12 +706,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_038",
-      "expected": {
+      "category": "Customer Support",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -603,7 +725,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [],
@@ -611,12 +733,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_039",
-      "expected": {
+      "category": "Customer Support",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -627,7 +752,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -637,12 +762,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_040",
-      "expected": {
+      "category": "Customer Support",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -652,7 +780,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [],
@@ -660,12 +788,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_041",
-      "expected": {
+      "category": "Customer Support",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -676,7 +807,7 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Upwork Software",
         "capabilities": [
@@ -686,12 +817,15 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "failedEngine": "Classifier, Capability",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_042",
-      "expected": {
+      "category": "Customer Support",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -702,7 +836,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Customer Support",
         "capabilities": [
@@ -712,12 +846,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_045",
-      "expected": {
+      "category": "Data Entry",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Data Entry",
         "capabilities": [
@@ -727,7 +864,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Upwork Software",
         "capabilities": [
@@ -737,12 +874,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier",
-      "reason": "Mismatched engine outputs: Classifier"
+      "failedEngine": "Classifier",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_046",
-      "expected": {
+      "category": "Data Entry",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Data Entry",
         "capabilities": [
@@ -752,7 +892,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Physical Onsite",
         "capabilities": [
@@ -762,12 +902,15 @@
         "riskLevel": "high",
         "decision": "escalate"
       },
-      "whichEngineFailed": "Classifier, Feasibility, Risk, Decision",
-      "reason": "Mismatched engine outputs: Classifier, Feasibility, Risk, Decision"
+      "failedEngine": "Classifier, Feasibility, Risk, Decision",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_047",
-      "expected": {
+      "category": "Data Entry",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Data Entry",
         "capabilities": [
@@ -778,7 +921,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Data Entry",
         "capabilities": [
@@ -788,12 +931,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_049",
-      "expected": {
+      "category": "Data Entry",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Data Entry",
         "capabilities": [
@@ -803,7 +949,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Data Entry",
         "capabilities": [
@@ -813,12 +959,43 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
-      "scenarioId": "SCENARIO_054",
-      "expected": {
+      "scenarioId": "SCENARIO_050",
+      "category": "Translation",
+      "expectedResult": {
+        "qualification": "qualified",
+        "category": "Translation",
+        "capabilities": [
+          "knowledge.research-synthesis"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "actualResult": {
+        "qualification": "qualified",
+        "category": "Translation",
+        "capabilities": [
+          "engineering.software-implementation"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+    },
+    {
+      "scenarioId": "SCENARIO_051",
+      "category": "Translation",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Translation",
         "capabilities": [
@@ -829,7 +1006,25 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
+        "qualification": "qualified",
+        "category": "Translation",
+        "capabilities": [
+          "documentation.technical-documentation"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+    },
+    {
+      "scenarioId": "SCENARIO_053",
+      "category": "Translation",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Translation",
         "capabilities": [
@@ -839,25 +1034,52 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "actualResult": {
+        "qualification": "qualified",
+        "category": "Translation",
+        "capabilities": [],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
     },
     {
-      "scenarioId": "SCENARIO_057",
-      "expected": {
+      "scenarioId": "SCENARIO_054",
+      "category": "Translation",
+      "expectedResult": {
         "qualification": "qualified",
-        "category": "Marketing",
+        "category": "Translation",
         "capabilities": [
-          "knowledge.research-synthesis",
-          "writing.proposal-writing"
+          "documentation.technical-documentation",
+          "knowledge.research-synthesis"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
-        "category": "Marketing",
+        "category": "Translation",
+        "capabilities": [],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+    },
+    {
+      "scenarioId": "SCENARIO_056",
+      "category": "Translation",
+      "expectedResult": {
+        "qualification": "qualified",
+        "category": "Translation",
         "capabilities": [
           "knowledge.research-synthesis"
         ],
@@ -865,12 +1087,23 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "actualResult": {
+        "qualification": "qualified",
+        "category": "Translation",
+        "capabilities": [],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "B. Capability missing",
+      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
     },
     {
-      "scenarioId": "SCENARIO_058",
-      "expected": {
+      "scenarioId": "SCENARIO_057",
+      "category": "Marketing",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
@@ -881,7 +1114,34 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
+        "qualification": "qualified",
+        "category": "Marketing",
+        "capabilities": [],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+    },
+    {
+      "scenarioId": "SCENARIO_058",
+      "category": "Marketing",
+      "expectedResult": {
+        "qualification": "qualified",
+        "category": "Marketing",
+        "capabilities": [
+          "knowledge.research-synthesis",
+          "writing.proposal-writing"
+        ],
+        "feasibility": "feasible",
+        "riskLevel": "low",
+        "decision": "approve"
+      },
+      "actualResult": {
         "qualification": "qualified",
         "category": "Upwork Software",
         "capabilities": [
@@ -891,12 +1151,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "failedEngine": "Classifier, Capability",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_060",
-      "expected": {
+      "category": "Marketing",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
@@ -907,7 +1170,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
@@ -917,12 +1180,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_062",
-      "expected": {
+      "category": "Marketing",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
@@ -933,7 +1199,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
@@ -944,12 +1210,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_065",
-      "expected": {
+      "category": "Government Tender",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Government Tender",
         "capabilities": [
@@ -959,7 +1228,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Government Tender",
         "capabilities": [
@@ -970,12 +1239,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_066",
-      "expected": {
+      "category": "Government Tender",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Government Tender",
         "capabilities": [
@@ -986,7 +1258,7 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Government Tender",
         "capabilities": [
@@ -996,12 +1268,15 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_084",
-      "expected": {
+      "category": "Unrealistic Projects",
+      "expectedResult": {
         "qualification": "unqualified",
         "category": "Unrealistic Projects",
         "capabilities": [],
@@ -1009,7 +1284,7 @@
         "riskLevel": "medium",
         "decision": "reject"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Unrealistic Projects",
         "capabilities": [
@@ -1019,12 +1294,15 @@
         "riskLevel": "medium",
         "decision": "approve"
       },
-      "whichEngineFailed": "Qualification, Capability, Feasibility, Decision",
-      "reason": "Mismatched engine outputs: Qualification, Capability, Feasibility, Decision"
+      "failedEngine": "Qualification, Capability, Feasibility, Decision",
+      "confidence": 90,
+      "rootCauseClassification": "E. Requirement extraction weakness",
+      "rootCauseDescription": "Unrealistic project bounds or scam detection heuristic missed specific phrase trigger"
     },
     {
       "scenarioId": "SCENARIO_088",
-      "expected": {
+      "category": "High Risk Projects",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
@@ -1034,7 +1312,7 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
@@ -1044,12 +1322,15 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_090",
-      "expected": {
+      "category": "High Risk Projects",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
@@ -1059,7 +1340,7 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [],
@@ -1067,12 +1348,15 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_092",
-      "expected": {
+      "category": "High Risk Projects",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
@@ -1082,7 +1366,7 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
@@ -1092,12 +1376,15 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_093",
-      "expected": {
+      "category": "High Risk Projects",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
@@ -1107,7 +1394,7 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
@@ -1117,12 +1404,15 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_094",
-      "expected": {
+      "category": "High Risk Projects",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
@@ -1132,7 +1422,7 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [],
@@ -1140,12 +1430,15 @@
         "riskLevel": "high",
         "decision": "hold"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     },
     {
       "scenarioId": "SCENARIO_096",
-      "expected": {
+      "category": "Low Risk Projects",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Low Risk Projects",
         "capabilities": [
@@ -1155,7 +1448,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
@@ -1165,12 +1458,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "failedEngine": "Classifier, Capability",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_097",
-      "expected": {
+      "category": "Low Risk Projects",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Low Risk Projects",
         "capabilities": [
@@ -1181,7 +1477,7 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Data Entry",
         "capabilities": [
@@ -1192,12 +1488,15 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier",
-      "reason": "Mismatched engine outputs: Classifier"
+      "failedEngine": "Classifier",
+      "confidence": 90,
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
     },
     {
       "scenarioId": "SCENARIO_100",
-      "expected": {
+      "category": "Low Risk Projects",
+      "expectedResult": {
         "qualification": "qualified",
         "category": "Low Risk Projects",
         "capabilities": [
@@ -1207,7 +1506,7 @@
         "riskLevel": "none",
         "decision": "approve"
       },
-      "actual": {
+      "actualResult": {
         "qualification": "qualified",
         "category": "Low Risk Projects",
         "capabilities": [],
@@ -1215,8 +1514,10 @@
         "riskLevel": "none",
         "decision": "approve"
       },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
+      "failedEngine": "Capability",
+      "confidence": 90,
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
     }
   ]
 }
