@@ -1,0 +1,10 @@
+{
+  "name": "garuda-backend-node",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "npx typescript --noEmit -p tsconfig.json",
+    "test:risk": "node -e \"require('child_process').execSync('npx typescript --ignoreConfig --module commonjs --target es2020 --outDir dist src/services/riskAssessmentService.ts src/riskAssessment.test.ts && node dist/riskAssessment.test.js', { stdio: 'inherit' })\"",
+    "test": "npm run typecheck && npm run test:risk"
+  }
+}
