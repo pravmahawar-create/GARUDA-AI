@@ -3,7 +3,7 @@ const { evaluateClassifier, evaluateCapabilities } = require('./founderValidatio
 const revenueOrchestrator = require('../src/services/revenueOrchestratorService');
 
 function runRegressionTests() {
-  console.log('Running Founder Validation Anti-Circular, Classification & Security Invariant Tests...\n');
+  console.log('Running Founder Validation Anti-Circular, Classification, Security & Registry Gap Tests...\n');
 
   // Test 1: Classification Anti-Circular Test
   {
@@ -168,7 +168,40 @@ function runRegressionTests() {
     console.log('✔ Test 5 — Defensive security & smart contract safety invariants passed (10/10 cases passed)');
   }
 
-  console.log('\nAll Founder Validation Anti-Circular, Classification & Security Invariant Tests PASSED cleanly.');
+  // Test 6: Registry Coverage Gap Expansion & Collision Invariants
+  {
+    const gapCases = [
+      {
+        name: 'Full-Stack E-Commerce Web App',
+        input: { title: 'Full-Stack E-Commerce Web App with Stripe Integration', description: 'Build Node.js/React online store with Stripe payment gateway' },
+        expectedCap: 'engineering.software-implementation'
+      },
+      {
+        name: 'React Native Mobile App Prototype',
+        input: { title: 'Mobile Fitness Tracking App React Native Prototype', description: 'Develop iOS/Android cross-platform prototype' },
+        expectedCap: 'engineering.software-implementation'
+      },
+      {
+        name: 'PostgreSQL Multi-Tenant Schema Refactoring',
+        input: { title: 'PostgreSQL Multi-Tenant Database Schema Refactoring', description: 'Refactor relational database tables for tenant isolation' },
+        expectedCap: 'engineering.software-implementation'
+      },
+      {
+        name: 'Intercom Chatbot Decision Tree',
+        input: { title: 'Intercom Chatbot Decision Tree Setup', description: 'Configure qualification chatbot flow in Intercom' },
+        expectedCap: 'ai.agent-engineering'
+      }
+    ];
+
+    gapCases.forEach((tc) => {
+      const match = revenueOrchestrator.matchDemand(tc.input);
+      assert.strictEqual(match.primaryCapability, tc.expectedCap, `Gap test '${tc.name}' primary capability must be '${tc.expectedCap}' but got '${match.primaryCapability}'`);
+    });
+
+    console.log('✔ Test 6 — Registry coverage gap expansion & collision invariants passed (4/4 cases passed)');
+  }
+
+  console.log('\nAll Founder Validation Anti-Circular, Classification, Security & Registry Gap Tests PASSED cleanly.');
 }
 
 runRegressionTests();

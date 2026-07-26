@@ -26,7 +26,10 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
       "nextjs", "oauth", "auth0", "jwt", "scraping", "database migration", "schema migration",
       "sql migration", "migration", "iam", "aws", "policy", "permission", "smart contract",
       "ethereum", "solidity", "crypto", "contract deployment", "token contract", "presale contract",
-      "crypto token", "html", "css", "flexbox", "layout fix", "landing page", "frontend styling"
+      "crypto token", "html", "css", "flexbox", "layout fix", "landing page", "frontend styling",
+      "full-stack", "online store", "e-commerce", "e-commerce web app", "payment gateway",
+      "react native", "mobile app", "fitness tracking", "prototype", "database schema",
+      "schema refactoring", "tenant isolation", "relational database"
     ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
@@ -118,7 +121,8 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
       "routing", "escalation", "alert", "deduplication", "enrichment", "monitoring",
       "notice", "extraction", "ocr", "flow", "tree", "crm", "hubspot", "zendesk",
       "intercom", "freshdesk", "sla", "email", "document", "approval", "orchestration",
-      "make.com", "business process automation", "multi-step automation", "api workflow", "task orchestration"
+      "make.com", "business process automation", "multi-step automation", "api workflow", "task orchestration",
+      "lead distribution", "agent portal", "sales agents", "zipcode", "receipt expense", "receipt entry", "quickbooks csv"
     ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
@@ -140,7 +144,10 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: [],
     relatedCapabilities: ["data.data-analysis"],
-    tags: ["spreadsheet", "excel", "csv", "sheets", "data", "finance", "table"],
+    tags: [
+      "spreadsheet", "excel", "csv", "sheets", "data", "finance", "table",
+      "nps survey", "survey analysis", "sentiment report", "customer feedback comments"
+    ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
@@ -168,7 +175,8 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
       "market", "seo", "marketing", "content", "translation", "localization",
       "spanish", "german", "french", "legal", "legal research", "case law",
       "statute", "uspto", "trademark", "copyright", "patent", "patent search",
-      "prior art", "privacy", "policy", "gdpr", "compliance", "regulatory", "synthesis", "literature"
+      "prior art", "privacy", "policy", "gdpr", "compliance", "regulatory", "synthesis", "literature",
+      "outbound sequence", "cold email sequence", "outreach drafting", "lead magnet", "whitepaper guide", "e-book writing", "feasibility study", "smart city", "iot study"
     ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
@@ -195,7 +203,8 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     relatedCapabilities: ["knowledge.research-synthesis", "writing.proposal-writing"],
     tags: [
       "documentation", "api", "spec", "manual", "technical", "diagram", "architecture",
-      "readme", "license", "boilerplate", "setup", "guidelines", "help", "articles", "troubleshooting", "knowledge base"
+      "readme", "license", "boilerplate", "setup", "guidelines", "help", "articles", "troubleshooting", "knowledge base",
+      "lead magnet", "whitepaper guide", "e-book writing"
     ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
@@ -219,7 +228,8 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     relatedCapabilities: ["documentation.technical-documentation"],
     tags: [
       "proposal", "quotation", "rfp", "bid", "commercial", "writing", "intake",
-      "terms of service", "privacy policy", "contract", "clause", "legal drafting", "copy", "outreach", "email"
+      "terms of service", "privacy policy", "contract", "clause", "legal drafting", "copy", "outreach", "email",
+      "content strategy", "blog article", "article package", "blog post"
     ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
@@ -243,7 +253,13 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: ["engineering.software-implementation"],
     relatedCapabilities: ["engineering.api-integration"],
-    tags: ["ai", "agent", "rag", "llm", "prompt", "vector", "search", "automation"],
+    tags: [
+      "ai", "agent", "rag", "llm", "prompt", "vector", "search", "automation",
+      "claims photo", "damage categorization", "photo categorization", "auto-responder",
+      "ticket categorization", "zendesk auto-reply", "chatbot", "decision tree",
+      "qualification chatbot", "intercom chatbot", "response bot", "whatsapp bot",
+      "order status bot", "draft generator", "support email generator", "ai draft"
+    ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,

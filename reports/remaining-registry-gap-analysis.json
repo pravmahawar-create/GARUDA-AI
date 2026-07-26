@@ -1,0 +1,1052 @@
+{
+  "totalFailures": 25,
+  "gapFailures": [
+    {
+      "scenarioId": "SCENARIO_003",
+      "title": "PostgreSQL Database Query Optimization",
+      "description": "Audit slow SQL queries and optimize indexes for PostgreSQL database",
+      "expectedCapabilities": [
+        "engineering.repository-audit",
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "engineering.repository-audit"
+      ],
+      "candidates": [
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 100,
+          "matchedTags": [
+            "audit",
+            "database",
+            "sql",
+            "postgres",
+            "query",
+            "optimization",
+            "queries",
+            "query optimization"
+          ]
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "software"
+          ]
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ]
+        }
+      ],
+      "text": "postgresql database query optimization audit slow sql queries and optimize indexes for postgresql database database optimization requiring performance audit"
+    },
+    {
+      "scenarioId": "SCENARIO_009",
+      "title": "UI/UX Figma Mockups for Mobile App",
+      "description": "Create interactive Figma wireframes and mobile screen prototypes",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.vector-design"
+      ],
+      "candidates": [
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "figma",
+            "creative"
+          ]
+        },
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        }
+      ],
+      "text": "ui/ux figma mockups for mobile app create interactive figma wireframes and mobile screen prototypes figma ui prototype design package"
+    },
+    {
+      "scenarioId": "SCENARIO_010",
+      "title": "Animated Explainer Video Motion Graphics",
+      "description": "30-second 2D motion graphic explainer video for product launch",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.motion-graphics",
+        "creative.vector-design"
+      ],
+      "candidates": [
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 100,
+          "matchedTags": [
+            "video",
+            "motion",
+            "graphics",
+            "explainer",
+            "creative"
+          ]
+        },
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "graphics",
+            "creative"
+          ]
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 40,
+          "matchedTags": [
+            "product",
+            "creative"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "text": "animated explainer video motion graphics 30-second 2d motion graphic explainer video for product launch motion graphics animation gig"
+    },
+    {
+      "scenarioId": "SCENARIO_011",
+      "title": "Podcast Audio Editing & Noise Reduction",
+      "description": "Clean up 45-minute podcast episode audio, remove background hum and balance levels",
+      "expectedCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "creative.motion-graphics"
+      ],
+      "candidates": [
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 80,
+          "matchedTags": [
+            "editing",
+            "podcast",
+            "creative",
+            "audio"
+          ]
+        },
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        }
+      ],
+      "text": "podcast audio editing & noise reduction clean up 45-minute podcast episode audio, remove background hum and balance levels audio post-production service"
+    },
+    {
+      "scenarioId": "SCENARIO_012",
+      "title": "3D Product Render & CAD Illustration",
+      "description": "Render 3D CAD model of consumer electronic product in Blender",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.3d-rendering"
+      ],
+      "candidates": [
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 100,
+          "matchedTags": [
+            "3d",
+            "cad",
+            "blender",
+            "product",
+            "creative",
+            "model"
+          ]
+        },
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        }
+      ],
+      "text": "3d product render & cad illustration render 3d cad model of consumer electronic product in blender blender 3d visualization project"
+    },
+    {
+      "scenarioId": "SCENARIO_013",
+      "title": "Social Media Banner & Graphic Design Package",
+      "description": "Design 10 promotional social media banners for marketing campaign",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.vector-design",
+        "knowledge.research-synthesis"
+      ],
+      "candidates": [
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 80,
+          "matchedTags": [
+            "design",
+            "graphics",
+            "creative",
+            "banner"
+          ]
+        },
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 60,
+          "matchedTags": [
+            "motion",
+            "graphics",
+            "creative"
+          ]
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "market",
+            "marketing"
+          ]
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "text": "social media banner & graphic design package design 10 promotional social media banners for marketing campaign banner graphic design gig"
+    },
+    {
+      "scenarioId": "SCENARIO_014",
+      "title": "E-book Layout & Cover Typography",
+      "description": "Format 50-page e-book PDF layout with custom typography and chapter headers",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.vector-design"
+      ],
+      "candidates": [
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "creative",
+            "layout"
+          ]
+        },
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        }
+      ],
+      "text": "e-book layout & cover typography format 50-page e-book pdf layout with custom typography and chapter headers e-book layout formatting service"
+    },
+    {
+      "scenarioId": "SCENARIO_015",
+      "title": "n8n Customer Lead Intake Workflow Automation",
+      "description": "Build automated n8n pipeline to parse incoming leads from Typeform into HubSpot CRM",
+      "expectedCapabilities": [
+        "automation.workflow-automation",
+        "engineering.api-integration"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "candidates": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 100,
+          "matchedTags": [
+            "automation",
+            "workflow",
+            "n8n",
+            "pipeline",
+            "flow",
+            "crm",
+            "hubspot"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 40,
+          "matchedTags": [
+            "ai",
+            "automation"
+          ]
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "automation"
+          ]
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "intake"
+          ]
+        }
+      ],
+      "text": "n8n customer lead intake workflow automation build automated n8n pipeline to parse incoming leads from typeform into hubspot crm n8n workflow automation needing founder approval for trigger execution"
+    },
+    {
+      "scenarioId": "SCENARIO_018",
+      "title": "Automated Document OCR & Invoice Data Extraction",
+      "description": "Extract line items from PDF invoices using OCR API and write to PostgreSQL",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "candidates": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 80,
+          "matchedTags": [
+            "automation",
+            "extraction",
+            "ocr",
+            "document"
+          ]
+        },
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 40,
+          "matchedTags": [
+            "database",
+            "postgres"
+          ]
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 40,
+          "matchedTags": [
+            "automation",
+            "api"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 40,
+          "matchedTags": [
+            "ai",
+            "automation"
+          ]
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ]
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        }
+      ],
+      "text": "automated document ocr & invoice data extraction extract line items from pdf invoices using ocr api and write to postgresql invoice data extraction pipeline"
+    },
+    {
+      "scenarioId": "SCENARIO_022",
+      "title": "EU GDPR Data Compliance Policy Review",
+      "description": "Synthesize summary of GDPR regulatory requirements for SaaS user data retention",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "candidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 100,
+          "matchedTags": [
+            "research",
+            "summary",
+            "legal",
+            "legal research",
+            "policy",
+            "gdpr",
+            "compliance",
+            "regulatory"
+          ]
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "policy"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "search"
+          ]
+        },
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 20,
+          "matchedTags": [
+            "review"
+          ]
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ]
+        }
+      ],
+      "text": "eu gdpr data compliance policy review synthesize summary of gdpr regulatory requirements for saas user data retention information research synthesis of public gdpr regulations"
+    },
+    {
+      "scenarioId": "SCENARIO_032",
+      "title": "Underwriting Risk Assessment Matrix Generator",
+      "description": "Create automated report comparing applicant risk metrics against underwriting criteria",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "candidates": [
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "writing"
+          ]
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "report"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "text": "underwriting risk assessment matrix generator create automated report comparing applicant risk metrics against underwriting criteria risk analysis matrix generation report"
+    },
+    {
+      "scenarioId": "SCENARIO_033",
+      "title": "Insurance Agent Portal Lead Distribution Script",
+      "description": "Assign inbound insurance leads to regional sales agents based on zipcode",
+      "expectedCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "ai.agent-engineering",
+        "engineering.repository-audit"
+      ],
+      "candidates": [
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "agent"
+          ]
+        },
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 20,
+          "matchedTags": [
+            "code"
+          ]
+        }
+      ],
+      "text": "insurance agent portal lead distribution script assign inbound insurance leads to regional sales agents based on zipcode lead routing automation for insurance agency"
+    },
+    {
+      "scenarioId": "SCENARIO_034",
+      "title": "Property Damage Claims Photo Categorization",
+      "description": "Classify vehicle damage photos into severe, moderate, minor categories",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "ai.agent-engineering"
+      ],
+      "candidates": [
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "text": "property damage claims photo categorization classify vehicle damage photos into severe, moderate, minor categories image classification workflow for claims handling"
+    },
+    {
+      "scenarioId": "SCENARIO_036",
+      "title": "Zendesk Automated Ticket Auto-Responder Workflow",
+      "description": "Set up Zendesk trigger rules to categorize incoming support tickets and auto-reply",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "candidates": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 80,
+          "matchedTags": [
+            "workflow",
+            "trigger",
+            "flow",
+            "zendesk"
+          ]
+        }
+      ],
+      "text": "zendesk automated ticket auto-responder workflow set up zendesk trigger rules to categorize incoming support tickets and auto-reply helpdesk support ticket routing setup"
+    },
+    {
+      "scenarioId": "SCENARIO_038",
+      "title": "Intercom Chatbot Decision Tree Setup",
+      "description": "Configure qualification chatbot flow in Intercom for SaaS website visitors",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "candidates": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 60,
+          "matchedTags": [
+            "flow",
+            "tree",
+            "intercom"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "setup"
+          ]
+        }
+      ],
+      "text": "intercom chatbot decision tree setup configure qualification chatbot flow in intercom for saas website visitors chatbot flow configuration"
+    },
+    {
+      "scenarioId": "SCENARIO_039",
+      "title": "Customer NPS Survey Analysis & Sentiment Report",
+      "description": "Analyze 500 customer feedback comments and output sentiment distribution report",
+      "expectedCapabilities": [
+        "automation.spreadsheet-automation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "candidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "analysis",
+            "report"
+          ]
+        },
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 20,
+          "matchedTags": [
+            "database"
+          ]
+        }
+      ],
+      "text": "customer nps survey analysis & sentiment report analyze 500 customer feedback comments and output sentiment distribution report customer feedback sentiment analysis task"
+    },
+    {
+      "scenarioId": "SCENARIO_041",
+      "title": "E-commerce Order Status WhatsApp Response Bot",
+      "description": "Integrate WhatsApp Business API with Shopify to auto-answer 'Where is my order?'",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "engineering.api-integration"
+      ],
+      "actualCapabilities": [
+        "engineering.api-integration"
+      ],
+      "candidates": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        }
+      ],
+      "text": "e-commerce order status whatsapp response bot integrate whatsapp business api with shopify to auto-answer 'where is my order?' messaging api order inquiry chatbot"
+    },
+    {
+      "scenarioId": "SCENARIO_042",
+      "title": "Multilingual Support Email Draft Generator",
+      "description": "Generate auto-translated draft responses for customer support inquiries",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "ai.agent-engineering"
+      ],
+      "candidates": [
+        {
+          "id": "localization.translation-services",
+          "name": "Multi-Language Document & UI Translation",
+          "score": 40,
+          "matchedTags": [
+            "translate",
+            "multilingual"
+          ]
+        },
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 40,
+          "matchedTags": [
+            "sla",
+            "email"
+          ]
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "email"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "text": "multilingual support email draft generator generate auto-translated draft responses for customer support inquiries ai support response translation drafting tool"
+    },
+    {
+      "scenarioId": "SCENARIO_047",
+      "title": "Receipt Expense Categorization & Entry",
+      "description": "Parse receipt images, extract total amounts and dates into QuickBooks CSV format",
+      "expectedCapabilities": [
+        "automation.spreadsheet-automation",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "automation.spreadsheet-automation"
+      ],
+      "candidates": [
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 60,
+          "matchedTags": [
+            "spreadsheet",
+            "csv",
+            "data"
+          ]
+        }
+      ],
+      "text": "receipt expense categorization & entry parse receipt images, extract total amounts and dates into quickbooks csv format expense receipt data entry automation"
+    },
+    {
+      "scenarioId": "SCENARIO_054",
+      "title": "Arabic Corporate Presentation Translation",
+      "description": "Translate 15 PowerPoint pitch deck slides from English into Arabic",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "candidates": [
+        {
+          "id": "localization.translation-services",
+          "name": "Multi-Language Document & UI Translation",
+          "score": 60,
+          "matchedTags": [
+            "translation",
+            "translate",
+            "arabic"
+          ]
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "translation"
+          ]
+        },
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 20,
+          "matchedTags": [
+            "sla"
+          ]
+        }
+      ],
+      "text": "arabic corporate presentation translation translate 15 powerpoint pitch deck slides from english into arabic corporate presentation translation"
+    },
+    {
+      "scenarioId": "SCENARIO_057",
+      "title": "B2B SaaS Content Strategy & Blog Article Package",
+      "description": "Write 4 SEO-optimized blog posts on cloud security best practices",
+      "expectedCapabilities": [
+        "knowledge.research-synthesis",
+        "writing.proposal-writing"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "candidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 80,
+          "matchedTags": [
+            "market",
+            "seo",
+            "marketing",
+            "content"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "articles"
+          ]
+        }
+      ],
+      "text": "b2b saas content strategy & blog article package write 4 seo-optimized blog posts on cloud security best practices technical content marketing article writing"
+    },
+    {
+      "scenarioId": "SCENARIO_058",
+      "title": "Cold Email Outreach Sequence Drafting for Agency",
+      "description": "Draft 5-step outbound B2B cold email sequence targeting CTOs",
+      "expectedCapabilities": [
+        "knowledge.research-synthesis",
+        "writing.proposal-writing"
+      ],
+      "actualCapabilities": [
+        "writing.proposal-writing"
+      ],
+      "candidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "market",
+            "marketing"
+          ]
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 40,
+          "matchedTags": [
+            "outreach",
+            "email"
+          ]
+        },
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 20,
+          "matchedTags": [
+            "email"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "text": "cold email outreach sequence drafting for agency draft 5-step outbound b2b cold email sequence targeting ctos b2b sales outreach copy creation"
+    },
+    {
+      "scenarioId": "SCENARIO_062",
+      "title": "Lead Magnet E-book Writing on AI Workflows",
+      "description": "Draft 15-page whitepaper guide on automating enterprise operations",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation",
+        "writing.proposal-writing"
+      ],
+      "candidates": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "market",
+            "marketing"
+          ]
+        },
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 40,
+          "matchedTags": [
+            "workflow",
+            "flow"
+          ]
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "writing"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "text": "lead magnet e-book writing on ai workflows draft 15-page whitepaper guide on automating enterprise operations lead magnet whitepaper writing project"
+    },
+    {
+      "scenarioId": "SCENARIO_066",
+      "title": "Municipal Smart City IoT Feasibility Study",
+      "description": "Write technical feasibility document for municipal smart street lighting network",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "candidates": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 40,
+          "matchedTags": [
+            "tree",
+            "document"
+          ]
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "technical"
+          ]
+        }
+      ],
+      "text": "municipal smart city iot feasibility study write technical feasibility document for municipal smart street lighting network municipal infrastructure feasibility study"
+    },
+    {
+      "scenarioId": "SCENARIO_084",
+      "title": "Unlimited Free AI Server Infrastructure Without Hosting Cost",
+      "description": "Deploy 1000 GPU AI models with zero server costs and zero latency guaranteed",
+      "expectedCapabilities": [],
+      "actualCapabilities": [
+        "ai.agent-engineering",
+        "creative.3d-rendering"
+      ],
+      "candidates": [
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "model"
+          ]
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "text": "unlimited free ai server infrastructure without hosting cost deploy 1000 gpu ai models with zero server costs and zero latency guaranteed unfeasible technical guarantees"
+    }
+  ]
+}
