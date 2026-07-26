@@ -1,0 +1,47 @@
+{
+  "date": "2026-07-26T06:36:23.460Z",
+  "badCommit": "ccb6c6c",
+  "stableCommit": "b964fa7",
+  "changesInBadCommit": [
+    "src/services/revenueOrchestratorService.js: Added SYNONYM_MAP, HIGH_WEIGHT_TAGS, 1.5x title multiplier, +20 category phrase bonus, +25 name phrase bonus, confidence tie-breaking",
+    "scripts/founderValidation.js: Updated evaluateCapabilities to return primary + secondary composite matches filtered by topScore * 0.70"
+  ],
+  "accuracyComparison": {
+    "Phase1_b964fa7": {
+      "qualification": "99.00%",
+      "classification": "89.00%",
+      "capability": "56.00%",
+      "feasibility": "98.00%",
+      "risk": "99.00%",
+      "overall": "52.00%"
+    },
+    "Phase2_ccb6c6c": {
+      "qualification": "99.00%",
+      "classification": "89.00%",
+      "capability": "35.00%",
+      "feasibility": "98.00%",
+      "risk": "99.00%",
+      "overall": "33.00%"
+    }
+  },
+  "regressionRootCauses": [
+    {
+      "causeCategory": "validator behavior change & composite over-selection",
+      "description": "Returning secondary capabilities without exact composite demand gating caused single-capability benchmark scenarios to report extra unexpected capability IDs, failing exact set equality.",
+      "affectedScenarios": [
+        "SCENARIO_001",
+        "SCENARIO_091",
+        "SCENARIO_098"
+      ]
+    },
+    {
+      "causeCategory": "exact-phrase & category bonus distortion",
+      "description": "+25 and +20 points for category and name phrases boosted generic capabilities (e.g. 3d rendering, technical documentation) whenever description text contained broad terms like \"technical\" or \"product\".",
+      "affectedScenarios": [
+        "SCENARIO_084",
+        "SCENARIO_088",
+        "SCENARIO_095"
+      ]
+    }
+  ]
+}

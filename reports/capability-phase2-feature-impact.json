@@ -1,0 +1,35 @@
+{
+  "date": "2026-07-26T06:36:23.460Z",
+  "featuresEvaluated": [
+    {
+      "feature": "1.5x Title Multiplier",
+      "beneficialScenarios": 4,
+      "regressedScenarios": 0,
+      "netEffect": "+4%",
+      "verdict": "SAFE"
+    },
+    {
+      "feature": "Synonym Map",
+      "beneficialScenarios": 3,
+      "regressedScenarios": 0,
+      "netEffect": "+3%",
+      "verdict": "SAFE"
+    },
+    {
+      "feature": "Category & Name Phrase Bonus (+20/+25)",
+      "beneficialScenarios": 1,
+      "regressedScenarios": 12,
+      "netEffect": "-11%",
+      "collisionExample": "Broad term \"product\" triggered 3D rendering name bonus on web app deliverables",
+      "verdict": "UNSAFE"
+    },
+    {
+      "feature": "Unconditional Composite Secondary Selection",
+      "beneficialScenarios": 2,
+      "regressedScenarios": 15,
+      "netEffect": "-13%",
+      "collisionExample": "Returned 3 capabilities for single-capability benchmark tasks",
+      "verdict": "UNSAFE"
+    }
+  ]
+}
