@@ -1,13 +1,13 @@
 {
-  "date": "2026-07-26T06:44:05.190Z",
-  "gitCommit": "3a2d7ac",
+  "date": "2026-07-26T06:47:10.605Z",
+  "gitCommit": "0d01f90",
   "totalScenarios": 100,
   "passed": 53,
   "failed": 47,
   "accuracy": {
     "qualification": "99.00%",
     "classification": "89.00%",
-    "capability": "57.00%",
+    "capability": "58.00%",
     "feasibility": "98.00%",
     "risk": "99.00%",
     "overall": "53.00%"
@@ -311,14 +311,14 @@
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
-          "creative.vector-design"
+          "automation.workflow-automation"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
       },
-      "whichEngineFailed": "Classifier, Capability",
-      "reason": "Mismatched engine outputs: Classifier, Capability"
+      "whichEngineFailed": "Classifier",
+      "reason": "Mismatched engine outputs: Classifier"
     },
     {
       "scenarioId": "SCENARIO_021",

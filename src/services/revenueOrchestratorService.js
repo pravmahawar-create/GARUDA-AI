@@ -21,6 +21,35 @@ const EXACT_ALIAS_MAP = {
   "graphql-api": "graphql"
 };
 
+const DOMAIN_SYNONYM_MAP = {
+  engineering: {
+    "audit": ["refactor", "codebase review", "architecture review", "security audit"],
+    "database": ["db", "sql", "postgres", "postgresql", "mysql", "mongodb"],
+    "qa": ["testing", "unit test", "integration test", "bug fix"]
+  },
+  writing: {
+    "proposal": ["sow", "rfp", "tender response", "bid", "quotation"]
+  },
+  knowledge: {
+    "research": ["literature review", "market research", "competitive analysis"]
+  },
+  localization: {
+    "translation": ["i18n", "internationalization", "spanish", "german", "french", "japanese"]
+  },
+  creative: {
+    "vector": ["vector logo", "svg design"],
+    "3d": ["3d model", "render"],
+    "motion": ["animation", "motion graphics"]
+  },
+  automation: {
+    "spreadsheet": ["excel", "csv", "google sheets", "sheet"],
+    "workflow": ["n8n", "zapier", "make.com"]
+  },
+  documentation: {
+    "technical-documentation": ["user manual", "api docs", "swagger", "readme", "documentation"]
+  }
+};
+
 function normalizeExactToken(token = "") {
   let cleaned = String(token).toLowerCase().trim().replace(/['"’]/g, "");
 
@@ -28,7 +57,6 @@ function normalizeExactToken(token = "") {
     return EXACT_ALIAS_MAP[cleaned];
   }
 
-  // Deterministic plural to singular normalization for domain terms
   if (cleaned.endsWith("s") && !cleaned.endsWith("ss") && cleaned.length > 3) {
     if (cleaned.endsWith("ies")) {
       cleaned = cleaned.slice(0, -3) + "y";
@@ -64,12 +92,38 @@ function requiresHumanIdentity(demand = {}) {
   return HUMAN_IDENTITY_SIGNALS.some((signal) => text.includes(signal));
 }
 
+function getDomainCategory(capability = {}) {
+  if (capability.id) {
+    const prefix = capability.id.split(".")[0];
+    if (DOMAIN_SYNONYM_MAP[prefix]) return prefix;
+  }
+  if (capability.category) {
+    const cat = normalizeText(capability.category);
+    for (const d of Object.keys(DOMAIN_SYNONYM_MAP)) {
+      if (cat.includes(d)) return d;
+    }
+  }
+  return "general";
+}
+
 function scoreCapability(capability, demand = {}) {
   const normalized = tokenizeDemand(demand);
+  const domain = getDomainCategory(capability);
+  const domainSynonyms = DOMAIN_SYNONYM_MAP[domain] || {};
+
   const matchedTags = capability.tags.filter((tag) => {
     const normalizedTag = normalizeText(tag);
-    return normalized.text.includes(normalizedTag) || normalized.tokens.has(normalizedTag);
+    if (normalized.text.includes(normalizedTag) || normalized.tokens.has(normalizedTag)) {
+      return true;
+    }
+
+    const tagSynonyms = domainSynonyms[normalizedTag] || [];
+    return tagSynonyms.some((syn) => {
+      const normSyn = normalizeText(syn);
+      return normalized.text.includes(normSyn) || normalized.tokens.has(normSyn);
+    });
   });
+
   const score = capability.tags.length
     ? Math.round((matchedTags.length / Math.min(capability.tags.length, 5)) * 100)
     : 0;
@@ -77,42 +131,35 @@ function scoreCapability(capability, demand = {}) {
 }
 
 function compareTieBreak(a, b, demand = {}) {
-  // 1. Primary score comparison
   if (b.score !== a.score) return b.score - a.score;
 
   const titleText = normalizeText(demand.title || "");
   const descText = normalizeText(demand.description || "");
 
-  // 2. Exact capability name match in title or description
   const normNameA = normalizeText(a.name);
   const normNameB = normalizeText(b.name);
   const nameInTitleA = titleText.includes(normNameA) ? 2 : descText.includes(normNameA) ? 1 : 0;
   const nameInTitleB = titleText.includes(normNameB) ? 2 : descText.includes(normNameB) ? 1 : 0;
   if (nameInTitleB !== nameInTitleA) return nameInTitleB - nameInTitleA;
 
-  // 3. Exact tag match count
   const matchCountA = (a.matchedTags || []).length;
   const matchCountB = (b.matchedTags || []).length;
   if (matchCountB !== matchCountA) return matchCountB - matchCountA;
 
-  // 4. Exact phrase match length (total character length of matched tags)
   const phraseLenA = (a.matchedTags || []).reduce((acc, t) => acc + t.length, 0);
   const phraseLenB = (b.matchedTags || []).reduce((acc, t) => acc + t.length, 0);
   if (phraseLenB !== phraseLenA) return phraseLenB - phraseLenA;
 
-  // 5. Domain category match in title or description
   const normCatA = normalizeText(a.category);
   const normCatB = normalizeText(b.category);
   const catInTitleA = titleText.includes(normCatA) ? 2 : descText.includes(normCatA) ? 1 : 0;
   const catInTitleB = titleText.includes(normCatB) ? 2 : descText.includes(normCatB) ? 1 : 0;
   if (catInTitleB !== catInTitleA) return catInTitleB - catInTitleA;
 
-  // 6. Confidence score
   const confA = a.confidenceScore || 0;
   const confB = b.confidenceScore || 0;
   if (confB !== confA) return confB - confA;
 
-  // 7. Alphabetical order (LAST fallback ONLY)
   return a.name.localeCompare(b.name);
 }
 

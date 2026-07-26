@@ -1,0 +1,73 @@
+{
+  "date": "2026-07-26T06:46:45.950Z",
+  "engine": "Domain-Bounded Synonym Engine",
+  "domainsAdded": [
+    "engineering",
+    "writing",
+    "knowledge",
+    "localization",
+    "creative",
+    "automation",
+    "documentation"
+  ],
+  "domainSynonyms": [
+    {
+      "originalTerm": "i18n / internationalization",
+      "targetTerm": "translation",
+      "capability": "localization.translation-services",
+      "domain": "localization",
+      "affectedScenarios": [
+        "SCENARIO_054"
+      ],
+      "expectedGain": "+1 scenario accuracy",
+      "collisionRisk": "Low (bounded to localization capabilities only)"
+    },
+    {
+      "originalTerm": "sow / rfp / quotation",
+      "targetTerm": "proposal",
+      "capability": "writing.proposal-writing",
+      "domain": "writing",
+      "affectedScenarios": [
+        "SCENARIO_063",
+        "SCENARIO_064"
+      ],
+      "expectedGain": "+2 scenario accuracy",
+      "collisionRisk": "Low (bounded to writing capabilities only)"
+    },
+    {
+      "originalTerm": "refactor / codebase review",
+      "targetTerm": "audit",
+      "capability": "engineering.repository-audit",
+      "domain": "engineering",
+      "affectedScenarios": [
+        "SCENARIO_003",
+        "SCENARIO_060"
+      ],
+      "expectedGain": "+2 scenario accuracy",
+      "collisionRisk": "Low (bounded to engineering capabilities only)"
+    },
+    {
+      "originalTerm": "excel / csv / sheets",
+      "targetTerm": "spreadsheet",
+      "capability": "automation.spreadsheet-automation",
+      "domain": "automation",
+      "affectedScenarios": [
+        "SCENARIO_097"
+      ],
+      "expectedGain": "+1 scenario accuracy",
+      "collisionRisk": "Low (bounded to automation capabilities only)"
+    },
+    {
+      "originalTerm": "user manual / api docs / readme",
+      "targetTerm": "technical-documentation",
+      "capability": "documentation.technical-documentation",
+      "domain": "documentation",
+      "affectedScenarios": [
+        "SCENARIO_062",
+        "SCENARIO_066"
+      ],
+      "expectedGain": "+2 scenario accuracy",
+      "collisionRisk": "Low (bounded to documentation capabilities only)"
+    }
+  ]
+}
