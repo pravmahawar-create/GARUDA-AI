@@ -1,29 +1,20 @@
 {
-  "totalGaps": 4,
+  "totalGaps": 3,
   "capabilityGaps": [
     {
-      "category": "Creative & Design",
-      "gapType": "Missing Capability in Registry",
-      "details": "Graphic design, 3D CAD rendering, motion graphics, audio post-production capabilities missing from capabilityRegistryService.js",
-      "remedy": "Define creative.vector-design, creative.motion-graphics, creative.3d-rendering in capability registry"
+      "category": "Creative Services",
+      "status": "Capabilities Registered",
+      "details": "creative.vector-design, creative.motion-graphics, creative.3d-rendering added to capabilityRegistryService.js"
     },
     {
-      "category": "Language & Localization",
-      "gapType": "Missing Capability in Registry",
-      "details": "Translation & localization capabilities for multi-language documents missing from registry",
-      "remedy": "Define localization.translation-services capability in registry"
+      "category": "Translation",
+      "status": "Capabilities Registered",
+      "details": "localization.translation-services added to capabilityRegistryService.js"
     },
     {
-      "category": "Software & Database",
-      "gapType": "Keyword & Tag Weakness",
-      "details": "Keywords like \"query\", \"audit\", \"optimization\", \"docker\", \"auth0\" lack tag matching weight in capabilityRegistryService.js",
-      "remedy": "Expand tags for engineering.repository-audit, engineering.software-implementation, engineering.api-integration"
-    },
-    {
-      "category": "Marketing & Content",
-      "gapType": "Tag Weight & Scoring Weakness",
-      "details": "Marketing strategy, copywriting, SEO keywords score below minimumScore threshold (20)",
-      "remedy": "Add tags \"marketing\", \"seo\", \"outreach\", \"content\" to writing.proposal-writing & knowledge.research-synthesis"
+      "category": "Classification Signals",
+      "status": "Tag Density Calibrated",
+      "details": "Software, Audit, Research, Creative, and Translation tags expanded"
     }
   ]
 }

@@ -1,9 +1,8 @@
 {
-  "totalFailures": 54,
+  "totalFailures": 48,
   "rootCauseDistribution": {
-    "C. Capability mapping incorrect": 31,
-    "B. Capability missing": 12,
-    "D. Classification weakness": 10,
+    "C. Capability mapping incorrect": 36,
+    "D. Classification weakness": 11,
     "E. Requirement extraction weakness": 1
   },
   "failures": [
@@ -34,65 +33,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
-    },
-    {
-      "scenarioId": "SCENARIO_005",
-      "category": "Upwork Software",
-      "expectedResult": {
-        "qualification": "qualified",
-        "category": "Upwork Software",
-        "capabilities": [
-          "engineering.software-implementation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actualResult": {
-        "qualification": "qualified",
-        "category": "Upwork Software",
-        "capabilities": [
-          "ai.agent-engineering",
-          "engineering.api-integration"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "failedEngine": "Capability",
-      "confidence": 90,
-      "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
-    },
-    {
-      "scenarioId": "SCENARIO_006",
-      "category": "Upwork Software",
-      "expectedResult": {
-        "qualification": "qualified",
-        "category": "Upwork Software",
-        "capabilities": [
-          "engineering.api-integration",
-          "engineering.software-implementation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actualResult": {
-        "qualification": "qualified",
-        "category": "Upwork Software",
-        "capabilities": [
-          "engineering.api-integration"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "failedEngine": "Capability",
-      "confidence": 90,
-      "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_008",
@@ -111,7 +52,8 @@
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
-          "ai.agent-engineering"
+          "ai.agent-engineering",
+          "creative.vector-design"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
@@ -119,8 +61,8 @@
       },
       "failedEngine": "Capability",
       "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_009",
@@ -138,15 +80,17 @@
       "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
-        "capabilities": [],
+        "capabilities": [
+          "creative.vector-design"
+        ],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
       },
       "failedEngine": "Capability",
       "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_010",
@@ -165,7 +109,8 @@
         "qualification": "qualified",
         "category": "Fiverr Creative",
         "capabilities": [
-          "ai.agent-engineering"
+          "creative.3d-rendering",
+          "creative.motion-graphics"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
@@ -173,8 +118,8 @@
       },
       "failedEngine": "Capability",
       "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_011",
@@ -192,15 +137,17 @@
       "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
-        "capabilities": [],
+        "capabilities": [
+          "creative.motion-graphics"
+        ],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
       },
       "failedEngine": "Capability",
       "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_012",
@@ -218,15 +165,17 @@
       "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
-        "capabilities": [],
+        "capabilities": [
+          "creative.3d-rendering"
+        ],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
       },
       "failedEngine": "Capability",
       "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_013",
@@ -245,7 +194,7 @@
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
-          "ai.agent-engineering",
+          "creative.vector-design",
           "knowledge.research-synthesis"
         ],
         "feasibility": "feasible",
@@ -254,8 +203,8 @@
       },
       "failedEngine": "Classifier, Capability",
       "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+      "rootCauseClassification": "D. Classification weakness",
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_014",
@@ -273,15 +222,17 @@
       "actualResult": {
         "qualification": "qualified",
         "category": "Fiverr Creative",
-        "capabilities": [],
+        "capabilities": [
+          "creative.vector-design"
+        ],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
       },
       "failedEngine": "Capability",
       "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_015",
@@ -310,7 +261,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_016",
@@ -338,7 +289,7 @@
       "failedEngine": "Classifier",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_018",
@@ -368,7 +319,7 @@
       "failedEngine": "Classifier, Capability",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_019",
@@ -386,7 +337,9 @@
       "actualResult": {
         "qualification": "qualified",
         "category": "Marketing",
-        "capabilities": [],
+        "capabilities": [
+          "creative.vector-design"
+        ],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
@@ -394,7 +347,7 @@
       "failedEngine": "Classifier, Capability",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_021",
@@ -423,7 +376,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_022",
@@ -452,7 +405,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_023",
@@ -481,7 +434,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_025",
@@ -508,7 +461,7 @@
       "failedEngine": "Classifier, Capability",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_026",
@@ -537,7 +490,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_027",
@@ -565,7 +518,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_032",
@@ -594,7 +547,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_033",
@@ -622,7 +575,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_034",
@@ -651,7 +604,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_036",
@@ -680,7 +633,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_037",
@@ -709,7 +662,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_038",
@@ -736,7 +689,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_039",
@@ -765,7 +718,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_040",
@@ -791,7 +744,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_041",
@@ -820,7 +773,7 @@
       "failedEngine": "Classifier, Capability",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_042",
@@ -849,7 +802,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_045",
@@ -877,7 +830,7 @@
       "failedEngine": "Classifier",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_046",
@@ -905,7 +858,7 @@
       "failedEngine": "Classifier, Feasibility, Risk, Decision",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_047",
@@ -934,7 +887,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_049",
@@ -962,90 +915,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
-    },
-    {
-      "scenarioId": "SCENARIO_050",
-      "category": "Translation",
-      "expectedResult": {
-        "qualification": "qualified",
-        "category": "Translation",
-        "capabilities": [
-          "knowledge.research-synthesis"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actualResult": {
-        "qualification": "qualified",
-        "category": "Translation",
-        "capabilities": [
-          "engineering.software-implementation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "failedEngine": "Capability",
-      "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
-    },
-    {
-      "scenarioId": "SCENARIO_051",
-      "category": "Translation",
-      "expectedResult": {
-        "qualification": "qualified",
-        "category": "Translation",
-        "capabilities": [
-          "documentation.technical-documentation",
-          "knowledge.research-synthesis"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actualResult": {
-        "qualification": "qualified",
-        "category": "Translation",
-        "capabilities": [
-          "documentation.technical-documentation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "failedEngine": "Capability",
-      "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
-    },
-    {
-      "scenarioId": "SCENARIO_053",
-      "category": "Translation",
-      "expectedResult": {
-        "qualification": "qualified",
-        "category": "Translation",
-        "capabilities": [
-          "knowledge.research-synthesis"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actualResult": {
-        "qualification": "qualified",
-        "category": "Translation",
-        "capabilities": [],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "failedEngine": "Capability",
-      "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_054",
@@ -1064,22 +934,6 @@
       "actualResult": {
         "qualification": "qualified",
         "category": "Translation",
-        "capabilities": [],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "failedEngine": "Capability",
-      "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
-    },
-    {
-      "scenarioId": "SCENARIO_056",
-      "category": "Translation",
-      "expectedResult": {
-        "qualification": "qualified",
-        "category": "Translation",
         "capabilities": [
           "knowledge.research-synthesis"
         ],
@@ -1087,18 +941,10 @@
         "riskLevel": "low",
         "decision": "approve"
       },
-      "actualResult": {
-        "qualification": "qualified",
-        "category": "Translation",
-        "capabilities": [],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
       "failedEngine": "Capability",
       "confidence": 90,
-      "rootCauseClassification": "B. Capability missing",
-      "rootCauseDescription": "Specific creative/translation capability is missing from active verified registry"
+      "rootCauseClassification": "C. Capability mapping incorrect",
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_057",
@@ -1117,7 +963,9 @@
       "actualResult": {
         "qualification": "qualified",
         "category": "Marketing",
-        "capabilities": [],
+        "capabilities": [
+          "knowledge.research-synthesis"
+        ],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
@@ -1125,7 +973,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_058",
@@ -1154,7 +1002,7 @@
       "failedEngine": "Classifier, Capability",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_060",
@@ -1183,7 +1031,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_062",
@@ -1213,7 +1061,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_065",
@@ -1242,7 +1090,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_066",
@@ -1271,7 +1119,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_084",
@@ -1288,7 +1136,8 @@
         "qualification": "qualified",
         "category": "Unrealistic Projects",
         "capabilities": [
-          "ai.agent-engineering"
+          "ai.agent-engineering",
+          "creative.3d-rendering"
         ],
         "feasibility": "feasible",
         "riskLevel": "medium",
@@ -1297,7 +1146,7 @@
       "failedEngine": "Qualification, Capability, Feasibility, Decision",
       "confidence": 90,
       "rootCauseClassification": "E. Requirement extraction weakness",
-      "rootCauseDescription": "Unrealistic project bounds or scam detection heuristic missed specific phrase trigger"
+      "rootCauseDescription": "Unrealistic project bounds missed specific phrase trigger"
     },
     {
       "scenarioId": "SCENARIO_088",
@@ -1316,7 +1165,8 @@
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
-          "automation.spreadsheet-automation"
+          "automation.spreadsheet-automation",
+          "creative.3d-rendering"
         ],
         "feasibility": "feasible",
         "riskLevel": "high",
@@ -1325,7 +1175,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_090",
@@ -1351,7 +1201,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_092",
@@ -1379,7 +1229,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_093",
@@ -1407,7 +1257,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_094",
@@ -1433,7 +1283,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     },
     {
       "scenarioId": "SCENARIO_096",
@@ -1452,6 +1302,7 @@
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
+          "creative.vector-design",
           "knowledge.research-synthesis"
         ],
         "feasibility": "feasible",
@@ -1461,7 +1312,7 @@
       "failedEngine": "Classifier, Capability",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_097",
@@ -1491,7 +1342,7 @@
       "failedEngine": "Classifier",
       "confidence": 90,
       "rootCauseClassification": "D. Classification weakness",
-      "rootCauseDescription": "Text signals mapped to generic fallback category rather than specific domain category"
+      "rootCauseDescription": "Text signals mapped to generic category rather than target domain"
     },
     {
       "scenarioId": "SCENARIO_100",
@@ -1517,7 +1368,7 @@
       "failedEngine": "Capability",
       "confidence": 90,
       "rootCauseClassification": "C. Capability mapping incorrect",
-      "rootCauseDescription": "Tag or keyword scoring did not match expected capability in production registry"
+      "rootCauseDescription": "Keyword tag density or score threshold in production registry matched partial capability set"
     }
   ]
 }
