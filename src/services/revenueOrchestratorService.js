@@ -51,6 +51,38 @@ function matchDemand(demand = {}, options = {}) {
     .filter((capability) => capability.score >= minimumScore)
     .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
 
+  const traceEnabled = Boolean(options.trace || process.env.TRACE_MODE === "true");
+  let trace = undefined;
+
+  if (traceEnabled) {
+    const { tokens } = tokenizeDemand(demand);
+    const winningCapability = matches.length > 0 ? matches[0].id : null;
+    const topScore = matches.length > 0 ? matches[0].score : 0;
+
+    trace = {
+      opportunityId: String(demand.externalId || demand.id || demand.title || ""),
+      tokensExtracted: Array.from(tokens),
+      winningCapability,
+      candidates: capabilities.map((cap) => {
+        const { score, matchedTags } = scoreCapability(cap, demand);
+        return {
+          id: cap.id,
+          name: cap.name,
+          category: cap.category,
+          matchedTags,
+          finalScore: score,
+          confidence: cap.confidenceScore,
+          status: score < minimumScore ? "below_threshold" : cap.id === winningCapability ? "winner" : "lost",
+          lossReason: score < minimumScore
+            ? `Score (${score}) below minimumScore (${minimumScore})`
+            : cap.id !== winningCapability
+            ? `Score (${score}) lower than winner score (${topScore})`
+            : undefined
+        };
+      })
+    };
+  }
+
   const selfEarningEligible = !humanIdentityRequired && matches.length > 0;
   return {
     demand: { title: String(demand.title).trim(), source: String(demand.source || "manual").trim() },
@@ -62,6 +94,7 @@ function matchDemand(demand = {}, options = {}) {
         ? "capability_match_found"
         : "no_verified_capability_match",
     matches,
+    ...(trace ? { trace } : {}),
     requiresFounderApprovalForExternalAction: true,
     automaticApplicationAllowed: false,
     automaticContractAcceptanceAllowed: false

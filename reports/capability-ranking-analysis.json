@@ -1,0 +1,336 @@
+{
+  "totalRankingMismatches": 72,
+  "top20IncorrectRankings": [
+    {
+      "scenarioId": "SCENARIO_001",
+      "category": "Upwork Software",
+      "title": "Build Node.js API Service for E-commerce",
+      "expectedCapability": "engineering.api-integration",
+      "predictedCapability": "engineering.software-implementation",
+      "expectedCapabilityScore": 40,
+      "winnerCapabilityScore": 80,
+      "expectedMatchedTags": [
+        "api",
+        "rest"
+      ],
+      "winnerMatchedTags": [
+        "development",
+        "api",
+        "backend",
+        "node"
+      ],
+      "exactLossReason": "Score (40) lower than winner score (80)"
+    },
+    {
+      "scenarioId": "SCENARIO_002",
+      "category": "Upwork Software",
+      "title": "React Dashboard Chart Integration",
+      "expectedCapability": "engineering.software-implementation",
+      "predictedCapability": "engineering.software-implementation",
+      "expectedCapabilityScore": 40,
+      "winnerCapabilityScore": 40,
+      "expectedMatchedTags": [
+        "frontend",
+        "react"
+      ],
+      "winnerMatchedTags": [
+        "frontend",
+        "react"
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO_003",
+      "category": "Upwork Software",
+      "title": "PostgreSQL Database Query Optimization",
+      "expectedCapability": "engineering.repository-audit",
+      "predictedCapability": "automation.spreadsheet-automation",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 20,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "data"
+      ],
+      "exactLossReason": "Capability engineering.repository-audit not present in registry"
+    },
+    {
+      "scenarioId": "SCENARIO_004",
+      "category": "Upwork Software",
+      "title": "GraphQL API Connector for Shopify",
+      "expectedCapability": "engineering.api-integration",
+      "predictedCapability": "engineering.api-integration",
+      "expectedCapabilityScore": 40,
+      "winnerCapabilityScore": 40,
+      "expectedMatchedTags": [
+        "api",
+        "graphql"
+      ],
+      "winnerMatchedTags": [
+        "api",
+        "graphql"
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO_005",
+      "category": "Upwork Software",
+      "title": "Docker Microservice Containerization",
+      "expectedCapability": "engineering.software-implementation",
+      "predictedCapability": "engineering.software-implementation",
+      "expectedCapabilityScore": 40,
+      "winnerCapabilityScore": 40,
+      "expectedMatchedTags": [
+        "docker",
+        "container"
+      ],
+      "winnerMatchedTags": [
+        "docker",
+        "container"
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO_006",
+      "category": "Upwork Software",
+      "title": "OAuth2 SSO Integration with Auth0",
+      "expectedCapability": "engineering.api-integration",
+      "predictedCapability": "engineering.software-implementation",
+      "expectedCapabilityScore": 20,
+      "winnerCapabilityScore": 40,
+      "expectedMatchedTags": [
+        "integration"
+      ],
+      "winnerMatchedTags": [
+        "oauth",
+        "auth0"
+      ],
+      "exactLossReason": "Score (20) lower than winner score (40)"
+    },
+    {
+      "scenarioId": "SCENARIO_007",
+      "category": "Upwork Software",
+      "title": "Python Web Scraping Pipeline for Market Data",
+      "expectedCapability": "automation.workflow-automation",
+      "predictedCapability": "engineering.software-implementation",
+      "expectedCapabilityScore": 20,
+      "winnerCapabilityScore": 60,
+      "expectedMatchedTags": [
+        "pipeline"
+      ],
+      "winnerMatchedTags": [
+        "api",
+        "python",
+        "scraping"
+      ],
+      "exactLossReason": "Score (20) lower than winner score (60)"
+    },
+    {
+      "scenarioId": "SCENARIO_008",
+      "category": "Fiverr Creative",
+      "title": "Vector Logo Design & Brand Kit",
+      "expectedCapability": "documentation.technical-documentation",
+      "predictedCapability": "creative.vector-design",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 80,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "design",
+        "logo",
+        "vector",
+        "svg"
+      ],
+      "exactLossReason": "Score (0) below minimumScore (20)"
+    },
+    {
+      "scenarioId": "SCENARIO_009",
+      "category": "Fiverr Creative",
+      "title": "UI/UX Figma Mockups for Mobile App",
+      "expectedCapability": "documentation.technical-documentation",
+      "predictedCapability": "creative.vector-design",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 20,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "figma"
+      ],
+      "exactLossReason": "Score (0) below minimumScore (20)"
+    },
+    {
+      "scenarioId": "SCENARIO_010",
+      "category": "Fiverr Creative",
+      "title": "Animated Explainer Video Motion Graphics",
+      "expectedCapability": "documentation.technical-documentation",
+      "predictedCapability": "creative.motion-graphics",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 80,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "video",
+        "motion",
+        "graphics",
+        "explainer"
+      ],
+      "exactLossReason": "Score (0) below minimumScore (20)"
+    },
+    {
+      "scenarioId": "SCENARIO_011",
+      "category": "Fiverr Creative",
+      "title": "Podcast Audio Editing & Noise Reduction",
+      "expectedCapability": "automation.workflow-automation",
+      "predictedCapability": "creative.motion-graphics",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 60,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "editing",
+        "podcast",
+        "audio"
+      ],
+      "exactLossReason": "Score (0) below minimumScore (20)"
+    },
+    {
+      "scenarioId": "SCENARIO_012",
+      "category": "Fiverr Creative",
+      "title": "3D Product Render & CAD Illustration",
+      "expectedCapability": "documentation.technical-documentation",
+      "predictedCapability": "creative.3d-rendering",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 100,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "3d",
+        "cad",
+        "blender",
+        "product",
+        "model"
+      ],
+      "exactLossReason": "Score (0) below minimumScore (20)"
+    },
+    {
+      "scenarioId": "SCENARIO_013",
+      "category": "Fiverr Creative",
+      "title": "Social Media Banner & Graphic Design Package",
+      "expectedCapability": "documentation.technical-documentation",
+      "predictedCapability": "knowledge.research-synthesis",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 40,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "market",
+        "marketing"
+      ],
+      "exactLossReason": "Score (0) below minimumScore (20)"
+    },
+    {
+      "scenarioId": "SCENARIO_014",
+      "category": "Fiverr Creative",
+      "title": "E-book Layout & Cover Typography",
+      "expectedCapability": "documentation.technical-documentation",
+      "predictedCapability": "creative.vector-design",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 20,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "layout"
+      ],
+      "exactLossReason": "Score (0) below minimumScore (20)"
+    },
+    {
+      "scenarioId": "SCENARIO_015",
+      "category": "AI Automation",
+      "title": "n8n Customer Lead Intake Workflow Automation",
+      "expectedCapability": "automation.workflow-automation",
+      "predictedCapability": "automation.workflow-automation",
+      "expectedCapabilityScore": 80,
+      "winnerCapabilityScore": 80,
+      "expectedMatchedTags": [
+        "automation",
+        "workflow",
+        "n8n",
+        "pipeline"
+      ],
+      "winnerMatchedTags": [
+        "automation",
+        "workflow",
+        "n8n",
+        "pipeline"
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO_016",
+      "category": "AI Automation",
+      "title": "Zapier Automated Email Lead Notification System",
+      "expectedCapability": "automation.workflow-automation",
+      "predictedCapability": "automation.workflow-automation",
+      "expectedCapabilityScore": 20,
+      "winnerCapabilityScore": 20,
+      "expectedMatchedTags": [
+        "zapier"
+      ],
+      "winnerMatchedTags": [
+        "zapier"
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO_017",
+      "category": "AI Automation",
+      "title": "OpenAI RAG Chatbot for Internal PDF Knowledge Base",
+      "expectedCapability": "ai.agent-engineering",
+      "predictedCapability": "ai.agent-engineering",
+      "expectedCapabilityScore": 60,
+      "winnerCapabilityScore": 60,
+      "expectedMatchedTags": [
+        "ai",
+        "rag",
+        "vector"
+      ],
+      "winnerMatchedTags": [
+        "ai",
+        "rag",
+        "vector"
+      ]
+    },
+    {
+      "scenarioId": "SCENARIO_018",
+      "category": "AI Automation",
+      "title": "Automated Document OCR & Invoice Data Extraction",
+      "expectedCapability": "ai.agent-engineering",
+      "predictedCapability": "automation.spreadsheet-automation",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 20,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "data"
+      ],
+      "exactLossReason": "Score (0) below minimumScore (20)"
+    },
+    {
+      "scenarioId": "SCENARIO_019",
+      "category": "AI Automation",
+      "title": "Make.com Multi-Step Social Media Cross-Posting",
+      "expectedCapability": "automation.workflow-automation",
+      "predictedCapability": "creative.vector-design",
+      "expectedCapabilityScore": 0,
+      "winnerCapabilityScore": 20,
+      "expectedMatchedTags": [],
+      "winnerMatchedTags": [
+        "ebook"
+      ],
+      "exactLossReason": "Score (0) below minimumScore (20)"
+    },
+    {
+      "scenarioId": "SCENARIO_020",
+      "category": "AI Automation",
+      "title": "AI Voice Agent Twilio Integration for Appointment Booking",
+      "expectedCapability": "ai.agent-engineering",
+      "predictedCapability": "ai.agent-engineering",
+      "expectedCapabilityScore": 40,
+      "winnerCapabilityScore": 40,
+      "expectedMatchedTags": [
+        "ai",
+        "agent"
+      ],
+      "winnerMatchedTags": [
+        "ai",
+        "agent"
+      ]
+    }
+  ]
+}
