@@ -4,6 +4,7 @@ const router = express.Router();
 router.get("/candidates", controller.list);
 router.post("/run", controller.run);
 router.patch("/candidates/:id/decision", controller.decide);
+router.post("/founder-intake", controller.importFounderAssisted);
 router.get("/work-intakes", controller.listWorkIntakes);
 router.get("/candidates/:id/work-intake", controller.getWorkIntake);
 router.post("/candidates/:id/work-intake/handoff", controller.prepareWorkIntakeHandoff);

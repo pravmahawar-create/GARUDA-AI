@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FounderAssistedIntakePanel from "./FounderAssistedIntakePanel";
 
 export default function FounderReviewPanel({ candidate, onDecision }) {
   const [decision, setDecision] = useState("");
@@ -8,7 +9,12 @@ export default function FounderReviewPanel({ candidate, onDecision }) {
   const [submittedStatus, setSubmittedStatus] = useState(candidate?.status || "ready_for_founder_review");
 
   if (!candidate) {
-    return <div className="founder-review-panel empty">No mission candidate selected for review.</div>;
+    return (
+      <div className="founder-review-panel empty">
+        <p style={{ margin: "0 0 1rem 0", color: "#94a3b8" }}>No candidate selected for review. Import a genuine marketplace or client work order below:</p>
+        <FounderAssistedIntakePanel />
+      </div>
+    );
   }
 
   const handleActionClick = (actionType) => {

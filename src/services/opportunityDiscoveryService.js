@@ -364,6 +364,8 @@ module.exports = {
   processJobsBatch,
   runDiscoveryCycle,
   runStandaloneDiscovery,
+  importFounderAssistedCandidate: require("./founderAssistedIntakeService").importFounderAssistedCandidate,
+  processFounderAssistedIntake: require("./founderAssistedIntakeService").processFounderAssistedIntake,
   scoreCandidate,
   splitCandidateForDecisionPreservation,
   toUniversalOpportunity,
