@@ -1,9 +1,10 @@
 const assert = require("assert");
 const motherIntegration = require("../src/services/motherRevenueIntegrationService");
 const connectorFramework = require("../src/services/motherExecutionConnectorService");
+const platformAuth = require("../src/services/motherPlatformAuthService");
 
 function runIntegrationTests() {
-  console.log("Running Mother Revenue Brain v1 & Execution Connector Framework Integration Tests...\n");
+  console.log("Running Mother Revenue Brain v1, Connector Framework & Platform Auth Integration Tests...\n");
 
   motherIntegration.resetProcessedMissions();
   connectorFramework.resetExecutionPackageStore();
@@ -357,7 +358,124 @@ function runIntegrationTests() {
     console.log("✔ Test 24 — Zero live network requests / external execution performed");
   }
 
-  console.log("\nAll 24 Mother Revenue Brain v1 & Execution Connector Framework Integration Tests PASSED cleanly.");
+  // Test 25: Missing credentials return credential_not_configured
+  {
+    const emptyEnv = {};
+    const auth = platformAuth.validateConnectorAuthentication("generic_email", emptyEnv);
+    assert.strictEqual(auth.configured, false);
+    assert.strictEqual(auth.validationStatus, "credential_not_configured");
+    assert.strictEqual(auth.failureCode, "MISSING_ENV_VARS");
+
+    console.log("✔ Test 25 — Missing credentials return credential_not_configured");
+  }
+
+  // Test 26: Secrets are never exposed in responses or redacted metadata
+  {
+    const sampleEnv = {
+      GARUDA_EMAIL_HOST: "smtp.example.com",
+      GARUDA_EMAIL_PORT: "587",
+      GARUDA_EMAIL_USER: "garuda_admin@example.com",
+      GARUDA_EMAIL_PASS: "SuperSecretPassword123!"
+    };
+
+    const auth = platformAuth.validateConnectorAuthentication("generic_email", sampleEnv);
+    assert.strictEqual(auth.configured, true);
+    assert.strictEqual(auth.authenticated, true);
+    assert.strictEqual(auth.redactedAccountReference, "g***n@example.com");
+    assert.strictEqual(auth.redactedMetadata.password, "[REDACTED]");
+    assert.strictEqual(JSON.stringify(auth).includes("SuperSecretPassword123!"), false);
+
+    console.log("✔ Test 26 — Secrets are never exposed in responses or metadata ([REDACTED])");
+  }
+
+  // Test 27: Invalid credential shape is rejected
+  {
+    const invalidEnv = {
+      GARUDA_EMAIL_HOST: "invalid host with spaces",
+      GARUDA_EMAIL_PORT: "invalid_port",
+      GARUDA_EMAIL_USER: "invalid_email_no_at",
+      GARUDA_EMAIL_PASS: "pass"
+    };
+
+    const auth = platformAuth.validateConnectorAuthentication("generic_email", invalidEnv);
+    assert.strictEqual(auth.configured, true);
+    assert.strictEqual(auth.authenticated, false);
+    assert.strictEqual(auth.validationStatus, "invalid_credentials");
+
+    console.log("✔ Test 27 — Invalid credential shape is rejected (invalid_credentials)");
+  }
+
+  // Test 28: Authenticated test-mode connector reaches ready_for_external_authorization
+  {
+    const validEnv = {
+      GARUDA_EMAIL_HOST: "smtp.example.com",
+      GARUDA_EMAIL_PORT: "587",
+      GARUDA_EMAIL_USER: "admin@example.com",
+      GARUDA_EMAIL_PASS: "valid_secret_key"
+    };
+
+    const readiness = platformAuth.evaluateConnectorReadiness("INTEG_TEST_001", "generic_email", validEnv);
+    assert.strictEqual(readiness.readinessStatus, "ready_for_external_authorization");
+    assert.strictEqual(readiness.authorizesExternalAction, false);
+
+    console.log("✔ Test 28 — Authenticated test-mode connector reaches ready_for_external_authorization");
+  }
+
+  // Test 29: Authentication alone does NOT authorize an external action
+  {
+    const validEnv = {
+      GARUDA_EMAIL_HOST: "smtp.example.com",
+      GARUDA_EMAIL_PORT: "587",
+      GARUDA_EMAIL_USER: "admin@example.com",
+      GARUDA_EMAIL_PASS: "valid_secret_key"
+    };
+
+    const auth = platformAuth.validateConnectorAuthentication("generic_email", validEnv);
+    assert.strictEqual(auth.authorizesExternalAction, false);
+
+    const readiness = platformAuth.evaluateConnectorReadiness("INTEG_TEST_001", "generic_email", validEnv);
+    assert.strictEqual(readiness.authorizesExternalAction, false);
+
+    console.log("✔ Test 29 — Authentication alone does NOT authorize external action (authorizesExternalAction: false)");
+  }
+
+  // Test 30: Unapproved mission remains blocked from readiness gate
+  {
+    const emptyEnv = {};
+    const readiness = platformAuth.evaluateConnectorReadiness("INTEG_TEST_007", "generic_email", emptyEnv);
+    assert.strictEqual(readiness.readinessStatus, "blocked");
+    assert.strictEqual(readiness.reason.includes("not Founder-approved"), true);
+
+    console.log("✔ Test 30 — Unapproved mission candidate remains blocked from readiness gate");
+  }
+
+  // Test 31: Duplicate credential validation is idempotent
+  {
+    const validEnv = {
+      GARUDA_EMAIL_HOST: "smtp.example.com",
+      GARUDA_EMAIL_PORT: "587",
+      GARUDA_EMAIL_USER: "admin@example.com",
+      GARUDA_EMAIL_PASS: "valid_secret_key"
+    };
+
+    const auth1 = platformAuth.validateConnectorAuthentication("generic_email", validEnv);
+    const auth2 = platformAuth.validateConnectorAuthentication("generic_email", validEnv);
+    assert.strictEqual(auth1.validationStatus, auth2.validationStatus);
+    assert.strictEqual(auth1.redactedAccountReference, auth2.redactedAccountReference);
+
+    console.log("✔ Test 31 — Duplicate credential validation is idempotent");
+  }
+
+  // Test 32: Missing scopes or unconfigured credentials produce clean readiness status
+  {
+    const emptyEnv = {};
+    const readiness = platformAuth.evaluateConnectorReadiness("INTEG_TEST_001", "generic_email", emptyEnv);
+    assert.strictEqual(readiness.readinessStatus, "not_configured");
+
+    console.log("✔ Test 32 — Unconfigured connector returns clean 'not_configured' readiness status");
+  }
+
+  console.log("\nAll 32 Platform Authentication Readiness & Connector Framework Integration Tests PASSED cleanly.");
 }
 
 runIntegrationTests();

@@ -1,0 +1,37 @@
+{
+  "dryRunTimestamp": "2026-07-26T11:26:25.896Z",
+  "selectedConnector": "generic_email",
+  "caseA_credentialsAbsent": {
+    "connectorSelected": "generic_email",
+    "credentialRequirementsReported": [
+      "GARUDA_EMAIL_HOST",
+      "GARUDA_EMAIL_PORT",
+      "GARUDA_EMAIL_USER",
+      "GARUDA_EMAIL_PASS"
+    ],
+    "configured": false,
+    "authenticated": false,
+    "readinessStatus": "not_configured",
+    "authorizesExternalAction": false
+  },
+  "caseB_testCredentialsPresent": {
+    "connectorSelected": "generic_email",
+    "testMode": true,
+    "configured": true,
+    "authenticated": true,
+    "validationStatus": "configured_authenticated",
+    "redactedAccountReference": "f***t@example.com",
+    "grantedScopes": [
+      "email.draft",
+      "email.send"
+    ],
+    "readinessStatus": "ready_for_external_authorization",
+    "authorizesExternalAction": false,
+    "packageHash": "2f6927ea6b7c9cc30518197dd805fca1f6fd609c9a2c18856f607fec452a90bf"
+  },
+  "governanceProtections": {
+    "noSecretsExposedInReport": true,
+    "noLiveExternalActionExecuted": true,
+    "noNetworkDispatchAttempted": true
+  }
+}

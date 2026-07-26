@@ -23,5 +23,11 @@ router.get("/candidates", revenueController.listCandidates);
 router.get("/candidates/:id", revenueController.getCandidate);
 router.post("/candidates/:id/decision", revenueController.recordCandidateDecision);
 router.get("/candidates/:id/audit", revenueController.getCandidateAuditTrail);
+router.get("/candidates/:id/readiness", revenueController.getMissionConnectorReadiness);
+
+// Connector Authentication Routes
+router.get("/connectors/:id/requirements", revenueController.getConnectorRequirements);
+router.get("/connectors/:id/auth", revenueController.getConnectorAuthStatus);
+router.post("/connectors/:id/validate", revenueController.validateConnectorCredentials);
 
 module.exports = router;

@@ -1,21 +1,16 @@
 node_modules/
 .env
+.env.local
+.env.*.local
 uploads/
 *.log
 .DS_Store
 
 .garuda_*
 *.backup
+*.backup.js
 
 data/
-*.backup.js
 .aider*
-.env
-.env
-.env
-.env
-.env
-.env
-.env
-.env
-.env
+scratch/
+backend-node/dist/

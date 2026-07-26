@@ -1,0 +1,22 @@
+{
+  "selectedConnector": "generic_email",
+  "name": "Generic Email Connector",
+  "connectorType": "email_outbound",
+  "selectionReason": "Priority #1 requirement: Standard SMTP/OAuth configuration is supported locally and allows safe offline shape and credential readiness verification without external side effects.",
+  "supportedAuthTypes": [
+    "smtp_basic",
+    "oauth2"
+  ],
+  "requiredEnvironmentVariables": [
+    "GARUDA_EMAIL_HOST",
+    "GARUDA_EMAIL_PORT",
+    "GARUDA_EMAIL_USER",
+    "GARUDA_EMAIL_PASS"
+  ],
+  "requiredScopes": [
+    "email.draft",
+    "email.send"
+  ],
+  "testModeSupported": true,
+  "authorizesLiveAction": false
+}

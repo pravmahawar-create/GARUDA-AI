@@ -199,3 +199,43 @@ exports.getCandidateAuditTrail = async (req, res) => {
     return sendError(res, error, "Failed to get candidate decision audit trail");
   }
 };
+
+const platformAuth = require("../services/motherPlatformAuthService");
+
+exports.getConnectorRequirements = async (req, res) => {
+  try {
+    const reqs = platformAuth.getCredentialRequirements(req.params.id);
+    return res.json({ success: true, data: reqs });
+  } catch (error) {
+    return sendError(res, error, "Failed to get connector requirements");
+  }
+};
+
+exports.getConnectorAuthStatus = async (req, res) => {
+  try {
+    const status = platformAuth.validateConnectorAuthentication(req.params.id, process.env);
+    return res.json({ success: true, data: status });
+  } catch (error) {
+    return sendError(res, error, "Failed to get connector authentication status");
+  }
+};
+
+exports.validateConnectorCredentials = async (req, res) => {
+  try {
+    const customEnv = req.body.env ? { ...process.env, ...req.body.env } : process.env;
+    const result = platformAuth.validateConnectorAuthentication(req.params.id, customEnv);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return sendError(res, error, "Failed to validate connector credentials");
+  }
+};
+
+exports.getMissionConnectorReadiness = async (req, res) => {
+  try {
+    const connectorId = req.query.connectorId || "generic_email";
+    const readiness = platformAuth.evaluateConnectorReadiness(req.params.id, connectorId, process.env);
+    return res.json({ success: true, data: readiness });
+  } catch (error) {
+    return sendError(res, error, "Failed to get mission connector readiness");
+  }
+};

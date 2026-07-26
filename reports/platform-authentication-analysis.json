@@ -1,0 +1,38 @@
+{
+  "version": "revenue-brain-v1-platform-auth",
+  "timestamp": "2026-07-26T11:24:33.046Z",
+  "reusableModules": [
+    "src/services/motherExecutionConnectorService.js",
+    "src/services/revenueConnectorRegistryService.js",
+    "src/services/revenueSignedWebhookService.js",
+    "src/services/motherRevenueIntegrationService.js"
+  ],
+  "missingAuthenticationLayer": [
+    "Secure Connector Credential Configuration Service with automatic secret redaction",
+    "Connector Authentication Validator (missing configuration detection, local shape validation, scope check, safe test-mode handshake)",
+    "Connector Readiness Gate (enforcing approved mission, execution package, allow-listed connector, authenticated credentials, granted scopes, founder authorization)"
+  ],
+  "currentSecurityGaps": [
+    "Unredacted environment variables in raw debug dumps",
+    "Lack of normalized scope verification for external connectors"
+  ],
+  "supportedCredentialSources": [
+    "Environment variables (process.env)",
+    "Secure local secret providers (.env / env configuration)"
+  ],
+  "safestConnectorToConfigureFirst": "generic_email",
+  "exactFilesRequiringModification": [
+    "src/services/motherPlatformAuthService.js",
+    "src/services/motherExecutionConnectorService.js",
+    "src/controllers/revenueController.js",
+    "src/routes/revenueRoutes.js",
+    "scripts/motherRevenueIntegration.test.js",
+    ".env.example"
+  ],
+  "requiredFounderActionsOutsideCode": [
+    "Set environment variables GARUDA_EMAIL_HOST, GARUDA_EMAIL_PORT, GARUDA_EMAIL_USER, GARUDA_EMAIL_PASS in local environment or .env"
+  ],
+  "platformLimitations": [
+    "Live email transmission, browser scraping, and credential storage in database are strictly prohibited."
+  ]
+}
