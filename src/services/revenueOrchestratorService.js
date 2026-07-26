@@ -7,8 +7,46 @@ const HUMAN_IDENTITY_SIGNALS = [
   "technical evaluation", "apply to join", "talent network", "vetted network", "your rate"
 ];
 
+const EXACT_ALIAS_MAP = {
+  "node.js": "node",
+  "nodejs": "node",
+  "next.js": "nextjs",
+  "next js": "nextjs",
+  "postgre-sql": "postgres",
+  "postgresql": "postgres",
+  "auth-0": "auth0",
+  "k8s": "kubernetes",
+  "dockerized": "docker",
+  "restful": "rest",
+  "graphql-api": "graphql"
+};
+
+function normalizeExactToken(token = "") {
+  let cleaned = String(token).toLowerCase().trim().replace(/['"’]/g, "");
+
+  if (EXACT_ALIAS_MAP[cleaned]) {
+    return EXACT_ALIAS_MAP[cleaned];
+  }
+
+  // Deterministic plural to singular normalization for domain terms
+  if (cleaned.endsWith("s") && !cleaned.endsWith("ss") && cleaned.length > 3) {
+    if (cleaned.endsWith("ies")) {
+      cleaned = cleaned.slice(0, -3) + "y";
+    } else if (cleaned.endsWith("es") && (cleaned.endsWith("ches") || cleaned.endsWith("shes") || cleaned.endsWith("boxes"))) {
+      cleaned = cleaned.slice(0, -2);
+    } else if (cleaned.endsWith("s") && !cleaned.endsWith("is") && !cleaned.endsWith("us") && !cleaned.endsWith("os")) {
+      cleaned = cleaned.slice(0, -1);
+    }
+  }
+
+  return cleaned;
+}
+
 function normalizeText(value = "") {
-  return String(value).toLowerCase().replace(/[^a-z0-9+#.]+/g, " ").replace(/\s+/g, " ").trim();
+  const raw = String(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const cleanedText = raw.replace(/[-_./]+/g, " ").replace(/[^a-z0-9+#\s]+/g, " ").replace(/\s+/g, " ").trim();
+  const tokens = cleanedText.split(" ").map(normalizeExactToken);
+  return tokens.join(" ");
 }
 
 function tokenizeDemand(demand = {}) {
@@ -144,6 +182,7 @@ function matchDemand(demand = {}, options = {}) {
 module.exports = {
   HUMAN_IDENTITY_SIGNALS,
   matchDemand,
+  normalizeExactToken,
   normalizeText,
   requiresHumanIdentity,
   scoreCapability,

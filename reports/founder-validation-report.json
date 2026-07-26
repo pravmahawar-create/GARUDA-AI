@@ -1,16 +1,16 @@
 {
-  "date": "2026-07-26T06:42:17.702Z",
-  "gitCommit": "0dc984e",
+  "date": "2026-07-26T06:44:05.190Z",
+  "gitCommit": "3a2d7ac",
   "totalScenarios": 100,
-  "passed": 52,
-  "failed": 48,
+  "passed": 53,
+  "failed": 47,
   "accuracy": {
     "qualification": "99.00%",
     "classification": "89.00%",
-    "capability": "56.00%",
+    "capability": "57.00%",
     "feasibility": "98.00%",
     "risk": "99.00%",
-    "overall": "52.00%"
+    "overall": "53.00%"
   },
   "failureBreakdown": [
     {
@@ -443,31 +443,6 @@
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_027",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Legal Research",
-        "capabilities": [
-          "knowledge.research-synthesis"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "medium",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Legal Research",
-        "capabilities": [
-          "writing.proposal-writing"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "medium",
         "decision": "approve"
       },
       "whichEngineFailed": "Capability",

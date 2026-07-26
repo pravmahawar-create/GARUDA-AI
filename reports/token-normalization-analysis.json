@@ -1,0 +1,86 @@
+{
+  "date": "2026-07-26T06:43:43.650Z",
+  "normalizationLayer": "Exact Token Pre-Processor (Internal Only)",
+  "normalizationRules": [
+    {
+      "rule": "Unicode Normalization",
+      "example": "café → cafe",
+      "scope": "Accents & diacritics removal"
+    },
+    {
+      "rule": "Technical Alias Normalization",
+      "example": "node.js / nodejs → node",
+      "scope": "Standard tech framework aliases"
+    },
+    {
+      "rule": "Database Alias Normalization",
+      "example": "postgre-sql / postgresql → postgres",
+      "scope": "Standard database aliases"
+    },
+    {
+      "rule": "Container Alias Normalization",
+      "example": "k8s → kubernetes, dockerized → docker",
+      "scope": "DevOps & containerization aliases"
+    },
+    {
+      "rule": "Auth Alias Normalization",
+      "example": "auth-0 → auth0",
+      "scope": "Authentication service aliases"
+    },
+    {
+      "rule": "Plural to Singular Normalization",
+      "example": "apis → api, scripts → script, reports → report",
+      "scope": "Deterministic English plural stripping"
+    }
+  ],
+  "tokensFixed": [
+    {
+      "raw": "node.js",
+      "normalized": "node"
+    },
+    {
+      "raw": "nodejs",
+      "normalized": "node"
+    },
+    {
+      "raw": "next.js",
+      "normalized": "nextjs"
+    },
+    {
+      "raw": "postgre-sql",
+      "normalized": "postgres"
+    },
+    {
+      "raw": "postgresql",
+      "normalized": "postgres"
+    },
+    {
+      "raw": "auth-0",
+      "normalized": "auth0"
+    },
+    {
+      "raw": "k8s",
+      "normalized": "kubernetes"
+    },
+    {
+      "raw": "dockerized",
+      "normalized": "docker"
+    },
+    {
+      "raw": "api's",
+      "normalized": "api"
+    },
+    {
+      "raw": "apis",
+      "normalized": "api"
+    },
+    {
+      "raw": "reports",
+      "normalized": "report"
+    },
+    {
+      "raw": "dashboards",
+      "normalized": "dashboard"
+    }
+  ]
+}
