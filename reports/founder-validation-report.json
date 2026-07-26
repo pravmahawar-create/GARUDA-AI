@@ -1,16 +1,16 @@
 {
-  "date": "2026-07-26T07:18:20.529Z",
-  "gitCommit": "f8a7812",
+  "date": "2026-07-26T07:20:55.559Z",
+  "gitCommit": "acd80e9",
   "totalScenarios": 100,
-  "passed": 59,
-  "failed": 41,
+  "passed": 64,
+  "failed": 36,
   "accuracy": {
     "qualification": "99.00%",
     "classification": "98.00%",
-    "capability": "61.00%",
+    "capability": "66.00%",
     "feasibility": "99.00%",
     "risk": "100.00%",
-    "overall": "59.00%"
+    "overall": "64.00%"
   },
   "failureBreakdown": [
     {
@@ -30,36 +30,11 @@
         "qualification": "qualified",
         "category": "Upwork Software",
         "capabilities": [
-          "automation.spreadsheet-automation"
+          "automation.spreadsheet-automation",
+          "knowledge.research-synthesis"
         ],
         "feasibility": "feasible",
         "riskLevel": "medium",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_008",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Fiverr Creative",
-        "capabilities": [
-          "documentation.technical-documentation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Fiverr Creative",
-        "capabilities": [
-          "ai.agent-engineering",
-          "creative.vector-design"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
         "decision": "approve"
       },
       "whichEngineFailed": "Capability",
@@ -348,56 +323,6 @@
       "reason": "Mismatched engine outputs: Capability"
     },
     {
-      "scenarioId": "SCENARIO_025",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Legal Research",
-        "capabilities": [
-          "knowledge.research-synthesis",
-          "writing.proposal-writing"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "medium",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Legal Research",
-        "capabilities": [],
-        "feasibility": "feasible",
-        "riskLevel": "medium",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_026",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Legal Research",
-        "capabilities": [
-          "knowledge.research-synthesis"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Legal Research",
-        "capabilities": [
-          "ai.agent-engineering",
-          "automation.spreadsheet-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
-    },
-    {
       "scenarioId": "SCENARIO_032",
       "expected": {
         "qualification": "qualified",
@@ -517,32 +442,6 @@
         "category": "Customer Support",
         "capabilities": [
           "automation.workflow-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_037",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Customer Support",
-        "capabilities": [
-          "documentation.technical-documentation",
-          "knowledge.research-synthesis"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Customer Support",
-        "capabilities": [
-          "knowledge.research-synthesis"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
@@ -775,8 +674,7 @@
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
-          "ai.agent-engineering",
-          "automation.workflow-automation"
+          "writing.proposal-writing"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
@@ -929,7 +827,9 @@
       "actual": {
         "qualification": "qualified",
         "category": "High Risk Projects",
-        "capabilities": [],
+        "capabilities": [
+          "knowledge.research-synthesis"
+        ],
         "feasibility": "feasible",
         "riskLevel": "high",
         "decision": "hold"
@@ -953,7 +853,8 @@
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
-          "engineering.api-integration"
+          "engineering.api-integration",
+          "knowledge.research-synthesis"
         ],
         "feasibility": "feasible",
         "riskLevel": "high",
@@ -978,7 +879,8 @@
         "qualification": "qualified",
         "category": "High Risk Projects",
         "capabilities": [
-          "ai.agent-engineering"
+          "ai.agent-engineering",
+          "writing.proposal-writing"
         ],
         "feasibility": "feasible",
         "riskLevel": "high",
@@ -1002,7 +904,9 @@
       "actual": {
         "qualification": "qualified",
         "category": "High Risk Projects",
-        "capabilities": [],
+        "capabilities": [
+          "writing.proposal-writing"
+        ],
         "feasibility": "feasible",
         "riskLevel": "high",
         "decision": "hold"
@@ -1031,29 +935,6 @@
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_100",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Low Risk Projects",
-        "capabilities": [
-          "documentation.technical-documentation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "none",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Low Risk Projects",
-        "capabilities": [],
-        "feasibility": "feasible",
-        "riskLevel": "none",
         "decision": "approve"
       },
       "whichEngineFailed": "Capability",

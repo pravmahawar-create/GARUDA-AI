@@ -144,7 +144,13 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: [],
     relatedCapabilities: ["documentation.technical-documentation"],
-    tags: ["research", "analysis", "report", "knowledge", "summary", "documentation", "market", "seo", "marketing", "content", "translation", "localization", "spanish", "german", "french"],
+    tags: [
+      "research", "analysis", "report", "knowledge", "summary", "documentation",
+      "market", "seo", "marketing", "content", "translation", "localization",
+      "spanish", "german", "french", "legal", "legal research", "case law",
+      "statute", "uspto", "trademark", "copyright", "patent", "patent search",
+      "prior art", "privacy", "policy", "gdpr", "compliance", "regulatory", "audit", "synthesis", "literature"
+    ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
@@ -168,7 +174,10 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: [],
     relatedCapabilities: ["knowledge.research-synthesis", "writing.proposal-writing"],
-    tags: ["documentation", "api", "spec", "manual", "technical", "diagram", "architecture"],
+    tags: [
+      "documentation", "api", "spec", "manual", "technical", "diagram", "architecture",
+      "readme", "license", "boilerplate", "setup", "guidelines", "help", "articles", "troubleshooting", "knowledge base"
+    ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
@@ -189,7 +198,10 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: [],
     relatedCapabilities: ["documentation.technical-documentation"],
-    tags: ["proposal", "quotation", "rfp", "bid", "commercial", "writing", "intake"],
+    tags: [
+      "proposal", "quotation", "rfp", "bid", "commercial", "writing", "intake",
+      "terms of service", "privacy policy", "contract", "clause", "legal drafting", "copy", "outreach", "email"
+    ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
