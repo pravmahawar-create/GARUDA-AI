@@ -1,0 +1,71 @@
+{
+  "version": "revenue-brain-v1",
+  "date": "2026-07-26T11:03:39.621Z",
+  "existingFiles": [
+    "src/services/opportunityDiscoveryService.js",
+    "src/services/opportunityQualificationService.js",
+    "src/services/opportunityClassificationService.js",
+    "src/services/revenueOrchestratorService.js",
+    "src/services/capabilityRegistryService.js",
+    "src/services/feasibilityService.js",
+    "src/services/riskAssessmentService.ts",
+    "src/services/revenueMissionOrchestratorService.js",
+    "src/services/revenueExecutionMissionService.js",
+    "src/services/revenueMissionDecisionService.js",
+    "src/services/revenueSourceTruthService.js"
+  ],
+  "existingCallableFunctions": {
+    "qualification": "opportunityQualificationService.evaluateQualification(opportunity)",
+    "classification": "opportunityClassificationService.classifyOpportunity(opportunity)",
+    "capabilityMapping": "revenueOrchestratorService.matchDemand(opportunity)",
+    "feasibility": "feasibilityService.evaluateFeasibility(opportunity, capabilities)",
+    "riskAssessment": "riskAssessmentService.evaluateRisk(opportunity)",
+    "missionOrchestration": "revenueMissionOrchestratorService.evaluateMissionCandidate(candidate)",
+    "founderDecision": "revenueMissionDecisionService.decideMission(missionId, input, context)"
+  },
+  "currentDataContracts": {
+    "opportunityInput": [
+      "id",
+      "externalId",
+      "title",
+      "description",
+      "category",
+      "tags",
+      "source",
+      "url"
+    ],
+    "revenueBrainDecisionOutput": [
+      "opportunityId",
+      "source",
+      "qualification",
+      "classification",
+      "primaryCapability",
+      "secondaryCapabilities",
+      "feasibility",
+      "risk",
+      "recommendedAction",
+      "requiresFounderApproval",
+      "executionEligibility",
+      "rejectionReasons",
+      "evidence",
+      "timestamp",
+      "engineVersion"
+    ]
+  },
+  "missingIntegrationLinks": [
+    "Opportunity Discovery currently calls revenueOrchestrator.matchDemand directly without running the complete 5-stage Revenue Brain pipeline (Qualification -> Classification -> Capability -> Feasibility -> Risk)."
+  ],
+  "duplicateOrchestration": [
+    "Opportunity discovery and revenue mission orchestration both perform ad-hoc candidate scoring instead of using a unified Revenue Brain v1 Integration Adapter."
+  ],
+  "safestIntegrationPoint": "Create src/services/motherRevenueIntegrationService.js as a unified Revenue Brain v1 Adapter connecting Discovery to Mission Planning and Founder Review.",
+  "exactFilesRequiringModification": [
+    "src/services/motherRevenueIntegrationService.js",
+    "scripts/founderValidation.test.js"
+  ],
+  "integrationRisks": [
+    "Bypassing Founder approval gate during mission creation",
+    "Duplicate mission generation for identical externalId",
+    "Modifying frozen Revenue Brain v1 core engines"
+  ]
+}

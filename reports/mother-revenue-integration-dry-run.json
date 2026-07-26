@@ -1,0 +1,53 @@
+{
+  "dryRunTimestamp": "2026-07-26T11:07:13.279Z",
+  "fixture": {
+    "id": "DRY_RUN_FIXTURE_001",
+    "externalId": "NON_LIVE_EXT_999",
+    "title": "Build Node.js REST API Microservice",
+    "description": "Request for proposal with fixed price, statement of work, project milestone, delivery deadline, and acceptance criteria for Node API microservice deliverable",
+    "category": "Upwork Software",
+    "tags": [
+      "node",
+      "api",
+      "postgres"
+    ],
+    "url": "https://verified.client/job/999",
+    "source": "upwork",
+    "sourceVerified": true,
+    "publishedAt": "2026-07-26T11:07:13.271Z"
+  },
+  "discoveryInputReceived": true,
+  "revenueBrainDecisionGenerated": true,
+  "decision": {
+    "opportunityId": "DRY_RUN_FIXTURE_001",
+    "qualification": "qualified",
+    "classification": "Government Tender",
+    "primaryCapability": "engineering.repository-audit",
+    "secondaryCapabilities": [
+      "engineering.api-integration"
+    ],
+    "feasibility": "feasible",
+    "risk": "low",
+    "recommendedAction": "proceed_to_founder_review",
+    "requiresFounderApproval": true,
+    "executionEligibility": true,
+    "engineVersion": "revenue-brain-v1"
+  },
+  "eligibilityDetermined": true,
+  "founderApprovalGateReached": true,
+  "missionCandidateCreatedOnce": true,
+  "externalActionExecuted": false,
+  "auditEvidenceWritten": true,
+  "evidence": {
+    "sourceVerified": true,
+    "listingKind": "unverified_general_listing",
+    "garudaExecutionEligible": false,
+    "humanIdentityGateClear": true,
+    "confidenceScore": 65,
+    "matchedTags": [
+      "node",
+      "database",
+      "postgres"
+    ]
+  }
+}
