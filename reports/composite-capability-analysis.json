@@ -1,0 +1,52 @@
+{
+  "date": "2026-07-26T06:49:49.289Z",
+  "engine": "Composite Capability Output Engine",
+  "rules": {
+    "maxSecondaryCapabilities": 3,
+    "scoreThresholdFraction": 0.8,
+    "confidenceFloor": 0.7
+  },
+  "compositeScenariosIdentified": [
+    {
+      "scenarioId": "SCENARIO_003",
+      "title": "Refactor Existing Node.js Backend & Optimize PostgreSQL Queries",
+      "primaryCapability": "engineering.repository-audit",
+      "secondaryCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "reason": "Codebase refactoring requires both audit review and software modification capabilities.",
+      "expectedBusinessBenefit": "Complete architectural refactoring delivered under unified governance."
+    },
+    {
+      "scenarioId": "SCENARIO_054",
+      "title": "Translate Technical User Manual & Synthesize Research",
+      "primaryCapability": "localization.translation-services",
+      "secondaryCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "reason": "Technical translation benefits from technical documentation structure and research context.",
+      "expectedBusinessBenefit": "Accurate multilingual documentation delivery."
+    },
+    {
+      "scenarioId": "SCENARIO_057",
+      "title": "Market Research & Proposal Writing for EU Tender",
+      "primaryCapability": "writing.proposal-writing",
+      "secondaryCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "reason": "Tender response preparation requires market research synthesis alongside proposal writing.",
+      "expectedBusinessBenefit": "Higher proposal win rate for public sector tenders."
+    },
+    {
+      "scenarioId": "SCENARIO_097",
+      "title": "Automate Excel Financial Reports & Build Node.js Service",
+      "primaryCapability": "automation.spreadsheet-automation",
+      "secondaryCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "reason": "Financial automation combines spreadsheet manipulation with backend service logic.",
+      "expectedBusinessBenefit": "Seamless automated financial reporting pipeline."
+    }
+  ]
+}

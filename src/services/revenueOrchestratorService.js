@@ -176,13 +176,29 @@ function matchDemand(demand = {}, options = {}) {
     .filter((capability) => capability.score >= minimumScore)
     .sort((a, b) => compareTieBreak(a, b, demand));
 
+  const primaryCapability = matches.length > 0 ? matches[0].id : null;
+  const topScore = matches.length > 0 ? matches[0].score : 0;
+
+  // Composite secondary capability selection (max 3, score >= 80% topScore, confidence >= 70)
+  const secondaryCapabilities = matches.slice(1)
+    .filter((m) => m.score >= topScore * 0.80 && (m.confidenceScore || 70) >= 70)
+    .slice(0, 3)
+    .map((m) => m.id);
+
+  const confidence = matches.length > 0
+    ? Math.min(100, Math.round(matches[0].score * 0.85 + (matches[0].confidenceScore || 70) * 0.15))
+    : 0;
+
+  const selectionReason = primaryCapability
+    ? `Primary capability '${primaryCapability}' selected with top score ${topScore}${secondaryCapabilities.length ? ` plus ${secondaryCapabilities.length} supporting composite capabilities` : ""}`
+    : "No verified capability match found above threshold";
+
   const traceEnabled = Boolean(options.trace || process.env.TRACE_MODE === "true");
   let trace = undefined;
 
   if (traceEnabled) {
     const { tokens } = tokenizeDemand(demand);
-    const winningCapability = matches.length > 0 ? matches[0].id : null;
-    const topScore = matches.length > 0 ? matches[0].score : 0;
+    const winningCapability = primaryCapability;
 
     trace = {
       opportunityId: String(demand.externalId || demand.id || demand.title || ""),
@@ -218,6 +234,10 @@ function matchDemand(demand = {}, options = {}) {
       : selfEarningEligible
         ? "capability_match_found"
         : "no_verified_capability_match",
+    primaryCapability,
+    secondaryCapabilities,
+    confidence,
+    selectionReason,
     matches,
     ...(trace ? { trace } : {}),
     requiresFounderApprovalForExternalAction: true,
