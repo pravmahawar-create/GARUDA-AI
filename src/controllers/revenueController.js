@@ -239,3 +239,22 @@ exports.getMissionConnectorReadiness = async (req, res) => {
     return sendError(res, error, "Failed to get mission connector readiness");
   }
 };
+
+exports.prepareSmtpAction = async (req, res) => {
+  try {
+    const proposal = platformAuth.prepareGovernedSmtpAction(req.params.id, { env: process.env });
+    return res.json({ success: true, data: proposal });
+  } catch (error) {
+    return sendError(res, error, "Failed to prepare SMTP action");
+  }
+};
+
+exports.executeSmtpAction = async (req, res) => {
+  try {
+    const { authorizationPhrase } = req.body || {};
+    const result = await platformAuth.executeGovernedSmtpAction(req.params.id, authorizationPhrase, { env: process.env });
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return sendError(res, error, "Failed to execute SMTP action");
+  }
+};

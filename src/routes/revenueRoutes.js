@@ -24,6 +24,8 @@ router.get("/candidates/:id", revenueController.getCandidate);
 router.post("/candidates/:id/decision", revenueController.recordCandidateDecision);
 router.get("/candidates/:id/audit", revenueController.getCandidateAuditTrail);
 router.get("/candidates/:id/readiness", revenueController.getMissionConnectorReadiness);
+router.get("/candidates/:id/smtp-prepare", revenueController.prepareSmtpAction);
+router.post("/candidates/:id/smtp-execute", revenueController.executeSmtpAction);
 
 // Connector Authentication Routes
 router.get("/connectors/:id/requirements", revenueController.getConnectorRequirements);

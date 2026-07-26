@@ -3,11 +3,12 @@ const motherIntegration = require("../src/services/motherRevenueIntegrationServi
 const connectorFramework = require("../src/services/motherExecutionConnectorService");
 const platformAuth = require("../src/services/motherPlatformAuthService");
 
-function runIntegrationTests() {
-  console.log("Running Mother Revenue Brain v1, Connector Framework & Platform Auth Integration Tests...\n");
+async function runIntegrationTests() {
+  console.log("Running Mother Revenue Brain v1, Connector Framework & Governed Live Action Integration Tests...\n");
 
   motherIntegration.resetProcessedMissions();
   connectorFramework.resetExecutionPackageStore();
+  platformAuth.resetLiveActionAuditStore();
 
   // Test 1: Verified and eligible opportunity creates one mission candidate
   {
@@ -475,7 +476,93 @@ function runIntegrationTests() {
     console.log("✔ Test 32 — Unconfigured connector returns clean 'not_configured' readiness status");
   }
 
-  console.log("\nAll 32 Platform Authentication Readiness & Connector Framework Integration Tests PASSED cleanly.");
+  // Test 33: Prepare SMTP action generates proposed action with recipient garudaos.ai@gmail.com
+  {
+    const validEnv = {
+      GARUDA_EMAIL_HOST: "smtp.example.com",
+      GARUDA_EMAIL_PORT: "587",
+      GARUDA_EMAIL_USER: "admin@example.com",
+      GARUDA_EMAIL_PASS: "valid_secret_key"
+    };
+
+    const proposal = platformAuth.prepareGovernedSmtpAction("INTEG_TEST_001", { env: validEnv });
+    assert.strictEqual(proposal.proposedAction.recipient, "garudaos.ai@gmail.com");
+    assert.strictEqual(proposal.proposedAction.subject, "GARUDA First Governed SMTP Test");
+    assert.strictEqual(proposal.exactAuthorizationPhraseRequired, "FOUNDER APPROVED FIRST SMTP SELF-TEST");
+    assert.strictEqual(proposal.authorizesExternalAction, false);
+
+    console.log("✔ Test 33 — Prepare SMTP action generates controlled proposal payload awaiting Founder authorization");
+  }
+
+  // Test 34: Execute SMTP action refuses send without exact Founder authorization phrase
+  {
+    const validEnv = {
+      GARUDA_EMAIL_HOST: "smtp.example.com",
+      GARUDA_EMAIL_PORT: "587",
+      GARUDA_EMAIL_USER: "admin@example.com",
+      GARUDA_EMAIL_PASS: "valid_secret_key"
+    };
+
+    await assert.rejects(
+      async () => {
+        await platformAuth.executeGovernedSmtpAction("INTEG_TEST_001", "WRONG_PHRASE", { env: validEnv });
+      },
+      (err) => err.statusCode === 403
+    );
+
+    console.log("✔ Test 34 — Execute SMTP action refuses send without exact Founder authorization phrase (403 Forbidden)");
+  }
+
+  // Test 35: Execute SMTP action succeeds with mock transport and exact phrase
+  {
+    const validEnv = {
+      GARUDA_EMAIL_HOST: "smtp.example.com",
+      GARUDA_EMAIL_PORT: "587",
+      GARUDA_EMAIL_USER: "admin@example.com",
+      GARUDA_EMAIL_PASS: "valid_secret_key"
+    };
+
+    const mockTransport = async (config, mail) => {
+      assert.strictEqual(mail.to, "garudaos.ai@gmail.com");
+      return { accepted: true, providerResponseId: "MOCK_250_OK" };
+    };
+
+    const result = await platformAuth.executeGovernedSmtpAction(
+      "INTEG_TEST_001",
+      "FOUNDER APPROVED FIRST SMTP SELF-TEST",
+      { env: validEnv, mockTransport }
+    );
+
+    assert.strictEqual(result.status, "sent_and_provider_accepted");
+    assert.strictEqual(result.recipient, "garudaos.ai@gmail.com");
+    assert.strictEqual(result.networkSideEffectCount, 1);
+
+    console.log("✔ Test 35 — Execute SMTP action succeeds with mock transport and exact Founder phrase");
+  }
+
+  // Test 36: Duplicate SMTP action execution is idempotent
+  {
+    const validEnv = {
+      GARUDA_EMAIL_HOST: "smtp.example.com",
+      GARUDA_EMAIL_PORT: "587",
+      GARUDA_EMAIL_USER: "admin@example.com",
+      GARUDA_EMAIL_PASS: "valid_secret_key"
+    };
+
+    const mockTransport = async () => ({ accepted: true, providerResponseId: "MOCK_250_OK" });
+
+    const dupResult = await platformAuth.executeGovernedSmtpAction(
+      "INTEG_TEST_001",
+      "FOUNDER APPROVED FIRST SMTP SELF-TEST",
+      { env: validEnv, mockTransport }
+    );
+
+    assert.strictEqual(dupResult.status, "idempotent_duplicate_prevented");
+
+    console.log("✔ Test 36 — Duplicate SMTP action execution is idempotent (prevents secondary email send)");
+  }
+
+  console.log("\nAll 36 Platform Authentication, Connector Framework & Governed Action Integration Tests PASSED cleanly.");
 }
 
 runIntegrationTests();

@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-07-26T13:49:46.843Z",
+  "missionCandidateId": "PROPOSED_SMTP_001",
+  "connectorId": "generic_email",
+  "authenticationStatus": "configured_authenticated",
+  "redactedSender": "g***i@gmail.com",
+  "proposedAction": {
+    "recipient": "garudaos.ai@gmail.com",
+    "subject": "GARUDA First Governed SMTP Test",
+    "body": "GARUDA SMTP connector successfully completed its first founder-authorized governed live test.\n\nThis message confirms:\n- authenticated connector execution\n- founder-controlled authorization\n- truthful audit recording\n- no customer outreach\n- no payment or settlement action\n\nJAI GARUDA.",
+    "connector": "generic_email (SMTP)",
+    "executionPackageHash": "a1b0657b365f0d3ba091fba03e186c98d340e022abbd139dad730895ff220f94",
+    "sideEffectClassification": "Live Outbound Email Dispatch (Self-Test Only)",
+    "idempotencyKey": "09cf9c4530e61b08a3830d00b3ff1bffb6bf0688f42a368200ee15b529409881"
+  },
+  "founderAuthorizationGate": {
+    "requiredPhrase": "FOUNDER APPROVED FIRST SMTP SELF-TEST",
+    "authorizationGrantedInSession": false,
+    "status": "awaiting_founder_authorization"
+  },
+  "executionResult": {
+    "smtpExecutionStatus": "blocked_awaiting_founder_authorization",
+    "providerAcceptance": "none",
+    "emailsSent": 0,
+    "networkSideEffectsExecuted": 0
+  },
+  "securityAndGovernance": {
+    "secretsExposed": 0,
+    "duplicateEmailsSent": 0,
+    "unauthorizedRecipients": 0,
+    "paymentOrSettlementChanges": 0,
+    "benchmarkUnchanged": true
+  }
+}
