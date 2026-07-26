@@ -1,0 +1,19 @@
+{
+  "targetedFailureGroup": "primary-vs-secondary inversion",
+  "failureCount": 9,
+  "percentage": "36.00%",
+  "recommendation": "Implement composite multi-capability output engine refinement to emit supporting capabilities when multiple distinct domain tags match above threshold (minimumScore >= 20)",
+  "bundleStatus": "Single targeted patch (preserves primary winner selection)",
+  "targetFiles": [
+    "src/services/revenueOrchestratorService.js"
+  ],
+  "acceptanceGates": {
+    "qualification": ">=99%",
+    "classification": ">=98%",
+    "capability": ">75%",
+    "feasibility": ">=99%",
+    "risk": ">=100%",
+    "overall": ">73%"
+  },
+  "rollbackCriteria": "Revert commit immediately if any metric decreases or primary winner selection changes"
+}

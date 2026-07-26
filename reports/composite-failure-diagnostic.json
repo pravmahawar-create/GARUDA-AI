@@ -1,0 +1,1239 @@
+{
+  "totalFailures": 25,
+  "failures": [
+    {
+      "scenarioId": "SCENARIO_003",
+      "title": "PostgreSQL Database Query Optimization",
+      "expectedPrimary": "engineering.repository-audit",
+      "actualPrimary": "engineering.repository-audit",
+      "expectedSupporting": [
+        "engineering.software-implementation"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 100,
+          "matchedTags": [
+            "audit",
+            "database",
+            "sql",
+            "postgres",
+            "query",
+            "optimization",
+            "queries",
+            "query optimization"
+          ]
+        },
+        {
+          "capabilityId": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "software"
+          ]
+        },
+        {
+          "capabilityId": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ]
+        }
+      ],
+      "rawScore": 100,
+      "matchedTags": [
+        "audit",
+        "database",
+        "sql",
+        "postgres",
+        "query",
+        "optimization",
+        "queries",
+        "query optimization"
+      ],
+      "domainSignal": "Upwork Software",
+      "confidence": 99,
+      "scoreGap": 0,
+      "rootCauseCategory": "missing composite signal"
+    },
+    {
+      "scenarioId": "SCENARIO_009",
+      "title": "UI/UX Figma Mockups for Mobile App",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "creative.vector-design",
+      "expectedSupporting": [],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "figma",
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        }
+      ],
+      "rawScore": 40,
+      "matchedTags": [
+        "figma",
+        "creative"
+      ],
+      "domainSignal": "Fiverr Creative",
+      "confidence": 47,
+      "scoreGap": 40,
+      "rootCauseCategory": "registry coverage gap"
+    },
+    {
+      "scenarioId": "SCENARIO_010",
+      "title": "Animated Explainer Video Motion Graphics",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "creative.motion-graphics",
+      "expectedSupporting": [],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 100,
+          "matchedTags": [
+            "video",
+            "motion",
+            "graphics",
+            "explainer",
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "graphics",
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 40,
+          "matchedTags": [
+            "product",
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "rawScore": 100,
+      "matchedTags": [
+        "video",
+        "motion",
+        "graphics",
+        "explainer",
+        "creative"
+      ],
+      "domainSignal": "Fiverr Creative",
+      "confidence": 98,
+      "scoreGap": 100,
+      "rootCauseCategory": "registry coverage gap"
+    },
+    {
+      "scenarioId": "SCENARIO_011",
+      "title": "Podcast Audio Editing & Noise Reduction",
+      "expectedPrimary": "automation.workflow-automation",
+      "actualPrimary": "creative.motion-graphics",
+      "expectedSupporting": [],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 80,
+          "matchedTags": [
+            "editing",
+            "podcast",
+            "creative",
+            "audio"
+          ]
+        },
+        {
+          "capabilityId": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        }
+      ],
+      "rawScore": 80,
+      "matchedTags": [
+        "editing",
+        "podcast",
+        "creative",
+        "audio"
+      ],
+      "domainSignal": "Fiverr Creative",
+      "confidence": 81,
+      "scoreGap": 80,
+      "rootCauseCategory": "registry coverage gap"
+    },
+    {
+      "scenarioId": "SCENARIO_012",
+      "title": "3D Product Render & CAD Illustration",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "creative.3d-rendering",
+      "expectedSupporting": [],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 100,
+          "matchedTags": [
+            "3d",
+            "cad",
+            "blender",
+            "product",
+            "creative",
+            "model"
+          ]
+        },
+        {
+          "capabilityId": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        }
+      ],
+      "rawScore": 100,
+      "matchedTags": [
+        "3d",
+        "cad",
+        "blender",
+        "product",
+        "creative",
+        "model"
+      ],
+      "domainSignal": "Fiverr Creative",
+      "confidence": 97,
+      "scoreGap": 100,
+      "rootCauseCategory": "non-textual input limitation"
+    },
+    {
+      "scenarioId": "SCENARIO_013",
+      "title": "Social Media Banner & Graphic Design Package",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "creative.vector-design",
+      "expectedSupporting": [],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 80,
+          "matchedTags": [
+            "design",
+            "graphics",
+            "creative",
+            "banner"
+          ]
+        },
+        {
+          "capabilityId": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 60,
+          "matchedTags": [
+            "motion",
+            "graphics",
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "market",
+            "marketing"
+          ]
+        },
+        {
+          "capabilityId": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "rawScore": 80,
+      "matchedTags": [
+        "design",
+        "graphics",
+        "creative",
+        "banner"
+      ],
+      "domainSignal": "Fiverr Creative",
+      "confidence": 81,
+      "scoreGap": 80,
+      "rootCauseCategory": "registry coverage gap"
+    },
+    {
+      "scenarioId": "SCENARIO_014",
+      "title": "E-book Layout & Cover Typography",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "creative.vector-design",
+      "expectedSupporting": [],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "creative",
+            "layout"
+          ]
+        },
+        {
+          "capabilityId": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        },
+        {
+          "capabilityId": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ]
+        }
+      ],
+      "rawScore": 40,
+      "matchedTags": [
+        "creative",
+        "layout"
+      ],
+      "domainSignal": "Fiverr Creative",
+      "confidence": 47,
+      "scoreGap": 40,
+      "rootCauseCategory": "registry coverage gap"
+    },
+    {
+      "scenarioId": "SCENARIO_015",
+      "title": "n8n Customer Lead Intake Workflow Automation",
+      "expectedPrimary": "automation.workflow-automation",
+      "actualPrimary": "automation.workflow-automation",
+      "expectedSupporting": [
+        "engineering.api-integration"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 100,
+          "matchedTags": [
+            "automation",
+            "workflow",
+            "n8n",
+            "pipeline",
+            "flow",
+            "crm",
+            "hubspot"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 40,
+          "matchedTags": [
+            "ai",
+            "automation"
+          ]
+        },
+        {
+          "capabilityId": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "automation"
+          ]
+        },
+        {
+          "capabilityId": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "intake"
+          ]
+        }
+      ],
+      "rawScore": 100,
+      "matchedTags": [
+        "automation",
+        "workflow",
+        "n8n",
+        "pipeline",
+        "flow",
+        "crm",
+        "hubspot"
+      ],
+      "domainSignal": "AI Automation",
+      "confidence": 98,
+      "scoreGap": 0,
+      "rootCauseCategory": "missing composite signal"
+    },
+    {
+      "scenarioId": "SCENARIO_018",
+      "title": "Automated Document OCR & Invoice Data Extraction",
+      "expectedPrimary": "ai.agent-engineering",
+      "actualPrimary": "automation.workflow-automation",
+      "expectedSupporting": [
+        "automation.workflow-automation"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 80,
+          "matchedTags": [
+            "automation",
+            "extraction",
+            "ocr",
+            "document"
+          ]
+        },
+        {
+          "capabilityId": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 40,
+          "matchedTags": [
+            "database",
+            "postgres"
+          ]
+        },
+        {
+          "capabilityId": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 40,
+          "matchedTags": [
+            "automation",
+            "api"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 40,
+          "matchedTags": [
+            "ai",
+            "automation"
+          ]
+        },
+        {
+          "capabilityId": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ]
+        },
+        {
+          "capabilityId": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "capabilityId": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        }
+      ],
+      "rawScore": 80,
+      "matchedTags": [
+        "automation",
+        "extraction",
+        "ocr",
+        "document"
+      ],
+      "domainSignal": "AI Automation",
+      "confidence": 81,
+      "scoreGap": 40,
+      "rootCauseCategory": "primary-vs-secondary inversion"
+    },
+    {
+      "scenarioId": "SCENARIO_022",
+      "title": "EU GDPR Data Compliance Policy Review",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "knowledge.research-synthesis",
+      "expectedSupporting": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 100,
+          "matchedTags": [
+            "research",
+            "summary",
+            "legal",
+            "legal research",
+            "policy",
+            "gdpr",
+            "compliance",
+            "regulatory"
+          ]
+        },
+        {
+          "capabilityId": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "policy"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "search"
+          ]
+        },
+        {
+          "capabilityId": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 20,
+          "matchedTags": [
+            "review"
+          ]
+        },
+        {
+          "capabilityId": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ]
+        }
+      ],
+      "rawScore": 100,
+      "matchedTags": [
+        "research",
+        "summary",
+        "legal",
+        "legal research",
+        "policy",
+        "gdpr",
+        "compliance",
+        "regulatory"
+      ],
+      "domainSignal": "Legal Research",
+      "confidence": 99,
+      "scoreGap": 100,
+      "rootCauseCategory": "primary-vs-secondary inversion"
+    },
+    {
+      "scenarioId": "SCENARIO_032",
+      "title": "Underwriting Risk Assessment Matrix Generator",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "writing.proposal-writing",
+      "expectedSupporting": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [
+        "knowledge.research-synthesis",
+        "ai.agent-engineering"
+      ],
+      "candidateRanking": [
+        {
+          "capabilityId": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "writing"
+          ]
+        },
+        {
+          "capabilityId": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "report"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "rawScore": 20,
+      "matchedTags": [
+        "writing"
+      ],
+      "domainSignal": "Insurance",
+      "confidence": 31,
+      "scoreGap": 20,
+      "rootCauseCategory": "primary-vs-secondary inversion"
+    },
+    {
+      "scenarioId": "SCENARIO_033",
+      "title": "Insurance Agent Portal Lead Distribution Script",
+      "expectedPrimary": "automation.workflow-automation",
+      "actualPrimary": "ai.agent-engineering",
+      "expectedSupporting": [],
+      "actualSecondary": [
+        "engineering.repository-audit"
+      ],
+      "candidateRanking": [
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "agent"
+          ]
+        },
+        {
+          "capabilityId": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 20,
+          "matchedTags": [
+            "code"
+          ]
+        }
+      ],
+      "rawScore": 20,
+      "matchedTags": [
+        "agent"
+      ],
+      "domainSignal": "Insurance",
+      "confidence": 31,
+      "scoreGap": 20,
+      "rootCauseCategory": "registry coverage gap"
+    },
+    {
+      "scenarioId": "SCENARIO_034",
+      "title": "Property Damage Claims Photo Categorization",
+      "expectedPrimary": "ai.agent-engineering",
+      "actualPrimary": "ai.agent-engineering",
+      "expectedSupporting": [
+        "automation.workflow-automation"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "rawScore": 20,
+      "matchedTags": [
+        "ai"
+      ],
+      "domainSignal": "Insurance",
+      "confidence": 31,
+      "scoreGap": 0,
+      "rootCauseCategory": "missing composite signal"
+    },
+    {
+      "scenarioId": "SCENARIO_036",
+      "title": "Zendesk Automated Ticket Auto-Responder Workflow",
+      "expectedPrimary": "ai.agent-engineering",
+      "actualPrimary": "automation.workflow-automation",
+      "expectedSupporting": [
+        "automation.workflow-automation"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 80,
+          "matchedTags": [
+            "workflow",
+            "trigger",
+            "flow",
+            "zendesk"
+          ]
+        }
+      ],
+      "rawScore": 80,
+      "matchedTags": [
+        "workflow",
+        "trigger",
+        "flow",
+        "zendesk"
+      ],
+      "domainSignal": "Customer Support",
+      "confidence": 81,
+      "scoreGap": 80,
+      "rootCauseCategory": "primary-vs-secondary inversion"
+    },
+    {
+      "scenarioId": "SCENARIO_038",
+      "title": "Intercom Chatbot Decision Tree Setup",
+      "expectedPrimary": "ai.agent-engineering",
+      "actualPrimary": "automation.workflow-automation",
+      "expectedSupporting": [
+        "automation.workflow-automation"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 60,
+          "matchedTags": [
+            "flow",
+            "tree",
+            "intercom"
+          ]
+        },
+        {
+          "capabilityId": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "setup"
+          ]
+        }
+      ],
+      "rawScore": 60,
+      "matchedTags": [
+        "flow",
+        "tree",
+        "intercom"
+      ],
+      "domainSignal": "Customer Support",
+      "confidence": 64,
+      "scoreGap": 60,
+      "rootCauseCategory": "primary-vs-secondary inversion"
+    },
+    {
+      "scenarioId": "SCENARIO_039",
+      "title": "Customer NPS Survey Analysis & Sentiment Report",
+      "expectedPrimary": "automation.spreadsheet-automation",
+      "actualPrimary": "knowledge.research-synthesis",
+      "expectedSupporting": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "analysis",
+            "report"
+          ]
+        },
+        {
+          "capabilityId": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 20,
+          "matchedTags": [
+            "database"
+          ]
+        }
+      ],
+      "rawScore": 40,
+      "matchedTags": [
+        "analysis",
+        "report"
+      ],
+      "domainSignal": "Customer Support",
+      "confidence": 48,
+      "scoreGap": 40,
+      "rootCauseCategory": "primary-vs-secondary inversion"
+    },
+    {
+      "scenarioId": "SCENARIO_041",
+      "title": "E-commerce Order Status WhatsApp Response Bot",
+      "expectedPrimary": "ai.agent-engineering",
+      "actualPrimary": "engineering.software-implementation",
+      "expectedSupporting": [
+        "engineering.api-integration"
+      ],
+      "actualSecondary": [
+        "engineering.api-integration",
+        "documentation.technical-documentation"
+      ],
+      "candidateRanking": [
+        {
+          "capabilityId": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "capabilityId": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        },
+        {
+          "capabilityId": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ]
+        }
+      ],
+      "rawScore": 20,
+      "matchedTags": [
+        "api"
+      ],
+      "domainSignal": "Customer Support",
+      "confidence": 31,
+      "scoreGap": 20,
+      "rootCauseCategory": "primary-vs-secondary inversion"
+    },
+    {
+      "scenarioId": "SCENARIO_042",
+      "title": "Multilingual Support Email Draft Generator",
+      "expectedPrimary": "ai.agent-engineering",
+      "actualPrimary": "localization.translation-services",
+      "expectedSupporting": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [
+        "automation.workflow-automation"
+      ],
+      "candidateRanking": [
+        {
+          "capabilityId": "localization.translation-services",
+          "name": "Multi-Language Document & UI Translation",
+          "score": 40,
+          "matchedTags": [
+            "translate",
+            "multilingual"
+          ]
+        },
+        {
+          "capabilityId": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 40,
+          "matchedTags": [
+            "sla",
+            "email"
+          ]
+        },
+        {
+          "capabilityId": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "email"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "rawScore": 40,
+      "matchedTags": [
+        "translate",
+        "multilingual"
+      ],
+      "domainSignal": "Customer Support",
+      "confidence": 48,
+      "scoreGap": 20,
+      "rootCauseCategory": "missing composite signal"
+    },
+    {
+      "scenarioId": "SCENARIO_047",
+      "title": "Receipt Expense Categorization & Entry",
+      "expectedPrimary": "automation.spreadsheet-automation",
+      "actualPrimary": "automation.spreadsheet-automation",
+      "expectedSupporting": [
+        "automation.workflow-automation"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 60,
+          "matchedTags": [
+            "spreadsheet",
+            "csv",
+            "data"
+          ]
+        }
+      ],
+      "rawScore": 60,
+      "matchedTags": [
+        "spreadsheet",
+        "csv",
+        "data"
+      ],
+      "domainSignal": "Data Entry",
+      "confidence": 65,
+      "scoreGap": 0,
+      "rootCauseCategory": "missing composite signal"
+    },
+    {
+      "scenarioId": "SCENARIO_054",
+      "title": "Arabic Corporate Presentation Translation",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "localization.translation-services",
+      "expectedSupporting": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "localization.translation-services",
+          "name": "Multi-Language Document & UI Translation",
+          "score": 60,
+          "matchedTags": [
+            "translation",
+            "translate",
+            "arabic"
+          ]
+        },
+        {
+          "capabilityId": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "translation"
+          ]
+        },
+        {
+          "capabilityId": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 20,
+          "matchedTags": [
+            "sla"
+          ]
+        }
+      ],
+      "rawScore": 60,
+      "matchedTags": [
+        "translation",
+        "translate",
+        "arabic"
+      ],
+      "domainSignal": "Translation",
+      "confidence": 65,
+      "scoreGap": 60,
+      "rootCauseCategory": "primary-vs-secondary inversion"
+    },
+    {
+      "scenarioId": "SCENARIO_057",
+      "title": "B2B SaaS Content Strategy & Blog Article Package",
+      "expectedPrimary": "knowledge.research-synthesis",
+      "actualPrimary": "knowledge.research-synthesis",
+      "expectedSupporting": [
+        "writing.proposal-writing"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 80,
+          "matchedTags": [
+            "market",
+            "seo",
+            "marketing",
+            "content"
+          ]
+        },
+        {
+          "capabilityId": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "articles"
+          ]
+        }
+      ],
+      "rawScore": 80,
+      "matchedTags": [
+        "market",
+        "seo",
+        "marketing",
+        "content"
+      ],
+      "domainSignal": "Marketing",
+      "confidence": 82,
+      "scoreGap": 0,
+      "rootCauseCategory": "missing composite signal"
+    },
+    {
+      "scenarioId": "SCENARIO_058",
+      "title": "Cold Email Outreach Sequence Drafting for Agency",
+      "expectedPrimary": "knowledge.research-synthesis",
+      "actualPrimary": "knowledge.research-synthesis",
+      "expectedSupporting": [
+        "writing.proposal-writing"
+      ],
+      "actualSecondary": [
+        "writing.proposal-writing"
+      ],
+      "candidateRanking": [
+        {
+          "capabilityId": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "market",
+            "marketing"
+          ]
+        },
+        {
+          "capabilityId": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 40,
+          "matchedTags": [
+            "outreach",
+            "email"
+          ]
+        },
+        {
+          "capabilityId": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 20,
+          "matchedTags": [
+            "email"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "rawScore": 40,
+      "matchedTags": [
+        "market",
+        "marketing"
+      ],
+      "domainSignal": "Marketing",
+      "confidence": 48,
+      "scoreGap": 0,
+      "rootCauseCategory": "primary-vs-secondary inversion"
+    },
+    {
+      "scenarioId": "SCENARIO_062",
+      "title": "Lead Magnet E-book Writing on AI Workflows",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "knowledge.research-synthesis",
+      "expectedSupporting": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [
+        "automation.workflow-automation"
+      ],
+      "candidateRanking": [
+        {
+          "capabilityId": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "market",
+            "marketing"
+          ]
+        },
+        {
+          "capabilityId": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 40,
+          "matchedTags": [
+            "workflow",
+            "flow"
+          ]
+        },
+        {
+          "capabilityId": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "writing"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "rawScore": 40,
+      "matchedTags": [
+        "market",
+        "marketing"
+      ],
+      "domainSignal": "Marketing",
+      "confidence": 48,
+      "scoreGap": 40,
+      "rootCauseCategory": "registry coverage gap"
+    },
+    {
+      "scenarioId": "SCENARIO_066",
+      "title": "Municipal Smart City IoT Feasibility Study",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "automation.workflow-automation",
+      "expectedSupporting": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [],
+      "candidateRanking": [
+        {
+          "capabilityId": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 40,
+          "matchedTags": [
+            "tree",
+            "document"
+          ]
+        },
+        {
+          "capabilityId": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "technical"
+          ]
+        }
+      ],
+      "rawScore": 40,
+      "matchedTags": [
+        "tree",
+        "document"
+      ],
+      "domainSignal": "Government Tender",
+      "confidence": 47,
+      "scoreGap": 20,
+      "rootCauseCategory": "missing composite signal"
+    },
+    {
+      "scenarioId": "SCENARIO_084",
+      "title": "Unlimited Free AI Server Infrastructure Without Hosting Cost",
+      "expectedPrimary": null,
+      "actualPrimary": "creative.3d-rendering",
+      "expectedSupporting": [],
+      "actualSecondary": [
+        "ai.agent-engineering"
+      ],
+      "candidateRanking": [
+        {
+          "capabilityId": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "model"
+          ]
+        },
+        {
+          "capabilityId": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ]
+        }
+      ],
+      "rawScore": 20,
+      "matchedTags": [
+        "model"
+      ],
+      "domainSignal": "Unrealistic Projects",
+      "confidence": 29,
+      "scoreGap": 20,
+      "rootCauseCategory": "registry coverage gap"
+    }
+  ]
+}

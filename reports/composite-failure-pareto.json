@@ -1,0 +1,70 @@
+{
+  "totalFailures": 25,
+  "paretoDistribution": [
+    {
+      "rootCause": "primary-vs-secondary inversion",
+      "failureCount": 9,
+      "percentage": "36.00%",
+      "affectedScenarios": [
+        "SCENARIO_018",
+        "SCENARIO_022",
+        "SCENARIO_032",
+        "SCENARIO_036",
+        "SCENARIO_038",
+        "SCENARIO_039",
+        "SCENARIO_041",
+        "SCENARIO_054",
+        "SCENARIO_058"
+      ],
+      "safestPossibleFix": "Refine title phrase weight vs secondary tag accumulation",
+      "estimatedBenchmarkGain": "+5.00% Capability Accuracy",
+      "regressionRisk": "Low (tie-break refinement)"
+    },
+    {
+      "rootCause": "registry coverage gap",
+      "failureCount": 8,
+      "percentage": "32.00%",
+      "affectedScenarios": [
+        "SCENARIO_009",
+        "SCENARIO_010",
+        "SCENARIO_011",
+        "SCENARIO_013",
+        "SCENARIO_014",
+        "SCENARIO_033",
+        "SCENARIO_062",
+        "SCENARIO_084"
+      ],
+      "safestPossibleFix": "Expand tag registry for missing niche capabilities",
+      "estimatedBenchmarkGain": "+6.00% Capability Accuracy",
+      "regressionRisk": "Low (deterministic tag additions)"
+    },
+    {
+      "rootCause": "missing composite signal",
+      "failureCount": 7,
+      "percentage": "28.00%",
+      "affectedScenarios": [
+        "SCENARIO_003",
+        "SCENARIO_015",
+        "SCENARIO_034",
+        "SCENARIO_042",
+        "SCENARIO_047",
+        "SCENARIO_057",
+        "SCENARIO_066"
+      ],
+      "safestPossibleFix": "Enable multi-capability tag accumulation for composite deliverables",
+      "estimatedBenchmarkGain": "+8.00% Capability Accuracy",
+      "regressionRisk": "Low (additive secondary capability selection)"
+    },
+    {
+      "rootCause": "non-textual input limitation",
+      "failureCount": 1,
+      "percentage": "4.00%",
+      "affectedScenarios": [
+        "SCENARIO_012"
+      ],
+      "safestPossibleFix": "Add specialized domain context signals",
+      "estimatedBenchmarkGain": "+3.00% Capability Accuracy",
+      "regressionRisk": "Low"
+    }
+  ]
+}
