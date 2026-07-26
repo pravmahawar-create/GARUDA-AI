@@ -1,0 +1,950 @@
+{
+  "totalFailures": 15,
+  "failureAnalysis": [
+    {
+      "scenarioId": "SCENARIO_003",
+      "title": "PostgreSQL Database Query Optimization",
+      "description": "Audit slow SQL queries and optimize indexes for PostgreSQL database",
+      "expectedPrimary": "engineering.repository-audit",
+      "actualPrimary": "engineering.repository-audit",
+      "expectedSecondary": [
+        "engineering.software-implementation"
+      ],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 100,
+          "matchedTags": [
+            "audit",
+            "database",
+            "sql",
+            "postgres",
+            "query",
+            "optimization",
+            "queries",
+            "query optimization"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "software"
+          ],
+          "uniqueMatchedTags": [
+            "software"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ],
+          "uniqueMatchedTags": [
+            "data"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [
+        "engineering.software-implementation"
+      ],
+      "rootCause": "missing secondary capability (threshold too strict)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_009",
+      "title": "UI/UX Figma Mockups for Mobile App",
+      "description": "Create interactive Figma wireframes and mobile screen prototypes",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "engineering.software-implementation",
+      "expectedSecondary": [],
+      "actualSecondary": [
+        "creative.vector-design"
+      ],
+      "candidateScores": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 40,
+          "matchedTags": [
+            "mobile app",
+            "prototype"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "figma",
+            "creative"
+          ],
+          "uniqueMatchedTags": [
+            "figma",
+            "creative"
+          ],
+          "uniqueTagCount": 2
+        },
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ],
+          "uniqueMatchedTags": [
+            "creative"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ],
+          "uniqueMatchedTags": [
+            "creative"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [
+        "creative.vector-design"
+      ],
+      "missingSecondary": [],
+      "rootCause": "incorrect secondary capability (generic tag overlap)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_010",
+      "title": "Animated Explainer Video Motion Graphics",
+      "description": "30-second 2D motion graphic explainer video for product launch",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "creative.motion-graphics",
+      "expectedSecondary": [],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 100,
+          "matchedTags": [
+            "video",
+            "motion",
+            "graphics",
+            "explainer",
+            "creative"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "graphics",
+            "creative"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 40,
+          "matchedTags": [
+            "product",
+            "creative"
+          ],
+          "uniqueMatchedTags": [
+            "product"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ],
+          "uniqueMatchedTags": [
+            "ai"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [],
+      "rootCause": "incorrect secondary capability (generic tag overlap)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_011",
+      "title": "Podcast Audio Editing & Noise Reduction",
+      "description": "Clean up 45-minute podcast episode audio, remove background hum and balance levels",
+      "expectedPrimary": "automation.workflow-automation",
+      "actualPrimary": "creative.motion-graphics",
+      "expectedSecondary": [],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 80,
+          "matchedTags": [
+            "editing",
+            "podcast",
+            "creative",
+            "audio"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [],
+      "rootCause": "incorrect secondary capability (generic tag overlap)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_012",
+      "title": "3D Product Render & CAD Illustration",
+      "description": "Render 3D CAD model of consumer electronic product in Blender",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "creative.3d-rendering",
+      "expectedSecondary": [],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 100,
+          "matchedTags": [
+            "3d",
+            "cad",
+            "blender",
+            "product",
+            "creative",
+            "model"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [],
+      "rootCause": "non-textual input limitation (CAD/3D model)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_013",
+      "title": "Social Media Banner & Graphic Design Package",
+      "description": "Design 10 promotional social media banners for marketing campaign",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "creative.vector-design",
+      "expectedSecondary": [],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 80,
+          "matchedTags": [
+            "design",
+            "graphics",
+            "creative",
+            "banner"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 60,
+          "matchedTags": [
+            "motion",
+            "graphics",
+            "creative"
+          ],
+          "uniqueMatchedTags": [
+            "motion"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 40,
+          "matchedTags": [
+            "market",
+            "marketing"
+          ],
+          "uniqueMatchedTags": [
+            "market",
+            "marketing"
+          ],
+          "uniqueTagCount": 2
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ],
+          "uniqueMatchedTags": [
+            "ai"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [],
+      "rootCause": "incorrect secondary capability (generic tag overlap)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_014",
+      "title": "E-book Layout & Cover Typography",
+      "description": "Format 50-page e-book PDF layout with custom typography and chapter headers",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "creative.vector-design",
+      "expectedSecondary": [],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "creative.vector-design",
+          "name": "Vector Graphics, Logo & Layout Design",
+          "score": 40,
+          "matchedTags": [
+            "creative",
+            "layout"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.motion-graphics",
+          "name": "Motion Graphics, Video & Audio Editing",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "creative"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [],
+      "rootCause": "incorrect secondary capability (generic tag overlap)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_015",
+      "title": "n8n Customer Lead Intake Workflow Automation",
+      "description": "Build automated n8n pipeline to parse incoming leads from Typeform into HubSpot CRM",
+      "expectedPrimary": "automation.workflow-automation",
+      "actualPrimary": "automation.workflow-automation",
+      "expectedSecondary": [
+        "engineering.api-integration"
+      ],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 100,
+          "matchedTags": [
+            "automation",
+            "workflow",
+            "n8n",
+            "pipeline",
+            "flow",
+            "crm",
+            "hubspot"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 40,
+          "matchedTags": [
+            "ai",
+            "automation"
+          ],
+          "uniqueMatchedTags": [
+            "ai"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "automation"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "intake"
+          ],
+          "uniqueMatchedTags": [
+            "intake"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [
+        "engineering.api-integration"
+      ],
+      "rootCause": "missing secondary capability (threshold too strict)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_018",
+      "title": "Automated Document OCR & Invoice Data Extraction",
+      "description": "Extract line items from PDF invoices using OCR API and write to PostgreSQL",
+      "expectedPrimary": "ai.agent-engineering",
+      "actualPrimary": "automation.workflow-automation",
+      "expectedSecondary": [
+        "automation.workflow-automation"
+      ],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 80,
+          "matchedTags": [
+            "automation",
+            "extraction",
+            "ocr",
+            "document"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 40,
+          "matchedTags": [
+            "database",
+            "postgres"
+          ],
+          "uniqueMatchedTags": [
+            "database",
+            "postgres"
+          ],
+          "uniqueTagCount": 2
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 40,
+          "matchedTags": [
+            "automation",
+            "api"
+          ],
+          "uniqueMatchedTags": [
+            "api"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 40,
+          "matchedTags": [
+            "ai",
+            "automation"
+          ],
+          "uniqueMatchedTags": [
+            "ai"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ],
+          "uniqueMatchedTags": [
+            "data"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ],
+          "uniqueMatchedTags": [
+            "api"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "score": 20,
+          "matchedTags": [
+            "api"
+          ],
+          "uniqueMatchedTags": [
+            "api"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [
+        "automation.workflow-automation"
+      ],
+      "rootCause": "missing secondary capability (threshold too strict)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_022",
+      "title": "EU GDPR Data Compliance Policy Review",
+      "description": "Synthesize summary of GDPR regulatory requirements for SaaS user data retention",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "knowledge.research-synthesis",
+      "expectedSecondary": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 100,
+          "matchedTags": [
+            "research",
+            "summary",
+            "legal",
+            "legal research",
+            "policy",
+            "gdpr",
+            "compliance",
+            "regulatory"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "score": 20,
+          "matchedTags": [
+            "policy"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "search"
+          ],
+          "uniqueMatchedTags": [
+            "search"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "score": 20,
+          "matchedTags": [
+            "review"
+          ],
+          "uniqueMatchedTags": [
+            "review"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "score": 20,
+          "matchedTags": [
+            "data"
+          ],
+          "uniqueMatchedTags": [
+            "data"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [
+        "knowledge.research-synthesis"
+      ],
+      "rootCause": "missing secondary capability (threshold too strict)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_032",
+      "title": "Underwriting Risk Assessment Matrix Generator",
+      "description": "Create automated report comparing applicant risk metrics against underwriting criteria",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "writing.proposal-writing",
+      "expectedSecondary": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [
+        "knowledge.research-synthesis",
+        "ai.agent-engineering"
+      ],
+      "candidateScores": [
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "writing"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "report"
+          ],
+          "uniqueMatchedTags": [
+            "report"
+          ],
+          "uniqueTagCount": 1
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ],
+          "uniqueMatchedTags": [
+            "ai"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [
+        "ai.agent-engineering"
+      ],
+      "missingSecondary": [],
+      "rootCause": "incorrect secondary capability (generic tag overlap)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_034",
+      "title": "Property Damage Claims Photo Categorization",
+      "description": "Classify vehicle damage photos into severe, moderate, minor categories",
+      "expectedPrimary": "ai.agent-engineering",
+      "actualPrimary": "ai.agent-engineering",
+      "expectedSecondary": [
+        "automation.workflow-automation"
+      ],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 60,
+          "matchedTags": [
+            "ai",
+            "claims photo",
+            "photo categorization"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [
+        "automation.workflow-automation"
+      ],
+      "rootCause": "missing secondary capability (threshold too strict)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_042",
+      "title": "Multilingual Support Email Draft Generator",
+      "description": "Generate auto-translated draft responses for customer support inquiries",
+      "expectedPrimary": "ai.agent-engineering",
+      "actualPrimary": "localization.translation-services",
+      "expectedSecondary": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "candidateScores": [
+        {
+          "id": "localization.translation-services",
+          "name": "Multi-Language Document & UI Translation",
+          "score": 40,
+          "matchedTags": [
+            "translate",
+            "multilingual"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 40,
+          "matchedTags": [
+            "ai",
+            "draft generator"
+          ],
+          "uniqueMatchedTags": [
+            "ai",
+            "draft generator"
+          ],
+          "uniqueTagCount": 2
+        },
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 40,
+          "matchedTags": [
+            "sla",
+            "email"
+          ],
+          "uniqueMatchedTags": [
+            "sla",
+            "email"
+          ],
+          "uniqueTagCount": 2
+        },
+        {
+          "id": "writing.proposal-writing",
+          "name": "Technical Proposal & Quotation Package Writing",
+          "score": 20,
+          "matchedTags": [
+            "email"
+          ],
+          "uniqueMatchedTags": [
+            "email"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [
+        "automation.workflow-automation"
+      ],
+      "missingSecondary": [
+        "knowledge.research-synthesis"
+      ],
+      "rootCause": "incorrect secondary capability (generic tag overlap)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_054",
+      "title": "Arabic Corporate Presentation Translation",
+      "description": "Translate 15 PowerPoint pitch deck slides from English into Arabic",
+      "expectedPrimary": "documentation.technical-documentation",
+      "actualPrimary": "localization.translation-services",
+      "expectedSecondary": [
+        "knowledge.research-synthesis"
+      ],
+      "actualSecondary": [],
+      "candidateScores": [
+        {
+          "id": "localization.translation-services",
+          "name": "Multi-Language Document & UI Translation",
+          "score": 60,
+          "matchedTags": [
+            "translation",
+            "translate",
+            "arabic"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "score": 20,
+          "matchedTags": [
+            "translation"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "score": 20,
+          "matchedTags": [
+            "sla"
+          ],
+          "uniqueMatchedTags": [
+            "sla"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [],
+      "missingSecondary": [
+        "knowledge.research-synthesis"
+      ],
+      "rootCause": "missing secondary capability (threshold too strict)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    },
+    {
+      "scenarioId": "SCENARIO_084",
+      "title": "Unlimited Free AI Server Infrastructure Without Hosting Cost",
+      "description": "Deploy 1000 GPU AI models with zero server costs and zero latency guaranteed",
+      "actualPrimary": "creative.3d-rendering",
+      "expectedSecondary": [],
+      "actualSecondary": [
+        "ai.agent-engineering"
+      ],
+      "candidateScores": [
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "score": 20,
+          "matchedTags": [
+            "model"
+          ],
+          "uniqueMatchedTags": [],
+          "uniqueTagCount": 0
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "score": 20,
+          "matchedTags": [
+            "ai"
+          ],
+          "uniqueMatchedTags": [
+            "ai"
+          ],
+          "uniqueTagCount": 1
+        }
+      ],
+      "incorrectSecondary": [
+        "ai.agent-engineering"
+      ],
+      "missingSecondary": [],
+      "rootCause": "incorrect secondary capability (generic tag overlap)",
+      "safestCorrection": "Require secondary capabilities to possess independent unique matched phrase evidence or lower secondary threshold for distinct domain matches",
+      "regressionRisk": "Low"
+    }
+  ]
+}

@@ -1,0 +1,225 @@
+{
+  "totalRemainingFailures": 15,
+  "remainingFailures": [
+    {
+      "scenarioId": "SCENARIO_003",
+      "title": "PostgreSQL Database Query Optimization",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "engineering.repository-audit",
+        "engineering.software-implementation"
+      ],
+      "actualOutput": [
+        "engineering.repository-audit"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_009",
+      "title": "UI/UX Figma Mockups for Mobile App",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "documentation.technical-documentation"
+      ],
+      "actualOutput": [
+        "creative.vector-design",
+        "engineering.software-implementation"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_010",
+      "title": "Animated Explainer Video Motion Graphics",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "documentation.technical-documentation"
+      ],
+      "actualOutput": [
+        "creative.motion-graphics",
+        "creative.vector-design"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_011",
+      "title": "Podcast Audio Editing & Noise Reduction",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "automation.workflow-automation"
+      ],
+      "actualOutput": [
+        "creative.motion-graphics"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_012",
+      "title": "3D Product Render & CAD Illustration",
+      "failureCategory": "non-textual input limitation (CAD/3D model)",
+      "expectedOutput": [
+        "documentation.technical-documentation"
+      ],
+      "actualOutput": [
+        "creative.3d-rendering"
+      ],
+      "isNonTextual": true,
+      "recommendedNextAction": "Implement multimodal CAD/PDF asset parsing pipeline in Phase 3",
+      "actionTiming": "defer_to_phase3"
+    },
+    {
+      "scenarioId": "SCENARIO_013",
+      "title": "Social Media Banner & Graphic Design Package",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "documentation.technical-documentation"
+      ],
+      "actualOutput": [
+        "creative.vector-design",
+        "knowledge.research-synthesis"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_014",
+      "title": "E-book Layout & Cover Typography",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "documentation.technical-documentation"
+      ],
+      "actualOutput": [
+        "creative.vector-design"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_015",
+      "title": "n8n Customer Lead Intake Workflow Automation",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "automation.workflow-automation",
+        "engineering.api-integration"
+      ],
+      "actualOutput": [
+        "automation.workflow-automation"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_018",
+      "title": "Automated Document OCR & Invoice Data Extraction",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualOutput": [
+        "automation.workflow-automation"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_022",
+      "title": "EU GDPR Data Compliance Policy Review",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualOutput": [
+        "knowledge.research-synthesis"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_032",
+      "title": "Underwriting Risk Assessment Matrix Generator",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualOutput": [
+        "knowledge.research-synthesis"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_034",
+      "title": "Property Damage Claims Photo Categorization",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualOutput": [
+        "ai.agent-engineering"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_042",
+      "title": "Multilingual Support Email Draft Generator",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "ai.agent-engineering",
+        "knowledge.research-synthesis"
+      ],
+      "actualOutput": [
+        "ai.agent-engineering"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_054",
+      "title": "Arabic Corporate Presentation Translation",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualOutput": [
+        "knowledge.research-synthesis"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    },
+    {
+      "scenarioId": "SCENARIO_084",
+      "title": "Unlimited Free AI Server Infrastructure Without Hosting Cost",
+      "failureCategory": "multi-capability composite secondary output filtering",
+      "expectedOutput": [],
+      "actualOutput": [
+        "ai.agent-engineering",
+        "creative.3d-rendering"
+      ],
+      "isNonTextual": false,
+      "recommendedNextAction": "Refine multi-capability composite output schema thresholding",
+      "actionTiming": "fix_now"
+    }
+  ]
+}
