@@ -1,33 +1,34 @@
 {
-  "timestamp": "2026-07-26T13:54:47.524Z",
+  "timestamp": "2026-07-26T17:35:31.252Z",
   "missionCandidateId": "LIVE_SMTP_PILOT_001",
   "connectorId": "generic_email",
-  "authenticationStatus": "authentication_failed",
+  "authenticationStatus": "configured_authenticated",
   "redactedSender": "g***i@gmail.com",
   "executedAction": {
     "recipient": "garudaos.ai@gmail.com",
     "subject": "GARUDA First Governed SMTP Test",
     "connector": "generic_email (SMTP)",
-    "executionPackageHash": "e9ca44d8f4bd13e23b494114683b0e1943a62a9b897e1112f45a5a7f03dc9638",
+    "executionPackageHash": "0691f1658230f8937215bfa22ba114d1d466384087f98b0be710137425170085",
     "sideEffectClassification": "Live Outbound Email Dispatch (Self-Test Only)",
-    "idempotencyKey": "07acda475f1d1bed492d5cf3b3788efbd2926f6db2250fcb2484e5c5496effb3"
+    "idempotencyKey": "f0b19797eaa715a32506843992f5c142dda9f296d43c758f99d07f539a87fa14"
   },
   "founderAuthorizationGate": {
     "requiredPhrase": "FOUNDER APPROVED FIRST SMTP SELF-TEST",
     "authorizationGrantedInSession": true,
-    "status": "authorized_execution_attempted"
+    "status": "authorized_and_executed"
   },
   "executionResult": {
-    "smtpExecutionStatus": "failed",
-    "providerAcceptance": "rejected_by_provider",
-    "failureCode": "SMTP_AUTHENTICATION_ERROR",
-    "errorMessage": "SMTP Server Error (535): 535-5.7.8 Username and Password not accepted. For more information, go to\r\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5a478bee46e88-314bc548f5dsm24579565eec.17 - gsmtp",
-    "providerResponseId": null,
-    "emailsSent": 0,
-    "networkSideEffectsExecuted": 0
+    "smtpExecutionStatus": "sent_and_provider_accepted",
+    "providerAcceptance": "accepted",
+    "failureCode": null,
+    "errorMessage": null,
+    "providerResponseId": "250 2.0.0 OK  1785087330 a92af1059eb24-13d2eb01aa0sm32488042c88.3 - gsmtp",
+    "emailsSent": 1,
+    "networkSideEffectsExecuted": 1
   },
   "duplicatePrevention": {
-    "idempotencyTestPassed": true
+    "idempotencyTestPassed": true,
+    "duplicateOutcomeStatus": "idempotent_duplicate_prevented"
   },
   "securityAndGovernance": {
     "secretsExposed": 0,
