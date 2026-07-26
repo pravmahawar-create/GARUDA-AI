@@ -1,0 +1,53 @@
+{
+  "dryRunTimestamp": "2026-07-26T11:13:42.881Z",
+  "fixture": {
+    "id": "DRY_RUN_REVIEW_001",
+    "externalId": "NON_LIVE_EXT_888",
+    "title": "Build Node.js API Service & PostgreSQL Integration",
+    "description": "Request for proposal with fixed price, statement of work, project milestone, delivery deadline, and acceptance criteria for Node API microservice deliverable",
+    "category": "Upwork Software",
+    "tags": [
+      "node",
+      "api",
+      "postgres"
+    ],
+    "url": "https://verified.client/job/888",
+    "source": "upwork",
+    "sourceVerified": true,
+    "publishedAt": "2026-07-26T11:13:42.874Z"
+  },
+  "missionCandidateLoaded": true,
+  "founderReviewPayloadDisplayed": {
+    "candidateId": "DRY_RUN_REVIEW_001",
+    "missionId": "MOTHER_MISSION_DRY_RUN_REVIEW_001",
+    "title": "Build Node.js API Service & PostgreSQL Integration",
+    "classification": "Government Tender",
+    "primaryCapability": "engineering.api-integration",
+    "secondaryCapabilities": [
+      "engineering.repository-audit"
+    ],
+    "qualification": "qualified",
+    "feasibility": "feasible",
+    "riskLevel": "low",
+    "requiresFounderApproval": true,
+    "status": "approved"
+  },
+  "approvalRecorded": true,
+  "auditEventWritten": true,
+  "exactlyOneExecutionMissionActivated": true,
+  "externalActionRemainedBlocked": true,
+  "noPaymentOrSettlementRecordCreated": true,
+  "auditRecord": {
+    "candidateId": "DRY_RUN_REVIEW_001",
+    "missionId": "MOTHER_MISSION_DRY_RUN_REVIEW_001",
+    "decision": "approved",
+    "reason": "Approved by Founder for governed internal mission execution",
+    "instructions": "Proceed with internal deliverable architecture planning",
+    "actor": "founder",
+    "decidedAt": "2026-07-26T11:13:42.881Z",
+    "governance": {
+      "externalActionBlocked": true,
+      "authorizesExternalAction": false
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "version": "revenue-brain-v1-founder-review",
+  "timestamp": "2026-07-26T11:11:50.328Z",
+  "reusableExistingServices": [
+    "src/services/motherRevenueIntegrationService.js",
+    "src/services/revenueExecutionMissionService.js",
+    "src/services/revenueMissionDecisionService.js",
+    "src/services/revenueSourceTruthService.js"
+  ],
+  "missingLinks": [
+    "Founder Review decision handler connecting motherRevenueIntegrationService to mission state transition (ready_for_founder_review -> approved / rejected / revision_required).",
+    "Immutable decision audit trail recorder for candidate review decisions.",
+    "API routes for listing candidates, submitting founder decision, and fetching audit trail."
+  ],
+  "currentMissionStatuses": [
+    "ready_for_founder_review",
+    "revision_required",
+    "approved",
+    "rejected",
+    "execution_ready"
+  ],
+  "requiredApiContract": {
+    "GET /api/revenue/candidates": "List all mission candidates with evidence and Revenue Brain decision",
+    "GET /api/revenue/candidates/:id": "Get specific mission candidate details",
+    "POST /api/revenue/candidates/:id/decision": "Submit Founder decision (approve/reject/request_changes)",
+    "GET /api/revenue/candidates/:id/audit": "Fetch decision audit log"
+  },
+  "requiredFrontendChanges": [
+    "Add Founder Review decision controls (Approve, Reject, Request Changes) to Revenue Mission / Candidate Review view.",
+    "Require reason input for Reject and Request Changes.",
+    "Display warning modal / callout upon Approval stating: 'Approval activates the internal mission only. No external application, outreach, delivery or payment action will occur without its separate governed authorization.'"
+  ],
+  "exactFilesToModify": [
+    "src/services/motherRevenueIntegrationService.js",
+    "src/controllers/revenueController.js",
+    "src/routes/revenueRoutes.js",
+    "scripts/motherRevenueIntegration.test.js"
+  ],
+  "duplicateOrConflictingFlows": "None. Direct extension of existing motherRevenueIntegrationService and revenueController.",
+  "safestImplementationPath": "Extend motherRevenueIntegrationService with recordFounderDecision(), getMissionCandidate(), listMissionCandidates(), and getDecisionAuditTrail(), wire them to revenueController and revenueRoutes, and add complete unit/integration tests."
+}

@@ -1,10 +1,10 @@
 /**
  * 🦅 GARUDA Revenue Brain v1 Mother Pipeline Integration Adapter
  * Connects Opportunity Discovery, Qualification, Classification, Capability Mapping,
- * Feasibility, Risk Assessment, Governance, and Mission Planning.
+ * Feasibility, Risk Assessment, Governance, Mission Planning, and Founder Review.
  *
  * Engine Version: revenue-brain-v1
- * Baseline Rollback Commit: 6b7f35b
+ * Baseline Rollback Commit: 0a56904
  */
 
 const revenueOrchestrator = require("./revenueOrchestratorService");
@@ -29,8 +29,9 @@ function getRiskEngine() {
   return riskEngineInstance;
 }
 
-// In-memory mission candidate registry for idempotency
+// In-memory mission candidate registry & audit trail store
 const processedMissionMap = new Map();
+const auditTrailStore = new Map();
 
 /**
  * Evaluate Qualification for an opportunity
@@ -248,18 +249,34 @@ function submitToMotherMissionPlanning(opportunity = {}, options = {}) {
     missionId,
     opportunityId: decision.opportunityId,
     title: opportunity.title,
+    description: opportunity.description || "",
+    url: opportunity.url || "",
+    source: opportunity.source || "unknown",
     primaryCapability: decision.primaryCapability,
     secondaryCapabilities: decision.secondaryCapabilities,
     classification: decision.classification,
+    qualification: decision.qualification,
+    feasibility: decision.feasibility,
     riskLevel: decision.risk,
+    recommendedAction: decision.recommendedAction,
+    executionEligibility: decision.executionEligibility,
     requiresFounderApproval: true,
     founderApproved: false,
     status: "ready_for_founder_review",
+    activationStatus: "pending_review",
     createdAt: new Date().toISOString(),
-    engineVersion: "revenue-brain-v1"
+    engineVersion: "revenue-brain-v1",
+    governance: {
+      externalActionBlocked: true,
+      authorizesExternalAction: false,
+      settlementRecord: null,
+      paymentReceipt: null
+    },
+    decisionAuditTrail: []
   };
 
   processedMissionMap.set(decision.opportunityId, missionCandidate);
+  processedMissionMap.set(missionId, missionCandidate);
 
   return {
     status: "created_ready_for_founder_review",
@@ -269,10 +286,167 @@ function submitToMotherMissionPlanning(opportunity = {}, options = {}) {
 }
 
 /**
- * Clear idempotent mission candidate cache (for testing)
+ * Record a Founder Review decision on a mission candidate
+ * @param {Object} payload { missionCandidateId, founderDecision, founderReason, instructions }
+ * @returns {Object} Decision result
+ */
+function recordFounderDecision(payload = {}) {
+  const candidateId = String(payload.missionCandidateId || payload.opportunityId || payload.id || "").trim();
+  if (!candidateId) {
+    const err = new Error("missionCandidateId or opportunityId is required");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const candidate = processedMissionMap.get(candidateId);
+  if (!candidate) {
+    const err = new Error(`Mission candidate '${candidateId}' not found`);
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const decision = String(payload.founderDecision || "").trim().toLowerCase();
+  if (!["approved", "rejected", "request_changes"].includes(decision)) {
+    const err = new Error("founderDecision must be 'approved', 'rejected', or 'request_changes'");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const reason = String(payload.founderReason || payload.reason || "").trim();
+  if ((decision === "rejected" || decision === "request_changes") && !reason) {
+    const err = new Error(`founderReason is required when decision is '${decision}'`);
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // Check state transitions and idempotency
+  if (candidate.status === "approved" || candidate.status === "execution_ready") {
+    if (decision === "approved") {
+      // Idempotent duplicate request
+      return {
+        status: "idempotent_success",
+        message: "Mission candidate is already approved and activated",
+        mission: candidate,
+        auditRecord: (auditTrailStore.get(candidate.opportunityId) || []).slice(-1)[0] || null
+      };
+    } else {
+      const err = new Error(`Cannot change decision for already approved candidate '${candidate.opportunityId}' to '${decision}'`);
+      err.statusCode = 409;
+      throw err;
+    }
+  }
+
+  if (candidate.status === "rejected") {
+    if (decision === "rejected") {
+      // Idempotent duplicate request
+      return {
+        status: "idempotent_success",
+        message: "Mission candidate is already permanently rejected",
+        mission: candidate,
+        auditRecord: (auditTrailStore.get(candidate.opportunityId) || []).slice(-1)[0] || null
+      };
+    } else {
+      const err = new Error(`Cannot change decision for permanently rejected candidate '${candidate.opportunityId}' to '${decision}'`);
+      err.statusCode = 409;
+      throw err;
+    }
+  }
+
+  if (candidate.status !== "ready_for_founder_review" && candidate.status !== "revision_required") {
+    const err = new Error(`Mission candidate is in invalid state '${candidate.status}' for Founder review`);
+    err.statusCode = 409;
+    throw err;
+  }
+
+  // Create Audit Record
+  const now = new Date().toISOString();
+  const auditRecord = {
+    candidateId: candidate.opportunityId,
+    missionId: candidate.missionId,
+    decision,
+    reason: reason || "Approved by Founder",
+    instructions: String(payload.instructions || "").trim(),
+    actor: "founder",
+    decidedAt: now,
+    governance: {
+      externalActionBlocked: true,
+      authorizesExternalAction: false
+    }
+  };
+
+  let auditList = auditTrailStore.get(candidate.opportunityId) || [];
+  auditList.push(auditRecord);
+  auditTrailStore.set(candidate.opportunityId, auditList);
+  candidate.decisionAuditTrail.push(auditRecord);
+
+  // Apply state transitions
+  if (decision === "approved") {
+    candidate.status = "approved";
+    candidate.activationStatus = "execution_ready";
+    candidate.founderApproved = true;
+    candidate.founderDecision = { decision: "approved", reason: auditRecord.reason, decidedAt: now };
+  } else if (decision === "rejected") {
+    candidate.status = "rejected";
+    candidate.activationStatus = "permanently_blocked";
+    candidate.founderApproved = false;
+    candidate.founderDecision = { decision: "rejected", reason: auditRecord.reason, decidedAt: now };
+  } else if (decision === "request_changes") {
+    candidate.status = "revision_required";
+    candidate.activationStatus = "revision_pending";
+    candidate.founderApproved = false;
+    candidate.founderDecision = { decision: "request_changes", reason: auditRecord.reason, decidedAt: now };
+  }
+
+  return {
+    status: `decision_recorded_${candidate.status}`,
+    mission: candidate,
+    auditRecord
+  };
+}
+
+/**
+ * Get a specific mission candidate
+ * @param {String} id
+ * @returns {Object} Mission candidate object
+ */
+function getMissionCandidate(id) {
+  const candidateId = String(id || "").trim();
+  const candidate = processedMissionMap.get(candidateId);
+  if (!candidate) {
+    const err = new Error(`Mission candidate '${candidateId}' not found`);
+    err.statusCode = 404;
+    throw err;
+  }
+  return candidate;
+}
+
+/**
+ * List all mission candidates
+ * @param {Object} filters
+ * @returns {Array} List of mission candidates
+ */
+function listMissionCandidates(filters = {}) {
+  const candidates = Array.from(new Set(processedMissionMap.values()));
+  if (!filters.status) return candidates;
+  return candidates.filter((c) => c.status === filters.status);
+}
+
+/**
+ * Get audit trail for a candidate
+ * @param {String} id
+ * @returns {Array} Audit records
+ */
+function getDecisionAuditTrail(id) {
+  const candidateId = String(id || "").trim();
+  return auditTrailStore.get(candidateId) || [];
+}
+
+/**
+ * Clear processed mission cache & audit store (for testing)
  */
 function resetProcessedMissions() {
   processedMissionMap.clear();
+  auditTrailStore.clear();
 }
 
 module.exports = {
@@ -281,5 +455,9 @@ module.exports = {
   evaluateRiskLevel,
   processOpportunity,
   submitToMotherMissionPlanning,
+  recordFounderDecision,
+  getMissionCandidate,
+  listMissionCandidates,
+  getDecisionAuditTrail,
   resetProcessedMissions
 };

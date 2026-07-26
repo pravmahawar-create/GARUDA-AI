@@ -156,3 +156,46 @@ exports.updateSettlementStatus = async (req, res) => {
   }
 };
 
+const motherIntegration = require("../services/motherRevenueIntegrationService");
+
+exports.listCandidates = async (req, res) => {
+  try {
+    const candidates = motherIntegration.listMissionCandidates(req.query || {});
+    return res.json({ success: true, data: candidates });
+  } catch (error) {
+    return sendError(res, error, "Failed to list mission candidates");
+  }
+};
+
+exports.getCandidate = async (req, res) => {
+  try {
+    const candidate = motherIntegration.getMissionCandidate(req.params.id);
+    return res.json({ success: true, data: candidate });
+  } catch (error) {
+    return sendError(res, error, "Failed to get mission candidate");
+  }
+};
+
+exports.recordCandidateDecision = async (req, res) => {
+  try {
+    const payload = {
+      missionCandidateId: req.params.id,
+      founderDecision: req.body.founderDecision || req.body.decision,
+      founderReason: req.body.founderReason || req.body.reason,
+      instructions: req.body.instructions
+    };
+    const result = motherIntegration.recordFounderDecision(payload);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return sendError(res, error, "Failed to record Founder decision");
+  }
+};
+
+exports.getCandidateAuditTrail = async (req, res) => {
+  try {
+    const audit = motherIntegration.getDecisionAuditTrail(req.params.id);
+    return res.json({ success: true, data: audit });
+  } catch (error) {
+    return sendError(res, error, "Failed to get candidate decision audit trail");
+  }
+};

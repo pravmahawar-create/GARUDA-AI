@@ -18,4 +18,10 @@ router.get("/metrics", revenueController.metrics);
 router.get("/analytics", revenueController.analytics);
 router.get("/settlement", revenueController.settlement);
 
+// Mission Candidate Review Routes
+router.get("/candidates", revenueController.listCandidates);
+router.get("/candidates/:id", revenueController.getCandidate);
+router.post("/candidates/:id/decision", revenueController.recordCandidateDecision);
+router.get("/candidates/:id/audit", revenueController.getCandidateAuditTrail);
+
 module.exports = router;
