@@ -1,0 +1,41 @@
+{
+  "version": "revenue-brain-v1-founder-configuration",
+  "timestamp": "2026-07-26T13:03:23.142Z",
+  "connectorSelected": "generic_email",
+  "name": "Generic Email Connector (SMTP)",
+  "configurationStatus": "not_configured",
+  "validationStatus": "credential_not_configured",
+  "failureCode": "MISSING_ENV_VARS",
+  "requiredEnvironmentVariables": [
+    {
+      "variable": "GARUDA_EMAIL_HOST",
+      "purpose": "Hostname of the SMTP server for outbound communication",
+      "example": "smtp.gmail.com"
+    },
+    {
+      "variable": "GARUDA_EMAIL_PORT",
+      "purpose": "TLS/STARTTLS port number for the SMTP server",
+      "example": "587"
+    },
+    {
+      "variable": "GARUDA_EMAIL_USER",
+      "purpose": "Authenticated email username / address",
+      "example": "founder@garuda.ai"
+    },
+    {
+      "variable": "GARUDA_EMAIL_PASS",
+      "purpose": "Secure app password or SMTP authentication key",
+      "example": "[SECURE_APP_PASSWORD]"
+    }
+  ],
+  "exactSetupSteps": [
+    "1. Create or update the local '.env' file in project root 'C:\\Users\\hp\\OneDrive\\GARUDA\\GARUDA-AI\\.env'.",
+    "2. Add the four required environment variables: GARUDA_EMAIL_HOST, GARUDA_EMAIL_PORT, GARUDA_EMAIL_USER, GARUDA_EMAIL_PASS.",
+    "3. Save the file. Ensure '.env' remains git-ignored (verified in .gitignore).",
+    "4. Re-run validation via API endpoint GET /api/revenue/connectors/generic_email/auth or node test script."
+  ],
+  "validationMethod": "Call platformAuth.validateConnectorAuthentication('generic_email', process.env) to perform local shape and readiness validation.",
+  "expectedReadinessStateWhenConfigured": "ready_for_external_authorization",
+  "authorizesExternalAction": false,
+  "note": "Even when configured, GARUDA will require separate explicit Founder authorization before executing any live external action."
+}
