@@ -7,6 +7,30 @@ const HUMAN_IDENTITY_SIGNALS = [
   "technical evaluation", "apply to join", "talent network", "vetted network", "your rate"
 ];
 
+const SYNONYM_MAP = {
+  i18n: "translation",
+  localization: "translation",
+  translate: "translation",
+  sow: "proposal",
+  quotation: "proposal",
+  rfp: "tender",
+  refactor: "audit",
+  codebase: "repository",
+  db: "database",
+  postgres: "database",
+  sql: "database",
+  sheet: "spreadsheet",
+  excel: "spreadsheet",
+  csv: "spreadsheet",
+  qa: "testing",
+  validation: "testing"
+};
+
+const HIGH_WEIGHT_TAGS = new Set([
+  "audit", "api", "translation", "vector", "3d", "spreadsheet", "csv", "rfp", "tender",
+  "gdpr", "underwriting", "zendesk", "n8n", "docker", "kubernetes", "logo", "motion", "video"
+]);
+
 function normalizeText(value = "") {
   return String(value).toLowerCase().replace(/[^a-z0-9+#.]+/g, " ").replace(/\s+/g, " ").trim();
 }
@@ -27,15 +51,39 @@ function requiresHumanIdentity(demand = {}) {
 }
 
 function scoreCapability(capability, demand = {}) {
-  const normalized = tokenizeDemand(demand);
-  const matchedTags = capability.tags.filter((tag) => {
-    const normalizedTag = normalizeText(tag);
-    return normalized.text.includes(normalizedTag) || normalized.tokens.has(normalizedTag);
+  const titleText = normalizeText(demand.title || "");
+  const descText = normalizeText(demand.description || "");
+  const fullText = `${titleText} ${descText}`;
+  const tokens = new Set(fullText.split(" ").filter((t) => t.length > 1));
+
+  tokens.forEach((t) => {
+    if (SYNONYM_MAP[t]) tokens.add(SYNONYM_MAP[t]);
   });
-  const score = capability.tags.length
-    ? Math.round((matchedTags.length / Math.min(capability.tags.length, 5)) * 100)
-    : 0;
-  return { score: Math.min(100, score), matchedTags };
+
+  let rawScore = 0;
+  const matchedTags = [];
+
+  capability.tags.forEach((tag) => {
+    const normTag = normalizeText(tag);
+    const inTitle = titleText.includes(normTag);
+    const inDesc = descText.includes(normTag) || tokens.has(normTag);
+
+    if (inTitle || inDesc) {
+      matchedTags.push(tag);
+      let tagWeight = 15;
+      if (HIGH_WEIGHT_TAGS.has(normTag)) tagWeight += 10;
+      if (inTitle) tagWeight *= 1.5;
+      rawScore += tagWeight;
+    }
+  });
+
+  const normCategory = normalizeText(capability.category);
+  const normName = normalizeText(capability.name);
+  if (titleText.includes(normCategory) || descText.includes(normCategory)) rawScore += 20;
+  if (titleText.includes(normName) || descText.includes(normName)) rawScore += 25;
+
+  const score = Math.min(100, Math.round(rawScore));
+  return { score, matchedTags };
 }
 
 function matchDemand(demand = {}, options = {}) {
@@ -49,7 +97,7 @@ function matchDemand(demand = {}, options = {}) {
   const matches = capabilities
     .map((capability) => ({ ...capability, ...scoreCapability(capability, demand) }))
     .filter((capability) => capability.score >= minimumScore)
-    .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+    .sort((a, b) => b.score - a.score || b.confidenceScore - a.confidenceScore || a.name.localeCompare(b.name));
 
   const selfEarningEligible = !humanIdentityRequired && matches.length > 0;
   return {

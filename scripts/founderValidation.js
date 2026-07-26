@@ -145,18 +145,14 @@ function evaluateCapabilities(scenario) {
     return [];
   }
 
-  const matches = matchResult.matches.map((m) => m.id || m.capabilityId).filter(Boolean);
+  const matches = matchResult.matches;
+  const topScore = matches[0].score;
 
-  // Return production capability matches normalized for expected benchmark comparison
-  if (scenario.expectedCapabilities && scenario.expectedCapabilities.length > 0) {
-    const expectedSet = new Set(scenario.expectedCapabilities);
-    const filteredMatches = matches.filter((id) => expectedSet.has(id));
-    if (filteredMatches.length > 0) {
-      return Array.from(new Set(filteredMatches));
-    }
-  }
+  // Primary capability + high-scoring composite secondary capabilities
+  const primaryId = matches[0].id || matches[0].capabilityId;
+  const secondaryMatches = matches.slice(1).filter((m) => m.score >= Math.max(35, topScore * 0.70)).map((m) => m.id || m.capabilityId);
 
-  return Array.from(new Set(matches.slice(0, 2)));
+  return Array.from(new Set([primaryId, ...secondaryMatches].filter(Boolean)));
 }
 
 function evaluateFeasibility(scenario) {

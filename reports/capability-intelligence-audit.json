@@ -1,0 +1,48 @@
+{
+  "date": "2026-07-26T06:32:21.268Z",
+  "pipelineComponents": {
+    "capabilityRegistryService": "src/services/capabilityRegistryService.js",
+    "revenueOrchestratorService": "src/services/revenueOrchestratorService.js",
+    "revenueSourceTruthService": "src/services/revenueSourceTruthService.js"
+  },
+  "auditFindings": {
+    "scoringAlgorithm": {
+      "type": "Unweighted Tag Count",
+      "flaws": [
+        "Title and description text carry equal weight despite title containing primary intent",
+        "Generic tags (node, code, data) produce identical score boost as specific domain tags (audit, svg, rfp)",
+        "No exact multi-word phrase bonus or rare keyword bonus"
+      ]
+    },
+    "rankingLogic": {
+      "type": "Score Descending + Name Alphabetical Tie-break",
+      "flaws": [
+        "Alphabetical tie-break favors names starting with A-Z regardless of domain specificity"
+      ]
+    },
+    "synonymMatching": {
+      "type": "Literal String Substring",
+      "flaws": [
+        "Missing synonym resolution for i18n/localization, sow/proposal, qa/testing, refactor/audit"
+      ]
+    },
+    "confidenceCalculation": {
+      "type": "Static Capability Benchmark",
+      "flaws": [
+        "Static confidence (e.g. 95) is returned without scaling by actual match score quality"
+      ]
+    },
+    "thresholdCalculation": {
+      "type": "Fixed Minimum Score (20)",
+      "flaws": [
+        "Fixed threshold cuts off secondary composite capabilities that match 1 strong specific tag"
+      ]
+    },
+    "multiCapabilityHandling": {
+      "type": "Single Dominant Match Slicing",
+      "flaws": [
+        "Composite projects requiring multiple capabilities dropped complementary secondary capabilities"
+      ]
+    }
+  }
+}
