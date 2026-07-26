@@ -1,0 +1,86 @@
+{
+  "dryRunTimestamp": "2026-07-26T11:20:30.823Z",
+  "fixture": {
+    "id": "DRY_RUN_CONNECTOR_001",
+    "externalId": "NON_LIVE_EXT_777",
+    "title": "Build Node.js REST API & PostgreSQL Microservice Deliverable",
+    "description": "Request for proposal with fixed price, statement of work, project milestone, delivery deadline, and acceptance criteria for Node API microservice deliverable",
+    "category": "Upwork Software",
+    "tags": [
+      "node",
+      "api",
+      "postgres"
+    ],
+    "url": "https://verified.client/job/777",
+    "source": "upwork",
+    "sourceVerified": true,
+    "publishedAt": "2026-07-26T11:20:30.814Z",
+    "salaryText": "$12,000 fixed price"
+  },
+  "founderApprovalVerified": true,
+  "connectorSelected": "generic_job_platform",
+  "executionPackageGenerated": true,
+  "executionPackage": {
+    "packageId": "EXEC_PKG_DRY_RUN_CONNECTOR_001_generic_job_platform",
+    "missionId": "MOTHER_MISSION_DRY_RUN_CONNECTOR_001",
+    "opportunityId": "DRY_RUN_CONNECTOR_001",
+    "connectorRequirements": {
+      "connectorId": "generic_job_platform",
+      "connectorType": "job_board",
+      "name": "Generic Job Platform Connector",
+      "payloadBuilderVersion": "v1.0.0"
+    },
+    "verifiedTitle": "Build Node.js REST API & PostgreSQL Microservice Deliverable",
+    "verifiedScope": "Request for proposal with fixed price, statement of work, project milestone, delivery deadline, and acceptance criteria for Node API microservice deliverable",
+    "verifiedBudget": null,
+    "verifiedDeadline": null,
+    "capabilityProfile": {
+      "primaryCapability": "engineering.repository-audit",
+      "secondaryCapabilities": [
+        "engineering.api-integration"
+      ]
+    },
+    "deliverables": [
+      {
+        "name": "engineering.repository-audit_deliverable",
+        "type": "source_code_package",
+        "verified": true
+      }
+    ],
+    "evidence": {
+      "sourceVerified": true,
+      "url": "https://verified.client/job/777",
+      "qualification": "qualified",
+      "feasibility": "feasible",
+      "riskLevel": "low"
+    },
+    "payload": {
+      "opportunityId": "DRY_RUN_CONNECTOR_001",
+      "missionId": "MOTHER_MISSION_DRY_RUN_CONNECTOR_001",
+      "title": "Build Node.js REST API & PostgreSQL Microservice Deliverable",
+      "scope": "Request for proposal with fixed price, statement of work, project milestone, delivery deadline, and acceptance criteria for Node API microservice deliverable",
+      "budget": null,
+      "deadline": null,
+      "primaryCapability": "engineering.repository-audit",
+      "secondaryCapabilities": [
+        "engineering.api-integration"
+      ],
+      "classification": "Government Tender",
+      "source": "upwork",
+      "url": "https://verified.client/job/777"
+    },
+    "governance": {
+      "founderApproved": true,
+      "externalActionBlocked": true,
+      "authorizesExternalAction": false,
+      "noNetworkExecutionPerformed": true,
+      "noPaymentOrSettlementCreated": true
+    },
+    "packageHash": "0b3c157a2570ca6103c4128f008bb2b3654adc8c8d6a209622ec9af25050848a",
+    "createdAt": "2026-07-26T11:20:30.823Z",
+    "status": "package_prepared_awaiting_dispatch_authorization"
+  },
+  "networkRequestsPerformed": false,
+  "externalSideEffectsPerformed": false,
+  "paymentOrSettlementCreated": false
+}

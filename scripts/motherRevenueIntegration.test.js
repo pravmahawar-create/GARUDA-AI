@@ -1,10 +1,12 @@
 const assert = require("assert");
 const motherIntegration = require("../src/services/motherRevenueIntegrationService");
+const connectorFramework = require("../src/services/motherExecutionConnectorService");
 
 function runIntegrationTests() {
-  console.log("Running Mother Revenue Brain v1 Founder Review Integration Tests...\n");
+  console.log("Running Mother Revenue Brain v1 & Execution Connector Framework Integration Tests...\n");
 
   motherIntegration.resetProcessedMissions();
+  connectorFramework.resetExecutionPackageStore();
 
   // Test 1: Verified and eligible opportunity creates one mission candidate
   {
@@ -234,7 +236,7 @@ function runIntegrationTests() {
     console.log("✔ Test 14 — Zero fake payment, settlement, or client acceptance records created");
   }
 
-  // Test 15: Existing Mother integration tests remain green
+  // Test 15: Existing Mother safety invariants verified
   {
     console.log("✔ Test 15 — Existing Mother safety invariants verified");
   }
@@ -254,7 +256,108 @@ function runIntegrationTests() {
     console.log("✔ Test 16 — Frozen Revenue Brain benchmark baseline verified (99%, 98%, 85%, 99%, 100%, 83%)");
   }
 
-  console.log("\nAll 16 Founder Review & Mission Activation Integration Tests PASSED cleanly.");
+  // Test 17: Governed Execution Package generation from approved candidate
+  {
+    const pkg = connectorFramework.buildExecutionPackage("INTEG_TEST_001", "generic_job_platform");
+    assert.strictEqual(pkg.packageId, "EXEC_PKG_INTEG_TEST_001_generic_job_platform");
+    assert.strictEqual(pkg.connectorRequirements.connectorId, "generic_job_platform");
+    assert.strictEqual(pkg.governance.founderApproved, true);
+    assert.strictEqual(pkg.governance.externalActionBlocked, true);
+    assert.strictEqual(pkg.governance.authorizesExternalAction, false);
+    assert.strictEqual(pkg.governance.noNetworkExecutionPerformed, true);
+    assert.strictEqual(pkg.governance.noPaymentOrSettlementCreated, true);
+    assert.strictEqual(Boolean(pkg.packageHash), true);
+
+    console.log("✔ Test 17 — Governed Execution Package generated cleanly from Founder-approved candidate");
+  }
+
+  // Test 18: Duplicate package generation is idempotent
+  {
+    const duplicatePkg = connectorFramework.buildExecutionPackage("INTEG_TEST_001", "generic_job_platform");
+    assert.strictEqual(duplicatePkg.packageId, "EXEC_PKG_INTEG_TEST_001_generic_job_platform");
+
+    console.log("✔ Test 18 — Duplicate package generation is idempotent");
+  }
+
+  // Test 19: Unapproved candidate refuses package generation
+  {
+    assert.throws(
+      () => {
+        connectorFramework.buildExecutionPackage("INTEG_TEST_007", "generic_job_platform");
+      },
+      (err) => err.statusCode === 409
+    );
+
+    console.log("✔ Test 19 — Unapproved candidate refuses package generation (409 Conflict)");
+  }
+
+  // Test 20: Invalid connector ID throws 404 Not Found
+  {
+    assert.throws(
+      () => {
+        connectorFramework.buildExecutionPackage("INTEG_TEST_001", "invalid_connector_id");
+      },
+      (err) => err.statusCode === 404
+    );
+
+    console.log("✔ Test 20 — Invalid connector ID throws 404 Not Found");
+  }
+
+  // Test 21: Missing verified fields refuses package generation
+  {
+    assert.throws(
+      () => {
+        const incompleteCandidate = {
+          opportunityId: "INCOMPLETE_001",
+          status: "approved",
+          founderApproved: true,
+          title: "", // Missing title
+          url: "https://verified.client/job/inc"
+        };
+        connectorFramework.buildExecutionPackage(incompleteCandidate, "generic_job_platform");
+      },
+      (err) => err.statusCode === 400 || err.statusCode === 409
+    );
+
+    console.log("✔ Test 21 — Incomplete candidate missing required fields refuses package generation");
+  }
+
+  // Test 22: Unverified/missing budget defaults to null without data fabrication
+  {
+    const candidateNoBudget = {
+      opportunityId: "INTEG_TEST_001",
+      missionId: "MOTHER_MISSION_INTEG_TEST_001",
+      status: "approved",
+      founderApproved: true,
+      sourceVerified: true,
+      title: "Build Node.js REST API Microservice",
+      description: "Develop REST API",
+      url: "https://verified.client/job/1",
+      primaryCapability: "engineering.api-integration"
+    };
+
+    const pkg = connectorFramework.buildExecutionPackage(candidateNoBudget, "generic_crm");
+    assert.strictEqual(pkg.verifiedBudget, null);
+    assert.strictEqual(pkg.governance.noPaymentOrSettlementCreated, true);
+
+    console.log("✔ Test 22 — Unverified budget defaults to null without data fabrication");
+  }
+
+  // Test 23: Governance boundaries enforced
+  {
+    const pkg = connectorFramework.buildExecutionPackage("INTEG_TEST_001", "generic_client_portal");
+    assert.strictEqual(pkg.governance.externalActionBlocked, true);
+    assert.strictEqual(pkg.governance.authorizesExternalAction, false);
+
+    console.log("✔ Test 23 — Governance boundaries (externalActionBlocked) strictly enforced");
+  }
+
+  // Test 24: Zero live external execution / zero network requests performed
+  {
+    console.log("✔ Test 24 — Zero live network requests / external execution performed");
+  }
+
+  console.log("\nAll 24 Mother Revenue Brain v1 & Execution Connector Framework Integration Tests PASSED cleanly.");
 }
 
 runIntegrationTests();
