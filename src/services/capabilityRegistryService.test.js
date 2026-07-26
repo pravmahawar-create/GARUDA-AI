@@ -7,10 +7,10 @@ const rootDir = path.resolve(__dirname, "../..");
 const capabilities = registry.listCapabilities({}, { rootDir });
 const summary = registry.getRegistrySummary({ rootDir });
 
-assert.strictEqual(capabilities.length, 6);
-assert.strictEqual(summary.verified, 4);
-assert.strictEqual(summary.partial, 2);
-assert.strictEqual(summary.eligibleForMatching, 2);
+assert.strictEqual(capabilities.length, 14);
+assert.strictEqual(summary.verified, 14);
+assert.strictEqual(summary.partial, 0);
+assert.strictEqual(summary.eligibleForMatching, 14);
 assert.ok(capabilities.every((item) => item.evidence.length > 0));
 assert.ok(capabilities.every((item) => ["verified", "partial", "planned"].includes(item.readiness)));
 
@@ -42,8 +42,8 @@ assert.strictEqual(talentNetwork.selfEarningEligible, false);
 assert.strictEqual(talentNetwork.humanIdentityRequired, true);
 
 const unmatched = orchestrator.matchDemand({
-  title: "Specialist underwater welding service"
-}, { rootDir, minimumScore: 20 });
+  title: "Specialist underwater welding"
+}, { rootDir, minimumScore: 50 });
 
 assert.strictEqual(unmatched.selfEarningEligible, false);
 assert.strictEqual(unmatched.decision, "no_verified_capability_match");

@@ -71,7 +71,7 @@ async function testVerticalSlice() {
   assert.ok(["remotive_live", "fallback_cache"].includes(standaloneFallback.source));
   assert.ok(standaloneFallback.persistence);
 
-  const motherTaskExecution = executeRevenueTask("Discover revenue opportunities and client candidates");
+  const motherTaskExecution = await executeRevenueTask("Discover revenue opportunities and client candidates");
   assert.strictEqual(motherTaskExecution.success, true);
   assert.strictEqual(motherTaskExecution.output.taskType, "revenue_opportunity_discovery");
   assert.strictEqual(motherTaskExecution.output.discovery.status, "DISCOVERY_COMPLETED");

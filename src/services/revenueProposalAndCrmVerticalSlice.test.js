@@ -59,7 +59,7 @@ async function testSprint2VerticalSlice() {
   assert.strictEqual(handoff.status, "handoff_ready");
   assert.ok(handoff.handoff.packageHash);
 
-  const motherExecution = executeRevenueTask("Generate technical proposal and CRM work intake package", { rootDir });
+  const motherExecution = await executeRevenueTask("Generate technical proposal and CRM work intake package", { rootDir });
   assert.strictEqual(motherExecution.success, true);
   assert.strictEqual(motherExecution.output.taskType, "revenue_proposal_and_crm_intake");
   assert.strictEqual(motherExecution.output.proposalAndCrm.status, "PROPOSAL_AND_INTAKE_READY");
