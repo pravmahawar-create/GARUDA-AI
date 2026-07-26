@@ -1,8 +1,9 @@
 const assert = require('assert');
 const { evaluateClassifier, evaluateCapabilities } = require('./founderValidation');
+const revenueOrchestrator = require('../src/services/revenueOrchestratorService');
 
 function runRegressionTests() {
-  console.log('Running Founder Validation Anti-Circular & Classification Boundary Regression Tests...\n');
+  console.log('Running Founder Validation Anti-Circular, Classification & Security Invariant Tests...\n');
 
   // Test 1: Classification Anti-Circular Test
   {
@@ -98,7 +99,76 @@ function runRegressionTests() {
     console.log('✔ Test 4 — Classification domain boundary invariants passed');
   }
 
-  console.log('\nAll Founder Validation Anti-Circular & Classification Boundary Regression Tests PASSED cleanly.');
+  // Test 5: Defensive Security & Smart Contract Safety Invariants
+  {
+    const securityCases = [
+      {
+        name: 'Authorized web application security assessment',
+        input: { title: 'Authorized Web Application Security Audit & Assessment', description: 'Perform defensive code security review and vulnerability assessment' },
+        expectedCap: 'engineering.repository-audit'
+      },
+      {
+        name: 'API authentication and authorization review',
+        input: { title: 'REST API Authentication & Authorization Security Review', description: 'Review OAuth2 tokens and access control policies for security' },
+        expectedCap: 'engineering.software-implementation'
+      },
+      {
+        name: 'Dependency vulnerability audit',
+        input: { title: 'npm Dependency Vulnerability Audit Report', description: 'Scan package dependencies for known CVE vulnerabilities and report' },
+        expectedCap: 'engineering.repository-audit'
+      },
+      {
+        name: 'Cloud security configuration review',
+        input: { title: 'AWS Cloud IAM Security Policy Review', description: 'Audit AWS IAM policies for secure access configuration' },
+        expectedCap: 'engineering.software-implementation'
+      },
+      {
+        name: 'Solidity smart-contract audit',
+        input: { title: 'Solidity Smart Contract Security Verification', description: 'Audit Ethereum ERC-20 smart contract code for reentrancy vulnerabilities' },
+        expectedCap: 'engineering.software-implementation'
+      },
+      {
+        name: 'Token contract access-control verification',
+        input: { title: 'Token Smart Contract Access Control Verification', description: 'Verify Solidity token contract admin role permissions' },
+        expectedCap: 'engineering.software-implementation'
+      },
+      {
+        name: 'Ordinary software QA test',
+        input: { title: 'Automated Unit Test Suite for Node.js App', description: 'Write Mocha/Jest unit test assertions' },
+        expectedCap: 'testing.quality-assurance'
+      },
+      {
+        name: 'Financial audit document',
+        input: { title: 'Annual Financial Audit Report Preparation', description: 'Synthesize spreadsheet financial balance sheet audit' },
+        expectedCap: 'automation.spreadsheet-automation'
+      },
+      {
+        name: 'Unauthorized exploitation request',
+        input: { title: 'Hack target website and bypass password cracking', description: 'Phishing and unauthorized credential theft' },
+        expectedCategory: 'Scam Opportunities'
+      },
+      {
+        name: 'Ambiguous penetration-testing request without authorization',
+        input: { title: 'Unauthorized penetration testing and credential exploitation', description: 'Bypass server password cracking and phishing attacks' },
+        expectedCategory: 'Scam Opportunities'
+      }
+    ];
+
+    securityCases.forEach((tc) => {
+      if (tc.expectedCategory) {
+        const cat = evaluateClassifier(tc.input);
+        assert.strictEqual(cat, tc.expectedCategory, `Security test '${tc.name}' must classify as '${tc.expectedCategory}' but got '${cat}'`);
+      }
+      if (tc.expectedCap) {
+        const match = revenueOrchestrator.matchDemand(tc.input);
+        assert.strictEqual(match.primaryCapability, tc.expectedCap, `Security test '${tc.name}' primary capability must be '${tc.expectedCap}' but got '${match.primaryCapability}'`);
+      }
+    });
+
+    console.log('✔ Test 5 — Defensive security & smart contract safety invariants passed (10/10 cases passed)');
+  }
+
+  console.log('\nAll Founder Validation Anti-Circular, Classification & Security Invariant Tests PASSED cleanly.');
 }
 
 runRegressionTests();

@@ -1,0 +1,559 @@
+{
+  "totalCapabilityFailures": 34,
+  "securityMismatchesCount": 9,
+  "securityMismatches": [
+    {
+      "scenarioId": "SCENARIO_003",
+      "title": "PostgreSQL Database Query Optimization",
+      "expectedCategory": "Upwork Software",
+      "expectedCapabilities": [
+        "engineering.repository-audit",
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "automation.spreadsheet-automation",
+        "knowledge.research-synthesis"
+      ],
+      "text": "postgresql database query optimization audit slow sql queries and optimize indexes for postgresql database database optimization requiring performance audit"
+    },
+    {
+      "scenarioId": "SCENARIO_023",
+      "title": "Open Source Software License Audit Report",
+      "expectedCategory": "Legal Research",
+      "expectedCapabilities": [
+        "engineering.repository-audit",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "open source software license audit report audit npm dependencies for copyleft licenses (gpl, agpl) and generate compliance report software license automated auditing task"
+    },
+    {
+      "scenarioId": "SCENARIO_057",
+      "title": "B2B SaaS Content Strategy & Blog Article Package",
+      "expectedCategory": "Marketing",
+      "expectedCapabilities": [
+        "knowledge.research-synthesis",
+        "writing.proposal-writing"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "b2b saas content strategy & blog article package write 4 seo-optimized blog posts on cloud security best practices technical content marketing article writing"
+    },
+    {
+      "scenarioId": "SCENARIO_060",
+      "title": "SEO Website Audit & Technical Recommendation Report",
+      "expectedCategory": "Marketing",
+      "expectedCapabilities": [
+        "engineering.repository-audit",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "seo website audit & technical recommendation report audit website page speed, broken links, meta tags and generate action plan technical seo website audit report"
+    },
+    {
+      "scenarioId": "SCENARIO_088",
+      "title": "Direct Production Database Migration with Master Admin Key",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "automation.spreadsheet-automation",
+        "creative.3d-rendering"
+      ],
+      "text": "direct production database migration with master admin key run live sql schema migration on production db using raw root password without backup requires production credential access; high security risk"
+    },
+    {
+      "scenarioId": "SCENARIO_090",
+      "title": "Healthcare Medical Records PII Sync Without HIPAA Audit",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.api-integration"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "healthcare medical records pii sync without hipaa audit sync patient medical records across cloud servers without verified hipaa encryption sensitive personal healthcare data handling"
+    },
+    {
+      "scenarioId": "SCENARIO_092",
+      "title": "Root Cloud AWS IAM Policy Master Permission Change",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "engineering.api-integration",
+        "knowledge.research-synthesis"
+      ],
+      "text": "root cloud aws iam policy master permission change grant full administratoraccess policy to external microservice role root access credential handling risk"
+    },
+    {
+      "scenarioId": "SCENARIO_093",
+      "title": "Cryptocurrency Smart Contract Deployment on Ethereum Mainnet",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "ai.agent-engineering",
+        "writing.proposal-writing"
+      ],
+      "text": "cryptocurrency smart contract deployment on ethereum mainnet deploy unverified solidity smart contract to live ethereum mainnet handling user funds unverified live smart contract deployment"
+    },
+    {
+      "scenarioId": "SCENARIO_094",
+      "title": "Unverified Client Custom Crypto Token Presale Contract",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "writing.proposal-writing"
+      ],
+      "text": "unverified client custom crypto token presale contract build token contract for unverified anonymous client on decentralized exchange unverified client identity combined with financial token creation"
+    }
+  ],
+  "allFailures": [
+    {
+      "scenarioId": "SCENARIO_003",
+      "title": "PostgreSQL Database Query Optimization",
+      "expectedCategory": "Upwork Software",
+      "expectedCapabilities": [
+        "engineering.repository-audit",
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "automation.spreadsheet-automation",
+        "knowledge.research-synthesis"
+      ],
+      "text": "postgresql database query optimization audit slow sql queries and optimize indexes for postgresql database database optimization requiring performance audit"
+    },
+    {
+      "scenarioId": "SCENARIO_009",
+      "title": "UI/UX Figma Mockups for Mobile App",
+      "expectedCategory": "Fiverr Creative",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.vector-design"
+      ],
+      "text": "ui/ux figma mockups for mobile app create interactive figma wireframes and mobile screen prototypes figma ui prototype design package"
+    },
+    {
+      "scenarioId": "SCENARIO_010",
+      "title": "Animated Explainer Video Motion Graphics",
+      "expectedCategory": "Fiverr Creative",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.motion-graphics",
+        "creative.vector-design"
+      ],
+      "text": "animated explainer video motion graphics 30-second 2d motion graphic explainer video for product launch motion graphics animation gig"
+    },
+    {
+      "scenarioId": "SCENARIO_011",
+      "title": "Podcast Audio Editing & Noise Reduction",
+      "expectedCategory": "Fiverr Creative",
+      "expectedCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "creative.motion-graphics"
+      ],
+      "text": "podcast audio editing & noise reduction clean up 45-minute podcast episode audio, remove background hum and balance levels audio post-production service"
+    },
+    {
+      "scenarioId": "SCENARIO_012",
+      "title": "3D Product Render & CAD Illustration",
+      "expectedCategory": "Fiverr Creative",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.3d-rendering"
+      ],
+      "text": "3d product render & cad illustration render 3d cad model of consumer electronic product in blender blender 3d visualization project"
+    },
+    {
+      "scenarioId": "SCENARIO_013",
+      "title": "Social Media Banner & Graphic Design Package",
+      "expectedCategory": "Fiverr Creative",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.vector-design",
+        "knowledge.research-synthesis"
+      ],
+      "text": "social media banner & graphic design package design 10 promotional social media banners for marketing campaign banner graphic design gig"
+    },
+    {
+      "scenarioId": "SCENARIO_014",
+      "title": "E-book Layout & Cover Typography",
+      "expectedCategory": "Fiverr Creative",
+      "expectedCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "actualCapabilities": [
+        "creative.vector-design"
+      ],
+      "text": "e-book layout & cover typography format 50-page e-book pdf layout with custom typography and chapter headers e-book layout formatting service"
+    },
+    {
+      "scenarioId": "SCENARIO_015",
+      "title": "n8n Customer Lead Intake Workflow Automation",
+      "expectedCategory": "AI Automation",
+      "expectedCapabilities": [
+        "automation.workflow-automation",
+        "engineering.api-integration"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "text": "n8n customer lead intake workflow automation build automated n8n pipeline to parse incoming leads from typeform into hubspot crm n8n workflow automation needing founder approval for trigger execution"
+    },
+    {
+      "scenarioId": "SCENARIO_018",
+      "title": "Automated Document OCR & Invoice Data Extraction",
+      "expectedCategory": "AI Automation",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "text": "automated document ocr & invoice data extraction extract line items from pdf invoices using ocr api and write to postgresql invoice data extraction pipeline"
+    },
+    {
+      "scenarioId": "SCENARIO_021",
+      "title": "Automated Code Review Bot for GitHub Pull Requests",
+      "expectedCategory": "AI Automation",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "engineering.repository-audit"
+      ],
+      "actualCapabilities": [
+        "ai.agent-engineering"
+      ],
+      "text": "automated code review bot for github pull requests build github action that uses llm api to run static analysis and post pr comments github action code review automation bot"
+    },
+    {
+      "scenarioId": "SCENARIO_022",
+      "title": "EU GDPR Data Compliance Policy Review",
+      "expectedCategory": "Legal Research",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "eu gdpr data compliance policy review synthesize summary of gdpr regulatory requirements for saas user data retention information research synthesis of public gdpr regulations"
+    },
+    {
+      "scenarioId": "SCENARIO_023",
+      "title": "Open Source Software License Audit Report",
+      "expectedCategory": "Legal Research",
+      "expectedCapabilities": [
+        "engineering.repository-audit",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "open source software license audit report audit npm dependencies for copyleft licenses (gpl, agpl) and generate compliance report software license automated auditing task"
+    },
+    {
+      "scenarioId": "SCENARIO_032",
+      "title": "Underwriting Risk Assessment Matrix Generator",
+      "expectedCategory": "Insurance",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "underwriting risk assessment matrix generator create automated report comparing applicant risk metrics against underwriting criteria risk analysis matrix generation report"
+    },
+    {
+      "scenarioId": "SCENARIO_033",
+      "title": "Insurance Agent Portal Lead Distribution Script",
+      "expectedCategory": "Insurance",
+      "expectedCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "ai.agent-engineering"
+      ],
+      "text": "insurance agent portal lead distribution script assign inbound insurance leads to regional sales agents based on zipcode lead routing automation for insurance agency"
+    },
+    {
+      "scenarioId": "SCENARIO_034",
+      "title": "Property Damage Claims Photo Categorization",
+      "expectedCategory": "Insurance",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "ai.agent-engineering"
+      ],
+      "text": "property damage claims photo categorization classify vehicle damage photos into severe, moderate, minor categories image classification workflow for claims handling"
+    },
+    {
+      "scenarioId": "SCENARIO_036",
+      "title": "Zendesk Automated Ticket Auto-Responder Workflow",
+      "expectedCategory": "Customer Support",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "text": "zendesk automated ticket auto-responder workflow set up zendesk trigger rules to categorize incoming support tickets and auto-reply helpdesk support ticket routing setup"
+    },
+    {
+      "scenarioId": "SCENARIO_038",
+      "title": "Intercom Chatbot Decision Tree Setup",
+      "expectedCategory": "Customer Support",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation"
+      ],
+      "text": "intercom chatbot decision tree setup configure qualification chatbot flow in intercom for saas website visitors chatbot flow configuration"
+    },
+    {
+      "scenarioId": "SCENARIO_039",
+      "title": "Customer NPS Survey Analysis & Sentiment Report",
+      "expectedCategory": "Customer Support",
+      "expectedCapabilities": [
+        "automation.spreadsheet-automation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "customer nps survey analysis & sentiment report analyze 500 customer feedback comments and output sentiment distribution report customer feedback sentiment analysis task"
+    },
+    {
+      "scenarioId": "SCENARIO_041",
+      "title": "E-commerce Order Status WhatsApp Response Bot",
+      "expectedCategory": "Customer Support",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "engineering.api-integration"
+      ],
+      "actualCapabilities": [
+        "engineering.api-integration"
+      ],
+      "text": "e-commerce order status whatsapp response bot integrate whatsapp business api with shopify to auto-answer 'where is my order?' messaging api order inquiry chatbot"
+    },
+    {
+      "scenarioId": "SCENARIO_042",
+      "title": "Multilingual Support Email Draft Generator",
+      "expectedCategory": "Customer Support",
+      "expectedCapabilities": [
+        "ai.agent-engineering",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "ai.agent-engineering"
+      ],
+      "text": "multilingual support email draft generator generate auto-translated draft responses for customer support inquiries ai support response translation drafting tool"
+    },
+    {
+      "scenarioId": "SCENARIO_047",
+      "title": "Receipt Expense Categorization & Entry",
+      "expectedCategory": "Data Entry",
+      "expectedCapabilities": [
+        "automation.spreadsheet-automation",
+        "automation.workflow-automation"
+      ],
+      "actualCapabilities": [
+        "automation.spreadsheet-automation"
+      ],
+      "text": "receipt expense categorization & entry parse receipt images, extract total amounts and dates into quickbooks csv format expense receipt data entry automation"
+    },
+    {
+      "scenarioId": "SCENARIO_054",
+      "title": "Arabic Corporate Presentation Translation",
+      "expectedCategory": "Translation",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "arabic corporate presentation translation translate 15 powerpoint pitch deck slides from english into arabic corporate presentation translation"
+    },
+    {
+      "scenarioId": "SCENARIO_057",
+      "title": "B2B SaaS Content Strategy & Blog Article Package",
+      "expectedCategory": "Marketing",
+      "expectedCapabilities": [
+        "knowledge.research-synthesis",
+        "writing.proposal-writing"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "b2b saas content strategy & blog article package write 4 seo-optimized blog posts on cloud security best practices technical content marketing article writing"
+    },
+    {
+      "scenarioId": "SCENARIO_058",
+      "title": "Cold Email Outreach Sequence Drafting for Agency",
+      "expectedCategory": "Marketing",
+      "expectedCapabilities": [
+        "knowledge.research-synthesis",
+        "writing.proposal-writing"
+      ],
+      "actualCapabilities": [
+        "writing.proposal-writing"
+      ],
+      "text": "cold email outreach sequence drafting for agency draft 5-step outbound b2b cold email sequence targeting ctos b2b sales outreach copy creation"
+    },
+    {
+      "scenarioId": "SCENARIO_060",
+      "title": "SEO Website Audit & Technical Recommendation Report",
+      "expectedCategory": "Marketing",
+      "expectedCapabilities": [
+        "engineering.repository-audit",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "seo website audit & technical recommendation report audit website page speed, broken links, meta tags and generate action plan technical seo website audit report"
+    },
+    {
+      "scenarioId": "SCENARIO_062",
+      "title": "Lead Magnet E-book Writing on AI Workflows",
+      "expectedCategory": "Marketing",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "automation.workflow-automation",
+        "writing.proposal-writing"
+      ],
+      "text": "lead magnet e-book writing on ai workflows draft 15-page whitepaper guide on automating enterprise operations lead magnet whitepaper writing project"
+    },
+    {
+      "scenarioId": "SCENARIO_066",
+      "title": "Municipal Smart City IoT Feasibility Study",
+      "expectedCategory": "Government Tender",
+      "expectedCapabilities": [
+        "documentation.technical-documentation",
+        "knowledge.research-synthesis"
+      ],
+      "actualCapabilities": [
+        "documentation.technical-documentation"
+      ],
+      "text": "municipal smart city iot feasibility study write technical feasibility document for municipal smart street lighting network municipal infrastructure feasibility study"
+    },
+    {
+      "scenarioId": "SCENARIO_084",
+      "title": "Unlimited Free AI Server Infrastructure Without Hosting Cost",
+      "expectedCategory": "Unrealistic Projects",
+      "expectedCapabilities": [],
+      "actualCapabilities": [
+        "ai.agent-engineering",
+        "creative.3d-rendering"
+      ],
+      "text": "unlimited free ai server infrastructure without hosting cost deploy 1000 gpu ai models with zero server costs and zero latency guaranteed unfeasible technical guarantees"
+    },
+    {
+      "scenarioId": "SCENARIO_088",
+      "title": "Direct Production Database Migration with Master Admin Key",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "automation.spreadsheet-automation",
+        "creative.3d-rendering"
+      ],
+      "text": "direct production database migration with master admin key run live sql schema migration on production db using raw root password without backup requires production credential access; high security risk"
+    },
+    {
+      "scenarioId": "SCENARIO_090",
+      "title": "Healthcare Medical Records PII Sync Without HIPAA Audit",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.api-integration"
+      ],
+      "actualCapabilities": [
+        "knowledge.research-synthesis"
+      ],
+      "text": "healthcare medical records pii sync without hipaa audit sync patient medical records across cloud servers without verified hipaa encryption sensitive personal healthcare data handling"
+    },
+    {
+      "scenarioId": "SCENARIO_092",
+      "title": "Root Cloud AWS IAM Policy Master Permission Change",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "engineering.api-integration",
+        "knowledge.research-synthesis"
+      ],
+      "text": "root cloud aws iam policy master permission change grant full administratoraccess policy to external microservice role root access credential handling risk"
+    },
+    {
+      "scenarioId": "SCENARIO_093",
+      "title": "Cryptocurrency Smart Contract Deployment on Ethereum Mainnet",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "ai.agent-engineering",
+        "writing.proposal-writing"
+      ],
+      "text": "cryptocurrency smart contract deployment on ethereum mainnet deploy unverified solidity smart contract to live ethereum mainnet handling user funds unverified live smart contract deployment"
+    },
+    {
+      "scenarioId": "SCENARIO_094",
+      "title": "Unverified Client Custom Crypto Token Presale Contract",
+      "expectedCategory": "High Risk Projects",
+      "expectedCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "writing.proposal-writing"
+      ],
+      "text": "unverified client custom crypto token presale contract build token contract for unverified anonymous client on decentralized exchange unverified client identity combined with financial token creation"
+    },
+    {
+      "scenarioId": "SCENARIO_096",
+      "title": "Static HTML/CSS Landing Page Layout Fix",
+      "expectedCategory": "Low Risk Projects",
+      "expectedCapabilities": [
+        "engineering.software-implementation"
+      ],
+      "actualCapabilities": [
+        "creative.vector-design",
+        "knowledge.research-synthesis"
+      ],
+      "text": "static html/css landing page layout fix fix css flexbox alignment issue on static marketing landing page basic frontend styling fix"
+    }
+  ]
+}

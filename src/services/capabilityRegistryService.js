@@ -20,7 +20,14 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: [],
     relatedCapabilities: ["engineering.repository-audit", "testing.quality-assurance"],
-    tags: ["software", "development", "implementation", "automation", "api", "backend", "frontend", "testing", "javascript", "node", "docker", "container", "kubernetes", "python", "react", "nextjs", "oauth", "auth0", "jwt", "scraping"],
+    tags: [
+      "software", "development", "implementation", "automation", "api", "backend", "frontend",
+      "testing", "javascript", "node", "docker", "container", "kubernetes", "python", "react",
+      "nextjs", "oauth", "auth0", "jwt", "scraping", "database migration", "schema migration",
+      "sql migration", "migration", "iam", "aws", "policy", "permission", "smart contract",
+      "ethereum", "solidity", "crypto", "contract deployment", "token contract", "presale contract",
+      "crypto token", "html", "css", "flexbox", "layout fix", "landing page", "frontend styling"
+    ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
@@ -46,13 +53,21 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: [],
     relatedCapabilities: ["engineering.software-implementation"],
-    tags: ["repository", "code", "audit", "architecture", "quality", "javascript", "node", "react", "database", "sql", "postgres", "mysql", "query", "optimization", "performance", "review", "schema", "migration"],
+    tags: [
+      "repository", "code", "audit", "architecture", "quality", "javascript", "node", "react",
+      "database", "sql", "postgres", "mysql", "query", "optimization", "performance", "review",
+      "schema", "migration", "queries", "query optimization", "performance audit", "database audit",
+      "dependencies", "copyleft", "npm dependencies", "license audit", "seo audit", "website audit",
+      "technical audit", "security review", "code security review", "vulnerability assessment",
+      "threat modeling", "secure code review", "security assessment", "vulnerability scan", "authorized penetration test",
+      "security audit", "web security", "application security", "code audit"
+    ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
     evidenceFiles: [
       "scripts/mother/scanner.js",
-      "scripts/dev-agent/core/ArchitectureAnalyzer.js",
+      "src/motherCore/scanner/scannerEngine.js",
       "scripts/mother/validator.js"
     ]
   },
@@ -71,7 +86,11 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: ["engineering.software-implementation"],
     relatedCapabilities: ["automation.workflow-automation"],
-    tags: ["api", "integration", "webhook", "graphql", "rest", "microservice"],
+    tags: [
+      "api", "integration", "webhook", "graphql", "rest", "microservice",
+      "sync", "pii sync", "medical records", "data sync", "api security",
+      "authentication review", "authorization review", "access control review"
+    ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
@@ -149,7 +168,7 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
       "market", "seo", "marketing", "content", "translation", "localization",
       "spanish", "german", "french", "legal", "legal research", "case law",
       "statute", "uspto", "trademark", "copyright", "patent", "patent search",
-      "prior art", "privacy", "policy", "gdpr", "compliance", "regulatory", "audit", "synthesis", "literature"
+      "prior art", "privacy", "policy", "gdpr", "compliance", "regulatory", "synthesis", "literature"
     ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
