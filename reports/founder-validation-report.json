@@ -1,16 +1,16 @@
 {
-  "date": "2026-07-26T06:55:32.928Z",
-  "gitCommit": "90505b2",
+  "date": "2026-07-26T07:18:20.529Z",
+  "gitCommit": "f8a7812",
   "totalScenarios": 100,
-  "passed": 56,
-  "failed": 44,
+  "passed": 59,
+  "failed": 41,
   "accuracy": {
     "qualification": "99.00%",
     "classification": "98.00%",
-    "capability": "58.00%",
+    "capability": "61.00%",
     "feasibility": "99.00%",
     "risk": "100.00%",
-    "overall": "56.00%"
+    "overall": "59.00%"
   },
   "failureBreakdown": [
     {
@@ -260,8 +260,7 @@
         "qualification": "qualified",
         "category": "AI Automation",
         "capabilities": [
-          "automation.spreadsheet-automation",
-          "engineering.software-implementation"
+          "automation.workflow-automation"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
@@ -568,7 +567,9 @@
       "actual": {
         "qualification": "qualified",
         "category": "Customer Support",
-        "capabilities": [],
+        "capabilities": [
+          "automation.workflow-automation"
+        ],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
@@ -595,29 +596,6 @@
         "capabilities": [
           "knowledge.research-synthesis"
         ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_040",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Customer Support",
-        "capabilities": [
-          "automation.workflow-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Customer Support",
-        "capabilities": [],
         "feasibility": "feasible",
         "riskLevel": "low",
         "decision": "approve"
@@ -695,31 +673,6 @@
         "category": "Data Entry",
         "capabilities": [
           "automation.spreadsheet-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_049",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Data Entry",
-        "capabilities": [
-          "automation.workflow-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Data Entry",
-        "capabilities": [
-          "ai.agent-engineering"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
@@ -822,7 +775,8 @@
         "qualification": "qualified",
         "category": "Marketing",
         "capabilities": [
-          "ai.agent-engineering"
+          "ai.agent-engineering",
+          "automation.workflow-automation"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",
@@ -876,32 +830,6 @@
         "capabilities": [
           "automation.workflow-automation",
           "writing.proposal-writing"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "whichEngineFailed": "Capability",
-      "reason": "Mismatched engine outputs: Capability"
-    },
-    {
-      "scenarioId": "SCENARIO_065",
-      "expected": {
-        "qualification": "qualified",
-        "category": "Government Tender",
-        "capabilities": [
-          "automation.workflow-automation"
-        ],
-        "feasibility": "feasible",
-        "riskLevel": "low",
-        "decision": "approve"
-      },
-      "actual": {
-        "qualification": "qualified",
-        "category": "Government Tender",
-        "capabilities": [
-          "engineering.api-integration",
-          "engineering.software-implementation"
         ],
         "feasibility": "feasible",
         "riskLevel": "low",

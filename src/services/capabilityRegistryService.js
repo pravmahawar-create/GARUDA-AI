@@ -94,7 +94,13 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: [],
     relatedCapabilities: ["automation.spreadsheet-automation", "engineering.api-integration"],
-    tags: ["automation", "workflow", "zapier", "n8n", "pipeline", "trigger", "process"],
+    tags: [
+      "automation", "workflow", "zapier", "n8n", "pipeline", "trigger", "process",
+      "routing", "escalation", "alert", "deduplication", "enrichment", "monitoring",
+      "notice", "extraction", "ocr", "flow", "tree", "crm", "hubspot", "zendesk",
+      "intercom", "freshdesk", "sla", "email", "document", "approval", "orchestration",
+      "make.com", "business process automation", "multi-step automation", "api workflow", "task orchestration"
+    ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
