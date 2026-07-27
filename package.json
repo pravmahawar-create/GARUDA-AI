@@ -28,7 +28,8 @@
     "dev:agent": "node scripts/dev-agent/dev-agent.js",
     "dev:status": "node scripts/dev-agent/status.js",
     "engineering:environment": "node scripts/dev-agent/run-production-batch.js environment",
-    "engineering:resume": "node scripts/dev-agent/run-production-batch.js resume"
+    "engineering:resume": "node scripts/dev-agent/run-production-batch.js resume",
+    "garuda:dispatch": "node scripts/garuda-dispatch.js"
   },
   "repository": {
     "type": "git",
