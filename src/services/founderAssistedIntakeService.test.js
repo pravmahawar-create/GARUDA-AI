@@ -84,6 +84,10 @@ async function runFounderAssistedIntakeTests() {
   const importedFirst = await importFounderAssistedCandidate(validIntakeInput, validContext, { now });
   assert.ok(importedFirst.candidate);
   assert.ok(importedFirst.reviewPackage);
+  assert.ok(importedFirst.submissionPackage);
+  assert.strictEqual(importedFirst.submissionPackage.status, "READY_FOR_FOUNDER_SUBMISSION");
+  assert.ok(importedFirst.submissionPackage.packageHash);
+
 
   // 5. Expired Listing Rejection
   const expiredInput = {

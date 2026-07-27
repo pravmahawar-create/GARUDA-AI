@@ -264,22 +264,30 @@ async function importFounderAssistedCandidate(input = {}, context = {}, options 
       ...processed
     });
     const result = created.toJSON();
+    const { buildFounderSubmissionPackage } = require("./founderSubmissionPackageService");
     return {
       candidate: result,
-      reviewPackage: buildFounderReviewPackage(result)
+      reviewPackage: buildFounderReviewPackage(result),
+      submissionPackage: buildFounderSubmissionPackage(result, context, { now })
     };
   }
 
+  const { buildFounderSubmissionPackage } = require("./founderSubmissionPackageService");
   return {
     candidate: processed,
-    reviewPackage: buildFounderReviewPackage(processed)
+    reviewPackage: buildFounderReviewPackage(processed),
+    submissionPackage: buildFounderSubmissionPackage(processed, context, { now })
   };
 }
+
+const { buildFounderSubmissionPackage } = require("./founderSubmissionPackageService");
 
 module.exports = {
   INTAKE_LABEL,
   buildFounderReviewPackage,
+  buildFounderSubmissionPackage,
   importFounderAssistedCandidate,
   processFounderAssistedIntake,
   sha256
 };
+
