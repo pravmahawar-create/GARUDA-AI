@@ -40,7 +40,7 @@ async function runAttackListTests() {
   assert.ok(evalResult.expectedDeliveryTime.aiExecutionHours >= 1);
   assert.ok(evalResult.expectedProfit.amount > 0);
   assert.ok(evalResult.aiAutomationPercent >= 70);
-  assert.ok(["ATTACK_IMMEDIATELY", "FOUNDER_SUBMIT", "NEGOTIATE", "PASS"].includes(evalResult.recommendedAction));
+  assert.ok(["✅ Submit Immediately", "⚠️ Negotiate First", "🟡 Ask Questions", "❌ Reject", "ATTACK_IMMEDIATELY", "FOUNDER_SUBMIT", "NEGOTIATE", "PASS"].includes(evalResult.recommendedAction));
 
   // 3. Today's Attack List Generation (Amendment 4)
   const attackListResult = generateTodaysAttackList([sampleCandidate], validContext, { now });
@@ -49,7 +49,7 @@ async function runAttackListTests() {
   assert.ok(attackListResult.summary.totalPotentialRevenue.amount > 0);
   assert.ok(attackListResult.attackList.length >= 1);
   assert.strictEqual(attackListResult.attackList[0].rank, 1);
-  assert.ok(attackListResult.attackList[0].attackReasoning.includes("Revenue Score"));
+  assert.ok(attackListResult.attackList[0].attackReasoning.includes("Opportunity Score") || attackListResult.attackList[0].attackReasoning.includes("Revenue Score"));
 
   console.log("GARUDA Today's Attack List & Constitutional Amendments unit tests PASSED cleanly.");
 }

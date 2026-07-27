@@ -25,6 +25,14 @@ export default function FounderReviewPanel({ candidate, onDecision }) {
   const category = candidate.opportunityCategory || "freelance_project";
   const executionMode = intel.executionMode || candidate.executionMode || "founder_assisted";
 
+  const clientIntel = candidate.clientIntelligence || {};
+  const riskAnalysis = candidate.riskAnalysis || {};
+
+  const opportunityScore = candidate.opportunityScore || candidate.revenueScore || 85;
+  const riskLevel = candidate.riskLevel || riskAnalysis.riskLevel || "LOW";
+  const riskScore = candidate.riskScore || riskAnalysis.riskScore || 15;
+  const recommendedAction = candidate.recommendedAction || "✅ Submit Immediately";
+
   const milestones = pricing.milestones || [
     { name: "Milestone 1 — Prototype & Core Setup (50% Deposit)", amount: Math.round((pricing.recommendedPrice || 2500) / 2) },
     { name: "Milestone 2 — Final Implementation & Test Acceptance (50%)", amount: Math.round((pricing.recommendedPrice || 2500) / 2) }
@@ -104,6 +112,24 @@ export default function FounderReviewPanel({ candidate, onDecision }) {
         )}
       </div>
 
+      {/* CLIENT INTELLIGENCE & OPPORTUNITY SCORECARD */}
+      <div className="review-section client-intelligence-scorecard" style={{ background: "#065f46", border: "1px solid #10b981", borderRadius: "8px", padding: "1rem", margin: "1rem 0" }}>
+        <h3 style={{ color: "#a7f3d0", marginTop: 0 }}>📊 Client Intelligence & Risk Scorecard</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "0.75rem" }}>
+          <div><strong>Opportunity Score:</strong> <span style={{ color: "#6ee7b7", fontSize: "1.1rem", fontWeight: "bold" }}>{opportunityScore}/100</span></div>
+          <div><strong>Risk Level:</strong> <span className={`badge risk-${riskLevel.toLowerCase()}`} style={{ background: riskLevel === "CRITICAL" ? "#ef4444" : riskLevel === "HIGH" ? "#f97316" : riskLevel === "MEDIUM" ? "#eab308" : "#10b981", color: "#fff", padding: "2px 8px", borderRadius: "4px" }}>{riskLevel} ({riskScore}/100)</span></div>
+          <div><strong>Recommended Action:</strong> <strong style={{ color: "#fde047" }}>{recommendedAction}</strong></div>
+          <div><strong>Expected Revenue Value:</strong> {pricing.currency || "USD"} ${candidate.expectedRevenueValue ? candidate.expectedRevenueValue.toLocaleString() : (pricing.recommendedPrice || 2500).toLocaleString()}</div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", fontSize: "0.85rem", color: "#d1fae5", background: "rgba(0,0,0,0.2)", padding: "0.5rem", borderRadius: "4px" }}>
+          <div><strong>Client Trust Score:</strong> {clientIntel.clientTrustScore || candidate.clientTrustScore || 70}/100</div>
+          <div><strong>Scope Clarity:</strong> {clientIntel.scopeClarity || candidate.scopeClarity || 75}/100</div>
+          <div><strong>Communication Burden:</strong> {(clientIntel.communicationComplexity || "low").toUpperCase()}</div>
+          <div><strong>Urgency:</strong> {(clientIntel.urgency || "medium").toUpperCase()}</div>
+        </div>
+      </div>
+
       {/* CLASSIFICATION & PLATFORM INTELLIGENCE BOX */}
       <div className="review-section intelligence-classification-box" style={{ background: "#1e1b4b", border: "1px solid #4338ca", borderRadius: "8px", padding: "1rem", margin: "1rem 0" }}>
         <h3 style={{ color: "#a5b4fc", marginTop: 0 }}>🧠 Opportunity Intelligence & Execution Mode</h3>
@@ -174,8 +200,8 @@ export default function FounderReviewPanel({ candidate, onDecision }) {
         <p><strong>Classification:</strong> {candidate.classification || category}</p>
         <p><strong>Primary Capability:</strong> <code>{candidate.primaryCapability || "None"}</code></p>
         <p><strong>Feasibility:</strong> <span className={`badge ${candidate.feasibility}`}>{candidate.feasibility}</span></p>
-        <p><strong>Risk Level:</strong> <span className={`badge risk-${candidate.riskLevel || candidate.risk}`}>{candidate.riskLevel || candidate.risk}</span></p>
-        <p><strong>Recommended Action:</strong> <code>{candidate.recommendedAction}</code></p>
+        <p><strong>Risk Level:</strong> <span className={`badge risk-${riskLevel.toLowerCase()}`}>{riskLevel}</span></p>
+        <p><strong>Recommended Action:</strong> <code>{recommendedAction}</code></p>
         <p><strong>Status:</strong> <span className="status-highlight">{submittedStatus}</span></p>
       </div>
 

@@ -37,11 +37,12 @@ function evaluateAttackOpportunity(candidate = {}, context = {}, options = {}) {
   const empirical = getEmpiricalProbability();
 
   const winProb = empirical.measured ? empirical.winRate : (rieReport.capabilityMatch?.score || 85);
-  const payProb = empirical.measured ? empirical.paymentProbability : (rieReport.metrics?.clientQualityScore || 70);
+  const { calculateOpportunityIntelligence } = require("./clientIntelligenceEngineService");
+  const oppIntel = calculateOpportunityIntelligence(candidate, context);
 
   const baseValue = pricing.recommendedPrice || 2500;
   const expectedProfitAmount = Math.max(0, baseValue - (pricing.baseCost || 800));
-  const revenueScore = Math.min(100, Math.max(10, Math.round((winProb * 0.4) + (payProb * 0.4) + Math.min(20, (expectedProfitAmount / 500)))));
+  const revenueScore = oppIntel.opportunityScore;
   const executionScore = Math.min(100, Math.max(10, rieReport.capabilityMatch?.score || 85));
 
   // 3. Founder Effort
@@ -59,16 +60,12 @@ function evaluateAttackOpportunity(candidate = {}, context = {}, options = {}) {
   const aiAutomationPercent = Math.min(95, Math.max(70, Math.round((time.aiExecutionHours / (time.aiExecutionHours + time.humanCoordinationHours + time.approvalHours)) * 100)));
 
   // 5. Recommended Action
-  let recommendedAction = "FOUNDER_SUBMIT";
-  if (revenueScore >= 85 && classification !== "reject") {
-    recommendedAction = "ATTACK_IMMEDIATELY";
-  } else if (rieReport.recommendation === "NEGOTIATE") {
-    recommendedAction = "NEGOTIATE";
-  } else if (classification === "reject" || classification === "human_only") {
-    recommendedAction = "PASS";
+  let recommendedAction = oppIntel.recommendedAction;
+  if (classification === "reject" || classification === "human_only") {
+    recommendedAction = "❌ Reject";
   }
 
-  const attackReasoning = `Revenue Score ${revenueScore}/100 | Expected Profit: ${pricing.currency || "USD"} ${expectedProfitAmount.toLocaleString()} | ${aiAutomationPercent}% AI Automation | ${founderEffort.toUpperCase()} Founder effort.`;
+  const attackReasoning = `Opportunity Score ${oppIntel.opportunityScore}/100 | Risk: ${oppIntel.riskLevel} (${oppIntel.riskScore}/100) | ERV: ${pricing.currency || "USD"} $${oppIntel.expectedRevenueValue.toLocaleString()} | ${founderEffort.toUpperCase()} Founder effort.`;
 
   return {
     opportunityId: String(candidate.externalId || candidate.id || candidate._id || rieReport.opportunityId),
@@ -76,22 +73,31 @@ function evaluateAttackOpportunity(candidate = {}, context = {}, options = {}) {
     clientCompany: company,
     url: String(candidate.url || candidate.rawSource?.url || rieReport.url || ""),
     classification,
-    revenueScore,
+    opportunityCategory: candidate.opportunityCategory || "freelance_project",
+    revenueScore: oppIntel.opportunityScore,
+    opportunityScore: oppIntel.opportunityScore,
+    riskScore: oppIntel.riskScore,
+    riskLevel: oppIntel.riskLevel,
+    expectedRevenueValue: oppIntel.expectedRevenueValue,
+    clientTrustScore: oppIntel.clientIntel.clientTrustScore,
+    scopeClarity: oppIntel.clientIntel.scopeClarity,
     executionScore,
     founderEffort,
-    expectedDeliveryTime: {
-      humanRealityDays: time.recommendedClientDeliveryDays || 4,
-      aiExecutionHours: time.aiExecutionHours || 6
-    },
-    paymentProbability: payProb,
     competition,
+    aiAutomationPercent,
+    expectedDeliveryTime: {
+      humanRealityDays: time.recommendedClientDeliveryDays,
+      aiExecutionHours: time.aiExecutionHours,
+      speedCompressionRatio: time.aiTimeCompressionRatio
+    },
     expectedProfit: {
       amount: expectedProfitAmount,
       currency: pricing.currency || "USD"
     },
-    aiAutomationPercent,
     recommendedAction,
     attackReasoning,
+    clientIntelligence: oppIntel.clientIntel,
+    riskAnalysis: oppIntel.riskAnalysis,
     rieReport
   };
 }
