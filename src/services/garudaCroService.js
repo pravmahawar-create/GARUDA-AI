@@ -138,6 +138,12 @@ Please reply to authorize Milestone 1 initiation.
 `.trim();
   }
 
+  const followUpStrategy = {
+    noReply24h: `Hi ${company} team, following up on our proposal for "${title}". We are reserved to initiate Milestone 1 with a ${effort.estimatedDeliveryDays}-day delivery commitment.`,
+    noReply72h: `Hi ${company} team, sharing our technical architecture breakdown and test runner plan for "${title}" to assist your review.`,
+    noReply7Days: `Hi ${company} team, checking in before our current scheduling availability for "${title}" closes this week.`
+  };
+
   const payload = {
     opportunityId: String(candidateInput.externalId || candidateInput.id || candidateInput._id || rieReport.opportunityId),
     title,
@@ -151,6 +157,7 @@ Please reply to authorize Milestone 1 initiation.
     shouldNegotiate: shouldNegotiate ? "YES" : "NO",
     negotiationConversation,
     directAcceptanceMessage,
+    followUpStrategy,
     historicalContext: history,
     evaluatedAt: now.toISOString()
   };

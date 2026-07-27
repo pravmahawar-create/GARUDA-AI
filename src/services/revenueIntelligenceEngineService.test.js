@@ -44,9 +44,9 @@ async function runRieTests() {
   assert.ok(report.reportHash);
   assert.ok(report.truthHash);
 
-  // 2. Metrics & Probability Validation
-  assert.ok(report.metrics.probabilityOfWinning >= 25 && report.metrics.probabilityOfWinning <= 100);
-  assert.ok(report.metrics.probabilityOfPayment >= 30 && report.metrics.probabilityOfPayment <= 100);
+  // 2. Metrics & Empirical Probability Validation
+  assert.ok(report.metrics.probabilityOfWinning === null || (report.metrics.probabilityOfWinning >= 0 && report.metrics.probabilityOfWinning <= 100));
+  assert.ok(report.metrics.probabilityOfPayment === null || (report.metrics.probabilityOfPayment >= 0 && report.metrics.probabilityOfPayment <= 100));
   assert.ok(report.metrics.clientQualityScore >= 0 && report.metrics.clientQualityScore <= 100);
   assert.ok(["low", "medium", "high", "critical"].includes(report.metrics.estimatedDeliveryRisk));
   assert.ok(["low", "medium", "high", "extreme"].includes(report.metrics.technicalComplexity));

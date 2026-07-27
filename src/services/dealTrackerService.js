@@ -1,0 +1,288 @@
+const crypto = require("crypto");
+const { recordClosingOutcome: recordClosingOutcomeSystem } = require("./revenueClosingSystemService");
+
+function sha256(data) {
+  return crypto.createHash("sha256").update(typeof data === "string" ? data : JSON.stringify(data)).digest("hex");
+}
+
+function plainText(value = "") {
+  return String(value || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Valid Response Statuses
+ */
+const RESPONSE_STATUSES = [
+  "NO_REPLY",
+  "AUTO_REJECTION",
+  "REJECTION",
+  "SHORTLISTED",
+  "INTERVIEW",
+  "NEGOTIATION",
+  "DEPOSIT_REQUEST",
+  "WON",
+  "LOST"
+];
+
+/**
+ * Persistent Deal Store (In-Memory Ledger with SHA-256 state tracking)
+ */
+const dealLedger = new Map();
+
+/**
+ * PHASE 1: SUBMISSION TRACKER
+ */
+function recordDealSubmission(submissionInput = {}, context = {}) {
+  const dealId = String(submissionInput.dealId || submissionInput.externalId || `deal-${Date.now()}`).trim();
+  const now = submissionInput.submissionDate ? new Date(submissionInput.submissionDate) : new Date();
+
+  const record = {
+    dealId,
+    client: plainText(submissionInput.client || submissionInput.company || "Client"),
+    platform: plainText(submissionInput.platform || submissionInput.source || "Direct"),
+    submissionDate: now.toISOString(),
+    proposalVersion: String(submissionInput.proposalVersion || "v1.0.0"),
+    pricing: {
+      quotedPrice: Number(submissionInput.pricing?.quotedPrice || submissionInput.quotedPrice || 0),
+      floorPrice: Number(submissionInput.pricing?.floorPrice || submissionInput.floorPrice || 0),
+      currency: String(submissionInput.pricing?.currency || submissionInput.currency || "USD")
+    },
+    coverLetterHash: String(submissionInput.coverLetterHash || sha256(submissionInput.proposalText || "")),
+    deliveryPromiseDays: Number(submissionInput.deliveryPromiseDays || submissionInput.estimatedDeliveryDays || 5),
+    paymentTerms: String(submissionInput.paymentTerms || "50/50 Milestone"),
+    founderNotes: String(submissionInput.founderNotes || "Submitted via Founder Authorized Account"),
+    
+    // Status tracking
+    currentStatus: "NO_REPLY",
+    responses: [],
+    outcome: null,
+    actualPaymentCollected: 0,
+    recordedAt: now.toISOString()
+  };
+
+  dealLedger.set(dealId, record);
+
+  return {
+    success: true,
+    dealId,
+    currentStatus: record.currentStatus,
+    dealRecordHash: sha256(record)
+  };
+}
+
+/**
+ * PHASE 2: RESPONSE TRACKER
+ */
+function recordClientResponse(responseInput = {}, context = {}) {
+  const dealId = String(responseInput.dealId).trim();
+  const deal = dealLedger.get(dealId);
+
+  if (!deal) {
+    const err = new Error(`Deal ID ${dealId} not found in submission tracker`);
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const status = String(responseInput.status || "SHORTLISTED").toUpperCase();
+  if (!RESPONSE_STATUSES.includes(status)) {
+    const err = new Error(`Invalid response status ${status}. Must be one of ${RESPONSE_STATUSES.join(", ")}`);
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const responseDate = responseInput.responseDate ? new Date(responseInput.responseDate) : new Date();
+  const submissionTime = new Date(deal.submissionDate).getTime();
+  const responseTimeHours = Math.max(0, (responseDate.getTime() - submissionTime) / 3600000);
+
+  const responseEvent = {
+    status,
+    responseDate: responseDate.toISOString(),
+    responseTimeHours: Math.round(responseTimeHours * 10) / 10,
+    clientMessage: plainText(responseInput.clientMessage || ""),
+    negotiatedPrice: responseInput.negotiatedPrice ? Number(responseInput.negotiatedPrice) : null,
+    notes: plainText(responseInput.notes || "")
+  };
+
+  deal.responses.push(responseEvent);
+  deal.currentStatus = status;
+
+  if (status === "WON" || status === "LOST" || status === "AUTO_REJECTION" || status === "REJECTION") {
+    deal.outcome = status === "WON" ? "WON" : "LOST";
+    if (status === "WON" && responseInput.paymentCollected) {
+      deal.actualPaymentCollected = Number(responseInput.paymentCollected);
+    }
+  }
+
+  dealLedger.set(dealId, deal);
+
+  return {
+    success: true,
+    dealId,
+    currentStatus: deal.currentStatus,
+    responseTimeHours: responseEvent.responseTimeHours,
+    dealRecordHash: sha256(deal)
+  };
+}
+
+/**
+ * PHASE 3: OUTCOME LEARNING ENGINE
+ */
+function recordDealOutcome(outcomeInput = {}, context = {}) {
+  const dealId = String(outcomeInput.dealId).trim();
+  const deal = dealLedger.get(dealId);
+
+  const outcome = String(outcomeInput.outcome || "WON").toUpperCase();
+  const reason = plainText(outcomeInput.reason || outcomeInput.reasonForOutcome || "");
+
+  if (deal) {
+    deal.outcome = outcome;
+    deal.currentStatus = outcome;
+    if (outcome === "WON") {
+      deal.actualPaymentCollected = Number(outcomeInput.actualPaymentCollected || outcomeInput.agreedPrice || deal.pricing.quotedPrice);
+    }
+    dealLedger.set(dealId, deal);
+  }
+
+  recordClosingOutcomeSystem({
+    closingCaseId: dealId,
+    negotiationOutcome: outcome === "WON" ? "won_full_price" : "lost_price_objection",
+    discountGiven: Number(outcomeInput.discountGiven || 0),
+    clientObjections: outcomeInput.objectionsEncountered || [],
+    actualDeliveryTimeDays: Number(outcomeInput.deliveryDays || 3),
+    clientSatisfaction: Number(outcomeInput.clientSatisfaction || 5)
+  });
+
+  return {
+    recorded: true,
+    dealId,
+    outcome,
+    reason,
+    metrics: getRealityMetrics()
+  };
+}
+
+/**
+ * PHASE 4: REALITY METRICS CALCULATOR
+ */
+function getRealityMetrics() {
+  const deals = Array.from(dealLedger.values());
+  const submissionCount = deals.length;
+
+  if (submissionCount === 0) {
+    return {
+      submissionCount: 0,
+      replyRatePercent: null,
+      replyRateLabel: "UNMEASURED (Awaiting empirical deal data)",
+      interviewRatePercent: null,
+      interviewRateLabel: "UNMEASURED (Awaiting empirical deal data)",
+      negotiationRatePercent: null,
+      negotiationRateLabel: "UNMEASURED (Awaiting empirical deal data)",
+      depositRatePercent: null,
+      depositRateLabel: "UNMEASURED (Awaiting empirical deal data)",
+      winRatePercent: null,
+      winRateLabel: "UNMEASURED (Awaiting empirical deal data)",
+      revenueCollected: 0,
+      averageReplyTimeHours: null,
+      averageDealSize: 0,
+      averageDaysToPayment: null,
+      statusBreakdown: {
+        NO_REPLY: 0,
+        AUTO_REJECTION: 0,
+        REJECTION: 0,
+        SHORTLISTED: 0,
+        INTERVIEW: 0,
+        NEGOTIATION: 0,
+        DEPOSIT_REQUEST: 0,
+        WON: 0,
+        LOST: 0
+      }
+    };
+  }
+
+  const repliedDeals = deals.filter((d) => d.responses.length > 0 && d.currentStatus !== "NO_REPLY");
+  const interviewedDeals = deals.filter((d) => d.responses.some((r) => r.status === "INTERVIEW" || r.status === "SHORTLISTED"));
+  const negotiatedDeals = deals.filter((d) => d.responses.some((r) => r.status === "NEGOTIATION"));
+  const depositDeals = deals.filter((d) => d.responses.some((r) => r.status === "DEPOSIT_REQUEST" || r.status === "WON"));
+  const wonDeals = deals.filter((d) => d.outcome === "WON" || d.currentStatus === "WON");
+
+  const revenueCollected = wonDeals.reduce((sum, d) => sum + (d.actualPaymentCollected || d.pricing.quotedPrice || 0), 0);
+
+  const replyTimes = [];
+  deals.forEach((d) => {
+    if (d.responses.length > 0) {
+      replyTimes.push(d.responses[0].responseTimeHours);
+    }
+  });
+
+  const avgReplyTime = replyTimes.length > 0 ? Math.round((replyTimes.reduce((a, b) => a + b, 0) / replyTimes.length) * 10) / 10 : null;
+  const avgDealSize = wonDeals.length > 0 ? Math.round(revenueCollected / wonDeals.length) : 0;
+
+  const replyRate = Math.round((repliedDeals.length / submissionCount) * 100);
+  const winRate = Math.round((wonDeals.length / submissionCount) * 100);
+
+  return {
+    submissionCount,
+    replyCount: repliedDeals.length,
+    replyRatePercent: replyRate,
+    replyRateLabel: `${replyRate}% (Empirical)`,
+    interviewRatePercent: Math.round((interviewedDeals.length / submissionCount) * 100),
+    negotiationRatePercent: Math.round((negotiatedDeals.length / submissionCount) * 100),
+    depositRatePercent: Math.round((depositDeals.length / submissionCount) * 100),
+    winRatePercent: winRate,
+    winRateLabel: `${winRate}% (Empirical)`,
+    revenueCollected,
+    averageReplyTimeHours: avgReplyTime,
+    averageDealSize: avgDealSize,
+    averageDaysToPayment: avgReplyTime ? Math.round(avgReplyTime / 24) : null,
+    statusBreakdown: {
+      NO_REPLY: deals.filter((d) => d.currentStatus === "NO_REPLY").length,
+      AUTO_REJECTION: deals.filter((d) => d.currentStatus === "AUTO_REJECTION").length,
+      REJECTION: deals.filter((d) => d.currentStatus === "REJECTION").length,
+      SHORTLISTED: deals.filter((d) => d.currentStatus === "SHORTLISTED").length,
+      INTERVIEW: deals.filter((d) => d.currentStatus === "INTERVIEW").length,
+      NEGOTIATION: deals.filter((d) => d.currentStatus === "NEGOTIATION").length,
+      DEPOSIT_REQUEST: deals.filter((d) => d.currentStatus === "DEPOSIT_REQUEST").length,
+      WON: wonDeals.length,
+      LOST: deals.filter((d) => d.outcome === "LOST").length
+    }
+  };
+}
+
+/**
+ * EMPIRICAL PROBABILITY LOOKUP
+ * Returns empirical win rate if deal data exists, otherwise returns null with unmeasured label.
+ */
+function getEmpiricalProbability() {
+  const metrics = getRealityMetrics();
+  if (metrics.submissionCount === 0) {
+    return {
+      measured: false,
+      winRate: null,
+      winRateLabel: "UNMEASURED (Awaiting empirical deal data)",
+      paymentProbability: null,
+      paymentProbabilityLabel: "UNMEASURED (Awaiting empirical deal data)"
+    };
+  }
+  return {
+    measured: true,
+    winRate: metrics.winRatePercent,
+    winRateLabel: `${metrics.winRatePercent}% (Empirical)`,
+    paymentProbability: metrics.depositRatePercent,
+    paymentProbabilityLabel: `${metrics.depositRatePercent}% (Empirical)`
+  };
+}
+
+function clearDealTrackerStore() {
+  dealLedger.clear();
+}
+
+module.exports = {
+  recordDealSubmission,
+  recordClientResponse,
+  recordDealOutcome,
+  getRealityMetrics,
+  getEmpiricalProbability,
+  clearDealTrackerStore,
+  RESPONSE_STATUSES,
+  sha256
+};

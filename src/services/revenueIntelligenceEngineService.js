@@ -205,17 +205,23 @@ function assessClientQuality(candidate = {}) {
 /**
  * 3. Multi-Dimensional Probabilities & Risk Evaluation
  */
-function calculateProbabilities(candidate = {}, capabilityMatch = {}, clientQuality = {}, submissionPackage = {}, historicalSummary = {}) {
-  const matchScore = capabilityMatch.score || 80;
+const { getEmpiricalProbability } = require("./dealTrackerService");
+
+function calculateDealProbabilities(matchScore = 80, clientQuality = {}, historicalSummary = {}, submissionPackage = {}) {
   const clientScore = clientQuality.clientQualityScore || 60;
-  const winHistory = historicalSummary.historicalWinRate || 85;
-  const paymentHistory = historicalSummary.historicalPaymentSuccessRate || 95;
+  const empirical = getEmpiricalProbability();
 
-  const rawWin = Math.round((matchScore * 0.40) + (clientScore * 0.30) + (winHistory * 0.30));
-  const probabilityOfWinning = Math.min(98, Math.max(25, rawWin));
+  let probabilityOfWinning = null;
+  let probabilityOfWinningLabel = "UNMEASURED (Awaiting empirical deal data)";
+  let probabilityOfPayment = null;
+  let probabilityOfPaymentLabel = "UNMEASURED (Awaiting empirical deal data)";
 
-  const rawPayment = Math.round((clientScore * 0.50) + (paymentHistory * 0.50));
-  const probabilityOfPayment = Math.min(99, Math.max(30, rawPayment));
+  if (empirical.measured) {
+    probabilityOfWinning = empirical.winRate;
+    probabilityOfWinningLabel = empirical.winRateLabel;
+    probabilityOfPayment = empirical.paymentProbability;
+    probabilityOfPaymentLabel = empirical.paymentProbabilityLabel;
+  }
 
   const effort = submissionPackage.effortEstimation || {};
   let technicalComplexity = "medium";
@@ -231,7 +237,10 @@ function calculateProbabilities(candidate = {}, capabilityMatch = {}, clientQual
 
   return {
     probabilityOfWinning,
+    probabilityOfWinningLabel,
     probabilityOfPayment,
+    probabilityOfPaymentLabel,
+    empiricalMeasured: empirical.measured,
     technicalComplexity,
     estimatedDeliveryRisk
   };
@@ -286,7 +295,7 @@ function evaluateExecutiveDecision(candidate = {}, probabilities = {}, clientQua
   let recommendation = "ACCEPT";
   let rationale = [];
 
-  if (estimatedDeliveryRisk === "critical" || probabilityOfPayment < 40) {
+  if (estimatedDeliveryRisk === "critical" || (probabilityOfPayment !== null && probabilityOfPayment < 40)) {
     recommendation = "REJECT";
     rationale.push("High delivery risk or unacceptably low probability of payment does not align with GARUDA commercial safety standards.");
   } else if (clientQuality.clientQualityScore < 55 || pricing.targetClientBudget === null) {
@@ -294,7 +303,7 @@ function evaluateExecutiveDecision(candidate = {}, probabilities = {}, clientQua
     rationale.push("Opportunity requires commercial negotiation to clarify payment terms, budget, or scope boundaries before initiation.");
   } else {
     recommendation = "ACCEPT";
-    rationale.push(`Strong opportunity alignment with ${probabilityOfWinning}% win probability, ${probabilityOfPayment}% payment probability, and ${timeEconomics.aiTimeCompressionRatio}× speed compression advantage.`);
+    rationale.push(`Strong opportunity alignment with ${probabilities.probabilityOfWinningLabel} win probability, ${probabilities.probabilityOfPaymentLabel} payment probability, and ${timeEconomics.aiTimeCompressionRatio}× speed compression advantage.`);
   }
 
   const executiveSummaryText = `
@@ -350,7 +359,7 @@ function generateExecutiveDecisionReport(candidateInput = {}, context = {}, opti
   const historicalSummary = getLearningLedgerSummary(candidate.category);
 
   const clientQuality = assessClientQuality(candidate);
-  const probabilities = calculateProbabilities(candidate, capabilityMatch, clientQuality, submissionPackage, historicalSummary);
+  const probabilities = calculateDealProbabilities(capabilityMatch.score || 85, clientQuality, historicalSummary, submissionPackage);
 
   const timeEconomics = computeTimeEconomics(candidate, submissionPackage, historicalSummary);
   const pricing = submissionPackage.pricingRecommendation || {};
@@ -423,7 +432,8 @@ module.exports = {
   generateExecutiveDecisionReport,
   computeTimeEconomics,
   assessClientQuality,
-  calculateProbabilities,
+  calculateDealProbabilities,
+  calculateProbabilities: calculateDealProbabilities,
   generateNegotiationStrategy,
   evaluateExecutiveDecision,
   recordLearningOutcome,

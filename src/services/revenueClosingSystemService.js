@@ -339,12 +339,15 @@ function getExecutiveClosingDashboardData(projectState = {}, conversation = {}, 
     recommendedNextAction = "Handover unlocked source code & deployment documentation to client";
   }
 
+  const { getEmpiricalProbability } = require("./dealTrackerService");
+  const empirical = getEmpiricalProbability();
+
   return {
     opportunityId: projectState.opportunityId || rieReport.opportunityId,
     title: projectState.title || rieReport.title,
     clientCompany: projectState.clientCompany || rieReport.clientCompany,
-    probabilityOfClosing: metrics.probabilityOfWinning || 85,
-    negotiationScore: Math.round(((metrics.probabilityOfWinning || 85) + (metrics.clientQualityScore || 70)) / 2),
+    probabilityOfClosing: empirical.winRateLabel,
+    negotiationScore: Math.round(((metrics.clientQualityScore || 70) + (empirical.measured ? empirical.winRate : 70)) / 2),
     paymentRisk: metrics.estimatedDeliveryRisk || "low",
     currentClientMood: conversation.clientMood || "cautious",
     recommendedNextAction,
