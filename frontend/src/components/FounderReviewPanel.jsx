@@ -28,17 +28,17 @@ export default function FounderReviewPanel({ candidate, onDecision }) {
   const clientIntel = candidate.clientIntelligence || {};
   const riskAnalysis = candidate.riskAnalysis || {};
 
-  const opportunityScore = candidate.opportunityScore || candidate.revenueScore || 85;
-  const riskLevel = candidate.riskLevel || riskAnalysis.riskLevel || "LOW";
-  const riskScore = candidate.riskScore || riskAnalysis.riskScore || 15;
-  const recommendedAction = candidate.recommendedAction || "✅ Submit Immediately";
+  const opportunityScore = candidate.opportunityScore ?? candidate.revenueScore ?? "Pending Analysis";
+  const riskLevel = candidate.riskLevel || riskAnalysis.riskLevel || "Pending Risk Analysis";
+  const riskScore = candidate.riskScore ?? riskAnalysis.riskScore ?? "N/A";
+  const recommendedAction = candidate.recommendedAction || "🟡 Review Candidate";
 
   const milestones = pricing.milestones || [
-    { name: "Milestone 1 — Prototype & Core Setup (50% Deposit)", amount: Math.round((pricing.recommendedPrice || 2500) / 2) },
-    { name: "Milestone 2 — Final Implementation & Test Acceptance (50%)", amount: Math.round((pricing.recommendedPrice || 2500) / 2) }
+    { name: "Milestone 1 — Prototype & Core Setup (50% Deposit)", amount: pricing.recommendedPrice ? Math.round(pricing.recommendedPrice / 2) : "Pending" },
+    { name: "Milestone 2 — Final Implementation & Test Acceptance (50%)", amount: pricing.recommendedPrice ? Math.round(pricing.recommendedPrice / 2) : "Pending" }
   ];
 
-  const proposalText = subPkg.formattedSubmissionText || subPkg.proposalText || candidate.proposalText || `Commercial Proposal for ${candidate.company || "Client"}\nProject: ${candidate.title}\nQuoted Investment: ${pricing.currency || "USD"} $${(pricing.recommendedPrice || 2500).toLocaleString()}\nTarget Delivery: ${subPkg.effortEstimation?.estimatedDeliveryDays || 5} Business Days\n100% Automated Test Execution Log Guarantee included.`;
+  const proposalText = subPkg.formattedSubmissionText || subPkg.proposalText || candidate.proposalText || `Commercial Proposal for ${candidate.company || "Client"}\nProject: ${candidate.title}\nQuoted Investment: ${pricing.recommendedPrice ? `${pricing.currency || "USD"} $${pricing.recommendedPrice.toLocaleString()}` : "Pending Pricing Analysis"}\nTarget Delivery: ${subPkg.effortEstimation?.estimatedDeliveryDays || 5} Business Days\n100% Automated Test Execution Log Guarantee included.`;
 
   const coverLetterText = `Hi ${candidate.company || "Engineering Team"},\n\nI reviewed your listing for "${candidate.title}". We can execute and deliver this project in ${subPkg.effortEstimation?.estimatedDeliveryDays || 5} business days with production-ready code and an automated Jest test suite (100% passing test execution report included prior to code handover).\n\nBest regards,\nPraveen Mahawar\nFounder & Engineering Director | GARUDA AI Operating System`;
 

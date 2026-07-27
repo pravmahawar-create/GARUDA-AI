@@ -168,9 +168,9 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
     source: String(input.source || "Client Portal").trim(),
     title: String(input.title || "").trim(),
     description: String(input.description || "").trim(),
-    company: String(input.company || "not disclosed").trim(),
-    salaryText: String(input.salaryText || "not stated").trim(),
-    deadlineText: String(input.deadlineText || "not stated").trim(),
+    company: String(input.company || "Unknown Company (Requires Founder Verification)").trim(),
+    salaryText: String(input.salaryText || "Unstated Budget (Requires Founder Verification)").trim(),
+    deadlineText: String(input.deadlineText || "Unstated Deadline").trim(),
     attachments: Array.isArray(input.attachments) ? input.attachments.map((a) => Object.freeze({ ...a })) : [],
     importedAt: now.toISOString()
   });
@@ -256,7 +256,7 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
       executionMode: intel.executionMode
     },
     platformIntelligence: intel.platformIntelligence,
-    location: "Worldwide",
+    location: String(input.location || "Pending Location Verification"),
     sourceAttribution: `${rawSource.source} (Founder Assisted)`,
     publishedAt: now,
     tags: Array.isArray(input.tags) ? input.tags.map(plainText) : [],

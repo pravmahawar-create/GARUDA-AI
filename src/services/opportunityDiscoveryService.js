@@ -298,35 +298,7 @@ async function runStandaloneDiscovery(options = {}) {
       jobs = await fetchRemotiveJobs();
     } catch (err) {
       fetchError = err.message;
-      jobs = [
-        {
-          id: "fallback-deliverable-01",
-          title: "Custom Node.js REST API & Microservice Automation",
-          company_name: "Direct Client Partner (Verified)",
-          description: "Build custom Node.js backend microservices, REST API endpoints, and automated tests with zero placeholder data.",
-          candidate_required_location: "Worldwide",
-          salary: "$8,000 fixed price",
-          job_type: "contract",
-          publication_date: new Date().toISOString(),
-          tags: ["Node", "API", "Microservice", "Testing", "Automation"],
-          url: "https://example.com/direct-client-deliverable-01",
-          opportunityChannel: "garuda_deliverable",
-          autonomouslyDeliverable: true,
-          humanInvolvementRequired: false
-        },
-        {
-          id: "fallback-02",
-          title: "Senior Node.js Full-Stack Developer Position",
-          company_name: "Tech Enterprise",
-          description: "Full-time remote developer role building microservices and backend services.",
-          candidate_required_location: "Worldwide",
-          salary: "$90,000 / yr",
-          job_type: "full_time",
-          publication_date: new Date().toISOString(),
-          tags: ["Node", "Full-Stack", "Backend"],
-          url: "https://example.com/fallback-02"
-        }
-      ];
+      jobs = [];
     }
   }
 
