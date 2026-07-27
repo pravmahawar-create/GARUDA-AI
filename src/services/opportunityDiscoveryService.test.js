@@ -64,4 +64,14 @@ assert.strictEqual(safeUpdate.insertOnly.status, "ranked");
 assert.strictEqual(safeUpdate.insertOnly.requiresFounderApproval, true);
 assert.strictEqual(safeUpdate.refreshable.opportunityChannel, "human_opportunity_only");
 
-console.log("Opportunity discovery validation test passed.");
+const { getProactiveBusinessBriefing } = require("./opportunityDiscoveryService");
+getProactiveBusinessBriefing().then((briefing) => {
+  assert.ok(briefing.greeting.includes("Good Morning"));
+  assert.ok(Array.isArray(briefing.highestRevenuePotential));
+  assert.ok(briefing.marketSummary.newOpportunitiesDiscoveredToday >= 0);
+  console.log("Proactive Business Development Briefing test PASSED cleanly.");
+  console.log("Opportunity discovery validation test passed.");
+}).catch((err) => {
+  console.error("Proactive briefing test failed:", err);
+  process.exit(1);
+});

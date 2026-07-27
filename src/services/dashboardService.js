@@ -88,13 +88,24 @@ async function getDashboardSnapshot() {
   const agentReport = readJsonReport("reports/mother-core-agent-report.json");
   const scanReport = readJsonReport("reports/mother-core-scan-report.json");
 
-  return buildDashboardPayload({
+  const { getProactiveBusinessBriefing } = require("./opportunityDiscoveryService");
+  let proactiveBriefing = null;
+  try {
+    proactiveBriefing = await getProactiveBusinessBriefing();
+  } catch (e) {
+    proactiveBriefing = null;
+  }
+
+  const payload = buildDashboardPayload({
     healthStatus,
     knowledgeCount,
     agentReport,
     scanReport,
     revenueMetrics
   });
+
+  payload.proactiveBusinessBriefing = proactiveBriefing;
+  return payload;
 }
 
 module.exports = {
