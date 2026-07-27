@@ -3,20 +3,24 @@ const http = require("http");
 const app = require("../app");
 const { clearDealTrackerStore } = require("../services/dealTrackerService");
 
-function request(server, method, path, body = {}) {
+function request(server, method, path, body = null) {
   return new Promise((resolve, reject) => {
     const address = server.address();
-    const postData = JSON.stringify(body);
+    const hasBody = body !== null && (method === "POST" || method === "PUT" || method === "PATCH");
+    const postData = hasBody ? JSON.stringify(body) : "";
+
+    const headers = {};
+    if (hasBody) {
+      headers["Content-Type"] = "application/json";
+      headers["Content-Length"] = Buffer.byteLength(postData);
+    }
 
     const reqOptions = {
       hostname: "127.0.0.1",
       port: address.port,
       path,
       method,
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": Buffer.byteLength(postData)
-      }
+      headers
     };
 
     const req = http.request(reqOptions, (res) => {
@@ -33,7 +37,7 @@ function request(server, method, path, body = {}) {
     });
 
     req.on("error", reject);
-    if (method === "POST" || method === "PUT" || method === "PATCH") {
+    if (hasBody) {
       req.write(postData);
     }
     req.end();
