@@ -39,6 +39,7 @@ function evaluateAttackOpportunity(candidate = {}, context = {}, options = {}) {
   const winProb = empirical.measured ? empirical.winRate : (rieReport.capabilityMatch?.score || 85);
   const payProb = empirical.measured ? empirical.paymentProbability : (rieReport.metrics?.clientQualityScore || 70);
 
+  const baseValue = pricing.recommendedPrice || 2500;
   const expectedProfitAmount = Math.max(0, baseValue - (pricing.baseCost || 800));
   const revenueScore = Math.min(100, Math.max(10, Math.round((winProb * 0.4) + (payProb * 0.4) + Math.min(20, (expectedProfitAmount / 500)))));
   const executionScore = Math.min(100, Math.max(10, rieReport.capabilityMatch?.score || 85));
