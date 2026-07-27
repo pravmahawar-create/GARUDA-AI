@@ -32,7 +32,7 @@ async function runFounderAssistedIntakeTests() {
 
   // 1. Valid Specific-Client Listing
   const result = processFounderAssistedIntake(validIntakeInput, validContext, now);
-  assert.strictEqual(result.opportunityChannel, "garuda_deliverable");
+  assert.strictEqual(result.opportunityChannel, "founder_garuda");
   assert.strictEqual(result.verification.listingKind, "specific_client_work");
   assert.strictEqual(result.verification.garudaExecutionEligible, true);
   assert.strictEqual(result.requiresFounderApproval, true);
@@ -48,18 +48,30 @@ async function runFounderAssistedIntakeTests() {
   assert.strictEqual(reviewPkg.budget, validIntakeInput.salaryText);
   assert.strictEqual(reviewPkg.label, INTAKE_LABEL);
 
-  // 2. Human Employment Rejection
-  const humanJobInput = {
+  // 2. Physical Onsite / Licensed Professional Rejection (Human Only)
+  const physicalOnsiteJobInput = {
     ...validIntakeInput,
-    url: "https://upwork.com/jobs/~humanjob001",
-    title: "Full-Time Senior Node.js Developer Position",
-    description: "Seeking a permanent full-time employee. Send CV, portfolio, and attend coding interview.",
+    url: "https://upwork.com/jobs/~onsitejob001",
+    title: "Physical Onsite Office Hardware Technician",
+    description: "Physical onsite presence required in office every day. In-person hardware maintenance.",
     company: "Big Tech LLC"
   };
   assert.throws(
-    () => processFounderAssistedIntake(humanJobInput, validContext, now),
-    (err) => err.statusCode === 409 && err.message.includes("human employment")
+    () => processFounderAssistedIntake(physicalOnsiteJobInput, validContext, now),
+    (err) => err.statusCode === 409 && err.message.includes("physical presence")
   );
+
+  // 2b. Client Listing / Full-Time Role Accepted under Founder + GARUDA Workforce Model (Amendment 1 & 2)
+  const clientRoleInput = {
+    ...validIntakeInput,
+    url: "https://upwork.com/jobs/~clientrole001",
+    title: "Full-Time Senior Node.js Developer Position",
+    description: "Seeking a senior Node.js backend developer for project execution and technical deliverables.",
+    company: "Big Tech LLC"
+  };
+  const clientRoleResult = processFounderAssistedIntake(clientRoleInput, validContext, now);
+  assert.strictEqual(clientRoleResult.opportunityChannel, "founder_garuda");
+  assert.strictEqual(clientRoleResult.verification.garudaExecutionEligible, true);
 
   // 3. Missing Attestation Rejection
   const missingAttestationInput = {
@@ -108,7 +120,7 @@ async function runFounderAssistedIntakeTests() {
     company: "not disclosed"
   };
   const missingBudgetResult = processFounderAssistedIntake(missingBudgetInput, validContext, now);
-  assert.strictEqual(missingBudgetResult.opportunityChannel, "garuda_deliverable");
+  assert.strictEqual(missingBudgetResult.opportunityChannel, "founder_garuda");
   assert.ok(missingBudgetResult.founderAssistedIntake.missingInformation.some((m) => m.includes("Budget")));
   assert.ok(missingBudgetResult.founderAssistedIntake.missingInformation.some((m) => m.includes("Client identity")));
   assert.ok(missingBudgetResult.founderAssistedIntake.risks.some((r) => r.includes("budget specification")));

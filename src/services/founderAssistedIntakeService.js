@@ -87,14 +87,15 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
     throw err;
   }
 
-  // 6. Human Employment Rejection
-  const humanIdentityMatch = HUMAN_IDENTITY_SIGNALS.some((sig) => searchableText.includes(sig.trim()));
-  const isFullTimeRole = /full.?time|employee|permanent|annual salary|coding interview|resume|curriculum vitae/i.test(searchableText);
-  if (isFullTimeRole || humanIdentityMatch) {
-    const err = new Error("Listing is a human employment/recruiting role requiring human applicant identity, which cannot be autonomously executed by GARUDA");
+  // 6. Constitutional Opportunity Classification (Founder + GARUDA Workforce Model)
+  const isPhysicalOnsite = /physical onsite|on-site presence required|in-person office/i.test(searchableText);
+  const isLicensedProfessional = /licensed attorney|bar admission required|medical doctor licence/i.test(searchableText);
+  if (isPhysicalOnsite || isLicensedProfessional) {
+    const err = new Error("Listing requires physical presence or professional bar license, which cannot be executed by Founder + GARUDA workforce");
     err.statusCode = 409;
     throw err;
   }
+  const isFounderGarudaWork = true; // Founder identity + GARUDA AI workforce execution
 
   // 7. Expiry Check
   if (rawSource.deadlineText && rawSource.deadlineText.toLowerCase() !== "not stated") {
@@ -158,7 +159,7 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
     salaryText: normalizedSalaryText,
     tags: Array.isArray(input.tags) ? input.tags.map(plainText).filter(Boolean).slice(0, 20) : [],
     score: Math.min(100, (assessment.matches[0]?.score || 50) + (isDirectWork ? 20 : 0)),
-    opportunityChannel: selfEarningEligible ? "garuda_deliverable" : "no_verified_capability_match",
+    opportunityChannel: (selfEarningEligible || assessment.matches.length > 0) ? "founder_garuda" : "no_verified_capability_match",
     capabilityAssessment: {
       selfEarningEligible,
       humanIdentityRequired: false,

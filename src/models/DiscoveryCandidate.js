@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const OPPORTUNITY_CHANNELS = [
+  "autonomous_garuda",
+  "founder_garuda",
+  "human_only",
+  "reject",
   "garuda_deliverable",
   "human_opportunity_only",
   "no_verified_capability_match"
