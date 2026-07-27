@@ -253,6 +253,50 @@ function assertCurrentSourceTruth(candidateInput = {}, now = new Date(), options
   return { candidate, verification };
 }
 
+/**
+ * Evaluates whether GARUDA can legally and technically deliver the requested outcome.
+ * Question: "Can GARUDA legally and technically deliver the requested outcome?"
+ */
+function evaluateOutcomeDeliverability(candidate = {}) {
+  const title = String(candidate.title || candidate.rawSource?.title || "").toLowerCase();
+  const description = String(candidate.description || candidate.rawSource?.description || "").toLowerCase();
+  const combinedText = `${title} ${description}`;
+
+  // 1. Legal Deliverability Check
+  let legallyExecutable = true;
+  let legalReason = "Compliant with legal, regulatory, and ethical boundaries.";
+
+  if (/gambling|casino|betting|adult content|tobacco|vape|illegal|phishing|malware|keylogger|password cracking/i.test(combinedText)) {
+    legallyExecutable = false;
+    legalReason = "Prohibited domain or illegal activity signal detected.";
+  }
+  if (/licensed attorney|bar admission|medical doctor|court appearance/i.test(combinedText)) {
+    legallyExecutable = false;
+    legalReason = "Requires licensed human professional credentials (bar, medical board).";
+  }
+
+  // 2. Technical Deliverability Check
+  let technicallyExecutable = true;
+  let technicalReason = "Within GARUDA's governed software engineering and automation capabilities.";
+
+  if (/physical onsite|in-person|plumbing|hardware repair|truck driver/i.test(combinedText)) {
+    technicallyExecutable = false;
+    technicalReason = "Requires physical presence or non-software human labor.";
+  }
+
+  const canGarudaDeliver = legallyExecutable && technicallyExecutable;
+  const evaluationReason = canGarudaDeliver 
+    ? "Accepted: GARUDA can legally and technically deliver the requested outcome."
+    : `${legalReason} ${technicalReason}`.trim();
+
+  return {
+    legallyExecutable,
+    technicallyExecutable,
+    canGarudaDeliver,
+    evaluationReason
+  };
+}
+
 module.exports = {
   DIRECT_WORK_SIGNALS,
   GENERIC_PAGE_PATHS,
@@ -266,6 +310,7 @@ module.exports = {
   canonicalRecord,
   classifyOpportunityCategory,
   classifySourceTruth,
+  evaluateOutcomeDeliverability,
   normalizeText,
   sourceRecordHash
 };

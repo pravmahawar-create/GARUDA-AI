@@ -28,6 +28,14 @@ const EXECUTION_MODES = [
   "human_team_required"
 ];
 
+const MARKET_SOURCE_TYPES = [
+  "job_listings",
+  "freelance_marketplaces",
+  "business_problems",
+  "partnerships",
+  "direct_outreach"
+];
+
 const discoveryCandidateSchema = new mongoose.Schema(
   {
     missionId: { type: mongoose.Schema.Types.ObjectId, ref: "IncomeGoal", required: true, index: true },
@@ -37,6 +45,18 @@ const discoveryCandidateSchema = new mongoose.Schema(
     company: { type: String, default: "", trim: true },
     description: { type: String, default: "", trim: true },
     category: { type: String, default: "remote_job", trim: true },
+    marketSourceType: {
+      type: String,
+      enum: MARKET_SOURCE_TYPES,
+      default: "job_listings",
+      index: true
+    },
+    outcomeDeliverability: {
+      legallyExecutable: { type: Boolean, default: true },
+      technicallyExecutable: { type: Boolean, default: true },
+      canGarudaDeliver: { type: Boolean, default: true },
+      evaluationReason: { type: String, default: "Governed technical software deliverable.", trim: true }
+    },
     opportunityCategory: {
       type: String,
       enum: OPPORTUNITY_CATEGORIES,
@@ -110,5 +130,6 @@ module.exports = {
   DiscoveryCandidate: mongoose.model("DiscoveryCandidate", discoveryCandidateSchema),
   OPPORTUNITY_CHANNELS,
   OPPORTUNITY_CATEGORIES,
-  EXECUTION_MODES
+  EXECUTION_MODES,
+  MARKET_SOURCE_TYPES
 };

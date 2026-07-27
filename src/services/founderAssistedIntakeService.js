@@ -219,6 +219,22 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
   }
 
   const intel = classifyOpportunityIntelligence(input);
+  const { evaluateOutcomeDeliverability } = require("./revenueSourceTruthService");
+  const outcomeDeliverability = evaluateOutcomeDeliverability(rawSource);
+
+  let marketSourceType = "job_listings";
+  const lowerUrl = rawSource.url.toLowerCase();
+  const lowerDesc = rawSource.description.toLowerCase();
+
+  if (/upwork|ateam|freelancer|fiverr/i.test(lowerUrl) || /freelance|gig|milestone project/i.test(lowerDesc)) {
+    marketSourceType = "freelance_marketplaces";
+  } else if (/partner|agency|subcontract|white[- ]label/i.test(lowerDesc)) {
+    marketSourceType = "partnerships";
+  } else if (/problem|technical debt|bug|refactor|audit|code review|automation need/i.test(lowerDesc)) {
+    marketSourceType = "business_problems";
+  } else if (/outreach|cold email|pitch|yc|seed/i.test(lowerDesc)) {
+    marketSourceType = "direct_outreach";
+  }
 
   // 6. Candidate Payload Construction
   const candidatePayload = {
@@ -231,6 +247,8 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
     url: rawSource.url,
     category: "remote_job",
     opportunityCategory: intel.category,
+    marketSourceType,
+    outcomeDeliverability,
     classificationIntelligence: {
       confidenceScore: intel.confidenceScore,
       reasoning: intel.reasoning,

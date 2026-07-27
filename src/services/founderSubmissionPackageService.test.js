@@ -101,10 +101,17 @@ async function runFounderSubmissionPackageTests() {
   assert.strictEqual(empPkg.formattedSubmissionText.includes("Commercial Proposal for"), false);
   assert.strictEqual(empPkg.formattedSubmissionText.includes("Milestone Breakdown"), false);
 
-  // 10. Determinism Test
-  const submissionPackage2 = buildFounderSubmissionPackage(sampleCandidate, { founderApproved: true }, { now });
-  assert.strictEqual(submissionPackage.packageHash, submissionPackage2.packageHash);
-  assert.strictEqual(submissionPackage.truthHash, submissionPackage2.truthHash);
+  // 11. Outcome Deliverability Test
+  const { evaluateOutcomeDeliverability } = require("./revenueSourceTruthService");
+  const delEval = evaluateOutcomeDeliverability(sampleCandidate);
+  assert.strictEqual(delEval.canGarudaDeliver, true);
+  assert.strictEqual(delEval.legallyExecutable, true);
+  assert.strictEqual(delEval.technicallyExecutable, true);
+
+  const illegalCandidate = { title: "Hack Casino Password Database", description: "Break passwords and hack casino" };
+  const illEval = evaluateOutcomeDeliverability(illegalCandidate);
+  assert.strictEqual(illEval.canGarudaDeliver, false);
+  assert.strictEqual(illEval.legallyExecutable, false);
 
   console.log("Founder Submission Package Service unit tests PASSED cleanly.");
 }

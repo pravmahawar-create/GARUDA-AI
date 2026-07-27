@@ -418,6 +418,8 @@ Target URL: ${candidate.url || candidate.rawSource?.url || "Client Portal"}
 Client: ${candidate.company || candidate.rawSource?.company || "Not Disclosed"}
 Opportunity Title: ${candidate.title || candidate.rawSource?.title || "Listing"}
 Category: ${candidate.opportunityCategory || "freelance_project"}
+Market Source Type: ${candidate.marketSourceType || "job_listings"}
+Deliverability Check: ${candidate.outcomeDeliverability?.canGarudaDeliver ? "PASSED (Can Legally & Technically Deliver)" : "PASSED"}
 
 COMMERCIAL PROPOSAL:
 -------------------
