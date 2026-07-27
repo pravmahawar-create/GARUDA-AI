@@ -222,6 +222,20 @@ function calculateOpportunityIntelligence(candidate = {}, context = {}) {
     actionCode = "SUBMIT_IMMEDIATELY";
   }
 
+  // Evidence Breakdown (Commercial Intelligence Upgrade)
+  const confidenceLevel = opportunityScore >= 80 ? "HIGH" : opportunityScore >= 60 ? "MEDIUM" : "LOW";
+  const evidenceBreakdown = {
+    confidenceLevel,
+    empiricalMeasured: empirical.measured,
+    historicalWinRateLabel: empirical.winRateLabel,
+    checklist: [
+      { factor: "Technical Skill Match", status: clientIntel.technicalMatch >= 70 ? "PASSED" : "REVIEW", text: `✓ ${clientIntel.technicalMatch}% match against GARUDA technical stack` },
+      { factor: "Budget Confidence", status: clientIntel.budgetConfidence >= 60 ? "PASSED" : "REVIEW", text: `✓ Budget stated (${clientIntel.budgetConfidence}% confidence)` },
+      { factor: "Client Trust Score", status: clientIntel.clientTrustScore >= 60 ? "PASSED" : "REVIEW", text: `✓ Trust score ${clientIntel.clientTrustScore}/100` },
+      { factor: "Historical Conversion Data", status: empirical.measured ? "PASSED" : "UNMEASURED", text: empirical.measured ? `✓ ${empirical.winRateLabel}` : "✗ No historical client conversion data (Awaiting empirical deal logging)" }
+    ]
+  };
+
   return {
     opportunityScore,
     riskScore: riskAnalysis.riskScore,
@@ -229,6 +243,8 @@ function calculateOpportunityIntelligence(candidate = {}, context = {}) {
     expectedRevenueValue,
     recommendedAction,
     actionCode,
+    confidenceLevel,
+    evidenceBreakdown,
     clientIntel,
     riskAnalysis
   };

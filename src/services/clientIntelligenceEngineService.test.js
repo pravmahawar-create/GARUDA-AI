@@ -36,6 +36,9 @@ async function runClientIntelligenceEngineTests() {
   assert.ok(oppIntel.opportunityScore >= 50 && oppIntel.opportunityScore <= 100);
   assert.ok(oppIntel.riskScore >= 0 && oppIntel.riskScore <= 100);
   assert.ok(oppIntel.expectedRevenueValue > 0);
+  assert.ok(["HIGH", "MEDIUM", "LOW"].includes(oppIntel.confidenceLevel));
+  assert.ok(oppIntel.evidenceBreakdown);
+  assert.strictEqual(oppIntel.evidenceBreakdown.checklist.length, 4);
   assert.ok(["✅ Submit Immediately", "⚠️ Negotiate First", "🟡 Ask Questions", "❌ Reject"].includes(oppIntel.recommendedAction));
 
   // 4. Critical Risk Enforcement Test
