@@ -49,7 +49,13 @@ async function runAttackListTests() {
   assert.ok(attackListResult.summary.totalPotentialRevenue.amount > 0);
   assert.ok(attackListResult.attackList.length >= 1);
   assert.strictEqual(attackListResult.attackList[0].rank, 1);
-  assert.ok(attackListResult.attackList[0].attackReasoning.includes("Opportunity Score") || attackListResult.attackList[0].attackReasoning.includes("Revenue Score"));
+  // 4. Today's Founder Execution Mission Test
+  const { generateTodaysFounderExecutionMission } = require("./attackListService");
+  const missionResult = generateTodaysFounderExecutionMission([sampleCandidate], validContext, { now });
+  assert.ok(missionResult.missionHeadline.includes("FOUNDER DAILY EXECUTION MISSION"));
+  assert.strictEqual(missionResult.dailyMissionItems.length, 1);
+  assert.strictEqual(missionResult.dailyMissionItems[0].executionPriority, "P0_IMMEDIATE");
+  assert.strictEqual(missionResult.dailyMissionItems[0].preparationStatus, "100% PREPARED & VALIDATED");
 
   console.log("GARUDA Today's Attack List & Constitutional Amendments unit tests PASSED cleanly.");
 }

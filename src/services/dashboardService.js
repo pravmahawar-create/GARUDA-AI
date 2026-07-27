@@ -96,6 +96,14 @@ async function getDashboardSnapshot() {
     proactiveBriefing = null;
   }
 
+  const { generateTodaysFounderExecutionMission } = require("./attackListService");
+  let founderMission = null;
+  try {
+    founderMission = generateTodaysFounderExecutionMission([], { founderApproved: true });
+  } catch (e) {
+    founderMission = null;
+  }
+
   const payload = buildDashboardPayload({
     healthStatus,
     knowledgeCount,
@@ -105,6 +113,7 @@ async function getDashboardSnapshot() {
   });
 
   payload.proactiveBusinessBriefing = proactiveBriefing;
+  payload.todaysFounderExecutionMission = founderMission;
   return payload;
 }
 
