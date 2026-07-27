@@ -20,6 +20,11 @@ export default function FounderReviewPanel({ candidate, onDecision }) {
 
   const subPkg = candidate.submissionPackage || candidate.submissionPkg || {};
   const pricing = subPkg.pricingRecommendation || candidate.pricing || {};
+  const intel = candidate.classificationIntelligence || candidate.classificationIntel || {};
+  const platformIntel = candidate.platformIntelligence || intel.platformIntelligence || { platformId: "generic", platformName: "Direct Client Portal" };
+  const category = candidate.opportunityCategory || "freelance_project";
+  const executionMode = intel.executionMode || candidate.executionMode || "founder_assisted";
+
   const milestones = pricing.milestones || [
     { name: "Milestone 1 — Prototype & Core Setup (50% Deposit)", amount: Math.round((pricing.recommendedPrice || 2500) / 2) },
     { name: "Milestone 2 — Final Implementation & Test Acceptance (50%)", amount: Math.round((pricing.recommendedPrice || 2500) / 2) }
@@ -27,7 +32,7 @@ export default function FounderReviewPanel({ candidate, onDecision }) {
 
   const proposalText = subPkg.formattedSubmissionText || subPkg.proposalText || candidate.proposalText || `Commercial Proposal for ${candidate.company || "Client"}\nProject: ${candidate.title}\nQuoted Investment: ${pricing.currency || "USD"} $${(pricing.recommendedPrice || 2500).toLocaleString()}\nTarget Delivery: ${subPkg.effortEstimation?.estimatedDeliveryDays || 5} Business Days\n100% Automated Test Execution Log Guarantee included.`;
 
-  const coverLetterText = `Hi ${candidate.company || "Engineering Team"},\n\nI reviewed your listing for "${candidate.title}". We can execute and deliver this project in ${subPkg.effortEstimation?.estimatedDeliveryDays || 5} business days with production-ready code and an automated Jest test suite (100% passing test execution report included prior to code handover).\n\nQuoted Investment: ${pricing.currency || "USD"} $${(pricing.recommendedPrice || 2500).toLocaleString()} under a 50/50 milestone agreement.\n\nBest regards,\nPraveen Mahawar\nFounder & Engineering Director | GARUDA AI Operating System`;
+  const coverLetterText = `Hi ${candidate.company || "Engineering Team"},\n\nI reviewed your listing for "${candidate.title}". We can execute and deliver this project in ${subPkg.effortEstimation?.estimatedDeliveryDays || 5} business days with production-ready code and an automated Jest test suite (100% passing test execution report included prior to code handover).\n\nBest regards,\nPraveen Mahawar\nFounder & Engineering Director | GARUDA AI Operating System`;
 
   const handleCopy = (text, type) => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -99,35 +104,63 @@ export default function FounderReviewPanel({ candidate, onDecision }) {
         )}
       </div>
 
-      {/* PROPOSAL PREVIEW & COMMERCIAL BREAKDOWN SECTION */}
-      <div className="review-section proposal-preview-section" style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: "8px", padding: "1rem", margin: "1rem 0" }}>
-        <h3 style={{ color: "#38bdf8", marginTop: 0 }}>📜 Generated Proposal & Commercial Package</h3>
-        
-        <div className="pricing-breakdown" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "1rem" }}>
-          <div><strong>Quoted Price:</strong> {pricing.currency || "USD"} ${pricing.recommendedPrice ? pricing.recommendedPrice.toLocaleString() : "2,500"}</div>
-          <div><strong>Floor Price:</strong> {pricing.currency || "USD"} ${pricing.minimumAcceptableFloorPrice ? pricing.minimumAcceptableFloorPrice.toLocaleString() : "2,000"}</div>
-          <div><strong>Target Delivery:</strong> {subPkg.effortEstimation?.estimatedDeliveryDays || 5} Business Days</div>
-          <div><strong>Payment Terms:</strong> 50/50 Milestone Deposit</div>
+      {/* CLASSIFICATION & PLATFORM INTELLIGENCE BOX */}
+      <div className="review-section intelligence-classification-box" style={{ background: "#1e1b4b", border: "1px solid #4338ca", borderRadius: "8px", padding: "1rem", margin: "1rem 0" }}>
+        <h3 style={{ color: "#a5b4fc", marginTop: 0 }}>🧠 Opportunity Intelligence & Execution Mode</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "0.75rem" }}>
+          <div><strong>Category:</strong> <span className="badge" style={{ background: "#4f46e5", color: "#fff", padding: "2px 8px", borderRadius: "4px" }}>{category.toUpperCase()}</span></div>
+          <div><strong>Confidence Score:</strong> <span style={{ color: "#34d399", fontWeight: "bold" }}>{intel.confidenceScore || 85}%</span></div>
+          <div><strong>Execution Mode:</strong> <code style={{ color: "#fbbf24" }}>{executionMode.toUpperCase()}</code></div>
+          <div><strong>Platform:</strong> {platformIntel.platformName || "Direct Client Portal"}</div>
         </div>
 
-        <h4>Milestone Schedule:</h4>
-        <ul style={{ margin: "0.5rem 0 1rem 1.25rem", padding: 0 }}>
-          {milestones.map((m, i) => (
-            <li key={i}><strong>{m.name || `Milestone ${i+1}`}:</strong> {pricing.currency || "USD"} ${m.amount ? m.amount.toLocaleString() : "1,250"}</li>
-          ))}
-        </ul>
+        {intel.reasoning && intel.reasoning.length > 0 && (
+          <div>
+            <strong>Classification Reasoning:</strong>
+            <ul style={{ margin: "0.25rem 0 0 1.25rem", padding: 0, color: "#c7d2fe", fontSize: "0.85rem" }}>
+              {intel.reasoning.map((r, idx) => (
+                <li key={idx}>{r}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* PROPOSAL PREVIEW & COMMERCIAL BREAKDOWN SECTION */}
+      <div className="review-section proposal-preview-section" style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: "8px", padding: "1rem", margin: "1rem 0" }}>
+        <h3 style={{ color: "#38bdf8", marginTop: 0 }}>📜 Generated Proposal Package ({category.toUpperCase()})</h3>
+        
+        {category !== "full_time_job" && (
+          <div className="pricing-breakdown" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "1rem" }}>
+            <div><strong>Quoted Price:</strong> {pricing.currency || "USD"} ${pricing.recommendedPrice ? pricing.recommendedPrice.toLocaleString() : "2,500"}</div>
+            <div><strong>Floor Price:</strong> {pricing.currency || "USD"} ${pricing.minimumAcceptableFloorPrice ? pricing.minimumAcceptableFloorPrice.toLocaleString() : "2,000"}</div>
+            <div><strong>Target Delivery:</strong> {subPkg.effortEstimation?.estimatedDeliveryDays || 5} Business Days</div>
+            <div><strong>Payment Terms:</strong> 50/50 Milestone Deposit</div>
+          </div>
+        )}
+
+        {category !== "full_time_job" && category !== "contract_role" && (
+          <>
+            <h4>Milestone Schedule:</h4>
+            <ul style={{ margin: "0.5rem 0 1rem 1.25rem", padding: 0 }}>
+              {milestones.map((m, i) => (
+                <li key={i}><strong>{m.name || `Milestone ${i+1}`}:</strong> {pricing.currency || "USD"} ${m.amount ? m.amount.toLocaleString() : "1,250"}</li>
+              ))}
+            </ul>
+          </>
+        )}
 
         <h4>Proposal Text Preview:</h4>
-        <pre style={{ background: "#020617", color: "#e2e8f0", padding: "0.75rem", borderRadius: "6px", maxHeight: "200px", overflowY: "auto", fontSize: "0.85rem", whiteSpace: "pre-wrap" }}>
+        <pre style={{ background: "#020617", color: "#e2e8f0", padding: "0.75rem", borderRadius: "6px", maxHeight: "220px", overflowY: "auto", fontSize: "0.85rem", whiteSpace: "pre-wrap" }}>
           {proposalText}
         </pre>
 
         <div className="proposal-copy-actions" style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}>
           <button type="button" className="btn btn-copy" onClick={() => handleCopy(proposalText, "proposal")} style={{ background: "#10b981", color: "#fff", border: "none", padding: "0.5rem 1rem", borderRadius: "4px", cursor: "pointer" }}>
-            {copiedType === "proposal" ? "✓ Proposal Copied!" : "📋 Copy Full Proposal"}
+            {copiedType === "proposal" ? "✓ Package Copied!" : category === "full_time_job" ? "📋 Copy Cover Letter & Application" : "📋 Copy Full Proposal"}
           </button>
           <button type="button" className="btn btn-copy-letter" onClick={() => handleCopy(coverLetterText, "cover")} style={{ background: "#6366f1", color: "#fff", border: "none", padding: "0.5rem 1rem", borderRadius: "4px", cursor: "pointer" }}>
-            {copiedType === "cover" ? "✓ Cover Letter Copied!" : "✉️ Copy Cover Letter"}
+            {copiedType === "cover" ? "✓ Note Copied!" : "✉️ Copy Short Note"}
           </button>
           <button type="button" className="btn btn-open-url" onClick={handleOpenUrl} style={{ background: "#0284c7", color: "#fff", border: "none", padding: "0.5rem 1rem", borderRadius: "4px", cursor: "pointer" }}>
             🌐 Open Application Form
@@ -138,7 +171,7 @@ export default function FounderReviewPanel({ candidate, onDecision }) {
       <div className="review-section intelligence">
         <h3>Revenue Brain Assessment</h3>
         <p><strong>Qualification:</strong> <span className={`badge ${candidate.qualification}`}>{candidate.qualification}</span></p>
-        <p><strong>Classification:</strong> {candidate.classification}</p>
+        <p><strong>Classification:</strong> {candidate.classification || category}</p>
         <p><strong>Primary Capability:</strong> <code>{candidate.primaryCapability || "None"}</code></p>
         <p><strong>Feasibility:</strong> <span className={`badge ${candidate.feasibility}`}>{candidate.feasibility}</span></p>
         <p><strong>Risk Level:</strong> <span className={`badge risk-${candidate.riskLevel || candidate.risk}`}>{candidate.riskLevel || candidate.risk}</span></p>

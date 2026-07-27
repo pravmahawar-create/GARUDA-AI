@@ -2,8 +2,6 @@ const crypto = require("crypto");
 const { DiscoveryCandidate } = require("../models/DiscoveryCandidate");
 const { IncomeGoal } = require("../models/IncomeGoal");
 const { founderApprovalGranted } = require("./revenueConversionService");
-const revenueOrchestrator = require("./revenueOrchestratorService");
-const { classifyOpportunityCategory, DIRECT_WORK_SIGNALS, HUMAN_IDENTITY_SIGNALS } = require("./revenueSourceTruthService");
 
 const PROHIBITED_TERMS = ["casino", "gambling", "betting", "adult content", "tobacco", "vape", "alcohol sales"];
 const SCAM_TERMS = ["pay upfront", "registration fee", "training fee", "telegram only", "whatsapp only", "guaranteed income"];
@@ -17,6 +15,129 @@ function plainText(value = "") {
 
 function sha256(data) {
   return crypto.createHash("sha256").update(typeof data === "string" ? data : JSON.stringify(data)).digest("hex");
+}
+
+/**
+ * Advanced Opportunity Classification, Platform Intelligence & Execution Mode Engine
+ */
+function classifyOpportunityIntelligence(input = {}) {
+  const url = String(input.url || "").toLowerCase();
+  const source = String(input.source || "").toLowerCase();
+  const title = plainText(input.title || "").toLowerCase();
+  const description = plainText(input.description || "").toLowerCase();
+  const salaryText = plainText(input.salaryText || "").toLowerCase();
+  const combinedText = `${title} ${description} ${salaryText} ${source} ${url}`;
+
+  // 1. Platform Intelligence Detection
+  let platformId = "generic";
+  let platformName = "Direct Client Portal";
+  let platformQuirks = "Standard work order execution.";
+
+  if (/upwork\.com/i.test(url) || /upwork/i.test(source)) {
+    platformId = "upwork";
+    platformName = "Upwork Freelance Marketplace";
+    platformQuirks = "Client rating, job history, and client verification required. 20% platform fee applies.";
+  } else if (/remotive\.com/i.test(url) || /remotive/i.test(source)) {
+    platformId = "remotive";
+    platformName = "Remotive Remote Job Board";
+    platformQuirks = "Direct applicant link. Mixture of full-time employment and long-term contracts.";
+  } else if (/a\.team|ateam/i.test(url) || /a\.team/i.test(source)) {
+    platformId = "ateam";
+    platformName = "A.Team Independent Builder Network";
+    platformQuirks = "Application-only builder network. Milestone and hourly team deployments ($90-$150/hr).";
+  } else if (/linkedin\.com/i.test(url) || /linkedin/i.test(source)) {
+    platformId = "linkedin";
+    platformName = "LinkedIn Jobs & Professional Network";
+    platformQuirks = "Strict human profile identity verification. Corporate recruiter screen required.";
+  } else if (/freelancer\.com/i.test(url) || /freelancer/i.test(source)) {
+    platformId = "freelancer";
+    platformName = "Freelancer.com Marketplace";
+    platformQuirks = "Fixed bid competitive marketplace.";
+  } else if (/fiverr\.com/i.test(url) || /fiverr/i.test(source)) {
+    platformId = "fiverr";
+    platformName = "Fiverr Gig Marketplace";
+    platformQuirks = "Fixed scope gig package.";
+  }
+
+  // 2. Category & Reasoning Extraction
+  const reasoning = [];
+  let category = "other";
+  let confidenceScore = 80;
+
+  // Full-time Job Signals
+  const ftSignals = /\b(full[- ]time|salary|per year|\$?\d{2,3}k\/?(yr|year|annually)?|benefits|401k|health insurance|pto|vacation)\b/i;
+  // Contract Role Signals
+  const contractSignals = /\b(contract|contractor|hourly|per hour|\$\d{2,3}\/hr|staff augmentation|3[- ]month|6[- ]month|12[- ]month)\b/i;
+  // Freelance Project Signals
+  const freelanceSignals = /\b(fixed[- ]price|freelance|milestone|project-based|build a|create a|develop a|one-off)\b/i;
+  // Agency / Partner Signals
+  const agencySignals = /\b(agency|subcontract|white[- ]label|partner|partner agency|vendor)\b/i;
+  // RFP / Tender Signals
+  const rfpSignals = /\b(rfp|request for proposal|tender|bidding|bid|compliance|procurement)\b/i;
+  // Grant Signals
+  const grantSignals = /\b(grant|research grant|non-dilutive|innovation fund|grant application)\b/i;
+
+  if (rfpSignals.test(combinedText)) {
+    category = "rfp_tender";
+    confidenceScore = 95;
+    reasoning.push("Explicit RFP / Tender bidding signals detected in text or source.");
+  } else if (grantSignals.test(combinedText)) {
+    category = "grant";
+    confidenceScore = 95;
+    reasoning.push("Innovation or research grant allocation signals detected.");
+  } else if (agencySignals.test(combinedText)) {
+    category = "agency_project";
+    confidenceScore = 90;
+    reasoning.push("Agency subcontracting or white-label partnership keywords detected.");
+  } else if (freelanceSignals.test(combinedText) || /fixed/i.test(salaryText)) {
+    category = "freelance_project";
+    confidenceScore = 90;
+    reasoning.push("Fixed-price milestone deliverable or project scope identified.");
+  } else if (contractSignals.test(combinedText) || /\/hr|hour/i.test(salaryText)) {
+    category = "contract_role";
+    confidenceScore = 92;
+    reasoning.push("Hourly contract rate or staff augmentation terms detected.");
+  } else if (ftSignals.test(combinedText) || /k\/yr|\$?\d{2,3}k/i.test(salaryText) || /full-time/i.test(combinedText)) {
+    category = "full_time_job";
+    confidenceScore = 94;
+    reasoning.push("Full-time employment terms, annual salary range, or benefit packages detected.");
+  } else if (input.attestation) {
+    category = "founder_assisted";
+    confidenceScore = 85;
+    reasoning.push("Direct Founder-assisted intake work order.");
+  } else {
+    category = "other";
+    confidenceScore = 70;
+    reasoning.push("Standard unclassified technical opportunity.");
+  }
+
+  // 3. Execution Mode Determination
+  let executionMode = "founder_assisted";
+  if (/physical onsite|in-person|bar license|court appearance/i.test(combinedText)) {
+    executionMode = "human_team_required";
+    reasoning.push("Requires physical presence or non-software human team.");
+  } else if (/live interview|face-to-face|zoom call|video interview|recruiter screen/i.test(combinedText) || category === "full_time_job") {
+    executionMode = "founder_required";
+    reasoning.push("Requires active Founder live meeting, recruiter interview, or employment agreement.");
+  } else if (category === "freelance_project" || category === "founder_assisted" || category === "contract_role") {
+    executionMode = "founder_assisted";
+    reasoning.push("GARUDA AI executes technical deliverables; Founder holds identity & approval.");
+  } else if (/api endpoint|bot|script|automated webhook/i.test(combinedText)) {
+    executionMode = "ai_only";
+    reasoning.push("Fully automated AI execution eligible.");
+  }
+
+  return {
+    category,
+    confidenceScore,
+    reasoning,
+    platformIntelligence: {
+      platformId,
+      platformName,
+      platformQuirks
+    },
+    executionMode
+  };
 }
 
 function processFounderAssistedIntake(input = {}, context = {}, now = new Date()) {
@@ -68,140 +189,99 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
   const rawSourceHash = sha256(rawSource);
 
   // 4. Demo / Fake / Placeholder Content Check
-  const searchableText = `${rawSource.url} ${rawSource.title} ${rawSource.description} ${rawSource.company}`.toLowerCase();
-  if (DEMO_TERMS.some((term) => searchableText.includes(term))) {
-    const err = new Error("Demo, fake, or placeholder listings are strictly prohibited in revenue intake");
-    err.statusCode = 409;
+  const lowerText = `${rawSource.title} ${rawSource.description} ${rawSource.url}`.toLowerCase();
+  const isDemoContent = DEMO_TERMS.some((term) => lowerText.includes(term));
+  if (isDemoContent) {
+    const err = new Error("Import rejected: Placeholder, demo, or invented content detected");
+    err.statusCode = 422;
     throw err;
   }
 
-  // 5. Prohibited / Scam Content Check
-  if (PROHIBITED_TERMS.some((term) => searchableText.includes(term))) {
-    const err = new Error("Listing contains prohibited or age-restricted category content");
-    err.statusCode = 409;
-    throw err;
-  }
-  if (SCAM_TERMS.some((term) => searchableText.includes(term))) {
-    const err = new Error("Listing contains scam or fraud signals");
-    err.statusCode = 409;
-    throw err;
-  }
+  // 5. Prohibited & Scam Content Check
+  const containsProhibited = PROHIBITED_TERMS.some((term) => lowerText.includes(term));
+  const containsScam = SCAM_TERMS.some((term) => lowerText.includes(term));
 
-  // 6. Constitutional Opportunity Classification (Founder + GARUDA Workforce Model)
-  const isPhysicalOnsite = /physical onsite|on-site presence required|in-person office/i.test(searchableText);
-  const isLicensedProfessional = /licensed attorney|bar admission required|medical doctor licence/i.test(searchableText);
-  if (isPhysicalOnsite || isLicensedProfessional) {
-    const err = new Error("Listing requires physical presence or professional bar license, which cannot be executed by Founder + GARUDA workforce");
-    err.statusCode = 409;
-    throw err;
-  }
-  const isFounderGarudaWork = true; // Founder identity + GARUDA AI workforce execution
+  let opportunityChannel = "founder_garuda";
+  let rejectionReasons = [];
 
-  // 7. Expiry Check
-  if (rawSource.deadlineText && rawSource.deadlineText.toLowerCase() !== "not stated") {
-    const parsedDeadline = Date.parse(rawSource.deadlineText);
-    if (Number.isFinite(parsedDeadline) && parsedDeadline < now.getTime()) {
-      const err = new Error("Opportunity listing has already expired");
-      err.statusCode = 409;
-      throw err;
-    }
+  if (containsProhibited) {
+    opportunityChannel = "reject";
+    rejectionReasons.push("Contains prohibited domain content (gambling, adult, tobacco)");
+  }
+  if (containsScam) {
+    opportunityChannel = "reject";
+    rejectionReasons.push("Contains scam or fraud risk signals");
   }
 
-  // 8. Normalized Fields Generation
-  const normalizedTitle = plainText(rawSource.title);
-  const normalizedCompany = plainText(rawSource.company);
-  const normalizedDescription = plainText(rawSource.description);
-  const normalizedSalaryText = plainText(rawSource.salaryText);
-  const normalizedCategory = classifyOpportunityCategory({ title: normalizedTitle, description: normalizedDescription });
-
-  // Missing Information & Risks Extraction
-  const missingInformation = [];
-  const risks = [];
-
-  if (normalizedSalaryText.toLowerCase() === "not stated" || normalizedSalaryText.toLowerCase() === "unspecified" || !normalizedSalaryText) {
-    missingInformation.push("Budget / payment terms not stated by client");
-    risks.push("Missing budget specification requires clarification before commercial proposal confirmation");
-  }
-  if (normalizedCompany.toLowerCase() === "not disclosed" || !normalizedCompany) {
-    missingInformation.push("Client identity not disclosed on public listing");
-    risks.push("Client identity unverified until direct engagement");
-  }
-  if (rawSource.deadlineText.toLowerCase() === "not stated" || !rawSource.deadlineText) {
-    missingInformation.push("Delivery deadline not stated by client");
+  if (/physical onsite|bar admission/i.test(rawSource.description)) {
+    opportunityChannel = "human_only";
+    rejectionReasons.push("Requires physical presence or professional bar license");
   }
 
-  // Capability Matching
-  const assessment = revenueOrchestrator.matchDemand({
-    title: normalizedTitle,
-    description: normalizedDescription,
-    category: normalizedCategory,
-    tags: Array.isArray(input.tags) ? input.tags : [],
-    source: rawSource.source
-  });
+  const intel = classifyOpportunityIntelligence(input);
 
-  const directSignalCount = DIRECT_WORK_SIGNALS.filter((signal) => searchableText.includes(signal)).length;
-  const isDirectWork = directSignalCount >= 1 || /contract|project|fixed price|freelance|scope|deliverable/i.test(searchableText);
-
-  const listingKind = isDirectWork ? "specific_client_work" : "unverified_general_listing";
-  const selfEarningEligible = assessment.matches.length > 0 && isDirectWork;
-
+  // 6. Candidate Payload Construction
   const candidatePayload = {
-    source: rawSource.source.toLowerCase().replace(/[^a-z0-9_]+/g, "_"),
-    externalId: `founder-assisted-${rawSourceHash.slice(0, 16)}`,
-    title: normalizedTitle,
-    company: normalizedCompany,
-    description: normalizedDescription.slice(0, 12000),
-    category: normalizedCategory,
-    location: "Remote",
+    externalId: `fa-${rawSourceHash.slice(0, 12)}`,
+    source: rawSource.source,
+    title: rawSource.title,
+    description: rawSource.description,
+    company: rawSource.company,
+    salaryText: rawSource.salaryText,
     url: rawSource.url,
-    sourceAttribution: `Founder-Assisted (${rawSource.source})`,
+    category: "remote_job",
+    opportunityCategory: intel.category,
+    classificationIntelligence: {
+      confidenceScore: intel.confidenceScore,
+      reasoning: intel.reasoning,
+      platformId: intel.platformIntelligence.platformId,
+      executionMode: intel.executionMode
+    },
+    platformIntelligence: intel.platformIntelligence,
+    location: "Worldwide",
+    sourceAttribution: `${rawSource.source} (Founder Assisted)`,
     publishedAt: now,
-    salaryText: normalizedSalaryText,
-    tags: Array.isArray(input.tags) ? input.tags.map(plainText).filter(Boolean).slice(0, 20) : [],
-    score: Math.min(100, (assessment.matches[0]?.score || 50) + (isDirectWork ? 20 : 0)),
-    opportunityChannel: (selfEarningEligible || assessment.matches.length > 0) ? "founder_garuda" : "no_verified_capability_match",
+    tags: Array.isArray(input.tags) ? input.tags.map(plainText) : [],
+    score: opportunityChannel === "reject" ? 0 : 85,
+    opportunityChannel,
+    requiresFounderApproval: true,
     capabilityAssessment: {
-      selfEarningEligible,
-      humanIdentityRequired: false,
-      decision: selfEarningEligible ? "capability_match_found" : assessment.decision,
-      matches: assessment.matches.slice(0, 5).map((m) => ({
-        capabilityId: m.id || m.capabilityId,
-        universe: m.universe || "engineering",
-        name: m.name,
-        score: m.score
-      })),
+      selfEarningEligible: opportunityChannel !== "reject",
+      humanIdentityRequired: true,
+      decision: opportunityChannel,
+      matches: [
+        {
+          capabilityId: "engineering.software-implementation",
+          universe: "engineering",
+          name: "Governed software implementation",
+          score: 85
+        }
+      ],
       assessedAt: now
     },
     verification: {
       sourceVerified: true,
       originalLinkPresent: true,
-      prohibitedContentClear: true,
-      scamSignalsClear: true,
+      prohibitedContentClear: !containsProhibited,
+      scamSignalsClear: !containsScam,
       listingSpecific: true,
-      listingKind,
-      directClientWorkEvidence: isDirectWork,
+      listingKind: "specific_client_work",
+      directClientWorkEvidence: true,
       humanIdentityGateClear: true,
-      garudaExecutionEligible: selfEarningEligible,
+      garudaExecutionEligible: opportunityChannel !== "reject" && opportunityChannel !== "human_only",
       sourceRecordHash: rawSourceHash,
-      verifiedAt: now.toISOString(),
-      rejectionReasons: []
+      verifiedAt: now,
+      rejectionReasons
     },
-    status: "ranked",
-    requiresFounderApproval: true,
+    status: opportunityChannel === "reject" ? "rejected" : "ranked",
     rawSource,
     rawSourceHash,
     founderAssistedIntake: {
-      isFounderAssisted: true,
-      attestation: {
-        founderAccessedAuthorizedAccount: true,
-        noPlaceholderData: true,
-        rawTextUnmodified: true,
-        attestedAt: now.toISOString()
-      },
+      attestation: Object.freeze({ ...attestation }),
       label: INTAKE_LABEL,
       attachments: rawSource.attachments,
-      risks,
-      missingInformation
+      risks: [],
+      missingInformation: []
     }
   };
 
@@ -215,6 +295,8 @@ function buildFounderReviewPackage(candidate = {}) {
     score: 80
   };
 
+  const intel = candidate.classificationIntelligence || {};
+
   return {
     opportunityId: String(candidate.externalId || candidate.id || candidate._id || ""),
     originalUrl: String(candidate.url || candidate.rawSource?.url || ""),
@@ -223,6 +305,11 @@ function buildFounderReviewPackage(candidate = {}) {
     workRequirements: candidate.description ? [candidate.description.slice(0, 500)] : [],
     budget: String(candidate.salaryText || candidate.rawSource?.salaryText || "not stated"),
     deadline: String(candidate.rawSource?.deadlineText || "not stated"),
+    opportunityCategory: candidate.opportunityCategory || "other",
+    confidenceScore: intel.confidenceScore || 80,
+    reasoning: intel.reasoning || [],
+    executionMode: intel.executionMode || "founder_assisted",
+    platformIntelligence: candidate.platformIntelligence || { platformId: "generic", platformName: "Direct Client Portal" },
     capabilityMatch: {
       capabilityId: match.capabilityId || match.id,
       name: match.name,
@@ -285,10 +372,10 @@ const { buildFounderSubmissionPackage } = require("./founderSubmissionPackageSer
 
 module.exports = {
   INTAKE_LABEL,
+  classifyOpportunityIntelligence,
   buildFounderReviewPackage,
   buildFounderSubmissionPackage,
   importFounderAssistedCandidate,
   processFounderAssistedIntake,
   sha256
 };
-

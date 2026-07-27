@@ -37,6 +37,9 @@ function recordDealSubmission(submissionInput = {}, context = {}) {
 
   const record = {
     dealId,
+    opportunityCategory: String(submissionInput.opportunityCategory || submissionInput.category || "other"),
+    executionMode: String(submissionInput.executionMode || "founder_assisted"),
+    platformIntelligence: submissionInput.platformIntelligence || { platformId: "generic", platformName: submissionInput.platform || "Direct" },
     client: plainText(submissionInput.client || submissionInput.company || "Client"),
     platform: plainText(submissionInput.platform || submissionInput.source || "Direct"),
     submissionDate: now.toISOString(),

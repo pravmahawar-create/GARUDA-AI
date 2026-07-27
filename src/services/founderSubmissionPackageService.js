@@ -262,9 +262,88 @@ function prepareDeliverables(candidate = {}, requirements = {}) {
 }
 
 /**
- * 6. Client Proposal Generator
+ * Specialized Category Generators & Guardrail Validation
  */
+function validatePackageGuardrails(category = "", proposalText = "") {
+  if (category === "full_time_job" && /fixed[- ]price|milestone 1|deposit amount/i.test(proposalText)) {
+    const err = new Error("Guardrail Violated: Employment applications cannot contain fixed-price commercial milestone clauses.");
+    err.statusCode = 422;
+    throw err;
+  }
+  if (category === "freelance_project" && (!/fixed price|milestone/i.test(proposalText) || !/quoted investment|recommended price/i.test(proposalText))) {
+    const err = new Error("Guardrail Violated: Freelance deliverable packages must include fixed pricing and milestone schedule.");
+    err.statusCode = 422;
+    throw err;
+  }
+}
+
+function generateEmploymentPackage(candidate = {}, requirements = {}) {
+  const company = candidate.company || "Engineering Team";
+  const title = requirements.title || candidate.title || "Software Engineering Role";
+  const stack = (requirements.technicalStack || []).join(", ");
+
+  return `
+# Application Cover Letter for ${company}
+**Position**: ${title}
+**Applicant**: Praveen Mahawar (Founder & Engineering Director)
+**Technical Workforce**: GARUDA AI Operating System
+
+---
+
+### Dear Hiring Team at ${company},
+
+I am writing to express my strong interest in the **${title}** role. As Founder & Engineering Director operating with GARUDA AI, I bring high-precision software delivery capabilities utilizing **${stack}**.
+
+### Why I Am a Strong Fit:
+- **Technical Excellence**: Proven experience building production-ready code with complete automated unit & integration testing (${stack}).
+- **Governed Implementation**: Zero placeholder logic, clean modular architecture, and full adherence to software engineering standards.
+- **Immediate Availability**: Ready to align with team workflows and contribute immediately to engineering milestones.
+
+I look forward to discussing how my experience and GARUDA's governed engineering capabilities can contribute to ${company}'s goals.
+
+Best regards,
+
+**Praveen Mahawar**  
+Founder & Engineering Director  
+GARUDA AI Operating System
+`.trim();
+}
+
+function generateContractPackage(candidate = {}, requirements = {}, pricing = {}) {
+  const company = candidate.company || "Client Team";
+  const title = requirements.title || candidate.title || "Contract Role";
+  const stack = (requirements.technicalStack || []).join(", ");
+  const hourlyRate = Math.round((pricing.recommendedPrice || 3000) / 30);
+
+  return `
+# Contract Work Statement & Profile
+**Position**: ${title}
+**Client**: ${company}
+**Hourly Rate**: USD $${hourlyRate} / hr
+**Weekly Availability**: 20 – 40 hours / week
+
+---
+
+### Executive Overview
+Praveen Mahawar and the GARUDA AI Operating System are available for contract assignment on **${title}**. We provide senior-level technical implementation in **${stack}** with guaranteed automated testing.
+
+### Key Terms:
+- **Hourly Contract Rate**: USD $${hourlyRate} / hr
+- **Core Capabilities**: ${stack}
+- **Handover Standard**: Automated test execution logs provided with all code commits.
+`.trim();
+}
+
 function generateProposalText(candidate = {}, requirements = {}, effort = {}, pricing = {}, deliverables = []) {
+  const category = candidate.opportunityCategory || "freelance_project";
+
+  if (category === "full_time_job") {
+    return generateEmploymentPackage(candidate, requirements);
+  }
+  if (category === "contract_role") {
+    return generateContractPackage(candidate, requirements, pricing);
+  }
+
   const company = candidate.company || candidate.rawSource?.company || "Client Team";
   const title = requirements.title || "Project Request";
   const stack = (requirements.technicalStack || []).join(", ");
@@ -315,6 +394,7 @@ ${pricing.milestones.map((m) => `  • ${m.milestone}: ${pricing.currency} ${m.a
 *GARUDA AI Operating System Governance: Governed execution, no human identity impersonation, 100% verified test execution.*
 `.trim();
 
+  validatePackageGuardrails(category, proposalText);
   return proposalText;
 }
 
@@ -337,6 +417,7 @@ PROPOSAL SUBMISSION PACKAGE (FOR FOUNDER COPY-PASTE)
 Target URL: ${candidate.url || candidate.rawSource?.url || "Client Portal"}
 Client: ${candidate.company || candidate.rawSource?.company || "Not Disclosed"}
 Opportunity Title: ${candidate.title || candidate.rawSource?.title || "Listing"}
+Category: ${candidate.opportunityCategory || "freelance_project"}
 
 COMMERCIAL PROPOSAL:
 -------------------

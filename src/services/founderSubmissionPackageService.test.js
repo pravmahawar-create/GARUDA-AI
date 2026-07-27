@@ -90,7 +90,18 @@ async function runFounderSubmissionPackageTests() {
   assert.strictEqual(submissionPackage.governance.founderApprovalRequiredBeforeSubmission, true);
   assert.strictEqual(submissionPackage.governance.manualSubmissionRequired, true);
 
-  // 9. Determinism Test
+  // 9. Category Package & Guardrail Test
+  const employmentCandidate = {
+    ...sampleCandidate,
+    opportunityCategory: "full_time_job",
+    title: "Senior Node.js Backend Engineer (Full-Time)"
+  };
+  const empPkg = buildFounderSubmissionPackage(employmentCandidate, { founderApproved: true }, { now });
+  assert.ok(empPkg.formattedSubmissionText.includes("Application Cover Letter"));
+  assert.strictEqual(empPkg.formattedSubmissionText.includes("Commercial Proposal for"), false);
+  assert.strictEqual(empPkg.formattedSubmissionText.includes("Milestone Breakdown"), false);
+
+  // 10. Determinism Test
   const submissionPackage2 = buildFounderSubmissionPackage(sampleCandidate, { founderApproved: true }, { now });
   assert.strictEqual(submissionPackage.packageHash, submissionPackage2.packageHash);
   assert.strictEqual(submissionPackage.truthHash, submissionPackage2.truthHash);

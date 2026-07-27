@@ -10,6 +10,24 @@ const OPPORTUNITY_CHANNELS = [
   "no_verified_capability_match"
 ];
 
+const OPPORTUNITY_CATEGORIES = [
+  "full_time_job",
+  "contract_role",
+  "freelance_project",
+  "agency_project",
+  "rfp_tender",
+  "grant",
+  "founder_assisted",
+  "other"
+];
+
+const EXECUTION_MODES = [
+  "ai_only",
+  "founder_assisted",
+  "founder_required",
+  "human_team_required"
+];
+
 const discoveryCandidateSchema = new mongoose.Schema(
   {
     missionId: { type: mongoose.Schema.Types.ObjectId, ref: "IncomeGoal", required: true, index: true },
@@ -19,6 +37,18 @@ const discoveryCandidateSchema = new mongoose.Schema(
     company: { type: String, default: "", trim: true },
     description: { type: String, default: "", trim: true },
     category: { type: String, default: "remote_job", trim: true },
+    opportunityCategory: {
+      type: String,
+      enum: OPPORTUNITY_CATEGORIES,
+      default: "other",
+      index: true
+    },
+    classificationIntelligence: {
+      confidenceScore: { type: Number, default: 80, min: 0, max: 100 },
+      reasoning: { type: [String], default: [] },
+      platformId: { type: String, default: "generic", trim: true },
+      executionMode: { type: String, enum: EXECUTION_MODES, default: "founder_assisted" }
+    },
     location: { type: String, default: "Worldwide", trim: true },
     url: { type: String, required: true, trim: true },
     sourceAttribution: { type: String, required: true, trim: true },
@@ -78,5 +108,7 @@ discoveryCandidateSchema.set("toJSON", { versionKey: false, transform: (_doc, re
 
 module.exports = {
   DiscoveryCandidate: mongoose.model("DiscoveryCandidate", discoveryCandidateSchema),
-  OPPORTUNITY_CHANNELS
+  OPPORTUNITY_CHANNELS,
+  OPPORTUNITY_CATEGORIES,
+  EXECUTION_MODES
 };
