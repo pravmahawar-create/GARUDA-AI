@@ -1,6 +1,9 @@
 const revenueService = require("../services/revenueService");
 const revenueConversionService = require("../services/revenueConversionService");
 const settlementService = require("../services/settlementService");
+const motherIntegration = require("../services/motherRevenueIntegrationService");
+const platformAuth = require("../services/motherPlatformAuthService");
+const dealTrackerService = require("../services/dealTrackerService");
 
 function sendError(res, error, fallback) {
   return res.status(error.statusCode || 500).json({
@@ -156,8 +159,6 @@ exports.updateSettlementStatus = async (req, res) => {
   }
 };
 
-const motherIntegration = require("../services/motherRevenueIntegrationService");
-
 exports.listCandidates = async (req, res) => {
   try {
     const candidates = motherIntegration.listMissionCandidates(req.query || {});
@@ -199,8 +200,6 @@ exports.getCandidateAuditTrail = async (req, res) => {
     return sendError(res, error, "Failed to get candidate decision audit trail");
   }
 };
-
-const platformAuth = require("../services/motherPlatformAuthService");
 
 exports.getConnectorRequirements = async (req, res) => {
   try {
@@ -256,5 +255,33 @@ exports.executeSmtpAction = async (req, res) => {
     return res.json({ success: true, data: result });
   } catch (error) {
     return sendError(res, error, "Failed to execute SMTP action");
+  }
+};
+
+/* DEAL TRACKER API CONTROLLER METHODS */
+exports.submitDeal = async (req, res) => {
+  try {
+    const result = dealTrackerService.recordDealSubmission(req.body || {}, { founderApproved: true });
+    return res.status(201).json({ success: true, data: result });
+  } catch (error) {
+    return sendError(res, error, "Failed to record deal submission");
+  }
+};
+
+exports.getDealMetrics = async (_req, res) => {
+  try {
+    const metrics = dealTrackerService.getRealityMetrics();
+    return res.json({ success: true, data: metrics });
+  } catch (error) {
+    return sendError(res, error, "Failed to fetch deal metrics");
+  }
+};
+
+exports.recordDealResponse = async (req, res) => {
+  try {
+    const result = dealTrackerService.recordClientResponse(req.body || {}, { founderApproved: true });
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return sendError(res, error, "Failed to record client response");
   }
 };

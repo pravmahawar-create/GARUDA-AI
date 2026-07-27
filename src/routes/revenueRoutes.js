@@ -32,4 +32,9 @@ router.get("/connectors/:id/requirements", revenueController.getConnectorRequire
 router.get("/connectors/:id/auth", revenueController.getConnectorAuthStatus);
 router.post("/connectors/:id/validate", revenueController.validateConnectorCredentials);
 
+// Empirical Deal Tracker Routes
+router.post("/deals/submit", revenueController.submitDeal);
+router.get("/deals/metrics", revenueController.getDealMetrics);
+router.post("/deals/response", revenueController.recordDealResponse);
+
 module.exports = router;

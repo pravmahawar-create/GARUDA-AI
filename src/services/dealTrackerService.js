@@ -1,5 +1,4 @@
 const crypto = require("crypto");
-const { recordClosingOutcome: recordClosingOutcomeSystem } = require("./revenueClosingSystemService");
 
 function sha256(data) {
   return crypto.createHash("sha256").update(typeof data === "string" ? data : JSON.stringify(data)).digest("hex");
@@ -143,6 +142,7 @@ function recordDealOutcome(outcomeInput = {}, context = {}) {
     dealLedger.set(dealId, deal);
   }
 
+  const { recordClosingOutcome: recordClosingOutcomeSystem } = require("./revenueClosingSystemService");
   recordClosingOutcomeSystem({
     closingCaseId: dealId,
     negotiationOutcome: outcome === "WON" ? "won_full_price" : "lost_price_objection",
