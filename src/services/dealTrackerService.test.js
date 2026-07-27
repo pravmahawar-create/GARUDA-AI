@@ -35,6 +35,10 @@ async function runDealTrackerTests() {
   assert.strictEqual(sub1.success, true);
   assert.strictEqual(sub1.currentStatus, "NO_REPLY");
   assert.ok(sub1.dealRecordHash);
+  assert.ok(sub1.clientWorkspace);
+  assert.ok(sub1.clientWorkspace.projectBrief.businessGoal);
+  assert.ok(Array.isArray(sub1.clientWorkspace.deliveryChecklist));
+  assert.ok(Array.isArray(sub1.clientWorkspace.timeline));
 
   const sub2 = recordDealSubmission({
     dealId: "deal-002",

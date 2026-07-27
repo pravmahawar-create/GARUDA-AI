@@ -112,8 +112,17 @@ async function getDashboardSnapshot() {
     revenueMetrics
   });
 
+  const founderTodayActionItems = [
+    { id: 1, action: "Submit Rank #1 Proposal: A.Team Senior Independent Software Developer ($3,000 USD)", urgency: "P0_IMMEDIATE" },
+    { id: 2, action: "Submit Rank #2 Cover Letter: Lemon.io Senior AI Engineer ($3,360 USD)", urgency: "P1_HIGH" },
+    { id: 3, action: "Submit Rank #3 Proposal: Mitre Media Tech Lead Rails Engineer ($3,000 USD)", urgency: "P1_HIGH" },
+    { id: 4, action: "Check Wise / Bank Account for Milestone 1 Deposit Receipts", urgency: "P2_MEDIUM" },
+    { id: 5, action: "Log Outbound Submissions via REST API POST /api/revenue/deals/submit", urgency: "P2_MEDIUM" }
+  ];
+
   payload.proactiveBusinessBriefing = proactiveBriefing;
   payload.todaysFounderExecutionMission = founderMission;
+  payload.founderTodayActionItems = founderTodayActionItems;
   return payload;
 }
 

@@ -31,9 +31,62 @@ const dealLedger = new Map();
 /**
  * PHASE 1: SUBMISSION TRACKER
  */
+/**
+ * LAUNCH READINESS SPRINT: CLIENT WORKSPACE & ONBOARDING ENGINE
+ */
+function createClientWorkspace(deal = {}) {
+  const title = deal.title || deal.opportunityTitle || "Software Implementation Project";
+  const client = deal.client || "Client Team";
+  const deliveryDays = deal.deliveryPromiseDays || 5;
+
+  const projectBrief = {
+    businessGoal: `Deliver high-precision governed software solution for "${title}".`,
+    scope: `Complete technical implementation, modular data schemas, REST endpoints, and automated test suite.`,
+    features: ["Core Feature & API Implementation", "Modular Data Schema Design", "100% Passing Automated Test Suite"],
+    deliverables: ["Production Codebase", "Automated QA Test Runner Suite", "Handover Documentation"],
+    deadlines: `${deliveryDays} Business Days from Milestone 1 Deposit`,
+    constraints: "Zero placeholder logic; 100% verified test runner logs.",
+    successCriteria: "Test runner exits with code 0 and all build checks pass cleanly."
+  };
+
+  const deliveryChecklist = [
+    { id: "check-1", item: "Requirements Confirmed", completed: true },
+    { id: "check-2", item: "Repository Access", completed: true },
+    { id: "check-3", item: "Environment Ready", completed: true },
+    { id: "check-4", item: "Development Started", completed: true },
+    { id: "check-5", item: "Testing Complete", completed: false },
+    { id: "check-6", item: "Client Review", completed: false },
+    { id: "check-7", item: "Final Delivery", completed: false },
+    { id: "check-8", item: "Payment Received", completed: Number(deal.actualPaymentCollected || 0) > 0 }
+  ];
+
+  const clientTimeline = [
+    { day: "Day 1", phase: "Requirements Confirmation & Repository Setup" },
+    { day: `Day 2-${Math.max(2, deliveryDays - 2)}`, phase: "Core Feature & API Implementation" },
+    { day: `Day ${Math.max(3, deliveryDays - 1)}`, phase: "Automated QA & Integration Testing" },
+    { day: `Day ${deliveryDays}`, phase: "Final Handover & Client Milestone Acceptance" }
+  ];
+
+  return {
+    workspaceId: `workspace-${deal.dealId || "001"}`,
+    clientName: client,
+    projectName: title,
+    status: deal.currentStatus || "IN_PROGRESS",
+    requirements: deal.proposalText || title,
+    projectBrief,
+    deliverables: projectBrief.deliverables,
+    timeline: clientTimeline,
+    deliveryChecklist,
+    paymentStatus: Number(deal.actualPaymentCollected || 0) > 0 ? "50% DEPOSIT PAID" : "PENDING DEPOSIT",
+    repositoryLinks: [`https://github.com/GARUDA-AI-Workspace/${deal.dealId || "repo"}`],
+    documents: ["Proposal_Package.md", "Technical_Blueprint.md", "Verification_Report.json"],
+    notes: deal.founderNotes || "Client workspace activated. Technical execution in progress."
+  };
+}
+
 function recordDealSubmission(submissionInput = {}, context = {}) {
-  const dealId = String(submissionInput.dealId || submissionInput.externalId || `deal-${Date.now()}`).trim();
-  const now = submissionInput.submissionDate ? new Date(submissionInput.submissionDate) : new Date();
+  const dealId = String(submissionInput.dealId || `deal-${crypto.randomBytes(4).toString("hex")}`).trim();
+  const now = new Date();
 
   const record = {
     dealId,
@@ -42,6 +95,7 @@ function recordDealSubmission(submissionInput = {}, context = {}) {
     platformIntelligence: submissionInput.platformIntelligence || { platformId: "generic", platformName: submissionInput.platform || "Direct" },
     client: plainText(submissionInput.client || submissionInput.company || "Client"),
     platform: plainText(submissionInput.platform || submissionInput.source || "Direct"),
+    title: plainText(submissionInput.title || submissionInput.opportunityTitle || "Software Engineering Project"),
     submissionDate: now.toISOString(),
     proposalVersion: String(submissionInput.proposalVersion || "v1.0.0"),
     pricing: {
@@ -62,12 +116,14 @@ function recordDealSubmission(submissionInput = {}, context = {}) {
     recordedAt: now.toISOString()
   };
 
+  record.clientWorkspace = createClientWorkspace(record);
   dealLedger.set(dealId, record);
 
   return {
     success: true,
     dealId,
     currentStatus: record.currentStatus,
+    clientWorkspace: record.clientWorkspace,
     dealRecordHash: sha256(record)
   };
 }
@@ -280,6 +336,7 @@ function clearDealTrackerStore() {
 }
 
 module.exports = {
+  createClientWorkspace,
   recordDealSubmission,
   recordClientResponse,
   recordDealOutcome,
