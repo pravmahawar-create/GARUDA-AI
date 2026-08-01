@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export default function PublicLanding({ onLoginClick }) {
+export default function PublicLanding({ onGetStarted, onFounderLogin }) {
   const capabilities = [
     { icon: "✦", title: "Fixed-Price AI Engineering", desc: "Custom AI agent development, workflow automation, and custom tool integration with predictable outcomes." },
     { icon: "◌", title: "Autonomous Operations", desc: "Background task discovery, automated intelligence processing, and governed execution monitoring." },
@@ -33,7 +33,7 @@ export default function PublicLanding({ onLoginClick }) {
           <a href="#pricing" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.95rem" }}>Pricing</a>
           <button
             type="button"
-            onClick={onLoginClick}
+            onClick={onGetStarted}
             style={{
               background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
               color: "#000000",
@@ -45,8 +45,9 @@ export default function PublicLanding({ onLoginClick }) {
               fontSize: "0.9rem"
             }}
           >
-            Founder Login
+            Get Started
           </button>
+          <button type="button" onClick={onFounderLogin} style={{ background: "none", border: "none", color: "#9ca3af", cursor: "pointer", fontSize: "0.9rem" }}>Founder Login</button>
         </nav>
       </header>
 
@@ -68,7 +69,7 @@ export default function PublicLanding({ onLoginClick }) {
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
             <button
-              onClick={onLoginClick}
+              onClick={onGetStarted}
               style={{
                 background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
                 color: "#000000",
@@ -80,7 +81,7 @@ export default function PublicLanding({ onLoginClick }) {
                 cursor: "pointer"
               }}
             >
-              Access Founder Portal
+              Get Started
             </button>
           </div>
         </motion.div>
@@ -117,7 +118,7 @@ export default function PublicLanding({ onLoginClick }) {
           Fixed-scope sprints backed by automated validation and proof-of-work output.
         </p>
         <button
-          onClick={onLoginClick}
+          onClick={onGetStarted}
           style={{
             background: "rgba(255, 255, 255, 0.05)",
             border: "1px solid rgba(255, 255, 255, 0.2)",
