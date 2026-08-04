@@ -29,6 +29,7 @@ app.get("/", (req, res) => {
 app.get("/health", healthResponse);
 app.get("/api/health", healthResponse);
 
+app.use("/api/mother", require("./routes/motherAgentRoutes"));
 app.use("/api/knowledge", require("./routes/knowledgeRoutes"));
 app.use("/api/rag", require("./routes/ragRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
