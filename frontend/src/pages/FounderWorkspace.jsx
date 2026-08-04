@@ -12,7 +12,7 @@ import EngineeringPlannerPanel from "../components/EngineeringPlannerPanel";
 import MotherBrainPanel from "../components/MotherBrainPanel";
 import LearningPanel from "../components/LearningPanel";
 import selfBuildEngine from "../selfbuild/SelfBuildEngine";
-import { checkHealth, askRag, getDashboardSnapshot } from "../services/api";
+import { checkHealth, askRag, getDashboardSnapshot, submitMission, getMissionStatus, getLatestMission, submitFounderApproval } from "../services/api";
 
 const REVENUE_APP_URL = import.meta.env.VITE_REVENUE_APP_URL || "https://garuda-emergent-revenue.vercel.app/dashboard";
 
@@ -21,16 +21,18 @@ export default function FounderWorkspace({ onLogout }) {
   const [healthMessage, setHealthMessage] = useState("Awaiting backend response...");
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([
-    { role: "garuda", text: "Founder access granted. GARUDA is prepared to orchestrate your next move." }
+    { role: "garuda", text: "Founder access granted. GARUDA Autonomous Agent Control Console online." }
   ]);
   const [loading, setLoading] = useState(false);
   const [hasEntered, setHasEntered] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
   const [selfBuildState, setSelfBuildState] = useState(null);
   const [activeNav, setActiveNav] = useState("Dashboard");
+  const [activeMission, setActiveMission] = useState(null);
 
   const commandCenterRef = useRef(null);
   const metricsGridRef = useRef(null);
+  const pollIntervalRef = useRef(null);
 
   const handleRequestProposal = () => {
     commandCenterRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -48,12 +50,31 @@ export default function FounderWorkspace({ onLogout }) {
     setActiveNav(label);
   };
 
+  const pollMissionStatus = (taskId) => {
+    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    pollIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await getMissionStatus(taskId);
+        if (res && res.success && res.record) {
+          setActiveMission(res.record);
+          if (res.record.status === "completed" || res.record.status === "failed" || res.record.status === "rejected") {
+            clearInterval(pollIntervalRef.current);
+            setLoading(false);
+          }
+        }
+      } catch {
+        clearInterval(pollIntervalRef.current);
+        setLoading(false);
+      }
+    }, 1000);
+  };
+
   useEffect(() => {
     let active = true;
 
     async function loadDashboard() {
       try {
-        const [healthData, snapshot] = await Promise.all([checkHealth(), getDashboardSnapshot()]);
+        const [healthData, snapshot, latestRes] = await Promise.all([checkHealth(), getDashboardSnapshot(), getLatestMission().catch(() => null)]);
         if (!active) return;
 
         const snapshotHealth = snapshot?.health?.status || healthData?.status || "healthy";
@@ -61,6 +82,10 @@ export default function FounderWorkspace({ onLogout }) {
         setHealth(snapshotHealth);
         setHealthMessage(snapshotMessage);
         setDashboardData(snapshot);
+
+        if (latestRes && latestRes.success && latestRes.record) {
+          setActiveMission(latestRes.record);
+        }
       } catch (error) {
         if (active) {
           setHealth("offline");
@@ -72,18 +97,9 @@ export default function FounderWorkspace({ onLogout }) {
 
     loadDashboard();
 
-    try {
-      setSelfBuildState(selfBuildEngine.analyze({
-        projectStructure: ["frontend", "src", "scripts", "docs", "data"],
-        modules: ["arrival", "dashboard", "knowledge", "rag", "mother"],
-        dependencies: ["react", "vite", "express", "mongoose", "framer-motion"]
-      }));
-    } catch {
-      setSelfBuildState(null);
-    }
-
     return () => {
       active = false;
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
     };
   }, []);
 
@@ -97,20 +113,27 @@ export default function FounderWorkspace({ onLogout }) {
 
     try {
       const data = await askRag(q);
-      const answer = data?.answer || data?.message || "GARUDA Command Console is active.";
-      setMessages((prev) => [
-        ...prev,
-        { role: "garuda", text: answer }
-      ]);
+      setMessages((prev) => [...prev, { role: "garuda", text: data?.answer || "GARUDA Agent received query." }]);
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "garuda", text: `Namaste Founder! Main aapki query "${q}" samajh gaya hoon. GARUDA Command Console active hai aur aapke next directive ke liye ready hai!` }
-      ]);
+      setMessages((prev) => [...prev, { role: "garuda", text: `GARUDA Console: Query submitted to agent runtime.` }]);
     } finally {
       setLoading(false);
     }
   }
+
+  const handleApproval = async (taskId, decision) => {
+    try {
+      const res = await submitFounderApproval(taskId, decision);
+      if (res && res.success && res.record) {
+        setActiveMission(res.record);
+        if (decision === "APPROVE") {
+          pollMissionStatus(taskId);
+        }
+      }
+    } catch {
+      // Handled silently
+    }
+  };
 
   const revenueValue = dashboardData?.metrics?.revenue?.current ?? 0;
   const revenueDetail = dashboardData?.metrics?.revenue?.trend || "Live value";
@@ -226,8 +249,10 @@ export default function FounderWorkspace({ onLogout }) {
                 messages={messages}
                 question={question}
                 loading={loading}
+                activeMission={activeMission}
                 onQuestionChange={setQuestion}
                 onSend={askGaruda}
+                onApproval={handleApproval}
               />
             </div>
           </div>
