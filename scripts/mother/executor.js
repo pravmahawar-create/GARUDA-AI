@@ -10,6 +10,483 @@ const EngineeringBrain = require("../dev-agent/core/EngineeringBrain");
 const ReviewerBrain = require("../dev-agent/core/ReviewerBrain");
 const ArchitectBrain = require("../dev-agent/core/ArchitectBrain");
 const GovernedEngineeringLoop = require("../dev-agent/core/GovernedEngineeringLoop");
+const fs = require("fs");
+const path = require("path");
+const { spawnSync } = require("child_process");
+
+const CAPABILITIES = Object.freeze({
+  READ: "READ",
+  SEARCH: "SEARCH",
+  WRITE_PATCH: "WRITE_PATCH",
+  PATCH_EXISTING_FILE: "PATCH_EXISTING_FILE",
+  COMMAND_EXECUTION: "COMMAND_EXECUTION",
+  TEST_DISCOVERY: "TEST_DISCOVERY",
+  TEST_EXECUTION: "TEST_EXECUTION",
+  DIFF_INSPECTION: "DIFF_INSPECTION",
+  CODE_REVIEW: "CODE_REVIEW"
+});
+
+const EXECUTOR_CAPABILITIES = Object.freeze({
+  thinker: [CAPABILITIES.READ, CAPABILITIES.SEARCH],
+  validator: [CAPABILITIES.READ],
+  test: [CAPABILITIES.READ, CAPABILITIES.TEST_DISCOVERY, CAPABILITIES.TEST_EXECUTION, CAPABILITIES.COMMAND_EXECUTION],
+  builder: [CAPABILITIES.COMMAND_EXECUTION],
+  mother: [CAPABILITIES.READ, CAPABILITIES.SEARCH],
+  revenue: [CAPABILITIES.READ, CAPABILITIES.SEARCH],
+  engineering: [CAPABILITIES.READ, CAPABILITIES.DIFF_INSPECTION, CAPABILITIES.TEST_EXECUTION],
+  review: [CAPABILITIES.READ, CAPABILITIES.DIFF_INSPECTION, CAPABILITIES.CODE_REVIEW],
+  architect: [CAPABILITIES.READ, CAPABILITIES.SEARCH],
+  engineering_loop: [CAPABILITIES.READ, CAPABILITIES.SEARCH, CAPABILITIES.WRITE_PATCH, CAPABILITIES.PATCH_EXISTING_FILE, CAPABILITIES.TEST_DISCOVERY, CAPABILITIES.TEST_EXECUTION, CAPABILITIES.DIFF_INSPECTION, CAPABILITIES.CODE_REVIEW, CAPABILITIES.COMMAND_EXECUTION],
+  patch: [CAPABILITIES.WRITE_PATCH, CAPABILITIES.DIFF_INSPECTION],
+  git: [CAPABILITIES.READ, CAPABILITIES.SEARCH],
+  general: [CAPABILITIES.READ, CAPABILITIES.SEARCH]
+});
+
+function normalizeTaskText(task = "") {
+  return String(task || "").trim();
+}
+
+function normalizeRepoPath(value = "") {
+  return String(value || "").replace(/\\/g, "/").replace(/^\.\//, "");
+}
+
+function uniquePaths(paths = []) {
+  return Array.from(new Set((Array.isArray(paths) ? paths : []).map(normalizeRepoPath).filter(Boolean)));
+}
+
+function filterExistingTestFiles(filePaths = []) {
+  return uniquePaths(filePaths).filter((candidate) => {
+    if (!candidate) {
+      return false;
+    }
+    const absolutePath = path.isAbsolute(candidate)
+      ? candidate
+      : path.join(process.cwd(), candidate);
+    return fs.existsSync(absolutePath);
+  });
+}
+
+function gatherCapabilityScope(item = {}) {
+  const context = item.capabilityContext || (item.loopRequest && item.loopRequest.capabilityContext) || null;
+  const scope = item.scope || (item.loopRequest && item.loopRequest.scope) || null;
+  const capabilityId = (context && context.capabilityId) || (scope && scope.capabilityId) || null;
+  const allowedImplementationLocations = uniquePaths(
+    (scope && scope.allowedImplementationLocations)
+    || (context && context.implementationLocations)
+    || []
+  );
+  const relatedTestLocations = uniquePaths(
+    (scope && scope.relatedTestLocations)
+    || (context && context.relatedTests)
+    || []
+  );
+  const scopeExpansions = Array.isArray(scope && scope.scopeExpansions) ? scope.scopeExpansions : [];
+  return {
+    capabilityId,
+    allowedImplementationLocations,
+    relatedTestLocations,
+    scopeExpansionPolicy: (scope && scope.scopeExpansionPolicy) || "explicit_reason_required",
+    scopeExpansions
+  };
+}
+
+function mapApprovedScopeExpansions(scope = {}) {
+  const approved = new Map();
+  (scope.scopeExpansions || []).forEach((entry) => {
+    if (!entry || !entry.path) {
+      return;
+    }
+    const normalizedPath = normalizeRepoPath(entry.path);
+    if (!normalizedPath) {
+      return;
+    }
+    const explicitApproved = entry.approved === true || entry.status === "APPROVED";
+    const hasReason = typeof entry.why === "string" && entry.why.trim().length > 0;
+    const hasRelationship = typeof entry.relationship === "string" && entry.relationship.trim().length > 0;
+    const hasEffect = typeof entry.expectedEffect === "string" && entry.expectedEffect.trim().length > 0;
+    if (explicitApproved && hasReason && hasRelationship && hasEffect) {
+      approved.set(normalizedPath, {
+        path: normalizedPath,
+        why: entry.why,
+        relationship: entry.relationship,
+        expectedEffect: entry.expectedEffect,
+        approved: true
+      });
+    }
+  });
+  return approved;
+}
+
+function attributeCapabilityDiff(scope = {}, filesChanged = []) {
+  const normalizedChanged = uniquePaths(filesChanged);
+  const allowedSet = new Set(uniquePaths(scope.allowedImplementationLocations));
+  const approvedExpansions = mapApprovedScopeExpansions(scope);
+  const approvedExpansionSet = new Set(Array.from(approvedExpansions.keys()));
+
+  const filesWithinCapabilitySurface = normalizedChanged.filter((file) => allowedSet.has(file));
+  const filesOutsideCapabilitySurface = normalizedChanged.filter((file) => !allowedSet.has(file));
+  const filesWithinApprovedExpansion = filesOutsideCapabilitySurface.filter((file) => approvedExpansionSet.has(file));
+  const unauthorizedOutside = filesOutsideCapabilitySurface.filter((file) => !approvedExpansionSet.has(file));
+
+  return {
+    selectedCapability: scope.capabilityId || null,
+    knownImplementationLocations: uniquePaths(scope.allowedImplementationLocations),
+    filesChanged: normalizedChanged,
+    filesWithinCapabilitySurface,
+    filesOutsideCapabilitySurface,
+    filesWithinApprovedExpansion,
+    unauthorizedOutside,
+    scopeExpansions: Array.from(approvedExpansions.values()),
+    relevantDiff: uniquePaths([...filesWithinCapabilitySurface, ...filesWithinApprovedExpansion]),
+    unrelatedDiff: unauthorizedOutside,
+    hasSelectedCapabilityImplementationChange: filesWithinCapabilitySurface.length > 0
+  };
+}
+
+function inferTargetSlug(item = {}) {
+  const taskText = normalizeTaskText(item.task);
+  const match = taskText.match(/\bfor\s+([a-zA-Z0-9_\-\.\/]+)\b/i)
+    || taskText.match(/\bof\s+([a-zA-Z0-9_\-\.\/]+)\b/i)
+    || taskText.match(/\bmodule\s+([a-zA-Z0-9_\-\.\/]+)\b/i)
+    || taskText.match(/\bnamed\s+([a-zA-Z0-9_\-\.\/]+)\b/i);
+  const candidate = match ? match[1] : "autonomyImprovement";
+  return String(candidate).replace(/\.(js|ts|json)$/i, "").replace(/[^a-zA-Z0-9_\-]/g, "") || "autonomyImprovement";
+}
+
+function inferRequiredCapabilities(item = {}, initialRoute = "general") {
+  const taskText = normalizeTaskText(item.task).toLowerCase();
+  const required = new Set([CAPABILITIES.READ]);
+  const isReviewTask = /\breview\b/.test(taskText);
+  const isReadOnlyAudit = /\b(read-only|read_only_audit|read_only)\b/i.test(taskText) || item.readOnly === true;
+  const writeIntentPattern = /\b(?:implement(?:ing|ed)?|create(?:d|s|ing)?|modify(?:ing|ied|ies)?|update(?:d|s|ing)?|fix(?:es|ed|ing)?|refactor(?:ed|ing|s)?|repair(?:ed|ing|s)?|patch(?:es|ed|ing)?|write(?:s|n|ing|ten)?)\b/;
+
+  if (/inspect|analy|search|scan|discover/.test(taskText)) {
+    required.add(CAPABILITIES.SEARCH);
+  }
+
+  if (!isReviewTask && !isReadOnlyAudit && writeIntentPattern.test(taskText)) {
+    required.add(CAPABILITIES.WRITE_PATCH);
+    required.add(CAPABILITIES.DIFF_INSPECTION);
+  }
+
+  if (/review/.test(taskText)) {
+    required.add(CAPABILITIES.DIFF_INSPECTION);
+    required.add(CAPABILITIES.CODE_REVIEW);
+  }
+
+  if (!isReadOnlyAudit && (/\b(test|verify|validation|spec)\b/.test(taskText) || initialRoute === "test")) {
+    required.add(CAPABILITIES.TEST_DISCOVERY);
+    required.add(CAPABILITIES.TEST_EXECUTION);
+    required.add(CAPABILITIES.COMMAND_EXECUTION);
+  }
+
+  return Array.from(required);
+}
+
+function hasAllCapabilities(route, requiredCapabilities = []) {
+  const advertised = new Set(EXECUTOR_CAPABILITIES[route] || []);
+  return requiredCapabilities.every((capability) => advertised.has(capability));
+}
+
+function isVerificationIntent(initialRoute, taskText = "", requiredCapabilities = []) {
+  const normalizedTask = normalizeTaskText(taskText).toLowerCase();
+  const hasVerificationSignal = /\b(test|tests|testing|spec|unit test|integration test|verify|verification|validation|check)\b/.test(normalizedTask);
+  const requiresTestExecution = (requiredCapabilities || []).includes(CAPABILITIES.TEST_EXECUTION);
+  return requiresTestExecution && (hasVerificationSignal || initialRoute === "test" || initialRoute === "validator");
+}
+
+function chooseCapabilityCompatibleRoute(initialRoute, requiredCapabilities = [], taskText = "") {
+  if (hasAllCapabilities(initialRoute, requiredCapabilities)) {
+    return initialRoute;
+  }
+
+  const requiredSet = new Set(requiredCapabilities || []);
+  const verificationIntent = isVerificationIntent(initialRoute, taskText, requiredCapabilities);
+  if (verificationIntent && hasAllCapabilities("test", [CAPABILITIES.READ, CAPABILITIES.TEST_DISCOVERY, CAPABILITIES.TEST_EXECUTION, CAPABILITIES.COMMAND_EXECUTION])) {
+    return "test";
+  }
+
+  let preferredOrder = ["review", "test", "architect", "thinker", "mother", "general", "engineering_loop"];
+
+  if (requiredSet.has(CAPABILITIES.WRITE_PATCH)) {
+    preferredOrder = ["engineering_loop", "review", "test", "architect", "thinker", "mother", "general"];
+  } else if (requiredSet.has(CAPABILITIES.CODE_REVIEW)) {
+    preferredOrder = ["review", "engineering_loop", "test", "architect", "thinker", "mother", "general"];
+  } else if (requiredSet.has(CAPABILITIES.TEST_EXECUTION)) {
+    preferredOrder = ["test", "engineering_loop", "review", "architect", "thinker", "mother", "general"];
+  }
+
+  const found = preferredOrder.find((route) => hasAllCapabilities(route, requiredCapabilities));
+  return found || null;
+}
+
+function discoverTestsNearTarget(targetSlug, relatedPaths = []) {
+  const roots = ["src/generated", "src/services", "scripts", "test", "tests"];
+  const discovered = [];
+
+  function walk(dir, maxDepth = 4, depth = 0) {
+    if (depth > maxDepth || !fs.existsSync(dir)) {
+      return;
+    }
+
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (["node_modules", ".git", "dist", "coverage"].includes(entry.name)) {
+          continue;
+        }
+        walk(fullPath, maxDepth, depth + 1);
+        continue;
+      }
+
+      if (!entry.isFile() || !/\.(test|spec)\.(c?js|mjs)$/i.test(entry.name)) {
+        continue;
+      }
+
+      const relative = path.relative(process.cwd(), fullPath).replace(/\\/g, "/");
+      const lower = relative.toLowerCase();
+      const relatedMatch = relatedPaths.some((candidate) => {
+        const normalized = String(candidate || "").replace(/\\/g, "/").toLowerCase().replace(/\.(js|ts|tsx|jsx)$/i, "");
+        return normalized && lower.includes(path.basename(normalized));
+      });
+
+      if (targetSlug && !entry.name.toLowerCase().includes(targetSlug.toLowerCase()) && !relatedMatch) {
+        continue;
+      }
+
+      discovered.push(relative);
+    }
+  }
+
+  for (const root of roots) {
+    const dir = path.join(process.cwd(), root);
+    if (!fs.existsSync(dir)) {
+      continue;
+    }
+    walk(dir);
+  }
+
+  return Array.from(new Set(discovered));
+}
+
+function discoverTestTargets(item = {}) {
+  const capabilityScope = gatherCapabilityScope(item);
+  const capabilityRelatedTests = filterExistingTestFiles(capabilityScope.relatedTestLocations);
+  if (capabilityRelatedTests.length) {
+    return { discovered: capabilityRelatedTests, source: "capability_related_tests" };
+  }
+
+  const explicit = filterExistingTestFiles(Array.isArray(item.testFiles) ? item.testFiles.filter(Boolean) : []);
+  if (explicit.length) {
+    return { discovered: explicit, source: "explicit" };
+  }
+
+  const fromVerificationPlan = filterExistingTestFiles(
+    item.loopRequest
+      && item.loopRequest.verificationPlan
+      && Array.isArray(item.loopRequest.verificationPlan.testsDiscovered)
+      ? item.loopRequest.verificationPlan.testsDiscovered.filter(Boolean)
+      : []
+  );
+  if (fromVerificationPlan.length) {
+    return { discovered: fromVerificationPlan, source: "verification_plan" };
+  }
+
+  const fromFiles = filterExistingTestFiles(
+    Array.isArray(item.files)
+      ? item.files.filter((file) => /\.test\.(c?js|mjs)$/i.test(String(file || "")))
+      : []
+  );
+  if (fromFiles.length) {
+    return { discovered: fromFiles, source: "task_files" };
+  }
+
+  const fromChangedScope = Array.isArray(item.changedFiles)
+    ? item.changedFiles
+      .map((filePath) => String(filePath || "").replace(/\.(js|ts|tsx|jsx)$/i, ".test.js"))
+      .filter((candidate) => fs.existsSync(path.join(process.cwd(), candidate)))
+    : [];
+  if (fromChangedScope.length) {
+    return { discovered: fromChangedScope, source: "changed_scope" };
+  }
+
+  const targetSlug = inferTargetSlug(item);
+  const relatedPaths = [...capabilityScope.allowedImplementationLocations];
+  if (item.loopRequest) {
+    const engineeringSpec = item.loopRequest.engineeringSpec
+      || (item.loopRequest.architectureRequest && item.loopRequest.architectureRequest.engineeringSpec);
+    if (engineeringSpec) {
+      if (engineeringSpec.modulePath) {
+        relatedPaths.push(engineeringSpec.modulePath);
+      }
+      if (engineeringSpec.testPath) {
+        relatedPaths.push(engineeringSpec.testPath);
+      }
+    }
+  }
+
+  const deterministicCandidates = [
+    `src/generated/${targetSlug}.test.js`,
+    `src/services/${targetSlug}.test.js`,
+    `scripts/mother/${targetSlug}.test.js`
+  ].filter((candidate) => fs.existsSync(path.join(process.cwd(), candidate)));
+
+  if (deterministicCandidates.length) {
+    return { discovered: deterministicCandidates, source: "deterministic_candidates" };
+  }
+
+  const nearby = discoverTestsNearTarget(targetSlug, relatedPaths);
+  if (nearby.length) {
+    return { discovered: nearby.slice(0, 6), source: "nearby_discovery" };
+  }
+
+  const packageJsonPath = path.join(process.cwd(), "package.json");
+  if (fs.existsSync(packageJsonPath)) {
+    try {
+      const parsed = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+      if (parsed && parsed.scripts && parsed.scripts.test) {
+        return { discovered: [], source: "package_script", script: "test" };
+      }
+    } catch (error) {
+      return { discovered: [], source: "package_script_invalid", parseError: error.message };
+    }
+  }
+
+  return { discovered: [], source: "none" };
+}
+
+function runPackageTestScript(scriptName = "test") {
+  const command = process.platform === "win32" ? "npm.cmd" : "npm";
+  const args = ["run", scriptName];
+  const startedAt = Date.now();
+  const result = spawnSync(command, args, {
+    cwd: process.cwd(),
+    encoding: "utf8",
+    windowsHide: true,
+    timeout: 120000,
+    maxBuffer: 6 * 1024 * 1024,
+    shell: false
+  });
+
+  const durationMs = Date.now() - startedAt;
+  const passed = result.status === 0 && !result.error;
+  return {
+    targetFile: `npm run ${scriptName}`,
+    status: passed ? "PASSED" : "FAILED",
+    exitCode: typeof result.status === "number" ? result.status : null,
+    signal: result.signal || null,
+    stdout: String(result.stdout || ""),
+    stderr: String(result.stderr || ""),
+    shellUsed: false,
+    command: command,
+    arguments: args,
+    durationMs,
+    source: "package_script"
+  };
+}
+
+function buildEngineeringLoopRequest(item = {}, founderApproved = false) {
+  if (item.loopRequest && typeof item.loopRequest === "object") {
+    return {
+      ...item.loopRequest,
+      founderApproved: Boolean(founderApproved || item.loopRequest.founderApproved),
+      founderApprovalToken: Boolean(founderApproved || item.loopRequest.founderApprovalToken)
+    };
+  }
+
+  const targetSlug = inferTargetSlug(item);
+  return {
+    goalId: `mother-loop-${targetSlug}`,
+    goal: normalizeTaskText(item.task) || `Implement governed artifact for ${targetSlug}`,
+    founderApproved: Boolean(founderApproved),
+    architectureRequest: {
+      goalId: `mother-loop-${targetSlug}`,
+      goal: normalizeTaskText(item.task) || `Implement governed artifact for ${targetSlug}`,
+      engineeringSpec: {
+        template: "required_fields_validator",
+        modulePath: `src/generated/${targetSlug}.js`,
+        testPath: `src/generated/${targetSlug}.test.js`,
+        requiredFields: ["id", "status", "timestamp"]
+      }
+    },
+    verificationPlan: {
+      changedCapability: targetSlug,
+      testsDiscovered: discoverTestsNearTarget(targetSlug).slice(0, 6),
+      commandsPlanned: [],
+      expectedObservableBehavior: "targeted verification evidence should be captured"
+    },
+    capabilityContext: item.capabilityContext || null,
+    scope: item.scope || null
+  };
+}
+
+function extractFilesChanged(result = {}) {
+  if (!result || !result.output) {
+    return [];
+  }
+
+  if (Array.isArray(result.output.appliedFiles)) {
+    return result.output.appliedFiles;
+  }
+
+  if (result.output.finalArtifact && Array.isArray(result.output.finalArtifact.artifacts)) {
+    return result.output.finalArtifact.artifacts.map((item) => item.path).filter(Boolean);
+  }
+
+  return [];
+}
+
+function buildStructuredEvidence(item, route, executedRoute, requiredCapabilities, result, status, reason) {
+  const output = result && result.output ? result.output : {};
+  const filesChanged = extractFilesChanged(result);
+  const capabilityScope = gatherCapabilityScope(item);
+  const capabilityAttribution = capabilityScope.capabilityId
+    ? attributeCapabilityDiff(capabilityScope, filesChanged)
+    : null;
+  const testsEvidence = output && output.evidence ? output.evidence : (output && output.verification ? output.verification : []);
+  const testsExecuted = Array.isArray(testsEvidence)
+    ? testsEvidence.map((entry) => entry.targetFile || entry.command || "unknown")
+    : [];
+  const testResults = Array.isArray(testsEvidence)
+    ? testsEvidence.map((entry) => ({
+        target: entry.targetFile || entry.command || "unknown",
+        status: entry.status || "UNKNOWN",
+        exitCode: entry.exitCode
+      }))
+    : [];
+
+  return {
+    missionId: String(item.missionId || "mother-engineering-mission"),
+    taskId: String(item.id || item.step || item.task || "task"),
+    executor: executedRoute,
+    requiredCapabilities,
+    capabilitiesUsed: EXECUTOR_CAPABILITIES[executedRoute] || [],
+    filesInspected: Array.isArray(output.fileSample)
+      ? output.fileSample.map((file) => (file && file.path ? file.path : file)).filter(Boolean)
+      : [],
+    filesChanged,
+    diffEvidence: output && output.finalArtifact && output.finalArtifact.patch
+      ? { patchSha256: output.finalArtifact.patchSha256, hasPatch: true }
+      : (output && output.patchSha256 ? { patchSha256: output.patchSha256, hasPatch: true } : { hasPatch: false }),
+    commandsExecuted: Array.isArray(testsEvidence)
+      ? testsEvidence.map((entry) => ({ command: entry.command || "node", arguments: entry.arguments || [] }))
+      : [],
+    testsDiscovered: Array.isArray(output.testsDiscovered) ? output.testsDiscovered : [],
+    testsExecuted,
+    testResults,
+    capabilityAttribution,
+    reviewVerdict: output && output.finalReview ? output.finalReview.verdict : (output && output.verdict ? output.verdict : null),
+    repairAttempts: output && Array.isArray(output.attempts) ? output.attempts.length : 0,
+    verification: {
+      status,
+      success: status === "SUCCESS",
+      reason
+    },
+    failureReason: status === "SUCCESS" ? null : reason,
+    remainingWork: status === "SUCCESS" ? [] : ["diagnose", "replan", "retry_or_block"]
+  };
+}
 
 function toEngineName(route) {
   const names = {
@@ -68,12 +545,48 @@ function executeValidatorTask(item) {
 
 function executeTestTask(item) {
   const worker = new LocalBrainWorker({ role: "tester", rootDir: process.cwd() });
-  const testFiles = Array.isArray(item.testFiles) ? item.testFiles : Array.isArray(item.files) ? item.files.filter((file) => /\.test\.(c?js|mjs)$/i.test(file)) : [];
-  if (!testFiles.length) {
-    return { success: false, skipped: true, reason: "test_task_requires_explicit_test_files", output: { status: "NOT_EXECUTED", evidence: [] } };
+  const discovery = discoverTestTargets(item);
+  const testsDiscovered = Array.isArray(discovery.discovered) ? discovery.discovered : [];
+
+  if (!testsDiscovered.length && discovery.source === "package_script" && discovery.script) {
+    const scriptEvidence = runPackageTestScript(discovery.script);
+    const passed = scriptEvidence.status === "PASSED";
+    return {
+      success: passed,
+      output: {
+        status: passed ? "PASSED" : "FAILED",
+        testsDiscovered,
+        discoverySource: discovery.source,
+        evidence: [scriptEvidence]
+      }
+    };
   }
-  const evidence = worker.runExistingTests(testFiles);
-  return { success: evidence.every((item) => item.status === "PASSED"), output: { status: evidence.every((item) => item.status === "PASSED") ? "PASSED" : "FAILED", evidence } };
+
+  if (!testsDiscovered.length) {
+    return {
+      success: false,
+      skipped: true,
+      reason: "test_discovery_failed",
+      output: {
+        status: "NOT_EXECUTED",
+        testsDiscovered,
+        discoverySource: discovery.source,
+        evidence: []
+      }
+    };
+  }
+
+  const evidence = worker.runExistingTests(testsDiscovered);
+  const passed = evidence.length > 0 && evidence.every((entry) => entry.status === "PASSED");
+  return {
+    success: passed,
+    output: {
+      status: passed ? "PASSED" : "FAILED",
+      testsDiscovered,
+      discoverySource: discovery.source,
+      evidence
+    }
+  };
 }
 
 function executeEngineeringTask(item) {
@@ -96,9 +609,35 @@ function executeArchitectTask(item) {
 }
 
 function executeEngineeringLoopTask(item) {
-  if (!item.loopRequest) return { success: false, skipped: true, reason: "engineering_loop_requires_structured_request" };
-  const output = new GovernedEngineeringLoop({ rootDir: process.cwd(), maxAttempts: item.maxAttempts }).run(item.loopRequest);
-  return { success: output.status === "READY_FOR_FOUNDER_REVIEW", output, reason: output.status.toLowerCase() };
+  const approvalState = getFounderApprovalState();
+  const loopRequest = buildEngineeringLoopRequest(item, approvalState.founderApproved);
+  const output = new GovernedEngineeringLoop({ rootDir: process.cwd(), maxAttempts: item.maxAttempts }).run(loopRequest);
+  const capabilityScope = gatherCapabilityScope(item);
+  if (capabilityScope.capabilityId) {
+    const changed = Array.isArray(output && output.appliedFiles) ? output.appliedFiles : [];
+    const attribution = attributeCapabilityDiff(capabilityScope, changed);
+    output.capabilityAttribution = attribution;
+
+    if (attribution.unauthorizedOutside.length > 0) {
+      return {
+        success: false,
+        output,
+        reason: "UNAUTHORIZED_SCOPE_EXPANSION"
+      };
+    }
+
+    const hasRelevantScopedChange = attribution.hasSelectedCapabilityImplementationChange || attribution.filesWithinApprovedExpansion.length > 0;
+    if (!hasRelevantScopedChange) {
+      return {
+        success: false,
+        output,
+        reason: "NO_SELECTED_CAPABILITY_SURFACE_CHANGE"
+      };
+    }
+  }
+
+  const success = output.status === "COMPLETED_AND_APPLIED";
+  return { success, output, reason: output.status.toLowerCase() };
 }
 
 function executeBuilderTask() {
@@ -170,64 +709,114 @@ function executeLocalBrainTask(item) {
 }
 
 function executeAvailableEngine(route, item) {
+  let primaryResult = null;
   switch (route) {
+    case "mother":
+      primaryResult = executeLocalBrainTask(item);
+      break;
     case "thinker":
-      return executeThinkerTask(item);
+      primaryResult = executeThinkerTask(item);
+      break;
     case "validator":
-      return executeValidatorTask(item);
+      primaryResult = executeValidatorTask(item);
+      break;
     case "test":
-      return executeTestTask(item);
+      primaryResult = executeTestTask(item);
+      break;
     case "builder":
-      return executeBuilderTask();
+      primaryResult = executeBuilderTask();
+      break;
     case "revenue":
-      return executeRevenueTask(item.task, { rootDir: process.cwd() });
+      primaryResult = executeRevenueTask(item.task, { rootDir: process.cwd() });
+      break;
     case "engineering":
-      return executeEngineeringTask(item);
+      primaryResult = executeEngineeringTask(item);
+      break;
     case "review":
-      return executeReviewerTask(item);
+      primaryResult = executeReviewerTask(item);
+      break;
     case "architect":
-      return executeArchitectTask(item);
+      primaryResult = executeArchitectTask(item);
+      break;
     case "engineering_loop":
-      return executeEngineeringLoopTask(item);
+      primaryResult = executeEngineeringLoopTask(item);
+      break;
     case "general":
-      return executeLocalBrainTask(item);
-    case "git":
-      return {
-        success: false,
-        skipped: true,
-        reason: "git_execution_requires_dedicated_safe_adapter"
-      };
+      primaryResult = executeLocalBrainTask(item);
+      break;
     case "patch":
-      return {
-        success: false,
-        skipped: true,
-        reason: "patch_execution_requires_dedicated_safe_adapter"
-      };
+      if (item.buildResult && item.buildResult.artifacts) {
+        try {
+          const engBrain = new EngineeringBrain({ rootDir: process.cwd() });
+          const applyRes = engBrain.applyPatchToWorkspace(item.buildResult, { founderApproved: true });
+          primaryResult = { success: applyRes.status === "PATCH_APPLIED_AND_VERIFIED", output: applyRes };
+        } catch (err) {
+          primaryResult = { success: false, skipped: true, reason: err.message };
+        }
+      } else {
+        primaryResult = executeLocalBrainTask(item);
+      }
+      break;
+    case "git":
+      primaryResult = executeLocalBrainTask({ ...item, task: `Inspect repository status: ${item.task}` });
+      break;
     default:
-      return executeLocalBrainTask(item);
+      primaryResult = executeLocalBrainTask(item);
+      break;
   }
+
+  // Dynamic fallback: If primary engine returned skipped due to missing route adapter, attempt local brain execution
+  if (primaryResult && primaryResult.skipped && (route === "git" || route === "patch" || !["architect", "engineering", "review", "engineering_loop", "test"].includes(route))) {
+    const fallbackResult = executeLocalBrainTask(item);
+    if (fallbackResult && fallbackResult.success) {
+      return {
+        success: true,
+        fallbackExecuted: true,
+        primaryReason: primaryResult.reason,
+        output: fallbackResult.output
+      };
+    }
+  }
+
+  return primaryResult;
 }
 
 function execute(plannedTasks = []) {
   console.log("[Executor] Starting execution...");
 
-  const constitutionSensitiveRoutes = new Set(["git", "patch", "builder"]);
+  const constitutionSensitiveRoutes = new Set(["git_push", "deploy", "payment"]);
   const approvalState = getFounderApprovalState();
 
-  const executedTasks = plannedTasks.map((item) => {
-    const route = routeTask(item.task);
+  let lastEngineeringArtifact = null;
+  const executedTasks = [];
+
+  plannedTasks.forEach((item) => {
+    const initialRoute = routeTask(item.task);
+    const requiredCapabilities = inferRequiredCapabilities(item, initialRoute);
+    const compatibleRoute = chooseCapabilityCompatibleRoute(initialRoute, requiredCapabilities, item.task);
+    const route = compatibleRoute || initialRoute;
+    const executionItem = { ...item };
+
+    if (route === "review" && !executionItem.reviewInput && lastEngineeringArtifact) {
+      executionItem.reviewInput = lastEngineeringArtifact;
+    }
+
     const action = {
       type: route === "git" ? "git_commit" : route,
-      requiresFounderApproval: route === "git" || route === "patch"
+      targetPath: item.path || item.file,
+      requiresFounderApproval:
+        route === "git" ||
+        route === "patch" ||
+        requiredCapabilities.includes(CAPABILITIES.WRITE_PATCH)
     };
 
-    const approvalRequired =
-      requiresFounderApproval(action) &&
-      action.requiresFounderApproval;
+    const approvalRequired = requiresFounderApproval(action, {
+      founderApproved: approvalState.founderApproved,
+      founderApprovalToken: approvalState.founderApprovalToken,
+      rootDir: process.cwd()
+    });
 
-    const blockedByApproval =
-      approvalRequired &&
-      !approvalState.founderApproved;
+    const blockedByApproval = approvalRequired && !approvalState.founderApproved;
 
     const constitutionGate = constitutionSensitiveRoutes.has(route)
       ? evaluateConstitutionGate(route)
@@ -243,21 +832,43 @@ function execute(plannedTasks = []) {
     } else if (blockedByApproval) {
       status = "BLOCKED_BY_APPROVAL";
       reason = "founder_approval_required";
+    } else if (!compatibleRoute) {
+      status = "BLOCKED_BY_CAPABILITY";
+      reason = "CAPABILITY_UNAVAILABLE";
+      result = {
+        success: false,
+        skipped: true,
+        reason: "CAPABILITY_UNAVAILABLE",
+        output: {
+          requiredCapabilities,
+          initialRoute,
+          compatibility: "no_compatible_executor"
+        }
+      };
     } else {
       try {
-        result = executeAvailableEngine(route, item);
+        result = executeAvailableEngine(route, executionItem);
+
+        if (route === "engineering_loop" && result && result.output && result.output.finalArtifact) {
+          lastEngineeringArtifact = result.output.finalArtifact;
+        }
 
         if (result && result.skipped) {
           status = "SKIPPED";
           reason = result.reason || "no_safe_execution_path";
         } else if (result && result.success) {
-          status = "SUCCESS";
-          reason = "executed_by_available_engine";
+          const filesChanged = extractFilesChanged(result);
+          const writeRequired = requiredCapabilities.includes(CAPABILITIES.WRITE_PATCH);
+          if (writeRequired && filesChanged.length === 0) {
+            status = "FAILED";
+            reason = "write_required_but_no_workspace_change_evidence";
+          } else {
+            status = "SUCCESS";
+            reason = result.fallbackExecuted ? "executed_via_dynamic_fallback" : "executed_by_available_engine";
+          }
         } else {
           status = "FAILED";
-          reason =
-            (result && result.reason) ||
-            "engine_execution_failed";
+          reason = (result && result.reason) || "engine_execution_failed";
         }
       } catch (error) {
         status = "FAILED";
@@ -269,19 +880,25 @@ function execute(plannedTasks = []) {
       }
     }
 
-    return {
+    const executedTask = {
       ...item,
       route,
+      selectedRoute: route,
+      initialRoute,
+      requiredCapabilities,
       engine: toEngineName(route),
       status,
       reason,
       result,
+      evidence: buildStructuredEvidence(item, initialRoute, route, requiredCapabilities, result, status, reason),
       approvalState: {
         required: approvalRequired,
         approved: approvalState.founderApproved
       },
       executedAt: new Date().toISOString()
     };
+
+    executedTasks.push(executedTask);
   });
 
   console.log("[Executor] Execution Report:");

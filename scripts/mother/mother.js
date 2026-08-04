@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const { scan } = require("./scanner");
 const { think } = require("./thinker");
 const { decide } = require("./decision");
@@ -28,6 +30,15 @@ const { WorkforceRouter } = require("../dev-agent/core/WorkforceRouter");
 const { PromptBuilder } = require("../dev-agent/core/PromptBuilder");
 const { ExternalWorkerAdapter, SUPPORTED_WORKERS, EXECUTION_MODE } = require("../dev-agent/core/ExternalWorkerAdapter");
 const LocalBrainWorker = require("../dev-agent/workers/LocalBrainWorker");
+const { RevenueBridgeClient } = require("../../src/services/revenueBridgeClient");
+const {
+  SELF_DEVELOPMENT_TARGET_SOURCE,
+  groundSelfDevelopmentGoal,
+  buildSelfDevelopmentPlannedTasks,
+  compareCapabilitySnapshots,
+  getCurrentBodyState,
+  resolvePreviousMissionEvidence
+} = require("./bodyAwareness");
 
 function buildReadOnlyAnalysis(rootDir) {
   const architect = new LocalBrainWorker({ role: "architect", rootDir });
@@ -156,13 +167,17 @@ function buildTaskProfile(goalInput, goal, tasks, scanResult) {
     files,
     fileCount: files.length,
     complexity,
-    requiresWrite: hasWriteIntent(goalInput, tasks),
+    requiresWrite: hasWriteIntent(goalInput, tasks, goal),
     budget: { mode: "policy_guarded" },
     scanSummary: scanResult && scanResult.summary ? scanResult.summary : {}
   };
 }
 
-function hasWriteIntent(goalInput, plannedTasks = []) {
+function hasWriteIntent(goalInput, plannedTasks = [], goal = null) {
+  if (goal && (goal.intent === "read_only_audit" || goal.actionType === "analysis")) {
+    return false;
+  }
+
   const pattern = /implement|write|patch|modify|refactor|create|build|deploy|commit|push/i;
   if (pattern.test(String(goalInput || ""))) {
     return true;
@@ -174,8 +189,179 @@ function hasWriteIntent(goalInput, plannedTasks = []) {
   });
 }
 
+function shouldEngageRevenueBridge(goalInput = "", goal = {}) {
+  const text = `${goalInput} ${goal && goal.domain ? goal.domain : ""} ${goal && goal.intent ? goal.intent : ""}`.toLowerCase();
+  return /(revenue|income|opportun|settlement|client|proposal|acquisition|affiliate|mission)/.test(text);
+}
+
+function buildRevenueBridgeInput(goalInput = "", goal = {}, tasks = []) {
+  const title = String(goalInput || "").trim().slice(0, 240) || "Revenue evaluation request";
+  const taskTags = Array.isArray(tasks)
+    ? tasks
+      .map((task) => String(typeof task === "string" ? task : (task && task.task ? task.task : "")))
+      .join(" ")
+      .toLowerCase()
+      .split(/[^a-z0-9_+#.]+/)
+      .filter((value) => value && value.length >= 4)
+      .slice(0, 12)
+    : [];
+
+  return {
+    missionId: goal && goal.intent ? String(goal.intent) : "mother-revenue-mission",
+    title,
+    description: String(goal && goal.rawGoal ? goal.rawGoal : goalInput || "").slice(0, 2000),
+    location: "Remote",
+    tags: taskTags,
+    potentialValue: 10000
+  };
+}
+
+function deriveRevenueBridgeNextAction(revenueBridge = {}) {
+  if (!revenueBridge || revenueBridge.engaged !== true) {
+    return null;
+  }
+
+  const evaluation = revenueBridge.evaluation;
+  if (evaluation && evaluation.ok && evaluation.raw && evaluation.raw.suggestedNextAction) {
+    return `revenue_${String(evaluation.raw.suggestedNextAction).trim().toLowerCase()}`;
+  }
+
+  if (evaluation && !evaluation.ok && evaluation.error && evaluation.error.code) {
+    return `revenue_bridge_${String(evaluation.error.code).trim().toLowerCase()}`;
+  }
+
+  return null;
+}
+
+function summarizeEngineeringEvidence(executedTasks = []) {
+  const evidenceItems = Array.isArray(executedTasks)
+    ? executedTasks.map((task) => task && task.evidence).filter(Boolean)
+    : [];
+
+  const filesChanged = new Set();
+  const testsDiscovered = [];
+  const testsExecuted = [];
+  const testResults = [];
+  const failedEvidence = [];
+  const capabilityAttribution = [];
+
+  evidenceItems.forEach((item) => {
+    (item.filesChanged || []).forEach((filePath) => filesChanged.add(filePath));
+    (item.testsDiscovered || []).forEach((entry) => testsDiscovered.push(entry));
+    (item.testsExecuted || []).forEach((entry) => testsExecuted.push(entry));
+    (item.testResults || []).forEach((entry) => testResults.push(entry));
+    if (item.capabilityAttribution) {
+      capabilityAttribution.push(item.capabilityAttribution);
+    }
+    if (item.verification && item.verification.success === false) {
+      failedEvidence.push(item);
+    }
+  });
+
+  const relevantCapabilityChanges = capabilityAttribution.flatMap((entry) => Array.isArray(entry.relevantDiff) ? entry.relevantDiff : []);
+  const unrelatedCapabilityChanges = capabilityAttribution.flatMap((entry) => Array.isArray(entry.unrelatedDiff) ? entry.unrelatedDiff : []);
+
+  return {
+    evidenceItems,
+    filesChanged: Array.from(filesChanged),
+    testsDiscovered,
+    testsExecuted,
+    testResults,
+    failedEvidence,
+    capabilityAttribution,
+    relevantCapabilityChanges: Array.from(new Set(relevantCapabilityChanges)),
+    unrelatedCapabilityChanges: Array.from(new Set(unrelatedCapabilityChanges))
+  };
+}
+
+function propagateVerificationEvidenceToCapability(snapshot, capabilityId, engineeringEvidence) {
+  if (!snapshot || !capabilityId || !engineeringEvidence) {
+    return { snapshot, propagatedEvidence: null };
+  }
+
+  const capabilities = Array.isArray(snapshot.capabilities) ? snapshot.capabilities : [];
+  const capabilityIndex = capabilities.findIndex((item) => item && item.id === capabilityId);
+  if (capabilityIndex < 0) {
+    return { snapshot, propagatedEvidence: null };
+  }
+
+  const currentEvidence = Array.isArray(capabilities[capabilityIndex].verificationEvidence)
+    ? capabilities[capabilityIndex].verificationEvidence
+    : [];
+
+  const propagatedEvidence = {
+    type: "mission_execution",
+    id: `cycle_verification_${Date.now()}`,
+    success: Array.isArray(engineeringEvidence.testsExecuted) && engineeringEvidence.testsExecuted.length > 0,
+    details: {
+      testsDiscovered: Array.isArray(engineeringEvidence.testsDiscovered) ? engineeringEvidence.testsDiscovered : [],
+      testsExecuted: Array.isArray(engineeringEvidence.testsExecuted) ? engineeringEvidence.testsExecuted : [],
+      testResults: Array.isArray(engineeringEvidence.testResults) ? engineeringEvidence.testResults : []
+    }
+  };
+
+  const nextCapabilities = capabilities.map((item, index) => {
+    if (index !== capabilityIndex) {
+      return item;
+    }
+
+    return {
+      ...item,
+      verificationEvidence: [...currentEvidence, propagatedEvidence]
+    };
+  });
+
+  return {
+    snapshot: {
+      ...snapshot,
+      capabilities: nextCapabilities
+    },
+    propagatedEvidence
+  };
+}
+
+function normalizeRepoPath(value) {
+  return String(value || "").replace(/\\/g, "/").replace(/^\.\//, "").toLowerCase();
+}
+
+function hasCapabilitySurfaceEvidenceImproved(beforeSnapshot, afterSnapshot, capabilityId, engineeringEvidence) {
+  if (!beforeSnapshot || !afterSnapshot || !capabilityId || !engineeringEvidence) {
+    return false;
+  }
+
+  const beforeCapability = Array.isArray(beforeSnapshot.capabilities)
+    ? beforeSnapshot.capabilities.find((item) => item && item.id === capabilityId)
+    : null;
+  const afterCapability = Array.isArray(afterSnapshot.capabilities)
+    ? afterSnapshot.capabilities.find((item) => item && item.id === capabilityId)
+    : null;
+
+  const implementationLocations = new Set([
+    ...(beforeCapability && Array.isArray(beforeCapability.implementationLocations)
+      ? beforeCapability.implementationLocations.map(normalizeRepoPath)
+      : []),
+    ...(afterCapability && Array.isArray(afterCapability.implementationLocations)
+      ? afterCapability.implementationLocations.map(normalizeRepoPath)
+      : [])
+  ]);
+
+  if (!implementationLocations.size) {
+    return false;
+  }
+
+  const changedFiles = Array.isArray(engineeringEvidence.filesChanged)
+    ? engineeringEvidence.filesChanged.map(normalizeRepoPath)
+    : [];
+
+  const touchedCapabilitySurface = changedFiles.some((changedFile) => implementationLocations.has(changedFile));
+  const verificationExecuted = Array.isArray(engineeringEvidence.testsExecuted) && engineeringEvidence.testsExecuted.length > 0;
+  const hasFailures = Array.isArray(engineeringEvidence.failedEvidence) && engineeringEvidence.failedEvidence.length > 0;
+
+  return touchedCapabilitySurface && verificationExecuted && !hasFailures;
+}
+
 class Mother {
-  async start() {
+  async start(overrideGoal = null, options = {}) {
     console.log("🦅 GARUDA Mother Started\n");
 
     const {
@@ -184,7 +370,7 @@ class Mother {
       context,
       founderApprovalToken,
       founderApproved
-    } = this._initializeCoreComponents();
+    } = this._initializeCoreComponents(overrideGoal, options);
 
     if (!constitution || !Array.isArray(constitution.laws) || constitution.laws.length === 0) {
       const errorPayload = {
@@ -292,15 +478,62 @@ class Mother {
     }
 
     console.log("[Constitution]", constitution.laws.length + " laws loaded");
-    console.log("[Context]", context.platform, context.node);
+    const parsedGoal = understandGoal(goalInput);
+    let goal = parsedGoal;
+    let bodySnapshotBefore = null;
+    let selfDevelopmentSelection = null;
+
+    if (parsedGoal.intent === "self_development_meta") {
+      const priorMissionEvidence = options && options.previousMissionEvidence
+        ? options.previousMissionEvidence
+        : resolvePreviousMissionEvidence({ rootDir: process.cwd() });
+      const grounding = groundSelfDevelopmentGoal(parsedGoal, {
+        rootDir: process.cwd(),
+        previousMissionEvidence: priorMissionEvidence
+      });
+      goal = grounding.goal;
+      bodySnapshotBefore = grounding.beforeSnapshot;
+      selfDevelopmentSelection = grounding.selection;
+    }
+
+    const tasks = prioritize(decompose(goal));
+    const scanResult = scan();
+
+    const revenueBridge = {
+      engaged: false,
+      capabilities: null,
+      evaluation: null,
+      suggestedNextAction: null,
+      status: "NOT_ENGAGED"
+    };
+
+    if (shouldEngageRevenueBridge(goalInput, goal)) {
+      revenueBridge.engaged = true;
+      const revenueBridgeClient = new RevenueBridgeClient();
+      revenueBridge.capabilities = await revenueBridgeClient.getCapabilities();
+      revenueBridge.evaluation = await revenueBridgeClient.evaluateWork(
+        buildRevenueBridgeInput(goalInput, goal, tasks),
+        founderApproved
+      );
+      revenueBridge.suggestedNextAction = deriveRevenueBridgeNextAction(revenueBridge);
+      revenueBridge.status = revenueBridge.evaluation && revenueBridge.evaluation.ok
+        ? "EVALUATED"
+        : "DEGRADED";
+    }
 
     const memoryEngine = new ProjectMemoryEngine();
     const memoryMatches = memoryEngine.findSimilarGoal(goalInput);
-    const latestExact = memoryMatches.exactMatches[0] || null;
+    let latestExact = (options && options.bypassMemoryMatch) ? null : (memoryMatches.exactMatches[0] || null);
 
-    const scanResult = scan();
-    const goal = understandGoal(goalInput);
-    const tasks = prioritize(decompose(goal));
+    if (latestExact && goal.targetName && goal.actionType === "creation") {
+      const targetSlug = goal.targetName.replace(/\.(js|ts|json)$/i, "");
+      const modulePath = path.join(process.cwd(), `src/generated/${targetSlug}.js`);
+      const testPath = path.join(process.cwd(), `src/generated/${targetSlug}.test.js`);
+      if (!fs.existsSync(modulePath) || !fs.existsSync(testPath)) {
+        console.log(`[Memory] Target files ${targetSlug}.js missing on disk. Bypassing cached memory completion.`);
+        latestExact = null;
+      }
+    }
     const taskProfile = buildTaskProfile(goalInput, goal, tasks, scanResult);
     const dispatchPreview = buildDispatchPreview(goalInput, goal, tasks);
 
@@ -331,7 +564,7 @@ class Mother {
       externalWorkerAdapter
     });
 
-    const intendsWrite = hasWriteIntent(goalInput, tasks);
+    const intendsWrite = hasWriteIntent(goalInput, tasks, goal);
     const externalExecutionEnabled =
       process.env.GARUDA_EXTERNAL_WORKER_EXECUTION === "true";
 
@@ -460,10 +693,10 @@ class Mother {
         founderApprovalToken: Boolean(founderApprovalToken)
       },
       externalExecutionEnabled,
-      requiresApproval: intendsWrite,
-      rootDir: process.cwd(),
-      timeoutMs: 600000,
-      localWorkerHandler: () => buildReadOnlyAnalysis(process.cwd())
+      localWorkerHandler: (localInput = {}) => {
+        void localInput;
+        return buildReadOnlyAnalysis(process.cwd());
+      }
     });
 
     const adapterPayload =
@@ -490,7 +723,11 @@ class Mother {
     console.log("[Goal]", goal);
     console.log("[Tasks]", tasks);
 
-    if (latestExact) {
+    const checkModulePath = goal.targetName ? path.join(process.cwd(), `src/generated/${goal.targetName.replace(/\.(js|ts|json)$/i, "")}.js`) : null;
+    const checkTestPath = goal.targetName ? path.join(process.cwd(), `src/generated/${goal.targetName.replace(/\.(js|ts|json)$/i, "")}.test.js`) : null;
+    const targetFilesExist = checkModulePath && checkTestPath ? (fs.existsSync(checkModulePath) && fs.existsSync(checkTestPath)) : true;
+
+    if (latestExact && targetFilesExist && !(options && options.bypassMemoryMatch)) {
       const isIncomplete = latestExact.workflowStatus !== "Completed (3/3)" || !latestExact.completedAt;
 
       if (isIncomplete && !founderApproved) {
@@ -558,10 +795,16 @@ class Mother {
         console.log("[Memory] Founder approval detected. Resuming interrupted goal execution.");
       }
 
+      const targetSlug = goal.targetName ? goal.targetName.replace(/\.(js|ts|json)$/i, "") : null;
+      const targetModulePath = targetSlug ? path.join(process.cwd(), `src/generated/${targetSlug}.js`) : null;
+      const targetTestPath = targetSlug ? path.join(process.cwd(), `src/generated/${targetSlug}.test.js`) : null;
+      const targetFilesMissing = targetSlug && goal.actionType === "creation" && (!fs.existsSync(targetModulePath) || !fs.existsSync(targetTestPath));
+
       if (
         latestExact.workflowStatus === "Completed (3/3)" &&
         latestExact.approvalStatus !== "BLOCKED_BY_APPROVAL" &&
-        latestExact.completedAt
+        latestExact.completedAt &&
+        !targetFilesMissing
       ) {
         const completedPayload = {
           status: "ALREADY_COMPLETED",
@@ -651,23 +894,51 @@ class Mother {
       writeApproval.allowed === true
     );
 
+    const groundedSelfDevelopmentPlan = goal.targetSource === SELF_DEVELOPMENT_TARGET_SOURCE.GARUDA_CAPABILITY_SELECTED_TARGET
+      ? buildSelfDevelopmentPlannedTasks(goal)
+      : null;
+
     const decisions = think({
       projectClean: scanResult.clean,
       summary: scanResult.summary,
       buildRequired: true,
       validateRequired: true,
-      tasks
+      tasks: groundedSelfDevelopmentPlan ? groundedSelfDevelopmentPlan.map((item) => item.task) : tasks
     });
 
-    const executionPlan = decide(scanResult, decisions);
-    const plannedTasks = plan(executionPlan);
-    const writeIntentDetected = hasWriteIntent(goalInput, plannedTasks);
+    const executionPlan = groundedSelfDevelopmentPlan
+      ? groundedSelfDevelopmentPlan.map((item) => item.task)
+      : decide(scanResult, decisions);
+    const plannedTasks = groundedSelfDevelopmentPlan || plan(executionPlan);
+    const writeIntentDetected = hasWriteIntent(goalInput, plannedTasks, goal);
 
     const preflight = validate(plannedTasks);
+
+    if (parsedGoal.intent === "self_development_meta" && !goal.targetName) {
+      preflight.passed = false;
+      preflight.status = selfDevelopmentSelection && selfDevelopmentSelection.status
+        ? selfDevelopmentSelection.status
+        : "NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET";
+      preflight.issues = [
+        ...(Array.isArray(preflight.issues) ? preflight.issues : []),
+        preflight.status === "IMPLEMENTATION_SURFACE_UNKNOWN"
+          ? "Selected self-development candidates lacked credible implementation ownership evidence."
+          : "No eligible evidence-grounded self-development capability target was selected."
+      ];
+    }
+
     const cycle = {
       goal,
       context,
+      bodyAwareness: {
+        beforeSnapshot: bodySnapshotBefore,
+        candidateSelection: selfDevelopmentSelection,
+        afterSnapshot: null,
+        capabilityTransition: null
+      },
+      targetProvenance: goal.targetProvenance || null,
       scanResult,
+      revenueBridge,
       decisions,
       executionPlan,
       plannedTasks,
@@ -680,7 +951,9 @@ class Mother {
       },
       nextAction: preflight.passed
         ? (executionApproved ? "continue_safe_execution" : "await_founder_approval")
-        : "fix_validation_issues",
+        : (preflight.status === "NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET"
+          ? "NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET"
+          : "fix_validation_issues"),
       bible: {
         validationStatus: "PASSED",
         version: bibleContext.version,
@@ -737,6 +1010,20 @@ class Mother {
       }
     };
 
+    if (revenueBridge.engaged && revenueBridge.evaluation && !revenueBridge.evaluation.ok) {
+      cycle.validation = {
+        ...cycle.validation,
+        issues: [
+          ...(Array.isArray(cycle.validation.issues) ? cycle.validation.issues : []),
+          `Revenue bridge degraded: ${revenueBridge.evaluation.error.code} - ${revenueBridge.evaluation.error.message}`
+        ]
+      };
+    }
+
+    if (revenueBridge.engaged && revenueBridge.suggestedNextAction && cycle.nextAction === "continue_safe_execution") {
+      cycle.nextAction = revenueBridge.suggestedNextAction;
+    }
+
     if ((writeIntentDetected || promptDecision.implementationBlocked) && !executionApproved) {
       cycle.validation = {
         ...cycle.validation,
@@ -758,23 +1045,114 @@ class Mother {
     } else if (preflight.passed && executionApproved) {
       cycle.executedTasks = execute(plannedTasks);
       cycle.validation = validate(cycle.executedTasks);
+      const engineeringEvidence = summarizeEngineeringEvidence(cycle.executedTasks);
 
       const executionBlocked = cycle.executedTasks.some(
         (task) => task && task.status === "BLOCKED_BY_APPROVAL"
       );
       const executionPassed = Boolean(cycle.validation && cycle.validation.passed) && !executionBlocked;
 
+      if (writeIntentDetected && engineeringEvidence.filesChanged.length === 0) {
+        cycle.validation.passed = false;
+        cycle.validation.status = "FAILED";
+        cycle.validation.issues = [
+          ...(Array.isArray(cycle.validation.issues) ? cycle.validation.issues : []),
+          "Write intent was detected but no workspace change evidence was produced."
+        ];
+      }
+
+      if (writeIntentDetected && engineeringEvidence.testsExecuted.length === 0) {
+        cycle.validation.passed = false;
+        cycle.validation.status = "FAILED";
+        cycle.validation.issues = [
+          ...(Array.isArray(cycle.validation.issues) ? cycle.validation.issues : []),
+          "No verification tests were executed for this mission cycle."
+        ];
+      }
+
+      cycle.engineeringEvidence = engineeringEvidence;
+
+      if (
+        goal.targetSource === SELF_DEVELOPMENT_TARGET_SOURCE.GARUDA_CAPABILITY_SELECTED_TARGET &&
+        goal.capabilityTarget &&
+        goal.capabilityTarget.id
+      ) {
+        const capabilityEvidencePropagation = propagateVerificationEvidenceToCapability(
+          bodySnapshotBefore || { capabilities: [] },
+          goal.capabilityTarget.id,
+          engineeringEvidence
+        );
+
+        if (capabilityEvidencePropagation.propagatedEvidence) {
+          cycle.bodyAwareness.beforeSnapshot = capabilityEvidencePropagation.snapshot;
+          cycle.bodyAwareness.selectedCapabilityVerificationEvidence = capabilityEvidencePropagation.propagatedEvidence;
+        }
+
+        if (!engineeringEvidence.relevantCapabilityChanges.length) {
+          cycle.validation.passed = false;
+          cycle.validation.status = "FAILED";
+          cycle.validation.issues = [
+            ...(Array.isArray(cycle.validation.issues) ? cycle.validation.issues : []),
+            `No attributable implementation change was detected inside selected capability '${goal.capabilityTarget.id}' surface.`
+          ];
+        }
+
+        const afterSnapshot = getCurrentBodyState({ rootDir: process.cwd() });
+        const transition = compareCapabilitySnapshots(
+          capabilityEvidencePropagation.snapshot || bodySnapshotBefore || { capabilities: [] },
+          afterSnapshot,
+          goal.capabilityTarget.id
+        );
+
+        cycle.bodyAwareness.afterSnapshot = afterSnapshot;
+        cycle.bodyAwareness.capabilityTransition = {
+          ...transition,
+          currentCycleVerificationEvidence: capabilityEvidencePropagation.propagatedEvidence
+            ? capabilityEvidencePropagation.propagatedEvidence.details
+            : null
+        };
+
+        const sameStatus = transition.beforeStatus === transition.afterStatus;
+        const evidenceBackedSurfaceImprovement = sameStatus && hasCapabilitySurfaceEvidenceImproved(
+          bodySnapshotBefore || { capabilities: [] },
+          afterSnapshot,
+          goal.capabilityTarget.id,
+          engineeringEvidence
+        );
+
+        if (!transition.improved && evidenceBackedSurfaceImprovement) {
+          cycle.bodyAwareness.capabilityTransition = {
+            ...transition,
+            improved: true,
+            improvementBasis: "verified_target_surface_change",
+            note: `Capability status remained ${transition.afterStatus}, but target implementation surface was patched and verified.`
+          };
+        }
+
+        if (!cycle.bodyAwareness.capabilityTransition.improved) {
+          cycle.validation.passed = false;
+          cycle.validation.status = "FAILED";
+          cycle.validation.issues = [
+            ...(Array.isArray(cycle.validation.issues) ? cycle.validation.issues : []),
+            `Self-development capability target '${goal.capabilityTarget.id}' did not improve (${transition.beforeStatus} -> ${transition.afterStatus}).`
+          ];
+          cycle.nextAction = "self_development_capability_not_improved";
+        }
+      }
+
+      const executionPassedAfterEvidence = Boolean(cycle.validation && cycle.validation.passed) && !executionBlocked;
+
       cycle.governance.status = executionBlocked
         ? "approval_required"
-        : (executionPassed ? "approved_for_safe_execution" : "blocked_by_validation");
-      cycle.nextAction = executionPassed ? "execution_completed" : "fix_execution_issues";
+        : (executionPassedAfterEvidence ? "approved_for_safe_execution" : "blocked_by_validation");
+      cycle.nextAction = executionPassedAfterEvidence ? "execution_completed" : "fix_execution_issues";
       cycle.workforce.validationStatus = executionBlocked
         ? "BLOCKED_BY_APPROVAL"
-        : (executionPassed ? "PASSED" : "FAILED");
+        : (executionPassedAfterEvidence ? "PASSED" : "FAILED");
       cycle.workforce.approvalStatus = "APPROVED";
       cycle.workforce.writeStopped = executionBlocked;
 
-      if (executionPassed) {
+      if (executionPassedAfterEvidence) {
         build();
         cycle.multiBrain.workflow = {
           status: "Completed (3/3)",
@@ -833,23 +1211,160 @@ class Mother {
 
     report(cycle);
 
-    console.log("\n🦅 GARUDA Mother Finished");
+    console.log("\n🦅 GARUDA Mother Cycle Finished");
+    return cycle;
   }
 
-  _initializeCoreComponents() {
-    const goalInput = process.argv.slice(2).join(" ").trim() || "make mother brain more autonomous";
+  async runMissionToCompletion(overrideGoal = null, options = {}) {
+    const maxCycles = Math.min(10, Math.max(1, Number(options.maxCycles) || 5));
+    let cyclesExecuted = 0;
+    let currentGoal = overrideGoal;
+    const parentObjective = String(overrideGoal || process.env.GARUDA_GOAL || "").trim();
+    let lastCycleResult = null;
+    const history = [];
+    let priorFailureSignature = null;
+    let repeatFailureCount = 0;
+    let replanAttempted = false;
+
+    for (let cycle = 1; cycle <= maxCycles; cycle += 1) {
+      cyclesExecuted += 1;
+      console.log(`\n🦅 GARUDA Bounded Mission Continuation Loop — Cycle ${cycle} of ${maxCycles}`);
+      
+      const cycleResult = await this.start(currentGoal, { ...options, singleCycle: true });
+      lastCycleResult = cycleResult;
+      history.push(cycleResult);
+
+      if (cycleResult && cycleResult.governance) {
+        if (cycleResult.governance.status === "BLOCKED_BY_CONSTITUTION") {
+          console.log("\n🛑 Terminal State Reached: CONSTITUTIONAL_BLOCK");
+          return { status: "CONSTITUTIONAL_BLOCK", cyclesExecuted, lastCycleResult, history };
+        }
+        if (cycleResult.governance.status === "approval_required" || cycleResult.governance.status === "BLOCKED_BY_APPROVAL") {
+          console.log("\n🛑 Terminal State Reached: FOUNDER_ACTION_REQUIRED");
+          return { status: "FOUNDER_ACTION_REQUIRED", cyclesExecuted, lastCycleResult, history };
+        }
+      }
+
+      if (cycleResult && cycleResult.validation && cycleResult.validation.status === "FAILED" && cycle >= maxCycles) {
+        console.log("\n🛑 Terminal State Reached: SAFE_RETRY_LIMIT_REACHED");
+        return { status: "SAFE_RETRY_LIMIT_REACHED", cyclesExecuted, lastCycleResult, history };
+      }
+
+      const nextAction = cycleResult ? cycleResult.nextAction : "execution_completed";
+
+      if (nextAction === "NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET") {
+        console.log("\n🛑 Terminal State Reached: NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET");
+        return { status: "NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET", cyclesExecuted, lastCycleResult, history };
+      }
+
+      if (cycleResult && cycleResult.validation && cycleResult.validation.passed === false) {
+        const failureSignature = JSON.stringify({
+          nextAction,
+          issues: Array.isArray(cycleResult.validation.issues) ? cycleResult.validation.issues : [],
+          governance: cycleResult.governance && cycleResult.governance.status ? cycleResult.governance.status : "unknown"
+        });
+
+        if (failureSignature === priorFailureSignature) {
+          repeatFailureCount += 1;
+        } else {
+          repeatFailureCount = 0;
+          replanAttempted = false;
+        }
+        priorFailureSignature = failureSignature;
+
+        if (repeatFailureCount >= 1 && !replanAttempted) {
+          replanAttempted = true;
+          currentGoal = `Diagnose previous engineering failure and change execution strategy for parent objective \"${parentObjective || (cycleResult.goal && cycleResult.goal.rawGoal ? cycleResult.goal.rawGoal : "mission") }\"`;
+          continue;
+        }
+
+        if (repeatFailureCount >= 2) {
+          console.log("\n🛑 Terminal State Reached: BLOCKED_BY_REPEATED_FAILURE");
+          return { status: "BLOCKED_BY_REPEATED_FAILURE", cyclesExecuted, lastCycleResult, history };
+        }
+      } else {
+        priorFailureSignature = null;
+        repeatFailureCount = 0;
+        replanAttempted = false;
+      }
+
+      if (!nextAction || nextAction === "execution_completed" || nextAction === "none" || (cycleResult && cycleResult.validation && cycleResult.validation.status === "ALREADY_COMPLETED")) {
+        if (
+          cycleResult &&
+          cycleResult.goal &&
+          cycleResult.goal.targetName &&
+          cycleResult.goal.targetSource !== SELF_DEVELOPMENT_TARGET_SOURCE.GARUDA_CAPABILITY_SELECTED_TARGET
+        ) {
+          const targetSlug = cycleResult.goal.targetName.replace(/\.(js|ts|json)$/i, "");
+          const isExistingService = fs.existsSync(path.join(process.cwd(), `src/services/${targetSlug}.js`));
+          const modulePath = isExistingService
+            ? path.join(process.cwd(), `src/services/${targetSlug}.js`)
+            : path.join(process.cwd(), `src/generated/${targetSlug}.js`);
+          const testPath = isExistingService
+            ? path.join(process.cwd(), `src/services/${targetSlug}.test.js`)
+            : path.join(process.cwd(), `src/generated/${targetSlug}.test.js`);
+          
+          const moduleExists = fs.existsSync(modulePath);
+          const testExists = fs.existsSync(testPath);
+
+          if (!moduleExists || !testExists) {
+            console.log(`\n⚠️ Observable Outcome Verification: Created files missing (${targetSlug}.js: ${moduleExists}, ${targetSlug}.test.js: ${testExists}). Continuing loop...`);
+            currentGoal = `Implement required module ${cycleResult.goal.targetName}`;
+            continue;
+          }
+
+          const executedTasks = cycleResult.executedTasks || (cycleResult.multiBrain ? cycleResult.multiBrain.executedTasks : []);
+          const testTask = executedTasks.find((t) => t.route === "test" || (t.task && /unit tests|run test/i.test(t.task)));
+          const testPassed = testTask && testTask.status === "SUCCESS" && testTask.result && testTask.result.output && testTask.result.output.status === "PASSED";
+
+          if (!testPassed) {
+            const testReason = testTask ? (testTask.status === "SKIPPED" ? (testTask.reason || "SKIPPED") : testTask.status) : "not_executed";
+            console.log(`\n⚠️ Observable Outcome Verification: Test task verification failed (status: ${testReason}). Continuing loop to run unit tests...`);
+            currentGoal = `Run unit tests for ${cycleResult.goal.targetName || "requested artifact"}`;
+            continue;
+          }
+        }
+
+        console.log("\n✅ Terminal State Reached: MISSION_COMPLETED");
+        return { status: "MISSION_COMPLETED", cyclesExecuted, lastCycleResult, history };
+      }
+
+      currentGoal = nextAction;
+      currentGoal = parentObjective
+        ? `${nextAction} (parent objective: ${parentObjective})`
+        : nextAction;
+    }
+
+    console.log("\n🛑 Terminal State Reached: SAFE_RETRY_LIMIT_REACHED");
+    return { status: "SAFE_RETRY_LIMIT_REACHED", cyclesExecuted, lastCycleResult, history };
+  }
+
+  _initializeCoreComponents(overrideGoal = null, options = {}) {
+    const cliGoal = process.argv.slice(2).join(" ").trim();
+    const goalInput = overrideGoal || process.env.GARUDA_GOAL || cliGoal || "make mother brain more autonomous";
     const constitution = loadConstitution();
     const context = getContext();
     const founderApprovalToken = process.env.GARUDA_FOUNDER_APPROVAL_TOKEN || "";
-    const founderApproved = process.env.GARUDA_FOUNDER_APPROVED === "true" || Boolean(founderApprovalToken);
+    const founderApproved = process.env.GARUDA_FOUNDER_APPROVED === "true" || Boolean(options && options.founderApproved) || Boolean(founderApprovalToken);
     return { goalInput, constitution, context, founderApprovalToken, founderApproved };
   }
 }
 
 if (require.main === module) {
-  new Mother().start();
+  const mother = new Mother();
+  if (process.env.GARUDA_CONTINUOUS === "true" || process.env.GARUDA_RUN_MISSION === "true") {
+    mother.runMissionToCompletion().then((res) => {
+      console.log(`\nMission Terminal Outcome: ${res.status} (${res.cyclesExecuted} cycles executed)`);
+    });
+  } else {
+    mother.start();
+  }
 }
 
-module.exports = { Mother };
+module.exports = {
+  Mother,
+  summarizeEngineeringEvidence,
+  propagateVerificationEvidenceToCapability
+};
 
 
