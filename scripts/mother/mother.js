@@ -1405,7 +1405,12 @@ class Mother {
     const constitution = loadConstitution();
     const context = getContext();
     const founderApprovalToken = process.env.GARUDA_FOUNDER_APPROVAL_TOKEN || "";
-    const founderApproved = process.env.GARUDA_FOUNDER_APPROVED === "true" || Boolean(options && options.founderApproved) || Boolean(founderApprovalToken);
+    const parsedGoal = understandGoal(goalInput);
+    const hasNegativeConstraint =
+      /\b(do not|don't|dont|no|without|zero|never|stop)\s+([a-z\s,]+)?\b(modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i.test(goalInput) ||
+      /\b(read-only|read only|no writes|no write|without changing|without modifying|don't commit|don't push|don't modify|don't write|dont commit|dont push|dont modify|dont write)\b/i.test(goalInput);
+    const isReadOnlyMission = Boolean(parsedGoal && (parsedGoal.actionType === "analysis" || parsedGoal.intent === "read_only_audit")) || hasNegativeConstraint;
+    const founderApproved = process.env.GARUDA_FOUNDER_APPROVED === "true" || Boolean(options && options.founderApproved) || Boolean(founderApprovalToken) || isReadOnlyMission;
     return { goalInput, constitution, context, founderApprovalToken, founderApproved };
   }
 }
