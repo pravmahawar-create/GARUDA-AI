@@ -1,3 +1,4 @@
+try { require("dotenv").config(); } catch {}
 const express = require("express");
 const http = require("http");
 
@@ -46,8 +47,8 @@ function createGatewayApp(customSecret) {
     next();
   });
 
-  // GET /health - Authenticated gateway and local Ollama probe
-  app.get("/health", async (req, res) => {
+  // Health Probes: GET /health, GET /api/health, GET /api/tags
+  const handleHealthProbe = async (req, res) => {
     try {
       const probeRes = await fetch(`${OLLAMA_BASE_URL.replace(/\/$/, "")}/api/tags`);
       if (probeRes.ok) {
@@ -58,7 +59,8 @@ function createGatewayApp(customSecret) {
           gateway: "GARUDA_AUTHENTICATED_GATEWAY_V1",
           nodeProvider: "ollama",
           configuredModel: ALLOWED_MODEL,
-          modelPresent: models.some((m) => m.includes(ALLOWED_MODEL))
+          modelPresent: models.some((m) => m.includes(ALLOWED_MODEL)),
+          models: data.models || []
         });
       }
       return res.status(503).json({
@@ -73,10 +75,14 @@ function createGatewayApp(customSecret) {
         error: err.message
       });
     }
-  });
+  };
 
-  // POST /generate - Authenticated model inference proxy
-  app.post("/generate", async (req, res) => {
+  app.get("/health", handleHealthProbe);
+  app.get("/api/health", handleHealthProbe);
+  app.get("/api/tags", handleHealthProbe);
+
+  // Model Inference: POST /generate, POST /api/generate
+  const handleGenerate = async (req, res) => {
     const { model, prompt, options } = req.body || {};
 
     if (!prompt || typeof prompt !== "string") {
@@ -122,7 +128,10 @@ function createGatewayApp(customSecret) {
         message: err.message
       });
     }
-  });
+  };
+
+  app.post("/generate", handleGenerate);
+  app.post("/api/generate", handleGenerate);
 
   return app;
 }
