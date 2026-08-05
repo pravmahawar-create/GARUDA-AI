@@ -118,13 +118,14 @@ class LocalBrainWorker {
 
   reviewProposal(proposal = {}) {
     const task = proposal.task || {};
-    const hasBlockedActions = Array.isArray(task.blockedActions) && task.blockedActions.some((action) => ["commit", "merge", "deploy", "paid_api", "push"].includes(action));
+    const allowed = Array.isArray(task.allowedActions) ? task.allowedActions : [];
+    const hasWriteAction = allowed.some((action) => ["commit", "merge", "deploy", "paid_api", "push", "write_source", "file_write"].includes(action));
 
     return {
-      approved: !hasBlockedActions,
+      approved: !hasWriteAction,
       reviewer: this.role,
       reviewedAt: new Date().toISOString(),
-      reason: hasBlockedActions ? "proposal_contains_blocked_actions" : "read_only_proposal_approved"
+      reason: hasWriteAction ? "proposal_contains_write_actions" : "read_only_proposal_approved"
     };
   }
 }
