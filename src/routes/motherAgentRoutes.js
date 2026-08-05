@@ -34,7 +34,7 @@ router.post("/chat", async (req, res) => {
     }
 
     const goal = understandGoal(userMessage);
-    const isReadOnly = goal.intent === "read_only_audit";
+    const isReadOnly = goal.actionType === "analysis" || goal.intent === "read_only_audit";
     const isAgentTask = isReadOnly ||
                         goal.intent === "create_code_artifact" ||
                         goal.intent === "modify_code_artifact" ||

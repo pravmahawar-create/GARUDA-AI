@@ -1,12 +1,19 @@
 function understandGoal(goal = "") {
   const rawGoal = String(goal || "").trim();
   const text = rawGoal.toLowerCase();
-  const selfDevelopmentSignal = /\b(capability|weakness|self-development|self development|improvement|weaknesses)\b/i.test(text);
-  const selfDevelopmentMetaSignal = /\b(inspect\s+your(?:self|\s+currently\s+available\s+runtime\s+capabilities)|choose\s+the\s+target\s+yourself|identify\s+one\s+highest-value\s+capability|self-development\s+engineering\s+mission)\b/i.test(text);
 
-  const hasNegativeWriteConstraint = /\b(do not|don't|no|without)\s+(modify|edit|write|change|patch|create|modifying|changing)\b/i.test(text) || /\b(read-only|read only)\b/i.test(text);
-  const isReadOnlyInspection = /\b(inspect|audit|analyze|determine\s+whether|check\s+whether|verify\s+whether|find\s+whether)\b/i.test(text);
-  const hasAffirmativeWriteCommand = /\b(create|build|implement|add|write|generate|fix|repair|modify|update|patch|refactor)\s+([a-z0-9_\-\.\/]+)\b/i.test(text) || /^\s*(create|build|implement|add|write|generate|fix|repair|modify|update|patch|refactor)\b/i.test(text);
+  const hasNegativeWriteConstraint =
+    /\b(do not|don't|dont|no|without|zero|never|stop)\s+([a-z\s,]+)?\b(modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i.test(text) ||
+    /\b(read-only|read only|no writes|no write|without changing|without modifying|don't commit|don't push|don't modify|don't write|dont commit|dont push|dont modify|dont write)\b/i.test(text);
+
+  const selfDevelopmentSignal = !hasNegativeWriteConstraint && /\b(capability|weakness|self-development|self development|improvement|weaknesses)\b/i.test(text);
+  const selfDevelopmentMetaSignal = !hasNegativeWriteConstraint && /\b(inspect\s+your(?:self|\s+currently\s+available\s+runtime\s+capabilities)|choose\s+the\s+target\s+yourself|identify\s+one\s+highest-value\s+capability|self-development\s+engineering\s+mission)\b/i.test(text);
+
+  const isReadOnlyInspection = /\b(inspect|audit|analyze|determine\s+whether|check\s+whether|verify\s+whether|find\s+whether|read)\b/i.test(text);
+  const hasAffirmativeWriteCommand = !hasNegativeWriteConstraint && (
+    /\b(create|build|implement|add|write|generate|fix|repair|modify|update|patch|refactor)\s+([a-z0-9_\-\.\/]+)\b/i.test(text) ||
+    /^\s*(create|build|implement|add|write|generate|fix|repair|modify|update|patch|refactor)\b/i.test(text)
+  );
 
   let actionType = "analysis";
 
@@ -37,17 +44,21 @@ function understandGoal(goal = "") {
 
   if (text.includes("existing") && (text.includes("subsystem") || text.includes("passive") || text.includes("partially-connected"))) {
     targetName = "continuousRevenueAttemptService";
-    actionType = "modification";
+    if (!hasNegativeWriteConstraint) actionType = "modification";
   } else if (!targetName && selfDevelopmentSignal && !selfDevelopmentMetaSignal) {
     targetName = "motherSelfDevelopmentBridge";
-    actionType = "modification";
+    if (!hasNegativeWriteConstraint) actionType = "modification";
   }
 
   let domain = "general";
   let intent = "unknown";
   let priority = "medium";
 
-  if (selfDevelopmentMetaSignal) {
+  if (hasNegativeWriteConstraint) {
+    domain = "engineering";
+    intent = "read_only_audit";
+    priority = "medium";
+  } else if (selfDevelopmentMetaSignal) {
     domain = "mother";
     intent = "self_development_meta";
     priority = "high";
