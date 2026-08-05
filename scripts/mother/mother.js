@@ -199,8 +199,12 @@ function hasWriteIntent(goalInput = "", plannedTasks = [], goal = {}) {
 }
 
 function shouldEngageRevenueBridge(goalInput = "", goal = {}) {
+  if (goal && (goal.actionType === "analysis" || goal.intent === "read_only_audit")) {
+    return false;
+  }
+
   const text = `${goalInput} ${goal && goal.domain ? goal.domain : ""} ${goal && goal.intent ? goal.intent : ""}`.toLowerCase();
-  return /(revenue|income|opportun|settlement|client|proposal|acquisition|affiliate|mission)/.test(text);
+  return /(revenue|income|payout|settlement|client_deal|deal_tracker|affiliate_conversion)/.test(text);
 }
 
 function buildRevenueBridgeInput(goalInput = "", goal = {}, tasks = []) {
