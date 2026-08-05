@@ -173,13 +173,22 @@ function buildTaskProfile(goalInput, goal, tasks, scanResult) {
   };
 }
 
-function hasWriteIntent(goalInput, plannedTasks = [], goal = null) {
-  if (goal && (goal.intent === "read_only_audit" || goal.actionType === "analysis")) {
+function hasWriteIntent(goalInput = "", plannedTasks = [], goal = {}) {
+  if (goal && (goal.actionType === "analysis" || goal.intent === "read_only_audit")) {
     return false;
   }
 
-  const pattern = /implement|write|patch|modify|refactor|create|build|deploy|commit|push/i;
-  if (pattern.test(String(goalInput || ""))) {
+  const text = String(goalInput || "").toLowerCase();
+  const hasNegativeWriteConstraint =
+    /\b(do not|don't|dont|no|without|zero|never|stop)\s+([a-z\s,]+)?\b(modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i.test(text) ||
+    /\b(read-only|read only|no writes|no write|without changing|without modifying|don't commit|don't push|don't modify|don't write|dont commit|dont push|dont modify|dont write)\b/i.test(text);
+
+  if (hasNegativeWriteConstraint) {
+    return false;
+  }
+
+  const pattern = /\b(implement|write|patch|modify|refactor|create|build|deploy|commit|push)\b/i;
+  if (pattern.test(text)) {
     return true;
   }
 
@@ -393,8 +402,13 @@ class Mother {
         },
         persistReport: false
       });
-    console.log("\n🦅 GARUDA Mother Finished");
-    return;
+      console.log("\n🦅 GARUDA Mother Finished");
+      return {
+        goal: { rawGoal: goalInput, domain: "mother", intent: "startup_failure" },
+        validation: { passed: false, status: "MISSING_CONSTITUTION", issues: [errorPayload.message] },
+        governance: { status: "blocked_by_validation", reason: "constitution_missing" },
+        nextAction: "restore_constitution"
+      };
     }
 
     const bibleLoader = new GarudaBibleLoader();
@@ -432,7 +446,18 @@ class Mother {
         persistReport: false
       });
       console.log("\n🦅 GARUDA Mother Finished");
-      return;
+      return {
+        goal: { rawGoal: goalInput, domain: "mother", intent: "startup_failure" },
+        validation: {
+          passed: false,
+          status: "BIBLE_VALIDATION_FAILED",
+          issues: bibleValidation.messages
+            .filter((message) => message.level === "error")
+            .map((message) => `${message.code}: ${message.message}`)
+        },
+        governance: { status: "blocked_by_validation", reason: "bible_validation_failed" },
+        nextAction: "fix_bible_validation_errors"
+      };
     }
 
     const requestedBibleChapters = buildRequiredBibleChapters(goalInput);
@@ -474,7 +499,12 @@ class Mother {
         persistReport: false
       });
       console.log("\n🦅 GARUDA Mother Finished");
-      return;
+      return {
+        goal: { rawGoal: goalInput, domain: "mother", intent: "startup_failure" },
+        validation: { passed: false, status: "BIBLE_CONTEXT_LOAD_FAILED", issues: [error.message] },
+        governance: { status: "blocked_by_validation", reason: "bible_context_load_failed" },
+        nextAction: "fix_bible_chapters"
+      };
     }
 
     console.log("[Constitution]", constitution.laws.length + " laws loaded");
@@ -523,7 +553,7 @@ class Mother {
 
     const memoryEngine = new ProjectMemoryEngine();
     const memoryMatches = memoryEngine.findSimilarGoal(goalInput);
-    let latestExact = (options && options.bypassMemoryMatch) ? null : (memoryMatches.exactMatches[0] || null);
+    let latestExact = (options && options.bypassMemoryMatch) || goal.actionType === "analysis" || goal.intent === "read_only_audit" ? null : (memoryMatches.exactMatches[0] || null);
 
     if (latestExact && goal.targetName && goal.actionType === "creation") {
       const targetSlug = goal.targetName.replace(/\.(js|ts|json)$/i, "");
@@ -788,7 +818,12 @@ class Mother {
           persistReport: false
         });
         console.log("\n🦅 GARUDA Mother Finished");
-        return;
+        return {
+          goal: { rawGoal: goalInput, domain: "mother", intent: "resume_available" },
+          validation: { passed: false, status: "RESUME_AVAILABLE", issues: [] },
+          governance: { status: "approval_required", reason: "memory_resume_available" },
+          nextAction: "await_founder_approval"
+        };
       }
 
       if (isIncomplete && founderApproved) {
@@ -863,7 +898,14 @@ class Mother {
           persistReport: false
         });
         console.log("\n🦅 GARUDA Mother Finished");
-        return;
+        return {
+          goal: { rawGoal: goalInput, domain: "mother", intent: "already_completed" },
+          validation: { passed: true, status: "ALREADY_COMPLETED", issues: [] },
+          governance: { status: "approved_for_safe_execution" },
+          nextAction: "execution_completed",
+          executedTasks: [],
+          multiBrain: { workflow: { status: "Completed (3/3)", completedSteps: 3, totalSteps: 3 } }
+        };
       }
     }
     const readOnlyAnalysis = buildReadOnlyAnalysis(process.cwd());
@@ -1250,7 +1292,12 @@ class Mother {
         return { status: "SAFE_RETRY_LIMIT_REACHED", cyclesExecuted, lastCycleResult, history };
       }
 
-      const nextAction = cycleResult ? cycleResult.nextAction : "execution_completed";
+      if (!cycleResult) {
+        console.log("\n🛑 Terminal State Reached: UNKNOWN_EXECUTION_FAILURE");
+        return { status: "FAILED", cyclesExecuted, lastCycleResult, history };
+      }
+
+      const nextAction = cycleResult.nextAction || "execution_completed";
 
       if (nextAction === "NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET") {
         console.log("\n🛑 Terminal State Reached: NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET");
