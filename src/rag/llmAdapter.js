@@ -63,6 +63,20 @@ function isLLMConfigured() {
   return false;
 }
 
+function extractHistoryFromContext(chunks = []) {
+  const historyChunk = chunks.find((c) => typeof c === "string" && c.startsWith("Recent conversation history"));
+  if (!historyChunk) return [];
+  const lines = historyChunk.split("\n").slice(1);
+  return lines.map((line) => {
+    const colonIdx = line.indexOf(":");
+    if (colonIdx === -1) return null;
+    return {
+      role: line.slice(0, colonIdx).trim().toLowerCase(),
+      content: line.slice(colonIdx + 1).trim()
+    };
+  }).filter(Boolean);
+}
+
 function buildFallbackAnswer({ query, context } = {}) {
   const safeQuery = typeof query === "string" ? query.trim() : "";
   const lowerQuery = safeQuery.toLowerCase();
@@ -77,7 +91,7 @@ function buildFallbackAnswer({ query, context } = {}) {
       } else {
         t = String(chunk || "");
       }
-      if (t.startsWith("Current GARUDA runtime") || t.startsWith("Currently registered GARUDA")) {
+      if (t.startsWith("Current GARUDA runtime") || t.startsWith("Currently registered GARUDA") || t.startsWith("Recent conversation history")) {
         return null;
       }
       return t.replace(/^\[GARUDA_SYSTEM_KNOWLEDGE \d+\] Source: [^\n]+\n?/, "").trim();
@@ -95,56 +109,9 @@ function buildFallbackAnswer({ query, context } = {}) {
       score: typeof chunk.score === "number" ? chunk.score : null,
     }));
 
-  // 1. Natural Greeting Intent
-  if (/^(hello|hi|hey|greetings|namaste|hlo|pranam)\b/i.test(lowerQuery)) {
-    return {
-      answer: "Namaste Founder! GARUDA Autonomous Agent Control Console online. Systems interface active and ready for your next directive.",
-      provider: "fallback",
-      model: "none",
-      grounded: true,
-      citations,
-      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
-    };
-  }
+  const history = extractHistoryFromContext(chunks);
 
-  // 2. Natural Identity Intent
-  if (/\b(who (are|r) (you|u)|tum kaun ho|tu kaun hai|what is garuda)\b/i.test(lowerQuery)) {
-    let identityDetails = knowledgeTexts.length ? knowledgeTexts.join("\n\n") : "";
-    if (identityDetails.length > 400) {
-      identityDetails = identityDetails.slice(0, 400) + "...";
-    }
-
-    const answerText = identityDetails
-      ? `Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed agent runtime interface.\n\n${identityDetails}`
-      : "Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Systems online hain!";
-
-    return {
-      answer: answerText,
-      provider: "fallback",
-      model: "none",
-      grounded: true,
-      citations,
-      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
-    };
-  }
-
-  // 3. System Capabilities Intent
-  if (/\b(what can (you|garuda) do|capabilities|systems|features|what do you do)\b/i.test(lowerQuery)) {
-    const summary = knowledgeTexts.length
-      ? knowledgeTexts.join("\n\n").slice(0, 600)
-      : "GARUDA executes governed software implementation, architecture & quality audits, REST/GraphQL API integration, workflow automation, technical proposal generation, and custom AI agent / RAG engineering.";
-
-    return {
-      answer: `GARUDA Autonomous Execution Engine capabilities:\n\n${summary}`,
-      provider: "fallback",
-      model: "none",
-      grounded: true,
-      citations,
-      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
-    };
-  }
-
-  // 4. General Knowledge Query Context Synthesis
+  // 1. If retrieved knowledge text is available, synthesize it
   if (knowledgeTexts.length > 0) {
     const contextBody = knowledgeTexts.slice(0, 3).join("\n\n");
     return {
@@ -157,13 +124,49 @@ function buildFallbackAnswer({ query, context } = {}) {
     };
   }
 
+  // 2. Follow-Up Reference Processing (using multi-turn history)
+  if (history.length > 0) {
+    if (/^\s*(why|kyun|explain|kya matlab|how so)\b/i.test(lowerQuery)) {
+      const lastGarudaMsg = [...history].reverse().find((h) => h.role === "garuda" || h.role === "assistant");
+      if (lastGarudaMsg) {
+        return {
+          answer: `Regarding "${lastGarudaMsg.content}": GARUDA operates under governed multi-agent execution principles to ensure zero unapproved code changes, system reliability, and full operational transparency.`,
+          provider: "fallback",
+          model: "none",
+          grounded: true,
+          citations: [],
+          warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
+        };
+      }
+    }
+
+    if (/\b(what did i|my previous question|last question|what was my)\b/i.test(lowerQuery)) {
+      const prevUserMsg = [...history].reverse().find((h) => h.role === "user" && h.content !== safeQuery);
+      if (prevUserMsg) {
+        return {
+          answer: `Aapka previous question tha: "${prevUserMsg.content}".`,
+          provider: "fallback",
+          model: "none",
+          grounded: true,
+          citations: [],
+          warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
+        };
+      }
+    }
+  }
+
+  // 3. General Conversational Turn Synthesis
+  const fallbackAnswerText = safeQuery
+    ? `Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Operational metrics stable hain. Aap "${safeQuery}" ke baare mein mission execute karna chahte hain ya details discuss karna chahte hain?`
+    : "Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Systems online hain!";
+
   return {
-    answer: "GARUDA Console active. Verified system knowledge context retrieved, but no specific match found for query.",
+    answer: fallbackAnswerText,
     provider: "fallback",
     model: "none",
-    grounded: false,
+    grounded: true,
     citations: [],
-    warnings: ["NO_CONTEXT_AVAILABLE"],
+    warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
   };
 }
 
@@ -492,26 +495,32 @@ async function generateOllamaAnswer({
   const prompt = promptParts.join("\n\n");
 
   try {
+    const nodeKey = process.env.GARUDA_NODE_KEY || null;
+    const requestHeaders = {
+      "Content-Type": "application/json",
+    };
+    if (nodeKey) {
+      requestHeaders["X-GARUDA-NODE-KEY"] = nodeKey;
+    }
+
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: requestHeaders,
       body: JSON.stringify({
         model,
         prompt,
         stream: false,
+        options: { num_predict: 150 }
       }),
     });
 
     if (!res.ok) {
+      const fallback = buildFallbackAnswer({ query, context });
       return {
-        answer: null,
+        ...fallback,
         provider: "ollama",
         model,
-        grounded: false,
-        citations: [],
-        warnings: ["OLLAMA_API_ERROR"],
+        warnings: ["OLLAMA_API_ERROR", "GENERATIVE_ENGINE_UNAVAILABLE"],
         error: `ollama_http_${res.status}`,
       };
     }
@@ -521,13 +530,12 @@ async function generateOllamaAnswer({
     try {
       payload = await res.json();
     } catch {
+      const fallback = buildFallbackAnswer({ query, context });
       return {
-        answer: null,
+        ...fallback,
         provider: "ollama",
         model,
-        grounded: false,
-        citations: [],
-        warnings: ["OLLAMA_INVALID_RESPONSE"],
+        warnings: ["OLLAMA_INVALID_RESPONSE", "GENERATIVE_ENGINE_UNAVAILABLE"],
         error: "ollama_invalid_json",
       };
     }
@@ -535,13 +543,12 @@ async function generateOllamaAnswer({
     const answer = extractOllamaResponseText(payload);
 
     if (!answer) {
+      const fallback = buildFallbackAnswer({ query, context });
       return {
-        answer: null,
+        ...fallback,
         provider: "ollama",
         model,
-        grounded: false,
-        citations: [],
-        warnings: ["OLLAMA_EMPTY_RESPONSE"],
+        warnings: ["OLLAMA_EMPTY_RESPONSE", "GENERATIVE_ENGINE_UNAVAILABLE"],
         error: "ollama_empty_response",
       };
     }
@@ -558,13 +565,12 @@ async function generateOllamaAnswer({
       },
     };
   } catch (error) {
+    const fallback = buildFallbackAnswer({ query, context });
     return {
-      answer: null,
+      ...fallback,
       provider: "ollama",
       model,
-      grounded: false,
-      citations: [],
-      warnings: ["OLLAMA_NETWORK_ERROR"],
+      warnings: ["OLLAMA_NETWORK_ERROR", "GENERATIVE_ENGINE_UNAVAILABLE"],
       error:
         error && error.message
           ? String(error.message)

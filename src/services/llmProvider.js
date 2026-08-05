@@ -24,6 +24,7 @@ IDENTITY:
 - You are not "GARUDA Mother Reporter", a capability registry, a mission report, or any other individual subsystem.
 - Mother Reporter, mission reports, capability registries, and other runtime components are information sources available to you. They are not your identity.
 - Never identify yourself as one of those internal components.
+- Never identify yourself as OpenAI, Alibaba, Qwen, Ollama, or any third-party AI company or model vendor. You are GARUDA.
 
 ROLE:
 - Help the user think, plan, understand, design, create, troubleshoot, research, write, code, and solve problems.
@@ -280,20 +281,17 @@ function buildVerifiedKnowledgeContext(chunks) {
   return labeledChunks.filter(Boolean);
 }
 
+const cognitiveRouterService = require("./cognitiveRouterService");
+
 async function ask({
   systemContext = "",
   userMessage = "",
   conversationHistory = [],
+  capability = "CONVERSATION",
 } = {}) {
-  const provider = (
-    process.env.GARUDA_LLM_PROVIDER ||
-    "fallback"
-  )
-    .trim()
-    .toLowerCase();
-
-  const model =
-    process.env.GARUDA_LLM_MODEL || null;
+  const resource = cognitiveRouterService.resolveCognitiveResource(capability);
+  const provider = resource.provider;
+  const model = resource.model;
 
   const runtimeContext = readRuntimeContext();
 

@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "";
+const API_BASE = import.meta.env.VITE_API_URL || "https://garuda-ai-xfif.onrender.com";
 
 export async function checkHealth() {
   try {
@@ -55,7 +55,7 @@ export async function submitFounderApproval(taskId, decision) {
   return res.json();
 }
 
-export async function askRag(question) {
+export async function askRag(question, threadId = null, history = []) {
   const promptText = (question || "").trim();
   if (!promptText) return { success: false, answer: "" };
 
@@ -65,8 +65,8 @@ export async function askRag(question) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: promptText,
-        systemContext: "",
-        history: []
+        threadId,
+        history
       })
     });
 
@@ -74,14 +74,52 @@ export async function askRag(question) {
 
     const data = await res.json();
     return {
-      success: true,
-      answer: data && typeof data.answer === "string" ? data.answer : ""
+      success: data && data.success === true,
+      threadId: data && data.threadId ? data.threadId : threadId,
+      mode: data && data.mode ? data.mode : "conversation",
+      missionStatus: data && (data.missionStatus || data.status) ? (data.missionStatus || data.status) : null,
+      answer: data && typeof data.answer === "string" ? data.answer : "",
+      evidence: data && (data.evidence || data.agentEvidence) ? (data.evidence || data.agentEvidence) : null,
+      grounded: data && data.grounded === true
     };
   } catch {
     return {
       success: false,
       answer: ""
     };
+  }
+}
+
+export async function fetchThreads() {
+  try {
+    const res = await fetch(`${API_BASE}/api/conversations`);
+    if (!res.ok) throw new Error("Fetch threads failed");
+    const data = await res.json();
+    return data.threads || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchThread(threadId) {
+  try {
+    const res = await fetch(`${API_BASE}/api/conversations/${encodeURIComponent(threadId)}`);
+    if (!res.ok) throw new Error("Fetch thread failed");
+    const data = await res.json();
+    return data.thread || null;
+  } catch {
+    return null;
+  }
+}
+
+export async function createThread() {
+  try {
+    const res = await fetch(`${API_BASE}/api/conversations`, { method: "POST" });
+    if (!res.ok) throw new Error("Create thread failed");
+    const data = await res.json();
+    return data.thread || null;
+  } catch {
+    return null;
   }
 }
 
