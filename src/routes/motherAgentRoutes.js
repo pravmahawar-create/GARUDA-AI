@@ -34,7 +34,11 @@ router.post("/chat", async (req, res) => {
     }
 
     const goal = understandGoal(userMessage);
-    const isReadOnly = goal.actionType === "analysis" || goal.intent === "read_only_audit";
+    const hasNegativeWriteConstraint =
+      /\b(do not|don't|dont|no|without|zero|never|stop)\s+([a-z\s,]+)?\b(modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i.test(userMessage) ||
+      /\b(read-only|read only|no writes|no write|without changing|without modifying|don't commit|don't push|don't modify|don't write|dont commit|dont push|dont modify|dont write)\b/i.test(userMessage);
+
+    const isReadOnly = goal.actionType === "analysis" || goal.intent === "read_only_audit" || hasNegativeWriteConstraint;
     const isAgentTask = isReadOnly ||
                         goal.intent === "create_code_artifact" ||
                         goal.intent === "modify_code_artifact" ||
