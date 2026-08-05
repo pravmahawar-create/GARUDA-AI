@@ -459,6 +459,7 @@ async function generateOllamaAnswer({
   query,
   context,
   systemPrompt,
+  conversationHistory,
 } = {}) {
   const model =
     process.env.GARUDA_LLM_MODEL ||
@@ -488,8 +489,24 @@ async function generateOllamaAnswer({
     );
   }
 
+  if (Array.isArray(conversationHistory) && conversationHistory.length > 0) {
+    const formattedHistory = conversationHistory
+      .slice(-6)
+      .map((msg) => {
+        const roleStr = (msg.role === "user") ? "User" : "GARUDA";
+        const contentStr = msg.content || msg.text || msg.message || "";
+        return `${roleStr}: ${contentStr}`;
+      })
+      .filter((s) => s.trim())
+      .join("\n");
+
+    if (formattedHistory) {
+      promptParts.push(`Recent Conversation Context:\n${formattedHistory}`);
+    }
+  }
+
   if (typeof query === "string" && query.trim()) {
-    promptParts.push(query.trim());
+    promptParts.push(`User Question: ${query.trim()}`);
   }
 
   const prompt = promptParts.join("\n\n");
@@ -761,6 +778,7 @@ async function generateAnswer({
   query,
   context,
   systemPrompt,
+  conversationHistory,
   metadata,
 } = {}) {
   const provider = getConfiguredProvider();
@@ -788,6 +806,7 @@ async function generateAnswer({
       query,
       context,
       systemPrompt,
+      conversationHistory,
       metadata,
     });
   }
