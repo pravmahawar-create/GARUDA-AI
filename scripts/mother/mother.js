@@ -932,6 +932,11 @@ class Mother {
     const multiBrainCoordination = orchestration.coordination;
     const approvalResult = orchestration.approval;
     const workflow = buildWorkflowProgress(orchestration, multiBrainCoordination);
+    console.log("[ExecutionApproved Check]", {
+      founderApproved,
+      approvalResultAllowed: approvalResult ? approvalResult.allowed : null,
+      writeApprovalAllowed: writeApproval ? writeApproval.allowed : null
+    });
     const executionApproved = Boolean(
       founderApproved &&
       approvalGate &&
