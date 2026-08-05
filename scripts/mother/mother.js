@@ -598,16 +598,19 @@ class Mother {
     const externalExecutionEnabled =
       process.env.GARUDA_EXTERNAL_WORKER_EXECUTION === "true";
 
+    const isReadOnlyGoal = !intendsWrite || (goal && (goal.actionType === "analysis" || goal.intent === "read_only_audit"));
     const costDecision = costOptimizer.classify({
       complexity: taskProfile.complexity,
       fileCount: taskProfile.fileCount,
       risk: taskProfile.risk,
       duplicateDetected: Boolean(latestExact),
-      localCapabilities: !intendsWrite,
+      localCapabilities: isReadOnlyGoal,
       requiresExternal:
-        intendsWrite ||
-        taskProfile.complexity >= 4 ||
-        taskProfile.fileCount > 3,
+        !isReadOnlyGoal && (
+          intendsWrite ||
+          taskProfile.complexity >= 4 ||
+          taskProfile.fileCount > 3
+        ),
       paidRequested: false,
       creditsAvailable: externalExecutionEnabled ? 1 : 0
     });
