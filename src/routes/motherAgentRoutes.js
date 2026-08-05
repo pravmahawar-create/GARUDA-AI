@@ -102,8 +102,6 @@ router.post("/chat", async (req, res) => {
       } else {
         answerText = `GARUDA agent mission ended with status: ${outcome.status}.`;
       }
-
-      const filesInspected = executedTasks.flatMap((t) => (t && t.evidence && Array.isArray(t.evidence.filesInspected) ? t.evidence.filesInspected : []));
       const filesModified = cycle.multiBrain && Array.isArray(cycle.multiBrain.filesChanged) ? cycle.multiBrain.filesChanged : [];
 
       const sanitizedEvidence = {
