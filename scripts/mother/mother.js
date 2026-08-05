@@ -1001,11 +1001,11 @@ class Mother {
       executedTasks: [],
       governance: {
         status: preflight.passed
-          ? (executionApproved ? "ready" : "approval_required")
+          ? (executionApproved || isReadOnlyMission ? "ready" : "approval_required")
           : "blocked_by_validation"
       },
       nextAction: preflight.passed
-        ? (executionApproved ? "continue_safe_execution" : "await_founder_approval")
+        ? (executionApproved || isReadOnlyMission ? "continue_safe_execution" : "await_founder_approval")
         : (preflight.status === "NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET"
           ? "NO_ELIGIBLE_SELF_DEVELOPMENT_TARGET"
           : "fix_validation_issues"),
