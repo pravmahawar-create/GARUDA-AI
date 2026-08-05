@@ -10,7 +10,10 @@ router.post("/chat", async (req, res) => {
   try {
     const systemContext = req.body.systemContext || "";
     const userMessage = req.body.message || req.body.userMessage || req.body.question || "";
-    const threadId = req.body.threadId || null;
+    let threadId = req.body.threadId || null;
+    if (!threadId) {
+      threadId = `thread_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    }
 
     let conversationHistory = Array.isArray(req.body.history) ? req.body.history : [];
 
