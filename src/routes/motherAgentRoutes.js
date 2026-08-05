@@ -50,6 +50,7 @@ router.post("/chat", async (req, res) => {
       const mother = new Mother();
       const outcome = await mother.runMissionToCompletion(userMessage, {
         founderApproved,
+        bypassMemoryMatch: isReadOnly,
         maxCycles: 1
       });
 

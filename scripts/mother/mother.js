@@ -553,7 +553,8 @@ class Mother {
 
     const memoryEngine = new ProjectMemoryEngine();
     const memoryMatches = memoryEngine.findSimilarGoal(goalInput);
-    let latestExact = (options && options.bypassMemoryMatch) || goal.actionType === "analysis" || goal.intent === "read_only_audit" ? null : (memoryMatches.exactMatches[0] || null);
+    const isReadOnlyMission = Boolean(goal && (goal.actionType === "analysis" || goal.intent === "read_only_audit"));
+    let latestExact = (options && options.bypassMemoryMatch) || isReadOnlyMission ? null : (memoryMatches.exactMatches[0] || null);
 
     if (latestExact && goal.targetName && goal.actionType === "creation") {
       const targetSlug = goal.targetName.replace(/\.(js|ts|json)$/i, "");
