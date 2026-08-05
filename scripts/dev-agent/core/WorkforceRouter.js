@@ -129,12 +129,21 @@ function normalizeCostClassification(cost = {}) {
 }
 
 function taskNeedsWrite(task = {}) {
-  const writePattern =
-    /implement|write|patch|modify|refactor|create|build|fix|update|develop|upgrade|integrate/i;
+  const goalText = String(task.rawGoal || task.goal || task.prompt || "").toLowerCase();
+  const hasNegativeWriteConstraint =
+    /\b(do not|don't|dont|no|without|zero|never|stop)\s+([a-z\s,]+)?\b(modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i.test(goalText) ||
+    /\b(read-only|read only|no writes|no write|without changing|without modifying|don't commit|don't push|don't modify|don't write|dont commit|dont push|dont modify|dont write)\b/i.test(goalText);
+
+  if (hasNegativeWriteConstraint || task.intent === "read_only_audit" || task.actionType === "analysis") {
+    return false;
+  }
 
   if (normalizeBoolean(task.requiresWrite)) {
     return true;
   }
+
+  const writePattern =
+    /\b(implement|write|patch|modify|refactor|create|build|fix|update|develop|upgrade|integrate)\b/i;
 
   const searchableFields = [
     task.goal,
@@ -306,9 +315,10 @@ class WorkforceRouter {
 
     if (freeExternalAllowed && !externalBlocked) {
       externalAIRequired =
-        complexity >= 3 ||
-        fileCount > 3 ||
-        needsWrite;
+        needsWrite && (
+          complexity >= 3 ||
+          fileCount > 3
+        );
 
       if (
         externalAIRequired &&
