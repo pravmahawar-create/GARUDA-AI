@@ -702,7 +702,7 @@ class Mother {
           allowed: true,
           status: "READ_ONLY_APPROVED",
           reason: "read_only_planning",
-          founderApprovalRequired: true,
+          founderApprovalRequired: false,
           blockedActions: [],
           blockedReason: "None"
         };
