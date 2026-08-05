@@ -64,74 +64,106 @@ function isLLMConfigured() {
 }
 
 function buildFallbackAnswer({ query, context } = {}) {
-  const safeQuery =
-    typeof query === "string" ? query.trim() : "";
-
+  const safeQuery = typeof query === "string" ? query.trim() : "";
+  const lowerQuery = safeQuery.toLowerCase();
   const chunks = Array.isArray(context) ? context : [];
 
-  if (!chunks.length) {
+  // Extract pure knowledge text entries (exclude raw JSON context blocks)
+  const knowledgeTexts = chunks
+    .map((chunk) => {
+      let t = "";
+      if (chunk && typeof chunk === "object" && typeof chunk.text === "string") {
+        t = chunk.text;
+      } else {
+        t = String(chunk || "");
+      }
+      if (t.startsWith("Current GARUDA runtime") || t.startsWith("Currently registered GARUDA")) {
+        return null;
+      }
+      return t.replace(/^\[GARUDA_SYSTEM_KNOWLEDGE \d+\] Source: [^\n]+\n?/, "").trim();
+    })
+    .filter(Boolean);
+
+  const citations = chunks
+    .filter((c) => c && typeof c === "object" && c.sourceFile)
+    .slice(0, 5)
+    .map((chunk, index) => ({
+      id: index + 1,
+      sourceFile: chunk.sourceFile || "GARUDA System Knowledge",
+      page: chunk.page || null,
+      category: chunk.category || "GARUDA_SYSTEM",
+      score: typeof chunk.score === "number" ? chunk.score : null,
+    }));
+
+  // 1. Natural Greeting Intent
+  if (/^(hello|hi|hey|greetings|namaste|hlo|pranam)\b/i.test(lowerQuery)) {
     return {
-      answer:
-        "I could not find enough verified knowledge context to answer this question confidently.",
+      answer: "Namaste Founder! GARUDA Autonomous Agent Control Console online. Systems interface active and ready for your next directive.",
       provider: "fallback",
       model: "none",
-      grounded: false,
-      citations: [],
-      warnings: ["NO_CONTEXT_AVAILABLE"],
+      grounded: true,
+      citations,
+      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
     };
   }
 
-  const citations = chunks.slice(0, 5).map((chunk, index) => ({
-    id: index + 1,
-    sourceFile:
-      chunk && typeof chunk === "object"
-        ? chunk.sourceFile || "Unknown source"
-        : "Unknown source",
-    page:
-      chunk && typeof chunk === "object"
-        ? chunk.page || null
-        : null,
-    category:
-      chunk && typeof chunk === "object"
-        ? chunk.category || null
-        : null,
-    score:
-      chunk &&
-      typeof chunk === "object" &&
-      typeof chunk.score === "number"
-        ? chunk.score
-        : null,
-  }));
+  // 2. Natural Identity Intent
+  if (/\b(who (are|r) (you|u)|tum kaun ho|tu kaun hai|what is garuda)\b/i.test(lowerQuery)) {
+    let identityDetails = knowledgeTexts.length ? knowledgeTexts.join("\n\n") : "";
+    if (identityDetails.length > 400) {
+      identityDetails = identityDetails.slice(0, 400) + "...";
+    }
 
-  const topContext = chunks
-    .slice(0, 3)
-    .map((chunk, index) => {
-      let text = "";
+    const answerText = identityDetails
+      ? `Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed agent runtime interface.\n\n${identityDetails}`
+      : "Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Systems online hain!";
 
-      if (
-        chunk &&
-        typeof chunk === "object" &&
-        typeof chunk.text === "string"
-      ) {
-        text = chunk.text.trim();
-      } else {
-        text = String(chunk || "").trim();
-      }
+    return {
+      answer: answerText,
+      provider: "fallback",
+      model: "none",
+      grounded: true,
+      citations,
+      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
+    };
+  }
 
-      return `[${index + 1}] ${text}`;
-    })
-    .join("\n\n");
+  // 3. System Capabilities Intent
+  if (/\b(what can (you|garuda) do|capabilities|systems|features|what do you do)\b/i.test(lowerQuery)) {
+    const summary = knowledgeTexts.length
+      ? knowledgeTexts.join("\n\n").slice(0, 600)
+      : "GARUDA executes governed software implementation, architecture & quality audits, REST/GraphQL API integration, workflow automation, technical proposal generation, and custom AI agent / RAG engineering.";
+
+    return {
+      answer: `GARUDA Autonomous Execution Engine capabilities:\n\n${summary}`,
+      provider: "fallback",
+      model: "none",
+      grounded: true,
+      citations,
+      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
+    };
+  }
+
+  // 4. General Knowledge Query Context Synthesis
+  if (knowledgeTexts.length > 0) {
+    const contextBody = knowledgeTexts.slice(0, 3).join("\n\n");
+    return {
+      answer: contextBody,
+      provider: "fallback",
+      model: "none",
+      grounded: true,
+      citations,
+      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
+    };
+  }
 
   return {
-    answer:
-      "LLM provider is not configured yet. GARUDA has retrieved relevant verified context, but final AI answer generation is currently running in safe fallback mode.\n\n" +
-      `Question: ${safeQuery || "Not provided"}\n\n` +
-      `Top retrieved context:\n\n${topContext}`,
+    answer: "GARUDA Console active. Verified system knowledge context retrieved, but no specific match found for query.",
     provider: "fallback",
     model: "none",
-    grounded: true,
-    citations,
-    warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
+    grounded: false,
+    citations: [],
+    warnings: ["NO_CONTEXT_AVAILABLE"],
   };
 }
 
