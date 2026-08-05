@@ -130,6 +130,7 @@ router.post("/chat", async (req, res) => {
         answer: answerText,
         missionStatus: outcome.status,
         grounded: true,
+        debugGoal: goal,
         evidence: sanitizedEvidence
       });
     }
