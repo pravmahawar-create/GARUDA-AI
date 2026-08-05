@@ -1079,7 +1079,7 @@ class Mother {
       cycle.nextAction = revenueBridge.suggestedNextAction;
     }
 
-    if ((writeIntentDetected || promptDecision.implementationBlocked) && !executionApproved) {
+    if ((writeIntentDetected || promptDecision.implementationBlocked) && !executionApproved && !isReadOnlyGoal) {
       cycle.validation = {
         ...cycle.validation,
         status: "BLOCKED_BY_APPROVAL",
