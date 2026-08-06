@@ -339,6 +339,13 @@ function extractOllamaResponseText(payload) {
   return null;
 }
 
+function logOllamaDiagnostic(event, details = {}) {
+  console.error("[GARUDA_OLLAMA_DIAGNOSTIC]", {
+    event,
+    ...details,
+  });
+}
+
 async function generateOpenAIAnswer({
   query,
   context,
@@ -532,6 +539,11 @@ async function generateOllamaAnswer({
     });
 
     if (!res.ok) {
+      logOllamaDiagnostic("http_error", {
+        status: res.status,
+        authenticationRejected: res.status === 401 || res.status === 403,
+        nodeKeyConfigured: Boolean(nodeKey),
+      });
       const fallback = buildFallbackAnswer({ query, context });
       return {
         ...fallback,
@@ -546,7 +558,12 @@ async function generateOllamaAnswer({
 
     try {
       payload = await res.json();
-    } catch {
+    } catch (error) {
+      logOllamaDiagnostic("json_parse_failure", {
+        status: res.status,
+        errorName: error && error.name ? String(error.name) : "UnknownError",
+        errorMessage: error && error.message ? String(error.message).slice(0, 300) : "ollama_invalid_json",
+      });
       const fallback = buildFallbackAnswer({ query, context });
       return {
         ...fallback,
@@ -560,6 +577,16 @@ async function generateOllamaAnswer({
     const answer = extractOllamaResponseText(payload);
 
     if (!answer) {
+      const responseIsString = payload && typeof payload.response === "string";
+      logOllamaDiagnostic(
+        responseIsString ? "empty_model_response" : "malformed_response",
+        {
+          payloadType: payload === null ? "null" : typeof payload,
+          responseFieldType: payload && Object.prototype.hasOwnProperty.call(payload, "response")
+            ? typeof payload.response
+            : "missing",
+        }
+      );
       const fallback = buildFallbackAnswer({ query, context });
       return {
         ...fallback,
@@ -582,6 +609,19 @@ async function generateOllamaAnswer({
       },
     };
   } catch (error) {
+    const errorName = error && error.name ? String(error.name) : "UnknownError";
+    const errorMessage = error && error.message
+      ? String(error.message).slice(0, 300)
+      : "ollama_network_error";
+    const errorCategory =
+      errorName === "AbortError" || /timeout|timed out/i.test(errorMessage)
+        ? "timeout_or_connectivity_failure"
+        : "network_or_fetch_failure";
+    logOllamaDiagnostic(errorCategory, {
+      errorName,
+      errorMessage,
+      nodeKeyConfigured: Boolean(process.env.GARUDA_NODE_KEY),
+    });
     const fallback = buildFallbackAnswer({ query, context });
     return {
       ...fallback,
