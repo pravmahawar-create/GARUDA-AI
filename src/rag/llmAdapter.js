@@ -346,6 +346,27 @@ function logOllamaDiagnostic(event, details = {}) {
   });
 }
 
+function getSafeOllamaErrorDetails(error) {
+  const cause = error && error.cause && typeof error.cause === "object"
+    ? error.cause
+    : null;
+
+  return {
+    errorName: error && error.name ? String(error.name) : "UnknownError",
+    errorMessage: error && error.message
+      ? String(error.message).slice(0, 300)
+      : "ollama_network_error",
+    causeName: cause && cause.name ? String(cause.name) : null,
+    causeCode: cause && cause.code ? String(cause.code) : null,
+    causeMessage: cause && cause.message
+      ? String(cause.message).slice(0, 300)
+      : null,
+    causeErrno: cause && cause.errno ? String(cause.errno) : null,
+    causeSyscall: cause && cause.syscall ? String(cause.syscall) : null,
+    causeHostname: cause && cause.hostname ? String(cause.hostname) : null,
+  };
+}
+
 async function generateOpenAIAnswer({
   query,
   context,
@@ -609,17 +630,15 @@ async function generateOllamaAnswer({
       },
     };
   } catch (error) {
-    const errorName = error && error.name ? String(error.name) : "UnknownError";
-    const errorMessage = error && error.message
-      ? String(error.message).slice(0, 300)
-      : "ollama_network_error";
+    const errorDetails = getSafeOllamaErrorDetails(error);
     const errorCategory =
-      errorName === "AbortError" || /timeout|timed out/i.test(errorMessage)
+      errorDetails.errorName === "AbortError" ||
+      /timeout|timed out/i.test(errorDetails.errorMessage) ||
+      /timeout|timed out/i.test(errorDetails.causeMessage || "")
         ? "timeout_or_connectivity_failure"
         : "network_or_fetch_failure";
     logOllamaDiagnostic(errorCategory, {
-      errorName,
-      errorMessage,
+      ...errorDetails,
       nodeKeyConfigured: Boolean(process.env.GARUDA_NODE_KEY),
     });
     const fallback = buildFallbackAnswer({ query, context });
