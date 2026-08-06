@@ -15,11 +15,13 @@ export default function CommandCenter({
   onSend,
   onApproval
 }) {
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const [expandedEvidenceIndex, setExpandedEvidenceIndex] = useState(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages, loading, activityState, activeMission]);
 
   const toggleEvidence = (index) => {
@@ -108,6 +110,7 @@ export default function CommandCenter({
 
       {/* Messages Scroll Area */}
       <div
+        ref={messagesContainerRef}
         className="command-center__messages"
         style={{
           minHeight: "320px",

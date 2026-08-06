@@ -20,7 +20,7 @@ export default function FounderWorkspace({ onLogout }) {
   const [health, setHealth] = useState("checking");
   const [healthMessage, setHealthMessage] = useState("Awaiting backend response...");
   const [question, setQuestion] = useState("");
-  const [activeThreadId, setActiveThreadId] = useState(() => localStorage.getItem("garuda_active_thread_id") || null);
+  const [activeThreadId, setActiveThreadId] = useState(null);
   const [threads, setThreads] = useState([]);
   const [messages, setMessages] = useState([
     { role: "garuda", text: "Founder access granted. GARUDA is prepared to orchestrate your next move.", mode: "conversation" }
@@ -69,20 +69,6 @@ export default function FounderWorkspace({ onLogout }) {
         setHealthMessage(snapshotMessage);
         setDashboardData(snapshot);
         setThreads(threadList || []);
-
-        let targetThreadId = activeThreadId;
-        if (!targetThreadId && threadList && threadList.length > 0) {
-          targetThreadId = threadList[0].threadId;
-        }
-
-        if (targetThreadId) {
-          const loadedThread = await fetchThread(targetThreadId);
-          if (loadedThread && Array.isArray(loadedThread.messages) && loadedThread.messages.length > 0) {
-            setActiveThreadId(targetThreadId);
-            localStorage.setItem("garuda_active_thread_id", targetThreadId);
-            setMessages(loadedThread.messages);
-          }
-        }
       } catch (error) {
         if (active) {
           setHealth("offline");
