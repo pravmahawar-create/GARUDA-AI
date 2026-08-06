@@ -32,9 +32,15 @@ function AppRoutes() {
     navigate("/");
   };
 
-  const founderRoute = authenticated === null ? null : authenticated
-    ? <FounderWorkspace onLogout={handleLogout} />
-    : <FounderLogin onAuthenticated={() => setAuthenticated(true)} />;
+  const founderRoute = authenticated === null ? (
+    <div style={{ minHeight: "100vh", background: "#030712", display: "grid", placeItems: "center", color: "#d4af37", fontFamily: "sans-serif", fontSize: "0.9rem", letterSpacing: "0.1em" }}>
+      GARUDA FOUNDER DESKTOP...
+    </div>
+  ) : authenticated ? (
+    <FounderWorkspace onLogout={handleLogout} />
+  ) : (
+    <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
+  );
   const customerRoute = customer === null ? null : customer ? <CustomerDashboard customer={customer} onLogout={async () => { await fetch("/api/customer/logout", { method: "POST", credentials: "same-origin" }); setCustomer(false); navigate("/"); }} /> : <Login />;
   const publicLanding = <PublicLanding onGetStarted={() => navigate("/signup")} onFounderLogin={() => navigate("/founder")} />;
 

@@ -19,9 +19,7 @@ export default function ArrivalExperience({ onEnter }) {
   function handleEnter() {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    window.setTimeout(() => {
-      onEnter();
-    }, 300);
+    onEnter();
   }
 
   useEffect(() => {

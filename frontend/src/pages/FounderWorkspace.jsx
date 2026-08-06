@@ -27,7 +27,7 @@ export default function FounderWorkspace({ onLogout }) {
   ]);
   const [loading, setLoading] = useState(false);
   const [activityState, setActivityState] = useState("Ready");
-  const [hasEntered, setHasEntered] = useState(false);
+  const [hasEntered, setHasEntered] = useState(() => Boolean(sessionStorage.getItem("garuda_has_entered")));
   const [dashboardData, setDashboardData] = useState(null);
   const [selfBuildState, setSelfBuildState] = useState(null);
   const [activeNav, setActiveNav] = useState("Dashboard");
@@ -196,12 +196,20 @@ export default function FounderWorkspace({ onLogout }) {
     return (
       <ArrivalExperience
         onEnter={() => {
+          sessionStorage.setItem("garuda_has_entered", "true");
           setHasEntered(true);
           window.scrollTo(0, 0);
         }}
       />
     );
   }
+
+  const handleSignOut = () => {
+    sessionStorage.removeItem("garuda_has_entered");
+    if (typeof onLogout === "function") {
+      onLogout();
+    }
+  };
 
   return (
     <div className="garuda-shell">
@@ -212,7 +220,7 @@ export default function FounderWorkspace({ onLogout }) {
           <TopBar />
           {onLogout && (
             <button
-              onClick={onLogout}
+              onClick={handleSignOut}
               style={{
                 marginRight: "1.5rem",
                 background: "rgba(239, 68, 68, 0.15)",
