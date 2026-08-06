@@ -56,8 +56,42 @@ function AppRoutes() {
   );
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("GARUDA UI Error Boundary caught an error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: "100vh", background: "#030712", color: "#f87171", padding: "2rem", fontFamily: "sans-serif" }}>
+          <h2 style={{ color: "#d4af37" }}>GARUDA Founder Console UI Notice</h2>
+          <p>{String(this.state.error?.message || this.state.error)}</p>
+          <button onClick={() => window.location.reload()} style={{ marginTop: "1rem", padding: "0.6rem 1.2rem", background: "linear-gradient(135deg, #d4af37 0%, #aa820a 100%)", color: "#000", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}>
+            Reload Console
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <AppRoutes />
-  </BrowserRouter>
+  <React.StrictMode>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </ErrorBoundary>
+  </React.StrictMode>
 );
