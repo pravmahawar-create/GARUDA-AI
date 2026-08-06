@@ -40,8 +40,28 @@ const {
   resolvePreviousMissionEvidence
 } = require("./bodyAwareness");
 
-function buildReadOnlyAnalysis(rootDir) {
+function buildReadOnlyAnalysis(rootDir, targetPaths = []) {
   const architect = new LocalBrainWorker({ role: "architect", rootDir });
+  const explicitTargets = Array.isArray(targetPaths) ? targetPaths : [];
+
+  if (explicitTargets.length > 0) {
+    const fileSample = explicitTargets.map((targetPath) => {
+      const absolutePath = path.resolve(rootDir, targetPath);
+      const relativePath = path.relative(rootDir, absolutePath);
+      const withinRoot = relativePath && !relativePath.startsWith("..") && !path.isAbsolute(relativePath);
+
+      return {
+        path: targetPath,
+        type: withinRoot && fs.existsSync(absolutePath) ? "file" : "missing"
+      };
+    });
+
+    return {
+      projectStructure: [],
+      fileSample,
+      reportDraft: architect.prepareReports({ summary: "Mother completed targeted read-only analysis." })
+    };
+  }
 
   return {
     projectStructure: architect.readProjectStructure(2),
@@ -736,7 +756,7 @@ class Mother {
       externalExecutionEnabled,
       localWorkerHandler: (localInput = {}) => {
         void localInput;
-        return buildReadOnlyAnalysis(process.cwd());
+        return buildReadOnlyAnalysis(process.cwd(), goal.targetPaths);
       }
     });
 
@@ -919,7 +939,7 @@ class Mother {
         };
       }
     }
-    const readOnlyAnalysis = buildReadOnlyAnalysis(process.cwd());
+    const readOnlyAnalysis = buildReadOnlyAnalysis(process.cwd(), goal.targetPaths);
 
     const orchestration = await manager.manageDevelopmentDirectorGoal(goalInput, {
       context: {

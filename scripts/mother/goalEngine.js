@@ -1,6 +1,14 @@
+function extractExplicitRepoPaths(goal = "") {
+  const pathPattern = /(?:^|[\s`"'(])((?:\.{1,2}\/)?(?:[A-Za-z0-9_.-]+\/)+[A-Za-z0-9_.-]+\.(?:[cm]?[jt]sx?|json|ya?ml|md|css|scss|html))/g;
+  return Array.from(String(goal || "").matchAll(pathPattern), (match) => match[1])
+    .map((value) => value.replace(/^\.\//, ""))
+    .filter((value, index, values) => values.indexOf(value) === index);
+}
+
 function understandGoal(goal = "") {
   const rawGoal = String(goal || "").trim();
   const text = rawGoal.toLowerCase();
+  const targetPaths = extractExplicitRepoPaths(rawGoal);
 
   const hasNegativeWriteConstraint =
     /\b(do not|don't|dont|no|without|zero|never|stop)\s+([a-z\s,]+)?\b(modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i.test(text) ||
@@ -125,6 +133,7 @@ function understandGoal(goal = "") {
     intent,
     actionType,
     targetName,
+    targetPaths,
     priority,
     explicitArtifactRequest,
     targetSource: explicitArtifactRequest ? "FOUNDER_EXPLICIT_TARGET" : null,
@@ -132,7 +141,7 @@ function understandGoal(goal = "") {
   };
 }
 
-module.exports = { understandGoal };
+module.exports = { understandGoal, extractExplicitRepoPaths };
 // GARUDA_SELF_DEVELOPMENT_TOUCHPOINT capability=mother.goal_target_grounding timestamp=2026-08-02T08:27:19.545Z objective=Create a minimal governed touchpoint inside selected capability surface for mother.goal_target_grounding
 // GARUDA_SELF_DEVELOPMENT_TOUCHPOINT capability=mother.goal_target_grounding timestamp=2026-08-02T08:41:43.786Z objective=Create a minimal governed touchpoint inside selected capability surface for mother.goal_target_grounding
 // GARUDA_SELF_DEVELOPMENT_TOUCHPOINT capability=mother.goal_target_grounding timestamp=2026-08-02T10:59:53.425Z objective=Create a minimal governed touchpoint inside selected capability surface for mother.goal_target_grounding

@@ -1,4 +1,5 @@
 const { routeTask } = require("./router");
+const { extractExplicitRepoPaths } = require("./goalEngine");
 const { requiresFounderApproval } = require("../../src/motherCore/approval/approvalPolicy");
 const { evaluateConstitutionGate } = require("./constitution");
 const { think } = require("./thinker");
@@ -153,11 +154,32 @@ function inferTargetSlug(item = {}) {
   return String(candidate).replace(/\.(js|ts|json)$/i, "").replace(/[^a-zA-Z0-9_\-]/g, "") || "autonomyImprovement";
 }
 
+function hasNegativeWriteConstraint(taskText = "") {
+  const text = normalizeTaskText(taskText).toLowerCase();
+  if (!text) {
+    return false;
+  }
+
+  const explicitNegationPattern = /\b(?:do not|don't|dont|never|no|without|avoid|stop)\b/i;
+  const writeTermPattern = /\b(?:modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i;
+  const readOnlyPattern = /\b(?:read-only|read only|read_only|no writes?|no changes?|no edits?|no modifications?|without changing|without modifying|without editing|don't commit|don't push|don't modify|don't write|dont commit|dont push|dont modify|dont write)\b/i;
+
+  if (readOnlyPattern.test(text)) {
+    return true;
+  }
+
+  if (!explicitNegationPattern.test(text)) {
+    return false;
+  }
+
+  return writeTermPattern.test(text);
+}
+
 function inferRequiredCapabilities(item = {}, initialRoute = "general") {
   const taskText = normalizeTaskText(item.task).toLowerCase();
   const required = new Set([CAPABILITIES.READ]);
   const isReviewTask = /\breview\b/.test(taskText);
-  const isReadOnlyAudit = /\b(read-only|read_only_audit|read_only)\b/i.test(taskText) || item.readOnly === true;
+  const isReadOnlyAudit = hasNegativeWriteConstraint(taskText) || /\b(read-only|read_only_audit|read_only)\b/i.test(taskText) || item.readOnly === true;
   const writeIntentPattern = /\b(?:implement(?:ing|ed)?|create(?:d|s|ing)?|modify(?:ing|ied|ies)?|update(?:d|s|ing)?|fix(?:es|ed|ing)?|refactor(?:ed|ing|s)?|repair(?:ed|ing|s)?|patch(?:es|ed|ing)?|write(?:s|n|ing|ten)?)\b/;
 
   if (/inspect|analy|search|scan|discover/.test(taskText)) {
@@ -656,9 +678,29 @@ function executeLocalBrainTask(item) {
   });
 
   const taskText = String(item.task || "").toLowerCase();
+  const explicitTargets = extractExplicitRepoPaths(item.task);
   let output;
 
-  if (taskText.includes("architecture")) {
+  if (explicitTargets.length > 0) {
+    const fileSample = explicitTargets.map((targetPath) => {
+      const absolutePath = path.resolve(process.cwd(), targetPath);
+      const relativePath = path.relative(process.cwd(), absolutePath);
+      const withinRoot = relativePath && !relativePath.startsWith("..") && !path.isAbsolute(relativePath);
+
+      return {
+        path: targetPath,
+        status: withinRoot && fs.existsSync(absolutePath) ? "INSPECTED" : "MISSING"
+      };
+    });
+
+    output = {
+      taskType: "targeted_read_only_execution",
+      fileSample,
+      missingTargets: fileSample.filter((file) => file.status === "MISSING").map((file) => file.path),
+      summary: `Targeted read-only inspection completed for ${fileSample.length} explicit path(s) without repository expansion.`,
+      report: worker.prepareReports({ summary: "Targeted read-only report prepared." })
+    };
+  } else if (taskText.includes("architecture")) {
     output = {
       taskType: "architecture_analysis",
       projectStructure: worker.readProjectStructure(3),
