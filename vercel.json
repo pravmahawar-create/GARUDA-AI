@@ -4,11 +4,15 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/api/(?!auth/)(.*)",
-      "destination": "https://garuda-ai-xfif.onrender.com/api/$1"
+      "source": "/api/auth/:path*",
+      "destination": "/api/auth/:path*"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/api/:path*",
+      "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
+    },
+    {
+      "source": "/:path*",
       "destination": "/index.html"
     }
   ]
