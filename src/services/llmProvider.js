@@ -223,7 +223,13 @@ function buildConversationContext(history) {
   );
 }
 
-function buildSystemPrompt(systemContext) {
+const FAST_GARUDA_PROMPT = "You are GARUDA, a helpful AI assistant. Answer directly and concisely based on recent conversation history.";
+
+function buildSystemPrompt(systemContext, fastLane = false) {
+  if (fastLane) {
+    return FAST_GARUDA_PROMPT;
+  }
+
   const extraContext =
     typeof systemContext === "string"
       ? systemContext.trim()
@@ -290,6 +296,7 @@ async function ask({
   capability = "CONVERSATION",
   skipKnowledge = false,
   skipRuntimeContext = false,
+  fastLane = false,
 } = {}) {
   const resource = cognitiveRouterService.resolveCognitiveResource(capability);
   const provider = resource.provider;
@@ -297,7 +304,7 @@ async function ask({
 
   const context = [];
 
-  if (!skipRuntimeContext) {
+  if (!skipRuntimeContext && !fastLane) {
     const runtimeContext = readRuntimeContext();
     const compactContext = buildCompactRuntimeContext(runtimeContext);
     context.push(...compactContext);
@@ -312,7 +319,7 @@ async function ask({
 
   let verifiedKnowledgeContext = [];
 
-  if (!skipKnowledge) {
+  if (!skipKnowledge && !fastLane) {
     try {
       const knowledgeChunks = await knowledgeService.searchKnowledgeByCategory(
         typeof userMessage === "string"
@@ -346,11 +353,12 @@ async function ask({
     context,
 
     systemPrompt:
-      buildSystemPrompt(systemContext),
+      buildSystemPrompt(systemContext, fastLane),
 
     metadata: {
       source: "garuda_conversational_layer",
       provider,
+      fastLane,
     },
   };
 

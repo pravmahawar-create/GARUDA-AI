@@ -139,7 +139,8 @@ router.post("/chat", async (req, res) => {
       userMessage,
       conversationHistory,
       skipKnowledge: true,
-      skipRuntimeContext: true
+      skipRuntimeContext: true,
+      fastLane: true
     });
 
     const cleanAnswer = response && typeof response.answer === "string" && response.answer.trim()

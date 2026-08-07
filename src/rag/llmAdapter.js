@@ -488,6 +488,7 @@ async function generateOllamaAnswer({
   context,
   systemPrompt,
   conversationHistory,
+  metadata = {},
 } = {}) {
   const model =
     process.env.GARUDA_LLM_MODEL ||
@@ -548,6 +549,7 @@ async function generateOllamaAnswer({
       requestHeaders["X-GARUDA-NODE-KEY"] = nodeKey;
     }
 
+    const isFastLane = metadata && metadata.fastLane === true;
     const res = await fetch(endpoint, {
       method: "POST",
       headers: requestHeaders,
@@ -555,7 +557,7 @@ async function generateOllamaAnswer({
         model,
         prompt,
         stream: false,
-        options: { num_predict: 150 }
+        options: { num_predict: isFastLane ? 80 : 150 }
       }),
     });
 
