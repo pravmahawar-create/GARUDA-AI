@@ -18,10 +18,24 @@ function AppRoutes() {
   const [customer, setCustomer] = useState(null);
 
   useEffect(() => {
-    fetch("/api/auth/session", { credentials: "same-origin" })
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+      setAuthenticated(false);
+    }, 5000);
+
+    fetch("/api/auth/session", { credentials: "same-origin", signal: controller.signal })
       .then((response) => response.json())
-      .then((data) => setAuthenticated(data.authenticated === true))
-      .catch(() => setAuthenticated(false));
+      .then((data) => {
+        clearTimeout(timeoutId);
+        setAuthenticated(data.authenticated === true);
+      })
+      .catch(() => {
+        clearTimeout(timeoutId);
+        setAuthenticated(false);
+      });
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   useEffect(() => { fetch("/api/customer/session", { credentials: "same-origin" }).then((response) => response.json()).then((data) => setCustomer(data.authenticated ? data.customer : false)).catch(() => setCustomer(false)); }, []);
