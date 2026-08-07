@@ -33,21 +33,18 @@ router.post("/chat", async (req, res) => {
       }
     }
 
-    const goal = understandGoal(userMessage);
-    const hasNegativeWriteConstraint =
-      /\b(do not|don't|dont|no|without|zero|never|stop)\s+([a-z\s,]+)?\b(modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i.test(userMessage) ||
-      /\b(read-only|read only|no writes|no write|without changing|without modifying|don't commit|don't push|don't modify|don't write|dont commit|dont push|dont modify|dont write)\b/i.test(userMessage);
+    const isExplicitAgentRequest =
+      req.body.mode === "agent" ||
+      /^\/(agent|mission|run)\b/i.test(userMessage.trim()) ||
+      /\b(run mission|start mission|agent mode|execute agent|autonomous mission)\b/i.test(userMessage);
 
-    const isReadOnly = goal.intent === "read_only_audit" || hasNegativeWriteConstraint;
-    const isAgentTask = isReadOnly ||
-                        goal.intent === "create_code_artifact" ||
-                        goal.intent === "modify_code_artifact" ||
-                        goal.intent === "verify_code_artifact" ||
-                        goal.intent === "develop_revenue_model" ||
-                        goal.intent === "self_development_meta" ||
-                        goal.intent === "self_development_improvement";
+    if (isExplicitAgentRequest) {
+      const goal = understandGoal(userMessage);
+      const hasNegativeWriteConstraint =
+        /\b(do not|don't|dont|no|without|zero|never|stop)\s+([a-z\s,]+)?\b(modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i.test(userMessage) ||
+        /\b(read-only|read only|no writes|no write|without changing|without modifying|don't commit|don't push|don't modify|don't write|dont commit|dont push|dont modify|dont write)\b/i.test(userMessage);
 
-    if (isAgentTask) {
+      const isReadOnly = goal.intent === "read_only_audit" || hasNegativeWriteConstraint;
       // Read-only tasks run safe read-only execution (founderApproved: true for read_only_audit).
       // Write tasks MUST use explicit founder approval from request body only (founderApproved: Boolean(req.body.founderApproved)).
       const founderApproved = isReadOnly ? true : Boolean(req.body.founderApproved);
@@ -137,7 +134,13 @@ router.post("/chat", async (req, res) => {
       });
     }
 
-    const response = await llmProvider.ask({ systemContext, userMessage, conversationHistory });
+    const response = await llmProvider.ask({
+      systemContext,
+      userMessage,
+      conversationHistory,
+      skipKnowledge: true,
+      skipRuntimeContext: true
+    });
 
     const cleanAnswer = response && typeof response.answer === "string" && response.answer.trim()
       ? response.answer
@@ -146,6 +149,26 @@ router.post("/chat", async (req, res) => {
     const providerName = response && response.provider ? response.provider : "fallback";
     const modelName = response && response.model ? response.model : null;
     const warningsList = response && Array.isArray(response.warnings) ? response.warnings : [];
+
+    const rawAnswer = response && typeof response.answer === "string" ? response.answer : null;
+    const rawExists = rawAnswer !== null;
+    const rawLength = rawAnswer ? rawAnswer.length : 0;
+    const rawSnippet = rawAnswer ? rawAnswer.slice(0, 120) : null;
+    const cleanLength = cleanAnswer ? cleanAnswer.length : 0;
+    const cleanSnippet = cleanAnswer ? cleanAnswer.slice(0, 120) : null;
+
+    console.log("[GARUDA_CONVERSATION_DIAGNOSTIC]", {
+      provider: providerName,
+      model: modelName,
+      rawExists,
+      rawLength,
+      rawSnippet,
+      differs: rawAnswer !== cleanAnswer,
+      cleanLength,
+      cleanSnippet,
+      warnings: warningsList,
+      error: response && response.error ? response.error : null
+    });
 
     if (threadId) {
       await conversationService.appendMessages(threadId, [

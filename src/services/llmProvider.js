@@ -288,15 +288,20 @@ async function ask({
   userMessage = "",
   conversationHistory = [],
   capability = "CONVERSATION",
+  skipKnowledge = false,
+  skipRuntimeContext = false,
 } = {}) {
   const resource = cognitiveRouterService.resolveCognitiveResource(capability);
   const provider = resource.provider;
   const model = resource.model;
 
-  const runtimeContext = readRuntimeContext();
+  const context = [];
 
-  const context =
-    buildCompactRuntimeContext(runtimeContext);
+  if (!skipRuntimeContext) {
+    const runtimeContext = readRuntimeContext();
+    const compactContext = buildCompactRuntimeContext(runtimeContext);
+    context.push(...compactContext);
+  }
 
   const historyContext =
     buildConversationContext(conversationHistory);
@@ -307,27 +312,29 @@ async function ask({
 
   let verifiedKnowledgeContext = [];
 
-  try {
-    const knowledgeChunks = await knowledgeService.searchKnowledgeByCategory(
-      typeof userMessage === "string"
-        ? userMessage.trim()
-        : String(userMessage || "").trim(),
-      "GARUDA_SYSTEM",
-      5
-    );
-
-    verifiedKnowledgeContext = buildVerifiedKnowledgeContext(knowledgeChunks);
-
-    if (verifiedKnowledgeContext.length) {
-      context.push(
-        "Verified GARUDA system knowledge retrieved from the GARUDA knowledge base. Use it as grounded reference context; it is not your identity."
+  if (!skipKnowledge) {
+    try {
+      const knowledgeChunks = await knowledgeService.searchKnowledgeByCategory(
+        typeof userMessage === "string"
+          ? userMessage.trim()
+          : String(userMessage || "").trim(),
+        "GARUDA_SYSTEM",
+        5
       );
-      context.push(...verifiedKnowledgeContext);
+
+      verifiedKnowledgeContext = buildVerifiedKnowledgeContext(knowledgeChunks);
+
+      if (verifiedKnowledgeContext.length) {
+        context.push(
+          "Verified GARUDA system knowledge retrieved from the GARUDA knowledge base. Use it as grounded reference context; it is not your identity."
+        );
+        context.push(...verifiedKnowledgeContext);
+      }
+    } catch (error) {
+      context.push(
+        "GARUDA system knowledge retrieval failed; continuing with existing runtime context and conversation history only."
+      );
     }
-  } catch (error) {
-    context.push(
-      "GARUDA system knowledge retrieval failed; continuing with existing runtime context and conversation history only."
-    );
   }
 
   const adapterInput = {
