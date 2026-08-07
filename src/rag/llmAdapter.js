@@ -63,23 +63,8 @@ function isLLMConfigured() {
   return false;
 }
 
-function extractHistoryFromContext(chunks = []) {
-  const historyChunk = chunks.find((c) => typeof c === "string" && c.startsWith("Recent conversation history"));
-  if (!historyChunk) return [];
-  const lines = historyChunk.split("\n").slice(1);
-  return lines.map((line) => {
-    const colonIdx = line.indexOf(":");
-    if (colonIdx === -1) return null;
-    return {
-      role: line.slice(0, colonIdx).trim().toLowerCase(),
-      content: line.slice(colonIdx + 1).trim()
-    };
-  }).filter(Boolean);
-}
-
 function buildFallbackAnswer({ query, context, metadata = {} } = {}) {
   const safeQuery = typeof query === "string" ? query.trim() : "";
-  const lowerQuery = safeQuery.toLowerCase();
   const chunks = Array.isArray(context) ? context : [];
 
   // Extract pure knowledge text entries (exclude raw JSON context blocks)
@@ -109,9 +94,7 @@ function buildFallbackAnswer({ query, context, metadata = {} } = {}) {
       score: typeof chunk.score === "number" ? chunk.score : null,
     }));
 
-  const history = extractHistoryFromContext(chunks);
-
-  // 1. If retrieved knowledge text is available, synthesize it
+  // If retrieved knowledge text is available, synthesize it
   if (knowledgeTexts.length > 0) {
     const contextBody = knowledgeTexts.slice(0, 3).join("\n\n");
     return {
@@ -124,63 +107,26 @@ function buildFallbackAnswer({ query, context, metadata = {} } = {}) {
     };
   }
 
-  // 2. Memory & Follow-Up Recall (using multi-turn history)
-  if (history.length > 0) {
-    if (/\b(what code|remember this code|what was the code|code did i|recall code)\b/i.test(lowerQuery)) {
-      const prevMsgWithCode = [...history].reverse().find((h) => h.role === "user" && /\b[A-Z0-9]+-[0-9]+\b/i.test(h.content));
-      if (prevMsgWithCode) {
-        const codeMatch = prevMsgWithCode.content.match(/\b[A-Z0-9]+-[0-9]+\b/i);
-        if (codeMatch) {
-          return {
-            answer: codeMatch[0],
-            provider: "fallback",
-            model: "none",
-            grounded: true,
-            citations: [],
-            warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
-          };
-        }
-      }
-    }
-  }
-
-  const isAgent = metadata && (metadata.mode === "agent" || metadata.isAgent === true);
-
-  if (isAgent) {
-    const agentFallbackText = safeQuery
-      ? `Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Operational metrics stable hain. Aap "${safeQuery}" ke baare mein mission execute karna chahte hain ya details discuss karna chahte hain?`
-      : "Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Systems online hain!";
-
+  // If query is empty/whitespace, return a minimal prompt
+  if (!safeQuery) {
     return {
-      answer: agentFallbackText,
+      answer: "Please type something so I can help.",
       provider: "fallback",
       model: "none",
-      grounded: true,
+      grounded: false,
       citations: [],
-      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
+      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
     };
   }
 
-  // Neutralized Conversation Fallback
-  let fallbackAnswerText = "";
-
-  if (lowerQuery === "hi" || lowerQuery === "hi!") {
-    fallbackAnswerText = "Hi! How can I help?";
-  } else if (lowerQuery === "hello" || lowerQuery === "hello!" || lowerQuery === "hey") {
-    fallbackAnswerText = "Hello! How can I help?";
-  } else if (lowerQuery === "thanks" || lowerQuery === "thank you" || lowerQuery === "thanks!") {
-    fallbackAnswerText = "You're welcome!";
-  } else {
-    fallbackAnswerText = "I didn't fully understand that. Could you rephrase it or give a little more detail?";
-  }
-
+  // All other non-empty inputs: LLM is unavailable
   return {
-    answer: fallbackAnswerText,
+    answer: "I'm here — but the AI engine isn't responding right now. Please try again in a moment.",
     provider: "fallback",
     model: "none",
-    grounded: true,
+    grounded: false,
     citations: [],
-    warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
+    warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
   };
 }
 
