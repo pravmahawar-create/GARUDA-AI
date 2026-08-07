@@ -77,7 +77,7 @@ function extractHistoryFromContext(chunks = []) {
   }).filter(Boolean);
 }
 
-function buildFallbackAnswer({ query, context } = {}) {
+function buildFallbackAnswer({ query, context, metadata = {} } = {}) {
   const safeQuery = typeof query === "string" ? query.trim() : "";
   const lowerQuery = safeQuery.toLowerCase();
   const chunks = Array.isArray(context) ? context : [];
@@ -124,41 +124,55 @@ function buildFallbackAnswer({ query, context } = {}) {
     };
   }
 
-  // 2. Follow-Up Reference Processing (using multi-turn history)
+  // 2. Memory & Follow-Up Recall (using multi-turn history)
   if (history.length > 0) {
-    if (/^\s*(why|kyun|explain|kya matlab|how so)\b/i.test(lowerQuery)) {
-      const lastGarudaMsg = [...history].reverse().find((h) => h.role === "garuda" || h.role === "assistant");
-      if (lastGarudaMsg) {
-        return {
-          answer: `Regarding "${lastGarudaMsg.content}": GARUDA operates under governed multi-agent execution principles to ensure zero unapproved code changes, system reliability, and full operational transparency.`,
-          provider: "fallback",
-          model: "none",
-          grounded: true,
-          citations: [],
-          warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
-        };
-      }
-    }
-
-    if (/\b(what did i|my previous question|last question|what was my)\b/i.test(lowerQuery)) {
-      const prevUserMsg = [...history].reverse().find((h) => h.role === "user" && h.content !== safeQuery);
-      if (prevUserMsg) {
-        return {
-          answer: `Aapka previous question tha: "${prevUserMsg.content}".`,
-          provider: "fallback",
-          model: "none",
-          grounded: true,
-          citations: [],
-          warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
-        };
+    if (/\b(what code|remember this code|what was the code|code did i|recall code)\b/i.test(lowerQuery)) {
+      const prevMsgWithCode = [...history].reverse().find((h) => h.role === "user" && /\b[A-Z0-9]+-[0-9]+\b/i.test(h.content));
+      if (prevMsgWithCode) {
+        const codeMatch = prevMsgWithCode.content.match(/\b[A-Z0-9]+-[0-9]+\b/i);
+        if (codeMatch) {
+          return {
+            answer: codeMatch[0],
+            provider: "fallback",
+            model: "none",
+            grounded: true,
+            citations: [],
+            warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
+          };
+        }
       }
     }
   }
 
-  // 3. General Conversational Turn Synthesis
-  const fallbackAnswerText = safeQuery
-    ? `Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Operational metrics stable hain. Aap "${safeQuery}" ke baare mein mission execute karna chahte hain ya details discuss karna chahte hain?`
-    : "Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Systems online hain!";
+  const isAgent = metadata && (metadata.mode === "agent" || metadata.isAgent === true);
+
+  if (isAgent) {
+    const agentFallbackText = safeQuery
+      ? `Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Operational metrics stable hain. Aap "${safeQuery}" ke baare mein mission execute karna chahte hain ya details discuss karna chahte hain?`
+      : "Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Systems online hain!";
+
+    return {
+      answer: agentFallbackText,
+      provider: "fallback",
+      model: "none",
+      grounded: true,
+      citations: [],
+      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"]
+    };
+  }
+
+  // Neutralized Conversation Fallback
+  let fallbackAnswerText = "";
+
+  if (lowerQuery === "hi" || lowerQuery === "hi!") {
+    fallbackAnswerText = "Hi! How can I help?";
+  } else if (lowerQuery === "hello" || lowerQuery === "hello!" || lowerQuery === "hey") {
+    fallbackAnswerText = "Hello! How can I help?";
+  } else if (lowerQuery === "thanks" || lowerQuery === "thank you" || lowerQuery === "thanks!") {
+    fallbackAnswerText = "You're welcome!";
+  } else {
+    fallbackAnswerText = "I didn't fully understand that. Could you rephrase it or give a little more detail?";
+  }
 
   return {
     answer: fallbackAnswerText,
