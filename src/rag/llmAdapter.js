@@ -557,7 +557,7 @@ async function generateOllamaAnswer({
         model,
         prompt,
         stream: false,
-        options: { num_predict: isFastLane ? 80 : 150 }
+        options: { num_predict: isFastLane ? 200 : 250 }
       }),
     });
 
