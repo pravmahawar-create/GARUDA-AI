@@ -16,6 +16,7 @@ export default function CommandCenter({
   onApproval
 }) {
   const messagesContainerRef = useRef(null);
+  const messagesEndRef = useRef(null);
   const [expandedEvidenceIndex, setExpandedEvidenceIndex] = useState(null);
 
   useEffect(() => {
