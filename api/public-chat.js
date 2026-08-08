@@ -68,7 +68,7 @@ module.exports = async function handler(req, res) {
       }
     });
 
-    const reply = response.text || "No response text generated.";
+   const reply = response.text ?? response.outputText ?? "No response text generated.";
     return res.status(200).json({ reply });
   } catch (error) {
     console.error("Public Chat API Error:", error);
