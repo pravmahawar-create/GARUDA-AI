@@ -7,6 +7,7 @@ import FounderLogin from "./pages/FounderLogin";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import Login from "./pages/Login";
 import PublicLanding from "./pages/PublicLanding";
+import PublicChat from "./pages/PublicChat";
 import Signup from "./pages/Signup";
 import FounderWorkspace from "./pages/FounderWorkspace";
 
@@ -61,6 +62,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={publicLanding} />
+      <Route path="/chat" element={<PublicChat />} />
       <Route path="/founder" element={founderRoute} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />

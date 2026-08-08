@@ -44,6 +44,7 @@
   },
   "homepage": "https://github.com/pravmahawar-create/GARUDA-AI#readme",
   "dependencies": {
+    "@google/genai": "^2.16.0",
     "@vitejs/plugin-react": "^5.1.0",
     "concurrently": "^10.0.3",
     "cors": "^2.8.6",

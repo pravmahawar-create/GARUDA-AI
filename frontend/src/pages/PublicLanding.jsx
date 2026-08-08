@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 export default function PublicLanding({ onGetStarted, onFounderLogin }) {
+  const navigate = useNavigate();
   const capabilities = [
     { icon: "✦", title: "Fixed-Price AI Engineering", desc: "Custom AI agent development, workflow automation, and custom tool integration with predictable outcomes." },
     { icon: "◌", title: "Autonomous Operations", desc: "Background task discovery, automated intelligence processing, and governed execution monitoring." },
@@ -67,7 +69,7 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           <p style={{ color: "#9ca3af", fontSize: "1.2rem", lineHeight: 1.6, marginBottom: "2.5rem" }}>
             Fixed-price AI engineering, automation, API integration, and technical documentation delivered under Founder supervision.
           </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
             <button
               onClick={onGetStarted}
               style={{
@@ -82,6 +84,21 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               }}
             >
               Get Started
+            </button>
+            <button
+              onClick={() => navigate("/chat")}
+              style={{
+                background: "rgba(255, 255, 255, 0.05)",
+                border: "1px solid rgba(251, 191, 36, 0.4)",
+                color: "#fbbf24",
+                padding: "0.9rem 2.25rem",
+                borderRadius: "6px",
+                fontWeight: 700,
+                fontSize: "1rem",
+                cursor: "pointer"
+              }}
+            >
+              Try Public AI Chat →
             </button>
           </div>
         </motion.div>
