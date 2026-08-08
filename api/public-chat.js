@@ -61,7 +61,7 @@ module.exports = async function handler(req, res) {
     });
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash",
       contents,
       config: {
         systemInstruction: systemPrompt
