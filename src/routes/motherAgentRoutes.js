@@ -143,15 +143,19 @@ router.post("/chat", async (req, res) => {
       fastLane: true
     });
 
-    const cleanAnswer = response && typeof response.answer === "string" && response.answer.trim()
-      ? response.answer
+    const rawAnswer = response && typeof response.answer === "string" ? response.answer : null;
+
+    // Defensive guard: never surface the dead-end "AI engine isn't responding"
+    // message to the founder console. Fall back to the standard console message.
+    const deadEndDetected = rawAnswer !== null && /isn't responding|not responding right now/i.test(rawAnswer);
+    const cleanAnswer = rawAnswer && !deadEndDetected
+      ? rawAnswer
       : "Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Systems online hain!";
 
     const providerName = response && response.provider ? response.provider : "fallback";
     const modelName = response && response.model ? response.model : null;
     const warningsList = response && Array.isArray(response.warnings) ? response.warnings : [];
 
-    const rawAnswer = response && typeof response.answer === "string" ? response.answer : null;
     const rawExists = rawAnswer !== null;
     const rawLength = rawAnswer ? rawAnswer.length : 0;
     const rawSnippet = rawAnswer ? rawAnswer.slice(0, 120) : null;
@@ -164,6 +168,7 @@ router.post("/chat", async (req, res) => {
       rawExists,
       rawLength,
       rawSnippet,
+      deadEndDetected,
       differs: rawAnswer !== cleanAnswer,
       cleanLength,
       cleanSnippet,

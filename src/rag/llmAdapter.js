@@ -320,7 +320,22 @@ function logOllamaDiagnostic(event, details = {}) {
   });
 }
 
-function getSafeOllamaErrorDetails(error) {
+function logRouterEvent(event, details = {}) {
+  console.log("[GARUDA_LLM_ROUTER]", {
+    event,
+    timestamp: new Date().toISOString(),
+    ...details,
+  });
+}
+
+function isUsableAnswer(result) {
+  return Boolean(
+    result &&
+      typeof result.answer === "string" &&
+      result.answer.trim() &&
+      !result.error
+  );
+}function getSafeOllamaErrorDetails(error) {
   const cause = error && error.cause && typeof error.cause === "object"
     ? error.cause
     : null;
@@ -862,6 +877,14 @@ async function generateAnswer({
     metadata,
   };
 
+  logRouterEvent("provider_selected", {
+    provider,
+    model: process.env.GARUDA_LLM_MODEL || null,
+    hasGeminiKey: Boolean(getGeminiApiKey()),
+    hasOpenAIKey: Boolean(getOpenAIApiKey()),
+    capability: metadata && metadata.capability ? metadata.capability : null,
+  });
+
   let result;
 
   if (provider === "openai") {
@@ -871,45 +894,83 @@ async function generateAnswer({
   } else if (provider === "ollama") {
     result = await generateOllamaAnswer(adapterArgs);
   } else {
-    return buildFallbackAnswer(adapterArgs);
+    logRouterEvent("fallback_used", { reason: "no_provider_configured" });
+    const fallback = buildFallbackAnswer(adapterArgs);
+    return {
+      ...fallback,
+      answer: fallback.answer && /isn't responding|not responding/i.test(fallback.answer)
+        ? null
+        : fallback.answer,
+    };
   }
 
   // Graceful fallback chain: if the primary provider did not produce a
   // usable answer, automatically retry with a configured cloud provider.
-  const usable =
-    result &&
-    typeof result.answer === "string" &&
-    result.answer.trim() &&
-    !result.error;
+  if (!isUsableAnswer(result)) {
+    logRouterEvent("primary_failed", {
+      provider,
+      model: result && result.model ? result.model : null,
+      warnings: result && Array.isArray(result.warnings) ? result.warnings : [],
+      error: result && result.error ? result.error : null,
+    });
 
-  if (!usable) {
     if (getGeminiApiKey() && provider !== "gemini") {
+      logRouterEvent("fallback_attempt", { from: provider, to: "gemini" });
       const geminiResult = await generateGeminiAnswer(adapterArgs);
-      if (
-        geminiResult &&
-        typeof geminiResult.answer === "string" &&
-        geminiResult.answer.trim()
-      ) {
+      if (isUsableAnswer(geminiResult)) {
+        logRouterEvent("fallback_success", {
+          from: provider,
+          to: "gemini",
+          model: geminiResult.model,
+        });
         return {
           ...geminiResult,
           fallbackFrom: provider,
         };
       }
+      logRouterEvent("fallback_failed", {
+        from: provider,
+        to: "gemini",
+        error: geminiResult && geminiResult.error ? geminiResult.error : null,
+      });
     }
 
     if (getOpenAIApiKey() && provider !== "openai") {
+      logRouterEvent("fallback_attempt", { from: provider, to: "openai" });
       const openaiResult = await generateOpenAIAnswer(adapterArgs);
-      if (
-        openaiResult &&
-        typeof openaiResult.answer === "string" &&
-        openaiResult.answer.trim()
-      ) {
+      if (isUsableAnswer(openaiResult)) {
+        logRouterEvent("fallback_success", {
+          from: provider,
+          to: "openai",
+          model: openaiResult.model,
+        });
         return {
           ...openaiResult,
           fallbackFrom: provider,
         };
       }
+      logRouterEvent("fallback_failed", {
+        from: provider,
+        to: "openai",
+        error: openaiResult && openaiResult.error ? openaiResult.error : null,
+      });
     }
+
+    logRouterEvent("all_providers_failed", {
+      primaryProvider: provider,
+      lastWarnings: result && Array.isArray(result.warnings) ? result.warnings : [],
+      lastError: result && result.error ? result.error : null,
+    });
+
+    // Never surface the dead-end message to the founder console.
+    const safeFallback = buildFallbackAnswer(adapterArgs);
+    return {
+      ...safeFallback,
+      answer: null,
+      provider: result && result.provider ? result.provider : provider,
+      warnings: ["GENERATIVE_ENGINE_UNAVAILABLE", "ALL_PROVIDERS_FAILED"],
+      error: result && result.error ? result.error : "all_providers_failed",
+    };
   }
 
   return result || buildFallbackAnswer(adapterArgs);
