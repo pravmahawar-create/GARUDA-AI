@@ -1,2 +1,22 @@
-const { Customer, connectCustomerStore, issueSession, normalizeEmail, passwordMatches } = require("./_auth");
-module.exports = async function login(req, res) { if (req.method !== "POST") return res.status(405).json({ success: false, message: "Method not allowed" }); try { const email = normalizeEmail(req.body?.email); await connectCustomerStore(); const customer = await Customer.findOne({ email }); if (!customer || !(await passwordMatches(req.body?.password, customer))) return res.status(401).json({ success: false, message: "Invalid email or password" }); issueSession(res, customer._id.toString()); return res.status(200).json({ success: true, customer: { email: customer.email } }); } catch (error) { return res.status(error.message === "Customer authentication is not configured" ? 503 : 400).json({ success: false, message: error.message || "Unable to sign in" }); } };
+const { friendlyAuthError, isSupabaseConfigured, issueSession, normalizeEmail, supabaseClient } = require("./_auth");
+
+module.exports = async function login(req, res) {
+  if (req.method !== "POST") return res.status(405).json({ success: false, message: "Method not allowed" });
+  if (!isSupabaseConfigured()) {
+    return res.status(503).json({ success: false, message: "Customer sign in is unavailable: SUPABASE_URL and a publishable key must be configured." });
+  }
+  try {
+    const email = normalizeEmail(req.body?.email);
+    const password = String(req.body?.password || "");
+    const supabase = supabaseClient();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error || !data.session) {
+      const message = friendlyAuthError(error, "Invalid email or password");
+      return res.status(401).json({ success: false, message });
+    }
+    issueSession(res, { userId: data.session.user.id, email: data.session.user.email || email });
+    return res.status(200).json({ success: true, customer: { email: data.session.user.email || email } });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message || "Unable to sign in" });
+  }
+};
