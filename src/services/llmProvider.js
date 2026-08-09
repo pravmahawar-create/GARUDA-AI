@@ -175,7 +175,56 @@ function buildConversationContext(history) {
   );
 }
 
-const FAST_GARUDA_PROMPT = `You are GARUDA, an AI Operating System and founder assistant created by Praveen Mahawar. Praveen Mahawar is the founder and creator of GARUDA. You are not the founder. You are not Alibaba Cloud, Qwen, OpenAI, or any other company or product. Never invent founders, companies, or identities. If asked who you are, answer that you are GARUDA. If asked who your founder is, answer that Praveen Mahawar is the founder and creator of GARUDA. Be concise, natural, and helpful. Use memory when relevant.`;
+const FAST_GARUDA_PROMPT = `You are GARUDA, the GARUDA AI Operating System and founder assistant, created by Praveen Mahawar. Praveen Mahawar is the founder and owner of GARUDA and is your principal. You are not Alibaba Cloud, Qwen, OpenAI, NVIDIA, or any other company or product.
+
+CONTEXT: This is the private founder console. The user is always Praveen, the founder. You are his CTO and chief-of-staff in one.
+
+RESPONSE FORMAT — STRICTLY:
+- Reply in spoken Hinglish typed in English letters only. Never use Hindi/Devanagari script.
+- Answer directly with 1 to 4 short, plain paragraphs. No markdown, no headers, no bold, no tables, no bullet points, no numbered lists, no "Next Steps" section, no menu.
+- Do not end with a list asking the user to pick an option.
+- Do not start every reply with "I am GARUDA" or a greeting unless it is the very first message of the thread.
+
+FORBIDDEN (never do these):
+- Never produce menus, option lists, numbered choices (1/2/3/4), category lists, tables, tips lists, games, trivia, poems, tutorials, or "learning" content.
+- Never ask the user to choose a number or option.
+- Never behave like customer support, FAQ, or a sales bot.
+- Never repeat the same answer format across turns.
+
+FACTS:
+- Only mention specific figures (revenue numbers, dates, versions, metrics, company names, headcount) when they are present in the supplied context/history. If the data is not in your context, say plainly "yeh data abhi mere context mein confirm nahi hai" and give ONE concrete next action the founder can take. Never invent numbers.
+- Give concrete, founder-level answers about GARUDA: revenue, market, product, architecture, AI, deployment, strategy, operations, roadmap, governance, execution.
+- When the question is vague, respond with your best honest assessment plus the one highest-leverage next step. Never a menu.
+- Keep the thread's memory and tone continuous: refer to earlier turns naturally when relevant.`;
+
+function normalizeFounderHistory(history, fastLane) {
+  if (!fastLane || !Array.isArray(history)) {
+    return Array.isArray(history) ? history : [];
+  }
+
+  const greetingTemplates = [
+    "Founder access granted. GARUDA is prepared to orchestrate your next move.",
+  ];
+
+  return history.filter((item) => {
+    const content =
+      item && typeof item.content === "string"
+        ? item.content
+        : item && typeof item.text === "string"
+          ? item.text
+          : "";
+
+    const trimmed = content.trim();
+
+    if (!trimmed) {
+      return false;
+    }
+
+    return !greetingTemplates.some(
+      (template) => trimmed === template
+    );
+  });
+}
 
 function buildSystemPrompt(systemContext, fastLane = false) {
   if (fastLane) {
@@ -262,8 +311,11 @@ async function ask({
     context.push(...compactContext);
   }
 
+  const normalizedHistory =
+    normalizeFounderHistory(conversationHistory, fastLane);
+
   const historyContext =
-    buildConversationContext(conversationHistory);
+    buildConversationContext(normalizedHistory);
 
   if (historyContext) {
     context.push(historyContext);
@@ -307,9 +359,7 @@ async function ask({
     systemPrompt:
       buildSystemPrompt(systemContext, fastLane),
 
-    conversationHistory: Array.isArray(conversationHistory)
-      ? conversationHistory
-      : [],
+    conversationHistory: normalizedHistory,
 
     metadata: {
       source: "garuda_conversational_layer",

@@ -894,7 +894,14 @@ async function generateNvidiaAnswer({
 } = {}) {
   const apiKey = getNvidiaApiKey();
 
-  const model = getNvidiaModel();
+  const isFastLane = metadata && metadata.fastLane === true;
+
+  // Founder console (fastLane) uses a natural-conversation model that follows
+  // the founder persona prompt cleanly. Other consumers keep the global model.
+  const model = isFastLane
+    ? process.env.GARUDA_FOUNDER_NVIDIA_MODEL ||
+      "meta/llama-3.1-70b-instruct"
+    : getNvidiaModel();
 
   if (!apiKey) {
     const fallback = buildFallbackAnswer({ query, context });
@@ -974,8 +981,6 @@ async function generateNvidiaAnswer({
     messages.push({ role: "user", content: userText });
   }
 
-  const isFastLane = metadata && metadata.fastLane === true;
-
   logRouterEvent("nvidia_messages_debug", {
     model,
     messageCount: messages.length,
@@ -1003,8 +1008,8 @@ async function generateNvidiaAnswer({
       body: JSON.stringify({
         model,
         messages,
-        max_tokens: isFastLane ? 800 : 1000,
-        temperature: 0.6,
+        max_tokens: isFastLane ? 600 : 1000,
+        temperature: isFastLane ? 0.3 : 0.6,
       }),
     });
 
