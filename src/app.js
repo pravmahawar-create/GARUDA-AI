@@ -43,5 +43,6 @@ app.use("/api/capabilities", require("./routes/capabilityRoutes"));
 app.use("/api/affiliate-pilot", require("./routes/affiliateRoutes"));
 app.use("/api/public-chat", require("./routes/publicChatRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoutes"));
+app.use("/api/scout", require("./routes/scoutRoutes"));
 
 module.exports = app;
