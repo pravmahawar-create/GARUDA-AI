@@ -14,7 +14,7 @@ module.exports = async function login(req, res) {
       const message = friendlyAuthError(error, "Invalid email or password");
       return res.status(401).json({ success: false, message });
     }
-    issueSession(res, { userId: data.session.user.id, email: data.session.user.email || email });
+    issueSession(res, { accessToken: data.session.access_token, refreshToken: data.session.refresh_token });
     return res.status(200).json({ success: true, customer: { email: data.session.user.email || email } });
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message || "Unable to sign in" });

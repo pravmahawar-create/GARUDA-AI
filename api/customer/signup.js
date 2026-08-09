@@ -17,7 +17,7 @@ module.exports = async function signup(req, res) {
     const user = data.user;
     if (!user) return res.status(400).json({ success: false, message: "Unable to create account" });
     if (data.session) {
-      issueSession(res, { userId: user.id, email: user.email || email });
+      issueSession(res, { accessToken: data.session.access_token, refreshToken: data.session.refresh_token });
       return res.status(201).json({ success: true, customer: { email: user.email || email } });
     }
     const admin = supabaseAdminClient();
@@ -30,7 +30,7 @@ module.exports = async function signup(req, res) {
       if (signInError || !signInData.session) {
         return res.status(200).json({ success: true, requiresEmailConfirmation: true, message: "Account created. Sign in to continue." });
       }
-      issueSession(res, { userId: signInData.session.user.id, email: signInData.session.user.email || email });
+      issueSession(res, { accessToken: signInData.session.access_token, refreshToken: signInData.session.refresh_token });
       return res.status(201).json({ success: true, customer: { email: signInData.session.user.email || email } });
     }
     return res.status(200).json({ success: true, requiresEmailConfirmation: true, message: "Account created. Sign in to continue." });

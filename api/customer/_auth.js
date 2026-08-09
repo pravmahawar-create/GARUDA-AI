@@ -1,4 +1,3 @@
-const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 
 const COOKIE_NAME = "garuda_customer_session";
@@ -52,18 +51,6 @@ function validatePassword(value) {
   return password;
 }
 
-function sessionSecret() {
-  const secret = process.env.CUSTOMER_SESSION_SECRET;
-  if (!secret || secret.length < 16) {
-    throw new Error("Customer sessions are not configured: set CUSTOMER_SESSION_SECRET to a long random value.");
-  }
-  return secret;
-}
-
-function sign(value) {
-  return crypto.createHmac("sha256", sessionSecret()).update(value).digest("base64url");
-}
-
 function cookieValue(req) {
   const cookie = String(req.headers.cookie || "")
     .split(";")
@@ -72,41 +59,38 @@ function cookieValue(req) {
 }
 
 function issueSession(res, session) {
-  const sessionSecretValue = sessionSecret();
-  const expiresAt = Date.now() + SESSION_MAX_AGE_SECONDS * 1000;
-  const emailEncoded = Buffer.from(String(session.email || ""), "utf8").toString("base64url");
-  const value = `${session.userId}|${emailEncoded}|${expiresAt}`;
-  const token = `${value}.${sign(value)}`;
-  res.setHeader("Set-Cookie", `${COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_MAX_AGE_SECONDS}`);
+  const accessToken = String(session.accessToken || "");
+  const refreshToken = String(session.refreshToken || "");
+  if (!accessToken) throw new Error("Missing Supabase session token");
+  res.setHeader("Set-Cookie", `${COOKIE_NAME}=${accessToken}~${refreshToken}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_MAX_AGE_SECONDS}`);
 }
 
 function clearSession(res) {
   res.setHeader("Set-Cookie", `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
 }
 
-function safeEqual(left, right) {
-  const leftHash = crypto.createHash("sha256").update(String(left)).digest();
-  const rightHash = crypto.createHash("sha256").update(String(right)).digest();
-  return crypto.timingSafeEqual(leftHash, rightHash);
+function cookieTokens(req) {
+  const token = cookieValue(req);
+  if (!token) return { accessToken: "", refreshToken: "" };
+  const [accessToken, refreshToken] = token.split("~");
+  return { accessToken: accessToken || "", refreshToken: refreshToken || "" };
 }
 
 async function currentCustomer(req) {
-  if (!process.env.CUSTOMER_SESSION_SECRET) return null;
-  const token = cookieValue(req);
-  if (!token) return null;
-  const [value, signature] = token.split(".");
-  if (!value || !signature) return null;
-  const [userId, emailEncoded, expiresAt] = value.split("|");
-  if (!userId || !emailEncoded || !expiresAt || Number(expiresAt) < Date.now()) return null;
-  if (!safeEqual(signature, sign(value))) return null;
-  const email = Buffer.from(emailEncoded, "base64url").toString("utf8");
-  const admin = supabaseAdminClient();
-  if (admin) {
-    const { data, error } = await admin.auth.admin.getUserById(userId);
-    if (error || !data || !data.user) return null;
-    return { id: userId, email: data.user.email || email };
+  const { accessToken, refreshToken } = cookieTokens(req);
+  if (!accessToken) return null;
+  const supabase = supabaseClient();
+  const { data, error } = await supabase.auth.getUser(accessToken);
+  if (!error && data && data.user) {
+    return { customer: { id: data.user.id, email: data.user.email || "" }, refreshedSession: null };
   }
-  return { id: userId, email };
+  if (!refreshToken) return null;
+  const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
+  if (refreshError || !refreshed || !refreshed.session) return null;
+  return {
+    customer: { id: refreshed.session.user.id, email: refreshed.session.user.email || "" },
+    refreshedSession: refreshed.session
+  };
 }
 
 function friendlyAuthError(err, fallback) {
@@ -132,6 +116,7 @@ module.exports = {
   DEMO_EMAIL,
   DEMO_PASSWORD,
   clearSession,
+  cookieTokens,
   currentCustomer,
   friendlyAuthError,
   isSupabaseConfigured,

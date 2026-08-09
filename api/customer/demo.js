@@ -12,7 +12,7 @@ async function demoSignIn(req, res) {
 
   const attempt = await signInWithPassword(supabase, email, password);
   if (attempt.session) {
-    issueSession(res, { userId: attempt.session.user.id, email: attempt.session.user.email || email });
+    issueSession(res, { accessToken: attempt.session.access_token, refreshToken: attempt.session.refresh_token });
     return res.status(200).json({ success: true, demo: true, customer: { email: attempt.session.user.email || email } });
   }
 
@@ -22,7 +22,7 @@ async function demoSignIn(req, res) {
     if (provisioned.ok) {
       const retry = await signInWithPassword(supabase, email, password);
       if (retry.session) {
-        issueSession(res, { userId: retry.session.user.id, email: retry.session.user.email || email });
+        issueSession(res, { accessToken: retry.session.access_token, refreshToken: retry.session.refresh_token });
         return res.status(200).json({ success: true, demo: true, customer: { email: retry.session.user.email || email } });
       }
       return res.status(401).json({ success: false, message: "Unable to sign into the demo account. Please try again." });
@@ -33,8 +33,8 @@ async function demoSignIn(req, res) {
   const signup = await supabase.auth.signUp({ email, password });
   if (signup.data && signup.data.session) {
     issueSession(res, {
-      userId: signup.data.session.user.id,
-      email: signup.data.session.user.email || email
+      accessToken: signup.data.session.access_token,
+      refreshToken: signup.data.session.refresh_token
     });
     return res.status(201).json({ success: true, demo: true, customer: { email: signup.data.session.user.email || email } });
   }
