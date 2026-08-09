@@ -1,4 +1,5 @@
 const { GoogleGenAI } = require("@google/genai");
+const { authenticatedDbClient, authenticatedUserId } = require("./customer/_auth");
 
 const NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
 
@@ -153,6 +154,93 @@ async function generateWithGemini({ message, history }) {
   throw err;
 }
 
+async function generateReply(message, history) {
+  const nvidiaKey = getNvidiaApiKey();
+  const geminiKey = process.env.GEMINI_API_KEY;
+
+  if (!nvidiaKey && !geminiKey) {
+    const err = new Error("No AI provider is configured for public chat");
+    err.status = 500;
+    throw err;
+  }
+
+  if (nvidiaKey) {
+    try {
+      return await generateWithNvidia({ message, history });
+    } catch (error) {
+      console.error("Public Chat NVIDIA Error:", error && error.message ? error.message : error);
+      if (!geminiKey) throw error;
+    }
+  }
+
+  return generateWithGemini({ message, history });
+}
+
+// Resolve the conversation to write into. Reuses an existing one when it belongs to
+// the customer; otherwise creates a new conversation titled from the first message.
+async function resolveConversation(db, userId, conversationId, message) {
+  if (conversationId) {
+    const { data, error } = await db
+      .from("conversations")
+      .select("id")
+      .eq("id", String(conversationId))
+      .maybeSingle();
+    if (error || !data) return { conversationId: null, error: "Conversation not found" };
+    return { conversationId: data.id, error: null };
+  }
+  const title = String(message || "").trim().slice(0, 120) || "New conversation";
+  const { data, error } = await db
+    .from("conversations")
+    .insert({ user_id: userId, title })
+    .select("id")
+    .single();
+  if (error) return { conversationId: null, error: error.message };
+  return { conversationId: data.id, error: null };
+}
+
+async function loadConversationHistory(db, conversationId) {
+  const { data, error } = await db
+    .from("messages")
+    .select("role, content")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: true })
+    .limit(200);
+  if (error) return [];
+  return (data || []).map((item) => ({
+    role: item.role === "user" ? "user" : "assistant",
+    text: item.content
+  }));
+}
+
+async function persistMessage(db, conversationId, userId, role, content) {
+  const { data, error } = await db
+    .from("messages")
+    .insert({ conversation_id: conversationId, user_id: userId, role, content })
+    .select("id")
+    .single();
+  if (error) {
+    const err = new Error(error.message || "Unable to save the message");
+    err.status = 400;
+    throw err;
+  }
+  return data.id;
+}
+
+async function handleAuthenticated(conversationId, message, db, userId) {
+  const resolved = await resolveConversation(db, userId, conversationId, message);
+  if (!resolved.conversationId) {
+    const err = new Error(resolved.error || "Conversation not found");
+    err.status = resolved.error === "Conversation not found" ? 404 : 400;
+    throw err;
+  }
+  const targetConversationId = resolved.conversationId;
+  const history = await loadConversationHistory(db, targetConversationId);
+  await persistMessage(db, targetConversationId, userId, "user", message);
+  const reply = await generateReply(message, history);
+  await persistMessage(db, targetConversationId, userId, "assistant", reply);
+  return { reply, conversationId: targetConversationId };
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -170,35 +258,31 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { message, history } = req.body || {};
+  const { message, history, conversationId } = req.body || {};
   if (!message || typeof message !== "string" || !message.trim()) {
     return res.status(400).json({ error: "Message string is required" });
   }
 
-  const nvidiaKey = getNvidiaApiKey();
-  const geminiKey = process.env.GEMINI_API_KEY;
+  const db = authenticatedDbClient(req);
+  const userId = authenticatedUserId(req);
 
-  if (!nvidiaKey && !geminiKey) {
-    console.error("No AI provider configured (NVIDIA_API_KEY or GEMINI_API_KEY).");
-    return res.status(500).json({ error: "No AI provider is configured for public chat" });
-  }
-
-  // Prefer NVIDIA when configured, fall back to Gemini.
-  if (nvidiaKey) {
+  if (db && userId) {
     try {
-      const reply = await generateWithNvidia({ message, history });
-      return res.status(200).json({ reply });
+      const result = await handleAuthenticated(conversationId || "", message.trim(), db, userId);
+      return res.status(200).json(result);
     } catch (error) {
-      console.error("Public Chat NVIDIA Error:", error && error.message ? error.message : error);
-      if (!geminiKey) {
-        const status = typeof error.status === "number" && error.status >= 400 && error.status < 600 ? error.status : 500;
-        return res.status(status).json({ error: error.message || "Internal server error processing AI chat request" });
-      }
+      console.error("Public Chat Persistence Error:", error);
+      const status = typeof error.status === "number" && error.status >= 400 && error.status < 600
+        ? error.status
+        : 500;
+      return res.status(status).json({
+        error: error.message || "Unable to process the message"
+      });
     }
   }
 
   try {
-    const reply = await generateWithGemini({ message, history });
+    const reply = await generateReply(message.trim(), Array.isArray(history) ? history : []);
     return res.status(200).json({ reply });
   } catch (error) {
     console.error("Public Chat API Error:", error);

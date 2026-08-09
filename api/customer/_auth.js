@@ -58,6 +58,35 @@ function cookieValue(req) {
   return cookie ? decodeURIComponent(cookie.trim().slice(COOKIE_NAME.length + 1)) : "";
 }
 
+// Decode the "sub" claim (the auth.users id) from a Supabase access token JWT.
+function authUserId(accessToken) {
+  try {
+    const payload = String(accessToken || "").split(".")[1];
+    if (!payload) return "";
+    const json = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    return String(json.sub || "");
+  } catch {
+    return "";
+  }
+}
+
+// A Supabase client that impersonates the signed-in customer via their access token.
+// PostgREST resolves auth.uid() from the Bearer token, so row-level security applies per user.
+function authenticatedDbClient(req) {
+  const { accessToken } = cookieTokens(req);
+  if (!accessToken) return null;
+  const { url, key } = supabaseConfig();
+  return createClient(String(url).trim(), String(key).trim(), {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    global: { headers: { Authorization: `Bearer ${accessToken}` } }
+  });
+}
+
+// auth.users id of the signed-in customer (from the session cookie's access token).
+function authenticatedUserId(req) {
+  return authUserId(cookieTokens(req).accessToken);
+}
+
 function issueSession(res, session) {
   const accessToken = String(session.accessToken || "");
   const refreshToken = String(session.refreshToken || "");
@@ -115,6 +144,9 @@ module.exports = {
   COOKIE_NAME,
   DEMO_EMAIL,
   DEMO_PASSWORD,
+  authUserId,
+  authenticatedDbClient,
+  authenticatedUserId,
   clearSession,
   cookieTokens,
   currentCustomer,
