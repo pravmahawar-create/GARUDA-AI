@@ -149,7 +149,7 @@ export default function FounderWorkspace({ onLogout }) {
       setActivityState("Processing & Executing Mission");
       const data = await askRag(q, currentThreadId, historyPayload);
       setActivityState("Preparing response");
-      const answer = data?.answer || data?.message || "GARUDA Command Console is active.";
+      const answer = data?.answer || data?.message || "GARUDA engines are temporarily unavailable. Please try again.";
       const garudaMsg = {
         role: "garuda",
         text: answer,
@@ -170,7 +170,7 @@ export default function FounderWorkspace({ onLogout }) {
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "garuda", text: `Namaste Founder! Main aapki query "${q}" samajh gaya hoon. GARUDA Command Console active hai aur aapke next directive ke liye ready hai!`, mode: "conversation" }
+        { role: "garuda", text: "GARUDA could not reach the AI engine for that request. Please try again in a moment.", mode: "conversation" }
       ]);
     } finally {
       setLoading(false);

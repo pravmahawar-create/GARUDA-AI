@@ -8,6 +8,7 @@
  *
  * Supported providers:
  * - fallback
+ * - nvidia
  * - openai
  * - gemini
  * - ollama
@@ -24,6 +25,10 @@ function getConfiguredProvider() {
     return explicit;
   }
 
+  if (getNvidiaApiKey()) {
+    return "nvidia";
+  }
+
   if (getGeminiApiKey()) {
     return "gemini";
   }
@@ -37,6 +42,22 @@ function getConfiguredProvider() {
 
 function getLLMApiKey() {
   return process.env.GARUDA_LLM_API_KEY || null;
+}
+
+function getNvidiaApiKey() {
+  return (
+    process.env.NVIDIA_API_KEY ||
+    process.env.GARUDA_NVIDIA_API_KEY ||
+    null
+  );
+}
+
+function getNvidiaModel() {
+  return (
+    process.env.NVIDIA_MODEL ||
+    process.env.GARUDA_NVIDIA_MODEL ||
+    "nvidia/llama-3.3-nemotron-super-49b-v1"
+  );
 }
 
 function getOpenAIApiKey() {
@@ -68,6 +89,10 @@ function isLLMConfigured() {
 
   if (provider === "gemini") {
     return Boolean(getGeminiApiKey());
+  }
+
+  if (provider === "nvidia") {
+    return Boolean(getNvidiaApiKey());
   }
 
   if (provider === "ollama") {
@@ -860,6 +885,209 @@ async function generateGeminiAnswer({
   );
 }
 
+async function generateNvidiaAnswer({
+  query,
+  context,
+  systemPrompt,
+  conversationHistory,
+  metadata = {},
+} = {}) {
+  const apiKey = getNvidiaApiKey();
+
+  const model = getNvidiaModel();
+
+  if (!apiKey) {
+    const fallback = buildFallbackAnswer({ query, context });
+    return {
+      ...fallback,
+      provider: "nvidia",
+      answer: null,
+      warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
+    };
+  }
+
+  const messages = [];
+
+  if (
+    typeof systemPrompt === "string" &&
+    systemPrompt.trim()
+  ) {
+    messages.push({
+      role: "system",
+      content: systemPrompt.trim(),
+    });
+  }
+
+  if (
+    Array.isArray(conversationHistory) &&
+    conversationHistory.length
+  ) {
+    for (const item of conversationHistory.slice(-12)) {
+      const role =
+        item && item.role === "user" ? "user" : "assistant";
+
+      const content = item
+        ? item.content ||
+          item.text ||
+          item.message ||
+          ""
+        : "";
+
+      if (content && String(content).trim()) {
+        messages.push({
+          role,
+          content: String(content).trim().slice(0, 4000),
+        });
+      }
+    }
+  }
+
+  // Multi-turn history is carried in role-based messages above, so drop the
+  // "Recent conversation history" context block to avoid duplication.
+  const contextItems = Array.isArray(context) ? context : [];
+
+  const nonHistoryContext = contextItems.filter((item) => {
+    const text =
+      typeof item === "string"
+        ? item
+        : item &&
+            typeof item === "object" &&
+            typeof item.text === "string"
+          ? item.text
+          : "";
+
+    return !text.startsWith("Recent conversation history");
+  });
+
+  const nonHistoryText = normalizeContext(nonHistoryContext);
+
+  const userText = [
+    nonHistoryText
+      ? `GARUDA verified context:\n${nonHistoryText}`
+      : "",
+    typeof query === "string" ? query.trim() : "",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  if (userText) {
+    messages.push({ role: "user", content: userText });
+  }
+
+  const isFastLane = metadata && metadata.fastLane === true;
+
+  logRouterEvent("nvidia_messages_debug", {
+    model,
+    messageCount: messages.length,
+    roles: messages.map((m) => m.role),
+    lastRole: messages.length
+      ? messages[messages.length - 1].role
+      : null,
+    systemPromptOnce: messages.filter((m) => m.role === "system").length === 1,
+    historyCount: Array.isArray(conversationHistory)
+      ? conversationHistory.length
+      : 0,
+    contextChars: userText.length,
+  });
+
+  const endpoint =
+    "https://integrate.api.nvidia.com/v1/chat/completions";
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        max_tokens: isFastLane ? 800 : 1000,
+        temperature: 0.6,
+      }),
+    });
+
+    if (!res.ok) {
+      return {
+        answer: null,
+        provider: "nvidia",
+        model,
+        grounded: false,
+        citations: [],
+        warnings: ["NVIDIA_API_ERROR"],
+        error: `nvidia_http_${res.status}`,
+      };
+    }
+
+    let payload;
+
+    try {
+      payload = await res.json();
+    } catch {
+      return {
+        answer: null,
+        provider: "nvidia",
+        model,
+        grounded: false,
+        citations: [],
+        warnings: ["NVIDIA_INVALID_RESPONSE"],
+        error: "nvidia_invalid_json",
+      };
+    }
+
+    const answer =
+      payload &&
+      payload.choices &&
+      payload.choices[0] &&
+      payload.choices[0].message &&
+      typeof payload.choices[0].message.content === "string"
+        ? payload.choices[0].message.content.trim()
+        : null;
+
+    if (!answer) {
+      return {
+        answer: null,
+        provider: "nvidia",
+        model,
+        grounded: false,
+        citations: [],
+        warnings: ["NVIDIA_EMPTY_RESPONSE"],
+        error: "nvidia_empty_response",
+      };
+    }
+
+    return {
+      answer,
+      provider: "nvidia",
+      model,
+      grounded: Boolean(nonHistoryText),
+      citations: [],
+      warnings: [],
+      rawMetadata: {
+        id: payload.id || null,
+        finishReason:
+          payload.choices && payload.choices[0]
+            ? payload.choices[0].finish_reason || null
+            : null,
+      },
+    };
+  } catch (error) {
+    return {
+      answer: null,
+      provider: "nvidia",
+      model,
+      grounded: false,
+      citations: [],
+      warnings: ["NVIDIA_NETWORK_ERROR"],
+      error:
+        error && error.message
+          ? String(error.message)
+          : "nvidia_network_error",
+    };
+  }
+}
+
 async function generateAnswer({
   query,
   context,
@@ -879,9 +1107,12 @@ async function generateAnswer({
 
   logRouterEvent("provider_selected", {
     provider,
-    model: process.env.GARUDA_LLM_MODEL || null,
+    model: provider === "nvidia"
+      ? getNvidiaModel()
+      : (process.env.GARUDA_LLM_MODEL || null),
     hasGeminiKey: Boolean(getGeminiApiKey()),
     hasOpenAIKey: Boolean(getOpenAIApiKey()),
+    hasNvidiaKey: Boolean(getNvidiaApiKey()),
     capability: metadata && metadata.capability ? metadata.capability : null,
   });
 
@@ -891,6 +1122,8 @@ async function generateAnswer({
     result = await generateOpenAIAnswer(adapterArgs);
   } else if (provider === "gemini") {
     result = await generateGeminiAnswer(adapterArgs);
+  } else if (provider === "nvidia") {
+    result = await generateNvidiaAnswer(adapterArgs);
   } else if (provider === "ollama") {
     result = await generateOllamaAnswer(adapterArgs);
   } else {
@@ -913,6 +1146,27 @@ async function generateAnswer({
       warnings: result && Array.isArray(result.warnings) ? result.warnings : [],
       error: result && result.error ? result.error : null,
     });
+
+    if (getNvidiaApiKey() && provider !== "nvidia") {
+      logRouterEvent("fallback_attempt", { from: provider, to: "nvidia" });
+      const nvidiaResult = await generateNvidiaAnswer(adapterArgs);
+      if (isUsableAnswer(nvidiaResult)) {
+        logRouterEvent("fallback_success", {
+          from: provider,
+          to: "nvidia",
+          model: nvidiaResult.model,
+        });
+        return {
+          ...nvidiaResult,
+          fallbackFrom: provider,
+        };
+      }
+      logRouterEvent("fallback_failed", {
+        from: provider,
+        to: "nvidia",
+        error: nvidiaResult && nvidiaResult.error ? nvidiaResult.error : null,
+      });
+    }
 
     if (getGeminiApiKey() && provider !== "gemini") {
       logRouterEvent("fallback_attempt", { from: provider, to: "gemini" });

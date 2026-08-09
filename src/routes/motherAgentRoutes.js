@@ -146,11 +146,11 @@ router.post("/chat", async (req, res) => {
     const rawAnswer = response && typeof response.answer === "string" ? response.answer : null;
 
     // Defensive guard: never surface the dead-end "AI engine isn't responding"
-    // message to the founder console. Fall back to the standard console message.
+    // message to the founder console. If the LLM genuinely produced no usable
+    // answer, return null and let the frontend surface an honest retry state
+    // instead of a fabricated greeting.
     const deadEndDetected = rawAnswer !== null && /isn't responding|not responding right now/i.test(rawAnswer);
-    const cleanAnswer = rawAnswer && !deadEndDetected
-      ? rawAnswer
-      : "Main GARUDA AI Command Console hoon — aapka commercial operations, strategy control aur governed multi-agent execution interface. Systems online hain!";
+    const cleanAnswer = rawAnswer && !deadEndDetected ? rawAnswer : null;
 
     const providerName = response && response.provider ? response.provider : "fallback";
     const modelName = response && response.model ? response.model : null;

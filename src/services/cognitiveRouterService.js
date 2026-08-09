@@ -22,6 +22,10 @@ function detectPreferredProvider() {
     return explicit;
   }
 
+  if (process.env.NVIDIA_API_KEY || process.env.GARUDA_NVIDIA_API_KEY) {
+    return "nvidia";
+  }
+
   if (process.env.GARUDA_LLM_API_KEY || process.env.GEMINI_API_KEY) {
     return "gemini";
   }
@@ -34,6 +38,9 @@ function detectPreferredProvider() {
 }
 
 function defaultModelForProvider(provider) {
+  if (provider === "nvidia") {
+    return process.env.GARUDA_NVIDIA_MODEL || process.env.NVIDIA_MODEL || "nvidia/llama-3.3-nemotron-super-49b-v1";
+  }
   if (provider === "gemini") {
     return process.env.GARUDA_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash";
   }

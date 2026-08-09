@@ -307,6 +307,10 @@ async function ask({
     systemPrompt:
       buildSystemPrompt(systemContext, fastLane),
 
+    conversationHistory: Array.isArray(conversationHistory)
+      ? conversationHistory
+      : [],
+
     metadata: {
       source: "garuda_conversational_layer",
       provider,
