@@ -641,7 +641,7 @@ async function generateGeminiAnswer({
 } = {}) {
   const apiKey = getGeminiApiKey();
 
-  const model =
+  const configuredModel =
     process.env.GARUDA_GEMINI_MODEL ||
     process.env.GEMINI_MODEL ||
     "gemini-2.5-flash";
@@ -655,10 +655,6 @@ async function generateGeminiAnswer({
       warnings: ["LLM_PROVIDER_NOT_CONFIGURED"],
     };
   }
-
-  const endpoint =
-    "https://generativelanguage.googleapis.com/v1beta/models/" +
-    `${encodeURIComponent(model)}:generateContent`;
 
   const safeContext = normalizeContext(context);
 
@@ -697,120 +693,156 @@ async function generateGeminiAnswer({
     };
   }
 
-  try {
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
-      body: JSON.stringify(requestBody),
-    });
+  const candidateModels = [
+    configuredModel,
+    "gemini-flash-latest",
+    "gemini-3.5-flash",
+    "gemini-3.1-flash-lite"
+  ].filter(Boolean);
 
-    if (!res.ok) {
-      let errorMessage =
-        `gemini_http_${res.status}`;
+  let lastResult = null;
+
+  for (const model of candidateModels) {
+    const endpoint =
+      "https://generativelanguage.googleapis.com/v1beta/models/" +
+      `${encodeURIComponent(model)}:generateContent`;
+
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!res.ok) {
+        let errorMessage = `gemini_http_${res.status}`;
+
+        try {
+          const errorPayload = await res.json();
+
+          if (
+            errorPayload &&
+            errorPayload.error &&
+            typeof errorPayload.error.message ===
+              "string"
+          ) {
+            errorMessage +=
+              `: ${errorPayload.error.message}`;
+          }
+        } catch {
+          // Keep status-only error.
+        }
+
+        lastResult = {
+          answer: null,
+          provider: "gemini",
+          model,
+          grounded: false,
+          citations: [],
+          warnings: ["GEMINI_API_ERROR"],
+          error: errorMessage,
+        };
+
+        // Model availability errors (404/NOT_FOUND, 400 for retired
+        // models) are retryable against a newer candidate model.
+        if (res.status === 404 || res.status === 400 || res.status === 429) {
+          continue;
+        }
+
+        return lastResult;
+      }
+
+      let payload;
 
       try {
-        const errorPayload = await res.json();
-
-        if (
-          errorPayload &&
-          errorPayload.error &&
-          typeof errorPayload.error.message ===
-            "string"
-        ) {
-          errorMessage +=
-            `: ${errorPayload.error.message}`;
-        }
+        payload = await res.json();
       } catch {
-        // Keep status-only error.
+        lastResult = {
+          answer: null,
+          provider: "gemini",
+          model,
+          grounded: false,
+          citations: [],
+          warnings: ["GEMINI_INVALID_RESPONSE"],
+          error: "gemini_invalid_json",
+        };
+        continue;
+      }
+
+      const answer =
+        extractGeminiResponseText(payload);
+
+      if (!answer) {
+        const blockReason =
+          payload &&
+          payload.promptFeedback &&
+          payload.promptFeedback.blockReason
+            ? String(
+                payload.promptFeedback.blockReason
+              )
+            : null;
+
+        lastResult = {
+          answer: null,
+          provider: "gemini",
+          model,
+          grounded: false,
+          citations: [],
+          warnings: ["GEMINI_EMPTY_RESPONSE"],
+          error: blockReason
+            ? `gemini_empty_response:${blockReason}`
+            : "gemini_empty_response",
+        };
+        continue;
       }
 
       return {
+        answer,
+        provider: "gemini",
+        model,
+        grounded: Boolean(safeContext),
+        citations: [],
+        warnings: [],
+        rawMetadata: {
+          finishReason:
+            payload &&
+            payload.candidates &&
+            payload.candidates[0]
+              ? payload.candidates[0]
+                  .finishReason || null
+              : null,
+        },
+      };
+    } catch (error) {
+      lastResult = {
         answer: null,
         provider: "gemini",
         model,
         grounded: false,
         citations: [],
-        warnings: ["GEMINI_API_ERROR"],
-        error: errorMessage,
+        warnings: ["GEMINI_NETWORK_ERROR"],
+        error:
+          error && error.message
+            ? String(error.message)
+            : "gemini_network_error",
       };
     }
+  }
 
-    let payload;
-
-    try {
-      payload = await res.json();
-    } catch {
-      return {
-        answer: null,
-        provider: "gemini",
-        model,
-        grounded: false,
-        citations: [],
-        warnings: ["GEMINI_INVALID_RESPONSE"],
-        error: "gemini_invalid_json",
-      };
-    }
-
-    const answer =
-      extractGeminiResponseText(payload);
-
-    if (!answer) {
-      const blockReason =
-        payload &&
-        payload.promptFeedback &&
-        payload.promptFeedback.blockReason
-          ? String(
-              payload.promptFeedback.blockReason
-            )
-          : null;
-
-      return {
-        answer: null,
-        provider: "gemini",
-        model,
-        grounded: false,
-        citations: [],
-        warnings: ["GEMINI_EMPTY_RESPONSE"],
-        error: blockReason
-          ? `gemini_empty_response:${blockReason}`
-          : "gemini_empty_response",
-      };
-    }
-
-    return {
-      answer,
-      provider: "gemini",
-      model,
-      grounded: Boolean(safeContext),
-      citations: [],
-      warnings: [],
-      rawMetadata: {
-        finishReason:
-          payload &&
-          payload.candidates &&
-          payload.candidates[0]
-            ? payload.candidates[0]
-                .finishReason || null
-            : null,
-      },
-    };
-  } catch (error) {
-    return {
+  return (
+    lastResult || {
       answer: null,
       provider: "gemini",
-      model,
+      model: configuredModel,
       grounded: false,
       citations: [],
-      warnings: ["GEMINI_NETWORK_ERROR"],
-      error:
-        error && error.message
-          ? String(error.message)
-          : "gemini_network_error",
-    };
-  }
+      warnings: ["GEMINI_EMPTY_RESPONSE"],
+      error: "gemini_empty_response",
+    }
+  );
 }
 
 async function generateAnswer({

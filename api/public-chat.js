@@ -60,16 +60,39 @@ module.exports = async function handler(req, res) {
       parts: [{ text: message.trim() }]
     });
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents,
-      config: {
-        systemInstruction: systemPrompt
-      }
-    });
+    const candidateModels = [
+      process.env.GEMINI_MODEL || process.env.GARUDA_GEMINI_MODEL || "gemini-2.5-flash",
+      "gemini-flash-latest",
+      "gemini-3.5-flash",
+      "gemini-3.1-flash-lite"
+    ].filter(Boolean);
 
-    const reply = response.text ?? response.outputText ?? "No response text generated.";
-    return res.status(200).json({ reply });
+    let lastError = null;
+
+    for (const model of candidateModels) {
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents,
+          config: {
+            systemInstruction: systemPrompt
+          }
+        });
+
+        const reply = response.text ?? response.outputText ?? "No response text generated.";
+        return res.status(200).json({ reply });
+      } catch (error) {
+        lastError = error;
+        console.error(`Public Chat API Error (model=${model}):`, error && error.message ? error.message : error);
+      }
+    }
+
+    const status = lastError && typeof lastError.status === "number" && lastError.status >= 400 && lastError.status < 600
+      ? lastError.status
+      : 500;
+    return res.status(status).json({
+      error: (lastError && lastError.message) || "Internal server error processing AI chat request"
+    });
   } catch (error) {
     console.error("Public Chat API Error:", error);
     const status = error && typeof error.status === "number" && error.status >= 400 && error.status < 600
