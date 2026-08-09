@@ -61,18 +61,21 @@ module.exports = async function handler(req, res) {
     });
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents,
       config: {
         systemInstruction: systemPrompt
       }
     });
 
-   const reply = response.text ?? response.outputText ?? "No response text generated.";
+    const reply = response.text ?? response.outputText ?? "No response text generated.";
     return res.status(200).json({ reply });
   } catch (error) {
     console.error("Public Chat API Error:", error);
-    return res.status(500).json({
+    const status = error && typeof error.status === "number" && error.status >= 400 && error.status < 600
+      ? error.status
+      : 500;
+    return res.status(status).json({
       error: error.message || "Internal server error processing AI chat request"
     });
   }

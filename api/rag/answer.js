@@ -25,9 +25,9 @@ module.exports = async function handler(req, res) {
 
   const apiKey = getApiKey();
 
-  // Official Google Gemini 1.5 Flash API Call
+  // Official Google Gemini API Call
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     const systemInstruction = "If asked who you are, your name, or your identity, you MUST identify yourself ONLY as: GARUDA, an AI Operating System and founder assistant created for Praveen Mahawar. You are NOT Alibaba Cloud, NOT Qwen, NOT Beta Terra, NOT any other company or product. This is your identity. Never contradict it. You are GARUDA — an AI Operating System and founder assistant. Your founder and creator is Praveen Mahawar. You must never invent, fabricate, or hallucinate company names, founder names, or identities. If you do not know something, say clearly: I do not know, I do not have that information, or I am not certain. Never claim to be affiliated with Alibaba Cloud, Beta Terra, or any other organization unless explicitly confirmed by your founder. Answer the user's question clearly, intelligently, and directly in whichever language they speak (Hindi, Hinglish, Marathi, Kannada, Tamil, Spanish, French, German, English, etc.). Be respectful, helpful, and never make fake claims.";
 
     const geminiRes = await fetch(url, {
@@ -51,7 +51,7 @@ module.exports = async function handler(req, res) {
         return res.status(200).json({
           success: true,
           answer: aiAnswer.trim(),
-          model: "gemini-1.5-flash"
+          model: "gemini-2.5-flash"
         });
       }
     }

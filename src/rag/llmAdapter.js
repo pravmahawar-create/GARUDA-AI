@@ -16,9 +16,23 @@
 const DEFAULT_PROVIDER = "fallback";
 
 function getConfiguredProvider() {
-  return (process.env.GARUDA_LLM_PROVIDER || DEFAULT_PROVIDER)
+  const explicit = (process.env.GARUDA_LLM_PROVIDER || "")
     .trim()
     .toLowerCase();
+
+  if (explicit && explicit !== "fallback") {
+    return explicit;
+  }
+
+  if (getGeminiApiKey()) {
+    return "gemini";
+  }
+
+  if (getOpenAIApiKey()) {
+    return "openai";
+  }
+
+  return DEFAULT_PROVIDER;
 }
 
 function getLLMApiKey() {
@@ -335,7 +349,10 @@ async function generateOpenAIAnswer({
   const apiKey = getOpenAIApiKey();
 
   const model =
-    process.env.GARUDA_LLM_MODEL || "gpt-4o-mini";
+    process.env.GARUDA_OPENAI_MODEL ||
+    process.env.OPENAI_MODEL ||
+    process.env.GARUDA_LLM_MODEL ||
+    "gpt-4o-mini";
 
   if (!apiKey) {
     const fallback = buildFallbackAnswer({ query, context });
@@ -625,7 +642,8 @@ async function generateGeminiAnswer({
   const apiKey = getGeminiApiKey();
 
   const model =
-    process.env.GARUDA_LLM_MODEL ||
+    process.env.GARUDA_GEMINI_MODEL ||
+    process.env.GEMINI_MODEL ||
     "gemini-2.5-flash";
 
   if (!apiKey) {
@@ -804,40 +822,65 @@ async function generateAnswer({
 } = {}) {
   const provider = getConfiguredProvider();
 
-  if (provider === "openai") {
-    return generateOpenAIAnswer({
-      query,
-      context,
-      systemPrompt,
-      metadata,
-    });
-  }
-
-  if (provider === "gemini") {
-    return generateGeminiAnswer({
-      query,
-      context,
-      systemPrompt,
-      metadata,
-    });
-  }
-
-  if (provider === "ollama") {
-    return generateOllamaAnswer({
-      query,
-      context,
-      systemPrompt,
-      conversationHistory,
-      metadata,
-    });
-  }
-
-  return buildFallbackAnswer({
+  const adapterArgs = {
     query,
     context,
     systemPrompt,
+    conversationHistory,
     metadata,
-  });
+  };
+
+  let result;
+
+  if (provider === "openai") {
+    result = await generateOpenAIAnswer(adapterArgs);
+  } else if (provider === "gemini") {
+    result = await generateGeminiAnswer(adapterArgs);
+  } else if (provider === "ollama") {
+    result = await generateOllamaAnswer(adapterArgs);
+  } else {
+    return buildFallbackAnswer(adapterArgs);
+  }
+
+  // Graceful fallback chain: if the primary provider did not produce a
+  // usable answer, automatically retry with a configured cloud provider.
+  const usable =
+    result &&
+    typeof result.answer === "string" &&
+    result.answer.trim() &&
+    !result.error;
+
+  if (!usable) {
+    if (getGeminiApiKey() && provider !== "gemini") {
+      const geminiResult = await generateGeminiAnswer(adapterArgs);
+      if (
+        geminiResult &&
+        typeof geminiResult.answer === "string" &&
+        geminiResult.answer.trim()
+      ) {
+        return {
+          ...geminiResult,
+          fallbackFrom: provider,
+        };
+      }
+    }
+
+    if (getOpenAIApiKey() && provider !== "openai") {
+      const openaiResult = await generateOpenAIAnswer(adapterArgs);
+      if (
+        openaiResult &&
+        typeof openaiResult.answer === "string" &&
+        openaiResult.answer.trim()
+      ) {
+        return {
+          ...openaiResult,
+          fallbackFrom: provider,
+        };
+      }
+    }
+  }
+
+  return result || buildFallbackAnswer(adapterArgs);
 }
 
 module.exports = {

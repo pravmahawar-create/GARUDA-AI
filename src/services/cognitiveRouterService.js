@@ -13,22 +13,52 @@
  * - STRUCTURED_SYNTHESIS
  */
 
+function detectPreferredProvider() {
+  const explicit = (process.env.GARUDA_LLM_PROVIDER || "")
+    .trim()
+    .toLowerCase();
+
+  if (explicit && explicit !== "fallback") {
+    return explicit;
+  }
+
+  if (process.env.GARUDA_LLM_API_KEY || process.env.GEMINI_API_KEY) {
+    return "gemini";
+  }
+
+  if (process.env.GARUDA_LLM_API_KEY || process.env.OPENAI_API_KEY) {
+    return "openai";
+  }
+
+  return "ollama";
+}
+
+function defaultModelForProvider(provider) {
+  if (provider === "gemini") {
+    return process.env.GARUDA_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  }
+  if (provider === "openai") {
+    return process.env.GARUDA_OPENAI_MODEL || process.env.OPENAI_MODEL || "gpt-4o-mini";
+  }
+  return process.env.GARUDA_LLM_MODEL || "qwen2.5-coder:3b";
+}
+
 const CAPABILITY_MAPPINGS = {
   GENERAL_REASONING: {
-    provider: process.env.GARUDA_LLM_PROVIDER || "ollama",
-    model: process.env.GARUDA_LLM_MODEL || "qwen2.5-coder:3b"
+    provider: detectPreferredProvider(),
+    model: null
   },
   CONVERSATION: {
-    provider: process.env.GARUDA_LLM_PROVIDER || "ollama",
-    model: process.env.GARUDA_LLM_MODEL || "qwen2.5-coder:3b"
+    provider: detectPreferredProvider(),
+    model: null
   },
   CODE_REASONING: {
-    provider: process.env.GARUDA_LLM_PROVIDER || "ollama",
-    model: process.env.GARUDA_LLM_MODEL || "qwen2.5-coder:3b"
+    provider: detectPreferredProvider(),
+    model: null
   },
   STRUCTURED_SYNTHESIS: {
-    provider: process.env.GARUDA_LLM_PROVIDER || "ollama",
-    model: process.env.GARUDA_LLM_MODEL || "qwen2.5-coder:3b"
+    provider: detectPreferredProvider(),
+    model: null
   }
 };
 
@@ -40,7 +70,9 @@ function resolveCognitiveResource(capability = "CONVERSATION") {
     .trim()
     .toLowerCase();
 
-  const activeModel = (process.env.GARUDA_LLM_MODEL || mapping.model || "qwen2.5-coder:3b")
+  const activeModel = (activeProvider === "ollama"
+    ? process.env.GARUDA_LLM_MODEL
+    : null) || defaultModelForProvider(activeProvider)
     .trim();
 
   return {
