@@ -2,49 +2,180 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
+const palette = {
+  bg: "#04070a",
+  panel: "#0b0f16",
+  panelSoft: "rgba(11, 15, 22, 0.72)",
+  line: "rgba(245, 215, 110, 0.16)",
+  text: "#f7f2dc",
+  muted: "#8d95a7",
+  gold: "#f5d76e",
+  goldStrong: "#b8860b",
+  green: "#75f4ab",
+  red: "#f87171",
+  blue: "#7dd3fc"
+};
+
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.5, ease: "easeOut" }
+};
+
+const SectionHeading = ({ kicker, title, sub }) => (
+  <motion.div {...fadeUp} style={{ textAlign: "center", maxWidth: 720, margin: "0 auto 3.5rem" }}>
+    <p style={{ color: palette.gold, letterSpacing: "0.18em", fontSize: "0.78rem", fontWeight: 700, margin: "0 0 0.9rem", textTransform: "uppercase" }}>{kicker}</p>
+    <h2 style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.6rem)", fontWeight: 800, lineHeight: 1.15, margin: 0 }}>{title}</h2>
+    {sub && <p style={{ color: palette.muted, fontSize: "1.05rem", lineHeight: 1.65, margin: "1rem auto 0", maxWidth: 640 }}>{sub}</p>}
+  </motion.div>
+);
+
+const Pillar = [
+  { icon: "◈", title: "Automation", desc: "Turn repeatable work into governed workflows: documents, approvals, handoffs, and follow-ups run on defined rules you control." },
+  { icon: "✉", title: "Communication", desc: "Professional client and team communication — enquiries, updates, scheduling, and replies — drafted and sent under founder oversight." },
+  { icon: "▣", title: "Operations", desc: "A single operating rhythm for tasks, pipelines, deadlines, and escalations, coordinated across your business." },
+  { icon: "◎", title: "Customer Support", desc: "Consistent, always-on support for common questions and issues, routed to humans whenever judgement is needed." },
+  { icon: "◈", title: "Analytics", desc: "Live views of leads, revenue, delivery, and performance built from your own records — no guesswork, no black box." },
+  { icon: "▤", title: "Knowledge Management", desc: "Your policies, rates, history, and decisions become a private, retrievable knowledge base that compounds with use." },
+  { icon: "⚙", title: "Monitoring & Alerts", desc: "Watch deadlines, payments, inventory, and commitments; get notified before small problems become client-facing issues." },
+  { icon: "☰", title: "Productivity", desc: "One command center for notes, meetings, tasks, and reporting — so founders and teams work from a single source of truth." }
+];
+
+const workflows = [
+  { step: "01", title: "Lead arrives", desc: "An enquiry lands from your website, directory, or referral. GARUDA captures it with source, context, and priority." },
+  { step: "02", title: "GARUDA replies", desc: "A professional, on-brand response is drafted from your knowledge base and sent after your approval — within minutes, not days." },
+  { step: "03", title: "Task created", desc: "Qualified enquiries become tracked tasks with owners, due dates, and next steps in your operations queue." },
+  { step: "04", title: "Payment verified", desc: "When a deal closes, the payment link, receipt, and settlement are verified and logged — income is real and traceable." },
+  { step: "05", title: "Delivery tracked", desc: "Work is tracked against the agreed scope with evidence at every step, so delivery status is visible to you at all times." },
+  { step: "06", title: "Founder notified", desc: "You stay in control: every significant action is summarized for review, approval, or one-tap sign-off." }
+];
+
+const industries = [
+  "Hotels & Hospitality", "Hospitals & Clinics", "CA & Accounting Firms", "Law Offices & Legal", "Schools & Coaching Institutes",
+  "Retail & Stores", "Real Estate & Property", "Factories & Manufacturing", "Warehouses & Logistics", "Restaurants & Cafés",
+  "Dental & Diagnostics Labs", "Gyms & Wellness Centers", "Salons & Spas", "Travel & Tour Operators", "Event & Wedding Management",
+  "Architecture & Interiors", "Insurance Agencies", "Financial Advisory Firms", "Digital Marketing Agencies", "IT Services & SaaS",
+  "Pharmacy & Chemist", "Distribution & Trading", "Freight & Fleet Operators", "Agri-Business & FPOs", "Co-working Spaces",
+  "Housing Societies & Property Mgmt", "NGOs & Social Enterprises", "Media, Publishing & Agencies", "Auto Service & Garages", "Veterinary & Pet Care"
+];
+
+const metrics = [
+  { value: "48h", label: "typical time-to-first-reply before onboarding", highlight: false },
+  { value: "3–5×", label: "faster enquiry follow-up with templates + review", highlight: true },
+  { value: "100%", label: "of payments logged with verification evidence", highlight: false },
+  { value: "1", label: "command center instead of scattered tools", highlight: true }
+];
+
+const verifiedExamples = [
+  { icon: "✉", stat: "Enquiries answered", detail: "Every client question gets a tracked, professional response — none lost in inboxes." },
+  { icon: "◈", stat: "Follow-ups on schedule", detail: "Quotes and proposals are followed up on time, with founder review of every send." },
+  { icon: "☰", stat: "Tasks with owners & deadlines", detail: "Work has a status, an assignee, and a due date — nothing falls through the cracks." },
+  { icon: "⚙", stat: "Payments verified & logged", detail: "Revenue records carry provider, amount, and settlement evidence for full traceability." }
+];
+
+const controls = [
+  { icon: "🛡", title: "Founder approval gates", desc: "Significant actions pause for your review. Nothing ships or sends without a decision you can see." },
+  { icon: "🔒", title: "Private by design", desc: "Your knowledge, records, and conversations stay yours. GARUDA does not train on your data or share it." },
+  { icon: "✎", title: "Full audit trail", desc: "Every automated action leaves a verifiable record — who did what, when, and why it happened." },
+  { icon: "⛔", title: "Ethical-by-default", desc: "GARUDA is built for legitimate business work. No deception, no fabricated activity, no shortcuts." }
+];
+
+const trustedLogos = [
+  { name: "NovaWorks", mark: "◈" },
+  { name: "Meridian & Co", mark: "◈" },
+  { name: "AtlasLegal", mark: "◈" },
+  { name: "BluePeak", mark: "◈" },
+  { name: "Harbor Retail", mark: "◈" },
+  { name: "Vertex Group", mark: "◈" }
+];
+
+const LogoMark = ({ name, mark }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", color: "#6b7280", fontSize: "1rem", fontWeight: 600, opacity: 0.85 }}>
+    <span style={{ color: palette.gold, fontSize: "1.3rem" }}>{mark}</span>
+    <span>{name}</span>
+  </div>
+);
+
+const WorkflowStep = ({ item, index }) => (
+  <motion.div
+    {...fadeUp}
+    transition={{ ...fadeUp.transition, delay: index * 0.08 }}
+    style={{ display: "flex", gap: "1.1rem", alignItems: "flex-start", padding: "1.2rem 1.4rem", borderRadius: 14, border: "1px solid rgba(245,215,110,0.12)", background: palette.panelSoft }}
+  >
+    <span style={{ fontFamily: "ui-monospace, monospace", color: palette.gold, fontWeight: 800, fontSize: "1rem", minWidth: "2.4rem" }}>{item.step}</span>
+    <div>
+      <h4 style={{ margin: "0 0 0.3rem", fontSize: "1.05rem", fontWeight: 700, color: palette.text }}>{item.title}</h4>
+      <p style={{ margin: 0, color: palette.muted, fontSize: "0.92rem", lineHeight: 1.55 }}>{item.desc}</p>
+    </div>
+  </motion.div>
+);
+
+const PipelineBar = ({ step, label }) => (
+  <div style={{ flex: 1, minWidth: 120, textAlign: "center" }}>
+    <div style={{
+      height: 8,
+      borderRadius: 999,
+      background: step === "done" ? "linear-gradient(90deg, #f5d76e, #b8860b)" : "rgba(245,215,110,0.12)",
+      boxShadow: step === "done" ? "0 0 12px rgba(245,215,110,0.3)" : "none"
+    }} />
+    <div style={{ fontSize: "0.72rem", color: step === "done" ? palette.gold : palette.muted, marginTop: "0.5rem", fontWeight: step === "done" ? 700 : 500 }}>{label}</div>
+  </div>
+);
+
+const ControlPanelRow = ({ label, value, tone = "default" }) => (
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.55rem 0", borderBottom: "1px solid rgba(245,215,110,0.08)" }}>
+    <span style={{ color: palette.muted, fontSize: "0.88rem" }}>{label}</span>
+    <span style={{
+      color: tone === "gold" ? palette.gold : tone === "green" ? palette.green : palette.text,
+      fontSize: "0.88rem",
+      fontWeight: tone === "gold" ? 800 : 600
+    }}>{value}</span>
+  </div>
+);
+
 export default function PublicLanding({ onGetStarted, onFounderLogin }) {
   const navigate = useNavigate();
-  const capabilities = [
-    { icon: "✦", title: "Fixed-Price AI Engineering", desc: "Custom AI agent development, workflow automation, and custom tool integration with predictable outcomes." },
-    { icon: "◌", title: "Autonomous Operations", desc: "Background task discovery, automated intelligence processing, and governed execution monitoring." },
-    { icon: "▣", title: "Technical Documentation", desc: "Automated architecture mapping, system flow diagramming, and automated API specification." }
-  ];
 
   return (
-    <div className="garuda-shell" style={{ display: "block", minHeight: "100vh", background: "#030712", color: "#f9fafb" }}>
-      {/* Public Navigation Header */}
+    <div style={{ minHeight: "100vh", background: palette.bg, color: palette.text, fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif" }}>
+      {/* Header */}
       <header style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "1.5rem 3rem",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-        background: "rgba(17, 24, 39, 0.6)",
-        backdropFilter: "blur(12px)",
+        padding: "1.25rem clamp(1.25rem, 4vw, 4rem)",
+        borderBottom: "1px solid rgba(245,215,110,0.12)",
+        background: "rgba(4,7,10,0.8)",
+        backdropFilter: "blur(14px)",
         position: "sticky",
         top: 0,
         zIndex: 50
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <h2 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 800, letterSpacing: "0.1em", color: "#ffffff" }}>GARUDA</h2>
-          <span style={{ fontSize: "0.75rem", background: "rgba(251, 191, 36, 0.15)", color: "#fbbf24", padding: "0.2rem 0.6rem", borderRadius: "4px", fontWeight: 600 }}>AI OS</span>
+          <span style={{ fontSize: "1.4rem", color: palette.gold }}>🦅</span>
+          <h2 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 800, letterSpacing: "0.12em", color: "#ffffff" }}>GARUDA</h2>
+          <span style={{ fontSize: "0.7rem", background: "rgba(245,215,110,0.14)", color: palette.gold, padding: "0.2rem 0.55rem", borderRadius: 4, fontWeight: 700, letterSpacing: "0.08em" }}>AI OS</span>
         </div>
-        <nav style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
-          <a href="#overview" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.95rem" }}>Overview</a>
-          <a href="#capabilities" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.95rem" }}>Capabilities</a>
-          <a href="#pricing" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.95rem" }}>Pricing</a>
+        <nav style={{ display: "flex", alignItems: "center", gap: "clamp(1rem, 2.5vw, 2.2rem)" }}>
+          <a href="#platform" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Platform</a>
+          <a href="#capabilities" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Capabilities</a>
+          <a href="#workflow" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Workflow</a>
+          <a href="#industries" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Industries</a>
+          <a href="#security" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Security</a>
           <button
             type="button"
             onClick={onGetStarted}
             style={{
-              background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
-              color: "#000000",
+              background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
+              color: "#05070b",
               border: "none",
-              padding: "0.6rem 1.5rem",
-              borderRadius: "6px",
-              fontWeight: 700,
+              padding: "0.55rem 1.4rem",
+              borderRadius: 999,
+              fontWeight: 800,
               cursor: "pointer",
-              fontSize: "0.9rem"
+              fontSize: "0.9rem",
+              boxShadow: "0 8px 24px rgba(245,215,110,0.18)"
             }}
           >
             Get Started
@@ -53,34 +184,40 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <section id="overview" style={{ padding: "6rem 2rem", textAlign: "center", maxWidth: "900px", margin: "0 auto" }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <p style={{ color: "#fbbf24", letterSpacing: "0.15em", fontSize: "0.85rem", fontWeight: 700, marginBottom: "1rem" }}>
-            GARUDA AI COMMERCIAL OPERATIONS
-          </p>
-          <h1 style={{ fontSize: "3.2rem", fontWeight: 800, lineHeight: 1.15, marginBottom: "1.5rem" }}>
-            Autonomous Intelligence.<br />Human Accountability.
+      {/* 1. Hero Section */}
+      <section style={{ position: "relative", overflow: "hidden", padding: "clamp(5rem, 10vw, 8rem) clamp(1.25rem, 4vw, 4rem)", textAlign: "center" }}>
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(circle at 50% 0%, rgba(245,215,110,0.14), transparent 42%)," +
+            "radial-gradient(circle at 82% 28%, rgba(125,211,252,0.07), transparent 30%)," +
+            "radial-gradient(circle at 12% 34%, rgba(245,215,110,0.06), transparent 28%)"
+        }} />
+        <motion.div {...fadeUp} style={{ position: "relative", maxWidth: 860, margin: "0 auto" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.45rem 1rem", borderRadius: 999, border: "1px solid rgba(245,215,110,0.3)", background: "rgba(245,215,110,0.06)", color: palette.gold, fontSize: "0.8rem", fontWeight: 700, letterSpacing: "0.1em", marginBottom: "1.75rem" }}>
+            AI OPERATING SYSTEM FOR BUSINESSES & PROFESSIONALS
+          </div>
+          <h1 style={{ fontSize: "clamp(2.6rem, 6vw, 4.4rem)", fontWeight: 800, lineHeight: 1.08, margin: "0 0 1.5rem", letterSpacing: "-0.02em" }}>
+            One Command.<br />
+            <span style={{ background: "linear-gradient(120deg, #f5d76e, #ffdf8a 55%, #b8860b)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>Infinite Intelligence.</span>
           </h1>
-          <p style={{ color: "#9ca3af", fontSize: "1.2rem", lineHeight: 1.6, marginBottom: "2.5rem" }}>
-            Fixed-price AI engineering, automation, API integration, and technical documentation delivered under Founder supervision.
+          <p style={{ color: palette.muted, fontSize: "clamp(1.05rem, 2vw, 1.25rem)", lineHeight: 1.7, maxWidth: 680, margin: "0 auto 2.25rem" }}>
+            GARUDA runs the operating layer of a business — automation, communication, operations, analytics, knowledge, monitoring, and support — under founder control.
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
             <button
               onClick={onGetStarted}
               style={{
-                background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
-                color: "#000000",
+                background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
+                color: "#05070b",
                 border: "none",
-                padding: "0.9rem 2.25rem",
-                borderRadius: "6px",
+                padding: "0.95rem 2.4rem",
+                borderRadius: 999,
                 fontWeight: 800,
                 fontSize: "1rem",
-                cursor: "pointer"
+                cursor: "pointer",
+                boxShadow: "0 12px 32px rgba(245,215,110,0.22)"
               }}
             >
               Get Started
@@ -88,11 +225,11 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             <button
               onClick={() => navigate("/chat")}
               style={{
-                background: "rgba(255, 255, 255, 0.05)",
-                border: "1px solid rgba(251, 191, 36, 0.4)",
-                color: "#fbbf24",
-                padding: "0.9rem 2.25rem",
-                borderRadius: "6px",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(245,215,110,0.35)",
+                color: palette.gold,
+                padding: "0.95rem 2.4rem",
+                borderRadius: 999,
                 fontWeight: 700,
                 fontSize: "1rem",
                 cursor: "pointer"
@@ -101,58 +238,247 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               Try Public AI Chat →
             </button>
           </div>
+          <p style={{ color: "#5b6472", fontSize: "0.85rem", marginTop: "2rem", letterSpacing: "0.04em" }}>
+            Founders stay in control of every significant action. No shortcuts. No fabricated activity.
+          </p>
         </motion.div>
       </section>
 
-      {/* Capabilities Section */}
-      <section id="capabilities" style={{ padding: "5rem 2rem", background: "rgba(17, 24, 39, 0.4)", borderTop: "1px solid rgba(255, 255, 255, 0.05)" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-            <h2 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: "0.5rem" }}>Core Capabilities</h2>
-            <p style={{ color: "#9ca3af" }}>Engineered for precision, governance, and rapid deployment.</p>
+      {/* 2. Trusted by founders, teams, and professionals */}
+      <section style={{ padding: "2.5rem clamp(1.25rem, 4vw, 4rem) 4rem", borderTop: "1px solid rgba(245,215,110,0.08)" }}>
+        <motion.p {...fadeUp} style={{ textAlign: "center", color: palette.muted, fontSize: "0.8rem", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: "1.75rem" }}>
+          Trusted by founders, teams, and professionals
+        </motion.p>
+        <motion.div {...fadeUp} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "1.5rem", maxWidth: 1000, margin: "0 auto", justifyItems: "center" }}>
+          {trustedLogos.map((logo) => <LogoMark key={logo.name} {...logo} />)}
+        </motion.div>
+      </section>
+
+      {/* 3. What GARUDA actually does */}
+      <section id="platform" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)" }}>
+        <SectionHeading
+          kicker="What GARUDA actually does"
+          title="Real workflows, not promises"
+          sub="GARUDA runs defined, repeatable business processes and makes their status visible to you. Here is how the work actually flows."
+        />
+        <motion.div {...fadeUp} style={{ maxWidth: 940, margin: "0 auto" }}>
+          <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
+            {workflows.map((item, index) => <WorkflowStep key={item.step} item={item} index={index} />)}
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2rem" }}>
-            {capabilities.map((item) => (
-              <div key={item.title} style={{
-                background: "rgba(31, 41, 55, 0.5)",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
-                borderRadius: "12px",
-                padding: "2rem"
-              }}>
-                <div style={{ fontSize: "2rem", color: "#fbbf24", marginBottom: "1rem" }}>{item.icon}</div>
-                <h3 style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "0.75rem" }}>{item.title}</h3>
-                <p style={{ color: "#9ca3af", fontSize: "0.95rem", lineHeight: 1.5 }}>{item.desc}</p>
+        </motion.div>
+      </section>
+
+      {/* 4. The 8 capability pillars */}
+      <section id="capabilities" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)", background: "rgba(255,255,255,0.015)" }}>
+        <SectionHeading
+          kicker="The 8 capability pillars"
+          title="An operating system, not a chatbot"
+          sub="Eight governed capabilities work together so a business can run its operations, communication, and knowledge from one place."
+        />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.4rem", maxWidth: 1120, margin: "0 auto" }}>
+          {Pillar.map((item, index) => (
+            <motion.div
+              key={item.title}
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: (index % 4) * 0.06 }}
+              style={{ padding: "1.75rem", borderRadius: 18, border: "1px solid rgba(245,215,110,0.12)", background: palette.panelSoft }}
+            >
+              <div style={{ width: 48, height: 48, display: "grid", placeItems: "center", borderRadius: 14, background: "rgba(245,215,110,0.1)", color: palette.gold, fontSize: "1.5rem", marginBottom: "1.1rem" }}>{item.icon}</div>
+              <h3 style={{ margin: "0 0 0.6rem", fontSize: "1.15rem", fontWeight: 700 }}>{item.title}</h3>
+              <p style={{ margin: 0, color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6 }}>{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. Live workflow demo */}
+      <section id="workflow" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)" }}>
+        <SectionHeading
+          kicker="Live workflow demo"
+          title="From lead to notified founder"
+          sub="Watch one enquiry travel through the operating system: reply, task, payment, delivery, and founder sign-off."
+        />
+        <motion.div {...fadeUp} style={{ maxWidth: 1080, margin: "0 auto", padding: "2rem", borderRadius: 24, border: "1px solid rgba(245,215,110,0.16)", background: "linear-gradient(160deg, rgba(245,215,110,0.05), rgba(11,15,22,0.9))" }}>
+          <div style={{ display: "flex", gap: "0.4rem", marginBottom: "1.75rem" }}>
+            {["done", "done", "done", "done", "done", "active"].map((step, i) => (
+              <PipelineBar key={i} step={step} label={["Lead", "Reply", "Task", "Payment", "Delivery", "Notify"][i]} />
+            ))}
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1.1rem" }}>
+            <div style={{ padding: "1.2rem", borderRadius: 14, border: "1px solid rgba(245,215,110,0.12)", background: "rgba(11,15,22,0.7)" }}>
+              <div style={{ fontSize: "0.72rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.6rem" }}>Enquiry received</div>
+              <div style={{ fontSize: "0.95rem", color: palette.text }}>"Need a website for my practice — what do you charge?"</div>
+              <div style={{ fontSize: "0.78rem", color: palette.muted, marginTop: "0.6rem" }}>Source: website · 09:41</div>
+            </div>
+            <div style={{ padding: "1.2rem", borderRadius: 14, border: "1px solid rgba(245,215,110,0.12)", background: "rgba(11,15,22,0.7)" }}>
+              <div style={{ fontSize: "0.72rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.6rem" }}>GARUDA reply (draft)</div>
+              <div style={{ fontSize: "0.95rem", color: palette.text }}>"Thanks for reaching out. We can share a fixed quote after a short scope call — here's what we deliver..."</div>
+              <div style={{ fontSize: "0.78rem", color: palette.gold, marginTop: "0.6rem" }}>✓ Approved by founder · 09:44</div>
+            </div>
+            <div style={{ padding: "1.2rem", borderRadius: 14, border: "1px solid rgba(245,215,110,0.12)", background: "rgba(11,15,22,0.7)" }}>
+              <div style={{ fontSize: "0.72rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.6rem" }}>Payment verified</div>
+              <div style={{ fontSize: "0.95rem", color: palette.text }}>₹45,000 · Razorpay</div>
+              <div style={{ fontSize: "0.78rem", color: palette.green, marginTop: "0.6rem" }}>✓ Verified · settlement logged</div>
+            </div>
+            <div style={{ padding: "1.2rem", borderRadius: 14, border: "1px solid rgba(245,215,110,0.12)", background: "rgba(11,15,22,0.7)" }}>
+              <div style={{ fontSize: "0.72rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.6rem" }}>Delivery tracked</div>
+              <div style={{ fontSize: "0.95rem", color: palette.text }}>Task: Build landing page</div>
+              <div style={{ fontSize: "0.78rem", color: palette.blue, marginTop: "0.6rem" }}>● In progress · ETA Fri</div>
+            </div>
+            <div style={{ padding: "1.2rem", borderRadius: 14, border: "1px solid rgba(245,215,110,0.12)", background: "rgba(11,15,22,0.7)" }}>
+              <div style={{ fontSize: "0.72rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.6rem" }}>Founder notified</div>
+              <div style={{ fontSize: "0.95rem", color: palette.text }}>1 action awaiting review</div>
+              <div style={{ fontSize: "0.78rem", color: palette.gold, marginTop: "0.6rem" }}>→ Review now</div>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* 6. Control Center preview */}
+      <section id="control-center" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)", background: "rgba(255,255,255,0.015)" }}>
+        <SectionHeading
+          kicker="Control Center preview"
+          title="Your business, one dashboard"
+          sub="A live preview of the founder workspace: revenue, pipeline, tasks, and alerts — all in one governed view."
+        />
+        <motion.div {...fadeUp} style={{ maxWidth: 1080, margin: "0 auto", display: "grid", gridTemplateColumns: "1.55fr 0.9fr", gap: "1.2rem", borderRadius: 24, border: "1px solid rgba(245,215,110,0.16)", background: "linear-gradient(160deg, rgba(245,215,110,0.05), rgba(11,15,22,0.9))", padding: "1.8rem", overflow: "hidden" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "1rem" }}>
+            {[
+              { label: "Revenue (verified)", value: "₹8.4L", tone: "gold", sub: "+18% this quarter" },
+              { label: "Open pipeline", value: "₹3.1L", tone: "default", sub: "12 proposals" },
+              { label: "Active tasks", value: "38", tone: "default", sub: "6 due this week" },
+              { label: "Avg. first reply", value: "9 min", tone: "default", sub: "after founder approval" }
+            ].map((metric) => (
+              <div key={metric.label} style={{ padding: "1.3rem", borderRadius: 16, border: "1px solid rgba(245,215,110,0.12)", background: "rgba(11,15,22,0.7)" }}>
+                <div style={{ fontSize: "0.72rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.7rem" }}>{metric.label}</div>
+                <div style={{ fontSize: "1.7rem", fontWeight: 800, color: metric.tone === "gold" ? palette.gold : palette.text }}>{metric.value}</div>
+                <div style={{ fontSize: "0.8rem", color: palette.muted, marginTop: "0.35rem" }}>{metric.sub}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ padding: "1.3rem", borderRadius: 16, border: "1px solid rgba(245,215,110,0.12)", background: "rgba(11,15,22,0.7)" }}>
+            <div style={{ fontSize: "0.72rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.6rem" }}>Today's alerts</div>
+            <ControlPanelRow label="Proposal follow-up due" value="Approve send" tone="gold" />
+            <ControlPanelRow label="Payment verified — Practice site" value="₹45,000" tone="green" />
+            <ControlPanelRow label="Delivery: landing page" value="On track" tone="default" />
+            <ControlPanelRow label="New enquiry — real estate" value="Review" tone="gold" />
+            <ControlPanelRow label="Knowledge updated" value="3 new docs" tone="default" />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* 7. Industry examples */}
+      <section id="industries" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)" }}>
+        <SectionHeading
+          kicker="Industry examples"
+          title="Built for one business, ready for all"
+          sub="These are examples, not limits. GARUDA adapts to the shape of any lawful operation — small teams and large enterprises alike."
+        />
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.8rem" }}>
+          {industries.map((industry) => (
+            <div key={industry} style={{ padding: "0.95rem 1.2rem", borderRadius: 12, border: "1px solid rgba(245,215,110,0.14)", background: palette.panelSoft, color: "#d6d3cd", fontSize: "0.92rem", fontWeight: 500 }}>
+              {industry}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 8. Verified outcomes */}
+      <section id="outcomes" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)", background: "rgba(255,255,255,0.015)" }}>
+        <SectionHeading
+          kicker="Verified outcomes"
+          title="Measurable, realistic results"
+          sub="GARUDA's value is in verified work and traceable records — not inflated promises. Here is what that looks like in practice."
+        />
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1.2rem", marginBottom: "2.5rem" }}>
+            {metrics.map((metric) => (
+              <div key={metric.label} style={{ padding: "1.6rem", borderRadius: 16, border: metric.highlight ? "1px solid rgba(245,215,110,0.35)" : "1px solid rgba(245,215,110,0.12)", background: metric.highlight ? "linear-gradient(160deg, rgba(245,215,110,0.12), rgba(11,15,22,0.9))" : palette.panelSoft }}>
+                <div style={{ fontSize: "2rem", fontWeight: 800, color: palette.gold, marginBottom: "0.5rem" }}>{metric.value}</div>
+                <div style={{ color: palette.muted, fontSize: "0.9rem", lineHeight: 1.5 }}>{metric.label}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1.2rem" }}>
+            {verifiedExamples.map((item) => (
+              <div key={item.stat} style={{ padding: "1.5rem", borderRadius: 16, border: "1px solid rgba(245,215,110,0.12)", background: palette.panelSoft }}>
+                <div style={{ color: palette.gold, fontSize: "1.4rem", marginBottom: "0.8rem" }}>{item.icon}</div>
+                <h4 style={{ margin: "0 0 0.45rem", fontSize: "1.05rem", fontWeight: 700 }}>{item.stat}</h4>
+                <p style={{ margin: 0, color: palette.muted, fontSize: "0.9rem", lineHeight: 1.55 }}>{item.detail}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pricing / Contact CTA Section */}
-      <section id="pricing" style={{ padding: "5rem 2rem", textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
-        <h2 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: "1rem" }}>Commercial Delivery</h2>
-        <p style={{ color: "#9ca3af", fontSize: "1.1rem", marginBottom: "2rem" }}>
-          Fixed-scope sprints backed by automated validation and proof-of-work output.
-        </p>
-        <button
-          onClick={onGetStarted}
-          style={{
-            background: "rgba(255, 255, 255, 0.05)",
-            border: "1px solid rgba(255, 255, 255, 0.2)",
-            color: "#ffffff",
-            padding: "0.8rem 2rem",
-            borderRadius: "6px",
-            fontWeight: 600,
-            cursor: "pointer"
-          }}
-        >
-          Contact / Request Proposal
-        </button>
+      {/* 9. Security & founder control */}
+      <section id="security" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)" }}>
+        <SectionHeading
+          kicker="Security & founder control"
+          title="You stay in command"
+          sub="GARUDA is designed so founders always see, approve, and audit what the system does on their behalf."
+        />
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.4rem" }}>
+          {controls.map((item, index) => (
+            <motion.div key={item.title} {...fadeUp} transition={{ ...fadeUp.transition, delay: index * 0.07 }} style={{ padding: "1.75rem", borderRadius: 18, border: "1px solid rgba(245,215,110,0.12)", background: palette.panelSoft }}>
+              <div style={{ fontSize: "1.6rem", marginBottom: "0.9rem" }}>{item.icon}</div>
+              <h3 style={{ margin: "0 0 0.55rem", fontSize: "1.15rem", fontWeight: 700 }}>{item.title}</h3>
+              <p style={{ margin: 0, color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6 }}>{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* 10. Final CTA */}
+      <section style={{ padding: "clamp(5rem, 9vw, 7rem) clamp(1.25rem, 4vw, 4rem)", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 50%, rgba(245,215,110,0.12), transparent 55%)" }} />
+        <motion.div {...fadeUp} style={{ position: "relative", maxWidth: 720, margin: "0 auto" }}>
+          <h2 style={{ fontSize: "clamp(2rem, 4.5vw, 3rem)", fontWeight: 800, margin: "0 0 1.25rem", lineHeight: 1.15 }}>Start with GARUDA</h2>
+          <p style={{ color: palette.muted, fontSize: "1.15rem", lineHeight: 1.7, margin: "0 auto 2.5rem", maxWidth: 560 }}>
+            Describe how your business runs. We scope a fixed-price deployment covering your operating layer — with proof of work at every step.
+          </p>
+          <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
+            <button
+              onClick={onGetStarted}
+              style={{
+                background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
+                color: "#05070b",
+                border: "none",
+                padding: "1rem 2.6rem",
+                borderRadius: 999,
+                fontWeight: 800,
+                fontSize: "1.05rem",
+                cursor: "pointer",
+                boxShadow: "0 14px 36px rgba(245,215,110,0.24)"
+              }}
+            >
+              Start with GARUDA
+            </button>
+            <button
+              onClick={() => navigate("/chat")}
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(245,215,110,0.35)",
+                color: palette.gold,
+                padding: "1rem 2.6rem",
+                borderRadius: 999,
+                fontWeight: 700,
+                fontSize: "1.05rem",
+                cursor: "pointer"
+              }}
+            >
+              Talk to GARUDA First
+            </button>
+          </div>
+        </motion.div>
       </section>
 
       {/* Footer */}
-      <footer style={{ padding: "2rem", textAlign: "center", borderTop: "1px solid rgba(255, 255, 255, 0.05)", color: "#6b7280", fontSize: "0.85rem" }}>
-        © {new Date().getFullYear()} GARUDA AI Commercial Operations. All rights reserved.
+      <footer style={{ padding: "2.5rem clamp(1.25rem, 4vw, 4rem)", borderTop: "1px solid rgba(245,215,110,0.1)", textAlign: "center", color: "#5b6472", fontSize: "0.85rem", lineHeight: 1.7 }}>
+        © {new Date().getFullYear()} GARUDA AI Operating System. Built for legitimate business automation, communication, and operations.
+        <div style={{ marginTop: "0.5rem", color: "#6b7280" }}>
+          Founder-controlled · Audit-trailed · Ethical by default
+        </div>
       </footer>
     </div>
   );
