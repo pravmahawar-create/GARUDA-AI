@@ -3,6 +3,7 @@
   "outputDirectory": "frontend/dist",
   "framework": "vite",
   "rewrites": [
+    { "source": "/api/webhook/:path*", "destination": "https://garuda-ai-xfif.onrender.com/api/webhook/:path*" },
     {
       "source": "/api/auth/:path*",
       "destination": "/api/auth/:path*"

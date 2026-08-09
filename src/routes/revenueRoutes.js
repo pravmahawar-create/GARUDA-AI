@@ -1,7 +1,12 @@
 const express = require("express");
 const revenueController = require("../controllers/revenueController");
+const paymentLinkController = require("../controllers/paymentLinkController");
 
 const router = express.Router();
+
+// Payment Link Routes
+router.get("/payment-link/config", paymentLinkController.config);
+router.post("/payment-link", paymentLinkController.generate);
 
 router.get("/", revenueController.list);
 router.post("/", revenueController.create);

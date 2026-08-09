@@ -6,6 +6,7 @@ const path = require("path");
 const app = express();
 
 app.use(cors());
+app.use("/api/webhook", require("./routes/webhookRoutes"));
 app.use(express.json({
   verify: (req, _res, buffer) => {
     req.rawBody = buffer.toString("utf8");

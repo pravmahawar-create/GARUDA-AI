@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { RevenueRecord } = require("../models/RevenueRecord");
 const { SettlementLedger, SETTLEMENT_STATUSES } = require("../models/SettlementLedger");
 const { founderApprovalGranted } = require("./revenueConversionService");
+const settlementFeeConfigService = require("./settlementFeeConfigService");
 
 const STATUS_TRANSITIONS = Object.freeze({
   pending: ["eligible", "failed"],
@@ -48,10 +49,15 @@ async function findRevenueRecord(id) {
 async function previewSettlement(revenueRecordId, payload = {}) {
   const revenueRecord = await findRevenueRecord(revenueRecordId);
   const eligibility = assessPayoutEligibility(revenueRecord);
+  const provider = String(payload.provider || revenueRecord.provider || "manual").toLowerCase().trim();
+  const feeRatePercent = payload.feeRatePercent !== undefined && payload.feeRatePercent !== ""
+    ? Number(payload.feeRatePercent)
+    : settlementFeeConfigService.getProviderFeeRate(provider, process.env);
   return {
     revenueRecordId: String(revenueRecord._id),
-    ...calculateSettlementAmounts(revenueRecord.amount, payload.feeRatePercent ?? 0),
+    ...calculateSettlementAmounts(revenueRecord.amount, feeRatePercent),
     currency: revenueRecord.currency,
+    provider,
     payoutEligible: eligibility.eligible,
     eligibilityReasons: eligibility.reasons,
     initialStatus: eligibility.eligible ? "eligible" : "pending",
@@ -72,6 +78,7 @@ async function createSettlement(revenueRecordId, payload = {}, context = {}) {
     netAmount: preview.netAmount,
     feeRatePercent: preview.feeRatePercent,
     currency: preview.currency,
+    provider: preview.provider,
     status: preview.initialStatus,
     payoutEligible: preview.payoutEligible,
     eligibilityReasons: preview.eligibilityReasons,

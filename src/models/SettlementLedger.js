@@ -38,6 +38,7 @@ const settlementLedgerSchema = new mongoose.Schema(
     receiptReference: { type: String, default: "", trim: true },
     settledAt: { type: Date, default: null },
     failureReason: { type: String, default: "", trim: true },
+    provider: { type: String, enum: ["razorpay", "stripe", "manual"], default: "manual", index: true },
     auditTrail: { type: [auditEntrySchema], default: [] }
   },
   { timestamps: true }
