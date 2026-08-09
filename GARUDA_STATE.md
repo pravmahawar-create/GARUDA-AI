@@ -35,6 +35,12 @@
 - `garudaCroService.js`: Chief Revenue Officer deal winning intelligence & outcome learning.
 - `dealTrackerService.js`: Empirical Reality Feedback Engine tracking deal submissions, client responses, and measured KPIs.
 - `scripts/garuda-dispatch.js`: One-click Founder proposal dispatch CLI tool (`npm run garuda:dispatch`).
+- `api/customer/`: Public customer signup/login via Supabase Auth, plus persistent customer memory (`conversations` + `messages` tables) with one-click demo account (`demo@garudaos.in`).
+
+## Customer Memory (Supabase)
+- Tables: `conversations`, `messages` (RLS, linked to `auth.users`); schema in `scripts/setup-customer-memory.sql`.
+- Every authenticated public-chat message is saved with `user_id`, `conversation_id`, `role`, `content`, and timestamps.
+- Previous conversations load automatically after login (chat sidebar + customer dashboard list).
 
 ## Current Empirical Reality Metrics
 - **Total Deals Submitted**: 0 (Awaiting Founder initial dispatch)
