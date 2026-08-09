@@ -8,6 +8,7 @@ import CustomerDashboard from "./pages/CustomerDashboard";
 import Login from "./pages/Login";
 import PublicLanding from "./pages/PublicLanding";
 import PublicChat from "./pages/PublicChat";
+import PayLink from "./pages/PayLink";
 import Signup from "./pages/Signup";
 import FounderWorkspace from "./pages/FounderWorkspace";
 
@@ -67,6 +68,7 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/app" element={customerRoute} />
+      <Route path="/pay/:ref" element={<PayLink />} />
       <Route path="*" element={publicLanding} />
     </Routes>
   );

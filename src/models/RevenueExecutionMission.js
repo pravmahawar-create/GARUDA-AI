@@ -17,6 +17,7 @@ const revenueExecutionMissionSchema = new mongoose.Schema(
     productionDelivery: { type: mongoose.Schema.Types.Mixed, default: null },
     executionEvidence: { type: mongoose.Schema.Types.Mixed, default: null },
     founderDecision: { type: mongoose.Schema.Types.Mixed, default: null },
+    payment: { type: mongoose.Schema.Types.Mixed, default: null },
     revisionNumber: { type: Number, default: 0, min: 0, max: 3 },
     revisionHistory: { type: [mongoose.Schema.Types.Mixed], default: [] },
     executionPath: { type: [String], required: true },

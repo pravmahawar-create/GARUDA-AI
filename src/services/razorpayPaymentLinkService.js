@@ -169,10 +169,44 @@ function verifyWebhookSignature(rawBody, signature, env = process.env) {
   return { verified: true, mode: config.mode };
 }
 
+async function fetchPaymentLinkStatus(linkId, options = {}) {
+  const env = options.env || process.env;
+  const config = getProviderConfig(env);
+  if (!config.ready || !linkId) return null;
+
+  const transport = options.transport || global.fetch;
+  if (typeof transport !== "function") return null;
+
+  const endpoint = `https://api.razorpay.com/v1/payment_links/${encodeURIComponent(String(linkId))}`;
+  const auth = Buffer.from(`${config.keyId}:${config.keySecret}`).toString("base64");
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const response = await transport(endpoint, {
+      method: "GET",
+      signal: controller.signal,
+      headers: { authorization: `Basic ${auth}` }
+    });
+    if (!response.ok) return null;
+    const body = await response.json();
+    return {
+      status: String(body.status || "created"),
+      paymentId: String(body.id || ""),
+      amount: Number(body.amount || 0) / 100,
+      currency: String(body.currency || "INR")
+    };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 module.exports = {
   buildIdempotencyKey,
   buildPaymentLinkPayload,
   dispatchPaymentLinkRequest,
+  fetchPaymentLinkStatus,
   generatePaymentLink,
   getProviderConfig,
   verifyWebhookSignature

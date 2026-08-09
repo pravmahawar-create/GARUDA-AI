@@ -9,6 +9,10 @@
       "destination": "/api/auth/:path*"
     },
     {
+      "source": "/api/customer/:path*",
+      "destination": "/api/customer/:path*"
+    },
+    {
       "source": "/api/public-chat",
       "destination": "/api/public-chat"
     },

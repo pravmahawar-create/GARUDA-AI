@@ -17,6 +17,9 @@ router.post("/opportunities/:id/draft", controller.draftProposal);
 router.post("/opportunities/:id/approve", controller.approveOpportunity);
 router.post("/opportunities/:id/submit", controller.submitOpportunity);
 router.post("/opportunities/:id/outcome", controller.recordOutcome);
+router.post("/opportunities/:id/request-payment", controller.requestPayment);
+router.get("/payment/bridge", controller.paymentBridgeStatus);
+router.get("/payment/:ref", controller.publicPayment);
 
 router.get("/affiliate/partners", controller.affiliatePartners);
 router.get("/affiliate/link", controller.affiliateLink);

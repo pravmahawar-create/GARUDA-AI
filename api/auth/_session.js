@@ -19,7 +19,7 @@ function safeEqual(left, right) {
 }
 
 function isConfigured() {
-  return Boolean(process.env.FOUNDER_ACCESS_PASSWORD && process.env.FOUNDER_SESSION_SECRET);
+  return Boolean(process.env.FOUNDER_SESSION_SECRET);
 }
 
 function issueSession(res) {

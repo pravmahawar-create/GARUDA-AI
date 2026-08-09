@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import BrandAssetImage from "../components/BrandAssetImage";
 
 const palette = {
   bg: "#04070a",
@@ -152,11 +153,15 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         top: 0,
         zIndex: 50
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span style={{ fontSize: "1.4rem", color: palette.gold }}>🦅</span>
-          <h2 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 800, letterSpacing: "0.12em", color: "#ffffff" }}>GARUDA</h2>
-          <span style={{ fontSize: "0.7rem", background: "rgba(245,215,110,0.14)", color: palette.gold, padding: "0.2rem 0.55rem", borderRadius: 4, fontWeight: 700, letterSpacing: "0.08em" }}>AI OS</span>
-        </div>
+        <button type="button" onClick={() => navigate("/")} style={{ display: "flex", alignItems: "center", gap: "0.75rem", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+          <span style={{ width: 44, height: 44, display: "grid", placeItems: "center", overflow: "hidden" }}>
+            <BrandAssetImage kind="branding" alt="GARUDA sigil" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          </span>
+          <span style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <h2 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 800, letterSpacing: "0.12em", color: "#ffffff" }}>GARUDA</h2>
+            <span style={{ fontSize: "0.7rem", background: "rgba(245,215,110,0.14)", color: palette.gold, padding: "0.2rem 0.55rem", borderRadius: 4, fontWeight: 700, letterSpacing: "0.08em" }}>AI OS</span>
+          </span>
+        </button>
         <nav style={{ display: "flex", alignItems: "center", gap: "clamp(1rem, 2.5vw, 2.2rem)" }}>
           <a href="#platform" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Platform</a>
           <a href="#capabilities" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Capabilities</a>
@@ -195,6 +200,9 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             "radial-gradient(circle at 12% 34%, rgba(245,215,110,0.06), transparent 28%)"
         }} />
         <motion.div {...fadeUp} style={{ position: "relative", maxWidth: 860, margin: "0 auto" }}>
+          <div style={{ width: 108, height: 108, margin: "0 auto 1.4rem", borderRadius: "50%", overflow: "hidden", background: "radial-gradient(circle, rgba(245,215,110,0.18), rgba(5,8,14,0.95))", border: "2px solid rgba(245,215,110,0.4)", boxShadow: "0 0 48px rgba(245,215,110,0.28)", padding: 10 }}>
+            <BrandAssetImage kind="branding" alt="GARUDA sigil" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", borderRadius: "50%" }} />
+          </div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.45rem 1rem", borderRadius: 999, border: "1px solid rgba(245,215,110,0.3)", background: "rgba(245,215,110,0.06)", color: palette.gold, fontSize: "0.8rem", fontWeight: 700, letterSpacing: "0.1em", marginBottom: "1.75rem" }}>
             AI OPERATING SYSTEM FOR BUSINESSES & PROFESSIONALS
           </div>
@@ -411,7 +419,38 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         </div>
       </section>
 
-      {/* 9. Security & founder control */}
+      {/* 9. AI Development Showcase */}
+      <section id="ai" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)", background: "rgba(255,255,255,0.015)" }}>
+        <SectionHeading
+          kicker="AI development showcase"
+          title="Engineered by AI, governed by you"
+          sub="GARUDA's revenue, delivery, and operations systems are built and run by governed AI — here is a live taste you can try right now."
+        />
+        <motion.div {...fadeUp} style={{ maxWidth: 1080, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.4rem" }}>
+          <div style={{ padding: "1.8rem", borderRadius: 20, border: "1px solid rgba(245,215,110,0.16)", background: "linear-gradient(160deg, rgba(245,215,110,0.08), rgba(11,15,22,0.92))" }}>
+            <div style={{ width: 44, height: 44, display: "grid", placeItems: "center", borderRadius: 14, background: "rgba(245,215,110,0.12)", marginBottom: "1rem" }}>
+              <BrandAssetImage kind="branding" alt="GARUDA" style={{ width: 30, height: 30, objectFit: "contain" }} />
+            </div>
+            <h3 style={{ margin: "0 0 0.5rem", fontSize: "1.15rem", fontWeight: 700 }}>Public AI Assistant</h3>
+            <p style={{ margin: "0 0 1.2rem", color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6 }}>A live conversational AI over the GARUDA knowledge base. Ask anything about the system — no login required.</p>
+            <button onClick={() => navigate("/chat")} style={{ background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)", color: "#05070b", border: "none", padding: "0.75rem 1.6rem", borderRadius: 999, fontWeight: 800, fontSize: "0.9rem", cursor: "pointer" }}>Try it now →</button>
+          </div>
+
+          <div style={{ padding: "1.8rem", borderRadius: 20, border: "1px solid rgba(245,215,110,0.12)", background: palette.panelSoft }}>
+            <div style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>⚙</div>
+            <h3 style={{ margin: "0 0 0.5rem", fontSize: "1.15rem", fontWeight: 700 }}>AI Software Engineering</h3>
+            <p style={{ margin: 0, color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6 }}>Real repositories planned, implemented, tested, and reviewed by governed AI engineers — every change approval-gated by the founder.</p>
+          </div>
+
+          <div style={{ padding: "1.8rem", borderRadius: 20, border: "1px solid rgba(245,215,110,0.12)", background: palette.panelSoft }}>
+            <div style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>◈</div>
+            <h3 style={{ margin: "0 0 0.5rem", fontSize: "1.15rem", fontWeight: 700 }}>Revenue & Delivery Intelligence</h3>
+            <p style={{ margin: 0, color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6 }}>Automated lead verification, fixed-price scoping, payment links, and delivery tracking — every rupee recorded with evidence.</p>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* 9b. Security & founder control */}
       <section id="security" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)" }}>
         <SectionHeading
           kicker="Security & founder control"
@@ -477,7 +516,10 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
       <footer style={{ padding: "2.5rem clamp(1.25rem, 4vw, 4rem)", borderTop: "1px solid rgba(245,215,110,0.1)", textAlign: "center", color: "#5b6472", fontSize: "0.85rem", lineHeight: 1.7 }}>
         © {new Date().getFullYear()} GARUDA AI Operating System. Built for legitimate business automation, communication, and operations.
         <div style={{ marginTop: "0.5rem", color: "#6b7280" }}>
-          Founder-controlled · Audit-trailed · Ethical by default
+          Founder-controlled · Audit-trailed · Ethical by default ·{" "}
+          <button type="button" onClick={onFounderLogin} style={{ background: "none", border: "none", color: palette.gold, cursor: "pointer", fontSize: "inherit", padding: 0, textDecoration: "underline" }}>
+            Founder Console →
+          </button>
         </div>
       </footer>
     </div>

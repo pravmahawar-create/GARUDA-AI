@@ -1,6 +1,7 @@
 const { AI_SERVICE_CATEGORIES, getCategory } = require("../services/scoutCategories");
 const { SCOUT_PLATFORMS, scan } = require("../services/scoutPlatforms");
 const scoutService = require("../services/scoutOpportunityService");
+const scoutEmergentBridge = require("../services/scoutEmergentBridgeService");
 const { PARTNERS, disclosureText, linkFor, recordEvent, ledger, summary } = require("../services/scoutAffiliateEngine");
 const { getPlan } = require("../services/scoutPlan");
 
@@ -127,6 +128,32 @@ async function recordOutcome(req, res) {
   }
 }
 
+async function requestPayment(req, res) {
+  try {
+    const result = await scoutEmergentBridge.requestPaymentForWonOpportunity(req.params.id, req.body, {
+      founderApproved: req.body.founderApproved,
+      env: process.env,
+      rootDir: process.cwd()
+    });
+    ok(res, { ...result });
+  } catch (error) {
+    fail(res, error);
+  }
+}
+
+function paymentBridgeStatus(req, res) {
+  ok(res, { payment: scoutEmergentBridge.paymentReadiness(process.env) });
+}
+
+async function publicPayment(req, res) {
+  try {
+    const detail = await scoutEmergentBridge.publicPaymentByReference(req.params.ref, { env: process.env });
+    ok(res, detail);
+  } catch (error) {
+    fail(res, error);
+  }
+}
+
 async function dashboard(req, res) {
   try {
     const result = await scoutService.getDashboard();
@@ -191,9 +218,12 @@ module.exports = {
   draftProposal,
   getOpportunity,
   listOpportunities,
+  paymentBridgeStatus,
   plan,
+  publicPayment,
   platforms,
   recordOutcome,
+  requestPayment,
   runScan,
   scoreOpportunity,
   submitOpportunity
