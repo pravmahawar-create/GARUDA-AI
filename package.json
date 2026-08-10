@@ -29,7 +29,21 @@
     "dev:status": "node scripts/dev-agent/status.js",
     "engineering:environment": "node scripts/dev-agent/run-production-batch.js environment",
     "engineering:resume": "node scripts/dev-agent/run-production-batch.js resume",
-    "garuda:dispatch": "node scripts/garuda-dispatch.js"
+    "garuda:dispatch": "node scripts/garuda-dispatch.js",
+    "insurance:preview": "node scripts/garuda-insurance-outreach.js preview",
+    "insurance:send": "node scripts/garuda-insurance-outreach.js send",
+    "insurance:optout": "node scripts/garuda-insurance-outreach.js optout",
+    "insurance:status": "node scripts/garuda-insurance-outreach.js status",
+    "insurance:test": "node src/services/insuranceOutreachService.test.js",
+    "insurance:scheduler": "node scripts/garuda-insurance-scheduler.js",
+    "leads:import": "node scripts/garuda-insurance-leads.js import",
+    "leads:add": "node scripts/garuda-insurance-leads.js add",
+    "leads:score": "node scripts/garuda-insurance-leads.js score",
+    "leads:generate": "node scripts/garuda-insurance-leads.js generate",
+    "leads:status": "node scripts/garuda-insurance-leads.js status",
+    "leads:list": "node scripts/garuda-insurance-leads.js list",
+    "leads:remove": "node scripts/garuda-insurance-leads.js remove",
+    "leads:test": "node src/services/insuranceLeadGenService.test.js"
   },
   "repository": {
     "type": "git",

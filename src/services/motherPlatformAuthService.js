@@ -560,6 +560,7 @@ module.exports = {
   getCredentialRequirements,
   redactEmail,
   redactSecret,
+  sendSmtpNative,
   validateConnectorAuthentication,
   evaluateConnectorReadiness,
   prepareGovernedSmtpAction,
