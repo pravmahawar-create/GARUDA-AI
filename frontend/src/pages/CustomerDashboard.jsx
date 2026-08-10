@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import UniversesGrid from "../components/UniversesGrid";
 import UniverseDetail from "../components/UniverseDetail";
 
+const PAYMENT_URL = (import.meta.env.VITE_PAYMENT_URL || "https://razorpay.me/@garudaosincompany").trim();
+
 function timeAgo(iso) {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return "";
@@ -51,6 +53,14 @@ export default function CustomerDashboard({ customer, onLogout }) {
         </div>
         <div style={{ display: "flex", gap: "0.75rem" }}>
           <button type="button" onClick={() => navigate("/chat")} className="hero-panel__button hero-panel__button--primary">Open AI chat</button>
+          <button
+            type="button"
+            onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
+            className="hero-panel__button"
+            style={{ borderColor: "rgba(245,215,110,0.5)", color: "#f5d76e", fontWeight: 700, background: "rgba(245,215,110,0.06)" }}
+          >
+            Make a Payment
+          </button>
           <button type="button" onClick={onLogout} className="hero-panel__button">Sign out</button>
         </div>
       </header>
