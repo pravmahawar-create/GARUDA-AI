@@ -6,11 +6,11 @@
     { "source": "/api/webhook/:path*", "destination": "https://garuda-ai-xfif.onrender.com/api/webhook/:path*" },
     {
       "source": "/api/auth/:path*",
-      "destination": "/api/auth/:path*"
+      "destination": "/api/auth?path=:path*"
     },
     {
       "source": "/api/customer/:path*",
-      "destination": "/api/customer/:path*"
+      "destination": "/api/customer?path=:path*"
     },
     {
       "source": "/api/public-chat",
