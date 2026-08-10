@@ -17,6 +17,8 @@ const palette = {
   blue: "#7dd3fc"
 };
 
+const PAYMENT_URL = (import.meta.env.VITE_PAYMENT_URL || "https://razorpay.me/@garudaosincompany").trim();
+
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
@@ -185,6 +187,22 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           >
             Get Started
           </button>
+          <button
+            type="button"
+            onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(245,215,110,0.4)",
+              color: palette.gold,
+              borderRadius: 999,
+              padding: "0.55rem 1.3rem",
+              fontWeight: 800,
+              cursor: "pointer",
+              fontSize: "0.9rem"
+            }}
+          >
+            Pay
+          </button>
           <button type="button" onClick={onFounderLogin} style={{ background: "none", border: "none", color: "#9ca3af", cursor: "pointer", fontSize: "0.9rem" }}>Founder Login</button>
         </nav>
       </header>
@@ -244,6 +262,21 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               }}
             >
               Try Public AI Chat →
+            </button>
+            <button
+              onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
+              style={{
+                background: "rgba(245,215,110,0.08)",
+                border: "1px solid rgba(245,215,110,0.5)",
+                color: palette.gold,
+                padding: "0.95rem 2.4rem",
+                borderRadius: 999,
+                fontWeight: 800,
+                fontSize: "1rem",
+                cursor: "pointer"
+              }}
+            >
+              Make a Payment
             </button>
           </div>
           <p style={{ color: "#5b6472", fontSize: "0.85rem", marginTop: "2rem", letterSpacing: "0.04em" }}>
@@ -507,6 +540,21 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               }}
             >
               Talk to GARUDA First
+            </button>
+            <button
+              onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
+              style={{
+                background: "rgba(245,215,110,0.08)",
+                border: "1px solid rgba(245,215,110,0.5)",
+                color: palette.gold,
+                padding: "1rem 2.6rem",
+                borderRadius: 999,
+                fontWeight: 800,
+                fontSize: "1.05rem",
+                cursor: "pointer"
+              }}
+            >
+              Make a Payment
             </button>
           </div>
         </motion.div>
