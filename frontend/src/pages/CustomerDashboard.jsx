@@ -1,5 +1,89 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-const cards = ["My Projects", "AI Requests", "Billing", "Account"];
-function timeAgo(iso) { const then = new Date(iso).getTime(); if (Number.isNaN(then)) return ""; const diff = Date.now() - then; if (diff < 60000) return "just now"; const minutes = Math.floor(diff / 60000); if (minutes < 60) return `${minutes}m`; const hours = Math.floor(minutes / 60); if (hours < 24) return `${hours}h`; return `${Math.floor(hours / 24)}d`; }
-export default function CustomerDashboard({ customer, onLogout }) { const navigate = useNavigate(); const [conversations, setConversations] = useState([]); const [loading, setLoading] = useState(true); useEffect(() => { let cancelled = false; fetch("/api/customer/conversations", { credentials: "same-origin" }).then((r) => r.json()).then((data) => { if (cancelled) return; setConversations(data.success ? data.conversations || [] : []); setLoading(false); }).catch(() => { if (!cancelled) { setConversations([]); setLoading(false); } }); return () => { cancelled = true; }; }, []); return <main className="garuda-shell" style={{ minHeight: "100vh", padding: "2rem" }}><header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}><div><p className="eyebrow">CUSTOMER PORTAL</p><h1 style={{ margin: 0 }}>Welcome to GARUDA</h1><p style={{ color: "#9ca3af" }}>{customer?.email}</p></div><div style={{ display: "flex", gap: "0.75rem" }}><button type="button" onClick={() => navigate("/chat")} className="hero-panel__button hero-panel__button--primary">Open AI chat</button><button type="button" onClick={onLogout} className="hero-panel__button">Sign out</button></div></header><section className="dashboard-grid" aria-label="Customer account areas">{cards.map((title) => <article key={title} className="metric-card"><p className="eyebrow">{title}</p><h2>{title}</h2><p>Coming soon.</p></article>)}<article className="metric-card" style={{ gridColumn: "1 / -1" }}><p className="eyebrow">AI CONVERSATIONS</p><h2>Your chat memory</h2>{loading ? <p style={{ color: "#9ca3af" }}>Loading conversations...</p> : conversations.length === 0 ? <p>No conversations yet. Start one in the AI chat.</p> : <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>{conversations.slice(0, 6).map((item) => <li key={item.id}><button type="button" onClick={() => navigate(`/chat?c=${encodeURIComponent(item.id)}`)} style={{ width: "100%", textAlign: "left", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", padding: "0.75rem 1rem", cursor: "pointer", color: "inherit", font: "inherit" }}><span style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem" }}><span style={{ fontWeight: 700 }}>{item.title}</span><span style={{ color: "#9ca3af", fontSize: "0.8rem", whiteSpace: "nowrap" }}>{timeAgo(item.updated_at)}</span></span>{item.last_message && <span style={{ display: "block", color: "#9ca3af", fontSize: "0.85rem", marginTop: "0.25rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.last_message}</span>}</button></li>)}</ul>}</article></section></main>; }
+import UniversesGrid from "../components/UniversesGrid";
+import UniverseDetail from "../components/UniverseDetail";
+
+function timeAgo(iso) {
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return "";
+  const diff = Date.now() - then;
+  if (diff < 60000) return "just now";
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  return `${Math.floor(hours / 24)}d`;
+}
+
+export default function CustomerDashboard({ customer, onLogout }) {
+  const navigate = useNavigate();
+  const [conversations, setConversations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/customer/conversations", { credentials: "same-origin" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        setConversations(data.success ? data.conversations || [] : []);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setConversations([]);
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <main className="garuda-shell" style={{ minHeight: "100vh", padding: "2rem" }}>
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+        <div>
+          <p className="eyebrow">CUSTOMER PORTAL</p>
+          <h1 style={{ margin: 0 }}>Welcome to GARUDA</h1>
+          <p style={{ color: "#9ca3af" }}>{customer?.email}</p>
+        </div>
+        <div style={{ display: "flex", gap: "0.75rem" }}>
+          <button type="button" onClick={() => navigate("/chat")} className="hero-panel__button hero-panel__button--primary">Open AI chat</button>
+          <button type="button" onClick={onLogout} className="hero-panel__button">Sign out</button>
+        </div>
+      </header>
+
+      {selected && <UniverseDetail universe={selected} onClose={() => setSelected(null)} />}
+
+      <section style={{ marginBottom: "2rem" }} aria-label="GARUDA universes">
+        <UniversesGrid onSelect={setSelected} />
+      </section>
+
+      <section className="metric-card" style={{ display: "block", width: "100%", boxSizing: "border-box" }} aria-label="AI conversations">
+        <p className="eyebrow">AI CONVERSATIONS</p>
+        <h2 style={{ margin: "0 0 0.75rem" }}>Your chat memory</h2>
+        {loading ? (
+          <p style={{ color: "#9ca3af" }}>Loading conversations...</p>
+        ) : conversations.length === 0 ? (
+          <p>No conversations yet. Start one in the AI chat.</p>
+        ) : (
+          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            {conversations.slice(0, 6).map((item) => (
+              <li key={item.id}>
+                <button type="button" onClick={() => navigate(`/chat?c=${encodeURIComponent(item.id)}`)} style={{ width: "100%", textAlign: "left", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", padding: "0.75rem 1rem", cursor: "pointer", color: "inherit", font: "inherit" }}>
+                  <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem" }}>
+                    <span style={{ fontWeight: 700 }}>{item.title}</span>
+                    <span style={{ color: "#9ca3af", fontSize: "0.8rem", whiteSpace: "nowrap" }}>{timeAgo(item.updated_at)}</span>
+                  </span>
+                  {item.last_message && <span style={{ display: "block", color: "#9ca3af", fontSize: "0.85rem", marginTop: "0.25rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.last_message}</span>}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </main>
+  );
+}
