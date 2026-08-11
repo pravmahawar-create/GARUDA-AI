@@ -458,6 +458,52 @@ const DOMAINS = {
     inferQuery: genericInferQuery,
     knowledgeIndexPath: "data/salon-knowledge-index.json",
     website: "garudaos.in"
+  },
+
+  web_services: {
+    id: "web_services",
+    label: "Website / Content / Social Services",
+    namespace: "web_services",
+    topics: ["website_build", "content_writing", "social_media", "redesign", "digital_presence"],
+    topicKeywords: {
+      website_build: ["website", "site", "build", "create", "web design", "web designer", "landing page", "webpage"],
+      content_writing: ["content", "writer", "copy", "blog", "seo", "article", "writing"],
+      social_media: ["social media", "instagram", "facebook", "marketing", "content calendar", "posts"],
+      redesign: ["redesign", "rebuild", "rework", "improve", "update site", "modernize"],
+      digital_presence: ["presence", "online", "digital", "grow", "visibility", "found"]
+    },
+    segments: {
+      business_owner: { weight: 45, signals: ["business", "owner", "founder", "director", "company", "firm", "studio", "agency", "restaurant", "hotel", "shop", "clinic", "chamber"] },
+      small_business: { weight: 25, signals: ["small", "local", "independent", "sme", "startup", "family"] },
+      non_profit: { weight: 15, signals: ["nonprofit", "non-profit", "ngo", "chamber", "visitors bureau", "association"] },
+      urgent: { weight: 15, signals: ["rfp", "proposal", "bidding", "hiring", "seeking", "looking for", "contractor"] }
+    },
+    hooks: {
+      website_build: "Ek professional website aapke business ka digital storefront hai — sahi build se customers pehli nazar me trust karte hain.",
+      content_writing: "Content wahi hai jo Google par aapko dikhata hai — sahi copy customers ko action par le jaati hai.",
+      social_media: "Social presence consistent na ho toh brand yad nahi rehta — sahi strategy se posts sales ban jati hain.",
+      redesign: "Purana website customers ko door bhagata hai — modern redesign se conversions turant badhti hain.",
+      digital_presence: "Aaj customer pehle online check karta hai — complete digital presence hi asli growth hai."
+    },
+    hooksEn: {
+      website_build: "A professional website is your business's digital storefront — the right build earns trust at first glance.",
+      content_writing: "Content is what makes you visible on Google — the right copy moves people to act.",
+      social_media: "An inconsistent social presence makes a brand forgettable — the right strategy turns posts into sales.",
+      redesign: "An outdated website drives customers away — a modern redesign lifts conversions immediately.",
+      digital_presence: "Customers check online first today — a complete digital presence is real growth."
+    },
+    brandLines: [
+      "Mai GARUDA hoon — websites, content aur social media se business growth ka AI system.",
+      "Koi jhutha wada nahi, sirf deliver karta hoon."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — an AI system that grows businesses through websites, content, and social media.",
+      "No false promises — I just deliver."
+    ],
+    defaultTopic: "digital_presence",
+    inferQuery: genericInferQuery,
+    knowledgeIndexPath: "data/web-services-knowledge-index.json",
+    website: "garudaos.in"
   }
 };
 

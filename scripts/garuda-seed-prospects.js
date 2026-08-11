@@ -145,7 +145,17 @@ const prospects = [
   { domain: "clinic", businessName: "Mind Doctor Psychiatry", city: "Melbourne", country: "Australia", locale: "en", email: "minddoctorpsychiatry@gmail.com", phone: "", website: "minddoctor.com.au", businessType: "Psychiatry practice", notes: "Dr Schuyler Tan, online practice", source: "public_website" },
 
   // Canada — Education
-  { domain: "education", businessName: "Microm Learning Centres", city: "Toronto", country: "Canada", locale: "en", email: "micromlearning@gmail.com", phone: "4379930853", website: "micromlearning.com", businessType: "Education centre", notes: "family-owned, Etobicoke, virtual option", source: "public_website" }
+  { domain: "education", businessName: "Microm Learning Centres", city: "Toronto", country: "Canada", locale: "en", email: "micromlearning@gmail.com", phone: "4379930853", website: "micromlearning.com", businessType: "Education centre", notes: "family-owned, Etobicoke, virtual option", source: "public_website" },
+
+  // --- Batch 4: WEBSITE / CONTENT / SOCIAL SERVICES LEADS ---
+  // Buyers + public job postings/RFPs (no fabricated emails; masked ones excluded).
+
+  { domain: "web_services", businessName: "Rebecca Heartfly", city: "Boulder", country: "USA", locale: "en", email: "rebeccaheartfly@gmail.com", phone: "", website: "", businessType: "Business seeking web redesign", notes: "public post: seeking website redesign, marketing assistance, online booking/store setup; email proposals invited", source: "public_post" },
+  { domain: "web_services", businessName: "Smolicz Solutions LLC", city: "", country: "USA", locale: "en", email: "hannah@smoliczsolutionsllc.com", phone: "", website: "smoliczsolutionsllc.com", businessType: "Digital agency hiring web designer", notes: "public post: hiring junior website designer (30h+/mo, Google Ads)", source: "public_post" },
+  { domain: "web_services", businessName: "McCall Area Chamber of Commerce & Visitors Bureau", city: "McCall", country: "USA", locale: "en", email: "director@mccallchamber.org", phone: "2086347631", website: "visitmccall.org", businessType: "Chamber + tourism bureau RFP", notes: "public RFP: full redesign/rebuild of VisitMcCall.org, budget not yet fixed, proposals invited", source: "public_rfp" },
+  { domain: "web_services", businessName: "Disruptor Creations", city: "", country: "USA", locale: "en", email: "schlaut@gmail.com", phone: "", website: "disruptorcreations.com", businessType: "Business seeking web designer", notes: "public post: seeking web designer contractor, streaming/merch/ticketing site, email proposals invited", source: "public_post" },
+  { domain: "web_services", businessName: "Theshopthera", city: "Abuja", country: "Nigeria", locale: "en", email: "theshoptheracareer@gmail.com", phone: "", website: "", businessType: "Retail business hiring content/social manager", notes: "public job post: content & social media manager, sends CV by email", source: "public_post" },
+  { domain: "web_services", businessName: "Doaa Gamal (agency)", city: "", country: "UAE", locale: "en", email: "doaagamalri@gmail.com", phone: "", website: "", businessType: "Agency hiring account manager + content writer", notes: "public post: UAE/Egypt, content strategy + brand storytelling", source: "public_post" }
 ];
 
 let added = 0;
