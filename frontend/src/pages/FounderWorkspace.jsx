@@ -11,6 +11,9 @@ import IntelligencePanel from "../components/IntelligencePanel";
 import EngineeringPlannerPanel from "../components/EngineeringPlannerPanel";
 import MotherBrainPanel from "../components/MotherBrainPanel";
 import LearningPanel from "../components/LearningPanel";
+import FounderUniversesStrip from "../components/FounderUniversesStrip";
+import Sparkline from "../components/charts/Sparkline";
+import DonutChart from "../components/charts/DonutChart";
 import selfBuildEngine from "../selfbuild/SelfBuildEngine";
 import { checkHealth, askRag, getDashboardSnapshot, fetchThreads, fetchThread, createThread } from "../services/api";
 
@@ -192,6 +195,19 @@ export default function FounderWorkspace({ onLogout }) {
     { icon: "⬢", title: "Knowledge Core", value: knowledgeCount.toLocaleString(), detail: "Indexed documents", tone: "silver" }
   ];
 
+  const revenueTrend = Array.isArray(dashboardData?.metrics?.revenue?.series)
+    ? dashboardData.metrics.revenue.series
+    : [0, 0.5, 1.2, 2, 1.6, 3.4, 3.1, 4.8, 5.2, 6.1];
+
+  const universeMix = Array.isArray(dashboardData?.metrics?.universes)
+    ? dashboardData.metrics.universes
+    : [
+        { label: "Active", value: 15, color: "#16a34a" },
+        { label: "Primary", value: 1, color: "#2563eb" },
+        { label: "Locked", value: 8, color: "#7c3aed" },
+        { label: "Roadmap", value: 3, color: "#8b94a6" }
+      ];
+
   if (!hasEntered) {
     return (
       <ArrivalExperience
@@ -212,113 +228,163 @@ export default function FounderWorkspace({ onLogout }) {
   };
 
   return (
-    <div className="garuda-shell">
-      <Sidebar onSelectNav={handleSelectNav} />
+    <div className="founder-fd">
+      <Sidebar onSelectNav={handleSelectNav} onSignOut={handleSignOut} />
 
-      <section className="workspace">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <TopBar />
-          {onLogout && (
-            <button
-              onClick={handleSignOut}
-              style={{
-                marginRight: "1.5rem",
-                background: "rgba(239, 68, 68, 0.15)",
-                color: "#f87171",
-                border: "1px solid rgba(239, 68, 68, 0.3)",
-                padding: "0.4rem 1rem",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontWeight: 600,
-                fontSize: "0.85rem"
-              }}
-            >
-              Sign Out
+      <section className="workspace" style={{ flex: 1, minWidth: 0, padding: "1.5rem clamp(1rem, 3vw, 2.5rem) 3rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        <TopBar />
+
+        {/* Hero banner — primary focal point (prototype spec) */}
+        <motion.section
+          className="fd-hero"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "1.5rem", alignItems: "center", flexWrap: "wrap" }}
+        >
+          <div>
+            <p className="fd-eyebrow">GARUDA AI FOUNDER DESKTOP</p>
+            <h1 className="fd-heading" style={{ fontSize: "clamp(1.7rem, 3.4vw, 2.4rem)", lineHeight: 1.12, margin: "0.6rem 0 0.8rem" }}>
+              Autonomous Intelligence Control.<br />Human Accountability.
+            </h1>
+            <p style={{ color: "var(--fd-muted)", fontSize: "0.98rem", lineHeight: 1.6, maxWidth: 620, margin: 0 }}>
+              Governed execution, strategy control, and live multi-brain telemetry — with every significant action under founder oversight.
+            </p>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem", minWidth: 200 }}>
+            <button className="hero-panel__button hero-panel__button--primary" onClick={handleRequestProposal}>
+              Command Console
             </button>
-          )}
-        </div>
+            <button className="hero-panel__button" onClick={handleViewCapabilities}>
+              View Systems
+            </button>
+            <button
+              type="button"
+              onClick={() => window.location.href = REVENUE_APP_URL}
+              style={{ background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.5)", color: "#d4af37", padding: "0.7rem 1.1rem", borderRadius: 14, fontWeight: 800, cursor: "pointer", fontSize: "0.9rem" }}
+            >
+              Revenue Console ⟡
+            </button>
+          </div>
+        </motion.section>
 
+        {/* Stat cards */}
+        <section className="metrics-grid" ref={metricsGridRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "1rem" }}>
+          {metricCards.map((card) => (
+            <MetricCard
+              key={card.title}
+              {...card}
+              onClick={card.title === "Revenue Universe" ? () => handleSelectNav("Revenue Universe") : undefined}
+            />
+          ))}
+        </section>
+
+        {/* Charts row — line + donut (prototype spec) */}
+        <section style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.6fr) minmax(260px, 0.9fr)", gap: "1.25rem", flexWrap: "wrap" }} className="fd-charts">
+          <div className="fd-card">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.9rem", flexWrap: "wrap", gap: "0.5rem" }}>
+              <div>
+                <p className="fd-eyebrow">REVENUE TREND</p>
+                <h3 className="fd-heading" style={{ margin: "0.3rem 0 0", fontSize: "1.15rem" }}>Income signal</h3>
+              </div>
+              <span style={{ color: "var(--fd-muted)", fontSize: "0.78rem" }}>{revenueDetail}</span>
+            </div>
+            <Sparkline data={revenueTrend} label="Revenue trend" value={`₹${revenueValue.toLocaleString()}`} color="#d4af37" />
+          </div>
+          <div className="fd-card" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.9rem" }}>
+            <div style={{ width: "100%" }}>
+              <p className="fd-eyebrow">UNIVERSE MIX</p>
+              <h3 className="fd-heading" style={{ margin: "0.3rem 0 0", fontSize: "1.15rem" }}>27-universe distribution</h3>
+            </div>
+            <DonutChart segments={universeMix} centerLabel="27" centerSub="Universes" />
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem", justifyContent: "center" }}>
+              {universeMix.map((s) => (
+                <span key={s.label} style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", fontSize: "0.74rem", color: "var(--fd-muted)" }}>
+                  <span style={{ width: 9, height: 9, borderRadius: "50%", background: s.color }} />
+                  {s.label} · {s.value}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Inner Core — founder universes strip */}
+        <FounderUniversesStrip onSelectNav={handleSelectNav} />
+
+        {/* Self-build intelligence (kept) */}
+        {selfBuildState ? (
+          <section className="selfbuild-panel" aria-label="Self-build intelligence panel">
+            <p className="eyebrow">SELF-BUILDING INTELLIGENCE</p>
+            <p>Architecture Score: {selfBuildState.intelligenceScores?.architectureScore ?? 0}</p>
+            <p>Code Quality Score: {selfBuildState.intelligenceScores?.codeQualityScore ?? 0}</p>
+            <p>Knowledge Score: {selfBuildState.intelligenceScores?.knowledgeScore ?? 0}</p>
+            <p>Founder approval required before implementation.</p>
+          </section>
+        ) : null}
+
+        {/* Governance panels (kept intact) */}
         <AgentDebugPanel />
         <IntelligencePanel />
         <EngineeringPlannerPanel />
         <MotherBrainPanel />
         <LearningPanel />
 
-        <div className="dashboard-grid">
-          <div className="primary-column">
-            <motion.header
-              className="hero-panel"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35 }}
-            >
-              <div className="hero-panel__content">
-                <p className="eyebrow">GARUDA AI FOUNDER DESKTOP</p>
-                <h1>Autonomous Intelligence Control.<br />Human Accountability.</h1>
-                <p>
-                  Governed execution, strategy control, and live multi-brain telemetry.
-                </p>
-              </div>
-              <div className="hero-panel__actions">
-                <button
-                  className="hero-panel__button hero-panel__button--primary"
-                  onClick={handleRequestProposal}
-                >
-                  Command Console
-                </button>
-                <button
-                  className="hero-panel__button"
-                  onClick={handleViewCapabilities}
-                >
-                  View Systems
-                </button>
-              </div>
-            </motion.header>
-
-            {selfBuildState ? (
-              <section className="selfbuild-panel" aria-label="Self-build intelligence panel">
-                <p className="eyebrow">SELF-BUILDING INTELLIGENCE</p>
-                <p>Architecture Score: {selfBuildState.intelligenceScores?.architectureScore ?? 0}</p>
-                <p>Code Quality Score: {selfBuildState.intelligenceScores?.codeQualityScore ?? 0}</p>
-                <p>Knowledge Score: {selfBuildState.intelligenceScores?.knowledgeScore ?? 0}</p>
-                <p>Founder approval required before implementation.</p>
-              </section>
-            ) : null}
-
-            <section className="metrics-grid" ref={metricsGridRef}>
-              {metricCards.map((card) => (
-                <MetricCard
-                  key={card.title}
-                  {...card}
-                  onClick={card.title === "Revenue Universe" ? () => handleSelectNav("Revenue Universe") : undefined}
-                />
-              ))}
-            </section>
-
-            <div ref={commandCenterRef}>
-              <CommandCenter
-                messages={messages}
-                question={question}
-                loading={loading}
-                activityState={activityState}
-                threads={threads}
-                activeThreadId={activeThreadId}
-                onSelectThread={handleSelectThread}
-                onNewThread={handleNewThread}
-                onQuestionChange={setQuestion}
-                onSend={askGaruda}
-              />
-            </div>
-          </div>
-
-          <RightPanel
-            health={health}
-            healthMessage={healthMessage}
-            knowledgeCount={knowledgeCount}
-            motherBrain={motherBrain}
-            onSelectNav={handleSelectNav}
+        <div ref={commandCenterRef}>
+          <CommandCenter
+            messages={messages}
+            question={question}
+            loading={loading}
+            activityState={activityState}
+            threads={threads}
+            activeThreadId={activeThreadId}
+            onSelectThread={handleSelectThread}
+            onNewThread={handleNewThread}
+            onQuestionChange={setQuestion}
+            onSend={askGaruda}
           />
         </div>
+
+        {/* Conversation list — prototype spec */}
+        <section className="fd-card" aria-label="Conversations">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.9rem" }}>
+            <div>
+              <p className="fd-eyebrow">THREADS</p>
+              <h3 className="fd-heading" style={{ margin: "0.25rem 0 0", fontSize: "1.15rem" }}>Recent conversations</h3>
+            </div>
+            <button type="button" onClick={handleNewThread} style={{ background: "rgba(212,175,55,0.12)", color: "#d4af37", border: "1px solid rgba(212,175,55,0.4)", padding: "0.45rem 1rem", borderRadius: 12, fontWeight: 600, fontSize: "0.82rem", cursor: "pointer" }}>
+              + New Thread
+            </button>
+          </div>
+          {threads.length === 0 ? (
+            <p style={{ color: "var(--fd-muted)", fontSize: "0.88rem", margin: 0 }}>No conversations yet — start one in Command Console above.</p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.55rem" }}>
+              {threads.slice(0, 8).map((t) => (
+                <button
+                  key={t.id || t.threadId}
+                  type="button"
+                  onClick={() => handleSelectThread(t.threadId || t.id)}
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", textAlign: "left", background: "var(--fd-panel)", border: "1px solid var(--fd-line)", borderRadius: 14, padding: "0.8rem 1rem", cursor: "pointer", color: "inherit", font: "inherit" }}
+                >
+                  <span style={{ fontWeight: 600, fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {t.title || "Untitled conversation"}
+                  </span>
+                  <span style={{ color: "var(--fd-muted)", fontSize: "0.76rem", whiteSpace: "nowrap" }}>
+                    {t.messageCount !== undefined ? `${t.messageCount} msg` : ""}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <RightPanel
+          health={health}
+          healthMessage={healthMessage}
+          knowledgeCount={knowledgeCount}
+          motherBrain={motherBrain}
+          onSelectNav={handleSelectNav}
+        />
       </section>
     </div>
   );

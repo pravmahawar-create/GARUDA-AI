@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import BrandAssetImage from "./BrandAssetImage";
+import FounderProfile from "./FounderProfile";
 
 const navItems = [
   { icon: "◈", label: "Dashboard" },
@@ -11,7 +12,7 @@ const navItems = [
   { icon: "◎", label: "Settings" }
 ];
 
-export default function Sidebar({ onSelectNav }) {
+export default function Sidebar({ onSelectNav, onSignOut }) {
   const [activeItem, setActiveItem] = useState("Dashboard");
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -80,8 +81,14 @@ export default function Sidebar({ onSelectNav }) {
       </nav>
 
       <div className="sidebar__footer">
-        <p>Founder access</p>
-        <strong>{activeLabel}</strong>
+        {typeof onSignOut === "function" ? (
+          <FounderProfile onSignOut={onSignOut} />
+        ) : (
+          <>
+            <p>Founder access</p>
+            <strong>{activeLabel}</strong>
+          </>
+        )}
       </div>
     </aside>
   );
