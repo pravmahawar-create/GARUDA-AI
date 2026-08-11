@@ -4,6 +4,15 @@ const { v4: uuidv4 } = require("crypto");
 // In-memory fallback if MongoDB connection is pending or offline
 const memoryStore = new Map();
 
+function mongoAvailable() {
+  try {
+    const connectDB = require("../database/db");
+    return connectDB.isMongoConnected();
+  } catch {
+    return false;
+  }
+}
+
 function generateThreadId() {
   return `thread_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 }
@@ -52,43 +61,47 @@ async function listThreads(limit = 20) {
 async function getOrCreateThread(threadId = null) {
   const targetId = (typeof threadId === "string" && threadId.trim()) ? threadId.trim() : generateThreadId();
 
-  try {
-    let doc = await ConversationThread.findOne({ threadId: targetId });
-    if (!doc) {
-      const defaultWelcome = {
-        id: `msg_${Date.now()}_0`,
-        role: "garuda",
-        text: "Founder access granted. GARUDA is prepared to orchestrate your next move.",
-        mode: "conversation",
-        timestamp: new Date()
-      };
-      doc = await ConversationThread.create({
-        threadId: targetId,
-        title: "Founder Conversation",
-        messages: [defaultWelcome]
-      });
+  if (mongoAvailable()) {
+    try {
+      let doc = await ConversationThread.findOne({ threadId: targetId });
+      if (!doc) {
+        const defaultWelcome = {
+          id: `msg_${Date.now()}_0`,
+          role: "garuda",
+          text: "Founder access granted. GARUDA is prepared to orchestrate your next move.",
+          mode: "conversation",
+          timestamp: new Date()
+        };
+        doc = await ConversationThread.create({
+          threadId: targetId,
+          title: "Founder Conversation",
+          messages: [defaultWelcome]
+        });
+      }
+      return doc.toObject ? doc.toObject() : doc;
+    } catch (err) {
+      // Fall through to in-memory thread
     }
-    return doc.toObject ? doc.toObject() : doc;
-  } catch (err) {
-    // Fallback in-memory thread
-    if (!memoryStore.has(targetId)) {
-      const defaultWelcome = {
-        id: `msg_${Date.now()}_0`,
-        role: "garuda",
-        text: "Founder access granted. GARUDA is prepared to orchestrate your next move.",
-        mode: "conversation",
-        timestamp: new Date().toISOString()
-      };
-      memoryStore.set(targetId, {
-        threadId: targetId,
-        title: "Founder Conversation",
-        messages: [defaultWelcome],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      });
-    }
-    return memoryStore.get(targetId);
   }
+
+  // Fallback in-memory thread
+  if (!memoryStore.has(targetId)) {
+    const defaultWelcome = {
+      id: `msg_${Date.now()}_0`,
+      role: "garuda",
+      text: "Founder access granted. GARUDA is prepared to orchestrate your next move.",
+      mode: "conversation",
+      timestamp: new Date().toISOString()
+    };
+    memoryStore.set(targetId, {
+      threadId: targetId,
+      title: "Founder Conversation",
+      messages: [defaultWelcome],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+  }
+  return memoryStore.get(targetId);
 }
 
 async function appendMessages(threadId, newMessages = []) {
@@ -110,43 +123,47 @@ async function appendMessages(threadId, newMessages = []) {
     return getOrCreateThread(targetId);
   }
 
-  try {
-    let doc = await ConversationThread.findOne({ threadId: targetId });
-    if (!doc) {
-      doc = new ConversationThread({
-        threadId: targetId,
-        title: deriveTitle(normalizedList),
-        messages: []
-      });
-    }
+  if (mongoAvailable()) {
+    try {
+      let doc = await ConversationThread.findOne({ threadId: targetId });
+      if (!doc) {
+        doc = new ConversationThread({
+          threadId: targetId,
+          title: deriveTitle(normalizedList),
+          messages: []
+        });
+      }
 
-    doc.messages.push(...normalizedList);
-    if (!doc.title || doc.title === "Founder Conversation") {
-      doc.title = deriveTitle(doc.messages);
+      doc.messages.push(...normalizedList);
+      if (!doc.title || doc.title === "Founder Conversation") {
+        doc.title = deriveTitle(doc.messages);
+      }
+      doc.updatedAt = new Date();
+      await doc.save();
+      return doc.toObject ? doc.toObject() : doc;
+    } catch (err) {
+      // Fall through to memory store fallback
     }
-    doc.updatedAt = new Date();
-    await doc.save();
-    return doc.toObject ? doc.toObject() : doc;
-  } catch (err) {
-    // Memory store fallback
-    let thread = memoryStore.get(targetId);
-    if (!thread) {
-      thread = {
-        threadId: targetId,
-        title: deriveTitle(normalizedList),
-        messages: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-    }
-    thread.messages.push(...normalizedList);
-    if (!thread.title || thread.title === "Founder Conversation") {
-      thread.title = deriveTitle(thread.messages);
-    }
-    thread.updatedAt = new Date().toISOString();
-    memoryStore.set(targetId, thread);
-    return thread;
   }
+
+  // Memory store fallback
+  let thread = memoryStore.get(targetId);
+  if (!thread) {
+    thread = {
+      threadId: targetId,
+      title: deriveTitle(normalizedList),
+      messages: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+  }
+  thread.messages.push(...normalizedList);
+  if (!thread.title || thread.title === "Founder Conversation") {
+    thread.title = deriveTitle(thread.messages);
+  }
+  thread.updatedAt = new Date().toISOString();
+  memoryStore.set(targetId, thread);
+  return thread;
 }
 
 async function deleteThread(threadId) {

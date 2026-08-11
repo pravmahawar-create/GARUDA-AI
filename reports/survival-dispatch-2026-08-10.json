@@ -1,0 +1,2140 @@
+{
+  "generatedAt": "2026-08-10T11:00:00.778Z",
+  "registry": {
+    "total": 14,
+    "verified": 14,
+    "partial": 0,
+    "planned": 0,
+    "eligibleForMatching": 14,
+    "categories": [
+      "AI Agents",
+      "API Integration",
+      "Creative Services",
+      "Proposal Writing",
+      "Quality Assurance",
+      "Research",
+      "Software Engineering",
+      "Spreadsheet Automation",
+      "Technical Documentation",
+      "Translation",
+      "Workflow Automation"
+    ],
+    "universes": [
+      "automation",
+      "creative",
+      "engineering",
+      "knowledge",
+      "localization",
+      "revenue"
+    ]
+  },
+  "summary": {
+    "fetched": 19,
+    "qualified": 18,
+    "totalPipelineEstimateUSD": 668359
+  },
+  "identity": "I am GARUDA, Praveen's AI representative. I assist client project delivery on behalf of the Founder. Actions requiring commercial authorization are always confirmed by the Founder.",
+  "targets": [
+    {
+      "platform": "remotive",
+      "title": "Head of Marketing & Communications",
+      "client": "garden3d",
+      "url": "https://remotive.com/remote-jobs/marketing/head-of-marketing-communications-2091068",
+      "budgetText": "$150k - $230k",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "contract",
+      "source": "remotive_public_api",
+      "matchScore": 30,
+      "capabilityMatch": {
+        "id": "knowledge.research-synthesis",
+        "category": "Research",
+        "universe": "knowledge",
+        "name": "Research and knowledge synthesis",
+        "description": "Retrieve verified web and document sources to produce structured analytical research reports.",
+        "confidenceScore": 94,
+        "requiredSkills": [
+          "Information Retrieval",
+          "Source Verification",
+          "Executive Summarization",
+          "Markdown Formatting"
+        ],
+        "requiredTools": [
+          "ripgrep",
+          "fetch",
+          "node"
+        ],
+        "estimatedDeliveryTime": "2-6 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 150,
+          "billingModel": "fixed_report"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "documentation.technical-documentation"
+        ],
+        "tags": [
+          "research",
+          "analysis",
+          "report",
+          "knowledge",
+          "summary",
+          "documentation",
+          "market",
+          "seo",
+          "marketing",
+          "content",
+          "translation",
+          "localization",
+          "spanish",
+          "german",
+          "french",
+          "legal",
+          "legal research",
+          "case law",
+          "statute",
+          "uspto",
+          "trademark",
+          "copyright",
+          "patent",
+          "patent search",
+          "prior art",
+          "privacy",
+          "policy",
+          "gdpr",
+          "compliance",
+          "regulatory",
+          "synthesis",
+          "literature",
+          "outbound sequence",
+          "cold email sequence",
+          "outreach drafting",
+          "lead magnet",
+          "whitepaper guide",
+          "e-book writing",
+          "feasibility study",
+          "smart city",
+          "iot study"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "src/services/knowledgeService.js",
+          "src/services/documentService.js"
+        ],
+        "capabilityId": "knowledge.research-synthesis",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "src/services/knowledgeService.js",
+            "exists": true
+          },
+          {
+            "file": "src/services/documentService.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": false,
+      "expectedFee": 190000,
+      "salaryText": "$150k - $230k",
+      "rank": 13,
+      "package": {
+        "job": "Head of Marketing & Communications",
+        "company": "garden3d",
+        "url": "https://remotive.com/remote-jobs/marketing/head-of-marketing-communications-2091068",
+        "budget": "$150k - $230k",
+        "bestCapability": "Research and knowledge synthesis",
+        "matchScore": 30,
+        "proposedFee": 190000,
+        "proposal": "Hi garden3d, regarding \"Head of Marketing & Communications\" -\n\nI can deliver this as a research and knowledge synthesis: Retrieve verified web and document sources to produce structured analytical research reports.\n\nVerified skill set I will use: Information Retrieval, Source Verification, Executive Summarization, Markdown Formatting.\n\nBudget range I work in for this scope: $150k - $230k. Turnaround: 2-6 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (knowledge).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Tech Lead Full-Stack Rails Engineer",
+      "client": "Mitre Media",
+      "url": "https://remotive.com/remote-jobs/software-development/tech-lead-full-stack-rails-engineer-2069746",
+      "budgetText": "$170k - $200k",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time api CSS docker elasticsearch fullstack html javascript kubernetes postgresql react ror ruby/rails AI/ML CAD advertising Redis ES6 web applications MySQL NLP fintech Micro services github system architecture",
+      "source": "remotive_public_api",
+      "matchScore": 99,
+      "capabilityMatch": {
+        "id": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "name": "Governed software implementation",
+        "description": "Plan, implement, test, and package scoped software backend, frontend, and API microservices.",
+        "confidenceScore": 95,
+        "requiredSkills": [
+          "Node.js",
+          "JavaScript",
+          "TypeScript",
+          "REST APIs",
+          "Automated Testing"
+        ],
+        "requiredTools": [
+          "node",
+          "npm",
+          "git"
+        ],
+        "estimatedDeliveryTime": "4-24 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 250,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "engineering.repository-audit",
+          "testing.quality-assurance"
+        ],
+        "tags": [
+          "software",
+          "development",
+          "implementation",
+          "automation",
+          "api",
+          "backend",
+          "frontend",
+          "testing",
+          "javascript",
+          "node",
+          "docker",
+          "container",
+          "kubernetes",
+          "python",
+          "react",
+          "nextjs",
+          "oauth",
+          "auth0",
+          "jwt",
+          "scraping",
+          "database migration",
+          "schema migration",
+          "sql migration",
+          "migration",
+          "iam",
+          "aws",
+          "policy",
+          "permission",
+          "smart contract",
+          "ethereum",
+          "solidity",
+          "crypto",
+          "contract deployment",
+          "token contract",
+          "presale contract",
+          "crypto token",
+          "html",
+          "css",
+          "flexbox",
+          "layout fix",
+          "landing page",
+          "frontend styling",
+          "full-stack",
+          "online store",
+          "e-commerce",
+          "e-commerce web app",
+          "payment gateway",
+          "react native",
+          "mobile app",
+          "fitness tracking",
+          "prototype",
+          "database schema",
+          "schema refactoring",
+          "tenant isolation",
+          "relational database"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "scripts/mother/planner.js",
+          "scripts/mother/executor.js",
+          "scripts/mother/builder.js",
+          "scripts/mother/validator.js"
+        ],
+        "capabilityId": "engineering.software-implementation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "scripts/mother/planner.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/executor.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/builder.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/validator.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": 185000,
+      "salaryText": "$170k - $200k",
+      "rank": 14,
+      "package": {
+        "job": "Tech Lead Full-Stack Rails Engineer",
+        "company": "Mitre Media",
+        "url": "https://remotive.com/remote-jobs/software-development/tech-lead-full-stack-rails-engineer-2069746",
+        "budget": "$170k - $200k",
+        "bestCapability": "Governed software implementation",
+        "matchScore": 99,
+        "proposedFee": 185000,
+        "proposal": "Hi Mitre Media, regarding \"Tech Lead Full-Stack Rails Engineer\" -\n\nI can deliver this as a governed software implementation: Plan, implement, test, and package scoped software backend, frontend, and API microservices.\n\nVerified skill set I will use: Node.js, JavaScript, TypeScript, REST APIs, Automated Testing.\n\nBudget range I work in for this scope: $170k - $200k. Turnaround: 4-24 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Remote Office Assistant",
+      "client": "Coalition Technologies",
+      "url": "https://remotive.com/remote-jobs/marketing/remote-office-assistant-1680495",
+      "budgetText": "$31,2k- $52k",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time CSS excel frontend git html illustrator magento photoshop php shopify wordpress MySQL startup responsive themes bootstrap insurance jQuery Ajax",
+      "source": "remotive_public_api",
+      "matchScore": 45,
+      "capabilityMatch": {
+        "id": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "name": "Governed software implementation",
+        "description": "Plan, implement, test, and package scoped software backend, frontend, and API microservices.",
+        "confidenceScore": 95,
+        "requiredSkills": [
+          "Node.js",
+          "JavaScript",
+          "TypeScript",
+          "REST APIs",
+          "Automated Testing"
+        ],
+        "requiredTools": [
+          "node",
+          "npm",
+          "git"
+        ],
+        "estimatedDeliveryTime": "4-24 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 250,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "engineering.repository-audit",
+          "testing.quality-assurance"
+        ],
+        "tags": [
+          "software",
+          "development",
+          "implementation",
+          "automation",
+          "api",
+          "backend",
+          "frontend",
+          "testing",
+          "javascript",
+          "node",
+          "docker",
+          "container",
+          "kubernetes",
+          "python",
+          "react",
+          "nextjs",
+          "oauth",
+          "auth0",
+          "jwt",
+          "scraping",
+          "database migration",
+          "schema migration",
+          "sql migration",
+          "migration",
+          "iam",
+          "aws",
+          "policy",
+          "permission",
+          "smart contract",
+          "ethereum",
+          "solidity",
+          "crypto",
+          "contract deployment",
+          "token contract",
+          "presale contract",
+          "crypto token",
+          "html",
+          "css",
+          "flexbox",
+          "layout fix",
+          "landing page",
+          "frontend styling",
+          "full-stack",
+          "online store",
+          "e-commerce",
+          "e-commerce web app",
+          "payment gateway",
+          "react native",
+          "mobile app",
+          "fitness tracking",
+          "prototype",
+          "database schema",
+          "schema refactoring",
+          "tenant isolation",
+          "relational database"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "scripts/mother/planner.js",
+          "scripts/mother/executor.js",
+          "scripts/mother/builder.js",
+          "scripts/mother/validator.js"
+        ],
+        "capabilityId": "engineering.software-implementation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "scripts/mother/planner.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/executor.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/builder.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/validator.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": 182000,
+      "salaryText": "$31,2k- $52k",
+      "rank": 18,
+      "package": {
+        "job": "Remote Office Assistant",
+        "company": "Coalition Technologies",
+        "url": "https://remotive.com/remote-jobs/marketing/remote-office-assistant-1680495",
+        "budget": "$31,2k- $52k",
+        "bestCapability": "Governed software implementation",
+        "matchScore": 45,
+        "proposedFee": 182000,
+        "proposal": "Hi Coalition Technologies, regarding \"Remote Office Assistant\" -\n\nI can deliver this as a governed software implementation: Plan, implement, test, and package scoped software backend, frontend, and API microservices.\n\nVerified skill set I will use: Node.js, JavaScript, TypeScript, REST APIs, Automated Testing.\n\nBudget range I work in for this scope: $31,2k- $52k. Turnaround: 4-24 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Business Development Representative",
+      "client": "Outsite",
+      "url": "https://remotive.com/remote-jobs/sales/business-development-representative-2091075",
+      "budgetText": "$45,000 - $50,000",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time AI/ML CRM business development account management partnerships startup SDR hubspot travel pipedrive",
+      "source": "remotive_public_api",
+      "matchScore": 40,
+      "capabilityMatch": {
+        "id": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "universe": "automation",
+        "name": "Business Workflow & Process Automation",
+        "description": "Automate repetitive data pipelines, webhooks, spreadsheet updates, and email/CRM triggers.",
+        "confidenceScore": 88,
+        "requiredSkills": [
+          "Workflow Orchestration",
+          "Node.js Scripts",
+          "JSON Schema",
+          "Queue Management"
+        ],
+        "requiredTools": [
+          "node",
+          "fs",
+          "express"
+        ],
+        "estimatedDeliveryTime": "2-8 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 150,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "automation.spreadsheet-automation",
+          "engineering.api-integration"
+        ],
+        "tags": [
+          "automation",
+          "workflow",
+          "zapier",
+          "n8n",
+          "pipeline",
+          "trigger",
+          "process",
+          "routing",
+          "escalation",
+          "alert",
+          "deduplication",
+          "enrichment",
+          "monitoring",
+          "notice",
+          "extraction",
+          "ocr",
+          "flow",
+          "tree",
+          "crm",
+          "hubspot",
+          "zendesk",
+          "intercom",
+          "freshdesk",
+          "sla",
+          "email",
+          "document",
+          "approval",
+          "orchestration",
+          "make.com",
+          "business process automation",
+          "multi-step automation",
+          "api workflow",
+          "task orchestration",
+          "lead distribution",
+          "agent portal",
+          "sales agents",
+          "zipcode",
+          "receipt expense",
+          "receipt entry",
+          "quickbooks csv"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "src/services/revenueOutreachService.js"
+        ],
+        "capabilityId": "automation.workflow-automation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "src/services/revenueOutreachService.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": false,
+      "expectedFee": 47500,
+      "salaryText": "$45,000 - $50,000",
+      "rank": 7,
+      "package": {
+        "job": "Business Development Representative",
+        "company": "Outsite",
+        "url": "https://remotive.com/remote-jobs/sales/business-development-representative-2091075",
+        "budget": "$45,000 - $50,000",
+        "bestCapability": "Business Workflow & Process Automation",
+        "matchScore": 40,
+        "proposedFee": 47500,
+        "proposal": "Hi Outsite, regarding \"Business Development Representative\" -\n\nI can deliver this as a business workflow & process automation: Automate repetitive data pipelines, webhooks, spreadsheet updates, and email/CRM triggers.\n\nVerified skill set I will use: Workflow Orchestration, Node.js Scripts, JSON Schema, Queue Management.\n\nBudget range I work in for this scope: $45,000 - $50,000. Turnaround: 2-8 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (automation).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Patient Care Specialist",
+      "client": "STATLINX",
+      "url": "https://remotive.com/remote-jobs/medical/patient-care-specialist-2091069",
+      "budgetText": "$36k",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time research insurance",
+      "source": "remotive_public_api",
+      "matchScore": 25,
+      "capabilityMatch": {
+        "id": "knowledge.research-synthesis",
+        "category": "Research",
+        "universe": "knowledge",
+        "name": "Research and knowledge synthesis",
+        "description": "Retrieve verified web and document sources to produce structured analytical research reports.",
+        "confidenceScore": 94,
+        "requiredSkills": [
+          "Information Retrieval",
+          "Source Verification",
+          "Executive Summarization",
+          "Markdown Formatting"
+        ],
+        "requiredTools": [
+          "ripgrep",
+          "fetch",
+          "node"
+        ],
+        "estimatedDeliveryTime": "2-6 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 150,
+          "billingModel": "fixed_report"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "documentation.technical-documentation"
+        ],
+        "tags": [
+          "research",
+          "analysis",
+          "report",
+          "knowledge",
+          "summary",
+          "documentation",
+          "market",
+          "seo",
+          "marketing",
+          "content",
+          "translation",
+          "localization",
+          "spanish",
+          "german",
+          "french",
+          "legal",
+          "legal research",
+          "case law",
+          "statute",
+          "uspto",
+          "trademark",
+          "copyright",
+          "patent",
+          "patent search",
+          "prior art",
+          "privacy",
+          "policy",
+          "gdpr",
+          "compliance",
+          "regulatory",
+          "synthesis",
+          "literature",
+          "outbound sequence",
+          "cold email sequence",
+          "outreach drafting",
+          "lead magnet",
+          "whitepaper guide",
+          "e-book writing",
+          "feasibility study",
+          "smart city",
+          "iot study"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "src/services/knowledgeService.js",
+          "src/services/documentService.js"
+        ],
+        "capabilityId": "knowledge.research-synthesis",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "src/services/knowledgeService.js",
+            "exists": true
+          },
+          {
+            "file": "src/services/documentService.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": 36000,
+      "salaryText": "$36k",
+      "rank": 10,
+      "package": {
+        "job": "Patient Care Specialist",
+        "company": "STATLINX",
+        "url": "https://remotive.com/remote-jobs/medical/patient-care-specialist-2091069",
+        "budget": "$36k",
+        "bestCapability": "Research and knowledge synthesis",
+        "matchScore": 25,
+        "proposedFee": 36000,
+        "proposal": "Hi STATLINX, regarding \"Patient Care Specialist\" -\n\nI can deliver this as a research and knowledge synthesis: Retrieve verified web and document sources to produce structured analytical research reports.\n\nVerified skill set I will use: Information Retrieval, Source Verification, Executive Summarization, Markdown Formatting.\n\nBudget range I work in for this scope: $36k. Turnaround: 2-6 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (knowledge).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Freelance Copywriter",
+      "client": "Coalition Technologies",
+      "url": "https://remotive.com/remote-jobs/writing/freelance-copywriter-1749306",
+      "budgetText": "$20k -$35k",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "freelance accounting excel research data analysis bookkeeping google sheets quickbooks data entry insurance G Suite",
+      "source": "remotive_public_api",
+      "matchScore": 85,
+      "capabilityMatch": {
+        "id": "automation.spreadsheet-automation",
+        "category": "Spreadsheet Automation",
+        "universe": "automation",
+        "name": "Excel & Google Sheets Data Automation",
+        "description": "Build automated CSV/Excel generators, formula validators, data cleaning pipelines, and financial sheets.",
+        "confidenceScore": 90,
+        "requiredSkills": [
+          "CSV Parsing",
+          "Spreadsheet Formulas",
+          "Data Formatting",
+          "Excel Automation"
+        ],
+        "requiredTools": [
+          "node",
+          "fs"
+        ],
+        "estimatedDeliveryTime": "1-4 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 100,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "data.data-analysis"
+        ],
+        "tags": [
+          "spreadsheet",
+          "excel",
+          "csv",
+          "sheets",
+          "data",
+          "finance",
+          "table",
+          "nps survey",
+          "survey analysis",
+          "sentiment report",
+          "customer feedback comments"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "src/services/revenueCommandCenterService.js"
+        ],
+        "capabilityId": "automation.spreadsheet-automation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "src/services/revenueCommandCenterService.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": 27500,
+      "salaryText": "$20k -$35k",
+      "rank": 4,
+      "package": {
+        "job": "Freelance Copywriter",
+        "company": "Coalition Technologies",
+        "url": "https://remotive.com/remote-jobs/writing/freelance-copywriter-1749306",
+        "budget": "$20k -$35k",
+        "bestCapability": "Excel & Google Sheets Data Automation",
+        "matchScore": 85,
+        "proposedFee": 27500,
+        "proposal": "Hi Coalition Technologies, regarding \"Freelance Copywriter\" -\n\nI can deliver this as a excel & google sheets data automation: Build automated CSV/Excel generators, formula validators, data cleaning pipelines, and financial sheets.\n\nVerified skill set I will use: CSV Parsing, Spreadsheet Formulas, Data Formatting, Excel Automation.\n\nBudget range I work in for this scope: $20k -$35k. Turnaround: 1-4 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (automation).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Senior Independent AI Engineer / Architect",
+      "client": "A.Team",
+      "url": "https://remotive.com/remote-jobs/software-development/senior-independent-ai-engineer-architect-1919266",
+      "budgetText": "$120 - $170 /hour",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "contract go UI/UX wordpress chat apple testing catalyst",
+      "source": "remotive_public_api",
+      "matchScore": 25,
+      "capabilityMatch": {
+        "id": "testing.quality-assurance",
+        "category": "Quality Assurance",
+        "universe": "engineering",
+        "name": "Automated QA Test Suite & Validation",
+        "description": "Write automated unit tests, integration tests, API contract assertions, and validation reports.",
+        "confidenceScore": 95,
+        "requiredSkills": [
+          "Unit Testing",
+          "Integration Testing",
+          "Node.js Assertions",
+          "Test Suite Design"
+        ],
+        "requiredTools": [
+          "node",
+          "assert"
+        ],
+        "estimatedDeliveryTime": "2-6 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 120,
+          "billingModel": "fixed_test_suite"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "engineering.software-implementation"
+        ],
+        "tags": [
+          "qa",
+          "testing",
+          "unit",
+          "integration",
+          "assert",
+          "quality",
+          "validation"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "src/services/opportunityDiscoveryVerticalSlice.test.js"
+        ],
+        "capabilityId": "testing.quality-assurance",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "src/services/opportunityDiscoveryVerticalSlice.test.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": 145,
+      "salaryText": "$120 - $170 /hour",
+      "rank": 12,
+      "package": {
+        "job": "Senior Independent AI Engineer / Architect",
+        "company": "A.Team",
+        "url": "https://remotive.com/remote-jobs/software-development/senior-independent-ai-engineer-architect-1919266",
+        "budget": "$120 - $170 /hour",
+        "bestCapability": "Automated QA Test Suite & Validation",
+        "matchScore": 25,
+        "proposedFee": 145,
+        "proposal": "Hi A.Team, regarding \"Senior Independent AI Engineer / Architect\" -\n\nI can deliver this as a automated qa test suite & validation: Write automated unit tests, integration tests, API contract assertions, and validation reports.\n\nVerified skill set I will use: Unit Testing, Integration Testing, Node.js Assertions, Test Suite Design.\n\nBudget range I work in for this scope: $120 - $170 /hour. Turnaround: 2-6 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Senior Independent Software Developer",
+      "client": "A.Team",
+      "url": "https://remotive.com/remote-jobs/software-development/senior-independent-software-developer-1919265",
+      "budgetText": "$90 - $150 /hour",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "contract go wordpress chat apple testing catalyst",
+      "source": "remotive_public_api",
+      "matchScore": 40,
+      "capabilityMatch": {
+        "id": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "name": "Governed software implementation",
+        "description": "Plan, implement, test, and package scoped software backend, frontend, and API microservices.",
+        "confidenceScore": 95,
+        "requiredSkills": [
+          "Node.js",
+          "JavaScript",
+          "TypeScript",
+          "REST APIs",
+          "Automated Testing"
+        ],
+        "requiredTools": [
+          "node",
+          "npm",
+          "git"
+        ],
+        "estimatedDeliveryTime": "4-24 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 250,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "engineering.repository-audit",
+          "testing.quality-assurance"
+        ],
+        "tags": [
+          "software",
+          "development",
+          "implementation",
+          "automation",
+          "api",
+          "backend",
+          "frontend",
+          "testing",
+          "javascript",
+          "node",
+          "docker",
+          "container",
+          "kubernetes",
+          "python",
+          "react",
+          "nextjs",
+          "oauth",
+          "auth0",
+          "jwt",
+          "scraping",
+          "database migration",
+          "schema migration",
+          "sql migration",
+          "migration",
+          "iam",
+          "aws",
+          "policy",
+          "permission",
+          "smart contract",
+          "ethereum",
+          "solidity",
+          "crypto",
+          "contract deployment",
+          "token contract",
+          "presale contract",
+          "crypto token",
+          "html",
+          "css",
+          "flexbox",
+          "layout fix",
+          "landing page",
+          "frontend styling",
+          "full-stack",
+          "online store",
+          "e-commerce",
+          "e-commerce web app",
+          "payment gateway",
+          "react native",
+          "mobile app",
+          "fitness tracking",
+          "prototype",
+          "database schema",
+          "schema refactoring",
+          "tenant isolation",
+          "relational database"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "scripts/mother/planner.js",
+          "scripts/mother/executor.js",
+          "scripts/mother/builder.js",
+          "scripts/mother/validator.js"
+        ],
+        "capabilityId": "engineering.software-implementation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "scripts/mother/planner.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/executor.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/builder.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/validator.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": 120,
+      "salaryText": "$90 - $150 /hour",
+      "rank": 11,
+      "package": {
+        "job": "Senior Independent Software Developer",
+        "company": "A.Team",
+        "url": "https://remotive.com/remote-jobs/software-development/senior-independent-software-developer-1919265",
+        "budget": "$90 - $150 /hour",
+        "bestCapability": "Governed software implementation",
+        "matchScore": 40,
+        "proposedFee": 120,
+        "proposal": "Hi A.Team, regarding \"Senior Independent Software Developer\" -\n\nI can deliver this as a governed software implementation: Plan, implement, test, and package scoped software backend, frontend, and API microservices.\n\nVerified skill set I will use: Node.js, JavaScript, TypeScript, REST APIs, Automated Testing.\n\nBudget range I work in for this scope: $90 - $150 /hour. Turnaround: 4-24 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Freelance Writer",
+      "client": "IAPWE",
+      "url": "https://remotive.com/remote-jobs/writing/freelance-writer-1185979",
+      "budgetText": "$50-$75 /hour",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "freelance REST",
+      "source": "remotive_public_api",
+      "matchScore": 25,
+      "capabilityMatch": {
+        "id": "engineering.api-integration",
+        "category": "API Integration",
+        "universe": "engineering",
+        "name": "REST & GraphQL API Integration & Microservices",
+        "description": "Connect third-party APIs, webhooks, authentication flows, and data transformers with zero placeholder data.",
+        "confidenceScore": 92,
+        "requiredSkills": [
+          "REST API",
+          "GraphQL",
+          "Webhooks",
+          "JSON/XML Transformers"
+        ],
+        "requiredTools": [
+          "fetch",
+          "node",
+          "express"
+        ],
+        "estimatedDeliveryTime": "3-12 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 200,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [
+          "engineering.software-implementation"
+        ],
+        "relatedCapabilities": [
+          "automation.workflow-automation"
+        ],
+        "tags": [
+          "api",
+          "integration",
+          "webhook",
+          "graphql",
+          "rest",
+          "microservice",
+          "sync",
+          "pii sync",
+          "medical records",
+          "data sync",
+          "api security",
+          "authentication review",
+          "authorization review",
+          "access control review"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "src/services/opportunityDiscoveryService.js"
+        ],
+        "capabilityId": "engineering.api-integration",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "src/services/opportunityDiscoveryService.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": 63,
+      "salaryText": "$50-$75 /hour",
+      "rank": 3,
+      "package": {
+        "job": "Freelance Writer",
+        "company": "IAPWE",
+        "url": "https://remotive.com/remote-jobs/writing/freelance-writer-1185979",
+        "budget": "$50-$75 /hour",
+        "bestCapability": "REST & GraphQL API Integration & Microservices",
+        "matchScore": 25,
+        "proposedFee": 63,
+        "proposal": "Hi IAPWE, regarding \"Freelance Writer\" -\n\nI can deliver this as a rest & graphql api integration & microservices: Connect third-party APIs, webhooks, authentication flows, and data transformers with zero placeholder data.\n\nVerified skill set I will use: REST API, GraphQL, Webhooks, JSON/XML Transformers.\n\nBudget range I work in for this scope: $50-$75 /hour. Turnaround: 3-12 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Data Labeling Specialists",
+      "client": "Workada",
+      "url": "https://remotive.com/remote-jobs/data/data-labeling-specialists-2090903",
+      "budgetText": "$17/hr",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "freelance research digital content spreadsheets",
+      "source": "remotive_public_api",
+      "matchScore": 65,
+      "capabilityMatch": {
+        "id": "automation.spreadsheet-automation",
+        "category": "Spreadsheet Automation",
+        "universe": "automation",
+        "name": "Excel & Google Sheets Data Automation",
+        "description": "Build automated CSV/Excel generators, formula validators, data cleaning pipelines, and financial sheets.",
+        "confidenceScore": 90,
+        "requiredSkills": [
+          "CSV Parsing",
+          "Spreadsheet Formulas",
+          "Data Formatting",
+          "Excel Automation"
+        ],
+        "requiredTools": [
+          "node",
+          "fs"
+        ],
+        "estimatedDeliveryTime": "1-4 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 100,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "data.data-analysis"
+        ],
+        "tags": [
+          "spreadsheet",
+          "excel",
+          "csv",
+          "sheets",
+          "data",
+          "finance",
+          "table",
+          "nps survey",
+          "survey analysis",
+          "sentiment report",
+          "customer feedback comments"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "src/services/revenueCommandCenterService.js"
+        ],
+        "capabilityId": "automation.spreadsheet-automation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "src/services/revenueCommandCenterService.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": 17,
+      "salaryText": "$17/hr",
+      "rank": 6,
+      "package": {
+        "job": "Data Labeling Specialists",
+        "company": "Workada",
+        "url": "https://remotive.com/remote-jobs/data/data-labeling-specialists-2090903",
+        "budget": "$17/hr",
+        "bestCapability": "Excel & Google Sheets Data Automation",
+        "matchScore": 65,
+        "proposedFee": 17,
+        "proposal": "Hi Workada, regarding \"Data Labeling Specialists\" -\n\nI can deliver this as a excel & google sheets data automation: Build automated CSV/Excel generators, formula validators, data cleaning pipelines, and financial sheets.\n\nVerified skill set I will use: CSV Parsing, Spreadsheet Formulas, Data Formatting, Excel Automation.\n\nBudget range I work in for this scope: $17/hr. Turnaround: 1-4 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (automation).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Content Reviewer - United States",
+      "client": "TELUS Digital",
+      "url": "https://remotive.com/remote-jobs/all-others/content-reviewer-united-states-2091074",
+      "budgetText": "$14/hr",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "part_time android ios social media AI/ML",
+      "source": "remotive_public_api",
+      "matchScore": 15,
+      "capabilityMatch": {
+        "id": "engineering.repository-audit",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "name": "Repository architecture and quality audit",
+        "description": "Inspect a software repository and produce an evidence-backed architecture, risk, and validation report.",
+        "confidenceScore": 90,
+        "requiredSkills": [
+          "Architecture Analysis",
+          "Code Review",
+          "Security Audit",
+          "Linting"
+        ],
+        "requiredTools": [
+          "ripgrep",
+          "node",
+          "git"
+        ],
+        "estimatedDeliveryTime": "2-6 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 150,
+          "billingModel": "fixed_report"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "engineering.software-implementation"
+        ],
+        "tags": [
+          "repository",
+          "code",
+          "audit",
+          "architecture",
+          "quality",
+          "javascript",
+          "node",
+          "react",
+          "database",
+          "sql",
+          "postgres",
+          "mysql",
+          "query",
+          "optimization",
+          "performance",
+          "review",
+          "schema",
+          "migration",
+          "queries",
+          "query optimization",
+          "performance audit",
+          "database audit",
+          "dependencies",
+          "copyleft",
+          "npm dependencies",
+          "license audit",
+          "seo audit",
+          "website audit",
+          "technical audit",
+          "security review",
+          "code security review",
+          "vulnerability assessment",
+          "threat modeling",
+          "secure code review",
+          "security assessment",
+          "vulnerability scan",
+          "authorized penetration test",
+          "security audit",
+          "web security",
+          "application security",
+          "code audit"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "scripts/mother/scanner.js",
+          "src/motherCore/scanner/scannerEngine.js",
+          "scripts/mother/validator.js"
+        ],
+        "capabilityId": "engineering.repository-audit",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "scripts/mother/scanner.js",
+            "exists": true
+          },
+          {
+            "file": "src/motherCore/scanner/scannerEngine.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/validator.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": 14,
+      "salaryText": "$14/hr",
+      "rank": 8,
+      "package": {
+        "job": "Content Reviewer - United States",
+        "company": "TELUS Digital",
+        "url": "https://remotive.com/remote-jobs/all-others/content-reviewer-united-states-2091074",
+        "budget": "$14/hr",
+        "bestCapability": "Repository architecture and quality audit",
+        "matchScore": 15,
+        "proposedFee": 14,
+        "proposal": "Hi TELUS Digital, regarding \"Content Reviewer - United States\" -\n\nI can deliver this as a repository architecture and quality audit: Inspect a software repository and produce an evidence-backed architecture, risk, and validation report.\n\nVerified skill set I will use: Architecture Analysis, Code Review, Security Audit, Linting.\n\nBudget range I work in for this scope: $14/hr. Turnaround: 2-6 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Tier III Service Desk Engineer",
+      "client": "Unio Digital",
+      "url": "https://remotive.com/remote-jobs/information-technology/tier-iii-service-desk-engineer-2091045",
+      "budgetText": "",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time azure cisco security video documentation hardware helpdesk onboarding MSP ticketing Microsoft 365 IT systems",
+      "source": "remotive_public_api",
+      "matchScore": 40,
+      "capabilityMatch": {
+        "id": "documentation.technical-documentation",
+        "category": "Technical Documentation",
+        "universe": "knowledge",
+        "name": "Technical Documentation & API Specs",
+        "description": "Produce comprehensive API specifications, architectural sitemaps, system diagrams, and developer manuals.",
+        "confidenceScore": 92,
+        "requiredSkills": [
+          "OpenAPI/Swagger",
+          "Markdown",
+          "Mermaid Diagrams",
+          "System Architecture"
+        ],
+        "requiredTools": [
+          "fs",
+          "node"
+        ],
+        "estimatedDeliveryTime": "2-8 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 150,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "knowledge.research-synthesis",
+          "writing.proposal-writing"
+        ],
+        "tags": [
+          "documentation",
+          "api",
+          "spec",
+          "manual",
+          "technical",
+          "diagram",
+          "architecture",
+          "readme",
+          "license",
+          "boilerplate",
+          "setup",
+          "guidelines",
+          "help",
+          "articles",
+          "troubleshooting",
+          "knowledge base",
+          "lead magnet",
+          "whitepaper guide",
+          "e-book writing"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "scripts/mother/reporter.js"
+        ],
+        "capabilityId": "documentation.technical-documentation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "scripts/mother/reporter.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": false,
+      "expectedFee": null,
+      "salaryText": "",
+      "rank": 1,
+      "package": {
+        "job": "Tier III Service Desk Engineer",
+        "company": "Unio Digital",
+        "url": "https://remotive.com/remote-jobs/information-technology/tier-iii-service-desk-engineer-2091045",
+        "budget": "market rate",
+        "bestCapability": "Technical Documentation & API Specs",
+        "matchScore": 40,
+        "proposedFee": "to be quoted after scope check",
+        "proposal": "Hi Unio Digital, regarding \"Tier III Service Desk Engineer\" -\n\nI can deliver this as a technical documentation & api specs: Produce comprehensive API specifications, architectural sitemaps, system diagrams, and developer manuals.\n\nVerified skill set I will use: OpenAPI/Swagger, Markdown, Mermaid Diagrams, System Architecture.\n\nBudget range I work in for this scope: $150 starting. Turnaround: 2-8 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (knowledge).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "SaaS Product Support Jedi",
+      "client": "Creative Force",
+      "url": "https://remotive.com/remote-jobs/customer-service/saas-product-support-jedi-2091087",
+      "budgetText": "",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time api CSS go html javascript saas onboarding chat startup troubleshooting product support testing github",
+      "source": "remotive_public_api",
+      "matchScore": 75,
+      "capabilityMatch": {
+        "id": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "name": "Governed software implementation",
+        "description": "Plan, implement, test, and package scoped software backend, frontend, and API microservices.",
+        "confidenceScore": 95,
+        "requiredSkills": [
+          "Node.js",
+          "JavaScript",
+          "TypeScript",
+          "REST APIs",
+          "Automated Testing"
+        ],
+        "requiredTools": [
+          "node",
+          "npm",
+          "git"
+        ],
+        "estimatedDeliveryTime": "4-24 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 250,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "engineering.repository-audit",
+          "testing.quality-assurance"
+        ],
+        "tags": [
+          "software",
+          "development",
+          "implementation",
+          "automation",
+          "api",
+          "backend",
+          "frontend",
+          "testing",
+          "javascript",
+          "node",
+          "docker",
+          "container",
+          "kubernetes",
+          "python",
+          "react",
+          "nextjs",
+          "oauth",
+          "auth0",
+          "jwt",
+          "scraping",
+          "database migration",
+          "schema migration",
+          "sql migration",
+          "migration",
+          "iam",
+          "aws",
+          "policy",
+          "permission",
+          "smart contract",
+          "ethereum",
+          "solidity",
+          "crypto",
+          "contract deployment",
+          "token contract",
+          "presale contract",
+          "crypto token",
+          "html",
+          "css",
+          "flexbox",
+          "layout fix",
+          "landing page",
+          "frontend styling",
+          "full-stack",
+          "online store",
+          "e-commerce",
+          "e-commerce web app",
+          "payment gateway",
+          "react native",
+          "mobile app",
+          "fitness tracking",
+          "prototype",
+          "database schema",
+          "schema refactoring",
+          "tenant isolation",
+          "relational database"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "scripts/mother/planner.js",
+          "scripts/mother/executor.js",
+          "scripts/mother/builder.js",
+          "scripts/mother/validator.js"
+        ],
+        "capabilityId": "engineering.software-implementation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "scripts/mother/planner.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/executor.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/builder.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/validator.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": null,
+      "salaryText": "",
+      "rank": 2,
+      "package": {
+        "job": "SaaS Product Support Jedi",
+        "company": "Creative Force",
+        "url": "https://remotive.com/remote-jobs/customer-service/saas-product-support-jedi-2091087",
+        "budget": "market rate",
+        "bestCapability": "Governed software implementation",
+        "matchScore": 75,
+        "proposedFee": "to be quoted after scope check",
+        "proposal": "Hi Creative Force, regarding \"SaaS Product Support Jedi\" -\n\nI can deliver this as a governed software implementation: Plan, implement, test, and package scoped software backend, frontend, and API microservices.\n\nVerified skill set I will use: Node.js, JavaScript, TypeScript, REST APIs, Automated Testing.\n\nBudget range I work in for this scope: $250 starting. Turnaround: 4-24 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Senior Graphic Designer",
+      "client": "Lemon.io",
+      "url": "https://remotive.com/remote-jobs/design/senior-graphic-designer-2091081",
+      "budgetText": "",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time .Net android C C# C++ data science golang illustrator ios java javascript node.js php python react ruby/rails scala shopify swift wordpress blockchain AI/ML automation project management adobe creative suite react native rust unity electron spring laravel Ethereum graphic design Typescript  angular  data engineering Site Reliability SOLID Symfony startup marketplace next.js adobe illustrator flutter",
+      "source": "remotive_public_api",
+      "matchScore": 99,
+      "capabilityMatch": {
+        "id": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "name": "Governed software implementation",
+        "description": "Plan, implement, test, and package scoped software backend, frontend, and API microservices.",
+        "confidenceScore": 95,
+        "requiredSkills": [
+          "Node.js",
+          "JavaScript",
+          "TypeScript",
+          "REST APIs",
+          "Automated Testing"
+        ],
+        "requiredTools": [
+          "node",
+          "npm",
+          "git"
+        ],
+        "estimatedDeliveryTime": "4-24 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 250,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "engineering.repository-audit",
+          "testing.quality-assurance"
+        ],
+        "tags": [
+          "software",
+          "development",
+          "implementation",
+          "automation",
+          "api",
+          "backend",
+          "frontend",
+          "testing",
+          "javascript",
+          "node",
+          "docker",
+          "container",
+          "kubernetes",
+          "python",
+          "react",
+          "nextjs",
+          "oauth",
+          "auth0",
+          "jwt",
+          "scraping",
+          "database migration",
+          "schema migration",
+          "sql migration",
+          "migration",
+          "iam",
+          "aws",
+          "policy",
+          "permission",
+          "smart contract",
+          "ethereum",
+          "solidity",
+          "crypto",
+          "contract deployment",
+          "token contract",
+          "presale contract",
+          "crypto token",
+          "html",
+          "css",
+          "flexbox",
+          "layout fix",
+          "landing page",
+          "frontend styling",
+          "full-stack",
+          "online store",
+          "e-commerce",
+          "e-commerce web app",
+          "payment gateway",
+          "react native",
+          "mobile app",
+          "fitness tracking",
+          "prototype",
+          "database schema",
+          "schema refactoring",
+          "tenant isolation",
+          "relational database"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "scripts/mother/planner.js",
+          "scripts/mother/executor.js",
+          "scripts/mother/builder.js",
+          "scripts/mother/validator.js"
+        ],
+        "capabilityId": "engineering.software-implementation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "scripts/mother/planner.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/executor.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/builder.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/validator.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": null,
+      "salaryText": "",
+      "rank": 5,
+      "package": {
+        "job": "Senior Graphic Designer",
+        "company": "Lemon.io",
+        "url": "https://remotive.com/remote-jobs/design/senior-graphic-designer-2091081",
+        "budget": "market rate",
+        "bestCapability": "Governed software implementation",
+        "matchScore": 99,
+        "proposedFee": "to be quoted after scope check",
+        "proposal": "Hi Lemon.io, regarding \"Senior Graphic Designer\" -\n\nI can deliver this as a governed software implementation: Plan, implement, test, and package scoped software backend, frontend, and API microservices.\n\nVerified skill set I will use: Node.js, JavaScript, TypeScript, REST APIs, Automated Testing.\n\nBudget range I work in for this scope: $250 starting. Turnaround: 4-24 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Product Sales Specialist - Pet Health (CST timezone)",
+      "client": "Tribe Wellness",
+      "url": "https://remotive.com/remote-jobs/sales/product-sales-specialist-pet-health-cst-timezone-2091072",
+      "budgetText": "",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "excel salesforce video spark",
+      "source": "remotive_public_api",
+      "matchScore": 25,
+      "capabilityMatch": {
+        "id": "automation.spreadsheet-automation",
+        "category": "Spreadsheet Automation",
+        "universe": "automation",
+        "name": "Excel & Google Sheets Data Automation",
+        "description": "Build automated CSV/Excel generators, formula validators, data cleaning pipelines, and financial sheets.",
+        "confidenceScore": 90,
+        "requiredSkills": [
+          "CSV Parsing",
+          "Spreadsheet Formulas",
+          "Data Formatting",
+          "Excel Automation"
+        ],
+        "requiredTools": [
+          "node",
+          "fs"
+        ],
+        "estimatedDeliveryTime": "1-4 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 100,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "data.data-analysis"
+        ],
+        "tags": [
+          "spreadsheet",
+          "excel",
+          "csv",
+          "sheets",
+          "data",
+          "finance",
+          "table",
+          "nps survey",
+          "survey analysis",
+          "sentiment report",
+          "customer feedback comments"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "src/services/revenueCommandCenterService.js"
+        ],
+        "capabilityId": "automation.spreadsheet-automation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "src/services/revenueCommandCenterService.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": null,
+      "salaryText": "",
+      "rank": 9,
+      "package": {
+        "job": "Product Sales Specialist - Pet Health (CST timezone)",
+        "company": "Tribe Wellness",
+        "url": "https://remotive.com/remote-jobs/sales/product-sales-specialist-pet-health-cst-timezone-2091072",
+        "budget": "market rate",
+        "bestCapability": "Excel & Google Sheets Data Automation",
+        "matchScore": 25,
+        "proposedFee": "to be quoted after scope check",
+        "proposal": "Hi Tribe Wellness, regarding \"Product Sales Specialist - Pet Health (CST timezone)\" -\n\nI can deliver this as a excel & google sheets data automation: Build automated CSV/Excel generators, formula validators, data cleaning pipelines, and financial sheets.\n\nVerified skill set I will use: CSV Parsing, Spreadsheet Formulas, Data Formatting, Excel Automation.\n\nBudget range I work in for this scope: $100 starting. Turnaround: 1-4 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (automation).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Senior DevOps Engineer",
+      "client": "Lemon.io",
+      "url": "https://remotive.com/remote-jobs/devops/senior-devops-engineer-2091067",
+      "budgetText": "",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time .Net android AWS azure C C# C++ data science golang ios java javascript kubernetes node.js php python react ruby/rails scala shopify sql swift UI/UX wordpress blockchain AI/ML automation project management react native rust product management unity electron spring data analysis bash laravel Ethereum graphic design Typescript  terraform angular  GCP data engineering Site Reliability Symfony startup marketplace next.js flutter",
+      "source": "remotive_public_api",
+      "matchScore": 99,
+      "capabilityMatch": {
+        "id": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "name": "Governed software implementation",
+        "description": "Plan, implement, test, and package scoped software backend, frontend, and API microservices.",
+        "confidenceScore": 95,
+        "requiredSkills": [
+          "Node.js",
+          "JavaScript",
+          "TypeScript",
+          "REST APIs",
+          "Automated Testing"
+        ],
+        "requiredTools": [
+          "node",
+          "npm",
+          "git"
+        ],
+        "estimatedDeliveryTime": "4-24 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 250,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "engineering.repository-audit",
+          "testing.quality-assurance"
+        ],
+        "tags": [
+          "software",
+          "development",
+          "implementation",
+          "automation",
+          "api",
+          "backend",
+          "frontend",
+          "testing",
+          "javascript",
+          "node",
+          "docker",
+          "container",
+          "kubernetes",
+          "python",
+          "react",
+          "nextjs",
+          "oauth",
+          "auth0",
+          "jwt",
+          "scraping",
+          "database migration",
+          "schema migration",
+          "sql migration",
+          "migration",
+          "iam",
+          "aws",
+          "policy",
+          "permission",
+          "smart contract",
+          "ethereum",
+          "solidity",
+          "crypto",
+          "contract deployment",
+          "token contract",
+          "presale contract",
+          "crypto token",
+          "html",
+          "css",
+          "flexbox",
+          "layout fix",
+          "landing page",
+          "frontend styling",
+          "full-stack",
+          "online store",
+          "e-commerce",
+          "e-commerce web app",
+          "payment gateway",
+          "react native",
+          "mobile app",
+          "fitness tracking",
+          "prototype",
+          "database schema",
+          "schema refactoring",
+          "tenant isolation",
+          "relational database"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "scripts/mother/planner.js",
+          "scripts/mother/executor.js",
+          "scripts/mother/builder.js",
+          "scripts/mother/validator.js"
+        ],
+        "capabilityId": "engineering.software-implementation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "scripts/mother/planner.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/executor.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/builder.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/validator.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": null,
+      "salaryText": "",
+      "rank": 15,
+      "package": {
+        "job": "Senior DevOps Engineer",
+        "company": "Lemon.io",
+        "url": "https://remotive.com/remote-jobs/devops/senior-devops-engineer-2091067",
+        "budget": "market rate",
+        "bestCapability": "Governed software implementation",
+        "matchScore": 99,
+        "proposedFee": "to be quoted after scope check",
+        "proposal": "Hi Lemon.io, regarding \"Senior DevOps Engineer\" -\n\nI can deliver this as a governed software implementation: Plan, implement, test, and package scoped software backend, frontend, and API microservices.\n\nVerified skill set I will use: Node.js, JavaScript, TypeScript, REST APIs, Automated Testing.\n\nBudget range I work in for this scope: $250 starting. Turnaround: 4-24 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Senior Product Engineer (Fullstack)",
+      "client": "Clipster",
+      "url": "https://remotive.com/remote-jobs/software-development/senior-product-engineer-fullstack-2091062",
+      "budgetText": "",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time backend frontend fullstack golang postgresql react AI/ML documentation youtube Redis distributed systems GCP chat next.js infrastructure",
+      "source": "remotive_public_api",
+      "matchScore": 45,
+      "capabilityMatch": {
+        "id": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "name": "Governed software implementation",
+        "description": "Plan, implement, test, and package scoped software backend, frontend, and API microservices.",
+        "confidenceScore": 95,
+        "requiredSkills": [
+          "Node.js",
+          "JavaScript",
+          "TypeScript",
+          "REST APIs",
+          "Automated Testing"
+        ],
+        "requiredTools": [
+          "node",
+          "npm",
+          "git"
+        ],
+        "estimatedDeliveryTime": "4-24 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 250,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "engineering.repository-audit",
+          "testing.quality-assurance"
+        ],
+        "tags": [
+          "software",
+          "development",
+          "implementation",
+          "automation",
+          "api",
+          "backend",
+          "frontend",
+          "testing",
+          "javascript",
+          "node",
+          "docker",
+          "container",
+          "kubernetes",
+          "python",
+          "react",
+          "nextjs",
+          "oauth",
+          "auth0",
+          "jwt",
+          "scraping",
+          "database migration",
+          "schema migration",
+          "sql migration",
+          "migration",
+          "iam",
+          "aws",
+          "policy",
+          "permission",
+          "smart contract",
+          "ethereum",
+          "solidity",
+          "crypto",
+          "contract deployment",
+          "token contract",
+          "presale contract",
+          "crypto token",
+          "html",
+          "css",
+          "flexbox",
+          "layout fix",
+          "landing page",
+          "frontend styling",
+          "full-stack",
+          "online store",
+          "e-commerce",
+          "e-commerce web app",
+          "payment gateway",
+          "react native",
+          "mobile app",
+          "fitness tracking",
+          "prototype",
+          "database schema",
+          "schema refactoring",
+          "tenant isolation",
+          "relational database"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "scripts/mother/planner.js",
+          "scripts/mother/executor.js",
+          "scripts/mother/builder.js",
+          "scripts/mother/validator.js"
+        ],
+        "capabilityId": "engineering.software-implementation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "scripts/mother/planner.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/executor.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/builder.js",
+            "exists": true
+          },
+          {
+            "file": "scripts/mother/validator.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": null,
+      "salaryText": "",
+      "rank": 16,
+      "package": {
+        "job": "Senior Product Engineer (Fullstack)",
+        "company": "Clipster",
+        "url": "https://remotive.com/remote-jobs/software-development/senior-product-engineer-fullstack-2091062",
+        "budget": "market rate",
+        "bestCapability": "Governed software implementation",
+        "matchScore": 45,
+        "proposedFee": "to be quoted after scope check",
+        "proposal": "Hi Clipster, regarding \"Senior Product Engineer (Fullstack)\" -\n\nI can deliver this as a governed software implementation: Plan, implement, test, and package scoped software backend, frontend, and API microservices.\n\nVerified skill set I will use: Node.js, JavaScript, TypeScript, REST APIs, Automated Testing.\n\nBudget range I work in for this scope: $250 starting. Turnaround: 4-24 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (engineering).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    },
+    {
+      "platform": "remotive",
+      "title": "Assistant Account Payable",
+      "client": "The Obesity Society",
+      "url": "https://remotive.com/remote-jobs/medical/assistant-account-payable-2090989",
+      "budgetText": "",
+      "deadlineText": "flexible",
+      "categoryId": "",
+      "notes": "full_time accounting excel data entry outlook",
+      "source": "remotive_public_api",
+      "matchScore": 50,
+      "capabilityMatch": {
+        "id": "automation.spreadsheet-automation",
+        "category": "Spreadsheet Automation",
+        "universe": "automation",
+        "name": "Excel & Google Sheets Data Automation",
+        "description": "Build automated CSV/Excel generators, formula validators, data cleaning pipelines, and financial sheets.",
+        "confidenceScore": 90,
+        "requiredSkills": [
+          "CSV Parsing",
+          "Spreadsheet Formulas",
+          "Data Formatting",
+          "Excel Automation"
+        ],
+        "requiredTools": [
+          "node",
+          "fs"
+        ],
+        "estimatedDeliveryTime": "1-4 hours",
+        "pricingGuidance": {
+          "minimumFeeUSD": 100,
+          "billingModel": "fixed_deliverable"
+        },
+        "humanApprovalRequired": true,
+        "canMotherExecuteAutonomously": true,
+        "dependencies": [],
+        "relatedCapabilities": [
+          "data.data-analysis"
+        ],
+        "tags": [
+          "spreadsheet",
+          "excel",
+          "csv",
+          "sheets",
+          "data",
+          "finance",
+          "table",
+          "nps survey",
+          "survey analysis",
+          "sentiment report",
+          "customer feedback comments"
+        ],
+        "commercializable": true,
+        "executionMode": "founder_authorized_supervised",
+        "humanIdentityRequired": false,
+        "evidenceFiles": [
+          "src/services/revenueCommandCenterService.js"
+        ],
+        "capabilityId": "automation.spreadsheet-automation",
+        "readiness": "verified",
+        "eligibleForMatching": true,
+        "evidence": [
+          {
+            "file": "src/services/revenueCommandCenterService.js",
+            "exists": true
+          }
+        ]
+      },
+      "engineeringFit": true,
+      "expectedFee": null,
+      "salaryText": "",
+      "rank": 17,
+      "package": {
+        "job": "Assistant Account Payable",
+        "company": "The Obesity Society",
+        "url": "https://remotive.com/remote-jobs/medical/assistant-account-payable-2090989",
+        "budget": "market rate",
+        "bestCapability": "Excel & Google Sheets Data Automation",
+        "matchScore": 50,
+        "proposedFee": "to be quoted after scope check",
+        "proposal": "Hi The Obesity Society, regarding \"Assistant Account Payable\" -\n\nI can deliver this as a excel & google sheets data automation: Build automated CSV/Excel generators, formula validators, data cleaning pipelines, and financial sheets.\n\nVerified skill set I will use: CSV Parsing, Spreadsheet Formulas, Data Formatting, Excel Automation.\n\nBudget range I work in for this scope: $100 starting. Turnaround: 1-4 hours.\n\nI work milestone-based (start, mid-check, delivery) so you review everything before payment completes.\n\nTruth note: I only confirm what I can verify. Before we begin, I will confirm scope, the data I have access to, and the exact delivery deadline with you.\n\nIf this fits, share the project link and the 2-3 details below and I will send the specific plan plus a fixed price (automation).",
+        "nextAction": "OPEN URL > COPY PROPOSAL > SUBMIT VIA OFFICIAL ACCOUNT > RECORD IN GARUDA"
+      }
+    }
+  ]
+}

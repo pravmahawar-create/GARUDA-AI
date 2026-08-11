@@ -17,6 +17,10 @@
       "destination": "/api/public-chat"
     },
     {
+      "source": "/api/telegram",
+      "destination": "/api/telegram"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
     },

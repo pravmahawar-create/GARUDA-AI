@@ -55,7 +55,7 @@ export async function submitFounderApproval(taskId, decision) {
   return res.json();
 }
 
-export async function askRag(question, threadId = null, history = []) {
+export async function askRag(question, threadId = null, history = [], founderApproved = true) {
   const promptText = (question || "").trim();
   if (!promptText) return { success: false, answer: "" };
 
@@ -66,7 +66,8 @@ export async function askRag(question, threadId = null, history = []) {
       body: JSON.stringify({
         message: promptText,
         threadId,
-        history
+        history,
+        founderApproved: founderApproved === true
       })
     });
 

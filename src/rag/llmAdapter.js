@@ -16,6 +16,21 @@
 
 const DEFAULT_PROVIDER = "fallback";
 
+const DEFAULT_FETCH_TIMEOUT_MS = 20000;
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = DEFAULT_FETCH_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 function getConfiguredProvider() {
   const explicit = (process.env.GARUDA_LLM_PROVIDER || "")
     .trim()
@@ -56,7 +71,7 @@ function getNvidiaModel() {
   return (
     process.env.NVIDIA_MODEL ||
     process.env.GARUDA_NVIDIA_MODEL ||
-    "nvidia/llama-3.3-nemotron-super-49b-v1"
+    "nvidia/nemotron-3-nano-30b-a3b"
   );
 }
 
@@ -418,7 +433,7 @@ async function generateOpenAIAnswer({
     .join("\n\n");
 
   try {
-    const res = await fetch(endpoint, {
+    const res = await fetchWithTimeout(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -567,7 +582,7 @@ async function generateOllamaAnswer({
     }
 
     const isFastLane = metadata && metadata.fastLane === true;
-    const res = await fetch(endpoint, {
+    const res = await fetchWithTimeout(endpoint, {
       method: "POST",
       headers: requestHeaders,
       body: JSON.stringify({
@@ -748,7 +763,7 @@ async function generateGeminiAnswer({
       `${encodeURIComponent(model)}:generateContent`;
 
     try {
-      const res = await fetch(endpoint, {
+      const res = await fetchWithTimeout(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -900,7 +915,7 @@ async function generateNvidiaAnswer({
   // the founder persona prompt cleanly. Other consumers keep the global model.
   const model = isFastLane
     ? process.env.GARUDA_FOUNDER_NVIDIA_MODEL ||
-      "meta/llama-3.1-70b-instruct"
+      "nvidia/nemotron-3-nano-30b-a3b"
     : getNvidiaModel();
 
   if (!apiKey) {
@@ -999,7 +1014,7 @@ async function generateNvidiaAnswer({
     "https://integrate.api.nvidia.com/v1/chat/completions";
 
   try {
-    const res = await fetch(endpoint, {
+    const res = await fetchWithTimeout(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

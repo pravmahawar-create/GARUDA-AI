@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const llmProvider = require("../services/llmProvider");
+const garudaCommandRouter = require("../services/garudaCommandRouter");
 const conversationService = require("../services/conversationService");
 const { understandGoal } = require("../../scripts/mother/goalEngine");
 const { Mother } = require("../../scripts/mother/mother");
@@ -131,6 +132,32 @@ router.post("/chat", async (req, res) => {
         grounded: true,
         debugGoal: goal,
         evidence: sanitizedEvidence
+      });
+    }
+
+    const founderApproved = Boolean(req.body.founderApproved) || Boolean(req.get("x-garuda-founder-approved"));
+    const commandResult = await garudaCommandRouter.dispatchCommand(userMessage, { founderApproved });
+    if (commandResult && commandResult.command) {
+      const commandText = [
+        commandResult.message,
+        commandResult.goalCreated ? "Income mission active." : null
+      ].filter(Boolean).join("\n");
+
+      if (threadId) {
+        await conversationService.appendMessages(threadId, [
+          { role: "user", text: userMessage, mode: "command" },
+          { role: "garuda", text: commandText, mode: "command", command: commandResult.command, evidence: commandResult }
+        ]);
+      }
+
+      return res.json({
+        success: true,
+        threadId,
+        mode: "command",
+        answer: commandText,
+        command: commandResult.command,
+        execution: commandResult,
+        grounded: true
       });
     }
 

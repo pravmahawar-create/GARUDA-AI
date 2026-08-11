@@ -8,12 +8,19 @@ require("dotenv").config();
 const PORT = process.env.PORT || 3000;
 
 (async () => {
-    await connectDB();
+    const mongoConnected = await connectDB();
 
     app.listen(PORT, () => {
-        console.log(`?? GARUDA AI running on http://localhost:${PORT}`);
-        startDiscoveryWorker();
-        startRevenueTaskRunnerWorker();
-        startRevenueAcquisitionWorker();
+        console.log(`[GARUDA] GARUDA AI running on http://localhost:${PORT} (mongo: ${mongoConnected ? "connected" : "degraded"})`);
+
+        // Workers are Mongo-backed; only start when the DB is available.
+        // File/Supabase/NVIDIA features (lead-gen, outreach, affiliate, public chat) work regardless.
+        if (mongoConnected) {
+            try { startDiscoveryWorker(); } catch (e) { console.error("[GARUDA] discovery worker start failed:", e.message); }
+            try { startRevenueTaskRunnerWorker(); } catch (e) { console.error("[GARUDA] revenue task runner start failed:", e.message); }
+            try { startRevenueAcquisitionWorker(); } catch (e) { console.error("[GARUDA] revenue acquisition worker start failed:", e.message); }
+        } else {
+            console.log("[GARUDA] MongoDB unavailable — Mongo workers skipped. API + lead-gen + outreach + affiliate still live.");
+        }
     });
 })();

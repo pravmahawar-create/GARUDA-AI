@@ -39,7 +39,7 @@ function detectPreferredProvider() {
 
 function defaultModelForProvider(provider) {
   if (provider === "nvidia") {
-    return process.env.GARUDA_NVIDIA_MODEL || process.env.NVIDIA_MODEL || "nvidia/llama-3.3-nemotron-super-49b-v1";
+    return process.env.GARUDA_NVIDIA_MODEL || process.env.NVIDIA_MODEL || "nvidia/nemotron-3-nano-30b-a3b";
   }
   if (provider === "gemini") {
     return process.env.GARUDA_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash";

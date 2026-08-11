@@ -34,6 +34,7 @@
     "insurance:send": "node scripts/garuda-insurance-outreach.js send",
     "insurance:optout": "node scripts/garuda-insurance-outreach.js optout",
     "insurance:status": "node scripts/garuda-insurance-outreach.js status",
+    "telegram:setup": "node scripts/garuda-telegram-setup.js",
     "insurance:test": "node src/services/insuranceOutreachService.test.js",
     "insurance:scheduler": "node scripts/garuda-insurance-scheduler.js",
     "leads:import": "node scripts/garuda-insurance-leads.js import",

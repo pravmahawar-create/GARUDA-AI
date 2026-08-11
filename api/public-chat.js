@@ -1,29 +1,56 @@
 const { GoogleGenAI } = require("@google/genai");
-const { authenticatedDbClient, authenticatedUserId } = require("./customer/_auth");
+const { createClient } = require("@supabase/supabase-js");
+const { authenticatedDbClient, authenticatedUserId, isSupabaseConfigured, supabaseClient, supabaseAdminClient } = require("./customer/_auth");
 
 const NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
+const FETCH_TIMEOUT_MS = 20000;
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 function getNvidiaApiKey() {
   return process.env.NVIDIA_API_KEY || process.env.GARUDA_NVIDIA_API_KEY || null;
 }
 
 function getNvidiaModel() {
-  return process.env.NVIDIA_MODEL || process.env.GARUDA_NVIDIA_MODEL || "meta/llama-3.1-70b-instruct";
+  return process.env.NVIDIA_MODEL || process.env.GARUDA_NVIDIA_MODEL || "nvidia/nemotron-3-nano-30b-a3b";
 }
 
-const SYSTEM_PROMPT = [
-  "You are GARUDA, an advanced AI assistant for garudaos.in. Your founder is Praveen Mahawar.",
-  "BEHAVIOUR:",
-  "- Reply in the same language the user uses. If they write in Hinglish, reply in Hinglish.",
-  "- Give PRACTICAL, ACTIONABLE answers immediately. Never say 'main vichar kar raha hoon', 'let me think', or any placeholder — always answer directly.",
-  "- If the user has a problem (money, phone, health, business), give concrete steps they can do right now: what to try, who to ask, what to say.",
-  "- Be warm, honest, and clear. Never invent facts, prices, or policies you are not sure about. If unsure, say so and suggest a safe next step.",
-  "- Keep responses reasonably short and easy to read (short paragraphs, simple words).",
-  "- Never claim to be human or reveal a personal phone number.",
-  "RULES:",
-  "- No fabricated figures. No fake promises.",
-  "- If the user seems in serious distress (health/safety emergency), encourage them to seek local help and give the safest immediate step."
-].join("\n");
+function buildSystemPrompt() {
+  let capabilityBlock = "";
+  try {
+    const injector = require("../src/services/garudaCapabilityInjector");
+    capabilityBlock = injector.buildCapabilityBlock();
+  } catch {
+    capabilityBlock = "";
+  }
+
+  return [
+    "You are GARUDA, the AI Operating System behind garudaos.in. Your founder is Praveen Mahawar.",
+    "PERSONA: confident, warm, direct, action-oriented. You were built to be the most powerful AI assistant.",
+    capabilityBlock ? "WHAT YOU CAN ACTUALLY DO (be honest, use this when pitching services):\n" + capabilityBlock : "",
+    "BEHAVIOUR:",
+    "- NEVER output your internal reasoning or chain-of-thought. Do not write 'We need to', 'I should', or meta-commentary about instructions. Output ONLY the final spoken answer directly.",
+    "- Reply in the same language the user uses. If they write in Hinglish, reply in Hinglish.",
+    "- Give PRACTICAL, ACTIONABLE answers immediately. Never say 'main vichar kar raha hoon', 'let me think', or any placeholder — always answer directly.",
+    "- If the user has a business problem, offer a concrete next step AND offer that GARUDA can build/set up the solution (website, AI agent, automation, lead-generation, chatbot).",
+    "- Be warm, honest, and clear. Never invent facts, prices, or policies you are not sure about. If unsure, say so and suggest a safe next step.",
+    "- Keep responses reasonably short and easy to read (short paragraphs, simple words).",
+    "- Never claim to be human or reveal a personal phone number.",
+    "RULES:",
+    "- No fabricated figures. No fake promises. No guaranteed-income claims.",
+    "- If the user seems in serious distress (health/safety emergency), encourage them to seek local help and give the safest immediate step."
+  ].filter(Boolean).join("\n");
+}
+
+const SYSTEM_PROMPT = buildSystemPrompt();
 
 function buildHistoryMessages(history, message) {
   const messages = [
@@ -59,7 +86,7 @@ async function generateWithNvidia({ message, history }) {
   const apiKey = getNvidiaApiKey();
   const model = getNvidiaModel();
 
-  const res = await fetch(NVIDIA_ENDPOINT, {
+  const res = await fetchWithTimeout(NVIDIA_ENDPOINT, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -255,6 +282,84 @@ async function handleAuthenticated(conversationId, message, db, userId) {
   return { reply, conversationId: targetConversationId };
 }
 
+function looksLeadLike(text) {
+  const t = String(text || "").toLowerCase();
+  const interest = /\b(interested|i want|i need|chahiye|chahta|chahti|pls|please|quote|price|cost|kitna|how much|start|book|demo|call me|contact|reach out|build|make me|mera|website|bot|agent|automation)\b/.test(t);
+  const hasContact = /\b(\d{10}|\d{5}\s?\d{5}|@|email|mail|whatsapp|phone|call|number)\b/.test(t);
+  const askBusiness = /\b(website|app|bot|chatbot|ai|automation|lead|leadgen|outreach|marketing|proposal|quote|price)\b/.test(t);
+  return interest && (hasContact || askBusiness || t.includes("service"));
+}
+
+function extractLeadEmail(text) {
+  const t = String(text || "");
+  const match = t.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  return match ? match[0].toLowerCase() : "";
+}
+
+function extractLeadPhone(text) {
+  const t = String(text || "").replace(/[^0-9]/g, "");
+  if (t.length >= 10) return t.slice(-10);
+  return "";
+}
+
+function leadSource(userId, req) {
+  if (userId) return "public-chat-authenticated";
+  const ref = String((req.query && req.query.ref) || "").trim();
+  return ref ? `public-chat-${ref}` : "public-chat-anonymous";
+}
+
+async function captureLead({ message, reply, userId, req }) {
+  const lead = {
+    email: extractLeadEmail(message) || null,
+    phone: extractLeadPhone(message) || null,
+    first_name: extractLeadEmail(message) ? extractLeadEmail(message).split("@")[0].slice(0, 40) : null,
+    source: leadSource(userId, req),
+    user_id: userId || null,
+    message: String(message || "").slice(0, 2000),
+    reply_snippet: String(reply || "").slice(0, 500),
+    status: "new",
+    capturedAt: new Date().toISOString()
+  };
+
+  try {
+    if (isSupabaseConfigured()) {
+      const admin = supabaseAdminClient() || supabaseClient();
+      const { data, error } = await admin
+        .from("leads")
+        .insert({ ...lead })
+        .select("id")
+        .single();
+      if (!error && data) {
+        try {
+          const telegramBotService = require("../src/services/telegramBotService");
+          await telegramBotService.notifyLeadCaptured({ ...lead, id: data.id });
+        } catch {}
+        return data;
+      }
+    }
+  } catch {}
+
+  // File-based fallback: works even without Supabase table/policy.
+  try {
+    const fs = require("fs");
+    const path = require("path");
+    const file = path.join(__dirname, "..", "data", "leads.json");
+    const existing = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : { leads: [] };
+    if (!Array.isArray(existing.leads)) existing.leads = [];
+    const id = `lead_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    existing.leads.push({ id, ...lead });
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(existing, null, 2), "utf8");
+    try {
+      const telegramBotService = require("../src/services/telegramBotService");
+      await telegramBotService.notifyLeadCaptured({ ...lead, id });
+    } catch {}
+    return { id, ...lead };
+  } catch {
+    return null;
+  }
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -283,6 +388,7 @@ module.exports = async function handler(req, res) {
   if (db && userId) {
     try {
       const result = await handleAuthenticated(conversationId || "", message.trim(), db, userId);
+      await captureLead({ message, reply: result.reply, userId, req });
       return res.status(200).json(result);
     } catch (error) {
       console.error("Public Chat Persistence Error:", error);
@@ -297,6 +403,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const reply = await generateReply(message.trim(), Array.isArray(history) ? history : []);
+    await captureLead({ message, reply, userId: null, req });
     return res.status(200).json({ reply });
   } catch (error) {
     console.error("Public Chat API Error:", error);
