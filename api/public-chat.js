@@ -303,9 +303,10 @@ async function handleAuthenticated(conversationId, message, db, userId) {
   const targetConversationId = resolved.conversationId;
   const history = await loadConversationHistory(db, targetConversationId);
   await persistMessage(db, targetConversationId, userId, "user", message);
-  const sales = trySalesAgent(message, userId);
-  const advisor = sales.handled ? { handled: false, reply: null } : tryInsuranceAdvisor(message);
-  const reply = sales.handled ? sales.reply : advisor.handled ? advisor.reply : await generateReply(message, history);
+  // Insurance/ABSLI questions first — grounded advisor, sales agent ke bahar.
+  const advisor = tryInsuranceAdvisor(message);
+  const sales = advisor.handled ? { handled: false, reply: null } : trySalesAgent(message, userId);
+  const reply = advisor.handled ? advisor.reply : sales.handled ? sales.reply : await generateReply(message, history);
   await persistMessage(db, targetConversationId, userId, "assistant", reply);
   return { reply, conversationId: targetConversationId, mode: advisor.handled ? "insurance_advisor" : undefined };
 }
@@ -430,9 +431,9 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const sales = trySalesAgent(message.trim(), req.headers["x-garuda-session"] || req.ip || "anon");
-    const advisor = sales.handled ? { handled: false, reply: null } : tryInsuranceAdvisor(message.trim());
-    const reply = sales.handled ? sales.reply : advisor.handled ? advisor.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
+    const advisor = tryInsuranceAdvisor(message.trim());
+    const sales = advisor.handled ? { handled: false, reply: null } : trySalesAgent(message.trim(), req.headers["x-garuda-session"] || req.ip || "anon");
+    const reply = advisor.handled ? advisor.reply : sales.handled ? sales.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
     await captureLead({ message, reply, userId: null, req });
     return res.status(200).json({ reply, mode: advisor.handled ? "insurance_advisor" : undefined });
   } catch (error) {
