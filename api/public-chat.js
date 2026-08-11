@@ -267,6 +267,18 @@ async function persistMessage(db, conversationId, userId, role, content) {
   return data.id;
 }
 
+function trySalesAgent(message, sessionId) {
+  try {
+    const salesAgent = require("../src/services/garudaSalesAgentService");
+    const result = salesAgent.handleSalesMessage(message, { sessionId });
+    if (!result || !result.message) return { handled: false, reply: null };
+    if (result.action === "noop") return { handled: false, reply: null };
+    return { handled: true, reply: result.message };
+  } catch {
+    return { handled: false, reply: null };
+  }
+}
+
 async function handleAuthenticated(conversationId, message, db, userId) {
   const resolved = await resolveConversation(db, userId, conversationId, message);
   if (!resolved.conversationId) {
@@ -277,7 +289,8 @@ async function handleAuthenticated(conversationId, message, db, userId) {
   const targetConversationId = resolved.conversationId;
   const history = await loadConversationHistory(db, targetConversationId);
   await persistMessage(db, targetConversationId, userId, "user", message);
-  const reply = await generateReply(message, history);
+  const sales = trySalesAgent(message, userId);
+  const reply = sales.handled ? sales.reply : await generateReply(message, history);
   await persistMessage(db, targetConversationId, userId, "assistant", reply);
   return { reply, conversationId: targetConversationId };
 }
@@ -402,7 +415,8 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const reply = await generateReply(message.trim(), Array.isArray(history) ? history : []);
+    const sales = trySalesAgent(message.trim(), req.headers["x-garuda-session"] || req.ip || "anon");
+    const reply = sales.handled ? sales.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
     await captureLead({ message, reply, userId: null, req });
     return res.status(200).json({ reply });
   } catch (error) {
