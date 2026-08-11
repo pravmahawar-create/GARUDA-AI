@@ -249,8 +249,9 @@ function markBounced(recipientEmail) {
   return { updated };
 }
 
-// Scan inbox for delivery-failure (bounce) notifications from the mail system
-// and mark the matching leads as bounced so they are never followed up.
+// Scan inbox for delivery-failure (bounce) notifications from the mail system,
+// mark the matching leads as bounced so they are never followed up, and
+// auto-delete the bounce notification emails (they serve no purpose after parsing).
 // Returns the bounced recipient emails found.
 async function scanBounces(options = {}) {
   const user = String(process.env.GARUDA_EMAIL_USER || "").trim();
@@ -270,6 +271,7 @@ async function scanBounces(options = {}) {
   try {
     await client.connect();
     const lock = await client.getMailboxLock("INBOX");
+    const deleteUids = [];
     try {
       const uids = await client.search({
         subject: "delivery",
@@ -286,13 +288,20 @@ async function scanBounces(options = {}) {
             const result = markBounced(recipient);
             bounced.push({ email: normalizeEmail(recipient), ledgersUpdated: result.updated });
           }
+          deleteUids.push(uid);
         }
+      }
+      // Auto-delete processed bounce notifications (unless explicitly disabled).
+      if (!(options.delete === false) && deleteUids.length) {
+        try {
+          await client.messageDelete(deleteUids, { uid: true });
+        } catch {}
       }
     } finally {
       lock.release();
       await client.logout();
     }
-    return { ok: true, bounced };
+    return { ok: true, bounced, deleted: deleteUids.length };
   } catch (error) {
     try { await client.logout(); } catch {}
     return { ok: false, error: error && error.message ? error.message : String(error), bounced };

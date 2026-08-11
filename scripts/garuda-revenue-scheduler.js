@@ -1,8 +1,9 @@
 // GARUDA Revenue Scheduler — run daily (or via cron) to:
-//   1. Poll Gmail inbox for outreach replies
-//   2. Update lead status + alert founder (Telegram)
-//   3. Send due follow-ups (2 max per lead)
-//   4. Print revenue loop summary
+//   1. Scan & auto-delete bounce notifications, mark dead addresses
+//   2. Poll Gmail inbox for outreach replies
+//   3. Update lead status + alert founder (Telegram)
+//   4. Send due follow-ups (2 max per lead)
+//   5. Print revenue loop summary
 //
 // Usage: npm run revenue:scheduler   [-- --dry-run]
 require("dotenv").config();
@@ -20,8 +21,16 @@ async function main() {
   if (!inboxService.isConfigured()) {
     log("[REVENUE] GARUDA_EMAIL_USER/PASS not configured — inbox polling skipped.");
   } else if (DRY_RUN) {
-    log("[REVENUE] dry-run: inbox poll skipped (set --dry-run off to connect IMAP).");
+    log("[REVENUE] dry-run: inbox + bounce scan skipped (set --dry-run off to connect IMAP).");
   } else {
+    // Bounce scan first: mark dead addresses + auto-delete notifications.
+    const bounces = await inboxService.scanBounces({ limit: 50 });
+    log(`[REVENUE] bounce scan -> ok=${bounces.ok} bounced=${bounces.bounced.length} deleted=${bounces.deleted || 0}`);
+    if (bounces.error) log(`[REVENUE] bounce error: ${bounces.error}`);
+    for (const b of bounces.bounced) {
+      log(`  BOUNCED ${b.email} | ledgers updated: ${b.ledgersUpdated}`);
+    }
+
     const poll = await inboxService.pollInbox({ maxEmails: 25 });
     log(`[REVENUE] inbox poll -> ok=${poll.ok} processed=${poll.processed.length}`);
     if (poll.error) log(`[REVENUE] inbox error: ${poll.error}`);
