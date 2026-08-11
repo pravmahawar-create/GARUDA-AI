@@ -189,6 +189,22 @@ function run() {
     assert.strictEqual(gate.reason, "opted_out");
   });
 
+  test("buildPitch + previewOutreach support English (intl) locale", () => {
+    const enPitch = buildPitch({ firstName: "John", query: "direct_bookings", domainId: "hotel", chunks: [], locale: "en" });
+    assert.ok(enPitch.body.includes("Hello John"));
+    assert.ok(enPitch.body.includes("OTA booking costs you"));
+    assert.ok(!enPitch.body.includes("Namaste"));
+    const hiPitch = buildPitch({ firstName: "Ramesh", query: "direct_bookings", domainId: "hotel", chunks: [] });
+    assert.ok(hiPitch.body.includes("Namaste Ramesh"));
+    const ledgerPath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "garuda-gen-")), "ledger.json");
+    const result = previewOutreach(
+      [{ email: "dubai@x.ae", firstName: "John", query: "direct_bookings", locale: "en" }],
+      { domain: "hotel", ledgerPath }
+    );
+    assert.strictEqual(result.results[0].locale, "en");
+    assert.ok(result.results[0].body.includes("OTA booking costs you"));
+  });
+
   test("optOutLead + getSummary reflect status", () => {
     const ledgerPath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "garuda-gen-")), "ledger.json");
     fs.writeFileSync(ledgerPath, JSON.stringify({ leads: [{ email: "ramesh@x.in", optedOut: false, sentCount: 1, status: "message_sent", history: [] }] }), "utf8");

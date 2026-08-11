@@ -106,7 +106,46 @@ const prospects = [
   { domain: "hospital", businessName: "HIMAS Institute", city: "Bangalore", email: "himasglobalhospitals@gmail.com", phone: "7899824417", website: "himasindia.com", businessType: "Hospital & institute", notes: "Basavanagudi", source: "public_website" },
 
   // Delhi — Salons
-  { domain: "salon", businessName: "Krushhh By Konica", city: "Delhi", email: "krushhbykonica@gmail.com", phone: "9811296961", website: "krushhhbykonica.com", businessType: "Premium beauty salon", notes: "upmarket salon + makeup academy", source: "public_listing" }
+  { domain: "salon", businessName: "Krushhh By Konica", city: "Delhi", email: "krushhbykonica@gmail.com", phone: "9811296961", website: "krushhhbykonica.com", businessType: "Premium beauty salon", notes: "upmarket salon + makeup academy", source: "public_website" },
+
+  // --- Batch 3: INTERNATIONAL EXPANSION (public websites, verified listings) ---
+
+  // UAE — Hotels
+  { domain: "hotel", businessName: "Beach Walk Boutique", city: "Dubai", country: "UAE", locale: "en", email: "info@beachwalkboutique.com", phone: "97143322277", website: "beachwalkboutique.com", businessType: "Boutique hotel", notes: "boutique on Jumeirah Street, direct booking push", source: "public_website" },
+  { domain: "hotel", businessName: "Arabian Boutique Hotel", city: "Dubai", country: "UAE", locale: "en", email: "info@arabianboutiquehotel.com", phone: "97143544424", website: "arabianboutiquehotel.com", businessType: "Boutique hotel", notes: "first Emirati boutique hotel, Old Dubai", source: "public_website" },
+  { domain: "hotel", businessName: "Auris Boutique Hotel Apartments", city: "Dubai", country: "UAE", locale: "en", email: "info@aurisdubai.com", phone: "97143951313", website: "aurisdubai.com", businessType: "Boutique hotel apartments", notes: "privately operated", source: "public_website" },
+
+  // USA — Hotels
+  { domain: "hotel", businessName: "Refugio Paso Robles", city: "Paso Robles", country: "USA", locale: "en", email: "refugiopasorobles@gmail.com", phone: "", website: "refugiopasorobles.com", businessType: "Boutique lodging", notes: "direct booking saves fees", source: "public_website" },
+  { domain: "hotel", businessName: "Windrush Inn", city: "Cambria", country: "USA", locale: "en", email: "windrushinn@gmail.com", phone: "8059265200", website: "windrushinn.net", businessType: "Coastal inn", notes: "Moonstone Beach, 4 units, pet friendly", source: "public_website" },
+  { domain: "hotel", businessName: "Cort Cottage", city: "Three Rivers", country: "USA", locale: "en", email: "cortcottagethreerivers@gmail.com", phone: "5595610199", website: "cortcottage.com", businessType: "Guest cottage", notes: "B&B turned vacation rental, Sequoia NP", source: "public_website" },
+
+  // UK — Restaurants
+  { domain: "restaurant", businessName: "Naughty Piglets", city: "London", country: "UK", locale: "en", email: "naughtypiglets@gmail.com", phone: "", website: "naughtypiglets.co.uk", businessType: "Neighbourhood restaurant", notes: "South London, guest chefs monthly, owner Margaux", source: "public_website" },
+  { domain: "restaurant", businessName: "Panella London", city: "London", country: "UK", locale: "en", email: "panellalondon@gmail.com", phone: "", website: "panellalondon.co.uk", businessType: "Sicilian restaurant", notes: "couple-run, Trellick Tower, events hire", source: "public_website" },
+  { domain: "restaurant", businessName: "Sentosa Restaurant", city: "London", country: "UK", locale: "en", email: "sentosa.r208@gmail.com", phone: "02074075988", website: "sentosarestaurant.com", businessType: "Singapore/Malaysian restaurant", notes: "founder Ivan Lee, Bermondsey Street", source: "public_website" },
+  { domain: "restaurant", businessName: "Rossodisera", city: "London", country: "UK", locale: "en", email: "bookingrossodisera@gmail.com", phone: "02072403683", website: "rossodisera.co.uk", businessType: "Italian restaurant", notes: "Marche cuisine, Covent Garden, since 2007", source: "public_website" },
+
+  // UAE — Restaurants
+  { domain: "restaurant", businessName: "Pulutan House Restaurant", city: "Dubai", country: "UAE", locale: "en", email: "pulutanhouse@gmail.com", phone: "971501534399", website: "pulutanhouserestaurant.com", businessType: "Filipino buffet restaurant", notes: "Dubai + Abu Dhabi, family-friendly", source: "public_website" },
+  { domain: "restaurant", businessName: "Tazal Restaurant", city: "Abu Dhabi", country: "UAE", locale: "en", email: "info@tazal.com", phone: "971501520815", website: "tazal.com", businessType: "Arabic restaurant", notes: "Al Qana waterfront, family-friendly", source: "public_website" },
+  { domain: "restaurant", businessName: "Evergreen Restaurant", city: "Abu Dhabi", country: "UAE", locale: "en", email: "sales@gulfevergreen.org", phone: "97126767361", website: "gulfevergreen.com", businessType: "Vegetarian restaurant", notes: "since 1978, multiple branches", source: "public_website" },
+
+  // Canada — Clinics
+  { domain: "clinic", businessName: "Smile Team Toronto", city: "Toronto", country: "Canada", locale: "en", email: "smileteamtoronto@gmail.com", phone: "4165465599", website: "smileteamtoronto.ca", businessType: "Dental clinic", notes: "Scarborough, cosmetic + general", source: "public_website" },
+  { domain: "clinic", businessName: "D on D Dental", city: "Toronto", country: "Canada", locale: "en", email: "donddentalcare@gmail.com", phone: "4164621526", website: "donddental.ca", businessType: "Dental clinic", notes: "Danforth, 2 locations, evenings/weekends", source: "public_website" },
+  { domain: "clinic", businessName: "Dr Thuy Nguyen Dental", city: "Toronto", country: "Canada", locale: "en", email: "drthuynguyen200@gmail.com", phone: "4165377564", website: "drthuynguyendental.ca", businessType: "Family dental clinic", notes: "25 years experience, family-focused", source: "public_website" },
+  { domain: "clinic", businessName: "Dr Nancy Bishay DDS", city: "Toronto", country: "Canada", locale: "en", email: "torontodentist@yahoo.com", phone: "4162970071", website: "drnancybishay.com", businessType: "Dental clinic", notes: "Scarborough, Finch Midland Medical Center", source: "public_website" },
+
+  // Australia — Gyms
+  { domain: "gym", businessName: "HardAsRox Health & Fitness", city: "Sydney", country: "Australia", locale: "en", email: "hardasroxfitness@gmail.com", phone: "", website: "", businessType: "Personal training", notes: "owner Roxanne Collimore, outdoor PT, since 2012", source: "public_listing" },
+
+  // Australia — Clinics (doctors)
+  { domain: "clinic", businessName: "Dr Smadar Shalev Psychology", city: "Melbourne", country: "Australia", locale: "en", email: "drsmadarshalev@gmail.com", phone: "0408381505", website: "elsternwickpsychology.com.au", businessType: "Clinical psychology practice", notes: "Elsternwick, adult + adolescent therapy", source: "public_website" },
+  { domain: "clinic", businessName: "Mind Doctor Psychiatry", city: "Melbourne", country: "Australia", locale: "en", email: "minddoctorpsychiatry@gmail.com", phone: "", website: "minddoctor.com.au", businessType: "Psychiatry practice", notes: "Dr Schuyler Tan, online practice", source: "public_website" },
+
+  // Canada — Education
+  { domain: "education", businessName: "Microm Learning Centres", city: "Toronto", country: "Canada", locale: "en", email: "micromlearning@gmail.com", phone: "4379930853", website: "micromlearning.com", businessType: "Education centre", notes: "family-owned, Etobicoke, virtual option", source: "public_website" }
 ];
 
 let added = 0;

@@ -117,9 +117,20 @@ const DOMAINS = {
       seasonal_packages: "Off-season ko on-season banao — sahi package offers se rooms empty na rahein.",
       wedding_events: "Wedding & event business hotels ka sabse bada revenue hai — ek proper event pitch page us game ko unlock karta hai."
     },
+    hooksEn: {
+      direct_bookings: "Every OTA booking costs you 15-25% in commission. Direct bookings from a proper website go straight to you — the most cost-effective marketing there is.",
+      online_presence: "Today's traveller checks Google before booking. Without an online presence you lose customers to competitors — and still pay commission.",
+      reviews_google: "Google reviews are your digital storefront. Managed well, they bring bookings on their own.",
+      seasonal_packages: "Turn off-season into on-season — the right packages and offers keep your rooms full all year.",
+      wedding_events: "Weddings & events are the biggest revenue stream for hotels — a proper event page unlocks that game."
+    },
     brandLines: [
       "Mai GARUDA hoon — hotels ke liye direct bookings aur digital presence ka AI system.",
       "Koi pressure nahi, koi jhutha wada nahi — sirf sahi jaankari aur kaam."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — an AI system for hotels that grows direct bookings and online presence.",
+      "No pressure, no false promises — just the right information and real work."
     ],
     defaultTopic: "direct_bookings",
     inferQuery: genericInferQuery,
@@ -152,9 +163,20 @@ const DOMAINS = {
       health_awareness: "Health camps aur checkup offers se aap area ke sabse zyada trusted provider bante ho.",
       google_maps: "Google Maps pe sahi presence = nearby patients turant aapko dhoondh lete hain."
     },
+    hooksEn: {
+      patient_leads: "Today 70% of patients search online before they visit a hospital. If you're not present online, that lead goes to someone else.",
+      online_reputation: "Patients choose based on reviews. A positive reputation means more admissions.",
+      appointment_booking: "Online booking reduces reception load, improves patient experience, and means no lead is ever missed.",
+      health_awareness: "Health camps and checkup offers make you the most trusted provider in your area.",
+      google_maps: "The right Google Maps presence lets nearby patients find you instantly."
+    },
     brandLines: [
       "Mai GARUDA hoon — hospitals aur clinics ke liye patient growth ka AI system.",
       "Transparent, genuine, koi jhutha wada nahi."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — an AI system that grows patient volume for hospitals and clinics.",
+      "Transparent, genuine, and no false promises."
     ],
     defaultTopic: "patient_leads",
     inferQuery: genericInferQuery,
@@ -187,9 +209,20 @@ const DOMAINS = {
       customer_reviews: "Reviews aur ratings aapka menu se zyada farq deta hai — positive reviews = repeat customers.",
       local_visibility: "Aas paas ke log google par 'restaurant near me' search karte hain — unhe aap dikhna chahiye."
     },
+    hooksEn: {
+      direct_orders: "Delivery platforms take 25-30% of every order. Direct orders mean the profit stays with you.",
+      delivery_commission: "Cut delivery-app commission down — build your own ordering line and grow your margin.",
+      online_menu: "If your menu isn't online, a hungry customer moves on before finding you.",
+      customer_reviews: "Reviews and ratings matter more than your menu — positive reviews create repeat customers.",
+      local_visibility: "People nearby search 'restaurant near me' — you should be what they find."
+    },
     brandLines: [
       "Mai GARUDA hoon — restaurants ke liye direct orders aur profit margin ka AI system.",
       "Koi jhutha wada nahi, sirf kaam."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — an AI system that drives direct orders and profit margins for restaurants.",
+      "No false promises, just results."
     ],
     defaultTopic: "direct_orders",
     inferQuery: genericInferQuery,
@@ -222,9 +255,20 @@ const DOMAINS = {
       admission_leads: "Enquiry ko lead me badalna system se hota hai — form + follow-up = admission.",
       course_promotion: "Targeted campaigns se sahi students aate hain, sirf interested wale."
     },
+    hooksEn: {
+      student_admissions: "With the right digital presence, seats fill faster in admission season — without offering discounts.",
+      online_courses: "Add an online course alongside offline classes — double the revenue from the same faculty.",
+      parent_trust: "Results and success stories are the strongest trust signals online.",
+      admission_leads: "Converting enquiries into admissions is a system — forms plus follow-up equals admissions.",
+      course_promotion: "Targeted campaigns bring the right students — only the ones genuinely interested."
+    },
     brandLines: [
       "Mai GARUDA hoon — coaching institutes ke liye admissions growth ka AI system.",
       "Transparent, result-focussed, koi jhutha wada nahi."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — an AI system that grows admissions for coaching institutes.",
+      "Transparent, result-focused, and no false promises."
     ],
     defaultTopic: "student_admissions",
     inferQuery: genericInferQuery,
@@ -257,9 +301,20 @@ const DOMAINS = {
       broker_outreach: "Channel partners system se manage karo — broker network = fast sales.",
       nri_investors: "NRIs property ka sabse bada investor base hain — unke liye sahi digital outreach game changer hai."
     },
+    hooksEn: {
+      buyer_leads: "The property business runs on leads — verified buyer leads from the right source close bookings.",
+      project_visibility: "The first 30 days of online visibility after a launch decide how fast you sell.",
+      property_listings: "Quality listings with strong photos online mean more walk-ins and less reliance on word of mouth.",
+      broker_outreach: "Manage channel partners with a system — a broker network means faster sales.",
+      nri_investors: "NRIs are the biggest investor base in property — the right digital outreach is a game changer with them."
+    },
     brandLines: [
       "Mai GARUDA hoon — real estate ke liye buyer leads aur project growth ka AI system.",
       "Verified leads, koi jhutha wada nahi."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — an AI system for buyer leads and project growth in real estate.",
+      "Verified leads, no false promises."
     ],
     defaultTopic: "buyer_leads",
     inferQuery: genericInferQuery,
@@ -288,13 +343,24 @@ const DOMAINS = {
     hooks: {
       membership_sales: "Har mahine naye memberships chahiye hoti hain — digital funnel se trail se membership tak conversion.",
       online_presence: "Potential member pehle google karta hai phir gym aata hai — presence na ho toh woh competitor ko jaata hai.",
-      trial_signups: "Trial signup system = aapko kabhi khali gym nahi milegi.",
+      trial_signups: "Trial signup system = aapko kabhi khali gym nahi millegi.",
       retention: "Existing member retain karna 5x sasta hai naya laane se — engagement system wo kaam karta hai.",
       local_leads: "'Gym near me' searches local customers ko aapke paas laati hain."
+    },
+    hooksEn: {
+      membership_sales: "Every month you need new memberships — a digital funnel converts trials into members.",
+      online_presence: "A potential member Googles before walking in. Without presence, they go to your competitor.",
+      trial_signups: "A trial signup system means you'll never have an empty floor.",
+      retention: "Retaining an existing member is 5x cheaper than acquiring a new one — an engagement system does that work.",
+      local_leads: "'Gym near me' searches bring local customers straight to your door."
     },
     brandLines: [
       "Mai GARUDA hoon — gyms ke liye membership growth ka AI system.",
       "Koi jhutha wada nahi, sirf members."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — an AI system that grows memberships for gyms.",
+      "No false promises, just members."
     ],
     defaultTopic: "membership_sales",
     inferQuery: genericInferQuery,
@@ -327,9 +393,20 @@ const DOMAINS = {
       local_patients: "Aapke area ke patients 'doctor near me' search karte hain — unhe aap milne chahiye.",
       followup: "Follow-up reminders se repeat visits aur treatment completion dono badhte hain."
     },
+    hooksEn: {
+      patient_appointments: "OPD growth happens through online presence — 70% of patients search first.",
+      online_booking: "Online appointment booking means no patient is missed and less reception load.",
+      reputation: "Reviews matter for a doctor's trust — a positive digital reputation means more patients.",
+      local_patients: "Patients in your area search 'doctor near me' — they should find you.",
+      followup: "Follow-up reminders increase repeat visits and treatment completion."
+    },
     brandLines: [
       "Mai GARUDA hoon — clinics ke liye patient growth ka AI system.",
       "Genuine, transparent, koi jhutha wada nahi."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — an AI system that grows patients for clinics.",
+      "Genuine, transparent, and no false promises."
     ],
     defaultTopic: "patient_appointments",
     inferQuery: genericInferQuery,
@@ -362,9 +439,20 @@ const DOMAINS = {
       offers_packages: "Sahi packages off days ko busy karte hain — membership = predictable income.",
       local_visibility: "'Salon near me' searches aapke area ke clients ko aap tak laati hain."
     },
+    hooksEn: {
+      booking_sales: "Salon business runs on appointments — digital booking means the chair is never empty.",
+      online_presence: "Clients check Instagram and Google first — presence means new clients.",
+      repeat_customers: "Repeat customers are a salon's real revenue — a loyalty system holds onto them.",
+      offers_packages: "The right packages fill slow days — memberships mean predictable income.",
+      local_visibility: "'Salon near me' searches bring clients from your area straight to you."
+    },
     brandLines: [
       "Mai GARUDA hoon — salons ke liye bookings growth ka AI system.",
       "Koi jhutha wada nahi, sirf booked appointments."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — an AI system that grows bookings for salons.",
+      "No false promises, just booked appointments."
     ],
     defaultTopic: "booking_sales",
     inferQuery: genericInferQuery,

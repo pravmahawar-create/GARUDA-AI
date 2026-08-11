@@ -77,16 +77,23 @@ function canMessageToday(lead, now = new Date()) {
   return { allowed: true, reason: "eligible" };
 }
 
-function buildMail(config, lead, pitch, domain) {
+function buildMail(config, lead, pitch, domain, locale = "hi") {
   const user = String(config.user || "").trim();
-  const subject = `GARUDA: ${String(pitch.topic || "Ek aasaan baat")}`;
+  const isEn = locale === "en";
+  const subject = `GARUDA: ${String(pitch.topic || (isEn ? "A quick thought" : "Ek aasaan baat"))}`;
   const body = [
     pitch.body || "",
     "",
     "-----",
-    `Ye email GARUDA (${domain.website || "garudaos.in"}) ne bheji hai.`,
-    "Agar aap ye nahi chahte ki GARUDA aapko dobara message kare, toh sirf reply kare: UNSUBSCRIBE",
-    "Aapka data kisi ke saath share nahi hota."
+    isEn
+      ? `This email was sent by GARUDA (${domain.website || "garudaos.in"}).`
+      : `Ye email GARUDA (${domain.website || "garudaos.in"}) ne bheji hai.`,
+    isEn
+      ? "If you don't want GARUDA to message you again, just reply: UNSUBSCRIBE"
+      : "Agar aap ye nahi chahte ki GARUDA aapko dobara message kare, toh sirf reply kare: UNSUBSCRIBE",
+    isEn
+      ? "Your data is never shared with anyone."
+      : "Aapka data kisi ke saath share nahi hota."
   ].join("\n");
   return {
     to: lead.email,
@@ -128,6 +135,7 @@ function previewOutreach(contacts, options = {}) {
       continue;
     }
     const lead = ensureLead(ledger, contact);
+    const locale = String(contact.locale || contact.country || "hi").toLowerCase().startsWith("en") ? "en" : "hi";
     const gate = canMessageToday(lead, now);
     if (!gate.allowed) {
       results.push({ email, ok: false, reason: gate.reason });
@@ -137,12 +145,14 @@ function previewOutreach(contacts, options = {}) {
       firstName: lead.firstName,
       query: String(contact.query || contact.topic || ""),
       domainId: domain.id,
-      chunks
+      chunks,
+      locale
     });
     results.push({
       email,
       firstName: lead.firstName,
       ok: true,
+      locale,
       subject: `GARUDA: ${pitch.topic}`,
       body: pitch.body,
       factsUsed: pitch.factsUsed,
@@ -179,6 +189,7 @@ async function runOutreach(contacts, options = {}) {
       continue;
     }
     const lead = ensureLead(ledger, contact);
+    const locale = String(contact.locale || contact.country || "hi").toLowerCase().startsWith("en") ? "en" : "hi";
     const gate = canMessageToday(lead, now);
     if (!gate.allowed) {
       skipped.push({ email, reason: gate.reason });
@@ -188,7 +199,8 @@ async function runOutreach(contacts, options = {}) {
       firstName: lead.firstName,
       query: String(contact.query || contact.topic || ""),
       domainId: domain.id,
-      chunks
+      chunks,
+      locale
     });
 
     lead.lastAttemptAt = now.toISOString();
@@ -197,11 +209,11 @@ async function runOutreach(contacts, options = {}) {
     if (dryRun) {
       lead.status = "message_prepared";
       saveLedger(ledgerPath, ledger);
-      sent.push({ email, dryRun: true, subject: `GARUDA: ${pitch.topic}`, body: pitch.body });
+      sent.push({ email, dryRun: true, subject: `GARUDA: ${pitch.topic}`, body: pitch.body, locale });
       continue;
     }
 
-    const mail = buildMail(smtp.config, lead, pitch, domain);
+    const mail = buildMail(smtp.config, lead, pitch, domain, locale);
     try {
       const result = await sendEmailNative(smtp.config, mail);
       lead.sentCount += 1;

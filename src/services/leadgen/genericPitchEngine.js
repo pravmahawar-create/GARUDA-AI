@@ -88,29 +88,43 @@ function detectTopic(query = "", domain) {
   return domain.defaultTopic || (domain.topics && domain.topics[0]) || "general";
 }
 
-function buildPitch({ firstName = "", query = "", topic, domainId, chunks, knowledgeIndexPath }) {
+function buildPitch({ firstName = "", query = "", topic, domainId, chunks, knowledgeIndexPath, locale = "hi" }) {
   const domain = getDomain(domainId);
   const cleanName = String(firstName || "").trim().split(/\s+/)[0] || "";
   const resolvedTopic = topic || detectTopic(query, domain);
   const relevant = pickRelevantChunks(query || resolvedTopic, chunks, domain);
   const facts = extractFacts(relevant);
-  const hook = (domain.hooks && domain.hooks[resolvedTopic]) || (domain.hooks && domain.hooks[domain.defaultTopic]);
-  const brandLines = domain.brandLines || [];
+  const isEn = locale === "en";
+  const hooks = isEn ? domain.hooksEn || domain.hooks : domain.hooks;
+  const brandLines = isEn ? domain.brandLinesEn || domain.brandLines : domain.brandLines || [];
+  const hook = (hooks && hooks[resolvedTopic]) || (hooks && hooks[domain.defaultTopic]);
   const website = domain.website || "garudaos.in";
 
   const lines = [];
-  if (cleanName) lines.push(`Namaste ${cleanName},`);
+  if (cleanName) lines.push(isEn ? `Hello ${cleanName},` : `Namaste ${cleanName},`);
   if (brandLines[0]) lines.push(brandLines[0]);
   if (hook) lines.push(hook);
   if (facts.length && facts[0].numbers && facts[0].numbers.length) {
     const sample = facts[0].numbers[0];
     const source = facts[0].source;
-    lines.push(`Ye figures ${domain.label || ""} ke official document ("${source}") se verified hain — par exact benefits aapke plan, terms & conditions aur underwriting par depend karte hain.`);
+    lines.push(
+      isEn
+        ? `These figures are verified from ${domain.label || ""} official documents ("${source}") — exact benefits depend on your plan, terms & conditions, and underwriting.`
+        : `Ye figures ${domain.label || ""} ke official document ("${source}") se verified hain — par exact benefits aapke plan, terms & conditions aur underwriting par depend karte hain.`
+    );
   }
   if (brandLines[1]) lines.push(brandLines[1]);
   if (brandLines[2]) lines.push(brandLines[2].replace("garudaos.in", website));
-  lines.push(`Agar interested hain, toh bas reply kijiye 'yes' — main aapko aage guide karta hoon.`);
-  lines.push(`Aur agar nahi, toh koi baat nahi — reply 'no' aur main aapko dobara kabhi pareshan nahi karunga.`);
+  lines.push(
+    isEn
+      ? `If you're interested, just reply 'yes' and I'll guide you through the next steps.`
+      : `Agar interested hain, toh bas reply kijiye 'yes' — main aapko aage guide karta hoon.`
+  );
+  lines.push(
+    isEn
+      ? `And if not, no worries — reply 'no' and I won't bother you again.`
+      : `Aur agar nahi, toh koi baat nahi — reply 'no' aur main aapko dobara kabhi pareshan nahi karunga.`
+  );
   if (brandLines[3]) lines.push(brandLines[3]);
   lines.push(`— GARUDA`);
 

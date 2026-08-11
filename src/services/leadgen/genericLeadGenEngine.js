@@ -121,6 +121,7 @@ function scoreProspect(prospect = {}, domain) {
     action: gradeInfo.action,
     query,
     signals,
+    locale: String(prospect.locale || prospect.country || "hi").toLowerCase().startsWith("en") ? "en" : "hi",
     source: String(prospect.source || "public_research").trim(),
     notes: String(prospect.notes || "").trim(),
     status: "scored"
@@ -189,10 +190,10 @@ function generateContactsCsv(options = {}) {
   if (!candidates.length) {
     return { generated: 0, candidates: 0, rows: [], contactsPath: paths.contactsPath, reasons: { no_candidates: true } };
   }
-  const rows = candidates.map((p) => ({ email: p.email, firstName: p.firstName, lastName: p.lastName, phone: p.phone, query: p.query }));
-  const lines = ["email,firstName,lastName,phone,query"];
+  const rows = candidates.map((p) => ({ email: p.email, firstName: p.firstName, lastName: p.lastName, phone: p.phone, query: p.query, locale: p.locale }));
+  const lines = ["email,firstName,lastName,phone,query,locale"];
   for (const row of rows) {
-    lines.push([row.email, row.firstName, row.lastName, row.phone, row.query].join(","));
+    lines.push([row.email, row.firstName, row.lastName, row.phone, row.query, row.locale].join(","));
   }
   const csv = lines.join("\n") + "\n";
   if (!options.dryRun) {
