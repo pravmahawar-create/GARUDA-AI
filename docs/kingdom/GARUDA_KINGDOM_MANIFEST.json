@@ -1,0 +1,178 @@
+{
+  "manifestVersion": "1.0.0",
+  "name": "GARUDA_KINGDOM_MANIFEST",
+  "description": "Machine-readable metadata for the GARUDA Kingdom architecture recovery system.",
+  "generated": "2026-08-11",
+  "authority": "Constitution > Founder Locked Decisions > Master Inventory > Kingdom docs",
+  "recoveryStatuses": [
+    "RECOVERED",
+    "PARTIAL",
+    "IMPLEMENTED",
+    "RECONSTRUCTED",
+    "UNVERIFIED",
+    "DEPRECATED"
+  ],
+  "universes": [
+    {
+      "num": 10,
+      "name": "Revenue Universe",
+      "scope": "founder",
+      "hub": true,
+      "status": "IMPLEMENTED",
+      "sourceDocument": "docs/kingdom/universes/revenue/README.md",
+      "engines": [
+        "Opportunity Discovery",
+        "Revenue Intelligence Engine",
+        "Lead-gen + Outreach",
+        "CRO",
+        "Deal Tracker"
+      ],
+      "dependencies": ["Governance", "Communication", "Automation"],
+      "crossUniverse": ["all universes report to Revenue"]
+    },
+    {
+      "num": 19,
+      "name": "Creative Universe",
+      "scope": "public",
+      "group": "CREATE",
+      "status": "PARTIAL",
+      "sourceDocument": "docs/kingdom/universes/creative/README.md",
+      "engines": [
+        "Input Engine",
+        "Understanding Engine",
+        "Music Brain",
+        "Lyrics Brain",
+        "Visual Story Engine",
+        "Character Engine",
+        "Cinematic Engine",
+        "Video Engine",
+        "Post-Production Engine",
+        "Brand Engine",
+        "Publish Engine",
+        "Creator Intelligence",
+        "Collaboration Engine",
+        "Content Factory"
+      ],
+      "products": ["One-Tap Composer", "One-Tap Film Creator"],
+      "dependencies": ["Knowledge", "Memory", "Brand"],
+      "crossUniverse": ["Content", "Brand", "Digital Presence", "Revenue"]
+    },
+    {
+      "num": null,
+      "name": "Autonomous Universe",
+      "scope": "founder",
+      "hub": false,
+      "status": "IMPLEMENTED",
+      "sourceDocument": "docs/kingdom/universes/autonomous/README.md",
+      "engines": [
+        "Scanner Engine",
+        "Goal Engine",
+        "Planner",
+        "Decision Engine",
+        "Validator",
+        "Reporter",
+        "Safe Builder",
+        "Continuous Intelligence Engine",
+        "Learning Engine"
+      ],
+      "dependencies": ["Governance", "Security"],
+      "crossUniverse": ["Revenue", "Governance"]
+    },
+    {
+      "num": 8,
+      "name": "Security Universe",
+      "scope": "founder",
+      "hub": false,
+      "status": "PARTIAL",
+      "sourceDocument": "docs/kingdom/universes/security/README.md",
+      "engines": [
+        "Security Intelligence",
+        "Security Scanner",
+        "Threat Detection",
+        "Threat Analysis",
+        "Security Monitoring",
+        "Defensive Response"
+      ],
+      "dependencies": ["Governance"],
+      "crossUniverse": ["Sovereign (open Security vs Guardian question)"]
+    },
+    {
+      "num": null,
+      "name": "Sovereign Universe",
+      "scope": "founder",
+      "hub": false,
+      "status": "PARTIAL",
+      "sourceDocument": "docs/kingdom/universes/sovereign/README.md",
+      "engines": [
+        "Sovereign Intelligence",
+        "Founder Digital Representative",
+        "Universal Scanner",
+        "Guardian"
+      ],
+      "dependencies": ["Security", "Communication"],
+      "crossUniverse": ["Security", "Revenue"]
+    }
+  ],
+  "products": [
+    {
+      "name": "One-Tap Composer",
+      "universe": "Creative",
+      "status": "RECOVERED"
+    },
+    {
+      "name": "One-Tap Film Creator",
+      "universe": "Creative",
+      "status": "RECOVERED"
+    },
+    {
+      "name": "Public AI Assistant",
+      "universe": "Communication",
+      "status": "IMPLEMENTED"
+    },
+    {
+      "name": "Payment page (Razorpay)",
+      "universe": "Revenue",
+      "status": "IMPLEMENTED"
+    }
+  ],
+  "workflows": [
+    {
+      "name": "Music Composition (recovered)",
+      "universe": "Creative",
+      "sequence": "HUMMING→Melody Analysis→Pitch/Key/Scale→BPM→Chord→Mood/Genre→Composition→Arrangement→Production",
+      "status": "RECOVERED"
+    },
+    {
+      "name": "Visual Production (recovered)",
+      "universe": "Creative",
+      "sequence": "IDEA→STORY→CHARACTERS→VISUAL STORY→CINEMATIC→VIDEO→POST→BRAND→PUBLISH",
+      "status": "RECOVERED"
+    },
+    {
+      "name": "Autonomous loop",
+      "universe": "Autonomous",
+      "sequence": "SCAN→UNDERSTAND→GOAL→PLAN→DECIDE→EXECUTE→VALIDATE→REPORT→LEARN→IMPROVE→REPEAT",
+      "status": "IMPLEMENTED"
+    },
+    {
+      "name": "Security flow",
+      "universe": "Security",
+      "sequence": "ENVIRONMENT→SECURITY SCAN→SIGNAL DETECTION→THREAT CLASSIFICATION→RISK ASSESSMENT→DEFENSIVE RESPONSE→CONTAIN/RECOVER→LEARN→HARDENING",
+      "status": "PARTIAL"
+    },
+    {
+      "name": "Revenue pipeline",
+      "universe": "Revenue",
+      "sequence": "DISCOVER→QUALIFY→ACQUIRE→EXECUTE→DELIVER→ACCEPT→COLLECT→LEARN→NEXT",
+      "status": "IMPLEMENTED"
+    }
+  ],
+  "agents": [
+    {
+      "name": "Mother Core",
+      "role": "Workforce orchestrator",
+      "status": "IMPLEMENTED",
+      "sourceDocument": "GARUDA_AGENT_MANIFEST.json"
+    }
+  ]
+}
