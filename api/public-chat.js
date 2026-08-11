@@ -279,6 +279,20 @@ function trySalesAgent(message, sessionId) {
   }
 }
 
+// Insurance/ABSLI questions answered from the grounded ABSLI knowledge base
+// instead of letting the LLM hallucinate products.
+function tryInsuranceAdvisor(message) {
+  try {
+    const advisor = require("../src/services/insuranceAdvisorService");
+    if (!advisor.detectInsuranceIntent(message)) return { handled: false, reply: null };
+    const result = advisor.answerInsuranceQuery(message);
+    if (!result || !result.answer) return { handled: false, reply: null };
+    return { handled: true, reply: result.answer, mode: "insurance_advisor", grounded: result.grounded };
+  } catch {
+    return { handled: false, reply: null };
+  }
+}
+
 async function handleAuthenticated(conversationId, message, db, userId) {
   const resolved = await resolveConversation(db, userId, conversationId, message);
   if (!resolved.conversationId) {
@@ -290,9 +304,10 @@ async function handleAuthenticated(conversationId, message, db, userId) {
   const history = await loadConversationHistory(db, targetConversationId);
   await persistMessage(db, targetConversationId, userId, "user", message);
   const sales = trySalesAgent(message, userId);
-  const reply = sales.handled ? sales.reply : await generateReply(message, history);
+  const advisor = sales.handled ? { handled: false, reply: null } : tryInsuranceAdvisor(message);
+  const reply = sales.handled ? sales.reply : advisor.handled ? advisor.reply : await generateReply(message, history);
   await persistMessage(db, targetConversationId, userId, "assistant", reply);
-  return { reply, conversationId: targetConversationId };
+  return { reply, conversationId: targetConversationId, mode: advisor.handled ? "insurance_advisor" : undefined };
 }
 
 function looksLeadLike(text) {
@@ -416,9 +431,10 @@ module.exports = async function handler(req, res) {
 
   try {
     const sales = trySalesAgent(message.trim(), req.headers["x-garuda-session"] || req.ip || "anon");
-    const reply = sales.handled ? sales.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
+    const advisor = sales.handled ? { handled: false, reply: null } : tryInsuranceAdvisor(message.trim());
+    const reply = sales.handled ? sales.reply : advisor.handled ? advisor.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
     await captureLead({ message, reply, userId: null, req });
-    return res.status(200).json({ reply });
+    return res.status(200).json({ reply, mode: advisor.handled ? "insurance_advisor" : undefined });
   } catch (error) {
     console.error("Public Chat API Error:", error);
     const status = typeof error.status === "number" && error.status >= 400 && error.status < 600

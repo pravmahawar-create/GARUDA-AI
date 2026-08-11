@@ -35,3 +35,23 @@ create policy "leads_public_select"
   on public.leads
   for select
   using (true);
+
+-- ============================================================
+-- GARUDA FOUNDER MEMORY TABLE
+-- Persistent founder-fact memory (orders, partners, positioning).
+-- Only the server (service-role key) reads/writes this — no anon access.
+-- ============================================================
+
+create table if not exists public.founder_memory (
+  key text primary key,
+  value jsonb not null,
+  updated_at timestamptz default now()
+);
+
+alter table public.founder_memory enable row level security;
+
+drop policy if exists "founder_memory_admin_all" on public.founder_memory;
+create policy "founder_memory_admin_all"
+  on public.founder_memory
+  using (auth.role() = 'service_role')
+  with check (auth.role() = 'service_role');

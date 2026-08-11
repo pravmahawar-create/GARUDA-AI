@@ -1,5 +1,7 @@
 const llmProvider = require("./llmProvider");
 const garudaCapabilityInjector = require("./garudaCapabilityInjector");
+const garudaCommandRouter = require("./garudaCommandRouter");
+const insuranceAdvisorService = require("./insuranceAdvisorService");
 
 const TELEGRAM_API = "https://api.telegram.org";
 
@@ -75,6 +77,41 @@ async function handleUpdate(update) {
 
   const text = String(message.text || "").trim();
   const userId = String(message.from && message.from.id !== undefined ? message.from.id : "");
+
+  // 1) Founder commands → real engines (e.g. "insurance ke liye leads generate karo").
+  try {
+    const commandResult = await garudaCommandRouter.dispatchCommand(text, { founderApproved: true });
+    if (commandResult && commandResult.command && commandResult.message) {
+      await sendMessage(commandResult.message, chatId);
+      return {
+        ok: true,
+        chatId,
+        userId,
+        received: text,
+        reply: commandResult.message,
+        mode: "command",
+        command: commandResult.command
+      };
+    }
+  } catch {}
+
+  // 2) Insurance-related questions → grounded ABSLI advisor (no hallucination).
+  if (insuranceAdvisorService.detectInsuranceIntent(text)) {
+    const advisor = insuranceAdvisorService.answerInsuranceQuery(text);
+    if (advisor && advisor.answer) {
+      await sendMessage(advisor.answer, chatId);
+      return {
+        ok: true,
+        chatId,
+        userId,
+        received: text,
+        reply: advisor.answer,
+        mode: "insurance_advisor",
+        topic: advisor.topic,
+        grounded: advisor.grounded
+      };
+    }
+  }
 
   const reply = await llmProvider.ask({
     systemContext: "This message came through the founder's Telegram superman bot.",

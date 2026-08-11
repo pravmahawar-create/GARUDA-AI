@@ -65,6 +65,14 @@ function detectCommand(message) {
     return { command: "affiliate", params: {} };
   }
 
+  const isInsurancePitch =
+    /(absli|insurance)\b.*\b(pitch|pitch banao|pitch de|pitch ready|plans?|products?|term|health plan|sell|bechna|batao|details|kya bechte)/i.test(text) &&
+    !/\b(leads?|generate|outreach|send|nikalo)\b/i.test(text);
+
+  if (isInsurancePitch) {
+    return { command: "insurance_pitch", params: { query: text } };
+  }
+
   return null;
 }
 
@@ -72,6 +80,7 @@ function normalizeDomainKey(domain) {
   const key = String(domain || "").toLowerCase().replace(/[\s-]/g, "");
   const map = {
     insurance: "insurance",
+    absli: "insurance",
     hotel: "hotel",
     hotels: "hotel",
     hospital: "hospital",
@@ -241,6 +250,19 @@ function handleAffiliate() {
   };
 }
 
+function handleInsurancePitch(params = {}) {
+  const query = String(params.query || "").trim();
+  const advisor = require("./insuranceAdvisorService");
+  const result = advisor.answerInsuranceQuery(query || "insurance plans");
+  return {
+    success: true,
+    command: "insurance_pitch",
+    topic: result.topic,
+    grounded: result.grounded,
+    message: result.answer
+  };
+}
+
 async function dispatchCommand(message, context = {}) {
   const detection = detectCommand(message);
   if (!detection) return null;
@@ -257,6 +279,8 @@ async function dispatchCommand(message, context = {}) {
       return handleOutreach(params, { ...context, founderApproved, dryRun: !founderApproved });
     case "affiliate":
       return handleAffiliate();
+    case "insurance_pitch":
+      return handleInsurancePitch(params);
     default:
       return null;
   }
@@ -267,6 +291,7 @@ module.exports = {
   dispatchCommand,
   handleAffiliate,
   handleIncomeGoal,
+  handleInsurancePitch,
   handleLeadGen,
   handleOutreach,
   parseIndianAmount

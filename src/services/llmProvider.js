@@ -202,6 +202,8 @@ FORBIDDEN (never do these):
 FACTS:
 - ABSOLUTE PERMANENT PRINCIPLE (from the GARUDA Constitution, Amendment 7): Never lie, never hallucinate, never give wrong commitments or false hope — to the Founder or to any user. State figures only when present in context; otherwise say plainly "yeh data confirm nahi hai" and give ONE concrete next step. Never invent numbers, promises, revenue, timelines, or outcomes.
 - Only mention specific figures (revenue numbers, dates, versions, metrics, company names, headcount) when they are present in the supplied context/history. If the data is not in your context, say plainly "yeh data abhi mere context mein confirm nahi hai" and give ONE concrete next action the founder can take. Never invent numbers.
+- The FOUNDER RECORD block above is GARUDA's own record — treat it as authoritative. Answer from it. Orders/partners/business facts wahi se lo. Agar wo record me nahi hai, toh "yeh mere record me nahi hai" bolo — dubai embassy, medical exports, ya kisi company/product ke baare me kabhi MAT ghado jo context me nahi.
+- Jab founder koi naya order/deal/partner/fact bole (jaise "order mila", "deal final", "yaad rakho"), GARUDA usse record karke acknowledge kare ("record kar liya") — taaki agle turn se sab kuch yaad ho.
 - Give concrete, founder-level answers about GARUDA: revenue, market, product, architecture, AI, deployment, strategy, operations, roadmap, governance, execution.
 - When the question is vague, respond with your best honest assessment plus the one highest-leverage next step. Never a menu.
 - Keep the thread's memory and tone continuous: refer to earlier turns naturally when relevant.`;
@@ -235,12 +237,30 @@ function normalizeFounderHistory(history, fastLane) {
   });
 }
 
+// Persistent founder memory (orders, partners, positioning, live pipeline)
+// injected into founder-facing prompts so GARUDA answers from real record.
+async function buildFounderRecordBlock(fastLane) {
+  if (!fastLane) return "";
+  try {
+    const founderMemoryService = require("./founderMemoryService");
+    const pack = await founderMemoryService.buildContextPack();
+    if (!pack) return "";
+    return (
+      "\n\nFOUNDER RECORD (ground truth — GARUDA ka apna record, yehi facts sahi maano):\n" +
+      pack
+    );
+  } catch {
+    return "";
+  }
+}
+
 function buildSystemPrompt(systemContext, fastLane = false) {
   if (fastLane) {
     return (
       FAST_GARUDA_PROMPT +
       "\n\n" +
-      garudaCapabilityInjector.buildCapabilityBlock()
+      garudaCapabilityInjector.buildCapabilityBlock() +
+      "\n\n{@FOUNDER_RECORD_BLOCK}"
     );
   }
 
@@ -303,6 +323,32 @@ function buildVerifiedKnowledgeContext(chunks) {
 
 const cognitiveRouterService = require("./cognitiveRouterService");
 
+async function buildFinalSystemPrompt(systemContext, fastLane) {
+  const base = buildSystemPrompt(systemContext, fastLane);
+  const recordBlock = await buildFounderRecordBlock(fastLane);
+  if (!recordBlock) return base.replace("\n\n{@FOUNDER_RECORD_BLOCK}", "").replace("{@FOUNDER_RECORD_BLOCK}", "");
+  return base.replace("{@FOUNDER_RECORD_BLOCK}", recordBlock);
+}
+
+// Capture founder-provided facts (orders/notes) into persistent memory so the
+// very next turn (and all future turns) has the record.
+async function captureFounderMemory(userMessage, fastLane) {
+  if (!fastLane) return null;
+  try {
+    const founderMemoryService = require("./founderMemoryService");
+    const capture = founderMemoryService.captureMemoryFromMessage(userMessage);
+    if (capture && capture.action === "order") {
+      return await founderMemoryService.addOrder(capture.text);
+    }
+    if (capture && capture.action === "note") {
+      return await founderMemoryService.saveFact("business", capture.text);
+    }
+  } catch {
+    // Memory capture is best-effort; never block the answer.
+  }
+  return null;
+}
+
 async function ask({
   systemContext = "",
   userMessage = "",
@@ -315,6 +361,8 @@ async function ask({
   const resource = cognitiveRouterService.resolveCognitiveResource(capability);
   const provider = resource.provider;
   const model = resource.model;
+
+  await captureFounderMemory(userMessage, fastLane);
 
   const context = [];
 
@@ -370,7 +418,7 @@ async function ask({
     context,
 
     systemPrompt:
-      buildSystemPrompt(systemContext, fastLane),
+      await buildFinalSystemPrompt(systemContext, fastLane),
 
     conversationHistory: normalizedHistory,
 

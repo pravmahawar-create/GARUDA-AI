@@ -2,6 +2,9 @@ const fs = require("fs");
 const path = require("path");
 
 const KNOWLEDGE_INDEX_PATH = path.join(__dirname, "..", "..", "data", "knowledge-index.json");
+// Tracked enrichment chunks (ABSLI website + Activ One NXT) that survive
+// redeploys even when the gitignored data/ folder is rebuilt.
+const STATIC_KNOWLEDGE_PATH = path.join(__dirname, "..", "knowledge", "absl-knowledge.json");
 
 const TOPIC_KEYWORDS = {
   family_protection: [
@@ -22,13 +25,20 @@ const TOPIC_KEYWORDS = {
 };
 
 function loadKnowledgeChunks() {
+  let combined = [];
   try {
     const raw = fs.readFileSync(KNOWLEDGE_INDEX_PATH, "utf8");
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (Array.isArray(parsed)) combined = combined.concat(parsed);
   } catch {
-    return [];
+    // data/ may be absent on fresh deploys — fall through to static chunks.
   }
+  try {
+    const raw = fs.readFileSync(STATIC_KNOWLEDGE_PATH, "utf8");
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) combined = combined.concat(parsed);
+  } catch {}
+  return combined;
 }
 
 function plainText(value = "") {
@@ -39,12 +49,27 @@ function plainText(value = "") {
 
 function pickRelevantChunks(query, chunks, limit = 6) {
   const q = String(query || "").toLowerCase();
+  const terms = q.split(/\s+/).filter((t) => t.length > 3);
+
+  // Bigram/trigram phrases from the query get a strong boost so specific
+  // product names (e.g. "activ one nxt", "super term plan") win over large
+  // brochure documents that merely share generic words.
+  const phrases = [];
+  for (const size of [3, 2]) {
+    for (let i = 0; i + size <= terms.length; i++) {
+      const phrase = terms.slice(i, i + size).join(" ");
+      if (phrase.length > 8) phrases.push(phrase);
+    }
+  }
+
   const scored = chunks.map((chunk) => {
     const text = plainText(chunk.text).toLowerCase();
     let score = 0;
-    const terms = q.split(/\s+/).filter((t) => t.length > 3);
     for (const term of terms) {
       if (text.includes(term)) score += 2;
+    }
+    for (const phrase of phrases) {
+      if (text.includes(phrase)) score += 6;
     }
     for (const keyword of Object.keys(TOPIC_KEYWORDS)) {
       if (q.includes(keyword)) {
@@ -70,7 +95,15 @@ function extractFacts(chunks) {
     const numbers = text.match(moneyPattern) || [];
     const cleanNumbers = numbers
       .map((n) => n.trim())
-      .filter((n) => /\d/.test(n) && !/^\d{3,4}$/.test(n.replace(/[^0-9]/g, "")))
+      .filter((n) => {
+        if (!/\d/.test(n)) return false;
+        const digits = n.replace(/[^0-9]/g, "");
+        const hasCurrency = /(?:INR|Rs\.?|\u20b9|₹)/.test(n);
+        const hasUnit = /(?:%|lakh|lacs|crore|p\.a\.|per annum|years|annually)/.test(n);
+        // Bare 3-4 digit numbers without currency/unit are page numbers/IDs → drop.
+        if (!hasCurrency && !hasUnit && /^\d{3,4}$/.test(digits)) return false;
+        return true;
+      })
       .slice(0, 3);
     const snippet = text.slice(0, 320);
     if (cleanNumbers.length) {
