@@ -10,6 +10,7 @@ import PublicLanding from "./pages/PublicLanding";
 import PublicChat from "./pages/PublicChat";
 import PayLink from "./pages/PayLink";
 import Signup from "./pages/Signup";
+import DemoLaunch from "./pages/DemoLaunch";
 import FounderWorkspace from "./pages/FounderWorkspace";
 
 import "./styles/garuda-ui.css";
@@ -67,6 +68,7 @@ function AppRoutes() {
       <Route path="/founder" element={founderRoute} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/demo" element={<DemoLaunch />} />
       <Route path="/app" element={customerRoute} />
       <Route path="/pay/:ref" element={<PayLink />} />
       <Route path="*" element={publicLanding} />

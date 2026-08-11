@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 
 const COOKIE_NAME = "garuda_customer_session";
@@ -282,31 +283,33 @@ async function messagesHandler(req, res) {
   return res.status(405).json({ success: false, message: "Method not allowed" });
 }
 
-async function demoSignInHandler(req, res) {
-  const email = String(DEMO_EMAIL).trim().toLowerCase();
-  const password = String(DEMO_PASSWORD);
-  const supabase = supabaseClient();
+function randomDemoEmail() {
+  const suffix = crypto.randomBytes(6).toString("hex");
+  return `${String(DEMO_EMAIL).trim().toLowerCase().replace(/@.*$/, "")}-${suffix}@${String(DEMO_EMAIL).trim().toLowerCase().replace(/^.*@/, "")}`;
+}
 
-  const attempt = await signInWithPassword(supabase, email, password);
-  if (attempt.session) {
-    issueSession(res, { accessToken: attempt.session.access_token, refreshToken: attempt.session.refresh_token });
-    return res.status(200).json({ success: true, demo: true, customer: { email: attempt.session.user.email || email } });
-  }
+async function demoSignInHandler(req, res) {
+  // Per-visitor isolation: every demo sign-in gets a FRESH random account so no
+  // public user ever sees another user's conversations or dashboard data.
+  const email = randomDemoEmail();
+  const password = `${String(DEMO_PASSWORD)}!${Date.now()}`;
+  const supabase = supabaseClient();
 
   const admin = supabaseAdminClient();
   if (admin) {
     const provisioned = await provisionDemoAccount(admin, email, password);
     if (provisioned.ok) {
-      const retry = await signInWithPassword(supabase, email, password);
-      if (retry.session) {
-        issueSession(res, { accessToken: retry.session.access_token, refreshToken: retry.session.refresh_token });
-        return res.status(200).json({ success: true, demo: true, customer: { email: retry.session.user.email || email } });
+      const attempt = await signInWithPassword(supabase, email, password);
+      if (attempt.session) {
+        issueSession(res, { accessToken: attempt.session.access_token, refreshToken: attempt.session.refresh_token });
+        return res.status(200).json({ success: true, demo: true, customer: { email: attempt.session.user.email || email } });
       }
       return res.status(401).json({ success: false, message: "Unable to sign into the demo account. Please try again." });
     }
     return res.status(400).json({ success: false, message: provisioned.message || "Unable to prepare the demo account." });
   }
 
+  // Fallback (no service role): sign up a fresh random account directly.
   const signup = await supabase.auth.signUp({ email, password });
   if (signup.data && signup.data.session) {
     issueSession(res, {
@@ -315,7 +318,7 @@ async function demoSignInHandler(req, res) {
     });
     return res.status(201).json({ success: true, demo: true, customer: { email: signup.data.session.user.email || email } });
   }
-  const message = friendlyAuthError(signup.error || attempt.error, "Unable to sign into the demo account");
+  const message = friendlyAuthError(signup.error, "Unable to sign into the demo account");
   return res.status(message.includes("already exists") ? 409 : 400).json({ success: false, message });
 }
 

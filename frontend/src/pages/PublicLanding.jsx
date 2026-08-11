@@ -189,6 +189,22 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           </button>
           <button
             type="button"
+            onClick={() => navigate("/demo")}
+            style={{
+              background: "rgba(75, 200, 140, 0.12)",
+              border: "1px solid rgba(75, 200, 140, 0.45)",
+              color: "#7be8b4",
+              borderRadius: 999,
+              padding: "0.55rem 1.3rem",
+              fontWeight: 800,
+              cursor: "pointer",
+              fontSize: "0.9rem"
+            }}
+          >
+            Live Demo
+          </button>
+          <button
+            type="button"
             onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
             style={{
               background: "rgba(255,255,255,0.05)",
@@ -262,6 +278,21 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               }}
             >
               Try Public AI Chat →
+            </button>
+            <button
+              onClick={() => navigate("/demo")}
+              style={{
+                background: "rgba(75, 200, 140, 0.12)",
+                border: "1px solid rgba(75, 200, 140, 0.5)",
+                color: "#7be8b4",
+                padding: "0.95rem 2.4rem",
+                borderRadius: 999,
+                fontWeight: 800,
+                fontSize: "1rem",
+                cursor: "pointer"
+              }}
+            >
+              Try Live Demo →
             </button>
             <button
               onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
