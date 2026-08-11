@@ -134,6 +134,7 @@ function addProspects(prospects = [], options = {}) {
   const store = loadJson(paths.prospectsPath) || { prospects: [] };
   const ledger = loadJson(paths.ledgerPath) || { leads: [] };
   const optedOut = new Set(ledger.leads.filter((l) => l.optedOut).map((l) => l.email));
+  const bounced = new Set(ledger.leads.filter((l) => l.bounced).map((l) => l.email));
   const emails = new Set((store.prospects || []).map((p) => p.email));
   const added = [];
   const skipped = [];
@@ -150,6 +151,10 @@ function addProspects(prospects = [], options = {}) {
     }
     if (optedOut.has(scored.email)) {
       skipped.push({ ...scored, reason: "opted_out" });
+      continue;
+    }
+    if (bounced.has(scored.email)) {
+      skipped.push({ ...scored, reason: "bounced" });
       continue;
     }
     if (options.minScore !== undefined && scored.score < Number(options.minScore)) {
@@ -180,13 +185,15 @@ function listProspects(options = {}) {
 function generateContactsCsv(options = {}) {
   const domain = getDomain(options.domain);
   const paths = resolvePaths(domain, options);
+  const ledger = loadJson(paths.ledgerPath) || { leads: [] };
+  const bounced = new Set(ledger.leads.filter((l) => l.bounced).map((l) => l.email));
   const candidates = listProspects({
     minScore: options.minScore !== undefined ? options.minScore : 40,
     domain: domain.id,
     prospectsPath: paths.prospectsPath,
     contactsPath: paths.contactsPath,
     ledgerPath: paths.ledgerPath
-  }).filter((p) => p.status === "scored");
+  }).filter((p) => p.status === "scored" && !bounced.has(p.email));
   if (!candidates.length) {
     return { generated: 0, candidates: 0, rows: [], contactsPath: paths.contactsPath, reasons: { no_candidates: true } };
   }

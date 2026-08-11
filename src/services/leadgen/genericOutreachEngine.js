@@ -70,6 +70,7 @@ function ensureLead(ledger, contact) {
 function canMessageToday(lead, now = new Date()) {
   if (!lead) return { allowed: true, reason: "new_lead" };
   if (lead.optedOut) return { allowed: false, reason: "opted_out" };
+  if (lead.bounced) return { allowed: false, reason: "bounced" };
   const last = lead.lastAttemptAt ? new Date(lead.lastAttemptAt) : null;
   if (last && now.getTime() - last.getTime() < DAY_MS) {
     return { allowed: false, reason: "daily_cap" };

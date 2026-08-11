@@ -205,6 +205,12 @@ function run() {
     assert.ok(result.results[0].body.includes("OTA booking costs you"));
   });
 
+  test("canMessageToday blocks bounced leads (address doesn't exist)", () => {
+    const gate = canMessageToday({ bounced: true, optedOut: false, lastAttemptAt: null });
+    assert.strictEqual(gate.allowed, false);
+    assert.strictEqual(gate.reason, "bounced");
+  });
+
   test("optOutLead + getSummary reflect status", () => {
     const ledgerPath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "garuda-gen-")), "ledger.json");
     fs.writeFileSync(ledgerPath, JSON.stringify({ leads: [{ email: "ramesh@x.in", optedOut: false, sentCount: 1, status: "message_sent", history: [] }] }), "utf8");

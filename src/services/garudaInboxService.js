@@ -9,7 +9,7 @@ const { ImapFlow } = require("imapflow");
 const IMAP_HOST = process.env.GARUDA_IMAP_HOST || "imap.gmail.com";
 const IMAP_PORT = Number(process.env.GARUDA_IMAP_PORT) || 993;
 
-const DOMAINS = ["hotel", "restaurant", "gym", "education", "clinic", "insurance", "salon", "hospital", "realestate"];
+const DOMAINS = ["hotel", "restaurant", "gym", "education", "clinic", "insurance", "salon", "hospital", "realestate", "web_services"];
 
 function loadJson(file) {
   try {
@@ -210,6 +210,7 @@ function pendingFollowUps(now = new Date()) {
       const followUpCount = lead.followUpCount || 0;
       if (followUpCount >= 2) continue; // max 2 follow-ups
       if (lead.optedOut || lead.replyIntent === "no") continue;
+      if (lead.bounced) continue; // address doesn't exist — never follow up
       if (lead.replyIntent === "interested" || lead.status === "replied_interested") continue;
       const sinceSent = now.getTime() - sentAt;
       const waitFor = (followUpCount + 1) * 3 * DAY;
@@ -221,11 +222,90 @@ function pendingFollowUps(now = new Date()) {
   return due;
 }
 
+// Mark a lead as bounced (address doesn't exist) across every domain ledger.
+// Returns how many ledgers were updated.
+function markBounced(recipientEmail) {
+  const email = normalizeEmail(recipientEmail);
+  if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { updated: 0 };
+  let updated = 0;
+  for (const domain of DOMAINS) {
+    const file = ledgerPath(domain);
+    const ledger = loadJson(file);
+    if (!ledger || !Array.isArray(ledger.leads)) continue;
+    let changed = false;
+    for (const lead of ledger.leads) {
+      if (normalizeEmail(lead.email) === email && !lead.bounced) {
+        lead.bounced = true;
+        lead.bouncedAt = new Date().toISOString();
+        lead.status = "bounced";
+        lead.history = lead.history || [];
+        lead.history.push({ at: lead.bouncedAt, action: "bounced", note: "delivery failed — address does not exist" });
+        changed = true;
+        updated++;
+      }
+    }
+    if (changed) saveJson(file, ledger);
+  }
+  return { updated };
+}
+
+// Scan inbox for delivery-failure (bounce) notifications from the mail system
+// and mark the matching leads as bounced so they are never followed up.
+// Returns the bounced recipient emails found.
+async function scanBounces(options = {}) {
+  const user = String(process.env.GARUDA_EMAIL_USER || "").trim();
+  const pass = String(process.env.GARUDA_EMAIL_PASS || "").trim();
+  if (!user || !pass) return { ok: false, error: "GARUDA_EMAIL_USER/PASS not configured", bounced: [] };
+
+  const client = new ImapFlow({
+    host: IMAP_HOST,
+    port: IMAP_PORT,
+    secure: true,
+    auth: { user, pass },
+    logger: false,
+    tls: { rejectUnauthorized: false }
+  });
+
+  const bounced = [];
+  try {
+    await client.connect();
+    const lock = await client.getMailboxLock("INBOX");
+    try {
+      const uids = await client.search({
+        subject: "delivery",
+        or: [{ from: "mailer-daemon@googlemail.com" }, { from: "mailer-daemon@google.com" }]
+      });
+      const recent = (uids || []).slice(-Number(options.limit || 50));
+      for (const uid of recent) {
+        for await (const message of client.fetch({ uid }, { uid: true, source: true })) {
+          const text = String(message.source || "");
+          const recipient =
+            (text.match(/Final-Recipient:\s*rfc822;\s*([^\s]+)/i) || [])[1] ||
+            (text.match(/failed to deliver[^<]*<([^>]+)>/i) || [])[1];
+          if (recipient) {
+            const result = markBounced(recipient);
+            bounced.push({ email: normalizeEmail(recipient), ledgersUpdated: result.updated });
+          }
+        }
+      }
+    } finally {
+      lock.release();
+      await client.logout();
+    }
+    return { ok: true, bounced };
+  } catch (error) {
+    try { await client.logout(); } catch {}
+    return { ok: false, error: error && error.message ? error.message : String(error), bounced };
+  }
+}
+
 module.exports = {
   classifyReply,
   findLead,
   isConfigured,
+  markBounced,
   pendingFollowUps,
   pollInbox,
+  scanBounces,
   sendFollowUp
 };
