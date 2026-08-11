@@ -43,7 +43,10 @@
     "leads:status": "node scripts/garuda-insurance-leads.js status",
     "leads:list": "node scripts/garuda-insurance-leads.js list",
     "leads:remove": "node scripts/garuda-insurance-leads.js remove",
-    "leads:test": "node src/services/insuranceLeadGenService.test.js"
+    "leads:test": "node src/services/insuranceLeadGenService.test.js",
+    "leads:g": "node scripts/garuda-leads.js",
+    "leads:g:test": "node src/services/leadgen/genericLeadGenEngine.test.js",
+    "leads:g:outreach": "node scripts/garuda-leads-outreach.js"
   },
   "repository": {
     "type": "git",
