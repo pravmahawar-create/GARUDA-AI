@@ -21,7 +21,8 @@ function getProviderConfig(env = process.env) {
   const webhookSecret = liveEnabled ? env.RAZORPAY_WEBHOOK_SECRET_LIVE : env.RAZORPAY_WEBHOOK_SECRET_TEST;
   const feeRatePercent = settlementFeeConfigService.getProviderFeeRate("razorpay", env);
 
-  const configured = Boolean(keyId && keySecret && String(webhookSecret || "").length >= 16);
+  const MIN_WEBHOOK_SECRET_LENGTH = 12;
+  const configured = Boolean(keyId && keySecret && String(webhookSecret || "").length >= MIN_WEBHOOK_SECRET_LENGTH);
   return {
     mode: liveEnabled ? "live" : "test",
     liveEnabled,
@@ -158,7 +159,7 @@ async function generatePaymentLink(input = {}, options = {}) {
 
 function verifyWebhookSignature(rawBody, signature, env = process.env) {
   const config = getProviderConfig(env);
-  if (!config.webhookSecret || String(config.webhookSecret).length < 16) {
+  if (!config.webhookSecret || String(config.webhookSecret).length < 12) {
     fail("Razorpay webhook secret is not configured", 503);
   }
   if (typeof rawBody !== "string" || !rawBody) fail("rawBody is required for signature verification", 400);

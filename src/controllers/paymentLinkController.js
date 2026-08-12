@@ -6,7 +6,9 @@ function error(res, err) {
 
 exports.config = async (_req, res) => {
   try {
-    return res.json({ success: true, data: razorpayPaymentLinkService.getProviderConfig() });
+    const config = razorpayPaymentLinkService.getProviderConfig();
+    const { keyId, keySecret, webhookSecret, ...safe } = config;
+    return res.json({ success: true, data: safe });
   } catch (err) {
     return error(res, err);
   }

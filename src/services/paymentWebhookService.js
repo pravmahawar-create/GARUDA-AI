@@ -44,7 +44,7 @@ function parseReferenceId(referenceId) {
 }
 
 async function verifyRazorpaySignature(rawBody, signature, secret) {
-  if (!secret || String(secret).length < 16) fail("Razorpay webhook secret is not configured", 503);
+  if (!secret || String(secret).length < 12) fail("Razorpay webhook secret is not configured", 503);
   if (typeof rawBody !== "string" || !rawBody) fail("rawBody is required for signature verification", 400);
   const expected = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
   const provided = String(signature || "");
