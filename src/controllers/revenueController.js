@@ -4,13 +4,15 @@ const settlementService = require("../services/settlementService");
 const motherIntegration = require("../services/motherRevenueIntegrationService");
 const platformAuth = require("../services/motherPlatformAuthService");
 const dealTrackerService = require("../services/dealTrackerService");
+const executionMissionService = require("../services/revenueExecutionMissionService");
+const autonomousTaskRunner = require("../services/autonomousRevenueTaskRunnerService");
 
 function sendError(res, error, fallback) {
   return res.status(error.statusCode || 500).json({
     success: false,
     message: error.message || fallback
   });
-}
+};
 
 exports.list = async (req, res) => {
   try {
@@ -54,7 +56,6 @@ exports.remove = async (req, res) => {
   try {
     const result = await revenueService.deleteRevenue(req.params.id);
     return res.json({
-      success: true,
       ...result
     });
   } catch (error) {
@@ -186,10 +187,17 @@ exports.recordCandidateDecision = async (req, res) => {
       instructions: req.body.instructions
     };
     const result = motherIntegration.recordFounderDecision(payload);
+
+    if (result.mission && result.mission.status === "approved" && result.mission.founderApproved === true) {
+      const candidateId = result.mission.opportunityId || result.mission.missionCandidateId || req.params.id;
+      const missionCreation = executionMissionService.createFromApprovedCandidate(candidateId, { founderApproved: true });
+      if (missionCreation && missionCreation._id) {
+        await autonomousTaskRunner.runEligibleCycle({ limit: 1, trustedInternal: true });
+      }
+    }
+
     return res.json({ success: true, data: result });
-  } catch (error) {
-    return sendError(res, error, "Failed to record Founder decision");
-  }
+  } catch (error) { return sendError(res, error, "Failed to record Founder decision"); }
 };
 
 exports.getCandidateAuditTrail = async (req, res) => {
@@ -259,6 +267,7 @@ exports.executeSmtpAction = async (req, res) => {
 };
 
 /* DEAL TRACKER API CONTROLLER METHODS */
+
 exports.submitDeal = async (req, res) => {
   try {
     const result = dealTrackerService.recordDealSubmission(req.body || {}, { founderApproved: true });

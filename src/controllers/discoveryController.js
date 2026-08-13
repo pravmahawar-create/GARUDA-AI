@@ -1,5 +1,6 @@
 const discoveryService = require("../services/opportunityDiscoveryService");
 const executionMissionService = require("../services/revenueExecutionMissionService");
+const motherIntegration = require("../services/motherRevenueIntegrationService");
 const missionOrchestrator = require("../services/revenueMissionOrchestratorService");
 const missionDecisionService = require("../services/revenueMissionDecisionService");
 const deliverableWorkspaceService = require("../services/revenueDeliverableWorkspaceService");
@@ -18,7 +19,29 @@ const continuousAttemptService = require("../services/continuousRevenueAttemptSe
 function sendError(res, error, fallback) { return res.status(error.statusCode || 500).json({ success: false, message: error.message || fallback }); }
 exports.list = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.listCandidates(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list discovery candidates"); } };
 exports.run = async (_req, res) => { try { return res.json({ success: true, data: await discoveryService.runDiscoveryCycle() }); } catch (error) { return sendError(res, error, "Failed to run discovery cycle"); } };
-exports.decide = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.decideCandidate(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to update candidate decision"); } };
+exports.decide = async (req, res) => {
+  try {
+    const founderApproved = req.get("x-garuda-founder-approved");
+    const decideResult = await discoveryService.decideCandidate(req.params.id, req.body || {}, { founderApproved });
+    if (decideResult.status === "approved" || decideResult.status === "execution_ready") {
+      if (decideResult.externalId && decideResult.title) {
+        const universalOpp = discoveryService.toUniversalOpportunity(decideResult);
+        if (universalOpp.opportunityId) {
+          const missionOutcome = motherIntegration.submitToMotherMissionPlanning({
+            id: universalOpp.opportunityId,
+            externalId: universalOpp.opportunityId,
+            title: universalOpp.title,
+            description: universalOpp.description || "",
+            tags: universalOpp.capabilityMatches && universalOpp.capabilityMatches.length > 0 ? universalOpp.capabilityMatches.map(m => m.name || m.id || "") : [],
+            url: universalOpp.sourceUrl,
+            source: universalOpp.provider || "remotive"
+          });
+        }
+      }
+    }
+    return res.json({ success: true, data: decideResult });
+  } catch (error) { return sendError(res, error, "Failed to update candidate decision"); }
+};
 exports.importFounderAssisted = async (req, res) => { try { return res.status(201).json({ success: true, data: await discoveryService.importFounderAssistedCandidate(req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to import founder-assisted opportunity"); } };
 exports.createExecutionMission = async (req, res) => { try { return res.status(201).json({ success: true, data: await executionMissionService.createFromApprovedCandidate(req.params.id, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to create execution mission"); } };
 exports.listWorkIntakes = async (req, res) => { try { return res.json({ success: true, data: await workIntakeService.listIntakes(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list real-work intakes"); } };
