@@ -154,6 +154,17 @@ async function createFromApprovedCandidate(candidateId, context = {}) {
     { $setOnInsert: record },
     { new: true, upsert: true, runValidators: true }
   );
+  if (!stored.deliverableWorkspace) {
+    stored.deliverableWorkspace = {
+      status: "active",
+      totalTasks: 0,
+      completedTasks: 0,
+      blockedTasks: 0,
+      progressPercent: 0,
+      externalActionsAuthorized: false
+    };
+    await stored.save();
+  }
   return { ...stored.toJSON(), truthStatus: "verified_real_work" };
 }
 
