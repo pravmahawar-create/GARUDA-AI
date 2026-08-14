@@ -64,6 +64,24 @@ async function transitionTask(missionId, taskId, input = {}, context = {}) {
   mission.workPackages = preview.workPackages;
   mission.deliverableWorkspace = preview.deliverableWorkspace;
   await mission.save();
+
+  if (mission.deliverableWorkspace.status === "complete") {
+    const { SettlementLedger } = require("../models/SettlementLedger");
+    await SettlementLedger.findOneAndUpdate(
+      { executionMissionId: mission._id },
+      {
+        $setOnInsert: {
+          status: "eligible",
+          grossAmount: 0,
+          currency: "INR",
+          feeRatePercent: 0,
+          netAmount: 0
+        }
+      },
+      { upsert: true, new: true }
+    );
+  }
+
   return { mission: mission.toJSON(), event: preview.event };
 }
 async function listTaskEvents(missionId) {
