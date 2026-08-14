@@ -168,6 +168,56 @@ async function createFromApprovedCandidate(candidateId, context = {}) {
     }
     await stored.save();
   }
+
+  // P8: Minimal mission agent runner - only for active workspaces
+  if (stored.deliverableWorkspace.status === "active") {
+    const { researchAgent } = require("../agents/researchAgent");
+    const { proposalAgent } = require("../agents/proposalAgent");
+    const { validationAgent } = require("../agents/validationAgent");
+
+    // 1. ResearchAgent - only if researchNotes not already present
+    if (!stored.architecturePlan || !stored.architecturePlan.researchNotes) {
+      const workPackages = Array.isArray(stored.workPackages) ? stored.workPackages : [];
+      try {
+        researchAgent(stored, workPackages);
+      } catch (e) {
+        // non-fatal: keep mission active without research notes
+      }
+    }
+
+    // 2. ProposalAgent - only if proposalDraft not already present
+    if (
+      !stored.executionEvidence ||
+      !stored.executionEvidence.proposalDraft
+    ) {
+      try {
+        const acceptanceCriteria =
+          stored.realWorkIntake && stored.realWorkIntake.brief
+            ? stored.realWorkIntake.brief.acceptanceCriteria
+            : [];
+        proposalAgent(stored, stored.architecturePlan?.researchNotes, workPackages);
+      } catch (e) {
+        // non-fatal: keep mission active without proposal draft
+      }
+    }
+
+    // 3. ValidationAgent - only if validationResult not already present
+    if (
+      !stored.governance ||
+      !stored.governance.validationResult
+    ) {
+      const acceptanceCriteria =
+        stored.realWorkIntake && stored.realWorkIntake.brief
+          ? stored.realWorkIntake.brief.acceptanceCriteria
+          : [];
+      try {
+        validationAgent(stored, stored.executionEvidence?.proposalDraft, acceptanceCriteria);
+      } catch (e) {
+        // non-fatal: keep mission active without validation result
+      }
+    }
+  }
+
   return { ...stored.toJSON(), truthStatus: "verified_real_work" };
 }
 
