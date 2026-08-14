@@ -163,6 +163,9 @@ async function createFromApprovedCandidate(candidateId, context = {}) {
       progressPercent: 0,
       externalActionsAuthorized: false
     };
+    if (!stored.workPackages) {
+      stored.workPackages = prepared.workPackages || [];
+    }
     await stored.save();
   }
   return { ...stored.toJSON(), truthStatus: "verified_real_work" };
