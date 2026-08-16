@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const { DiscoveryCandidate } = require("../models/DiscoveryCandidate");
 const { IncomeGoal } = require("../models/IncomeGoal");
 const { founderApprovalGranted } = require("./revenueConversionService");
+const { matchDemandUniversal } = require("./capabilityRegistryService");
 
 const PROHIBITED_TERMS = ["casino", "gambling", "betting", "adult content", "tobacco", "vape", "alcohol sales"];
 const SCAM_TERMS = ["pay upfront", "registration fee", "training fee", "telegram only", "whatsapp only", "guaranteed income"];
@@ -237,6 +238,32 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
   }
 
   // 6. Candidate Payload Construction
+  // Dynamic capability matching using existing capability registry
+  const opportunityForMatching = {
+    title: rawSource.title,
+    description: rawSource.description,
+    category: intel.category,
+    tags: Array.isArray(input.tags) ? input.tags.map(plainText) : []
+  };
+  const capMatch = matchDemandUniversal(opportunityForMatching, { rootDir: context?.rootDir || process.cwd() });
+  const primaryMatch = capMatch.bestCapability || null;
+  const matches = capMatch.matches || [];
+
+  // Determine opportunityChannel based on genuine capability deliverability
+  if (!capMatch.capabilityMatchScore || capMatch.capabilityMatchScore < 30) {
+    opportunityChannel = "no_verified_capability_match";
+  } else if (/physical onsite|in-person|bar license|court appearance/i.test(rawSource.description)) {
+    opportunityChannel = "human_only";
+  } else {
+    opportunityChannel = "garuda_deliverable";
+  }
+
+  // humanIdentityRequired based on actual capability, not hardcoded
+  const humanIdentityRequired = capMatch.humanIdentityRequired;
+
+  // Score from actual capability matching, defaulting to 0 when no match
+  const matchingScore = capMatch.capabilityMatchScore !== undefined ? capMatch.capabilityMatchScore : 0;
+
   const candidatePayload = {
     externalId: `fa-${rawSourceHash.slice(0, 12)}`,
     source: rawSource.source,
@@ -259,22 +286,15 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
     location: String(input.location || "Pending Location Verification"),
     sourceAttribution: `${rawSource.source} (Founder Assisted)`,
     publishedAt: now,
-    tags: Array.isArray(input.tags) ? input.tags.map(plainText) : [],
-    score: opportunityChannel === "reject" ? 0 : 85,
+tags: Array.isArray(input.tags) ? input.tags.map(plainText) : [],
+    score: matchingScore,
     opportunityChannel,
     requiresFounderApproval: true,
     capabilityAssessment: {
-      selfEarningEligible: opportunityChannel !== "reject",
-      humanIdentityRequired: true,
+      selfEarningEligible: capMatch.capabilityMatchScore !== undefined && capMatch.capabilityMatchScore >= 30,
+      humanIdentityRequired: humanIdentityRequired,
       decision: opportunityChannel,
-      matches: [
-        {
-          capabilityId: "engineering.software-implementation",
-          universe: "engineering",
-          name: "Governed software implementation",
-          score: 85
-        }
-      ],
+      matches: matches.length > 0 ? matches : [],
       assessedAt: now
     },
     verification: {
@@ -286,7 +306,7 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
       listingKind: "specific_client_work",
       directClientWorkEvidence: true,
       humanIdentityGateClear: true,
-      garudaExecutionEligible: opportunityChannel !== "reject" && opportunityChannel !== "human_only",
+      garudaExecutionEligible: opportunityChannel !== "reject" && opportunityChannel !== "human_only" && opportunityChannel !== "no_verified_capability_match",
       sourceRecordHash: rawSourceHash,
       verifiedAt: now,
       rejectionReasons
@@ -363,7 +383,17 @@ async function importFounderAssistedCandidate(input = {}, context = {}, options 
     }
 
     const mission = await IncomeGoal.findOne({ status: "active" });
-    const missionId = mission ? mission._id : new mongoose.Types.ObjectId("507f1f77bcf86cd799439011");
+    let missionId = mission ? mission._id : null;
+    if (!missionId) {
+      const { ensureContinuousDiscoveryMission } = require("./opportunityDiscoveryService");
+      const opsMission = await ensureContinuousDiscoveryMission();
+      missionId = opsMission ? opsMission._id : null;
+    }
+    if (!missionId) {
+      const err = new Error("No active mission available for candidate intake");
+      err.statusCode = 503;
+      throw err;
+    }
 
     const created = await DiscoveryCandidate.create({
       missionId,

@@ -1,5 +1,6 @@
 const assert = require("assert");
 const { inspectCandidate, normalizeRemotiveJob, scoreCandidate, splitCandidateForDecisionPreservation, validateCandidateDecision } = require("./opportunityDiscoveryService");
+const { candidatePrioritySortValue } = require("./opportunityDiscoveryService");
 
 assert.strictEqual(inspectCandidate({ title: "Remote developer", url: "https://example.com/job" }).accepted, true);
 assert.strictEqual(inspectCandidate({ title: "Online casino promoter", url: "https://example.com/job" }).accepted, false);
@@ -15,6 +16,10 @@ assert.strictEqual(candidate.requiresFounderApproval, true);
 assert.strictEqual(candidate.opportunityChannel, "human_opportunity_only");
 assert.strictEqual(candidate.capabilityAssessment.selfEarningEligible, false);
 assert.strictEqual(candidate.capabilityAssessment.humanIdentityRequired, true);
+assert.strictEqual(candidate.priority, "UNMEASURED");
+assert.strictEqual(candidate.valueModel.status, "UNKNOWN");
+assert.strictEqual(candidate.valueModel.bandPriority, "UNMEASURED");
+assert.ok(Array.isArray(candidate.valueModel.factors) && candidate.valueModel.factors.length === 8);
 
 const remotiveSoftwareRole = normalizeRemotiveJob({
   id: 8,
@@ -70,8 +75,71 @@ getProactiveBusinessBriefing().then((briefing) => {
   assert.ok(Array.isArray(briefing.highestRevenuePotential));
   assert.ok(briefing.marketSummary.newOpportunitiesDiscoveredToday >= 0);
   console.log("Proactive Business Development Briefing test PASSED cleanly.");
+  return runListCandidatesTest();
+}).then(() => {
   console.log("Opportunity discovery validation test passed.");
 }).catch((err) => {
   console.error("Proactive briefing test failed:", err);
   process.exit(1);
 });
+
+// -- priority-aware candidate sorting (Fix 4) --
+const nowIso = new Date().toISOString();
+const wellVerifiedBuyer = {
+  status: "ranked",
+  opportunityChannel: "garuda_deliverable",
+  priority: "NORMAL",
+  verification: { sourceVerified: true, directClientWorkEvidence: true, garudaExecutionEligible: true },
+  valueModel: { status: "ESTIMATED", estimatedINR: 15000, rank: 70 },
+  score: 80,
+  publishedAt: nowIso
+};
+const weakEvidenceHighValue = {
+  status: "ranked",
+  opportunityChannel: "no_verified_capability_match",
+  priority: "STRATEGIC",
+  verification: { sourceVerified: false },
+  valueModel: { status: "ESTIMATED", estimatedINR: 200000, rank: 40 },
+  score: 95,
+  publishedAt: nowIso
+};
+assert.ok(candidatePrioritySortValue(wellVerifiedBuyer) > candidatePrioritySortValue(weakEvidenceHighValue),
+  "a well-verified low-band buyer must outrank a weak-evidence high-value listing");
+
+const approvedCandidate = { ...wellVerifiedBuyer, status: "approved" };
+assert.ok(candidatePrioritySortValue(approvedCandidate) > candidatePrioritySortValue(wellVerifiedBuyer),
+  "founder-approved/actionable state must sort first");
+
+const unmeasuredCandidate = {
+  status: "ranked",
+  opportunityChannel: "human_opportunity_only",
+  priority: "UNMEASURED",
+  valueModel: { status: "UNKNOWN", estimatedINR: null },
+  score: 99,
+  publishedAt: nowIso
+};
+assert.ok(candidatePrioritySortValue(wellVerifiedBuyer) > candidatePrioritySortValue(unmeasuredCandidate),
+  "UNMEASURED/UNKNOWN must stay below measured candidates regardless of raw score");
+assert.strictEqual(candidatePrioritySortValue({ ...unmeasuredCandidate, priority: "UNKNOWN" }) >= 0, true);
+
+async function runListCandidatesTest() {
+  const { DiscoveryCandidate } = require("../models/DiscoveryCandidate");
+  const { listCandidates } = require("./opportunityDiscoveryService");
+  const originalFind = DiscoveryCandidate.find;
+  DiscoveryCandidate.find = async () => [
+    { status: "ranked", opportunityChannel: "no_verified_capability_match", priority: "STRATEGIC", score: 95, publishedAt: nowIso, valueModel: { status: "ESTIMATED", estimatedINR: 200000, rank: 40 }, verification: {}, toJSON() { return this; } },
+    { status: "ranked", opportunityChannel: "garuda_deliverable", priority: "NORMAL", score: 80, publishedAt: nowIso, valueModel: { status: "ESTIMATED", estimatedINR: 15000, rank: 70 }, verification: { sourceVerified: true }, toJSON() { return this; } },
+    { status: "ranked", opportunityChannel: "human_opportunity_only", priority: "UNMEASURED", score: 99, publishedAt: nowIso, valueModel: { status: "UNKNOWN", estimatedINR: null }, verification: {}, toJSON() { return this; } }
+  ];
+  try {
+    const items = await listCandidates({});
+    assert.strictEqual(items.length, 3);
+    assert.strictEqual(items[0].opportunityChannel, "garuda_deliverable", "verified buyer sorts first");
+    assert.strictEqual(items[0].priority, "NORMAL");
+    const verifiedIdx = items.findIndex((i) => i.opportunityChannel === "garuda_deliverable");
+    const unmeasuredIdx = items.findIndex((i) => i.priority === "UNMEASURED");
+    assert.ok(unmeasuredIdx > verifiedIdx, "UNMEASURED must not outrank the well-verified buyer");
+  } finally {
+    DiscoveryCandidate.find = originalFind;
+  }
+}
