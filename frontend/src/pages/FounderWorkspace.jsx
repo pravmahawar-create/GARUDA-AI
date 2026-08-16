@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
 import MetricCard from "../components/MetricCard";
@@ -17,9 +18,8 @@ import DonutChart from "../components/charts/DonutChart";
 import selfBuildEngine from "../selfbuild/SelfBuildEngine";
 import { checkHealth, askRag, getDashboardSnapshot, fetchThreads, fetchThread, createThread } from "../services/api";
 
-const REVENUE_APP_URL = import.meta.env.VITE_REVENUE_APP_URL || "https://garuda-emergent-revenue.vercel.app/dashboard";
-
 export default function FounderWorkspace({ onLogout }) {
+  const navigate = useNavigate();
   const [health, setHealth] = useState("checking");
   const [healthMessage, setHealthMessage] = useState("Awaiting backend response...");
   const [question, setQuestion] = useState("");
@@ -48,7 +48,7 @@ export default function FounderWorkspace({ onLogout }) {
 
   const handleSelectNav = (label) => {
     if (label === "Revenue Universe") {
-      window.location.href = REVENUE_APP_URL;
+      navigate("/revenue");
       return;
     }
     setActiveNav(label);
@@ -260,7 +260,7 @@ export default function FounderWorkspace({ onLogout }) {
             </button>
             <button
               type="button"
-              onClick={() => window.location.href = REVENUE_APP_URL}
+              onClick={() => navigate("/revenue")}
               style={{ background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.5)", color: "#d4af37", padding: "0.7rem 1.1rem", borderRadius: 14, fontWeight: 800, cursor: "pointer", fontSize: "0.9rem" }}
             >
               Revenue Console ⟡

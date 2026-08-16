@@ -12,6 +12,7 @@ import PayLink from "./pages/PayLink";
 import Signup from "./pages/Signup";
 import DemoLaunch from "./pages/DemoLaunch";
 import FounderWorkspace from "./pages/FounderWorkspace";
+import RevenueDepartment from "./pages/RevenueDepartment";
 
 import "./styles/garuda-ui.css";
 
@@ -60,12 +61,22 @@ function AppRoutes() {
   );
   const customerRoute = customer === null ? null : customer ? <CustomerDashboard customer={customer} onLogout={async () => { await fetch("/api/customer/logout", { method: "POST", credentials: "same-origin" }); setCustomer(false); navigate("/"); }} /> : <Login />;
   const publicLanding = <PublicLanding onGetStarted={() => navigate("/signup")} onFounderLogin={() => navigate("/founder")} />;
+  const revenueRoute = authenticated === null ? (
+    <div style={{ minHeight: "100vh", background: "#030712", display: "grid", placeItems: "center", color: "#d4af37", fontFamily: "sans-serif", fontSize: "0.9rem", letterSpacing: "0.1em" }}>
+      GARUDA FOUNDER DESKTOP...
+    </div>
+  ) : authenticated ? (
+    <RevenueDepartment onBack={() => navigate("/founder")} />
+  ) : (
+    <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
+  );
 
   return (
     <Routes>
       <Route path="/" element={publicLanding} />
       <Route path="/chat" element={<PublicChat />} />
       <Route path="/founder" element={founderRoute} />
+      <Route path="/revenue" element={revenueRoute} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/demo" element={<DemoLaunch />} />

@@ -1,8 +1,6 @@
 import React from "react";
 import { getFounderUniverses, getRevenueHub, STATUS } from "../config/universes";
 
-const REVENUE_APP_URL = import.meta.env.VITE_REVENUE_APP_URL || "https://garuda-emergent-revenue.vercel.app/dashboard";
-
 const statusColor = (status) => {
   const meta = STATUS[status] || STATUS.ROADMAP;
   return meta.color || "#8b94a6";

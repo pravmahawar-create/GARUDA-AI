@@ -124,4 +124,18 @@ export async function createThread() {
   }
 }
 
+export async function getRevenueRecords() {
+  const res = await fetch(`${API_BASE}/api/revenue`);
+  if (!res.ok) throw new Error("Revenue records request failed");
+  const data = await res.json();
+  return data?.data || [];
+}
+
+export async function getRevenueMetrics() {
+  const res = await fetch(`${API_BASE}/api/revenue/metrics`);
+  if (!res.ok) throw new Error("Revenue metrics request failed");
+  const data = await res.json();
+  return data?.data || null;
+}
+
 
