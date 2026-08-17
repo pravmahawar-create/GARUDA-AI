@@ -172,13 +172,22 @@ exports.sendPitches = async (req, res) => {
         await lead.save();
         sent.push({ email: lead.email, accepted: result.accepted === true, providerResponseId: result.providerResponseId || null });
       } catch (error) {
+        const detail = (() => {
+          if (error && error.errors && error.errors.length) {
+            return error.errors.map((e) => String((e && e.message) || e)).join(" | ");
+          }
+          if (error && error.cause) {
+            return String((error.cause && error.cause.message) || error.cause);
+          }
+          return String((error && error.message) || error);
+        })();
         lead.lastAttemptAt = new Date();
         lead.status = "failed";
-        lead.reason = String(error.message || error);
+        lead.reason = detail;
         lead.audit = lead.audit || [];
-        lead.audit.push({ action: "pitch_send_failed", at: new Date(), detail: String(error.message || error) });
+        lead.audit.push({ action: "pitch_send_failed", at: new Date(), detail });
         await lead.save();
-        failed.push({ email: lead.email, reason: String(error.message || error) });
+        failed.push({ email: lead.email, reason: detail });
       }
     }
     return res.json({ success: true, data: { sent: sent.length, failed: failed.length, leads: sent, failures: failed } });
