@@ -325,7 +325,7 @@ function sendSmtpNative(config, mail) {
     const timer = setTimeout(() => {
       cleanup();
       reject(new Error("SMTP socket connection timed out"));
-    }, 15000);
+    }, Number(config.timeoutMs) || 30000);
 
     function sendCmd(cmd) {
       if (socket && socket.writable) {
@@ -429,11 +429,11 @@ function sendSmtpNative(config, mail) {
     }
 
     if (port === 465) {
-      socket = tls.connect(port, host, { servername: host, rejectUnauthorized: false }, () => {
+      socket = tls.connect(port, host, { servername: host, rejectUnauthorized: false, family: 4 }, () => {
         socket.on("data", handleData);
       });
     } else {
-      socket = net.connect(port, host, () => {
+      socket = net.connect({ port, host, family: 4 }, () => {
         socket.on("data", handleData);
       });
     }
