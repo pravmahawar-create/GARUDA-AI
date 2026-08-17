@@ -173,23 +173,48 @@ exports.sendPitches = async (req, res) => {
         await lead.save();
         sent.push({ email: lead.email, accepted: result.accepted === true, providerResponseId: result.providerResponseId || null });
       } catch (error) {
-        const detail = (() => {
-          if (error && error.errors && error.errors.length) {
-            return error.errors.map((e) => String((e && e.message) || e)).join(" | ");
-          }
-          if (error && error.cause) {
-            return String((error.cause && error.cause.message) || error.cause);
-          }
-          return String((error && error.message) || error);
-        })();
-        lead.lastAttemptAt = new Date();
-        lead.status = "failed";
-        lead.reason = detail;
-        lead.audit = lead.audit || [];
-        lead.audit.push({ action: "pitch_send_failed", at: new Date(), detail });
-        await lead.save();
-        failed.push({ email: lead.email, reason: detail });
+        // Gmail throttles rapid connections from cloud IPs — retry once after
+        // a short pause before marking the lead failed.
+        let retryResult = null;
+        try {
+          const delayMs = Number(req.query.retryDelayMs) || 2500;
+          await new Promise((r) => setTimeout(r, delayMs));
+          retryResult = await sendSmtpWithFallback(smtp.config, mail);
+          lead.sentCount = Number(lead.sentCount || 0) + 1;
+          lead.sentAt = new Date();
+          lead.lastAttemptAt = new Date();
+          lead.status = "message_sent";
+          lead.audit = lead.audit || [];
+          lead.audit.push({
+            action: "pitch_sent_retried",
+            at: new Date(),
+            detail: `provider=${retryResult.providerResponseId || "SMTP_ACCEPTED_250_OK"}, accepted=${retryResult.accepted === true}`
+          });
+          await lead.save();
+          sent.push({ email: lead.email, accepted: retryResult.accepted === true, providerResponseId: retryResult.providerResponseId || null });
+        } catch (retryError) {
+          const detail = (() => {
+            const err = retryError || error;
+            if (err && err.errors && err.errors.length) {
+              return err.errors.map((e) => String((e && e.message) || e)).join(" | ");
+            }
+            if (err && err.cause) {
+              return String((err.cause && err.cause.message) || err.cause);
+            }
+            return String((err && err.message) || err);
+          })();
+          lead.lastAttemptAt = new Date();
+          lead.status = "failed";
+          lead.reason = detail;
+          lead.audit = lead.audit || [];
+          lead.audit.push({ action: "pitch_send_failed", at: new Date(), detail });
+          await lead.save();
+          failed.push({ email: lead.email, reason: detail });
+        }
       }
+      // Space out sends so Gmail doesn't throttle the cloud egress IP.
+      const interDelayMs = Number(req.query.delayMs) || 1200;
+      if (interDelayMs > 0) await new Promise((r) => setTimeout(r, interDelayMs));
     }
     return res.json({ success: true, data: { sent: sent.length, failed: failed.length, leads: sent, failures: failed } });
   } catch (error) {
