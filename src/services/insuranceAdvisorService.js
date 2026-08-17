@@ -45,15 +45,15 @@ const INTENT_KEYWORDS = [
 
 const TOPIC_HOOK = {
   family_protection:
-    "Term insurance ka matlab hai — aapke pass aane se pehle aapke parivaar ki financial suraksha already set ho. Simple, transparent, aur investment-first.",
+    "Mai samajh sakta hoon ki parivaar ki suraksha aapke dil ke kitne kareeb hai — ye koi financial topic nahi, ek ehsaas hai. Term insurance bas ye pakka karta hai ki aapke pass aane se pehle hi aapke parivaar ki suraksha set ho. Simple, transparent, aur investment-first.",
   savings_investment:
-    "Investment ₹30,000 se shuru hota hai — growth, suraksha, aur flexibility sab saath me.",
+    "Achhi baat hai ki aap savings ki soch rahe hain — ye aapke aane wale kal ke liye pyaar hai. Investment ₹30,000 se shuru hota hai, aur saath me aata hai growth, suraksha, aur flexibility. Koi rigid fixed amount nahi, jo aapke hisaab se chale.",
   child_education:
-    "Bachpan ke sapne aapke saath aur aapke baad bhi pura ho sakein — aaj ka smart investment, kal ka shield.",
+    "Bachchon ke sapne toh aise hote hain ki unhe kabhi kisi cheez ki kami na lage. Aaj ka smart investment, kal ka unka shield — isi soch ke saath aapke liye ek aasaan rasta batata hoon.",
   cancer_health:
-    "Health insurance matlab medical emergency ke waqt aapki taraf koi khada ho — financial shield jo hospital bills ka bojh na hone de.",
+    "Health ki chinta sirf paise ki nahi, mann ki bhi hoti hai. Isliye medical emergency ke waqt aapki taraf koi khada ho — ye financial shield hospital bills ka bojh na hone de, aur aap family ke saath raho.",
   tax:
-    "Tax bachana ek smart financial move hai — kuch plans ke saath naturally juda hua hai."
+    "Tax bachana koi tedhi baat nahi — sahi jaankari se toh ye ek simple smart move hai. Kuch plans ke saath ye naturally juda hota hai, aur aapko koi extra jhanjhat nahi."
 };
 
 function detectInsuranceIntent(text) {
@@ -100,7 +100,7 @@ async function answerInsuranceQuery(text) {
   const hook = TOPIC_HOOK[topic] || TOPIC_HOOK.savings_investment;
 
   const lines = [
-    "Mai GARUDA hoon — AI Financial Advisor aur Aditya Birla Sun Life (ABSLI) ka official financial partner.",
+    "Sabse pehle, main aapki baat sunne ke liye yahan hoon — bilkul ek dost ki tarah. Main GARUDA hoon, AI Financial Advisor aur Aditya Birla Sun Life (ABSLI) ka official financial partner.",
     hook
   ];
 
@@ -112,12 +112,12 @@ async function answerInsuranceQuery(text) {
       .trim();
     lines.push(`Verified figure: ${sample} (source: ${source || "ABSLI official documents"}) — exact benefits plan, terms & conditions aur underwriting par depend karte hain.`);
   } else {
-    lines.push("Ye data mere ABSLI knowledge base me abhi full confirm nahi hai — main official documents se verify karke confirm karunga. Koi bhi figure main bina source ke nahi bataunga.");
+    lines.push("Ye data mere ABSLI knowledge base me abhi full confirm nahi hai — main official documents se verify karke confirm karunga. Koi bhi figure main bina source ke nahi bataunga, kyunki aapka bharosa mere liye sabse important hai.");
   }
 
   lines.push("Investment-first hai — ₹30,000 se shuru, flexible, koi rigid fixed amount nahi. Poori detail garudaos.in par bhi available hai.");
-  lines.push("Koi jhutha wada nahi, koi pressure nahi. Terms & conditions apply hote hain.");
-  lines.push("Agar aage baat karni hai toh bas batao — main plan details me guide karunga.");
+  lines.push("Koi jhutha wada nahi, koi pressure nahi. Main sirf wahi batata hoon jo true aur transparent hai. Terms & conditions apply hote hain.");
+  lines.push("Agar aapki koi aur pareshani ya sawal hai, toh khul ke batao — main aapki baat samajh ke aage guide karunga. Aapka aaram mera pahela dhyan hai.");
 
   return {
     handled: true,

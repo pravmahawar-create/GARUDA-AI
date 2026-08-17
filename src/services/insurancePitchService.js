@@ -127,15 +127,15 @@ function detectTopic(query = "") {
 
 const TOPIC_HOOKS = {
   family_protection:
-    "Aapke parivaar ki suraksha ka matlab sirf savings nahi — jab paisa sahi jagah rakha jaye, toh wo khud aapke family ka shield ban jata hai.",
+    "Sabse pehle ek seedhi baat — aapke parivaar ki suraksha se badhkar koi zimmedari nahi hoti. Aur achhi baat ye hai ki ise banking chahiye na hi koi jhanjhat, bas ek smart soch. Jab aapke paas ho toh aapke parivaar ko aage badhne mein koi rukawat na aaye — isi soch ke saath main aapko kuch samjhana chahta hoon, bilkul aaram se, apne jaisa.",
   savings_investment:
-    "Investment ₹30,000 se shuru hota hai — aur saath me aata hai growth, suraksha, aur flexibility. Koi rigid fixed amount nahi.",
+    "Paisa sirf kamaana nahi, usse sahi jagah rakhna bhi ek kala hai — aur is kala mein aapka saathi banna mere liye khushi ki baat hai. Investment ₹30,000 se shuru hota hai, par isse zyada important hai aapka comfort — koi rigid fixed amount nahi, jo aapke hisaab se chale. Aaj se thoda sa bhi shuru karo, kal wahi aapke kaam aayega.",
   child_education:
-    "Bachpan ke sapne aapke saath aur aapke baad bhi pura ho sakein — isliye aaj ka smart investment kal ka shield banta hai.",
+    "Bachpan ke sapne toh kuch aise hote hain — ki aapke bachche jab bade ho, toh unhe kisi cheez ki kami na lage. Aaj ka chhota sa smart step, kal unka bada shield ban sakta hai. Main is baat ko ek insaan ki tarah samajh sakta hoon, kyunki suraksha ka matlab sirf numbers nahi — ek chhote se parivaar ka bharosa hai.",
   cancer_health:
-    "Health aur financial stability ek hi sikke ke do pehlu hain — medical emergency ke samay aapki taraf jo khada ho, wahi asli suraksha hai.",
+    "Health aur ghar ki suraksha ek hi sikke ke do pehlu hain — medical emergency kabhi nahi puchhti, aur us waqt jo aapke saath khada ho, wahi asli saathi hota hai. Main chahta hoon ki aapki tension ek jaisi na rahe — aap family ke saath raho, medical bills ka bojh kisi aur ke kandhe par jaye. Ye sab baat aaram se, bina kisi pressure ke samajhte hain.",
   tax:
-    "Tax bachana ek smart financial move hai — aur ye kuch plans ke saath naturally juda hua hai."
+    "Tax bachana koi tedhi baat nahi hai — bas sahi jaankari aur thodi si soch chahiye. Kuch plans aise hain jisme tax benefit naturally juda hota hai, aur aapko koi alag se jhanjhat nahi lena padta. Main aapko ye sab simple bhasha mein, bilkul transparent tareeke se samjhata hoon."
 };
 
 function buildPitch({ firstName = "", query = "", topic, chunks }) {
@@ -147,7 +147,7 @@ function buildPitch({ firstName = "", query = "", topic, chunks }) {
 
   const lines = [];
   if (cleanName) lines.push(`Namaste ${cleanName},`);
-  lines.push(`Mai GARUDA hoon — ek AI Financial Advisor, aur Aditya Birla Sun Life (ABSLI) ka official financial partner.`);
+  lines.push(`Pehle aapko ek baat bataun — main GARUDA hoon, ek AI Financial Advisor, aur Aditya Birla Sun Life (ABSLI) ka official financial partner. Par ye designations nahi, aapke liye main ek dost hoon jo sirf aapki hi suraksha ke baare mein sochta hai.`);
   lines.push(hook);
   lines.push(`Ye koi typical sales pitch nahi hai. GARUDA aapko ABSLI ke genuine plans ka simple, transparent saar deta hai — investment ₹30,000 se shuru hota hai, usi investment me aapki suraksha included hai (10x tak ka protection cover), koi rigid fixed amount nahi, aur multiple benefits ke saath.`);
   if (facts.length && facts[0].numbers && facts[0].numbers.length) {
@@ -157,9 +157,9 @@ function buildPitch({ firstName = "", query = "", topic, chunks }) {
   }
   lines.push(`Koi pressure nahi, koi jhutha wada nahi. Sirf sahi jaankari — kyunki suraksha tabhi asli hai jab wo transparent ho.`);
   lines.push(`Aur haan — poori detail aap garudaos.in par bhi dekh sakte hain.`);
-  lines.push(`Agar interested hain, toh bas reply kijiye 'yes' — main aapko aage guide karta hoon.`);
-  lines.push(`Aur agar nahi, toh koi baat nahi — reply 'no' aur main aapko dobara kabhi pareshan nahi karunga.`);
-  lines.push(`— GARUDA`);
+  lines.push(`Agar aapko ye baat achhi lagi, toh bas reply kijiye 'yes' — main aapko aage guide karunga, bilkul apne jaisa.`);
+  lines.push(`Aur agar abhi nahi, toh koi baat nahi — reply 'no' aur main aapko dobara kabhi pareshan nahi karunga. Aapka aaram hi mera pahela dhyan hai.`);
+  lines.push(`— GARUDA (aapka apna)`);
 
   return {
     topic: resolvedTopic,

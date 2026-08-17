@@ -295,7 +295,7 @@ async function handleInsuranceMessage(chatId, text, options = {}) {
         };
       }
       const leadResult = await createInsuranceLeadFromConversation(chatId, updated, options);
-      reply = `${reply ? reply + "\n\n" : ""}Dhanyavaad ${updated.name}! GARUDA ne aapka interest note kar liya. Aapke plan details ke liye ek GARUDA advisor jald hi aapko guide karega. ${options.referenceLink ? `Detail: ${options.referenceLink}` : ""}`;
+      reply = `${reply ? reply + "\n\n" : ""}Dhanyavaad ${updated.name}, aapne itni baat meri suni — iske liye shukriya! GARUDA ne aapka interest bahut dhyan se note kar liya hai. Aapke plan details ke liye ek GARUDA advisor jald hi aapko guide karega, bilkul aaram se. ${options.referenceLink ? `Detail: ${options.referenceLink}` : ""}`;
       updated.leadId = leadResult.lead.id;
       updated.leadReused = leadResult.reused;
       await persistState(updated);
@@ -311,7 +311,7 @@ async function handleInsuranceMessage(chatId, text, options = {}) {
   }
 
   if (!reply) {
-    reply = "GARUDA yahan aapke insurance sawalon ke liye hai. Term, health, child education, savings/retirement — kisi bhi topic par puchhiye. Koi figure main bina source ke nahi bataunga.";
+    reply = "Koi baat nahi, main yahan hoon aapke liye. GARUDA aapke insurance sawalon ka jawab dene ke liye hai — term, health, child education, savings/retirement, jo bhi aapke mann mein ho, khul ke puchhiye. Aur koi figure main bina source ke nahi bataunga, kyunki aapka bharosa mere liye sabse important hai.";
   }
 
   await persistState(updated);
