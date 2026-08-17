@@ -138,4 +138,241 @@ export async function getRevenueMetrics() {
   return data?.data || null;
 }
 
+/* ---------- Revenue Universe API client (founder-scoped) ---------- */
+
+function founderHeaders(extra = {}) {
+  return {
+    "Content-Type": "application/json",
+    "x-garuda-founder-approved": "true",
+    ...extra
+  };
+}
+
+async function asData(res, fallback = []) {
+  if (!res.ok) throw new Error(`Request failed (${res.status})`);
+  const json = await res.json();
+  return json && json.success ? json.data : fallback;
+}
+
+/* Opportunities */
+export async function listOpportunities() {
+  const res = await fetch(`${API_BASE}/api/opportunities`);
+  return asData(res, []);
+}
+
+export async function getOpportunityMetrics() {
+  const res = await fetch(`${API_BASE}/api/opportunities/metrics`);
+  return asData(res, null);
+}
+
+export async function updateOpportunity(id, patch) {
+  const res = await fetch(`${API_BASE}/api/opportunities/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(patch)
+  });
+  return asData(res, null);
+}
+
+/* Revenue analytics + settlements */
+export async function getRevenueAnalytics(monthsBack = 6) {
+  const res = await fetch(`${API_BASE}/api/revenue/analytics?monthsBack=${monthsBack}`);
+  return asData(res, null);
+}
+
+export async function getSettlementSummary() {
+  const res = await fetch(`${API_BASE}/api/revenue/settlement`);
+  return asData(res, null);
+}
+
+export async function listSettlements() {
+  const res = await fetch(`${API_BASE}/api/revenue/settlements`);
+  return asData(res, []);
+}
+
+export async function previewSettlement(revenueRecordId, payload = {}) {
+  const res = await fetch(`${API_BASE}/api/revenue/settlements/${encodeURIComponent(revenueRecordId)}/preview`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return asData(res, null);
+}
+
+export async function createSettlement(revenueRecordId, payload = {}) {
+  const res = await fetch(`${API_BASE}/api/revenue/settlements/${encodeURIComponent(revenueRecordId)}`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return asData(res, null);
+}
+
+export async function updateSettlementStatus(id, patch = {}) {
+  const res = await fetch(`${API_BASE}/api/revenue/settlements/${encodeURIComponent(id)}/status`, {
+    method: "PATCH",
+    headers: founderHeaders(),
+    body: JSON.stringify(patch)
+  });
+  return asData(res, null);
+}
+
+/* Execution missions (discovery) */
+export async function listExecutionMissions() {
+  const res = await fetch(`${API_BASE}/api/discovery/execution-missions`);
+  return asData(res, []);
+}
+
+export async function prepareExecutionMission(id) {
+  const res = await fetch(`${API_BASE}/api/discovery/execution-missions/${encodeURIComponent(id)}/prepare`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify({})
+  });
+  return asData(res, null);
+}
+
+export async function listExecutionMissionDecisions(id) {
+  const res = await fetch(`${API_BASE}/api/discovery/execution-missions/${encodeURIComponent(id)}/decisions`);
+  return asData(res, []);
+}
+
+export async function listExecutionTaskEvents(id) {
+  const res = await fetch(`${API_BASE}/api/discovery/execution-missions/${encodeURIComponent(id)}/task-events`);
+  return asData(res, []);
+}
+
+export async function decideExecutionMission(id, payload = {}) {
+  const res = await fetch(`${API_BASE}/api/discovery/execution-missions/${encodeURIComponent(id)}/decision`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return asData(res, null);
+}
+
+export async function resubmitExecutionMission(id, payload = {}) {
+  const res = await fetch(`${API_BASE}/api/discovery/execution-missions/${encodeURIComponent(id)}/resubmit`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return asData(res, null);
+}
+
+export async function listExternalActionRequests(id) {
+  const res = await fetch(`${API_BASE}/api/discovery/execution-missions/${encodeURIComponent(id)}/action-requests`);
+  return asData(res, []);
+}
+
+export async function listRevenueConnectors() {
+  const res = await fetch(`${API_BASE}/api/discovery/connectors`);
+  return asData(res, []);
+}
+
+export async function getDeploymentReadiness() {
+  const res = await fetch(`${API_BASE}/api/discovery/deployment-readiness`);
+  return asData(res, null);
+}
+
+export async function listPilotLedger(id) {
+  const res = await fetch(`${API_BASE}/api/discovery/execution-missions/${encodeURIComponent(id)}/pilot-ledger`);
+  return asData(res, []);
+}
+
+export async function getProductionDelivery(id) {
+  const res = await fetch(`${API_BASE}/api/discovery/execution-missions/${encodeURIComponent(id)}/production-delivery`);
+  return asData(res, null);
+}
+
+/* Discovery candidates */
+export async function listDiscoveryCandidates() {
+  const res = await fetch(`${API_BASE}/api/discovery/candidates`);
+  return asData(res, []);
+}
+
+export async function decideDiscoveryCandidate(id, payload = {}) {
+  const res = await fetch(`${API_BASE}/api/discovery/candidates/${encodeURIComponent(id)}/decision`, {
+    method: "PATCH",
+    headers: founderHeaders(),
+    body: JSON.stringify({ status: payload.status, note: payload.note })
+  });
+  return asData(res, null);
+}
+
+export async function draftAcquisitionProposal(candidateId, payload = {}) {
+  const res = await fetch(`${API_BASE}/api/discovery/candidates/${encodeURIComponent(candidateId)}/acquisition/draft`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return asData(res, null);
+}
+
+export async function listAcquisitions() {
+  const res = await fetch(`${API_BASE}/api/discovery/acquisitions`);
+  return asData(res, []);
+}
+
+/* Income goals */
+export async function listIncomeGoals() {
+  const res = await fetch(`${API_BASE}/api/income-goals`);
+  return asData(res, []);
+}
+
+export async function getIncomeGoal(id) {
+  const res = await fetch(`${API_BASE}/api/income-goals/${encodeURIComponent(id)}`);
+  return asData(res, null);
+}
+
+export async function previewIncomeGoal(payload = {}) {
+  const res = await fetch(`${API_BASE}/api/income-goals/preview`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return asData(res, null);
+}
+
+/* Affiliate pilot */
+export async function getAffiliateStatus() {
+  const res = await fetch(`${API_BASE}/api/affiliate-pilot/status`);
+  return asData(res, null);
+}
+
+export async function listAffiliateCases() {
+  const res = await fetch(`${API_BASE}/api/affiliate-pilot/cases`);
+  return asData(res, []);
+}
+
+/* Deals */
+export async function getDealMetrics() {
+  const res = await fetch(`${API_BASE}/api/revenue/deals/metrics`);
+  return asData(res, null);
+}
+
+export async function submitDeal(payload = {}) {
+  const res = await fetch(`${API_BASE}/api/revenue/deals/submit`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return asData(res, null);
+}
+
+export async function recordDealResponse(payload = {}) {
+  const res = await fetch(`${API_BASE}/api/revenue/deals/response`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return asData(res, null);
+}
+
+/* Payment links */
+export async function getPaymentLinkConfig() {
+  const res = await fetch(`${API_BASE}/api/revenue/payment-link/config`);
+  return asData(res, null);
+}
+
 
