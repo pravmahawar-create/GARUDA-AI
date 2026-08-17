@@ -2,9 +2,14 @@ node_modules/
 .env
 .env.local
 .env.*.local
+.env.production
+.vercel/
 uploads/
 *.log
 .DS_Store
+test-output.txt
+test-revenue.txt
+test_orig.txt
 
 .garuda_*
 *.backup
