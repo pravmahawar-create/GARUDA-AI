@@ -125,6 +125,8 @@ exports.sendPitches = async (req, res) => {
     if (!(founderApproved === true || String(founderApproved || "").trim().toLowerCase() === "true")) {
       return res.status(403).json({ success: false, message: "Founder approval required to send insurance pitches" });
     }
+    const { getRelayConfig, sendViaRelay } = require("../services/emailRelayService");
+    const relay = getRelayConfig();
     const smtp = (() => {
       try {
         const { getSmtpConfig } = require("../services/insuranceOutreachService");
@@ -133,8 +135,13 @@ exports.sendPitches = async (req, res) => {
         return { ready: false, config: null };
       }
     })();
-    if (!smtp.ready || !smtp.config) {
-      return res.status(500).json({ success: false, message: "SMTP not configured (GARUDA_EMAIL_HOST/USER/PASS)" });
+    if (!relay.ready && (!smtp.ready || !smtp.config)) {
+      return res.status(500).json({
+        success: false,
+        message: relay.ready || smtp.ready
+          ? "Email transport not configured (set GARUDA_EMAIL_RELAY_* or GARUDA_EMAIL_HOST/USER/PASS)"
+          : "SMTP not configured (GARUDA_EMAIL_HOST/USER/PASS)"
+      });
     }
     const { sendSmtpWithFallback } = require("../services/motherPlatformAuthService");
     const leads = await InsuranceLead.find({ status: "message_prepared" });
@@ -159,7 +166,9 @@ exports.sendPitches = async (req, res) => {
         ].join("\n")
       };
       try {
-        const result = await sendSmtpWithFallback(smtp.config, mail);
+        const result = relay.ready
+          ? await sendViaRelay(relay.config, mail)
+          : await sendSmtpWithFallback(smtp.config, mail);
         lead.sentCount = Number(lead.sentCount || 0) + 1;
         lead.sentAt = new Date();
         lead.lastAttemptAt = new Date();
@@ -168,7 +177,7 @@ exports.sendPitches = async (req, res) => {
         lead.audit.push({
           action: "pitch_sent",
           at: new Date(),
-          detail: `provider=${result.providerResponseId || "SMTP_ACCEPTED_250_OK"}, accepted=${result.accepted === true}`
+          detail: `provider=${result.providerResponseId || (relay.ready ? "RELAY_ACCEPTED" : "SMTP_ACCEPTED_250_OK")}, accepted=${result.accepted === true}`
         });
         await lead.save();
         sent.push({ email: lead.email, accepted: result.accepted === true, providerResponseId: result.providerResponseId || null });
@@ -179,7 +188,9 @@ exports.sendPitches = async (req, res) => {
         try {
           const delayMs = Number(req.query.retryDelayMs) || 2500;
           await new Promise((r) => setTimeout(r, delayMs));
-          retryResult = await sendSmtpWithFallback(smtp.config, mail);
+          retryResult = relay.ready
+            ? await sendViaRelay(relay.config, mail)
+            : await sendSmtpWithFallback(smtp.config, mail);
           lead.sentCount = Number(lead.sentCount || 0) + 1;
           lead.sentAt = new Date();
           lead.lastAttemptAt = new Date();
@@ -188,7 +199,7 @@ exports.sendPitches = async (req, res) => {
           lead.audit.push({
             action: "pitch_sent_retried",
             at: new Date(),
-            detail: `provider=${retryResult.providerResponseId || "SMTP_ACCEPTED_250_OK"}, accepted=${retryResult.accepted === true}`
+            detail: `provider=${retryResult.providerResponseId || (relay.ready ? "RELAY_ACCEPTED" : "SMTP_ACCEPTED_250_OK")}, accepted=${retryResult.accepted === true}`
           });
           await lead.save();
           sent.push({ email: lead.email, accepted: retryResult.accepted === true, providerResponseId: retryResult.providerResponseId || null });
