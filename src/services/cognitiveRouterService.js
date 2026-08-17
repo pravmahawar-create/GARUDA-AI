@@ -18,7 +18,9 @@ function detectPreferredProvider() {
     .trim()
     .toLowerCase();
 
-  if (explicit && explicit !== "fallback") {
+  const KNOWN = ["nvidia", "openai", "gemini", "ollama"];
+
+  if (explicit && explicit !== "fallback" && KNOWN.includes(explicit)) {
     return explicit;
   }
 
@@ -39,7 +41,7 @@ function detectPreferredProvider() {
 
 function defaultModelForProvider(provider) {
   if (provider === "nvidia") {
-    return process.env.GARUDA_NVIDIA_MODEL || process.env.NVIDIA_MODEL || "nvidia/nemotron-3-nano-30b-a3b";
+    return process.env.GARUDA_NVIDIA_MODEL || process.env.NVIDIA_MODEL || "meta/llama-3.1-70b-instruct";
   }
   if (provider === "gemini") {
     return process.env.GARUDA_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash";

@@ -48,6 +48,23 @@ async function sendMessage(text, chatId) {
   });
 }
 
+function trimConciseReply(reply) {
+  const text = String(reply || "").trim();
+  if (!text) return "";
+  if (text.length <= 1200) return text;
+  const split = text.split(/\n\n+/);
+  let out = "";
+  for (const block of split) {
+    if ((out + "\n\n" + block).trim().length <= 1200) {
+      out = (out + "\n\n" + block).trim();
+    } else {
+      break;
+    }
+  }
+  if (!out) return text.slice(0, 1200);
+  return out;
+}
+
 async function sendFounderAlert(title, body) {
   if (!isConfigured()) return null;
   const text = `${title}\n\n${body}`;
@@ -139,7 +156,7 @@ async function handleUpdate(update) {
   });
 
   const answer = reply && typeof reply.answer === "string" && reply.answer.trim()
-    ? reply.answer
+    ? trimConciseReply(reply.answer)
     : "GARUDA yahan hai bhai — thoda der me jawab deta hoon. Abhi engine load ho raha hai.";
 
   await sendMessage(answer, chatId);
@@ -173,5 +190,6 @@ module.exports = {
   notifyLeadCaptured,
   sendFounderAlert,
   sendMessage,
-  setWebhook
+  setWebhook,
+  trimConciseReply
 };

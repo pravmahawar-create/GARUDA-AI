@@ -10,6 +10,7 @@
 6. **A feature is NOT DONE until it is usable/visible through garudaos.in** — served by the production backend and backed by the production database.
 7. **Founder approval is mandatory** before any production commit, push, or deploy (Constitutional Law 10).
 8. **The Revenue Department is served IN-APP** at `garudaos.in/revenue` (founder-scoped) inside the GARUDA-AI frontend, reading the production API `/api/revenue*`. No dependency on the other repo's `garuda-emergent-revenue.vercel.app` SPA.
+9. **SINGLE DEPLOYMENT PROJECT RULE (Permanent, Founder-Approved 2026-08-17):** `garuda-ai-v1` is the ONLY Vercel project for GARUDA. Every deployment, build, push, and production update lands ONLY on `garuda-ai-v1` and is reflected on `garudaos.in`. Any other Vercel project that appears in the account (e.g. old or preview projects) is IGNORED for production — it is not deleted, not deployed, not treated as production, and must never be given the `garudaos.in` domain. No push from this repo may trigger a deployment to any project other than `garuda-ai-v1`.
 
 ### Production Host Topology (verified)
 

@@ -55,11 +55,22 @@ test("getProviderConfig not ready without credentials", () => {
 });
 
 test("buildPaymentLinkPayload rejects invalid amount", () => {
-  assert.throws(() => buildPaymentLinkPayload({ missionId: "a", candidateId: "b", amount: 0.5 }), /at least INR 1.00/);
+  assert.throws(() => buildPaymentLinkPayload({ missionId: "a", candidateId: "b", amount: 0.5 }), /at least 1.00/);
 });
 
-test("buildPaymentLinkPayload rejects non-INR currency", () => {
-  assert.throws(() => buildPaymentLinkPayload({ missionId: "a", candidateId: "b", amount: 100, currency: "USD" }), /INR only/);
+test("buildPaymentLinkPayload accepts non-INR currency", () => {
+  const payload = buildPaymentLinkPayload({
+    missionId: "507f1f77bcf86cd799439011",
+    candidateId: "507f1f77bcf86cd799439012",
+    amount: 250,
+    currency: "USD"
+  });
+  assert.strictEqual(payload.currency, "USD");
+  assert.strictEqual(payload.amount, 25000);
+});
+
+test("buildPaymentLinkPayload rejects malformed currency", () => {
+  assert.throws(() => buildPaymentLinkPayload({ missionId: "a", candidateId: "b", amount: 100, currency: "US" }), /3-letter ISO/);
 });
 
 test("buildPaymentLinkPayload rejects invalid missionId", () => {

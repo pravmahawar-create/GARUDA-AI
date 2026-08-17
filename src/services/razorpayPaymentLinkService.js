@@ -47,10 +47,10 @@ function buildIdempotencyKey(input) {
 function buildPaymentLinkPayload(input, config) {
   const amountPaise = Math.round(Number(input.amount) * 100);
   if (!Number.isSafeInteger(amountPaise) || amountPaise < 100) {
-    fail("amount must be at least INR 1.00");
+    fail("amount must be at least 1.00 in the payment currency");
   }
   const currency = String(input.currency || "INR").toUpperCase();
-  if (currency !== "INR") fail("Razorpay payment links currently support INR only");
+  if (!/^[A-Z]{3}$/.test(currency)) fail("currency must be a valid 3-letter ISO code");
   if (!input.missionId || !mongoose.Types.ObjectId.isValid(String(input.missionId))) fail("Invalid missionId");
   if (!input.candidateId || !mongoose.Types.ObjectId.isValid(String(input.candidateId))) fail("Invalid candidateId");
 

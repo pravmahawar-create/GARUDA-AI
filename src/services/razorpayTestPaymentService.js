@@ -9,8 +9,8 @@ function readiness(env = process.env) {
 function prepareTestPaymentLink(input = {}, context = {}, now = new Date()) {
   if (!founderApproved(context.founderApproved)) fail("Founder approval is required to prepare a test payment link", 403);
   const amount = Math.round(Number(input.amount) * 100);
-  if (!Number.isSafeInteger(amount) || amount < 100) fail("amount must be at least INR 1.00");
-  const currency = String(input.currency || "INR").toUpperCase(); if (currency !== "INR") fail("Phase 41-43 supports INR test links only");
+  if (!Number.isSafeInteger(amount) || amount < 100) fail("amount must be at least 1.00 in the payment currency");
+  const currency = String(input.currency || "INR").toUpperCase(); if (!/^[A-Z]{3}$/.test(currency)) fail("currency must be a valid 3-letter ISO code");
   const referenceId = String(input.referenceId || "").trim(); if (!referenceId) fail("referenceId is required");
   return { mode: "test", endpoint: "https://api.razorpay.com/v1/payment_links", execute: false, payload: { amount, currency, reference_id: referenceId, description: String(input.description || "GARUDA test invoice").slice(0, 255), callback_method: "get" }, governance: { preparedOnly: true, networkCallPerformed: false, liveCredentialsAccepted: false, founderApprovalRequiredForFutureDispatch: true } };
 }

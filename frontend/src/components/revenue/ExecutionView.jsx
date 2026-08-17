@@ -11,8 +11,34 @@ import {
   getProductionDelivery,
   resubmitExecutionMission
 } from "../../services/api";
-import { GOLD, MUTED, GREEN, AMBER, RED, BLUE, PURPLE, formatDate, titleCase, timeAgo } from "./format";
+import { GOLD, MUTED, GREEN, AMBER, RED, BLUE, PURPLE, formatDate, formatAmount, titleCase, timeAgo } from "./format";
 import Badge from "./Badge";
+
+function workContextOf(mission) {
+  const opp = mission?.opportunity || {};
+  const brief = opp.brief || mission?.boundedScope || null;
+  const verif = opp.engagementVerification || {};
+  const price = brief && brief.price ? brief.price : null;
+  const hasBrief = !!(
+    brief &&
+    (brief.deliverableType || brief.scopeSummary || brief.price || brief.deadline || (Array.isArray(brief.acceptanceCriteria) && brief.acceptanceCriteria.length))
+  );
+  return {
+    company: String(opp.company || ""),
+    client: String(brief && brief.client ? brief.client : opp.company || ""),
+    deliverableType: String(brief && brief.deliverableType || ""),
+    scopeSummary: String(brief && brief.scopeSummary || ""),
+    requiredInputs: Array.isArray(brief && brief.requiredInputs) ? brief.requiredInputs : [],
+    price,
+    deadline: brief && brief.deadline || null,
+    acceptanceCriteria: Array.isArray(brief && brief.acceptanceCriteria) ? brief.acceptanceCriteria : [],
+    reference: String(verif.reference || ""),
+    evidenceKind: String(verif.evidenceKind || ""),
+    verifiedAt: verif.verifiedAt || null,
+    workAuthorizationConfirmed: !!verif.workAuthorizationConfirmed,
+    hasBrief
+  };
+}
 
 const MISSION_TONE = {
   awaiting_bounded_scope: BLUE,
@@ -92,6 +118,7 @@ export default function ExecutionView() {
   const { loading, error, missions, connectors, readiness } = state;
   const workPackages = Array.isArray(selected?.workPackages) ? selected.workPackages : [];
   const events = detail?.events || [];
+  const context = workContextOf(selected);
 
   return (
     <div>
@@ -150,6 +177,17 @@ export default function ExecutionView() {
                 </div>
               </div>
               <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap", marginTop: "0.7rem" }}>
+                {(() => {
+                  const opp = mission.opportunity || {};
+                  const brief = opp.brief || mission.boundedScope || null;
+                  const row = [];
+                  if (brief && brief.deliverableType) row.push(brief.deliverableType);
+                  if (brief && brief.price && brief.price.amount) row.push(`${brief.price.currency || "INR"} ${Number(brief.price.amount).toLocaleString("en-IN")}`);
+                  if (brief && brief.deadline) row.push(`by ${formatDate(brief.deadline)}`);
+                  return row.map((text) => (
+                    <span key={text} style={{ fontSize: "0.7rem", padding: "0.25rem 0.55rem", borderRadius: 8, border: "1px solid rgba(125,211,252,0.2)", color: "#7dd3fc" }}>{text}</span>
+                  ));
+                })()}
                 {(mission.workPackages || []).slice(0, 4).map((wp) => (
                   <span key={`${wp.title}-${wp.status}`} style={{ fontSize: "0.7rem", padding: "0.25rem 0.55rem", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", color: MUTED }}>{wp.title}</span>
                 ))}
@@ -186,6 +224,72 @@ export default function ExecutionView() {
                       <p style={{ margin: "0.2rem 0 0", fontWeight: 700, fontSize: "0.9rem" }}>{value}</p>
                     </div>
                   ))}
+                </div>
+
+                <div style={{ marginTop: "1.1rem", border: "1px solid rgba(125,211,252,0.25)", borderRadius: 12, padding: "0.9rem 1rem", background: "rgba(125,211,252,0.04)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+                    <p className="fd-eyebrow" style={{ margin: 0 }}>CONFIRMED WORK CONTEXT</p>
+                    {context.hasBrief && context.workAuthorizationConfirmed && (
+                      <Badge label="VERIFIED REAL WORK" color={GREEN} />
+                    )}
+                    {!context.hasBrief && (
+                      <Badge label="LISTING ONLY · NOT CONTRACT" color={AMBER} />
+                    )}
+                  </div>
+
+                  {!context.hasBrief ? (
+                    <p style={{ margin: "0.5rem 0 0", color: MUTED, fontSize: "0.82rem" }}>
+                      No confirmed client brief on record — this mission is listing-only and cannot authorize external action until verified real-work intake is attached.
+                    </p>
+                  ) : (
+                    <>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.6rem", marginTop: "0.6rem" }}>
+                        {[
+                          ["WHO · CLIENT", context.client || context.company || "—"],
+                          ["WHAT · DELIVERABLE", context.deliverableType || "—"],
+                          ["PRICE", context.price ? `${context.price.currency || "INR"} ${Number(context.price.amount || 0).toLocaleString("en-IN")}` : "—"],
+                          ["DEADLINE", formatDate(context.deadline)]
+                        ].map(([label, value]) => (
+                          <div key={label} style={{ border: "1px solid rgba(125,211,252,0.14)", borderRadius: 10, padding: "0.6rem 0.8rem", background: "rgba(125,211,252,0.05)" }}>
+                            <p style={{ margin: 0, color: MUTED, fontSize: "0.62rem", letterSpacing: "0.1em", fontWeight: 800 }}>{label}</p>
+                            <p style={{ margin: "0.2rem 0 0", fontWeight: 700, fontSize: "0.88rem", color: context.hasBrief ? "#eef1f6" : AMBER }}>{value}</p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {context.scopeSummary && (
+                        <div style={{ marginTop: "0.6rem" }}>
+                          <p style={{ margin: 0, color: MUTED, fontSize: "0.62rem", letterSpacing: "0.1em", fontWeight: 800 }}>SCOPE</p>
+                          <p style={{ margin: "0.2rem 0 0", fontSize: "0.84rem", color: "#eef1f6", whiteSpace: "pre-wrap" }}>{context.scopeSummary}</p>
+                        </div>
+                      )}
+
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginTop: "0.7rem" }}>
+                        {context.requiredInputs.length > 0 && (
+                          <div>
+                            <p style={{ margin: 0, color: MUTED, fontSize: "0.62rem", letterSpacing: "0.1em", fontWeight: 800 }}>REQUIRED INPUTS</p>
+                            {context.requiredInputs.map((item, i) => (
+                              <p key={i} style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "#eef1f6" }}>• {item}</p>
+                            ))}
+                          </div>
+                        )}
+                        {context.acceptanceCriteria.length > 0 && (
+                          <div>
+                            <p style={{ margin: 0, color: MUTED, fontSize: "0.62rem", letterSpacing: "0.1em", fontWeight: 800 }}>ACCEPTANCE CRITERIA</p>
+                            {context.acceptanceCriteria.map((item, i) => (
+                              <p key={i} style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "#eef1f6" }}>• {item}</p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {(context.reference || context.evidenceKind || context.verifiedAt) && (
+                        <p style={{ margin: "0.7rem 0 0", fontSize: "0.72rem", color: MUTED }}>
+                          Evidence: {[context.evidenceKind, context.reference, context.verifiedAt ? `verified ${formatDate(context.verifiedAt)}` : ""].filter(Boolean).join(" · ")}
+                        </p>
+                      )}
+                    </>
+                  )}
                 </div>
 
                 <div style={{ marginTop: "1.1rem" }}>

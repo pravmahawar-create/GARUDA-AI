@@ -36,7 +36,9 @@ function getConfiguredProvider() {
     .trim()
     .toLowerCase();
 
-  if (explicit && explicit !== "fallback") {
+  const KNOWN = ["nvidia", "openai", "gemini", "ollama"];
+
+  if (explicit && explicit !== "fallback" && KNOWN.includes(explicit)) {
     return explicit;
   }
 
@@ -71,7 +73,7 @@ function getNvidiaModel() {
   return (
     process.env.NVIDIA_MODEL ||
     process.env.GARUDA_NVIDIA_MODEL ||
-    "nvidia/nemotron-3-nano-30b-a3b"
+    "meta/llama-3.1-70b-instruct"
   );
 }
 
@@ -915,7 +917,7 @@ async function generateNvidiaAnswer({
   // the founder persona prompt cleanly. Other consumers keep the global model.
   const model = isFastLane
     ? process.env.GARUDA_FOUNDER_NVIDIA_MODEL ||
-      "nvidia/nemotron-3-nano-30b-a3b"
+      "meta/llama-3.1-70b-instruct"
     : getNvidiaModel();
 
   if (!apiKey) {
