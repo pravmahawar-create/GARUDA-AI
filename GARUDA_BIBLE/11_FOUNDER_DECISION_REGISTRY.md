@@ -28,6 +28,8 @@ This registry summarizes recovered founder locks without copying raw private con
 | FD-018 | Durable learning and permanent self-modification require governed approval and rollback | Active |
 | FD-019 | Product truth prioritizes coherence, trust/safety and usefulness over speed | Active |
 | FD-020 | Raw chats, secrets and private personal/business details must not be committed | Active |
+| FD-021 | Every GARUDA outreach is a mini product experience: premium copy AND premium, recipient-specific visual presentation are both mandatory for appropriate external outreach | Active |
+| FD-022 | Personalized visual pages may be used as teaser/depth medium for outreach, but any external send still requires verified recipient/opportunity/claims, full preview, and Founder approval through the governed outreach system | Active |
 
 ## Scope decisions, not deletions
 

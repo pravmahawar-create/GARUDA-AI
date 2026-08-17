@@ -1,5 +1,30 @@
 # GARUDA SYSTEM ARCHITECTURE — REVENUE OPERATING SYSTEM
 
+## GARUDA PRODUCTION OUTPUT RULE (Permanent, Founder-Approved)
+
+1. **garudaos.in is the SINGLE final user-facing production asset.** All public/founder product surfaces are served from `garudaos.in` (via the `garuda-ai-v1` Vercel project). No preview, staging, or side-app host is ever presented to users as the product.
+2. **localhost is DEV ONLY.** `localhost:3000` (server) and `localhost:5173` (Vite) are local development surfaces, never production.
+3. **Render backend is INFRASTRUCTURE ONLY.** `garuda-ai-xfif.onrender.com` is the production API host that `garudaos.in` proxies `/api/*` to. It is not a user-facing product surface.
+4. **MongoDB need not run on garudaos.in.** The production database may live anywhere (local Mongo, Atlas, etc.); what matters is that the production backend reads the SAME genuine database that drives user-visible output, and that `MONGODB_URI` in production points at genuine data (currently `garuda_ai`), never test data.
+5. **No test host becomes source of truth.** Preview URLs (Vercel/other repos) and test databases (`garuda`, `garuda_revenue` in the other repo) are never the production source of truth.
+6. **A feature is NOT DONE until it is usable/visible through garudaos.in** — served by the production backend and backed by the production database.
+7. **Founder approval is mandatory** before any production commit, push, or deploy (Constitutional Law 10).
+8. **The Revenue Department is served IN-APP** at `garudaos.in/revenue` (founder-scoped) inside the GARUDA-AI frontend, reading the production API `/api/revenue*`. No dependency on the other repo's `garuda-emergent-revenue.vercel.app` SPA.
+
+### Production Host Topology (verified)
+
+| Host | Purpose | Classification |
+|---|---|---|
+| `garudaos.in` / `www.garudaos.in` | Final user-facing frontend (Vite SPA) | PRODUCTION PRODUCT |
+| `garuda-ai-v1.vercel.app` | Same deployment default domain | PRODUCTION PRODUCT |
+| `garuda-ai-xfif.onrender.com` | Production API backend (`/api/*`) | PRODUCTION INFRASTRUCTURE |
+| localhost:3000 / localhost:5173 | Local dev server / Vite | DEV ONLY |
+| `garuda-emergent-revenue.vercel.app` | Other-repo Revenue SPA (no public backend) | OBSOLETE FOR PRODUCTION OUTPUT |
+| `gcifzzuyswrcwvkcfqbr.supabase.co` | Customer auth (Supabase) | PRODUCTION INFRASTRUCTURE |
+| `api.razorpay.com`, `razorpay.me/@garudaosincompany` | Payments | PRODUCTION INFRASTRUCTURE |
+| `api.telegram.org` | Telegram bot | PRODUCTION INFRASTRUCTURE |
+| NVIDIA / OpenAI / Gemini endpoints | LLM engines | PRODUCTION INFRASTRUCTURE |
+
 ## System Architecture Diagram
 
 ```

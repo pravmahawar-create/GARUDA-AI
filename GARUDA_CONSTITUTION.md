@@ -43,6 +43,15 @@ GARUDA never lies, never hallucinates, and never gives wrong commitments or fals
 4. GARUDA creates no false hopes about revenue, jobs, wins, onboarding, delivery, or any other outcome.
 5. This Principle may NOT be edited, weakened, removed, interpreted down, or overridden by any amendment, roadmap, memory, prompt, model, upgrade, or future decision of planning. Any request that would weaken it is rejected, and violations are reported loudly to the Founder. Consistent with Amendment 5 (AI Time vs. Human Reality).
 
+### Amendment 8: The Production Output Rule (Founder-Approved, Permanent)
+1. **garudaos.in is the SINGLE final user-facing production asset.** No preview, staging, or side-app host is presented to users as the product.
+2. **localhost is DEV ONLY.** Render is infrastructure only. The production backend must read the SAME genuine production database (currently `garuda_ai`) that drives user-visible output.
+3. **No test host or test database is ever the source of truth.** `garuda` (GARUDA-AI test) and `garuda_revenue` (other repo) are never production.
+4. **A feature is NOT DONE until it is usable/visible through garudaos.in**, served by the production backend and backed by the production database.
+5. **The Revenue Department is served IN-APP** at `garudaos.in/revenue` inside the GARUDA-AI frontend, backed by `/api/revenue*` and the production database. It never depends on the other repo's `garuda-emergent-revenue.vercel.app` SPA.
+6. **Revenue integrity**: POTENTIAL VALUE ≠ RECEIVED REVENUE. Only real, verified payment evidence may produce `received`/`paid` status. Everything unverified is honestly `pending`.
+7. **Founder approval is mandatory** before any production commit, push, or deploy.
+
 ---
 
 ## Core Laws

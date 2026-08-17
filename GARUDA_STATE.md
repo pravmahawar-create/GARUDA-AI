@@ -11,7 +11,10 @@
 ## Live Assets & Repositories
 - **Core Repository**: `https://github.com/pravmahawar-create/GARUDA-AI`
 - **Revenue Engine Repo**: `https://github.com/pravmahawar-create/garuda-emergent-revenue`
-- **Live Vercel Deployment**: `https://garuda-ai-v1.vercel.app/`
+- **Production Product (SINGLE user-facing asset)**: `https://www.garudaos.in/`
+- **Revenue Department (in-app, founder-scoped)**: `https://www.garudaos.in/revenue`
+- **Production API (infrastructure)**: `https://garuda-ai-xfif.onrender.com`
+- **Vercel Project default domain**: `https://garuda-ai-v1.vercel.app/`
 
 ## Governance & Constitutional Principles
 1. **Primary Objective**: GARUDA exists for ONE primary objective: **Generate Revenue**.
