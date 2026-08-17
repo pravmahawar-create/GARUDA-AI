@@ -1,4 +1,4 @@
-const { runDiscoveryCycle } = require("../services/opportunityDiscoveryService");
+const { runRevenueOperatingCycle } = require("../services/revenueOperatingCycleService");
 
 function startDiscoveryWorker(options = {}) {
   if (String(process.env.DISCOVERY_ENABLED || "true").toLowerCase() === "false") return null;
@@ -7,7 +7,10 @@ function startDiscoveryWorker(options = {}) {
   const cycle = async () => {
     if (running) return;
     running = true;
-    try { const result = await runDiscoveryCycle({ intervalMs }); console.log("[Discovery]", result); }
+    try {
+      const result = await runRevenueOperatingCycle({ intervalMs, dryRun: options.dryRun });
+      console.log("[Discovery] operating cycle:", JSON.stringify(result));
+    }
     catch (error) { console.error("[Discovery] cycle failed:", error.message); }
     finally { running = false; }
   };
