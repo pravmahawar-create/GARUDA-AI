@@ -138,9 +138,10 @@ exports.sendPitches = async (req, res) => {
     }
     const { sendSmtpNative } = require("../services/motherPlatformAuthService");
     const leads = await InsuranceLead.find({ status: "message_prepared" });
+    const limit = Math.max(1, Number(req.query.limit) || leads.length);
     const sent = [];
     const failed = [];
-    for (const lead of leads) {
+    for (const lead of leads.slice(0, limit)) {
       if (!lead.pitchBody) {
         failed.push({ email: lead.email, reason: "no_pitch_body" });
         continue;
