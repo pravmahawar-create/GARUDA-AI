@@ -555,12 +555,40 @@ function resetLiveActionAuditStore() {
   liveActionAuditStore.clear();
 }
 
+/**
+ * SMTP send with automatic port fallback. Cloud egress (Render, etc.) can
+ * drop Gmail's SYN on port 587 while 465/25 still work. Tries the configured
+ * port first, then 465 (implicit TLS) and 25 as fallbacks. Also forces IPv4
+ * and a generous timeout.
+ * @returns {Promise<Object>} result of the first successful send
+ */
+async function sendSmtpWithFallback(config, mail, options = {}) {
+  const preferred = Number(config.port) || 587;
+  const fallbacks = [preferred, 465, 25].filter((p, i, a) => a.indexOf(p) === i);
+  let lastError = null;
+  for (const port of fallbacks) {
+    try {
+      const attemptConfig = { ...config, port, timeoutMs: Number(config.timeoutMs) || 30000 };
+      return await sendSmtpNative(attemptConfig, mail);
+    } catch (err) {
+      lastError = err;
+      if (options.log) {
+        try {
+          console.log(`[SMTP] port ${port} failed: ${err && err.message ? err.message : err}`);
+        } catch {}
+      }
+    }
+  }
+  throw lastError || new Error("SMTP send failed on all ports");
+}
+
 module.exports = {
   CONNECTOR_AUTH_SPECS,
   getCredentialRequirements,
   redactEmail,
   redactSecret,
   sendSmtpNative,
+  sendSmtpWithFallback,
   validateConnectorAuthentication,
   evaluateConnectorReadiness,
   prepareGovernedSmtpAction,

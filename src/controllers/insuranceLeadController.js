@@ -136,7 +136,7 @@ exports.sendPitches = async (req, res) => {
     if (!smtp.ready || !smtp.config) {
       return res.status(500).json({ success: false, message: "SMTP not configured (GARUDA_EMAIL_HOST/USER/PASS)" });
     }
-    const { sendSmtpNative } = require("../services/motherPlatformAuthService");
+    const { sendSmtpWithFallback } = require("../services/motherPlatformAuthService");
     const leads = await InsuranceLead.find({ status: "message_prepared" });
     const limit = Math.max(1, Number(req.query.limit) || leads.length);
     const sent = [];
@@ -159,7 +159,7 @@ exports.sendPitches = async (req, res) => {
         ].join("\n")
       };
       try {
-        const result = await sendSmtpNative(smtp.config, mail);
+        const result = await sendSmtpWithFallback(smtp.config, mail);
         lead.sentCount = Number(lead.sentCount || 0) + 1;
         lead.sentAt = new Date();
         lead.lastAttemptAt = new Date();
