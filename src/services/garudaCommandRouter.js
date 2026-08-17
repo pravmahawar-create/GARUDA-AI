@@ -250,10 +250,10 @@ function handleAffiliate() {
   };
 }
 
-function handleInsurancePitch(params = {}) {
+async function handleInsurancePitch(params = {}) {
   const query = String(params.query || "").trim();
   const advisor = require("./insuranceAdvisorService");
-  const result = advisor.answerInsuranceQuery(query || "insurance plans");
+  const result = await advisor.answerInsuranceQuery(query || "insurance plans");
   return {
     success: true,
     command: "insurance_pitch",

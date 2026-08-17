@@ -281,11 +281,11 @@ function trySalesAgent(message, sessionId) {
 
 // Insurance/ABSLI questions answered from the grounded ABSLI knowledge base
 // instead of letting the LLM hallucinate products.
-function tryInsuranceAdvisor(message) {
+async function tryInsuranceAdvisor(message) {
   try {
     const advisor = require("../src/services/insuranceAdvisorService");
     if (!advisor.detectInsuranceIntent(message)) return { handled: false, reply: null };
-    const result = advisor.answerInsuranceQuery(message);
+    const result = await advisor.answerInsuranceQuery(message);
     if (!result || !result.answer) return { handled: false, reply: null };
     return { handled: true, reply: result.answer, mode: "insurance_advisor", grounded: result.grounded };
   } catch {
@@ -304,7 +304,7 @@ async function handleAuthenticated(conversationId, message, db, userId) {
   const history = await loadConversationHistory(db, targetConversationId);
   await persistMessage(db, targetConversationId, userId, "user", message);
   // Insurance/ABSLI questions first — grounded advisor, sales agent ke bahar.
-  const advisor = tryInsuranceAdvisor(message);
+  const advisor = await tryInsuranceAdvisor(message);
   const sales = advisor.handled ? { handled: false, reply: null } : trySalesAgent(message, userId);
   const reply = advisor.handled ? advisor.reply : sales.handled ? sales.reply : await generateReply(message, history);
   await persistMessage(db, targetConversationId, userId, "assistant", reply);
@@ -431,7 +431,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const advisor = tryInsuranceAdvisor(message.trim());
+    const advisor = await tryInsuranceAdvisor(message.trim());
     const sales = advisor.handled ? { handled: false, reply: null } : trySalesAgent(message.trim(), req.headers["x-garuda-session"] || req.ip || "anon");
     const reply = advisor.handled ? advisor.reply : sales.handled ? sales.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
     await captureLead({ message, reply, userId: null, req });

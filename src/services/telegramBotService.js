@@ -2,6 +2,7 @@ const llmProvider = require("./llmProvider");
 const garudaCapabilityInjector = require("./garudaCapabilityInjector");
 const garudaCommandRouter = require("./garudaCommandRouter");
 const insuranceAdvisorService = require("./insuranceAdvisorService");
+const telegramInsuranceWorker = require("./telegramInsuranceWorkerService");
 
 const TELEGRAM_API = "https://api.telegram.org";
 
@@ -71,46 +72,61 @@ async function handleUpdate(update) {
   if (!message || !message.text) return null;
 
   const chatId = String(message.chat && message.chat.id !== undefined ? message.chat.id : "");
-  if (!founderChatId() || chatId !== String(founderChatId())) {
-    return { ok: false, reason: "unauthorized_chat" };
-  }
+  if (!chatId) return null;
 
   const text = String(message.text || "").trim();
   const userId = String(message.from && message.from.id !== undefined ? message.from.id : "");
+  const isFounder = Boolean(founderChatId() && chatId === String(founderChatId()));
 
-  // 1) Founder commands → real engines (e.g. "insurance ke liye leads generate karo").
-  try {
-    const commandResult = await garudaCommandRouter.dispatchCommand(text, { founderApproved: true });
-    if (commandResult && commandResult.command && commandResult.message) {
-      await sendMessage(commandResult.message, chatId);
-      return {
-        ok: true,
-        chatId,
-        userId,
-        received: text,
-        reply: commandResult.message,
-        mode: "command",
-        command: commandResult.command
-      };
-    }
-  } catch {}
+  // 1) Founder chat: full command routing (real engines) + insurance worker.
+  if (isFounder) {
+    try {
+      const commandResult = await garudaCommandRouter.dispatchCommand(text, { founderApproved: true });
+      if (commandResult && commandResult.command && commandResult.message) {
+        await sendMessage(commandResult.message, chatId);
+        return {
+          ok: true,
+          chatId,
+          userId,
+          received: text,
+          reply: commandResult.message,
+          mode: "command",
+          command: commandResult.command
+        };
+      }
+    } catch {}
+  }
 
-  // 2) Insurance-related questions → grounded ABSLI advisor (no hallucination).
+  // 2) Insurance-related questions → grounded ABSLI advisor + conversation
+  //    memory + need detection + qualification (founder AND public chats).
   if (insuranceAdvisorService.detectInsuranceIntent(text)) {
-    const advisor = insuranceAdvisorService.answerInsuranceQuery(text);
-    if (advisor && advisor.answer) {
-      await sendMessage(advisor.answer, chatId);
+    const result = await telegramInsuranceWorker.handleInsuranceMessage(chatId, text);
+    if (result && result.reply) {
+      await sendMessage(result.reply, chatId);
       return {
         ok: true,
         chatId,
         userId,
         received: text,
-        reply: advisor.answer,
-        mode: "insurance_advisor",
-        topic: advisor.topic,
-        grounded: advisor.grounded
+        reply: result.reply,
+        mode: "insurance_worker",
+        grounded: result.advisorGrounded,
+        signals: result.signals || [],
+        leadId: result.leadId || null,
+        qualificationStep: result.qualificationStep || null
       };
     }
+  }
+
+  // 3) Non-founder, non-insurance → friendly public pointer (no hallucination,
+  //    no ungrounded LLM chatter to strangers).
+  if (!isFounder) {
+    const reply =
+      "GARUDA is your AI Financial Advisor for ABSLI insurance queries. " +
+      "Ask me about term insurance, health insurance, child education plans, savings, or retirement. " +
+      "Main official ABSLI knowledge se hi jawab deta hoon — koi figure bina source ke nahi.";
+    await sendMessage(reply, chatId);
+    return { ok: true, chatId, userId, received: text, reply, mode: "public_pointer" };
   }
 
   const reply = await llmProvider.ask({

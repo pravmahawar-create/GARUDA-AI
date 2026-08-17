@@ -41,6 +41,7 @@ app.use("/api/knowledge", require("./routes/knowledgeRoutes"));
 app.use("/api/rag", require("./routes/ragRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/opportunities", require("./routes/opportunityRoutes"));
+app.use("/api/insurance-leads", require("./routes/insuranceLeadRoutes"));
 app.use("/api/revenue", require("./routes/revenueRoutes"));
 app.use("/api/income-goals", require("./routes/incomeGoalRoutes"));
 app.use("/api/discovery", require("./routes/discoveryRoutes"));
@@ -51,6 +52,8 @@ app.use("/api/conversations", require("./routes/conversationRoutes"));
 app.use("/api/scout", require("./routes/scoutRoutes"));
 
 const telegramBotService = require("./services/telegramBotService");
+const abslKnowledgeService = require("./services/abslKnowledgeService");
+const abslKnowledgeSeedService = require("./services/abslKnowledgeSeedService");
 
 app.get("/api/telegram", async (req, res) => {
   try {
@@ -60,6 +63,37 @@ app.get("/api/telegram", async (req, res) => {
     }
     const info = await telegramBotService.getWebhookInfo();
     return res.json({ ok: true, configured: telegramBotService.isConfigured(), webhook: info });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: String(error && error.message ? error.message : error) });
+  }
+});
+
+// Knowledge status + governed one-time seed for the insurance Q&A worker.
+app.get("/api/telegram/knowledge", async (req, res) => {
+  try {
+    const stats = abslKnowledgeService.knowledgeStats();
+    const totalChunks = await abslKnowledgeSeedService.countKnowledge().catch(() => 0);
+    const absliChunks = await abslKnowledgeSeedService.countByCategory("ABSLI").catch(() => 0);
+    return res.json({
+      ok: true,
+      stats,
+      mongoKnowledgeTotal: totalChunks,
+      mongoAbsliChunks: absliChunks,
+      deployedSource: absliChunks > 0 ? "mongo_knowledge" : "file_fallback"
+    });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: String(error && error.message ? error.message : error) });
+  }
+});
+
+app.post("/api/telegram/knowledge/seed", async (req, res) => {
+  try {
+    const dryRun = req.query.dryRun === "true";
+    if (!dryRun && req.get("x-garuda-founder-approved") !== "true") {
+      return res.status(403).json({ ok: false, error: "Founder approval required for non-dry-run knowledge seed" });
+    }
+    const result = await abslKnowledgeSeedService.seedAbslKnowledge({ dryRun });
+    return res.json({ ok: true, data: result });
   } catch (error) {
     return res.status(500).json({ ok: false, error: String(error && error.message ? error.message : error) });
   }

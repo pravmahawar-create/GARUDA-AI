@@ -13,6 +13,7 @@
 // - ABSLI ko garudaos.in ke kisi public page pe pin/locate nahi karna.
 
 const insurancePitchService = require("./insurancePitchService");
+const abslKnowledge = require("./abslKnowledgeService");
 
 const INTENT_KEYWORDS = [
   "insurance",
@@ -90,10 +91,12 @@ function buildFactsBlock(query, limit = 3) {
   }
 }
 
-function answerInsuranceQuery(text) {
+async function answerInsuranceQuery(text) {
   const clean = String(text || "").trim();
   const topic = detectTopic(clean);
-  const facts = buildFactsBlock(clean);
+  // Canonical governed knowledge first (MongoDB Knowledge -> file chunks).
+  const { chunks } = await abslKnowledge.getKnowledgeChunks(clean, 8);
+  const facts = buildFactsFromChunks(clean, chunks);
   const hook = TOPIC_HOOK[topic] || TOPIC_HOOK.savings_investment;
 
   const lines = [
@@ -109,7 +112,7 @@ function answerInsuranceQuery(text) {
       .trim();
     lines.push(`Verified figure: ${sample} (source: ${source || "ABSLI official documents"}) — exact benefits plan, terms & conditions aur underwriting par depend karte hain.`);
   } else {
-    lines.push("Ye data mere ABSLI knowledge base me abhi full confirm nahi hai — main official documents se verify karke confirm karunga.");
+    lines.push("Ye data mere ABSLI knowledge base me abhi full confirm nahi hai — main official documents se verify karke confirm karunga. Koi bhi figure main bina source ke nahi bataunga.");
   }
 
   lines.push("Investment-first hai — ₹30,000 se shuru, flexible, koi rigid fixed amount nahi. Poori detail garudaos.in par bhi available hai.");
@@ -120,9 +123,26 @@ function answerInsuranceQuery(text) {
     handled: true,
     topic,
     grounded: facts.length > 0,
+    knowledgeOrigin: chunks.origin,
     factsUsed: facts.map((f) => ({ source: f.source, numbers: f.numbers })),
     answer: lines.join("\n\n")
   };
+}
+
+// Extract facts from normalized knowledge chunks ({ text, source, page }).
+function buildFactsFromChunks(query, chunkList) {
+  const chunks = Array.isArray(chunkList) ? chunkList : [];
+  if (!chunks.length) return [];
+  const relevant = insurancePitchService.pickRelevantChunks(query, chunks, 8);
+  const facts = insurancePitchService.extractFacts(relevant);
+  return (facts || [])
+    .map((f) => ({
+      source: f.source,
+      snippet: f.snippet,
+      numbers: (f.numbers || []).filter(isMeaningfulFigure)
+    }))
+    .filter((f) => f.numbers.length > 0)
+    .slice(0, 3);
 }
 
 module.exports = {
