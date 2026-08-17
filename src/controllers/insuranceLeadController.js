@@ -78,3 +78,39 @@ exports.importContacts = async (req, res) => {
     return sendError(res, error, "Failed to import insurance contacts");
   }
 };
+
+// Founder-gated pitch preparation: builds a grounded ABSLI pitch for every
+// `new` lead (using knowledge chunks) and stores pitchSubject/pitchBody. Sets
+// status to message_prepared. Founder approval header required.
+exports.preparePitches = async (req, res) => {
+  try {
+    const founderApproved = req.get("x-garuda-founder-approved");
+    if (!(founderApproved === true || String(founderApproved || "").trim().toLowerCase() === "true")) {
+      return res.status(403).json({ success: false, message: "Founder approval required to prepare insurance pitches" });
+    }
+    const { buildPitch, loadKnowledgeChunks, detectTopic } = require("../services/insurancePitchService");
+    const chunks = loadKnowledgeChunks();
+    const query = req.query.status || "new";
+    const leads = await InsuranceLead.find({ status: query });
+    const prepared = [];
+    const failed = [];
+    for (const lead of leads) {
+      try {
+        const topic = detectTopic(lead.tags && lead.tags.find((t) => ["child_education", "savings_investment", "family_protection", "cancer_health", "tax"].includes(t)) || "");
+        const pitch = buildPitch({ firstName: lead.firstName, query: topic, chunks });
+        lead.pitchSubject = `GARUDA: ${pitch.topic}`;
+        lead.pitchBody = pitch.body;
+        lead.status = "message_prepared";
+        lead.audit = lead.audit || [];
+        lead.audit.push({ action: "pitch_prepared", at: new Date(), detail: `topic=${pitch.topic}, facts=${pitch.factsUsed.length}` });
+        await lead.save();
+        prepared.push({ email: lead.email, topic: pitch.topic, factsUsed: pitch.factsUsed.length });
+      } catch (error) {
+        failed.push({ email: lead.email, reason: String(error.message || error) });
+      }
+    }
+    return res.json({ success: true, data: { prepared: prepared.length, failed: failed.length, leads: prepared, failures: failed } });
+  } catch (error) {
+    return sendError(res, error, "Failed to prepare insurance pitches");
+  }
+};
