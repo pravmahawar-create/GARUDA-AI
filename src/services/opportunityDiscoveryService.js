@@ -167,6 +167,27 @@ function normalizeRemotiveJob(job, missionId) {
   };
 }
 
+// Governed eligibility gate applied at discovery intake: GARUDA only ranks
+// work it can actually execute (garuda_deliverable / founder_garuda / AI-only)
+// with a measurable, above-floor value. Human-only roles, job listings, and
+// UNMEASURED or below-floor candidates are auto-rejected so the Founder
+// dashboard stays clean.
+function applyMinimumValueEligibilityGate(candidate = {}) {
+  const candidateRecord = { ...candidate };
+  const valueModel = candidateRecord.valueModel || {};
+  const channel = candidateRecord.opportunityChannel || "";
+  const reason = revenueValueModel.minimumValueRejectionReason(valueModel.estimatedINR, channel);
+  const eligible = ["garuda_deliverable", "founder_garuda", "autonomous_garuda"].includes(channel);
+  if (candidateRecord.status === "ranked" && (!eligible || reason)) {
+    candidateRecord.status = "rejected";
+    candidateRecord.rejectionReasons = Array.from(new Set([
+      ...(candidateRecord.rejectionReasons || []),
+      reason || "Rejected: not a GARUDA-executable deliverable (human-only role or job listing)."
+    ]));
+  }
+  return candidateRecord;
+}
+
 function splitCandidateForDecisionPreservation(candidate) {
   const { status, rejectionReasons, requiresFounderApproval, ...refreshable } = candidate;
   return {
@@ -257,12 +278,16 @@ async function runDiscoveryCycle(options = {}) {
       }
       const identity = { missionId, source: candidate.source, externalId: candidate.externalId };
       try {
-        let result = await DiscoveryCandidate.updateOne({ ...identity, status: { $in: ["ranked", "rejected"] } }, { $set: candidate });
+        const gated = applyMinimumValueEligibilityGate(candidate);
+        let result = await DiscoveryCandidate.updateOne({ ...identity, status: { $in: ["ranked", "rejected"] } }, { $set: gated });
         if (!result.matchedCount) {
-          const update = splitCandidateForDecisionPreservation(candidate);
+          const update = splitCandidateForDecisionPreservation(gated);
           result = await DiscoveryCandidate.updateOne(identity, { $set: update.refreshable, $setOnInsert: update.insertOnly }, { upsert: true });
         }
         if (result.upsertedCount) cycleCount += 1;
+        candidate.opportunityChannel = gated.opportunityChannel;
+        candidate.status = gated.status;
+        candidate.rejectionReasons = gated.rejectionReasons;
       } catch (error) {
         summary.errors.push(`persist failed: ${error.message}`);
         continue;
@@ -334,6 +359,60 @@ function candidatePrioritySortValue(candidate = {}) {
   return value;
 }
 
+// Governed bulk sweep: rejects every ranked or approved candidate that is not
+// GARUDA-executable or is below the minimum value floor. Also archives pipeline
+// opportunities that are human-only roles/jobs or below the value floor so the
+// Founder dashboard only surfaces real, GARUDA-executable work. Founder-gated
+// and idempotent — can be re-run safely as new junk arrives.
+async function sweepIneligibleCandidates(context = {}) {
+  if (!founderApprovalGranted(context.founderApproved)) {
+    throw Object.assign(new Error("Founder approval is required to sweep discovery candidates"), { statusCode: 403 });
+  }
+  const { Opportunity } = require("../models/Opportunity");
+  const candidates = await DiscoveryCandidate.find({ status: { $in: ["ranked", "approved"] } });
+  const rejected = [];
+  const kept = [];
+  for (const candidate of candidates) {
+    const gated = applyMinimumValueEligibilityGate(candidate.toJSON());
+    if (gated.status === "rejected") {
+      candidate.status = "rejected";
+      candidate.rejectionReasons = Array.from(new Set([...(candidate.rejectionReasons || []), ...(gated.rejectionReasons || [])]));
+      candidate.decision = {
+        actor: context.actor || "founder",
+        note: `Auto-rejected by governed minimum-value sweep. ${(gated.rejectionReasons || []).join(" ")}`,
+        decidedAt: new Date()
+      };
+      rejected.push({ id: candidate._id, title: candidate.title, reasons: gated.rejectionReasons });
+      await candidate.save();
+    } else {
+      kept.push(candidate._id);
+    }
+  }
+  const opportunities = await Opportunity.find({ stage: { $ne: "won" }, "outreach.archived": { $ne: true } });
+  const archived = [];
+  for (const opp of opportunities) {
+    const value = opp.valueModel && opp.valueModel.estimatedINR != null
+      ? opp.valueModel.estimatedINR
+      : (opp.potentialValue != null ? opp.potentialValue : null);
+    // Human-only roles come from Remotive/discovery and carry high salary
+    // figures; junk public-post scrapes carry tiny or UNMEASURED value. Either
+    // way, if a governed reason exists the opportunity is not GARUDA-executable.
+    const fromDiscovery = opp.origin === "discovery" || /remotive|discovery/.test(String(opp.source || ""));
+    const reason = revenueValueModel.minimumValueRejectionReason(value, fromDiscovery ? "human_opportunity_only" : "founder_garuda");
+    if (reason && opp.stage !== "won") {
+      opp.outreach = {
+        ...(opp.outreach || {}),
+        archived: true,
+        archivedAt: new Date(),
+        archiveReason: `${reason} (auto-swept by governed minimum-value sweep)`
+      };
+      archived.push({ id: opp._id, title: opp.title, reason });
+      await opp.save();
+    }
+  }
+  return { swept: rejected.length, rejected, keptCount: kept.length, opportunitiesArchived: archived.length, archivedOpportunities: archived };
+}
+
 async function listCandidates(filters = {}) {
   const query = {};
   if (filters.missionId) query.missionId = filters.missionId;
@@ -366,6 +445,20 @@ async function decideCandidate(id, payload = {}, context = {}) {
   const candidate = await DiscoveryCandidate.findById(id);
   if (!candidate) throw Object.assign(new Error("Discovery candidate not found"), { statusCode: 404 });
   if (candidate.status !== "ranked") throw Object.assign(new Error(`Candidate is already ${candidate.status}`), { statusCode: 409 });
+
+  if (payload.status === "approved") {
+    const rejectionReason = revenueValueModel.minimumValueRejectionReason(
+      candidate.valueModel && candidate.valueModel.estimatedINR,
+      candidate.opportunityChannel
+    );
+    if (rejectionReason) {
+      throw Object.assign(new Error(rejectionReason), { statusCode: 422 });
+    }
+    if (!candidate.verification || candidate.verification.garudaExecutionEligible !== true) {
+      throw Object.assign(new Error("Rejected: candidate is not eligible for GARUDA execution — human identity or verification gate is not clear."), { statusCode: 422 });
+    }
+  }
+
   candidate.status = payload.status;
   candidate.decision = { actor: context.actor || "founder", note: String(payload.note || "").trim(), decidedAt: new Date() };
   if (payload.status === "approved" && !candidate.opportunityId) {
@@ -394,6 +487,10 @@ async function createOpportunityFromCandidate(candidate, context = {}) {
   const estimate = candidate.valueModel && candidate.valueModel.estimatedINR != null
     ? candidate.valueModel
     : revenueValueModel.estimateValueFromEvidence(candidate.salaryText || "", { valueType: "estimated_project_value" });
+  const rejectionReason = revenueValueModel.minimumValueRejectionReason(estimate.estimatedINR, candidate.opportunityChannel);
+  if (rejectionReason) {
+    throw Object.assign(new Error(rejectionReason), { statusCode: 422 });
+  }
   const priority = estimate.estimatedINR != null
     ? (revenueValueModel.classifyPriority(estimate.estimatedINR)?.priority || "UNMEASURED")
     : "UNMEASURED";
@@ -634,6 +731,7 @@ module.exports = {
   PROHIBITED_TERMS,
   REMOTIVE_URL,
   SCAM_TERMS,
+  applyMinimumValueEligibilityGate,
   createOpportunityFromCandidate,
   candidatePrioritySortValue,
   decideCandidate,
@@ -651,6 +749,7 @@ module.exports = {
   processFounderAssistedIntake: require("./founderAssistedIntakeService").processFounderAssistedIntake,
   scoreCandidate,
   splitCandidateForDecisionPreservation,
+  sweepIneligibleCandidates,
   toUniversalOpportunity,
   validateCandidateDecision
 };

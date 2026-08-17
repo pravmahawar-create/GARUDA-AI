@@ -323,6 +323,30 @@ tags: Array.isArray(input.tags) ? input.tags.map(plainText) : [],
     }
   };
 
+  const { estimateValueFromEvidence, isMeasuredValue, minimumValueRejectionReason } = require("./revenueValueModelService");
+  const estimate = estimateValueFromEvidence(candidatePayload.salaryText || "", { valueType: "estimated_project_value" });
+  const valueReason = minimumValueRejectionReason(estimate.estimatedINR, candidatePayload.opportunityChannel);
+  if (candidatePayload.status === "ranked" && valueReason) {
+    candidatePayload.status = "rejected";
+    candidatePayload.rejectionReasons = Array.from(new Set([
+      ...(candidatePayload.rejectionReasons || []),
+      valueReason
+    ]));
+    candidatePayload.verification = {
+      ...(candidatePayload.verification || {}),
+      garudaExecutionEligible: false,
+      rejectionReasons: candidatePayload.rejectionReasons
+    };
+  }
+  if (candidatePayload.status === "ranked" && !isMeasuredValue(estimate.estimatedINR)) {
+    // No invented value: founder-assisted work still needs a stated budget.
+    candidatePayload.status = "rejected";
+    candidatePayload.rejectionReasons = Array.from(new Set([
+      ...(candidatePayload.rejectionReasons || []),
+      "Rejected: unstated budget — founder-assisted intake requires a stated project value (>= INR 3000)."
+    ]));
+  }
+
   return candidatePayload;
 }
 

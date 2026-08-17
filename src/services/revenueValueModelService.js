@@ -24,6 +24,32 @@
 // NOTE: revenueCommandCenterService is required lazily to avoid a load-time
 // circular dependency (it requires opportunityDiscoveryService).
 
+// Founder-approved minimum task value. GARUDA does not execute work below
+// this floor; such work is LOW_VALUE/JUNK and auto-rejected at intake and at
+// approval time. Unverified (UNKNOWN / UNMEASURED) value is also rejected.
+const MIN_TASK_VALUE_INR = 3000;
+
+function isMeasuredValue(estimatedINR) {
+  return Number.isFinite(Number(estimatedINR)) && Number(estimatedINR) > 0;
+}
+
+function isBelowMinimumValue(estimatedINR) {
+  return isMeasuredValue(estimatedINR) && Number(estimatedINR) < MIN_TASK_VALUE_INR;
+}
+
+function minimumValueRejectionReason(estimatedINR, channel = "") {
+  if (channel === "human_opportunity_only" || channel === "human_only") {
+    return "Rejected: this is a human-only role/listing — GARUDA cannot execute it.";
+  }
+  if (!isMeasuredValue(estimatedINR)) {
+    return "Rejected: unverified or UNMEASURED value — no credible commercial evidence.";
+  }
+  if (isBelowMinimumValue(estimatedINR)) {
+    return `Rejected: below GARUDA minimum task value of INR ${MIN_TASK_VALUE_INR}.`;
+  }
+  return "";
+}
+
 const PRIORITY_BANDS = Object.freeze([
   { priority: "LOW_VALUE", min: 0, max: 3000, label: "LOW VALUE / JUNK", maxFollowUps: 2, archiveOnExhaustion: true },
   { priority: "LOW", min: 3000, max: 5000, label: "LOW PRIORITY", maxFollowUps: 3, archiveOnExhaustion: true },
@@ -178,12 +204,16 @@ function rankFromCandidate(candidate = {}) {
 
 module.exports = {
   MAX_FOLLOW_UPS_BY_PRIORITY,
+  MIN_TASK_VALUE_INR,
   PRIORITY_BANDS,
   RANK_FACTORS,
   VALUE_TYPES,
   classifyPriority,
   estimateValueFromEvidence,
+  isBelowMinimumValue,
+  isMeasuredValue,
   maxFollowUpsFor,
+  minimumValueRejectionReason,
   priorityLabel,
   rankFromCandidate,
   rankOpportunity

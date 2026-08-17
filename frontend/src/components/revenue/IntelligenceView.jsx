@@ -70,6 +70,24 @@ export default function IntelligenceView() {
 
   const { loading, error, candidates, goals, affiliate, cases } = state;
 
+  const isGarudaEligible = (c) =>
+    ["garuda_deliverable", "founder_garuda", "autonomous_garuda"].includes(c.opportunityChannel) &&
+    c.verification &&
+    c.verification.garudaExecutionEligible === true;
+
+  const candidateActionBlockedReason = (c) => {
+    if (c.status !== "ranked") return "";
+    if (!isGarudaEligible(c)) {
+      return c.opportunityChannel === "human_opportunity_only" || c.opportunityChannel === "human_only"
+        ? "Human-only job listing — GARUDA cannot execute this. Reject it."
+        : "Not verified as GARUDA-executable deliverable.";
+    }
+    const vm = c.valueModel || {};
+    if (!(vm.estimatedINR > 0)) return "Unverified/UNMEASURED value — reject.";
+    if (vm.estimatedINR < 3000) return "Below INR 3000 minimum task value — reject.";
+    return "";
+  };
+
   if (loading) return <div style={{ textAlign: "center", padding: "3rem 0", color: MUTED }}>Loading intelligence…</div>;
   if (error) return (
     <div style={{ border: "1px solid rgba(248,113,113,0.35)", background: "rgba(248,113,113,0.08)", borderRadius: 14, padding: "1.25rem", color: "#fca5a5", fontSize: "0.9rem" }}>
@@ -113,21 +131,32 @@ export default function IntelligenceView() {
                     <td style={{ padding: "0.65rem 1rem", color: MUTED }}>{c.company || "—"}</td>
                     <td style={{ padding: "0.65rem 1rem" }}><Badge label={titleCase(c.status || "ranked").toUpperCase()} color={CAND_TONE[c.status] || BLUE} /></td>
                     <td style={{ padding: "0.65rem 1rem", fontWeight: 700, color: GOLD }}>{c.score != null ? c.score : "—"}</td>
-                    <td style={{ padding: "0.65rem 1rem", color: MUTED, fontSize: "0.76rem" }}>{titleCase(c.opportunityChannel || c.marketSourceType || "")}</td>
+                    <td style={{ padding: "0.65rem 1rem", color: MUTED, fontSize: "0.76rem" }}>
+                      {titleCase(c.opportunityChannel || c.marketSourceType || "")}
+                      {(c.opportunityChannel === "human_opportunity_only" || c.opportunityChannel === "human_only") && (
+                        <div style={{ marginTop: "0.2rem" }}>
+                          <Badge label="JOB LISTING — NOT GARUDA WORK" color={RED} />
+                        </div>
+                      )}
+                    </td>
                     <td style={{ padding: "0.65rem 1rem" }}>
-                      <div style={{ display: "flex", gap: "0.35rem" }}>
+                      <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
                         {["approved", "dismissed"].map((d) => (
                           <button
                             key={d}
                             type="button"
-                            disabled={decisionBusy === c.id || c.status === d}
+                            disabled={decisionBusy === c.id || c.status === d || (d === "approved" && candidateActionBlockedReason(c))}
                             onClick={() => decide(c, d)}
-                            style={{ fontSize: "0.64rem", fontWeight: 800, padding: "0.25rem 0.5rem", borderRadius: 7, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: c.status === d ? GREEN : "#c7ccd8", cursor: "pointer", textTransform: "capitalize" }}
+                            title={d === "approved" ? candidateActionBlockedReason(c) : undefined}
+                            style={{ fontSize: "0.64rem", fontWeight: 800, padding: "0.25rem 0.5rem", borderRadius: 7, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: c.status === d ? GREEN : (d === "approved" && candidateActionBlockedReason(c) ? "rgba(248,113,113,0.5)" : "#c7ccd8"), cursor: (d === "approved" && candidateActionBlockedReason(c)) ? "not-allowed" : "pointer", textTransform: "capitalize" }}
                           >
                             {decisionBusy === c.id ? "…" : d}
                           </button>
                         ))}
                       </div>
+                      {candidateActionBlockedReason(c) && (
+                        <div style={{ fontSize: "0.68rem", color: RED, marginTop: "0.3rem", maxWidth: 220 }}>{candidateActionBlockedReason(c)}</div>
+                      )}
                     </td>
                   </tr>
                 ))}

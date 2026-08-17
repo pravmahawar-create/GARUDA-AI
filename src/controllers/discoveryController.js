@@ -43,6 +43,7 @@ exports.decide = async (req, res) => {
     return res.json({ success: true, data: decideResult });
   } catch (error) { return sendError(res, error, "Failed to update candidate decision"); }
 };
+exports.sweepIneligible = async (req, res) => { try { return res.json({ success: true, data: await discoveryService.sweepIneligibleCandidates({ founderApproved: req.get("x-garuda-founder-approved"), actor: "founder" }) }); } catch (error) { return sendError(res, error, "Failed to sweep ineligible candidates"); } };
 exports.importFounderAssisted = async (req, res) => {
   try {
     let body = req.body || {};

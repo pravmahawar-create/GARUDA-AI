@@ -36,3 +36,45 @@ exports.promote = async (req, res) => {
     return sendError(res, error, "Failed to promote insurance lead to opportunity");
   }
 };
+
+// Founder-gated bulk import of qualified insurance contacts (from the founder's
+// outreach CSV) into the InsuranceLead pipeline. Idempotent per email. Founder
+// approval header required.
+exports.importContacts = async (req, res) => {
+  try {
+    const founderApproved = req.get("x-garuda-founder-approved");
+    if (!(founderApproved === true || String(founderApproved || "").trim().toLowerCase() === "true")) {
+      return res.status(403).json({ success: false, message: "Founder approval required for insurance contact import" });
+    }
+    const contacts = Array.isArray(req.body.contacts) ? req.body.contacts : [];
+    const inserted = [];
+    const skipped = [];
+    for (const raw of contacts) {
+      const email = String(raw.email || "").trim().toLowerCase();
+      if (!email) {
+        skipped.push({ ...raw, reason: "no_email" });
+        continue;
+      }
+      const existing = await InsuranceLead.findOne({ email });
+      if (existing) {
+        skipped.push({ email, reason: "duplicate" });
+        continue;
+      }
+      const lead = await InsuranceLead.create({
+        email,
+        firstName: String(raw.firstName || raw.name || "").trim(),
+        lastName: String(raw.lastName || "").trim(),
+        phone: String(raw.phone || "").trim(),
+        source: String(raw.source || "founder_contacts").trim(),
+        status: "new",
+        tags: ["founder_import", String(raw.query || "savings_investment")].filter(Boolean),
+        notes: String(raw.notes || "").trim(),
+        audit: [{ action: "founder_imported", at: new Date(), detail: `Import from founder contacts CSV${raw.query ? `, query=${raw.query}` : ""}` }]
+      });
+      inserted.push(lead.toJSON());
+    }
+    return res.status(201).json({ success: true, data: { inserted: inserted.length, skipped: skipped.length, insertedLeads: inserted, skippedReasons: skipped } });
+  } catch (error) {
+    return sendError(res, error, "Failed to import insurance contacts");
+  }
+};
