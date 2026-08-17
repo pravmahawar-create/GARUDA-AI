@@ -136,7 +136,7 @@ exports.sendPitches = async (req, res) => {
     if (!smtp.ready || !smtp.config) {
       return res.status(500).json({ success: false, message: "SMTP not configured (GARUDA_EMAIL_HOST/USER/PASS)" });
     }
-    const { sendSmtpNative } = require("./motherPlatformAuthService");
+    const { sendSmtpNative } = require("../services/motherPlatformAuthService");
     const leads = await InsuranceLead.find({ status: "message_prepared" });
     const sent = [];
     const failed = [];
