@@ -178,7 +178,7 @@ function applyMinimumValueEligibilityGate(candidate = {}) {
   const channel = candidateRecord.opportunityChannel || "";
   const reason = revenueValueModel.minimumValueRejectionReason(valueModel.estimatedINR, channel);
   const eligible = ["garuda_deliverable", "founder_garuda", "autonomous_garuda"].includes(channel);
-  if (candidateRecord.status === "ranked" && (!eligible || reason)) {
+  if (["ranked", "approved"].includes(candidateRecord.status) && (!eligible || reason)) {
     candidateRecord.status = "rejected";
     candidateRecord.rejectionReasons = Array.from(new Set([
       ...(candidateRecord.rejectionReasons || []),
