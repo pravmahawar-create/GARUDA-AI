@@ -77,6 +77,36 @@ async function main() {
     assert.strictEqual(worker.qualificationComplete({ name: "Abc", coverageType: "term" }), true);
   });
 
+  await test("age, budget and goal are captured from conversation text", () => {
+    let ctx = worker.parseQualificationAnswer("mera naam Vikram, age 34, budget 45000 per month, goal family ke liye term cover", {});
+    assert.strictEqual(ctx.name, "Vikram");
+    assert.strictEqual(ctx.age, 34);
+    assert.strictEqual(ctx.budget, 45000);
+    assert.ok(ctx.goal && ctx.goal.length > 0);
+  });
+
+  await test("invalid age is not captured", () => {
+    const ctx = worker.parseQualificationAnswer("meri umar 5 saal hai", {});
+    assert.strictEqual(ctx.age, undefined);
+  });
+
+  await test("follow-up respects budget context", () => {
+    const followUp = worker.buildFollowUp({ budget: 45000, coverageType: "term" }, { topic: "term" });
+    assert.ok(/45,000/.test(followUp));
+    assert.ok(/naam/.test(followUp));
+  });
+
+  await test("follow-up respects child education topic", () => {
+    const followUp = worker.buildFollowUp({ coverageType: "education", age: 34 }, { topic: "child_education" });
+    assert.ok(/34/.test(followUp));
+    assert.ok(/education/.test(followUp.toLowerCase()));
+  });
+
+  await test("follow-up falls back gracefully with only name", () => {
+    const followUp = worker.buildFollowUp({ userName: "Riya" }, null);
+    assert.ok(/Riya/.test(followUp));
+  });
+
   // -- InsuranceLead creation (DB mocked) --
   await test("insurance lead created from conversation state", async () => {
     const { InsuranceLead } = require("../models/InsuranceLead");

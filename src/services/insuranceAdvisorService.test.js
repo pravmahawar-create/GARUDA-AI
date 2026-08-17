@@ -51,6 +51,23 @@ async function main() {
     assert.ok(result.answer.includes("verify") || result.answer.includes("knowledge base") || result.answer.includes("figure"));
   });
 
+  await run("context personalizes the answer with name and budget", async () => {
+    const result = await insuranceAdvisorService.answerInsuranceQuery("term insurance kya hai", {
+      userName: "Vikram",
+      budget: 45000,
+      age: 34
+    });
+    assert.ok(result.answer.includes("Vikram"));
+    assert.ok(result.answer.includes("45,000"));
+    assert.ok(result.answer.includes("34"));
+  });
+
+  await run("context is optional and backward compatible", async () => {
+    const plain = await insuranceAdvisorService.answerInsuranceQuery("term insurance kya hai");
+    assert.strictEqual(plain.handled, true);
+    assert.ok(plain.answer.includes("ABSLI"));
+  });
+
   await run("command router maps insurance leadgen to insurance domain", () => {
     const detection = garudaCommandRouter.detectCommand("insurance ke liye leads generate karo");
     assert.strictEqual(detection.command, "leadgen");

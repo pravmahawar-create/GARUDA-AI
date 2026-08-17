@@ -109,8 +109,9 @@ function detectNeedSignals(text) {
   if (/\b(need|chahiye|want|batao|interested|le lunga|ke liye|apply|shuru|buy|khareedna|quote|plan batao)\b/.test(t)) signals.push("explicit_interest");
   if (/\b(name|mera naam|i am|main hoon|my name)\b/.test(t)) signals.push("name_provided");
   if (/(@|gmail|yahoo|outlook|hotmail|\b[0-9]{10}\b)/.test(t)) signals.push("contact_provided");
-  if (/\b(age|age\s*\d+|saal|years old|year old)\b/.test(t)) signals.push("age_provided");
-  if (/\b(budget|kitna|amount|premium|cost|price|monthly|per month)\b/.test(t)) signals.push("budget_context");
+  if (/\b(age|age\s*\d+|saal|saal ka|years old|year old|umar|umra)\b/.test(t)) signals.push("age_provided");
+  if (/\b(budget|kitna|amount|premium|cost|price|monthly|per month|haz\w*\s*(\/|per)?\s*month)\b/.test(t)) signals.push("budget_context");
+  if (/\b(goal|target|soch raha|soch rahi|plan karna|karna chahta|karana hai)\b/.test(t)) signals.push("goal_provided");
   if (/\b(term|health|child|education|cancer|retirement|pension|savings|investment|life)\b/.test(t)) signals.push("coverage_type");
   return signals;
 }
@@ -153,11 +154,62 @@ function parseQualificationAnswer(text, current = {}) {
     if (emailMatch) next.contact = emailMatch[0];
     else if (phoneMatch) next.contact = phoneMatch[1];
   }
+  if (!next.age) {
+    const ageMatch = t.match(/\b(\d{1,2})\s*(?:saal|years old|year old|years|age)\b/i) || t.match(/\bage\s*[:=]?\s*(\d{1,2})\b/i);
+    if (ageMatch) {
+      const age = Number(ageMatch[1]);
+      if (age >= 18 && age <= 80) next.age = age;
+    }
+  }
+  if (!next.budget) {
+    const budgetMatch = t.match(/(?:premium|budget|monthly|per month|amount|kitna|cost|price)\s*[:=]?\s*(?:rs\.?|inr|₹)?\s*([\d,]{4,})/i) || t.match(/\b(?:rs\.?|inr|₹)\s*([\d,]{4,})\b/i);
+    if (budgetMatch) next.budget = Number(String(budgetMatch[1]).replace(/,/g, ""));
+  }
+  if (!next.goal) {
+    const goalMatch = t.match(/\b(?:goal|target)\s*[:=]?\s*([a-z ,]+)/i);
+    if (goalMatch && goalMatch[1].trim().length > 1) next.goal = goalMatch[1].trim().replace(/[.!?]+$/, "");
+  }
   return next;
 }
 
 function qualificationComplete(ctx) {
   return Boolean(ctx && ctx.name && String(ctx.name).trim().length >= MIN_INITIAL_NAME_LENGTH && ctx.coverageType);
+}
+
+// Natural, no-pressure follow-up after a grounded answer. Uses whatever context
+// the user already shared (coverage type, age, budget, name) to ask one relevant
+// question that moves toward qualification — without forcing a sales pitch.
+function buildFollowUp(ctx = {}, advisor = null) {
+  const topic = (advisor && advisor.topic) || String(ctx.coverageType || "").toLowerCase();
+  const budget = Number(ctx.budget) || null;
+  const age = Number(ctx.age) || null;
+
+  if (budget && budget >= 30000) {
+    return `Aapka budget around ₹${budget.toLocaleString("en-IN")} per month rakha hai — is level par ₹30,000+ se shuru hone wale investment-first plans perfect fit hain. Aapka naam bata dein taaki main aapke hisaab se exact details tayyar kar sakun.`;
+  }
+  if (budget && budget > 0 && budget < 30000) {
+    return `Thoda context — ₹30,000 se upar ke investment-first plans start hote hain. Aap monthly kitna set karna chahenge, aur aapki umar kya hai? Isse main sahi ballpark bata sakta hoon.`;
+  }
+
+  if (topic === "child_education" || topic === "child" || topic === "education") {
+    return age ? `Aapki umar ${age} hai — bachchon ke liye education planning mein time aapka sabse bada advantage hai. Bachcha kitne saal ka hai aur kitna corpus soch rahe hain?` : `Bachchon ki education planning mein time sabse badi cheez hai. Aapka naam aur target amount bata dein taaki main ek clean picture de sakun?`;
+  }
+  if (topic === "retirement" || topic === "pension" || topic === "savings" || topic === "savings_investment") {
+    return `Savings/retirement ke liye long-term consistency sabse zaroori hai. Aapki umar aur monthly savings budget kya hai? Us hisaab se main growth + suraksha balance dikha sakta hoon.`;
+  }
+  if (topic === "health" || topic === "cancer" || topic === "cancer_health") {
+    return `Health cover ki planning mein age aur existing family history matter karti hai. Aapki umar kya hai, aur aap kis city mein hain? Isse main relevant health plan points bata sakta hoon.`;
+  }
+  if (topic === "term" || topic === "life" || topic === "family_protection") {
+    return `Term cover ki planning mein aapki monthly income aur family liabilities sabse important hain. Aapka naam aur age bata dein taaki main aapke hisaab se cover amount ka idea de sakun.`;
+  }
+  if (topic === "tax") {
+    return `Tax planning asaan ho sakti hai sahi product ke saath. Aapki annual income slab kya hai, aur aapne kisi tax-saving plan ke baare mein socha hai?`;
+  }
+  if (ctx.userName) {
+    return `${ctx.userName}, koi aur sawal jo aapke mann mein ho — bilkul freely puchhiye. Aur agar aap chaahen toh aapka naam, age, aur budget batakar plan details le sakte hain.`;
+  }
+  return "Agar aap chaahin toh main aapke hisaab se plan details tayyar kar sakta hoon — bas naam, age, aur budget batayein.";
 }
 
 // ---- Lead creation (founder-gated handoff) ----
@@ -264,10 +316,22 @@ async function handleInsuranceMessage(chatId, text, options = {}) {
 
   await remember(chatId, "user", clean, { evidence: { signals } });
 
+  // Conversation context (prior turns) so the bot can follow up naturally
+  // instead of treating each message as an isolated question.
+  const context = await recentContext(chatId, 8);
+  const contextPack = {
+    userName: updated.name || null,
+    age: updated.age || null,
+    budget: updated.budget || null,
+    goal: updated.goal || null,
+    coverageType: updated.coverageType || null,
+    priorTopics: (context || []).filter((m) => m.role === "user").map((m) => m.text).slice(-3)
+  };
+
   // 1) Grounded answer first (answer-first governance; no pitch).
   let advisor = null;
   try {
-    advisor = await insuranceAdvisorService.answerInsuranceQuery(clean);
+    advisor = await insuranceAdvisorService.answerInsuranceQuery(clean, contextPack);
   } catch {
     advisor = null;
   }
@@ -310,6 +374,13 @@ async function handleInsuranceMessage(chatId, text, options = {}) {
     }
   }
 
+  // 3) After a grounded answer, a natural follow-up keeps the conversation
+  //    warm and moves it toward qualification without any pressure.
+  if (reply && !qualificationStep && needs) {
+    const followUp = buildFollowUp(updated, advisor);
+    if (followUp) reply = `${reply}\n\n${followUp}`;
+  }
+
   if (!reply) {
     reply = "Koi baat nahi, main yahan hoon aapke liye. GARUDA aapke insurance sawalon ka jawab dene ke liye hai — term, health, child education, savings/retirement, jo bhi aapke mann mein ho, khul ke puchhiye. Aur koi figure main bina source ke nahi bataunga, kyunki aapka bharosa mere liye sabse important hai.";
   }
@@ -331,6 +402,7 @@ module.exports = {
   MIN_INITIAL_NAME_LENGTH,
   QUESTION_SEQUENCE,
   QUALIFICATION_STATE_MODE,
+  buildFollowUp,
   createInsuranceLeadFromConversation,
   detectInsuranceIntent,
   detectNeedSignals,

@@ -91,7 +91,7 @@ function buildFactsBlock(query, limit = 3) {
   }
 }
 
-async function answerInsuranceQuery(text) {
+async function answerInsuranceQuery(text, context = {}) {
   const clean = String(text || "").trim();
   const topic = detectTopic(clean);
   // Canonical governed knowledge first (MongoDB Knowledge -> file chunks).
@@ -113,6 +113,29 @@ async function answerInsuranceQuery(text) {
     lines.push(`Verified figure: ${sample} (source: ${source || "ABSLI official documents"}) — exact benefits plan, terms & conditions aur underwriting par depend karte hain.`);
   } else {
     lines.push("Ye data mere ABSLI knowledge base me abhi full confirm nahi hai — main official documents se verify karke confirm karunga. Koi bhi figure main bina source ke nahi bataunga, kyunki aapka bharosa mere liye sabse important hai.");
+  }
+
+  // Personalize with whatever the user already shared (name, budget, age).
+  // Backward compatible: context is optional and grounded-only, never invents figures.
+  const userName = context && context.userName ? String(context.userName).trim() : "";
+  const budget = context && Number(context.budget) ? Number(context.budget) : null;
+  const age = context && Number(context.age) ? Number(context.age) : null;
+  const goal = context && context.goal ? String(context.goal).trim() : "";
+  const prior = Array.isArray(context && context.priorTopics) ? context.priorTopics : [];
+
+  if (budget) {
+    lines.push(`Aapne monthly budget around ₹${budget.toLocaleString("en-IN")} bataya hai — is hisaab se planning karte hain, koi rigid fixed amount nahi.`);
+  }
+  if (age) {
+    lines.push(`Aapki umar ${age} ke hisaab se bhi main soch raha hoon — flexibility aur long-term growth dono ka balance rakhte hain.`);
+  }
+  if (goal) {
+    lines.push(`Aapka goal "${goal}" samajh gaya hoon — isi ke hisaab se main aapko aage guide karunga.`);
+  }
+  if (userName) {
+    lines.push(`Achha, ${userName} — main aapki baat bilkul dhyan se sun raha hoon.`);
+  } else if (prior.length) {
+    lines.push("Aur koi sawal ho toh khul ke batao — main aapki baat bilkul dhyan se sun raha hoon.");
   }
 
   lines.push("Investment-first hai — ₹30,000 se shuru, flexible, koi rigid fixed amount nahi. Poori detail garudaos.in par bhi available hai.");

@@ -135,15 +135,35 @@ async function handleUpdate(update) {
     }
   }
 
-  // 3) Non-founder, non-insurance → friendly public pointer (no hallucination,
-  //    no ungrounded LLM chatter to strangers).
+  // 3) Non-founder, non-insurance → friendly helpful answer via the guarded LLM
+  //    (no hallucination: skip knowledge/runtime context, transparent persona).
+  //    Falls back to a static pointer if the LLM is unavailable.
   if (!isFounder) {
+    let answer = null;
+    try {
+      const reply = await llmProvider.ask({
+        systemContext:
+          "This message came from a public Telegram user, not the founder. " +
+          "Be warm, honest, and concise in the user's own language. Never invent figures, " +
+          "prices, or policies. For insurance-related questions, keep it brief and mention " +
+          "that GARUDA is an AI Financial Advisor (Aditya Birla Sun Life ABSLI partner) and " +
+          "can answer from verified ABSLI knowledge.",
+        userMessage: text,
+        conversationHistory: [],
+        skipKnowledge: true,
+        skipRuntimeContext: true
+      });
+      const raw = reply && typeof reply.answer === "string" ? reply.answer.trim() : "";
+      if (raw) answer = trimConciseReply(raw);
+    } catch {}
     const reply =
-      "GARUDA is your AI Financial Advisor for ABSLI insurance queries. " +
-      "Ask me about term insurance, health insurance, child education plans, savings, or retirement. " +
-      "Main official ABSLI knowledge se hi jawab deta hoon — koi figure bina source ke nahi.";
+      answer && answer.length
+        ? answer
+        : "GARUDA is your AI Financial Advisor for ABSLI insurance queries. " +
+          "Ask me about term insurance, health insurance, child education plans, savings, or retirement. " +
+          "Main official ABSLI knowledge se hi jawab deta hoon — koi figure bina source ke nahi.";
     await sendMessage(reply, chatId);
-    return { ok: true, chatId, userId, received: text, reply, mode: "public_pointer" };
+    return { ok: true, chatId, userId, received: text, reply, mode: "public_llm" };
   }
 
   const reply = await llmProvider.ask({
