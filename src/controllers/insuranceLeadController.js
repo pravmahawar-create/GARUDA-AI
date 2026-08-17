@@ -136,7 +136,7 @@ exports.sendPitches = async (req, res) => {
     if (!smtp.ready || !smtp.config) {
       return res.status(500).json({ success: false, message: "SMTP not configured (GARUDA_EMAIL_HOST/USER/PASS)" });
     }
-    const { sendEmailNative } = require("../services/insuranceOutreachService");
+    const { sendSmtpNative } = require("./motherPlatformAuthService");
     const leads = await InsuranceLead.find({ status: "message_prepared" });
     const sent = [];
     const failed = [];
@@ -155,11 +155,10 @@ exports.sendPitches = async (req, res) => {
           "Ye email GARUDA (garudaos.in) — AI Financial Advisor & ABSLI Financial Partner — ne bheji hai.",
           "Agar aap ye nahi chahte ki GARUDA aapko dobara message kare, toh sirf reply kare: UNSUBSCRIBE",
           "Aapka data kisi ke saath share nahi hota."
-        ].join("\n"),
-        from: smtp.config.user
+        ].join("\n")
       };
       try {
-        const result = await sendEmailNative(smtp.config, mail);
+        const result = await sendSmtpNative(smtp.config, mail);
         lead.sentCount = Number(lead.sentCount || 0) + 1;
         lead.sentAt = new Date();
         lead.lastAttemptAt = new Date();
@@ -185,5 +184,34 @@ exports.sendPitches = async (req, res) => {
     return res.json({ success: true, data: { sent: sent.length, failed: failed.length, leads: sent, failures: failed } });
   } catch (error) {
     return sendError(res, error, "Failed to send insurance pitches");
+  }
+};
+
+// Founder-gated reset: returns `failed` leads (that have a stored pitchBody but
+// were never actually delivered) back to `message_prepared` so the send can be
+// retried. Only touches leads that were failed by a transport/config error and
+// never reached message_sent.
+exports.resetPitches = async (req, res) => {
+  try {
+    const founderApproved = req.get("x-garuda-founder-approved");
+    if (!(founderApproved === true || String(founderApproved || "").trim().toLowerCase() === "true")) {
+      return res.status(403).json({ success: false, message: "Founder approval required to reset insurance pitches" });
+    }
+    const leads = await InsuranceLead.find({ status: "failed", pitchBody: { $exists: true, $ne: "" } });
+    const reset = [];
+    for (const lead of leads) {
+      if (lead.sentCount > 0 || lead.sentAt) {
+        continue;
+      }
+      lead.status = "message_prepared";
+      lead.reason = "";
+      lead.audit = lead.audit || [];
+      lead.audit.push({ action: "pitch_reset", at: new Date(), detail: "reset failed -> message_prepared for retry" });
+      await lead.save();
+      reset.push({ email: lead.email });
+    }
+    return res.json({ success: true, data: { reset: reset.length, leads: reset } });
+  } catch (error) {
+    return sendError(res, error, "Failed to reset insurance pitches");
   }
 };
