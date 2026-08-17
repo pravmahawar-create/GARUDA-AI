@@ -68,6 +68,29 @@ async function main() {
     assert.ok(plain.answer.includes("ABSLI"));
   });
 
+  await run("term answer mentions car-owner route only when graduate car owner", async () => {
+    const result = await insuranceAdvisorService.answerInsuranceQuery("term insurance kya hai", {
+      hasCar: true,
+      isGraduate: true
+    });
+    assert.ok(/car-owner eligibility/.test(result.answer) || /car owner/.test(result.answer.toLowerCase()));
+  });
+
+  await run("term answer omits car-owner route without graduation", async () => {
+    const result = await insuranceAdvisorService.answerInsuranceQuery("term insurance kya hai", {
+      hasCar: true
+    });
+    assert.ok(!/car-owner eligibility/.test(result.answer));
+  });
+
+  await run("non-term topic never mentions car-owner eligibility", async () => {
+    const result = await insuranceAdvisorService.answerInsuranceQuery("savings investment plan batao", {
+      hasCar: true,
+      isGraduate: true
+    });
+    assert.ok(!/car-owner eligibility/.test(result.answer));
+  });
+
   await run("command router maps insurance leadgen to insurance domain", () => {
     const detection = garudaCommandRouter.detectCommand("insurance ke liye leads generate karo");
     assert.strictEqual(detection.command, "leadgen");

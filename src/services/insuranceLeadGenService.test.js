@@ -66,6 +66,16 @@ function run() {
     assert.ok(scored.query === "child_education", scored.query);
   });
 
+  test("car owner -> family_protection query (term route)", () => {
+    const scored = scoreProspect({
+      firstName: "Rohit",
+      email: "rohit@example.com",
+      notes: "owns a 4 wheeler car for 2 years, car insurance value 2 lakh"
+    });
+    assert.ok(scored.segments.includes("car_owner"), `segments=${scored.segments}`);
+    assert.ok(scored.query === "family_protection", scored.query);
+  });
+
   test("low-signal prospect email-only scores low", () => {
     const scored = scoreProspect({ email: "random@p.com" });
     assert.ok(scored.score <= 40, `score=${scored.score}`);

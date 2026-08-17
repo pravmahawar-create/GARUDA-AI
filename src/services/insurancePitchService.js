@@ -9,7 +9,8 @@ const STATIC_KNOWLEDGE_PATH = path.join(__dirname, "..", "knowledge", "absl-know
 const TOPIC_KEYWORDS = {
   family_protection: [
     "term", "protection", "death benefit", "sum assured", "family", "nominee",
-    "life cover", "risk cover", "financial protection", "income protection"
+    "life cover", "risk cover", "financial protection", "income protection",
+    "car owner", "4 wheeler", "four wheeler", "car insurance", "vehicle", "graduation"
   ],
   savings_investment: [
     "savings", "investment", "wealth", "guaranteed", "maturity", "returns",
@@ -150,6 +151,9 @@ function buildPitch({ firstName = "", query = "", topic, chunks }) {
   lines.push(`Pehle aapko ek baat bataun — main GARUDA hoon, ek AI Financial Advisor, aur Aditya Birla Sun Life (ABSLI) ka official financial partner. Par ye designations nahi, aapke liye main ek dost hoon jo sirf aapki hi suraksha ke baare mein sochta hai.`);
   lines.push(hook);
   lines.push(`Ye koi typical sales pitch nahi hai. GARUDA aapko ABSLI ke genuine plans ka simple, transparent saar deta hai — investment ₹30,000 se shuru hota hai, usi investment me aapki suraksha included hai (10x tak ka protection cover), koi rigid fixed amount nahi, aur multiple benefits ke saath.`);
+  if (resolvedTopic === "family_protection") {
+    lines.push(`Aur ek khass baat — agar aapke paas 4-wheeler car hai jo 2+ saal se ownership mein hai aur uski insurance value ₹2 lakh+ hai, toh term cover ke liye ek simple car-owner eligibility route bhi hai. Graduation complete hona iski pehli shart hai, baaki koi jhanjhat nahi.`);
+  }
   if (facts.length && facts[0].numbers && facts[0].numbers.length) {
     const sample = facts[0].numbers[0];
     const source = facts[0].source.replace(/^ABSLI /i, "ABSLI ");

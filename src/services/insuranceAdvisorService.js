@@ -122,6 +122,12 @@ async function answerInsuranceQuery(text, context = {}) {
   const age = context && Number(context.age) ? Number(context.age) : null;
   const goal = context && context.goal ? String(context.goal).trim() : "";
   const prior = Array.isArray(context && context.priorTopics) ? context.priorTopics : [];
+  const hasCar = context && context.hasCar !== undefined ? Boolean(context.hasCar) : false;
+  const isGraduate = context && context.isGraduate !== undefined ? Boolean(context.isGraduate) : false;
+
+  if (topic === "family_protection" && hasCar && isGraduate) {
+    lines.push(`Aapne bataya ki aap car owner hain aur graduation complete hai — term cover ke liye car-owner eligibility route aapke liye ek simple option hai (car 2+ saal ki ownership aur insurance value ₹2 lakh+ wali honi chahiye).`);
+  }
 
   if (budget) {
     lines.push(`Aapne monthly budget around ₹${budget.toLocaleString("en-IN")} bataya hai — is hisaab se planning karte hain, koi rigid fixed amount nahi.`);

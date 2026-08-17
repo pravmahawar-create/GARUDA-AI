@@ -25,14 +25,20 @@ const SEGMENT_SIGNALS = {
     "employee", "salaried", "professional", "engineer", "manager", "officer", "bank",
     "pvt ltd employee", "mnc", "it", "consultant", "chartered", "doctor", "lawyer"
   ],
-  retiree: ["retired", "pension", "senior citizen"]
+  retiree: ["retired", "pension", "senior citizen"],
+  car_owner: [
+    "car owner", "car hai", "car rakhta", "car rakhti", "4 wheeler", "four wheeler",
+    "4-wheeler", "four-wheel", "hatchback", "suv", "sedan", "vehicle insurance",
+    "car insurance", "insured car", "own a car", "car ke", "car ki", "car value"
+  ]
 };
 
 const SEGMENT_WEIGHTS = {
   business_owner: 28,
   parent: 18,
   salaried: 12,
-  retiree: 8
+  retiree: 8,
+  car_owner: 16
 };
 
 const GRADES = [
@@ -123,6 +129,7 @@ function inferQuery(segments) {
   if (primary === "business_owner") return "savings_investment";
   if (hasChildren) return "child_education";
   if (primary === "retiree") return "savings_investment";
+  if (primary === "car_owner") return "family_protection";
   if (primary === "salaried") return "family_protection";
   return "family_protection";
 }

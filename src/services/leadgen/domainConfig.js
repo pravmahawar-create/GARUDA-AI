@@ -36,7 +36,15 @@ const INSURANCE_SEGMENTS = {
   },
   parent: { weight: 18, signals: ["children", "child", "kids", "son", "daughter", "family", "school", "college"] },
   salaried: { weight: 12, signals: ["employee", "salaried", "professional", "engineer", "manager", "officer", "bank", "it", "consultant", "chartered", "doctor", "lawyer"] },
-  retiree: { weight: 8, signals: ["retired", "pension", "senior citizen"] }
+  retiree: { weight: 8, signals: ["retired", "pension", "senior citizen"] },
+  car_owner: {
+    weight: 16,
+    signals: [
+      "car owner", "car hai", "car rakhta", "car rakhti", "4 wheeler", "four wheeler",
+      "4-wheeler", "four-wheel", "hatchback", "suv", "sedan", "vehicle insurance",
+      "car insurance", "insured car", "own a car", "car ke", "car ki", "car value"
+    ]
+  }
 };
 
 const INSURANCE_HOOKS = {
@@ -61,6 +69,7 @@ function insuranceInferQuery(segments) {
   if (primary === "business_owner") return "savings_investment";
   if (hasChildren) return "child_education";
   if (primary === "retiree") return "savings_investment";
+  if (primary === "car_owner") return "family_protection";
   if (primary === "salaried") return "family_protection";
   return "family_protection";
 }

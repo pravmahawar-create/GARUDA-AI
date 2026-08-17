@@ -113,6 +113,8 @@ function detectNeedSignals(text) {
   if (/\b(budget|kitna|amount|premium|cost|price|monthly|per month|haz\w*\s*(\/|per)?\s*month)\b/.test(t)) signals.push("budget_context");
   if (/\b(goal|target|soch raha|soch rahi|plan karna|karna chahta|karana hai)\b/.test(t)) signals.push("goal_provided");
   if (/\b(term|health|child|education|cancer|retirement|pension|savings|investment|life)\b/.test(t)) signals.push("coverage_type");
+  if (/(4\s*wheeler|four\s*wheeler|4-wheeler|four-wheel|car\b|hatchback|suv|sedan)/.test(t)) signals.push("car_owner");
+  if (/\b(graduate|graduation|completed\s*(my)?\s*graduation|degree complete)\b/.test(t)) signals.push("graduation_provided");
   return signals;
 }
 
@@ -169,6 +171,25 @@ function parseQualificationAnswer(text, current = {}) {
     const goalMatch = t.match(/\b(?:goal|target)\s*[:=]?\s*([a-z ,]+)/i);
     if (goalMatch && goalMatch[1].trim().length > 1) next.goal = goalMatch[1].trim().replace(/[.!?]+$/, "");
   }
+  if (next.hasCar === undefined) {
+    if (/(4\s*wheeler|four\s*wheeler|4-wheeler|four-wheel|hatchback|suv|sedan|i\s+own\s+a\s+car|mere\s+paas\s+car|car\s+hai|car\s+rakhta)/i.test(t)) next.hasCar = true;
+    else if (/\bno car|car nahi|koi car nahi|nahi hai car\b/i.test(t)) next.hasCar = false;
+  }
+  if (next.hasCar && next.carOwnershipYears === undefined) {
+    const yearsMatch = t.match(/(\d{1,2})\s*(?:saal|years|year|yr)s?\s*(?:se|since|ke)?/i);
+    if (yearsMatch && Number(yearsMatch[1]) >= 2) next.carOwnershipYears = Number(yearsMatch[1]);
+  }
+  if (next.hasCar && next.carInsuranceValue === undefined) {
+    const valueMatch = t.match(/(?:insurance\s*value|cover|value|sum)\s*[:=]?\s*(?:rs\.?|inr|₹)?\s*([\d,]{4,})/i) || t.match(/\b(?:rs\.?|inr|₹)\s*([\d,]{4,})\b/i) || t.match(/(\d{1,2}(?:\.\d+)?)\s*lakh/i);
+    if (valueMatch) {
+      let value = Number(String(valueMatch[1]).replace(/,/g, ""));
+      if (/lakh/i.test(valueMatch[0])) value = value * 100000;
+      if (value >= 200000) next.carInsuranceValue = value;
+    }
+  }
+  if (next.isGraduate === undefined && /\b(graduate|graduation|completed\s*(my)?\s*graduation|degree complete|post.?graduate|b\.com|b\.tech|b\.sc|ba\b|m\.com|m\.tech)\b/i.test(t)) {
+    next.isGraduate = true;
+  }
   return next;
 }
 
@@ -201,6 +222,12 @@ function buildFollowUp(ctx = {}, advisor = null) {
     return `Health cover ki planning mein age aur existing family history matter karti hai. Aapki umar kya hai, aur aap kis city mein hain? Isse main relevant health plan points bata sakta hoon.`;
   }
   if (topic === "term" || topic === "life" || topic === "family_protection") {
+    if (ctx.hasCar === true && ctx.isGraduate === true) {
+      return `Perfect — graduation complete hai. Agar car 2+ saal ki ownership ke saath hai aur uski insurance value ₹2 lakh+ hai, toh aap term cover ke simple eligibility route ke liye qualify karte hain. Aapki car kitne saal se hai aur uski insurance value kitni hai?`;
+    }
+    if (ctx.hasCar === true && ctx.isGraduate === undefined) {
+      return `Bade point — agar aapke paas 4-wheeler car hai jo 2+ saal se hai aur uski insurance value ₹2 lakh+ hai, toh term cover ke liye ek simple eligibility route bhi hai. Kya aapne graduation complete ki hai? (Graduation complete hona is route ki pehli shart hai.)`;
+    }
     return `Term cover ki planning mein aapki monthly income aur family liabilities sabse important hain. Aapka naam aur age bata dein taaki main aapke hisaab se cover amount ka idea de sakun.`;
   }
   if (topic === "tax") {
@@ -325,6 +352,10 @@ async function handleInsuranceMessage(chatId, text, options = {}) {
     budget: updated.budget || null,
     goal: updated.goal || null,
     coverageType: updated.coverageType || null,
+    hasCar: updated.hasCar === undefined ? null : updated.hasCar,
+    carOwnershipYears: updated.carOwnershipYears || null,
+    carInsuranceValue: updated.carInsuranceValue || null,
+    isGraduate: updated.isGraduate === undefined ? null : updated.isGraduate,
     priorTopics: (context || []).filter((m) => m.role === "user").map((m) => m.text).slice(-3)
   };
 

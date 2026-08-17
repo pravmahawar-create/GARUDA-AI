@@ -88,6 +88,19 @@ function run() {
     assert.strictEqual(scored.query, "child_education");
   });
 
+  test("car owner -> family_protection query (term route)", () => {
+    const scored = scoreProspect(
+      {
+        firstName: "Rohit",
+        email: "rohit@example.com",
+        notes: "owns a 4 wheeler car for 2 years, car insurance value 2 lakh"
+      },
+      getDomain("insurance")
+    );
+    assert.ok(scored.segments.includes("car_owner"), `segments=${scored.segments}`);
+    assert.strictEqual(scored.query, "family_protection");
+  });
+
   test("low-signal prospect email-only scores low", () => {
     const scored = scoreProspect({ email: "random@p.com" }, getDomain("insurance"));
     assert.ok(scored.score <= 40, `score=${scored.score}`);

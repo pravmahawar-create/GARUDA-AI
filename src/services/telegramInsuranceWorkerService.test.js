@@ -107,6 +107,51 @@ async function main() {
     assert.ok(/Riya/.test(followUp));
   });
 
+  // -- car-owner term eligibility (Phase: car-owner term route) --
+  await test("car ownership need signal detected", () => {
+    const signals = worker.detectNeedSignals("mere paas 4 wheeler car hai");
+    assert.ok(signals.includes("car_owner"));
+  });
+
+  await test("graduation signal detected", () => {
+    const signals = worker.detectNeedSignals("maine graduation complete ki hai");
+    assert.ok(signals.includes("graduation_provided"));
+  });
+
+  await test("car details captured from conversation", () => {
+    let ctx = worker.parseQualificationAnswer("mere paas 4 wheeler car hai, 2 saal se, insurance value 2 lakh", {});
+    assert.strictEqual(ctx.hasCar, true);
+    assert.strictEqual(ctx.carOwnershipYears, 2);
+    assert.strictEqual(ctx.carInsuranceValue, 200000);
+  });
+
+  await test("graduation captured from conversation", () => {
+    const ctx = worker.parseQualificationAnswer("haan maine graduation complete ki hai", {});
+    assert.strictEqual(ctx.isGraduate, true);
+  });
+
+  await test("car below value threshold is not captured", () => {
+    const ctx = worker.parseQualificationAnswer("mere paas car hai, insurance value 1 lakh", {});
+    assert.strictEqual(ctx.hasCar, true);
+    assert.strictEqual(ctx.carInsuranceValue, undefined);
+  });
+
+  await test("term follow-up asks graduation when car owner", () => {
+    const followUp = worker.buildFollowUp({ coverageType: "term", hasCar: true }, { topic: "term" });
+    assert.ok(/graduation/.test(followUp.toLowerCase()));
+  });
+
+  await test("term follow-up confirms eligibility when graduate car owner", () => {
+    const followUp = worker.buildFollowUp({ coverageType: "term", hasCar: true, isGraduate: true }, { topic: "term" });
+    assert.ok(/eligible/i.test(followUp) || /qualify/.test(followUp.toLowerCase()));
+    assert.ok(/car/.test(followUp.toLowerCase()));
+  });
+
+  await test("car owner graduation does not leak into non-term topic", () => {
+    const followUp = worker.buildFollowUp({ coverageType: "health", hasCar: true }, { topic: "cancer_health" });
+    assert.ok(!/graduation/.test(followUp.toLowerCase()));
+  });
+
   // -- InsuranceLead creation (DB mocked) --
   await test("insurance lead created from conversation state", async () => {
     const { InsuranceLead } = require("../models/InsuranceLead");
