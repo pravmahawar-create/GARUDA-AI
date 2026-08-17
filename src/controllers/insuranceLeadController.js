@@ -114,3 +114,76 @@ exports.preparePitches = async (req, res) => {
     return sendError(res, error, "Failed to prepare insurance pitches");
   }
 };
+
+// Founder-gated pitch send: dispatches the stored pitchSubject/pitchBody for
+// every `message_prepared` lead via the governed SMTP transport and advances
+// the lead to `message_sent`. Idempotent per lead — only `message_prepared`
+// leads are eligible, so a second call sends nothing.
+exports.sendPitches = async (req, res) => {
+  try {
+    const founderApproved = req.get("x-garuda-founder-approved");
+    if (!(founderApproved === true || String(founderApproved || "").trim().toLowerCase() === "true")) {
+      return res.status(403).json({ success: false, message: "Founder approval required to send insurance pitches" });
+    }
+    const smtp = (() => {
+      try {
+        const { getSmtpConfig } = require("../services/insuranceOutreachService");
+        return getSmtpConfig();
+      } catch {
+        return { ready: false, config: null };
+      }
+    })();
+    if (!smtp.ready || !smtp.config) {
+      return res.status(500).json({ success: false, message: "SMTP not configured (GARUDA_EMAIL_HOST/USER/PASS)" });
+    }
+    const { sendEmailNative } = require("../services/insuranceOutreachService");
+    const leads = await InsuranceLead.find({ status: "message_prepared" });
+    const sent = [];
+    const failed = [];
+    for (const lead of leads) {
+      if (!lead.pitchBody) {
+        failed.push({ email: lead.email, reason: "no_pitch_body" });
+        continue;
+      }
+      const mail = {
+        to: lead.email,
+        subject: lead.pitchSubject || `GARUDA: Aapke liye ek aasaan baat`,
+        body: [
+          lead.pitchBody,
+          "",
+          "-----",
+          "Ye email GARUDA (garudaos.in) — AI Financial Advisor & ABSLI Financial Partner — ne bheji hai.",
+          "Agar aap ye nahi chahte ki GARUDA aapko dobara message kare, toh sirf reply kare: UNSUBSCRIBE",
+          "Aapka data kisi ke saath share nahi hota."
+        ].join("\n"),
+        from: smtp.config.user
+      };
+      try {
+        const result = await sendEmailNative(smtp.config, mail);
+        lead.sentCount = Number(lead.sentCount || 0) + 1;
+        lead.sentAt = new Date();
+        lead.lastAttemptAt = new Date();
+        lead.status = "message_sent";
+        lead.audit = lead.audit || [];
+        lead.audit.push({
+          action: "pitch_sent",
+          at: new Date(),
+          detail: `provider=${result.providerResponseId || "SMTP_ACCEPTED_250_OK"}, accepted=${result.accepted === true}`
+        });
+        await lead.save();
+        sent.push({ email: lead.email, accepted: result.accepted === true, providerResponseId: result.providerResponseId || null });
+      } catch (error) {
+        lead.lastAttemptAt = new Date();
+        lead.status = "failed";
+        lead.reason = String(error.message || error);
+        lead.audit = lead.audit || [];
+        lead.audit.push({ action: "pitch_send_failed", at: new Date(), detail: String(error.message || error) });
+        await lead.save();
+        failed.push({ email: lead.email, reason: String(error.message || error) });
+      }
+    }
+    return res.json({ success: true, data: { sent: sent.length, failed: failed.length, leads: sent, failures: failed } });
+  } catch (error) {
+    return sendError(res, error, "Failed to send insurance pitches");
+  }
+};

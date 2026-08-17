@@ -5,4 +5,5 @@ router.get("/", controller.list);
 router.post("/:id/promote", controller.promote);
 router.post("/import-contacts", controller.importContacts);
 router.post("/prepare-pitches", controller.preparePitches);
+router.post("/send-pitches", controller.sendPitches);
 module.exports = router;
