@@ -84,12 +84,32 @@ async function listOpportunities(filters = {}) {
   if (filters.client) {
     query.client = { $regex: String(filters.client).trim(), $options: "i" };
   }
+  if (filters.priority && ["LOW_VALUE", "LOW", "NORMAL", "HIGH", "VERY_HIGH", "STRATEGIC", "UNMEASURED"].includes(filters.priority)) {
+    query.priority = filters.priority;
+  }
+  if (filters.archived === "true") query["outreach.archived"] = true;
+  if (filters.archived === "false") query["outreach.archived"] = false;
 
   const items = await Opportunity.find(query).sort({
     expectedCloseDate: 1,
     createdAt: -1
   });
   return items.map((item) => item.toJSON());
+}
+
+async function getOpportunityById(id) {
+  if (!mongoose.Types.ObjectId.isValid(String(id || ""))) {
+    const error = new Error("Invalid opportunity id");
+    error.statusCode = 400;
+    throw error;
+  }
+  const item = await Opportunity.findById(id);
+  if (!item) {
+    const error = new Error("Opportunity not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return item.toJSON();
 }
 
 async function createOpportunity(payload = {}) {
@@ -101,7 +121,12 @@ async function createOpportunity(payload = {}) {
     currency: data.currency || "INR",
     probability: data.probability ?? 25,
     notes: data.notes || "",
-    tags: data.tags || []
+    tags: data.tags || [],
+    priority: payload.priority || "UNMEASURED",
+    valueModel: payload.valueModel || undefined,
+    outreach: payload.outreach || undefined,
+    origin: payload.origin || "manual",
+    candidateId: payload.candidateId || null
   });
   return item.toJSON();
 }
@@ -124,6 +149,9 @@ async function updateOpportunity(id, payload = {}) {
   Object.entries(data).forEach(([key, value]) => {
     if (value !== undefined) item[key] = value;
   });
+  if (payload.priority !== undefined) item.priority = payload.priority;
+  if (payload.valueModel !== undefined) item.valueModel = payload.valueModel;
+  if (payload.outreach !== undefined) item.outreach = payload.outreach;
   await item.save();
   return item.toJSON();
 }
@@ -171,6 +199,7 @@ module.exports = {
   createOpportunity,
   updateOpportunity,
   getOpportunityMetrics,
+  getOpportunityById,
   validateOpportunityInput,
   OPP_STAGES
 };

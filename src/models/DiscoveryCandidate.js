@@ -113,6 +113,35 @@ const discoveryCandidateSchema = new mongoose.Schema(
     status: { type: String, enum: ["ranked", "rejected", "approved", "dismissed"], default: "ranked", index: true },
     requiresFounderApproval: { type: Boolean, default: true, immutable: true },
     rejectionReasons: { type: [String], default: [] },
+    priority: {
+      type: String,
+      enum: ["LOW_VALUE", "LOW", "NORMAL", "HIGH", "VERY_HIGH", "STRATEGIC", "UNMEASURED"],
+      default: "UNMEASURED",
+      index: true
+    },
+    valueModel: {
+      status: {
+        type: String,
+        enum: ["UNKNOWN", "ESTIMATED", "APPROVED_DEAL", "RECEIVED"],
+        default: "UNKNOWN"
+      },
+      rawValue: { type: String, default: "", trim: true },
+      estimatedINR: { type: Number, default: null },
+      valueType: { type: String, default: "estimated_project_value", trim: true },
+      payUnit: { type: String, default: "unknown", trim: true },
+      confidence: { type: Number, default: 0, min: 0, max: 100 },
+      source: { type: String, default: "source_evidence_missing", trim: true },
+      note: { type: String, default: "", trim: true },
+      bandPriority: { type: String, default: "UNMEASURED", trim: true },
+      bandLabel: { type: String, default: "UNMEASURED", trim: true },
+      rank: { type: Number, default: 0, min: 0, max: 100 },
+      factors: {
+        type: [{ id: String, label: String, score: Number, evidence: String }],
+        default: []
+      },
+      rankedAt: { type: Date, default: null }
+    },
+    opportunityId: { type: mongoose.Schema.Types.ObjectId, ref: "Opportunity", default: null, index: true },
     decision: {
       actor: { type: String, default: "", trim: true },
       note: { type: String, default: "", trim: true },

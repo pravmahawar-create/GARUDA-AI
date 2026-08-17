@@ -1,4 +1,5 @@
 const discoveryService = require("../services/opportunityDiscoveryService");
+const { DiscoveryCandidate } = require("../models/DiscoveryCandidate");
 const executionMissionService = require("../services/revenueExecutionMissionService");
 const motherIntegration = require("../services/motherRevenueIntegrationService");
 const missionOrchestrator = require("../services/revenueMissionOrchestratorService");
@@ -42,7 +43,17 @@ exports.decide = async (req, res) => {
     return res.json({ success: true, data: decideResult });
   } catch (error) { return sendError(res, error, "Failed to update candidate decision"); }
 };
-exports.importFounderAssisted = async (req, res) => { try { return res.status(201).json({ success: true, data: await discoveryService.importFounderAssistedCandidate(req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to import founder-assisted opportunity"); } };
+exports.importFounderAssisted = async (req, res) => {
+  try {
+    let body = req.body || {};
+    if (!body.description) {
+      const candidate = await DiscoveryCandidate.findOne({ externalId: body.externalId });
+      if (candidate && candidate.description) {
+        body = { ...body, description: candidate.description };
+      }
+    }
+    return res.status(201).json({ success: true, data: await discoveryService.importFounderAssistedCandidate(body, { founderApproved: req.get("x-garuda-founder-approved") }) });
+  } catch (error) { return sendError(res, error, "Failed to import founder-assisted opportunity"); } };
 exports.createExecutionMission = async (req, res) => { try { return res.status(201).json({ success: true, data: await executionMissionService.createFromApprovedCandidate(req.params.id, { founderApproved: req.get("x-garuda-founder-approved") }) }); } catch (error) { return sendError(res, error, "Failed to create execution mission"); } };
 exports.listWorkIntakes = async (req, res) => { try { return res.json({ success: true, data: await workIntakeService.listIntakes(req.query || {}) }); } catch (error) { return sendError(res, error, "Failed to list real-work intakes"); } };
 exports.getWorkIntake = async (req, res) => { try { return res.json({ success: true, data: await workIntakeService.getIntakeByCandidate(req.params.id) }); } catch (error) { return sendError(res, error, "Failed to get real-work intake"); } };

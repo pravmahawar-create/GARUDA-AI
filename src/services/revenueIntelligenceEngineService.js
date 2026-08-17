@@ -349,17 +349,13 @@ function generateExecutiveDecisionReport(candidateInput = {}, context = {}, opti
     description: candidate.description || candidate.rawSource?.description || "",
     category: candidate.category || "software_engineering",
     tags: candidate.tags || []
-  }).matches[0] || {
-    capabilityId: "engineering.software-implementation",
-    name: "Governed software implementation",
-    score: 85
-  };
+  }).matches[0];
 
   const submissionPackage = buildFounderSubmissionPackage(candidate, context, { now });
   const historicalSummary = getLearningLedgerSummary(candidate.category);
 
   const clientQuality = assessClientQuality(candidate);
-  const probabilities = calculateDealProbabilities(capabilityMatch.score || 85, clientQuality, historicalSummary, submissionPackage);
+  const probabilities = calculateDealProbabilities(capabilityMatch ? capabilityMatch.score : 0, clientQuality, historicalSummary, submissionPackage);
 
   const timeEconomics = computeTimeEconomics(candidate, submissionPackage, historicalSummary);
   const pricing = submissionPackage.pricingRecommendation || {};

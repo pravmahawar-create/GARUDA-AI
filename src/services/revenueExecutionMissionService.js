@@ -218,6 +218,34 @@ async function createFromApprovedCandidate(candidateId, context = {}) {
     }
   }
 
+  // P11: Founder Review Quality Gate - prepare review payload when all agent outputs exist
+  const hasResearch = stored.architecturePlan && stored.architecturePlan.researchNotes;
+  const hasProposal = stored.executionEvidence && stored.executionEvidence.proposalDraft;
+  const hasValidation = stored.governance && stored.governance.validationResult;
+  if (hasResearch && hasProposal && hasValidation) {
+    const reviewPayload = {
+      missionId: String(stored._id),
+      opportunityTitle: String(stored.opportunity && stored.opportunity.title || ""),
+      client: String(stored.realWorkIntake && stored.realWorkIntake.brief && stored.realWorkIntake.brief.client || ""),
+      deliverableType: String(stored.realWorkIntake && stored.realWorkIntake.brief && stored.realWorkIntake.brief.deliverableType || ""),
+      proposalSummary: stored.executionEvidence.proposalDraft
+        ? String(stored.executionEvidence.proposalDraft.proposal.scope || "").substring(0, 200)
+        : "",
+      deliverables: Array.isArray(stored.workPackages) ? stored.workPackages.map((wp) => ({ title: wp.title, status: wp.status })) : [],
+      validationPass: stored.governance.validationResult.overallPass,
+      validationIssues: stored.governance.validationResult.issues || [],
+      riskLevel: stored.governance.validationResult.issues && stored.governance.validationResult.issues.length > 2 ? "high" : stored.governance.validationResult.issues && stored.governance.validationResult.issues.length > 0 ? "medium" : "low",
+      acceptanceCriteria: Array.isArray(stored.realWorkIntake && stored.realWorkIntake.brief.acceptanceCriteria)
+        ? stored.realWorkIntake.brief.acceptanceCriteria
+        : [],
+      generatedAt: new Date().toISOString()
+    };
+    stored.review = {
+      payload: reviewPayload,
+      state: "review_ready"
+    };
+  }
+
   return { ...stored.toJSON(), truthStatus: "verified_real_work" };
 }
 
