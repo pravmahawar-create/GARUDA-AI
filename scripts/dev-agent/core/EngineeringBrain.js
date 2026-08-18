@@ -78,7 +78,7 @@ class EngineeringBrain {
       engine: "GARUDA Engineering Brain v1",
       status: passed ? "ARTIFACT_READY_FOR_REVIEW" : "VALIDATION_FAILED",
       workspace,
-      artifacts: artifacts.map(({ path: artifactPath, kind, sha256 }) => ({ path: artifactPath, kind: kind || "generated", sha256 })),
+      artifacts: artifacts.map(({ path: artifactPath, kind, sha256, content }) => ({ path: artifactPath, kind: kind || "generated", sha256, content })),
       patch,
       patchSha256: crypto.createHash("sha256").update(patch).digest("hex"),
       evidence,
@@ -86,6 +86,54 @@ class EngineeringBrain {
       requiresFounderApprovalToApply: true,
       commitPushDeployAllowed: false,
       ...metadata
+    };
+  }
+
+  applyPatchToWorkspace(buildResult, options = {}) {
+    if (!buildResult || !Array.isArray(buildResult.artifacts) || buildResult.artifacts.length === 0) {
+      throw new Error("applyPatchToWorkspace requires a buildResult with artifacts");
+    }
+    if (options.founderApproved !== true) {
+      return { status: "FOUNDER_APPROVAL_REQUIRED", appliedFiles: [], requiresFounderApprovalToApply: true };
+    }
+    if (buildResult.status !== "ARTIFACT_READY_FOR_REVIEW") {
+      throw new Error(`Cannot apply an artifact in state: ${buildResult.status || "unknown"}`);
+    }
+    const appliedFiles = [];
+    for (const artifact of buildResult.artifacts) {
+      const relativePath = normalizeRelativePath(artifact.path, { testFile: /\.test\.js$/i.test(artifact.path || "") });
+      const targetPath = path.join(this.rootDir, relativePath);
+      if (fs.existsSync(targetPath)) {
+        throw new Error(`New-file-only policy rejected existing target: ${relativePath}`);
+      }
+      fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+      fs.writeFileSync(targetPath, String(artifact.content ?? ""), "utf8");
+      if (artifact.sha256 && crypto.createHash("sha256").update(String(artifact.content ?? "")).digest("hex") !== artifact.sha256) {
+        throw new Error(`Content fingerprint mismatch for ${relativePath} — refusing to apply tampered artifact`);
+      }
+      appliedFiles.push(relativePath);
+    }
+    const runner = new SafeCommandRunner({ rootDir: this.rootDir });
+    const modules = buildResult.artifacts.filter((a) => !/\.test\.js$/i.test(a.path || ""));
+    const tests = buildResult.artifacts.filter((a) => /\.test\.js$/i.test(a.path || ""));
+    const evidence = [
+      ...modules.map((a) => runner.runSyntaxCheck(a.path)),
+      ...tests.map((a) => runner.runNodeTest(a.path))
+    ];
+    const verified = evidence.every((item) => item.status === "PASSED" && item.targetModified === false);
+    if (!verified) {
+      for (const file of appliedFiles) fs.unlinkSync(path.join(this.rootDir, file));
+      return { status: "PATCH_REJECTED", appliedFiles: [], evidence, reason: "verification_failed_rollback_completed" };
+    }
+    return {
+      status: "PATCH_APPLIED_AND_VERIFIED",
+      engine: "GARUDA Engineering Brain v1",
+      appliedFiles,
+      evidence,
+      patch: buildResult.patch || null,
+      patchSha256: buildResult.patchSha256 || null,
+      requiresFounderApprovalToApply: false,
+      commitPushDeployAllowed: false
     };
   }
 

@@ -36,4 +36,42 @@ assert.throws(() => brain.build({ template: "required_fields_validator", moduleP
 assert.throws(() => brain.build({ template: "required_fields_validator", modulePath: "../escape.js", testPath: "src/generated/escape.test.js", requiredFields: ["id"] }), /approved workspace/);
 assert.throws(() => brain.build({ template: "arbitrary_code", modulePath: "src/generated/code.js", testPath: "src/generated/code.test.js", requiredFields: ["id"] }), /only supports/);
 
+// --- applyPatchToWorkspace: founder approval gate ---
+const noApproval = brain.applyPatchToWorkspace(result, {});
+assert.strictEqual(noApproval.status, "FOUNDER_APPROVAL_REQUIRED");
+assert.strictEqual(fs.existsSync(path.join(rootDir, "src/generated/customerValidator.js")), false);
+
+// --- applyPatchToWorkspace: real apply + verify ---
+const applied = brain.applyPatchToWorkspace(result, { founderApproved: true });
+assert.strictEqual(applied.status, "PATCH_APPLIED_AND_VERIFIED");
+assert.ok(applied.appliedFiles.includes("src/generated/customerValidator.js"));
+assert.ok(applied.appliedFiles.includes("src/generated/customerValidator.test.js"));
+assert.strictEqual(fs.existsSync(path.join(rootDir, "src/generated/customerValidator.js")), true);
+assert.ok(applied.evidence.every((item) => item.status === "PASSED"));
+const appliedTest = spawnSync(process.execPath, [path.join(rootDir, "src/generated/customerValidator.test.js")], { cwd: rootDir, encoding: "utf8" });
+assert.strictEqual(appliedTest.status, 0, appliedTest.stderr);
+
+// --- applyPatchToWorkspace: existing target rejected ---
+assert.throws(() => brain.applyPatchToWorkspace(result, { founderApproved: true }), /existing target/);
+
+// --- applyPatchToWorkspace: bad state rejected ---
+assert.throws(() => brain.applyPatchToWorkspace({ artifacts: result.artifacts, status: "VALIDATION_FAILED" }, { founderApproved: true }), /Cannot apply/);
+assert.throws(() => brain.applyPatchToWorkspace(null, { founderApproved: true }), /requires a buildResult/);
+
+// --- applyPatchToWorkspace: rollback on failed verification ---
+const failureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "garuda-engineering-failroot-"));
+const failureBrain = new EngineeringBrain({ rootDir: failureRoot });
+const brokenResult = failureBrain.build({
+  template: "required_fields_validator",
+  modulePath: "src/generated/brokenModule.js",
+  testPath: "src/generated/brokenModule.test.js",
+  requiredFields: ["id"]
+});
+brokenResult.artifacts[1].content = brokenResult.artifacts[1].content.replace("assert.deepStrictEqual(invalid.missing", "assert.deepStrictEqual(invalid.missing, [\"no\"");
+brokenResult.artifacts[1].sha256 = require("crypto").createHash("sha256").update(brokenResult.artifacts[1].content).digest("hex");
+const rolledBack = failureBrain.applyPatchToWorkspace(brokenResult, { founderApproved: true });
+assert.strictEqual(rolledBack.status, "PATCH_REJECTED");
+assert.strictEqual(fs.existsSync(path.join(failureRoot, "src/generated/brokenModule.js")), false);
+assert.strictEqual(fs.existsSync(path.join(failureRoot, "src/generated/brokenModule.test.js")), false);
+
 console.log("Engineering Brain isolated artifact validation passed.");

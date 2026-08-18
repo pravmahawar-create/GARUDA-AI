@@ -17,7 +17,7 @@ Zero external AI default path mein, koi working write-apply path nahi, koi live 
 | Core engines (scanner/thinker/decision/planner/build/validate/report/goal/decomposer/context/constitution) | **READY** | Deterministic logic — NOT "intelligent". Thinker fs-reads 4 files, emits static findings. Decision/planner are dedupe/shape wrappers. |
 | bodyAwareness / memory / context | **READY** | Real 41KB snapshot/comparison; persistent `data/dev-agent/project-memory.json` (1.5MB). |
 | dev-agent brains (BrainRegistry, MultiBrainPlanner, BrainCoordinator, EngineeringManager, LocalBrainWorker, WorkforceRouter, ProjectMemoryEngine) | **READY** | Real code: fs proposals/review, directory walk, syntax checks, cost-aware routing, SHA1 fingerprints. |
-| **Source-write / patch-apply path** | **SCAFFOLD (BROKEN)** | Executor `patch` route calls `EngineeringBrain.applyPatchToWorkspace` — **undefined anywhere in repo** → throws→SKIPPED. `src/generated/` empty. No source write has ever landed. |
+| **Source-write / patch-apply path** | **READY (FIXED 2026-08-18)** | `EngineeringBrain.applyPatchToWorkspace` implemented + executor `patch` route wired (READ/WRITE_PATCH/DIFF_INSPECTION/TEST_EXECUTION capabilities). Live E2E verified: build→patch→apply→verify→module load. Founder-approval gate + new-file-only + SHA256 fingerprint + rollback on verification failure. |
 | revenueEngine (`scripts/mother/revenueEngine.js`) | **PROTOTYPE** | Inspects 22 src modules for markers, par report se real hai; par discovery/proposal feeds **hardcoded fake jobs** (`example.com/lead-01`, "sprint1-lead-01"). No live provider. |
 | priorityEngine | **SCAFFOLD** | Hardcoded map of ~9 strings. |
 | ExternalWorkerAdapter | **PROTOTYPE** | Spawn aider/gemini/cline/copilot CLIs possible, par hard-gated: PREVIEW-ONLY unless `GARUDA_EXTERNAL_WORKER_EXECUTION=true` + founder approval. |
@@ -28,12 +28,13 @@ Zero external AI default path mein, koi working write-apply path nahi, koi live 
 ## Honest takeaway
 
 - **Intelligence**: Rule-based autonomy (git status, file reads, test runs, report writing) — genuinely useful automation, not LLM reasoning in the default path.
-- **Ready**: planning/reporting orchestration, test execution, memory, read-only analysis.
-- **NOT ready**: writing real code into the repo, live revenue discovery, external AI workers, frontend "mother" is cosmetic.
-- **The gap that matters**: `applyPatchToWorkspace` undefined + EngineeringLoop can't complete + revenueEngine feeds fake jobs = "AI engineers that only plan, never ship; revenue engine that only simulates".
+- **Ready**: planning/reporting orchestration, test execution, memory, read-only analysis, **governed source-write (patch-apply)**.
+- **NOT ready**: live revenue discovery, external AI workers, frontend "mother" is cosmetic.
+- **The gap that matters now**: EngineeringLoop still can't complete end-to-end (single template only) + revenueEngine feeds fake jobs = "AI engineers that only plan, never ship; revenue engine that only simulates".
 
 ## Foundational fix queue (suggested)
 
-1. Implement real `applyPatchToWorkspace` (or remove the dead `patch` route) so executor can actually apply governed changes.
+1. ~~Implement real `applyPatchToWorkspace`~~ **DONE (2026-08-18)** — executor `patch` route ab real source-write karta hai (founder-gated, fingerprint-verified, rollback-safe).
 2. Wire revenueEngine to a real provider (or keep it explicitly demo-scoped).
 3. Either build frontend mother with real data or drop the cosmetic "all ready" panel.
+4. Expand EngineeringBrain beyond the single `required_fields_validator` template so engineering_loop can ship real code.
