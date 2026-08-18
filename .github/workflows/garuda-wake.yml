@@ -15,7 +15,8 @@ jobs:
     steps:
       - name: Ping Render backend (keeps free dyno awake 24x7)
         run: |
-          curl -fsS --max-time 30 -o /dev/null -w "render /api/health -> %{http_code} (%{time_total}s)\n" \
+          curl -fsS --retry 4 --retry-delay 15 --retry-all-errors --max-time 60 -o /dev/null \
+            -w "render /api/health -> %{http_code} (%{time_total}s)\n" \
             https://garuda-ai-xfif.onrender.com/api/health || exit 1
 
       - name: Verify public frontend responds

@@ -3,6 +3,7 @@ const garudaCapabilityInjector = require("./garudaCapabilityInjector");
 const garudaCommandRouter = require("./garudaCommandRouter");
 const insuranceAdvisorService = require("./insuranceAdvisorService");
 const telegramInsuranceWorker = require("./telegramInsuranceWorkerService");
+const conversationService = require("./conversationService");
 
 const TELEGRAM_API = "https://api.telegram.org";
 
@@ -83,17 +84,74 @@ async function notifyLeadCaptured(lead) {
   return sendFounderAlert("GARUDA — New Lead", summary);
 }
 
+function detectMediaKind(message) {
+  if (!message) return null;
+  if (Array.isArray(message.photo) && message.photo.length) return "photo";
+  if (message.video) return "video";
+  if (message.document) return "document";
+  if (message.audio) return "audio";
+  if (message.voice) return "voice_message";
+  if (message.video_note) return "video_message";
+  if (message.animation) return "animation";
+  if (message.sticker) return "sticker";
+  return null;
+}
+
+function telegramThreadId(chatId) {
+  return `telegram:${String(chatId)}`;
+}
+
+async function loadChatHistory(chatId, limit = 8) {
+  const WELCOME_TEXT = "Founder access granted. GARUDA is prepared to orchestrate your next move.";
+  try {
+    const thread = await conversationService.getOrCreateThread(telegramThreadId(chatId));
+    const messages = Array.isArray(thread.messages) ? thread.messages : [];
+    return messages
+      .filter((m) => m && m.mode !== "telegram_insurance_state" && m.text !== WELCOME_TEXT)
+      .slice(-limit)
+      .map((m) => ({ role: m.role, content: m.text }));
+  } catch {
+    return [];
+  }
+}
+
+async function persistChatExchange(chatId, userText, reply) {
+  try {
+    await conversationService.appendMessages(telegramThreadId(chatId), [
+      { role: "user", text: String(userText || "").slice(0, 2000), mode: "telegram" },
+      { role: "garuda", text: String(reply || "").slice(0, 4000), mode: "telegram" }
+    ]);
+  } catch {
+    // Best-effort persistence; never block the reply.
+  }
+}
+
 async function handleUpdate(update) {
   if (!isConfigured()) return null;
   const message = update && update.message ? update.message : null;
-  if (!message || !message.text) return null;
+  if (!message) return null;
 
   const chatId = String(message.chat && message.chat.id !== undefined ? message.chat.id : "");
   if (!chatId) return null;
 
-  const text = String(message.text || "").trim();
+  const text = String(message.text || message.caption || "").trim();
   const userId = String(message.from && message.from.id !== undefined ? message.from.id : "");
   const isFounder = Boolean(founderChatId() && chatId === String(founderChatId()));
+
+  const mediaKind = detectMediaKind(message);
+
+  // Media-only message (photo/video/document/etc. with no caption): acknowledge
+  // instead of silently dropping it, so users aren't left on "seen" forever.
+  if (!text && mediaKind) {
+    const reply =
+      `Mila aapka ${mediaKind}. Main abhi media file ko directly dekh/padh nahi sakta — ` +
+      `caption ya ek line mein likh dijiye ki is par mujhe kya karna hai, main us par kaam karta hoon.`;
+    await persistChatExchange(chatId, `[${mediaKind}]`, reply);
+    await sendMessage(reply, chatId);
+    return { ok: true, chatId, userId, received: `[${mediaKind}]`, reply, mode: "media_ack" };
+  }
+
+  if (!text) return null;
 
   // 1) Founder chat: full command routing (real engines) + insurance worker.
   if (isFounder) {
@@ -135,6 +193,10 @@ async function handleUpdate(update) {
     }
   }
 
+  // Shared conversation memory for non-insurance turns so the bot keeps context
+  // instead of restarting/repeating on every new message.
+  const conversationHistory = await loadChatHistory(chatId, 8);
+
   // 3) Non-founder, non-insurance → friendly helpful answer via the guarded LLM
   //    (no hallucination: skip knowledge/runtime context, transparent persona).
   //    Falls back to a static pointer if the LLM is unavailable.
@@ -149,7 +211,7 @@ async function handleUpdate(update) {
           "that GARUDA is an AI Financial Advisor (Aditya Birla Sun Life ABSLI partner) and " +
           "can answer from verified ABSLI knowledge.",
         userMessage: text,
-        conversationHistory: [],
+        conversationHistory,
         skipKnowledge: true,
         skipRuntimeContext: true
       });
@@ -162,6 +224,7 @@ async function handleUpdate(update) {
         : "GARUDA is your AI Financial Advisor for ABSLI insurance queries. " +
           "Ask me about term insurance, health insurance, child education plans, savings, or retirement. " +
           "Main official ABSLI knowledge se hi jawab deta hoon — koi figure bina source ke nahi.";
+    await persistChatExchange(chatId, text, reply);
     await sendMessage(reply, chatId);
     return { ok: true, chatId, userId, received: text, reply, mode: "public_llm" };
   }
@@ -169,7 +232,7 @@ async function handleUpdate(update) {
   const reply = await llmProvider.ask({
     systemContext: "This message came through the founder's Telegram superman bot.",
     userMessage: text,
-    conversationHistory: [],
+    conversationHistory,
     skipKnowledge: true,
     skipRuntimeContext: true,
     fastLane: true
@@ -179,6 +242,7 @@ async function handleUpdate(update) {
     ? trimConciseReply(reply.answer)
     : "GARUDA yahan hai bhai — thoda der me jawab deta hoon. Abhi engine load ho raha hai.";
 
+  await persistChatExchange(chatId, text, answer);
   await sendMessage(answer, chatId);
 
   return {
