@@ -30,12 +30,41 @@ tests.push({
 });
 
 tests.push({
-  name: "deal accept -> payment page",
+  name: "deal accept -> asks for contact, then payment page",
   run: () => {
+    salesAgent.resetDeal("t3");
     salesAgent.handleSalesMessage("website chahiye budget 20,000", { sessionId: "t3" });
     const r = salesAgent.handleSalesMessage("deal done", { sessionId: "t3" });
+    assert.strictEqual(r.action, "need_contact");
+    assert.ok(/email|WhatsApp|number/i.test(r.message), "should ask for contact before payment link");
+    const r2 = salesAgent.handleSalesMessage("mera email rahul@example.com", { sessionId: "t3" });
+    assert.strictEqual(r2.action, "accepted");
+    assert.ok(r2.paymentPageUrl.includes("razorpay"));
+    assert.strictEqual(r2.contact.email, "rahul@example.com");
+  }
+});
+
+tests.push({
+  name: "deal accept with contact in same message -> immediate",
+  run: () => {
+    salesAgent.resetDeal("t3b");
+    salesAgent.handleSalesMessage("website chahiye budget 20,000", { sessionId: "t3b" });
+    const r = salesAgent.handleSalesMessage("deal done, email rahul@example.com", { sessionId: "t3b" });
     assert.strictEqual(r.action, "accepted");
     assert.ok(r.paymentPageUrl.includes("razorpay"));
+  }
+});
+
+tests.push({
+  name: "deal accept -> phone capture flow",
+  run: () => {
+    salesAgent.resetDeal("t3c");
+    salesAgent.handleSalesMessage("website chahiye budget 20,000", { sessionId: "t3c" });
+    const r = salesAgent.handleSalesMessage("ok", { sessionId: "t3c" });
+    assert.strictEqual(r.action, "need_contact");
+    const r2 = salesAgent.handleSalesMessage("9876543210", { sessionId: "t3c" });
+    assert.strictEqual(r2.action, "accepted");
+    assert.strictEqual(r2.contact.phone, "9876543210");
   }
 });
 

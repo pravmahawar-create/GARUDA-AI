@@ -196,6 +196,19 @@ function applyNegotiation(quote, clientReply) {
   return { action: "continue", message: null };
 }
 
+// ---------------------------------------------------------------- identity capture
+
+function extractContactFromText(text) {
+  const t = String(text || "");
+  const emailMatch = t.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  const digits = t.replace(/[^0-9]/g, "");
+  const phoneMatch = digits.length >= 10 ? digits.slice(-10) : "";
+  return {
+    email: emailMatch ? emailMatch[0].toLowerCase() : "",
+    phone: phoneMatch
+  };
+}
+
 // ---------------------------------------------------------------- state
 
 function getState(sessionId) {
@@ -236,7 +249,7 @@ function shouldEngageSales(message, state = {}) {
   const text = String(message || "").trim();
   if (!text) return false;
   // Session already inside an active deal conversation — keep it going.
-  if (state.quote || state.stage === "negotiation" || state.stage === "accepted") return true;
+  if (state.quote || state.stage === "negotiation" || state.stage === "need_contact" || state.stage === "accepted") return true;
   // Concrete service type or an explicit budget figure both mean sales intent.
   if (detectType(text)) return true;
   if (parseBudget(text) != null) return true;
@@ -284,6 +297,17 @@ function handleSalesMessage(message, options = {}) {
   if (state.stage === "negotiation") {
     const result = applyNegotiation(state.quote, text);
     if (result.action === "accept" && state.quote) {
+      const contact = extractContactFromText(text);
+      const hasContact = Boolean(contact.email || contact.phone);
+      if (!hasContact) {
+        state.stage = "need_contact";
+        return {
+          action: "need_contact",
+          message:
+            `Deal confirm karne ke liye sirf ek cheez chahiye — aapka email ya WhatsApp number (deal, quote aur payment link wahi bhejunga). Bata do, poora pack ready hai.`
+        };
+      }
+      state.contact = contact;
       state.stage = "accepted";
       return { action: "accepted", quote: state.quote, message: result.message, paymentPageUrl: PAYMENT_PAGE_URL };
     }
@@ -293,6 +317,26 @@ function handleSalesMessage(message, options = {}) {
     return {
       action: "continue",
       message: "Kya hum deal final karein? 'deal done' ya 'ok' bolo, payment link share kar dunga. Ya koi budget adjustment chahiye to batao."
+    };
+  }
+
+  if (state.stage === "need_contact") {
+    const contact = extractContactFromText(text);
+    if (contact.email || contact.phone) {
+      state.contact = { ...(state.contact || {}), ...contact };
+      state.stage = "accepted";
+      return {
+        action: "accepted",
+        quote: state.quote,
+        message:
+          `Deal locked! ${state.quote.currentPrice.toLocaleString("en-IN")} INR. Aapka contact note kar liya (${contact.email || contact.phone}) — payment link: ${PAYMENT_PAGE_URL}. Delivery plan isi par bhejenge.`,
+        paymentPageUrl: PAYMENT_PAGE_URL,
+        contact: state.contact
+      };
+    }
+    return {
+      action: "need_contact",
+      message: "Bas ek email ya WhatsApp number chahiye (jaise name@email.com ya 98XXXXXXXX) — deal lock aur payment link ke liye zaroori hai."
     };
   }
 
