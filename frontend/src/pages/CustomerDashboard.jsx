@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UniversesGrid from "../components/UniversesGrid";
+import UniversesStrip from "../components/UniversesStrip";
+import IndustryGuides from "../components/IndustryGuides";
 import UniverseDetail from "../components/UniverseDetail";
 import ChatConsole from "../components/ChatConsole";
 
@@ -33,7 +34,6 @@ export default function CustomerDashboard({ customer, onLogout }) {
   const navigate = useNavigate();
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showAll, setShowAll] = useState(false);
   const [chatConversationId, setChatConversationId] = useState(null);
   const [selected, setSelected] = useState(null);
 
@@ -110,27 +110,28 @@ export default function CustomerDashboard({ customer, onLogout }) {
         />
       </section>
 
-      {/* Universes - collapsed on mobile via View all */}
+      {/* Universes - horizontal strips */}
       <section aria-label="GARUDA universes">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
-          <div>
-            <p className="eyebrow" style={{ marginBottom: "0.3rem" }}>UNIVERSES</p>
-            <h2 style={{ margin: 0, fontSize: "1.25rem" }}>The GARUDA world</h2>
-          </div>
-          <button type="button" onClick={() => setShowAll((v) => !v)} style={buttonStyle}>
-            {showAll ? "Show less" : "View all"}
-          </button>
+        <div style={{ marginBottom: "1.5rem" }}>
+          <p className="eyebrow" style={{ marginBottom: "0.3rem" }}>UNIVERSES</p>
+          <h2 style={{ margin: 0, fontSize: "1.25rem" }}>The GARUDA world</h2>
+          <p style={{ margin: "0.3rem 0 0", color: palette.muted, fontSize: "0.88rem" }}>
+            16 public universes, laid out left to right. The founder-internal 11 stay on the founder page.
+          </p>
         </div>
-        <div style={{ maxHeight: showAll ? "none" : 560, overflow: "hidden", position: "relative" }}>
-          <UniversesGrid onSelect={setSelected} />
-          {!showAll && (
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 90, background: "linear-gradient(transparent, #04070a)", display: "grid", placeItems: "end", padding: "1.5rem" }}>
-              <button type="button" onClick={() => setShowAll(true)} style={{ ...buttonStyle, background: "rgba(212,175,55,0.16)" }}>
-                View all universes →
-              </button>
-            </div>
-          )}
+        <UniversesStrip onSelect={setSelected} />
+      </section>
+
+      {/* Industry guides */}
+      <section aria-label="Industry guides" style={{ marginTop: "2.5rem" }}>
+        <div style={{ marginBottom: "1.5rem" }}>
+          <p className="eyebrow" style={{ marginBottom: "0.3rem" }}>INDUSTRY GUIDES</p>
+          <h2 style={{ margin: 0, fontSize: "1.25rem" }}>How GARUDA helps your industry</h2>
+          <p style={{ margin: "0.3rem 0 0", color: palette.muted, fontSize: "0.88rem" }}>
+            Capabilities, not promises — what every guide does is based on real system features.
+          </p>
         </div>
+        <IndustryGuides />
       </section>
 
       {/* Conversations */}

@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import BrandAssetImage from "../components/BrandAssetImage";
+import { getPublicUniverses } from "../config/universes";
 
 const palette = {
   bg: "#04070a",
@@ -126,19 +127,9 @@ const PipelineBar = ({ step, label }) => (
   </div>
 );
 
-const ControlPanelRow = ({ label, value, tone = "default" }) => (
-  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.55rem 0", borderBottom: "1px solid rgba(245,215,110,0.08)" }}>
-    <span style={{ color: palette.muted, fontSize: "0.88rem" }}>{label}</span>
-    <span style={{
-      color: tone === "gold" ? palette.gold : tone === "green" ? palette.green : palette.text,
-      fontSize: "0.88rem",
-      fontWeight: tone === "gold" ? 800 : 600
-    }}>{value}</span>
-  </div>
-);
-
 export default function PublicLanding({ onGetStarted, onFounderLogin }) {
   const navigate = useNavigate();
+  const publicUniverses = getPublicUniverses();
 
   return (
     <div style={{ minHeight: "100vh", background: palette.bg, color: palette.text, fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif" }}>
@@ -366,7 +357,7 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
       {/* 5. Live workflow demo */}
       <section id="workflow" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)" }}>
         <SectionHeading
-          kicker="Live workflow demo"
+          kicker="Workflow demo"
           title="From lead to notified founder"
           sub="Watch one enquiry travel through the operating system: reply, task, payment, delivery, and founder sign-off."
         />
@@ -403,39 +394,38 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               <div style={{ fontSize: "0.78rem", color: palette.gold, marginTop: "0.6rem" }}>→ Review now</div>
             </div>
           </div>
+          <p style={{ color: palette.muted, fontSize: "0.78rem", textAlign: "center", margin: "1.2rem 0 0" }}>
+            Illustrative example — the enquiry, amount, and tasks above are a concept preview, not a real transaction.
+          </p>
         </motion.div>
       </section>
 
-      {/* 6. Control Center preview */}
+      {/* 6. Universe architecture teaser */}
       <section id="control-center" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)", background: "rgba(255,255,255,0.015)" }}>
         <SectionHeading
-          kicker="Control Center preview"
-          title="Your business, one dashboard"
-          sub="A live preview of the founder workspace: revenue, pipeline, tasks, and alerts — all in one governed view."
+          kicker="Universe architecture"
+          title="One system, 27 universes"
+          sub="16 universes power what customers see and feel. 11 founder-internal universes run the intelligence behind it — every universe reports into Revenue, the reporting hub."
         />
-        <motion.div {...fadeUp} style={{ maxWidth: 1080, margin: "0 auto", display: "grid", gridTemplateColumns: "1.55fr 0.9fr", gap: "1.2rem", borderRadius: 24, border: "1px solid rgba(245,215,110,0.16)", background: "linear-gradient(160deg, rgba(245,215,110,0.05), rgba(11,15,22,0.9))", padding: "1.8rem", overflow: "hidden" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "1rem" }}>
-            {[
-              { label: "Revenue (verified)", value: "₹8.4L", tone: "gold", sub: "+18% this quarter" },
-              { label: "Open pipeline", value: "₹3.1L", tone: "default", sub: "12 proposals" },
-              { label: "Active tasks", value: "38", tone: "default", sub: "6 due this week" },
-              { label: "Avg. first reply", value: "9 min", tone: "default", sub: "after founder approval" }
-            ].map((metric) => (
-              <div key={metric.label} style={{ padding: "1.3rem", borderRadius: 16, border: "1px solid rgba(245,215,110,0.12)", background: "rgba(11,15,22,0.7)" }}>
-                <div style={{ fontSize: "0.72rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.7rem" }}>{metric.label}</div>
-                <div style={{ fontSize: "1.7rem", fontWeight: 800, color: metric.tone === "gold" ? palette.gold : palette.text }}>{metric.value}</div>
-                <div style={{ fontSize: "0.8rem", color: palette.muted, marginTop: "0.35rem" }}>{metric.sub}</div>
+        <motion.div {...fadeUp} style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <div style={{ display: "flex", gap: "0.9rem", overflowX: "auto", padding: "0.4rem 0.2rem 1.2rem", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
+            {publicUniverses.map((u) => (
+              <div
+                key={u.num}
+                style={{ scrollSnapAlign: "start", minWidth: 200, maxWidth: 200, padding: "1.2rem", borderRadius: 16, border: "1px solid rgba(245,215,110,0.14)", background: "rgba(11,15,22,0.7)" }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+                  <span style={{ fontSize: "1.3rem" }}>{u.icon}</span>
+                  <span style={{ fontFamily: "ui-monospace, monospace", color: palette.gold, fontWeight: 800, fontSize: "0.72rem" }}>{String(u.num).padStart(2, "0")}</span>
+                </div>
+                <h4 style={{ margin: "0 0 0.4rem", fontSize: "0.98rem", fontWeight: 700 }}>{u.name.replace(" Universe", "")}</h4>
+                <p style={{ margin: 0, color: palette.muted, fontSize: "0.78rem", lineHeight: 1.45 }}>{u.tagline}</p>
               </div>
             ))}
           </div>
-          <div style={{ padding: "1.3rem", borderRadius: 16, border: "1px solid rgba(245,215,110,0.12)", background: "rgba(11,15,22,0.7)" }}>
-            <div style={{ fontSize: "0.72rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.6rem" }}>Today's alerts</div>
-            <ControlPanelRow label="Proposal follow-up due" value="Approve send" tone="gold" />
-            <ControlPanelRow label="Payment verified — Practice site" value="₹45,000" tone="green" />
-            <ControlPanelRow label="Delivery: landing page" value="On track" tone="default" />
-            <ControlPanelRow label="New enquiry — real estate" value="Review" tone="gold" />
-            <ControlPanelRow label="Knowledge updated" value="3 new docs" tone="default" />
-          </div>
+          <p style={{ color: palette.muted, fontSize: "0.85rem", textAlign: "center", marginTop: "0.4rem" }}>
+            11 founder-internal universes (Knowledge, Reasoning, Memory, Learning, Decision, Automation, Communication, Security, Governance, Revenue, Wealth) stay on the founder page.
+          </p>
         </motion.div>
       </section>
 
