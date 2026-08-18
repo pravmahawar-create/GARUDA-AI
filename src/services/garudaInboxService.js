@@ -182,8 +182,8 @@ async function sendFollowUp(email, domain, step = 1) {
   }, { website: "garudaos.in" });
 
   try {
-    const { sendEmailNative } = require("./motherPlatformAuthService");
-    const result = await sendEmailNative(smtp.config, mail);
+    const { sendSmtpNative } = require("./motherPlatformAuthService");
+    const result = await sendSmtpNative(smtp.config, mail);
     const match = findLead(email);
     if (match) {
       match.lead.followUpCount = (match.lead.followUpCount || 0) + 1;
@@ -212,10 +212,12 @@ function pendingFollowUps(now = new Date()) {
       if (lead.optedOut || lead.replyIntent === "no") continue;
       if (lead.bounced) continue; // address doesn't exist — never follow up
       if (lead.replyIntent === "interested" || lead.status === "replied_interested") continue;
-      const sinceSent = now.getTime() - sentAt;
-      const waitFor = (followUpCount + 1) * 3 * DAY;
-      if (sinceSent >= waitFor) {
-        due.push({ email: lead.email, domain, step: followUpCount + 1, sinceDays: Math.round(sinceSent / DAY) });
+      // Space follow-ups 3 days apart measured from the LAST outbound message
+      // (first send or previous follow-up), not from the original send.
+      const anchor = lead.lastFollowUpAt ? new Date(lead.lastFollowUpAt).getTime() : sentAt;
+      const sinceAnchor = now.getTime() - anchor;
+      if (sinceAnchor >= 3 * DAY) {
+        due.push({ email: lead.email, domain, step: followUpCount + 1, sinceDays: Math.round(sinceAnchor / DAY) });
       }
     }
   }
