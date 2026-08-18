@@ -272,7 +272,7 @@ function trySalesAgent(message, sessionId) {
     const salesAgent = require("../src/services/garudaSalesAgentService");
     const result = salesAgent.handleSalesMessage(message, { sessionId });
     if (!result || !result.message) return { handled: false, reply: null };
-    if (result.action === "noop") return { handled: false, reply: null };
+    if (result.action === "noop" || result.action === "pass_through") return { handled: false, reply: null };
     return { handled: true, reply: result.message };
   } catch {
     return { handled: false, reply: null };

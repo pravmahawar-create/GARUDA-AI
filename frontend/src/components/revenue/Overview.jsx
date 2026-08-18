@@ -139,9 +139,9 @@ export default function Overview({ onNavigate }) {
     },
     {
       icon: "◎",
-      title: "Potential Pipeline",
+      title: "Executable Pipeline",
       value: formatAmount(pipelineValue, "INR"),
-      detail: `${totalOpp} opportunities · weighted ${formatAmount(weightedPipeline, "INR")} · potential only, not revenue`,
+      detail: `${totalOpp} GARUDA-executable opportunities · weighted ${formatAmount(weightedPipeline, "INR")} · job postings & junk excluded`,
       tone: "gold"
     }
   ];
@@ -200,7 +200,7 @@ export default function Overview({ onNavigate }) {
             })}
           </div>
           <p style={{ margin: "0.85rem 0 0", fontSize: "0.78rem", color: MUTED }}>
-            Potential pipeline — opportunity <strong>potential</strong>, never received revenue.
+            Executable pipeline — GARUDA-deliverable opportunities only; human-only job postings and unmeasured scrapes excluded.
           </p>
         </Panel>
       </div>

@@ -223,11 +223,33 @@ function requiredQuestions(state) {
 
 // ---------------------------------------------------------------- main entry
 
+// Intent gate: the sales agent must only take over conversations that are
+// actually about buying GARUDA services. Non-sales messages pass through to the
+// real LLM instead of being hijacked by quote/budget questions.
+const SALES_NEGOTIATION_SIGNALS = [
+  /(quote|price|cost|kitna|how much|rate)/i,
+  /(banwana|banwani|bana do|banao|bana dena)/i,
+  /(mehenga|kam karo|discount|sasta|deal done|deal lock|accept|agreed)/i
+];
+
+function shouldEngageSales(message, state = {}) {
+  const text = String(message || "").trim();
+  if (!text) return false;
+  // Session already inside an active deal conversation — keep it going.
+  if (state.quote || state.stage === "negotiation" || state.stage === "accepted") return true;
+  // Concrete service type or an explicit budget figure both mean sales intent.
+  if (detectType(text)) return true;
+  if (parseBudget(text) != null) return true;
+  // Explicit commercial language.
+  return SALES_NEGOTIATION_SIGNALS.some((regex) => regex.test(text));
+}
+
 function handleSalesMessage(message, options = {}) {
   const sessionId = options.sessionId || options.userId || "default";
   const state = getState(sessionId);
   const text = String(message || "").trim();
   if (!text) return { action: "noop" };
+  if (!shouldEngageSales(text, state)) return { action: "pass_through", message: null };
 
   const scope = extractScope(text);
   if (scope.type) state.scope.type = scope.type;
@@ -309,5 +331,6 @@ module.exports = {
   getDealSummary,
   handleSalesMessage,
   parseBudget,
-  resetDeal
+  resetDeal,
+  shouldEngageSales
 };

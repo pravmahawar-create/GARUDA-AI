@@ -87,8 +87,11 @@ async function listOpportunities(filters = {}) {
   if (filters.priority && ["LOW_VALUE", "LOW", "NORMAL", "HIGH", "VERY_HIGH", "STRATEGIC", "UNMEASURED"].includes(filters.priority)) {
     query.priority = filters.priority;
   }
-  if (filters.archived === "true") query["outreach.archived"] = true;
-  if (filters.archived === "false") query["outreach.archived"] = false;
+  if (filters.archived === "true") {
+    query["outreach.archived"] = true;
+  } else {
+    query["outreach.archived"] = { $ne: true };
+  }
 
   const items = await Opportunity.find(query).sort({
     expectedCloseDate: 1,
@@ -156,9 +159,20 @@ async function updateOpportunity(id, payload = {}) {
   return item.toJSON();
 }
 
+// Only count opportunities GARUDA can actually execute: not archived, not
+// human-only job postings (salary compensation), and carrying a measured value.
+function executableOpportunityFilter() {
+  return {
+    "outreach.archived": { $ne: true },
+    "valueModel.valueType": { $ne: "salary_contract_compensation" },
+    "valueModel.status": { $in: ["ESTIMATED", "APPROVED_DEAL", "RECEIVED"] }
+  };
+}
+
 async function getOpportunityMetrics() {
   const [byStage, totals] = await Promise.all([
     Opportunity.aggregate([
+      { $match: executableOpportunityFilter() },
       {
         $group: {
           _id: "$stage",
@@ -168,6 +182,7 @@ async function getOpportunityMetrics() {
       }
     ]),
     Opportunity.aggregate([
+      { $match: executableOpportunityFilter() },
       {
         $group: {
           _id: null,

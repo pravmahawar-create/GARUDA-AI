@@ -116,7 +116,7 @@ export default function CustomerDashboard({ customer, onLogout }) {
           <p className="eyebrow" style={{ marginBottom: "0.3rem" }}>UNIVERSES</p>
           <h2 style={{ margin: 0, fontSize: "1.25rem" }}>The GARUDA world</h2>
           <p style={{ margin: "0.3rem 0 0", color: palette.muted, fontSize: "0.88rem" }}>
-            16 public universes, laid out left to right. The founder-internal 11 stay on the founder page.
+            16 public universes, neatly laid out in a grid. The founder-internal 11 stay on the founder page.
           </p>
         </div>
         <UniversesStrip onSelect={setSelected} />

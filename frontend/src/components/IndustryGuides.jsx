@@ -17,12 +17,9 @@ export default function IndustryGuides() {
   return (
     <div
       style={{
-        display: "flex",
-        gap: "1rem",
-        overflowX: "auto",
-        padding: "0.4rem 0.2rem 1.2rem",
-        scrollSnapType: "x mandatory",
-        WebkitOverflowScrolling: "touch"
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+        gap: "1rem"
       }}
     >
       {INDUSTRY_GUIDES.map((guide) => {
@@ -31,9 +28,7 @@ export default function IndustryGuides() {
           <div
             key={guide.id}
             style={{
-              scrollSnapAlign: "start",
-              flex: "0 0 300px",
-              maxWidth: 300,
+              maxWidth: "none",
               padding: "1.3rem",
               borderRadius: 18,
               border: isOpen ? "1px solid rgba(245,215,110,0.45)" : "1px solid rgba(245,215,110,0.14)",

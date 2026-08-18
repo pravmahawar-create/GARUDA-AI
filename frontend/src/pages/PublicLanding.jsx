@@ -408,11 +408,11 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           sub="16 universes power what customers see and feel. 11 founder-internal universes run the intelligence behind it — every universe reports into Revenue, the reporting hub."
         />
         <motion.div {...fadeUp} style={{ maxWidth: 1080, margin: "0 auto" }}>
-          <div style={{ display: "flex", gap: "0.9rem", overflowX: "auto", padding: "0.4rem 0.2rem 1.2rem", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: "1rem" }}>
             {publicUniverses.map((u) => (
               <div
                 key={u.num}
-                style={{ scrollSnapAlign: "start", minWidth: 200, maxWidth: 200, padding: "1.2rem", borderRadius: 16, border: "1px solid rgba(245,215,110,0.14)", background: "rgba(11,15,22,0.7)" }}
+                style={{ padding: "1.2rem", borderRadius: 16, border: "1px solid rgba(245,215,110,0.14)", background: "rgba(11,15,22,0.7)" }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
                   <span style={{ fontSize: "1.3rem" }}>{u.icon}</span>

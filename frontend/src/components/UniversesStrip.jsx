@@ -39,12 +39,9 @@ export default function UniversesStrip({ onSelect }) {
           <p style={{ margin: "0 0 1rem", color: palette.muted, fontSize: "0.9rem" }}>{group.blurb}</p>
           <div
             style={{
-              display: "flex",
-              gap: "1rem",
-              overflowX: "auto",
-              padding: "0.4rem 0.2rem 1.2rem",
-              scrollSnapType: "x mandatory",
-              WebkitOverflowScrolling: "touch"
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: "1rem"
             }}
           >
             {group.universes.map((u) => {
@@ -55,8 +52,6 @@ export default function UniversesStrip({ onSelect }) {
                   type="button"
                   onClick={() => onSelect(u)}
                   style={{
-                    scrollSnapAlign: "start",
-                    flex: "0 0 230px",
                     textAlign: "left",
                     padding: "1.3rem",
                     borderRadius: 18,
