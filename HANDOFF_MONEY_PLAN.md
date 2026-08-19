@@ -81,3 +81,32 @@
 ## ✅ Today's commits (all pushed)
 - `9eca8b5` fix(telegram): honest engine-unavailable reply
 - `06bf4b4` docs: universes.md + handoff complete
+- `0ef76fb` docs: money-focus handoff
+
+## 🔴 TOMORROW'S FIRST TASK (before money plan) — Fix gemini 503
+
+**Founder report (tonight):** bot replied with big message `gemini_http_503` —
+"high demand, try again later". Bot is now honest (no more lying), but gemini
+transient 503 kills the answer instantly.
+
+**Root cause (diagnosed, verified):** `src/rag/llmAdapter.js` line ~808-812:
+```js
+if (res.status === 404 || res.status === 400 || res.status === 429) {
+  continue;   // only these retry against next candidate model
+}
+return lastResult;  // 503 returns FATAL here — no retry, no backoff
+```
+Render has ONLY gemini configured (NVIDIA key dead/403) → no fallback survives →
+honest "engine unavailable". 503 is Google transient overload (seconds), must retry.
+
+**Fix (small, one file — `src/rag/llmAdapter.js`):**
+1. Add `sleep()` helper (~5 lines).
+2. Gemini path: on 503/429/500/502/504 retry SAME model up to 3× with backoff
+   (1s → 2s → 4s), then `continue` to next candidate model. Keep 401/403 fatal
+   (auth errors, not retryable). Apply same retry to the catch/network-error block.
+3. Verify: local mock test (503 then 200 → confirm retry works), real gemini call
+   3-4×, `node --check`, re-run mother LLM tests
+   (`conversationalIntelligenceRegression`, `localCognitiveResourceIntegration`).
+4. Optional: soften/trim the telegram engine-unavailable message.
+
+Then push (`git push origin main`) → Render auto-deploys → test bot again.
