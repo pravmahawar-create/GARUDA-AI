@@ -7,6 +7,7 @@ const { RevenueWorkIntake } = require("../models/RevenueWorkIntake");
 const { RevenueExecutionMission } = require("../models/RevenueExecutionMission");
 const deliveryUnlockService = require("./deliveryUnlockService");
 const settlementFeeConfigService = require("./settlementFeeConfigService");
+const paymentReconciliationService = require("./paymentReconciliationService");
 
 function fail(message, statusCode = 400) {
   throw Object.assign(new Error(message), { statusCode });
@@ -14,6 +15,10 @@ function fail(message, statusCode = 400) {
 
 function hash(value) {
   return crypto.createHash("sha256").update(JSON.stringify(value)).digest("hex");
+}
+
+function getProviderMode(env = process.env) {
+  return String(env.RAZORPAY_LIVE_ENABLED || "").toLowerCase() === "true" ? "live" : "test";
 }
 
 function getProviderFeeRate(provider) {
@@ -43,6 +48,15 @@ function parseReferenceId(referenceId) {
   return { missionId: null, candidateId: null };
 }
 
+function hasValidReference(referenceId) {
+  const { missionId, candidateId } = parseReferenceId(referenceId);
+  return Boolean(
+    missionId && candidateId &&
+    mongoose.Types.ObjectId.isValid(String(missionId)) &&
+    mongoose.Types.ObjectId.isValid(String(candidateId))
+  );
+}
+
 async function verifyRazorpaySignature(rawBody, signature, secret) {
   if (!secret || String(secret).length < 12) fail("Razorpay webhook secret is not configured", 503);
   if (typeof rawBody !== "string" || !rawBody) fail("rawBody is required for signature verification", 400);
@@ -58,8 +72,14 @@ function extractPaymentDetails(event) {
   const payload = event.payload || {};
   const payment = payload.payment || payload.payment_link || {};
   const paymentEntity = payment.entity || payment;
-  
-  const paymentId = String(paymentEntity.id || "");
+
+  const isPaymentLinkPaid = type === "payment_link.paid";
+  const isRefund = type === "payment.refunded" || type === "refund.processed" || type === "refund.created";
+
+  let paymentId = String(paymentEntity.id || "");
+  if (isPaymentLinkPaid && Array.isArray(paymentEntity.payments?.items) && paymentEntity.payments.items.length > 0) {
+    paymentId = String(paymentEntity.payments.items[0].id || paymentId);
+  }
   const amount = Number(paymentEntity.amount || 0);
   const currency = String(paymentEntity.currency || "INR").toUpperCase();
   const referenceId = String(paymentEntity.notes?.missionId && paymentEntity.notes?.candidateId 
@@ -73,6 +93,7 @@ function extractPaymentDetails(event) {
   return {
     provider: "razorpay",
     eventType: type,
+    providerEventId: String(event.id || ""),
     paymentId,
     amount,
     currency,
@@ -80,6 +101,8 @@ function extractPaymentDetails(event) {
     status,
     capturedAt,
     paymentCaptured,
+    isRefund,
+    mode: getProviderMode(),
     rawEvent: event
   };
 }
@@ -87,10 +110,16 @@ function extractPaymentDetails(event) {
 async function createRevenueRecordFromPayment(details) {
   const { missionId, candidateId } = parseReferenceId(details.referenceId);
   const paymentEventKey = hash({ provider: details.provider, paymentId: details.paymentId, amount: details.amount });
-  
+
+  const existingByEvent = details.providerEventId
+    ? await RevenueRecord.findOne({ providerEventId: details.providerEventId }).lean()
+    : null;
+  if (existingByEvent) {
+    return { record: existingByEvent, created: false, duplicate: true, reason: "provider_event_already_processed" };
+  }
   const existing = await RevenueRecord.findOne({ paymentEventKey });
   if (existing) {
-    return { record: existing.toJSON(), created: false, duplicate: true };
+    return { record: existing.toJSON(), created: false, duplicate: true, reason: "payment_already_recorded" };
   }
   
   let clientName = "Unknown Client";
@@ -102,11 +131,17 @@ async function createRevenueRecordFromPayment(details) {
   
   const record = await RevenueRecord.create({
     opportunityId: candidateId || null,
+    candidateId: candidateId || null,
     executionMissionId: missionId || null,
     paymentEventKey,
+    providerEventId: details.providerEventId || undefined,
+    paymentId: details.paymentId || undefined,
+    mode: details.mode,
     verificationEvidence: {
       provider: details.provider,
+      mode: details.mode,
       eventType: details.eventType,
+      providerEventId: details.providerEventId,
       paymentId: details.paymentId,
       referenceId: details.referenceId,
       rawEvent: details.rawEvent,
@@ -117,6 +152,7 @@ async function createRevenueRecordFromPayment(details) {
     source: "razorpay_webhook",
     client: clientName,
     status: "received",
+    capturedAt: new Date(details.capturedAt),
     recordedAt: new Date(),
     notes: `Payment captured via ${details.provider} webhook (${details.eventType})`
   });
@@ -125,7 +161,8 @@ async function createRevenueRecordFromPayment(details) {
 }
 
 async function createSettlementFromRevenueRecord(revenueRecord, provider) {
-  const existing = await SettlementLedger.findOne({ revenueRecordId: revenueRecord.id });
+  const revenueRecordId = revenueRecord._id || revenueRecord.id;
+  const existing = await SettlementLedger.findOne({ revenueRecordId });
   if (existing) {
     return { ledger: existing.toJSON(), created: false };
   }
@@ -134,25 +171,52 @@ async function createSettlementFromRevenueRecord(revenueRecord, provider) {
   const amounts = calculateSettlementAmounts(revenueRecord.amount, feeRatePercent);
   
   const ledger = await SettlementLedger.create({
-    revenueRecordId: revenueRecord.id,
+    revenueRecordId,
+    executionMissionId: revenueRecord.executionMissionId || undefined,
+    paymentEventKey: revenueRecord.paymentEventKey,
+    verificationEvidence: revenueRecord.verificationEvidence,
     grossAmount: amounts.grossAmount,
     feeAmount: amounts.feeAmount,
     netAmount: amounts.netAmount,
     feeRatePercent: amounts.feeRatePercent,
     currency: revenueRecord.currency,
-    status: "eligible",
-    payoutEligible: true,
-    eligibilityReasons: [],
+    status: "pending",
+    payoutEligible: false,
+    eligibilityReasons: ["payment_captured_settlement_pending"],
     provider,
     auditTrail: [{
       action: "settlement_created",
-      toStatus: "eligible",
+      toStatus: "pending",
       actor: "system",
-      note: `Auto-created from ${provider} webhook payment verification`
+      note: `Payment captured via ${provider} webhook; provider settlement not yet confirmed`
     }]
   });
   
   return { ledger: ledger.toJSON(), created: true };
+}
+
+async function handleRefundEvent(details) {
+  const query = details.paymentId ? { paymentId: details.paymentId } : {};
+  if (Object.keys(query).length === 0) {
+    await paymentReconciliationService.createReconciliationItem(details, "refund_without_payment_reference");
+    return { handled: false, reason: "no_payment_reference" };
+  }
+  const record = await RevenueRecord.findOne(query);
+  if (!record) {
+    await paymentReconciliationService.createReconciliationItem(details, "refund_for_unmatched_payment");
+    return { handled: false, reason: "payment_record_not_found" };
+  }
+  record.status = "refunded";
+  record.notes = `Refunded via ${details.provider} webhook (${details.eventType}) ${details.providerEventId ? `event=${details.providerEventId}` : ""}`;
+  await record.save();
+  const settlement = await SettlementLedger.findOne({ revenueRecordId: record.id });
+  if (settlement && settlement.status !== "settled") {
+    settlement.status = "failed";
+    settlement.failureReason = "payment_refunded";
+    settlement.auditTrail.push({ action: "status_changed", fromStatus: settlement.status, toStatus: "failed", actor: "system", note: "Payment refunded after capture" });
+    await settlement.save();
+  }
+  return { handled: true, revenueRecord: record.toJSON() };
 }
 
 async function triggerDeliveryUnlock(missionId, paymentDetails) {
@@ -176,15 +240,39 @@ async function triggerDeliveryUnlock(missionId, paymentDetails) {
 
 async function processRazorpayWebhook(rawBody, headers) {
   const signature = headers["x-razorpay-signature"] || headers["X-Razorpay-Signature"] || "";
-  const secret = process.env.RAZORPAY_WEBHOOK_SECRET_LIVE || process.env.RAZORPAY_WEBHOOK_SECRET_TEST || "";
+  const mode = getProviderMode();
+  const secret = mode === "live"
+    ? process.env.RAZORPAY_WEBHOOK_SECRET_LIVE
+    : process.env.RAZORPAY_WEBHOOK_SECRET_TEST;
   
   await verifyRazorpaySignature(rawBody, signature, secret);
   
   const event = JSON.parse(rawBody);
   const details = extractPaymentDetails(event);
   
+  if (details.isRefund) {
+    const refundResult = await handleRefundEvent(details);
+    return {
+      success: true,
+      eventType: details.eventType,
+      mode,
+      refund: refundResult
+    };
+  }
+  
   if (!details.paymentCaptured) {
-    return { success: true, ignored: true, reason: `Event ${details.eventType} does not indicate payment capture` };
+    return { success: true, ignored: true, reason: `Event ${details.eventType} does not indicate payment capture`, mode };
+  }
+  
+  if (!hasValidReference(details.referenceId)) {
+    const item = await paymentReconciliationService.createReconciliationItem(details, "payment_reference_unresolvable");
+    return {
+      success: true,
+      queued: true,
+      mode,
+      reconciliation: item,
+      reason: "Payment reference could not be resolved to a GARUDA engagement; queued for founder reconciliation"
+    };
   }
   
   const revenueResult = await createRevenueRecordFromPayment(details);
@@ -198,6 +286,7 @@ async function processRazorpayWebhook(rawBody, headers) {
   
   return {
     success: true,
+    mode,
     revenueRecord: revenueResult.record,
     revenueRecordCreated: revenueResult.created,
     settlement: settlementResult.ledger,
@@ -220,6 +309,9 @@ module.exports = {
   triggerDeliveryUnlock,
   processRazorpayWebhook,
   parseReferenceId,
+  hasValidReference,
+  handleRefundEvent,
+  getProviderMode,
   getProviderFeeRate,
   calculateSettlementAmounts
 };

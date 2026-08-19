@@ -258,6 +258,14 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
     opportunityChannel = "garuda_deliverable";
   }
 
+  // Earning mode (Amendment 9): founder-assisted intake IS the founder-engaged
+  // mechanism — the Founder imported the opportunity under attestation, so
+  // GARUDA-assisted delivery is engaged. Capability-matched work stays
+  // garuda_deliverable; everything else is NOT_ELIGIBLE. Permission to engage
+  // is recorded UNKNOWN until confirmed (never auto-inferred as permitted).
+  const hasCapabilityMatch = opportunityChannel === "garuda_deliverable";
+  const earningMode = hasCapabilityMatch ? "FOUNDER_ENGAGED_GARUDA_ASSISTED" : "NOT_ELIGIBLE";
+
   // humanIdentityRequired based on actual capability, not hardcoded
   const humanIdentityRequired = capMatch.humanIdentityRequired;
 
@@ -289,6 +297,8 @@ function processFounderAssistedIntake(input = {}, context = {}, now = new Date()
 tags: Array.isArray(input.tags) ? input.tags.map(plainText) : [],
     score: matchingScore,
     opportunityChannel,
+    earningMode,
+    contractPermission: "UNKNOWN",
     requiresFounderApproval: true,
     capabilityAssessment: {
       selfEarningEligible: capMatch.capabilityMatchScore !== undefined && capMatch.capabilityMatchScore >= 30,

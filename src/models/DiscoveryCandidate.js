@@ -10,6 +10,19 @@ const OPPORTUNITY_CHANNELS = [
   "no_verified_capability_match"
 ];
 
+const EARNING_MODES = [
+  "DIRECT_GARUDA",
+  "FOUNDER_ENGAGED_GARUDA_ASSISTED",
+  "PERMISSION_UNKNOWN",
+  "NOT_ELIGIBLE"
+];
+
+const CONTRACT_PERMISSIONS = [
+  "PERMITTED",
+  "PROHIBITED",
+  "UNKNOWN"
+];
+
 const OPPORTUNITY_CATEGORIES = [
   "full_time_job",
   "contract_role",
@@ -80,6 +93,18 @@ const discoveryCandidateSchema = new mongoose.Schema(
       type: String,
       enum: OPPORTUNITY_CHANNELS,
       default: "no_verified_capability_match",
+      index: true
+    },
+    earningMode: {
+      type: String,
+      enum: EARNING_MODES,
+      default: "PERMISSION_UNKNOWN",
+      index: true
+    },
+    contractPermission: {
+      type: String,
+      enum: CONTRACT_PERMISSIONS,
+      default: "UNKNOWN",
       index: true
     },
     capabilityAssessment: {
@@ -155,10 +180,35 @@ const discoveryCandidateSchema = new mongoose.Schema(
 discoveryCandidateSchema.index({ missionId: 1, source: 1, externalId: 1 }, { unique: true });
 discoveryCandidateSchema.set("toJSON", { versionKey: false, transform: (_doc, ret) => { ret.id = String(ret._id); ret.missionId = String(ret.missionId); delete ret._id; } });
 
+// Deterministic earning-mode resolution for records created before earningMode
+// existed. Capability is separated from engagement permission: a capability
+// match never grants permission; a human-identity requirement never negates
+// capability. Legacy records therefore resolve safely and never auto-execute.
+function resolveEarningMode(candidate = {}) {
+  if (candidate.earningMode && EARNING_MODES.includes(candidate.earningMode)) return candidate.earningMode;
+  const channel = candidate.opportunityChannel || "";
+  const assessment = candidate.capabilityAssessment || {};
+  const hasMatch = Array.isArray(assessment.matches) && assessment.matches.length > 0;
+  if (channel === "garuda_deliverable" && hasMatch && assessment.humanIdentityRequired !== true) return "DIRECT_GARUDA";
+  // human_opportunity_only is the legacy label for capability-matched human-role
+  // listings; under Amendment 9 these are founder-reviewable, not ineligible.
+  if (["founder_garuda", "human_opportunity_only"].includes(channel) && hasMatch) return "PERMISSION_UNKNOWN";
+  return "NOT_ELIGIBLE";
+}
+
+function resolveContractPermission(candidate = {}) {
+  if (candidate.contractPermission && CONTRACT_PERMISSIONS.includes(candidate.contractPermission)) return candidate.contractPermission;
+  return "UNKNOWN";
+}
+
 module.exports = {
   DiscoveryCandidate: mongoose.model("DiscoveryCandidate", discoveryCandidateSchema),
+  CONTRACT_PERMISSIONS,
+  EARNING_MODES,
   OPPORTUNITY_CHANNELS,
   OPPORTUNITY_CATEGORIES,
   EXECUTION_MODES,
-  MARKET_SOURCE_TYPES
+  MARKET_SOURCE_TYPES,
+  resolveContractPermission,
+  resolveEarningMode
 };

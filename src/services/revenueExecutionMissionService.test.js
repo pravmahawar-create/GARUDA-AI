@@ -65,10 +65,32 @@ assert.strictEqual(buildMissionPreview(candidate(), { rootDir, workIntake }).mis
 assert.throws(() => buildMissionPreview(candidate(), { rootDir }), /real-work intake/);
 
 assert.throws(() => validateApprovedCandidate(candidate({ status: "ranked" }), { rootDir }), /Founder-approved/);
-assert.throws(() => validateApprovedCandidate(candidate({ opportunityChannel: "human_opportunity_only" }), { rootDir }), /GARUDA-deliverable/);
+assert.throws(() => validateApprovedCandidate(candidate({ opportunityChannel: "human_opportunity_only" }), { rootDir }), /GARUDA-deliverable|founder-engaged/);
 assert.throws(() => validateApprovedCandidate(candidate({ capabilityAssessment: { selfEarningEligible: true, humanIdentityRequired: true, matches: [] } }), { rootDir }), /not eligible/);
 assert.throws(() => validateApprovedCandidate(candidate({ verification: { sourceVerified: false } }), { rootDir }), /verification gates/);
 assert.throws(() => validateApprovedCandidate(candidate({ decision: { actor: "", decidedAt: null } }), { rootDir }), /approval evidence/);
 assert.throws(() => validateApprovedCandidate(candidate({ decision: { actor: "operator", decidedAt: new Date() } }), { rootDir }), /Founder approval evidence/);
+
+// Founder-engaged (Amendment 9): a human-role listing with a confirmed founder
+// engagement is a valid mission; PERMISSION_UNKNOWN and PROHIBITED never execute.
+const roleRecord = { source: "remotive", externalId: "role-1", title: "Full-time Senior Node.js Developer Position", company: "Acme Corp", description: "Seeking a senior Node.js backend developer for project execution and technical deliverables.", category: "full_time_job", url: "https://remotive.com/job/role-1", sourceAttribution: "Remotive" };
+const humanRoleTruth = { ...classifySourceTruth(roleRecord), verifiedAt: "2026-07-22T09:00:00.000Z", prohibitedContentClear: true, scamSignalsClear: true };
+const founderEngagedBase = {
+  ...roleRecord,
+  _id: "507f1f77bcf86cd799439011",
+  missionId: "507f191e810c19729de860ea",
+  status: "approved",
+  opportunityChannel: "founder_garuda",
+  score: 88,
+  capabilityAssessment: { selfEarningEligible: false, humanIdentityRequired: true, matches: [{ capabilityId: "engineering.software-implementation", universe: "engineering", name: "Governed software implementation", score: 82 }] },
+  verification: humanRoleTruth,
+  decision: { actor: "founder", decidedAt: "2026-07-22T10:00:00.000Z" }
+};
+const founderEngaged = { ...founderEngagedBase, earningMode: "FOUNDER_ENGAGED_GARUDA_ASSISTED", contractPermission: "UNKNOWN" };
+assert.doesNotThrow(() => validateApprovedCandidate(founderEngaged, { rootDir, now: new Date("2026-07-22T11:00:00.000Z") }), "founder-engaged human-role mission must be accepted");
+
+assert.throws(() => validateApprovedCandidate({ ...founderEngagedBase, earningMode: "PERMISSION_UNKNOWN", contractPermission: "UNKNOWN" }, { rootDir, now: new Date("2026-07-22T11:00:00.000Z") }), /PERMISSION_UNKNOWN|permission not established/);
+
+assert.throws(() => validateApprovedCandidate({ ...founderEngagedBase, earningMode: "FOUNDER_ENGAGED_GARUDA_ASSISTED", contractPermission: "PROHIBITED" }, { rootDir, now: new Date("2026-07-22T11:00:00.000Z") }), /prohibits/);
 
 console.log("Revenue execution mission bridge validation passed.");

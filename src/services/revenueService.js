@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { RevenueRecord, REVENUE_STATUSES } = require("../models/RevenueRecord");
+const { SettlementLedger } = require("../models/SettlementLedger");
 const { Opportunity } = require("../models/Opportunity");
 
 function isObjectId(value) {
@@ -245,30 +246,34 @@ async function getRevenueMetrics() {
     bySource,
     topClients,
     currentMonth,
-    previousMonth
+    previousMonth,
+    testTransactions
   ] = await Promise.all([
     RevenueRecord.aggregate([
-      { $match: { status: "received" } },
+      { $match: { status: "received", mode: { $ne: "test" } } },
       { $group: { _id: null, value: { $sum: "$amount" } } }
     ]),
     RevenueRecord.aggregate([
-      { $match: { status: "pending" } },
+      { $match: { status: "pending", mode: { $ne: "test" } } },
       { $group: { _id: null, value: { $sum: "$amount" } } }
     ]),
     RevenueRecord.aggregate([
-      { $match: { status: "refunded" } },
+      { $match: { status: "refunded", mode: { $ne: "test" } } },
       { $group: { _id: null, value: { $sum: "$amount" } } }
     ]),
-    RevenueRecord.countDocuments(),
+    RevenueRecord.countDocuments({ mode: { $ne: "test" } }),
     RevenueRecord.aggregate([
+      { $match: { mode: { $ne: "test" } } },
       { $group: { _id: "$status", count: { $sum: 1 }, amount: { $sum: "$amount" } } }
     ]),
     RevenueRecord.aggregate([
+      { $match: { mode: { $ne: "test" } } },
       { $group: { _id: "$source", amount: { $sum: "$amount" } } },
       { $sort: { amount: -1 } },
       { $limit: 8 }
     ]),
     RevenueRecord.aggregate([
+      { $match: { mode: { $ne: "test" } } },
       { $group: { _id: "$client", amount: { $sum: "$amount" } } },
       { $sort: { amount: -1 } },
       { $limit: 5 }
@@ -277,6 +282,7 @@ async function getRevenueMetrics() {
       {
         $match: {
           status: "received",
+          mode: { $ne: "test" },
           recordedAt: { $gte: monthRange(0).start, $lt: monthRange(0).end }
         }
       },
@@ -286,10 +292,15 @@ async function getRevenueMetrics() {
       {
         $match: {
           status: "received",
+          mode: { $ne: "test" },
           recordedAt: { $gte: monthRange(-1).start, $lt: monthRange(-1).end }
         }
       },
       { $group: { _id: null, value: { $sum: "$amount" } } }
+    ]),
+    RevenueRecord.aggregate([
+      { $match: { mode: "test" } },
+      { $group: { _id: null, count: { $sum: 1 }, amount: { $sum: "$amount" } } }
     ])
   ]);
 
@@ -309,7 +320,12 @@ async function getRevenueMetrics() {
     trend: buildTrendString(mtdRevenue, prevMonthRevenue),
     byStatus: byStatus.map((row) => ({ status: row._id, count: row.count, amount: row.amount })),
     bySource: bySource.map((row) => ({ source: row._id || "unknown", amount: row.amount })),
-    topClients: topClients.map((row) => ({ client: row._id || "unknown", amount: row.amount }))
+    topClients: topClients.map((row) => ({ client: row._id || "unknown", amount: row.amount })),
+    testTransactions: {
+      count: testTransactions[0]?.count || 0,
+      amount: testTransactions[0]?.amount || 0,
+      excludedFromReceivedRevenue: true
+    }
   };
 }
 
@@ -355,21 +371,35 @@ async function getRevenueAnalytics({ monthsBack = 6 } = {}) {
 
 async function getSettlementSummary() {
   const metrics = await getRevenueMetrics();
-  const settledRevenue = metrics.receivedRevenue;
-  const settlementBase = settledRevenue + metrics.pendingRevenue;
-  const settlementRate = settlementBase > 0 ? Math.round((settledRevenue / settlementBase) * 100) : 0;
+  const [{ settled } = {}] = await SettlementLedger.aggregate([
+    { $match: { status: "settled" } },
+    { $group: { _id: null, value: { $sum: "$netAmount" } } }
+  ]);
+  const [{ inFlight } = {}] = await SettlementLedger.aggregate([
+    { $match: { status: { $in: ["pending", "eligible", "processing"] } } },
+    { $group: { _id: null, value: { $sum: "$netAmount" } } }
+  ]);
+  const settledAmount = settled?.value || 0;
+  const inFlightAmount = inFlight?.value || 0;
+  const settlementBase = settledAmount + inFlightAmount;
+  const settlementRate = settlementBase > 0 ? Math.round((settledAmount / settlementBase) * 100) : 0;
 
-  const recentSettlements = await RevenueRecord.find({ status: "received" })
-    .sort({ recordedAt: -1 })
+  const recentSettlements = await SettlementLedger.find({ status: "settled" })
+    .sort({ settledAt: -1 })
     .limit(5);
 
   return {
-    pendingSettlementAmount: metrics.pendingRevenue,
-    pendingSettlementCount: metrics.byStatus.find((row) => row.status === "pending")?.count || 0,
-    settledAmount: settledRevenue,
+    pendingSettlementAmount: inFlightAmount,
+    pendingSettlementCount: await SettlementLedger.countDocuments({ status: { $in: ["pending", "eligible", "processing"] } }),
+    settledAmount,
+    settledCount: await SettlementLedger.countDocuments({ status: "settled" }),
+    bankReconciledAmount: (await SettlementLedger.aggregate([
+      { $match: { status: "settled", bankReconciled: true } },
+      { $group: { _id: null, value: { $sum: "$netAmount" } } }
+    ]))[0]?.value || 0,
     refundedAmount: metrics.refundedRevenue,
     settlementRate,
-    recentSettlements: recentSettlements.map((record) => record.toJSON())
+    recentSettlements: recentSettlements.map((ledger) => ledger.toJSON())
   };
 }
 

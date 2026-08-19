@@ -1,6 +1,8 @@
 const revenueService = require("../services/revenueService");
 const revenueConversionService = require("../services/revenueConversionService");
 const settlementService = require("../services/settlementService");
+const paymentReconciliationService = require("../services/paymentReconciliationService");
+const revenueCommandCenterService = require("../services/revenueCommandCenterService");
 const motherIntegration = require("../services/motherRevenueIntegrationService");
 const platformAuth = require("../services/motherPlatformAuthService");
 const dealTrackerService = require("../services/dealTrackerService");
@@ -157,6 +159,42 @@ exports.updateSettlementStatus = async (req, res) => {
     return res.json({ success: true, data: ledger });
   } catch (error) {
     return sendError(res, error, "Failed to update settlement");
+  }
+};
+
+exports.recordBankReconciliation = async (req, res) => {
+  try {
+    const ledger = await settlementService.recordBankReconciliation(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") });
+    return res.json({ success: true, data: ledger });
+  } catch (error) {
+    return sendError(res, error, "Failed to record bank reconciliation");
+  }
+};
+
+exports.listReconciliation = async (req, res) => {
+  try {
+    const items = await paymentReconciliationService.listReconciliationItems(req.query || {});
+    return res.json({ success: true, data: items });
+  } catch (error) {
+    return sendError(res, error, "Failed to list reconciliation queue");
+  }
+};
+
+exports.resolveReconciliation = async (req, res) => {
+  try {
+    const item = await paymentReconciliationService.resolveReconciliationItem(req.params.id, req.body || {}, { founderApproved: req.get("x-garuda-founder-approved") });
+    return res.json({ success: true, data: item });
+  } catch (error) {
+    return sendError(res, error, "Failed to resolve reconciliation item");
+  }
+};
+
+exports.commandCenter = async (_req, res) => {
+  try {
+    const truth = await revenueCommandCenterService.getRevenueTruthMetrics();
+    return res.json({ success: true, data: truth });
+  } catch (error) {
+    return sendError(res, error, "Failed to compute revenue command center truth");
   }
 };
 

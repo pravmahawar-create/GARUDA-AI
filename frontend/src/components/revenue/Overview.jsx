@@ -127,7 +127,7 @@ export default function Overview({ onNavigate }) {
       icon: "◔",
       title: "Revenue Records",
       value: formatNumber(metrics?.totalRecords ?? records.length),
-      detail: "88 records · 1:1 with opportunities · production ledger",
+      detail: `${metrics?.totalRecords ?? records.length} records · production ledger · test transactions excluded`,
       tone: "gold"
     },
     {

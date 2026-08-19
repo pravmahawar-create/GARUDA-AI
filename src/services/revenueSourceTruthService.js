@@ -230,16 +230,29 @@ function classifySourceTruth(raw = {}, now = new Date()) {
 function assertCurrentSourceTruth(candidateInput = {}, now = new Date(), options = {}) {
   const candidate = candidateInput?.toObject ? candidateInput.toObject() : candidateInput || {};
   const verification = candidate.verification || {};
+  const founderEngaged = options.mode === "founder_engaged";
   const required = [
     [verification.sourceVerified === true, "source transport record is not verified"],
     [verification.originalLinkPresent === true, "secure original listing link is missing"],
-    [verification.listingSpecific === true, "specific listing is not proven"],
-    [verification.listingKind === "specific_client_work", "listing is not specific client work"],
-    [verification.directClientWorkEvidence === true, "direct client work is not proven"],
-    [verification.humanIdentityGateClear === true, "listing requires a human identity, profile, or employment process"],
-    [verification.garudaExecutionEligible === true, "listing is not eligible for GARUDA execution"],
-    [/^[a-f0-9]{64}$/.test(String(verification.sourceRecordHash || "")), "source snapshot hash is missing"]
+    [verification.listingSpecific === true, "specific listing is not proven"]
   ];
+  if (founderEngaged) {
+    // Founder-engaged mode (Amendment 9): the listing is truthfully still a
+    // human-role listing, but the Founder has confirmed engagement and
+    // permission. The source snapshot must still be current and unchanged.
+    required.push([
+      ["founder_garuda", "garuda_deliverable"].includes(candidate.opportunityChannel),
+      "candidate is not a founder-engaged or GARUDA-deliverable opportunity"
+    ]);
+  } else {
+    required.push(
+      [verification.listingKind === "specific_client_work", "listing is not specific client work"],
+      [verification.directClientWorkEvidence === true, "direct client work is not proven"],
+      [verification.humanIdentityGateClear === true, "listing requires a human identity, profile, or employment process"],
+      [verification.garudaExecutionEligible === true, "listing is not eligible for GARUDA execution"]
+    );
+  }
+  required.push([/^[a-f0-9]{64}$/.test(String(verification.sourceRecordHash || "")), "source snapshot hash is missing"]);
   const failed = required.find(([passed]) => !passed);
   if (failed) throw Object.assign(new Error(`Source truth gate failed: ${failed[1]}`), { statusCode: 409 });
   if (sourceRecordHash(candidate) !== verification.sourceRecordHash) {

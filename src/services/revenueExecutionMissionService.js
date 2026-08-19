@@ -15,12 +15,26 @@ function validateApprovedCandidate(candidateInput, options = {}) {
   const candidate = plain(candidateInput);
   if (candidate.status !== "approved") fail("Candidate must have Founder-approved status", 409);
   if (!candidate.decision || String(candidate.decision.actor || "").toLowerCase() !== "founder" || !candidate.decision.decidedAt || !Number.isFinite(Date.parse(candidate.decision.decidedAt))) fail("Candidate Founder approval evidence is incomplete", 409);
-  if (candidate.opportunityChannel !== "garuda_deliverable") fail("Candidate is not a GARUDA-deliverable opportunity", 409);
+  const channel = candidate.opportunityChannel;
+  const { resolveContractPermission, resolveEarningMode } = require("../models/DiscoveryCandidate");
+  const earningMode = resolveEarningMode(candidate);
+  const contractPermission = resolveContractPermission(candidate);
   const assessment = candidate.capabilityAssessment || {};
-  if (assessment.selfEarningEligible !== true || assessment.humanIdentityRequired === true) fail("Candidate is not eligible for GARUDA self-execution", 409);
+  if (channel === "garuda_deliverable") {
+    if (earningMode !== "DIRECT_GARUDA" && earningMode !== "FOUNDER_ENGAGED_GARUDA_ASSISTED") fail("Candidate is not eligible for GARUDA self-execution", 409);
+    if (assessment.humanIdentityRequired === true) fail("Candidate is not eligible for GARUDA self-execution", 409);
+  } else if (channel === "founder_garuda") {
+    if (earningMode !== "FOUNDER_ENGAGED_GARUDA_ASSISTED") fail("Candidate Founder engagement permission is not established (earningMode PERMISSION_UNKNOWN) — no external execution", 409);
+  } else {
+    fail("Candidate is not a GARUDA-deliverable or founder-engaged GARUDA-assisted opportunity", 409);
+  }
+  if (contractPermission === "PROHIBITED") fail("Candidate contract/platform permission explicitly prohibits GARUDA-assisted engagement", 409);
   const verification = candidate.verification || {};
   if (verification.prohibitedContentClear !== true || verification.scamSignalsClear !== true) fail("Candidate safety verification gates are incomplete", 409);
-  assertCurrentSourceTruth(candidate, options.now ? new Date(options.now) : new Date(), { maxAgeMs: options.sourceTruthMaxAgeMs });
+  assertCurrentSourceTruth(candidate, options.now ? new Date(options.now) : new Date(), {
+    maxAgeMs: options.sourceTruthMaxAgeMs,
+    mode: channel === "founder_garuda" ? "founder_engaged" : undefined
+  });
   if (!/^https:\/\//i.test(String(candidate.url || ""))) fail("Candidate requires a secure original source link", 409);
   const matches = Array.isArray(assessment.matches) ? assessment.matches : [];
   if (!matches.length || !matches[0].capabilityId) fail("Candidate has no verified capability match", 409);

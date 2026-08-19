@@ -16,6 +16,10 @@ router.get("/settlements", revenueController.listSettlements);
 router.post("/settlements/:revenueRecordId/preview", revenueController.previewSettlement);
 router.post("/settlements/:revenueRecordId", revenueController.createSettlement);
 router.patch("/settlements/:id/status", revenueController.updateSettlementStatus);
+router.patch("/settlements/:id/bank-reconciliation", revenueController.recordBankReconciliation);
+router.get("/reconciliation", revenueController.listReconciliation);
+router.patch("/reconciliation/:id", revenueController.resolveReconciliation);
+router.get("/command-center", revenueController.commandCenter);
 router.patch("/:id", revenueController.update);
 router.delete("/:id", revenueController.remove);
 

@@ -1,7 +1,13 @@
 const mongoose = require("mongoose");
-const { DiscoveryCandidate } = require("../models/DiscoveryCandidate");
+const { DiscoveryCandidate, resolveEarningMode, resolveContractPermission } = require("../models/DiscoveryCandidate");
 const { RevenueAcquisitionCase } = require("../models/RevenueAcquisitionCase");
 const { RevenueWorkIntake } = require("../models/RevenueWorkIntake");
+const { RevenueRecord } = require("../models/RevenueRecord");
+const { SettlementLedger } = require("../models/SettlementLedger");
+const { RevenueExecutionMission } = require("../models/RevenueExecutionMission");
+const { RevenueProductionDelivery } = require("../models/RevenueProductionDelivery");
+const { PermissionReview } = require("../models/PermissionReview");
+const { PaymentReconciliationItem } = require("../models/PaymentReconciliationItem");
 const { runStandaloneDiscovery } = require("./opportunityDiscoveryService");
 const ProjectMemoryEngine = require("../../scripts/dev-agent/core/ProjectMemoryEngine");
 
@@ -198,6 +204,14 @@ async function getRevenueMetrics(options = {}) {
   const qualifiedOpportunities = candidates.filter((c) => (c.score >= 70 || c.status === "ranked") && c.verification?.scamSignalsClear !== false).length;
   const garudaDeliverableOpportunities = candidates.filter((c) => c.opportunityChannel === "garuda_deliverable" || c.capabilityAssessment?.selfEarningEligible === true).length;
 
+  // Earning-mode breakdown (Founder Engagement Review Queue). PERMISSION_UNKNOWN
+  // opportunities are reviewable, never counted as executable revenue.
+  const directGarudaOpportunities = candidates.filter((c) => resolveEarningMode(c) === "DIRECT_GARUDA").length;
+  const founderEngagedOpportunities = candidates.filter((c) => resolveEarningMode(c) === "FOUNDER_ENGAGED_GARUDA_ASSISTED").length;
+  const permissionReviewRequired = candidates.filter((c) => resolveEarningMode(c) === "PERMISSION_UNKNOWN").length;
+  const blockedNotEligible = candidates.filter((c) => resolveEarningMode(c) === "NOT_ELIGIBLE").length;
+  const prohibitedOpportunities = candidates.filter((c) => resolveContractPermission(c) === "PROHIBITED").length;
+
   const proposalReadyOpportunities = cases.filter((c) => ["proposal_drafted", "handoff_ready"].includes(c.status)).length;
   const founderApprovalsPending = cases.filter((c) => ["proposal_drafted", "handoff_ready"].includes(c.status) && (!c.founderApproval || c.founderApproval.authorized !== true)).length;
   const submittedProposals = cases.filter((c) => ["submitted", "submitted_for_review"].includes(c.status)).length;
@@ -240,6 +254,11 @@ async function getRevenueMetrics(options = {}) {
     opportunitiesDiscovered,
     qualifiedOpportunities,
     garudaDeliverableOpportunities,
+    directGarudaOpportunities,
+    founderEngagedOpportunities,
+    permissionReviewRequired,
+    blockedNotEligible,
+    prohibitedOpportunities,
     proposalReadyOpportunities,
     founderApprovalsPending,
     submittedProposals,
@@ -275,8 +294,120 @@ async function getRevenueMetrics(options = {}) {
   };
 }
 
+async function getRevenueTruthMetrics() {
+  const mongoReady = mongoose.connection && mongoose.connection.readyState === 1;
+  if (!mongoReady) {
+    return {
+      timestamp: new Date().toISOString(),
+      dataSource: "mongo_disconnected",
+      pipeline: {}, payments: {}, delivery: {}, settlements: {}, reconciliation: {},
+      receivedRevenue: 0, testExcluded: { count: 0, amount: 0 }
+    };
+  }
+
+  const sum = (rows) => (rows[0]?.value || 0);
+
+  const [
+    candidates,
+    missions,
+    deliveries,
+    payments,
+    ledgers,
+    reconcil,
+    permissionReviews
+  ] = await Promise.all([
+    DiscoveryCandidate.find({}).lean(),
+    RevenueExecutionMission.find({}).lean(),
+    RevenueProductionDelivery.find({}).lean(),
+    RevenueRecord.find({ mode: { $ne: "test" } }).lean(),
+    SettlementLedger.find({}).lean(),
+    PaymentReconciliationItem.find({}).sort({ createdAt: -1 }).lean(),
+    PermissionReview.find({}).lean()
+  ]);
+
+  const settledIds = new Set(ledgers.filter((l) => l.status === "settled").map((l) => String(l.revenueRecordId)));
+  const bankReconciledIds = new Set(ledgers.filter((l) => l.status === "settled" && l.bankReconciled === true).map((l) => String(l.revenueRecordId)));
+
+  const paid = payments.filter((p) => p.status === "received");
+  const capturedNotSettledAmount = paid.filter((p) => !settledIds.has(String(p._id))).reduce((acc, p) => acc + Number(p.amount || 0), 0);
+
+  const settledAmount = ledgers.filter((l) => l.status === "settled").reduce((acc, l) => acc + Number(l.netAmount || 0), 0);
+  const bankReconciledAmount = ledgers.filter((l) => l.status === "settled" && l.bankReconciled).reduce((acc, l) => acc + Number(l.netAmount || 0), 0);
+
+  const deliveryCount = (s) => deliveries.filter((d) => d.status === s).length;
+
+  return {
+    timestamp: new Date().toISOString(),
+    dataSource: "mongodb_persisted",
+    pipeline: {
+      discovered: candidates.length,
+      permissionReviewRequired: candidates.filter((c) => resolveEarningMode(c) === "PERMISSION_UNKNOWN").length,
+      permissionConfirmed: candidates.filter((c) => resolveEarningMode(c) === "FOUNDER_ENGAGED_GARUDA_ASSISTED").length,
+      directGaruda: candidates.filter((c) => resolveEarningMode(c) === "DIRECT_GARUDA").length,
+      blockedNotEligible: candidates.filter((c) => resolveEarningMode(c) === "NOT_ELIGIBLE").length,
+      permissionReviews: permissionReviews.length
+    },
+    engagements: {
+      awaitingFounderReview: missions.filter((m) => m.status === "ready_for_founder_review").length,
+      founderApproved: missions.filter((m) => m.status === "founder_approved").length,
+      changesRequired: missions.filter((m) => m.status === "changes_required").length,
+      rejectedOrBlocked: missions.filter((m) => ["rejected", "blocked"].includes(m.status)).length
+    },
+    proposals: {
+      draftedOrHandoff: missions.filter((m) => m.productionDelivery?.proposalState).length,
+      none: "Proposal state tracked on acquisition cases; see Opportunities view"
+    },
+    paymentRequests: {
+      created: missions.filter((m) => m.payment && m.payment.url).length,
+      statuses: missions.reduce((acc, m) => {
+        const s = m.payment?.status || "none";
+        acc[s] = (acc[s] || 0) + 1;
+        return acc;
+      }, {})
+    },
+    payments: {
+      pending: payments.filter((p) => p.status === "pending").reduce((acc, p) => acc + Number(p.amount || 0), 0),
+      capturedNotSettled: capturedNotSettledAmount,
+      refunded: payments.filter((p) => p.status === "refunded").reduce((acc, p) => acc + Number(p.amount || 0), 0)
+    },
+    delivery: {
+      qualityPassed: deliveryCount("quality_passed"),
+      finalApproved: deliveryCount("final_approved"),
+      delivered: deliveryCount("delivered"),
+      clientAccepted: deliveryCount("client_accepted"),
+      paymentVerified: deliveryCount("payment_verified")
+    },
+    settlements: {
+      pending: ledgers.filter((l) => l.status === "pending").length,
+      eligible: ledgers.filter((l) => l.status === "eligible").length,
+      processing: ledgers.filter((l) => l.status === "processing").length,
+      settled: ledgers.filter((l) => l.status === "settled").length,
+      failed: ledgers.filter((l) => l.status === "failed").length,
+      settledAmount,
+      bankReconciledAmount,
+      bankReconciled: ledgers.filter((l) => l.bankReconciled).length
+    },
+    reconciliation: {
+      unmatched: reconcil.filter((r) => r.status === "unmatched").length,
+      total: reconcil.length,
+      statuses: reconcil.reduce((acc, r) => { acc[r.status] = (acc[r.status] || 0) + 1; return acc; }, {})
+    },
+    receivedRevenue: bankReconciledAmount,
+    receivedRevenueLabel: "RECEIVED only when payment captured, settled, AND bank credit reconciled",
+    testExcluded: {
+      count: await RevenueRecord.countDocuments({ mode: "test" }),
+      amount: (await RevenueRecord.aggregate([
+        { $match: { mode: "test" } },
+        { $group: { _id: null, value: { $sum: "$amount" } } }
+      ]))[0]?.value || 0,
+      note: "Test transactions are excluded from all revenue truth buckets"
+    }
+  };
+}
+
 module.exports = {
   getRevenueMetrics,
+  getRevenueTruthMetrics,
   calculateNextHighestRoiAction,
   parseMonetaryValue,
   parseMonetaryValueDetailed

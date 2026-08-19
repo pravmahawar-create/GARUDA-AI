@@ -13,7 +13,9 @@ assert.strictEqual(candidate.title, "Remote Writer");
 assert.strictEqual(candidate.sourceAttribution, "Remotive");
 assert.strictEqual(candidate.status, "ranked");
 assert.strictEqual(candidate.requiresFounderApproval, true);
-assert.strictEqual(candidate.opportunityChannel, "human_opportunity_only");
+assert.strictEqual(candidate.opportunityChannel, "founder_garuda");
+assert.strictEqual(candidate.earningMode, "PERMISSION_UNKNOWN");
+assert.strictEqual(candidate.contractPermission, "UNKNOWN");
 assert.strictEqual(candidate.capabilityAssessment.selfEarningEligible, false);
 assert.strictEqual(candidate.capabilityAssessment.humanIdentityRequired, true);
 assert.strictEqual(candidate.priority, "UNMEASURED");
@@ -30,7 +32,8 @@ const remotiveSoftwareRole = normalizeRemotiveJob({
   category: "contract_project",
   tags: ["Node", "API", "Testing"]
 }, "507f1f77bcf86cd799439011");
-assert.strictEqual(remotiveSoftwareRole.opportunityChannel, "human_opportunity_only");
+assert.strictEqual(remotiveSoftwareRole.opportunityChannel, "founder_garuda");
+assert.strictEqual(remotiveSoftwareRole.earningMode, "PERMISSION_UNKNOWN");
 assert.strictEqual(remotiveSoftwareRole.capabilityAssessment.selfEarningEligible, false);
 assert.strictEqual(remotiveSoftwareRole.capabilityAssessment.humanIdentityRequired, true);
 assert.strictEqual(remotiveSoftwareRole.verification.listingKind, "human_role_listing");
@@ -45,7 +48,8 @@ const humanOpportunity = normalizeRemotiveJob({
   job_type: "full_time",
   tags: ["Software"]
 }, "507f1f77bcf86cd799439011");
-assert.strictEqual(humanOpportunity.opportunityChannel, "human_opportunity_only");
+assert.strictEqual(humanOpportunity.opportunityChannel, "founder_garuda");
+assert.strictEqual(humanOpportunity.earningMode, "PERMISSION_UNKNOWN");
 assert.strictEqual(humanOpportunity.capabilityAssessment.humanIdentityRequired, true);
 const talentNetwork = normalizeRemotiveJob({
   id: 10,
@@ -56,7 +60,8 @@ const talentNetwork = normalizeRemotiveJob({
   job_type: "contract",
   tags: ["AI", "Architecture"]
 }, "507f1f77bcf86cd799439011");
-assert.strictEqual(talentNetwork.opportunityChannel, "human_opportunity_only");
+assert.strictEqual(talentNetwork.opportunityChannel, "founder_garuda");
+assert.strictEqual(talentNetwork.earningMode, "PERMISSION_UNKNOWN");
 assert.strictEqual(talentNetwork.verification.listingKind, "talent_network_recruitment");
 assert.ok(talentNetwork.verification.rejectionReasons.includes("talent_network_recruitment_not_client_mission"));
 assert.strictEqual(validateCandidateDecision("approved", "true"), "approved");
@@ -67,7 +72,8 @@ const safeUpdate = splitCandidateForDecisionPreservation(candidate);
 assert.strictEqual(safeUpdate.refreshable.status, undefined);
 assert.strictEqual(safeUpdate.insertOnly.status, "ranked");
 assert.strictEqual(safeUpdate.insertOnly.requiresFounderApproval, true);
-assert.strictEqual(safeUpdate.refreshable.opportunityChannel, "human_opportunity_only");
+assert.strictEqual(safeUpdate.refreshable.opportunityChannel, "founder_garuda");
+assert.strictEqual(safeUpdate.refreshable.earningMode, "PERMISSION_UNKNOWN");
 
 const { getProactiveBusinessBriefing } = require("./opportunityDiscoveryService");
 getProactiveBusinessBriefing().then((briefing) => {

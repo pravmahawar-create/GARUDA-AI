@@ -102,11 +102,27 @@ function normalizeRemotiveJob(job, missionId) {
     source: "remotive"
   });
   const humanIdentityRequired = assessment.humanIdentityRequired || sourceTruth.humanIdentityGateClear !== true;
-  const selfEarningEligible = assessment.matches.length > 0 && sourceTruth.garudaExecutionEligible === true && !humanIdentityRequired;
+  const hasCapabilityMatch = assessment.matches.length > 0;
+  // Earning-mode classification (Amendment 9): capability and engagement
+  // permission are separate. A human-identity-required listing with a verified
+  // capability match is a founder-reviewable founder_garuda opportunity, NOT an
+  // auto-rejected human-only role. Direct client work stays garuda_deliverable.
+  const garudaDeliverable = hasCapabilityMatch && !humanIdentityRequired && sourceTruth.garudaExecutionEligible === true;
+  const founderEngagedCandidate = hasCapabilityMatch && humanIdentityRequired;
+  const channel = garudaDeliverable
+    ? "garuda_deliverable"
+    : founderEngagedCandidate
+      ? "founder_garuda"
+      : "no_verified_capability_match";
+  const earningMode = !inspection.accepted || !hasCapabilityMatch
+    ? "NOT_ELIGIBLE"
+    : garudaDeliverable
+      ? "DIRECT_GARUDA"
+      : "PERMISSION_UNKNOWN";
 
   const estimate = revenueValueModel.estimateValueFromEvidence(sourceRecord.salaryText, { valueType: "salary_contract_compensation" });
   const rank = revenueValueModel.rankFromCandidate({
-    opportunityChannel: selfEarningEligible ? "garuda_deliverable" : (humanIdentityRequired ? "human_opportunity_only" : "no_verified_capability_match"),
+    opportunityChannel: channel,
     salaryText: sourceRecord.salaryText,
     outcomeDeliverability: { canGarudaDeliver: !humanIdentityRequired },
     verification: { sourceVerified: sourceTruth.sourceVerified, directClientWorkEvidence: sourceTruth.directClientWorkEvidence }
@@ -135,13 +151,11 @@ function normalizeRemotiveJob(job, missionId) {
       factors: rank.factors,
       rankedAt: new Date()
     },
-    opportunityChannel: selfEarningEligible
-      ? "garuda_deliverable"
-      : humanIdentityRequired
-        ? "human_opportunity_only"
-        : "no_verified_capability_match",
+    opportunityChannel: channel,
+    earningMode,
+    contractPermission: "UNKNOWN",
     capabilityAssessment: {
-      selfEarningEligible,
+      selfEarningEligible: garudaDeliverable,
       humanIdentityRequired,
       decision: sourceTruth.garudaExecutionEligible !== true
         ? `source_truth:${sourceTruth.listingKind}`
@@ -454,19 +468,45 @@ async function decideCandidate(id, payload = {}, context = {}) {
     if (rejectionReason) {
       throw Object.assign(new Error(rejectionReason), { statusCode: 422 });
     }
-    if (!candidate.verification || candidate.verification.garudaExecutionEligible !== true) {
+    const channel = candidate.opportunityChannel;
+    const { resolveContractPermission, resolveEarningMode } = require("../models/DiscoveryCandidate");
+    if (channel === "founder_garuda") {
+      // Founder-engaged (Amendment 9): approval is allowed for founder review,
+      // but explicit contractual prohibition can never be overridden.
+      if (resolveContractPermission(candidate) === "PROHIBITED") {
+        throw Object.assign(new Error("Rejected: client/platform contract explicitly prohibits GARUDA-assisted engagement — Founder approval cannot override it."), { statusCode: 422 });
+      }
+      if (resolveEarningMode(candidate) === "NOT_ELIGIBLE") {
+        throw Object.assign(new Error("Rejected: candidate has no verified capability match and is not eligible for GARUDA-assisted execution."), { statusCode: 422 });
+      }
+    } else if (channel !== "garuda_deliverable" || !candidate.verification || candidate.verification.garudaExecutionEligible !== true) {
       throw Object.assign(new Error("Rejected: candidate is not eligible for GARUDA execution — human identity or verification gate is not clear."), { statusCode: 422 });
     }
   }
 
   candidate.status = payload.status;
   candidate.decision = { actor: context.actor || "founder", note: String(payload.note || "").trim(), decidedAt: new Date() };
-  if (payload.status === "approved" && !candidate.opportunityId) {
-    // Governed Candidate -> Opportunity handoff. Opportunity inherits the value
-    // model; only approved candidates may enter the pipeline.
-    const opportunity = await createOpportunityFromCandidate(candidate.toJSON(), { actor: context.actor || "founder", note: payload.note });
-    candidate.opportunityId = opportunity.id;
-    candidate.valueModel.status = candidate.valueModel.status === "UNKNOWN" ? "UNKNOWN" : candidate.valueModel.status;
+  if (payload.status === "approved") {
+    // Founder-engaged promotion (Amendment 9): when the Founder explicitly
+    // confirms client permission during approval, PERMISSION_UNKNOWN becomes
+    // FOUNDER_ENGAGED_GARUDA_ASSISTED. Otherwise the earning mode stays
+    // PERMISSION_UNKNOWN and the mission gate will never execute externally.
+    const { resolveContractPermission, resolveEarningMode } = require("../models/DiscoveryCandidate");
+    if (candidate.opportunityChannel === "founder_garuda" && resolveEarningMode(candidate) !== "NOT_ELIGIBLE") {
+      if (context.contractPermission === "PERMITTED" && context.earningMode === "FOUNDER_ENGAGED_GARUDA_ASSISTED") {
+        candidate.earningMode = "FOUNDER_ENGAGED_GARUDA_ASSISTED";
+        candidate.contractPermission = "PERMITTED";
+      } else if (resolveContractPermission(candidate) === "PROHIBITED") {
+        // already rejected above; defensive guard
+      }
+    }
+    if (!candidate.opportunityId) {
+      // Governed Candidate -> Opportunity handoff. Opportunity inherits the value
+      // model; only approved candidates may enter the pipeline.
+      const opportunity = await createOpportunityFromCandidate(candidate.toJSON(), { actor: context.actor || "founder", note: payload.note });
+      candidate.opportunityId = opportunity.id;
+      candidate.valueModel.status = candidate.valueModel.status === "UNKNOWN" ? "UNKNOWN" : candidate.valueModel.status;
+    }
   }
   await candidate.save();
   const result = candidate.toJSON();
@@ -587,6 +627,8 @@ function processJobsBatch(rawJobs = [], missionId = null) {
     const item = normalizeRemotiveJob(job, missionId);
     if (job.opportunityChannel === "garuda_deliverable" || job.autonomouslyDeliverable === true) {
       item.opportunityChannel = "garuda_deliverable";
+      item.earningMode = "DIRECT_GARUDA";
+      item.contractPermission = "PERMITTED";
       item.capabilityAssessment.selfEarningEligible = true;
       item.capabilityAssessment.humanIdentityRequired = false;
       item.verification.garudaExecutionEligible = true;

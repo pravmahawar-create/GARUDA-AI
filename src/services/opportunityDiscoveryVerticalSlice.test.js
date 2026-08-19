@@ -76,7 +76,21 @@ async function testVerticalSlice() {
   assert.strictEqual(motherTaskExecution.output.taskType, "revenue_opportunity_discovery");
   assert.strictEqual(motherTaskExecution.output.discovery.status, "DISCOVERY_COMPLETED");
   assert.ok(motherTaskExecution.output.discovery.universalOpportunities.length > 0);
-  assert.ok(motherTaskExecution.output.discovery.universalOpportunities.some((item) => item.channel === "garuda_deliverable" || item.channel === "human_opportunity_only"));
+  const motherUniversal = motherTaskExecution.output.discovery.universalOpportunities;
+  // Amendment 9 canonical channels: garuda_deliverable (direct) and
+  // founder_garuda (human-role, founder-reviewable). Legacy human_opportunity_only
+  // is still accepted for pre-Amendment callers.
+  assert.ok(motherUniversal.some((item) => ["garuda_deliverable", "founder_garuda", "human_opportunity_only"].includes(item.channel)),
+    "discovery must surface capability-matched opportunities (direct or founder-reviewable)");
+  for (const item of motherUniversal) {
+    if (["founder_garuda", "human_opportunity_only"].includes(item.channel)) {
+      assert.strictEqual(item.autonomouslyDeliverable, false, "founder-reviewable opportunities must never auto-execute");
+    }
+    if (item.channel === "garuda_deliverable") {
+      assert.strictEqual(item.autonomouslyDeliverable, true, "direct GARUDA deliverables are autonomously deliverable");
+    }
+  }
+  assert.ok(motherUniversal.every((item) => item.requiresFounderApproval === true), "every discovered opportunity still requires Founder approval");
 
   console.log("Sprint 1 Opportunity Discovery CTO fixes validation passed.");
 }
