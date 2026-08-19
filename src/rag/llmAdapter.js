@@ -1181,12 +1181,16 @@ async function generateAnswer({
   } else {
     logRouterEvent("fallback_used", { reason: "no_provider_configured" });
     const fallback = buildFallbackAnswer(adapterArgs);
+    // Honest degraded response: never return a null/empty answer and never let
+    // callers believe a generative reply is coming later. The engine is simply
+    // not configured or unreachable, so surface that plainly.
     return {
       ...fallback,
       configuredModel,
-      answer: fallback.answer && /isn't responding|not responding/i.test(fallback.answer)
-        ? null
-        : fallback.answer,
+      answer: fallback.answer && fallback.answer.trim()
+        ? fallback.answer
+        : "I'm here — but the AI engine is not configured or is unavailable right now, so I cannot generate an answer yet.",
+      warnings: Array.isArray(fallback.warnings) ? fallback.warnings : ["LLM_PROVIDER_NOT_CONFIGURED"],
     };
   }
 

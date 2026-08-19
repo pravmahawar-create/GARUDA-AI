@@ -66,6 +66,22 @@ function trimConciseReply(reply) {
   return out;
 }
 
+// Honest degraded reply for the founder when the generative engine produced no
+// answer. NEVER lies ("engine load ho raha hai, thoda der me jawab") because
+// the webhook is synchronous — no second reply ever follows. Amendment 7.
+function buildEngineUnavailableReply(llmResult) {
+  const base =
+    "GARUDA yahan hai, lekin AI engine abhi available nahi hai — isliye main " +
+    "abhi jawab nahi de sakta. Engine wapas online hote hi main jawab dunga.";
+  const reason = llmResult && llmResult.error ? llmResult.error : null;
+  const warning = llmResult && Array.isArray(llmResult.warnings) && llmResult.warnings.length
+    ? llmResult.warnings[0]
+    : null;
+  const detail = reason || warning;
+  if (!detail) return base;
+  return `${base}\n\n[engine: ${detail}]`;
+}
+
 async function sendFounderAlert(title, body) {
   if (!isConfigured()) return null;
   const text = `${title}\n\n${body}`;
@@ -238,9 +254,9 @@ async function handleUpdate(update) {
     fastLane: true
   });
 
-  const answer = reply && typeof reply.answer === "string" && reply.answer.trim()
+  const answer = reply && typeof reply.answer === "string" && reply.answer.trim() && !reply.error
     ? trimConciseReply(reply.answer)
-    : "GARUDA yahan hai bhai — thoda der me jawab deta hoon. Abhi engine load ho raha hai.";
+    : buildEngineUnavailableReply(reply);
 
   await persistChatExchange(chatId, text, answer);
   await sendMessage(answer, chatId);
