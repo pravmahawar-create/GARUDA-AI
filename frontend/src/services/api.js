@@ -300,6 +300,50 @@ export async function decideDiscoveryCandidate(id, payload = {}) {
   return asData(res, null);
 }
 
+/* Founder Engagement Review Queue */
+export async function listPermissionReviews(filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.source) params.set("source", filters.source);
+  if (filters.minScore) params.set("minScore", String(filters.minScore));
+  if (filters.maxResults) params.set("maxResults", String(filters.maxResults));
+  const qs = params.toString();
+  const res = await fetch(`${API_BASE}/api/review-queue${qs ? `?${qs}` : ""}`);
+  return asData(res, []);
+}
+
+export async function getPermissionReview(id) {
+  const res = await fetch(`${API_BASE}/api/review-queue/${encodeURIComponent(id)}`);
+  return asData(res, null);
+}
+
+export async function getPermissionReviewHistory(id) {
+  const res = await fetch(`${API_BASE}/api/review-queue/${encodeURIComponent(id)}/history`);
+  return asData(res, []);
+}
+
+export async function getPermissionReviewStats() {
+  const res = await fetch(`${API_BASE}/api/review-queue/stats`);
+  return asData(res, null);
+}
+
+export async function decidePermissionReview(id, payload = {}) {
+  const res = await fetch(`${API_BASE}/api/review-queue/${encodeURIComponent(id)}/decision`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return asData(res, null);
+}
+
+export async function decidePermissionReviews(candidateIds = [], payload = {}) {
+  const res = await fetch(`${API_BASE}/api/review-queue/batch`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify({ candidateIds, payload })
+  });
+  return asData(res, null);
+}
+
 export async function draftAcquisitionProposal(candidateId, payload = {}) {
   const res = await fetch(`${API_BASE}/api/discovery/candidates/${encodeURIComponent(candidateId)}/acquisition/draft`, {
     method: "POST",

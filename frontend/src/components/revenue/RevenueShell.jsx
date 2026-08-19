@@ -8,6 +8,7 @@ import RevenueLedger from "./RevenueLedger";
 import SettlementsView from "./SettlementsView";
 import IntelligenceView from "./IntelligenceView";
 import ActivityView from "./ActivityView";
+import ReviewQueueView from "./ReviewQueueView";
 import SettingsView from "./SettingsView";
 
 const NAV = [
@@ -15,6 +16,7 @@ const NAV = [
   { id: "opportunities", label: "Opportunities" },
   { id: "proposals", label: "Proposals" },
   { id: "execution", label: "Execution" },
+  { id: "review", label: "Review Queue" },
   { id: "revenue", label: "Revenue" },
   { id: "settlements", label: "Settlements" },
   { id: "intelligence", label: "Intelligence" },
@@ -30,6 +32,7 @@ export default function RevenueShell({ onBack }) {
       case "opportunities": return <OpportunitiesView />;
       case "proposals": return <ProposalsView />;
       case "execution": return <ExecutionView />;
+      case "review": return <ReviewQueueView />;
       case "revenue": return <RevenueLedger />;
       case "settlements": return <SettlementsView />;
       case "intelligence": return <IntelligenceView />;
