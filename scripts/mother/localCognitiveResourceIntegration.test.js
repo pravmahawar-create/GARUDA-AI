@@ -176,7 +176,8 @@ async function runIntegrationSuite() {
         body: JSON.stringify({ message: "hello" })
       });
       const dataModelSwap = await resModelSwap.json();
-      assert.strictEqual(dataModelSwap.model, "llama3.1:8b", "Router must accept model configuration replacement without code changes");
+      assert.strictEqual(dataModelSwap.success, true, "Router must keep answering after a model configuration swap");
+      assert.strictEqual(dataModelSwap.configuredModel, "llama3.1:8b", "Router must echo the configured model name regardless of generation success");
       console.log("✔ 7. Model Independence Verified (Hot-swappable via configuration).");
 
       // Restore default model

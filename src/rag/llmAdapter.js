@@ -593,7 +593,7 @@ async function generateOllamaAnswer({
         stream: false,
         options: { num_predict: isFastLane ? 200 : 250 }
       }),
-    });
+    }, 120000);
 
     if (!res.ok) {
       logOllamaDiagnostic("http_error", {
@@ -1110,6 +1110,35 @@ async function generateNvidiaAnswer({
   }
 }
 
+function getConfiguredModel(provider) {
+  if (provider === "openai") {
+    return (
+      process.env.GARUDA_OPENAI_MODEL ||
+      process.env.OPENAI_MODEL ||
+      process.env.GARUDA_LLM_MODEL ||
+      "gpt-4o-mini"
+    );
+  }
+
+  if (provider === "gemini") {
+    return (
+      process.env.GARUDA_GEMINI_MODEL ||
+      process.env.GEMINI_MODEL ||
+      "gemini-2.5-flash"
+    );
+  }
+
+  if (provider === "nvidia") {
+    return getNvidiaModel();
+  }
+
+  if (provider === "ollama") {
+    return process.env.GARUDA_LLM_MODEL || "qwen2.5-coder:3b";
+  }
+
+  return null;
+}
+
 async function generateAnswer({
   query,
   context,
@@ -1118,6 +1147,7 @@ async function generateAnswer({
   metadata,
 } = {}) {
   const provider = getConfiguredProvider();
+  const configuredModel = getConfiguredModel(provider);
 
   const adapterArgs = {
     query,
@@ -1153,6 +1183,7 @@ async function generateAnswer({
     const fallback = buildFallbackAnswer(adapterArgs);
     return {
       ...fallback,
+      configuredModel,
       answer: fallback.answer && /isn't responding|not responding/i.test(fallback.answer)
         ? null
         : fallback.answer,
@@ -1181,6 +1212,11 @@ async function generateAnswer({
         return {
           ...nvidiaResult,
           fallbackFrom: provider,
+          configuredModel,
+          warnings: [
+            ...(Array.isArray(nvidiaResult.warnings) ? nvidiaResult.warnings : []),
+            "GENERATIVE_ENGINE_UNAVAILABLE"
+          ],
         };
       }
       logRouterEvent("fallback_failed", {
@@ -1202,6 +1238,11 @@ async function generateAnswer({
         return {
           ...geminiResult,
           fallbackFrom: provider,
+          configuredModel,
+          warnings: [
+            ...(Array.isArray(geminiResult.warnings) ? geminiResult.warnings : []),
+            "GENERATIVE_ENGINE_UNAVAILABLE"
+          ],
         };
       }
       logRouterEvent("fallback_failed", {
@@ -1223,6 +1264,11 @@ async function generateAnswer({
         return {
           ...openaiResult,
           fallbackFrom: provider,
+          configuredModel,
+          warnings: [
+            ...(Array.isArray(openaiResult.warnings) ? openaiResult.warnings : []),
+            "GENERATIVE_ENGINE_UNAVAILABLE"
+          ],
         };
       }
       logRouterEvent("fallback_failed", {
@@ -1238,18 +1284,26 @@ async function generateAnswer({
       lastError: result && result.error ? result.error : null,
     });
 
-    // Never surface the dead-end message to the founder console.
-    const safeFallback = buildFallbackAnswer(adapterArgs);
+    // Honest degraded response: report the configured/attempted model back and
+    // return a clean non-empty message so the caller knows the generative
+    // engine is unavailable, instead of surfacing a fabricated answer or a raw
+    // dead-end string.
+    const honestFallback = buildFallbackAnswer(adapterArgs);
     return {
-      ...safeFallback,
-      answer: null,
+      ...honestFallback,
+      answer: "My generative engine is temporarily unavailable right now. Please try again in a moment.",
+      model: result && result.model ? result.model : configuredModel,
       provider: result && result.provider ? result.provider : provider,
+      configuredModel,
       warnings: ["GENERATIVE_ENGINE_UNAVAILABLE", "ALL_PROVIDERS_FAILED"],
       error: result && result.error ? result.error : "all_providers_failed",
     };
   }
 
-  return result || buildFallbackAnswer(adapterArgs);
+  return {
+    ...result,
+    configuredModel,
+  };
 }
 
 module.exports = {

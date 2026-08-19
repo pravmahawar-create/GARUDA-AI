@@ -452,6 +452,9 @@ async function ask({
       model:
         llmResult.model || model || null,
 
+      configuredModel:
+        llmResult.configuredModel || model || null,
+
       answer:
         typeof llmResult.answer === "string"
           ? llmResult.answer

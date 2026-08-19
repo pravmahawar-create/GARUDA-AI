@@ -1121,7 +1121,7 @@ class Mother {
       cycle.workforce.writeStopped = true;
       cycle.workforce.approvalStatus = "BLOCKED_BY_APPROVAL";
     } else if (preflight.passed && executionApproved) {
-      cycle.executedTasks = execute(plannedTasks);
+      cycle.executedTasks = await execute(plannedTasks);
       cycle.validation = validate(cycle.executedTasks);
       const engineeringEvidence = summarizeEngineeringEvidence(cycle.executedTasks);
 

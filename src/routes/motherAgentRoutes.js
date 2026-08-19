@@ -34,13 +34,34 @@ router.post("/chat", async (req, res) => {
       }
     }
 
+    const goal = understandGoal(userMessage);
+    // Conservative auto-agent detection. GoalEngine intents are triggered by
+    // loose keyword substring matches (e.g. "ui" inside "quick", "autonomous"
+    // in a casual identity question), so an intent alone is NOT enough to
+    // route a chat into an agent mission. Only auto-agent when the goal is a
+    // real engineering/revenue mission AND the message carries a concrete
+    // repo/code/inspect/mission signal. Casual identity/ability questions
+    // ("who are you", "tum kaun ho", "kya kar sakte ho") stay in conversation.
+    const autoAgentIntents = new Set([
+      "create_code_artifact",
+      "modify_code_artifact",
+      "verify_code_artifact",
+      "develop_revenue_model",
+      "self_development_meta",
+      "self_development_improvement"
+    ]);
+    const AGENT_MISSION_SIGNAL_RE = /\b(inspect|audit|repository|repo|code|implement|modify|create|fix|repair|refactor|patch|scaffold|mission|autonomous|revenue|engine|brain|self-development)\b/i;
+    const autoAgentDetected =
+      goal.intent === "read_only_audit" ||
+      (autoAgentIntents.has(goal.intent) && AGENT_MISSION_SIGNAL_RE.test(userMessage));
+
     const isExplicitAgentRequest =
       req.body.mode === "agent" ||
       /^\/(agent|mission|run)\b/i.test(userMessage.trim()) ||
-      /\b(run mission|start mission|agent mode|execute agent|autonomous mission)\b/i.test(userMessage);
+      /\b(run mission|start mission|agent mode|execute agent|autonomous mission)\b/i.test(userMessage) ||
+      autoAgentDetected;
 
     if (isExplicitAgentRequest) {
-      const goal = understandGoal(userMessage);
       const hasNegativeWriteConstraint =
         /\b(do not|don't|dont|no|without|zero|never|stop)\s+([a-z\s,]+)?\b(modify|modifying|edit|editing|write|writes|writing|change|changes|changing|patch|patching|create|creating|delete|deleting|commit|committing|push|pushing|file|files|anything|code)\b/i.test(userMessage) ||
         /\b(read-only|read only|no writes|no write|without changing|without modifying|don't commit|don't push|don't modify|don't write|dont commit|dont push|dont modify|dont write)\b/i.test(userMessage);
@@ -181,6 +202,7 @@ router.post("/chat", async (req, res) => {
 
     const providerName = response && response.provider ? response.provider : "fallback";
     const modelName = response && response.model ? response.model : null;
+    const configuredModel = response && response.configuredModel ? response.configuredModel : null;
     const warningsList = response && Array.isArray(response.warnings) ? response.warnings : [];
 
     const rawExists = rawAnswer !== null;
@@ -213,6 +235,7 @@ router.post("/chat", async (req, res) => {
     return res.json({
       provider: providerName,
       model: modelName,
+      configuredModel,
       warnings: warningsList,
       success: true,
       threadId,

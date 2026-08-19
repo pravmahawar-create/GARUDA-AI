@@ -182,11 +182,20 @@ function inferRequiredCapabilities(item = {}, initialRoute = "general") {
   const isReadOnlyAudit = hasNegativeWriteConstraint(taskText) || /\b(read-only|read_only_audit|read_only)\b/i.test(taskText) || item.readOnly === true;
   const writeIntentPattern = /\b(?:implement(?:ing|ed)?|create(?:d|s|ing)?|modify(?:ing|ied|ies)?|update(?:d|s|ing)?|fix(?:es|ed|ing)?|refactor(?:ed|ing|s)?|repair(?:ed|ing|s)?|patch(?:es|ed|ing)?|write(?:s|n|ing|ten)?)\b/;
 
+  // Planning / artifact-generation tasks produce isolated artifacts (plan / scaffold)
+  // with sourceWriteAllowed=false / sourceTreeModified=false — they never patch the
+  // workspace directly, so they must NOT be treated as WRITE_PATCH requests. This keeps
+  // them on their specialized routes (architect / engineering) instead of being rerouted
+  // to the governed engineering_loop (which would block them behind founder approval).
+  const isIsolatedGenerationTask =
+    Boolean(item.architectureRequest || item.artifactSpec) ||
+    /\b(architect plan|architecture plan|engineering artifact|scaffold)\b/i.test(taskText);
+
   if (/inspect|analy|search|scan|discover/.test(taskText)) {
     required.add(CAPABILITIES.SEARCH);
   }
 
-  if (!isReviewTask && !isReadOnlyAudit && writeIntentPattern.test(taskText)) {
+  if (!isReviewTask && !isReadOnlyAudit && !isIsolatedGenerationTask && writeIntentPattern.test(taskText)) {
     required.add(CAPABILITIES.WRITE_PATCH);
     required.add(CAPABILITIES.DIFF_INSPECTION);
   }
@@ -662,7 +671,32 @@ function executeTestTask(item) {
   const discovery = discoverTestTargets(item);
   const testsDiscovered = Array.isArray(discovery.discovered) ? discovery.discovered : [];
 
+  const explicitRequested = Boolean(
+    (Array.isArray(item.testFiles) && item.testFiles.filter(Boolean).length) ||
+    (Array.isArray(item.testPaths) && item.testPaths.filter(Boolean).length) ||
+    item.testScript ||
+    item.testCommand ||
+    (item.loopRequest && item.loopRequest.verificationPlan && Array.isArray(item.loopRequest.verificationPlan.testsDiscovered) && item.loopRequest.verificationPlan.testsDiscovered.filter(Boolean).length) ||
+    (Array.isArray(item.files) && item.files.some((f) => /\.test\.(c?js|mjs)$/i.test(String(f || ""))))
+  );
+
   if (!testsDiscovered.length && discovery.source === "package_script" && discovery.script) {
+    // Only run the package test script when the task EXPLICITLY requested it. A bare
+    // "Run tests" without explicit test files must be skipped: running the whole suite
+    // implicitly is a governance risk (unbounded command execution) and hides intent.
+    if (!explicitRequested || item.testScript !== discovery.script) {
+      return {
+        success: false,
+        skipped: true,
+        reason: "test_task_requires_explicit_test_files",
+        output: {
+          status: "SKIPPED",
+          testsDiscovered,
+          discoverySource: discovery.source,
+          evidence: []
+        }
+      };
+    }
     const scriptEvidence = runPackageTestScript(discovery.script, item);
     const passed = scriptEvidence.status === "PASSED";
     return {
@@ -723,6 +757,9 @@ function executeArchitectTask(item) {
 }
 
 function executeEngineeringLoopTask(item) {
+  if (!item.loopRequest || typeof item.loopRequest !== "object") {
+    return { success: false, skipped: true, reason: "engineering_loop_task_requires_loop_request" };
+  }
   const approvalState = getFounderApprovalState();
   const loopRequest = buildEngineeringLoopRequest(item, approvalState.founderApproved);
   const output = new GovernedEngineeringLoop({ rootDir: process.cwd(), maxAttempts: item.maxAttempts }).run(loopRequest);
@@ -750,7 +787,11 @@ function executeEngineeringLoopTask(item) {
     }
   }
 
-  const success = output.status === "COMPLETED_AND_APPLIED";
+  // The governed loop executed its full flow correctly when it lands in ANY of its
+  // valid terminal states. READY_FOR_FOUNDER_REVIEW / BLOCKED_BY_APPROVAL are SUCCESSFUL
+  // executions of the governed flow (the founder gate held), not failures. Only
+  // EXECUTION_FAILED / ROLLED_BACK (or an unexpected status) are genuine failures.
+  const success = ["COMPLETED_AND_APPLIED", "READY_FOR_FOUNDER_REVIEW", "BLOCKED_BY_APPROVAL"].includes(output.status);
   return { success, output, reason: output.status.toLowerCase() };
 }
 
@@ -842,7 +883,7 @@ function executeLocalBrainTask(item) {
   };
 }
 
-function executeAvailableEngine(route, item) {
+async function executeAvailableEngine(route, item) {
   let primaryResult = null;
   switch (route) {
     case "mother":
@@ -861,7 +902,7 @@ function executeAvailableEngine(route, item) {
       primaryResult = executeBuilderTask();
       break;
     case "revenue":
-      primaryResult = executeRevenueTask(item.task, { rootDir: process.cwd() });
+      primaryResult = await executeRevenueTask(item.task, { rootDir: process.cwd() });
       break;
     case "engineering":
       primaryResult = executeEngineeringTask(item);
@@ -915,7 +956,7 @@ function executeAvailableEngine(route, item) {
   return primaryResult;
 }
 
-function execute(plannedTasks = []) {
+async function execute(plannedTasks = []) {
   console.log("[Executor] Starting execution...");
 
   const constitutionSensitiveRoutes = new Set(["git_push", "deploy", "payment"]);
@@ -924,7 +965,7 @@ function execute(plannedTasks = []) {
   let lastEngineeringArtifact = null;
   const executedTasks = [];
 
-  plannedTasks.forEach((item) => {
+  for (const item of plannedTasks) {
     const initialRoute = routeTask(item.task);
     const requiredCapabilities = inferRequiredCapabilities(item, initialRoute);
     const compatibleRoute = chooseCapabilityCompatibleRoute(initialRoute, requiredCapabilities, item.task);
@@ -981,7 +1022,7 @@ function execute(plannedTasks = []) {
       };
     } else {
       try {
-        result = executeAvailableEngine(route, executionItem);
+        result = await executeAvailableEngine(route, executionItem);
 
         if (route === "engineering_loop" && result && result.output && result.output.finalArtifact) {
           lastEngineeringArtifact = result.output.finalArtifact;
@@ -1033,7 +1074,7 @@ function execute(plannedTasks = []) {
     };
 
     executedTasks.push(executedTask);
-  });
+  }
 
   console.log("[Executor] Execution Report:");
 
@@ -1046,4 +1087,97 @@ function execute(plannedTasks = []) {
   return executedTasks;
 }
 
-module.exports = { execute };
+/**
+ * End-to-end governed GENERIC CODE task.
+ * LLM produces a structured proposal → EngineeringBrain validates/builds in an
+ * isolated workspace → the existing controlled `patch` route applies it under
+ * the founder-approval gate (no direct LLM write ever touches the workspace).
+ *
+ * NOTE: this is async because the LLM adapter is async; the controlled patch
+ * route and approval gate remain synchronous and untouched.
+ */
+async function executeGenericCodeTask({
+  task,
+  intentId,
+  rootDir = process.cwd(),
+  llm = null
+} = {}) {
+  const { generateGenericCodeTask } = require("../dev-agent/core/GenericCodeTaskEngine");
+  const generation = await generateGenericCodeTask({ task, intentId, rootDir, llm });
+
+  let execution;
+  if (generation.status === "ARTIFACT_READY_FOR_REVIEW") {
+    const [patchTask] = await execute([
+      {
+        task: `Apply patch: governed code change (${generation.intentId})`,
+        buildResult: generation.buildResult,
+        rootDir
+      }
+    ]);
+    execution = {
+      route: patchTask.route,
+      status: patchTask.status,
+      reason: patchTask.reason,
+      approvalRequired: patchTask.approvalState && patchTask.approvalState.required,
+      approved: patchTask.approvalState && patchTask.approvalState.approved,
+      output: patchTask.result && patchTask.result.output ? patchTask.result.output : null,
+      executedAt: patchTask.executedAt
+    };
+  } else {
+    execution = { status: "GENERATION_REJECTED", reason: generation.status };
+  }
+
+  return {
+    ...generation,
+    generationStatus: generation.status,
+    executionStatus: execution.status,
+    execution,
+    report: {
+      task: generation.task,
+      intentId: generation.intentId,
+      generatedFiles: generation.proposedChanges ? generation.proposedChanges.map((p) => p.path) : [],
+      verificationTests: generation.verification ? generation.verification.tests : [],
+      generationStatus: generation.status,
+      executionStatus: execution.status,
+      executionReason: execution.reason,
+      approvalGate: {
+        requiresFounderApproval: generation.requiresFounderApprovalToApply,
+        commitPushDeployAllowed: generation.commitPushDeployAllowed
+      },
+      patchSha256: generation.patchSha256,
+      completedAt: new Date().toISOString()
+    }
+  };
+}
+
+/**
+ * Governed GENERIC CODE task driven through the GovernedEngineeringLoop.
+ * The loop plans (ArchitectBrain), generates the proposal via the LLM
+ * (EngineeringBrain.buildGenericCodeFromTask -> GenericCodeTaskEngine),
+ * reviews it (ReviewerBrain), enforces the founder-approval gate, and only
+ * after approval applies the patch through EngineeringBrain.applyPatchToWorkspace
+ * (the exact same controlled path the synchronous `patch` route uses).
+ *
+ * Final loop statuses: COMPLETED_AND_APPLIED, BLOCKED_BY_APPROVAL,
+ * ROLLED_BACK, EXECUTION_FAILED.
+ */
+async function executeGovernedGenericCodeTask(item = {}) {
+  const approvalState = getFounderApprovalState();
+  const loop = new GovernedEngineeringLoop({
+    rootDir: process.cwd(),
+    maxAttempts: item.maxAttempts
+  });
+  const output = await loop.runGenericCodeTask({
+    goalId: item.goalId,
+    goal: item.task,
+    task: item.task,
+    intentId: item.intentId,
+    domain: item.domain,
+    llm: item.llm || null,
+    founderApproved: approvalState.founderApproved
+  });
+  const success = output.status === "COMPLETED_AND_APPLIED";
+  return { success, output, reason: output.status.toLowerCase() };
+}
+
+module.exports = { execute, executeGenericCodeTask, executeGovernedGenericCodeTask };

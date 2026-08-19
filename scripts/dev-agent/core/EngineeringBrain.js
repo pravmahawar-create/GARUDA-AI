@@ -151,6 +151,31 @@ class EngineeringBrain {
     return this.validateArtifacts(artifacts, [testPath], { template: spec.template, intelligenceUsed: false });
   }
 
+  async buildGenericCodeFromTask({ task, intentId, llm = null } = {}) {
+    const { generateGenericCodeTask } = require("./GenericCodeTaskEngine");
+    return generateGenericCodeTask({ task, intentId, rootDir: this.rootDir, llm });
+  }
+
+  buildGenericCodeTask(spec = {}) {
+    if (spec.template !== "generic_code_task") throw new Error("Engineering Brain v1 buildGenericCodeTask requires generic_code_task template");
+    const artifacts = spec.proposedChanges.map((change) => ({
+      path: change.path,
+      kind: change.kind,
+      content: change.content
+    }));
+    const testFiles = spec.verification.tests;
+    const result = this.validateArtifacts(artifacts, testFiles, {
+      template: spec.template,
+      task: spec.task,
+      targetFiles: spec.targetFiles,
+      implementationPlan: spec.implementationPlan,
+      proposedChanges: artifacts.map(({ path, kind }) => ({ path, kind })),
+      verification: spec.verification,
+      intelligenceUsed: true
+    });
+    return result;
+  }
+
   buildFromIntelligence(request = {}) {
     if (!this.intelligenceProvider || typeof this.intelligenceProvider.propose !== "function") throw new Error("Engineering intelligence provider is not configured");
     const metadata = typeof this.intelligenceProvider.getMetadata === "function" ? this.intelligenceProvider.getMetadata() : null;
@@ -161,7 +186,7 @@ class EngineeringBrain {
     if (proposal && typeof proposal.then === "function") throw new Error("Async providers require a dedicated bounded adapter");
     const { validateProposal } = require("./EngineeringProposalPolicy");
     const validated = validateProposal(proposal);
-    const result = this.buildRequiredFieldsValidator(validated.artifactSpec);
+    const result = this.build(validated.artifactSpec);
     return {
       ...result,
       intelligenceUsed: true,
@@ -174,6 +199,7 @@ class EngineeringBrain {
   }
 
   build(spec = {}) {
+    if (spec.template === "generic_code_task") return this.buildGenericCodeTask(spec);
     return this.buildRequiredFieldsValidator(spec);
   }
 }
