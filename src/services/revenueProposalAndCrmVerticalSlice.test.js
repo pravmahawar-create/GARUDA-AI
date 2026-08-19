@@ -67,6 +67,36 @@ async function testSprint2VerticalSlice() {
   assert.ok(motherExecution.output.proposalAndCrm.proposalDraft.proposalHash);
   assert.ok(motherExecution.output.proposalAndCrm.handoffPackage.packageHash);
   assert.strictEqual(motherExecution.output.proposalAndCrm.governance.founderApprovalRequiredBeforeSubmission, true);
+  // Amendment 9: the Sprint 2 pipeline only auto-drafts a proposal for a
+  // DIRECT_GARUDA deliverable; it must never draft for a permission-unknown
+  // founder-engaged candidate.
+  assert.strictEqual(motherExecution.output.proposalAndCrm.candidate.opportunityChannel, "garuda_deliverable");
+
+  const permissionUnknown = {
+    ...candidateBase,
+    opportunityChannel: "founder_garuda",
+    earningMode: "PERMISSION_UNKNOWN",
+    contractPermission: "UNKNOWN",
+    capabilityAssessment: { ...candidateBase.capabilityAssessment, selfEarningEligible: false, humanIdentityRequired: true }
+  };
+  assert.throws(
+    () => buildProposal(permissionUnknown, { proposalType: "application" }, now, { rootDir }),
+    /no external execution|permission not established|not eligible/,
+    "a PERMISSION_UNKNOWN founder-engaged candidate must never auto-generate a proposal"
+  );
+
+  const prohibited = {
+    ...candidateBase,
+    contractPermission: "PROHIBITED",
+    earningMode: "FOUNDER_ENGAGED_GARUDA_ASSISTED",
+    opportunityChannel: "founder_garuda",
+    capabilityAssessment: { ...candidateBase.capabilityAssessment, selfEarningEligible: false, humanIdentityRequired: true }
+  };
+  assert.throws(
+    () => buildProposal(prohibited, { proposalType: "application" }, now, { rootDir }),
+    /explicitly prohibits/,
+    "an explicit prohibition must never be overridden by proposal generation"
+  );
 
   console.log("Sprint 2 Proposal Generation & Work Intake CRM vertical slice validation passed.");
 }
