@@ -31,6 +31,10 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = DEFAULT_FETCH_TIM
   }
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function getConfiguredProvider() {
   const explicit = (process.env.GARUDA_LLM_PROVIDER || "")
     .trim()
@@ -757,6 +761,13 @@ async function generateGeminiAnswer({
     "gemini-3.1-flash-lite"
   ].filter(Boolean);
 
+  // Transient overload/rate-limit statuses: retry the SAME model with backoff.
+  const RETRYABLE_STATUSES = [429, 500, 502, 503, 504];
+  const RETRY_BACKOFF_MS = (process.env.GARUDA_LLM_RETRY_BACKOFF_MS || "1000,2000,4000")
+    .split(",")
+    .map(Number)
+    .filter(Number.isFinite);
+
   let lastResult = null;
 
   for (const model of candidateModels) {
@@ -764,128 +775,151 @@ async function generateGeminiAnswer({
       "https://generativelanguage.googleapis.com/v1beta/models/" +
       `${encodeURIComponent(model)}:generateContent`;
 
-    try {
-      const res = await fetchWithTimeout(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": apiKey,
-        },
-        body: JSON.stringify(requestBody),
-      });
+    for (let attempt = 0; attempt <= RETRY_BACKOFF_MS.length; attempt += 1) {
+      try {
+        const res = await fetchWithTimeout(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey,
+          },
+          body: JSON.stringify(requestBody),
+        });
 
-      if (!res.ok) {
-        let errorMessage = `gemini_http_${res.status}`;
+        if (!res.ok) {
+          let errorMessage = `gemini_http_${res.status}`;
+
+          try {
+            const errorPayload = await res.json();
+
+            if (
+              errorPayload &&
+              errorPayload.error &&
+              typeof errorPayload.error.message ===
+                "string"
+            ) {
+              errorMessage +=
+                `: ${errorPayload.error.message}`;
+            }
+          } catch {
+            // Keep status-only error.
+          }
+
+          lastResult = {
+            answer: null,
+            provider: "gemini",
+            model,
+            grounded: false,
+            citations: [],
+            warnings: ["GEMINI_API_ERROR"],
+            error: errorMessage,
+          };
+
+          // Auth errors are not retryable — fail fast.
+          if (res.status === 401 || res.status === 403) {
+            return lastResult;
+          }
+
+          // Model availability errors (404/NOT_FOUND, 400 for retired
+          // models) are retryable against a newer candidate model.
+          if (res.status === 404 || res.status === 400) {
+            break;
+          }
+
+          // Transient overload/rate-limit: retry SAME model with backoff,
+          // then fall through to the next candidate model.
+          if (RETRYABLE_STATUSES.includes(res.status)) {
+            if (attempt < RETRY_BACKOFF_MS.length) {
+              await sleep(RETRY_BACKOFF_MS[attempt]);
+              continue;
+            }
+            break;
+          }
+
+          return lastResult;
+        }
+
+        let payload;
 
         try {
-          const errorPayload = await res.json();
-
-          if (
-            errorPayload &&
-            errorPayload.error &&
-            typeof errorPayload.error.message ===
-              "string"
-          ) {
-            errorMessage +=
-              `: ${errorPayload.error.message}`;
-          }
+          payload = await res.json();
         } catch {
-          // Keep status-only error.
+          lastResult = {
+            answer: null,
+            provider: "gemini",
+            model,
+            grounded: false,
+            citations: [],
+            warnings: ["GEMINI_INVALID_RESPONSE"],
+            error: "gemini_invalid_json",
+          };
+          break;
         }
 
+        const answer =
+          extractGeminiResponseText(payload);
+
+        if (!answer) {
+          const blockReason =
+            payload &&
+            payload.promptFeedback &&
+            payload.promptFeedback.blockReason
+              ? String(
+                  payload.promptFeedback.blockReason
+                )
+              : null;
+
+          lastResult = {
+            answer: null,
+            provider: "gemini",
+            model,
+            grounded: false,
+            citations: [],
+            warnings: ["GEMINI_EMPTY_RESPONSE"],
+            error: blockReason
+              ? `gemini_empty_response:${blockReason}`
+              : "gemini_empty_response",
+          };
+          break;
+        }
+
+        return {
+          answer,
+          provider: "gemini",
+          model,
+          grounded: Boolean(safeContext),
+          citations: [],
+          warnings: [],
+          rawMetadata: {
+            finishReason:
+              payload &&
+              payload.candidates &&
+              payload.candidates[0]
+                ? payload.candidates[0]
+                    .finishReason || null
+                : null,
+          },
+        };
+      } catch (error) {
         lastResult = {
           answer: null,
           provider: "gemini",
           model,
           grounded: false,
           citations: [],
-          warnings: ["GEMINI_API_ERROR"],
-          error: errorMessage,
+          warnings: ["GEMINI_NETWORK_ERROR"],
+          error:
+            error && error.message
+              ? String(error.message)
+              : "gemini_network_error",
         };
 
-        // Model availability errors (404/NOT_FOUND, 400 for retired
-        // models) are retryable against a newer candidate model.
-        if (res.status === 404 || res.status === 400 || res.status === 429) {
+        if (attempt < RETRY_BACKOFF_MS.length) {
+          await sleep(RETRY_BACKOFF_MS[attempt]);
           continue;
         }
-
-        return lastResult;
+        break;
       }
-
-      let payload;
-
-      try {
-        payload = await res.json();
-      } catch {
-        lastResult = {
-          answer: null,
-          provider: "gemini",
-          model,
-          grounded: false,
-          citations: [],
-          warnings: ["GEMINI_INVALID_RESPONSE"],
-          error: "gemini_invalid_json",
-        };
-        continue;
-      }
-
-      const answer =
-        extractGeminiResponseText(payload);
-
-      if (!answer) {
-        const blockReason =
-          payload &&
-          payload.promptFeedback &&
-          payload.promptFeedback.blockReason
-            ? String(
-                payload.promptFeedback.blockReason
-              )
-            : null;
-
-        lastResult = {
-          answer: null,
-          provider: "gemini",
-          model,
-          grounded: false,
-          citations: [],
-          warnings: ["GEMINI_EMPTY_RESPONSE"],
-          error: blockReason
-            ? `gemini_empty_response:${blockReason}`
-            : "gemini_empty_response",
-        };
-        continue;
-      }
-
-      return {
-        answer,
-        provider: "gemini",
-        model,
-        grounded: Boolean(safeContext),
-        citations: [],
-        warnings: [],
-        rawMetadata: {
-          finishReason:
-            payload &&
-            payload.candidates &&
-            payload.candidates[0]
-              ? payload.candidates[0]
-                  .finishReason || null
-              : null,
-        },
-      };
-    } catch (error) {
-      lastResult = {
-        answer: null,
-        provider: "gemini",
-        model,
-        grounded: false,
-        citations: [],
-        warnings: ["GEMINI_NETWORK_ERROR"],
-        error:
-          error && error.message
-            ? String(error.message)
-            : "gemini_network_error",
-      };
     }
   }
 
