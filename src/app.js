@@ -51,6 +51,7 @@ app.use("/api/affiliate-pilot", require("./routes/affiliateRoutes"));
 app.use("/api/public-chat", require("./routes/publicChatRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoutes"));
 app.use("/api/scout", require("./routes/scoutRoutes"));
+app.use("/api/billing", require("./routes/billingRoutes"));
 
 const telegramBotService = require("./services/telegramBotService");
 const abslKnowledgeService = require("./services/abslKnowledgeService");
