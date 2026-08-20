@@ -129,7 +129,79 @@ function scoreProspect(prospect = {}, domain) {
   };
 }
 
+// Optional Mongo storage adapter. When PROSPECT_STORE==="mongo" AND mongoose is
+// connected, prospects are read/written via the Prospect model instead of the
+// data/<domain>-prospects.json files. JSON files remain the default fallback.
+function mongoStorageEnabled() {
+  return process.env.PROSPECT_STORE === "mongo";
+}
+
+function mongoReady() {
+  if (!mongoStorageEnabled()) return false;
+  try {
+    return require("mongoose").connection.readyState === 1;
+  } catch {
+    return false;
+  }
+}
+
+async function addProspectsMongo(prospects = [], options = {}) {
+  const { Prospect } = require("../../models/Prospect");
+  const domain = getDomain(options.domain);
+  const list = Array.isArray(prospects) ? prospects : [prospects];
+  const added = [];
+  const skipped = [];
+
+  for (const raw of list) {
+    const scored = scoreProspect(raw, domain);
+    if (!scored.email) {
+      skipped.push({ ...scored, reason: "no_email" });
+      continue;
+    }
+    const existing = await Prospect.findOne({ domain: domain.id, email: scored.email }).lean();
+    if (existing) {
+      skipped.push({ ...scored, reason: "duplicate" });
+      continue;
+    }
+    if (options.minScore !== undefined && scored.score < Number(options.minScore)) {
+      skipped.push({ ...scored, reason: "below_min_score" });
+      continue;
+    }
+    const firstName = scored.firstName;
+    const lastName = scored.lastName;
+    const doc = {
+      domain: domain.id,
+      name: String(raw.name || [firstName, lastName].filter(Boolean).join(" ") || "").trim(),
+      ...scored,
+      website: String(raw.website || "").trim(),
+      location: String(raw.location || "").trim(),
+      state: String(raw.state || "").trim(),
+      sourceId: scored.id
+    };
+    delete doc.id;
+    const saved = await Prospect.create(doc);
+    added.push({ ...scored, _id: saved._id, createdAt: saved.createdAt });
+  }
+  return { added, skipped, total: added.length, store: "mongo", domain: domain.id };
+}
+
+async function getProspects(domain, options = {}) {
+  const d = getDomain(domain && domain.id ? domain.id : domain);
+  if (mongoReady()) {
+    const { Prospect } = require("../../models/Prospect");
+    const filter = { domain: d.id };
+    if (options.minScore !== undefined) filter.score = { $gte: Number(options.minScore) };
+    if (options.status) filter.status = options.status;
+    if (options.query) filter.query = options.query;
+    return Prospect.find(filter).sort({ score: -1 }).lean();
+  }
+  return listProspects({ ...options, domain: d.id });
+}
+
 function addProspects(prospects = [], options = {}) {
+  if (mongoReady()) {
+    return addProspectsMongo(prospects, options);
+  }
   const domain = getDomain(options.domain);
   const paths = resolvePaths(domain, options);
   const store = loadJson(paths.prospectsPath) || { prospects: [] };
@@ -240,13 +312,17 @@ function getPipeline(options = {}) {
 module.exports = {
   GRADES,
   addProspects,
+  addProspectsMongo,
   buildBusinessProfile,
   detectSegments,
   extractEmail,
   generateContactsCsv,
   getDomain,
   getPipeline,
+  getProspects,
   listProspects,
+  mongoReady,
+  mongoStorageEnabled,
   normalizeEmail,
   normalizePhone,
   scoreProspect

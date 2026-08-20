@@ -158,19 +158,21 @@ const prospects = [
   { domain: "web_services", businessName: "Doaa Gamal (agency)", city: "", country: "UAE", locale: "en", email: "doaagamalri@gmail.com", phone: "", website: "", businessType: "Agency hiring account manager + content writer", notes: "public post: UAE/Egypt, content strategy + brand storytelling", source: "public_post" }
 ];
 
-let added = 0;
-let skipped = 0;
-for (const p of prospects) {
-  const domain = p.domain;
-  delete p.domain;
-  const result = addProspects([p], { domain });
-  if (result.added[0]) {
-    added++;
-    const a = result.added[0];
-    console.log(`ny [${domain}] ${a.score} ${a.grade} | ${a.email} | ${a.businessName} | query:${a.query}`);
-  } else {
-    skipped++;
-    console.log(`xx [${domain}] ${p.email} | ${p.businessName} | ${result.skipped[0] ? result.skipped[0].reason : "unknown"}`);
+(async () => {
+  let added = 0;
+  let skipped = 0;
+  for (const p of prospects) {
+    const domain = p.domain;
+    delete p.domain;
+    const result = await addProspects([p], { domain });
+    if (result.added[0]) {
+      added++;
+      const a = result.added[0];
+      console.log(`ny [${domain}] ${a.score} ${a.grade} | ${a.email} | ${a.businessName} | query:${a.query}`);
+    } else {
+      skipped++;
+      console.log(`xx [${domain}] ${p.email} | ${p.businessName} | ${result.skipped[0] ? result.skipped[0].reason : "unknown"}`);
+    }
   }
-}
-console.log(`\n[GARUDA] Seeded ${added} | Skipped ${skipped}`);
+  console.log(`\n[GARUDA] Seeded ${added} | Skipped ${skipped}`);
+})();

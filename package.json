@@ -53,6 +53,7 @@
     "leads:g": "node scripts/garuda-leads.js",
     "leads:g:test": "node src/services/leadgen/genericLeadGenEngine.test.js",
     "leads:g:outreach": "node scripts/garuda-leads-outreach.js",
+    "prospects:sync": "node scripts/sync-prospects-to-mongo.js",
     "tutoring:scan": "node scripts/garuda-tutoring-scan.js",
     "tutoring:import": "node scripts/garuda-tutoring-import.js",
     "tutoring:test": "node src/services/tutoringLeadScoutService.test.js"

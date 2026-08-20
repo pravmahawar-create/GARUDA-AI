@@ -16,7 +16,10 @@ const {
   addProspects,
   generateContactsCsv,
   getPipeline,
+  getProspects,
   listProspects,
+  mongoReady,
+  mongoStorageEnabled,
   scoreProspect
 } = require("../src/services/leadgen/genericLeadGenEngine");
 
@@ -96,6 +99,13 @@ async function main() {
 
   if (["help", "--help", "-h"].includes(command)) return usage();
 
+  // Mongo storage mode needs a live connection before the engine can route
+  // reads/writes to the Prospect model. Fails soft: engine falls back to JSON.
+  if (mongoStorageEnabled()) {
+    const connectDB = require("../src/database/db");
+    await connectDB();
+  }
+
   const withDomain = { domain };
 
   if (command === "score") {
@@ -107,8 +117,8 @@ async function main() {
 
   if (command === "add") {
     const prospect = fillFromEnvironmentFields(parseInlineArgs(rest.slice(1).join(",")));
-    const result = addProspects([prospect], withDomain);
-    console.log(`[GARUDA:${domain}] Added: ${result.added.length} | Skipped: ${result.skipped.length}`);
+    const result = await addProspects([prospect], withDomain);
+    console.log(`[GARUDA:${domain}] Added: ${result.added.length} | Skipped: ${result.skipped.length}${result.store === "mongo" ? " (mongo)" : ""}`);
     for (const s of result.skipped) console.log(`  xx ${s.email || s.businessName || "(no-email)"}: ${s.reason}`);
     for (const a of result.added) {
       console.log(`  ny ${a.email} | "${a.businessName}" | score ${a.score} ${a.grade} | query ${a.query}`);
@@ -131,8 +141,8 @@ async function main() {
       rows = parseCsvToProspects(raw);
     }
     rows = rows.map(fillFromEnvironmentFields);
-    const result = addProspects(rows, withDomain);
-    console.log(`[GARUDA:${domain}] Imported ${rows.length} rows -> Added ${result.added.length} | Skipped ${result.skipped.length}`);
+    const result = await addProspects(rows, withDomain);
+    console.log(`[GARUDA:${domain}] Imported ${rows.length} rows -> Added ${result.added.length} | Skipped ${result.skipped.length}${result.store === "mongo" ? " (mongo)" : ""}`);
     for (const s of result.skipped.slice(0, 10)) console.log(`  xx ${s.email || s.businessName || "(no-email)"}: ${s.reason}`);
     for (const a of result.added.slice(0, 10)) {
       console.log(`  ny ${a.email} | "${a.businessName}" | score ${a.score} ${a.grade} | query ${a.query}`);
@@ -157,6 +167,17 @@ async function main() {
   }
 
   if (command === "status") {
+    if (mongoReady()) {
+      const list = await getProspects(domain);
+      const byGrade = {};
+      const byQuery = {};
+      for (const p of list) {
+        byGrade[p.grade] = (byGrade[p.grade] || 0) + 1;
+        byQuery[p.query] = (byQuery[p.query] || 0) + 1;
+      }
+      console.log(`[GARUDA:${domain}] Pipeline (mongo):`, JSON.stringify({ total: list.length, hot: byGrade.HOT || 0, strong: byGrade.STRONG || 0, byGrade, byQuery, domain }, null, 2));
+      return;
+    }
     console.log(`[GARUDA:${domain}] Pipeline:`, JSON.stringify(getPipeline(withDomain), null, 2));
     return;
   }
@@ -166,7 +187,7 @@ async function main() {
     const queryArg = rest.find((a) => a.startsWith("--query"));
     const minScore = minScoreArg ? Number(minScoreArg.split("=")[1] || 0) : 0;
     const query = queryArg ? queryArg.split("=")[1] : "";
-    const list = listProspects({ minScore, query, domain });
+    const list = mongoReady() ? await getProspects(domain, { minScore, query }) : listProspects({ minScore, query, domain });
     console.log(`[GARUDA:${domain}] Prospects (score>=${minScore}${query ? `, query=${query}` : ""}): ${list.length}`);
     for (const p of list) {
       console.log(`  ${p.score} ${p.grade} | ${p.email} | ${p.businessName || p.firstName} | ${p.query}`);
@@ -177,7 +198,14 @@ async function main() {
   usage();
 }
 
-main().catch((error) => {
-  console.error("[GARUDA] FATAL:", error.message);
-  process.exit(1);
-});
+main()
+  .then(async () => {
+    if (mongoStorageEnabled()) {
+      const mongoose = require("mongoose");
+      if (mongoose.connection.readyState !== 0) await mongoose.disconnect();
+    }
+  })
+  .catch((error) => {
+    console.error("[GARUDA] FATAL:", error.message);
+    process.exit(1);
+  });
