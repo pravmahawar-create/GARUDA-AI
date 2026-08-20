@@ -85,6 +85,11 @@ function genericInferQuery(segments) {
   return "awareness";
 }
 
+// Tutoring outreach is a single consistent B2B partner pitch to centres.
+function tutoringInferQuery() {
+  return "partner_maths_tutor";
+}
+
 const DOMAINS = {
   insurance: {
     id: "insurance",
@@ -513,6 +518,59 @@ const DOMAINS = {
     inferQuery: genericInferQuery,
     knowledgeIndexPath: "data/web-services-knowledge-index.json",
     website: "garudaos.in"
+  },
+
+  tutoring: {
+    id: "tutoring",
+    label: "Tutoring Centers (USA/UAE) — Online Maths Tutor Partnership",
+    namespace: "tutoring",
+    topics: ["partner_maths_tutor", "online_tutor_network", "curriculum_maths", "quality_and_reports"],
+    topicKeywords: {
+      partner_maths_tutor: ["partner", "tutor", "maths", "math", "teacher", "faculty", "staff", "hire", "add"],
+      online_tutor_network: ["online", "virtual", "remote", "zoom", "live class", "network", "capacity"],
+      curriculum_maths: ["cbse", "icse", "grade 8", "class 8", "middle school", "curriculum", "syllabus"],
+      quality_and_reports: ["quality", "results", "retention", "progress", "reports", "admin"]
+    },
+    segments: {
+      tutoring_center: {
+        weight: 45,
+        signals: [
+          "tutoring", "tutoring center", "learning center", "academy", "tuition",
+          "after school", "afterschool", "test prep", "education center", "study center",
+          "mathnasium", "kumon", "tuition centre", "learning centre", "coaching"
+        ]
+      },
+      small_business: { weight: 25, signals: ["small", "local", "independent", "family run", "mom and pop", "home tuition", "single location"] },
+      premium: { weight: 20, signals: ["international", "cbse", "icse", "american curriculum", "british curriculum", "premium", "elite", "private school"] },
+      chain: { weight: 15, signals: ["chain", "franchise", "multiple", "group", "locations", "brand", "network"] }
+    },
+    hooks: {
+      partner_maths_tutor: "We have a verified online maths tutor for Class 8 and below ready to join your roster — you pay only for the classes you use, no fixed salary, no recruitment cost.",
+      online_tutor_network: "Expand your centre's capacity without hiring — an on-demand online maths tutor covers extra batches and waitlists instantly.",
+      curriculum_maths: "Class 8 maths (CBSE, ICSE, or US curriculum) covered by a dedicated online tutor — a clean add-on to your existing batches.",
+      quality_and_reports: "Every class comes with a structured progress report — better results and retention for your families, zero extra admin for your staff."
+    },
+    hooksEn: {
+      partner_maths_tutor: "We have a verified online maths tutor for Class 8 and below ready to join your roster — you pay only for the classes you use, no fixed salary, no recruitment cost.",
+      online_tutor_network: "Expand your centre's capacity without hiring — an on-demand online maths tutor covers extra batches and waitlists instantly.",
+      curriculum_maths: "Class 8 maths (CBSE, ICSE, or US curriculum) covered by a dedicated online tutor — a clean add-on to your existing batches.",
+      quality_and_reports: "Every class comes with a structured progress report — better results and retention for your families, zero extra admin for your staff."
+    },
+    brandLines: [
+      "I'm GARUDA — connecting tutoring centres with verified online maths tutors for Class 8 and below.",
+      "You only pay for classes you use — no fixed salary, no recruitment, no onboarding cost.",
+      "Your centre's data is never shared with anyone."
+    ],
+    brandLinesEn: [
+      "I'm GARUDA — connecting tutoring centres with verified online maths tutors for Class 8 and below.",
+      "You only pay for classes you use — no fixed salary, no recruitment, no onboarding cost.",
+      "Your centre's data is never shared with anyone."
+    ],
+    defaultTopic: "partner_maths_tutor",
+    inferQuery: tutoringInferQuery,
+    knowledgeIndexPath: "data/tutoring-knowledge-index.json",
+    website: "garudaos.in",
+    locale: "en"
   }
 };
 

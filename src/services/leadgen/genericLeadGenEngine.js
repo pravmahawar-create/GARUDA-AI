@@ -122,6 +122,7 @@ function scoreProspect(prospect = {}, domain) {
     query,
     signals,
     locale: String(prospect.locale || prospect.country || "hi").toLowerCase().startsWith("en") ? "en" : "hi",
+    country: String(prospect.country || "").trim(),
     source: String(prospect.source || "public_research").trim(),
     notes: String(prospect.notes || "").trim(),
     status: "scored"

@@ -174,18 +174,31 @@ async function handleUpdate(update) {
     try {
       const commandResult = await garudaCommandRouter.dispatchCommand(text, { founderApproved: true });
       if (commandResult && commandResult.command && commandResult.message) {
-        await sendMessage(commandResult.message, chatId);
+        const reply = `${commandResult.message}\n\n[EXECUTED: ${commandResult.command}]`;
+        await sendMessage(reply, chatId);
         return {
           ok: true,
           chatId,
           userId,
           received: text,
-          reply: commandResult.message,
+          reply,
           mode: "command",
           command: commandResult.command
         };
       }
-    } catch {}
+    } catch (error) {
+      const errMsg = error && error.message ? error.message : String(error);
+      const reply = `[COMMAND ERROR]\n${errMsg}\n\n[koi background task start nahi hua — ye real error hai]`;
+      await sendMessage(reply, chatId);
+      return {
+        ok: true,
+        chatId,
+        userId,
+        received: text,
+        reply,
+        mode: "command_error"
+      };
+    }
   }
 
   // 2) Insurance-related questions → grounded ABSLI advisor + conversation
@@ -193,13 +206,14 @@ async function handleUpdate(update) {
   if (insuranceAdvisorService.detectInsuranceIntent(text)) {
     const result = await telegramInsuranceWorker.handleInsuranceMessage(chatId, text);
     if (result && result.reply) {
-      await sendMessage(result.reply, chatId);
+      const groundedReply = isFounder ? `${result.reply}\n\n[GROUNDED: ABSLI insurance knowledge]` : result.reply;
+      await sendMessage(groundedReply, chatId);
       return {
         ok: true,
         chatId,
         userId,
         received: text,
-        reply: result.reply,
+        reply: groundedReply,
         mode: "insurance_worker",
         grounded: result.advisorGrounded,
         signals: result.signals || [],
@@ -259,7 +273,10 @@ async function handleUpdate(update) {
     : buildEngineUnavailableReply(reply);
 
   await persistChatExchange(chatId, text, answer);
-  await sendMessage(answer, chatId);
+  const truthSuffix =
+    "\n\n[CONVERSATIONAL ONLY — koi background task ya command execute nahi hua]" +
+    "\n[Sach check karna ho to bhejo: /pipeline ya /status]";
+  await sendMessage(answer + truthSuffix, chatId);
 
   return {
     ok: true,

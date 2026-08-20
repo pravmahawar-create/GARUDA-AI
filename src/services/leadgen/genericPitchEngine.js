@@ -21,7 +21,7 @@ function loadKnowledgeChunks(domain, overrides = {}) {
     overrides.knowledgeIndexPath || domain.knowledgeIndexPath || "data/knowledge-index.json";
   const resolved = path.isAbsolute(indexPath)
     ? indexPath
-    : path.join(__dirname, "..", "..", indexPath);
+    : path.join(__dirname, "..", "..", "..", indexPath);
   try {
     const raw = fs.readFileSync(resolved, "utf8");
     const parsed = JSON.parse(raw);

@@ -50,7 +50,10 @@
     "leads:test": "node src/services/insuranceLeadGenService.test.js",
     "leads:g": "node scripts/garuda-leads.js",
     "leads:g:test": "node src/services/leadgen/genericLeadGenEngine.test.js",
-    "leads:g:outreach": "node scripts/garuda-leads-outreach.js"
+    "leads:g:outreach": "node scripts/garuda-leads-outreach.js",
+    "tutoring:scan": "node scripts/garuda-tutoring-scan.js",
+    "tutoring:import": "node scripts/garuda-tutoring-import.js",
+    "tutoring:test": "node src/services/tutoringLeadScoutService.test.js"
   },
   "repository": {
     "type": "git",
