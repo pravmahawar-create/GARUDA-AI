@@ -88,13 +88,26 @@ function extractItems(text) {
   }
   items.sort((a, b) => a.pos - b.pos)
   for (const it of items) delete it.pos
-  return items
+  const unique = []
+  const seenKey = new Set()
+  for (const it of items) {
+    const key = it.name + '|' + it.unit + '|' + it.qty
+    if (seenKey.has(key)) continue
+    seenKey.add(key)
+    unique.push(it)
+  }
+  const deduped = []
+  for (const it of unique) {
+    const hasLonger = unique.some((o) => o !== it && o.unit === it.unit && o.qty === it.qty && o.name.length > it.name.length && o.name.toLowerCase().includes(it.name.toLowerCase()))
+    if (!hasLonger) deduped.push(it)
+  }
+  return deduped
 }
 
-// Rates appear as "390 ke", "420 ke rate se", "58 hazaar ke", paired to items in order.
+// Rates appear as "390 ke", "420 ke rate se", "58 hazaar ke", "57 rupaye kilo ke", "₹230 ke bhav se", paired to items in order.
 function collectRates(text) {
   const out = []
-  const re = /(\d+(?:\.\d+)?)\s*(hazaar|hajar|lakh|lac)?\s*(?:ke|ka)\b/gi
+  const re = /(?:₹\s*)?(\d+(?:\.\d+)?)\s*(hazaar|hajar|lakh|lac)?\s*(?:rupaye|rupay|rs)?\s*(?:kilo|kg|quintal|qtl|ton|tonne|piece|pieces|truck|bag|bori|bags)?\s*(?:ke|ka)\b/gi
   let m
   while ((m = re.exec(text)) !== null) out.push(Number(m[1]) * (MULTS[(m[2] || '').toLowerCase()] || 1))
   return out
@@ -102,13 +115,22 @@ function collectRates(text) {
 
 function findCustomer(text, knownNames) {
   const patterns = [
+    /(?:customer|client|user)\s+ka\s+naam\s+(?:hai|hain|he|ho)?\s*([a-z][a-z\s.]{1,24}?)(?:\s|$)/i,
+    /(?:customer|client|user)\s+ke\s+naam\s+se\s+([a-z][a-z\s.]{1,24}?)(?:\s|$)/i,
+    /(?:customer|client|user)\s+ke\s+naam\s+par\s+([a-z][a-z\s.]{1,24}?)(?:\s|$)/i,
+    /(?:iske|uske|is|us)\s+naam\s+se\s+([a-z][a-z\s.]{1,24}?)(?:\s|$)/i,
+    /(?:iske|uske|is|us)\s+naam\s+par\s+([a-z][a-z\s.]{1,24}?)(?:\s|$)/i,
+    /([a-z][a-z\s.]{1,24}?)\s+ka\s+(?:\d|[a-z]*\s*(?:bag|kg|ton|piece|truck)|bill)/i,
     /([a-z][a-z\s.]{1,24}?)\s+ke\s+(?:naam|name)/i,
     /([\u0900-\u097F][\u0900-\u097F\s.]{1,24}?)\s+ke\s+(?:naam|name)/i,
     /([\u0900-\u097F][\u0900-\u097F\s.]{1,24}?)\s+के\s+(?:नाम|नाम से)/i,
     /([a-z][a-z\s.]{1,24}?)\s+ko\s+(?:\d|[a-z]*\s*(?:bag|kg|ton|piece|truck)|bill)/i,
     /([\u0900-\u097F][\u0900-\u097F\s.]{1,24}?)\s+ko\s+(?:\d|[a-z\u0900-\u097F]*\s*(?:bag|kg|ton|piece|truck)|bill)/i,
     /([a-z][a-z\s.]{1,24}?)\s+ke\s+liye/i,
-    /([\u0900-\u097F][\u0900-\u097F\s.]{1,24}?)\s+के\s+लिए/i
+    /([\u0900-\u097F][\u0900-\u097F\s.]{1,24}?)\s+के\s+लिए/i,
+    /(?:customer|client|user)\s+का\s+नाम\s+(?:है|हैं|हे|हो)?\s*([\u0900-\u097F][\u0900-\u097F\s.]{1,24}?)(?:\s|$)/i,
+    /(?:customer|client|user)\s+के\s+नाम\s+से\s+([\u0900-\u097F][\u0900-\u097F\s.]{1,24}?)(?:\s|$)/i,
+    /([\u0900-\u097F][\u0900-\u097F\s.]{1,24}?)\s+का\s+(?:\d|[\u0900-\u097F]*\s*(?:bag|kg|ton|piece|truck)|bill)/i
   ]
   for (const re of patterns) {
     const m = text.match(re)
@@ -195,7 +217,8 @@ export function parseLocal(text, knownNames = []) {
   const raw = String(text || '').trim()
   if (!raw) return { intent: 'clarify', message: 'Kuch suna nahi. Fir bolo.' }
   // Normalize Devanagari Hindi to Latin Hinglish for parsing, but keep original for customer name
-  const normalizedRaw = normalizeDevanagari(raw)
+  let normalizedRaw = normalizeDevanagari(raw)
+  normalizedRaw = normalizedRaw.replace(/\bper\b/gi, 'ke')
   const t = normalizedRaw.toLowerCase()
 
   // 1) Outstanding/balance query
@@ -223,7 +246,20 @@ export function parseLocal(text, knownNames = []) {
   if (/bill|bana|laga/i.test(t) || /\b(bag|bori|kg|ton|quintal|piece)\b/i.test(t) || /cement|sariya|steel|tmt/i.test(t)) {
     const customer = { name: findCustomer(normalizedRaw, knownNames), mobile: '' }
     const items = extractItems(normalizedRaw)
-    if (items.length === 0) return { intent: 'clarify', message: 'Item samajh nahi aaya. Jaise bolo: "50 bag cement 390 ke aur 2 ton sariya 58000 ke."' }
+    let missing = []
+    if (!customer.name) missing.push('customer ka naam')
+    if (items.length === 0) {
+      const fallbackItems = extractItems(normalizedRaw)
+      if (fallbackItems.length > 0) {
+        items.push(...fallbackItems)
+      }
+    }
+    if (items.length === 0) {
+      const msg = customer.name
+        ? customer.name + ' ka bill banane ke liye item batao — jaise "50 bag cement 390 ke".'
+        : 'Item samajh nahi aaya. Jaise bolo: "50 bag cement 390 ke aur 2 ton sariya 58000 ke."'
+      return { intent: 'clarify', message: msg }
+    }
     const rates = collectRates(normalizedRaw)
     items.forEach((it, i) => { it.rate = rates[i] || 0 })
     const vehicleNo = (normalizedRaw.match(/([A-Za-z]{2}\d{2}[A-Za-z]{0,3}\d{3,4})/) || [])[1] || ''
@@ -231,8 +267,6 @@ export function parseLocal(text, knownNames = []) {
     const frMatch = normalizedRaw.match(/transport\s+(\d+(?:\.\d+)?)\s*(hazaar|hajar|lakh|lac)?/i)
     const freight = frMatch ? Number(frMatch[1]) * (MULTS[(frMatch[2] || '').toLowerCase()] || 1) : 0
     const site = (normalizedRaw.match(/(?:site|location|jagah)\s+([a-z]+)/i) || [])[1] || ''
-    const missing = []
-    if (!customer.name) missing.push('customer ka naam')
     if (items.some((it) => !it.rate)) missing.push('har item ka rate')
     return {
       intent: 'create_bill',
