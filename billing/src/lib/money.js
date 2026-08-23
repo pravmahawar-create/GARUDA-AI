@@ -9,18 +9,21 @@ export function inrFull(n) {
 }
 
 export function calcBill(items, opts = {}) {
-  const { gstRate = 18, discount = 0, transport = {} } = opts
+  const { gstRate = 18, discount = 0, transport = {}, billType = 'gst', mode = 'intra' } = opts
+  const isKaccha = billType === 'kaccha'
+  const rate = isKaccha ? 0 : Number(gstRate) || 0
   const lines = items
     .filter((i) => i && Number(i.qty) > 0)
     .map((i) => {
       const qty = Number(i.qty) || 0
-      const rate = Number(i.rate) || 0
-      return { ...i, qty, rate, amount: qty * rate }
+      const r = Number(i.rate) || 0
+      return { ...i, qty, rate: r, amount: qty * r }
     })
   const subtotal = lines.reduce((s, l) => s + l.amount, 0)
   const taxable = Math.max(0, subtotal - (Number(discount) || 0))
-  const gst = Math.round(taxable * gstRate) / 100
+  const gst = Math.round(taxable * rate) / 100
   const half = gst / 2
+  const inter = mode === 'inter'
   const freight = Number(transport.freight) || 0
   const loading = Number(transport.loading) || 0
   const unloading = Number(transport.unloading) || 0
@@ -30,9 +33,12 @@ export function calcBill(items, opts = {}) {
     subtotal: Math.round(subtotal * 100) / 100,
     taxable: Math.round(taxable * 100) / 100,
     gst: Math.round(gst * 100) / 100,
-    gstRate,
-    cgst: Math.round(half * 100) / 100,
-    sgst: Math.round(half * 100) / 100,
+    gstRate: rate,
+    billType,
+    mode: isKaccha ? 'intra' : inter ? 'inter' : 'intra',
+    cgst: isKaccha || inter ? 0 : Math.round(half * 100) / 100,
+    sgst: isKaccha || inter ? 0 : Math.round(half * 100) / 100,
+    igst: isKaccha ? 0 : inter ? Math.round(gst * 100) / 100 : 0,
     discount: Number(discount) || 0,
     freight,
     loading,

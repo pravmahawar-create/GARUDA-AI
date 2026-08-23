@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { db, enqueue } from '../db'
+import { db, enqueue, getActiveCompany, nextBillNo } from '../db'
 import { inrFull, calcBill } from '../lib/money'
+import { gstTypeFor } from '../lib/gst'
 import { navigate } from '../App'
+import { Icon } from '../components/Icon'
 
 const apiBase = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
 
@@ -60,7 +62,7 @@ export default function ImportScreen() {
     if (biz && (biz.name || biz.gstin)) {
       const dup = await db.customers.where('gstin').equals(biz.gstin || '____none').count()
       if (!dup) {
-        const cust = { id: 'c' + Date.now(), name: biz.name || biz.gstin || 'Customer', mobile: '', gstin: biz.gstin || '', address: biz.address || '', createdAt: new Date().toISOString() }
+        const cust = { id: 'c' + Date.now(), name: biz.name || biz.gstin || 'Customer', mobile: '', gstin: biz.gstin || '', billType: biz.gstin ? 'gst' : 'kaccha', address: biz.address || '', creditLimit: 0, createdAt: new Date().toISOString() }
         await db.customers.put(cust)
         await enqueue('customer', 'create', cust)
         customerId = cust.id
@@ -69,13 +71,19 @@ export default function ImportScreen() {
     if (p.items && p.items.length > 0) {
       const rows = p.items.filter((it) => Number(it.qty) > 0)
       if (rows.length > 0) {
-        const totals = calcBill(rows, { gstRate: 18, transport: p.transport || {} })
-        const seq = await db.settings.get('nextInvoiceNo')
-        const invoiceNo = seq ? Number(seq.value) : 1001
-        await db.settings.put({ key: 'nextInvoiceNo', value: invoiceNo + 1 })
+        const comp = await getActiveCompany()
+        const custGstin = biz?.gstin || ''
+        const billType = (cust && cust.billType) || (custGstin ? 'gst' : 'kaccha')
+        const mode = gstTypeFor(comp.gstin, custGstin)
+        const totals = calcBill(rows, { gstRate: comp.gstRate, transport: p.transport || {}, billType, mode })
+        const invoiceNo = await nextBillNo(comp.id, billType)
         const invoice = {
           id: 'inv' + Date.now(),
           invoiceNo,
+          companyId: comp.id,
+          companyName: comp.name,
+          templateId: comp.templateId || 'classic',
+          billType,
           customerId,
           customerName: p.invoice?.customerName || (biz && biz.name) || '—',
           date: p.invoice?.date || new Date().toISOString().slice(0, 10),
@@ -83,16 +91,17 @@ export default function ImportScreen() {
           totals,
           discount: p.tax?.discount || 0,
           transport: p.transport || {},
+          bank: { bankName: comp.bankName, bankHolder: comp.bankHolder, bankAccount: comp.bankAccount, bankIfsc: comp.bankIfsc, upiId: comp.upiId },
           status: 'saved',
           paidAmount: 0,
           createdAt: new Date().toISOString()
         }
         await db.invoices.put(invoice)
         await enqueue('invoice', 'create', invoice)
-        setImported('✅ Import ho gaya — Invoice #' + invoiceNo)
+        setImported('Import ho gaya — ' + (billType === 'kaccha' ? 'Kaccha bill' : 'Invoice') + ' #' + invoiceNo)
       }
     } else {
-      setImported('✅ Business/customer record import ho gaya')
+      setImported('Business/customer record import ho gaya')
     }
   }
 
@@ -125,7 +134,7 @@ export default function ImportScreen() {
           ))}
           {parsed.tax?.grandTotal > 0 && <div className="vc-total">Total: {inrFull(parsed.tax.grandTotal)}</div>}
           <div className="actions">
-            <button className="primary" onClick={doImport}>✅ Approve & Import</button>
+            <button className="primary" onClick={doImport}><Icon name="check" size={14} /> Approve & Import</button>
           </div>
           {imported && <div className="status">{imported}</div>}
         </section>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { db, enqueue } from '../db'
 import { validateGstin, gstStateCode } from '../lib/gst'
+import { Icon } from '../components/Icon'
 
 const apiBase = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
 
@@ -11,10 +12,11 @@ export default function GstVerifyModal({ open, onClose }) {
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
   const [done, setDone] = useState('')
+  const [nameOverride, setNameOverride] = useState('')
 
   if (!open) return null
 
-  const reset = () => { setGstin(''); setStep('input'); setInfo(null); setErr(''); setDone('') }
+  const reset = () => { setGstin(''); setStep('input'); setInfo(null); setErr(''); setDone(''); setNameOverride('') }
 
   const verify = async () => {
     setErr(''); setDone('')
@@ -50,17 +52,20 @@ export default function GstVerifyModal({ open, onClose }) {
 
   const add = async () => {
     const b = info.live?.business
+    const name = String(nameOverride || '').trim() || (b && (b.legalName || b.tradeName)) || gstin
     const cust = {
       id: 'c' + Date.now(),
-      name: (b && (b.legalName || b.tradeName)) || gstin,
+      name,
       mobile: '',
       gstin: info.gstin,
+      billType: 'gst',
       address: (b && b.address) || '',
+      creditLimit: 0,
       createdAt: new Date().toISOString()
     }
     await db.customers.put(cust)
     await enqueue('customer', 'create', cust)
-    setDone('✅ ' + (b ? b.legalName || b.tradeName : info.gstin) + ' records mein add ho gaya')
+    setDone(name + ' records mein add ho gaya')
   }
 
   const liveBiz = info?.live?.business
@@ -70,7 +75,7 @@ export default function GstVerifyModal({ open, onClose }) {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <div className="modal-title">Verify GSTIN</div>
-          <button className="del" onClick={() => { onClose(); reset() }}>✕</button>
+          <button className="del" onClick={() => { onClose(); reset() }}><Icon name="x" size={18} /></button>
         </div>
 
         {step === 'input' && (
@@ -87,11 +92,16 @@ export default function GstVerifyModal({ open, onClose }) {
 
             {info.valid && !info.dup && !liveBiz && (
               <div className="card">
-                <div className="card-title">Checksum valid ✅</div>
+                <div className="card-title">Checksum valid</div>
                 <div className="ip-muted">GSTIN: {info.gstin}</div>
                 <div className="ip-muted">State: {info.state}</div>
-                {info.live?.live === false && <div className="ip-muted">Live verification: unavailable (API key nahi hai).</div>}
-                {!info.live && <div className="ip-muted">Live verification: offline / server nahi pahuncha.</div>}
+                {info.live?.live === false && <div className="ip-muted">Live verification: unavailable (API key nahi hai) — naam khud bharo.</div>}
+                {!info.live && <div className="ip-muted">Live verification: offline / server nahi pahuncha — naam khud bharo.</div>}
+                <input className="input" style={{ marginTop: 8 }} placeholder="Company ka naam (GSTIN nahi pata chal raha)" value={nameOverride} onChange={(e) => setNameOverride(e.target.value)} />
+                <div className="actions" style={{ marginTop: 8 }}>
+                  <button className="primary" onClick={add}><Icon name="plus" size={14} /> Add Company</button>
+                  <button className="ghost" onClick={reset}>Cancel</button>
+                </div>
               </div>
             )}
 
@@ -104,7 +114,7 @@ export default function GstVerifyModal({ open, onClose }) {
                 {liveBiz.address && <div className="ip-muted">{liveBiz.address}</div>}
                 {liveBiz.status && <div className="ip-muted">Status: {liveBiz.status}</div>}
                 <div className="ip-muted" style={{ margin: '8px 0' }}>Add this business to your records?</div>
-                <button className="primary" onClick={add}>➕ Add Business</button>
+                <button className="primary" onClick={add}><Icon name="plus" size={14} /> Add Business</button>
                 <button className="ghost" onClick={reset}>Cancel</button>
               </div>
             )}

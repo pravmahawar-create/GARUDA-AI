@@ -12,7 +12,29 @@ test('calcBill: cement + steel with 18% GST', () => {
   assert.equal(t.gst, 24390)
   assert.equal(t.cgst, 12195)
   assert.equal(t.sgst, 12195)
+  assert.equal(t.igst, 0)
   assert.equal(t.grandTotal, 159890)
+})
+
+test('calcBill: IGST for inter-state (50/50 nahi, full IGST)', () => {
+  const t = calcBill([{ name: 'Cement', qty: 50, rate: 390 }], { gstRate: 18, mode: 'inter' })
+  assert.equal(t.cgst, 0)
+  assert.equal(t.sgst, 0)
+  assert.equal(t.igst, 3510)
+  assert.equal(t.grandTotal, 23010)
+})
+
+test('calcBill: kaccha bill = 0% GST, transport on top', () => {
+  const t = calcBill([{ name: 'Cement', qty: 50, rate: 390 }], {
+    billType: 'kaccha',
+    gstRate: 18,
+    transport: { freight: 2500 }
+  })
+  assert.equal(t.gst, 0)
+  assert.equal(t.cgst, 0)
+  assert.equal(t.sgst, 0)
+  assert.equal(t.igst, 0)
+  assert.equal(t.grandTotal, 19500 + 2500)
 })
 
 test('calcBill: zero qty lines ignored', () => {

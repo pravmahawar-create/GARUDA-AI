@@ -1,17 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import { db } from '../db'
+import { db, getSetting } from '../db'
 import { inrFull } from '../lib/money'
 import { navigate } from '../App'
+import useCompanyScope from '../lib/useCompanyScope'
+import CompanyScopeBar from '../components/CompanyScopeBar'
+import { Icon } from '../components/Icon'
 
 export default function InvoicesScreen() {
   const [invoices, setInvoices] = useState([])
+  const [q, setQ] = useState('')
+  const [kacchaMode, setKacchaMode] = useState(true)
+  const [showCancelled, setShowCancelled] = useState(false)
+  const { scope, setScope, companies, activeId, matches } = useCompanyScope()
 
   useEffect(() => {
     ;(async () => {
       const list = await db.invoices.orderBy('createdAt').reverse().toArray()
       setInvoices(list)
+      const stored = await getSetting('kacchaMode', null)
+      setKacchaMode(stored === null ? true : Boolean(stored))
     })()
   }, [])
+
+  const shown = invoices
+    .filter(matches)
+    .filter((i) => kacchaMode || i.billType !== 'kaccha')
+    .filter((i) => showCancelled || i.status !== 'cancelled')
+    .filter((i) => {
+      const s = q.trim().toLowerCase()
+      if (!s) return true
+      return String(i.invoiceNo).toLowerCase().includes(s) || (i.customerName || '').toLowerCase().includes(s)
+    })
 
   return (
     <div className="screen">
@@ -19,14 +38,30 @@ export default function InvoicesScreen() {
         <button className="back" onClick={() => navigate('#/')}>‹</button>
         <div className="top-title">Invoices</div>
       </header>
-      {invoices.length === 0 && <div className="empty">Abhi koi bill nahi bana.</div>}
-      {invoices.map((i) => (
+      <CompanyScopeBar scope={scope} setScope={setScope} activeName={companies.find((c) => c.id === activeId)?.name} companies={companies} />
+      <div className="scope-bar">
+        <button className={`chip ${kacchaMode ? 'chip-active' : 'chip-other'}`} onClick={() => setKacchaMode((k) => !k)}>Kaccha {kacchaMode ? 'ON' : 'OFF'}</button>
+        <button className={`chip ${showCancelled ? 'chip-active' : 'chip-other'}`} onClick={() => setShowCancelled((s) => !s)}>Cancelled</button>
+      </div>
+      <input className="input search-input" placeholder="Bill no / customer se dhundo" value={q} onChange={(e) => setQ(e.target.value)} />
+      {shown.length === 0 && (
+        <div className="empty">
+          <div className="empty-sigil"><Icon name="list" size={44} /></div>
+          <div className="empty-title">Koi bill nahi mila</div>
+          <div className="empty-sub">{!kacchaMode && invoices.some((i) => matches(i) && i.billType === 'kaccha') ? 'Kaccha bills chhupe hain — upar "Kaccha ON" chip dabao.' : ''}</div>
+        </div>
+      )}
+      {shown.map((i) => (
         <button className="card invoice-row" key={i.id} onClick={() => navigate('#/invoice?id=' + i.id)}>
           <div>
-            <div className="cust-name">#{i.invoiceNo} — {i.customerName}</div>
-            <div className="ip-muted">{i.date}</div>
+            <div className="cust-name">
+              #{i.invoiceNo} — {i.customerName}
+              {i.billType === 'kaccha' && <span className="billtype-badge bt-kaccha" style={{ marginLeft: 6 }}>KACCHA</span>}
+              {i.status === 'cancelled' && <span className="billtype-badge bt-cancelled" style={{ marginLeft: 6 }}>CANCELLED</span>}
+            </div>
+            <div className="ip-muted">{i.date}{scope === 'all' && i.companyName ? ' · ' + i.companyName : ''}</div>
           </div>
-          <div className="cust-bal">{inrFull(i.totals.grandTotal)}</div>
+          <div className={`cust-bal ${i.status === 'cancelled' ? 'muted' : ''}`}>{inrFull(i.totals.grandTotal)}</div>
         </button>
       ))}
     </div>

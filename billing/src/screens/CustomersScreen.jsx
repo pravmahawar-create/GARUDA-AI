@@ -1,39 +1,118 @@
 import React, { useEffect, useState } from 'react'
 import { db, enqueue } from '../db'
 import { inrFull } from '../lib/money'
+import { buildKhataPdf } from '../lib/pdf'
 import { navigate } from '../App'
 import GstVerifyModal from '../components/GstVerifyModal'
+import { Icon } from '../components/Icon'
 
 export default function CustomersScreen() {
   const [customers, setCustomers] = useState([])
   const [outstanding, setOutstanding] = useState({})
   const [gstOpen, setGstOpen] = useState(false)
+  const [q, setQ] = useState('')
+  const [editing, setEditing] = useState(null)
+  const [deleting, setDeleting] = useState(null)
+  const [busy, setBusy] = useState(false)
+  const [adding, setAdding] = useState(null)
 
-  useEffect(() => {
-    ;(async () => {
-      const custs = await db.customers.toArray()
-      const invoices = await db.invoices.toArray()
-      const payments = await db.payments.toArray()
-      const map = {}
-      for (const c of custs) {
-        const invs = invoices.filter((i) => i.customerId === c.id)
-        const billed = invs.reduce((s, i) => s + i.totals.grandTotal, 0)
-        const paid = payments.filter((p) => p.customerId === c.id).reduce((s, p) => s + p.amount, 0)
-        map[c.id] = { billed, paid, balance: billed - paid }
-      }
-      setCustomers(custs)
-      setOutstanding(map)
-    })()
-  }, [])
+  const refresh = async () => {
+    const custs = await db.customers.toArray()
+    const invoices = await db.invoices.toArray()
+    const payments = await db.payments.toArray()
+    const map = {}
+    for (const c of custs) {
+      const invs = invoices.filter((i) => i.customerId === c.id)
+      const billed = invs.reduce((s, i) => s + i.totals.grandTotal, 0)
+      const paid = payments.filter((p) => p.customerId === c.id).reduce((s, p) => s + p.amount, 0)
+      map[c.id] = { billed, paid, balance: billed - paid }
+    }
+    setCustomers(custs)
+    setOutstanding(map)
+  }
 
-  const addQuick = async () => {
-    const name = prompt('Naya customer naam?')
-    if (!name) return
-    const cust = { id: 'c' + Date.now(), name: name.trim(), mobile: '', gstin: '', address: '', createdAt: new Date().toISOString() }
+  useEffect(() => { refresh() }, [])
+
+  const addQuick = () => setAdding({ name: '', mobile: '', gstin: '', billType: 'kaccha' })
+
+  const saveNew = async (e) => {
+    e.preventDefault()
+    if (!adding.name.trim()) return
+    const gstin = adding.gstin.trim().toUpperCase()
+    const finalType = adding.billType
+    if (finalType === 'gst' && !gstin) { setBusy('Error: GST bill ke liye GSTIN chahiye.'); return }
+    if (gstin) {
+      const dup = customers.find((c) => c.gstin === gstin)
+      if (dup) { setBusy('Error: GSTIN ' + gstin + ' pehle se "' + dup.name + '" ke paas hai.'); return }
+    }
+    const cust = { id: 'c' + Date.now(), name: adding.name.trim(), mobile: adding.mobile.trim(), gstin, billType: finalType, address: '', creditLimit: 0, createdAt: new Date().toISOString() }
     await db.customers.put(cust)
     await enqueue('customer', 'create', cust)
-    setCustomers(await db.customers.toArray())
+    setAdding(null)
+    setBusy('')
+    await refresh()
   }
+
+  const saveEdit = async (e) => {
+    e.preventDefault()
+    const f = new FormData(e.target)
+    let gstin = String(f.get('gstin') || '').trim().toUpperCase()
+    if (editing.billType === 'gst') gstin = String(editing.gstin || '').trim().toUpperCase()
+    if (gstin && gstin.length !== 15) {
+      setBusy('Error: GSTIN 15 digit ka hona chahiye (' + gstin + ').')
+      return
+    }
+    const data = {
+      ...editing,
+      name: String(f.get('name') || '').trim() || editing.name,
+      mobile: String(f.get('mobile') || '').trim(),
+      gstin,
+      billType: gstin ? 'gst' : editing.billType,
+      address: String(f.get('address') || '').trim(),
+      creditLimit: Number(f.get('creditLimit')) || 0
+    }
+    if (data.gstin) {
+      const dup = customers.find((c) => c.gstin === data.gstin && c.id !== editing.id)
+      if (dup) { setBusy('Error: GSTIN ' + data.gstin + ' pehle se "' + dup.name + '" ke paas hai.'); return }
+    }
+    await db.customers.put(data)
+    await enqueue('customer', 'update', data)
+    setEditing(null)
+    setBusy('')
+    await refresh()
+  }
+
+  const doDelete = async () => {
+    const c = deleting
+    setDeleting(null)
+    if (!c) return
+    await db.customers.delete(c.id)
+    await enqueue('customer', 'delete', { id: c.id, entity: 'customer' })
+    await refresh()
+  }
+
+  const shareKhata = async (c) => {
+    const company = (await db.companies.toArray())[0]
+    const invs = await db.invoices.where('customerId').equals(c.id).toArray()
+    const pays = await db.payments.where('customerId').equals(c.id).toArray()
+    const bytes = await buildKhataPdf(c, invs, pays, company)
+    const file = new File([new Blob([bytes], { type: 'application/pdf' })], `Khata-${c.name}.pdf`, { type: 'application/pdf' })
+    if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], title: 'Khata ' + c.name })
+    else {
+      const url = URL.createObjectURL(file)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `Khata-${c.name}.pdf`
+      a.click()
+      URL.revokeObjectURL(url)
+    }
+  }
+
+  const shown = customers.filter((c) => {
+    const s = q.trim().toLowerCase()
+    if (!s) return true
+    return (c.name || '').toLowerCase().includes(s) || (c.mobile || '').includes(s) || (c.gstin || '').toLowerCase().includes(s)
+  })
 
   return (
     <div className="screen">
@@ -43,23 +122,113 @@ export default function CustomersScreen() {
         <button className="mini-add" onClick={() => setGstOpen(true)}>GSTIN+</button>
         <button className="mini-add" onClick={addQuick}>+ Add</button>
       </header>
-      {customers.length === 0 && <div className="empty">Abhi koi customer nahi — pehle bill banao.</div>}
-      {customers.map((c) => {
+
+      <input className="input search-input" placeholder="Naam / mobile / GSTIN se dhundo" value={q} onChange={(e) => setQ(e.target.value)} />
+
+      {shown.length === 0 && (
+        <div className="empty">
+          <div className="empty-sigil"><Icon name="users" size={44} /></div>
+          <div className="empty-title">Abhi koi customer nahi</div>
+          <div className="empty-sub">Pehla bill banate hi customer apne aap bane jaayenge.</div>
+        </div>
+      )}
+      {shown.map((c) => {
         const o = outstanding[c.id]
         return (
           <div className="card cust-row" key={c.id}>
-            <div>
-              <div className="cust-name">{c.name}</div>
+            <div style={{ minWidth: 0 }}>
+              <div className="cust-name">{c.name}
+                <span className={`billtype-badge ${(c.billType === 'gst' || c.gstin) ? 'bt-gst' : 'bt-kaccha'}`} style={{ marginLeft: 6 }}>{c.billType === 'gst' || c.gstin ? 'GST' : 'KACCHA'}</span>
+                {c.creditLimit > 0 && <span className="billtype-badge bt-gst" style={{ marginLeft: 4 }}>LIMIT</span>}
+              </div>
               {c.mobile && <div className="ip-muted">{c.mobile}</div>}
-              {c.gstin && <div className="ip-muted">{c.gstin}</div>}
+              {c.gstin && <div className="ip-muted">GSTIN: {c.gstin}</div>}
             </div>
-            <div className={`cust-bal ${o && o.balance > 0 ? 'due' : 'clear'}`}>
-              {o ? inrFull(o.balance) : '₹0'}
-              <div className="ip-muted">{o && o.balance > 0 ? 'baki' : 'clear'}</div>
+            <div className="cust-right">
+              <div className={`cust-bal ${o && o.balance > 0 ? 'due' : 'clear'}`}>
+                {o ? inrFull(o.balance) : '₹0'}
+                <div className="ip-muted">{o && o.balance > 0 ? 'baki' : 'clear'}</div>
+              </div>
+              <div className="row-actions" style={{ justifyContent: 'flex-end' }}>
+                <button className="btn btn-sm" onClick={() => shareKhata(c)}><Icon name="book" size={15} /> Khata</button>
+                <button className="btn btn-sm" onClick={() => setEditing(c)}><Icon name="edit" size={15} /></button>
+                <button className="btn btn-sm btn-danger" onClick={() => setDeleting(c)}><Icon name="trash" size={15} /></button>
+              </div>
             </div>
           </div>
         )
       })}
+
+      {editing && (
+        <div className="modal-mask" onClick={() => setEditing(null)}>
+          <form className="modal" onClick={(e) => e.stopPropagation()} onSubmit={saveEdit}>
+            <div className="modal-title">Edit Customer</div>
+            <div className="scope-bar" style={{ marginBottom: 8 }}>
+              <span className={`chip ${editing.billType === 'gst' ? 'chip-active' : ''}`}>GST</span>
+              <span className={`chip ${editing.billType !== 'gst' ? 'chip-active' : ''}`}>Kaccha</span>
+            </div>
+            <div className="ip-muted" style={{ marginBottom: 8 }}>Bill type add ke waqt set hua tha — GSTIN dalne par GST ban jayega.</div>
+            <label className="form-label">Naam <input className="input" name="name" defaultValue={editing.name} /></label>
+            <label className="form-label">Mobile <input className="input" name="mobile" defaultValue={editing.mobile} /></label>
+            {editing.billType === 'gst' && <label className="form-label">GSTIN <input className="input" name="gstin" defaultValue={editing.gstin} disabled /></label>}
+            {editing.billType !== 'gst' && (
+              <>
+                <label className="form-label">GSTIN (daloge to GST/pakka ban jayega) <input className="input" name="gstin" placeholder="15 digit GSTIN" /></label>
+                <div className="ip-muted">Abhi kaccha hai — GSTIN bhar kar save karoge to ye customer GST (pakka) ban jayega. GST wale se wapas kaccha nahi hota.</div>
+              </>
+            )}
+            <label className="form-label">Address <input className="input" name="address" defaultValue={editing.address} /></label>
+            <label className="form-label">Credit limit (₹) — 0 = no limit <input className="input" inputMode="numeric" name="creditLimit" defaultValue={editing.creditLimit || 0} /></label>
+            {busy && <div className="err">{busy}</div>}
+            <div className="row-actions">
+              <button className="btn">Save</button>
+              <button type="button" className="btn btn-ghost" onClick={() => setEditing(null)}>Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {adding && (
+        <div className="modal-mask" onClick={() => { setAdding(null); setBusy('') }}>
+          <form className="modal" onClick={(e) => e.stopPropagation()} onSubmit={saveNew}>
+            <div className="modal-title">Naya Customer</div>
+            <label className="form-label">Naam <input className="input" name="name" autoFocus value={adding.name} onChange={(e) => setAdding({ ...adding, name: e.target.value })} /></label>
+            <label className="form-label">Mobile <input className="input" type="tel" name="mobile" value={adding.mobile} onChange={(e) => setAdding({ ...adding, mobile: e.target.value })} /></label>
+            <div className="scope-bar" style={{ marginBottom: 8 }}>
+              <button type="button" className={`chip ${adding.billType === 'kaccha' ? 'chip-active' : ''}`} onClick={() => setAdding({ ...adding, billType: 'kaccha', gstin: '' })}>Kaccha (bina GSTIN)</button>
+              <button type="button" className={`chip ${adding.billType === 'gst' ? 'chip-active' : ''}`} onClick={() => setAdding({ ...adding, billType: 'gst' })}>GST bill</button>
+            </div>
+            {adding.billType === 'gst' && (
+              <>
+                <label className="form-label">GSTIN (15 digit) <input className="input" name="gstin" value={adding.gstin} onChange={(e) => setAdding({ ...adding, gstin: e.target.value.toUpperCase() })} /></label>
+                <div className="ip-muted">GST bill wala customer banega — baad me GSTIN lock rahega.</div>
+              </>
+            )}
+            {busy && <div className="err">{busy}</div>}
+            <div className="row-actions">
+              <button className="btn">Save</button>
+              <button type="button" className="btn btn-ghost" onClick={() => { setAdding(null); setBusy('') }}>Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {deleting && (
+        <div className="modal-mask" onClick={() => setDeleting(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-title">Customer delete karein?</div>
+            <div className="ip-muted" style={{ margin: '6px 0' }}>"{deleting.name}" ka record hat jayega. Unke purane bills list mein rahenge (sirf customer record delete hota hai).</div>
+            {outstanding[deleting.id] && outstanding[deleting.id].balance > 0 && (
+              <div className="err">Is customer ka baki hai: {inrFull(outstanding[deleting.id].balance)} — pehle payment le lena behtar hoga.</div>
+            )}
+            <div className="row-actions">
+              <button className="btn btn-danger" onClick={doDelete}><Icon name="trash" size={15} /> Delete</button>
+              <button className="btn btn-ghost" onClick={() => setDeleting(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {gstOpen && <GstVerifyModal open={gstOpen} onClose={() => setGstOpen(false)} />}
     </div>
   )

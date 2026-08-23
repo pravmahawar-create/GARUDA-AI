@@ -1,116 +1,188 @@
 import React, { useEffect, useState } from 'react'
-import { db, getSetting } from '../db'
-import { buildInvoicePdf } from '../lib/pdf'
-import { inrFull, amountInWords } from '../lib/money'
+import { db, enqueue } from '../db'
+import { buildInvoicePdf, buildKhataPdf } from '../lib/pdf'
+import { inrFull } from '../lib/money'
+import { upiQrDataUrl } from '../lib/upi'
+import InvoicePaper from '../components/InvoicePaper'
 import { navigate } from '../App'
+import { Icon } from '../components/Icon'
+
+const dataUrlToBlob = (url) => fetch(url).then((r) => r.blob())
 
 export default function InvoicePreviewScreen() {
   const id = new URLSearchParams(window.location.hash.split('?')[1] || '').get('id')
   const [invoice, setInvoice] = useState(null)
   const [customer, setCustomer] = useState(null)
-  const [settings, setSettings] = useState({})
+  const [company, setCompany] = useState(null)
   const [status, setStatus] = useState('')
+  const [deleteChoice, setDeleteChoice] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(null)
 
-  useEffect(() => {
-    ;(async () => {
-      const inv = await db.invoices.get(id)
-      setInvoice(inv)
-      if (inv) setCustomer(await db.customers.get(inv.customerId))
-      setSettings({
-        shopName: await getSetting('shopName', ''),
-        shopGstin: await getSetting('shopGstin', ''),
-        shopAddress: await getSetting('shopAddress', ''),
-        shopPhone: await getSetting('shopPhone', '')
-      })
-    })()
-  }, [id])
+  const reload = async () => {
+    const inv = await db.invoices.get(id)
+    setInvoice(inv)
+    if (!inv) return
+    setCustomer(await db.customers.get(inv.customerId))
+    const comp = await db.companies.get(inv.companyId)
+    setCompany(comp || {
+      id: inv.companyId,
+      name: inv.companyName || 'Company',
+      gstin: '',
+      address: '',
+      phone: '',
+      gstRate: inv.totals?.gstRate ?? 18,
+      templateId: inv.templateId || 'classic',
+      ...(inv.bank || {})
+    })
+  }
 
-  if (!invoice) return <div className="screen"><div className="center">Loading…</div></div>
+  useEffect(() => { reload() }, [id])
 
-  const t = invoice.totals
+  if (!invoice || !company) return <div className="screen"><div className="center">Loading…</div></div>
+
+  const t = invoice.totals || {}
+  const isKaccha = invoice.billType === 'kaccha'
+  const paid = Number(invoice.paidAmount || 0)
+  const balance = Math.max(0, Number(t.grandTotal || 0) - paid)
+
+  const shareFile = async (file) => {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: file.name })
+    } else {
+      const url = URL.createObjectURL(file)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = file.name
+      a.click()
+      URL.revokeObjectURL(url)
+    }
+  }
 
   const sharePdf = async () => {
     setStatus('Generating PDF…')
     try {
-      const bytes = await buildInvoicePdf(invoice, settings, customer)
-      const blob = new Blob([bytes], { type: 'application/pdf' })
-      const file = new File([blob], `Invoice-${invoice.invoiceNo}.pdf`, { type: 'application/pdf' })
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'Invoice ' + invoice.invoiceNo })
-      } else {
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `Invoice-${invoice.invoiceNo}.pdf`
-        a.click()
-        URL.revokeObjectURL(url)
-      }
-      setStatus('Done ✅')
+      const bytes = await buildInvoicePdf(invoice, company, customer, invoice.templateId)
+      const file = new File([new Blob([bytes], { type: 'application/pdf' })], `Invoice-${invoice.invoiceNo}.pdf`, { type: 'application/pdf' })
+      await shareFile(file)
+      setStatus('Done')
     } catch (e) {
       setStatus('Share cancel hua / error: ' + e.message)
     }
   }
 
+  const shareKhata = async () => {
+    setStatus('Khata PDF bana raha hoon…')
+    try {
+      const invs = await db.invoices.where('customerId').equals(invoice.customerId).toArray()
+      const pays = await db.payments.where('customerId').equals(invoice.customerId).toArray()
+      const bytes = await buildKhataPdf(customer, invs, pays, company)
+      const file = new File([new Blob([bytes], { type: 'application/pdf' })], `Khata-${customer?.name || 'customer'}.pdf`, { type: 'application/pdf' })
+      await shareFile(file)
+      setStatus('Khata share ho gaya')
+    } catch (e) {
+      setStatus('Error: ' + e.message)
+    }
+  }
+
+  const shareReminder = async () => {
+    try {
+      const text = `Namaste ${invoice.customerName} ji,\nAapka baki: ${inrFull(balance)} (Invoice #${invoice.invoiceNo}, ${invoice.date})\nKripya jaldi bhej dijiye. Dhanyavaad!\n${company?.name || ''}`
+      if (company?.upiId) {
+        const qr = await upiQrDataUrl(company, balance, 'Baki-' + invoice.invoiceNo)
+        if (qr) {
+          const blob = await dataUrlToBlob(qr)
+          const file = new File([blob], 'upi-qr.png', { type: 'image/png' })
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({ files: [file], text, title: 'Baki reminder' })
+            return
+          }
+        }
+      }
+      const wa = 'https://wa.me/?text=' + encodeURIComponent(text)
+      window.open(wa, '_blank')
+    } catch (e) {
+      setStatus('Error: ' + e.message)
+    }
+  }
+
+  const doDelete = async (mode) => {
+    setDeleteChoice(false)
+    setStatus('…')
+    if (mode === 'cancel') {
+      invoice.status = 'cancelled'
+      await db.invoices.put(invoice)
+      await enqueue('invoice', 'update', invoice)
+      setStatus('Bill cancel ho gaya (audit ke liye rakha hai).')
+      await reload()
+    } else {
+      await db.invoices.delete(id)
+      await enqueue('invoice', 'delete', { id, entity: 'invoice' })
+      navigate('#/invoices')
+    }
+  }
+
+  const duplicate = async () => {
+    const d = { ...invoice }
+    delete d.id
+    navigate('#/bill?copy=' + id)
+  }
+
+  const paidStr = paid > 0 ? 'Paid ' + inrFull(paid) : ''
+  const balStr = balance > 0 ? 'Baki ' + inrFull(balance) : 'Clear'
+
   return (
     <div className="screen">
       <header className="topbar backbar">
-        <button className="back" onClick={() => navigate('#/bill')}>‹</button>
-        <div className="top-title">Invoice #{invoice.invoiceNo}</div>
+        <button className="back" onClick={() => navigate('#/invoices')}>‹</button>
+        <div className="top-title">{isKaccha ? 'Kaccha Bill' : 'Invoice'} #{invoice.invoiceNo}</div>
       </header>
 
       <div className="invoice-paper">
-        <div className="ip-head">
-          <div>
-            <div className="ip-shop">{settings.shopName || 'Your Shop'}</div>
-            {settings.shopGstin && <div className="ip-muted">GSTIN: {settings.shopGstin}</div>}
-            {settings.shopAddress && <div className="ip-muted">{settings.shopAddress}</div>}
-            {settings.shopPhone && <div className="ip-muted">Ph: {settings.shopPhone}</div>}
-          </div>
-          <div className="ip-right">
-            <div className="ip-inv">GST INVOICE</div>
-            <div className="ip-muted">No: {invoice.invoiceNo}</div>
-            <div className="ip-muted">Date: {invoice.date}</div>
-          </div>
-        </div>
-        <div className="ip-cust">
-          <div className="ip-muted">Bill To</div>
-          <div className="ip-cust-name">{invoice.customerName}</div>
-          {customer?.mobile && <div className="ip-muted">Mobile: {customer.mobile}</div>}
-          {customer?.gstin && <div className="ip-muted">GSTIN: {customer.gstin}</div>}
-        </div>
-        <table className="ip-table">
-          <thead><tr><th>Item</th><th>Qty</th><th>Rate</th><th>Amt</th></tr></thead>
-          <tbody>
-            {invoice.items.map((l, i) => (
-              <tr key={i}><td>{l.name}{l.hsn ? <span className="ip-hsn"> ({l.hsn})</span> : ''}</td><td>{l.qty} {l.unit}</td><td>{inrFull(l.rate)}</td><td>{inrFull(l.amount)}</td></tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="ip-totals">
-          <div className="ip-tline"><span>Subtotal</span><span>{inrFull(t.subtotal)}</span></div>
-          {t.discount > 0 && <div className="ip-tline"><span>Discount</span><span>-{inrFull(t.discount)}</span></div>}
-          <div className="ip-tline"><span>CGST</span><span>{inrFull(t.cgst)}</span></div>
-          <div className="ip-tline"><span>SGST</span><span>{inrFull(t.sgst)}</span></div>
-          {t.freight > 0 && <div className="ip-tline"><span>Freight</span><span>{inrFull(t.freight)}</span></div>}
-          {t.loading > 0 && <div className="ip-tline"><span>Loading</span><span>{inrFull(t.loading)}</span></div>}
-          {t.unloading > 0 && <div className="ip-tline"><span>Unloading</span><span>{inrFull(t.unloading)}</span></div>}
-          <div className="ip-tline ip-grand"><span>GRAND TOTAL</span><span>{inrFull(t.grandTotal)}</span></div>
-          <div className="ip-words">{amountInWords(t.grandTotal)}</div>
-        </div>
-        {invoice.transport?.vehicleNo && (
-          <div className="ip-tr">
-            <div className="ip-muted">Transport</div>
-            <div>{invoice.transport.vehicleNo}{invoice.transport.driverName ? ' • Driver: ' + invoice.transport.driverName : ''}</div>
-            {invoice.transport.site && <div className="ip-muted">Site: {invoice.transport.site}</div>}
-          </div>
-        )}
-        <div className="ip-foot">Thank you for your business!</div>
+        <InvoicePaper invoice={invoice} company={company} customer={customer} />
       </div>
 
-      <div className="actions">
-        <button className="primary big" onClick={sharePdf}>📤 Share / WhatsApp PDF</button>
-        <button className="ghost" onClick={() => navigate('#/bill')}>+ Naya bill</button>
+      <div className="card pay-card">
+        <div className="pay-row">
+          <span className="pay-total">{inrFull(t.grandTotal)}</span>
+          <span className={`pay-bal ${balance > 0 ? 'due' : 'clear'}`}>{balStr}</span>
+        </div>
+        {paidStr && <div className="ip-muted">{paidStr}</div>}
+        {balance > 0 && <button className="btn btn-sm" onClick={() => navigate('#/payments?customer=' + invoice.customerId + '&amount=' + balance)}><Icon name="wallet" size={14} /> Collect {inrFull(balance)}</button>}
       </div>
+
+      {!company?.upiId && !company?.bankAccount && (
+        <div className="card warn" style={{ margin: '10px 0' }}>
+          <b>QR / bank bill par nahi dikh raha</b> — Companies mein apni company ke "Payment details" mein UPI ID ya bank account daalo. Iske baad QR + bank info automatically har bill (screen + PDF) par aa jayegi.
+          <button className="btn btn-sm" style={{ marginTop: 8 }} onClick={() => navigate('#/companies')}><Icon name="cog" size={14} /> Payment details set karo</button>
+        </div>
+      )}
+
+      <div className="actions">
+        <button className="primary big" onClick={sharePdf}><Icon name="share" size={15} /> Share / WhatsApp PDF</button>
+        <button className="btn" onClick={shareKhata}><Icon name="book" size={14} /> Khata (statement) PDF</button>
+        <button className="btn" onClick={shareReminder} disabled={balance <= 0}><Icon name="bell" size={14} /> Baki reminder ({balance > 0 ? 'UPI QR' : 'nahi'})</button>
+      </div>
+
+      {invoice.status !== 'cancelled' && (
+        <div className="row-actions">
+          <button className="btn btn-sm" onClick={() => navigate('#/bill?id=' + id)}><Icon name="edit" size={14} /> Edit bill</button>
+          <button className="btn btn-sm" onClick={duplicate}><Icon name="copy" size={14} /> Copy as new</button>
+          <button className="btn btn-sm btn-danger" onClick={() => setDeleteChoice(true)}><Icon name="trash" size={14} /> Delete</button>
+        </div>
+      )}
+
+      {deleteChoice && (
+        <div className="modal-mask" onClick={() => setDeleteChoice(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-title">Bill #{invoice.invoiceNo} ka kya karein?</div>
+            <div className="row-actions">
+              <button className="btn" onClick={() => doDelete('cancel')}><Icon name="ban" size={14} /> Cancel (soft) — audit ke liye rakhega</button>
+              <button className="btn btn-danger" onClick={() => doDelete('hard')}><Icon name="trash" size={14} /> Delete permanently</button>
+              <button className="btn btn-ghost" onClick={() => setDeleteChoice(false)}>Bahut hua, band</button>
+            </div>
+          </div>
+        </div>
+      )}
       {status && <div className="status">{status}</div>}
     </div>
   )

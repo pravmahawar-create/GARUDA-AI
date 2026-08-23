@@ -22,6 +22,19 @@ export function validateGstin(gstin) {
   return expected !== null && g.charAt(14) === expected
 }
 
+export function stateCodeOf(gstin) {
+  const g = String(gstin || '').trim()
+  const code = parseInt(g.slice(0, 2), 10)
+  return isNaN(code) ? null : code
+}
+
+export function gstTypeFor(companyGstin, customerGstin) {
+  const a = stateCodeOf(companyGstin)
+  const b = stateCodeOf(customerGstin)
+  if (a === null || b === null || a === b) return 'intra'
+  return 'inter'
+}
+
 export function gstStateCode(gstin) {
   const g = String(gstin || '').trim()
   const code = parseInt(g.slice(0, 2), 10)

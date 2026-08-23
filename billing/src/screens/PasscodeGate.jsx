@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { setSetting } from '../db'
+import GarudaSigil from '../components/GarudaSigil'
 
 export default function PasscodeGate({ hasPasscode, passcode, onUnlock, onSet }) {
   const [pin, setPin] = useState('')
@@ -27,15 +28,16 @@ export default function PasscodeGate({ hasPasscode, passcode, onUnlock, onSet })
 
   return (
     <div className="gate">
+      <div className="gate-sigil"><GarudaSigil size={92} /></div>
+      <div className="gate-title">GARUDA</div>
+      <div className="gate-word">INDUSTRIAL<em>.</em></div>
+      <div className="gate-sub">{mode === 'set' ? 'App lock banao' : 'Secure access'}</div>
       <div className="gate-box">
-        <div className="gate-icon">₹</div>
-        <div className="gate-title">Garuda Billing</div>
-        {mode === 'set' && <div className="gate-sub">App lock banao</div>}
         <input
           className="input gate-input"
           inputMode="numeric"
           type="password"
-          placeholder={mode === 'unlock' ? 'Passcode' : 'Naya passcode (4 digit)'}
+          placeholder="••••"
           value={pin}
           onChange={(e) => setPin(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && submit()}
@@ -45,7 +47,7 @@ export default function PasscodeGate({ hasPasscode, passcode, onUnlock, onSet })
             className="input gate-input"
             inputMode="numeric"
             type="password"
-            placeholder="Dobara passcode"
+            placeholder="••••"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
           />

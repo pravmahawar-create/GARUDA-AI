@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { validateGstin, gstStateCode, gstinCheckChar } from './gst.js'
+import { validateGstin, gstStateCode, gstinCheckChar, stateCodeOf, gstTypeFor } from './gst.js'
 
 test('valid GSTINs pass checksum', () => {
   assert.equal(validateGstin('27AAPFU0939F1ZV'), true)
@@ -26,4 +26,13 @@ test('check char self-consistency', () => {
 test('state code lookup', () => {
   assert.equal(gstStateCode('23ABCPM1234F1Z2'), 'Madhya Pradesh')
   assert.equal(gstStateCode('27AAAAA0000A1Z5'), 'Maharashtra')
+})
+
+test('stateCodeOf + gstTypeFor (IGST detection)', () => {
+  assert.equal(stateCodeOf('23ABCPM1234F1Z2'), 23)
+  assert.equal(stateCodeOf(''), null)
+  assert.equal(gstTypeFor('23ABCPM1234F1Z2', '23ABCPM1234F1Z2'), 'intra')
+  assert.equal(gstTypeFor('23ABCPM1234F1Z2', '27AAAAA0000A1Z5'), 'inter')
+  assert.equal(gstTypeFor('', '27AAAAA0000A1Z5'), 'intra')
+  assert.equal(gstTypeFor('23ABCPM1234F1Z2', ''), 'intra')
 })

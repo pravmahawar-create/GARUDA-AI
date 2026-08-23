@@ -43,3 +43,51 @@ test('unknown -> clarify', () => {
   const t = parseLocal('namaste kya haal hai')
   assert.equal(t.intent, 'clarify')
 })
+
+test('founder: Ramesh ke naam 50 bag cement 390 ke bill', () => {
+  const t = parseLocal('Ramesh ke naam 50 bag cement 390 ke bill bana do', [])
+  assert.equal(t.intent, 'create_bill')
+  assert.equal(t.customer.name, 'Ramesh')
+  assert.equal(t.items.length, 1)
+  assert.equal(t.items[0].qty, 50)
+  assert.equal(t.items[0].unit, 'bag')
+  assert.equal(t.items[0].rate, 390)
+})
+
+test('founder: Ramesh ko 20 bag ACC cement 420', () => {
+  const t = parseLocal('Ramesh ko 20 bag ACC cement 420 ke rate se bill bana do', [])
+  assert.equal(t.intent, 'create_bill')
+  assert.equal(t.customer.name.toLowerCase(), 'ramesh')
+  assert.equal(t.items[0].qty, 20)
+  assert.equal(t.items[0].rate, 420)
+})
+
+test('stock entry: MP20AB1234 se 50 bag ACC cement aur 2 ton TMT steel aaya hai', () => {
+  const t = parseLocal('MP20AB1234 se 50 bag ACC cement aur 2 ton TMT steel aaya hai', [])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.equal(t.vehicleNo, 'MP20AB1234')
+  assert.ok(t.items.length >= 2)
+})
+
+test('stock add: 50 bag ACC cement stock mein add karo', () => {
+  const t = parseLocal('50 bag ACC cement stock mein add karo', [])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+})
+
+test('stock query: ACC cement ka stock kitna hai', () => {
+  const t = parseLocal('ACC cement ka stock kitna hai', [])
+  assert.equal(t.intent, 'stock_query')
+})
+
+test('stock query stated form does not overwrite', () => {
+  const t = parseLocal('ACC cement ka stock 120 bag hai', [])
+  assert.equal(t.intent, 'stock_query')
+})
+
+test('incomplete bill: missing customer', () => {
+  const t = parseLocal('50 bag cement 390 ke bill bana do', [])
+  assert.equal(t.intent, 'create_bill')
+  assert.ok(t.missing.includes('customer ka naam'))
+})
