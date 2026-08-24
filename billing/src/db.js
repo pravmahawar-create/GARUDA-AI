@@ -269,8 +269,16 @@ function inferCategory(name) {
   return 'other'
 }
 
+const PRODUCT_ALIAS_MATCH = { sariya: 'tmt', sariyaa: 'tmt', rod: 'tmt', tmt: 'tmt', steel: 'tmt', semento: 'cement', siment: 'cement' }
+
 export function canonicalName(s) {
   return String(s || '').toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(Boolean).sort().join('')
+}
+
+function aliasCanonical(s) {
+  const toks = String(s || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)
+  const mapped = toks.map((w) => PRODUCT_ALIAS_MATCH[w] || w)
+  return mapped.sort().join('')
 }
 
 function normalizeName(s) {
@@ -279,11 +287,16 @@ function normalizeName(s) {
 
 export async function findStockItem(voiceName) {
   const all = await db.items.toArray()
-  const vn = normalizeName(voiceName)
+  const vn = canonicalName(voiceName)
+  const vnAlias = aliasCanonical(voiceName)
+  const sizeMatch = (String(voiceName || '').match(/\d+mm/) || [])[0]
   let best = null
   for (const it of all) {
-    const inn = normalizeName(it.name)
-    if (inn === vn || inn.includes(vn) || vn.includes(inn)) {
+    const inn = canonicalName(it.name)
+    const innAlias = aliasCanonical(it.name)
+    const itSize = (String(it.name).match(/\d+mm/) || [])[0]
+    if (sizeMatch && itSize && itSize !== sizeMatch) continue
+    if (inn === vn || inn.includes(vn) || vn.includes(inn) || innAlias === vnAlias || innAlias.includes(vnAlias) || vnAlias.includes(innAlias)) {
       if (!best || it.name.length < best.name.length) best = it
     }
   }
@@ -346,7 +359,9 @@ export async function applyStockOp({ name, qty, unit, operation, sourceType = 'a
 }
 
 export async function getPhysicalStock(itemId) {
+  const item = await db.items.get(itemId)
   const txs = await db.stockTransactions.where('itemId').equals(itemId).toArray()
+  if (txs.length === 0 && item) return Math.max(0, Number(item.qty || 0))
   let stock = 0
   for (const tx of txs) {
     if (tx.movementType === 'stock_in' || tx.movementType === 'opening') stock += Number(tx.quantity || 0)

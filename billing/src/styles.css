@@ -512,6 +512,12 @@ body {
   background: var(--surface); color: var(--steel); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
+.sm-qty {
+  width: 46px; height: 30px; border-radius: 9px; border: 1px solid var(--line-gold-strong);
+  background: var(--surface); color: var(--steel); text-align: center;
+  font-size: 13px; font-weight: 800; -moz-appearance: textfield;
+}
+.sm-qty::-webkit-outer-spin-button, .sm-qty::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .sm-btn-plus { border-color: var(--line-gold-strong); color: var(--gold-ink); background: var(--line-gold); }
 .sm-btn-minus { color: var(--danger); }
 .stock-big { font-size: 30px; font-weight: 800; color: var(--steel); }

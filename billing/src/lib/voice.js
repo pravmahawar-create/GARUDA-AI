@@ -39,22 +39,34 @@ function titleCase(w) {
   return w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : ''
 }
 
-const STOP_WORDS = new Set(['ke', 'ka', 'ki', 'ko', 'aur', 'and', 'rate', 'se', 'bana', 'banao', 'banaw', 'kar', 'karo', 'daal', 'dal', 'do', 'dena', 'chahiye', 'bill', 'aaya', 'aaye', 'gaya', 'gaye', 'hai', 'hain', 'raha', 'rahe', 'stock', 'stok', 'mein', 'add', 'badh', 'jod', 'kitna', 'kya', 'hai', 'per', 'par', 'rupaye', 'rupay', 'rs', 'minus', 'mines', 'mine', 'kam', 'ghatao', 'nikalo', 'nikal', 'hatao', 'becha', 'bech'])
+const STOP_WORDS = new Set(['ke', 'ka', 'ki', 'ko', 'aur', 'and', 'rate', 'se', 'bana', 'banao', 'banaw', 'kar', 'karo', 'daal', 'dal', 'do', 'dena', 'chahiye', 'bill', 'aaya', 'aaye', 'gaya', 'gaye', 'hai', 'hain', 'raha', 'rahe', 'stock', 'stok', 'mein', 'add', 'badh', 'jod', 'kitna', 'kya', 'hai', 'per', 'par', 'rupaye', 'rupay', 'rs', 'minus', 'mines', 'mine', 'kam', 'ghatao', 'nikalo', 'nikal', 'nikaal', 'hatao', 'becha', 'bechi', 'bech', 'wali', 'vali'])
+
+function cleanProductWords(words) {
+  return words.filter((w) => (!/^\d+$/.test(w) || /^\d+mm$/.test(w)) && !STOP_WORDS.has(String(w).toLowerCase()))
+}
 
 function buildItemName(words) {
   while (words.length > 0 && STOP_WORDS.has(words[words.length - 1])) words.pop()
   if (!words.length) return ''
-  const baseKey = [...words].reverse().find((w) => PRODUCT_ALIAS[w])
+  const sizeIdx = words.findIndex((w) => /^\d+mm$/.test(w))
+  const sizeWord = sizeIdx >= 0 ? words[sizeIdx] : ''
+  const productWords = sizeWord ? words.filter((w) => w !== sizeWord) : words
+  const baseKey = [...productWords].reverse().find((w) => PRODUCT_ALIAS[w])
   const baseName = baseKey ? PRODUCT_ALIAS[baseKey] : null
-  if (!baseName) return words.map((w) => BRAND_CASE[w] || titleCase(w)).join(' ')
-  if (words.length === 1) return baseName
-  const firstAlias = PRODUCT_ALIAS[words[0]]
-  if (firstAlias && firstAlias === baseName) return baseName
-  if (firstAlias && firstAlias !== baseName) return firstAlias
-  const idx = words.indexOf(baseKey)
-  const prefix = words.slice(0, idx)
-  if (!prefix.length) return baseName
-  return prefix.map((w) => BRAND_CASE[w] || titleCase(w)).join(' ') + ' ' + baseName
+  let name
+  if (!baseName) name = productWords.map((w) => BRAND_CASE[w] || titleCase(w)).join(' ')
+  else if (productWords.length === 1) name = baseName
+  else {
+    const firstAlias = PRODUCT_ALIAS[productWords[0]]
+    if (firstAlias && firstAlias === baseName) name = baseName
+    else if (firstAlias && firstAlias !== baseName) name = firstAlias
+    else {
+      const idx = productWords.indexOf(baseKey)
+      const prefix = productWords.slice(0, idx)
+      name = prefix.length ? prefix.map((w) => BRAND_CASE[w] || titleCase(w)).join(' ') + ' ' + baseName : baseName
+    }
+  }
+  return sizeWord ? sizeWord + ' ' + name : name
 }
 
 function extractItems(text) {
@@ -68,13 +80,14 @@ function extractItems(text) {
     seen.add(key)
     items.push({ name, qty, unit, rate: 0, pos })
   }
-  // Order 1: "50 bag ACC cement", "50 kg Fortune TMT 12mm" (size captured separately)
-  const re1 = new RegExp('(\\d+(?:\\.\\d+)?)\\s*(hazaar|hajar|lakh|lac)?\\s*' + unitWord + '\\s+([a-z]+(?:\\s+[a-z]+){0,2})(?:\\s+(\\d+)\\s*mm)?', 'gi')
+  // Order 1: "50 bag ACC cement", "50 kg Fortune TMT 12mm", "50 piece 8mm TMT" (size preserved)
+  const re1 = new RegExp('(\\d+(?:\\.\\d+)?)\\s*(hazaar|hajar|lakh|lac)?\\s*' + unitWord + '\\s+([a-z0-9]+(?:\\s+[a-z0-9]+){0,2})(?:\\s+(\\d+)\\s*mm)?', 'gi')
   let m
   while ((m = re1.exec(text)) !== null) {
     const qty = Number(m[1]) * (MULTS[(m[2] || '').toLowerCase()] || 1)
     const unit = UNITS[m[3].toLowerCase()]
-    const words = m[4].toLowerCase().split(/\s+/)
+    const words = cleanProductWords(m[4].toLowerCase().split(/\s+/))
+    if (!words.length || !hasProductToken(words)) continue
     let name = buildItemName(words)
     if (m[5]) name = (name + ' ' + m[5] + 'mm').trim()
     push(qty, unit, name, m.index)
@@ -147,7 +160,31 @@ function findCustomer(text, knownNames) {
   return ''
 }
 
-const STOCK_HINT = /(stock|stok|aaya hai|aa gaya|pahunch|pahonch|add karo|daal do|dalo|jodo|minus|mines|mine|kam karo|ghata|nikal|hatao|becha|bech diya)/i
+const STOCK_HINT = /(stock|stok|aaya hai|aayi hai|aa gaya|aa gayi|aagaya|aagayi|pahunch|pahonch|add karo|add kar do|daal do|dalo|jod|jodo|jod do|badh|badha|minus|mines|mine|kam karo|ghata|nikal|nikaal|hatao|becha|bech diya|bech diye|gaadi|gadi|vehicle|inward|history|last\s*(?:incoming|entry)|kis\s*gaadi|kitna\s*aaya|kitna\s*aayi|kitni\s*aaya|kitni\s*aayi|(cement|sariya|steel|tmt|sand|bricks|eent).*(kitna|kitni|kitne)|(kitna|kitni|kitne|total).*(cement|sariya|steel|tmt|bori|stock)|kitni\s*bori|padi\s*hai|pada\s*hai)/i
+
+const CATEGORY_TOKENS = { cement: 'cement', siment: 'cement', semento: 'cement', steel: 'steel', sariya: 'steel', sariyaa: 'steel', rod: 'steel', tmt: 'steel', sand: 'other', ret: 'other', bricks: 'other', eent: 'other', int: 'other' }
+
+function categoryFromText(text) {
+  const toks = String(text || '').toLowerCase().split(/[^a-z]+/)
+  for (const tok of toks) {
+    if (CATEGORY_TOKENS[tok]) return CATEGORY_TOKENS[tok]
+  }
+  return null
+}
+
+function hasBrandToken(text) {
+  const low = String(text || '').toLowerCase()
+  return Object.keys(BRAND_CASE).some((b) => new RegExp('(^|[^a-z])' + b + '([^a-z]|$)', 'i').test(low))
+}
+
+function isAggregateAsk(text) {
+  return /(total|sab|all|kitna|kitni|kitne|kya|padi|pada|bori|bora|bag)/i.test(text)
+}
+
+function extractProductPhrase(text) {
+  const m = String(text || '').match(/([a-z][a-z\s]{1,40}?)\s+(?:ka|ke|ki|का|की|के)\s+(?:last|aakhri|akhir|stock|inward|entry|aaya|aayi)/i)
+  return m ? m[1].trim() : ''
+}
 
 function hasProductToken(words) {
   return words.some((w) => PRODUCT_ALIAS[String(w).toLowerCase()] || BRAND_CASE[String(w).toLowerCase()])
@@ -164,8 +201,14 @@ function canonicalKey(s) {
 function resolveQueryItem(text, stockItems) {
   if (!stockItems || !stockItems.length) return null
   const qWords = new Set(tokenize(text))
+  const size = (String(text).match(/\d+mm/) || [])[0]
+  let pool = stockItems
+  if (size) {
+    const sized = stockItems.filter((it) => (String(it.name).match(/\d+mm/) || [])[0] === size)
+    if (sized.length) pool = sized
+  }
   const groups = new Map()
-  for (const it of stockItems) {
+  for (const it of pool) {
     const toks = tokenize(it.name)
     if (!toks.length) continue
     const hit = toks.filter((tk) => qWords.has(tk))
@@ -192,23 +235,91 @@ function extractStockQtyUnit(text) {
   return { qty: Number(m[1]) * (MULTS[(m[2] || '').toLowerCase()] || 1), unit: UNITS[m[3].toLowerCase()] || 'bag' }
 }
 
+const STOCK_ACTION_SPLIT = /\s*(?:,|;|aur|and|tatha)\s+|\s*(?:add karo|add kar do|jod do|jodo|daal do|dalo|minus karo|nikaal do|nikal do|nikalo|kam karo|ghata do|hata do|bech diya|bech diye)\s*/i
+
+function splitStockCommands(text) {
+  return String(text || '').split(STOCK_ACTION_SPLIT).map((s) => s.trim()).filter(Boolean)
+}
+
+// Parse ONE stock clause (no action verb) into a single item, or null when ambiguous/incomplete.
+function parseStockSegment(seg) {
+  let items = extractItems(seg)
+  if (!items.length) {
+    const preQty = seg.match(/^([a-z0-9][a-z0-9\s]{1,40}?)\s+(\d+(?:\.\d+)?)\s*(bag|bori|kg|kilo|quintal|qtl|ton|tonne|piece|truck)s?/i)
+    if (preQty) {
+      const rawWords = cleanProductWords(preQty[1].trim().toLowerCase().split(/\s+/))
+      if (hasProductToken(rawWords)) {
+        const name = buildItemName(rawWords)
+        const qty = Number(preQty[2])
+        const unit = UNITS[preQty[3].toLowerCase()] || 'bag'
+        if (name && qty > 0) items.push({ name, qty, unit })
+      }
+    }
+  }
+  if (!items.length) {
+    const m = seg.match(/^(\d+\s*mm)(?:\s+(?:wali|vali))?\s+(\d+(?:\.\d+)?)\s*(bag|bori|kg|kilo|quintal|qtl|ton|tonne|piece|truck)s?\s+([a-z0-9][a-z0-9\s]{1,30}?)$/i)
+    if (m) {
+      const rawWords = cleanProductWords([m[1].replace(/\s+/g, ''), ...m[4].trim().toLowerCase().split(/\s+/)])
+      if (hasProductToken(rawWords)) {
+        const name = buildItemName(rawWords)
+        const qty = Number(m[2])
+        const unit = UNITS[m[3].toLowerCase()] || 'bag'
+        if (name && qty > 0) items.push({ name, qty, unit })
+      }
+    }
+  }
+  if (items.length === 1) return items[0]
+  return null
+}
+
 function parseStock(text, numberFromHindiFn, stockItems = []) {
   text = String(text || '').trim()
   const t = text.toLowerCase()
-  const vehicleNo = (text.match(/([A-Za-z]{2}\d{2}[A-Za-z]{0,3}\d{3,4})/) || [])[1] || ''
+  const vehM = text.match(/([A-Za-z]{2}\s?\d{2}\s?[A-Za-z]{1,3}\s?\d{3,4})/) || String(text).replace(/\s+/g, '').match(/([A-Za-z]{2}\d{2}[A-Za-z]{1,3}\d{3,4})/)
+  const vehicleNo = (vehM ? vehM[1] : '').replace(/\s+/g, '').toUpperCase()
   const driver = (text.match(/driver\s+([a-z]+)/i) || [])[1] || ''
 
   const wantsSet = /(set\s?karo|set\s?kar|update\s?kar|rakh\s?do|barabar\s?kar|ho\s?jaye\s?aisa)/i.test(t)
-  const wantsAdd = /(add|badh|jod|jama|aaya|aa gaya|pahunch|pahonch|daal|dalo|dale)/i.test(t)
-  const wantsSubtract = /(minus|mines|mine|kam karo|kam kar|ghatao|ghata|ghata do|nikal|nikalo|hatao|hata do|becha|bech diya|kam)/i.test(t)
+  const wantsAdd = /(add|badh|jod|jama|aaya|aayi|aaye|aa gaya|aa gayi|aagaya|aagayi|pahunch|pahonch|daal|dalo|dale)/i.test(t)
+  const wantsSubtract = /(minus|mines|mine|kam karo|kam kar|ghatao|ghata|ghata do|nikal|nikalo|nikaal|hatao|hata do|becha|bech diya|bech diye|kam)/i.test(t)
   const wantsQuery = /(kitna|kitni|kya hai|kya bacha|check|batao)/i.test(t)
 
-  const items = extractItems(text)
-  // Fallback: product name BEFORE qty/unit — "ACC cement 50 bag", "ACC Cement mein 20 bori", "ACC cement ke stock mein se 300 bori"
+  // Multi-item mutation: "8mm TMT 50 piece add karo 10mm TMT 30 piece add karo" → two operations
+  const segments = splitStockCommands(text)
+  if (segments.length > 1 && !wantsQuery && (wantsAdd || wantsSubtract)) {
+    if (wantsAdd && wantsSubtract) {
+      return { intent: 'clarify', message: 'Ek command mein add aur minus dono nahi — alag alag bolo.' }
+    }
+    const op = wantsSubtract ? 'subtract' : 'add'
+    const multi = []
+    for (const seg of segments) {
+      const item = parseStockSegment(seg)
+      if (!item) {
+        return { intent: 'clarify', message: 'Multiple items hain — ek ek karke saaf bolo, jaise "8mm TMT 50 piece add karo aur 10mm TMT 30 piece add karo".' }
+      }
+      multi.push(item)
+    }
+    return { intent: 'stock_entry', operation: op, items: multi, vehicleNo, driver, source: 'voice' }
+  }
+
+  // Size qty unit product: "12mm 50 kilo Sariya" (most specific — run before generic qty-unit)
+  let items = []
+  const sizeM = text.match(/^(\d+\s*mm)(?:\s+(?:wali|vali))?\s+(\d+(?:\.\d+)?)\s*(bag|bori|kg|kilo|quintal|qtl|ton|tonne|piece|truck)s?\s+([a-z0-9][a-z0-9\s]{1,30}?)$/i)
+  if (sizeM) {
+    const rawWords = cleanProductWords([sizeM[1].replace(/\s+/g, ''), ...sizeM[4].trim().toLowerCase().split(/\s+/)])
+    if (hasProductToken(rawWords)) {
+      const candidateName = buildItemName(rawWords)
+      const qty = Number(sizeM[2])
+      const unit = UNITS[sizeM[3].toLowerCase()] || 'bag'
+      if (candidateName && qty > 0) items.push({ name: candidateName, qty, unit })
+    }
+  }
+  if (!items.length) items = extractItems(text)
+  // Fallback: product name BEFORE qty/unit — "ACC cement 50 bag", "ACC Cement mein 20 bori", "8mm sariya mein 100 piece"
   if (items.length === 0) {
-    const preQty = text.match(/^([a-z][a-z\s]{1,40}?)\s+(\d+(?:\.\d+)?)\s*(bag|bori|kg|kilo|quintal|qtl|ton|tonne|piece|truck)s?/i)
+    const preQty = text.match(/^([a-z0-9][a-z0-9\s]{1,40}?)\s+(\d+(?:\.\d+)?)\s*(bag|bori|kg|kilo|quintal|qtl|ton|tonne|piece|truck)s?/i)
     if (preQty) {
-      const rawWords = preQty[1].trim().split(/\s+/)
+      const rawWords = cleanProductWords(preQty[1].trim().toLowerCase().split(/\s+/))
       if (hasProductToken(rawWords)) {
         const candidateName = buildItemName(rawWords)
         const qty = Number(preQty[2])
@@ -217,11 +328,38 @@ function parseStock(text, numberFromHindiFn, stockItems = []) {
       }
     }
   }
-  // Query: product name without qty — "ACC cement ka stock kitna hai"
+  // Query (no qty present): route to ledger-history, category aggregate, or specific item
+  if (items.length === 0) {
+    // --- LEDGER / inward-history queries (checked before add/subtract misfires on "aaya"/"aayi") ---
+    const isLedgerAsk = /(aaya|aayi|aaye)\s*(tha|thi|the|hai)?|aagaya|aagayi|inward|last\s*(?:incoming|entry)|kis\s*gaadi|kaunsi\s*gaadi|history|kitna\s*(?:aaya|aayi)|kitni\s*(?:aaya|aayi)/i.test(text)
+    if (isLedgerAsk) {
+      const cat = categoryFromText(text)
+      const itemPhrase = extractProductPhrase(text)
+      if (vehicleNo) {
+        return { intent: 'stock_ledger_query', scope: 'vehicle', vehicleNo, category: cat, itemName: '', driver, source: 'voice' }
+      }
+      if (/aaj|aaj\s*ka|aaj\s*ki|today/i.test(text)) {
+        return { intent: 'stock_ledger_query', scope: 'today', category: cat, itemName: '', vehicleNo: '', driver, source: 'voice' }
+      }
+      if (/kis\s*gaadi|kaunsi\s*gaadi/i.test(text)) {
+        return { intent: 'stock_ledger_query', scope: 'last_vehicle', category: cat, itemName: '', vehicleNo: '', driver, source: 'voice' }
+      }
+      if (/last|aakhri|akhir/i.test(text)) {
+        return { intent: 'stock_ledger_query', scope: 'last_incoming', category: cat, itemName: itemPhrase, vehicleNo: '', driver, source: 'voice' }
+      }
+      return { intent: 'stock_ledger_query', scope: 'inward', category: cat, itemName: itemPhrase, vehicleNo: '', driver, source: 'voice' }
+    }
+  }
   if (items.length === 0 && wantsQuery) {
-    const qName = text.match(/^([a-z][a-z\s]{1,40}?)\s+(?:ka|ke|ki|का|की|के)\s*(?:stock|stok)\s*(?:kitna|kitni|kya|check|batao|hai|hain|raha|कितना|कितनी)/i)
+    const cat = categoryFromText(text)
+    // --- CATEGORY aggregate (skip when a specific size/variant is named) ---
+    if (cat && !hasBrandToken(text) && !/\d+\s*mm/i.test(text) && isAggregateAsk(text)) {
+      return { intent: 'stock_query', operation: 'query_category', category: cat, vehicleNo: '', driver, stated: null, source: 'voice' }
+    }
+    // --- specific item resolution ---
+    const qName = text.match(/^([a-z0-9][a-z0-9\s]{1,40}?)\s+(?:ka|ke|ki|का|की|के)\s*(?:stock|stok)\s*(?:kitna|kitni|kya|check|batao|hai|hain|raha|कितना|कितनी)/i)
     if (qName) {
-      const rawWords = qName[1].trim().split(/\s+/)
+      const rawWords = cleanProductWords(qName[1].trim().toLowerCase().split(/\s+/))
       if (hasProductToken(rawWords)) {
         const candidateName = buildItemName(rawWords)
         if (candidateName) items.push({ name: candidateName, qty: 0, unit: 'bag' })
@@ -296,11 +434,24 @@ function parseStock(text, numberFromHindiFn, stockItems = []) {
 
 export function normalizeDevanagari(text) {
   return String(text || '')
+    .replace(/०/g, '0').replace(/१/g, '1').replace(/२/g, '2').replace(/३/g, '3').replace(/४/g, '4')
+    .replace(/५/g, '5').replace(/६/g, '6').replace(/७/g, '7').replace(/८/g, '8').replace(/९/g, '9')
+    .replace(/एमपी/g, ' MP ')
+    .replace(/जेड/g, ' Z ')
+    .replace(/नंबर/g, ' number ')
+    .replace(/गाड़ी|गाडी/g, ' gaadi ')
+    .replace(/ऐड करो/g, ' add karo ')
+    .replace(/ऐड/g, ' add ')
+    .replace(/(?:^|\s)आया(?=\s|$)/g, ' aaya ')
+    .replace(/(?:^|\s)आई(?=\s|$)/g, ' aayi ')
+    .replace(/(?:^|\s)आये(?=\s|$)/g, ' aaye ')
+    .replace(/एमएम/g, ' mm ')
+    .replace(/एम एम/g, ' mm ')
     .replace(/बोरियों|बोरियां|बोरी|बोरा|बैग/g, ' bag ')
     .replace(/किलोग्राम|किलो/g, ' kg ')
     .replace(/टन/g, ' ton ')
     .replace(/क्विंटल/g, ' quintal ')
-    .replace(/पीस/g, ' piece ')
+    .replace(/पीस|नग/g, ' piece ')
     .replace(/सीमेंट|सिमेंट/g, ' cement ')
     .replace(/एसीसी/g, ' ACC ')
     .replace(/अल्ट्राटेक/g, ' ultratech ')
@@ -309,6 +460,10 @@ export function normalizeDevanagari(text) {
     .replace(/स्टील/g, ' steel ')
     .replace(/के नाम से/g, ' ke naam ')
     .replace(/के नाम/g, ' ke naam ')
+    .replace(/के भाव से/g, ' ke bhav se ')
+    .replace(/के भाव/g, ' ke bhav ')
+    .replace(/के हिसाब से/g, ' ke hisab se ')
+    .replace(/के हिसाब/g, ' ke hisab ')
     .replace(/के रेट से/g, ' ke rate se ')
     .replace(/के रेट/g, ' ke rate ')
     .replace(/बिल बना दो|बिल बनाओ/g, ' bill bana do ')
@@ -320,6 +475,8 @@ export function normalizeDevanagari(text) {
     .replace(/कितना|कितनी|कितने/g, ' kitna ')
     .replace(/माइनस|घटा|घटाओ/g, ' minus ')
     .replace(/जोड़ो|जोडो|जोड़ दो/g, ' jodo ')
+    .replace(/एक/g, '1 ').replace(/दो(?=\s)/g, '2 ').replace(/तीन/g, '3 ').replace(/चार/g, '4 ').replace(/पांच/g, '5 ').replace(/छह/g, '6 ').replace(/सात/g, '7 ').replace(/आठ/g, '8 ').replace(/नौ/g, '9 ').replace(/दस/g, '10 ').replace(/बारह/g, '12 ').replace(/बीस/g, '20 ').replace(/तीस/g, '30 ').replace(/चालीस/g, '40 ').replace(/पचास/g, '50 ')
+    .replace(/(\d)\s*mm/g, '$1mm')
     .replace(/करो/g, ' karo ')
     .replace(/है|हैं/g, ' hai ')
 }

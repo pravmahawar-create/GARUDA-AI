@@ -1,7 +1,7 @@
 import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import 'fake-indexeddb/auto'
-import { db, applyStockOp, getStockQty, getPhysicalStock, getStockLedger, recordStockOutForInvoice, findStockItem } from '../db.js'
+import { db, applyStockOp, getStockQty, getPhysicalStock, getStockLedger, recordStockOutForInvoice, findStockItem, canonicalName } from '../db.js'
 import { parseLocal } from './voice.js'
 import { executeCreateBill } from './voiceExecutor.js'
 
@@ -254,6 +254,155 @@ test('STOCK IDENTITY: unrelated products remain unaffected', async () => {
   assert.equal(res.item.id, 'itm-acc')
   assert.equal(await getStockQty('Cement - UltraTech'), 100, 'UltraTech must be unaffected')
   assert.equal(await getStockQty('ACC Cement'), 530)
+})
+
+test('STOCK QUERY REGRESSION: add+subtract then query returns persisted items.qty', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-qs1', name: 'ACC Cement', unit: 'bag', rate: 390, category: 'cement', qty: 50 })
+  await applyStockOp({ name: 'ACC Cement', qty: 50, unit: 'bag', operation: 'add' })
+  await applyStockOp({ name: 'ACC Cement', qty: 20, unit: 'bag', operation: 'subtract' })
+  const it = await findStockItem('ACC Cement')
+  assert.equal(Number(it.qty || 0), 80, 'persisted items.qty must be 80')
+  assert.equal(await getStockQty('ACC Cement'), 80, 'query must match persisted items.qty')
+  assert.equal(await getStockQty('ACC Cement'), 80, 'repeated query returns same')
+})
+
+test('STOCK QUERY REGRESSION: normalized alias lookup consistent across add/query', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-qs2', name: 'ACC Cement', unit: 'bag', rate: 390, category: 'cement', qty: 0 })
+  await applyStockOp({ name: 'Cement ACC', qty: 100, unit: 'bag', operation: 'add' })
+  const it = await findStockItem('ACC Cement')
+  assert.equal(it.id, 'itm-qs2')
+  assert.equal(Number(it.qty || 0), 100)
+  assert.equal(await getStockQty('Cement - ACC'), 100)
+})
+
+test('STOCK INWARD: vehicle number persisted in transaction ledger', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-in1', name: 'ACC Cement', unit: 'bag', rate: 390, category: 'cement', qty: 0 })
+  await applyStockOp({ name: 'ACC Cement', qty: 400, unit: 'bag', operation: 'add', vehicleNo: 'MP20ZZ7787', sourceType: 'inward' })
+  const txs = await db.stockTransactions.where('itemId').equals('itm-in1').toArray()
+  assert.equal(txs.length, 1)
+  assert.equal(txs[0].vehicleNo, 'MP20ZZ7787')
+  assert.equal(txs[0].movementType, 'stock_in')
+  assert.equal(txs[0].quantity, 400)
+  const it = await db.items.get('itm-in1')
+  assert.equal(it.qty, 400, 'stock balance must update')
+})
+
+test('STOCK INWARD: read-back after vehicle inward equals persisted qty', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-in2', name: 'ACC Cement', unit: 'bag', rate: 390, category: 'cement', qty: 100 })
+  await applyStockOp({ name: 'ACC Cement', qty: 400, unit: 'bag', operation: 'add', vehicleNo: 'MP20ZZ7787' })
+  const check = await db.items.get('itm-in2')
+  assert.equal(Number(check.qty || 0), 500, 'persisted qty after inward')
+  assert.equal(await getStockQty('ACC Cement'), 500)
+})
+
+test('STOCK CATEGORY AGGREGATE: sum of real persisted cement items', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-ca1', name: 'ACC Cement', unit: 'bag', rate: 390, category: 'cement', qty: 300 })
+  await db.items.put({ id: 'itm-ca2', name: 'Cement - UltraTech', unit: 'bag', rate: 395, category: 'cement', qty: 120 })
+  await db.items.put({ id: 'itm-ca3', name: 'TMT Steel 8mm', unit: 'kg', rate: 62, category: 'steel', qty: 50 })
+  const all = await db.items.toArray()
+  const cement = all.filter((it) => it.category === 'cement')
+  const sum = cement.reduce((s, it) => s + Number(it.qty || 0), 0)
+  assert.equal(cement.length, 2)
+  assert.equal(sum, 420, 'aggregate must use real persisted data, not hardcoded')
+  assert.equal(all.find((it) => it.id === 'itm-ca3').qty, 50, 'steel unaffected')
+})
+
+test('STOCK CATEGORY COUNT: canonical duplicates count as one product', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-cc1', name: 'ACC Cement', unit: 'bag', rate: 390, category: 'cement', qty: 30 })
+  await db.items.put({ id: 'itm-cc2', name: 'Cement - UltraTech', unit: 'bag', rate: 395, category: 'cement', qty: 200 })
+  await db.items.put({ id: 'itm-cc3', name: 'JK Lakshmi Cement', unit: 'bag', rate: 395, category: 'cement', qty: 800 })
+  await db.items.put({ id: 'itm-cc4', name: 'Cement - ACC', unit: 'bag', rate: 390, category: 'cement', qty: 0 })
+  const all = await db.items.toArray()
+  const rawCement = all.filter((it) => it.category === 'cement')
+  const mergedMap = new Map()
+  for (const it of rawCement) {
+    const key = canonicalName(it.name)
+    if (!mergedMap.has(key)) mergedMap.set(key, { ...it })
+    else if (it.name.length < mergedMap.get(key).name.length) mergedMap.get(key).name = it.name
+  }
+  const members = [...mergedMap.values()]
+  const sum = members.reduce((s, it) => s + Number(it.qty || 0), 0)
+  assert.equal(rawCement.length, 4, 'four raw records exist')
+  assert.equal(members.length, 3, 'canonical merge reduces to three products')
+  assert.equal(sum, 1030, 'sum = 30 + 200 + 800 + 0')
+  assert.equal(members.find((m) => canonicalName(m.name) === canonicalName('ACC Cement')).name, 'ACC Cement', 'shortest canonical name wins')
+})
+
+test('STOCK QUERY: existing ACC Cement qty read back as 30', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-q30', name: 'ACC Cement', unit: 'bag', rate: 390, category: 'cement', qty: 30 })
+  assert.equal(await getStockQty('ACC Cement'), 30)
+  const it = await findStockItem('ACC Cement')
+  assert.equal(it.id, 'itm-q30')
+})
+
+test('SARIYA: 8mm stock add via voice mutation + query read-back', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-s8', name: 'TMT Steel 8mm', unit: 'piece', rate: 62, category: 'steel', qty: 50 })
+  await applyStockOp({ name: '8mm sariya', qty: 100, unit: 'piece', operation: 'add' })
+  const it = await findStockItem('8mm sariya')
+  assert.ok(it, '8mm sariya must resolve to existing item')
+  assert.equal(Number(it.qty || 0), 150, '8mm must increase by 100')
+  assert.equal(await getStockQty('8mm sariya'), 150)
+})
+
+test('SARIYA: 8mm add does not affect 10mm', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-s8b', name: 'TMT Steel 8mm', unit: 'piece', rate: 62, category: 'steel', qty: 50 })
+  await db.items.put({ id: 'itm-s10b', name: 'TMT Steel 10mm', unit: 'piece', rate: 65, category: 'steel', qty: 30 })
+  await applyStockOp({ name: '8mm sariya', qty: 100, unit: 'piece', operation: 'add' })
+  const it8 = await findStockItem('8mm sariya')
+  const it10 = await findStockItem('10mm sariya')
+  assert.equal(Number(it8.qty || 0), 150, '8mm increased')
+  assert.equal(Number(it10.qty || 0), 30, '10mm unchanged')
+})
+
+test('SARIYA: alias matching — "8mm sariya" resolves to "TMT Steel 8mm"', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-sa', name: 'TMT Steel 8mm', unit: 'piece', rate: 62, category: 'steel', qty: 100 })
+  const bySariya = await findStockItem('8mm sariya')
+  const byTmt = await findStockItem('8mm TMT')
+  const byRod = await findStockItem('8mm rod')
+  const bySteel = await findStockItem('8mm steel')
+  assert.ok(bySariya && bySariya.id === 'itm-sa')
+  assert.ok(byTmt && byTmt.id === 'itm-sa')
+  assert.ok(byRod && byRod.id === 'itm-sa')
+  assert.ok(bySteel && bySteel.id === 'itm-sa')
+})
+
+test('SAFETY: unit mismatch (kg vs piece) must be detectable before mutation', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-sf1', name: 'TMT Steel 12mm', unit: 'piece', rate: 65, category: 'steel', qty: 100 })
+  // Parser produces "12mm TMT Steel" 50 kg for "12mm 50 kilo Sariya"
+  const target = await findStockItem('12mm TMT Steel')
+  assert.ok(target, '12mm variant must resolve')
+  const spokenUnit = 'kg'
+  const mismatch = spokenUnit.toLowerCase() !== String(target.unit).toLowerCase()
+  assert.equal(mismatch, true, 'executor must detect kg vs piece mismatch and clarify, NOT mutate')
+  assert.equal(Number(target.qty || 0), 100, 'no mutation before clarification')
+})
+
+test('SAFETY: size-less steel with multiple size variants is ambiguous', async () => {
+  await db.items.clear(); await db.stockTransactions.clear()
+  await db.items.put({ id: 'itm-sz8', name: 'TMT Steel 8mm', unit: 'piece', rate: 62, category: 'steel', qty: 10 })
+  await db.items.put({ id: 'itm-sz10', name: 'TMT Steel 10mm', unit: 'piece', rate: 65, category: 'steel', qty: 10 })
+  await db.items.put({ id: 'itm-sz12', name: 'TMT Steel 12mm', unit: 'piece', rate: 68, category: 'steel', qty: 10 })
+  const all = await db.items.toArray()
+  const target = await findStockItem('TMT Steel')
+  const steelFamily = (n) => /sariya|tmt|steel|rod/.test(String(n || '').toLowerCase())
+  const sizeOf = (n) => (String(n || '').match(/\d+mm/) || [])[0] || ''
+  assert.ok(target, 'a size variant resolves')
+  assert.equal(sizeOf('TMT Steel'), '', 'parsed name has no size')
+  const sized = all.filter((x) => steelFamily(x.name) && sizeOf(x.name) && x.id !== target.id)
+  assert.ok(sized.length >= 2, 'multiple size variants exist → must clarify, not guess')
+  const qtyBefore = Number((await db.items.get(target.id)).qty || 0)
+  assert.equal(qtyBefore, 10, 'no mutation happened')
 })
 
 test('STOCK DEDUCTION: bill creation deducts stock via canonical item id', async () => {

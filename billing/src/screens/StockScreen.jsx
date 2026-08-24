@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { db, getPhysicalStock, getStockLedger, applyStockOp, canonicalName, UNITS } from '../db'
+import { db, getStockLedger, applyStockOp, canonicalName, UNITS } from '../db'
 import { inrFull } from '../lib/money'
 import { navigate } from '../App'
 import { Icon } from '../components/Icon'
@@ -15,6 +15,7 @@ const MOVEMENT_LABEL = {
   opening: 'Opening',
   purchase: 'GST Purchase',
   unbilled_inward: 'Unbilled Inward',
+  inward: 'Vehicle Inward',
   sale: 'Sale',
   adjustment: 'Adjustment'
 }
@@ -31,14 +32,13 @@ export default function StockScreen() {
   const [ledger, setLedger] = useState([])
   const [showAdd, setShowAdd] = useState(false)
   const [f, setF] = useState({ name: '', unit: 'bag', rate: '', category: 'other', hsn: '' })
+  const [drafts, setDrafts] = useState({})
 
   const refreshItems = async () => {
     const all = await db.items.toArray()
     setItems(all)
     const map = {}
-    await Promise.all(all.map(async (it) => {
-      map[it.id] = await getPhysicalStock(it.id)
-    }))
+    for (const it of all) map[it.id] = Number(it.qty || 0)
     setPhysical(map)
   }
 
@@ -57,13 +57,17 @@ export default function StockScreen() {
     refreshItems()
   }
 
-  const adjust = async (it, delta) => {
-    const qty = Math.abs(delta)
-    if (!qty) return
+  const adjust = async (it, sign) => {
+    const draft = drafts[it.id]
+    let qty = 1
+    if (draft !== undefined && draft !== '' && Number(draft) > 0 && Number(draft) !== Number(it.stock)) qty = Math.round(Number(draft))
+    const delta = sign * qty
+    if (!delta) return
     const op = delta > 0 ? 'add' : 'subtract'
     try {
-      await applyStockOp({ name: it.name, qty, unit: it.unit, operation: op })
-      setMsg(op === 'add' ? it.name + ' +' + qty + ' ' + it.unit : it.name + ' -' + qty + ' ' + it.unit)
+      await applyStockOp({ name: it.name, qty: Math.abs(delta), unit: it.unit, operation: op })
+      setDrafts((d) => { const c = { ...d }; delete c[it.id]; return c })
+      setMsg(op === 'add' ? it.name + ' +' + Math.abs(delta) + ' ' + it.unit : it.name + ' -' + Math.abs(delta) + ' ' + it.unit)
       refreshItems()
     } catch (e) {
       setMsg('Stock error: ' + (e && e.message ? e.message : e))
@@ -264,8 +268,13 @@ export default function StockScreen() {
                   </span>
                 </button>
                 <div className="sm-actions">
-                  <button className="sm-btn sm-btn-minus" onClick={() => adjust(it, -1)} title="Reduce 1"><Icon name="minus" size={14} /></button>
-                  <button className="sm-btn sm-btn-plus" onClick={() => adjust(it, 1)} title="Add 1"><Icon name="plus" size={14} /></button>
+                  <button className="sm-btn sm-btn-minus" onClick={() => adjust(it, -1)} title="Reduce"><Icon name="minus" size={14} /></button>
+                  <input className="sm-qty" inputMode="numeric"
+                    value={drafts[it.id] !== undefined ? drafts[it.id] : it.stock}
+                    onChange={(e) => setDrafts((d) => ({ ...d, [it.id]: e.target.value }))}
+                    onBlur={() => setDrafts((d) => { const c = { ...d }; delete c[it.id]; return c })}
+                  />
+                  <button className="sm-btn sm-btn-plus" onClick={() => adjust(it, 1)} title="Add"><Icon name="plus" size={14} /></button>
                 </div>
               </div>
             ))}

@@ -194,7 +194,7 @@ test('customer name extraction: customer ka naam hai Mohit', () => {
   const t = parseLocal('customer ka naam hai Mohit isko 300 bori ACC ki bechi 290 ke rate se Bill bnao', [])
   assert.equal(t.intent, 'create_bill')
   assert.equal(t.customer.name, 'Mohit')
-  assert.ok(t.items.find(it => it.name === 'ACC Ki Bechi' && it.qty === 300))
+  assert.ok(t.items.find(it => it.name === 'ACC' && it.qty === 300))
   assert.equal(t.items[0].rate, 290)
 })
 
@@ -406,17 +406,336 @@ test('regression: unanchored query resolves specific item', () => {
   assert.ok(t.items.some(it => it.name === 'ACC Cement'))
 })
 
-test('regression: ambiguous cement query clarifies', () => {
+test('regression: generic cement query becomes category aggregate', () => {
   const t = parseLocal('stock mein kitna cement hai', [], [
     { name: 'ACC Cement', unit: 'bag' },
     { name: 'UltraTech Cement', unit: 'bag' }
   ])
-  assert.equal(t.intent, 'clarify')
-  assert.ok(t.message.includes('Cement'))
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query_category')
+  assert.equal(t.category, 'cement')
 })
 
 test('regression: resolveQueryItem without stockItems falls back to anchored regex', () => {
   const t = parseLocal('ACC Cement ka stock kitna hai', [])
   assert.equal(t.intent, 'stock_query')
   assert.ok(t.items.some(it => it.name === 'ACC Cement'))
+})
+
+test('regression: Devanagari digits parse qty and rate', () => {
+  const t = parseLocal('रमेश के नाम ५० बैग सीमेंट ३९० का बिल बना दो', [])
+  assert.equal(t.intent, 'create_bill')
+  assert.equal(t.customer.name, 'रमेश')
+  const it = t.items.find(i => i.name === 'Cement')
+  assert.ok(it, 'item must be detected')
+  assert.equal(it.qty, 50)
+  assert.equal(it.unit, 'bag')
+  assert.equal(it.rate, 390)
+})
+
+test('regression: ke bhav se rate extraction', () => {
+  const t = parseLocal('मोहन के नाम 300 बोरी एसीसी सीमेंट 290 के भाव से बिल बनाओ', [])
+  assert.equal(t.intent, 'create_bill')
+  assert.equal(t.customer.name, 'मोहन')
+  const it = t.items.find(i => i.name === 'ACC Cement')
+  assert.ok(it, 'item must be detected')
+  assert.equal(it.qty, 300)
+  assert.equal(it.unit, 'bag')
+  assert.equal(it.rate, 290)
+})
+
+test('regression: Devanagari + Hinglish mixed sentence', () => {
+  const t = parseLocal('रमेश के नाम 50 बैग सीमेंट 390 का बिल बना दो', [])
+  assert.equal(t.intent, 'create_bill')
+  const it = t.items.find(i => i.name === 'Cement')
+  assert.equal(it.qty, 50)
+  assert.equal(it.rate, 390)
+})
+
+test('stock category aggregate: Cement ka total stock kitna hai', () => {
+  const t = parseLocal('Cement ka total stock kitna hai?', [], [])
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query_category')
+  assert.equal(t.category, 'cement')
+})
+
+test('stock category aggregate: company mein total cement kitni bori hai', () => {
+  const t = parseLocal('company mein total cement kitni bori hai', [], [])
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query_category')
+  assert.equal(t.category, 'cement')
+})
+
+test('stock category aggregate: company ke stock mein abhi Kitna bori cement hai', () => {
+  const t = parseLocal('company ke stock mein abhi Kitna bori cement hai', [], [])
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query_category')
+  assert.equal(t.category, 'cement')
+})
+
+test('stock category aggregate: abhi cement ka stock kitna hai', () => {
+  const t = parseLocal('abhi cement ka stock kitna hai', [], [])
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query_category')
+  assert.equal(t.category, 'cement')
+})
+
+test('stock category aggregate: cement kitni bori padi hai', () => {
+  const t = parseLocal('cement kitni bori padi hai', [], [])
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query_category')
+  assert.equal(t.category, 'cement')
+})
+
+test('stock category aggregate: total abhi cement ka stock kitna hai total', () => {
+  const t = parseLocal('total abhi cement ka stock kitna hai total', [], [])
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query_category')
+  assert.equal(t.category, 'cement')
+})
+
+test('stock specific item query stays item query (not category)', () => {
+  const t = parseLocal('ACC Cement ka stock kitna hai?', [], [])
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query')
+  assert.ok(t.items.some(i => i.name === 'ACC Cement'))
+})
+
+test('stock inward with vehicle: MP 20 ZZ 7787 gaadi se 400 bori ACC Cement', () => {
+  const t = parseLocal('MP 20 ZZ 7787 number ki gaadi se 400 bori ACC Cement aayi hai', [], [])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.equal(t.vehicleNo, 'MP20ZZ7787')
+  assert.ok(t.items.find(i => i.name === 'ACC Cement' && i.qty === 400))
+})
+
+test('stock inward without vehicle: 400 bori ACC Cement aayi hai', () => {
+  const t = parseLocal('400 bori ACC Cement aayi hai', [], [])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.equal(t.vehicleNo, '')
+  assert.ok(t.items.find(i => i.name === 'ACC Cement' && i.qty === 400))
+})
+
+test('vehicle ledger query: MP 20 ZZ 7787 se kitna cement aaya tha', () => {
+  const t = parseLocal('MP 20 ZZ 7787 se kitna cement aaya tha?', [], [])
+  assert.equal(t.intent, 'stock_ledger_query')
+  assert.equal(t.scope, 'vehicle')
+  assert.equal(t.vehicleNo, 'MP20ZZ7787')
+})
+
+test('today inward ledger query: Aaj kitna cement inward hua', () => {
+  const t = parseLocal('Aaj kitna cement inward hua?', [], [])
+  assert.equal(t.intent, 'stock_ledger_query')
+  assert.equal(t.scope, 'today')
+})
+
+test('last incoming ledger query: ACC Cement ki last incoming entry kya hai', () => {
+  const t = parseLocal('ACC Cement ki last incoming entry kya hai?', [], [])
+  assert.equal(t.intent, 'stock_ledger_query')
+  assert.equal(t.scope, 'last_incoming')
+  assert.equal(t.itemName, 'ACC Cement')
+})
+
+test('last vehicle ledger query: Last cement kis gaadi se aaya tha', () => {
+  const t = parseLocal('Last cement kis gaadi se aaya tha?', [], [])
+  assert.equal(t.intent, 'stock_ledger_query')
+  assert.equal(t.scope, 'last_vehicle')
+  assert.equal(t.category, 'cement')
+})
+
+test('regression: Hindi STT vehicle inward → stock_entry add', () => {
+  const t = parseLocal('एमपी 20 जेड 7787 नंबर की गाड़ी से 400 बोरी एसीसी सीमेंट आई है स्टॉक में ऐड करो', [], [])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.equal(t.vehicleNo, 'MP20Z7787')
+  assert.ok(t.items.find(i => i.name === 'ACC Cement' && i.qty === 400))
+})
+
+test('regression: Hindi STT vehicle inward (different spacing) → stock_entry add', () => {
+  const t = parseLocal('एमपी20जेड7787 नंबर की गाड़ी से 400 बोरी एसीसी सीमेंट आई है स्टॉक में ऐड करो', [], [])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.vehicleNo, 'MP20Z7787')
+  assert.ok(t.items.find(i => i.name === 'ACC Cement' && i.qty === 400))
+})
+
+test('regression: ACC Cement / Cement ACC variants resolve to same canonical item', () => {
+  const t1 = parseLocal('ACC Cement ka stock kitna hai', [], [])
+  assert.equal(t1.intent, 'stock_query')
+  assert.ok(t1.items.length > 0)
+  const t2 = parseLocal('Cement ACC ka stock kitna hai', [], [])
+  assert.equal(t2.intent, 'stock_query')
+  assert.ok(t2.items.length > 0, 'Cement ACC must be extracted')
+  const t3 = parseLocal('एसीसी सीमेंट का स्टॉक कितना है', [], [])
+  assert.equal(t3.intent, 'stock_query')
+  assert.ok(t3.items.length > 0)
+})
+
+test('regression: category aggregate count merges canonical duplicates', () => {
+  // Simulate 4 records but only 3 canonical products
+  const t = parseLocal('cement kitna bori hai', [], [
+    { name: 'ACC Cement', unit: 'bag' },
+    { name: 'Cement - UltraTech', unit: 'bag' },
+    { name: 'JK Lakshmi Cement', unit: 'bag' },
+    { name: 'Cement - ACC', unit: 'bag' }
+  ])
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query_category')
+  assert.equal(t.category, 'cement')
+})
+
+const SARIYA_ITEMS = [
+  { name: 'TMT Steel 8mm', unit: 'piece' },
+  { name: 'TMT Steel 10mm', unit: 'piece' },
+  { name: 'TMT Steel 12mm', unit: 'piece' },
+  { name: 'Sariya (rod) - 40ft', unit: 'piece' },
+  { name: 'Sariya (rod) - 20ft', unit: 'piece' }
+]
+
+test('sariya add: 8mm sariya mein 100 piece add karo → 8mm variant', () => {
+  const t = parseLocal('8mm sariya mein 100 piece add karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  const it = t.items.find(i => i.name === '8mm TMT Steel')
+  assert.ok(it, '8mm variant required')
+  assert.equal(it.qty, 100)
+  assert.equal(it.unit, 'piece')
+})
+
+test('sariya add: 12mm sariya mein 50 piece jod do → 12mm NOT 8mm/10mm', () => {
+  const t = parseLocal('12mm sariya mein 50 piece jod do', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.ok(t.items.find(i => i.name === '12mm TMT Steel' && i.qty === 50))
+  assert.ok(!t.items.find(i => i.name.includes('8mm')))
+  assert.ok(!t.items.find(i => i.name.includes('10mm')))
+})
+
+test('sariya add: 50 piece 8mm TMT stock mein add karo', () => {
+  const t = parseLocal('50 piece 8mm TMT stock mein add karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.ok(t.items.find(i => i.name === '8mm TMT Steel' && i.qty === 50))
+})
+
+test('sariya add: natural Hinglish 8 mm wali sariya daal do', () => {
+  const t = parseLocal('8 mm wali sariya ke 100 piece stock mein daal do', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.ok(t.items.find(i => i.name === '8mm TMT Steel' && i.qty === 100))
+})
+
+test('sariya query: 8mm sariya ka stock kitna hai → 8mm variant', () => {
+  const t = parseLocal('8mm sariya ka stock kitna hai', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_query')
+  assert.ok(t.items.some(i => i.name === '8mm TMT Steel'))
+})
+
+test('sariya query: 10mm sariya kitna hai → 10mm variant', () => {
+  const t = parseLocal('10mm sariya kitna hai', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_query')
+  assert.ok(t.items.some(i => i.name === 'TMT Steel 10mm'))
+})
+
+test('sariya query: 12mm TMT ka stock batao → 12mm variant', () => {
+  const t = parseLocal('12mm TMT ka stock batao', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_query')
+  assert.ok(t.items.some(i => i.name === '12mm TMT Steel'))
+})
+
+test('sariya subtract: 8mm sariya ke 20 piece minus karo', () => {
+  const t = parseLocal('8mm sariya ke 20 piece minus karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'subtract')
+  assert.ok(t.items.find(i => i.name === '8mm TMT Steel' && i.qty === 20))
+})
+
+test('sariya subtract: 10mm sariya se 50 piece nikaal do', () => {
+  const t = parseLocal('10mm sariya se 50 piece nikaal do', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'subtract')
+  assert.ok(t.items.find(i => i.name === '10mm TMT Steel' && i.qty === 50))
+})
+
+test('sariya category total: company mein total sariya kitna hai', () => {
+  const t = parseLocal('company mein total sariya kitna hai', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query_category')
+  assert.equal(t.category, 'steel')
+})
+
+test('sariya Hindi add: आठ एमएम सरिया स्टॉक में 100 पीस ऐड करो', () => {
+  const t = parseLocal('आठ एमएम सरिया स्टॉक में 100 पीस ऐड करो', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.ok(t.items.find(i => i.name === '8mm TMT Steel' && i.qty === 100))
+})
+
+test('sariya Hindi query: बारह एमएम टीएमटी का स्टॉक कितना है', () => {
+  const t = parseLocal('बारह एमएम टीएमटी का स्टॉक कितना है', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_query')
+  assert.ok(t.items.some(i => i.name === '12mm TMT Steel'))
+})
+
+test('sariya vehicle inward: MP 20 ZZ 7787 se 100 piece 8mm sariya aayi', () => {
+  const t = parseLocal('MP 20 ZZ 7787 se 100 piece 8mm sariya aayi hai stock mein add karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.equal(t.vehicleNo, 'MP20ZZ7787')
+  assert.ok(t.items.find(i => i.name === '8mm TMT Steel' && i.qty === 100))
+})
+
+test('multi-item safety: 8mm + 10mm separate operations, never collapsed', () => {
+  const t = parseLocal('8 mm TMT 50 piece add karo 10 mm TMT 30 piece add karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.equal(t.items.length, 2, 'two separate items required')
+  assert.ok(t.items.find(i => i.name === '8mm TMT Steel' && i.qty === 50 && i.unit === 'piece'))
+  assert.ok(t.items.find(i => i.name === '10mm TMT Steel' && i.qty === 30 && i.unit === 'piece'))
+})
+
+test('multi-item safety: comma separated variant', () => {
+  const t = parseLocal('8mm TMT 50 piece add karo, 10mm TMT 30 piece add karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.items.length, 2)
+  assert.ok(t.items.find(i => i.name === '8mm TMT Steel'))
+  assert.ok(t.items.find(i => i.name === '10mm TMT Steel'))
+})
+
+test('multi-item safety: aur separated variant', () => {
+  const t = parseLocal('8mm TMT 50 piece add karo aur 10mm TMT 30 piece add karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.items.length, 2)
+})
+
+test('safety: 12mm 50 kilo Sariya preserves 12mm size', () => {
+  const t = parseLocal('12 mm 50 kilo Sariya add karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  const it = t.items.find(i => i.name === '12mm TMT Steel')
+  assert.ok(it, '12mm variant required, must not become 8mm')
+  assert.equal(it.qty, 50)
+  assert.equal(it.unit, 'kg', 'spoken unit kg preserved for executor safety check')
+})
+
+test('safety: 12mm 50 piece Sariya uses piece unit', () => {
+  const t = parseLocal('12mm 50 piece Sariya add karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  const it = t.items.find(i => i.name === '12mm TMT Steel' && i.qty === 50)
+  assert.ok(it, '12mm variant required')
+  assert.equal(it.unit, 'piece')
+})
+
+test('safety: size-less sariya mutation parses without a size (executor must clarify)', () => {
+  const t = parseLocal('50 piece sariya add karo', [], SARIYA_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.ok(t.items.find(i => i.name === 'TMT Steel' && i.qty === 50))
+})
+
+test('customer extraction: Bil banao variant', () => {
+  const t = parseLocal('customer ka naam hai Mohit isko 300 bori ACC ki bechi 290 ke rate se Bil banao', [])
+  assert.equal(t.intent, 'create_bill')
+  assert.equal(t.customer.name, 'Mohit')
+  assert.ok(t.items.find(it => it.name === 'ACC' && it.qty === 300))
+  assert.equal(t.items[0].rate, 290)
 })

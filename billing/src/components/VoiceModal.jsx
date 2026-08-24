@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { db, applyStockOp, getStockQty, findStockItem, getActiveCompany, getPhysicalStock } from '../db'
+import { db, applyStockOp, getStockQty, findStockItem, getActiveCompany, canonicalName } from '../db'
 import { inrFull, calcBill } from '../lib/money'
 import { parseVoice, normalizeDevanagari } from '../lib/voice'
 import { executeCreateBill } from '../lib/voiceExecutor'
@@ -353,11 +353,51 @@ export default function VoiceModal({ open, onClose }) {
       } else if (parsed.intent === 'stock_entry') {
         console.log('[VOICE] executor stock_entry start', parsed)
         const op = parsed.operation || 'add'
+        // SAFETY: never mutate on ambiguous/conflicting input — clarify instead.
+        const allItems = await db.items.toArray()
+        const steelFamily = (name) => {
+          const n = String(name || '').toLowerCase()
+          return /sariya|tmt|steel|rod/.test(n)
+        }
+        const sizeOf = (name) => (String(name || '').match(/\d+mm/) || [])[0] || ''
+        for (const it of (parsed.items || [])) {
+          const target = await findStockItem(it.name)
+          if (target) {
+            // Unit mismatch: never silently use a different unit than the item's inventory unit.
+            if (it.unit && target.unit && String(it.unit).toLowerCase() !== String(target.unit).toLowerCase()) {
+              const msg = it.name + ' ' + target.unit + ' mein hai — aapne ' + it.unit + ' kaha. ' + it.qty + ' ' + target.unit + ' hi sahi lagega. Dobara bolo.'
+              setMessage(msg); speak(msg)
+              setStockResult({ operation: 'clarify', lines: [msg] })
+              return
+            }
+            // Size ambiguity: sariya/tmt/steel without a size when multiple sizes exist.
+            if (!sizeOf(it.name) && steelFamily(it.name)) {
+              const sized = allItems.filter((x) => steelFamily(x.name) && sizeOf(x.name) && x.id !== target.id)
+              const matching = sized.filter((x) => {
+                const key = canonicalName(x.name).replace(/\d+mm/g, '').split('').sort().join('')
+                const tkey = canonicalName(target.name).replace(/\d+mm/g, '').split('').sort().join('')
+                return key === tkey
+              })
+              if (matching.length > 0) {
+                const sizes = [...new Set([target.name, ...matching.map((x) => x.name)])].join(', ')
+                const msg = 'Kaunsa size? ' + sizes + ' — size batao, jaise "8mm TMT 50 piece add karo".'
+                setMessage(msg); speak(msg)
+                setStockResult({ operation: 'clarify', lines: [msg] })
+                return
+              }
+            }
+          }
+        }
         const outs = []
         for (const it of (parsed.items || [])) {
           try {
             console.log('[VOICE] DB write stock', it.name, it.qty, op)
-            const res = await applyStockOp({ name: it.name, qty: it.qty, unit: it.unit, operation: op })
+            const res = await applyStockOp({
+              name: it.name, qty: it.qty, unit: it.unit, operation: op,
+              vehicleNo: parsed.vehicleNo || '',
+              sourceType: op === 'add' && parsed.vehicleNo ? 'inward' : undefined,
+              notes: parsed.notes || ''
+            })
             // read-after-write proof
             const check = await db.items.get(res.item.id)
             if (!check || Number(check.qty) !== Number(res.nextQty)) throw new Error('Stock read-back failed for ' + it.name)
@@ -376,12 +416,48 @@ export default function VoiceModal({ open, onClose }) {
         setMessage(fullMsg)
         speak(msg)
       } else if (parsed.intent === 'stock_query') {
+        // Category aggregate query — sum real persisted items in that category
+        if (parsed.operation === 'query_category') {
+          const cat = parsed.category
+          const all = await db.items.toArray()
+          const label = cat === 'cement' ? 'Cement' : cat === 'steel' ? 'Steel' : 'Other'
+          const rawMembers = all.filter((it) => cat === 'other' ? !['cement', 'steel'].includes(it.category) : it.category === cat)
+          // Merge canonical duplicates (e.g. "ACC Cement" + "Cement - ACC" are one product)
+          const mergedMap = new Map()
+          for (const it of rawMembers) {
+            const key = canonicalName(it.name)
+            if (!mergedMap.has(key)) {
+              mergedMap.set(key, { ...it, aliases: 1 })
+            } else {
+              const cur = mergedMap.get(key)
+              cur.aliases += 1
+              if (it.name.length < cur.name.length) cur.name = it.name
+            }
+          }
+          const members = [...mergedMap.values()]
+          if (!members.length) {
+            const msg = label + ' mein koi stock item nahi hai.'
+            setMessage(msg); speak(msg)
+            setStockResult({ operation: 'query_category', lines: [msg], category: cat, members: [] })
+          } else {
+            const byUnit = {}
+            for (const it of members) {
+              const u = it.unit || 'bag'
+              byUnit[u] = (byUnit[u] || 0) + Number(it.qty || 0)
+            }
+            const parts = Object.entries(byUnit).map(([u, v]) => v + ' ' + u)
+            const msg = label + ': ' + parts.join(' + ') + ' (' + members.length + ' item)'
+            setMessage(msg); speak(label + ': ' + parts.join(' + '))
+            setStockResult({ operation: 'query_category', lines: [msg], category: cat, members: members.map((m) => ({ name: m.name, qty: Number(m.qty || 0), unit: m.unit })) })
+          }
+          return
+        }
         const names = (parsed.items && parsed.items.length) ? parsed.items.map((x) => x.name) : []
         // If a stated qty was captured ("ACC cement ka stock 120 bag hai") show current and offer Set
         if (parsed.stated) {
           const target = names[0] || ''
           const curItem = target ? await findStockItem(target) : null
-          const cur = curItem ? await getPhysicalStock(curItem.id) : 0
+          const cur = curItem ? Number(curItem.qty || 0) : 0
           const curName = (curItem && curItem.name) || target || 'Item'
           const msg = curName + ' ka stock abhi ' + cur + ' ' + (curItem?.unit || 'bag') + ' hai — aapne kaha ' + parsed.stated.qty + ' ' + parsed.stated.unit + '. Set karna hai?'
           setMessage(msg)
@@ -393,7 +469,7 @@ export default function VoiceModal({ open, onClose }) {
           const lines = []
           for (const n of names) {
             const it = await findStockItem(n)
-            const qty = it ? await getPhysicalStock(it.id) : 0
+            const qty = it ? Number(it.qty || 0) : 0
             const unit = (it && it.unit) || 'bag'
             const label = (it && it.name) || n
             lines.push(label + ': ' + qty + ' ' + unit)
@@ -405,14 +481,57 @@ export default function VoiceModal({ open, onClose }) {
           const all = await db.items.toArray()
           if (!all.length) { setMessage('Stock mein koi item nahi hai.'); speak('Stock khali hai') }
           else {
-            const qtyLines = await Promise.all(all.slice(0, 8).map(async (it) => {
-              const phys = await getPhysicalStock(it.id)
-              return it.name + ' ' + phys + ' ' + it.unit
-            }))
+            const qtyLines = all.slice(0, 8).map((it) => it.name + ' ' + Number(it.qty || 0) + ' ' + it.unit)
             const msg = qtyLines.join(' — ')
             setMessage(msg); setStockResult({ operation: 'query_all', lines: [msg] })
           }
         }
+      } else if (parsed.intent === 'stock_ledger_query') {
+        const allItems = await db.items.toArray()
+        const catOf = (itemName) => {
+          const key = canonicalName(itemName)
+          const hit = allItems.find((it) => canonicalName(it.name) === key)
+          if (hit) return hit.category
+          const n = String(itemName || '').toLowerCase()
+          if (n.includes('cement')) return 'cement'
+          if (n.includes('steel') || n.includes('sariya') || n.includes('tmt') || n.includes('rod')) return 'steel'
+          return 'other'
+        }
+        const catLabel = (c) => c === 'cement' ? 'Cement' : c === 'steel' ? 'Steel' : 'Other'
+        const txs = await db.stockTransactions.toArray()
+        const scope = parsed.scope || 'inward'
+        const today = new Date().toISOString().slice(0, 10)
+        const inTxs = txs.filter((t) => t.movementType === 'stock_in' || t.movementType === 'opening')
+        const groupByItem = (list) => {
+          const byItem = {}
+          for (const t of list) byItem[t.itemName] = (byItem[t.itemName] || 0) + Number(t.quantity || 0)
+          return Object.entries(byItem).map(([n, q]) => n + ' ' + q + ' ' + (list.find((m) => m.itemName === n)?.unit || 'bag')).join(', ')
+        }
+        let msg = 'Koi inward entry nahi mili.'
+        if (scope === 'vehicle') {
+          const v = String(parsed.vehicleNo || '').toUpperCase()
+          const matches = inTxs.filter((t) => String(t.vehicleNo || '').toUpperCase() === v)
+          if (matches.length) msg = 'Vehicle ' + v + ': ' + groupByItem(matches)
+        } else if (scope === 'today') {
+          const matches = inTxs.filter((t) => t.date === today && (!parsed.category || catOf(t.itemName) === parsed.category))
+          if (matches.length) msg = 'Aaj ka inward: ' + groupByItem(matches)
+        } else if (scope === 'last_incoming') {
+          const name = parsed.itemName || ''
+          const target = name ? await findStockItem(name) : null
+          const targetName = target ? target.name : name
+          const matches = inTxs.filter((t) => !targetName || String(t.itemName).toLowerCase() === String(targetName).toLowerCase())
+          const last = matches.slice().sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')))[0]
+          if (last) msg = 'Last incoming: ' + last.itemName + ' ' + last.quantity + ' ' + (last.unit || 'bag') + (last.vehicleNo ? ' — gaadi ' + last.vehicleNo : '') + ' (' + last.date + ')'
+        } else if (scope === 'last_vehicle') {
+          const matches = inTxs.filter((t) => t.vehicleNo && (!parsed.category || catOf(t.itemName) === parsed.category))
+          const last = matches.slice().sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')))[0]
+          if (last) msg = 'Last ' + (parsed.category ? catLabel(parsed.category) + ' ' : '') + 'gaadi: ' + last.vehicleNo + ' — ' + last.itemName + ' ' + last.quantity + ' ' + (last.unit || 'bag') + ' (' + last.date + ')'
+        } else {
+          const matches = inTxs.filter((t) => !parsed.category || catOf(t.itemName) === parsed.category)
+          if (matches.length) msg = 'Total inward: ' + groupByItem(matches)
+        }
+        setMessage(msg); speak(msg)
+        setStockResult({ operation: 'ledger', lines: [msg], scope })
       } else if (parsed.intent === 'create_bill') {
         const missing = parsed.missing || []
         if (missing.length) {

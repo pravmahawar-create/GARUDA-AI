@@ -1,3 +1,6 @@
+import { Capacitor } from '@capacitor/core'
+import { Share } from '@capacitor/share'
+import { Filesystem, Directory } from '@capacitor/filesystem'
 import { buildInvoicePdf } from './pdf.js'
 import { inrFull } from './money.js'
 
@@ -36,12 +39,51 @@ async function buildPdfFile(invoice, company, customer) {
   return new File([new Blob([bytes], { type: 'application/pdf' })], `Bill-${invoice?.invoiceNo || 'bill'}.pdf`, { type: 'application/pdf' })
 }
 
-async function nativeShare({ files, text, title }) {
-  if (!navigator || typeof navigator.share !== 'function') return { ok: false, message: 'Share is not supported on this device' }
-  const payload = {}
-  if (files && files.length && navigator.canShare && navigator.canShare({ files })) payload.files = files
-  if (text) payload.text = text
-  if (title) payload.title = title
+function arrayBufferToBase64(buffer) {
+  const bytes = new Uint8Array(buffer)
+  let binary = ''
+  const chunk = 0x8000
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk))
+  }
+  return btoa(binary)
+}
+
+async function shareFilesNative(files, text, title) {
+  const uris = []
+  const writePaths = []
+  try {
+    for (const f of files) {
+      const name = f.name || ('share-' + Date.now())
+      const buf = await f.arrayBuffer()
+      const path = 'garuda-share/' + name
+      await Filesystem.writeFile({ path, data: arrayBufferToBase64(buf), directory: Directory.Cache, recursive: true })
+      writePaths.push(path)
+      const res = await Filesystem.getUri({ path, directory: Directory.Cache })
+      uris.push(res.uri)
+    }
+    const opts = { title: title || '', dialogTitle: title || '' }
+    if (text) opts.text = text
+    if (uris.length) opts.files = uris
+    const result = await Share.share(opts)
+    return { ok: Boolean(result && result.completed), cancelled: Boolean(result && !result.completed) }
+  } catch (e) {
+    const msg = e && e.message ? e.message : String(e)
+    if (/cancel/i.test(msg)) return { ok: false, cancelled: true, message: 'Share cancelled' }
+    return { ok: false, message: msg }
+  } finally {
+    for (const path of writePaths) {
+      try {
+        await Filesystem.deleteFile({ path, directory: Directory.Cache })
+      } catch (e) { /* ignore cleanup errors */ }
+    }
+  }
+}
+
+async function shareWeb(payload) {
+  if (!navigator || typeof navigator.share !== 'function') {
+    return { ok: false, notSupported: true, message: 'Share is not supported on this device' }
+  }
   try {
     await navigator.share(payload)
     return { ok: true }
@@ -51,10 +93,38 @@ async function nativeShare({ files, text, title }) {
   }
 }
 
+async function nativeShare({ files, text, title }) {
+  if (Capacitor.isNativePlatform() && window.Capacitor?.Plugins?.Share && files && files.length) {
+    return await shareFilesNative(files, text, title)
+  }
+  const payload = {}
+  if (files && files.length && navigator.canShare && navigator.canShare({ files })) payload.files = files
+  if (text) payload.text = text
+  if (title) payload.title = title
+  return await shareWeb(payload)
+}
+
+function downloadFile(file) {
+  const url = URL.createObjectURL(file)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = file.name
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+}
+
 export async function shareInvoicePdf(invoice, company, customer) {
   try {
     const file = await buildPdfFile(invoice, company, customer)
-    return await nativeShare({ files: [file], title: `Bill-${invoice?.invoiceNo || ''}` })
+    const res = await nativeShare({ files: [file], title: `Bill-${invoice?.invoiceNo || ''}` })
+    if (res.ok || res.cancelled) return res
+    if (res.notSupported) {
+      downloadFile(file)
+      return { ok: true, message: 'PDF download ho gaya — file se share/WhatsApp kar sakte hain' }
+    }
+    return res
   } catch (e) {
     return { ok: false, message: e && e.message ? e.message : String(e) }
   }
@@ -66,7 +136,8 @@ export async function shareInvoiceText(invoice, company) {
     const res = await nativeShare({ text, title: `Bill-${invoice?.invoiceNo || ''}` })
     if (res.ok) return res
     if (res.cancelled) return res
-    return await copyBillText(text)
+    if (res.notSupported) return await copyBillText(text)
+    return res
   } catch (e) {
     return { ok: false, message: e && e.message ? e.message : String(e) }
   }
