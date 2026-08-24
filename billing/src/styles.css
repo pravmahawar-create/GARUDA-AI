@@ -568,6 +568,10 @@ body {
 /* ========== SEARCH INPUT ========== */
 .search-input { margin: 8px 0; }
 
+/* ========== SHARE ACTIONS ========== */
+.share-btn { flex: 1; justify-content: center; display: flex; align-items: center; gap: 6px; padding: 10px 6px; font-size: 12px; }
+.share-btn .ico { color: var(--gold); }
+
 /* ========== VOICE MODAL ========== */
 .modal-mask { position: fixed; inset: 0; background: rgba(10,20,15,.55); display: flex;
   align-items: flex-end; justify-content: center; z-index: 50; }

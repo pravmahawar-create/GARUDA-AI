@@ -34,6 +34,7 @@ export default function VoiceModal({ open, onClose }) {
   const [message, setMessage] = useState('')
   const [errMsg, setErrMsg] = useState('')
   const [confirmedBill, setConfirmedBill] = useState(null)
+  const [confirmedInvoiceId, setConfirmedInvoiceId] = useState(null)
   const [stockResult, setStockResult] = useState(null)
   const [company, setCompany] = useState(null)
   const [clickDiag, setClickDiag] = useState(false)
@@ -45,7 +46,7 @@ export default function VoiceModal({ open, onClose }) {
 
   useEffect(() => {
     if (!open) return
-    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setErrMsg(''); setStockResult(null)
+    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setConfirmedInvoiceId(null); setErrMsg(''); setStockResult(null)
     ;(async () => setCompany(await getActiveCompany()))()
   }, [open])
 
@@ -289,6 +290,8 @@ export default function VoiceModal({ open, onClose }) {
     setBusy(true)
     setResult(null)
     setStockResult(null)
+    setConfirmedBill(null)
+    setConfirmedInvoiceId(null)
     setMessage('Samajh raha hoon…')
     setErrMsg('')
     let parsed
@@ -429,6 +432,7 @@ export default function VoiceModal({ open, onClose }) {
           if (!check) throw new Error('Invoice read-back failed')
           console.log('[VOICE] DB read-back success', check.invoiceNo, check.customerName)
           setConfirmedBill(invoice.invoiceNo)
+          setConfirmedInvoiceId(invoice.id)
           const msg = 'Bill created successfully — #' + invoice.invoiceNo + ' — ' + invoice.customerName + ' — ' + totals.grandTotal.toLocaleString('en-IN') + ' rupaye'
           setMessage(msg)
           speak('Bill ban gaya. Invoice number ' + invoice.invoiceNo)
@@ -455,6 +459,7 @@ export default function VoiceModal({ open, onClose }) {
       if (!p || p.intent !== 'create_bill') return
       const { invoice, totals } = await executeCreateBill(p, company)
       setConfirmedBill(invoice.invoiceNo)
+      setConfirmedInvoiceId(invoice.id)
       speak((invoice.billType === 'kaccha' ? 'Kaccha bill ban gaya' : 'Bill ban gaya') + '. Invoice number ' + invoice.invoiceNo)
       setMessage('Bill created successfully — #' + invoice.invoiceNo + ' — ' + invoice.customerName + ' — ' + totals.grandTotal.toLocaleString('en-IN') + ' rupaye')
     } catch (e) {
@@ -525,7 +530,13 @@ export default function VoiceModal({ open, onClose }) {
                 </div>
               )}
               {confirmedBill && <div className="vm-sec vm-accent">Result</div>}
-              {confirmedBill && <div className="status">Bill #{confirmedBill} ban gaya. <button className="link" onClick={() => { onClose(); navigate('#/invoices') }}>Dekho <Icon name="chevronRight" size={12} /></button></div>}
+              {confirmedBill && <div className="status">Bill #{confirmedBill} ban gaya.</div>}
+              {confirmedBill && (
+                <div className="actions" style={{ marginTop: 8 }}>
+                  <button className="primary" onClick={() => { onClose(); navigate(confirmedInvoiceId ? '#/invoice?id=' + confirmedInvoiceId : '#/invoices') }}><Icon name="share" size={14} /> View & Share Bill</button>
+                  <button className="ghost" onClick={() => { onClose(); navigate('#/invoices') }}>Bills list</button>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { db, enqueue } from '../db'
-import { buildInvoicePdf, buildKhataPdf } from '../lib/pdf'
+import { buildKhataPdf } from '../lib/pdf'
 import { inrFull } from '../lib/money'
 import { upiQrDataUrl } from '../lib/upi'
+import { shareInvoicePdf, shareInvoiceWhatsApp, shareInvoiceEmail, shareInvoiceText, copyBillText, generateBillText, generateBillShareMessage, generateBillEmailSubject } from '../lib/share'
 import InvoicePaper from '../components/InvoicePaper'
 import { navigate } from '../App'
 import { Icon } from '../components/Icon'
@@ -61,12 +62,53 @@ export default function InvoicePreviewScreen() {
   const sharePdf = async () => {
     setStatus('Generating PDF…')
     try {
-      const bytes = await buildInvoicePdf(invoice, company, customer, invoice.templateId)
-      const file = new File([new Blob([bytes], { type: 'application/pdf' })], `Invoice-${invoice.invoiceNo}.pdf`, { type: 'application/pdf' })
-      await shareFile(file)
-      setStatus('Done')
+      const res = await shareInvoicePdf(invoice, company, customer)
+      setStatus(res.ok ? 'Done' : (res.cancelled ? '' : 'PDF share error: ' + res.message))
     } catch (e) {
-      setStatus('Share cancel hua / error: ' + e.message)
+      console.error('[GARUDA] pdf share error:', e)
+      setStatus('PDF share mein problem hui. Dobara try karein.')
+    }
+  }
+
+  const shareWhatsApp = async () => {
+    setStatus('WhatsApp share khol raha hoon…')
+    try {
+      const res = await shareInvoiceWhatsApp(invoice, company, customer)
+      setStatus(res.ok ? '' : (res.cancelled ? '' : 'Share error: ' + res.message))
+    } catch (e) {
+      console.error('[GARUDA] whatsapp share error:', e)
+      setStatus('Share mein problem hui. Dobara try karein.')
+    }
+  }
+
+  const shareEmail = async () => {
+    setStatus('Email share khol raha hoon…')
+    try {
+      const res = await shareInvoiceEmail(invoice, company, customer)
+      setStatus(res.ok ? '' : (res.cancelled ? '' : 'Email share error: ' + res.message))
+    } catch (e) {
+      console.error('[GARUDA] email share error:', e)
+      setStatus('Email share mein problem hui. Dobara try karein.')
+    }
+  }
+
+  const shareText = async () => {
+    try {
+      const res = await shareInvoiceText(invoice, company)
+      setStatus(res.ok ? (res.message || '') : (res.cancelled ? '' : 'Share error: ' + res.message))
+    } catch (e) {
+      console.error('[GARUDA] text share error:', e)
+      setStatus('Share mein problem hui. Dobara try karein.')
+    }
+  }
+
+  const copyText = async () => {
+    try {
+      const res = await copyBillText(invoice)
+      setStatus(res.ok ? (res.message || 'Bill text copy ho gaya') : 'Copy nahi hua')
+    } catch (e) {
+      console.error('[GARUDA] copy error:', e)
+      setStatus('Copy nahi hua')
     }
   }
 
@@ -158,7 +200,13 @@ export default function InvoicePreviewScreen() {
       )}
 
       <div className="actions">
-        <button className="primary big" onClick={sharePdf}><Icon name="share" size={15} /> Share / WhatsApp PDF</button>
+        <button className="primary big" onClick={shareWhatsApp}><Icon name="share" size={15} /> Share / WhatsApp</button>
+        <div className="row-actions" style={{ justifyContent: 'stretch' }}>
+          <button className="btn share-btn" onClick={shareEmail}><Icon name="mail" size={15} /> Email</button>
+          <button className="btn share-btn" onClick={sharePdf}><Icon name="file" size={15} /> PDF</button>
+          <button className="btn share-btn" onClick={shareText}><Icon name="share" size={15} /> Share Text</button>
+          <button className="btn share-btn" onClick={copyText}><Icon name="copy" size={15} /> Copy</button>
+        </div>
         <button className="btn" onClick={shareKhata}><Icon name="book" size={14} /> Khata (statement) PDF</button>
         <button className="btn" onClick={shareReminder} disabled={balance <= 0}><Icon name="bell" size={14} /> Baki reminder ({balance > 0 ? 'UPI QR' : 'nahi'})</button>
       </div>
