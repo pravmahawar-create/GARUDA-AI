@@ -27,8 +27,8 @@ db.version(2).stores({
   }
   const company = {
     id: 'comp-1',
-    name: get('shopName', 'A.K TRADING COMPANY') || 'A.K TRADING COMPANY',
-    category: get('category', 'Trading · Steel · Cement'),
+    name: get('shopName', '') || '',
+    category: get('category', '') || '',
     logo: get('logo', ''),
     ownerName: get('ownerName', ''),
     website: get('website', ''),
@@ -104,13 +104,46 @@ db.version(4).stores({
 }).upgrade(async (tx) => {
   const companies = await tx.table('companies').toArray()
   for (const comp of companies) {
-    if (!comp.category) comp.category = 'Trading · Steel · Cement'
     if (!comp.logo) comp.logo = ''
     if (!comp.ownerName) comp.ownerName = ''
     if (!comp.website) comp.website = ''
     if (!comp.whatsapp) comp.whatsapp = ''
     if (!comp.email) comp.email = ''
     await tx.table('companies').put(comp)
+  }
+})
+
+db.version(5).stores({
+  customers: 'id, name, mobile, gstin, createdAt',
+  items: 'id, category, name, unit, hsn',
+  invoices: 'id, invoiceNo, customerId, companyId, date, createdAt',
+  payments: 'id, customerId, invoiceId, date',
+  settings: 'key',
+  syncQueue: '++id, entity, op, synced',
+  companies: 'id, name',
+  stockTransactions: '++id, itemId, itemName, movementType, sourceType, gstStatus, date, createdAt'
+}).upgrade(async (tx) => {
+  const items = await tx.table('items').toArray()
+  for (const it of items) {
+    const qty = Number(it.qty || 0)
+    if (qty === 0) continue
+    await tx.table('stockTransactions').add({
+      itemId: it.id,
+      itemName: it.name,
+      quantity: qty,
+      unit: it.unit || 'bag',
+      movementType: 'opening',
+      sourceType: 'opening',
+      supplierName: '',
+      invoiceNo: '',
+      gstStatus: 'opening',
+      rate: Number(it.rate || 0),
+      vehicleNo: '',
+      date: new Date().toISOString().slice(0, 10),
+      referenceId: '',
+      notes: 'Migrated from items.qty',
+      createdAt: new Date().toISOString()
+    })
   }
 })
 
@@ -175,11 +208,11 @@ export async function setCompanyTemplate(companyId, templateId) {
   await db.companies.update(companyId, { templateId })
 }
 
-function defaultCompany() {
+export function defaultCompany() {
   return {
     id: 'comp-' + Date.now(),
-    name: 'A.K TRADING COMPANY',
-    category: 'Trading · Steel · Cement',
+    name: '',
+    category: '',
     logo: '',
     ownerName: '',
     website: '',
@@ -224,22 +257,6 @@ export async function nextInvoiceNo(companyId) {
 }
 
 export async function seedDefaults() {
-  const itemCount = await db.items.count()
-  if (itemCount === 0) {
-    const defaults = [
-      { category: 'cement', name: 'Cement - ACC', unit: 'bag', rate: 390, hsn: '2523' },
-      { category: 'cement', name: 'Cement - UltraTech', unit: 'bag', rate: 395, hsn: '2523' },
-      { category: 'steel', name: 'TMT Steel 8mm', unit: 'kg', rate: 62, hsn: '7214' },
-      { category: 'steel', name: 'TMT Steel 10mm', unit: 'kg', rate: 60, hsn: '7214' },
-      { category: 'steel', name: 'TMT Steel 12mm', unit: 'kg', rate: 61, hsn: '7214' },
-      { category: 'steel', name: 'Sariya (rod) - 40ft', unit: 'piece', rate: 680, hsn: '7214' },
-      { category: 'steel', name: 'Sariya (rod) - 20ft', unit: 'piece', rate: 340, hsn: '7214' },
-      { category: 'other', name: 'Sand', unit: 'truck', rate: 8000, hsn: '2505' },
-      { category: 'other', name: 'Bricks', unit: 'piece', rate: 8, hsn: '6904' },
-      { category: 'other', name: 'Transport/Booking', unit: 'job', rate: 0, hsn: '9965' }
-    ]
-    await db.items.bulkPut(defaults.map((it, i) => ({ ...it, id: 'itm-' + (i + 1) })))
-  }
   const companies = await getCompanies()
   const activeId = await getSetting('activeCompanyId', null)
   if (!activeId) await setActiveCompany(companies[0].id)
@@ -252,8 +269,12 @@ function inferCategory(name) {
   return 'other'
 }
 
+export function canonicalName(s) {
+  return String(s || '').toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(Boolean).sort().join('')
+}
+
 function normalizeName(s) {
-  return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+  return canonicalName(s)
 }
 
 export async function findStockItem(voiceName) {
@@ -274,7 +295,7 @@ export async function getStockQty(voiceName) {
   return it ? Number(it.qty || 0) : 0
 }
 
-export async function applyStockOp({ name, qty, unit, operation }) {
+export async function applyStockOp({ name, qty, unit, operation, sourceType = 'adjustment', supplierName = '', invoiceNo = '', gstStatus = 'unbilled', rate = 0, vehicleNo = '', referenceId = '', notes = '' }) {
   const n = Number(qty) || 0
   if (!name || n <= 0) throw new Error('Invalid stock entry')
   let item = await findStockItem(name)
@@ -283,7 +304,7 @@ export async function applyStockOp({ name, qty, unit, operation }) {
       id: 'itm' + Date.now() + Math.random().toString(36).slice(2, 6),
       name: String(name).trim(),
       unit: unit || 'bag',
-      rate: 0,
+      rate: Number(rate) || 0,
       category: inferCategory(name),
       hsn: '',
       qty: 0
@@ -300,8 +321,69 @@ export async function applyStockOp({ name, qty, unit, operation }) {
   else nextQty = Number(item.qty || 0) + n
   await db.items.update(item.id, { qty: nextQty })
   await enqueue('item', 'update', { id: item.id, qty: nextQty })
+
+  const movementType = op === 'subtract' ? 'stock_out' : 'stock_in'
+  await db.stockTransactions.add({
+    itemId: item.id,
+    itemName: item.name,
+    quantity: n,
+    unit: item.unit || unit || 'bag',
+    movementType,
+    sourceType: op === 'subtract' ? 'sale' : sourceType,
+    supplierName: supplierName || '',
+    invoiceNo: invoiceNo || '',
+    gstStatus: op === 'subtract' ? 'gst' : gstStatus,
+    rate: Number(rate) || Number(item.rate || 0),
+    vehicleNo: vehicleNo || '',
+    date: new Date().toISOString().slice(0, 10),
+    referenceId: referenceId || '',
+    notes: notes || '',
+    createdAt: new Date().toISOString()
+  })
+
   const updated = await db.items.get(item.id)
-  return { item: updated, prevQty: Number(item.qty || 0), nextQty, operation: op }
+  return { item: updated, prevQty: Number(item.qty || 0) - (op === 'subtract' ? 0 : n), nextQty, operation: op }
+}
+
+export async function getPhysicalStock(itemId) {
+  const txs = await db.stockTransactions.where('itemId').equals(itemId).toArray()
+  let stock = 0
+  for (const tx of txs) {
+    if (tx.movementType === 'stock_in' || tx.movementType === 'opening') stock += Number(tx.quantity || 0)
+    else if (tx.movementType === 'stock_out') stock -= Number(tx.quantity || 0)
+  }
+  return Math.max(0, stock)
+}
+
+export async function getStockLedger(itemId) {
+  return db.stockTransactions.where('itemId').equals(itemId).sortBy('createdAt')
+}
+
+export async function recordStockOutForInvoice(invoice, items) {
+  for (const line of items) {
+    const item = await findStockItem(line.name)
+    if (!item) continue
+    const qty = Number(line.qty || 0)
+    if (qty <= 0) continue
+    await db.items.update(item.id, { qty: Math.max(0, Number(item.qty || 0) - qty) })
+    await db.stockTransactions.add({
+      itemId: item.id,
+      itemName: item.name,
+      quantity: qty,
+      unit: item.unit || line.unit || 'bag',
+      movementType: 'stock_out',
+      sourceType: 'sale',
+      supplierName: '',
+      invoiceNo: String(invoice.invoiceNo || ''),
+      gstStatus: invoice.billType === 'kaccha' ? 'kaccha' : 'gst',
+      rate: Number(line.rate || 0),
+      vehicleNo: '',
+      date: invoice.date || new Date().toISOString().slice(0, 10),
+      referenceId: invoice.id,
+      notes: 'Auto-deducted for invoice ' + invoice.invoiceNo,
+      createdAt: new Date().toISOString()
+    })
+  }
 }
 
 export const UNITS = ['bag', 'kg', 'quintal', 'ton', 'piece', 'truck', 'job', 'no']

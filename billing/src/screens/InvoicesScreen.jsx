@@ -32,11 +32,20 @@ export default function InvoicesScreen() {
       return String(i.invoiceNo).toLowerCase().includes(s) || (i.customerName || '').toLowerCase().includes(s)
     })
 
+  const payStatus = (i) => {
+    if (i.status === 'cancelled') return { label: 'CANCELLED', cls: 'cancelled' }
+    const paid = Number(i.paidAmount || 0)
+    const total = Number(i.totals?.grandTotal || 0)
+    if (total > 0 && paid >= total) return { label: 'PAID', cls: 'paid' }
+    if (paid > 0) return { label: 'PARTIAL', cls: 'partial' }
+    return { label: 'PENDING', cls: 'pending' }
+  }
+
   return (
     <div className="screen">
       <header className="topbar backbar">
         <button className="back" onClick={() => navigate('#/')}>‹</button>
-        <div className="top-title">Invoices</div>
+        <div className="top-title">Bills</div>
       </header>
       <CompanyScopeBar scope={scope} setScope={setScope} activeName={companies.find((c) => c.id === activeId)?.name} companies={companies} />
       <div className="scope-bar">
@@ -47,23 +56,26 @@ export default function InvoicesScreen() {
       {shown.length === 0 && (
         <div className="empty">
           <div className="empty-sigil"><Icon name="list" size={44} /></div>
-          <div className="empty-title">Koi bill nahi mila</div>
-          <div className="empty-sub">{!kacchaMode && invoices.some((i) => matches(i) && i.billType === 'kaccha') ? 'Kaccha bills chhupe hain — upar "Kaccha ON" chip dabao.' : ''}</div>
+          <div className="empty-title">No bills found</div>
+          <div className="empty-sub">{!kacchaMode && invoices.some((i) => matches(i) && i.billType === 'kaccha') ? 'Kaccha bills hidden — turn "Kaccha ON" above.' : 'Create your first bill to see it here.'}</div>
         </div>
       )}
-      {shown.map((i) => (
-        <button className="card invoice-row" key={i.id} onClick={() => navigate('#/invoice?id=' + i.id)}>
-          <div>
-            <div className="cust-name">
-              #{i.invoiceNo} — {i.customerName}
-              {i.billType === 'kaccha' && <span className="billtype-badge bt-kaccha" style={{ marginLeft: 6 }}>KACCHA</span>}
-              {i.status === 'cancelled' && <span className="billtype-badge bt-cancelled" style={{ marginLeft: 6 }}>CANCELLED</span>}
+      {shown.map((i) => {
+        const st = payStatus(i)
+        return (
+          <button className="card invoice-row" key={i.id} onClick={() => navigate('#/invoice?id=' + i.id)}>
+            <div>
+              <div className="cust-name">
+                #{i.invoiceNo} — {i.customerName}
+                {i.billType === 'kaccha' && <span className="billtype-badge bt-kaccha" style={{ marginLeft: 6 }}>KACCHA</span>}
+              </div>
+              <div className="ip-muted" style={{ marginTop: 4 }}>{i.date}{scope === 'all' && i.companyName ? ' · ' + i.companyName : ''}</div>
+              <span className={`status-badge ${st.cls}`} style={{ marginTop: 6 }}>{st.label}</span>
             </div>
-            <div className="ip-muted">{i.date}{scope === 'all' && i.companyName ? ' · ' + i.companyName : ''}</div>
-          </div>
-          <div className={`cust-bal ${i.status === 'cancelled' ? 'muted' : ''}`}>{inrFull(i.totals.grandTotal)}</div>
-        </button>
-      ))}
+            <div className={`cust-bal ${i.status === 'cancelled' ? 'muted' : ''}`}>{inrFull(i.totals.grandTotal)}</div>
+          </button>
+        )
+      })}
     </div>
   )
 }

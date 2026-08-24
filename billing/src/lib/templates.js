@@ -34,15 +34,15 @@ export const SAMPLE_INVOICE = {
 }
 
 export const SAMPLE_COMPANY = {
-  name: 'A.K TRADING COMPANY',
-  category: 'Trading · Steel · Cement',
+  name: 'Your Business Name',
+  category: 'Business Type',
   logo: '',
   ownerName: '',
   website: '',
   whatsapp: '',
   email: '',
-  gstin: '23AABCA0000A1Z5',
-  address: 'Indore Road, Bhopal, MP',
-  phone: '0755-123456',
+  gstin: '',
+  address: 'Your Address',
+  phone: 'Your Phone',
   gstRate: 18
 }

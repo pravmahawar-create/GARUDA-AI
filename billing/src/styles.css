@@ -472,6 +472,102 @@ body {
 /* ========== STOCK RATE ========== */
 .stock-rate { width: 84px; padding: 6px; text-align: right; }
 
+/* ========== STOCK MANAGER ========== */
+.sm-summary {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0;
+}
+.sm-sum-item {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: 12px 10px; text-align: center;
+}
+.sm-sum-v { font-size: 17px; font-weight: 800; color: var(--steel); }
+.sm-sum-v.due { color: var(--danger); }
+.sm-sum-l { font-size: 11px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: .4px; }
+.sm-actions { margin: 10px 0; }
+.sm-add-link {
+  width: 100%; text-align: center; background: none; border: 1px dashed var(--line-gold-strong);
+  border-radius: var(--r-md); padding: 12px; color: var(--gold-ink); font-weight: 700;
+  cursor: pointer; font-size: 13px; margin: 6px 0 2px;
+}
+.sm-row {
+  display: flex; align-items: center; gap: 8px; padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.sm-row:last-child { border-bottom: none; }
+.sm-main {
+  flex: 1; min-width: 0; text-align: left; background: none; border: 0; cursor: pointer;
+  display: flex; flex-direction: column; gap: 3px; padding: 0;
+}
+.sm-name { font-weight: 700; font-size: 14px; color: var(--steel); display: flex; align-items: center; gap: 6px; }
+.sm-alias {
+  font-size: 9px; font-weight: 700; color: var(--gold-ink); background: var(--line-gold);
+  border-radius: 999px; padding: 1px 6px; letter-spacing: .4px;
+}
+.sm-meta { display: flex; gap: 10px; align-items: baseline; }
+.sm-stock { font-size: 13px; font-weight: 800; color: var(--steel); }
+.sm-rate { font-size: 12px; color: var(--muted); }
+.sm-actions { display: flex; gap: 6px; margin: 0; }
+.sm-btn {
+  width: 30px; height: 30px; border-radius: 9px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--steel); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.sm-btn-plus { border-color: var(--line-gold-strong); color: var(--gold-ink); background: var(--line-gold); }
+.sm-btn-minus { color: var(--danger); }
+.stock-big { font-size: 30px; font-weight: 800; color: var(--steel); }
+.stock-big-unit { font-size: 15px; font-weight: 600; color: var(--muted); }
+.badge { padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: .4px; }
+.badge-ok { background: var(--ok-2); color: var(--gold-ink); }
+.badge-warn { background: rgba(239,68,68,.08); color: var(--danger); }
+
+/* ========== STATUS BADGES (Bills) ========== */
+.status-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 10px;
+  font-weight: 800; letter-spacing: .5px;
+}
+.status-badge.paid { background: #e8f5e9; color: #2e7d32; }
+.status-badge.pending { background: rgba(239,68,68,.1); color: var(--danger); }
+.status-badge.partial { background: #fff8e1; color: #b26a00; }
+.status-badge.cancelled { background: var(--surface-3); color: var(--muted-2); }
+
+/* ========== RECENT ACTIVITY (Dashboard) ========== */
+.rec-list { display: flex; flex-direction: column; }
+.rec-row {
+  display: flex; justify-content: space-between; align-items: center; padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft); cursor: pointer;
+}
+.rec-row:last-child { border-bottom: none; }
+.rec-left { min-width: 0; }
+.rec-name { font-weight: 700; font-size: 14px; color: var(--steel); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rec-meta { font-size: 12px; color: var(--muted); }
+.rec-amt { font-weight: 800; font-size: 14px; color: var(--steel); }
+
+/* ========== BUSINESS SETUP CTA ========== */
+.setup-card {
+  background: linear-gradient(135deg, rgba(245,215,110,.14), rgba(245,215,110,.05));
+  border: 1px solid var(--line-gold-strong); border-radius: var(--r-lg);
+  padding: 16px; margin: 10px 0; display: flex; align-items: center; gap: 12px;
+}
+.setup-card-text { flex: 1; }
+.setup-card-title { font-weight: 800; font-size: 15px; color: var(--steel); }
+.setup-card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.setup-card-btn {
+  background: var(--gold); color: var(--gold-ink); border: 0; border-radius: 10px;
+  padding: 10px 14px; font-weight: 800; font-size: 13px; cursor: pointer;
+}
+
+/* ========== VOICE MODAL SECTIONS ========== */
+.vm-sec {
+  font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--muted-2); margin: 10px 0 4px;
+}
+.vm-sec.vm-accent { color: var(--gold-ink); }
+.vm-block { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: 12px; }
+.vm-block + .vm-block { margin-top: 8px; }
+
+/* ========== SEARCH INPUT ========== */
+.search-input { margin: 8px 0; }
+
 /* ========== VOICE MODAL ========== */
 .modal-mask { position: fixed; inset: 0; background: rgba(10,20,15,.55); display: flex;
   align-items: flex-end; justify-content: center; z-index: 50; }
@@ -486,6 +582,9 @@ body {
 .mic-icon { font-size: 22px; }
 @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(245, 215, 110, .4); } 50% { box-shadow: 0 0 0 12px rgba(245, 215, 110, 0); } }
 .voice-transcript { text-align: center; color: var(--ink); font-size: 15px; margin: 14px 0 4px; font-weight: 600; }
+.vm-tagline { text-align: center; color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+.vm-examples { text-align: center; color: var(--muted-2); font-size: 11px; margin-top: 6px; }
+.draft-total { color: var(--muted-2) !important; font-size: 14px; }
 .vc-cust { font-size: 14px; margin-bottom: 8px; }
 .vc-item { display: flex; justify-content: space-between; font-size: 14px; padding: 3px 0; }
 .vc-total { border-top: 2px solid var(--gold); margin-top: 8px; padding-top: 8px;

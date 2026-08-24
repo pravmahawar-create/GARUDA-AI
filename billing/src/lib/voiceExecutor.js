@@ -1,4 +1,4 @@
-import { db, enqueue, getActiveCompany, nextBillNo } from '../db.js'
+import { db, enqueue, getActiveCompany, nextBillNo, recordStockOutForInvoice } from '../db.js'
 import { calcBill } from './money.js'
 import { gstTypeFor } from './gst.js'
 
@@ -56,5 +56,6 @@ export async function executeCreateBill(parsed, companyOverride = null) {
   const verify = await db.invoices.get(invoice.id)
   if (!verify) throw new Error('Invoice not persisted — read-back failed')
   await enqueue('invoice', 'create', invoice)
+  await recordStockOutForInvoice(verify, totals.lines)
   return { invoice: verify, customer: cust, totals }
 }

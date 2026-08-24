@@ -30,6 +30,7 @@ export default function HomeScreen() {
   const [picker, setPicker] = useState(false)
   const [syncBadge, setSyncBadge] = useState('')
   const [kpi, setKpi] = useState(null)
+  const [recent, setRecent] = useState([])
 
   useEffect(() => {
     ;(async () => {
@@ -52,6 +53,7 @@ export default function HomeScreen() {
         outstanding: Math.max(0, billed - paid),
         bills: live.length
       })
+      setRecent(invoices.slice(0, 5))
 
       const s = await syncNow()
       setSyncBadge(s.ok ? (s.pushed ? `Synced ${s.pushed}` : 'In sync') : `Pending ${s.queued}`)
@@ -93,6 +95,16 @@ export default function HomeScreen() {
         </button>
       </section>
 
+      {active && !active.name && (
+        <div className="setup-card">
+          <div className="setup-card-text">
+            <div className="setup-card-title">Set up your business</div>
+            <div className="setup-card-sub">Add your business name, GSTIN and details to start.</div>
+          </div>
+          <button className="setup-card-btn" onClick={() => navigate('#/companies')}>Setup</button>
+        </div>
+      )}
+
       {kpi && (
         <div className="kpi-grid">
           <div className="kpi">
@@ -131,6 +143,26 @@ export default function HomeScreen() {
         </span>
         <Icon name="chevronRight" size={16} style={{ marginLeft: 'auto', opacity: .5 }} />
       </button>
+
+      <div className="sec-title">Recent Activity</div>
+      {recent.length === 0 ? (
+        <div className="card" style={{ textAlign: 'center', color: 'var(--muted)' }}>
+          <div className="empty-title" style={{ fontSize: 14, marginBottom: 4 }}>No transactions yet</div>
+          <div className="empty-sub" style={{ fontSize: 12 }}>Create your first bill to see activity here.</div>
+        </div>
+      ) : (
+        <div className="card rec-list">
+          {recent.map((i) => (
+            <div className="rec-row" key={i.id} onClick={() => navigate('#/invoice?id=' + i.id)}>
+              <div className="rec-left">
+                <div className="rec-name">#{i.invoiceNo} — {i.customerName}</div>
+                <div className="rec-meta">{i.date}</div>
+              </div>
+              <div className="rec-amt">{formatINR(i.totals?.grandTotal || 0)}</div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="sec-title">Workspace</div>
       <div className="cmd-list">

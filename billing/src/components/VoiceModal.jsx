@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { db, applyStockOp, getStockQty, findStockItem, getActiveCompany } from '../db'
+import { db, applyStockOp, getStockQty, findStockItem, getActiveCompany, getPhysicalStock } from '../db'
 import { inrFull, calcBill } from '../lib/money'
 import { parseVoice, normalizeDevanagari } from '../lib/voice'
 import { executeCreateBill } from '../lib/voiceExecutor'
@@ -299,9 +299,11 @@ export default function VoiceModal({ open, onClose }) {
       console.log('[VOICE_DB_CUSTOMERS_BEFORE]')
       customers = await withTimeout(db.customers.toArray(), 5000, 'db customers')
       console.log('[VOICE_DB_CUSTOMERS_AFTER] count=' + customers.length)
+      stage = 'db_items'
+      const stockItems = await withTimeout(db.items.toArray(), 5000, 'db items')
       stage = 'parse'
       console.log('[VOICE_PARSE_BEFORE]')
-      parsed = await parseVoice(text, customers.map((c) => c.name), apiBase)
+      parsed = await parseVoice(text, customers.map((c) => c.name), apiBase, stockItems)
       console.log('[VOICE_PARSE_AFTER] ' + JSON.stringify(parsed).slice(0,800))
       console.log('[VOICE_INTENT] ' + (parsed && parsed.intent))
       stage = 'exec_' + (parsed && parsed.intent)
@@ -375,8 +377,8 @@ export default function VoiceModal({ open, onClose }) {
         // If a stated qty was captured ("ACC cement ka stock 120 bag hai") show current and offer Set
         if (parsed.stated) {
           const target = names[0] || ''
-          const cur = target ? await getStockQty(target) : 0
           const curItem = target ? await findStockItem(target) : null
+          const cur = curItem ? await getPhysicalStock(curItem.id) : 0
           const curName = (curItem && curItem.name) || target || 'Item'
           const msg = curName + ' ka stock abhi ' + cur + ' ' + (curItem?.unit || 'bag') + ' hai — aapne kaha ' + parsed.stated.qty + ' ' + parsed.stated.unit + '. Set karna hai?'
           setMessage(msg)
@@ -388,7 +390,7 @@ export default function VoiceModal({ open, onClose }) {
           const lines = []
           for (const n of names) {
             const it = await findStockItem(n)
-            const qty = it ? Number(it.qty || 0) : 0
+            const qty = it ? await getPhysicalStock(it.id) : 0
             const unit = (it && it.unit) || 'bag'
             const label = (it && it.name) || n
             lines.push(label + ': ' + qty + ' ' + unit)
@@ -400,7 +402,11 @@ export default function VoiceModal({ open, onClose }) {
           const all = await db.items.toArray()
           if (!all.length) { setMessage('Stock mein koi item nahi hai.'); speak('Stock khali hai') }
           else {
-            const msg = all.slice(0, 8).map((it) => it.name + ' ' + (it.qty || 0) + ' ' + it.unit).join(' — ')
+            const qtyLines = await Promise.all(all.slice(0, 8).map(async (it) => {
+              const phys = await getPhysicalStock(it.id)
+              return it.name + ' ' + phys + ' ' + it.unit
+            }))
+            const msg = qtyLines.join(' — ')
             setMessage(msg); setStockResult({ operation: 'query_all', lines: [msg] })
           }
         }
@@ -474,45 +480,59 @@ export default function VoiceModal({ open, onClose }) {
           <button className="del" onClick={onClose}><Icon name="x" size={18} /></button>
         </div>
 
+        <div className="vm-tagline">Speak naturally in Hindi or Hinglish</div>
         <button className={`mic ${listening ? 'mic-on' : ''}`} onClick={listening ? stop : start}>
           <span className="mic-icon"><Icon name={listening ? 'x' : 'mic'} size={20} /></span>
-          <span>{clickDiag ? 'CLICK RECEIVED' : listening ? 'Sun raha hoon… pura bolo' : 'Bolo (Hindi/Hinglish)'}</span>
+          <span>{clickDiag ? 'CLICK RECEIVED' : listening ? 'Sun raha hoon… pura bolo' : 'Bolo (Hindi / Hinglish)'}</span>
         </button>
-        <div className="ip-muted" style={{ fontSize: 11, textAlign: 'center', marginTop: 4 }}>Pura sentence ek baar me bolo — 15 second tak sunega</div>
+        <div className="vm-examples">"Ramesh ke naam 50 bag cement ₹390 ke rate se bill banao."</div>
+        <div className="vm-examples">"ACC Cement ka stock batao" · "50 bag ACC Cement add karo"</div>
 
         {transcript && <div className="voice-transcript">{transcript}</div>}
         {busy && <div className="status">Samajh raha hoon…</div>}
         {listening && !busy && <div className="status">Listening…</div>}
         {errMsg && <div className="err">{errMsg}</div>}
         {result && <div className="ip-muted" style={{ fontSize: 11, textAlign: 'center', marginTop: 6 }}>Intent: {result.intent}{result.missing && result.missing.length ? ' — missing: ' + result.missing.join(', ') : ''}</div>}
-        {message && <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>}
+        {message && !['stock_entry', 'stock_query', 'query_outstanding', 'query_report', 'query_delivery', 'clarify'].includes(result?.intent) && (
+          <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>
+        )}
 
         {result && result.intent === 'create_bill' && (
           <div className="card">
-            <div className="card-title">Bill summary</div>
-            <div className={`billtype-chip ${company?.gstin ? 'bt-gst' : 'bt-kaccha'}`} style={{ marginBottom: 8 }}>Confirm par type GSTIN wale customer se auto decide hoga</div>
-            <div className="vc-cust">Customer: <b>{result.customer.name || '—'}</b> {result.missing && result.missing.length > 0 && <span style={{ color: 'var(--danger)', fontSize: 12 }}> — {result.missing.join(', ')} chahiye</span>}</div>
-            {result.items.map((it, i) => (
-              <div className="vc-item" key={i}>
-                <span>{it.name}</span>
-                <span>{it.qty} {it.unit} × {inrFull(it.rate)}</span>
-              </div>
-            ))}
-            {result.transport?.freight > 0 && <div className="vc-item"><span>Freight</span><span>{inrFull(result.transport.freight)}</span></div>}
-            {result.transport?.vehicleNo && <div className="vc-item"><span>Vehicle</span><span>{result.transport.vehicleNo}</span></div>}
-            <div className="vc-total">Total: {inrFull(calcBill(result.items, { gstRate: company?.gstRate ?? 18, billType: company ? (result.customerGstin ? 'gst' : 'kaccha') : 'gst', transport: result.transport || {} }).grandTotal)}</div>
-            {!confirmedBill && result.missing && result.missing.length === 0 && (
-              <div className="actions">
-                <button className="primary" onClick={confirmCreate}><Icon name="check" size={14} /> Create bill</button>
-                <button className="ghost" onClick={() => setResult(null)}>Cancel</button>
-              </div>
-            )}
-            {confirmedBill && <div className="status">Bill #{confirmedBill} ban gaya. <button className="link" onClick={() => { onClose(); navigate('#/invoices') }}>Dekho <Icon name="chevronRight" size={12} /></button></div>}
+            <div className="vm-sec">Understood</div>
+            <div className="vm-block">
+              <div className="vc-cust" style={{ marginBottom: 6 }}>Customer: <b>{result.customer.name || '—'}</b> {result.missing && result.missing.length > 0 && <span style={{ color: 'var(--danger)', fontSize: 12 }}> — {result.missing.join(', ')} chahiye</span>}</div>
+              {result.items.map((it, i) => (
+                <div className="vc-item" key={i}>
+                  <span>{it.name}</span>
+                  <span>{it.qty} {it.unit} × {inrFull(it.rate)}</span>
+                </div>
+              ))}
+              {result.transport?.freight > 0 && <div className="vc-item"><span>Freight</span><span>{inrFull(result.transport.freight)}</span></div>}
+              {result.transport?.vehicleNo && <div className="vc-item"><span>Vehicle</span><span>{result.transport.vehicleNo}</span></div>}
+            </div>
+            <div className="vm-sec vm-accent">Action</div>
+            <div className="vm-block">
+              {result.missing && result.missing.length > 0 ? (
+                <div className="vc-total draft-total" style={{ borderTop: 0, paddingTop: 0 }}>Draft / Needs information</div>
+              ) : (
+                <div className="vc-total" style={{ borderTop: 0, paddingTop: 0 }}>Total: {inrFull(calcBill(result.items, { gstRate: company?.gstRate ?? 18, billType: company ? (result.customerGstin ? 'gst' : 'kaccha') : 'gst', transport: result.transport || {} }).grandTotal)}</div>
+              )}
+              {!confirmedBill && result.missing && result.missing.length === 0 && (
+                <div className="actions" style={{ marginTop: 8 }}>
+                  <button className="primary" onClick={confirmCreate}><Icon name="check" size={14} /> Create bill</button>
+                  <button className="ghost" onClick={() => setResult(null)}>Cancel</button>
+                </div>
+              )}
+              {confirmedBill && <div className="vm-sec vm-accent">Result</div>}
+              {confirmedBill && <div className="status">Bill #{confirmedBill} ban gaya. <button className="link" onClick={() => { onClose(); navigate('#/invoices') }}>Dekho <Icon name="chevronRight" size={12} /></button></div>}
+            </div>
           </div>
         )}
 
         {result && (result.intent === 'stock_entry' || result.intent === 'stock_query') && message && (
           <div className="card">
+            <div className="vm-sec vm-accent">Result</div>
             <div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div>
             {stockResult && stockResult.operation === 'query_stated' && (
               <div className="actions">
@@ -524,10 +544,18 @@ export default function VoiceModal({ open, onClose }) {
         )}
 
         {result && ['query_outstanding', 'query_report', 'query_delivery'].includes(result.intent) && message && (
-          <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>
+          <div className="card">
+            <div className="vm-sec vm-accent">Result</div>
+            <div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div>
+          </div>
         )}
 
-        {result && result.intent === 'clarify' && message && <div className="card"><div className="answer">{message}</div></div>}
+        {result && result.intent === 'clarify' && message && (
+          <div className="card">
+            <div className="vm-sec" style={{ color: 'var(--danger)' }}>Needs more information</div>
+            <div className="answer">{message}</div>
+          </div>
+        )}
 
         {!result && message && !busy && !listening && <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>}
       </div>

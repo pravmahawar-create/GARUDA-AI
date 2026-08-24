@@ -12,6 +12,7 @@ export function Icon({ name, size = 22, className = '', strokeWidth = 1.7, style
   const common = { ...P, strokeWidth, width: size, height: size, viewBox: '0 0 24 24', style }
   const paths = {
     plus: <path d="M12 5v14M5 12h14" />,
+    minus: <path d="M5 12h14" />,
     bill: <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z" />,
     users: <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />,
     list: <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />,

@@ -259,3 +259,164 @@ test('customer name extraction: customer ka naam Chintu hai 37 bag ACC Cement 42
   assert.equal(t.intent, 'create_bill')
   assert.equal(t.customer.name, 'Chintu')
 })
+
+test('regression: stock add then query returns ledger physical stock', () => {
+  const add = parseLocal('500 bag ACC cement stock mein add karo', [])
+  assert.equal(add.intent, 'stock_entry')
+  assert.equal(add.operation, 'add')
+
+  const query = parseLocal('ACC cement ka stock kitna hai', [])
+  assert.equal(query.intent, 'stock_query')
+})
+
+test('regression: mines karo normalizes to stock subtract', () => {
+  const t = parseLocal('20 bori ACC Cement mines karo', [])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'subtract')
+  assert.ok(t.items.find(it => it.name === 'ACC Cement' && it.qty === 20))
+})
+
+test('regression: Hindi minus variants route to stock subtract', () => {
+  const t = parseLocal('10 bag ACC Cement kam karo', [])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'subtract')
+
+  const t2 = parseLocal('10 bag ACC Cement ghata do', [])
+  assert.equal(t2.intent, 'stock_entry')
+  assert.equal(t2.operation, 'subtract')
+})
+
+test('regression: ACC Cement alias intent is stock_query', () => {
+  const t1 = parseLocal('ACC Cement ka stock kitna hai', [])
+  assert.equal(t1.intent, 'stock_query')
+
+  const t2 = parseLocal('Cement - ACC ka stock kitna hai', [])
+  assert.equal(t2.intent, 'stock_query')
+
+  const t3 = parseLocal('ACC cement ka stock kitna hai', [])
+  assert.equal(t3.intent, 'stock_query')
+})
+
+test('regression: Devanagari ACC Cement intent is stock_query', () => {
+  const t = parseLocal('एसीसी सीमेंट का स्टॉक कितना है', [])
+  assert.equal(t.intent, 'stock_query')
+})
+
+test('regression: stock subtract with mines variant', () => {
+  const t = parseLocal('20 bori ACC Cement mines karo', [])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'subtract')
+  assert.ok(t.items.find(it => it.name === 'ACC Cement' && it.qty === 20))
+})
+
+test('regression: stock add without explicit verb uses stated form', () => {
+  const t = parseLocal('ACC Cement ka stock 120 bag hai', [])
+  assert.equal(t.intent, 'stock_query')
+  assert.equal(t.operation, 'query')
+  assert.ok(t.stated)
+  assert.equal(t.stated.qty, 120)
+})
+
+const TWO_BAG_ITEMS = [
+  { name: 'Cement - ACC', unit: 'bag' },
+  { name: 'Cement - UltraTech', unit: 'bag' }
+]
+
+test('regression: ACC cement stock mein se 300 bori minus → ACC Cement', () => {
+  const t = parseLocal('ACC cement stock mein se 300 bori minus kar do', [], TWO_BAG_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'subtract')
+  assert.ok(t.items.find(it => it.name === 'ACC Cement' && it.qty === 300 && it.unit === 'bag'))
+})
+
+test('regression: stock mein se 300 bori ACC cement minus → ACC Cement', () => {
+  const t = parseLocal('stock mein se 300 bori ACC cement minus kar do', [], TWO_BAG_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'subtract')
+  assert.ok(t.items.find(it => it.name === 'ACC Cement' && it.qty === 300))
+})
+
+test('regression: ACC cement ke stock mein se 300 bori minus → ACC Cement', () => {
+  const t = parseLocal('ACC cement ke stock mein se 300 bori minus kar do', [], TWO_BAG_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'subtract')
+  assert.ok(t.items.find(it => it.name === 'ACC Cement' && it.qty === 300))
+})
+
+test('regression: 300 bori ACC cement stock mein jodo → add', () => {
+  const t = parseLocal('300 bori ACC cement stock mein jodo', [], TWO_BAG_ITEMS)
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'add')
+  assert.ok(t.items.find(it => it.name === 'ACC Cement' && it.qty === 300))
+})
+
+test('regression: stock query extracts item name', () => {
+  const t = parseLocal('ACC cement ka stock kitna hai?', [], TWO_BAG_ITEMS)
+  assert.equal(t.intent, 'stock_query')
+  assert.ok(t.items.some(it => it.name === 'ACC Cement'))
+})
+
+test('regression: Devanagari stock query extracts item name', () => {
+  const t = parseLocal('एसीसी सीमेंट का स्टॉक कितना है', [], TWO_BAG_ITEMS)
+  assert.equal(t.intent, 'stock_query')
+  assert.ok(t.items.some(it => it.name === 'ACC Cement'))
+})
+
+test('regression: missing item with single candidate resolves safely', () => {
+  const t = parseLocal('stock mein se 300 bori minus kar do', [], [{ name: 'Cement - ACC', unit: 'bag' }])
+  assert.equal(t.intent, 'stock_entry')
+  assert.equal(t.operation, 'subtract')
+  assert.ok(t.items.find(it => it.name === 'Cement - ACC' && it.qty === 300))
+})
+
+test('regression: missing item with multiple candidates clarifies with names', () => {
+  const t = parseLocal('stock mein se 300 bori minus kar do', [], TWO_BAG_ITEMS)
+  assert.equal(t.intent, 'clarify')
+  assert.ok(t.message.includes('Cement - ACC'))
+  assert.ok(t.message.includes('Cement - UltraTech'))
+})
+
+test('regression: missing item without stock context keeps generic clarify', () => {
+  const t = parseLocal('stock mein se 300 bori minus kar do', [])
+  assert.equal(t.intent, 'clarify')
+  assert.ok(t.message.includes('Item ka naam batao'))
+})
+
+test('regression: missing quantity still clarifies', () => {
+  const t = parseLocal('stock mein se minus kar do', [], TWO_BAG_ITEMS)
+  assert.equal(t.intent, 'clarify')
+  assert.ok(t.message.includes('Kitna'))
+})
+
+test('regression: unrelated unit family not a candidate for bag subtract', () => {
+  const t = parseLocal('stock mein se 300 bori minus kar do', [], [
+    { name: 'Cement - ACC', unit: 'bag' },
+    { name: 'TMT Steel 8mm', unit: 'kg' }
+  ])
+  assert.equal(t.intent, 'stock_entry')
+  assert.ok(t.items.find(it => it.name === 'Cement - ACC' && it.qty === 300))
+})
+
+test('regression: unanchored query resolves specific item', () => {
+  const t = parseLocal('is samay stock mein kitni ACC Cement hai', [], [
+    { name: 'ACC Cement', unit: 'bag' },
+    { name: 'Cement - UltraTech', unit: 'bag' }
+  ])
+  assert.equal(t.intent, 'stock_query')
+  assert.ok(t.items.some(it => it.name === 'ACC Cement'))
+})
+
+test('regression: ambiguous cement query clarifies', () => {
+  const t = parseLocal('stock mein kitna cement hai', [], [
+    { name: 'ACC Cement', unit: 'bag' },
+    { name: 'UltraTech Cement', unit: 'bag' }
+  ])
+  assert.equal(t.intent, 'clarify')
+  assert.ok(t.message.includes('Cement'))
+})
+
+test('regression: resolveQueryItem without stockItems falls back to anchored regex', () => {
+  const t = parseLocal('ACC Cement ka stock kitna hai', [])
+  assert.equal(t.intent, 'stock_query')
+  assert.ok(t.items.some(it => it.name === 'ACC Cement'))
+})

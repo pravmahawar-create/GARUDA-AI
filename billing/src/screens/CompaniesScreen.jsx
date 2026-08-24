@@ -58,8 +58,8 @@ export default function CompaniesScreen() {
     const f = new FormData(e.target)
     const data = {
       id: editing?.id,
-      name: String(f.get('name') || '').trim() || 'Company',
-      category: String(f.get('category') || '').trim() || 'Trading · Steel · Cement',
+      name: String(f.get('name') || '').trim() || '',
+      category: String(f.get('category') || '').trim() || '',
       logo: String(logoData || '').trim(),
       ownerName: String(f.get('ownerName') || '').trim(),
       website: String(f.get('website') || '').trim(),
@@ -93,9 +93,17 @@ export default function CompaniesScreen() {
     <div className="screen">
       <header className="topbar backbar">
         <button className="back" onClick={() => navigate('#/settings')}>‹</button>
-        <div className="top-title">Companies</div>
+        <div className="top-title">{list.some((c) => !c.name) ? 'Set up your business' : 'Business Profile'}</div>
       </header>
       {msg && <div className="chip chip-ok" style={{ margin: '4px 2px' }}>{msg}</div>}
+      {list.some((c) => !c.name) && (
+        <div className="setup-card">
+          <div className="setup-card-text">
+            <div className="setup-card-title">Welcome — let's set up your business</div>
+            <div className="setup-card-sub">Enter your business name, GSTIN (optional) and contact details. You can start billing even before setting GSTIN.</div>
+          </div>
+        </div>
+      )}
       {list.map((c) => (
         <div className="card" key={c.id}>
           <div className="card-title">
@@ -143,7 +151,7 @@ export default function CompaniesScreen() {
           <div className="form-label">Name *</div>
           <input name="name" defaultValue={editing.name} required className="input" />
           <div className="form-label">Category</div>
-          <input name="category" defaultValue={editing.category} placeholder="Trading · Steel · Cement" className="input" />
+          <input name="category" defaultValue={editing.category} placeholder="e.g. Hardware · Steel · Cement" className="input" />
           <div className="form-label">Owner Name</div>
           <input name="ownerName" defaultValue={editing.ownerName} className="input" />
           <div className="form-label">Website</div>
@@ -164,7 +172,7 @@ export default function CompaniesScreen() {
           </select>
           <div className="card-title" style={{ marginTop: 10, marginBottom: 6, fontSize: 12, color: 'var(--muted)' }}><Icon name="creditCard" size={15} /> Payment details (bill + QR par dikhega)</div>
           <div className="form-label">UPI ID (QR isi se banega)</div>
-          <input name="upiId" defaultValue={editing.upiId || ''} placeholder="aktrading@upi" className="input" />
+          <input name="upiId" defaultValue={editing.upiId || ''} placeholder="yourname@bank" className="input" />
           <div className="ip-muted">UPI + bank daalo to har bill (screen aur PDF) par QR aur bank details automatically aa jayega.</div>
           <div className="form-label">Account holder</div>
           <input name="bankHolder" defaultValue={editing.bankHolder || ''} className="input" />

@@ -9,6 +9,8 @@ const NUMS = {
 
 const MULTS = { hazaar: 1000, hajar: 1000, lakh: 100000, lac: 100000 }
 
+const UNIT_FAMILY = { bag: 'bag', bori: 'bag', bags: 'bag', kg: 'kg', kilo: 'kg', kgg: 'kg', quintal: 'quintal', qtl: 'quintal', ton: 'ton', tonne: 'ton', piece: 'piece', pieces: 'piece', truck: 'truck', gadi: 'truck' }
+
 export function numberFromHindi(text) {
   const t = String(text || '').toLowerCase().trim()
   if (/^\d+$/.test(t)) return parseInt(t, 10)
@@ -37,10 +39,10 @@ function titleCase(w) {
   return w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : ''
 }
 
-const STOP_WORDS = new Set(['ke', 'ka', 'ki', 'ko', 'aur', 'and', 'rate', 'se', 'bana', 'banao', 'banaw', 'kar', 'karo', 'daal', 'dal', 'do', 'dena', 'chahiye', 'bill', 'aaya', 'aaye', 'gaya', 'gaye', 'hai', 'hain', 'raha', 'rahe', 'stock', 'stok', 'mein', 'add', 'badh', 'jod', 'kitna', 'kya', 'hai', 'per', 'par', 'rupaye', 'rupay', 'rs', 'minus', 'kam', 'ghatao', 'nikalo', 'nikal', 'hatao', 'becha', 'bech'])
+const STOP_WORDS = new Set(['ke', 'ka', 'ki', 'ko', 'aur', 'and', 'rate', 'se', 'bana', 'banao', 'banaw', 'kar', 'karo', 'daal', 'dal', 'do', 'dena', 'chahiye', 'bill', 'aaya', 'aaye', 'gaya', 'gaye', 'hai', 'hain', 'raha', 'rahe', 'stock', 'stok', 'mein', 'add', 'badh', 'jod', 'kitna', 'kya', 'hai', 'per', 'par', 'rupaye', 'rupay', 'rs', 'minus', 'mines', 'mine', 'kam', 'ghatao', 'nikalo', 'nikal', 'hatao', 'becha', 'bech'])
 
 function buildItemName(words) {
-  while (words.length > 1 && STOP_WORDS.has(words[words.length - 1])) words.pop()
+  while (words.length > 0 && STOP_WORDS.has(words[words.length - 1])) words.pop()
   if (!words.length) return ''
   const baseKey = [...words].reverse().find((w) => PRODUCT_ALIAS[w])
   const baseName = baseKey ? PRODUCT_ALIAS[baseKey] : null
@@ -145,19 +147,97 @@ function findCustomer(text, knownNames) {
   return ''
 }
 
-const STOCK_HINT = /(stock|stok|aaya hai|aa gaya|pahunch|pahonch|add karo|daal do|dalo|jodo|minus|kam karo|ghata|nikal|hatao|becha|bech diya)/i
+const STOCK_HINT = /(stock|stok|aaya hai|aa gaya|pahunch|pahonch|add karo|daal do|dalo|jodo|minus|mines|mine|kam karo|ghata|nikal|hatao|becha|bech diya)/i
 
-function parseStock(text, numberFromHindiFn) {
+function hasProductToken(words) {
+  return words.some((w) => PRODUCT_ALIAS[String(w).toLowerCase()] || BRAND_CASE[String(w).toLowerCase()])
+}
+
+function tokenize(s) {
+  return String(s || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)
+}
+
+function canonicalKey(s) {
+  return tokenize(s).sort().join('')
+}
+
+function resolveQueryItem(text, stockItems) {
+  if (!stockItems || !stockItems.length) return null
+  const qWords = new Set(tokenize(text))
+  const groups = new Map()
+  for (const it of stockItems) {
+    const toks = tokenize(it.name)
+    if (!toks.length) continue
+    const hit = toks.filter((tk) => qWords.has(tk))
+    if (hit.length === 0) continue
+    const key = canonicalKey(it.name)
+    if (!groups.has(key)) groups.set(key, [])
+    groups.get(key).push({ it, score: hit.length / toks.length })
+  }
+  if (groups.size === 0) return null
+  const ranked = [...groups.entries()].map(([key, arr]) => ({ key, arr, score: Math.max(...arr.map((a) => a.score)) }))
+  ranked.sort((a, b) => b.score - a.score)
+  const top = ranked[0]
+  const tie = ranked.filter((g) => g.score === top.score)
+  const pick = (arr) => arr.reduce((best, c) => (c.it.name.length < best.it.name.length ? c : best), arr[0]).it
+  if (top.score === 1 && tie.length === 1) return { item: pick(top.arr) }
+  if (tie.length > 1) return { ambiguous: tie.flatMap((g) => g.arr.map((a) => a.it.name)) }
+  if (ranked.length === 1) return { item: pick(top.arr) }
+  return { ambiguous: ranked.slice(0, 4).flatMap((g) => g.arr.map((a) => a.it.name)) }
+}
+
+function extractStockQtyUnit(text) {
+  const m = text.match(/(\d+(?:\.\d+)?)\s*(hazaar|hajar|lakh|lac)?\s*(bag|bori|bags|kg|kilo|kgg|quintal|qtl|ton|tonne|piece|pieces|truck)/i)
+  if (!m) return null
+  return { qty: Number(m[1]) * (MULTS[(m[2] || '').toLowerCase()] || 1), unit: UNITS[m[3].toLowerCase()] || 'bag' }
+}
+
+function parseStock(text, numberFromHindiFn, stockItems = []) {
+  text = String(text || '').trim()
   const t = text.toLowerCase()
   const vehicleNo = (text.match(/([A-Za-z]{2}\d{2}[A-Za-z]{0,3}\d{3,4})/) || [])[1] || ''
   const driver = (text.match(/driver\s+([a-z]+)/i) || [])[1] || ''
 
   const wantsSet = /(set\s?karo|set\s?kar|update\s?kar|rakh\s?do|barabar\s?kar|ho\s?jaye\s?aisa)/i.test(t)
   const wantsAdd = /(add|badh|jod|jama|aaya|aa gaya|pahunch|pahonch|daal|dalo|dale)/i.test(t)
-  const wantsSubtract = /(minus|kam karo|kam kar|ghatao|ghata|nikal|nikalo|hatao|becha|bech diya)/i.test(t)
+  const wantsSubtract = /(minus|mines|mine|kam karo|kam kar|ghatao|ghata|ghata do|nikal|nikalo|hatao|hata do|becha|bech diya|kam)/i.test(t)
   const wantsQuery = /(kitna|kitni|kya hai|kya bacha|check|batao)/i.test(t)
 
   const items = extractItems(text)
+  // Fallback: product name BEFORE qty/unit — "ACC cement 50 bag", "ACC Cement mein 20 bori", "ACC cement ke stock mein se 300 bori"
+  if (items.length === 0) {
+    const preQty = text.match(/^([a-z][a-z\s]{1,40}?)\s+(\d+(?:\.\d+)?)\s*(bag|bori|kg|kilo|quintal|qtl|ton|tonne|piece|truck)s?/i)
+    if (preQty) {
+      const rawWords = preQty[1].trim().split(/\s+/)
+      if (hasProductToken(rawWords)) {
+        const candidateName = buildItemName(rawWords)
+        const qty = Number(preQty[2])
+        const unit = UNITS[preQty[3].toLowerCase()] || 'bag'
+        if (candidateName && qty > 0) items.push({ name: candidateName, qty, unit })
+      }
+    }
+  }
+  // Query: product name without qty — "ACC cement ka stock kitna hai"
+  if (items.length === 0 && wantsQuery) {
+    const qName = text.match(/^([a-z][a-z\s]{1,40}?)\s+(?:ka|ke|ki|का|की|के)\s*(?:stock|stok)\s*(?:kitna|kitni|kya|check|batao|hai|hain|raha|कितना|कितनी)/i)
+    if (qName) {
+      const rawWords = qName[1].trim().split(/\s+/)
+      if (hasProductToken(rawWords)) {
+        const candidateName = buildItemName(rawWords)
+        if (candidateName) items.push({ name: candidateName, qty: 0, unit: 'bag' })
+      }
+    }
+    if (items.length === 0) {
+      const resolved = resolveQueryItem(text, stockItems)
+      if (resolved) {
+        if (resolved.item) items.push({ name: resolved.item.name, qty: 0, unit: resolved.item.unit || 'bag' })
+        else if (resolved.ambiguous) {
+          const names = [...new Set(resolved.ambiguous)].slice(0, 6).join(', ')
+          return { intent: 'clarify', message: 'Kaunsa item? ' + names + ' — thoda aur saaf bolo.' }
+        }
+      }
+    }
+  }
   // "ACC cement ka stock 120 bag hai" — stated qty without mutation verb
   let stated = null
   const statedM = text.match(/(\d+(?:\.\d+)?)\s*(bag|kg|kilo|quintal|qtl|ton|tonne|piece|truck)s?\s*(?:ka\s*)?(?:stock|stok)?\s*(?:hai|hain|raha)?\.?$/i)
@@ -180,6 +260,29 @@ function parseStock(text, numberFromHindiFn) {
       driver,
       source: 'voice'
     }
+  }
+
+  if (items.length === 0 && (wantsAdd || wantsSet || wantsSubtract)) {
+    let op = 'add'
+    if (wantsSet) op = 'set'
+    else if (wantsSubtract) op = 'subtract'
+    const qu = extractStockQtyUnit(text)
+    if (!qu) {
+      return { intent: 'clarify', message: 'Kitna add ya minus karna hai? Jaise "300 bori ACC cement minus karo".' }
+    }
+    if (stockItems && stockItems.length) {
+      const family = UNIT_FAMILY[qu.unit] || qu.unit
+      const candidates = stockItems.filter((it) => (UNIT_FAMILY[it.unit] || it.unit) === family)
+      if (candidates.length === 1) {
+        return { intent: 'stock_entry', operation: op, items: [{ name: candidates[0].name, qty: qu.qty, unit: qu.unit }], vehicleNo, driver, source: 'voice' }
+      }
+      if (candidates.length > 1) {
+        const list = candidates.slice(0, 8).map((c) => c.name).join(', ')
+        return { intent: 'clarify', message: 'Kaunsa item? ' + list + ' — bolo jaise "' + candidates[0].name + ' ' + qu.qty + ' bori ' + (wantsSubtract ? 'minus' : 'add') + ' karo".' }
+      }
+      return { intent: 'clarify', message: 'Stock mein koi ' + qu.unit + ' item nahi mila — item ka naam batao.' }
+    }
+    return { intent: 'clarify', message: 'Item ka naam batao — jaise "50 bag ACC cement add karo".' }
   }
 
   // Statement form: "<item> ka stock <n> <unit> hai" → report only; UI offers explicit Set.
@@ -211,9 +314,17 @@ export function normalizeDevanagari(text) {
     .replace(/बिल बना दो|बिल बनाओ/g, ' bill bana do ')
     .replace(/स्टॉक में|स्टॉक/g, ' stock ')
     .replace(/रुपए|रुपये|रूपये/g, ' rupaye ')
+    .replace(/का/g, ' ka ')
+    .replace(/की/g, ' ki ')
+    .replace(/में/g, ' mein ')
+    .replace(/कितना|कितनी|कितने/g, ' kitna ')
+    .replace(/माइनस|घटा|घटाओ/g, ' minus ')
+    .replace(/जोड़ो|जोडो|जोड़ दो/g, ' jodo ')
+    .replace(/करो/g, ' karo ')
+    .replace(/है|हैं/g, ' hai ')
 }
 
-export function parseLocal(text, knownNames = []) {
+export function parseLocal(text, knownNames = [], stockItems = []) {
   const raw = String(text || '').trim()
   if (!raw) return { intent: 'clarify', message: 'Kuch suna nahi. Fir bolo.' }
   // Normalize Devanagari Hindi to Latin Hinglish for parsing, but keep original for customer name
@@ -234,7 +345,7 @@ export function parseLocal(text, knownNames = []) {
 
   // 3) STOCK commands — checked BEFORE bill so "stock mein add karo" never becomes a bill
   if (STOCK_HINT.test(t)) {
-    return parseStock(normalizedRaw, numberFromHindi)
+    return parseStock(normalizedRaw, numberFromHindi, stockItems)
   }
 
   // 4) Dispatch/delivery query
@@ -280,7 +391,7 @@ export function parseLocal(text, knownNames = []) {
   return { intent: 'clarify', message: 'Samajh nahi aaya. Bol sakte ho: "Ramesh ke naam 50 bag cement 390 ke bill bana do" ya "50 bag ACC cement stock mein add karo".' }
 }
 
-export async function parseVoice(text, knownNames = [], apiBase = '') {
+export async function parseVoice(text, knownNames = [], apiBase = '', stockItems = []) {
   try {
     if (apiBase) {
       const res = await fetch(apiBase + '/api/billing/voice', {
@@ -294,5 +405,5 @@ export async function parseVoice(text, knownNames = [], apiBase = '') {
       }
     }
   } catch (e) { /* fall through to local */ }
-  return { source: 'local', ...parseLocal(text, knownNames) }
+  return { source: 'local', ...parseLocal(text, knownNames, stockItems) }
 }
