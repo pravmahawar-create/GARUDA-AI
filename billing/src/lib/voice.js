@@ -41,11 +41,11 @@ function titleCase(w) {
 
 const STOP_WORDS = new Set(['ke', 'ka', 'ki', 'ko', 'aur', 'and', 'rate', 'se', 'bana', 'banao', 'banaw', 'kar', 'karo', 'daal', 'dal', 'do', 'dena', 'chahiye', 'bill', 'aaya', 'aaye', 'gaya', 'gaye', 'hai', 'hain', 'raha', 'rahe', 'stock', 'stok', 'mein', 'add', 'badh', 'jod', 'kitna', 'kya', 'hai', 'per', 'par', 'rupaye', 'rupay', 'rs', 'minus', 'mines', 'mine', 'kam', 'ghatao', 'nikalo', 'nikal', 'nikaal', 'hatao', 'becha', 'bechi', 'bech', 'wali', 'vali'])
 
-function cleanProductWords(words) {
+export function cleanProductWords(words) {
   return words.filter((w) => (!/^\d+$/.test(w) || /^\d+mm$/.test(w)) && !STOP_WORDS.has(String(w).toLowerCase()))
 }
 
-function buildItemName(words) {
+export function buildItemName(words) {
   while (words.length > 0 && STOP_WORDS.has(words[words.length - 1])) words.pop()
   if (!words.length) return ''
   const sizeIdx = words.findIndex((w) => /^\d+mm$/.test(w))
@@ -69,7 +69,7 @@ function buildItemName(words) {
   return sizeWord ? sizeWord + ' ' + name : name
 }
 
-function extractItems(text) {
+export function extractItems(text) {
   const items = []
   const seen = new Set()
   const unitWord = '(bag|bori|bags|kg|kilo|kgg|quintal|qtl|ton|tonne|piece|pieces|truck)'
@@ -120,7 +120,7 @@ function extractItems(text) {
 }
 
 // Rates appear as "390 ke", "420 ke rate se", "58 hazaar ke", "57 rupaye kilo ke", "₹230 ke bhav se", paired to items in order.
-function collectRates(text) {
+export function collectRates(text) {
   const out = []
   const re = /(?:₹\s*)?(\d+(?:\.\d+)?)\s*(hazaar|hajar|lakh|lac)?\s*(?:rupaye|rupay|rs)?\s*(?:kilo|kg|quintal|qtl|ton|tonne|piece|pieces|truck|bag|bori|bags)?\s*(?:ke|ka)\b/gi
   let m
@@ -186,7 +186,7 @@ function extractProductPhrase(text) {
   return m ? m[1].trim() : ''
 }
 
-function hasProductToken(words) {
+export function hasProductToken(words) {
   return words.some((w) => PRODUCT_ALIAS[String(w).toLowerCase()] || BRAND_CASE[String(w).toLowerCase()])
 }
 

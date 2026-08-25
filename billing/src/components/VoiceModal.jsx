@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { db, applyStockOp, getStockQty, findStockItem, getActiveCompany, canonicalName } from '../db'
 import { inrFull, calcBill } from '../lib/money'
 import { parseVoice, normalizeDevanagari } from '../lib/voice'
+import { ConversationManager } from '../lib/conversation'
 import { executeCreateBill } from '../lib/voiceExecutor'
 import { SpeechRecognition } from '@capacitor-community/speech-recognition'
 import { navigate } from '../App'
@@ -38,17 +39,26 @@ export default function VoiceModal({ open, onClose }) {
   const [stockResult, setStockResult] = useState(null)
   const [company, setCompany] = useState(null)
   const [clickDiag, setClickDiag] = useState(false)
+  const [draftNote, setDraftNote] = useState('')
   const recRef = useRef(null)
   const mediaRef = useRef(null)
   const streamRef = useRef(null)
   const chunksRef = useRef([])
   const listenTimerRef = useRef(null)
+  const conversation = useRef(new ConversationManager())
+  const convoIdRef = useRef(null)
+  const executingRef = useRef(false)
 
   useEffect(() => {
     if (!open) return
-    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setConfirmedInvoiceId(null); setErrMsg(''); setStockResult(null)
+    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setConfirmedInvoiceId(null); setErrMsg(''); setStockResult(null); setDraftNote('')
     ;(async () => setCompany(await getActiveCompany()))()
   }, [open])
+
+  useEffect(() => {
+    convoIdRef.current = conversation.current.newConversation()
+    return () => conversation.current.endConversation(convoIdRef.current)
+  }, [])
 
   useEffect(() => {
     return () => {
@@ -313,6 +323,60 @@ export default function VoiceModal({ open, onClose }) {
       setResult(parsed)
       setBusy(false)
 
+      const isNonBill = ['query_outstanding', 'query_report', 'query_delivery', 'stock_entry', 'stock_query', 'stock_ledger_query'].includes(parsed.intent)
+      if (!isNonBill) {
+        // BILL / FIELD / CLARIFY turn → conversational layer (never auto-executes)
+        const turn = conversation.current.processTurn(convoIdRef.current, text, parsed, { customers, stockItems, company })
+        setDraftNote(turn.summary || '')
+        if (turn.status === 'execute') {
+          try {
+            executingRef.current = true
+            const draft = conversation.current.draftForExecution(convoIdRef.current)
+            if (!draft) throw new Error('No draft')
+            const { invoice, totals } = await executeCreateBill(draft, company)
+            conversation.current.markExecuted(convoIdRef.current, invoice)
+            setConfirmedBill(invoice.invoiceNo)
+            setConfirmedInvoiceId(invoice.id)
+            const msg = 'Bill created successfully — #' + invoice.invoiceNo + ' — ' + invoice.customerName + ' — ' + totals.grandTotal.toLocaleString('en-IN') + ' rupaye'
+            setMessage(msg)
+            speak('Bill ban gaya. Invoice number ' + invoice.invoiceNo)
+          } catch (e) {
+            console.log('[VOICE ERROR] bill write', e && e.message)
+            setErrMsg('Bill nahi bana: ' + (e && e.message ? e.message : e))
+          } finally {
+            executingRef.current = false
+          }
+          return
+        }
+        if (turn.status === 'needs_confirm') {
+          setResult(turn.renderDraft || null)
+          setMessage(turn.message)
+          speak(turn.message)
+          return
+        }
+        if (turn.status === 'needs_info') {
+          setResult(null)
+          setMessage(turn.message)
+          speak(turn.message)
+          return
+        }
+        if (turn.status === 'intent_switch') {
+          setMessage(turn.message)
+          speak(turn.message)
+          return
+        }
+        setResult(null)
+        setMessage(turn.message || parsed.message || 'Samajh nahi aaya.')
+        return
+      }
+
+      // Non-bill commands: a stock mutation discards an unfinished bill draft (announced).
+      if (parsed.intent === 'stock_entry' && conversation.current.hasActiveBill(convoIdRef.current)) {
+        conversation.current.discard(convoIdRef.current)
+        setDraftNote('')
+        setMessage('Bill draft cancel ho gaya — ab stock update karta hoon.')
+      }
+
       if (parsed.intent === 'query_outstanding') {
         const name = parsed.customerName
         const cust = customers.find((c) => c.name.toLowerCase() === String(name || '').toLowerCase())
@@ -532,33 +596,6 @@ export default function VoiceModal({ open, onClose }) {
         }
         setMessage(msg); speak(msg)
         setStockResult({ operation: 'ledger', lines: [msg], scope })
-      } else if (parsed.intent === 'create_bill') {
-        const missing = parsed.missing || []
-        if (missing.length) {
-          const need = missing.join(' aur ')
-          const msg = need.charAt(0).toUpperCase() + need.slice(1) + ' bolo — jaise "Ramesh ke naam 50 bag cement 390 ke bill bana do".'
-          setMessage(msg)
-          speak(need + ' batao')
-          return
-        }
-        // AUTO-EXECUTE real bill transaction via canonical executor + read-after-write proof
-        console.log('[VOICE] executor bill start', parsed)
-        try {
-          console.log('[VOICE] DB write bill start')
-          const { invoice, totals } = await executeCreateBill(parsed, company)
-          console.log('[VOICE] DB write bill success', invoice.id, invoice.invoiceNo)
-          const check = await db.invoices.get(invoice.id)
-          if (!check) throw new Error('Invoice read-back failed')
-          console.log('[VOICE] DB read-back success', check.invoiceNo, check.customerName)
-          setConfirmedBill(invoice.invoiceNo)
-          setConfirmedInvoiceId(invoice.id)
-          const msg = 'Bill created successfully — #' + invoice.invoiceNo + ' — ' + invoice.customerName + ' — ' + totals.grandTotal.toLocaleString('en-IN') + ' rupaye'
-          setMessage(msg)
-          speak('Bill ban gaya. Invoice number ' + invoice.invoiceNo)
-        } catch (e) {
-          console.log('[VOICE ERROR] bill write', e && e.message)
-          setErrMsg('Bill nahi bana: ' + (e && e.message ? e.message : e))
-        }
       } else if (parsed.intent === 'clarify') {
         setMessage(parsed.message || 'Thoda aur clearly batao.')
         speak(parsed.message || 'Thoda aur clearly batao.')
@@ -574,9 +611,15 @@ export default function VoiceModal({ open, onClose }) {
 
   const confirmCreate = async () => {
     try {
-      const p = result
-      if (!p || p.intent !== 'create_bill') return
-      const { invoice, totals } = await executeCreateBill(p, company)
+      if (executingRef.current) return
+      if (!conversation.current.canExecute(convoIdRef.current)) {
+        setMessage('Pehle bill ki details batao.')
+        return
+      }
+      executingRef.current = true
+      const draft = conversation.current.draftForExecution(convoIdRef.current)
+      const { invoice, totals } = await executeCreateBill(draft, company)
+      conversation.current.markExecuted(convoIdRef.current, invoice)
       setConfirmedBill(invoice.invoiceNo)
       setConfirmedInvoiceId(invoice.id)
       speak((invoice.billType === 'kaccha' ? 'Kaccha bill ban gaya' : 'Bill ban gaya') + '. Invoice number ' + invoice.invoiceNo)
@@ -584,6 +627,8 @@ export default function VoiceModal({ open, onClose }) {
     } catch (e) {
       console.error('[GARUDA] voice create error:', e)
       setErrMsg('Bill nahi bana: ' + (e && e.message ? e.message : e))
+    } finally {
+      executingRef.current = false
     }
   }
 
@@ -616,7 +661,7 @@ export default function VoiceModal({ open, onClose }) {
         {busy && <div className="status">Samajh raha hoon…</div>}
         {listening && !busy && <div className="status">Listening…</div>}
         {errMsg && <div className="err">{errMsg}</div>}
-        {result && <div className="ip-muted" style={{ fontSize: 11, textAlign: 'center', marginTop: 6 }}>Intent: {result.intent}{result.missing && result.missing.length ? ' — missing: ' + result.missing.join(', ') : ''}</div>}
+        {draftNote && !result && <div className="card"><div className="vm-sec">Draft so far</div><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{draftNote}</div></div>}
         {message && !['stock_entry', 'stock_query', 'query_outstanding', 'query_report', 'query_delivery', 'clarify'].includes(result?.intent) && (
           <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>
         )}
@@ -640,12 +685,12 @@ export default function VoiceModal({ open, onClose }) {
               {result.missing && result.missing.length > 0 ? (
                 <div className="vc-total draft-total" style={{ borderTop: 0, paddingTop: 0 }}>Draft / Needs information</div>
               ) : (
-                <div className="vc-total" style={{ borderTop: 0, paddingTop: 0 }}>Total: {inrFull(calcBill(result.items, { gstRate: company?.gstRate ?? 18, billType: company ? (result.customerGstin ? 'gst' : 'kaccha') : 'gst', transport: result.transport || {} }).grandTotal)}</div>
+                <div className="vc-total" style={{ borderTop: 0, paddingTop: 0 }}>Total: {inrFull(calcBill(result.items, { gstRate: company?.gstRate ?? 18, billType: result.billType || (company ? (result.customerGstin ? 'gst' : 'kaccha') : 'gst'), transport: result.transport || {} }).grandTotal)}</div>
               )}
               {!confirmedBill && result.missing && result.missing.length === 0 && (
                 <div className="actions" style={{ marginTop: 8 }}>
-                  <button className="primary" onClick={confirmCreate}><Icon name="check" size={14} /> Create bill</button>
-                  <button className="ghost" onClick={() => setResult(null)}>Cancel</button>
+                  <button className="primary" onClick={confirmCreate}><Icon name="check" size={14} /> Confirm & Create Bill</button>
+                  <button className="ghost" onClick={() => { conversation.current.discard(convoIdRef.current); setDraftNote(''); setResult(null) }}>Cancel</button>
                 </div>
               )}
               {confirmedBill && <div className="vm-sec vm-accent">Result</div>}

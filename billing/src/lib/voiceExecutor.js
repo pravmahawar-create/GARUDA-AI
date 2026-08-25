@@ -13,13 +13,14 @@ export async function executeCreateBill(parsed, companyOverride = null) {
   const byName = existing.find((c) => c.name.toLowerCase() === String(parsed.customer.name).toLowerCase())
   const byMobile = parsed.customer.mobile && existing.find((c) => c.mobile === parsed.customer.mobile)
   let cust = byName || byMobile
+  const gstin = String((parsed.customer && parsed.customer.gstin) || parsed.customerGstin || '').trim().toUpperCase()
   if (!cust) {
     cust = {
       id: 'c' + Date.now() + Math.random().toString(36).slice(2, 6),
       name: String(parsed.customer.name).trim(),
       mobile: parsed.customer.mobile || '',
-      gstin: '',
-      billType: 'kaccha',
+      gstin,
+      billType: gstin ? 'gst' : 'kaccha',
       address: '',
       creditLimit: 0,
       createdAt: new Date().toISOString()
@@ -27,7 +28,7 @@ export async function executeCreateBill(parsed, companyOverride = null) {
     await db.customers.put(cust)
     await enqueue('customer', 'create', cust)
   }
-  const billType = cust.billType || (cust.gstin ? 'gst' : 'kaccha')
+  const billType = parsed.billType || cust.billType || (cust.gstin ? 'gst' : 'kaccha')
   const mode = gstTypeFor(comp.gstin, cust.gstin)
   const rows = parsed.items.map((it) => ({ name: it.name, qty: it.qty, unit: it.unit || 'bag', rate: it.rate || 0, hsn: it.hsn || '' }))
   const totals = calcBill(rows, { gstRate: comp.gstRate, discount: 0, transport: parsed.transport || {}, billType, mode })
