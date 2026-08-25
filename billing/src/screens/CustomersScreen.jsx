@@ -3,8 +3,10 @@ import { db, enqueue } from '../db'
 import { inrFull } from '../lib/money'
 import { buildKhataPdf } from '../lib/pdf'
 import { getCustomerHistory, getCustomerSummary } from '../lib/customerContext'
+import { getLedger, getCustomerPayments, recordPayment, deletePayment, customerOutstanding } from '../lib/ledger'
 import { navigate } from '../App'
 import GstVerifyModal from '../components/GstVerifyModal'
+import UpiQrModal from '../components/UpiQrModal'
 import VoiceModal from '../components/VoiceModal'
 import { Icon } from '../components/Icon'
 
@@ -22,17 +24,58 @@ export default function CustomersScreen() {
   const [summary, setSummary] = useState(null)
   const [voiceOpen, setVoiceOpen] = useState(false)
   const [billCustomer, setBillCustomer] = useState(null)
+  const [ledgerRows, setLedgerRows] = useState([])
+  const [payments, setPayments] = useState([])
+  const [payModal, setPayModal] = useState(null)
+  const [payMsg, setPayMsg] = useState('')
+  const [upiOpen, setUpiOpen] = useState(false)
+  const [upiAmount, setUpiAmount] = useState(0)
+  const [company, setCompany] = useState(null)
 
   const openDetail = async (c) => {
     setDetail(c)
+    const comps = await db.companies.toArray()
+    setCompany(comps[0] || null)
     const [h, s] = await Promise.all([getCustomerHistory(c.id), getCustomerSummary(c.id)])
     setHistory(h)
     setSummary(s)
+    setLedgerRows(await getLedger(c.id))
+    setPayments(await getCustomerPayments(c.id))
   }
 
   const startBill = (c) => {
     setBillCustomer(c)
     setVoiceOpen(true)
+  }
+
+  const refreshDetail = async () => {
+    if (!detail) return
+    const [h, s] = await Promise.all([getCustomerHistory(detail.id), getCustomerSummary(detail.id)])
+    setHistory(h)
+    setSummary(s)
+    setLedgerRows(await getLedger(detail.id))
+    setPayments(await getCustomerPayments(detail.id))
+  }
+
+  const savePayment = async () => {
+    const amt = Number(payModal.amount)
+    if (!amt || amt <= 0) return setPayMsg('Amount sahi daalo')
+    try {
+      await recordPayment({ customerId: detail.id, invoiceId: '', amount: amt, date: '', mode: payModal.mode || 'Cash', note: '', companyId: '' })
+      setPayModal(null); setPayMsg('')
+      await refreshDetail()
+    } catch (e) { setPayMsg('Payment nahi hua: ' + e.message) }
+  }
+
+  const removePayment = async (id) => {
+    await deletePayment(id)
+    await refreshDetail()
+  }
+
+  const showUpi = async () => {
+    const out = await customerOutstanding(detail.id)
+    setUpiAmount(Math.max(0, out))
+    setUpiOpen(true)
   }
 
   const refresh = async () => {
@@ -165,6 +208,43 @@ export default function CustomersScreen() {
             <div className="vc-item"><span>Bill Type</span><span className={`billtype-badge ${detail.billType === 'gst' || detail.gstin ? 'bt-gst' : 'bt-kaccha'}`}>{detail.billType === 'gst' || detail.gstin ? 'GST' : 'Kaccha'}</span></div>
             <div className="vc-item"><span>Last Transaction</span><span>{summary && summary.lastDate ? summary.lastDate : '—'}</span></div>
             <div className="vc-item"><span>Credit Limit</span><span>{detail.creditLimit > 0 ? inrFull(detail.creditLimit) : '—'}</span></div>
+          </section>
+
+          <section className="card">
+            <div className="card-title">Financial Summary</div>
+            <div className="vc-item"><span>Total Billed</span><span>{inrFull(summary ? summary.sales : 0)}</span></div>
+            <div className="vc-item"><span>Total Paid</span><span>{inrFull(summary ? summary.payments : 0)}</span></div>
+            <div className="vc-item"><span>Outstanding</span><span className={summary && summary.outstanding > 0 ? 'num due' : 'num ok'}>{inrFull(summary ? summary.outstanding : 0)}</span></div>
+            {payments.length > 0 && <div className="vc-item"><span>Last Payment</span><span>{payments[payments.length - 1].date} · {inrFull(payments[payments.length - 1].amount)} · {payments[payments.length - 1].mode}</span></div>}
+            <div className="actions" style={{ marginTop: 8 }}>
+              <button className="primary" onClick={() => setPayModal({ amount: summary ? Math.max(0, summary.outstanding) : 0, mode: 'Cash' })}><Icon name="rupee" size={14} /> Receive Payment</button>
+              <button className="btn" onClick={showUpi}><Icon name="file" size={14} /> Show UPI QR</button>
+            </div>
+          </section>
+
+          <section className="card">
+            <div className="card-title">Khata</div>
+            {ledgerRows.length === 0 && <div className="empty-sub">Khata khali hai</div>}
+            {ledgerRows.map((r, i) => (
+              <div className="vc-item" key={i} style={{ borderBottom: '1px solid var(--line-soft)' }}>
+                <span className="ip-muted">{r.date} · {r.type === 'bill' ? 'Bill ' + r.ref : r.ref}</span>
+                <span>
+                  <b className={r.type === 'bill' ? 'num due' : 'num ok'}>{r.type === 'bill' ? '+' : '−'}{inrFull(r.type === 'bill' ? r.debit : r.credit)}</b>
+                  <div className="ip-muted">Balance {inrFull(r.balance)}</div>
+                </span>
+              </div>
+            ))}
+          </section>
+
+          <section className="card">
+            <div className="card-title">Payments</div>
+            {payments.length === 0 && <div className="empty-sub">Abhi koi payment nahi</div>}
+            {payments.slice().reverse().map((p) => (
+              <div className="vc-item" key={p.id}>
+                <span>{p.date} · {p.mode}{p.note ? ' · ' + p.note : ''}</span>
+                <span className="num ok">{inrFull(p.amount)} <button className="del" onClick={() => removePayment(p.id)} title="Delete"><Icon name="trash" size={14} /></button></span>
+              </div>
+            ))}
           </section>
           {history && history.recentItems.length > 0 && (
             <section className="card">
@@ -313,12 +393,33 @@ export default function CustomersScreen() {
           onClose={() => {
             setVoiceOpen(false)
             setBillCustomer(null)
-            if (detail) openDetail(detail)
+            if (detail) refreshDetail()
             else refresh()
           }}
           initialCustomer={billCustomer}
         />
       )}
+
+      {payModal && (
+        <div className="modal-mask" onClick={() => setPayModal(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-title">Receive Payment — {detail.name}</div>
+            <div className="ip-muted" style={{ margin: '6px 0 10px' }}>Outstanding: {inrFull(summary ? summary.outstanding : 0)}</div>
+            <label className="form-label">Amount ₹ <input className="input" inputMode="decimal" value={payModal.amount} onChange={(e) => setPayModal({ ...payModal, amount: e.target.value })} /></label>
+            <label className="form-label">Mode</label>
+            <select className="input" value={payModal.mode} onChange={(e) => setPayModal({ ...payModal, mode: e.target.value })}>
+              {['Cash', 'UPI', 'Bank Transfer', 'Cheque', 'Other'].map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+            {payMsg && <div className="err">{payMsg}</div>}
+            <div className="row-actions">
+              <button className="btn" onClick={savePayment}>Save Payment</button>
+              <button className="btn btn-ghost" onClick={() => { setPayModal(null); setPayMsg('') }}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {upiOpen && <UpiQrModal open={upiOpen} onClose={() => setUpiOpen(false)} company={company} amount={upiAmount} ref={'Cust-' + detail.id} />}
     </div>
   )
 }

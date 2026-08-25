@@ -205,3 +205,77 @@ test('conversation: multiple historical rates produce clarification', async () =
   assert.equal(r.status, 'needs_info')
   assert.match(r.message, /58|61/)
 })
+
+test('payment: record amount + customer via voice, then confirm executes', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const customers = [{ name: 'Vijay Singh', id: 'c1' }]
+  const ctx = { customers, stockItems: [], company: null, resolveCustomer: async (name) => { const h = customers.filter(c => c.name.toLowerCase().includes(name.toLowerCase())); return { customer: h.length === 1 ? h[0] : null, ambiguous: h.length > 1 ? h : [] } } }
+  const t = await cm.processTurn(id, 'Vijay Singh ne 50 hazaar diye hain', parseLocal('Vijay Singh ne 50 hazaar diye hain', customers), ctx)
+  assert.equal(t.status, 'payment_confirm')
+  assert.equal(t.renderFinance.amount, 50000)
+  assert.equal(t.renderFinance.customer.name, 'Vijay Singh')
+  const t2 = await cm.processTurn(id, 'Haan', parseLocal('Haan', customers), ctx)
+  assert.equal(t2.status, 'payment_execute')
+})
+
+test('payment: missing amount asks amount', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const customers = [{ name: 'Vijay Singh', id: 'c1' }]
+  const ctx = { customers, stockItems: [], company: null, resolveCustomer: async (name) => { const h = customers.filter(c => c.name.toLowerCase().includes(name.toLowerCase())); return { customer: h.length === 1 ? h[0] : null, ambiguous: [] } } }
+  const t = await cm.processTurn(id, 'Vijay Singh ka payment jama kar do', parseLocal('Vijay Singh ka payment jama kar do', customers), ctx)
+  assert.equal(t.status, 'payment_needs_info')
+  assert.match(t.message, /Kitna|payment/)
+})
+
+test('payment: ambiguous customer asks which', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const customers = [{ name: 'Vijay Singh', id: 'a' }, { name: 'Vijay Traders', id: 'b' }]
+  const ctx = { customers, stockItems: [], company: null, resolveCustomer: async (name) => { const h = customers.filter(c => c.name.toLowerCase().includes(name.toLowerCase())); return { customer: null, ambiguous: h.length > 1 ? h : [] } } }
+  const t = await cm.processTurn(id, 'Vijay ne 20 hazaar diye', parseLocal('Vijay ne 20 hazaar diye', customers), ctx)
+  assert.equal(t.status, 'ambiguous_customer')
+  assert.match(t.message, /do customer/)
+})
+
+test('payment: khata query returns status', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const customers = [{ name: 'Vijay Singh', id: 'c1' }]
+  const ctx = { customers, stockItems: [], company: null }
+  const t = await cm.processTurn(id, 'Vijay Singh ka khata dikhao', parseLocal('Vijay Singh ka khata dikhao', customers), ctx)
+  assert.equal(t.status, 'khata_query')
+  assert.equal(t.customerName, 'Vijay Singh')
+})
+
+test('payment: upi qr request returns status', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const customers = [{ name: 'Vijay Singh', id: 'c1' }]
+  const ctx = { customers, stockItems: [], company: null, resolveCustomer: async () => ({ customer: null, ambiguous: [] }) }
+  const t = await cm.processTurn(id, 'Vijay Singh ko payment ke liye QR dikhao', parseLocal('Vijay Singh ko payment ke liye QR dikhao', customers), ctx)
+  assert.equal(t.status, 'upi_qr')
+  assert.equal(t.customerName, 'Vijay Singh')
+})
+
+test('payment: last payment query returns status', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const customers = [{ name: 'Vijay Singh', id: 'c1' }]
+  const ctx = { customers, stockItems: [], company: null }
+  const t = await cm.processTurn(id, 'Vijay Singh ki last payment kab aayi', parseLocal('Vijay Singh ki last payment kab aayi', customers), ctx)
+  assert.equal(t.status, 'last_payment_query')
+  assert.equal(t.customerName, 'Vijay Singh')
+})
+
+test('payment: existing bill flow unchanged', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const customers = [{ name: 'Ramesh', id: 'c1', billType: 'kaccha' }]
+  const ctx = { customers, stockItems: [], company: null, resolveCustomer: async () => ({ customer: null, ambiguous: [] }) }
+  await cm.processTurn(id, 'Ramesh ke naam 50 bag cement 390 ke bill bana do', parseLocal('Ramesh ke naam 50 bag cement 390 ke bill bana do', customers), ctx)
+  assert.equal(cm.canExecute(id), true)
+  const draft = cm.draftForExecution(id)
+  assert.equal(draft.items[0].rate, 390)
+})

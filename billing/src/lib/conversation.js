@@ -42,11 +42,15 @@ function bareProductItems(text) {
 function cleanName(s) { return String(s || '').trim().split(/\s+/).map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : '')).join(' ') }
 
 function extractCustomerName(text, knownNames) {
-  const m = String(text || '').match(/([a-z][a-z\s.]{1,30}?)\s+(?:ka|ke|ko|ki|का|के|को)\s+(?:bill|naam|name)/i)
+  const m = String(text || '').match(/([a-z][a-z\s.]{1,30}?)\s+(?:ka|ke|ko|ki|का|के|को)\s+(?:bill|naam|name|khata)/i)
   if (m) return cleanName(m[1])
+  const ne = String(text || '').match(/([a-z][a-z\s.]{1,30}?)\s+ne\s+(?:\d|payment|rupaye|rupay|hazaar|hajar|lakh|lac|diye|diya|dii)/i)
+  if (ne) return cleanName(ne[1])
   for (const n of knownNames || []) if (String(text || '').toLowerCase().includes(String(n).toLowerCase())) return n
   return ''
 }
+
+function customerNames(ctx) { return ((ctx && ctx.customers) || []).map((c) => String(c.name || '')) }
 
 function detectBillIntent(text) { return /bill|bana|laga/i.test(String(text || '')) }
 
@@ -69,6 +73,69 @@ function isConfirm(text) {
 }
 
 function isReject(text) { return /^nahi|^no|^na\b|^mat karo|^cancel/.test(String(text || '').toLowerCase().trim()) }
+
+function financeFresh() {
+  return { customer: null, customerId: null, amount: 0, method: 'Cash', invoiceId: '', invoiceRef: '', note: '', qrRequested: false, confirmed: false, executed: false }
+}
+
+function financeMissing(f) {
+  const missing = []
+  if (!f.customer || !f.customer.name) missing.push('customer')
+  if (!f.amount || f.amount <= 0) missing.push('amount')
+  return missing
+}
+
+function financeSummary(f) {
+  const parts = []
+  if (f.customer && f.customer.name) parts.push('Customer: ' + f.customer.name)
+  if (f.amount) parts.push('Payment: ₹' + f.amount)
+  if (f.method) parts.push(f.method)
+  if (f.invoiceRef) parts.push('Bill ' + f.invoiceRef)
+  return parts.join(' | ')
+}
+
+function askForFinance(field) {
+  return field === 'customer' ? 'Customer ka naam batao.' : 'Kitna payment? Bolo jaise "50 hazaar".'
+}
+
+function detectPaymentMethod(text) {
+  const t = String(text || '').toLowerCase()
+  if (/\bcash\b|naqad/.test(t)) return 'Cash'
+  if (/\bupi\b|phone pe|phonepe|gpay|google pay|paytm/.test(t)) return 'UPI'
+  if (/bank transfer|bank|transfer|neft|imps/.test(t)) return 'Bank Transfer'
+  if (/cheque|check/.test(t)) return 'Cheque'
+  return null
+}
+
+function extractAmount(text) {
+  const t = String(text || '')
+  const tokens = []
+  const re = /₹?\s*(\d+(?:[.,]\d+)?)\s*(hazaar|hajar|lakh|lac)?\s*(rupaye|rupay|rs|rupe)?/gi
+  let m
+  while ((m = re.exec(t)) !== null) {
+    let n = parseFloat(m[1].replace(/,/g, ''))
+    const mult = (m[2] || '').toLowerCase()
+    if (mult === 'lakh' || mult === 'lac') n *= 100000
+    else if (mult) n *= 1000
+    if (n > 0) tokens.push(n)
+  }
+  return tokens.length ? Math.max(...tokens) : 0
+}
+
+function extractInvoiceRef(text) {
+  const m = String(text || '').match(/(?:bill|invoice)\s*#?\s*(\d{3,4})/i)
+  return m ? m[1] : ''
+}
+
+function detectFinanceIntent(text) {
+  const t = String(text || '').toLowerCase()
+  if (/khata|ledger/.test(t) && /dikhao|dikha|show|ka khata/.test(t)) return { kind: 'khata' }
+  if (/last\s*(payment|rupaye)|aakhri\s*(payment|rupaye)|akhir\s*(payment|rupaye)/.test(t)) return { kind: 'last_payment' }
+  if (/kitna\s*(payment|rupaye)\s*(diya|dii|aaye)|kitne\s*(payment|rupaye)|total\s*(payment|rupaye)|payment\s*total/.test(t)) return { kind: 'total_paid' }
+  if (/\bqr\b|upi\s*(dikhao|bana|dikha)|payment ke liye (qr|upi)/.test(t)) return { kind: 'upi_qr' }
+  if (/(payment|jama|bhar\s*(diye|diya|dii|kar)|de\s*diye|diye|diya|dii|rupaye\s*(diye|diya|dii))/.test(t) && !/kitna|kitni|baki|kaun|khata|last/.test(t)) return { kind: 'record' }
+  return null
+}
 
 function computeMissing(c) {
   const missing = []
@@ -104,7 +171,7 @@ export class ConversationManager {
   constructor() { this.convos = new Map() }
 
   fresh(id) {
-    return { id, createdAt: Date.now(), lastActivity: Date.now(), intent: null, customer: null, customerId: null, items: [], billType: null, gstin: null, transport: null, asked: new Set(), confirmed: false, executed: false, result: null, pendingSuggestion: null, noSuggest: new Set() }
+    return { id, createdAt: Date.now(), lastActivity: Date.now(), intent: null, customer: null, customerId: null, items: [], billType: null, gstin: null, transport: null, asked: new Set(), confirmed: false, executed: false, result: null, pendingSuggestion: null, noSuggest: new Set(), finance: null }
   }
 
   newConversation() { const id = 'convo-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6); this.convos.set(id, this.fresh(id)); return id }
@@ -131,6 +198,20 @@ export class ConversationManager {
     else if (s.field === 'rate' && c.items.length) c.items = c.items.map((it) => (Number(it.rate) ? it : { ...it, rate: s.value }))
     else if (s.field === 'item') c.items = [{ name: s.value, qty: 0, rate: 0, unit: s.unit || 'bag' }]
   }
+
+  async resolveFinanceCustomer(c, ctx) {
+    if (!c.finance || !c.finance.customer || !c.finance.customer.name || c.finance.customer._resolved) return null
+    if (!ctx || !ctx.resolveCustomer) { c.finance.customer._resolved = true; return null }
+    const res = await ctx.resolveCustomer(c.finance.customer.name)
+    if (res && res.ambiguous && res.ambiguous.length > 1) {
+      return { status: 'ambiguous_customer', message: 'Is naam ke do customer mil rahe hain: ' + res.ambiguous.map((x) => x.name).join(', ') + '. Kaunsa?', summary: financeSummary(c.finance) }
+    }
+    if (res && res.customer) { c.finance.customer = { name: res.customer.name, mobile: res.customer.mobile || '', _id: res.customer.id, _resolved: true }; c.finance.customerId = res.customer.id }
+    else if (c.finance.customer) c.finance.customer._resolved = true
+    return null
+  }
+
+  markFinanceExecuted(id) { const c = this.convos.get(id); if (c && c.finance) { c.finance.executed = true; c.finance.confirmed = true } }
 
   async resolveCustomerAmbiguity(c, ctx) {
     if (!c.customer || !c.customer.name || c.customer._resolved) return null
@@ -208,7 +289,7 @@ export class ConversationManager {
     const t = String(text || '').toLowerCase().trim()
 
     if (c.executed) {
-      const startsNew = detectBillIntent(t) || (parsed && parsed.intent === 'create_bill')
+      const startsNew = detectBillIntent(t) || (parsed && parsed.intent === 'create_bill') || !!detectFinanceIntent(t)
       if (!startsNew) return { status: 'none', message: 'Bill ban gaya tha. Naya bill banane ke liye bolo.' }
       const fresh = this.fresh(id); fresh.id = id; this.convos.set(id, fresh); c = fresh
     }
@@ -221,8 +302,53 @@ export class ConversationManager {
       c.pendingSuggestion = null // user answered something else — clear suggestion and continue
     }
 
+    // 0) FINANCE intents (payments, khata, UPI)
+    const fin = detectFinanceIntent(t)
+    if (fin) {
+      if (fin.kind === 'khata') {
+        const nm = extractCustomerName(text, customerNames(ctx)) || (c.finance && c.finance.customer && c.finance.customer.name) || ''
+        return { status: 'khata_query', customerName: nm }
+      }
+      if (fin.kind === 'last_payment') {
+        const nm = extractCustomerName(text, customerNames(ctx)) || ''
+        return { status: 'last_payment_query', customerName: nm }
+      }
+      if (fin.kind === 'total_paid') {
+        const nm = extractCustomerName(text, customerNames(ctx)) || ''
+        return { status: 'total_paid_query', customerName: nm }
+      }
+      if (fin.kind === 'upi_qr') {
+        if (!c.finance || c.finance.executed) c.finance = financeFresh()
+        const nm = extractCustomerName(text, customerNames(ctx))
+        if (nm) { c.finance.customer = { name: nm }; const amb = await this.resolveFinanceCustomer(c, ctx); if (amb) return amb }
+        const amt = extractAmount(text)
+        if (amt > 0) c.finance.amount = amt
+        c.finance.qrRequested = true
+        return { status: 'upi_qr', customerName: (c.finance.customer && c.finance.customer.name) || nm || '', amount: amt || 0, summary: financeSummary(c.finance) }
+      }
+      // record payment
+      if (!c.finance || c.finance.executed) c.finance = financeFresh()
+      c.finance.qrRequested = false
+      const amt = extractAmount(text)
+      if (amt > 0) c.finance.amount = amt
+      const meth = detectPaymentMethod(text)
+      if (meth) c.finance.method = meth
+      const invRef = extractInvoiceRef(text)
+      if (invRef) c.finance.invoiceRef = invRef
+      const nm = extractCustomerName(text, customerNames(ctx))
+      if (nm) { c.finance.customer = { name: nm }; const amb = await this.resolveFinanceCustomer(c, ctx); if (amb) return amb }
+      const fmissing = financeMissing(c.finance)
+      if (fmissing.length) return { status: 'payment_needs_info', message: askForFinance(fmissing[0]), summary: financeSummary(c.finance), missing: fmissing }
+      return { status: 'payment_confirm', message: 'Payment record karun? ' + financeSummary(c.finance), summary: financeSummary(c.finance), renderFinance: { ...c.finance } }
+    }
+
     // 1) Confirmation answer
     if (isConfirm(t)) {
+      if (c.finance && !c.finance.executed) {
+        const fmissing = financeMissing(c.finance)
+        if (fmissing.length) return { status: 'payment_needs_info', message: askForFinance(fmissing[0]), summary: financeSummary(c.finance) }
+        return { status: 'payment_execute', message: 'Payment record karta hoon.', summary: financeSummary(c.finance) }
+      }
       if (c.intent === 'create_bill' && computeMissing(c).length === 0) { return { status: 'execute', message: summaryText(c) } }
       return { status: 'needs_info', message: c.intent === 'create_bill' ? MESSAGES[computeMissing(c)[0]] : 'Kuch nahi bana — pehle batao kya karna hai.' }
     }
@@ -266,7 +392,7 @@ export class ConversationManager {
 
     // 5) Bill intent from text
     if (!c.intent && detectBillIntent(t)) {
-      c.intent = 'create_bill'; const nm = extractCustomerName(text, ctx && ctx.customers)
+      c.intent = 'create_bill'; const nm = extractCustomerName(text, customerNames(ctx))
       if (nm) {
         const known = (ctx.customers || []).find((x) => String(x.name).toLowerCase() === String(nm).toLowerCase())
         c.customer = { name: nm, mobile: (known && known.mobile) || '', gstin: (known && known.gstin) || '' }

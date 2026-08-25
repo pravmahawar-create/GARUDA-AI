@@ -5,6 +5,8 @@ import { parseVoice, normalizeDevanagari } from '../lib/voice'
 import { ConversationManager } from '../lib/conversation'
 import { getCustomerHistory, findCustomerByRef } from '../lib/customerContext'
 import { executeCreateBill } from '../lib/voiceExecutor'
+import { recordPayment, getLedger, getLastPayment, getTotalPaid, customerOutstanding } from '../lib/ledger'
+import UpiQrModal from './UpiQrModal'
 import { SpeechRecognition } from '@capacitor-community/speech-recognition'
 import { navigate } from '../App'
 import { Icon } from './Icon'
@@ -41,6 +43,9 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
   const [company, setCompany] = useState(null)
   const [clickDiag, setClickDiag] = useState(false)
   const [draftNote, setDraftNote] = useState('')
+  const [financeDraft, setFinanceDraft] = useState(null)
+  const [upiOpen, setUpiOpen] = useState(false)
+  const [upiAmount, setUpiAmount] = useState(0)
   const recRef = useRef(null)
   const mediaRef = useRef(null)
   const streamRef = useRef(null)
@@ -52,7 +57,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
 
   useEffect(() => {
     if (!open) return
-    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setConfirmedInvoiceId(null); setErrMsg(''); setStockResult(null); setDraftNote('')
+    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setConfirmedInvoiceId(null); setErrMsg(''); setStockResult(null); setDraftNote(''); setFinanceDraft(null); setUpiOpen(false)
     ;(async () => setCompany(await getActiveCompany()))()
   }, [open])
 
@@ -149,7 +154,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
       // small delay to let Android reset
       await new Promise((r) => setTimeout(r, 300))
     }
-    setErrMsg(''); setMessage(''); setStockResult(null)
+    setErrMsg(''); setMessage(''); setStockResult(null); setFinanceDraft(null)
     // CLEANUP any stale session before starting — critical for consecutive commands, non-blocking
     console.log('[VOICE] cleanup start')
     try { await withTimeout(SpeechRecognition.stop().catch(()=>{}), 1000, 'cleanup stop') } catch (e) { console.log('[VOICE] cleanup stop timeout/error', e && e.message) }
@@ -367,6 +372,66 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
         if (turn.status === 'intent_switch') {
           setMessage(turn.message)
           speak(turn.message)
+          return
+        }
+        if (turn.status === 'payment_confirm') {
+          setResult(null)
+          setFinanceDraft(turn.renderFinance || null)
+          let msg = turn.message
+          const f = turn.renderFinance
+          if (f && f.customerId) {
+            const out = await customerOutstanding(f.customerId, company?.id || '')
+            if (out < f.amount) msg = msg + ' Baki ₹' + out + ' hai — ₹' + (f.amount - out) + ' advance ke roop mein rakhu?'
+          }
+          setMessage(msg); speak(msg)
+          return
+        }
+        if (turn.status === 'payment_needs_info') {
+          setResult(null); setFinanceDraft(null); setMessage(turn.message); speak(turn.message); return
+        }
+        if (turn.status === 'payment_execute') {
+          try {
+            const f = conversation.current.get(convoIdRef.current) && conversation.current.get(convoIdRef.current).finance
+            if (!f || f.executed) { setMessage('Payment already record ho gaya tha.'); return }
+            const pay = await recordPayment({ customerId: f.customerId, invoiceId: f.invoiceId || '', amount: f.amount, date: '', mode: f.method || 'Cash', note: f.note || '', companyId: company?.id || '' })
+            conversation.current.markFinanceExecuted(convoIdRef.current)
+            setFinanceDraft(null)
+            const out = await customerOutstanding(f.customerId, company?.id || '')
+            const msg = 'Payment ₹' + pay.amount + ' record ho gaya. ' + (f.customer && f.customer.name || '') + ' ka remaining baki ' + inrFull(out) + ' hai.'
+            setMessage(msg); speak('Payment record ho gaya. Baki ' + out + ' rupaye.')
+          } catch (e) { console.error('[GARUDA] payment error:', e); setErrMsg('Payment nahi hua: ' + (e && e.message ? e.message : e)) }
+          return
+        }
+        if (turn.status === 'khata_query' || turn.status === 'last_payment_query' || turn.status === 'total_paid_query') {
+          const name = turn.customerName || ''
+          const cust = customers.find((c) => String(c.name).toLowerCase() === String(name).toLowerCase())
+          if (!cust) { const msg = name ? (name + ' customer list mein nahi mila.') : 'Customer ka naam batao.'; setMessage(msg); speak(msg); return }
+          if (turn.status === 'khata_query') {
+            const rows = await getLedger(cust.id)
+            if (!rows.length) { const msg = cust.name + ' ka khata khali hai.'; setMessage(msg); speak(msg); return }
+            const lines = rows.map((r) => (r.type === 'bill' ? 'Bill ' + r.ref + ' ₹' + r.debit + ' — Balance ₹' + r.balance : r.ref + ' ₹' + r.credit + ' — Balance ₹' + r.balance))
+            const msg = cust.name + ' ka khata:\n' + lines.join('\n')
+            setMessage(msg); setStockResult({ operation: 'khata', lines }); speak(cust.name + ' ka khata ' + rows.length + ' entry hai.')
+          } else if (turn.status === 'last_payment_query') {
+            const lp = await getLastPayment(cust.id)
+            const msg = lp ? (cust.name + ' ki last payment ' + lp.date + ' ko ' + inrFull(lp.amount) + ' (' + lp.mode + ') aayi thi.') : (cust.name + ' ki abhi tak koi payment nahi aayi.')
+            setMessage(msg); speak(msg)
+          } else {
+            const tp = await getTotalPaid(cust.id)
+            const msg = cust.name + ' ne total ' + inrFull(tp) + ' payment diya hai.'
+            setMessage(msg); speak(msg)
+          }
+          return
+        }
+        if (turn.status === 'upi_qr') {
+          const name = turn.customerName || ''
+          const cust = customers.find((c) => String(c.name).toLowerCase() === String(name).toLowerCase())
+          let amt = Number(turn.amount) || 0
+          if (!amt && cust) amt = Math.max(0, await customerOutstanding(cust.id, company?.id || ''))
+          const msg = cust ? (cust.name + ' ka outstanding ' + inrFull(amt) + ' hai. QR bana raha hoon.') : (name ? name + ' customer list mein nahi mila.' : 'Customer ka naam batao.')
+          setMessage(msg); speak(cust ? 'QR bana raha hoon' : 'Customer ka naam batao')
+          setUpiAmount(amt)
+          setUpiOpen(true)
           return
         }
         setResult(null)
@@ -645,6 +710,19 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
     } catch (e) { setErrMsg(e.message) }
   }
 
+  const confirmPayment = async () => {
+    try {
+      const f = conversation.current.get(convoIdRef.current) && conversation.current.get(convoIdRef.current).finance
+      if (!f || f.executed || !f.customerId || !f.amount) { setMessage('Payment details nahi hain.'); return }
+      const pay = await recordPayment({ customerId: f.customerId, invoiceId: f.invoiceId || '', amount: f.amount, date: '', mode: f.method || 'Cash', note: f.note || '', companyId: company?.id || '' })
+      conversation.current.markFinanceExecuted(convoIdRef.current)
+      setFinanceDraft(null)
+      const out = await customerOutstanding(f.customerId, company?.id || '')
+      const msg = 'Payment ₹' + pay.amount + ' record ho gaya. ' + (f.customer && f.customer.name || '') + ' ka remaining baki ' + inrFull(out) + ' hai.'
+      setMessage(msg); speak('Payment record ho gaya. Baki ' + out + ' rupaye.')
+    } catch (e) { console.error('[GARUDA] payment error:', e); setErrMsg('Payment nahi hua: ' + (e && e.message ? e.message : e)) }
+  }
+
   return (
     <div className="modal-mask" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -736,7 +814,20 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
           </div>
         )}
 
-        {!result && message && !busy && !listening && <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>}
+        {financeDraft && (
+          <div className="card">
+            <div className="vm-sec vm-accent">Payment</div>
+            <div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div>
+            <div className="actions" style={{ marginTop: 8 }}>
+              <button className="primary" onClick={confirmPayment}><Icon name="check" size={14} /> Confirm & Record Payment</button>
+              <button className="ghost" onClick={() => { conversation.current.get(convoIdRef.current) && (conversation.current.get(convoIdRef.current).finance = null); setFinanceDraft(null) }}>Cancel</button>
+            </div>
+          </div>
+        )}
+
+        {!result && message && !busy && !listening && !financeDraft && <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>}
+
+        {upiOpen && <UpiQrModal open={upiOpen} onClose={() => setUpiOpen(false)} company={company} amount={upiAmount} ref={confirmedInvoiceId ? 'Inv-' + confirmedInvoiceId : ''} />}
       </div>
     </div>
   )
