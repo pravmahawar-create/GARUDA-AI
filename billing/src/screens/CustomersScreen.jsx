@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { db, enqueue } from '../db'
 import { inrFull } from '../lib/money'
 import { buildKhataPdf } from '../lib/pdf'
+import { getCustomerHistory, getCustomerSummary } from '../lib/customerContext'
 import { navigate } from '../App'
 import GstVerifyModal from '../components/GstVerifyModal'
+import VoiceModal from '../components/VoiceModal'
 import { Icon } from '../components/Icon'
 
 export default function CustomersScreen() {
@@ -15,6 +17,23 @@ export default function CustomersScreen() {
   const [deleting, setDeleting] = useState(null)
   const [busy, setBusy] = useState(false)
   const [adding, setAdding] = useState(null)
+  const [detail, setDetail] = useState(null)
+  const [history, setHistory] = useState(null)
+  const [summary, setSummary] = useState(null)
+  const [voiceOpen, setVoiceOpen] = useState(false)
+  const [billCustomer, setBillCustomer] = useState(null)
+
+  const openDetail = async (c) => {
+    setDetail(c)
+    const [h, s] = await Promise.all([getCustomerHistory(c.id), getCustomerSummary(c.id)])
+    setHistory(h)
+    setSummary(s)
+  }
+
+  const startBill = (c) => {
+    setBillCustomer(c)
+    setVoiceOpen(true)
+  }
 
   const refresh = async () => {
     const custs = await db.customers.toArray()
@@ -125,7 +144,64 @@ export default function CustomersScreen() {
 
       <input className="input search-input" placeholder="Naam / mobile / GSTIN se dhundo" value={q} onChange={(e) => setQ(e.target.value)} />
 
-      {shown.length === 0 && (
+      {detail && (
+        <div className="screen">
+          <header className="topbar backbar">
+            <button className="back" onClick={() => { setDetail(null); setHistory(null); setSummary(null); refresh() }}>‹</button>
+            <div className="top-title">{detail.name}</div>
+            <button className="mini-add" onClick={() => startBill(detail)}><Icon name="mic" size={14} /> Bill Banaao</button>
+          </header>
+          {summary && (
+            <div className="sm-summary" style={{ marginTop: 10 }}>
+              <div className="sm-sum-item"><div className="sm-sum-v">{summary.bills}</div><div className="sm-sum-l">Bills</div></div>
+              <div className="sm-sum-item"><div className="sm-sum-v">{inrFull(summary.sales)}</div><div className="sm-sum-l">Sales</div></div>
+              <div className="sm-sum-item"><div className={`sm-sum-v ${summary.outstanding > 0 ? 'due' : ''}`}>{inrFull(summary.outstanding)}</div><div className="sm-sum-l">Outstanding</div></div>
+            </div>
+          )}
+          <section className="card">
+            <div className="card-title">Details</div>
+            <div className="vc-item"><span>Mobile</span><span>{detail.mobile || '—'}</span></div>
+            <div className="vc-item"><span>GSTIN</span><span>{detail.gstin || '—'}</span></div>
+            <div className="vc-item"><span>Bill Type</span><span className={`billtype-badge ${detail.billType === 'gst' || detail.gstin ? 'bt-gst' : 'bt-kaccha'}`}>{detail.billType === 'gst' || detail.gstin ? 'GST' : 'Kaccha'}</span></div>
+            <div className="vc-item"><span>Last Transaction</span><span>{summary && summary.lastDate ? summary.lastDate : '—'}</span></div>
+            <div className="vc-item"><span>Credit Limit</span><span>{detail.creditLimit > 0 ? inrFull(detail.creditLimit) : '—'}</span></div>
+          </section>
+          {history && history.recentItems.length > 0 && (
+            <section className="card">
+              <div className="card-title">Recent Items</div>
+              {history.recentItems.slice(0, 5).map((it, i) => (
+                <div className="vc-item" key={i}>
+                  <span>{it.name}</span>
+                  <span className="ip-muted">{it.date} · {it.qty} {it.unit} × ₹{it.rate}</span>
+                </div>
+              ))}
+            </section>
+          )}
+          {history && history.recentBills.length > 0 && (
+            <section className="card">
+              <div className="card-title">Recent Bills</div>
+              {history.recentBills.slice(0, 8).map((inv) => (
+                <div className="rec-row" key={inv.id} onClick={() => navigate('#/invoice?id=' + inv.id)}>
+                  <div className="rec-left">
+                    <div className="rec-name">#{inv.invoiceNo} — {inrFull(inv.totals?.grandTotal || 0)}</div>
+                    <div className="rec-meta">{inv.date} · <span className={`billtype-badge ${inv.billType === 'gst' ? 'bt-gst' : 'bt-kaccha'}`}>{inv.billType === 'gst' ? 'GST' : 'KACCHA'}</span></div>
+                  </div>
+                  <Icon name="chevronRight" size={16} />
+                </div>
+              ))}
+            </section>
+          )}
+          {!history || (history.recentBills.length === 0 && (
+            <div className="empty" style={{ marginTop: 10 }}>
+              <div className="empty-title">No transactions yet</div>
+              <div className="empty-sub" style={{ marginBottom: 10 }}>Is customer ka abhi koi bill nahi hai.</div>
+              <button className="btn btn-big" onClick={() => startBill(detail)}><Icon name="mic" size={15} /> Bill Banaao</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!detail && shown.length === 0 && (
         <div className="empty">
           <div className="empty-sigil"><Icon name="users" size={44} /></div>
           <div className="empty-title">Abhi koi customer nahi</div>
@@ -135,7 +211,7 @@ export default function CustomersScreen() {
       {shown.map((c) => {
         const o = outstanding[c.id]
         return (
-          <div className="card cust-row" key={c.id}>
+          <div className="card cust-row" key={c.id} onClick={() => openDetail(c)} style={{ cursor: 'pointer' }}>
             <div style={{ minWidth: 0 }}>
               <div className="cust-name">{c.name}
                 <span className={`billtype-badge ${(c.billType === 'gst' || c.gstin) ? 'bt-gst' : 'bt-kaccha'}`} style={{ marginLeft: 6 }}>{c.billType === 'gst' || c.gstin ? 'GST' : 'KACCHA'}</span>
@@ -150,9 +226,9 @@ export default function CustomersScreen() {
                 <div className="ip-muted">{o && o.balance > 0 ? 'baki' : 'clear'}</div>
               </div>
               <div className="row-actions" style={{ justifyContent: 'flex-end' }}>
-                <button className="btn btn-sm" onClick={() => shareKhata(c)}><Icon name="book" size={15} /> Khata</button>
-                <button className="btn btn-sm" onClick={() => setEditing(c)}><Icon name="edit" size={15} /></button>
-                <button className="btn btn-sm btn-danger" onClick={() => setDeleting(c)}><Icon name="trash" size={15} /></button>
+                <button className="btn btn-sm" onClick={(e) => { e.stopPropagation(); shareKhata(c) }}><Icon name="book" size={15} /> Khata</button>
+                <button className="btn btn-sm" onClick={(e) => { e.stopPropagation(); setEditing(c) }}><Icon name="edit" size={15} /></button>
+                <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); setDeleting(c) }}><Icon name="trash" size={15} /></button>
               </div>
             </div>
           </div>
@@ -230,6 +306,19 @@ export default function CustomersScreen() {
       )}
 
       {gstOpen && <GstVerifyModal open={gstOpen} onClose={() => setGstOpen(false)} />}
+
+      {voiceOpen && (
+        <VoiceModal
+          open={voiceOpen}
+          onClose={() => {
+            setVoiceOpen(false)
+            setBillCustomer(null)
+            if (detail) openDetail(detail)
+            else refresh()
+          }}
+          initialCustomer={billCustomer}
+        />
+      )}
     </div>
   )
 }

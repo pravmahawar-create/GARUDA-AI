@@ -3,6 +3,7 @@ import { db, applyStockOp, getStockQty, findStockItem, getActiveCompany, canonic
 import { inrFull, calcBill } from '../lib/money'
 import { parseVoice, normalizeDevanagari } from '../lib/voice'
 import { ConversationManager } from '../lib/conversation'
+import { getCustomerHistory, findCustomerByRef } from '../lib/customerContext'
 import { executeCreateBill } from '../lib/voiceExecutor'
 import { SpeechRecognition } from '@capacitor-community/speech-recognition'
 import { navigate } from '../App'
@@ -27,7 +28,7 @@ function speak(text) {
   } catch (e) {}
 }
 
-export default function VoiceModal({ open, onClose }) {
+export default function VoiceModal({ open, onClose, initialCustomer }) {
   const [listening, setListening] = useState(false)
   const [transcript, setTranscript] = useState('')
   const [result, setResult] = useState(null)
@@ -56,9 +57,11 @@ export default function VoiceModal({ open, onClose }) {
   }, [open])
 
   useEffect(() => {
-    convoIdRef.current = conversation.current.newConversation()
-    return () => conversation.current.endConversation(convoIdRef.current)
-  }, [])
+    const id = conversation.current.newConversation()
+    convoIdRef.current = id
+    if (initialCustomer) conversation.current.seedCustomer(id, initialCustomer)
+    return () => conversation.current.endConversation(id)
+  }, [initialCustomer])
 
   useEffect(() => {
     return () => {
@@ -326,7 +329,8 @@ export default function VoiceModal({ open, onClose }) {
       const isNonBill = ['query_outstanding', 'query_report', 'query_delivery', 'stock_entry', 'stock_query', 'stock_ledger_query'].includes(parsed.intent)
       if (!isNonBill) {
         // BILL / FIELD / CLARIFY turn → conversational layer (never auto-executes)
-        const turn = conversation.current.processTurn(convoIdRef.current, text, parsed, { customers, stockItems, company })
+        const bizCtx = { customers, stockItems, company, getHistory: (cid) => getCustomerHistory(cid), resolveCustomer: (name) => findCustomerByRef(customers, name) }
+        const turn = await conversation.current.processTurn(convoIdRef.current, text, parsed, bizCtx)
         setDraftNote(turn.summary || '')
         if (turn.status === 'execute') {
           try {
@@ -354,7 +358,7 @@ export default function VoiceModal({ open, onClose }) {
           speak(turn.message)
           return
         }
-        if (turn.status === 'needs_info') {
+        if (turn.status === 'needs_info' || turn.status === 'suggest' || turn.status === 'ambiguous_customer') {
           setResult(null)
           setMessage(turn.message)
           speak(turn.message)
