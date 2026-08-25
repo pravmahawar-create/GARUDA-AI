@@ -44,8 +44,10 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
   const [clickDiag, setClickDiag] = useState(false)
   const [draftNote, setDraftNote] = useState('')
   const [financeDraft, setFinanceDraft] = useState(null)
+  const [inventoryDraft, setInventoryDraft] = useState(null)
   const [upiOpen, setUpiOpen] = useState(false)
   const [upiAmount, setUpiAmount] = useState(0)
+  const inventoryExecutedRef = useRef(false)
   const recRef = useRef(null)
   const mediaRef = useRef(null)
   const streamRef = useRef(null)
@@ -54,10 +56,12 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
   const conversation = useRef(new ConversationManager())
   const convoIdRef = useRef(null)
   const executingRef = useRef(false)
+  const langRef = useRef('hi-IN')
+  const restartTimerRef = useRef(null)
 
   useEffect(() => {
     if (!open) return
-    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setConfirmedInvoiceId(null); setErrMsg(''); setStockResult(null); setDraftNote(''); setFinanceDraft(null); setUpiOpen(false)
+    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setConfirmedInvoiceId(null); setErrMsg(''); setStockResult(null); setDraftNote(''); setFinanceDraft(null); setUpiOpen(false); setInventoryDraft(null); inventoryExecutedRef.current = false
     ;(async () => setCompany(await getActiveCompany()))()
   }, [open])
 
@@ -74,6 +78,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
       try { if (mediaRef.current) mediaRef.current.stop() } catch (e) {}
       try { if (native) SpeechRecognition.stop() } catch (e) {}
       if (listenTimerRef.current) clearTimeout(listenTimerRef.current)
+      if (restartTimerRef.current) { clearTimeout(restartTimerRef.current); restartTimerRef.current = null }
     }
   }, [])
 
@@ -83,6 +88,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
 
   const stop = async () => {
     clearListenTimer()
+    if (restartTimerRef.current) { clearTimeout(restartTimerRef.current); restartTimerRef.current = null }
     try { if (native) await SpeechRecognition.stop() } catch (e) {}
     try { if (mediaRef.current) mediaRef.current.stop() } catch (e) {}
     try { recRef.current && recRef.current.stop() } catch (e) {}
@@ -143,16 +149,87 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
     }
   }
 
-  const start = async () => {
+  // One SpeechRecognition window. Preserves the logical conversation (draft) across windows and
+  // auto-restarts when continuous-entry mode is active.
+  const startRecognitionWindow = async (lang) => {
+    let text = ''
+    let partialListener = null
+    let listeningListener = null
+    try {
+      partialListener = await SpeechRecognition.addListener('partialResults', (data) => {
+        if (data && data.matches && data.matches[0]) {
+          text = String(data.matches[0] || '').trim()
+          transcriptRef.current = text
+          setTranscript(text)
+        }
+      })
+      listeningListener = await SpeechRecognition.addListener('listeningState', () => {})
+    } catch (e) { console.log('[VOICE_ERROR] addListener failed', e && e.message) }
+    listenTimerRef.current = setTimeout(() => { console.log('[VOICE] timeout stop'); try { SpeechRecognition.stop() } catch (e) {} }, LISTEN_MAX_MS)
+    try {
+      console.log('[VOICE] SpeechRecognition.start')
+      const r = await withTimeout(SpeechRecognition.start({ language: lang, maxResults: 5, partialResults: false }), 25000, 'start')
+      clearListenTimer()
+      console.log('[VOICE_RESULT] ' + JSON.stringify(r))
+      if (r && r.matches && r.matches[0]) text = String(r.matches[0] || '').trim()
+      if (!text) text = String(transcriptRef.current || '').trim()
+      console.log('[VOICE_RAW] ' + text)
+    } catch (e) {
+      clearListenTimer()
+      console.log('[VOICE_ERROR] start failed ' + (e && e.message ? e.message : e))
+      text = String(transcriptRef.current || '').trim()
+      console.log('[VOICE_RAW] fallback text ' + text)
+      if (!text) setMessage('Voice error: ' + (e && e.message ? e.message : e))
+      if (!text && lang === 'hi-IN') {
+        try {
+          console.log('[VOICE] fallback en-IN')
+          listenTimerRef.current = setTimeout(() => { try { SpeechRecognition.stop() } catch (e2) {} }, LISTEN_MAX_MS)
+          const r2 = await withTimeout(SpeechRecognition.start({ language: 'en-IN', maxResults: 5, partialResults: false }), 25000, 'start-en')
+          clearListenTimer()
+          console.log('[VOICE_RESULT] fallback ' + JSON.stringify(r2))
+          if (r2 && r2.matches && r2.matches[0]) text = String(r2.matches[0] || '').trim()
+          console.log('[VOICE_RAW] fallback ' + text)
+        } catch (e2) { clearListenTimer(); console.log('[VOICE_ERROR] fallback failed ' + (e2 && e2.message ? e2.message : e2)) }
+      }
+    }
+    try { if (partialListener) await withTimeout(partialListener.remove(), 1000, 'cleanup partialListener') } catch (e) {}
+    try { if (listeningListener) await withTimeout(listeningListener.remove(), 1000, 'cleanup listeningListener') } catch (e) {}
+    try { await withTimeout(SpeechRecognition.removeAllListeners(), 1000, 'cleanup removeAllListeners') } catch (e) {}
+    try { await withTimeout(SpeechRecognition.stop(), 1000, 'cleanup stop') } catch (e) {}
+    clearListenTimer()
+    setListening(false)
+    console.log('[VOICE_END] text=' + text)
+    if (text) {
+      setTranscript(text)
+      await handle(text)
+      // Continuous entry: recognition window ended is NOT the end of the logical conversation.
+      if (conversation.current.isContinuous(convoIdRef.current)) {
+        clearTimeout(restartTimerRef.current)
+        restartTimerRef.current = setTimeout(() => {
+          if (conversation.current.isContinuous(convoIdRef.current) && !executingRef.current) start(true)
+        }, 1200)
+      }
+    } else if (!message) {
+      setMessage('Kuch suna nahi. Fir bolo.')
+    }
+  }
+
+  const start = async (quick = false) => {
     console.log('[VOICE_CLICK] BOLO CLICKED')
     setClickDiag(true); setTimeout(() => setClickDiag(false), 1500)
-    console.log('[VOICE_START] entered')
+    console.log('[VOICE_START] entered' + (quick ? ' (continuous restart)' : ''))
     console.log('[VOICE] session created, listening=' + listening + ' busy=' + busy)
     if (listening || busy) {
       console.log('[VOICE] already listening/busy — stopping previous session first')
       await stop()
       // small delay to let Android reset
       await new Promise((r) => setTimeout(r, 300))
+    }
+    if (quick) {
+      setListening(true); setTranscript(''); setMessage('Sun raha hoon…'); setResult(null)
+      transcriptRef.current = ''
+      await startRecognitionWindow(langRef.current)
+      return
     }
     setErrMsg(''); setMessage(''); setStockResult(null); setFinanceDraft(null)
     // CLEANUP any stale session before starting — critical for consecutive commands, non-blocking
@@ -196,63 +273,12 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
           const list = sup && sup.languages ? sup.languages : []
           if (list.length && !list.includes('hi-IN') && !list.includes('hi')) lang = 'en-IN'
         } catch (e) { console.log('[VOICE] getSupportedLanguages timeout/error, using hi-IN') }
+        langRef.current = lang
         console.log('[VOICE] start lang=' + lang)
         setListening(true); setTranscript(''); setMessage('Sun raha hoon… (' + lang + ') pura bolo'); setResult(null)
         transcriptRef.current = ''
-        let text = ''
-        let partialListener = null
-        let listeningListener = null
-        try {
-          partialListener = await SpeechRecognition.addListener('partialResults', (data) => {
-            console.log('[VOICE_PARTIAL] ' + JSON.stringify(data))
-            if (data && data.matches && data.matches[0]) {
-              text = String(data.matches[0] || '').trim()
-              transcriptRef.current = text
-              setTranscript(text)
-            }
-          })
-          listeningListener = await SpeechRecognition.addListener('listeningState', (data) => {
-            console.log('[VOICE_LISTENING_STATE] ' + JSON.stringify(data))
-          })
-          console.log('[VOICE] listeners registered BEFORE start')
-        } catch (e) { console.log('[VOICE_ERROR] addListener failed', e && e.message) }
-        listenTimerRef.current = setTimeout(() => { console.log('[VOICE] timeout stop'); try { SpeechRecognition.stop() } catch (e) {} }, LISTEN_MAX_MS)
-        try {
-          console.log('[VOICE] SpeechRecognition.start')
-          const r = await withTimeout(SpeechRecognition.start({ language: lang, maxResults: 5, partialResults: false }), 25000, 'start')
-          clearListenTimer()
-          console.log('[VOICE_RESULT] ' + JSON.stringify(r))
-          if (r && r.matches && r.matches[0]) text = String(r.matches[0] || '').trim()
-          if (!text) text = String(transcriptRef.current || '').trim()
-          console.log('[VOICE_RAW] ' + text)
-        } catch (e) {
-          clearListenTimer()
-          console.log('[VOICE_ERROR] start failed ' + (e && e.message ? e.message : e))
-          text = String(transcriptRef.current || '').trim()
-          console.log('[VOICE_RAW] fallback text ' + text)
-          if (!text) setMessage('Voice error: ' + (e && e.message ? e.message : e))
-          if (!text && lang === 'hi-IN') {
-            try {
-              console.log('[VOICE] fallback en-IN')
-              listenTimerRef.current = setTimeout(() => { try { SpeechRecognition.stop() } catch (e2) {} }, LISTEN_MAX_MS)
-              const r2 = await withTimeout(SpeechRecognition.start({ language: 'en-IN', maxResults: 5, partialResults: false }), 25000, 'start-en')
-              clearListenTimer()
-              console.log('[VOICE_RESULT] fallback ' + JSON.stringify(r2))
-              if (r2 && r2.matches && r2.matches[0]) text = String(r2.matches[0] || '').trim()
-              console.log('[VOICE_RAW] fallback ' + text)
-            } catch (e2) { clearListenTimer(); console.log('[VOICE_ERROR] fallback failed ' + (e2 && e2.message ? e2.message : e2)) }
-          }
-        }
-        try { if (partialListener) await withTimeout(partialListener.remove(), 1000, 'cleanup partialListener') } catch (e) {}
-        try { if (listeningListener) await withTimeout(listeningListener.remove(), 1000, 'cleanup listeningListener') } catch (e) {}
-        try { await withTimeout(SpeechRecognition.removeAllListeners(), 1000, 'cleanup removeAllListeners') } catch (e) {}
-        try { await withTimeout(SpeechRecognition.stop(), 1000, 'cleanup stop') } catch (e) {}
-        clearListenTimer()
-        setListening(false)
-        console.log('[VOICE_END] text=' + text)
-        if (text) { setTranscript(text); await handle(text) }
-        else if (!message) setMessage('Kuch suna nahi. Fir bolo — "Ramesh ke naam 50 bag cement 390 ke bill bana do".')
-        console.log('[VOICE] cleanup ready for next session')
+        await startRecognitionWindow(lang)
+        return
       } catch (e) {
         clearListenTimer()
         try { await SpeechRecognition.removeAllListeners() } catch (e2) {}
@@ -432,6 +458,18 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
           setMessage(msg); speak(cust ? 'QR bana raha hoon' : 'Customer ka naam batao')
           setUpiAmount(amt)
           setUpiOpen(true)
+          return
+        }
+        if (turn.status === 'inventory_confirm') {
+          setResult(null)
+          setFinanceDraft(null)
+          setInventoryDraft(conversation.current.inventoryItems(convoIdRef.current))
+          setMessage(turn.message)
+          speak('Inventory review. Commit karein?')
+          return
+        }
+        if (turn.status === 'inventory_done') {
+          setMessage(turn.message); speak('Inventory commit ho gaya')
           return
         }
         setResult(null)
@@ -723,6 +761,28 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
     } catch (e) { console.error('[GARUDA] payment error:', e); setErrMsg('Payment nahi hua: ' + (e && e.message ? e.message : e)) }
   }
 
+  const confirmInventory = async () => {
+    try {
+      if (inventoryExecutedRef.current) { setMessage('Inventory already commit ho gaya tha.'); return }
+      const items = conversation.current.inventoryItems(convoIdRef.current)
+      if (!items || !items.length) { setMessage('Inventory khali hai.'); return }
+      inventoryExecutedRef.current = true
+      for (const it of items) {
+        const target = await findStockItem(it.name)
+        if (target && it.unit && target.unit && String(it.unit).toLowerCase() !== String(target.unit).toLowerCase()) {
+          inventoryExecutedRef.current = false
+          setInventoryDraft(null)
+          setErrMsg(it.name + ' ' + target.unit + ' mein hai — aapne ' + it.unit + ' kaha. Item skip kar diya.')
+          return
+        }
+        await applyStockOp({ name: it.name, qty: it.qty, unit: it.unit, operation: 'add', sourceType: 'inward' })
+      }
+      setInventoryDraft(null)
+      setMessage('Inventory commit ho gaya — ' + items.length + ' item add hua.')
+      speak('Inventory commit ho gaya')
+    } catch (e) { console.error('[GARUDA] inventory error:', e); setErrMsg('Inventory commit nahi hua: ' + (e && e.message ? e.message : e)); inventoryExecutedRef.current = false }
+  }
+
   return (
     <div className="modal-mask" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -825,7 +885,18 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
           </div>
         )}
 
-        {!result && message && !busy && !listening && !financeDraft && <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>}
+        {inventoryDraft && inventoryDraft.length > 0 && (
+          <div className="card">
+            <div className="vm-sec vm-accent">Inventory Review</div>
+            <div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{inventoryDraft.map((it) => it.name + ' ' + it.qty + ' ' + it.unit).join('\n')}</div>
+            <div className="actions" style={{ marginTop: 8 }}>
+              <button className="primary" onClick={confirmInventory}><Icon name="check" size={14} /> Commit Inventory</button>
+              <button className="ghost" onClick={() => { conversation.current.exitContinuous(convoIdRef.current); setInventoryDraft(null) }}>Cancel</button>
+            </div>
+          </div>
+        )}
+
+        {!result && message && !busy && !listening && !financeDraft && !inventoryDraft && <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>}
 
         {upiOpen && <UpiQrModal open={upiOpen} onClose={() => setUpiOpen(false)} company={company} amount={upiAmount} ref={confirmedInvoiceId ? 'Inv-' + confirmedInvoiceId : ''} />}
       </div>

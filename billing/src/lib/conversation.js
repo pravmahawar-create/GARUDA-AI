@@ -24,6 +24,40 @@ function productFirstItems(text) {
   return [{ name, qty: Number(m[2]), unit: UNIT_LOOKUP[m[3].toLowerCase()] || 'bag', rate: 0 }]
 }
 
+// Loose extractor for explicit continuous dictation ("5 kilo sugar", "10 kilo atta", "2 litre oil").
+// Accepts unknown product words — the user is deliberately dictating items.
+const LOOSE_UNITS = { ...UNIT_LOOKUP, litre: 'litre', liters: 'litre', liter: 'litre', ltr: 'litre' }
+const LOOSE_FILLERS = new Set(['ke', 'ka', 'ki', 'ko', 'se', 'per', 'par', 'aur', 'and', 'rate', 'bhav', 'rupaye', 'rupay', 'rs', 'hazaar', 'hajar', 'lakh', 'lac', 'wala', 'wali', 'kar', 'karo', 'do', 'karke', 'ke rate', 'ke bhav'])
+function looseClean(words) {
+  return words.filter((w) => !/^\d+$/.test(w) && !LOOSE_FILLERS.has(w))
+}
+// Loose name builder: keeps dictation words even if they collide with STOP_WORDS (e.g. "dal").
+function looseName(words) {
+  const w = words.filter(Boolean)
+  return w.length ? w.map((x) => x.charAt(0).toUpperCase() + x.slice(1)).join(' ') : ''
+}
+function looseItems(text) {
+  const out = []
+  const re = /(\d+(?:\.\d+)?)\s*(hazaar|hajar|lakh|lac)?\s*(bag|bori|bags|kg|kilo|kgg|quintal|qtl|ton|tonne|piece|pieces|truck|litre|liters|liter|ltr)\s+([a-z0-9]+(?:\s+[a-z0-9]+){0,3})/gi
+  let m
+  while ((m = re.exec(text)) !== null) {
+    const name = looseName(looseClean(m[4].toLowerCase().split(/\s+/)))
+    if (!name) continue
+    const mult = (m[2] || '').toLowerCase()
+    const qty = Number(m[1]) * (mult === 'lakh' || mult === 'lac' ? 100000 : mult ? 1000 : 1)
+    out.push({ name, qty, unit: LOOSE_UNITS[m[3].toLowerCase()] || 'bag', rate: 0 })
+  }
+  return out
+}
+
+function productFirstItemsLoose(text) {
+  const m = String(text || '').match(/^([a-z0-9][a-z0-9\s]{1,40}?)\s+(\d+(?:\.\d+)?)\s*(bag|bori|bags|kg|kilo|kgg|quintal|qtl|ton|tonne|piece|pieces|truck|litre|liters|liter|ltr)s?/i)
+  if (!m) return null
+  const name = looseName(looseClean(m[1].trim().toLowerCase().split(/\s+/)))
+  if (!name) return null
+  return [{ name, qty: Number(m[2]), unit: LOOSE_UNITS[m[3].toLowerCase()] || 'bag', rate: 0 }]
+}
+
 function bareProductToken(text) {
   const m = String(text || '').match(/\b(sariya|sariyaa|tmt|steel|rod|cement|siment|sand|bricks|eent|acc(?:\s+cement)?)\b/i)
   return m ? m[0] : ''
@@ -163,6 +197,11 @@ function partialSummary(c) {
   return parts.join(' | ')
 }
 
+function inventorySummary(inv) {
+  const items = (inv && inv.items) || []
+  return items.length ? items.map((it) => it.name + ' ' + it.qty + ' ' + (it.unit || '')).join('\n') : ''
+}
+
 function renderDraft(c) {
   return { intent: 'create_bill', customer: c.customer || { name: '' }, items: (c.items || []).map((it) => ({ name: it.name, qty: Number(it.qty), unit: it.unit || 'bag', rate: Number(it.rate) || 0, hsn: it.hsn || '' })), transport: c.transport || {}, billType: c.billType, customerGstin: c.gstin || '', missing: [] }
 }
@@ -171,7 +210,7 @@ export class ConversationManager {
   constructor() { this.convos = new Map() }
 
   fresh(id) {
-    return { id, createdAt: Date.now(), lastActivity: Date.now(), intent: null, customer: null, customerId: null, items: [], billType: null, gstin: null, transport: null, asked: new Set(), confirmed: false, executed: false, result: null, pendingSuggestion: null, noSuggest: new Set(), finance: null }
+    return { id, createdAt: Date.now(), lastActivity: Date.now(), intent: null, customer: null, customerId: null, items: [], billType: null, gstin: null, transport: null, asked: new Set(), confirmed: false, executed: false, result: null, pendingSuggestion: null, noSuggest: new Set(), finance: null, continuousEntry: null, inventory: null }
   }
 
   newConversation() { const id = 'convo-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6); this.convos.set(id, this.fresh(id)); return id }
@@ -181,6 +220,11 @@ export class ConversationManager {
   hasActiveBill(id) { const c = this.convos.get(id); return !!c && c.intent === 'create_bill' && !c.executed && (!!c.customer || c.items.length > 0 || !!c.billType || !!c.gstin) }
   canExecute(id) { const c = this.convos.get(id); return !!c && c.intent === 'create_bill' && !c.executed && computeMissing(c).length === 0 }
   markExecuted(id, invoice) { const c = this.convos.get(id); if (c) { c.executed = true; c.result = invoice } }
+
+  enterContinuous(id, mode) { const c = this.convos.get(id); if (c) c.continuousEntry = mode }
+  exitContinuous(id) { const c = this.convos.get(id); if (c) c.continuousEntry = null }
+  isContinuous(id) { const c = this.convos.get(id); return c ? c.continuousEntry : null }
+  inventoryItems(id) { const c = this.convos.get(id); return (c && c.inventory && c.inventory.items) || [] }
 
   draftForExecution(id) {
     const c = this.convos.get(id); if (!c) return null
@@ -267,19 +311,32 @@ export class ConversationManager {
   async nextStep(c, ctx, reask) {
     let missing = computeMissing(c)
     const confirm = () => { const msg = summaryText(c); return { status: 'needs_confirm', message: msg, summary: msg, renderDraft: renderDraft(c), missing: [] } }
-    if (missing.length === 0) return confirm()
+    if (missing.length === 0) {
+      if (c.continuousEntry === 'bill') return { status: 'needs_info', message: 'Items bolte jao — "bas" bolna jab ho jaye.', summary: partialSummary(c), missing: [] }
+      return confirm()
+    }
+    // Auto-enter continuous entry is triggered by an explicit opt-in or a second item (see step 4).
     if (!reask) {
       // Suggestions can auto-fill a field (e.g. saved GSTIN); keep re-checking until stable.
       for (let i = 0; i < 5; i++) {
         const sug = await this.maybeSuggest(c, ctx)
         if (sug) return sug
         const m2 = computeMissing(c)
-        if (m2.length === 0) return confirm()
+        if (m2.length === 0) {
+          if (c.continuousEntry === 'bill') return { status: 'needs_info', message: 'Items bolte jao — "bas" bolna jab ho jaye.', summary: partialSummary(c), missing: [] }
+          return confirm()
+        }
         if (m2.join() === missing.join()) break
         missing = m2
       }
     }
-    const field = missing[0]; return { status: 'needs_info', message: (reask ? 'Phir bolo — ' : '') + MESSAGES[field], summary: partialSummary(c), missing }
+    const field = missing[0]
+    if (c.continuousEntry === 'bill') {
+      if (field === 'item') return { status: 'needs_info', message: 'Material ka naam batao — items bolte jao, main add karta jaunga. Jab ho jaye to "bas" bol dena.', summary: partialSummary(c), missing }
+      if (field === 'rate') return { status: 'needs_info', message: 'Item add ho gaya. Rate batao — jaise "110".', summary: partialSummary(c), missing }
+      if (field === 'quantity') return { status: 'needs_info', message: 'Item add ho gaya. Quantity batao.', summary: partialSummary(c), missing }
+    }
+    return { status: 'needs_info', message: (reask ? 'Phir bolo — ' : '') + MESSAGES[field], summary: partialSummary(c), missing }
   }
 
   async processTurn(id, text, parsed, ctx) {
@@ -342,12 +399,80 @@ export class ConversationManager {
       return { status: 'payment_confirm', message: 'Payment record karun? ' + financeSummary(c.finance), summary: financeSummary(c.finance), renderFinance: { ...c.finance } }
     }
 
+    // 0.5) CONTINUOUS ENTRY — bill opt-in ("items bolta jaunga", bulk)
+    if (!c.continuousEntry && c.intent === 'create_bill' && /items\s*(bolta|bolti|bolungi|bolu)?\s*(jaunga|jaungi|jaaunga)|bulk|continuous|lagataar|bolte jao|bolta jaunga|items add karne hain/i.test(t)) {
+      c.continuousEntry = 'bill'
+      return { status: 'needs_info', message: 'Items bolte jao — main add karta jaunga. Jab ho jaye to "bas" bol dena.', summary: partialSummary(c) }
+    }
+
+    // 0.5) CONTINUOUS ENTRY — inventory start
+    if (!c.continuousEntry && /(inventory|stock)\s*banana hai|items bolta jaunga.*(inventory|stock)|inventory entry|inventory me add/.test(t)) {
+      c.continuousEntry = 'inventory'
+      c.inventory = c.inventory || { items: [] }
+      return { status: 'needs_info', message: 'Inventory items bolte jao — main add karta jaunga. Jab ho jaye to "bas" bol dena.' }
+    }
+
+    // 0.6) CONTINUOUS ENTRY — active session commands (finish / cancel / undo / corrections)
+    if (c.continuousEntry) {
+      if (/^(bas|ho gaya|ho gya|khataam|finish|complete|itna hi|bas itna hi|ho gaya bill|items complete|ab bas|bas kar)\b/.test(t) || ['bas', 'ho gaya', 'ho gya', 'khataam', 'finish', 'itna hi'].includes(t)) {
+        c.continuousEntry = null
+        if (c.inventory && c.inventory.items && c.inventory.items.length) {
+          const sum = inventorySummary(c.inventory)
+          return { status: 'inventory_confirm', message: 'Inventory review:\n' + sum + '\nCommit karun?', summary: sum }
+        }
+        return await this.nextStep(c, ctx)
+      }
+      if (/^(cancel|rehne do|mat banao|band karo|cancel kar do|bilkul nahi)\b/.test(t)) {
+        const fresh = this.fresh(id); fresh.id = id; this.convos.set(id, fresh); c = fresh
+        return { status: 'none', message: 'Draft cancel kar diya.' }
+      }
+      if (/(pichla|pichle|last|ek hat)\s*(item)?\s*(hatao|delete|hatana|nikal|remove|undo|hata do|girao)/i.test(t)) {
+        if (c.items && c.items.length) { c.items.pop(); return { status: 'needs_info', message: 'Pichla item hata diya. Items bolte jao — "bas" bolna jab ho jaye.', summary: partialSummary(c) } }
+        return { status: 'needs_info', message: 'Koi item nahi hai hatane ko.' }
+      }
+      const rateM = t.match(/pichle item ka (rate|bhav)\s*(\d+(?:\.\d+)?)/)
+      if (rateM && c.items && c.items.length) {
+        c.items[c.items.length - 1].rate = Number(rateM[2])
+        return { status: 'needs_info', message: 'Pichle item ka rate ' + rateM[2] + ' kar diya. Items bolte jao.', summary: partialSummary(c) }
+      }
+      const qtyM = t.match(/pichle item ki (qty|quantity|matra)\s*(\d+(?:\.\d+)?)/)
+      if (qtyM && c.items && c.items.length) {
+        c.items[c.items.length - 1].qty = Number(qtyM[2])
+        return { status: 'needs_info', message: 'Pichle item ki quantity ' + qtyM[2] + ' kar di. Items bolte jao.', summary: partialSummary(c) }
+      }
+      const nameM = t.match(/pichla item (.+?) nahi (.+?) tha/)
+      if (nameM && c.items && c.items.length) {
+        const words = cleanProductWords(nameM[2].trim().toLowerCase().split(/\s+/))
+        const newName = buildItemName(words) || nameM[2].trim()
+        c.items[c.items.length - 1].name = newName
+        return { status: 'needs_info', message: 'Pichla item ' + newName + ' kar diya. Items bolte jao.', summary: partialSummary(c) }
+      }
+      // inventory continuous: append extracted items
+      if (c.continuousEntry === 'inventory') {
+        let extra = extractItems(text)
+        if (!extra.length) { const pf = productFirstItems(text); if (pf) extra = pf }
+        if (extra.length) {
+          c.inventory = c.inventory || { items: [] }
+          const rates = collectRates(text)
+          const added = extra.map((it, i) => ({ name: it.name, qty: Number(it.qty), unit: it.unit || 'bag', rate: Number(it.rate || rates[i]) || 0 }))
+          c.inventory.items.push(...added)
+          const last = c.inventory.items[c.inventory.items.length - 1]
+          return { status: 'needs_info', message: 'Add ho gaya: ' + last.name + ' ' + last.qty + ' ' + last.unit + '. Items bolte jao — "bas" bolna jab ho jaye.', summary: inventorySummary(c.inventory) }
+        }
+        return { status: 'needs_info', message: 'Item samajh nahi aaya. Phir bolo — jaise "ACC cement 500 bag".' }
+      }
+    }
+
     // 1) Confirmation answer
     if (isConfirm(t)) {
       if (c.finance && !c.finance.executed) {
         const fmissing = financeMissing(c.finance)
         if (fmissing.length) return { status: 'payment_needs_info', message: askForFinance(fmissing[0]), summary: financeSummary(c.finance) }
         return { status: 'payment_execute', message: 'Payment record karta hoon.', summary: financeSummary(c.finance) }
+      }
+      // Mid-entry acknowledgment must NOT execute the bill in continuous mode.
+      if (c.continuousEntry === 'bill') {
+        return { status: 'needs_info', message: 'Items bolte jao — "bas" bolna jab ho jaye.', summary: partialSummary(c) }
       }
       if (c.intent === 'create_bill' && computeMissing(c).length === 0) { return { status: 'execute', message: summaryText(c) } }
       return { status: 'needs_info', message: c.intent === 'create_bill' ? MESSAGES[computeMissing(c)[0]] : 'Kuch nahi bana — pehle batao kya karna hai.' }
@@ -367,6 +492,11 @@ export class ConversationManager {
       if (parsed && parsed.intent === 'create_bill' && parsed.items) extra = parsed.items
       if (!extra.length) extra = extractItems(text)
       if (!extra.length) { const pf = productFirstItems(text); if (pf) extra = pf }
+      if (!extra.length && c.continuousEntry === 'bill') {
+        const loose = looseItems(text)
+        if (loose.length) extra = loose
+        else { const pfl = productFirstItemsLoose(text); if (pfl) extra = pfl }
+      }
       if (!extra.length && c.customer && c.customer.name) {
         const bpTok = bareProductToken(text)
         if (bpTok && !String(c.customer.name).toLowerCase().includes(bpTok.toLowerCase())) {
@@ -377,7 +507,11 @@ export class ConversationManager {
       if (extra.length) {
         c.intent = 'create_bill'
         const rates = collectRates(text)
-        c.items = extra.map((it, i) => ({ name: it.name, qty: Number(it.qty), unit: it.unit || 'bag', rate: Number(it.rate || rates[i]) || 0, hsn: it.hsn || '' }))
+        const mapped = extra.map((it, i) => ({ name: it.name, qty: Number(it.qty), unit: it.unit || 'bag', rate: Number(it.rate || rates[i]) || 0, hsn: it.hsn || '' }))
+        if (c.continuousEntry === 'bill') c.items.push(...mapped)
+        else c.items = mapped
+        // A second item implies multi-item entry → switch to continuous mode automatically.
+        if (!c.continuousEntry && c.items.length >= 2) c.continuousEntry = 'bill'
         if (parsed && parsed.customer && parsed.customer.name) {
           const known = (ctx.customers || []).find((x) => String(x.name).toLowerCase() === String(parsed.customer.name).toLowerCase())
           const gstin = c.gstin || (known && known.gstin) || (parsed.customerGstin) || ''

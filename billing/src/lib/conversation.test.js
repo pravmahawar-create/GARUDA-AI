@@ -279,3 +279,201 @@ test('payment: existing bill flow unchanged', async () => {
   const draft = cm.draftForExecution(id)
   assert.equal(draft.items[0].rate, 390)
 })
+
+const emptyCtx = { customers: [], stockItems: [], company: null, resolveCustomer: async () => ({ customer: null, ambiguous: [] }) }
+
+async function startContinuousBill(cm, id) {
+  await cm.processTurn(id, 'Ramesh ka bill banana hai', parseLocal('Ramesh ka bill banana hai', []), emptyCtx)
+  await cm.processTurn(id, 'kaccha', parseLocal('kaccha', []), emptyCtx)
+  const r = await cm.processTurn(id, 'items bolta jaunga', parseLocal('items bolta jaunga', []), emptyCtx)
+  assert.equal(r.status, 'needs_info')
+  assert.match(r.message, /Items bolte jao/i)
+}
+
+test('continuous: multiple items append to the same draft', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  await cm.processTurn(id, '5 kilo sugar 48 ke rate se', parseLocal('5 kilo sugar 48 ke rate se', []), emptyCtx)
+  await cm.processTurn(id, '10 kilo atta 42 ke rate se', parseLocal('10 kilo atta 42 ke rate se', []), emptyCtx)
+  await cm.processTurn(id, '2 litre oil 145 ke rate se', parseLocal('2 litre oil 145 ke rate se', []), emptyCtx)
+  const c = cm.get(id)
+  assert.equal(c.items.length, 3)
+  assert.equal(c.items[0].name, 'Sugar')
+  assert.equal(c.items[0].qty, 5)
+  assert.equal(c.items[1].name, 'Atta')
+  assert.equal(c.items[2].name, 'Oil')
+  assert.equal(c.items[2].unit, 'litre')
+})
+
+test('continuous: 5+ recognition windows preserve one conversation', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  // window 1: customer
+  await cm.processTurn(id, 'Ramesh ka bill banana hai', parseLocal('Ramesh ka bill banana hai', []), emptyCtx)
+  // window 2: bill type
+  await cm.processTurn(id, 'kaccha', parseLocal('kaccha', []), emptyCtx)
+  // window 3: opt in
+  await cm.processTurn(id, 'items bolta jaunga', parseLocal('items bolta jaunga', []), emptyCtx)
+  // window 4/5/6: items
+  await cm.processTurn(id, '5 kilo sugar 48 ke rate se', parseLocal('5 kilo sugar 48 ke rate se', []), emptyCtx)
+  await cm.processTurn(id, '10 kilo atta 42 ke rate se', parseLocal('10 kilo atta 42 ke rate se', []), emptyCtx)
+  await cm.processTurn(id, '2 litre oil 145 ke rate se', parseLocal('2 litre oil 145 ke rate se', []), emptyCtx)
+  const c = cm.get(id)
+  assert.equal(c.customer.name, 'Ramesh')
+  assert.equal(c.billType, 'kaccha')
+  assert.equal(c.items.length, 3, 'recognition windows must not reset the draft')
+})
+
+test('continuous: 200+ items preserve order and data integrity', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  for (let i = 1; i <= 200; i++) {
+    const r = await cm.processTurn(id, i + ' kilo item' + i + ' ' + (100 + i) + ' ke rate se', parseLocal(i + ' kilo item' + i + ' ' + (100 + i) + ' ke rate se', []), emptyCtx)
+    assert.equal(r.status, 'needs_info', 'continuous must keep accepting items at ' + i)
+  }
+  const c = cm.get(id)
+  assert.equal(c.items.length, 200)
+  assert.equal(c.items[0].name, 'Item1')
+  assert.equal(c.items[199].name, 'Item200')
+  assert.equal(c.items[199].qty, 200)
+  assert.equal(c.items[199].rate, 300)
+  const fin = await cm.processTurn(id, 'bas', parseLocal('bas', []), emptyCtx)
+  assert.equal(fin.status, 'needs_confirm')
+  assert.equal(cm.canExecute(id), true)
+  assert.equal(cm.isContinuous(id), null, 'bas must exit continuous mode')
+})
+
+test('continuous: recognition window stop does not create a new conversation', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  await cm.processTurn(id, '5 kilo sugar 48 ke rate se', parseLocal('5 kilo sugar 48 ke rate se', []), emptyCtx)
+  const beforeId = id
+  // A "window stop" is simulated by the next utterance arriving on the SAME conversation id.
+  await cm.processTurn(id, '10 kilo atta 42 ke rate se', parseLocal('10 kilo atta 42 ke rate se', []), emptyCtx)
+  assert.equal(cm.get(beforeId).customer.name, 'Ramesh')
+  assert.equal(cm.get(beforeId).items.length, 2)
+})
+
+test('continuous: "bas" exits and "cancel" discards draft', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  await cm.processTurn(id, '5 kilo sugar 48 ke rate se', parseLocal('5 kilo sugar 48 ke rate se', []), emptyCtx)
+  const r = await cm.processTurn(id, 'bas', parseLocal('bas', []), emptyCtx)
+  assert.equal(r.status, 'needs_confirm')
+  assert.equal(cm.isContinuous(id), null)
+  // cancel discards
+  const cm2 = new ConversationManager()
+  const id2 = cm2.newConversation()
+  await startContinuousBill(cm2, id2)
+  await cm2.processTurn(id2, '5 kilo sugar 48 ke rate se', parseLocal('5 kilo sugar 48 ke rate se', []), emptyCtx)
+  const c2 = await cm2.processTurn(id2, 'cancel', parseLocal('cancel', []), emptyCtx)
+  assert.equal(c2.status, 'none')
+  assert.equal(cm2.get(id2).items.length, 0, 'cancel must discard the draft')
+})
+
+test('continuous: undo removes only the latest item', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  await cm.processTurn(id, '5 kilo sugar 48 ke rate se', parseLocal('5 kilo sugar 48 ke rate se', []), emptyCtx)
+  await cm.processTurn(id, '10 kilo atta 42 ke rate se', parseLocal('10 kilo atta 42 ke rate se', []), emptyCtx)
+  const r = await cm.processTurn(id, 'pichla item hatao', parseLocal('pichla item hatao', []), emptyCtx)
+  assert.match(r.message, /Pichla item hata diya/i)
+  const c = cm.get(id)
+  assert.equal(c.items.length, 1)
+  assert.equal(c.items[0].name, 'Sugar')
+})
+
+test('continuous: corrections to rate, quantity and product', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  await cm.processTurn(id, '5 kilo sugar 48 ke rate se', parseLocal('5 kilo sugar 48 ke rate se', []), emptyCtx)
+  await cm.processTurn(id, 'pichle item ka rate 50 kar do', parseLocal('pichle item ka rate 50 kar do', []), emptyCtx)
+  assert.equal(cm.get(id).items[0].rate, 50)
+  await cm.processTurn(id, 'pichle item ki quantity 8 kar do', parseLocal('pichle item ki quantity 8 kar do', []), emptyCtx)
+  assert.equal(cm.get(id).items[0].qty, 8)
+  await cm.processTurn(id, 'pichla item sugar nahi salt tha', parseLocal('pichla item sugar nahi salt tha', []), emptyCtx)
+  assert.equal(cm.get(id).items[0].name, 'Salt')
+})
+
+test('continuous: ambiguous correction asks rather than guessing', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  await cm.processTurn(id, '5 kilo sugar 48 ke rate se', parseLocal('5 kilo sugar 48 ke rate se', []), emptyCtx)
+  const r = await cm.processTurn(id, 'pichle item ka rate batao', parseLocal('pichle item ka rate batao', []), emptyCtx)
+  assert.equal(r.status, 'needs_info')
+  assert.equal(cm.get(id).items[0].rate, 48, 'no guess applied')
+})
+
+test('continuous: missing rate creates item-level clarification', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  const r = await cm.processTurn(id, '20 kilo dal', parseLocal('20 kilo dal', []), emptyCtx)
+  assert.equal(r.status, 'needs_info')
+  assert.match(r.message, /Rate batao/i)
+  assert.equal(cm.get(id).items[0].name, 'Dal')
+  const r2 = await cm.processTurn(id, '110', parseLocal('110', []), emptyCtx)
+  assert.equal(cm.get(id).items[0].rate, 110)
+})
+
+test('continuous: missing product does not fabricate product', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  const r = await cm.processTurn(id, '3000 bori 340 ke bhav se', parseLocal('3000 bori 340 ke bhav se', []), emptyCtx)
+  assert.equal(r.status, 'needs_info')
+  assert.match(r.message, /Material ka naam/i)
+  assert.equal(cm.get(id).items.length, 0, 'must not fabricate an item')
+})
+
+test('continuous: duplicate items remain separate', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  await cm.processTurn(id, '10 kilo sugar 48 ke rate se', parseLocal('10 kilo sugar 48 ke rate se', []), emptyCtx)
+  await cm.processTurn(id, '5 kilo sugar 50 ke rate se', parseLocal('5 kilo sugar 50 ke rate se', []), emptyCtx)
+  assert.equal(cm.get(id).items.length, 2, 'duplicates are separate lines unless explicitly merged')
+})
+
+test('continuous: no bill executed before confirmation', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await startContinuousBill(cm, id)
+  await cm.processTurn(id, '5 kilo sugar 48 ke rate se', parseLocal('5 kilo sugar 48 ke rate se', []), emptyCtx)
+  // A confirm word mid-continuous should NOT execute the bill
+  const r = await cm.processTurn(id, 'haan', parseLocal('haan', []), emptyCtx)
+  assert.notEqual(r.status, 'execute')
+  assert.equal(cm.canExecute(id), true, 'draft intact, awaiting bas + confirm')
+})
+
+test('inventory: continuous inventory builds a draft, commits only on confirm', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const r1 = await cm.processTurn(id, 'inventory banana hai items bolta jaunga', parseLocal('inventory banana hai items bolta jaunga', []), emptyCtx)
+  assert.equal(r1.status, 'needs_info')
+  await cm.processTurn(id, 'ACC cement 500 bag', parseLocal('ACC cement 500 bag', []), emptyCtx)
+  await cm.processTurn(id, 'Ambuja 300 bag', parseLocal('Ambuja 300 bag', []), emptyCtx)
+  assert.equal(cm.inventoryItems(id).length, 2)
+  assert.equal(cm.isContinuous(id), 'inventory')
+  const fin = await cm.processTurn(id, 'bas', parseLocal('bas', []), emptyCtx)
+  assert.equal(fin.status, 'inventory_confirm')
+  assert.match(fin.message, /Inventory review/)
+  assert.equal(cm.isContinuous(id), null)
+})
+
+test('inventory: cancel discards inventory draft', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await cm.processTurn(id, 'inventory banana hai items bolta jaunga', parseLocal('inventory banana hai items bolta jaunga', []), emptyCtx)
+  await cm.processTurn(id, 'ACC cement 500 bag', parseLocal('ACC cement 500 bag', []), emptyCtx)
+  const r = await cm.processTurn(id, 'cancel', parseLocal('cancel', []), emptyCtx)
+  assert.equal(r.status, 'none')
+  assert.equal(cm.inventoryItems(id).length, 0, 'cancel must discard inventory draft')
+})
