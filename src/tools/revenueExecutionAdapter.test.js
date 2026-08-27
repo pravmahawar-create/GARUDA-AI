@@ -61,6 +61,47 @@ async function runPhase6Tests() {
   const invalidTrans = adapter.recordClientAcceptance({ status: REVENUE_STATES.EXECUTING }, { accepted: true });
   assert(invalidTrans.success === false && invalidTrans.errorCode === 'INVALID_STATE_TRANSITION', 'Invalid state transition blocked');
 
+  // -------------------------------------------------------------
+  // 3. PAYMENT TRUTH & SCREENSHOT SAFETY TESTS (MILESTONE 24)
+  // -------------------------------------------------------------
+  console.log('\n--- 3. PAYMENT TRUTH & SCREENSHOT SAFETY TESTS ---');
+
+  // Test 9: Text claim recorded as PAYMENT_CLAIMED without marking real revenue
+  const claimRes = adapter.recordPaymentClaim('opp-101', 'I paid via UPI transaction #998877');
+  assert(
+    claimRes.success === true &&
+    claimRes.status === REVENUE_STATES.PAYMENT_CLAIMED &&
+    claimRes.isRealRevenue === false,
+    'Text claim recorded as PAYMENT_CLAIMED without marking real revenue'
+  );
+
+  // Test 10: Screenshot evidence recorded as PAYMENT_EVIDENCE_UNVERIFIED without marking real revenue
+  const evidenceRes = adapter.recordPaymentEvidence('opp-101', { path: 'uploads/receipt.png' });
+  assert(
+    evidenceRes.success === true &&
+    evidenceRes.status === REVENUE_STATES.PAYMENT_EVIDENCE_UNVERIFIED &&
+    evidenceRes.isRealRevenue === false,
+    'Screenshot evidence recorded as PAYMENT_EVIDENCE_UNVERIFIED without marking real revenue'
+  );
+
+  // Test 11: Payment amount mismatch detected and flagged as PAYMENT_MISMATCH
+  const mismatchRes = adapter.validatePaymentAmountAndCurrency({ amount: 5000, currency: 'INR' }, { amount: 2500, currency: 'INR' });
+  assert(
+    mismatchRes.valid === false &&
+    mismatchRes.status === REVENUE_STATES.PAYMENT_MISMATCH &&
+    mismatchRes.errorCode === 'AMOUNT_MISMATCH',
+    'Payment amount mismatch detected and flagged as PAYMENT_MISMATCH'
+  );
+
+  // Test 12: Payment currency mismatch detected and flagged as PAYMENT_MISMATCH
+  const currMismatchRes = adapter.validatePaymentAmountAndCurrency({ amount: 5000, currency: 'USD' }, { amount: 5000, currency: 'INR' });
+  assert(
+    currMismatchRes.valid === false &&
+    currMismatchRes.status === REVENUE_STATES.PAYMENT_MISMATCH &&
+    currMismatchRes.errorCode === 'CURRENCY_MISMATCH',
+    'Payment currency mismatch detected and flagged as PAYMENT_MISMATCH'
+  );
+
   console.log(`\n📊 Phase 6 Test Results: ${passed} Passed, ${failed} Failed.`);
   if (failed > 0) {
     process.exit(1);

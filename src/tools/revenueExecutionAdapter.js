@@ -14,14 +14,82 @@ const REVENUE_STATES = Object.freeze({
   WORK_COMPLETED: 'WORK_COMPLETED',
   DELIVERY_SUBMITTED: 'DELIVERY_SUBMITTED',
   CLIENT_ACCEPTED: 'CLIENT_ACCEPTED',
+  PAYMENT_CLAIMED: 'PAYMENT_CLAIMED',
+  PAYMENT_EVIDENCE_UNVERIFIED: 'PAYMENT_EVIDENCE_UNVERIFIED',
+  PAYMENT_VERIFICATION_PENDING: 'PAYMENT_VERIFICATION_PENDING',
   PAYMENT_VERIFIED: 'PAYMENT_VERIFIED',
-  REVENUE_REALIZED: 'REVENUE_REALIZED'
+  PAYMENT_FAILED: 'PAYMENT_FAILED',
+  PAYMENT_MISMATCH: 'PAYMENT_MISMATCH',
+  PAYMENT_DUPLICATE: 'PAYMENT_DUPLICATE',
+  PAYMENT_REFUNDED: 'PAYMENT_REFUNDED',
+  REVENUE_REALIZED: 'REVENUE_REALIZED',
+  REVENUE_CLOSED: 'REVENUE_CLOSED'
 });
 
 class RevenueExecutionAdapter {
   constructor(options = {}) {
     this.paymentWebhookService = options.paymentWebhookService || paymentWebhookService;
     this.processedPayments = new Set(); // Duplicate payment ledger protection
+  }
+
+  /**
+   * Helper: Record user text claim ("I paid") safely without marking payment verified.
+   */
+  recordPaymentClaim(opportunityId, textClaim = '') {
+    return {
+      success: true,
+      opportunityId,
+      status: REVENUE_STATES.PAYMENT_CLAIMED,
+      textClaim,
+      signatureVerified: false,
+      isRealRevenue: false,
+      note: 'User text claim recorded; provider HMAC verification is still required before revenue realization.'
+    };
+  }
+
+  /**
+   * Helper: Record uploaded screenshot or receipt evidence safely without marking payment verified.
+   */
+  recordPaymentEvidence(opportunityId, imageOrDoc = {}) {
+    return {
+      success: true,
+      opportunityId,
+      status: REVENUE_STATES.PAYMENT_EVIDENCE_UNVERIFIED,
+      evidenceFile: imageOrDoc.path || imageOrDoc.filename || 'uploaded_evidence',
+      signatureVerified: false,
+      isRealRevenue: false,
+      note: 'Screenshot/receipt evidence stored; screenshots DO NOT constitute authoritative payment verification.'
+    };
+  }
+
+  /**
+   * Helper: Validates expected vs received amount and currency.
+   */
+  validatePaymentAmountAndCurrency(expected = {}, received = {}) {
+    const expectedAmount = Number(expected.amount || 0);
+    const receivedAmount = Number(received.amount || 0);
+    const expectedCurrency = String(expected.currency || 'INR').toUpperCase();
+    const receivedCurrency = String(received.currency || 'INR').toUpperCase();
+
+    if (expectedAmount > 0 && Math.abs(expectedAmount - receivedAmount) > 0.01) {
+      return {
+        valid: false,
+        status: REVENUE_STATES.PAYMENT_MISMATCH,
+        error: `Payment amount mismatch: Expected ${expectedAmount} ${expectedCurrency}, but received ${receivedAmount} ${receivedCurrency}`,
+        errorCode: 'AMOUNT_MISMATCH'
+      };
+    }
+
+    if (expectedCurrency !== receivedCurrency) {
+      return {
+        valid: false,
+        status: REVENUE_STATES.PAYMENT_MISMATCH,
+        error: `Payment currency mismatch: Expected ${expectedCurrency}, but received ${receivedCurrency}`,
+        errorCode: 'CURRENCY_MISMATCH'
+      };
+    }
+
+    return { valid: true };
   }
 
   /**
