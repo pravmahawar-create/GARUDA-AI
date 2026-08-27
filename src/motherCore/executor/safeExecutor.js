@@ -1,4 +1,6 @@
 const { requiresFounderApproval } = require("../approval/approvalPolicy");
+const TaskExecutionBridge = require("../../tools/taskExecutionBridge");
+const TaskExecutionValidator = require("../../tools/taskExecutionValidator");
 
 function proposeFile(file, content) {
   const action = { type: "file_write", requiresFounderApproval: true };
@@ -66,4 +68,32 @@ module.exports = { getGitStatus };
   };
 }
 
-module.exports = { executeSafeActions };
+/**
+ * Phase 2 Governed Task Execution & Validation Slice.
+ * Connects a structured Mother Brain task to governed tool adapters and deterministic validator.
+ */
+async function executeGovernedTask(task = {}, context = {}) {
+  const bridge = new TaskExecutionBridge({ workspaceRoot: process.cwd() });
+  const validator = new TaskExecutionValidator({ workspaceRoot: process.cwd() });
+
+  // 1. Tool Bridge Execution
+  const executionResult = await bridge.executeTask(task, context);
+
+  // 2. Deterministic Validation
+  const validation = validator.validateExecutionResult(executionResult);
+
+  return {
+    engine: "GARUDA Governed Executor v2",
+    verifiedStatus: validation.status,
+    verified: validation.verified,
+    failureCategory: validation.failureCategory,
+    reason: validation.reason,
+    executionResult,
+    validationDetails: validation.verificationDetails
+  };
+}
+
+module.exports = {
+  executeSafeActions,
+  executeGovernedTask
+};

@@ -3,6 +3,7 @@ import BrandAssetImage from "./BrandAssetImage";
 import FounderProfile from "./FounderProfile";
 
 const navItems = [
+  { icon: "⚡", label: "Mission Control" },
   { icon: "◈", label: "Dashboard" },
   { icon: "⟡", label: "Revenue Universe" },
   { icon: "✦", label: "Creative Studio" },

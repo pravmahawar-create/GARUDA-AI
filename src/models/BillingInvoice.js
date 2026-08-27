@@ -15,7 +15,12 @@ const BillingLineSchema = new mongoose.Schema(
 const BillingInvoiceSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true },
-    invoiceNo: { type: Number, required: true, unique: true },
+    invoiceNo: { type: Number, required: true },
+    companyId: String,
+    companyName: String,
+    templateId: String,
+    billType: String,
+    bank: { type: mongoose.Schema.Types.Mixed },
     customerId: String,
     customerName: String,
     date: String,

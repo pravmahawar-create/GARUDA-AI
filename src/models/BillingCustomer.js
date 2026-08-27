@@ -7,6 +7,7 @@ const BillingCustomerSchema = new mongoose.Schema(
     mobile: String,
     gstin: String,
     address: String,
+    creditLimit: Number,
     createdAt: Date
   },
   { timestamps: true }

@@ -37,6 +37,7 @@ app.get("/health", healthResponse);
 app.get("/api/health", healthResponse);
 
 app.use("/api/mother", require("./routes/motherAgentRoutes"));
+app.use("/api/missions", require("./routes/missionRoutes"));
 app.use("/api/knowledge", require("./routes/knowledgeRoutes"));
 app.use("/api/rag", require("./routes/ragRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
@@ -56,6 +57,10 @@ app.use("/api/billing", require("./routes/billingRoutes"));
 const telegramBotService = require("./services/telegramBotService");
 const abslKnowledgeService = require("./services/abslKnowledgeService");
 const abslKnowledgeSeedService = require("./services/abslKnowledgeSeedService");
+const { initRevenueOperatingCycle } = require("./services/revenueOperatingCycleInitializer");
+
+// Boot 24x7 Revenue Operating Loop Workers
+initRevenueOperatingCycle();
 
 app.get("/api/telegram", async (req, res) => {
   try {

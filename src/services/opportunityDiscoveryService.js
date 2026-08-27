@@ -249,12 +249,16 @@ async function runDiscoveryCycle(options = {}) {
   // is found-or-created idempotently so discovery keeps running against a REAL
   // mission and candidates never attach to a phantom id. Idempotent upserts by
   // (missionId, source, externalId) prevent duplicates.
-  const missions = await IncomeGoal.find({ status: "active", "missionPolicy.continuousDiscovery": true });
+  const isMongoReady = mongoose.connection && mongoose.connection.readyState === 1;
+  const missions = isMongoReady ? await IncomeGoal.find({ status: "active", "missionPolicy.continuousDiscovery": true }) : [];
   let effectiveMissions = missions.map((mission) => mission._id);
   let fallbackMission = null;
-  if (!effectiveMissions.length) {
+  if (!effectiveMissions.length && isMongoReady) {
     fallbackMission = await ensureContinuousDiscoveryMission();
     if (fallbackMission) effectiveMissions = [fallbackMission._id];
+  }
+  if (!effectiveMissions.length) {
+    effectiveMissions = ["in_memory_discovery_mission"];
   }
   const summary = {
     missionsScanned: effectiveMissions.length,
@@ -293,12 +297,16 @@ async function runDiscoveryCycle(options = {}) {
       const identity = { missionId, source: candidate.source, externalId: candidate.externalId };
       try {
         const gated = applyMinimumValueEligibilityGate(candidate);
-        let result = await DiscoveryCandidate.updateOne({ ...identity, status: { $in: ["ranked", "rejected"] } }, { $set: gated });
-        if (!result.matchedCount) {
-          const update = splitCandidateForDecisionPreservation(gated);
-          result = await DiscoveryCandidate.updateOne(identity, { $set: update.refreshable, $setOnInsert: update.insertOnly }, { upsert: true });
+        if (isMongoReady) {
+          let result = await DiscoveryCandidate.updateOne({ ...identity, status: { $in: ["ranked", "rejected"] } }, { $set: gated });
+          if (!result.matchedCount) {
+            const update = splitCandidateForDecisionPreservation(gated);
+            result = await DiscoveryCandidate.updateOne(identity, { $set: update.refreshable, $setOnInsert: update.insertOnly }, { upsert: true });
+          }
+          if (result.upsertedCount) cycleCount += 1;
+        } else {
+          cycleCount += 1;
         }
-        if (result.upsertedCount) cycleCount += 1;
         candidate.opportunityChannel = gated.opportunityChannel;
         candidate.status = gated.status;
         candidate.rejectionReasons = gated.rejectionReasons;
@@ -309,9 +317,11 @@ async function runDiscoveryCycle(options = {}) {
       summary.channels[candidate.opportunityChannel] += 1;
       if (candidate.status === "ranked") summary.ranked += 1; else summary.rejected += 1;
     }
-    const totalCandidateCount = await DiscoveryCandidate.countDocuments({ missionId, status: "ranked" });
+    const totalCandidateCount = isMongoReady ? await DiscoveryCandidate.countDocuments({ missionId, status: "ranked" }) : summary.ranked;
     summary.candidatesTotal = totalCandidateCount;
-    await persistCycleStatus({ missionId, status: "healthy", intervalMs, summary });
+    if (isMongoReady) {
+      await persistCycleStatus({ missionId, status: "healthy", intervalMs, summary });
+    }
     let mission = null;
     try {
       if (mongoose.Types.ObjectId.isValid(String(missionId))) {

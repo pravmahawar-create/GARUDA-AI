@@ -414,8 +414,32 @@ export async function recordDealResponse(payload = {}) {
 }
 
 /* Payment links */
-export async function getPaymentLinkConfig() {
-  const res = await fetch(`${API_BASE}/api/revenue/payment-link/config`);
+/* Mission Control API Client */
+export async function createMissionApi(goal, founderApproved = true) {
+  const res = await fetch(`${API_BASE}/api/missions`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify({ goal, founderApproved })
+  });
+  return res.json();
+}
+
+export async function listMissionsApi() {
+  const res = await fetch(`${API_BASE}/api/missions`);
+  return asData(res, []);
+}
+
+export async function getMissionApi(missionId) {
+  const res = await fetch(`${API_BASE}/api/missions/${encodeURIComponent(missionId)}`);
+  return asData(res, null);
+}
+
+export async function actionMissionApi(missionId, action = "approve", payload = {}) {
+  const res = await fetch(`${API_BASE}/api/missions/${encodeURIComponent(missionId)}/action`, {
+    method: "POST",
+    headers: founderHeaders(),
+    body: JSON.stringify({ action, payload })
+  });
   return asData(res, null);
 }
 

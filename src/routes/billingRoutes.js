@@ -1,11 +1,16 @@
 const express = require("express");
+const multer = require("multer");
 const { generateAnswer, isLLMConfigured } = require("../rag/llmAdapter");
+const { transcribeAudio, MODEL } = require("../services/speechService");
 const BillingCustomer = require("../models/BillingCustomer");
 const BillingInvoice = require("../models/BillingInvoice");
 const BillingPayment = require("../models/BillingPayment");
+const BillingCompany = require("../models/BillingCompany");
 const connectDB = require("../database/db");
 
 const router = express.Router();
+
+const sttUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 15 * 1024 * 1024 } });
 
 const VOICE_SYSTEM_PROMPT = `You are Garuda, the billing assistant for a cement + steel (loha-cement) business in India. The user speaks Hindi/Hinglish. Parse their spoken command into STRICT JSON only. No markdown, no extra text.
 
@@ -73,6 +78,18 @@ router.post("/voice", async (req, res) => {
       });
     }
     return res.json({ success: true, parsed });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/stt", sttUpload.single("audio"), async (req, res) => {
+  try {
+    if (!req.file || !req.file.buffer || req.file.buffer.length === 0) {
+      return res.status(400).json({ success: false, message: "audio file required (multipart field 'audio')" });
+    }
+    const text = await transcribeAudio(req.file.buffer);
+    return res.json({ success: Boolean(text), text, model: MODEL });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -146,8 +163,29 @@ router.post("/sync", async (req, res) => {
     if (!connectDB.isMongoConnected()) {
       return res.status(503).json({ success: false, message: "Mongo not connected" });
     }
-    const { customers = [], invoices = [], payments = [] } = req.body || {};
-    const counts = { customers: 0, invoices: 0, payments: 0 };
+    const { customers = [], invoices = [], payments = [], companies = [], deletes = [] } = req.body || {};
+    const counts = { customers: 0, invoices: 0, payments: 0, companies: 0 };
+
+    const models = {
+      customer: BillingCustomer,
+      invoice: BillingInvoice,
+      payment: BillingPayment,
+      company: BillingCompany
+    };
+    for (const d of deletes) {
+      const model = models[d.entity];
+      if (!model || !d.id) continue;
+      const r = await model.deleteOne({ id: d.id });
+      counts[d.entity + 's'] = (counts[d.entity + 's'] || 0) + (r.deletedCount || 0);
+    }
+
+    if (companies.length) {
+      const ops = companies.map((c) => ({
+        updateOne: { filter: { id: c.id }, update: { $set: c }, upsert: true }
+      }));
+      const r = await BillingCompany.bulkWrite(ops, { ordered: false });
+      counts.companies = r.upsertedCount + r.modifiedCount;
+    }
 
     if (customers.length) {
       const ops = customers.map((c) => ({

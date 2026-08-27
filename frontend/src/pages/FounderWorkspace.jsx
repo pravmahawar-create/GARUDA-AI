@@ -13,6 +13,7 @@ import EngineeringPlannerPanel from "../components/EngineeringPlannerPanel";
 import MotherBrainPanel from "../components/MotherBrainPanel";
 import LearningPanel from "../components/LearningPanel";
 import FounderUniversesStrip from "../components/FounderUniversesStrip";
+import MissionControlPanel from "../components/MissionControlPanel";
 import Sparkline from "../components/charts/Sparkline";
 import DonutChart from "../components/charts/DonutChart";
 import selfBuildEngine from "../selfbuild/SelfBuildEngine";
@@ -233,6 +234,11 @@ export default function FounderWorkspace({ onLogout }) {
 
       <section className="workspace" style={{ flex: 1, minWidth: 0, padding: "1.5rem clamp(1rem, 3vw, 2.5rem) 3rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
         <TopBar />
+
+        {/* Mission Control Cockpit */}
+        <section className="fd-card" style={{ padding: "1.5rem" }}>
+          <MissionControlPanel />
+        </section>
 
         {/* Hero banner — primary focal point (prototype spec) */}
         <motion.section
