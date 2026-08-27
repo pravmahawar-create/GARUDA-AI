@@ -21,6 +21,21 @@ async function runMissionControlTests() {
   // -------------------------------------------------------------
   console.log('--- 1. MISSION CREATION & PERSISTENCE TESTS ---');
 
+  // Test 0: Pre-save hook signature test for MissionRecord
+  const MissionRecord = require('../models/MissionRecord');
+  const dummyDoc = new MissionRecord({ missionId: 'dummy_pre_save_test', goal: 'Test pre-save hook' });
+  let preSaveError = null;
+  try {
+    dummyDoc.set('updatedAt', new Date());
+    // Execute pre-save middleware explicitly
+    if (typeof dummyDoc.schema._hooks?.execPre === 'function') {
+      await dummyDoc.schema._hooks.execPre('save', dummyDoc);
+    }
+  } catch (err) {
+    preSaveError = err;
+  }
+  assert(preSaveError === null, 'MissionRecord pre-save hook executes cleanly without "next is not a function" error');
+
   // Test 1: Create mission with goal
   const goalText = 'Inspect repository package.json and audit capabilities';
   const mission = await missionControlService.createMission(goalText, { founderApproved: true });

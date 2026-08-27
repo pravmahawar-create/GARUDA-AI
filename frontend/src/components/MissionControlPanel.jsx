@@ -24,6 +24,7 @@ export default function MissionControlPanel() {
   const [activeMission, setActiveMission] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const pollTimerRef = useRef(null);
 
@@ -37,6 +38,7 @@ export default function MissionControlPanel() {
       }
     } catch (e) {
       console.error("Failed to list missions:", e);
+      setError("Failed to load persistent missions list");
     } finally {
       setLoading(false);
     }
@@ -77,6 +79,7 @@ export default function MissionControlPanel() {
     e.preventDefault();
     if (!goal.trim() || launching) return;
 
+    setError(null);
     setLaunching(true);
     try {
       const res = await createMissionApi(goal, founderApproved);
@@ -84,9 +87,13 @@ export default function MissionControlPanel() {
         setGoal("");
         setActiveMission(res.data);
         await refreshMissions();
+      } else {
+        const errMsg = (res && (res.message || res.error)) ? `${res.message}${res.error ? `: ${res.error}` : ""}` : "Failed to launch autonomous mission";
+        setError(errMsg);
       }
     } catch (err) {
       console.error("Launch error:", err);
+      setError(err.message || "Network error while launching mission");
     } finally {
       setLaunching(false);
     }
@@ -138,6 +145,14 @@ export default function MissionControlPanel() {
           ↻ Refresh Cockpit
         </button>
       </div>
+
+      {/* Error Alert Banner */}
+      {error && (
+        <div style={{ background: "rgba(248, 113, 113, 0.15)", border: `1px solid ${palette.red}`, color: palette.red, padding: "0.8rem 1rem", borderRadius: 10, marginBottom: "1.5rem", fontSize: "0.88rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span>⚠️ {error}</span>
+          <button onClick={() => setError(null)} style={{ background: "transparent", border: "none", color: palette.red, cursor: "pointer", fontWeight: 700, fontSize: "1rem" }}>✕</button>
+        </div>
+      )}
 
       {/* Goal Launch Console */}
       <form onSubmit={handleLaunch} style={{ background: palette.panelSoft, border: `1px solid ${palette.line}`, borderRadius: 16, padding: "1.5rem", marginBottom: "2rem" }}>

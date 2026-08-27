@@ -46,9 +46,8 @@ const MissionRecordSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
-MissionRecordSchema.pre("save", function(next) {
+MissionRecordSchema.pre("save", function() {
   this.updatedAt = new Date();
-  next();
 });
 
 module.exports = mongoose.model("MissionRecord", MissionRecordSchema);
