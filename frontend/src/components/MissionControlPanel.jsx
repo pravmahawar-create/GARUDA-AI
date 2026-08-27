@@ -52,7 +52,7 @@ export default function MissionControlPanel() {
   useEffect(() => {
     if (!activeMission || !activeMission.missionId) return;
 
-    const shouldPoll = ["RUNNING", "PLANNING", "WAITING_APPROVAL", "VERIFYING"].includes(activeMission.status);
+    const shouldPoll = ["READY", "RUNNING", "PLANNING", "WAITING_APPROVAL", "VERIFYING"].includes(activeMission.status);
     if (!shouldPoll) {
       if (pollTimerRef.current) clearInterval(pollTimerRef.current);
       return;
@@ -87,6 +87,7 @@ export default function MissionControlPanel() {
         setGoal("");
         setActiveMission(res.data);
         await refreshMissions();
+        setTimeout(refreshMissions, 1000);
       } else {
         const errMsg = (res && (res.message || res.error)) ? `${res.message}${res.error ? `: ${res.error}` : ""}` : "Failed to launch autonomous mission";
         setError(errMsg);
