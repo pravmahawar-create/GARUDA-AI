@@ -385,7 +385,7 @@ export default function ServiceLanding() {
           "@type": "Organization",
           "name": "GARUDA AI",
           "url": "https://www.garudaos.in",
-          "logo": "https://www.garudaos.in/favicon/garuda-sigil-icon.svg"
+          "logo": "https://www.garudaos.in/favicon-512x512.png"
         },
         "areaServed": "Worldwide",
         "offers": {

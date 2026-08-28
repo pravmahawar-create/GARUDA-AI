@@ -46,6 +46,10 @@
       "destination": "/chat/index.html"
     },
     {
+      "source": "/demo",
+      "destination": "/demo/index.html"
+    },
+    {
       "source": "/services/custom-ai-development",
       "destination": "/services/custom-ai-development/index.html"
     },

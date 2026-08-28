@@ -447,6 +447,23 @@ const ROUTES = [
       <p>Consult with GARUDA's conversational intelligence to draft project requirements, evaluate architecture options, and receive milestone pricing estimates.</p>
       <p>Direct Services: Custom AI Development, Autonomous Agents, Full-Stack Web Software, Enterprise Workflow Automation.</p>
     `
+  },
+  {
+    path: "/demo",
+    filePaths: [
+      path.join(DIST_DIR, "demo", "index.html"),
+      path.join(DIST_DIR, "demo.html")
+    ],
+    title: "GARUDA AI Interactive Demo | Autonomous AI Operating System",
+    description: "Launch the interactive GARUDA AI demonstration. Experience governed software execution, autonomous multi-agent workflows, and enterprise intelligence live.",
+    canonical: "https://www.garudaos.in/demo",
+    h1: "Launch GARUDA AI Interactive Demo",
+    eyebrow: "AUTONOMOUS AI EXPERIENCE",
+    contentSnippet: `
+      <h2>Experience Governed AI Execution in Real-Time</h2>
+      <p>Launch the interactive GARUDA AI demonstration to evaluate multi-agent orchestration, custom software generation, and business automation workflows.</p>
+      <p><a href="/chat">Discuss Custom Project Scope →</a> | <a href="/what-is-garuda-ai">Learn About GARUDA Architecture →</a></p>
+    `
   }
 ];
 

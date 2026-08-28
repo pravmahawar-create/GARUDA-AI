@@ -98,8 +98,12 @@ async function runTests() {
     "https://www.garudaos.in/what-is-garuda-ai",
     "https://www.garudaos.in/chat",
     "https://www.garudaos.in/services/custom-ai-development",
-    "https://www.garudaos.in/services/custom-software-saas-mvp",
-    "https://www.garudaos.in/services/business-workflow-ai-automation",
+    "https://www.garudaos.in/services/ai-agent-development",
+    "https://www.garudaos.in/services/custom-software-development",
+    "https://www.garudaos.in/services/website-development",
+    "https://www.garudaos.in/services/saas-mvp-development",
+    "https://www.garudaos.in/services/business-automation",
+    "https://www.garudaos.in/services/rag-development",
     "https://www.garudaos.in/services/whatsapp-telegram-ai-bots",
     "https://www.garudaos.in/demo"
   ];
@@ -162,6 +166,21 @@ async function runTests() {
     }
     console.log("✔ PASS: All prerendered distribution files have 100% unique titles, self-referencing canonicals, and unique H1s");
   }
+
+  // 9. Favicon & Brand Asset Suite Integrity
+  console.log("\n--- 9. Favicon & Brand Asset Suite Integrity ---");
+  const publicDir = path.join(repoRoot, "frontend", "public");
+  assert(fs.existsSync(path.join(publicDir, "favicon.ico")), "favicon.ico must exist in public directory");
+  assert(fs.statSync(path.join(publicDir, "favicon.ico")).size > 1000, "favicon.ico must be a valid multi-res icon");
+  assert(fs.existsSync(path.join(publicDir, "favicon-48x48.png")), "favicon-48x48.png must exist for Googlebot");
+  assert(fs.existsSync(path.join(publicDir, "apple-touch-icon.png")), "apple-touch-icon.png must exist");
+  assert(fs.existsSync(path.join(publicDir, "site.webmanifest")), "site.webmanifest must exist");
+
+  const rawIndexHtml = fs.readFileSync(indexHtmlPath, "utf8");
+  assert(rawIndexHtml.includes('/favicon.ico'), "index.html must reference /favicon.ico");
+  assert(rawIndexHtml.includes('/favicon-48x48.png'), "index.html must reference /favicon-48x48.png");
+  assert(!rawIndexHtml.includes("GARUDA SIGIL</text>"), "index.html must not contain star placeholder text");
+  console.log("✔ PASS: All authentic multi-resolution Golden Eagle favicon assets verified with zero placeholder stars");
 
   console.log("\n================================================================================");
   console.log("🦅 ALL GOOGLE BRAND ENTITY & SEARCH DISCOVERABILITY TESTS PASSED 100%!");
