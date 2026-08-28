@@ -241,6 +241,7 @@ class ClientProposalService {
         policyTier: isLowRiskScope ? "LOW_RISK_TIER_1" : "STANDARD_GOVERNED_TIER_2"
       },
       status: initialStatus,
+      isTest: input.isTest === true,
       publicUrl: `https://garudaos.in/proposal/${proposalId}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -567,7 +568,7 @@ class ClientProposalService {
   /**
    * Returns canonical commercial conversion funnel metrics.
    */
-  getCommercialFunnelMetrics() {
+  getCommercialFunnelMetrics(options = {}) {
     const proposals = Array.from(proposalStore.values());
     const countsByStatus = {};
     PROPOSAL_STATUSES.forEach((st) => { countsByStatus[st] = 0; });
@@ -575,6 +576,8 @@ class ClientProposalService {
     let totalQuotedINR = 0;
     let depositsPaidINR = 0;
     let realizedRevenueINR = 0;
+    let simulatedRevenueINR = 0;
+    let realCustomersCount = 0;
     const revenueByCurrency = {};
 
     for (const p of proposals) {
@@ -588,7 +591,12 @@ class ClientProposalService {
       }
 
       if (p.status === "CLOSED" && p.finalPayment?.verified) {
-        realizedRevenueINR += Number(p.pricing?.totalINR) || 0;
+        if (p.isTest === true || String(p.client?.name || "").includes("TEST") || String(p.client?.name || "").includes("Simulation")) {
+          simulatedRevenueINR += Number(p.pricing?.totalINR) || 0;
+        } else {
+          realizedRevenueINR += Number(p.pricing?.totalINR) || 0;
+          realCustomersCount++;
+        }
       }
     }
 
@@ -598,6 +606,8 @@ class ClientProposalService {
       pipelineValueINR: totalQuotedINR,
       depositsPaidINR,
       realizedRevenueINR,
+      simulatedRevenueINR,
+      realCustomersCount,
       revenueByCurrency,
       conversionRates: {
         proposalToAcceptanceRate: proposals.length ? Math.round((proposals.filter((p) => ["CLIENT_ACCEPTED", "DEPOSIT_PAID", "IN_EXECUTION", "DELIVERY_READY", "FINAL_ACCEPTED", "CLOSED"].includes(p.status)).length / proposals.length) * 100) : 0,

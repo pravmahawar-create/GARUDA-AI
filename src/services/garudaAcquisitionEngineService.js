@@ -149,6 +149,10 @@ class GarudaAcquisitionEngineService {
     };
 
     const outreachMetrics = require("./garudaOutreachDispatchService").getOutreachPipelineMetrics();
+    const conversionService = require("./customerConversionService");
+    const failureIntel = require("./conversionFailureIntelligenceService");
+
+    const conversionTelemetry = conversionService.getConversionTelemetry();
 
     return {
       success: true,
@@ -168,6 +172,7 @@ class GarudaAcquisitionEngineService {
         realizedRevenueINR: realizedINR,
         pipelineValueINR: funnel.pipelineValueINR || 0
       },
+      conversions: conversionTelemetry,
       leadQuality: {
         averageLeadScore: discoverySummary.averageLeadScore,
         averageCommercialValueUSD: discoverySummary.averageCommercialValueUSD,
@@ -176,6 +181,7 @@ class GarudaAcquisitionEngineService {
       globalMarkets: topMarkets,
       topCurrencies,
       outreach: outreachMetrics,
+      failureIntelligence: failureIntel.getAllBlockerDefinitions(),
       sources: discoverySummary.sources,
       topDemands,
       bottlenecks,
