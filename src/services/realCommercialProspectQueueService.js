@@ -46,45 +46,47 @@ class RealCommercialProspectQueueService {
       return { category: PROSPECT_CATEGORIES.INSUFFICIENT_PROJECT_INFORMATION, reason: "Title too brief or unmeasured", evalRes };
     }
 
-    // 4. Employment / Internal Staff Hiring Filter
+    // 4. Employment & Talent Marketplace Sourcing Filter
     const employmentKeywords = [
       "salary", "w2", "benefits", "401k", "full-time", "full time", "pto",
       "maternity", "equity", "health insurance", "join our team", "internal team",
       "hiring a", "engineering manager", "staff software engineer", "vice president",
       "head of", "tier iii", "inside sales", "office assistant", "copywriter",
-      "content reviewer", "face deduplication"
+      "content reviewer", "face deduplication", "marketplace that connects you",
+      "recruiting", "talent pool", "join lemon.io", "join a.team", "f/m/d"
     ];
 
+    const isTalentMarketplace = /lemon\.io|toptal|a\.team|azumo|telus digital/i.test(opp.company || "") || text.includes("marketplace that connects you");
     const hasExplicitEmploymentSignals = employmentKeywords.some((kw) => text.includes(kw) || title.includes(kw));
-    const isAgencyOrContractNetwork = /toptal|lemon\.io|a\.team|azumo/i.test(opp.company || "");
 
-    if (hasExplicitEmploymentSignals && !isAgencyOrContractNetwork) {
+    if (isTalentMarketplace || hasExplicitEmploymentSignals) {
       return {
         category: PROSPECT_CATEGORIES.EMPLOYMENT_JOB_LISTING,
-        reason: "Identified as internal employment/staff hiring listing rather than client project RFP",
+        reason: isTalentMarketplace
+          ? "Talent marketplace / recruitment network sourcing individual contractors for talent pool, not a direct client software RFP"
+          : "Internal employment/staff hiring listing rather than client project RFP",
         evalRes
       };
     }
 
     // 5. Genuine Commercial Project Opportunity
+    const isDirectClientProject = Boolean(opp.isDirectClientRfp || opp.contactEmail || opp.isCustomRfp);
     const projectKeywords = [
-      "agentic", "product engineer", "developer", "architect", "shopify", "e-commerce",
-      "web developer", "custom", "integration", "software", "ai engineer", "data engineer"
+      "rfp", "custom", "integration", "migration", "mvp", "bot", "agentic", "crm", "workflow"
     ];
-
     const hasProjectSignals = projectKeywords.some((kw) => title.includes(kw) || text.includes(kw));
 
-    if (hasProjectSignals || isAgencyOrContractNetwork) {
+    if (hasProjectSignals && isDirectClientProject) {
       return {
         category: PROSPECT_CATEGORIES.GENUINE_COMMERCIAL_PROSPECT,
-        reason: "Qualified commercial software / AI project opportunity",
+        reason: "Qualified direct client commercial software / AI project opportunity",
         evalRes
       };
     }
 
     return {
       category: PROSPECT_CATEGORIES.NEEDS_HUMAN_REVIEW,
-      reason: "Requires manual inspection by Founder",
+      reason: "Job-board listing with general title; requires manual verification before outreach",
       evalRes
     };
   }
@@ -146,17 +148,21 @@ class RealCommercialProspectQueueService {
   }
 
   /**
-   * Prepares the TOP 3 genuine commercial prospects into Founder Approval queue with tailored outreach drafts.
+   * Prepares top candidate outreach drafts with strict safety ratings.
    */
   async prepareTopOutreachDrafts(options = {}) {
     const queue = await this.curateCommercialQueue(options);
-    const topProspects = queue.genuineCommercialProspects.slice(0, 3);
+    const candidates = queue.genuineCommercialProspects.length > 0
+      ? queue.genuineCommercialProspects.slice(0, 3)
+      : queue.needsHumanReview.slice(0, 3);
 
     const preparedDrafts = [];
 
-    for (let i = 0; i < topProspects.length; i++) {
-      const p = topProspects[i];
+    for (let i = 0; i < candidates.length; i++) {
+      const p = candidates[i];
       const prospectId = `outreach_m31a_${Date.now()}_${i + 1}`;
+      const isGenuine = queue.genuineCommercialProspects.includes(p);
+      const isSafeForFounderApproval = isGenuine && Boolean(p.url && !p.url.includes("remote-jobs"));
 
       const draft = {
         prospectId,
@@ -170,7 +176,11 @@ class RealCommercialProspectQueueService {
         fitRationale: `GARUDA delivers deterministic end-to-end execution with automated regression QA test suites and cryptographic SHA-256 release manifests.`,
         subject: `Tailored Architectural Proposal: ${p.title} for ${p.company}`,
         body: `Dear ${p.company} Team,\n\nWe noted your requirement for "${p.title}".\n\nGARUDA delivers bespoke, premium software and AI systems engineered with deterministic quality assurance and transparent milestone governance (50% kickoff advance deposit upon digital proposal acceptance; 50% upon verified delivery).\n\nExplore our service blueprint: https://www.garudaos.in/services/custom-ai-development\nDirect Scoping Chat: https://www.garudaos.in/chat?ref=${prospectId}\n\nSincerely,\nGARUDA AI Operating System\nhttps://www.garudaos.in`,
-        status: "APPROVAL_REQUIRED"
+        status: isSafeForFounderApproval ? "APPROVAL_REQUIRED" : "INVALID_FOR_DIRECT_OUTREACH",
+        safetyRating: isSafeForFounderApproval ? "SAFE_FOR_FOUNDER_APPROVAL" : "INVALID_FOR_DIRECT_OUTREACH",
+        auditNotes: isSafeForFounderApproval
+          ? "Verified commercial client RFP with direct contact pathway."
+          : "Listing is hosted on a remote employment/job board aggregator without a verified direct client procurement email. Cold dispatch would be misaligned."
       };
 
       preparedDrafts.push(draft);
