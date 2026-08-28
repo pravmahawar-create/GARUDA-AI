@@ -33,6 +33,34 @@ const PROPOSAL_STATUSES = [
 const AUTONOMOUS_AUTHORIZATION_INR_LIMIT = 25000;
 const proposalStore = new Map();
 
+async function persistProposalDoc(proposal) {
+  if (!proposal || !proposal.proposalId) return;
+  proposalStore.set(proposal.proposalId, proposal);
+  try {
+    if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
+      await mongoose.connection.db.collection("clientproposals").updateOne(
+        { proposalId: proposal.proposalId },
+        { $set: proposal },
+        { upsert: true }
+      );
+    }
+  } catch {}
+}
+
+async function findProposalDoc(proposalId) {
+  if (proposalStore.has(proposalId)) return proposalStore.get(proposalId);
+  try {
+    if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
+      const doc = await mongoose.connection.db.collection("clientproposals").findOne({ proposalId });
+      if (doc) {
+        proposalStore.set(proposalId, doc);
+        return doc;
+      }
+    }
+  } catch {}
+  return null;
+}
+
 function sha256(data) {
   return crypto.createHash("sha256").update(typeof data === "string" ? data : JSON.stringify(data)).digest("hex");
 }
@@ -227,7 +255,7 @@ class ClientProposalService {
       ]
     };
 
-    proposalStore.set(proposalId, proposal);
+    await persistProposalDoc(proposal);
 
     // Telegram Alert to Founder
     try {
@@ -249,17 +277,19 @@ class ClientProposalService {
    * Retrieves proposal by ID. Strips sensitive internal keys if public client view.
    */
   async getProposal(proposalId, options = {}) {
-    const proposal = proposalStore.get(proposalId);
+    const proposal = await findProposalDoc(proposalId);
     if (!proposal) return null;
 
     if (options.isPublicView) {
       if (proposal.status === "APPROVED" || proposal.status === "SENT") {
         proposal.status = "CLIENT_VIEWED";
+        proposal.auditTrail = proposal.auditTrail || [];
         proposal.auditTrail.push({
           action: "CLIENT_VIEWED",
           actor: "client_portal",
           timestamp: new Date().toISOString()
         });
+        await persistProposalDoc(proposal);
       }
 
       // Return sanitized public representation
@@ -267,7 +297,7 @@ class ClientProposalService {
       return {
         ...publicSafe,
         isVerified: true,
-        scopeIntegrity: governance.scopeHash
+        scopeIntegrity: governance?.scopeHash
       };
     }
 
@@ -278,7 +308,7 @@ class ClientProposalService {
    * Client accepts proposal terms.
    */
   async acceptProposal(proposalId, clientSignature = {}) {
-    const proposal = proposalStore.get(proposalId);
+    const proposal = await findProposalDoc(proposalId);
     if (!proposal) {
       throw Object.assign(new Error("Proposal not found"), { statusCode: 404 });
     }
@@ -296,6 +326,7 @@ class ClientProposalService {
       agreementConfirmed: true
     };
 
+    proposal.auditTrail = proposal.auditTrail || [];
     proposal.auditTrail.push({
       action: "CLIENT_ACCEPTED",
       actor: "client",
@@ -304,6 +335,7 @@ class ClientProposalService {
     });
 
     proposal.updatedAt = new Date().toISOString();
+    await persistProposalDoc(proposal);
 
     // Telegram Notification to Founder
     try {
@@ -324,7 +356,7 @@ class ClientProposalService {
    * Records and verifies deposit payment using Payment Truth rules.
    */
   async recordDepositPayment(proposalId, paymentInput = {}) {
-    const proposal = proposalStore.get(proposalId);
+    const proposal = await findProposalDoc(proposalId);
     if (!proposal) {
       throw Object.assign(new Error("Proposal not found"), { statusCode: 404 });
     }
@@ -339,6 +371,7 @@ class ClientProposalService {
         state: paymentInput.screenshot ? "PAYMENT_EVIDENCE_UNVERIFIED" : "PAYMENT_CLAIMED",
         claimNote: "Payment claim recorded without authoritative provider signature verification. Real revenue and mission kickoff blocked."
       };
+      proposal.auditTrail = proposal.auditTrail || [];
       proposal.auditTrail.push({
         action: "PAYMENT_CLAIM_RECORDED",
         actor: "system_truth_gate",
@@ -346,6 +379,7 @@ class ClientProposalService {
         status: proposal.payment.paymentTruth.state,
         timestamp: new Date().toISOString()
       });
+      await persistProposalDoc(proposal);
       return {
         success: false,
         verified: false,
@@ -368,10 +402,13 @@ class ClientProposalService {
       verifiedAt: new Date().toISOString()
     };
 
-    proposal.milestones[0].status = "PAID";
+    if (proposal.milestones && proposal.milestones[0]) {
+      proposal.milestones[0].status = "PAID";
+    }
     proposal.status = "IN_EXECUTION";
     proposal.updatedAt = new Date().toISOString();
 
+    proposal.auditTrail = proposal.auditTrail || [];
     proposal.auditTrail.push({
       action: "DEPOSIT_VERIFIED",
       actor: "razorpay_webhook_gate",
@@ -380,6 +417,7 @@ class ClientProposalService {
       amount: paidAmount,
       timestamp: new Date().toISOString()
     });
+    await persistProposalDoc(proposal);
 
     // 3. Automated Governed Mission Creation
     let executionMission = null;
@@ -389,6 +427,7 @@ class ClientProposalService {
         { founderApproved: true, priority: "P1" }
       );
       proposal.missionId = executionMission.missionId;
+      await persistProposalDoc(proposal);
     } catch (err) {
       console.error(`[ClientProposalService] Failed to spawn mission for ${proposalId}:`, err.message);
     }
@@ -419,7 +458,7 @@ class ClientProposalService {
    * Completes milestone delivery with cryptographic SHA-256 manifest.
    */
   async completeDelivery(proposalId, deliveryPayload = {}) {
-    const proposal = proposalStore.get(proposalId);
+    const proposal = await findProposalDoc(proposalId);
     if (!proposal) throw Object.assign(new Error("Proposal not found"), { statusCode: 404 });
 
     const manifestHash = sha256(deliveryPayload.artifacts || { code: "verified_build" });
@@ -434,12 +473,14 @@ class ClientProposalService {
     proposal.status = "DELIVERY_READY";
     proposal.updatedAt = new Date().toISOString();
 
+    proposal.auditTrail = proposal.auditTrail || [];
     proposal.auditTrail.push({
       action: "DELIVERY_COMPLETED",
       actor: "qa_validator_engine",
       manifestHash,
       timestamp: new Date().toISOString()
     });
+    await persistProposalDoc(proposal);
 
     return proposal;
   }
@@ -448,7 +489,7 @@ class ClientProposalService {
    * Client inspects delivery evidence and provides final sign-off.
    */
   async recordFinalAcceptance(proposalId, signoff = {}) {
-    const proposal = proposalStore.get(proposalId);
+    const proposal = await findProposalDoc(proposalId);
     if (!proposal) throw Object.assign(new Error("Proposal not found"), { statusCode: 404 });
 
     proposal.status = "FINAL_ACCEPTED";
@@ -459,11 +500,13 @@ class ClientProposalService {
     };
 
     proposal.updatedAt = new Date().toISOString();
+    proposal.auditTrail = proposal.auditTrail || [];
     proposal.auditTrail.push({
       action: "FINAL_CLIENT_ACCEPTANCE",
       actor: "client",
       timestamp: new Date().toISOString()
     });
+    await persistProposalDoc(proposal);
 
     return proposal;
   }
@@ -472,7 +515,7 @@ class ClientProposalService {
    * Records final milestone settlement payment -> REVENUE_REALIZED.
    */
   async recordFinalPayment(proposalId, paymentInput = {}) {
-    const proposal = proposalStore.get(proposalId);
+    const proposal = await findProposalDoc(proposalId);
     if (!proposal) throw Object.assign(new Error("Proposal not found"), { statusCode: 404 });
 
     const isAuthoritative = paymentInput.authoritative === true && Boolean(paymentInput.paymentId);
@@ -495,6 +538,7 @@ class ClientProposalService {
       proposal.milestones[0].status = "PAID";
     }
 
+    proposal.auditTrail = proposal.auditTrail || [];
     proposal.auditTrail.push({
       action: "FINAL_PAYMENT_VERIFIED",
       actor: "razorpay_webhook_gate",
@@ -504,6 +548,7 @@ class ClientProposalService {
     });
 
     proposal.updatedAt = new Date().toISOString();
+    await persistProposalDoc(proposal);
 
     try {
       await telegramBotService.sendFounderAlert(
