@@ -6,6 +6,8 @@ const SERVICES_DATA = {
   "custom-ai-development": {
     slug: "custom-ai-development",
     title: "Custom AI Development & Agentic Architecture",
+    seoTitle: "Custom AI Development Services | AI Agents & Automation | GARUDA",
+    seoDescription: "Enterprise-grade custom AI development, autonomous multi-agent systems, and specialized RAG pipelines engineered with verified deterministic quality.",
     tagline: "Deterministic AI Agents, Multi-Turn RAG Pipelines & Governed Operations",
     keyword: "custom ai development",
     category: "AI & Machine Learning",
@@ -28,6 +30,8 @@ const SERVICES_DATA = {
   "custom-software-saas-mvp": {
     slug: "custom-software-saas-mvp",
     title: "Full-Stack Custom Software & Scalable SaaS Development",
+    seoTitle: "Custom Software & SaaS MVP Development | Full-Stack Engineering | GARUDA",
+    seoDescription: "Full-stack custom software engineering and production-ready SaaS MVP development with milestone-governed execution and automated test verification.",
     tagline: "From Concept to Production SaaS MVP with Payments, Auth & Database",
     keyword: "custom software development",
     category: "Full Stack Engineering",
@@ -50,6 +54,8 @@ const SERVICES_DATA = {
   "business-workflow-ai-automation": {
     slug: "business-workflow-ai-automation",
     title: "Enterprise Business Workflow & Process Automation",
+    seoTitle: "Business Workflow AI Automation | Enterprise Process Integration | GARUDA",
+    seoDescription: "Autonomous business process and workflow automation connecting CRMs, payment gateways, document pipelines, and enterprise data with zero loss.",
     tagline: "Automate Repetitive Lead Capture, Invoicing & Operational Pipelines",
     keyword: "ai automation",
     category: "Operations & Automation",
@@ -72,6 +78,8 @@ const SERVICES_DATA = {
   "whatsapp-telegram-ai-bots": {
     slug: "whatsapp-telegram-ai-bots",
     title: "Custom WhatsApp & Telegram AI Commercial Bots",
+    seoTitle: "WhatsApp & Telegram AI Commercial Bots | Customer Automation | GARUDA",
+    seoDescription: "Custom WhatsApp and Telegram AI commercial bots with multi-turn sales scoping, automated lead qualification, and instant payment checkout.",
     tagline: "24/7 Automated Customer Support, Scoping & Payment Checkout Bots",
     keyword: "custom whatsapp bot",
     category: "Conversational AI",
@@ -177,8 +185,8 @@ export default function ServiceLanding() {
   return (
     <div style={{ minHeight: "100vh", background: "#030712", color: "#f9fafb", fontFamily: "Inter, system-ui, sans-serif" }}>
       <SEOHead
-        title={`${service.title} — GARUDA AI Operating System`}
-        description={`${service.tagline}. Fixed-price milestone execution with automated verification test suites.`}
+        title={service.seoTitle || `${service.title} | GARUDA`}
+        description={service.seoDescription || `${service.tagline}. Fixed-price milestone execution.`}
         canonical={`https://www.garudaos.in/services/${service.slug}`}
         schema={serviceSchema}
       />

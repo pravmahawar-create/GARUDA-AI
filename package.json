@@ -4,7 +4,7 @@
   "description": "AI Operating System for ABSLI Life Insurance",
   "main": "index.js",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender-seo.js",
     "preview": "vite preview",
     "test:tools": "node src/tools/executionTools.test.js",
     "test:slice": "node src/tools/taskExecutionBridge.test.js",

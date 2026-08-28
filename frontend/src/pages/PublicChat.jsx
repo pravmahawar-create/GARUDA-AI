@@ -76,7 +76,7 @@ export default function PublicChat() {
       }}
     >
       <SEOHead
-        title="Interactive Commercial AI Scoping & Architecture Chat — GARUDA AI"
+        title="Talk to GARUDA AI | AI Solution Architect & Project Scoping"
         description="Interact directly with GARUDA AI's Solution Architect to scope custom AI pipelines, SaaS MVPs, automation workflows, and receive milestone quotes."
         canonical="https://www.garudaos.in/chat"
       />

@@ -135,8 +135,8 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
   return (
     <div style={{ minHeight: "100vh", background: palette.bg, color: palette.text, fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif" }}>
       <SEOHead
-        title="GARUDA AI — AI Operating System for Autonomous Business Execution"
-        description="GARUDA AI is an AI Operating System for governed business automation, custom software execution, revenue operations, and autonomous multi-agent workflows."
+        title="GARUDA AI Operating System | Custom AI & Software Engineering"
+        description="GARUDA is an autonomous AI Operating System delivering custom AI systems, web applications, SaaS MVPs, automated workflows, and enterprise software worldwide."
         canonical="https://www.garudaos.in/"
       />
       {/* Header */}

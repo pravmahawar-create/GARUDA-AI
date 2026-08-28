@@ -34,7 +34,7 @@ async function runTests() {
 
   // 3. Brand Naming & Title Strategy
   console.log("\n--- 3. Brand Naming & Search Title Strategy ---");
-  assert(indexHtml.includes("<title>GARUDA AI — AI Operating System for Autonomous Business Execution</title>"));
+  assert(indexHtml.includes("<title>GARUDA AI Operating System | Custom AI & Software Engineering</title>"));
   assert(indexHtml.includes('content="GARUDA AI"'), "og:site_name must be GARUDA AI");
   assert(indexHtml.includes("Praveen Mahawar"), "Founder Praveen Mahawar must be attributed");
   console.log("✔ PASS: Title, brand naming, and founder attribution verified");
@@ -120,6 +120,48 @@ async function runTests() {
   assert(whatIsGaruda.includes("Mother Brain & Orchestration"));
   assert(whatIsGaruda.includes("Praveen Mahawar"));
   console.log("✔ PASS: Dedicated entity page contains architecture breakdown, disambiguation, and FAQPage schema");
+
+  // 8. Prerendered Distribution Files Verification
+  console.log("\n--- 8. Prerendered Static HTML Files (Crawler-Visible Output) ---");
+  const distDir = path.join(repoRoot, "frontend", "dist");
+  if (fs.existsSync(distDir)) {
+    const distChecks = [
+      {
+        file: "index.html",
+        expectedTitle: "GARUDA AI Operating System | Custom AI & Software Engineering",
+        expectedCanonical: "https://www.garudaos.in/",
+        expectedH1: "One Command. Infinite Intelligence."
+      },
+      {
+        file: path.join("what-is-garuda-ai", "index.html"),
+        expectedTitle: "What is GARUDA AI? | Autonomous AI Operating System",
+        expectedCanonical: "https://www.garudaos.in/what-is-garuda-ai",
+        expectedH1: "What is GARUDA AI?"
+      },
+      {
+        file: path.join("services", "custom-ai-development", "index.html"),
+        expectedTitle: "Custom AI Development Services | AI Agents & Automation | GARUDA",
+        expectedCanonical: "https://www.garudaos.in/services/custom-ai-development",
+        expectedH1: "Custom AI Development & Autonomous Agent Architecture"
+      },
+      {
+        file: path.join("chat", "index.html"),
+        expectedTitle: "Talk to GARUDA AI | AI Solution Architect & Project Scoping",
+        expectedCanonical: "https://www.garudaos.in/chat",
+        expectedH1: "Interactive AI Solution Architect & Project Scoping"
+      }
+    ];
+
+    for (const c of distChecks) {
+      const fullPath = path.join(distDir, c.file);
+      assert(fs.existsSync(fullPath), `Prerendered file must exist: ${c.file}`);
+      const html = fs.readFileSync(fullPath, "utf8");
+      assert(html.includes(`<title>${c.expectedTitle}</title>`), `Title mismatch in ${c.file}`);
+      assert(html.includes(`<link rel="canonical" href="${c.expectedCanonical}" />`), `Canonical mismatch in ${c.file}`);
+      assert(html.includes(`>${c.expectedH1}</h1>`), `H1 mismatch in ${c.file}`);
+    }
+    console.log("✔ PASS: All prerendered distribution files have 100% unique titles, self-referencing canonicals, and unique H1s");
+  }
 
   console.log("\n================================================================================");
   console.log("🦅 ALL GOOGLE BRAND ENTITY & SEARCH DISCOVERABILITY TESTS PASSED 100%!");

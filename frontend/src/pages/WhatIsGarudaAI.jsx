@@ -89,8 +89,8 @@ export default function WhatIsGarudaAI() {
   return (
     <div style={{ minHeight: "100vh", background: palette.bg, color: palette.text, fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif" }}>
       <SEOHead
-        title="What is GARUDA AI? — The Autonomous AI Operating System Explained"
-        description="Comprehensive guide to GARUDA AI: The autonomous AI Operating System for governed business automation, software execution, and multi-agent workflows."
+        title="What is GARUDA AI? | Autonomous AI Operating System"
+        description="Learn what GARUDA AI is: The autonomous AI Operating System engineered for governed business automation, custom software execution, and multi-agent workflows."
         canonical="https://www.garudaos.in/what-is-garuda-ai"
         schema={entityFaqSchema}
       />
