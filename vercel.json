@@ -2,6 +2,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "frontend/dist",
   "framework": "vite",
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/api/webhook/:path*", "destination": "https://garuda-ai-xfif.onrender.com/api/webhook/:path*" },
     {
@@ -23,6 +24,22 @@
     {
       "source": "/api/:path*",
       "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
+    },
+    {
+      "source": "/what-is-garuda-ai",
+      "destination": "/what-is-garuda-ai/index.html"
+    },
+    {
+      "source": "/garuda-ai",
+      "destination": "/garuda-ai/index.html"
+    },
+    {
+      "source": "/chat",
+      "destination": "/chat/index.html"
+    },
+    {
+      "source": "/services/:slug",
+      "destination": "/services/:slug/index.html"
     },
     {
       "source": "/:path*",
