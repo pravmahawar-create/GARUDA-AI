@@ -50,14 +50,16 @@ const COMMERCIAL_KEYWORDS = [
 ];
 
 const EMPLOYMENT_SIGNALS = [
-  "annual salary", "w2 only", "401k", "health insurance benefits", "full-time employee",
-  "on-site daily", "w-2", "dental coverage", "paid time off", "join our team", "internal team",
-  "f/m/d", "maternity leave", "equity grant"
+  "annual salary", "w2 only", "401k", "401(k)", "health insurance benefits", "full-time employee",
+  "full time employee", "on-site daily", "w-2", "dental coverage", "paid time off", "unlimited pto",
+  "join our team", "internal team", "join our engineering team", "f/m/d", "maternity leave", "equity grant",
+  "visa sponsorship", "direct hire", "tier iii", "staff engineer", "engineering manager", "vice president"
 ];
 
 const TALENT_MARKETPLACE_SIGNALS = [
-  "lemon.io", "toptal", "a.team", "azumo", "telus digital", "marketplace that connects you",
-  "talent pool", "join our network", "roster of freelancers"
+  "lemon.io", "toptal", "a.team", "azumo", "telus digital", "turing.com", "andela", "gun.io",
+  "arc.dev", "bairesdev", "gigster", "crossover", "x-team", "dice.com", "marketplace that connects you",
+  "talent pool", "join our network", "roster of freelancers", "talent network", "vetted developers"
 ];
 
 const NON_SOFTWARE_TRADES = [

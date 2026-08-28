@@ -35,7 +35,7 @@ async function runTests() {
   assert(draftsResult.topDrafts.length >= 10);
   
   const sample = draftsResult.topDrafts[0];
-  assert(sample.prospectId.startsWith("outreach_sprint_"));
+  assert(sample.prospectId.startsWith("outreach_"));
   assert(sample.company && sample.company.length > 0);
   assert(sample.projectTitle && sample.projectTitle.length > 0);
   assert.strictEqual(sample.safetyRating, "SAFE_FOR_FOUNDER_APPROVAL");

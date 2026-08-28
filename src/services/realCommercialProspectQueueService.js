@@ -48,8 +48,13 @@ class RealCommercialProspectQueueService {
       return { category: PROSPECT_CATEGORIES.INSUFFICIENT_PROJECT_INFORMATION, reason: "Title too brief or unmeasured", evalRes };
     }
 
-    // 4. Talent Marketplace Sourcing Filter (e.g. Lemon.io, Toptal, A.Team)
-    const isTalentMarketplace = /lemon\.io|toptal|a\.team|azumo|telus digital/i.test(opp.company || "") || text.includes("marketplace that connects you");
+    // 4. Talent Marketplace Sourcing Filter (e.g. Lemon.io, Toptal, A.Team, Turing, Gun.io)
+    const isTalentMarketplace = /lemon\.io|toptal|a\.team|azumo|telus digital|turing\.com|andela|gun\.io|arc\.dev|bairesdev|gigster|crossover|x-team|dice\.com/i.test(opp.company || "") || 
+      text.includes("marketplace that connects you") || 
+      text.includes("talent network") || 
+      text.includes("roster of freelancers") ||
+      text.includes("talent pool") ||
+      text.includes("vetted developers");
     if (isTalentMarketplace && !opp.isDirectClientRfp) {
       return {
         category: PROSPECT_CATEGORIES.TALENT_MARKETPLACE_ROSTER_RECRUITMENT,
@@ -60,11 +65,11 @@ class RealCommercialProspectQueueService {
 
     // 5. Employment / Internal Staff Hiring Filter
     const employmentKeywords = [
-      "salary", "w2", "benefits", "401k", "full-time", "full time", "pto",
-      "maternity", "equity", "health insurance", "join our team", "internal team",
-      "hiring a", "engineering manager", "staff software engineer", "vice president",
-      "head of", "tier iii", "inside sales", "office assistant", "copywriter",
-      "content reviewer", "face deduplication", "f/m/d"
+      "salary", "w2", "w-2", "401k", "401(k)", "full-time", "full time", "pto", "unlimited pto",
+      "maternity", "equity", "health insurance", "dental coverage", "join our team", "internal team",
+      "join our engineering team", "hiring a", "engineering manager", "staff software engineer", "staff engineer",
+      "vice president", "head of", "tier iii", "inside sales", "office assistant", "copywriter",
+      "content reviewer", "face deduplication", "f/m/d", "visa sponsorship", "direct hire"
     ];
 
     const hasExplicitEmploymentSignals = employmentKeywords.some((kw) => text.includes(kw) || title.includes(kw));
@@ -149,6 +154,8 @@ class RealCommercialProspectQueueService {
       breakdown.contactPathCounts[pathType] = (breakdown.contactPathCounts[pathType] || 0) + 1;
 
       const record = {
+        id: opp.externalId || opp.id || null,
+        externalId: opp.externalId || opp.id || null,
         title: opp.title,
         company: opp.company || "Client",
         source: opp.source,
@@ -207,7 +214,8 @@ class RealCommercialProspectQueueService {
 
     for (let i = 0; i < candidates.length; i++) {
       const p = candidates[i];
-      const prospectId = `outreach_sprint_${Date.now()}_${i + 1}`;
+      const candidateKey = p.externalId || p.id || `${p.company}_${p.title}`.toLowerCase().replace(/[^a-z0-9]/g, "_");
+      const prospectId = `outreach_${candidateKey}`;
       const isGenuine = queue.genuineCommercialProspects.includes(p);
       const isSafeForFounderApproval = isGenuine && p.contactPath !== "JOB_BOARD_APPLICATION_ONLY" && p.contactPath !== "NO_ACTIONABLE_CONTACT_PATH";
 
@@ -219,6 +227,46 @@ class RealCommercialProspectQueueService {
         matchedService = "business-workflow-ai-automation";
       } else if (matchedCap.toLowerCase().includes("saas") || p.title.toLowerCase().includes("mvp")) {
         matchedService = "saas-mvp-development";
+      }
+
+      let classification = "INVALID_FOR_DIRECT_OUTREACH";
+      if (isSafeForFounderApproval) {
+        if (p.contactType === "AGENCY_PARTNERSHIP_PATH" || (p.company && p.company.includes("Fintech"))) {
+          classification = "NEEDS_HUMAN_REVIEW";
+        } else {
+          classification = "VERIFIED_SAFE_FOR_OUTREACH";
+        }
+      }
+
+      // Check persisted state in MongoDB / memory
+      const persistedRecord = await outreachDispatch.getOutreachRecord(prospectId);
+      let status = isSafeForFounderApproval ? "APPROVAL_REQUIRED" : "INVALID_FOR_DIRECT_OUTREACH";
+      let safetyRating = isSafeForFounderApproval ? "SAFE_FOR_FOUNDER_APPROVAL" : "INVALID_FOR_DIRECT_OUTREACH";
+      let providerResponseId = null;
+      let relayProvider = null;
+      let dispatchedAt = null;
+      let failedAt = null;
+      let dispatchError = null;
+
+      if (persistedRecord) {
+        if (persistedRecord.status === "SENT") {
+          status = "SENT";
+          safetyRating = "OUTREACH_SENT";
+          providerResponseId = persistedRecord.providerResponseId;
+          relayProvider = persistedRecord.relayProvider;
+          dispatchedAt = persistedRecord.dispatchedAt;
+        } else if (persistedRecord.status === "FAILED") {
+          status = "FAILED";
+          safetyRating = "DISPATCH_FAILED";
+          failedAt = persistedRecord.failedAt;
+          dispatchError = persistedRecord.dispatchError;
+        } else if (persistedRecord.status === "APPROVED") {
+          status = "APPROVED";
+          safetyRating = "APPROVED_READY_FOR_DISPATCH";
+        } else if (persistedRecord.status === "REJECTED") {
+          status = "REJECTED";
+          safetyRating = "REJECTED_BY_FOUNDER";
+        }
       }
 
       const draft = {
@@ -238,11 +286,17 @@ class RealCommercialProspectQueueService {
         fitRationale: `GARUDA delivers deterministic end-to-end execution with automated regression QA test suites and cryptographic SHA-256 release manifests.`,
         riskFlags: isSafeForFounderApproval ? "None (Verified Direct Business Opportunity)" : "Job-board portal only without direct procurement contact",
         recommendedAngle: `Introduce GARUDA as an autonomous AI engineering and software execution system capable of rapid, fixed-scope delivery with verified milestone guarantees.`,
-        acquisitionState: isSafeForFounderApproval ? "OUTREACH_READY (APPROVAL_REQUIRED)" : "HELD_AT_GATEWAY (INVALID_FOR_DIRECT_OUTREACH)",
+        acquisitionState: status === "SENT" ? "OUTREACH_SENT" : (isSafeForFounderApproval ? "OUTREACH_READY (APPROVAL_REQUIRED)" : "HELD_AT_GATEWAY (INVALID_FOR_DIRECT_OUTREACH)"),
         subject: `Implementation Partner Inquiry: ${p.title} — GARUDA AI OS`,
         body: `Dear ${p.company} Team,\n\nWe noted your requirement for "${p.title}".\n\nGARUDA operates as an autonomous AI engineering and software execution system. We specialize in rapid, deterministic delivery of custom AI pipelines, robust backend integrations, and automated business workflows with transparent milestone governance (50% kickoff advance deposit upon digital proposal acceptance; 50% upon verified delivery with complete regression test reports).\n\nIf you are evaluating external implementation partners for this project, we would welcome the opportunity to discuss your scope:\n\n• Architectural Blueprint: https://www.garudaos.in/services/${matchedService}\n• Direct Scoping Chat: https://www.garudaos.in/chat?ref=${prospectId}\n\nSincerely,\nGARUDA AI Operating System\nhttps://www.garudaos.in`,
-        status: isSafeForFounderApproval ? "APPROVAL_REQUIRED" : "INVALID_FOR_DIRECT_OUTREACH",
-        safetyRating: isSafeForFounderApproval ? "SAFE_FOR_FOUNDER_APPROVAL" : "INVALID_FOR_DIRECT_OUTREACH",
+        status,
+        safetyRating,
+        classification,
+        providerResponseId,
+        relayProvider,
+        dispatchedAt,
+        failedAt,
+        dispatchError,
         auditNotes: isSafeForFounderApproval
           ? `Verified commercial client RFP with direct contact pathway (${p.contactPath}: ${p.contactEmail || p.url}).`
           : "Listing lacks direct procurement/business contact email. Blocked from cold email dispatch."

@@ -68,25 +68,31 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
     setActionNotice({ type: "info", text: `Approving and dispatching brief for ${draft.company}...` });
 
     try {
-      // 1. Approve
-      const approveRes = await fetch(`/api/acquisition/outreach/${draft.prospectId}/approve`, {
+      const res = await fetch(`/api/acquisition/outreach/${draft.prospectId}/approve-and-dispatch`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ approver: "Founder", reason: "Direct commercial RFP match" })
+        body: JSON.stringify({
+          authorizedBy: "Founder",
+          company: draft.company,
+          title: draft.projectTitle,
+          contactEmail: draft.contactEmail,
+          subject: draft.subject,
+          body: draft.body,
+          serviceMatch: draft.matchedService
+        })
       });
 
-      // 2. Dispatch
-      const dispatchRes = await fetch(`/api/acquisition/outreach/${draft.prospectId}/dispatch`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ authorizedBy: "Founder" })
-      });
-
-      const dispData = await dispatchRes.json();
-      if (dispatchRes.ok) {
-        setActionNotice({ type: "success", text: `Outreach for ${draft.company} dispatched successfully via ${dispData.relayProvider || "Brevo Relay"}!` });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setActionNotice({
+          type: "success",
+          text: `Outreach for ${draft.company} dispatched successfully via ${data.relayProvider || "Brevo Relay"}! Provider ID: ${data.providerResponseId || "OK"}`
+        });
       } else {
-        setActionNotice({ type: "warning", text: `Approval recorded. Dispatch notice: ${dispData.message || "Held at gateway"}` });
+        setActionNotice({
+          type: "error",
+          text: `Dispatch failed for ${draft.company}: ${data.message || data.error || "Gateway error"}`
+        });
       }
       await loadData(false);
     } catch (err) {
@@ -360,13 +366,38 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 {topDrafts.map((d, i) => {
-                  const isSafe = d.safetyRating === "SAFE_FOR_FOUNDER_APPROVAL";
+                  const isSent = d.status === "SENT" || d.safetyRating === "OUTREACH_SENT";
+                  const isFailed = d.status === "FAILED" || d.safetyRating === "DISPATCH_FAILED";
+                  const isSafe = (d.safetyRating === "SAFE_FOR_FOUNDER_APPROVAL" || d.status === "APPROVAL_REQUIRED") && !isSent && !isFailed;
+
+                  let badgeBg = "rgba(239,68,68,0.15)";
+                  let badgeBorder = "#ef4444";
+                  let badgeColor = "#f87171";
+                  let badgeLabel = d.safetyRating;
+
+                  if (isSent) {
+                    badgeBg = "rgba(16,185,129,0.2)";
+                    badgeBorder = "#10b981";
+                    badgeColor = "#34d399";
+                    badgeLabel = `✓ SENT (${d.relayProvider || "Brevo"})`;
+                  } else if (isFailed) {
+                    badgeBg = "rgba(245,158,11,0.2)";
+                    badgeBorder = "#f59e0b";
+                    badgeColor = "#fbbf24";
+                    badgeLabel = "⚠️ DISPATCH FAILED";
+                  } else if (isSafe) {
+                    badgeBg = "rgba(16,185,129,0.15)";
+                    badgeBorder = "#10b981";
+                    badgeColor = "#34d399";
+                    badgeLabel = "SAFE_FOR_FOUNDER_APPROVAL";
+                  }
+
                   return (
                     <div
                       key={d.prospectId || i}
                       style={{
                         background: "#0f172a",
-                        border: `1px solid ${isSafe ? "rgba(16,185,129,0.3)" : "rgba(239,68,68,0.3)"}`,
+                        border: `1px solid ${isSent ? "rgba(16,185,129,0.5)" : (isSafe ? "rgba(16,185,129,0.3)" : (isFailed ? "rgba(245,158,11,0.4)" : "rgba(239,68,68,0.3)"))}`,
                         borderRadius: "8px",
                         padding: "1.2rem"
                       }}
@@ -375,18 +406,26 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
                         <div>
                           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                             <span style={{ fontSize: "1.1rem", fontWeight: "700", color: "#f8fafc" }}>{d.company}</span>
-                            <span style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem", borderRadius: "4px", background: isSafe ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)", color: isSafe ? "#34d399" : "#f87171", border: `1px solid ${isSafe ? "#10b981" : "#ef4444"}`, fontWeight: "600" }}>
-                              {d.safetyRating}
+                            <span style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem", borderRadius: "4px", background: badgeBg, color: badgeColor, border: `1px solid ${badgeBorder}`, fontWeight: "600" }}>
+                              {badgeLabel}
                             </span>
                           </div>
                           <div style={{ fontSize: "0.9rem", color: "#cbd5e1", marginTop: "0.2rem", fontWeight: "500" }}>
                             {d.projectTitle}
                           </div>
-                          {d.contactEvidence && (
+                          {isSent ? (
+                            <div style={{ fontSize: "0.75rem", color: "#34d399", marginTop: "0.2rem", fontWeight: "600" }}>
+                              ✉️ Dispatched to {d.contactEmail} • Provider ID: {d.providerResponseId || "Accepted"} • {d.dispatchedAt ? new Date(d.dispatchedAt).toLocaleTimeString() : "Sent"}
+                            </div>
+                          ) : isFailed ? (
+                            <div style={{ fontSize: "0.75rem", color: "#f87171", marginTop: "0.2rem", fontWeight: "600" }}>
+                              ⚠️ Error: {d.dispatchError}
+                            </div>
+                          ) : d.contactEvidence ? (
                             <div style={{ fontSize: "0.75rem", color: "#34d399", marginTop: "0.2rem", fontWeight: "600" }}>
                               ✉️ {d.contactEvidence}
                             </div>
-                          )}
+                          ) : null}
                         </div>
 
                         <div style={{ textAlign: "right" }}>
@@ -402,7 +441,7 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
                         </div>
                         <div>
                           <span style={{ color: "#94a3b8" }}>⚠️ <b>Risk:</b> </span>
-                          <span style={{ color: isSafe ? "#34d399" : "#f87171" }}>{d.riskFlags || "None"}</span>
+                          <span style={{ color: isSafe || isSent ? "#34d399" : "#f87171" }}>{d.riskFlags || "None"}</span>
                         </div>
                         <div style={{ gridColumn: "1 / -1" }}>
                           <span style={{ color: "#94a3b8" }}>💡 <b>Angle:</b> </span>
@@ -424,7 +463,22 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
                             👁️ View Outreach Brief
                           </button>
 
-                          {isSafe ? (
+                          {isSent ? (
+                            <button
+                              disabled
+                              style={{ padding: "0.45rem 0.9rem", background: "rgba(16,185,129,0.12)", border: "1px solid #10b981", color: "#34d399", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "700", cursor: "default" }}
+                            >
+                              ✓ Dispatched ({d.dispatchedAt ? new Date(d.dispatchedAt).toLocaleTimeString() : "Sent"})
+                            </button>
+                          ) : isFailed ? (
+                            <button
+                              onClick={() => handleApproveAndDispatch(d)}
+                              disabled={dispatchingId === d.prospectId}
+                              style={{ padding: "0.45rem 0.9rem", background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)", border: "none", color: "#fff", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "700" }}
+                            >
+                              {dispatchingId === d.prospectId ? "Retrying..." : "🔄 Retry Send"}
+                            </button>
+                          ) : isSafe ? (
                             <button
                               onClick={() => handleApproveAndDispatch(d)}
                               disabled={dispatchingId === d.prospectId}

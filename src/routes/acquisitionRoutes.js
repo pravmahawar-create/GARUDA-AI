@@ -74,6 +74,20 @@ router.post("/outreach/qualify", async (req, res) => {
 });
 
 /**
+ * POST /api/acquisition/outreach/:id/approve-and-dispatch
+ * Atomically approves and dispatches an outreach draft in a single operation.
+ */
+router.post("/outreach/:id/approve-and-dispatch", async (req, res) => {
+  try {
+    const result = await outreachDispatch.approveAndDispatchOutreach(req.params.id, req.body);
+    return res.status(200).json(result);
+  } catch (err) {
+    const status = err.statusCode || 500;
+    return res.status(status).json({ success: false, message: err.message, error: err.message });
+  }
+});
+
+/**
  * POST /api/acquisition/outreach/:id/approve
  * Approves an outreach draft for dispatch.
  */
@@ -97,7 +111,7 @@ router.post("/outreach/:id/dispatch", async (req, res) => {
     return res.status(200).json(result);
   } catch (err) {
     const status = err.statusCode || 500;
-    return res.status(status).json({ success: false, message: err.message });
+    return res.status(status).json({ success: false, message: err.message, error: err.message });
   }
 });
 
