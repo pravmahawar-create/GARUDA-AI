@@ -90,12 +90,12 @@ const controls = [
 ];
 
 const engineeringProofs = [
-  { title: "Deterministic Multi-Agent Engine", subtitle: "Governed State Transitions", icon: "◈" },
+  { title: "Governed Multi-Agent Engine", subtitle: "Deterministic State Transitions", icon: "◈" },
   { title: "Cryptographic Release Manifests", subtitle: "SHA-256 Verified Artifacts", icon: "🛡" },
   { title: "100% Truth Law Enforcement", subtitle: "Zero-Fabrication Architecture", icon: "⚖" },
-  { title: "Automated Verification Suites", subtitle: "Continuous Regression QA", icon: "⚙" },
-  { title: "Principal Architect Direct Oversight", subtitle: "Praveen Mahawar · Founder Eng", icon: "⚡" },
-  { title: "Production Multi-Cloud Deploy", subtitle: "Edge CDN & Microservices", icon: "☁" }
+  { title: "17 Automated QA Suites", subtitle: "100% Passing Regression Tests", icon: "⚙" },
+  { title: "Direct Founder Oversight", subtitle: "Praveen Mahawar · Principal Architect", icon: "⚡" },
+  { title: "Multi-Cloud High Availability", subtitle: "Vercel Edge + Render Microservices", icon: "☁" }
 ];
 
 const WorkflowStep = ({ item, index }) => (

@@ -93,13 +93,16 @@ async function notifyLeadCaptured(lead) {
   const attr = lead.attribution || {};
   const summary = [
     `Naya lead aaya hai!`,
+    lead.name ? `Name: ${lead.name}` : null,
+    lead.scopeId ? `Scope Reference: #${lead.scopeId}` : null,
+    lead.service ? `Service: ${lead.service}` : null,
     attr.channel ? `Channel: ${attr.channel}` : null,
     lead.source ? `Source / Campaign: ${lead.source}` : null,
     attr.landingPath ? `Landing Page: ${attr.landingPath}` : null,
     attr.referrerDomain ? `Referrer: ${attr.referrerDomain}` : null,
     lead.email ? `Email: ${lead.email}` : null,
     lead.phone ? `Phone: ${lead.phone}` : null,
-    lead.message ? `Message: ${String(lead.message).slice(0, 200)}` : null
+    lead.message ? `Message: ${String(lead.message).slice(0, 300)}` : null
   ].filter(Boolean).join("\n");
   return sendFounderAlert("GARUDA — New Lead (Attributed)", summary);
 }

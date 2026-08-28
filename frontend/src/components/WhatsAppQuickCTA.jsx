@@ -1,15 +1,22 @@
 import React from "react";
 import { trackEvent } from "../utils/telemetry";
 
-const DEFAULT_PHONE = (import.meta.env.VITE_WHATSAPP_NUMBER || "919829012345").replace(/[^0-9]/g, "");
+const RAW_PHONE = (import.meta.env.VITE_WHATSAPP_NUMBER || "").trim();
+const PHONE_NUMBER = RAW_PHONE.replace(/[^0-9]/g, "");
 const DEFAULT_TEXT = encodeURIComponent("Hi Praveen, I would like to discuss a custom AI / software project scope for my business.");
 
 export default function WhatsAppQuickCTA({
-  phoneNumber = DEFAULT_PHONE,
+  phoneNumber = PHONE_NUMBER,
   text = DEFAULT_TEXT,
   label = "Chat with Founder on WhatsApp",
   style = {}
 }) {
+  // If no legitimate WhatsApp number is configured by the founder in environment variables,
+  // do NOT display a placeholder or fake phone number.
+  if (!phoneNumber || phoneNumber.length < 8) {
+    return null;
+  }
+
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${text}`;
 
   const handleClick = () => {

@@ -139,23 +139,25 @@ export default function ProjectScopeForm({
           >
             Discuss Requirements on Live AI Chat →
           </a>
-          <a
-            href="https://wa.me/919829012345?text=Hi%20Praveen,%20I%20just%20submitted%20a%20project%20scope%20on%20garudaos.in."
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              background: "rgba(16,185,129,0.12)",
-              border: "1px solid rgba(16,185,129,0.5)",
-              color: "#34d399",
-              padding: "0.85rem 1.8rem",
-              borderRadius: "999px",
-              fontWeight: 700,
-              textDecoration: "none",
-              fontSize: "0.92rem"
-            }}
-          >
-            💬 Fast-Track on WhatsApp
-          </a>
+          {import.meta.env.VITE_WHATSAPP_NUMBER && (
+            <a
+              href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hi Praveen, I just submitted a project scope on garudaos.in.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background: "rgba(16,185,129,0.12)",
+                border: "1px solid rgba(16,185,129,0.5)",
+                color: "#34d399",
+                padding: "0.85rem 1.8rem",
+                borderRadius: "999px",
+                fontWeight: 700,
+                textDecoration: "none",
+                fontSize: "0.92rem"
+              }}
+            >
+              💬 Fast-Track on WhatsApp
+            </a>
+          )}
         </div>
       </div>
     );

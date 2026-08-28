@@ -23,7 +23,7 @@ async function runBatch1Tests() {
   assert(!landingFile.includes("Harbor Retail"), "Placeholder logo 'Harbor Retail' must be removed");
   assert(!landingFile.includes("Vertex Group"), "Placeholder logo 'Vertex Group' must be removed");
 
-  assert(landingFile.includes("Deterministic Multi-Agent Engine"), "Must include deterministic engineering proof");
+  assert(landingFile.includes("Governed Multi-Agent Engine"), "Must include deterministic engineering proof");
   assert(landingFile.includes("Cryptographic Release Manifests"), "Must include cryptographic release proof");
   assert(landingFile.includes("100% Truth Law Enforcement"), "Must include truth law proof");
   console.log("✔ PASS: Placeholder logos removed and replaced with authentic engineering proofs");

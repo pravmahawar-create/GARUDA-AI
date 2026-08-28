@@ -9,6 +9,13 @@ try {
   attributionService = null;
 }
 
+let authHelpers;
+try {
+  authHelpers = require("./customer/_auth");
+} catch {
+  authHelpers = null;
+}
+
 let telegramBotService;
 try {
   telegramBotService = require("../src/services/telegramBotService");
@@ -159,7 +166,22 @@ module.exports = async function handler(req, res) {
       capturedAt: new Date().toISOString()
     };
 
-    // Save lead record in JSON fallback
+    // 1. Supabase database persistence (primary serverless cloud database)
+    try {
+      if (authHelpers && authHelpers.isSupabaseConfigured()) {
+        const admin = authHelpers.supabaseAdminClient() || authHelpers.supabaseClient();
+        await admin.from("leads").insert({
+          email: leadRecord.email,
+          phone: leadRecord.phone,
+          first_name: leadRecord.name,
+          source: leadRecord.source,
+          message: String(leadRecord.requirements).slice(0, 2000),
+          status: "new"
+        });
+      }
+    } catch {}
+
+    // 2. Save lead record in local file fallback
     try {
       const file = path.join(__dirname, "..", "data", "leads.json");
       const existing = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : { leads: [] };
