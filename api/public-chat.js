@@ -267,20 +267,6 @@ async function persistMessage(db, conversationId, userId, role, content) {
   return data.id;
 }
 
-function trySalesAgent(message, sessionId) {
-  try {
-    const salesAgent = require("../src/services/garudaSalesAgentService");
-    const result = salesAgent.handleSalesMessage(message, { sessionId });
-    if (!result || !result.message) return { handled: false, reply: null };
-    if (result.action === "noop" || result.action === "pass_through") return { handled: false, reply: null };
-    return { handled: true, reply: result.message };
-  } catch {
-    return { handled: false, reply: null };
-  }
-}
-
-// Insurance/ABSLI questions answered from the grounded ABSLI knowledge base
-// instead of letting the LLM hallucinate products.
 async function tryInsuranceAdvisor(message) {
   try {
     const advisor = require("../src/services/insuranceAdvisorService");
@@ -293,7 +279,34 @@ async function tryInsuranceAdvisor(message) {
   }
 }
 
-async function handleAuthenticated(conversationId, message, db, userId) {
+async function tryCommercialAgent(message, history = [], options = {}) {
+  try {
+    const commercialAgent = require("../src/services/publicChatCommercialAgentService");
+    const result = await commercialAgent.processCommercialTurn({
+      message,
+      history,
+      conversationId: options.conversationId,
+      origin: options.origin || "public_chat",
+      isTest: options.isTest || false
+    });
+    if (result && result.reply) {
+      return {
+        handled: true,
+        reply: result.reply,
+        qualification: result.qualification,
+        proposalUrl: result.proposalUrl,
+        proposalId: result.proposalId,
+        pricing: result.pricing
+      };
+    }
+    return { handled: false, reply: null };
+  } catch (err) {
+    console.error("[PublicChat] Commercial agent fallback note:", err.message);
+    return { handled: false, reply: null };
+  }
+}
+
+async function handleAuthenticated(conversationId, message, db, userId, isTest = false) {
   const resolved = await resolveConversation(db, userId, conversationId, message);
   if (!resolved.conversationId) {
     const err = new Error(resolved.error || "Conversation not found");
@@ -303,12 +316,23 @@ async function handleAuthenticated(conversationId, message, db, userId) {
   const targetConversationId = resolved.conversationId;
   const history = await loadConversationHistory(db, targetConversationId);
   await persistMessage(db, targetConversationId, userId, "user", message);
-  // Insurance/ABSLI questions first — grounded advisor, sales agent ke bahar.
+  
+  // 1. Insurance/ABSLI queries
   const advisor = await tryInsuranceAdvisor(message);
-  const sales = advisor.handled ? { handled: false, reply: null } : trySalesAgent(message, userId);
-  const reply = advisor.handled ? advisor.reply : sales.handled ? sales.reply : await generateReply(message, history);
+  
+  // 2. Commercial Intake & Project Scoping queries
+  const commercial = advisor.handled ? { handled: false } : await tryCommercialAgent(message, history, { conversationId: targetConversationId, isTest });
+  
+  // 3. General Fallback
+  const reply = advisor.handled ? advisor.reply : commercial.handled ? commercial.reply : await generateReply(message, history);
   await persistMessage(db, targetConversationId, userId, "assistant", reply);
-  return { reply, conversationId: targetConversationId, mode: advisor.handled ? "insurance_advisor" : undefined };
+  return {
+    reply,
+    conversationId: targetConversationId,
+    mode: advisor.handled ? "insurance_advisor" : commercial.handled ? "commercial_architect" : undefined,
+    proposalUrl: commercial.proposalUrl,
+    proposalId: commercial.proposalId
+  };
 }
 
 function looksLeadLike(text) {
@@ -431,11 +455,18 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    const isTest = req.headers["x-garuda-test"] === "true" || (req.body && req.body.isTest === true);
     const advisor = await tryInsuranceAdvisor(message.trim());
-    const sales = advisor.handled ? { handled: false, reply: null } : trySalesAgent(message.trim(), req.headers["x-garuda-session"] || req.ip || "anon");
-    const reply = advisor.handled ? advisor.reply : sales.handled ? sales.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
+    const commercial = advisor.handled ? { handled: false } : await tryCommercialAgent(message.trim(), Array.isArray(history) ? history : [], { isTest, conversationId: conversationId || null });
+    const reply = advisor.handled ? advisor.reply : commercial.handled ? commercial.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
     await captureLead({ message, reply, userId: null, req });
-    return res.status(200).json({ reply, mode: advisor.handled ? "insurance_advisor" : undefined });
+    return res.status(200).json({
+      reply,
+      mode: advisor.handled ? "insurance_advisor" : commercial.handled ? "commercial_architect" : undefined,
+      proposalUrl: commercial.proposalUrl,
+      proposalId: commercial.proposalId,
+      qualification: commercial.qualification
+    });
   } catch (error) {
     console.error("Public Chat API Error:", error);
     const status = typeof error.status === "number" && error.status >= 400 && error.status < 600

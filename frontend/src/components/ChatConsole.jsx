@@ -71,7 +71,13 @@ export default function ChatConsole({
       if (data.conversationId && onConversationId) onConversationId(data.conversationId);
       setMessages((prev) => [
         ...prev,
-        { role: "model", text: data.reply || "No response text received." }
+        {
+          role: "model",
+          text: data.reply || "No response text received.",
+          proposalUrl: data.proposalUrl || null,
+          proposalId: data.proposalId || null,
+          qualification: data.qualification || null
+        }
       ]);
     } catch (err) {
       clearTimeout(timeoutId);
@@ -136,8 +142,32 @@ export default function ChatConsole({
         {messages.map((msg, idx) => {
           const isUser = msg.role === "user";
           return (
-            <div key={`${msg.role}-${idx}`} style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start" }}>
+            <div key={`${msg.role}-${idx}`} style={{ display: "flex", flexDirection: "column", alignItems: isUser ? "flex-end" : "flex-start" }}>
               <div style={bubbleStyle(isUser, msg.isError)}>{msg.text}</div>
+              {msg.proposalUrl && (
+                <div style={{ marginTop: "0.5rem" }}>
+                  <a
+                    href={msg.proposalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
+                      color: "#05070a",
+                      padding: "0.55rem 1.1rem",
+                      borderRadius: 8,
+                      fontWeight: 800,
+                      fontSize: "0.85rem",
+                      textDecoration: "none",
+                      boxShadow: "0 4px 15px rgba(245,215,110,0.25)"
+                    }}
+                  >
+                    <span>◈</span> View & Accept Formal Proposal →
+                  </a>
+                </div>
+              )}
             </div>
           );
         })}
