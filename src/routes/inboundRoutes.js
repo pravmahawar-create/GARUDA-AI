@@ -11,7 +11,7 @@ const inMemoryScopes = new Map();
 
 router.post("/project-scope", async (req, res) => {
   try {
-    const { requirements, email, name, phone, budget, timeline } = req.body || {};
+    const { requirements, email, name, phone, contact, budget, timeline, service } = req.body || {};
     const cleanRequirements = String(requirements || "").trim();
 
     if (!cleanRequirements) {
