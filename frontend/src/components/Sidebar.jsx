@@ -5,6 +5,7 @@ import FounderProfile from "./FounderProfile";
 const navItems = [
   { icon: "⚡", label: "Mission Control" },
   { icon: "◈", label: "Dashboard" },
+  { icon: "🎯", label: "Sales Cockpit" },
   { icon: "⟡", label: "Revenue Universe" },
   { icon: "✦", label: "Creative Studio" },
   { icon: "◌", label: "Mother Brain" },

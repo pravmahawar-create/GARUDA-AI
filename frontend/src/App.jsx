@@ -15,6 +15,7 @@ import FounderWorkspace from "./pages/FounderWorkspace";
 import RevenueDepartment from "./pages/RevenueDepartment";
 import ProposalPortal from "./pages/ProposalPortal";
 import ServiceLanding from "./pages/ServiceLanding";
+import FounderAcquisitionCockpit from "./pages/FounderAcquisitionCockpit";
 
 import "./styles/garuda-ui.css";
 
@@ -73,11 +74,22 @@ function AppRoutes() {
     <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
   );
 
+  const acquisitionRoute = authenticated === null ? (
+    <div style={{ minHeight: "100vh", background: "#030712", display: "grid", placeItems: "center", color: "#d4af37", fontFamily: "sans-serif", fontSize: "0.9rem", letterSpacing: "0.1em" }}>
+      GARUDA FOUNDER DESKTOP...
+    </div>
+  ) : authenticated ? (
+    <FounderAcquisitionCockpit onLogout={handleLogout} />
+  ) : (
+    <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
+  );
+
   return (
     <Routes>
       <Route path="/" element={publicLanding} />
       <Route path="/chat" element={<PublicChat />} />
       <Route path="/founder" element={founderRoute} />
+      <Route path="/founder/acquisition" element={acquisitionRoute} />
       <Route path="/revenue" element={revenueRoute} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />

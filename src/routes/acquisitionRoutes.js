@@ -231,4 +231,18 @@ router.get("/prospect-queue", async (req, res) => {
   }
 });
 
+/**
+ * GET /api/acquisition/opportunities/classified
+ * Returns complete commercial opportunity inventory categorized with contact paths.
+ */
+router.get("/opportunities/classified", async (req, res) => {
+  try {
+    const prospectQueueService = require("../services/realCommercialProspectQueueService");
+    const result = await prospectQueueService.curateCommercialQueue();
+    return res.status(200).json({ success: true, ...result });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

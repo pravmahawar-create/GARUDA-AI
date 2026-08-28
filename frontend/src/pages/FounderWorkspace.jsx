@@ -52,6 +52,10 @@ export default function FounderWorkspace({ onLogout }) {
       navigate("/revenue");
       return;
     }
+    if (label === "Sales Cockpit") {
+      navigate("/founder/acquisition");
+      return;
+    }
     setActiveNav(label);
   };
 
