@@ -43,9 +43,9 @@ async function runTests() {
   const relayStatus = outreachDispatch.getRelayConfigurationStatus();
   assert(typeof relayStatus.configured === "boolean");
   assert(typeof relayStatus.activeProvider === "string");
-  if (!relayStatus.configured) {
+  if (!relayStatus.isEmailConfigured) {
     assert.strictEqual(relayStatus.remediation.code, "OUTBOUND_CREDENTIAL_MISSING");
-    assert(relayStatus.remediation.requiredAction.includes("RESEND_API_KEY"));
+    assert(relayStatus.remediation.requiredAction.includes("GARUDA_EMAIL_RELAY_PROVIDER") || relayStatus.remediation.requiredAction.includes("GARUDA_EMAIL_HOST"));
   }
   console.log(`✔ PASS: Outbound relay status evaluated (Provider: ${relayStatus.activeProvider}, Configured: ${relayStatus.configured})`);
 

@@ -12,6 +12,7 @@
 
 const crypto = require("crypto");
 const telegramBotService = require("./telegramBotService");
+const emailRelayService = require("./emailRelayService");
 
 const OUTREACH_STATES = Object.freeze({
   OUTREACH_READY: "OUTREACH_READY",
@@ -171,22 +172,45 @@ class GarudaOutreachDispatchService {
   }
 
   /**
-   * Evaluates current outbound delivery relay configuration.
+   * Evaluates current outbound delivery relay configuration from production environment.
    */
   getRelayConfigurationStatus() {
-    const hasResend = Boolean(process.env.RESEND_API_KEY);
-    const hasSmtp = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER);
+    const relayConfig = emailRelayService.getRelayConfig(process.env);
+    const hasHttpRelay = relayConfig.ready === true;
+    const hasSmtp = Boolean(process.env.GARUDA_EMAIL_HOST && process.env.GARUDA_EMAIL_USER && process.env.GARUDA_EMAIL_PASS);
     const hasTelegram = telegramBotService.isConfigured();
-    const isConfigured = hasResend || hasSmtp || hasTelegram;
+    const isEmailConfigured = hasHttpRelay || hasSmtp;
+    const isConfigured = isEmailConfigured || hasTelegram;
+
+    let activeProvider = "unconfigured";
+    if (hasHttpRelay) {
+      activeProvider = `http_relay_${relayConfig.config.provider}`;
+    } else if (hasSmtp) {
+      activeProvider = "smtp_relay";
+    } else if (hasTelegram) {
+      activeProvider = "telegram_bot";
+    }
 
     return {
       configured: isConfigured,
-      activeProvider: hasResend ? "resend_api" : hasSmtp ? "smtp_relay" : hasTelegram ? "telegram_bot" : "unconfigured",
+      isEmailConfigured,
+      activeProvider,
+      httpRelay: {
+        ready: hasHttpRelay,
+        provider: relayConfig.config?.provider || String(process.env.GARUDA_EMAIL_RELAY_PROVIDER || "").toLowerCase() || null,
+        fromEmail: relayConfig.config?.from || process.env.GARUDA_EMAIL_USER || null
+      },
+      smtpRelay: {
+        ready: hasSmtp,
+        host: process.env.GARUDA_EMAIL_HOST || null,
+        port: Number(process.env.GARUDA_EMAIL_PORT) || 587,
+        user: process.env.GARUDA_EMAIL_USER || null
+      },
       hasTelegram,
-      remediation: (hasResend || hasSmtp) ? null : {
+      remediation: isEmailConfigured ? null : {
         code: "OUTBOUND_CREDENTIAL_MISSING",
-        reason: "Outbound email relay API keys (RESEND_API_KEY or SMTP_HOST/USER/PASS) not configured in environment.",
-        requiredAction: "Set RESEND_API_KEY or SMTP credentials in Render environment variables for automated dispatch."
+        reason: "Outbound email relay not configured (set GARUDA_EMAIL_RELAY_PROVIDER/GARUDA_EMAIL_RELAY_KEY or GARUDA_EMAIL_HOST/USER/PASS).",
+        requiredAction: "Verify GARUDA_EMAIL_RELAY_PROVIDER and GARUDA_EMAIL_RELAY_KEY in Render environment variables."
       }
     };
   }
