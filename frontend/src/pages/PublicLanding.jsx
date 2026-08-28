@@ -520,23 +520,102 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         </div>
       </section>
 
+      {/* 9c. Commercial Engineering & Service Clusters */}
+      <section id="services" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)", background: "rgba(255,255,255,0.015)" }}>
+        <SectionHeading
+          kicker="Engineered Commercial Services"
+          title="Bespoke Software, AI & Automation Delivery"
+          sub="Fixed-price milestone contracts, transparent deliverable manifests, and complete source code ownership."
+        />
+        <div style={{ maxWidth: 1120, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.4rem" }}>
+          {[
+            { slug: "custom-ai-development", title: "Custom AI Development", desc: "Domain-grounded LLM pipelines, bespoke models, and custom tool-calling agents.", tag: "AI & ML", icon: "🧠" },
+            { slug: "ai-agent-development", title: "AI Agent Development", desc: "Autonomous supervisor-worker multi-agent graphs executing multi-step business tasks.", tag: "Agentic AI", icon: "🤖" },
+            { slug: "custom-software-development", title: "Custom Software Engineering", desc: "Scalable enterprise web applications, robust APIs, and PostgreSQL/MongoDB backends.", tag: "Full Stack", icon: "⚙" },
+            { slug: "website-development", title: "Custom Website Development", desc: "Sub-second load times, technical SEO, and conversion-engineered business websites.", tag: "Web", icon: "🌐" },
+            { slug: "saas-mvp-development", title: "SaaS MVP Development", desc: "Turn product concepts into production SaaS with authentication & Stripe billing in 2-3 weeks.", tag: "Startups", icon: "🚀" },
+            { slug: "business-automation", title: "Business Workflow Automation", desc: "Automate lead capture, invoice sync, and cross-platform CRM integrations with zero data loss.", tag: "Automation", icon: "⚡" },
+            { slug: "rag-development", title: "Enterprise RAG Systems", desc: "Hybrid vector search across private enterprise documents with 0% hallucination guarantees.", tag: "RAG & Vector", icon: "📚" },
+            { slug: "whatsapp-telegram-ai-bots", title: "WhatsApp & Telegram AI Bots", desc: "24/7 commercial conversational agents formulating instant quotes and checkout links.", tag: "Bots", icon: "💬" }
+          ].map((srv) => (
+            <a
+              key={srv.slug}
+              href={`/services/${srv.slug}`}
+              style={{
+                textDecoration: "none",
+                padding: "1.75rem",
+                borderRadius: 18,
+                border: "1px solid rgba(245,215,110,0.12)",
+                background: palette.panelSoft,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                transition: "border-color 0.2s ease, transform 0.2s ease"
+              }}
+            >
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                  <span style={{ fontSize: "1.5rem" }}>{srv.icon}</span>
+                  <span style={{ fontSize: "0.72rem", background: "rgba(245,215,110,0.1)", color: palette.gold, padding: "0.2rem 0.5rem", borderRadius: 4, fontWeight: 700, textTransform: "uppercase" }}>{srv.tag}</span>
+                </div>
+                <h3 style={{ margin: "0 0 0.55rem", fontSize: "1.15rem", fontWeight: 700, color: palette.text }}>{srv.title}</h3>
+                <p style={{ margin: "0 0 1.2rem 0", color: palette.muted, fontSize: "0.9rem", lineHeight: 1.55 }}>{srv.desc}</p>
+              </div>
+              <span style={{ color: palette.gold, fontSize: "0.85rem", fontWeight: 700 }}>
+                Explore Service & Scoping →
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* 10. Project Scope Request Intake */}
-      <section style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)", position: "relative" }}>
+      <section id="project-scope" style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)", position: "relative" }}>
         <ProjectScopeForm />
       </section>
 
-      {/* Footer */}
-      <footer style={{ padding: "2.5rem clamp(1.25rem, 4vw, 4rem)", borderTop: "1px solid rgba(245,215,110,0.1)", textAlign: "center", color: "#5b6472", fontSize: "0.85rem", lineHeight: 1.7 }}>
-        © {new Date().getFullYear()} GARUDA AI Operating System. Founded by Praveen Mahawar. Official Website: https://www.garudaos.in.
-        <div style={{ marginTop: "0.5rem", color: "#6b7280" }}>
-          <a href="/what-is-garuda-ai" style={{ color: palette.gold, textDecoration: "none", marginRight: "1rem" }}>What is GARUDA AI?</a>
-          <a href="/services/custom-ai-development" style={{ color: "#9ca3af", textDecoration: "none", marginRight: "1rem" }}>Custom AI</a>
-          <a href="/services/custom-software-saas-mvp" style={{ color: "#9ca3af", textDecoration: "none", marginRight: "1rem" }}>SaaS MVP</a>
-          <a href="/chat" style={{ color: "#9ca3af", textDecoration: "none", marginRight: "1rem" }}>Scoping Chat</a>
-          <span style={{ margin: "0 0.5rem" }}>·</span>
-          <button type="button" onClick={onFounderLogin} style={{ background: "none", border: "none", color: palette.gold, cursor: "pointer", fontSize: "inherit", padding: 0, textDecoration: "underline" }}>
-            Founder Console →
-          </button>
+      {/* Comprehensive Crawlable Footer */}
+      <footer style={{ padding: "3rem clamp(1.25rem, 4vw, 4rem) 2rem", borderTop: "1px solid rgba(245,215,110,0.1)", background: "rgba(3,7,18,0.95)", color: "#9ca3af", fontSize: "0.85rem", lineHeight: 1.7 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "2rem", marginBottom: "2rem", textAlign: "left" }}>
+          <div>
+            <h4 style={{ color: palette.gold, margin: "0 0 0.8rem 0", fontSize: "0.95rem", fontWeight: 800 }}>GARUDA AI</h4>
+            <p style={{ margin: 0, lineHeight: 1.6, color: "#6b7280" }}>
+              Autonomous AI Operating System and commercial software engineering practice. Founded by Praveen Mahawar. Official Website: https://www.garudaos.in.
+            </p>
+          </div>
+          <div>
+            <h4 style={{ color: "#ffffff", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>AI & Machine Learning</h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+              <li><a href="/services/custom-ai-development" style={{ color: "#9ca3af", textDecoration: "none" }}>Custom AI Development</a></li>
+              <li><a href="/services/ai-agent-development" style={{ color: "#9ca3af", textDecoration: "none" }}>AI Agent Development</a></li>
+              <li><a href="/services/rag-development" style={{ color: "#9ca3af", textDecoration: "none" }}>Enterprise RAG Systems</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 style={{ color: "#ffffff", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Software & Startups</h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+              <li><a href="/services/saas-mvp-development" style={{ color: "#9ca3af", textDecoration: "none" }}>SaaS MVP Development</a></li>
+              <li><a href="/services/custom-software-development" style={{ color: "#9ca3af", textDecoration: "none" }}>Custom Software Development</a></li>
+              <li><a href="/services/website-development" style={{ color: "#9ca3af", textDecoration: "none" }}>Custom Website Development</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 style={{ color: "#ffffff", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Automation & Platform</h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+              <li><a href="/services/business-automation" style={{ color: "#9ca3af", textDecoration: "none" }}>Business Workflow Automation</a></li>
+              <li><a href="/services/whatsapp-telegram-ai-bots" style={{ color: "#9ca3af", textDecoration: "none" }}>WhatsApp & Telegram Bots</a></li>
+              <li><a href="/what-is-garuda-ai" style={{ color: "#9ca3af", textDecoration: "none" }}>What is GARUDA AI?</a></li>
+              <li><a href="/chat" style={{ color: "#9ca3af", textDecoration: "none" }}>Talk to AI Architect</a></li>
+              <li>
+                <button type="button" onClick={onFounderLogin} style={{ background: "none", border: "none", color: palette.gold, cursor: "pointer", fontSize: "inherit", padding: 0, textDecoration: "underline" }}>
+                  Founder Console →
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div style={{ textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "1.5rem", color: "#5b6472" }}>
+          © {new Date().getFullYear()} GARUDA AI Operating System. Built for deterministic, governed custom software and AI operations.
         </div>
       </footer>
 

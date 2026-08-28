@@ -22,7 +22,19 @@
     <loc>https://www.garudaos.in/services/custom-ai-development</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/services/ai-agent-development</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/services/custom-software-development</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.garudaos.in/services/custom-software-saas-mvp</loc>
@@ -31,7 +43,31 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://www.garudaos.in/services/website-development</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/services/saas-mvp-development</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/services/business-automation</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://www.garudaos.in/services/business-workflow-ai-automation</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/services/rag-development</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
