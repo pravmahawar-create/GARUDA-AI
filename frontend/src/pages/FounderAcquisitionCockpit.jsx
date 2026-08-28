@@ -382,6 +382,11 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
                           <div style={{ fontSize: "0.9rem", color: "#cbd5e1", marginTop: "0.2rem", fontWeight: "500" }}>
                             {d.projectTitle}
                           </div>
+                          {d.contactEvidence && (
+                            <div style={{ fontSize: "0.75rem", color: "#34d399", marginTop: "0.2rem", fontWeight: "600" }}>
+                              ✉️ {d.contactEvidence}
+                            </div>
+                          )}
                         </div>
 
                         <div style={{ textAlign: "right" }}>
@@ -390,14 +395,25 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
                         </div>
                       </div>
 
-                      <div style={{ fontSize: "0.8rem", color: "#94a3b8", background: "#090d16", padding: "0.6rem 0.8rem", borderRadius: "6px", marginBottom: "0.8rem" }}>
-                        <b>Audit Note:</b> {d.auditNotes}
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", background: "#090d16", padding: "0.6rem 0.8rem", borderRadius: "6px", marginBottom: "0.8rem", fontSize: "0.75rem" }}>
+                        <div>
+                          <span style={{ color: "#94a3b8" }}>🎯 <b>Capability:</b> </span>
+                          <span style={{ color: "#cbd5e1" }}>{d.matchedCapability || "Custom Software & AI"}</span>
+                        </div>
+                        <div>
+                          <span style={{ color: "#94a3b8" }}>⚠️ <b>Risk:</b> </span>
+                          <span style={{ color: isSafe ? "#34d399" : "#f87171" }}>{d.riskFlags || "None"}</span>
+                        </div>
+                        <div style={{ gridColumn: "1 / -1" }}>
+                          <span style={{ color: "#94a3b8" }}>💡 <b>Angle:</b> </span>
+                          <span style={{ color: "#cbd5e1" }}>{d.recommendedAngle || d.fitRationale}</span>
+                        </div>
                       </div>
 
                       {/* Card Action Controls */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #1e293b", paddingTop: "0.8rem" }}>
                         <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
-                          Source: <a href={d.sourceUrl} target="_blank" rel="noreferrer" style={{ color: "#38bdf8", textDecoration: "none" }}>{d.source || "Feed"} Listing ↗</a>
+                          Source: <a href={d.sourceUrl} target="_blank" rel="noreferrer" style={{ color: "#38bdf8", textDecoration: "none" }}>{d.source || "Feed"} RFP ↗</a>
                         </div>
 
                         <div style={{ display: "flex", gap: "0.6rem" }}>

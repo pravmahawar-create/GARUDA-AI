@@ -153,7 +153,13 @@ class RealCommercialProspectQueueService {
         company: opp.company || "Client",
         source: opp.source,
         url: opp.url,
+        contactEmail: opp.contactEmail || null,
         contactPath: pathType,
+        salaryText: opp.salaryText || opp.budget || null,
+        currency: opp.currency || "USD",
+        description: opp.description || "",
+        tags: opp.tags || [],
+        isDirectClientRfp: Boolean(opp.isDirectClientRfp),
         leadScore: classification.evalRes?.leadScore || 70,
         qualificationTier: classification.evalRes?.qualificationTier || "STANDARD",
         matchedCapability: classification.evalRes?.matchedCapability || "Custom Software Development",
@@ -186,12 +192,13 @@ class RealCommercialProspectQueueService {
   }
 
   /**
-   * Prepares top candidate outreach drafts with strict safety ratings.
+   * Prepares top candidate outreach drafts with strict safety ratings and complete provenance.
    */
   async prepareTopOutreachDrafts(options = {}) {
     const queue = await this.curateCommercialQueue(options);
+    const limit = options.limit || 10;
     const candidates = queue.genuineCommercialProspects.length > 0
-      ? queue.genuineCommercialProspects.slice(0, 3)
+      ? queue.genuineCommercialProspects.slice(0, limit)
       : (queue.needsHumanReview.length > 0
           ? queue.needsHumanReview.slice(0, 3)
           : queue.jobBoardOnlyRejects.slice(0, 3));
@@ -200,9 +207,19 @@ class RealCommercialProspectQueueService {
 
     for (let i = 0; i < candidates.length; i++) {
       const p = candidates[i];
-      const prospectId = `outreach_m32_${Date.now()}_${i + 1}`;
+      const prospectId = `outreach_sprint_${Date.now()}_${i + 1}`;
       const isGenuine = queue.genuineCommercialProspects.includes(p);
       const isSafeForFounderApproval = isGenuine && p.contactPath !== "JOB_BOARD_APPLICATION_ONLY" && p.contactPath !== "NO_ACTIONABLE_CONTACT_PATH";
+
+      const matchedCap = p.matchedCapability || "Custom Software & AI Development";
+      let matchedService = "custom-software-development";
+      if (matchedCap.toLowerCase().includes("ai") || p.title.toLowerCase().includes("ai") || p.title.toLowerCase().includes("rag")) {
+        matchedService = "custom-ai-development";
+      } else if (matchedCap.toLowerCase().includes("workflow") || p.title.toLowerCase().includes("bot") || p.title.toLowerCase().includes("automation")) {
+        matchedService = "business-workflow-ai-automation";
+      } else if (matchedCap.toLowerCase().includes("saas") || p.title.toLowerCase().includes("mvp")) {
+        matchedService = "saas-mvp-development";
+      }
 
       const draft = {
         prospectId,
@@ -210,17 +227,24 @@ class RealCommercialProspectQueueService {
         projectTitle: p.title,
         source: p.source,
         sourceUrl: p.url,
+        contactEmail: p.contactEmail || null,
         contactPath: p.contactPath,
-        matchedService: p.matchedCapability === "Custom AI Solutions" ? "custom-ai-development" : "business-workflow-ai-automation",
+        contactEvidence: p.contactEmail ? `Verified direct email: ${p.contactEmail}` : `Corporate RFP link: ${p.url}`,
+        matchedCapability: matchedCap,
+        matchedService,
         leadScore: p.leadScore,
-        estimatedValue: "$3,000 - $15,000 USD (50% Kickoff Advance)",
+        estimatedValue: p.salaryText || "$8,000 - $16,000 USD (50% Kickoff Advance)",
+        currency: p.currency || "USD",
         fitRationale: `GARUDA delivers deterministic end-to-end execution with automated regression QA test suites and cryptographic SHA-256 release manifests.`,
-        subject: `Tailored Architectural Proposal: ${p.title} for ${p.company}`,
-        body: `Dear ${p.company} Team,\n\nWe noted your requirement for "${p.title}".\n\nGARUDA delivers bespoke, premium software and AI systems engineered with deterministic quality assurance and transparent milestone governance (50% kickoff advance deposit upon digital proposal acceptance; 50% upon verified delivery).\n\nExplore our service blueprint: https://www.garudaos.in/services/custom-ai-development\nDirect Scoping Chat: https://www.garudaos.in/chat?ref=${prospectId}\n\nSincerely,\nGARUDA AI Operating System\nhttps://www.garudaos.in`,
+        riskFlags: isSafeForFounderApproval ? "None (Verified Direct Business Opportunity)" : "Job-board portal only without direct procurement contact",
+        recommendedAngle: `Introduce GARUDA as an autonomous AI engineering and software execution system capable of rapid, fixed-scope delivery with verified milestone guarantees.`,
+        acquisitionState: isSafeForFounderApproval ? "OUTREACH_READY (APPROVAL_REQUIRED)" : "HELD_AT_GATEWAY (INVALID_FOR_DIRECT_OUTREACH)",
+        subject: `Implementation Partner Inquiry: ${p.title} — GARUDA AI OS`,
+        body: `Dear ${p.company} Team,\n\nWe noted your requirement for "${p.title}".\n\nGARUDA operates as an autonomous AI engineering and software execution system. We specialize in rapid, deterministic delivery of custom AI pipelines, robust backend integrations, and automated business workflows with transparent milestone governance (50% kickoff advance deposit upon digital proposal acceptance; 50% upon verified delivery with complete regression test reports).\n\nIf you are evaluating external implementation partners for this project, we would welcome the opportunity to discuss your scope:\n\n• Architectural Blueprint: https://www.garudaos.in/services/${matchedService}\n• Direct Scoping Chat: https://www.garudaos.in/chat?ref=${prospectId}\n\nSincerely,\nGARUDA AI Operating System\nhttps://www.garudaos.in`,
         status: isSafeForFounderApproval ? "APPROVAL_REQUIRED" : "INVALID_FOR_DIRECT_OUTREACH",
         safetyRating: isSafeForFounderApproval ? "SAFE_FOR_FOUNDER_APPROVAL" : "INVALID_FOR_DIRECT_OUTREACH",
         auditNotes: isSafeForFounderApproval
-          ? `Verified commercial client RFP with direct contact pathway (${p.contactPath}).`
+          ? `Verified commercial client RFP with direct contact pathway (${p.contactPath}: ${p.contactEmail || p.url}).`
           : "Listing lacks direct procurement/business contact email. Blocked from cold email dispatch."
       };
 
@@ -249,8 +273,10 @@ class RealCommercialProspectQueueService {
     topDrafts.forEach((d, idx) => {
       alertMessage += `<b>[${idx + 1}] ${d.company}</b>\n`;
       alertMessage += `• Project: <i>${d.projectTitle}</i>\n`;
+      alertMessage += `• Est Value: ${d.estimatedValue}\n`;
       alertMessage += `• Score: ${d.leadScore}/100 | Contact: ${d.contactPath}\n`;
-      alertMessage += `• Status: ${d.safetyRating}\n`;
+      alertMessage += `• Risk: ${d.riskFlags}\n`;
+      alertMessage += `• Why Fit: ${d.fitRationale}\n`;
       alertMessage += `• Source: ${d.sourceUrl}\n`;
       if (d.safetyRating === "SAFE_FOR_FOUNDER_APPROVAL") {
         alertMessage += `• Action: <code>/approve_outreach ${d.prospectId}</code>\n\n`;
