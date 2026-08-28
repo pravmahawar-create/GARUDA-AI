@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const acquisitionEngine = require("../services/garudaAcquisitionEngineService");
 const selfMarketing = require("../services/garudaSelfMarketingService");
+const outreachDispatch = require("../services/garudaOutreachDispatchService");
 
 /**
  * GET /api/acquisition/command-center
@@ -55,6 +56,74 @@ router.post("/leads", async (req, res) => {
     return res.status(201).json({ success: true, lead: record });
   } catch (err) {
     return res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * POST /api/acquisition/outreach/qualify
+ * Prepares a qualified lead for governed outreach.
+ */
+router.post("/outreach/qualify", async (req, res) => {
+  try {
+    const isTest = req.headers["x-garuda-test"] === "true" || req.body.isTest === true;
+    const record = await outreachDispatch.qualifyProspectForOutreach(req.body, { isTest });
+    return res.status(201).json({ success: true, prospect: record });
+  } catch (err) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * POST /api/acquisition/outreach/:id/approve
+ * Approves an outreach draft for dispatch.
+ */
+router.post("/outreach/:id/approve", async (req, res) => {
+  try {
+    const record = await outreachDispatch.approveOutreach(req.params.id, req.body);
+    return res.status(200).json({ success: true, prospect: record });
+  } catch (err) {
+    const status = err.statusCode || 500;
+    return res.status(status).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * POST /api/acquisition/outreach/:id/dispatch
+ * Dispatches an approved outreach communication.
+ */
+router.post("/outreach/:id/dispatch", async (req, res) => {
+  try {
+    const result = await outreachDispatch.dispatchOutreach(req.params.id, req.body);
+    return res.status(200).json(result);
+  } catch (err) {
+    const status = err.statusCode || 500;
+    return res.status(status).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * POST /api/acquisition/outreach/:id/response
+ * Records inbound response from prospect.
+ */
+router.post("/outreach/:id/response", async (req, res) => {
+  try {
+    const record = await outreachDispatch.recordResponse(req.params.id, req.body);
+    return res.status(200).json({ success: true, prospect: record });
+  } catch (err) {
+    const status = err.statusCode || 500;
+    return res.status(status).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * GET /api/acquisition/outreach/metrics
+ */
+router.get("/outreach/metrics", (req, res) => {
+  try {
+    const metrics = outreachDispatch.getOutreachPipelineMetrics();
+    return res.status(200).json({ success: true, metrics });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
   }
 });
 

@@ -14,6 +14,7 @@ import DemoLaunch from "./pages/DemoLaunch";
 import FounderWorkspace from "./pages/FounderWorkspace";
 import RevenueDepartment from "./pages/RevenueDepartment";
 import ProposalPortal from "./pages/ProposalPortal";
+import ServiceLanding from "./pages/ServiceLanding";
 
 import "./styles/garuda-ui.css";
 
@@ -84,6 +85,7 @@ function AppRoutes() {
       <Route path="/app" element={customerRoute} />
       <Route path="/pay/:ref" element={<PayLink />} />
       <Route path="/proposal/:proposalId" element={<ProposalPortal />} />
+      <Route path="/services/:slug" element={<ServiceLanding />} />
       <Route path="*" element={publicLanding} />
     </Routes>
   );

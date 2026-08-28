@@ -91,12 +91,17 @@ class GarudaAcquisitionEngineService {
       ]
     };
 
+    const outreachMetrics = require("./garudaOutreachDispatchService").getOutreachPipelineMetrics();
+
     return {
       success: true,
       timestamp: new Date().toISOString(),
       funnel: {
         totalDiscovered: discoverySummary.totalOpportunities,
         qualifiedLeads: discoverySummary.qualifiedOpportunities,
+        outreachReady: outreachMetrics.approvalPending,
+        outreachSent: outreachMetrics.sent,
+        outreachResponses: outreachMetrics.responsesReceived,
         proposalsCreated: totalProps,
         proposalsAccepted: (counts["CLIENT_ACCEPTED"] || 0) + (counts["IN_EXECUTION"] || 0) + (counts["CLOSED"] || 0),
         activeMissions: counts["IN_EXECUTION"] || 0,
@@ -104,6 +109,7 @@ class GarudaAcquisitionEngineService {
         realizedRevenueINR: realizedINR,
         pipelineValueINR: funnel.pipelineValueINR || 0
       },
+      outreach: outreachMetrics,
       sources: discoverySummary.sources,
       topDemands,
       bottlenecks,
