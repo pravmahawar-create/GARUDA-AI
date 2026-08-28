@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import BrandAssetImage from "../components/BrandAssetImage";
+import SEOHead from "../components/SEOHead";
 
 export default function FounderLogin({ onAuthenticated }) {
   const [mode, setMode] = useState("login");
@@ -107,6 +108,7 @@ export default function FounderLogin({ onAuthenticated }) {
 
   return (
     <main style={{ minHeight: "100vh", position: "relative", display: "grid", placeItems: "center", padding: "2rem 1rem", background: "radial-gradient(circle at top, rgba(245,215,110,0.16), transparent 30%), linear-gradient(135deg, #03060a 0%, #07111d 45%, #02050a 100%)" }}>
+      <SEOHead title="GARUDA Founder Console — Private Access" noindex={true} />
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 15% 25%, rgba(245,215,110,0.08), transparent 22%), radial-gradient(circle at 85% 75%, rgba(125,211,252,0.06), transparent 24%)" }} />
 
       <div style={{ position: "relative", width: "min(100% - 2rem, 430px)" }}>

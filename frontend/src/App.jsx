@@ -16,6 +16,7 @@ import RevenueDepartment from "./pages/RevenueDepartment";
 import ProposalPortal from "./pages/ProposalPortal";
 import ServiceLanding from "./pages/ServiceLanding";
 import FounderAcquisitionCockpit from "./pages/FounderAcquisitionCockpit";
+import WhatIsGarudaAI from "./pages/WhatIsGarudaAI";
 
 import "./styles/garuda-ui.css";
 
@@ -87,6 +88,8 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={publicLanding} />
+      <Route path="/what-is-garuda-ai" element={<WhatIsGarudaAI />} />
+      <Route path="/garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/chat" element={<PublicChat />} />
       <Route path="/founder" element={founderRoute} />
       <Route path="/founder/acquisition" element={acquisitionRoute} />

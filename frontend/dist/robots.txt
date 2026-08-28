@@ -1,7 +1,21 @@
 User-agent: *
 Allow: /
-Disallow: /founder
-Disallow: /revenue
-Disallow: /api/
+Allow: /what-is-garuda-ai
+Allow: /chat
+Allow: /services/
+Allow: /demo
 
-Sitemap: https://garudaos.in/sitemap.xml
+# Protect private, authenticated & internal administrative routes
+Disallow: /founder
+Disallow: /founder/
+Disallow: /revenue
+Disallow: /revenue/
+Disallow: /api/
+Disallow: /app
+Disallow: /app/
+Disallow: /pay/
+Disallow: /proposal/
+Disallow: /login
+Disallow: /signup
+
+Sitemap: https://www.garudaos.in/sitemap.xml

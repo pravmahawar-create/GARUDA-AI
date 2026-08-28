@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SEOHead from "../components/SEOHead";
 
 export default function DemoLaunch() {
   const navigate = useNavigate();
@@ -29,6 +30,11 @@ export default function DemoLaunch() {
 
   return (
     <main className="garuda-shell" style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: "2rem" }}>
+      <SEOHead
+        title="Live Sandbox Demo — GARUDA AI Operating System"
+        description="Experience the live sandbox demo of GARUDA AI: Governed business automation, AI communication, operations, and revenue intelligence."
+        canonical="https://www.garudaos.in/demo"
+      />
       <div style={{ width: "min(100% - 2rem, 420px)", padding: "2.5rem", border: "1px solid rgba(245,215,110,0.25)", borderRadius: "20px", background: "#0b0f16", textAlign: "center" }}>
         <p className="eyebrow">GARUDA AI OS</p>
         <h1 style={{ margin: "0.4rem 0 1rem" }}>Live Demo</h1>

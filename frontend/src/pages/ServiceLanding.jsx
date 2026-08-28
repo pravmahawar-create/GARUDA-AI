@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import SEOHead from "../components/SEOHead";
 
 const SERVICES_DATA = {
   "custom-ai-development": {
@@ -112,7 +113,6 @@ export default function ServiceLanding() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = `${service.title} | GARUDA AI Operating System`;
   }, [service]);
 
   const conv = CURRENCY_CONVERSIONS[selectedCurrency] || CURRENCY_CONVERSIONS.INR;
@@ -124,8 +124,64 @@ export default function ServiceLanding() {
     ? `₹${Math.round(service.baseINR * 0.5).toLocaleString("en-IN")}`
     : `${conv.symbol}${Math.round(service.baseINR * conv.rate * 0.5).toLocaleString()}`;
 
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": `https://www.garudaos.in/services/${service.slug}#service`,
+        "name": service.title,
+        "serviceType": service.title,
+        "category": service.category,
+        "description": `${service.tagline}. ${service.solution}`,
+        "provider": {
+          "@type": "Organization",
+          "name": "GARUDA AI",
+          "url": "https://www.garudaos.in",
+          "logo": "https://www.garudaos.in/favicon/garuda-sigil-icon.svg"
+        },
+        "areaServed": "Worldwide",
+        "offers": {
+          "@type": "Offer",
+          "price": service.baseUSD,
+          "priceCurrency": "USD",
+          "description": `Starts at $${service.baseUSD} USD / ₹${service.baseINR.toLocaleString("en-IN")} with 50% milestone advance kickoff terms.`
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "GARUDA AI",
+            "item": "https://www.garudaos.in"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Services",
+            "item": "https://www.garudaos.in/#capabilities"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": service.title,
+            "item": `https://www.garudaos.in/services/${service.slug}`
+          }
+        ]
+      }
+    ]
+  };
+
   return (
     <div style={{ minHeight: "100vh", background: "#030712", color: "#f9fafb", fontFamily: "Inter, system-ui, sans-serif" }}>
+      <SEOHead
+        title={`${service.title} — GARUDA AI Operating System`}
+        description={`${service.tagline}. Fixed-price milestone execution with automated verification test suites.`}
+        canonical={`https://www.garudaos.in/services/${service.slug}`}
+        schema={serviceSchema}
+      />
       {/* Top Header */}
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.2rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.08)", background: "rgba(11,15,22,0.85)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", cursor: "pointer" }} onClick={() => navigate("/")}>

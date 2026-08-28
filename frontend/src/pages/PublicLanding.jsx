@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import BrandAssetImage from "../components/BrandAssetImage";
+import SEOHead from "../components/SEOHead";
 import { getPublicUniverses } from "../config/universes";
 
 const palette = {
@@ -133,6 +134,11 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
 
   return (
     <div style={{ minHeight: "100vh", background: palette.bg, color: palette.text, fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif" }}>
+      <SEOHead
+        title="GARUDA AI — AI Operating System for Autonomous Business Execution"
+        description="GARUDA AI is an AI Operating System for governed business automation, custom software execution, revenue operations, and autonomous multi-agent workflows."
+        canonical="https://www.garudaos.in/"
+      />
       {/* Header */}
       <header style={{
         display: "flex",
@@ -155,7 +161,8 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             <span style={{ fontSize: "0.7rem", background: "rgba(245,215,110,0.14)", color: palette.gold, padding: "0.2rem 0.55rem", borderRadius: 4, fontWeight: 700, letterSpacing: "0.08em" }}>AI OS</span>
           </span>
         </button>
-        <nav style={{ display: "flex", alignItems: "center", gap: "clamp(1rem, 2.5vw, 2.2rem)" }}>
+        <nav style={{ display: "flex", alignItems: "center", gap: "clamp(0.8rem, 2vw, 1.8rem)" }}>
+          <button type="button" onClick={() => navigate("/what-is-garuda-ai")} style={{ background: "none", border: "none", color: palette.gold, cursor: "pointer", fontSize: "0.92rem", fontWeight: 700 }}>What is GARUDA AI?</button>
           <a href="#platform" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Platform</a>
           <a href="#capabilities" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Capabilities</a>
           <a href="#workflow" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Workflow</a>
@@ -583,9 +590,13 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
 
       {/* Footer */}
       <footer style={{ padding: "2.5rem clamp(1.25rem, 4vw, 4rem)", borderTop: "1px solid rgba(245,215,110,0.1)", textAlign: "center", color: "#5b6472", fontSize: "0.85rem", lineHeight: 1.7 }}>
-        © {new Date().getFullYear()} GARUDA AI Operating System. Built for legitimate business automation, communication, and operations.
+        © {new Date().getFullYear()} GARUDA AI Operating System. Founded by Praveen Mahawar. Official Website: https://www.garudaos.in.
         <div style={{ marginTop: "0.5rem", color: "#6b7280" }}>
-          Founder-controlled · Audit-trailed · Ethical by default ·{" "}
+          <a href="/what-is-garuda-ai" style={{ color: palette.gold, textDecoration: "none", marginRight: "1rem" }}>What is GARUDA AI?</a>
+          <a href="/services/custom-ai-development" style={{ color: "#9ca3af", textDecoration: "none", marginRight: "1rem" }}>Custom AI</a>
+          <a href="/services/custom-software-saas-mvp" style={{ color: "#9ca3af", textDecoration: "none", marginRight: "1rem" }}>SaaS MVP</a>
+          <a href="/chat" style={{ color: "#9ca3af", textDecoration: "none", marginRight: "1rem" }}>Scoping Chat</a>
+          <span style={{ margin: "0 0.5rem" }}>·</span>
           <button type="button" onClick={onFounderLogin} style={{ background: "none", border: "none", color: palette.gold, cursor: "pointer", fontSize: "inherit", padding: 0, textDecoration: "underline" }}>
             Founder Console →
           </button>

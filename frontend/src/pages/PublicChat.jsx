@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ChatConsole from "../components/ChatConsole";
+import SEOHead from "../components/SEOHead";
 
 function timeAgo(iso) {
   const then = new Date(iso).getTime();
@@ -74,6 +75,11 @@ export default function PublicChat() {
         fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       }}
     >
+      <SEOHead
+        title="Interactive Commercial AI Scoping & Architecture Chat — GARUDA AI"
+        description="Interact directly with GARUDA AI's Solution Architect to scope custom AI pipelines, SaaS MVPs, automation workflows, and receive milestone quotes."
+        canonical="https://www.garudaos.in/chat"
+      />
       {/* Header */}
       <header
         style={{
