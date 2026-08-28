@@ -14,6 +14,8 @@ const telegramBotService = require("./telegramBotService");
 const PROSPECT_CATEGORIES = Object.freeze({
   GENUINE_COMMERCIAL_PROSPECT: "GENUINE_COMMERCIAL_PROSPECT",
   EMPLOYMENT_JOB_LISTING: "EMPLOYMENT_JOB_LISTING",
+  TALENT_MARKETPLACE_ROSTER_RECRUITMENT: "TALENT_MARKETPLACE_ROSTER_RECRUITMENT",
+  JOB_BOARD_APPLICATION_ONLY: "JOB_BOARD_APPLICATION_ONLY",
   PROHIBITED_OR_SCAM: "PROHIBITED_OR_SCAM",
   INSUFFICIENT_CONTACT_PATH: "INSUFFICIENT_CONTACT_PATH",
   INSUFFICIENT_PROJECT_INFORMATION: "INSUFFICIENT_PROJECT_INFORMATION",
@@ -22,7 +24,7 @@ const PROSPECT_CATEGORIES = Object.freeze({
 
 class RealCommercialProspectQueueService {
   /**
-   * Classifies an opportunity using strict commercial project intent criteria.
+   * Classifies an opportunity using strict commercial project intent and contact path criteria.
    */
   classifyOpportunity(opp = {}) {
     const text = `${opp.title || ""} ${opp.description || ""} ${opp.requirements || ""}`.toLowerCase();
@@ -46,37 +48,45 @@ class RealCommercialProspectQueueService {
       return { category: PROSPECT_CATEGORIES.INSUFFICIENT_PROJECT_INFORMATION, reason: "Title too brief or unmeasured", evalRes };
     }
 
-    // 4. Employment & Talent Marketplace Sourcing Filter
+    // 4. Talent Marketplace Sourcing Filter (e.g. Lemon.io, Toptal, A.Team)
+    const isTalentMarketplace = /lemon\.io|toptal|a\.team|azumo|telus digital/i.test(opp.company || "") || text.includes("marketplace that connects you");
+    if (isTalentMarketplace && !opp.isDirectClientRfp) {
+      return {
+        category: PROSPECT_CATEGORIES.TALENT_MARKETPLACE_ROSTER_RECRUITMENT,
+        reason: "Talent marketplace / recruitment network sourcing individual contractors for talent pool, not a direct client software RFP",
+        evalRes
+      };
+    }
+
+    // 5. Employment / Internal Staff Hiring Filter
     const employmentKeywords = [
       "salary", "w2", "benefits", "401k", "full-time", "full time", "pto",
       "maternity", "equity", "health insurance", "join our team", "internal team",
       "hiring a", "engineering manager", "staff software engineer", "vice president",
       "head of", "tier iii", "inside sales", "office assistant", "copywriter",
-      "content reviewer", "face deduplication", "marketplace that connects you",
-      "recruiting", "talent pool", "join lemon.io", "join a.team", "f/m/d"
+      "content reviewer", "face deduplication", "f/m/d"
     ];
 
-    const isTalentMarketplace = /lemon\.io|toptal|a\.team|azumo|telus digital/i.test(opp.company || "") || text.includes("marketplace that connects you");
     const hasExplicitEmploymentSignals = employmentKeywords.some((kw) => text.includes(kw) || title.includes(kw));
-
-    if (isTalentMarketplace || hasExplicitEmploymentSignals) {
+    if (hasExplicitEmploymentSignals && !opp.isDirectClientRfp) {
       return {
         category: PROSPECT_CATEGORIES.EMPLOYMENT_JOB_LISTING,
-        reason: isTalentMarketplace
-          ? "Talent marketplace / recruitment network sourcing individual contractors for talent pool, not a direct client software RFP"
-          : "Internal employment/staff hiring listing rather than client project RFP",
+        reason: "Internal employment/staff hiring listing rather than client project RFP",
         evalRes
       };
     }
 
-    // 5. Genuine Commercial Project Opportunity
-    const isDirectClientProject = Boolean(opp.isDirectClientRfp || opp.contactEmail || opp.isCustomRfp);
-    const projectKeywords = [
-      "rfp", "custom", "integration", "migration", "mvp", "bot", "agentic", "crm", "workflow"
-    ];
-    const hasProjectSignals = projectKeywords.some((kw) => title.includes(kw) || text.includes(kw));
+    // 6. Direct Client Commercial Project Opportunity
+    const contactPath = evalRes.contactPath;
+    const isDirectContact = [
+      "DIRECT_BUSINESS_PROJECT_CONTACT",
+      "PROCUREMENT_RFP_CONTACT",
+      "FOUNDER_OWNER_DECISION_MAKER_CONTACT",
+      "BUSINESS_CONTACT_FORM",
+      "AGENCY_PARTNERSHIP_PATH"
+    ].includes(contactPath);
 
-    if (hasProjectSignals && isDirectClientProject) {
+    if (evalRes.accepted || (isDirectContact && !hasExplicitEmploymentSignals && !isTalentMarketplace)) {
       return {
         category: PROSPECT_CATEGORIES.GENUINE_COMMERCIAL_PROSPECT,
         reason: "Qualified direct client commercial software / AI project opportunity",
@@ -84,15 +94,24 @@ class RealCommercialProspectQueueService {
       };
     }
 
+    // 7. Job Board Application Only (Blocked from outbound)
+    if (contactPath === "JOB_BOARD_APPLICATION_ONLY") {
+      return {
+        category: PROSPECT_CATEGORIES.JOB_BOARD_APPLICATION_ONLY,
+        reason: "Listing hosted on job board web portal without direct corporate procurement contact",
+        evalRes
+      };
+    }
+
     return {
       category: PROSPECT_CATEGORIES.NEEDS_HUMAN_REVIEW,
-      reason: "Job-board listing with general title; requires manual verification before outreach",
+      reason: "Requires manual inspection by Founder",
       evalRes
     };
   }
 
   /**
-   * Curates discovery feed opportunities into classified commercial queue.
+   * Curates discovery feed opportunities into classified commercial queue with contact path taxonomy.
    */
   async curateCommercialQueue(options = {}) {
     const discoveryResult = await discoveryRegistry.fetchAllOpportunities(options);
@@ -101,8 +120,19 @@ class RealCommercialProspectQueueService {
     const breakdown = {
       totalCandidatesReviewed: opportunities.length,
       countsByCategory: {},
+      contactPathCounts: {
+        DIRECT_BUSINESS_PROJECT_CONTACT: 0,
+        PROCUREMENT_RFP_CONTACT: 0,
+        FOUNDER_OWNER_DECISION_MAKER_CONTACT: 0,
+        BUSINESS_CONTACT_FORM: 0,
+        AGENCY_PARTNERSHIP_PATH: 0,
+        JOB_BOARD_APPLICATION_ONLY: 0,
+        NO_ACTIONABLE_CONTACT_PATH: 0
+      },
       genuineCommercialProspects: [],
       employmentListings: [],
+      talentMarketplaceRejects: [],
+      jobBoardOnlyRejects: [],
       prohibitedOrScam: [],
       insufficientContactPath: [],
       insufficientProjectInfo: [],
@@ -115,11 +145,15 @@ class RealCommercialProspectQueueService {
       const classification = this.classifyOpportunity(opp);
       breakdown.countsByCategory[classification.category] = (breakdown.countsByCategory[classification.category] || 0) + 1;
 
+      const pathType = classification.evalRes?.contactPath || "JOB_BOARD_APPLICATION_ONLY";
+      breakdown.contactPathCounts[pathType] = (breakdown.contactPathCounts[pathType] || 0) + 1;
+
       const record = {
         title: opp.title,
         company: opp.company || "Client",
         source: opp.source,
         url: opp.url,
+        contactPath: pathType,
         leadScore: classification.evalRes?.leadScore || 70,
         qualificationTier: classification.evalRes?.qualificationTier || "STANDARD",
         matchedCapability: classification.evalRes?.matchedCapability || "Custom Software Development",
@@ -130,6 +164,10 @@ class RealCommercialProspectQueueService {
         breakdown.genuineCommercialProspects.push(record);
       } else if (classification.category === PROSPECT_CATEGORIES.EMPLOYMENT_JOB_LISTING) {
         breakdown.employmentListings.push(record);
+      } else if (classification.category === PROSPECT_CATEGORIES.TALENT_MARKETPLACE_ROSTER_RECRUITMENT) {
+        breakdown.talentMarketplaceRejects.push(record);
+      } else if (classification.category === PROSPECT_CATEGORIES.JOB_BOARD_APPLICATION_ONLY) {
+        breakdown.jobBoardOnlyRejects.push(record);
       } else if (classification.category === PROSPECT_CATEGORIES.PROHIBITED_OR_SCAM) {
         breakdown.prohibitedOrScam.push(record);
       } else if (classification.category === PROSPECT_CATEGORIES.INSUFFICIENT_CONTACT_PATH) {
@@ -154,15 +192,17 @@ class RealCommercialProspectQueueService {
     const queue = await this.curateCommercialQueue(options);
     const candidates = queue.genuineCommercialProspects.length > 0
       ? queue.genuineCommercialProspects.slice(0, 3)
-      : queue.needsHumanReview.slice(0, 3);
+      : (queue.needsHumanReview.length > 0
+          ? queue.needsHumanReview.slice(0, 3)
+          : queue.jobBoardOnlyRejects.slice(0, 3));
 
     const preparedDrafts = [];
 
     for (let i = 0; i < candidates.length; i++) {
       const p = candidates[i];
-      const prospectId = `outreach_m31a_${Date.now()}_${i + 1}`;
+      const prospectId = `outreach_m32_${Date.now()}_${i + 1}`;
       const isGenuine = queue.genuineCommercialProspects.includes(p);
-      const isSafeForFounderApproval = isGenuine && Boolean(p.url && !p.url.includes("remote-jobs"));
+      const isSafeForFounderApproval = isGenuine && p.contactPath !== "JOB_BOARD_APPLICATION_ONLY" && p.contactPath !== "NO_ACTIONABLE_CONTACT_PATH";
 
       const draft = {
         prospectId,
@@ -170,17 +210,18 @@ class RealCommercialProspectQueueService {
         projectTitle: p.title,
         source: p.source,
         sourceUrl: p.url,
+        contactPath: p.contactPath,
         matchedService: p.matchedCapability === "Custom AI Solutions" ? "custom-ai-development" : "business-workflow-ai-automation",
         leadScore: p.leadScore,
-        estimatedValue: "$3,000 - $12,000 USD (50% Kickoff Advance)",
+        estimatedValue: "$3,000 - $15,000 USD (50% Kickoff Advance)",
         fitRationale: `GARUDA delivers deterministic end-to-end execution with automated regression QA test suites and cryptographic SHA-256 release manifests.`,
         subject: `Tailored Architectural Proposal: ${p.title} for ${p.company}`,
         body: `Dear ${p.company} Team,\n\nWe noted your requirement for "${p.title}".\n\nGARUDA delivers bespoke, premium software and AI systems engineered with deterministic quality assurance and transparent milestone governance (50% kickoff advance deposit upon digital proposal acceptance; 50% upon verified delivery).\n\nExplore our service blueprint: https://www.garudaos.in/services/custom-ai-development\nDirect Scoping Chat: https://www.garudaos.in/chat?ref=${prospectId}\n\nSincerely,\nGARUDA AI Operating System\nhttps://www.garudaos.in`,
         status: isSafeForFounderApproval ? "APPROVAL_REQUIRED" : "INVALID_FOR_DIRECT_OUTREACH",
         safetyRating: isSafeForFounderApproval ? "SAFE_FOR_FOUNDER_APPROVAL" : "INVALID_FOR_DIRECT_OUTREACH",
         auditNotes: isSafeForFounderApproval
-          ? "Verified commercial client RFP with direct contact pathway."
-          : "Listing is hosted on a remote employment/job board aggregator without a verified direct client procurement email. Cold dispatch would be misaligned."
+          ? `Verified commercial client RFP with direct contact pathway (${p.contactPath}).`
+          : "Listing lacks direct procurement/business contact email. Blocked from cold email dispatch."
       };
 
       preparedDrafts.push(draft);
@@ -189,6 +230,7 @@ class RealCommercialProspectQueueService {
     return {
       totalReviewed: queue.totalCandidatesReviewed,
       genuineProspectCount: queue.genuineCommercialProspects.length,
+      contactPathBreakdown: queue.contactPathCounts,
       topDrafts: preparedDrafts
     };
   }
@@ -207,12 +249,15 @@ class RealCommercialProspectQueueService {
     topDrafts.forEach((d, idx) => {
       alertMessage += `<b>[${idx + 1}] ${d.company}</b>\n`;
       alertMessage += `• Project: <i>${d.projectTitle}</i>\n`;
-      alertMessage += `• Score: ${d.leadScore}/100 | Est Value: ${d.estimatedValue}\n`;
+      alertMessage += `• Score: ${d.leadScore}/100 | Contact: ${d.contactPath}\n`;
+      alertMessage += `• Status: ${d.safetyRating}\n`;
       alertMessage += `• Source: ${d.sourceUrl}\n`;
-      alertMessage += `• Action: <code>/approve_outreach ${d.prospectId}</code>\n\n`;
+      if (d.safetyRating === "SAFE_FOR_FOUNDER_APPROVAL") {
+        alertMessage += `• Action: <code>/approve_outreach ${d.prospectId}</code>\n\n`;
+      } else {
+        alertMessage += `• Notice: <i>Blocked from cold dispatch (Job board / unverified email)</i>\n\n`;
+      }
     });
-
-    alertMessage += `⚡ Reply with <code>/approve_outreach &lt;id&gt;</code> to authorize live dispatch via Brevo HTTPS relay.`;
 
     try {
       await telegramBotService.sendFounderAlert(`🎯 REAL COMMERCIAL PROSPECTS READY`, alertMessage);
