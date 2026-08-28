@@ -171,6 +171,42 @@ class GarudaOutreachDispatchService {
   }
 
   /**
+   * Evaluates current outbound delivery relay configuration.
+   */
+  getRelayConfigurationStatus() {
+    const hasResend = Boolean(process.env.RESEND_API_KEY);
+    const hasSmtp = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER);
+    const hasTelegram = telegramBotService.isConfigured();
+    const isConfigured = hasResend || hasSmtp || hasTelegram;
+
+    return {
+      configured: isConfigured,
+      activeProvider: hasResend ? "resend_api" : hasSmtp ? "smtp_relay" : hasTelegram ? "telegram_bot" : "unconfigured",
+      hasTelegram,
+      remediation: (hasResend || hasSmtp) ? null : {
+        code: "OUTBOUND_CREDENTIAL_MISSING",
+        reason: "Outbound email relay API keys (RESEND_API_KEY or SMTP_HOST/USER/PASS) not configured in environment.",
+        requiredAction: "Set RESEND_API_KEY or SMTP credentials in Render environment variables for automated dispatch."
+      }
+    };
+  }
+
+  /**
+   * Generates a truthful personalized outreach brief grounded in real GARUDA capabilities.
+   */
+  generatePersonalizedOutreachBrief(record = {}) {
+    return {
+      company: record.company,
+      serviceMatch: record.serviceMatch,
+      leadScore: record.leadScore,
+      valueProposition: "Deterministic, governed custom software & AI development with automated QA test suites and cryptographic SHA-256 release manifests.",
+      milestoneTerms: "50% kickoff advance deposit upon digital proposal acceptance; 50% upon verified QA delivery and client sign-off.",
+      portalLink: `https://www.garudaos.in/services/${record.serviceMatch}`,
+      chatDirectLink: `https://www.garudaos.in/chat?ref=${record.prospectId}`
+    };
+  }
+
+  /**
    * Returns current outreach metrics for Acquisition Command Center.
    */
   getOutreachPipelineMetrics() {
@@ -182,13 +218,16 @@ class GarudaOutreachDispatchService {
       counts[r.status] = (counts[r.status] || 0) + 1;
     });
 
+    const relayStatus = this.getRelayConfigurationStatus();
+
     return {
       totalOutreachProspects: records.length,
       countsByStatus: counts,
       approvalPending: counts[OUTREACH_STATES.APPROVAL_REQUIRED] || 0,
       approved: counts[OUTREACH_STATES.APPROVED] || 0,
       sent: counts[OUTREACH_STATES.SENT] || 0,
-      responsesReceived: counts[OUTREACH_STATES.RESPONSE_RECEIVED] || 0
+      responsesReceived: counts[OUTREACH_STATES.RESPONSE_RECEIVED] || 0,
+      relayStatus
     };
   }
 }
