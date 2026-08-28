@@ -51,12 +51,17 @@ router.post("/project-scope", async (req, res) => {
           { milestone: "Milestone 1 — Complete Governed Delivery & Acceptance", amountINR: estimatedINR, percentage: 100 }
         ];
 
+    const attributionService = require("../services/acquisitionAttributionService");
+    const attribution = req.body.attribution || attributionService.resolveAttribution({ req, body: req.body });
+
     const proposal = {
       scopeId,
       customer: {
         name: String(name || "Prospective Client").trim(),
         email: String(email || "").trim() || null,
-        phone: String(phone || "").trim() || null
+        phone: String(phone || "").trim() || null,
+        contact: String(contact || email || phone || "anon").trim(),
+        attribution
       },
       requirements: cleanRequirements,
       capabilityMatch: {
@@ -85,21 +90,50 @@ router.post("/project-scope", async (req, res) => {
 
     inMemoryScopes.set(scopeId, proposal);
 
-    // Notify Founder Telegram of incoming scoped lead
+    // Save lead record in MongoDB / JSON fallback
+    const leadRecord = {
+      id: `lead_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`,
+      name: proposal.customer.name,
+      email: proposal.customer.email,
+      phone: proposal.customer.phone,
+      contact: proposal.customer.contact,
+      source: attribution.summary || "project_scope_form",
+      attribution,
+      scopeId,
+      requirements: cleanRequirements,
+      estimatedINR,
+      status: "new",
+      capturedAt: new Date().toISOString()
+    };
+
     try {
-      await telegramBotService.sendFounderAlert(
-        "🦅 NEW COMMERCIAL PROJECT SCOPED!",
-        `Client: ${proposal.customer.name} (${proposal.customer.email || proposal.customer.phone || "anon"})\n` +
-        `Target: ${cleanRequirements.slice(0, 90)}\n` +
-        `Capability: ${proposal.capabilityMatch.name} (${proposal.capabilityMatch.matchScore}%)\n` +
-        `Quote: ₹${estimatedINR.toLocaleString("en-IN")} INR ($${estimatedUSD} USD)\n` +
-        `Timeline: ${proposal.estimatedTimeline}\n` +
-        `Scope ID: ${scopeId}`
-      );
+      if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
+        await mongoose.connection.db.collection("inboundleads").insertOne(leadRecord);
+      }
+    } catch {}
+
+    try {
+      const fs = require("fs");
+      const path = require("path");
+      const file = path.join(__dirname, "..", "..", "data", "leads.json");
+      const existing = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : { leads: [] };
+      if (!Array.isArray(existing.leads)) existing.leads = [];
+      existing.leads.push(leadRecord);
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, JSON.stringify(existing, null, 2), "utf8");
+    } catch {}
+
+    // Notify Founder Telegram of incoming scoped lead with rich attribution
+    try {
+      await telegramBotService.notifyLeadCaptured({
+        ...leadRecord,
+        message: `Project Scope Form: ${cleanRequirements.slice(0, 140)} (Estimated: ₹${estimatedINR.toLocaleString("en-IN")})`
+      });
     } catch {}
 
     return res.status(201).json({
       success: true,
+      leadId: leadRecord.id,
       proposal
     });
   } catch (err) {

@@ -22,6 +22,14 @@
       "destination": "/api/telegram"
     },
     {
+      "source": "/api/inbound/project-scope",
+      "destination": "/api/project-scope"
+    },
+    {
+      "source": "/api/project-scope",
+      "destination": "/api/project-scope"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
     },

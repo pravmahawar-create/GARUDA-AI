@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import BrandAssetImage from "../components/BrandAssetImage";
 import SEOHead from "../components/SEOHead";
+import ProjectScopeForm from "../components/ProjectScopeForm";
+import WhatsAppQuickCTA from "../components/WhatsAppQuickCTA";
+import { trackEvent } from "../utils/telemetry";
 import { getPublicUniverses } from "../config/universes";
 
 const palette = {
@@ -86,21 +89,14 @@ const controls = [
   { icon: "⛔", title: "Ethical-by-default", desc: "GARUDA is built for legitimate business work. No deception, no fabricated activity, no shortcuts." }
 ];
 
-const trustedLogos = [
-  { name: "NovaWorks", mark: "◈" },
-  { name: "Meridian & Co", mark: "◈" },
-  { name: "AtlasLegal", mark: "◈" },
-  { name: "BluePeak", mark: "◈" },
-  { name: "Harbor Retail", mark: "◈" },
-  { name: "Vertex Group", mark: "◈" }
+const engineeringProofs = [
+  { title: "Deterministic Multi-Agent Engine", subtitle: "Governed State Transitions", icon: "◈" },
+  { title: "Cryptographic Release Manifests", subtitle: "SHA-256 Verified Artifacts", icon: "🛡" },
+  { title: "100% Truth Law Enforcement", subtitle: "Zero-Fabrication Architecture", icon: "⚖" },
+  { title: "Automated Verification Suites", subtitle: "Continuous Regression QA", icon: "⚙" },
+  { title: "Principal Architect Direct Oversight", subtitle: "Praveen Mahawar · Founder Eng", icon: "⚡" },
+  { title: "Production Multi-Cloud Deploy", subtitle: "Edge CDN & Microservices", icon: "☁" }
 ];
-
-const LogoMark = ({ name, mark }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", color: "#6b7280", fontSize: "1rem", fontWeight: 600, opacity: 0.85 }}>
-    <span style={{ color: palette.gold, fontSize: "1.3rem" }}>{mark}</span>
-    <span>{name}</span>
-  </div>
-);
 
 const WorkflowStep = ({ item, index }) => (
   <motion.div
@@ -245,67 +241,43 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           <p style={{ color: palette.muted, fontSize: "clamp(1.05rem, 2vw, 1.25rem)", lineHeight: 1.7, maxWidth: 680, margin: "0 auto 2.25rem" }}>
             GARUDA runs the operating layer of a business — automation, communication, operations, analytics, knowledge, monitoring, and support — under founder control.
           </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "1.2rem", flexWrap: "wrap" }}>
             <button
-              onClick={onGetStarted}
+              onClick={() => {
+                trackEvent("primary_cta_click", { location: "hero" });
+                document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
+              }}
               style={{
                 background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
                 color: "#05070b",
                 border: "none",
-                padding: "0.95rem 2.4rem",
+                padding: "1rem 2.6rem",
                 borderRadius: 999,
                 fontWeight: 800,
-                fontSize: "1rem",
+                fontSize: "1.05rem",
                 cursor: "pointer",
-                boxShadow: "0 12px 32px rgba(245,215,110,0.22)"
+                boxShadow: "0 12px 32px rgba(245,215,110,0.25)"
               }}
             >
-              Get Started
+              Get Project Scope →
             </button>
             <button
-              onClick={() => navigate("/chat")}
+              onClick={() => {
+                trackEvent("secondary_cta_click", { location: "hero" });
+                navigate("/chat");
+              }}
               style={{
                 background: "rgba(255,255,255,0.04)",
                 border: "1px solid rgba(245,215,110,0.35)",
                 color: palette.gold,
-                padding: "0.95rem 2.4rem",
+                padding: "1rem 2.4rem",
                 borderRadius: 999,
                 fontWeight: 700,
                 fontSize: "1rem",
                 cursor: "pointer"
               }}
             >
-              Try Public AI Chat →
-            </button>
-            <button
-              onClick={() => navigate("/demo")}
-              style={{
-                background: "rgba(75, 200, 140, 0.12)",
-                border: "1px solid rgba(75, 200, 140, 0.5)",
-                color: "#7be8b4",
-                padding: "0.95rem 2.4rem",
-                borderRadius: 999,
-                fontWeight: 800,
-                fontSize: "1rem",
-                cursor: "pointer"
-              }}
-            >
-              Try Live Demo →
-            </button>
-            <button
-              onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
-              style={{
-                background: "rgba(245,215,110,0.08)",
-                border: "1px solid rgba(245,215,110,0.5)",
-                color: palette.gold,
-                padding: "0.95rem 2.4rem",
-                borderRadius: 999,
-                fontWeight: 800,
-                fontSize: "1rem",
-                cursor: "pointer"
-              }}
-            >
-              Make a Payment
+              Talk to AI Architect →
             </button>
           </div>
           <p style={{ color: "#5b6472", fontSize: "0.85rem", marginTop: "2rem", letterSpacing: "0.04em" }}>
@@ -314,13 +286,32 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         </motion.div>
       </section>
 
-      {/* 2. Trusted by founders, teams, and professionals */}
-      <section style={{ padding: "2.5rem clamp(1.25rem, 4vw, 4rem) 4rem", borderTop: "1px solid rgba(245,215,110,0.08)" }}>
-        <motion.p {...fadeUp} style={{ textAlign: "center", color: palette.muted, fontSize: "0.8rem", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: "1.75rem" }}>
-          Trusted by founders, teams, and professionals
+      {/* 2. Architectural Proof & Engineering Governance */}
+      <section style={{ padding: "2.5rem clamp(1.25rem, 4vw, 4rem) 3.5rem", borderTop: "1px solid rgba(245,215,110,0.08)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        <motion.p {...fadeUp} style={{ textAlign: "center", color: palette.gold, fontSize: "0.78rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: "1.75rem" }}>
+          Architectural Proof & Engineering Governance
         </motion.p>
-        <motion.div {...fadeUp} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "1.5rem", maxWidth: 1000, margin: "0 auto", justifyItems: "center" }}>
-          {trustedLogos.map((logo) => <LogoMark key={logo.name} {...logo} />)}
+        <motion.div {...fadeUp} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1.2rem", maxWidth: 1100, margin: "0 auto" }}>
+          {engineeringProofs.map((proof) => (
+            <div
+              key={proof.title}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.9rem",
+                padding: "0.95rem 1.25rem",
+                borderRadius: "12px",
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(245,215,110,0.12)"
+              }}
+            >
+              <span style={{ color: palette.gold, fontSize: "1.4rem" }}>{proof.icon}</span>
+              <div>
+                <div style={{ color: "#ffffff", fontSize: "0.92rem", fontWeight: 700 }}>{proof.title}</div>
+                <div style={{ color: "#8d95a7", fontSize: "0.78rem" }}>{proof.subtitle}</div>
+              </div>
+            </div>
+          ))}
         </motion.div>
       </section>
 
@@ -529,63 +520,9 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         </div>
       </section>
 
-      {/* 10. Final CTA */}
-      <section style={{ padding: "clamp(5rem, 9vw, 7rem) clamp(1.25rem, 4vw, 4rem)", textAlign: "center", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 50%, rgba(245,215,110,0.12), transparent 55%)" }} />
-        <motion.div {...fadeUp} style={{ position: "relative", maxWidth: 720, margin: "0 auto" }}>
-          <h2 style={{ fontSize: "clamp(2rem, 4.5vw, 3rem)", fontWeight: 800, margin: "0 0 1.25rem", lineHeight: 1.15 }}>Start with GARUDA</h2>
-          <p style={{ color: palette.muted, fontSize: "1.15rem", lineHeight: 1.7, margin: "0 auto 2.5rem", maxWidth: 560 }}>
-            Describe how your business runs. We scope a fixed-price deployment covering your operating layer — with proof of work at every step.
-          </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
-            <button
-              onClick={onGetStarted}
-              style={{
-                background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
-                color: "#05070b",
-                border: "none",
-                padding: "1rem 2.6rem",
-                borderRadius: 999,
-                fontWeight: 800,
-                fontSize: "1.05rem",
-                cursor: "pointer",
-                boxShadow: "0 14px 36px rgba(245,215,110,0.24)"
-              }}
-            >
-              Start with GARUDA
-            </button>
-            <button
-              onClick={() => navigate("/chat")}
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(245,215,110,0.35)",
-                color: palette.gold,
-                padding: "1rem 2.6rem",
-                borderRadius: 999,
-                fontWeight: 700,
-                fontSize: "1.05rem",
-                cursor: "pointer"
-              }}
-            >
-              Talk to GARUDA First
-            </button>
-            <button
-              onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
-              style={{
-                background: "rgba(245,215,110,0.08)",
-                border: "1px solid rgba(245,215,110,0.5)",
-                color: palette.gold,
-                padding: "1rem 2.6rem",
-                borderRadius: 999,
-                fontWeight: 800,
-                fontSize: "1.05rem",
-                cursor: "pointer"
-              }}
-            >
-              Make a Payment
-            </button>
-          </div>
-        </motion.div>
+      {/* 10. Project Scope Request Intake */}
+      <section style={{ padding: "clamp(4rem, 8vw, 6rem) clamp(1.25rem, 4vw, 4rem)", position: "relative" }}>
+        <ProjectScopeForm />
       </section>
 
       {/* Footer */}
@@ -602,6 +539,9 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           </button>
         </div>
       </footer>
+
+      {/* Floating WhatsApp Business Inquiry CTA */}
+      <WhatsAppQuickCTA />
     </div>
   );
 }

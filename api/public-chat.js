@@ -349,24 +349,40 @@ function extractLeadEmail(text) {
   return match ? match[0].toLowerCase() : "";
 }
 
+let attributionService;
+try {
+  attributionService = require("../src/services/acquisitionAttributionService");
+} catch {
+  attributionService = null;
+}
+
 function extractLeadPhone(text) {
   const t = String(text || "").replace(/[^0-9]/g, "");
   if (t.length >= 10) return t.slice(-10);
   return "";
 }
 
-function leadSource(userId, req) {
+function leadSource(userId, req, attribution) {
+  if (attribution && attribution.summary) return attribution.summary;
   if (userId) return "public-chat-authenticated";
   const ref = String((req.query && req.query.ref) || "").trim();
   return ref ? `public-chat-${ref}` : "public-chat-anonymous";
 }
 
-async function captureLead({ message, reply, userId, req }) {
+async function captureLead({ message, reply, userId, req, body }) {
+  let attribution = null;
+  if (attributionService) {
+    try {
+      attribution = attributionService.resolveAttribution({ req, body: body || req.body || {} });
+    } catch {}
+  }
+
   const lead = {
     email: extractLeadEmail(message) || null,
     phone: extractLeadPhone(message) || null,
     first_name: extractLeadEmail(message) ? extractLeadEmail(message).split("@")[0].slice(0, 40) : null,
-    source: leadSource(userId, req),
+    source: leadSource(userId, req, attribution),
+    attribution: attribution || null,
     user_id: userId || null,
     message: String(message || "").slice(0, 2000),
     reply_snippet: String(reply || "").slice(0, 500),
@@ -441,7 +457,7 @@ module.exports = async function handler(req, res) {
   if (db && userId) {
     try {
       const result = await handleAuthenticated(conversationId || "", message.trim(), db, userId);
-      await captureLead({ message, reply: result.reply, userId, req });
+      await captureLead({ message, reply: result.reply, userId, req, body: req.body });
       return res.status(200).json(result);
     } catch (error) {
       console.error("Public Chat Persistence Error:", error);
@@ -459,7 +475,7 @@ module.exports = async function handler(req, res) {
     const advisor = await tryInsuranceAdvisor(message.trim());
     const commercial = advisor.handled ? { handled: false } : await tryCommercialAgent(message.trim(), Array.isArray(history) ? history : [], { isTest, conversationId: conversationId || null });
     const reply = advisor.handled ? advisor.reply : commercial.handled ? commercial.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
-    await captureLead({ message, reply, userId: null, req });
+    await captureLead({ message, reply, userId: null, req, body: req.body });
     return res.status(200).json({
       reply,
       mode: advisor.handled ? "insurance_advisor" : commercial.handled ? "commercial_architect" : undefined,

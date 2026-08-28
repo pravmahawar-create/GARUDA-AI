@@ -194,7 +194,8 @@ class ClientProposalService {
         name: String(input.client?.name || input.name || "Commercial Client").trim(),
         email: String(input.client?.email || input.email || "").trim() || null,
         phone: String(input.client?.phone || input.phone || "").trim() || null,
-        organization: String(input.client?.organization || input.organization || "").trim() || null
+        organization: String(input.client?.organization || input.organization || "").trim() || null,
+        attribution: input.attribution || input.client?.attribution || null
       },
       capabilityMatch: {
         name: bestCap.name,

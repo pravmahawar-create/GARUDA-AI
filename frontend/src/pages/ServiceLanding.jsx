@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
+import ProjectScopeForm from "../components/ProjectScopeForm";
+import WhatsAppQuickCTA from "../components/WhatsAppQuickCTA";
+import { trackEvent } from "../utils/telemetry";
 
 const SERVICES_DATA = {
   "custom-ai-development": {
@@ -229,18 +232,24 @@ export default function ServiceLanding() {
           <p style={{ fontSize: "1.2rem", color: "#9ca3af", maxWidth: 750, margin: "0 auto 2rem auto", lineHeight: 1.6 }}>
             {service.tagline}
           </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "1.2rem", flexWrap: "wrap" }}>
             <button
-              onClick={() => navigate("/chat?topic=" + service.slug)}
-              style={{ background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)", color: "#05070a", padding: "0.85rem 2rem", borderRadius: "10px", fontWeight: 800, fontSize: "1rem", border: "none", cursor: "pointer", boxShadow: "0 4px 20px rgba(245,215,110,0.3)" }}
+              onClick={() => {
+                trackEvent("primary_cta_click", { location: "service_hero", service: service.slug });
+                document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              style={{ background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)", color: "#05070a", padding: "0.95rem 2.4rem", borderRadius: "999px", fontWeight: 800, fontSize: "1rem", border: "none", cursor: "pointer", boxShadow: "0 4px 20px rgba(245,215,110,0.3)" }}
             >
-              ◈ Start Instant Project Scoping →
+              Get Project Scope →
             </button>
             <button
-              onClick={() => navigate("/")}
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#e5e7eb", padding: "0.85rem 1.6rem", borderRadius: "10px", fontWeight: 600, fontSize: "0.95rem", cursor: "pointer" }}
+              onClick={() => {
+                trackEvent("secondary_cta_click", { location: "service_hero", service: service.slug });
+                navigate("/chat?topic=" + service.slug);
+              }}
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#e5e7eb", padding: "0.95rem 2rem", borderRadius: "999px", fontWeight: 600, fontSize: "0.95rem", cursor: "pointer" }}
             >
-              Explore All Capabilities
+              Talk to AI Architect →
             </button>
           </div>
         </div>
@@ -311,27 +320,23 @@ export default function ServiceLanding() {
           </div>
         </div>
 
-        {/* Bottom CTA Card */}
-        <div style={{ textAlign: "center", padding: "3rem 1.5rem", background: "rgba(17,24,39,0.7)", borderRadius: "16px", border: "1px solid rgba(212,175,55,0.2)" }}>
-          <h2 style={{ fontSize: "1.8rem", fontWeight: 900, color: "#fff", margin: "0 0 1rem 0" }}>
-            Ready to Build Your Solution?
-          </h2>
-          <p style={{ color: "#9ca3af", maxWidth: 600, margin: "0 auto 2rem auto", fontSize: "1rem" }}>
-            Tell GARUDA what you need. Our Solution Architect will progressively understand your requirements, formulate an exact scope, and provide your formal proposal.
-          </p>
-          <button
-            onClick={() => navigate("/chat?topic=" + service.slug)}
-            style={{ background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)", color: "#05070a", padding: "1rem 2.5rem", borderRadius: "10px", fontWeight: 800, fontSize: "1.05rem", border: "none", cursor: "pointer", boxShadow: "0 6px 25px rgba(245,215,110,0.35)" }}
-          >
-            ◈ Talk to GARUDA Solution Architect Now →
-          </button>
-        </div>
+        {/* Dedicated Project Scope Lead Capture Form */}
+        <section style={{ marginBottom: "3rem" }}>
+          <ProjectScopeForm
+            defaultService={service.slug}
+            title={`Get Fixed-Price Scope for ${service.title}`}
+            subtitle="Submit your requirements to receive a formal architectural scope, technical milestone breakdown, and firm pricing quote."
+          />
+        </section>
       </main>
 
       {/* Footer */}
       <footer style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "2rem", textAlign: "center", color: "#6b7280", fontSize: "0.85rem" }}>
-        © 2026 GARUDA Operating Systems Inc. All rights reserved. Built for deterministic, governed custom software and AI operations.
+        © 2026 GARUDA Operating Systems Inc. All rights reserved. Founded by Praveen Mahawar. Built for deterministic, governed custom software and AI operations.
       </footer>
+
+      {/* Floating WhatsApp Quick CTA */}
+      <WhatsAppQuickCTA />
     </div>
   );
 }

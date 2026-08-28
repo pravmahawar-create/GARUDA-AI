@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { getAttributionPayload } from "../utils/attribution";
+import { trackEvent } from "../utils/telemetry";
 
 const GREETING = { role: "model", text: "Hello! I am GARUDA. How can I help you today?" };
 
 const REQUEST_TIMEOUT_MS = 45000;
 
 async function sendMessage(message, history, conversationId, signal) {
+  const attribution = getAttributionPayload();
   const res = await fetch("/api/public-chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -16,7 +19,8 @@ async function sendMessage(message, history, conversationId, signal) {
         role: m.role === "user" ? "user" : "model",
         text: m.text
       })),
-      conversationId: conversationId || null
+      conversationId: conversationId || null,
+      attribution
     })
   });
   const data = await res.json();
@@ -61,6 +65,10 @@ export default function ChatConsole({
     const updated = [...history, { role: "user", text: textToSend }];
     setMessages(updated);
     setLoading(true);
+
+    if (history.filter((m) => m.role === "user").length === 0) {
+      trackEvent("chat_started", { messageLength: textToSend.length });
+    }
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -141,6 +149,7 @@ export default function ChatConsole({
       <div style={{ flex: 1, overflowY: "auto", padding: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         {messages.map((msg, idx) => {
           const isUser = msg.role === "user";
+          const isModel = msg.role === "model" && idx > 0 && !msg.isError;
           return (
             <div key={`${msg.role}-${idx}`} style={{ display: "flex", flexDirection: "column", alignItems: isUser ? "flex-end" : "flex-start" }}>
               <div style={bubbleStyle(isUser, msg.isError)}>{msg.text}</div>
@@ -165,6 +174,28 @@ export default function ChatConsole({
                     }}
                   >
                     <span>◈</span> View & Accept Formal Proposal →
+                  </a>
+                </div>
+              )}
+              {isModel && !msg.proposalUrl && idx === messages.length - 1 && (
+                <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                  <a
+                    href="/#project-scope"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.35rem",
+                      background: "rgba(212,175,55,0.08)",
+                      border: "1px solid rgba(212,175,55,0.3)",
+                      color: "#d4af37",
+                      padding: "0.35rem 0.8rem",
+                      borderRadius: 6,
+                      fontWeight: 700,
+                      fontSize: "0.78rem",
+                      textDecoration: "none"
+                    }}
+                  >
+                    <span>📋</span> Request Formal Project Scope & Quote →
                   </a>
                 </div>
               )}

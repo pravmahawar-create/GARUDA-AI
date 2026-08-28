@@ -17,6 +17,7 @@ import ProposalPortal from "./pages/ProposalPortal";
 import ServiceLanding from "./pages/ServiceLanding";
 import FounderAcquisitionCockpit from "./pages/FounderAcquisitionCockpit";
 import WhatIsGarudaAI from "./pages/WhatIsGarudaAI";
+import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
 
@@ -24,6 +25,10 @@ function AppRoutes() {
   const navigate = useNavigate();
   const [authenticated, setAuthenticated] = useState(null);
   const [customer, setCustomer] = useState(null);
+
+  useEffect(() => {
+    initAttribution();
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

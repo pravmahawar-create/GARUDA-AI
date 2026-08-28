@@ -205,6 +205,9 @@ class GarudaAcquisitionEngineService {
     const currency = leadData.currency || "INR";
     const budget = Number(leadData.budget) || 25000;
 
+    const attributionService = require("./acquisitionAttributionService");
+    const attribution = leadData.attribution || attributionService.resolveAttribution({ body: leadData });
+
     // 1. Initial State: DISCOVERED -> QUALIFIED
     const isDeliverable = description.length > 10;
     const currentState = isDeliverable ? ACQUISITION_STATES.QUALIFIED : ACQUISITION_STATES.DISCOVERED;
@@ -218,7 +221,8 @@ class GarudaAcquisitionEngineService {
       client: {
         name: leadData.clientName || "Inbound Visitor",
         contact: leadData.contact || leadData.email || "anon",
-        source: leadData.source || "public_chat"
+        source: leadData.source || attribution.summary || "public_chat",
+        attribution
       },
       status: currentState,
       isTest,
@@ -233,6 +237,7 @@ class GarudaAcquisitionEngineService {
         `Lead ID: ${leadId}\n` +
         `Project: ${projectTitle}\n` +
         `Budget: ${currency} ${budget.toLocaleString("en-IN")}\n` +
+        `Channel: ${attribution.channel}\n` +
         `Source: ${record.client.source}\n` +
         `Status: ${currentState}`
       );

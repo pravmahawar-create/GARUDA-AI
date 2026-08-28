@@ -90,14 +90,18 @@ async function sendFounderAlert(title, body) {
 
 async function notifyLeadCaptured(lead) {
   if (!lead) return null;
+  const attr = lead.attribution || {};
   const summary = [
     `Naya lead aaya hai!`,
-    `Source: ${lead.source || "unknown"}`,
+    attr.channel ? `Channel: ${attr.channel}` : null,
+    lead.source ? `Source / Campaign: ${lead.source}` : null,
+    attr.landingPath ? `Landing Page: ${attr.landingPath}` : null,
+    attr.referrerDomain ? `Referrer: ${attr.referrerDomain}` : null,
     lead.email ? `Email: ${lead.email}` : null,
     lead.phone ? `Phone: ${lead.phone}` : null,
     lead.message ? `Message: ${String(lead.message).slice(0, 200)}` : null
   ].filter(Boolean).join("\n");
-  return sendFounderAlert("GARUDA — New Lead", summary);
+  return sendFounderAlert("GARUDA — New Lead (Attributed)", summary);
 }
 
 function detectMediaKind(message) {
