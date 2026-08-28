@@ -1,52 +1,97 @@
-# GARUDA-AI — Session Handoff (COMPLETED)
+# GARUDA Billing — Handoff for 2026-08-24
 
-> Status: **ALL WORK COMPLETE AND COMMITTED** — this note is kept as a historical
-> session record. It was originally an "URGENT STOP, resume here" memo from the
-> 2026-08-19 session. Everything listed below has been finished and committed.
+## Today's Accomplishments (2026-08-23)
 
-## ✅ Completed work (with commits)
+### Stock Voice Consistency Fix
+- **Root cause identified**: Order-sensitive `normalizeName()` in `src/db.js` caused `"ACC Cement"` and `"Cement - ACC"` to resolve as different products. Voice operations targeted the wrong record while the Stock UI displayed another.
+- **Fixes applied**:
+  - `src/db.js`: `normalizeName` now sorts words alphabetically before joining. `"ACC Cement"` and `"Cement - ACC"` both normalize to `acccement`.
+  - `src/lib/voice.js`: Added `mines`, `mine`, `kam`, `ghata do`, `hata do` to stock hint/subtract regexes; fixed `buildItemName` to strip all trailing stop words; added pre-qty fallback in `parseStock`; added `clarify` for mutation commands missing item name.
+  - `src/components/VoiceModal.jsx`: Fixed duplicate success message display by excluding stock/bill intents from the generic message render block.
+- **Regression tests added**: 11 new tests covering alias resolution, voice/UI record identity, add/subtract/query consistency, insufficient-stock floor, unrelated product isolation, and bill stock deduction.
+- **Test results**: 100/100 passing (was 89/89 before new tests).
+- **Build & device**: APK built and installed on ZN52238XJ9 (versionCode=12, versionName=1.11). App data preserved.
 
-| Milestone | Commit | Status |
-|---|---|---|
-| Revenue → Cash truth chain (payment webhook dedupe, reconciliation, settlement integrity) | `2334a36` | DONE |
-| Handoff-7 governed routing, degraded LLM honesty, governed generic code task engine | `b5fbc8a` | DONE |
-| Founder permission review queue with governed batch workspace | `6a12838` | DONE |
-| Mountbatten approval sender, prod cleanup script, rebuilt frontend bundle | `1979485` | DONE |
-| Revenue proposal-draft test (permission-unknown/prohibited candidates blocked) | `f4259f6` | DONE |
-| Telegram honest engine-unavailable reply (no more fake "engine load ho raha hai") | `9eca8b5` | DONE |
+### Voice Billing Lifecycle Stabilization (previous session)
+- Checkpointed in commits `165bc05` and `ad8e8b8`.
+- Fixed voice modal cleanup, listener leaks, and bill summary rendering across consecutive sessions.
 
-## ✅ Remaining work (original REMAINING WORK section — all DONE)
+## Current Repository State
 
-- A. `localCognitiveResourceIntegration.test.js` — PASS (conservative agent-intent
-  detection, degraded-mode honest answer, model-swap router echo).
-- B. `conversationalIntelligenceRegression.test.js` — PASS.
-- C. Cleanup + verification — mother suite 14/14 PASS; services 57 PASS
-  (2 pre-existing known fails: `attackListService`, `dealTrackerService`);
-  runtime noise restored to HEAD; handoff-7 completion report delivered.
+### Billing Repo (`billing/`)
+- Branch: `main` (ahead of origin by 2 commits — not yet pushed)
+- Modified source files:
+  - `src/db.js`
+  - `src/lib/voice.js`
+  - `src/lib/voice.test.js`
+  - `src/lib/voiceExecutor.js`
+  - `src/lib/voiceExecutor.test.js`
+  - `src/components/VoiceModal.jsx`
+  - `src/screens/StockScreen.jsx`
+  - `vite.config.js`
+  - `index.html`
+- Untracked: Android project files, `dist/`, `capacitor.config.json`, APK artifacts.
+- **Note**: `dist/` and build artifacts are present. Do not commit these; they are in `.gitignore` but some were force-overwritten during today's build cycle.
 
-## ✅ Next milestone after handoff-7 — DONE
+### Parent Repo (`GARUDA-AI/`)
+- Modified: `package.json`, `package-lock.json`, and several files in `src/models/` and `src/routes/`.
+- These changes appear to be from an earlier parallel work track (Mongo/billing backend models). **Do not mix** with the mobile billing work unless explicitly asked.
 
-Founder Batch Review Workspace (batch approve/reject/needs-changes UI+API over the
-118 `PERMISSION_UNKNOWN` candidates) — implemented, tested (A–R pass), committed in
-`6a12838`. Razorpay key-secret cleanup from `frontend/.env` also completed.
+## What Remains / Next Steps
 
-## 🔧 Follow-up items (open, not blocking)
+### 1. Push billing commits
+```bash
+cd billing
+git add src/db.js src/lib/voice.js src/lib/voice.test.js src/lib/voiceExecutor.js src/lib/voiceExecutor.test.js src/components/VoiceModal.jsx src/screens/StockScreen.jsx
+git commit -m "fix: stock voice consistency — canonical identity, subtract, duplicate message"
+git push origin main
+```
 
-- **Render deploy:** push `main` to GitHub (6 commits ahead of `origin/main`) so
-  Render runs the new code; add `GEMINI_API_KEY` + `GARUDA_LLM_PROVIDER=gemini`
-  to Render env so the deployed Telegram bot answers with real Gemini replies.
-- `reports/mother-cycle-report.json` is runtime noise (tracked file, changes every
-  cycle) — leave untouched.
-- This file is a record; no action needed.
+### 2. Clean up untracked build artifacts
+The `dist/` rebuild and Android sync left stale hashes and untracked files:
+```bash
+cd billing
+git clean -fd dist/ android/ capacitor.config.json Garuda-Billing.apk
+```
+Then rebuild cleanly if needed:
+```bash
+npm run build && npx cap sync android
+```
 
-## ⚠️ Gotchas (still valid)
+### 3. Verify parent repo changes
+The parent `GARUDA-AI/` repo has uncommitted changes to `src/models/` and `src/routes/`. These may be from an incomplete feature branch. Before touching them:
+- Check if they are needed for the mobile billing backend sync.
+- If not needed, stash or revert to avoid conflating the mobile PWA work with the Node/Express backend.
 
-- Never commit `node_modules/`, `package-lock.json`, `scripts/mother/memory.json`;
-  `data/` is gitignored.
-- Approval = `GARUDA_FOUNDER_APPROVED=true` env (tests/scripts) or
-  `x-garuda-founder-approved: true` header (API).
-- `.env` (local): `GARUDA_LLM_PROVIDER=gemini` + `GEMINI_API_KEY` set. Gemini can
-  intermittently 503; harnesses retry up to 3×. Ollama `qwen2.5-coder:3b` is the
-  only local model (127.0.0.1:11434).
-- `execute()` in `scripts/mother/executor.js` is async — tests must `await`.
-- Lazy `require("./GenericCodeTaskEngine")` in EngineeringBrain is intentional.
+### 4. Real-device validation checklist (device ZN52238XJ9)
+The APK is installed but manual voice testing should be repeated to confirm:
+- [ ] Stock screen shows correct quantities for all items.
+- [ ] Voice add updates the **same** record visible on the Stock screen.
+- [ ] Voice subtract actually deducts quantity and reports the correct resulting number.
+- [ ] Voice query returns the same quantity as the Stock screen.
+- [ ] Aliases like `"Cement - ACC"` and `"ACC cement"` resolve to the same record as `"ACC Cement"`.
+- [ ] Success message appears **once** per stock operation.
+- [ ] Consecutive voice commands do not leak state between sessions.
+
+### 5. Known limitations / watch-outs
+- **Duplicate records**: If the device already has both `ACC Cement` and `Cement - ACC` with different quantities, the new normalization will treat them as the same product going forward, but existing stale `qty` values on the "loser" record will not auto-merge. If quantities disagree, the shortest-name record wins `findStockItem` lookups, but the other record still exists in `db.items`. Consider a one-time migration script if data drift is suspected.
+- **Stock UI still shows `it.qty`**: `StockScreen.jsx` renders `it.qty` directly. For full consistency, consider migrating the Stock UI to use `getPhysicalStock(item.id)` everywhere, matching the voice path. This is a follow-up refactor, not a blocker.
+- **VoiceModal duplicate logic**: The fix is a render guard. If future intents are added that also use `message`, they must be added to the exclusion list or given their own render block.
+
+## How to Resume Tomorrow
+
+1. `cd C:\Users\hp\OneDrive\GARUDA\GARUDA-AI\billing`
+2. Review `git status` and ensure only intended source files are modified.
+3. Run `npm test` (expect 100/100).
+4. Run `npm run build && npx cap sync android` if a fresh APK is needed.
+5. Address parent repo changes if they block backend sync.
+
+## Key File References
+- Canonical identity fix: `src/db.js:289-304`
+- Parser robustness: `src/lib/voice.js:40-56, 148-192`
+- Duplicate message fix: `src/components/VoiceModal.jsx:492`
+- Regression tests: `src/lib/voice.test.js:288-320`, `src/lib/voiceExecutor.test.js:194-268`
+- Device: ZN52238XJ9 | APK: `Garuda-Billing.apk` (debug)
+
+---
+*Handoff generated 2026-08-23 21:25 IST*

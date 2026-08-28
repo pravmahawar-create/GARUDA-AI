@@ -116,7 +116,7 @@ export default function CompaniesScreen() {
             <div><span>GST Rate</span><b>{c.gstRate}%</b></div>
             <div><span>Template</span><b>{tplName(c.templateId)}</b></div>
             <div><span>Next GST bill</span><b>#{c.nextInvoiceNo}</b></div>
-            <div><span>Next kaccha</span><b>#{c.nextKacchaNo}</b></div>
+            <div><span>Next Non-GST</span><b>#{c.nextKacchaNo}</b></div>
             {c.logo && <div><span>Logo</span><b>URL loaded</b></div>}
             {c.ownerName && <div><span>Owner</span><b>{c.ownerName}</b></div>}
             {c.website && <div><span>Website</span><b>{c.website}</b></div>}

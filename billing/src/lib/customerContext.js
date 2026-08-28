@@ -1,15 +1,14 @@
-import { db } from '../db.js'
+import { db, getActiveCompanyId } from '../db.js'
 
 function key(s) {
   return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '')
 }
 
-// Resolve a natural voice/name reference to an existing customer.
-// Returns { customer, ambiguous } — never guesses when multiple customers match.
-export async function findCustomerByRef(customers, text) {
+export async function findCustomerByRef(customers, text, companyId) {
   const t = String(text || '').trim()
   if (!t) return { customer: null, ambiguous: [] }
-  const list = Array.isArray(customers) ? customers : await db.customers.toArray()
+  const cid = companyId || await getActiveCompanyId()
+  const list = Array.isArray(customers) ? customers : (cid ? await db.customers.where('companyId').equals(cid).toArray() : await db.customers.toArray())
   const tl = t.toLowerCase()
   const exact = list.filter((c) => String(c.name || '').toLowerCase() === tl)
   if (exact.length === 1) return { customer: exact[0], ambiguous: [] }
@@ -29,9 +28,10 @@ export async function findCustomerByRef(customers, text) {
   return { customer: null, ambiguous: [] }
 }
 
-export async function getCustomerSummary(customerId) {
-  const invoices = await db.invoices.where('customerId').equals(customerId).toArray()
-  const payments = await db.payments.where('customerId').equals(customerId).toArray()
+export async function getCustomerSummary(customerId, companyId) {
+  const cid = companyId || await getActiveCompanyId()
+  const invoices = cid ? await db.invoices.where('companyId').equals(cid).and((i) => i.customerId === customerId).toArray() : await db.invoices.where('customerId').equals(customerId).toArray()
+  const payments = cid ? await db.payments.where('companyId').equals(cid).and((p) => p.customerId === customerId).toArray() : await db.payments.where('customerId').equals(customerId).toArray()
   const sales = invoices.reduce((s, i) => s + (i.totals?.grandTotal || 0), 0)
   const paid = payments.reduce((s, p) => s + (p.amount || 0), 0)
   const byDate = (a, b) => String(b.date || b.createdAt || '').localeCompare(String(a.date || a.createdAt || ''))
@@ -45,10 +45,11 @@ export async function getCustomerSummary(customerId) {
   }
 }
 
-export async function getCustomerHistory(customerId, opts = {}) {
+export async function getCustomerHistory(customerId, opts = {}, companyId) {
+  const cid = companyId || await getActiveCompanyId()
   const limit = opts.limit || 10
-  const invoices = await db.invoices.where('customerId').equals(customerId).toArray()
-  const payments = await db.payments.where('customerId').equals(customerId).toArray()
+  const invoices = cid ? await db.invoices.where('companyId').equals(cid).and((i) => i.customerId === customerId).toArray() : await db.invoices.where('customerId').equals(customerId).toArray()
+  const payments = cid ? await db.payments.where('companyId').equals(cid).and((p) => p.customerId === customerId).toArray() : await db.payments.where('customerId').equals(customerId).toArray()
   const byDate = (a, b) => String(b.date || b.createdAt || '').localeCompare(String(a.date || a.createdAt || ''))
   const sorted = [...invoices].sort(byDate)
   const recentBills = sorted.slice(0, limit)
@@ -59,7 +60,7 @@ export async function getCustomerHistory(customerId, opts = {}) {
   const seenItems = new Set()
   const recentRates = []
   for (const inv of sorted) {
-    for (const it of inv.items || []) {
+    for (const it of (inv.items || [])) {
       const k = key(it.name)
       recentRates.push({ rate: Number(it.rate || 0), unit: it.unit || 'bag', item: it.name, date: inv.date || inv.createdAt || '' })
       if (!seenItems.has(k)) {

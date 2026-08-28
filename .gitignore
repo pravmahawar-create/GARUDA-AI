@@ -18,4 +18,8 @@ test_orig.txt
 data/
 .aider*
 scratch/
+projects/
 backend-node/dist/
+models/
+*.apk
+.continue/

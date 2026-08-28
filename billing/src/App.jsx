@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { Capacitor } from '@capacitor/core'
+import { App as CapApp } from '@capacitor/app'
 import { seedDefaults, getSetting, getActiveCompany, setCompanyTemplate } from './db'
 import { watchSync } from './lib/sync'
 import HomeScreen from './screens/HomeScreen'
@@ -10,6 +12,9 @@ import InvoicesScreen from './screens/InvoicesScreen'
 import PaymentsScreen from './screens/PaymentsScreen'
 import StockScreen from './screens/StockScreen'
 import TransportScreen from './screens/TransportScreen'
+import VehicleScreen from './screens/VehicleScreen'
+import InventoryScreen from './screens/InventoryScreen'
+import OrdersScreen from './screens/OrdersScreen'
 import ReportsScreen from './screens/ReportsScreen'
 import ImportScreen from './screens/ImportScreen'
 import CompaniesScreen from './screens/CompaniesScreen'
@@ -30,7 +35,10 @@ function useHashRoute() {
   return route
 }
 
+const routeStack = []
+
 export function navigate(to) {
+  routeStack.push(window.location.hash || '#/')
   window.location.hash = to
 }
 
@@ -78,6 +86,23 @@ export default function App() {
     })()
   }, [])
 
+  // Android hardware back button: navigate back through app routes, exit only from home.
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return
+    let unsub
+    ;(async () => {
+      unsub = await CapApp.addListener('backButton', async () => {
+        if (routeStack.length > 0) {
+          const prev = routeStack.pop()
+          window.location.hash = prev
+        } else {
+          try { await CapApp.exitApp() } catch (e) { /* ignore */ }
+        }
+      })
+    })()
+    return () => { if (unsub) { try { unsub.remove() } catch (e) {} } }
+  }, [])
+
   if (!ready) {
     return (
       <div className="boot gate">
@@ -107,6 +132,9 @@ export default function App() {
             {screen === '#/payments' && <PaymentsScreen />}
             {screen === '#/stock' && <StockScreen />}
             {screen === '#/transport' && <TransportScreen />}
+            {screen === '#/vehicles' && <VehicleScreen />}
+            {screen === '#/inventory' && <InventoryScreen />}
+            {screen === '#/orders' && <OrdersScreen />}
             {screen === '#/reports' && <ReportsScreen />}
             {screen === '#/import' && <ImportScreen />}
             {screen === '#/companies' && <CompaniesScreen />}

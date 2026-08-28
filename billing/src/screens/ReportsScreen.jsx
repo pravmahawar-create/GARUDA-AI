@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { db, getActiveCompany, getSetting } from '../db'
+import { db, getActiveCompany, getSetting, getCustomers, getPayments, getInvoices } from '../db'
 import { inrFull } from '../lib/money'
 import { navigate } from '../App'
 import useCompanyScope from '../lib/useCompanyScope'
@@ -14,12 +14,18 @@ export default function ReportsScreen() {
   const { scope, setScope, companies, activeId } = useCompanyScope()
 
   useEffect(() => {
+    let cancelled = false
+    setR(null) // INSTANT SYNCHRONOUS CLEAR TO PREVENT FLASHING OLD COMPANY REPORT DATA
     ;(async () => {
-      const invoices = await db.invoices.toArray()
-      const payments = await db.payments.toArray()
-      const customers = await db.customers.toArray()
+      if (!activeId && scope !== 'all') return
+      const invoices = scope === 'all'
+        ? await db.invoices.orderBy('createdAt').reverse().toArray()
+        : await getInvoices(activeId)
+      const payments = await getPayments(activeId)
+      const customers = await getCustomers(activeId)
       const company = await getActiveCompany()
       const kacchaMode = Boolean(await getSetting('kacchaMode', false))
+      if (cancelled) return
 
       const inScope = scope === 'all'
         ? invoices

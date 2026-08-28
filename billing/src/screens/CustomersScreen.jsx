@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { db, enqueue } from '../db'
+import { db, enqueue, getCustomers, getItems, saveCustomer, getPayments, getActiveCompany } from '../db'
 import { inrFull } from '../lib/money'
 import { buildKhataPdf } from '../lib/pdf'
 import { getCustomerHistory, getCustomerSummary } from '../lib/customerContext'
 import { getLedger, getCustomerPayments, recordPayment, deletePayment, customerOutstanding } from '../lib/ledger'
+import { shareFile } from '../lib/share'
 import { navigate } from '../App'
 import GstVerifyModal from '../components/GstVerifyModal'
 import UpiQrModal from '../components/UpiQrModal'
@@ -34,13 +35,14 @@ export default function CustomersScreen() {
 
   const openDetail = async (c) => {
     setDetail(c)
-    const comps = await db.companies.toArray()
-    setCompany(comps[0] || null)
-    const [h, s] = await Promise.all([getCustomerHistory(c.id), getCustomerSummary(c.id)])
+    const comp = await getActiveCompany()
+    setCompany(comp)
+    const cid = comp ? comp.id : null
+    const [h, s] = await Promise.all([getCustomerHistory(c.id, {}, cid), getCustomerSummary(c.id, cid)])
     setHistory(h)
     setSummary(s)
-    setLedgerRows(await getLedger(c.id))
-    setPayments(await getCustomerPayments(c.id))
+    setLedgerRows(await getLedger(c.id, cid))
+    setPayments(await getCustomerPayments(c.id, cid))
   }
 
   const startBill = (c) => {
@@ -50,18 +52,22 @@ export default function CustomersScreen() {
 
   const refreshDetail = async () => {
     if (!detail) return
-    const [h, s] = await Promise.all([getCustomerHistory(detail.id), getCustomerSummary(detail.id)])
+    const comp = await getActiveCompany()
+    setCompany(comp)
+    const cid = comp ? comp.id : null
+    const [h, s] = await Promise.all([getCustomerHistory(detail.id, {}, cid), getCustomerSummary(detail.id, cid)])
     setHistory(h)
     setSummary(s)
-    setLedgerRows(await getLedger(detail.id))
-    setPayments(await getCustomerPayments(detail.id))
+    setLedgerRows(await getLedger(detail.id, cid))
+    setPayments(await getCustomerPayments(detail.id, cid))
   }
 
   const savePayment = async () => {
     const amt = Number(payModal.amount)
     if (!amt || amt <= 0) return setPayMsg('Amount sahi daalo')
     try {
-      await recordPayment({ customerId: detail.id, invoiceId: '', amount: amt, date: '', mode: payModal.mode || 'Cash', note: '', companyId: '' })
+      const comp = await getActiveCompany()
+      await recordPayment({ customerId: detail.id, invoiceId: '', amount: amt, date: '', mode: payModal.mode || 'Cash', note: '', companyId: comp ? comp.id : '' })
       setPayModal(null); setPayMsg('')
       await refreshDetail()
     } catch (e) { setPayMsg('Payment nahi hua: ' + e.message) }
@@ -73,27 +79,36 @@ export default function CustomersScreen() {
   }
 
   const showUpi = async () => {
-    const out = await customerOutstanding(detail.id)
+    const comp = await getActiveCompany()
+    const out = await customerOutstanding(detail.id, comp ? comp.id : '')
     setUpiAmount(Math.max(0, out))
     setUpiOpen(true)
   }
 
   const refresh = async () => {
-    const custs = await db.customers.toArray()
-    const invoices = await db.invoices.toArray()
-    const payments = await db.payments.toArray()
+    const comp = await getActiveCompany()
+    setCompany(comp)
+    const cid = comp ? comp.id : null
+    const custs = await getCustomers(cid)
+    const invoices = cid ? await db.invoices.where('companyId').equals(cid).toArray() : await db.invoices.toArray()
+    const payments = cid ? await getPayments(cid) : await db.payments.toArray()
     const map = {}
     for (const c of custs) {
       const invs = invoices.filter((i) => i.customerId === c.id)
-      const billed = invs.reduce((s, i) => s + i.totals.grandTotal, 0)
-      const paid = payments.filter((p) => p.customerId === c.id).reduce((s, p) => s + p.amount, 0)
+      const billed = invs.reduce((s, i) => s + (i.totals?.grandTotal || 0), 0)
+      const paid = payments.filter((p) => p.customerId === c.id).reduce((s, p) => s + (p.amount || 0), 0)
       map[c.id] = { billed, paid, balance: billed - paid }
     }
     setCustomers(custs)
     setOutstanding(map)
   }
 
-  useEffect(() => { refresh() }, [])
+  useEffect(() => {
+    refresh()
+    const onFocus = () => { refresh(); if (detail) refreshDetail() }
+    window.addEventListener('focus', onFocus)
+    return () => window.removeEventListener('focus', onFocus)
+  }, [detail?.id])
 
   const addQuick = () => setAdding({ name: '', mobile: '', gstin: '', billType: 'kaccha' })
 
@@ -154,19 +169,17 @@ export default function CustomersScreen() {
   }
 
   const shareKhata = async (c) => {
-    const company = (await db.companies.toArray())[0]
-    const invs = await db.invoices.where('customerId').equals(c.id).toArray()
-    const pays = await db.payments.where('customerId').equals(c.id).toArray()
-    const bytes = await buildKhataPdf(c, invs, pays, company)
-    const file = new File([new Blob([bytes], { type: 'application/pdf' })], `Khata-${c.name}.pdf`, { type: 'application/pdf' })
-    if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], title: 'Khata ' + c.name })
-    else {
-      const url = URL.createObjectURL(file)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `Khata-${c.name}.pdf`
-      a.click()
-      URL.revokeObjectURL(url)
+    try {
+      const company = (await db.companies.toArray())[0]
+      const invs = await db.invoices.where('customerId').equals(c.id).toArray()
+      const pays = await db.payments.where('customerId').equals(c.id).toArray()
+      const bytes = await buildKhataPdf(c, invs, pays, company)
+      const file = new File([new Blob([bytes], { type: 'application/pdf' })], `Khata-${c.name}.pdf`, { type: 'application/pdf' })
+      const res = await shareFile(file, 'Khata ' + c.name)
+      setBusy(res.ok ? (res.message || 'Khata PDF ready hai') : 'Khata share error: ' + res.message)
+    } catch (e) {
+      console.error('[GARUDA] khata share error:', e)
+      setBusy('Khata share mein problem hui. Dobara try karein.')
     }
   }
 
@@ -194,6 +207,7 @@ export default function CustomersScreen() {
             <div className="top-title">{detail.name}</div>
             <button className="mini-add" onClick={() => startBill(detail)}><Icon name="mic" size={14} /> Bill Banaao</button>
           </header>
+          {busy && <div className="status">{busy}</div>}
           {summary && (
             <div className="sm-summary" style={{ marginTop: 10 }}>
               <div className="sm-sum-item"><div className="sm-sum-v">{summary.bills}</div><div className="sm-sum-l">Bills</div></div>
@@ -205,7 +219,7 @@ export default function CustomersScreen() {
             <div className="card-title">Details</div>
             <div className="vc-item"><span>Mobile</span><span>{detail.mobile || '—'}</span></div>
             <div className="vc-item"><span>GSTIN</span><span>{detail.gstin || '—'}</span></div>
-            <div className="vc-item"><span>Bill Type</span><span className={`billtype-badge ${detail.billType === 'gst' || detail.gstin ? 'bt-gst' : 'bt-kaccha'}`}>{detail.billType === 'gst' || detail.gstin ? 'GST' : 'Kaccha'}</span></div>
+            <div className="vc-item"><span>Bill Type</span><span className={`billtype-badge ${detail.billType === 'gst' || detail.gstin ? 'bt-gst' : 'bt-kaccha'}`}>{detail.billType === 'gst' || detail.gstin ? 'GST' : 'Non-GST'}</span></div>
             <div className="vc-item"><span>Last Transaction</span><span>{summary && summary.lastDate ? summary.lastDate : '—'}</span></div>
             <div className="vc-item"><span>Credit Limit</span><span>{detail.creditLimit > 0 ? inrFull(detail.creditLimit) : '—'}</span></div>
           </section>
@@ -223,7 +237,10 @@ export default function CustomersScreen() {
           </section>
 
           <section className="card">
-            <div className="card-title">Khata</div>
+            <div className="card-title" style={{ justifyContent: 'space-between' }}>
+              <span>Khata</span>
+              <button className="link" onClick={() => shareKhata(detail)}><Icon name="book" size={14} /> Khata PDF</button>
+            </div>
             {ledgerRows.length === 0 && <div className="empty-sub">Khata khali hai</div>}
             {ledgerRows.map((r, i) => (
               <div className="vc-item" key={i} style={{ borderBottom: '1px solid var(--line-soft)' }}>
@@ -264,7 +281,7 @@ export default function CustomersScreen() {
                 <div className="rec-row" key={inv.id} onClick={() => navigate('#/invoice?id=' + inv.id)}>
                   <div className="rec-left">
                     <div className="rec-name">#{inv.invoiceNo} — {inrFull(inv.totals?.grandTotal || 0)}</div>
-                    <div className="rec-meta">{inv.date} · <span className={`billtype-badge ${inv.billType === 'gst' ? 'bt-gst' : 'bt-kaccha'}`}>{inv.billType === 'gst' ? 'GST' : 'KACCHA'}</span></div>
+                    <div className="rec-meta">{inv.date} · <span className={`billtype-badge ${inv.billType === 'gst' ? 'bt-gst' : 'bt-kaccha'}`}>{inv.billType === 'gst' ? 'GST' : 'NON-GST'}</span></div>
                   </div>
                   <Icon name="chevronRight" size={16} />
                 </div>
@@ -294,7 +311,7 @@ export default function CustomersScreen() {
           <div className="card cust-row" key={c.id} onClick={() => openDetail(c)} style={{ cursor: 'pointer' }}>
             <div style={{ minWidth: 0 }}>
               <div className="cust-name">{c.name}
-                <span className={`billtype-badge ${(c.billType === 'gst' || c.gstin) ? 'bt-gst' : 'bt-kaccha'}`} style={{ marginLeft: 6 }}>{c.billType === 'gst' || c.gstin ? 'GST' : 'KACCHA'}</span>
+                <span className={`billtype-badge ${(c.billType === 'gst' || c.gstin) ? 'bt-gst' : 'bt-kaccha'}`} style={{ marginLeft: 6 }}>{c.billType === 'gst' || c.gstin ? 'GST' : 'NON-GST'}</span>
                 {c.creditLimit > 0 && <span className="billtype-badge bt-gst" style={{ marginLeft: 4 }}>LIMIT</span>}
               </div>
               {c.mobile && <div className="ip-muted">{c.mobile}</div>}
@@ -306,7 +323,7 @@ export default function CustomersScreen() {
                 <div className="ip-muted">{o && o.balance > 0 ? 'baki' : 'clear'}</div>
               </div>
               <div className="row-actions" style={{ justifyContent: 'flex-end' }}>
-                <button className="btn btn-sm" onClick={(e) => { e.stopPropagation(); shareKhata(c) }}><Icon name="book" size={15} /> Khata</button>
+                <button className="btn btn-sm" onClick={(e) => { e.stopPropagation(); openDetail(c) }}><Icon name="book" size={15} /> Khata</button>
                 <button className="btn btn-sm" onClick={(e) => { e.stopPropagation(); setEditing(c) }}><Icon name="edit" size={15} /></button>
                 <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); setDeleting(c) }}><Icon name="trash" size={15} /></button>
               </div>
@@ -321,7 +338,7 @@ export default function CustomersScreen() {
             <div className="modal-title">Edit Customer</div>
             <div className="scope-bar" style={{ marginBottom: 8 }}>
               <span className={`chip ${editing.billType === 'gst' ? 'chip-active' : ''}`}>GST</span>
-              <span className={`chip ${editing.billType !== 'gst' ? 'chip-active' : ''}`}>Kaccha</span>
+              <span className={`chip ${editing.billType !== 'gst' ? 'chip-active' : ''}`}>Non-GST</span>
             </div>
             <div className="ip-muted" style={{ marginBottom: 8 }}>Bill type add ke waqt set hua tha — GSTIN dalne par GST ban jayega.</div>
             <label className="form-label">Naam <input className="input" name="name" defaultValue={editing.name} /></label>
@@ -329,8 +346,8 @@ export default function CustomersScreen() {
             {editing.billType === 'gst' && <label className="form-label">GSTIN <input className="input" name="gstin" defaultValue={editing.gstin} disabled /></label>}
             {editing.billType !== 'gst' && (
               <>
-                <label className="form-label">GSTIN (daloge to GST/pakka ban jayega) <input className="input" name="gstin" placeholder="15 digit GSTIN" /></label>
-                <div className="ip-muted">Abhi kaccha hai — GSTIN bhar kar save karoge to ye customer GST (pakka) ban jayega. GST wale se wapas kaccha nahi hota.</div>
+                <label className="form-label">GSTIN (daloge to GST bill ban jayega) <input className="input" name="gstin" placeholder="15 digit GSTIN" /></label>
+                <div className="ip-muted">Abhi Non-GST hai — GSTIN bhar kar save karoge to ye customer GST wala ban jayega.</div>
               </>
             )}
             <label className="form-label">Address <input className="input" name="address" defaultValue={editing.address} /></label>
@@ -351,7 +368,7 @@ export default function CustomersScreen() {
             <label className="form-label">Naam <input className="input" name="name" autoFocus value={adding.name} onChange={(e) => setAdding({ ...adding, name: e.target.value })} /></label>
             <label className="form-label">Mobile <input className="input" type="tel" name="mobile" value={adding.mobile} onChange={(e) => setAdding({ ...adding, mobile: e.target.value })} /></label>
             <div className="scope-bar" style={{ marginBottom: 8 }}>
-              <button type="button" className={`chip ${adding.billType === 'kaccha' ? 'chip-active' : ''}`} onClick={() => setAdding({ ...adding, billType: 'kaccha', gstin: '' })}>Kaccha (bina GSTIN)</button>
+              <button type="button" className={`chip ${adding.billType === 'kaccha' ? 'chip-active' : ''}`} onClick={() => setAdding({ ...adding, billType: 'kaccha', gstin: '' })}>Non-GST (bina GSTIN)</button>
               <button type="button" className={`chip ${adding.billType === 'gst' ? 'chip-active' : ''}`} onClick={() => setAdding({ ...adding, billType: 'gst' })}>GST bill</button>
             </div>
             {adding.billType === 'gst' && (
@@ -419,7 +436,7 @@ export default function CustomersScreen() {
         </div>
       )}
 
-      {upiOpen && <UpiQrModal open={upiOpen} onClose={() => setUpiOpen(false)} company={company} amount={upiAmount} ref={'Cust-' + detail.id} />}
+      {upiOpen && <UpiQrModal open={upiOpen} onClose={() => setUpiOpen(false)} company={company} amount={upiAmount} txnRef={'Cust-' + detail.id} />}
     </div>
   )
 }

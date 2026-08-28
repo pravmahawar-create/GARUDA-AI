@@ -1,12 +1,20 @@
-import { extractItems, collectRates, buildItemName, cleanProductWords, hasProductToken } from './voice.js'
+import { extractItems, collectRates, buildItemName, cleanProductWords, hasProductToken, normalizeDevanagari, detectOrderIntent } from './voice.js'
+import { resolveProfile } from './domainProfiles.js'
+import { saveConversationSession, getConversationSession, deleteConversationSession } from '../db.js'
+import { processV3NluTurn } from './v3NluEngine.js'
+
+function domOf(ctx) { return (ctx && ctx.domain) || resolveProfile() }
+
+const OPT_IN = /(items\s*(bolta|bolti|bolungi|bolu)?\s*(jaunga|jaungi|jaaunga)|bulk|continuous|lagataar|bolte jao|bolta jaunga|items add karne hain)/i
 
 const MESSAGES = {
   customer: 'Customer ka naam batao.',
-  billType: 'GST ya kaccha? Pakka GST bill ya kaccha bill?',
+  billType: 'GST ya Non-GST? (Pakka GST bill ya bina GST wala bill?)',
   gstin: 'GSTIN batao.',
   item: 'Material ka naam batao.',
   quantity: 'Quantity batao.',
-  rate: 'Rate batao.'
+  rate: 'Rate batao.',
+  size: 'Kaunsa size? 8mm, 10mm, ya 12mm Sariya?'
 }
 
 const UNIT_LOOKUP = { bag: 'bag', bori: 'bag', bags: 'bag', kg: 'kg', kilo: 'kg', kgg: 'kg', quintal: 'quintal', qtl: 'quintal', ton: 'ton', tonne: 'ton', piece: 'piece', pieces: 'piece', truck: 'truck' }
@@ -14,24 +22,21 @@ const NON_BILL_INTENTS = ['stock_entry', 'stock_query', 'stock_ledger_query', 'q
 
 function key(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '') }
 
-function productFirstItems(text) {
+function productFirstItems(text, domain) {
   const m = String(text || '').match(/^([a-z0-9][a-z0-9\s]{1,40}?)\s+(\d+(?:\.\d+)?)\s*(bag|bori|bags|kg|kilo|kgg|quintal|qtl|ton|tonne|piece|pieces|truck)s?/i)
   if (!m) return null
   const words = cleanProductWords(m[1].trim().toLowerCase().split(/\s+/))
-  if (!hasProductToken(words)) return null
-  const name = buildItemName(words)
+  if (!hasProductToken(words, domain)) return null
+  const name = buildItemName(words, domain)
   if (!name) return null
   return [{ name, qty: Number(m[2]), unit: UNIT_LOOKUP[m[3].toLowerCase()] || 'bag', rate: 0 }]
 }
 
-// Loose extractor for explicit continuous dictation ("5 kilo sugar", "10 kilo atta", "2 litre oil").
-// Accepts unknown product words — the user is deliberately dictating items.
 const LOOSE_UNITS = { ...UNIT_LOOKUP, litre: 'litre', liters: 'litre', liter: 'litre', ltr: 'litre' }
 const LOOSE_FILLERS = new Set(['ke', 'ka', 'ki', 'ko', 'se', 'per', 'par', 'aur', 'and', 'rate', 'bhav', 'rupaye', 'rupay', 'rs', 'hazaar', 'hajar', 'lakh', 'lac', 'wala', 'wali', 'kar', 'karo', 'do', 'karke', 'ke rate', 'ke bhav'])
 function looseClean(words) {
   return words.filter((w) => !/^\d+$/.test(w) && !LOOSE_FILLERS.has(w))
 }
-// Loose name builder: keeps dictation words even if they collide with STOP_WORDS (e.g. "dal").
 function looseName(words) {
   const w = words.filter(Boolean)
   return w.length ? w.map((x) => x.charAt(0).toUpperCase() + x.slice(1)).join(' ') : ''
@@ -58,28 +63,36 @@ function productFirstItemsLoose(text) {
   return [{ name, qty: Number(m[2]), unit: LOOSE_UNITS[m[3].toLowerCase()] || 'bag', rate: 0 }]
 }
 
-function bareProductToken(text) {
-  const m = String(text || '').match(/\b(sariya|sariyaa|tmt|steel|rod|cement|siment|sand|bricks|eent|acc(?:\s+cement)?)\b/i)
+function bareProductToken(text, domain) {
+  const dom = domain || resolveProfile()
+  const aliases = Object.keys(dom.productAliases || {}).sort((a, b) => b.length - a.length)
+  const brands = Object.keys(dom.brandCase || {})
+  const words = [...aliases, ...brands]
+  if (!words.length) return ''
+  const re = new RegExp('\\b(' + words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'i')
+  const m = String(text || '').match(re)
   return m ? m[0] : ''
 }
 
-function bareProductItems(text) {
-  const tok = bareProductToken(text)
+function bareProductItems(text, domain) {
+  const tok = bareProductToken(text, domain)
   if (!tok) return null
   const words = cleanProductWords(tok.toLowerCase().split(/\s+/))
-  if (!hasProductToken(words)) return null
-  const name = buildItemName(words)
+  if (!hasProductToken(words, domain)) return null
+  const name = buildItemName(words, domain)
   if (!name) return null
   return [{ name, qty: 0, rate: 0, unit: '' }]
 }
 
 function cleanName(s) { return String(s || '').trim().split(/\s+/).map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : '')).join(' ') }
 
+const STOP_NAME = new Set(['ka', 'ke', 'ki', 'ko', 'se', 'per', 'par', 'mein', 'me', 'hai', 'hain', 'the', 'tha', 'de', 'ne', 'ko', 'lakh', 'lac', 'hazaar', 'hajar', 'rupaye', 'rupay', 'rs', 'rupe'])
+
 function extractCustomerName(text, knownNames) {
   const m = String(text || '').match(/([a-z][a-z\s.]{1,30}?)\s+(?:ka|ke|ko|ki|का|के|को)\s+(?:bill|naam|name|khata)/i)
-  if (m) return cleanName(m[1])
+  if (m) { const c = cleanName(m[1]); if (c.length > 1 && !STOP_NAME.has(c.toLowerCase())) return c }
   const ne = String(text || '').match(/([a-z][a-z\s.]{1,30}?)\s+ne\s+(?:\d|payment|rupaye|rupay|hazaar|hajar|lakh|lac|diye|diya|dii)/i)
-  if (ne) return cleanName(ne[1])
+  if (ne) { const c = cleanName(ne[1]); if (c.length > 1 && !STOP_NAME.has(c.toLowerCase())) return c }
   for (const n of knownNames || []) if (String(text || '').toLowerCase().includes(String(n).toLowerCase())) return n
   return ''
 }
@@ -91,7 +104,7 @@ function detectBillIntent(text) { return /bill|bana|laga/i.test(String(text || '
 function detectBillType(text) {
   const t = String(text || '').toLowerCase()
   if (/(^|\s)(gst|pakka|pakka bill)(\s|$)/.test(t) || /gst wala|pakka wala/.test(t)) return 'gst'
-  if (/(^|\s)(kaccha|kaccha bill)(\s|$)/.test(t) || /kaccha wala/.test(t)) return 'kaccha'
+  if (/(^|\s)(kaccha|kaccha bill|non-gst|bina gst|without gst)(\s|$)/.test(t) || /kaccha wala/.test(t) || /non gst|bina gst/.test(t)) return 'kaccha'
   return null
 }
 
@@ -103,13 +116,146 @@ function detectGstin(text) {
 function isConfirm(text) {
   const t = String(text || '').trim().toLowerCase()
   return t === 'haan' || t === 'han' || t === 'ha' || t === 'yes' || t === 'confirm' || t === 'done' || t === 'ok' ||
-    /^theek hai/.test(t) || /^bilkul/.test(t) || /^bana do/.test(t) || /^kar do/.test(t)
+    /^theek hai/.test(t) || /^bilkul/.test(t) || /^bana do/.test(t) || /^kar do/.test(t) ||
+    /^haan\b|^han\b|^yes\b/.test(t) || /^haan bana do/.test(t) || /^haan kar do/.test(t) || /^haan bilkul/.test(t)
 }
 
 function isReject(text) { return /^nahi|^no|^na\b|^mat karo|^cancel/.test(String(text || '').toLowerCase().trim()) }
 
 function financeFresh() {
   return { customer: null, customerId: null, amount: 0, method: 'Cash', invoiceId: '', invoiceRef: '', note: '', qrRequested: false, confirmed: false, executed: false }
+}
+
+function vehicleFresh() {
+  return { number: '', type: '', capacity: 0, unit: 'kg', executed: false }
+}
+
+function orderFresh() {
+  return { customer: null, customerId: null, value: 0, startDate: '', endDate: '', vehicles: 1, tripsPerDay: 1, vehicleNos: [], product: '', rate: 0, unit: 'kg', capacity: 0, capacityUnit: 'kg', executed: false }
+}
+
+function orderSummary(o) {
+  const parts = []
+  if (o.customer && o.customer.name) parts.push('Customer: ' + o.customer.name)
+  if (o.value) parts.push('Value: ₹' + o.value)
+  if (o.product) parts.push(o.product)
+  if (o.rate) parts.push('Rate: ₹' + o.rate + '/' + (o.unit || 'kg'))
+  if (o.startDate && o.endDate) parts.push(o.startDate + ' → ' + o.endDate)
+  if (o.vehicles && o.tripsPerDay) parts.push(o.vehicles + ' gaadi × ' + o.tripsPerDay + ' trip/day')
+  if (o.capacity) parts.push('Capacity: ' + o.capacity + ' ' + (o.capacityUnit || 'kg'))
+  if (o.vehicleNos && o.vehicleNos.length) parts.push('Vehicles: ' + o.vehicleNos.join(', '))
+  return parts.join(' | ')
+}
+
+function orderMissing(o) {
+  const m = []
+  if (!o.customer || !o.customer.name) m.push('customer')
+  if (!o.value) m.push('amount')
+  if (!o.product) m.push('product')
+  if (!o.rate) m.push('rate')
+  if (!o.startDate || !o.endDate) m.push('date')
+  if (!o.vehicles) m.push('vehicles')
+  else if (!o.vehicleNos || o.vehicleNos.length < o.vehicles) m.push('vehicles')
+  if (o.vehicleNos && o.vehicleNos.length && (!o.capacity || o.capacity === 0)) m.push('capacity')
+  return m
+}
+
+// Map Hindi/Hinglish number words to digits (for order context)
+const HINDI_NUMS = { ek: 1, do: 2, teen: 3, char: 4, panch: 5, che: 6, chhe: 6, saat: 7, aath: 8, nau: 9, das: 10, dus: 10, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 }
+
+function hindiNum(text) {
+  const m = String(text || '').match(/\b(ek|do|teen|char|panch|che|chhe|saat|aath|nau|das|dus|one|two|three|four|five|six|seven|eight|nine|ten)\b/i)
+  if (m) return HINDI_NUMS[m[1].toLowerCase()] || 0
+  return 0
+}
+
+function parseOrderFields(text, o, ctx) {
+  // Rate first (e.g. "58 rupaye kg", "58 per kg")
+  const rateM = String(text).match(/(\d+(?:\.\d+)?)\s*(?:rupaye|rupay|rs|rupe)?\s*(?:per|prati|ke)?\s*(kg|kilo|ton|tan|bag|quintal|qtl|piece|bori)\b/i)
+  if (rateM) { o.rate = Number(rateM[1]); o.unit = { kg: 'kg', kilo: 'kg', ton: 'ton', tan: 'ton', bag: 'bag', bori: 'bag', quintal: 'quintal', qtl: 'quintal', piece: 'piece' }[rateM[2].toLowerCase()] || o.unit }
+  // Value: amount with lakh/hazaar (don't overwrite a bigger value with a small rate-like number)
+  const valM = String(text).match(/(\d+(?:\.\d+)?)\s*(lakh|lac|hazaar|hajar)\s*(?:rupaye|rupay|rs|rupe)?/i)
+  if (valM && Number(valM[1]) > 0) {
+    let n = Number(valM[1])
+    const mult = (valM[2] || '').toLowerCase()
+    if (mult === 'lakh' || mult === 'lac') n *= 100000
+    else if (mult) n *= 1000
+    if (o.value === 0 || n > o.value) o.value = n
+  }
+  // product
+  const prod = productFirstItemsLoose(text)
+  if (prod && prod.length) { o.product = prod[0].name; o.unit = prod[0].unit || o.unit }
+  if (!o.product) {
+    const bp = bareProductItems(text, domOf(ctx))
+    if (bp && bp.length) { o.product = bp[0].name; if (bp[0].unit) o.unit = bp[0].unit }
+  }
+  // vehicle count (digit or Hindi word)
+  const vehDigit = String(text).match(/(\d+)\s*(?:gaadi|gadi|vehicle|truck)/i)
+  if (vehDigit) {
+    o.vehicles = Number(vehDigit[1]) || 1
+  } else {
+    const hn = hindiNum(text)
+    if (hn > 0 && /(gaadi|gadi|vehicle|truck)/i.test(text)) o.vehicles = hn
+  }
+  // vehicle numbers — support spaced format "MP 20 AB 1234" and contiguous "MP20AB1234"
+  const vehNos = [...String(text).matchAll(/([A-Za-z]{2})\s?(\d{2})\s?([A-Za-z]{1,3})\s?(\d{3,4})/gi)]
+    .map((m) => (m[1] + m[2] + m[3] + m[4]).toUpperCase())
+    .filter((v) => /^[A-Z]{2}\d{2}[A-Z]{1,3}\d{3,4}$/.test(v))
+  if (vehNos.length) o.vehicleNos = [...new Set([...(o.vehicleNos || []), ...vehNos])]
+  // trip count
+  const tripDigit = String(text).match(/(\d+)\s*trip/i)
+  if (tripDigit) {
+    o.tripsPerDay = Number(tripDigit[1]) || 1
+  } else {
+    const hn = hindiNum(text)
+    if (hn > 0 && /\btrip\b/i.test(text)) o.tripsPerDay = hn
+  }
+  // Date with month name: "2 se 5 july", "2-5 july"
+  const dM = String(text).match(/(\d{1,2})\s*(?:se|to|tak|-)?\s*(\d{1,2})\s*(january|jan|february|feb|march|mar|april|apr|may|june|jun|july|jul|august|aug|september|sep|october|oct|november|nov|december|dec)/i)
+  if (dM) {
+    const year = new Date().getFullYear()
+    const month = MONTHS[dM[3].toLowerCase()] || 1
+    o.startDate = String(year) + '-' + String(month).padStart(2, '0') + '-' + String(Number(dM[1])).padStart(2, '0')
+    o.endDate = String(year) + '-' + String(month).padStart(2, '0') + '-' + String(Number(dM[2])).padStart(2, '0')
+  } else {
+    // Bare date without month: "2 se 6 tareekh" — use current month
+    const dBare = String(text).match(/(\d{1,2})\s*(?:se|to|tak)\s*(\d{1,2})\s*(?:tareekh|date|disember|disember|ko)?/i)
+    if (dBare && !/lakh|hazaar|rupee|rupaye|rupay|rs/i.test(text)) {
+      const today = new Date()
+      const year = today.getFullYear()
+      const month = today.getMonth() + 1
+      const s = String(year) + '-' + String(month).padStart(2, '0') + '-' + String(Number(dBare[1])).padStart(2, '0')
+      const e = String(year) + '-' + String(month).padStart(2, '0') + '-' + String(Number(dBare[2])).padStart(2, '0')
+      if (!o.startDate) o.startDate = s
+      if (!o.endDate) o.endDate = e
+    }
+  }
+  // capacity: "1500 kg", "1500 kilo", "capacity 1500"
+  const capM = String(text).match(/(?:capacity\s*)?(\d+(?:\.\d+)?)\s*(kg|kilo|ton|tonne|quintal|qtl|bag|bori)\b/i)
+  if (capM) {
+    o.capacity = Number(capM[1]) || 0
+    o.capacityUnit = { kg: 'kg', kilo: 'kg', ton: 'ton', tonne: 'ton', quintal: 'quintal', qtl: 'quintal', bag: 'bag', bori: 'bag' }[capM[2].toLowerCase()] || 'kg'
+  }
+  // customer (strip amount phrases so "10 lakh ka bill" does not become customer "Lakh")
+  const cleanT = String(text).replace(/\d+\s*(lakh|lac|hazaar|hajar)?/gi, ' ')
+  const nm = extractCustomerName(cleanT, customerNames(ctx))
+  if (nm) o.customer = { name: nm }
+}
+
+function vehicleSummary(v) {
+  const parts = []
+  if (v.number) parts.push('Vehicle: ' + v.number)
+  if (v.type) parts.push(v.type)
+  if (v.capacity) parts.push('Capacity: ' + v.capacity + ' ' + v.unit)
+  return parts.join(' | ')
+}
+
+function detectVehicleIntent(text) {
+  const t = String(text || '').toLowerCase()
+  if (/^(?:ek\s+)?(?:gaadi|gadi|vehicle|truck)\s*(?:number\s+)?(?:add|register|entry|save|record|banao|bana do|daalo|daal do)\b/.test(t)) return 'add'
+  if (/(gaadi|gadi|vehicle|truck)\s*(add karo|register karo|entry karo|save karo|record karo)/i.test(t)) return 'add'
+  if (/(gaadi|gadi|vehicle)\s*(kitni|kitne|kaunsi|dikhao|list)/i.test(t)) return 'query'
+  return null
 }
 
 function financeMissing(f) {
@@ -177,12 +323,15 @@ function computeMissing(c) {
   if (!c.billType) missing.push('billType')
   if (c.billType === 'gst' && !c.gstin) missing.push('gstin')
   if (!c.items || c.items.length === 0) missing.push('item')
-  else { if (c.items.some((it) => !Number(it.qty))) missing.push('quantity'); if (c.items.some((it) => !Number(it.rate))) missing.push('rate') }
+  else {
+    if (c.items.some((it) => !Number(it.qty))) missing.push('quantity')
+    if (c.items.some((it) => !Number(it.rate))) missing.push('rate')
+  }
   return missing
 }
 
 function summaryText(c) {
-  const lines = []; const name = (c.customer && c.customer.name) || 'Customer'; const type = c.billType === 'gst' ? 'GST bill' : c.billType === 'kaccha' ? 'Kaccha bill' : 'bill'
+  const lines = []; const name = (c.customer && c.customer.name) || 'Customer'; const type = c.billType === 'gst' ? 'GST bill' : c.billType === 'kaccha' ? 'Non-GST bill' : 'bill'
   lines.push(name + ' ka ' + type + ':'); let total = 0
   for (const it of c.items || []) { const q = Number(it.qty) || 0; const r = Number(it.rate) || 0; total += q * r; lines.push(it.name + ' — ' + q + ' ' + (it.unit || '') + ' × ₹' + r + ' = ₹' + (q * r)) }
   if (c.gstin) lines.push('GSTIN ' + c.gstin); if (c.transport && c.transport.vehicleNo) lines.push('Vehicle ' + c.transport.vehicleNo)
@@ -192,7 +341,7 @@ function summaryText(c) {
 function partialSummary(c) {
   const parts = []
   if (c.customer && c.customer.name) parts.push('Customer: ' + c.customer.name)
-  if (c.billType) parts.push(c.billType === 'gst' ? 'GST bill' : 'Kaccha bill')
+  if (c.billType) parts.push(c.billType === 'gst' ? 'GST bill' : 'Non-GST bill')
   if (c.items && c.items.length) parts.push(c.items.map((it) => it.name + ' ' + it.qty + ' ' + (it.unit || '')).join(', '))
   return parts.join(' | ')
 }
@@ -210,16 +359,81 @@ export class ConversationManager {
   constructor() { this.convos = new Map() }
 
   fresh(id) {
-    return { id, createdAt: Date.now(), lastActivity: Date.now(), intent: null, customer: null, customerId: null, items: [], billType: null, gstin: null, transport: null, asked: new Set(), confirmed: false, executed: false, result: null, pendingSuggestion: null, noSuggest: new Set(), finance: null, continuousEntry: null, inventory: null }
+    return { id, createdAt: Date.now(), lastActivity: Date.now(), intent: null, customer: null, customerId: null, items: [], billType: null, gstin: null, transport: null, asked: new Set(), confirmed: false, executed: false, result: null, pendingSuggestion: null, noSuggest: new Set(), finance: null, continuousEntry: null, inventory: null, vehicle: null, lastUserMessage: '', lastAssistantMessage: '', lastSummaryNote: '' }
   }
 
   newConversation() { const id = 'convo-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6); this.convos.set(id, this.fresh(id)); return id }
-  endConversation(id) { this.convos.delete(id) }
+  endConversation(id) {
+    const c = this.convos.get(id)
+    if (c && typeof deleteConversationSession === 'function') {
+      deleteConversationSession(id).catch(() => {})
+    }
+    this.convos.delete(id)
+  }
   get(id) { return this.convos.get(id) }
-  discard(id) { const c = this.convos.get(id); if (c) this.convos.set(id, this.fresh(id)) }
+  discard(id) {
+    const c = this.convos.get(id)
+    if (c) {
+      this.convos.set(id, this.fresh(id))
+      if (typeof deleteConversationSession === 'function') deleteConversationSession(id).catch(() => {})
+    }
+  }
   hasActiveBill(id) { const c = this.convos.get(id); return !!c && c.intent === 'create_bill' && !c.executed && (!!c.customer || c.items.length > 0 || !!c.billType || !!c.gstin) }
   canExecute(id) { const c = this.convos.get(id); return !!c && c.intent === 'create_bill' && !c.executed && computeMissing(c).length === 0 }
-  markExecuted(id, invoice) { const c = this.convos.get(id); if (c) { c.executed = true; c.result = invoice } }
+  markExecuted(id, invoice) {
+    const c = this.convos.get(id)
+    if (c) {
+      c.executed = true
+      c.result = invoice
+      if (typeof deleteConversationSession === 'function') deleteConversationSession(id).catch(() => {})
+    }
+  }
+
+  async saveSessionToDb(id, companyId) {
+    const c = this.convos.get(id)
+    if (!c || typeof saveConversationSession !== 'function') return null
+    try {
+      return await saveConversationSession({
+        id: c.id,
+        companyId,
+        status: c.executed ? 'COMPLETED' : c.intent ? 'ACTIVE' : 'IDLE',
+        activeTask: c.intent || 'CREATE_BILL',
+        lastUserMessage: c.lastUserMessage || '',
+        lastAssistantMessage: c.lastAssistantMessage || '',
+        lastSummaryNote: c.lastSummaryNote || '',
+        draft: {
+          customer: c.customer,
+          customerId: c.customerId,
+          items: c.items,
+          billType: c.billType,
+          gstin: c.gstin,
+          transport: c.transport
+        },
+        updatedAt: new Date().toISOString()
+      })
+    } catch (e) { console.log('[SESSION_DB_SAVE_ERR]', e && e.message); return null }
+  }
+
+  async restoreSessionFromDb(id, companyId) {
+    if (!id || typeof getConversationSession !== 'function') return null
+    try {
+      const sess = await getConversationSession(id, companyId)
+      if (!sess || !sess.draft) return null
+      const c = this.fresh(id)
+      c.intent = sess.activeTask || 'create_bill'
+      c.customer = sess.draft.customer || null
+      c.customerId = sess.draft.customerId || null
+      c.items = sess.draft.items || []
+      c.billType = sess.draft.billType || null
+      c.gstin = sess.draft.gstin || null
+      c.transport = sess.draft.transport || null
+      c.lastUserMessage = sess.lastUserMessage || ''
+      c.lastAssistantMessage = sess.lastAssistantMessage || ''
+      c.lastSummaryNote = sess.lastSummaryNote || ''
+      this.convos.set(id, c)
+      return c
+    } catch (e) { console.log('[SESSION_DB_RESTORE_ERR]', e && e.message); return null }
+  }
 
   enterContinuous(id, mode) { const c = this.convos.get(id); if (c) c.continuousEntry = mode }
   exitContinuous(id) { const c = this.convos.get(id); if (c) c.continuousEntry = null }
@@ -257,6 +471,10 @@ export class ConversationManager {
 
   markFinanceExecuted(id) { const c = this.convos.get(id); if (c && c.finance) { c.finance.executed = true; c.finance.confirmed = true } }
 
+  markVehicleExecuted(id) { const c = this.convos.get(id); if (c && c.vehicle) { c.vehicle.executed = true; c.vehicle.confirmed = true } }
+
+  markOrderExecuted(id) { const c = this.convos.get(id); if (c && c.order) { c.order.executed = true; c.order.confirmed = true } }
+
   async resolveCustomerAmbiguity(c, ctx) {
     if (!c.customer || !c.customer.name || c.customer._resolved) return null
     if (!ctx || !ctx.resolveCustomer) { c.customer._resolved = true; return null }
@@ -285,7 +503,7 @@ export class ConversationManager {
     if (field === 'billType' && !c.noSuggest.has('billType')) {
       const types = (h.recentBillTypes || []).filter(Boolean); const distinct = [...new Set(types)]
       if (types.length && distinct.length === 1) {
-        const val = distinct[0]; c.pendingSuggestion = { field: 'billType', value: val, message: 'Pichla bill ' + (val === 'gst' ? 'GST' : 'kaccha') + ' tha. Is baar bhi ' + (val === 'gst' ? 'GST' : 'kaccha') + ' rakhu?' }
+        const val = distinct[0]; c.pendingSuggestion = { field: 'billType', value: val, message: 'Pichla bill ' + (val === 'gst' ? 'GST' : 'Non-GST') + ' tha. Is baar bhi ' + (val === 'gst' ? 'GST' : 'Non-GST') + ' rakhu?' }
         return { status: 'suggest', message: c.pendingSuggestion.message, summary: partialSummary(c), field: 'billType', value: val }
       }
     }
@@ -343,12 +561,20 @@ export class ConversationManager {
     let c = this.convos.get(id)
     if (!c) { this.convos.set(id, this.fresh(id)); c = this.convos.get(id) }
     c.lastActivity = Date.now()
-    const t = String(text || '').toLowerCase().trim()
+    const t = normalizeDevanagari(String(text || '')).replace(/\bper\b/gi, 'ke').toLowerCase().trim()
+    const dom = domOf(ctx)
+    const activeCompanyId = ctx && ctx.company && ctx.company.id ? ctx.company.id : null
 
     if (c.executed) {
       const startsNew = detectBillIntent(t) || (parsed && parsed.intent === 'create_bill') || !!detectFinanceIntent(t)
       if (!startsNew) return { status: 'none', message: 'Bill ban gaya tha. Naya bill banane ke liye bolo.' }
       const fresh = this.fresh(id); fresh.id = id; this.convos.set(id, fresh); c = fresh
+    }
+
+    // Company switch safety: invalidate order draft if company changed
+    if (c.order && !c.order.executed && c.order.companyId && activeCompanyId && c.order.companyId !== activeCompanyId) {
+      c.order = null
+      return { status: 'none', message: 'Company switch ho gaya. Pehle order confirm karne ke liye same company mein bolo.' }
     }
 
     // Pending suggestion handling (must run before other steps)
@@ -357,6 +583,74 @@ export class ConversationManager {
       if (isConfirm(t)) { c.pendingSuggestion = null; this.applySuggestion(c, s); return await this.nextStep(c, ctx) }
       if (isReject(t)) { c.pendingSuggestion = null; c.noSuggest.add(s.field); return await this.nextStep(c, ctx) }
       c.pendingSuggestion = null // user answered something else — clear suggestion and continue
+    }
+
+    // V3 NLU Conversational Correction & Negation Layer
+    const v3Res = processV3NluTurn(text, c, parsed, ctx)
+    if (v3Res && v3Res.handled) {
+      if (v3Res.type === 'NO_DRAFT_NEEDS_INFO') {
+        return { status: 'needs_info', message: v3Res.message, summary: 'No active bill draft.', missing: ['customer', 'item'] }
+      }
+      return await this.nextStep(c, ctx)
+    }
+
+    // 0) VEHICLE intent ("gaadi add karo", "vehicle number MP20AB1234 capacity 1500 kg")
+    const vehIntent = (parsed && parsed.intent === 'vehicle_add') ? 'add' : detectVehicleIntent(t)
+    const pendingVeh = c.vehicle && !c.vehicle.executed && (/([A-Za-z]{2}\s?\d{2}\s?[A-Za-z]{1,3}\s?\d{3,4})/.test(text) || /(\d+(?:\.\d+)?)\s*(kg|ton|bag|trolley)\b/i.test(text))
+    if (vehIntent || pendingVeh) {
+      if (vehIntent === 'query' && !(c.vehicle && c.vehicle.number)) {
+        return { status: 'vehicle_query', message: 'Vehicles list khol raha hoon.' }
+      }
+      if (!c.vehicle || c.vehicle.executed) c.vehicle = vehicleFresh()
+      const vehM = String(text).match(/([A-Za-z]{2}\s?\d{2}\s?[A-Za-z]{1,3}\s?\d{3,4})/)
+      if (vehM) c.vehicle.number = vehM[1].replace(/\s+/g, '').toUpperCase()
+      const capM = String(text).match(/capacity\s*(\d+(?:\.\d+)?)\s*([a-z]+)?/i) || String(text).match(/(\d+(?:\.\d+)?)\s*(kg|ton|bag|trolley)\b/i)
+      if (capM) { c.vehicle.capacity = Number(capM[1]) || 0; c.vehicle.unit = (capM[2] || 'kg').toLowerCase() }
+      if (!c.vehicle.number) return { status: 'vehicle_needs_info', message: 'Vehicle number batao — jaise "MP20AB1234".', summary: vehicleSummary(c.vehicle) }
+      if (!c.vehicle.capacity) return { status: 'vehicle_needs_info', message: 'Vehicle ' + c.vehicle.number + ' add karne ke liye capacity batao — jaise "1500 kg".', summary: vehicleSummary(c.vehicle) }
+      return { status: 'vehicle_confirm', message: 'Vehicle ' + c.vehicle.number + ', capacity ' + c.vehicle.capacity + ' ' + c.vehicle.unit + '. Add karun?', summary: vehicleSummary(c.vehicle) }
+    }
+
+    // 0.1) ORDER intent — multi-trip commercial billing ("₹10 lakh ka bill, 2-5 July, 3 gaadi, 4 trip/day")
+    const pendingOrder = c.order && !c.order.executed && c.order
+    const orderBareName = pendingOrder && (!c.order.customer || !c.order.customer.name) && /^[a-z][a-z\s.]{1,24}$/i.test(t) && !/\d/.test(t)
+    // Order cancel: "cancel", "rehne do", "mat banao" clears the order draft safely
+    if (pendingOrder && isReject(t)) {
+      c.order = null
+      return { status: 'none', message: 'Order cancel kar diya.' }
+    }
+    // Order continuation keywords: vehicle numbers (with spaces), capacity units, date words, trip words
+    const VEH_REGEX = /([A-Za-z]{2})\s?(\d{2})\s?([A-Za-z]{1,3})\s?(\d{3,4})/i
+    const orderContKey = /(lakh|hazaar|rupaye|rupay|rs|trip|gaadi|gadi|july|august|september|october|november|december|january|february|march|april|june|sariya|cement|steel|kg|ton|naam|bill|haathi|truck|vehicle|tareekh|date|se\s|tak\b|capacity|chhota|bada)/i
+    const hasVehiclePattern = VEH_REGEX.test(t) && /(gaadi|gadi|vehicle|truck|hai|hain|hoga|chhota|bada|number|se\s)/i.test(text) || VEH_REGEX.test(t) && pendingOrder
+    const hasCapacityOnly = !orderContKey.test(t) && /(?:capacity\s*)?(\d+(?:\.\d+)?)\s*(kg|kilo|ton|tonne|quintal|qtl|bag|bori)\b/i.test(t) && pendingOrder && pendingOrder.vehicleNos && pendingOrder.vehicleNos.length
+    if (detectOrderIntent(t) || (parsed && parsed.intent === 'order') || (pendingOrder && pendingOrder.value && (orderContKey.test(t) || hasVehiclePattern)) || (pendingOrder && hasCapacityOnly) || orderBareName) {
+      if (!c.order || c.order.executed) { c.order = orderFresh(); if (activeCompanyId) c.order.companyId = activeCompanyId }
+      if (orderBareName) c.order.customer = { name: cleanName(t) }
+      else {
+        // Merge AI-detected order fields first (do not overwrite existing fields)
+        if (parsed && parsed.intent === 'order') {
+          if (!c.order.customer && parsed.customer && parsed.customer.name) c.order.customer = parsed.customer
+          if (!c.order.value && parsed.orderValue) c.order.value = Number(parsed.orderValue)
+          if (!c.order.product && parsed.orderProduct) { c.order.product = parsed.orderProduct; if (parsed.orderUnit) c.order.unit = parsed.orderUnit }
+          if (!c.order.rate && parsed.orderRate) { c.order.rate = Number(parsed.orderRate); if (parsed.orderUnit) c.order.unit = parsed.orderUnit }
+          if (!c.order.startDate && parsed.orderDates) {
+            const parts = String(parsed.orderDates).split(/\s*to\s*|\s*-\s*/)
+            if (parts.length >= 2) { c.order.startDate = String(parts[0]).trim(); c.order.endDate = String(parts[1]).trim() }
+          }
+          if ((!c.order.vehicleNos || !c.order.vehicleNos.length) && parsed.orderVehicles && parsed.orderVehicles.length) c.order.vehicleNos = parsed.orderVehicles.map((v) => String(v).toUpperCase())
+          if (!c.order.vehicles && parsed.orderVehicleCount) c.order.vehicles = Number(parsed.orderVehicleCount)
+          if (!c.order.tripsPerDay && parsed.orderTripsPerDay) c.order.tripsPerDay = Number(parsed.orderTripsPerDay)
+          if (!c.order.capacity && parsed.orderCapacity) { c.order.capacity = Number(parsed.orderCapacity); if (parsed.orderUnit) c.order.capacityUnit = parsed.orderUnit }
+        }
+        parseOrderFields(t, c.order, ctx)
+      }
+      const om = orderMissing(c.order)
+      if (om.length) {
+        const msg = 'Order ke liye ' + (om[0] === 'customer' ? 'customer ka naam batao.' : om[0] === 'amount' ? 'kitne ka bill? Bolo jaise "10 lakh".' : om[0] === 'product' ? 'kaunsa maal? Jaise "sariya".' : om[0] === 'rate' ? 'rate batao — jaise "58 rupaye kg".' : om[0] === 'date' ? 'date batao — jaise "2 se 5 july" ya "2 se 6 tareekh".' : om[0] === 'vehicles' ? (c.order.vehicles ? 'Gaadiyon ke numbers batao — ' + c.order.vehicles + ' gaadi ke liye, jaise "MP20AB1234, MP20CD5678".' : 'Kitni gaadiyan hain? Bolo jaise "3 gaadi".') : om[0] === 'capacity' ? 'Gaadi ki capacity batao — jaise "1500 kg".' : 'date batao — jaise "2 se 5 july".')
+        return { status: 'order_needs_info', message: msg, summary: orderSummary(c.order), missing: om }
+      }
+      return { status: 'order_confirm', message: 'Order review:\n' + orderSummary(c.order) + '\nBill + trips banau?', summary: orderSummary(c.order) }
     }
 
     // 0) FINANCE intents (payments, khata, UPI)
@@ -399,12 +693,7 @@ export class ConversationManager {
       return { status: 'payment_confirm', message: 'Payment record karun? ' + financeSummary(c.finance), summary: financeSummary(c.finance), renderFinance: { ...c.finance } }
     }
 
-    // 0.5) CONTINUOUS ENTRY — bill opt-in ("items bolta jaunga", bulk)
-    if (!c.continuousEntry && c.intent === 'create_bill' && /items\s*(bolta|bolti|bolungi|bolu)?\s*(jaunga|jaungi|jaaunga)|bulk|continuous|lagataar|bolte jao|bolta jaunga|items add karne hain/i.test(t)) {
-      c.continuousEntry = 'bill'
-      return { status: 'needs_info', message: 'Items bolte jao — main add karta jaunga. Jab ho jaye to "bas" bol dena.', summary: partialSummary(c) }
-    }
-
+    // 0.5) CONTINUOUS ENTRY — bill opt-in handled inside step 4 (preserves same-turn customer/item).
     // 0.5) CONTINUOUS ENTRY — inventory start
     if (!c.continuousEntry && /(inventory|stock)\s*banana hai|items bolta jaunga.*(inventory|stock)|inventory entry|inventory me add/.test(t)) {
       c.continuousEntry = 'inventory'
@@ -443,14 +732,14 @@ export class ConversationManager {
       const nameM = t.match(/pichla item (.+?) nahi (.+?) tha/)
       if (nameM && c.items && c.items.length) {
         const words = cleanProductWords(nameM[2].trim().toLowerCase().split(/\s+/))
-        const newName = buildItemName(words) || nameM[2].trim()
+        const newName = buildItemName(words, dom) || nameM[2].trim()
         c.items[c.items.length - 1].name = newName
         return { status: 'needs_info', message: 'Pichla item ' + newName + ' kar diya. Items bolte jao.', summary: partialSummary(c) }
       }
       // inventory continuous: append extracted items
       if (c.continuousEntry === 'inventory') {
-        let extra = extractItems(text)
-        if (!extra.length) { const pf = productFirstItems(text); if (pf) extra = pf }
+        let extra = extractItems(text, dom)
+        if (!extra.length) { const pf = productFirstItems(text, dom); if (pf) extra = pf }
         if (extra.length) {
           c.inventory = c.inventory || { items: [] }
           const rates = collectRates(text)
@@ -465,6 +754,12 @@ export class ConversationManager {
 
     // 1) Confirmation answer
     if (isConfirm(t)) {
+      if (c.order && !c.order.executed && orderMissing(c.order).length === 0) {
+        return { status: 'order_execute', message: 'Order + bill + trips bana raha hoon.', summary: orderSummary(c.order) }
+      }
+      if (c.vehicle && !c.vehicle.executed && c.vehicle.number && c.vehicle.capacity) {
+        return { status: 'vehicle_execute', message: 'Vehicle add karta hoon.', summary: vehicleSummary(c.vehicle) }
+      }
       if (c.finance && !c.finance.executed) {
         const fmissing = financeMissing(c.finance)
         if (fmissing.length) return { status: 'payment_needs_info', message: askForFinance(fmissing[0]), summary: financeSummary(c.finance) }
@@ -491,16 +786,16 @@ export class ConversationManager {
       let extra = []
       if (parsed && parsed.intent === 'create_bill' && parsed.items) extra = parsed.items
       if (!extra.length) extra = extractItems(text)
-      if (!extra.length) { const pf = productFirstItems(text); if (pf) extra = pf }
+      if (!extra.length) { const pf = productFirstItems(text, dom); if (pf) extra = pf }
       if (!extra.length && c.continuousEntry === 'bill') {
         const loose = looseItems(text)
         if (loose.length) extra = loose
         else { const pfl = productFirstItemsLoose(text); if (pfl) extra = pfl }
       }
       if (!extra.length && c.customer && c.customer.name) {
-        const bpTok = bareProductToken(text)
+        const bpTok = bareProductToken(text, dom)
         if (bpTok && !String(c.customer.name).toLowerCase().includes(bpTok.toLowerCase())) {
-          const bp = bareProductItems(text)
+          const bp = bareProductItems(text, dom)
           if (bp) extra = bp
         }
       }
@@ -512,6 +807,8 @@ export class ConversationManager {
         else c.items = mapped
         // A second item implies multi-item entry → switch to continuous mode automatically.
         if (!c.continuousEntry && c.items.length >= 2) c.continuousEntry = 'bill'
+        // Same-turn explicit continuous opt-in also enables continuous mode.
+        if (!c.continuousEntry && c.intent === 'create_bill' && OPT_IN.test(t)) c.continuousEntry = 'bill'
         if (parsed && parsed.customer && parsed.customer.name) {
           const known = (ctx.customers || []).find((x) => String(x.name).toLowerCase() === String(parsed.customer.name).toLowerCase())
           const gstin = c.gstin || (known && known.gstin) || (parsed.customerGstin) || ''
@@ -521,6 +818,15 @@ export class ConversationManager {
         }
         const amb = await this.resolveCustomerAmbiguity(c, ctx); if (amb) return amb
         return await this.nextStep(c, ctx)
+      }
+      // Continuous opt-in without an extractable item in this turn: preserve customer, enable entry.
+      if (!c.continuousEntry && c.intent === 'create_bill' && OPT_IN.test(t)) {
+        c.continuousEntry = 'bill'
+        if (!c.customer || !c.customer.name) {
+          const nm = extractCustomerName(text, customerNames(ctx))
+          if (nm) { c.customer = { name: nm, mobile: '', gstin: '' }; const amb = await this.resolveCustomerAmbiguity(c, ctx); if (amb) return amb }
+        }
+        return { status: 'needs_info', message: 'Items bolte jao — main add karta jaunga. Jab ho jaye to "bas" bol dena.', summary: partialSummary(c) }
       }
     }
 

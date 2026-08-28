@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { Capacitor } from '@capacitor/core'
+import { Share } from '@capacitor/share'
 import { navigate } from '../App'
 import { db, getCompanies, getActiveCompany } from '../db'
 import BusinessCardPreview from '../components/BusinessCardPreview'
@@ -36,18 +38,16 @@ export default function BusinessCardScreen() {
 
   const handleShare = async () => {
     const text = generateShareLink()
-    if (navigator.canShare && navigator.canShare({ text })) {
-      await navigator.share({ text, title: 'Business Card - ' + (active?.name || 'Company') })
-    } else {
-      // Fallback: copy to clipboard
-      try {
-        await navigator.clipboard.writeText(text)
-        // Could show feedback here
-      } catch (e) {
-        // Clipboard not available
+    setShareOpen(true)
+    try {
+      await Share.share({ title: 'Business Card - ' + (active?.name || 'Company'), text, dialogTitle: 'Share Business Card' })
+    } catch (e) {
+      // Capacitor Share unavailable or cancelled
+      if (!/cancel/i.test(e && e.message ? e.message : String(e))) {
+        try { await navigator.clipboard.writeText(text) } catch (e2) { /* ignore */ }
       }
     }
-    setShareOpen(false)
+    setTimeout(() => setShareOpen(false), 1500)
   }
 
   const downloadCard = () => {

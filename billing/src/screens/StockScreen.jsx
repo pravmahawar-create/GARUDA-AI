@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { db, getStockLedger, applyStockOp, canonicalName, UNITS } from '../db'
+import { db, getStockLedger, applyStockOp, canonicalName, UNITS, getActiveCompany, getItems } from '../db'
 import { inrFull } from '../lib/money'
 import { navigate } from '../App'
 import { Icon } from '../components/Icon'
@@ -33,9 +33,26 @@ export default function StockScreen() {
   const [showAdd, setShowAdd] = useState(false)
   const [f, setF] = useState({ name: '', unit: 'bag', rate: '', category: 'other', hsn: '' })
   const [drafts, setDrafts] = useState({})
+  const [dAdj, setDAdj] = useState('')
+  const [showEdit, setShowEdit] = useState(false)
+  const [company, setCompany] = useState(null)
+
+  useEffect(() => {
+    ;(async () => {
+      const comp = await getActiveCompany()
+      setCompany(comp)
+    })()
+  }, [])
+
+  const saveDetail = async (e) => {
+    setDetailItem(data)
+    setShowEdit(false)
+    setMsg('Item update ho gaya')
+    await refreshItems()
+  }
 
   const refreshItems = async () => {
-    const all = await db.items.toArray()
+    const all = await getItems(company ? company.id : null)
     setItems(all)
     const map = {}
     for (const it of all) map[it.id] = Number(it.qty || 0)
@@ -61,14 +78,26 @@ export default function StockScreen() {
     const draft = drafts[it.id]
     let qty = 1
     if (draft !== undefined && draft !== '' && Number(draft) > 0 && Number(draft) !== Number(it.stock)) qty = Math.round(Number(draft))
-    const delta = sign * qty
-    if (!delta) return
+    await adjustQty(it, qty, sign)
+    setDrafts((d) => { const c = { ...d }; delete c[it.id]; return c })
+  }
+
+  const draftQty = (it) => {
+    const d = drafts[it.id]
+    if (d !== undefined && d !== '' && Number(d) > 0 && Number(d) !== Number(it.stock)) return Math.round(Number(d))
+    return 1
+  }
+
+  const adjustQty = async (item, qty, sign) => {
+    const n = Math.abs(Number(qty) || 0)
+    if (!n) return
+    const delta = sign * n
     const op = delta > 0 ? 'add' : 'subtract'
     try {
-      await applyStockOp({ name: it.name, qty: Math.abs(delta), unit: it.unit, operation: op })
-      setDrafts((d) => { const c = { ...d }; delete c[it.id]; return c })
-      setMsg(op === 'add' ? it.name + ' +' + Math.abs(delta) + ' ' + it.unit : it.name + ' -' + Math.abs(delta) + ' ' + it.unit)
-      refreshItems()
+      await applyStockOp({ name: item.name, qty: n, unit: item.unit, operation: op })
+      setMsg(op === 'add' ? item.name + ' +' + n + ' ' + item.unit : item.name + ' -' + n + ' ' + item.unit)
+      await refreshItems()
+      if (detailItem) setLedger(await getStockLedger(item.id))
     } catch (e) {
       setMsg('Stock error: ' + (e && e.message ? e.message : e))
     }
@@ -149,6 +178,49 @@ export default function StockScreen() {
         </section>
 
         <section className="card">
+          <div className="card-title">Quick Adjust</div>
+          <div className="tr-grid">
+            <input className="input" inputMode="numeric" placeholder={'Kitna ' + detailItem.unit} value={dAdj} onChange={(e) => setDAdj(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { adjustQty(detailItem, dAdj, 1); setDAdj('') } }} />
+            <div className="row-actions" style={{ margin: 0 }}>
+              <button className="btn" onClick={() => { adjustQty(detailItem, dAdj, 1); setDAdj('') }}><Icon name="plus" size={14} /> Add</button>
+              <button className="btn btn-ghost" onClick={() => { adjustQty(detailItem, dAdj, -1); setDAdj('') }}><Icon name="minus" size={14} /> Reduce</button>
+            </div>
+          </div>
+        </section>
+
+        <section className="card">
+          <div className="card-title" style={{ justifyContent: 'space-between' }}>
+            <span>Item Details</span>
+            <button className="link" onClick={() => setShowEdit((s) => !s)}><Icon name="edit" size={14} /> Edit</button>
+          </div>
+          <div className="vc-item"><span>Unit</span><span>{detailItem.unit}</span></div>
+          <div className="vc-item"><span>Rate</span><span>{inrFull(detailItem.rate || 0)} / {detailItem.unit}</span></div>
+          <div className="vc-item"><span>HSN</span><span>{detailItem.hsn || '—'}</span></div>
+          <div className="vc-item"><span>Category</span><span>{(CATS.find((c) => c.id === detailItem.category) || {}).label || detailItem.category}</span></div>
+          {showEdit && (
+            <form onSubmit={saveDetail} style={{ marginTop: 10 }}>
+              <input className="input" name="name" defaultValue={detailItem.name} placeholder="Item naam" style={{ marginBottom: 6 }} />
+              <div className="tr-grid">
+                <select className="input" name="category" defaultValue={detailItem.category} style={{ marginBottom: 6 }}>
+                  {CATS.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
+                </select>
+                <select className="input" name="unit" defaultValue={detailItem.unit} style={{ marginBottom: 6 }}>
+                  {UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
+                </select>
+              </div>
+              <div className="tr-grid">
+                <input className="input" name="rate" inputMode="decimal" defaultValue={detailItem.rate || 0} placeholder="Rate ₹" style={{ marginBottom: 6 }} />
+                <input className="input" name="hsn" defaultValue={detailItem.hsn || ''} placeholder="HSN" style={{ marginBottom: 6 }} />
+              </div>
+              <div className="row-actions">
+                <button className="btn">Save</button>
+                <button type="button" className="btn btn-ghost" onClick={() => setShowEdit(false)}>Cancel</button>
+              </div>
+            </form>
+          )}
+        </section>
+
+        <section className="card">
           <div className="card-title">Transactions</div>
           {ledger.length === 0 && <div className="empty-sub">No transactions yet</div>}
           {ledger.map((t, i) => (
@@ -179,7 +251,8 @@ export default function StockScreen() {
       <header className="topbar backbar">
         <button className="back" onClick={() => navigate('#/')}>‹</button>
         <div className="top-title">Stock Manager</div>
-        <button className="mini-add" style={{ marginLeft: 'auto' }} onClick={() => setVoiceOpen(true)}><Icon name="mic" size={14} /> Voice</button>
+        <button className="mini-add" style={{ marginLeft: 'auto' }} onClick={() => navigate('#/vehicles')}><Icon name="truck" size={14} /> Vehicles</button>
+        <button className="mini-add" onClick={() => setVoiceOpen(true)}><Icon name="mic" size={14} /> Voice</button>
       </header>
 
       <div className="sm-summary">
@@ -268,13 +341,15 @@ export default function StockScreen() {
                   </span>
                 </button>
                 <div className="sm-actions">
-                  <button className="sm-btn sm-btn-minus" onClick={() => adjust(it, -1)} title="Reduce"><Icon name="minus" size={14} /></button>
-                  <input className="sm-qty" inputMode="numeric"
+                  <button className="sm-btn sm-btn-minus" onClick={() => adjust(it, -1)} title={'Reduce ' + draftQty(it)}><Icon name="minus" size={14} /></button>
+                  <input className="sm-qty" inputMode="numeric" placeholder="qty"
                     value={drafts[it.id] !== undefined ? drafts[it.id] : it.stock}
                     onChange={(e) => setDrafts((d) => ({ ...d, [it.id]: e.target.value }))}
+                    onKeyDown={(e) => { if (e.key === 'Enter') adjust(it, 1) }}
                     onBlur={() => setDrafts((d) => { const c = { ...d }; delete c[it.id]; return c })}
+                    title="Qty type karke Enter dabao — add ho jayega"
                   />
-                  <button className="sm-btn sm-btn-plus" onClick={() => adjust(it, 1)} title="Add"><Icon name="plus" size={14} /></button>
+                  <button className="sm-btn sm-btn-plus" onClick={() => adjust(it, 1)} title={'Add ' + draftQty(it)}><Icon name="plus" size={14} /></button>
                 </div>
               </div>
             ))}

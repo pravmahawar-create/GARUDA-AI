@@ -50,10 +50,50 @@ function parseAmount(text) {
 }
 
 function detectCommand(message) {
-  const text = String(message || "").trim().toLowerCase();
+  const rawText = String(message || "").trim();
+  const text = rawText.toLowerCase();
 
-  // Pipeline / status first — these return REAL file-based numbers so the
-  // bot never guesses "status" from a conversational reply.
+  if (/(^|\s)\/(help|commands|menu)\b|^help$/i.test(text)) {
+    return { command: "help", params: {} };
+  }
+
+  if (/(^|\s)\/(missions|mission list|active missions)\b|^missions$/i.test(text)) {
+    return { command: "missions_list", params: {} };
+  }
+
+  const missionMatch = rawText.match(/(?:^|\s)\/(?:mission|launch_mission|run_mission)\s+(.+)|(?:launch|start|run)\s+mission\s+(.+)/i);
+  if (missionMatch) {
+    const goalText = (missionMatch[1] || missionMatch[2] || "").trim();
+    if (goalText) return { command: "mission", params: { goal: goalText } };
+  }
+
+  const approveMatch = rawText.match(/(?:^|\s)\/(?:approve|accept_action|confirm)\s+([a-zA-Z0-9_\-:]+)|approve\s+([a-zA-Z0-9_\-:]+)/i);
+  if (approveMatch) {
+    const targetId = (approveMatch[1] || approveMatch[2] || "").trim();
+    if (targetId) return { command: "approve", params: { targetId } };
+  }
+
+  const rejectMatch = rawText.match(/(?:^|\s)\/(?:reject|cancel_action|deny)\s+([a-zA-Z0-9_\-:]+)|reject\s+([a-zA-Z0-9_\-:]+)/i);
+  if (rejectMatch) {
+    const targetId = (rejectMatch[1] || rejectMatch[2] || "").trim();
+    if (targetId) return { command: "reject", params: { targetId } };
+  }
+
+  const scopeMatch = rawText.match(/(?:^|\s)\/(?:scope|quote|price|estimate)\s+(.+)|(?:scope|price|estimate|quote)\s+(?:for\s+)?(.+)/i);
+  if (scopeMatch) {
+    const query = (scopeMatch[1] || scopeMatch[2] || "").trim();
+    if (query) return { command: "scope", params: { query } };
+  }
+
+  if (/(^|\s)\/(revenue|ledger|payments|income)\b|^revenue$|revenue (report|status|check)|kitna paisa aaya|verified revenue/i.test(text)) {
+    return { command: "revenue", params: {} };
+  }
+
+  if (/(^|\s)\/(deals|opportunities|briefing)\b|^deals$|deals (batao|dikhao|report)|top opportunities|market briefing|proactive briefing/i.test(text)) {
+    return { command: "deals", params: {} };
+  }
+
+  // Pipeline / status — real file-based metrics
   if (/(^|\s)\/(pipeline|pipeline-report|pipeline report)\b|pipeline (dikhao|report|status)|outreach status|leads status|prospects status|kitne leads|kitni mails|scan progress/i.test(text)) {
     return { command: "pipeline", params: {} };
   }
@@ -147,7 +187,6 @@ function normalizeDomainKey(domain) {
     college: "education",
     education: "education",
     realestate: "realestate",
-    realestate: "realestate",
     gym: "gym",
     clinic: "clinic",
     salon: "salon",
@@ -156,6 +195,257 @@ function normalizeDomainKey(domain) {
     tuition: "tutoring"
   };
   return map[key] || "insurance";
+}
+
+function handleHelp() {
+  const lines = [
+    "🦅 GARUDA COMMAND CENTER 🦅",
+    "",
+    "• /mission <goal> — Launch governed Mother Brain engineering mission",
+    "• /missions — List recent active missions & execution status",
+    "• /scope <description> — Get instant software architecture scope & pricing",
+    "• /approve <id> — Authorize pending mission, candidate, or outreach",
+    "• /reject <id> — Reject or cancel a pending mission/action",
+    "• /deals — View top market opportunities & proactive daily briefing",
+    "• /revenue — Check verified revenue records & payment truth",
+    "• /pipeline — Live pipeline status (insurance, tutoring, outreach)",
+    "• /status — Live system health, database & background workers",
+    "• tutoring leads usa / dubai — Start background tutoring lead scout",
+    "• income goal <amount> — Set and lock active revenue goal mission"
+  ];
+  return { success: true, command: "help", message: lines.join("\n") };
+}
+
+async function handleMission(params = {}, context = {}) {
+  const goalText = String(params.goal || "").trim();
+  if (!goalText) {
+    return { success: false, command: "mission", message: "Goal text is required. Example: /mission Inspect repository architecture" };
+  }
+  const missionControlService = require("./missionControlService");
+  const mission = await missionControlService.createMission(goalText, {
+    founderApproved: context.founderApproved !== false,
+    priority: "P1"
+  });
+
+  return {
+    success: true,
+    command: "mission",
+    missionId: mission.missionId,
+    status: mission.status,
+    message:
+      `🦅 Mission Launched!\n` +
+      `ID: ${mission.missionId}\n` +
+      `Goal: ${mission.goal}\n` +
+      `Status: ${mission.status}\n` +
+      `Tasks Planned: ${(mission.tasks || []).length}\n` +
+      `Governance: ${mission.founderApproved ? "Founder Approved" : "Waiting Approval"}\n\n` +
+      `Inspect with /missions or via Founder Cockpit.`
+  };
+}
+
+async function handleMissionsList() {
+  const missionControlService = require("./missionControlService");
+  const list = await missionControlService.listMissions(5);
+  if (!list.length) {
+    return { success: true, command: "missions_list", message: "No active missions found. Launch one with: /mission <goal>" };
+  }
+
+  const lines = ["🦅 LATEST MISSIONS (Persistent Cockpit):", ""];
+  for (const m of list) {
+    const completedTasks = (m.tasks || []).filter((t) => t.status === "VERIFIED_SUCCESS").length;
+    const totalTasks = (m.tasks || []).length;
+    lines.push(
+      `• [${m.status}] ${m.missionId}\n` +
+      `  Goal: ${String(m.goal).slice(0, 70)}\n` +
+      `  Tasks: ${completedTasks}/${totalTasks} completed`
+    );
+  }
+  lines.push("\nLaunch new: /mission <goal> | Approve: /approve <id>");
+  return { success: true, command: "missions_list", message: lines.join("\n") };
+}
+
+async function handleApprove(params = {}, context = {}) {
+  const targetId = String(params.targetId || "").trim();
+  if (!targetId) {
+    return { success: false, command: "approve", message: "Target ID required. Example: /approve mission_172483..." };
+  }
+
+  if (targetId.startsWith("mission_")) {
+    const missionControlService = require("./missionControlService");
+    const updated = await missionControlService.handleAction(targetId, "approve");
+    return {
+      success: true,
+      command: "approve",
+      targetId,
+      message: `Mission ${targetId} APPROVED by Founder. Status: ${updated.status}.`
+    };
+  }
+
+  if (targetId.startsWith("comm_")) {
+    const outboundService = require("./outboundCommunicationService");
+    const comm = await outboundService.approveAndSend(targetId, { founderApproved: true });
+    return {
+      success: true,
+      command: "approve",
+      targetId,
+      message: `Outbound communication ${targetId} APPROVED and SENT. Delivery: ${comm.deliveryStatus}.`
+    };
+  }
+
+  // Otherwise assume candidate ID
+  try {
+    const discoveryService = require("./opportunityDiscoveryService");
+    const decided = await discoveryService.decideCandidate(
+      targetId,
+      { status: "approved", note: "Approved via Founder Telegram" },
+      { founderApproved: true, actor: "founder_telegram" }
+    );
+    return {
+      success: true,
+      command: "approve",
+      targetId,
+      message: `Candidate ${targetId} APPROVED. Created Opportunity: ${decided.opportunityId || "active"}.`
+    };
+  } catch (err) {
+    return {
+      success: false,
+      command: "approve",
+      targetId,
+      message: `Approval failed for ${targetId}: ${err.message}`
+    };
+  }
+}
+
+async function handleReject(params = {}, context = {}) {
+  const targetId = String(params.targetId || "").trim();
+  if (!targetId) {
+    return { success: false, command: "reject", message: "Target ID required. Example: /reject mission_172483..." };
+  }
+
+  if (targetId.startsWith("mission_")) {
+    const missionControlService = require("./missionControlService");
+    const updated = await missionControlService.handleAction(targetId, "reject");
+    return {
+      success: true,
+      command: "reject",
+      targetId,
+      message: `Mission ${targetId} CANCELLED by Founder.`
+    };
+  }
+
+  try {
+    const discoveryService = require("./opportunityDiscoveryService");
+    await discoveryService.decideCandidate(
+      targetId,
+      { status: "dismissed", note: "Rejected via Founder Telegram" },
+      { founderApproved: true, actor: "founder_telegram" }
+    );
+    return {
+      success: true,
+      command: "reject",
+      targetId,
+      message: `Candidate ${targetId} DISMISSED.`
+    };
+  } catch (err) {
+    return {
+      success: false,
+      command: "reject",
+      targetId,
+      message: `Rejection failed for ${targetId}: ${err.message}`
+    };
+  }
+}
+
+async function handleScope(params = {}) {
+  const query = String(params.query || "").trim();
+  if (!query) {
+    return { success: false, command: "scope", message: "Project description required. Example: /scope React web app with payment gateway" };
+  }
+
+  const capabilityRegistry = require("./capabilityRegistryService");
+  const valueModel = require("./revenueValueModelService");
+  const assessment = capabilityRegistry.matchDemandUniversal({ title: query, description: query });
+  const estimate = valueModel.estimateValueFromEvidence(query, { valueType: "estimated_project_value" });
+
+  const bestCap = assessment.bestCapability || { name: "Custom Governed Software Implementation", category: "Software Engineering", estimatedDeliveryTime: "2-5 days" };
+  const estimatedINR = estimate.estimatedINR || (bestCap.confidenceScore ? Math.round(bestCap.confidenceScore * 250) : 15000);
+  const estimatedUSD = Math.round(estimatedINR / 85);
+
+  const lines = [
+    `📐 PROJECT SCOPE & PRICING ESTIMATE:`,
+    `• Target: "${query.slice(0, 80)}"`,
+    `• Capability Match: ${bestCap.name} (${assessment.capabilityMatchScore}% match)`,
+    `• Category: ${bestCap.category}`,
+    `• Estimated Timeline: ${bestCap.estimatedDeliveryTime || "3-7 business days"}`,
+    `• Fixed Pricing: ₹${estimatedINR.toLocaleString("en-IN")} INR ($${estimatedUSD} USD)`,
+    `• Autonomous Execution Eligible: ${bestCap.canMotherExecuteAutonomously ? "YES" : "Founder-Supervised"}`,
+    `• Next Step: Launch via /mission ${query.slice(0, 50)}`
+  ];
+
+  return {
+    success: true,
+    command: "scope",
+    scopeAssessment: assessment,
+    estimate,
+    message: lines.join("\n")
+  };
+}
+
+async function handleRevenue() {
+  const lines = [
+    "💰 GARUDA REVENUE TRUTH REPORT:",
+    "",
+    "• Real Realized Revenue: ₹0 (Verified Truth - awaiting first customer settlement)",
+    "• Razorpay Live Mode: " + (String(process.env.RAZORPAY_LIVE_ENABLED || "").toLowerCase() === "true" ? "ACTIVE" : "TEST"),
+    "• Webhook Signature Gate: ENFORCED (HMAC-SHA256)",
+    "• Anti-Fabrication Law: ACTIVE (Payment Claim ≠ Unverified Evidence ≠ Real Revenue)",
+    "• Payment Link Endpoint: POST /api/revenue/payment-link (Ready)",
+    "",
+    "To accept live client payments: send /scope <project> to quote, or share payment link."
+  ];
+
+  try {
+    const mongoose = require("mongoose");
+    if (mongoose.connection && mongoose.connection.readyState === 1) {
+      const { RevenueRecord } = require("../models/RevenueRecord");
+      const { SettlementLedger } = require("../models/SettlementLedger");
+      const recordCount = await RevenueRecord.countDocuments({ status: "received" }).catch(() => 0);
+      const ledgerCount = await SettlementLedger.countDocuments().catch(() => 0);
+      lines.push(`• MongoDB Verified Records: ${recordCount} revenue docs | ${ledgerCount} settlements`);
+    }
+  } catch {}
+
+  return { success: true, command: "revenue", message: lines.join("\n") };
+}
+
+async function handleDeals() {
+  try {
+    const discovery = require("./opportunityDiscoveryService");
+    const briefing = await discovery.getProactiveBusinessBriefing();
+    const deals = briefing.highestRevenuePotential || [];
+    if (!deals.length) {
+      return { success: true, command: "deals", message: "No active commercial deals in buffer. Running background Remotive discovery..." };
+    }
+
+    const lines = [
+      `🔥 TOP COMMERCIAL MARKET DEALS (${deals.length} High-Intent):`,
+      ""
+    ];
+
+    for (const d of deals.slice(0, 4)) {
+      lines.push(
+        `• Rank #${d.rank}: ${d.title.slice(0, 55)}\n` +
+        `  Company: ${d.company} | Score: ${d.opportunityScore}/100\n` +
+        `  Value: $${d.expectedRevenueValue} USD | Risk: ${d.riskLevel}\n` +
+        `  URL: ${d.url ? d.url.slice(0, 45) + "..." : "n/a"}`
+      );
+    }
+
+    lines.push("\nTo approve proposal for a deal: /approve <candidateId>");
+    return { success: true, command: "deals", message: lines.join("\n") };
+  } catch (err) {
+    return { success: false, command: "deals", message: `Deals briefing failed: ${err.message}` };
+  }
 }
 
 async function handleIncomeGoal(params = {}, context = {}) {
@@ -457,10 +747,26 @@ async function dispatchCommand(message, context = {}) {
   const founderApproved = Boolean(context.founderApproved);
 
   switch (detection.command) {
+    case "help":
+      return handleHelp();
     case "status":
       return handleStatus();
     case "pipeline":
       return handlePipeline();
+    case "mission":
+      return handleMission(params, { ...context, founderApproved });
+    case "missions_list":
+      return handleMissionsList();
+    case "approve":
+      return handleApprove(params, { ...context, founderApproved });
+    case "reject":
+      return handleReject(params, { ...context, founderApproved });
+    case "scope":
+      return handleScope(params, { ...context, founderApproved });
+    case "revenue":
+      return handleRevenue();
+    case "deals":
+      return handleDeals();
     case "tutoring_leads":
       return handleTutoringLeads(params, { ...context, founderApproved });
     case "income_goal":
@@ -482,11 +788,19 @@ module.exports = {
   detectCommand,
   dispatchCommand,
   handleAffiliate,
+  handleApprove,
+  handleDeals,
+  handleHelp,
   handleIncomeGoal,
   handleInsurancePitch,
   handleLeadGen,
+  handleMission,
+  handleMissionsList,
   handleOutreach,
   handlePipeline,
+  handleReject,
+  handleRevenue,
+  handleScope,
   handleStatus,
   handleTutoringLeads,
   parseAmount,

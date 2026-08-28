@@ -67,11 +67,11 @@ export default function SettingsScreen() {
       </div>
 
       <section className="card">
-        <div className="card-title">Kaccha mode</div>
+        <div className="card-title">Non-GST mode</div>
         <label className="form-label toggle-row">
           <div>
-            <b>Kaccha bills chhupao</b>
-            <div className="ip-muted">OFF = kaccha bills list/reports/search me nahi dikhenge (sirf in sabke paas jinki zaroorat hai)</div>
+            <b>Non-GST bills chhupao</b>
+            <div className="ip-muted">OFF = Non-GST bills list/reports/search me nahi dikhenge</div>
           </div>
           <input type="checkbox" className="toggle" checked={kacchaMode} onChange={(e) => setKacchaMode(e.target.checked)} />
         </label>

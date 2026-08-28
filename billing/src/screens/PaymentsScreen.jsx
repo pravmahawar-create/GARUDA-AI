@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { db, enqueue } from '../db'
+import { db, enqueue, getCustomers, getPayments } from '../db'
 import { inrFull } from '../lib/money'
 import { navigate } from '../App'
 import useCompanyScope from '../lib/useCompanyScope'
@@ -37,14 +37,15 @@ export default function PaymentsScreen() {
   }, [])
 
   const refresh = async () => {
-    const custs = await db.customers.toArray()
-    const pays = await db.payments.orderBy('date').reverse().toArray()
-    const invoices = await db.invoices.toArray()
+    if (!activeId && scope !== 'all') return
+    const custs = await getCustomers(activeId)
+    const pays = await getPayments(activeId)
+    const invoices = await getInvoices(activeId)
     const bal = {}
     for (const c of custs) {
-      const inScope = invoices.filter((i) => i.customerId === c.id && (scope === 'all' || !i.companyId || i.companyId === activeId))
-      const billed = inScope.reduce((s, i) => s + i.totals.grandTotal, 0)
-      const paid = pays.filter((p) => p.customerId === c.id).reduce((s, p) => s + p.amount, 0)
+      const inScope = invoices.filter((i) => i.customerId === c.id)
+      const billed = inScope.reduce((s, i) => s + (i.totals?.grandTotal || 0), 0)
+      const paid = pays.filter((p) => p.customerId === c.id).reduce((s, p) => s + (p.amount || 0), 0)
       bal[c.id] = billed - paid
     }
     setCustomers(custs)
@@ -52,7 +53,10 @@ export default function PaymentsScreen() {
     setBalances(bal)
   }
 
-  useEffect(() => { refresh() }, [scope])
+  useEffect(() => {
+    setCustomers([]); setPayments([]); setBalances({}) // INSTANT CLEAR ON COMPANY SWITCH
+    refresh()
+  }, [activeId, scope])
 
   const save = async () => {
     const amt = Number(amount)
@@ -61,6 +65,7 @@ export default function PaymentsScreen() {
       id: 'pay' + Date.now(),
       customerId: custId,
       invoiceId: '',
+      companyId: activeId || '',
       amount: Math.round(amt * 100) / 100,
       date: new Date().toISOString().slice(0, 10),
       mode,

@@ -115,8 +115,13 @@ export default function InvoicePreviewScreen() {
   const shareKhata = async () => {
     setStatus('Khata PDF bana raha hoon…')
     try {
-      const invs = await db.invoices.where('customerId').equals(invoice.customerId).toArray()
-      const pays = await db.payments.where('customerId').equals(invoice.customerId).toArray()
+      const cid = company?.id || invoice?.companyId
+      const invs = cid
+        ? await db.invoices.where('companyId').equals(cid).and((i) => i.customerId === invoice.customerId).toArray()
+        : await db.invoices.where('customerId').equals(invoice.customerId).toArray()
+      const pays = cid
+        ? await db.payments.where('companyId').equals(cid).and((p) => p.customerId === invoice.customerId).toArray()
+        : await db.payments.where('customerId').equals(invoice.customerId).toArray()
       const bytes = await buildKhataPdf(customer, invs, pays, company)
       const file = new File([new Blob([bytes], { type: 'application/pdf' })], `Khata-${customer?.name || 'customer'}.pdf`, { type: 'application/pdf' })
       await shareFile(file)
@@ -176,7 +181,7 @@ export default function InvoicePreviewScreen() {
     <div className="screen">
       <header className="topbar backbar">
         <button className="back" onClick={() => navigate('#/invoices')}>‹</button>
-        <div className="top-title">{isKaccha ? 'Kaccha Bill' : 'Invoice'} #{invoice.invoiceNo}</div>
+        <div className="top-title">{isKaccha ? 'Non-GST Bill' : 'Invoice'} #{invoice.invoiceNo}</div>
       </header>
 
       <div className="invoice-paper">

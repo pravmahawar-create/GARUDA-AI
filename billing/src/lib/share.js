@@ -187,3 +187,14 @@ export async function copyBillText(invoice) {
     return { ok: false, message: 'Copy not supported: ' + (e && e.message ? e.message : String(e)) }
   }
 }
+
+// Generic file share — writes to cache, shares via Capacitor native share sheet.
+// Falls back to download when native share is unavailable.
+export async function shareFile(file, title = 'File', text = '') {
+  const res = await nativeShare({ files: [file], title, text })
+  if (res.notSupported) {
+    downloadFile(file)
+    return { ok: true, message: 'Download ho gaya — file se share kar sakte hain' }
+  }
+  return res
+}

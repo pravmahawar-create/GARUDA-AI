@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { db, getActiveCompany, nextBillNo, invoiceNoExists, formatInvoiceNo, UNITS, enqueue } from '../db'
+import { db, getActiveCompany, nextBillNo, invoiceNoExists, formatInvoiceNo, UNITS, enqueue, getCustomers, getItems } from '../db'
 import { calcBill, inrFull } from '../lib/money'
 import { gstTypeFor } from '../lib/gst'
 import { navigate } from '../App'
@@ -21,7 +21,7 @@ export default function NewBillScreen() {
   const [newName, setNewName] = useState('')
   const [newMobile, setNewMobile] = useState('')
   const [newGstin, setNewGstin] = useState('')
-  const [rows, setRows] = useState([freshRow('Cement - ACC', 'bag', 390), freshRow('TMT Steel 10mm', 'kg', 60)])
+  const [rows, setRows] = useState([freshRow('', 'bag', 0)])
   const [discount, setDiscount] = useState(0)
   const [transport, setTransport] = useState({})
   const [showTr, setShowTr] = useState(false)
@@ -33,14 +33,14 @@ export default function NewBillScreen() {
   const [loaded, setLoaded] = useState(false)
   const [voiceOpen, setVoiceOpen] = useState(false)
 
-  useEffect(() => {
-    ;(async () => {
-      const cs = await db.customers.toArray()
-      const cat = await db.items.toArray()
-      setCustomers(cs)
-      setCatalog(cat)
-      const comp = await getActiveCompany()
-      setCompany(comp)
+   useEffect(() => {
+     ;(async () => {
+       const comp = await getActiveCompany()
+       const cs = await getCustomers(comp ? comp.id : null)
+       const cat = await getItems(comp ? comp.id : null)
+       setCustomers(cs)
+       setCatalog(cat)
+       setCompany(comp)
 
       const sourceId = editId || copyId
       if (sourceId) {
@@ -114,11 +114,21 @@ export default function NewBillScreen() {
   const [localInvoices, setLocalInvoices] = useState([])
   const [localPayments, setLocalPayments] = useState([])
   useEffect(() => {
+    let cancelled = false
+    setLocalInvoices([])
+    setLocalPayments([])
     ;(async () => {
-      setLocalInvoices(await db.invoices.toArray())
-      setLocalPayments(await db.payments.toArray())
+      const comp = company || await getActiveCompany()
+      if (!comp) return
+      const invs = await getInvoices(comp.id)
+      const pays = await getPayments(comp.id)
+      if (!cancelled) {
+        setLocalInvoices(invs)
+        setLocalPayments(pays)
+      }
     })()
-  }, [])
+    return () => { cancelled = true }
+  }, [company?.id])
   const limitWarn = creditLimit > 0 && customerId && (outstandingOf(customerId) + totals.grandTotal) > creditLimit
 
   const save = async () => {
@@ -212,7 +222,7 @@ export default function NewBillScreen() {
       </header>
 
       <div className={`billtype-chip ${isKaccha ? 'bt-kaccha' : 'bt-gst'}`}>
-        {isKaccha ? 'KACCHA BILL' : 'TAX INVOICE'} — <span className="ip-muted-light">{billType === 'kaccha' ? 'customer GSTIN nahi' : 'GST ' + (company?.gstRate ?? 18) + '%'}</span>
+        {isKaccha ? 'NON-GST BILL' : 'TAX INVOICE'} — <span className="ip-muted-light">{billType === 'kaccha' ? 'customer GSTIN nahi (Non-GST)' : 'GST ' + (company?.gstRate ?? 18) + '%'}</span>
       </div>
 
       <section className="card">
@@ -223,7 +233,7 @@ export default function NewBillScreen() {
         </select>
         <input className="input" placeholder="Naam *" value={newName} onChange={(e) => setNewName(e.target.value)} />
         <div className="scope-bar">
-          <button type="button" className={`chip ${!selectedCustomer && newGstin ? 'chip-active' : ''}`} onClick={() => setNewGstin('')} disabled={Boolean(selectedCustomer)}>Kaccha (bina GSTIN)</button>
+          <button type="button" className={`chip ${!selectedCustomer && newGstin ? 'chip-active' : ''}`} onClick={() => setNewGstin('')} disabled={Boolean(selectedCustomer)}>Non-GST (bina GSTIN)</button>
           <button type="button" className={`chip ${!selectedCustomer && newGstin ? '' : 'chip-active'}`} onClick={() => setNewGstin(prompt('GSTIN daalo (15 digit)')?.toUpperCase() || newGstin)} disabled={Boolean(selectedCustomer)}>GST bill (GSTIN)</button>
         </div>
         <div className="ir-top">
@@ -231,7 +241,7 @@ export default function NewBillScreen() {
           <input className="input" placeholder="GSTIN (GST bill ke liye)" value={newGstin} onChange={(e) => setNewGstin(e.target.value.toUpperCase())} disabled={Boolean(selectedCustomer)} />
         </div>
         {newGstin && newGstin.length === 15 && <div className="ip-muted">GSTIN bhara hai → naya customer GST bill wala banega.</div>}
-        {selectedCustomer && <div className="ip-muted">Bill type customer se locked hai: {selectedCustomer.billType === 'gst' ? 'GST' : 'Kaccha'} — edit customer se nahi badlega.</div>}
+        {selectedCustomer && <div className="ip-muted">Bill type customer se locked hai: {selectedCustomer.billType === 'gst' ? 'GST' : 'Non-GST'} — edit customer se nahi badlega.</div>}
       </section>
 
       <section className="card">
@@ -293,7 +303,7 @@ export default function NewBillScreen() {
         <div className="total-line"><span>Subtotal</span><span>₹{totals.subtotal.toLocaleString('en-IN')}</span></div>
         <div className="total-line"><span>Discount</span><input className="input inline" inputMode="decimal" value={discount || ''} onChange={(e) => setDiscount(e.target.value)} /></div>
         {isKaccha ? (
-          <div className="total-line"><span>GST</span><span className="ip-muted">Kaccha — 0%</span></div>
+          <div className="total-line"><span>GST</span><span className="ip-muted">Non-GST — 0%</span></div>
         ) : totals.igst > 0 ? (
           <div className="total-line"><span>IGST ({totals.gstRate}%)</span><span>₹{totals.igst.toLocaleString('en-IN')}</span></div>
         ) : (

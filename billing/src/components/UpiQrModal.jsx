@@ -3,18 +3,18 @@ import { upiQrDataUrl, upiUrl, bankLines } from '../lib/upi'
 import { inrFull } from '../lib/money'
 import { Icon } from './Icon'
 
-export default function UpiQrModal({ open, onClose, company, amount = 0, ref = '' }) {
+export default function UpiQrModal({ open, onClose, company, amount = 0, txnRef = '' }) {
   const [qr, setQr] = useState(null)
 
   useEffect(() => {
     if (!open) return
     setQr(null)
     if (!company || !company.upiId) return
-    upiQrDataUrl(company, amount, ref).then(setQr).catch(() => setQr(null))
-  }, [open, company, amount, ref])
+    upiQrDataUrl(company, amount, txnRef).then(setQr).catch(() => setQr(null))
+  }, [open, company, amount, txnRef])
 
   if (!open) return null
-  const url = upiUrl(company, amount, ref)
+  const url = upiUrl(company, amount, txnRef)
   const banks = bankLines(company)
 
   return (

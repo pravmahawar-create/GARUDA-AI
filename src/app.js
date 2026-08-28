@@ -53,6 +53,8 @@ app.use("/api/public-chat", require("./routes/publicChatRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoutes"));
 app.use("/api/scout", require("./routes/scoutRoutes"));
 app.use("/api/billing", require("./routes/billingRoutes"));
+app.use("/api/inbound", require("./routes/inboundRoutes"));
+app.use("/api/proposals", require("./routes/proposalRoutes"));
 
 const telegramBotService = require("./services/telegramBotService");
 const abslKnowledgeService = require("./services/abslKnowledgeService");

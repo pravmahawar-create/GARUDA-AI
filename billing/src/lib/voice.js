@@ -1,3 +1,7 @@
+import { resolveProfile, unitsFor } from './domainProfiles.js'
+import { geminiAvailable, aiUnderstand, aiToParsed } from './voiceAI.js'
+import { transliterateDevanagariToHinglish } from './transliterateHindi.js'
+
 const UNITS = { bag: 'bag', bori: 'bag', bags: 'bag', kg: 'kg', kilo: 'kg', kgg: 'kg', quintal: 'quintal', qtl: 'quintal', ton: 'ton', tonne: 'ton', piece: 'piece', pieces: 'piece', truck: 'truck', gadi: 'truck' }
 
 const NUMS = {
@@ -69,10 +73,11 @@ export function buildItemName(words) {
   return sizeWord ? sizeWord + ' ' + name : name
 }
 
-export function extractItems(text) {
+export function extractItems(text, domain) {
+  const U = unitsFor(resolveProfile(domain))
+  const unitWord = '(' + Object.keys(U).join('|') + ')'
   const items = []
   const seen = new Set()
-  const unitWord = '(bag|bori|bags|kg|kilo|kgg|quintal|qtl|ton|tonne|piece|pieces|truck)'
   const push = (qty, unit, name, pos) => {
     if (!qty || !unit || !name) return
     const key = name + '|' + unit + '|' + qty
@@ -160,21 +165,23 @@ function findCustomer(text, knownNames) {
   return ''
 }
 
-const STOCK_HINT = /(stock|stok|aaya hai|aayi hai|aa gaya|aa gayi|aagaya|aagayi|pahunch|pahonch|add karo|add kar do|daal do|dalo|jod|jodo|jod do|badh|badha|minus|mines|mine|kam karo|ghata|nikal|nikaal|hatao|becha|bech diya|bech diye|gaadi|gadi|vehicle|inward|history|last\s*(?:incoming|entry)|kis\s*gaadi|kitna\s*aaya|kitna\s*aayi|kitni\s*aaya|kitni\s*aayi|(cement|sariya|steel|tmt|sand|bricks|eent).*(kitna|kitni|kitne)|(kitna|kitni|kitne|total).*(cement|sariya|steel|tmt|bori|stock)|kitni\s*bori|padi\s*hai|pada\s*hai)/i
+const STOCK_HINT = /(stock|stok|aaya|aayi|aaye|aaya hai|aayi hai|aa gaya|aa gayi|aagaya|aagayi|pahunch|pahonch|add karo|add kar do|daal do|dalo|jod|jodo|jod do|badh|badha|minus|mines|mine|kam karo|ghata|nikal|nikaal|hatao|becha|bech diya|bech diye|gaadi|gadi|vehicle|inward|history|last\s*(?:incoming|entry)|kis\s*gaadi|kitna\s*aaya|kitna\s*aayi|kitni\s*aaya|kitni\s*aayi|(cement|sariya|steel|tmt|sand|bricks|eent).*(kitna|kitni|kitne)|(kitna|kitni|kitne|total).*(cement|sariya|steel|tmt|bori|stock)|kitni\s*bori|padi\s*hai|pada\s*hai)/i
 
 const CATEGORY_TOKENS = { cement: 'cement', siment: 'cement', semento: 'cement', steel: 'steel', sariya: 'steel', sariyaa: 'steel', rod: 'steel', tmt: 'steel', sand: 'other', ret: 'other', bricks: 'other', eent: 'other', int: 'other' }
 
-function categoryFromText(text) {
+function categoryFromText(text, domain) {
   const toks = String(text || '').toLowerCase().split(/[^a-z]+/)
+  const cats = resolveProfile(domain).categoryTokens || CATEGORY_TOKENS
   for (const tok of toks) {
-    if (CATEGORY_TOKENS[tok]) return CATEGORY_TOKENS[tok]
+    if (cats[tok]) return cats[tok]
   }
   return null
 }
 
-function hasBrandToken(text) {
+function hasBrandToken(text, domain) {
   const low = String(text || '').toLowerCase()
-  return Object.keys(BRAND_CASE).some((b) => new RegExp('(^|[^a-z])' + b + '([^a-z]|$)', 'i').test(low))
+  const brand = resolveProfile(domain).brandCase || BRAND_CASE
+  return Object.keys(brand).some((b) => new RegExp('(^|[^a-z])' + b + '([^a-z]|$)', 'i').test(low))
 }
 
 function isAggregateAsk(text) {
@@ -186,8 +193,19 @@ function extractProductPhrase(text) {
   return m ? m[1].trim() : ''
 }
 
-export function hasProductToken(words) {
-  return words.some((w) => PRODUCT_ALIAS[String(w).toLowerCase()] || BRAND_CASE[String(w).toLowerCase()])
+// Multi-trip order command: "10 lakh ka bill, 2-5 july, 3 gaadi, 4 trip/day"
+export function detectOrderIntent(text) {
+  const t = String(text || '').toLowerCase()
+  const hasLakh = /(lakh|lac)/.test(t)
+  const hasTrips = /(\d+\s*trip|\d+\s*(gaadi|gadi|vehicle|truck))/.test(t)
+  const hasDate = /(july|jul|august|aug|september|sep|october|oct|november|nov|december|dec|january|jan|february|feb|march|mar|april|apr|june|jun|may)/.test(t)
+  return /bill|bana/i.test(t) && (hasLakh || hasTrips || hasDate)
+}
+
+export function hasProductToken(words, domain) {
+  const alias = (domain && domain.productAliases) || PRODUCT_ALIAS
+  const brand = (domain && domain.brandCase) || BRAND_CASE
+  return words.some((w) => alias[String(w).toLowerCase()] || brand[String(w).toLowerCase()])
 }
 
 function tokenize(s) {
@@ -272,7 +290,7 @@ function parseStockSegment(seg) {
   return null
 }
 
-function parseStock(text, numberFromHindiFn, stockItems = []) {
+function parseStock(text, numberFromHindiFn, stockItems = [], domain) {
   text = String(text || '').trim()
   const t = text.toLowerCase()
   const vehM = text.match(/([A-Za-z]{2}\s?\d{2}\s?[A-Za-z]{1,3}\s?\d{3,4})/) || String(text).replace(/\s+/g, '').match(/([A-Za-z]{2}\d{2}[A-Za-z]{1,3}\d{3,4})/)
@@ -351,9 +369,9 @@ function parseStock(text, numberFromHindiFn, stockItems = []) {
     }
   }
   if (items.length === 0 && wantsQuery) {
-    const cat = categoryFromText(text)
+    const cat = categoryFromText(text, domain)
     // --- CATEGORY aggregate (skip when a specific size/variant is named) ---
-    if (cat && !hasBrandToken(text) && !/\d+\s*mm/i.test(text) && isAggregateAsk(text)) {
+    if (cat && !hasBrandToken(text, domain) && !/\d+\s*mm/i.test(text) && isAggregateAsk(text)) {
       return { intent: 'stock_query', operation: 'query_category', category: cat, vehicleNo: '', driver, stated: null, source: 'voice' }
     }
     // --- specific item resolution ---
@@ -467,6 +485,8 @@ export function normalizeDevanagari(text) {
     .replace(/के रेट से/g, ' ke rate se ')
     .replace(/के रेट/g, ' ke rate ')
     .replace(/बिल बना दो|बिल बनाओ/g, ' bill bana do ')
+    .replace(/बिल/g, ' bill ')
+    .replace(/बनाना|बनाइए|बनाओ/g, ' bana ')
     .replace(/स्टॉक में|स्टॉक/g, ' stock ')
     .replace(/रुपए|रुपये|रूपये/g, ' rupaye ')
     .replace(/का/g, ' ka ')
@@ -479,9 +499,13 @@ export function normalizeDevanagari(text) {
     .replace(/(\d)\s*mm/g, '$1mm')
     .replace(/करो/g, ' karo ')
     .replace(/है|हैं/g, ' hai ')
+    .replace(/\bbil\b/gi, 'bill')
 }
 
-export function parseLocal(text, knownNames = [], stockItems = []) {
+export function parseLocal(text, knownNames = [], stockItems = [], domain) {
+  const profileOf = (d) => (d && d.stockHint ? d : resolveProfile(d))
+  const dom = profileOf(domain)
+  const stockHint = dom.stockHint || STOCK_HINT
   const raw = String(text || '').trim()
   if (!raw) return { intent: 'clarify', message: 'Kuch suna nahi. Fir bolo.' }
   // Normalize Devanagari Hindi to Latin Hinglish for parsing, but keep original for customer name
@@ -496,13 +520,13 @@ export function parseLocal(text, knownNames = [], stockItems = []) {
   }
 
   // 2) Sales report
-  if (/bikri|sales|kitna becha|report|kitna hua/i.test(t) && !STOCK_HINT.test(t)) {
+  if (/bikri|sales|kitna becha|report|kitna hua/i.test(t) && !stockHint.test(t)) {
     return { intent: 'query_report', query: normalizedRaw }
   }
 
   // 3) STOCK commands — checked BEFORE bill so "stock mein add karo" never becomes a bill
-  if (STOCK_HINT.test(t)) {
-    return parseStock(normalizedRaw, numberFromHindi, stockItems)
+  if (stockHint.test(t)) {
+    return parseStock(normalizedRaw, numberFromHindi, stockItems, domain)
   }
 
   // 4) Dispatch/delivery query
@@ -511,13 +535,13 @@ export function parseLocal(text, knownNames = [], stockItems = []) {
   }
 
   // 5) Create bill
-  if (/bill|bana|laga/i.test(t) || /\b(bag|bori|kg|ton|quintal|piece)\b/i.test(t) || /cement|sariya|steel|tmt/i.test(t)) {
+  if (/bill|bana|laga/i.test(t) || /\b(bag|bori|kg|ton|quintal|piece)\b/i.test(t) || /cement|sariya|steel|tmt/i.test(t) || hasProductToken(cleanProductWords(t.split(/\s+/)), domain)) {
     const customer = { name: findCustomer(normalizedRaw, knownNames), mobile: '' }
-    const items = extractItems(normalizedRaw)
+    const items = extractItems(normalizedRaw, domain)
     let missing = []
     if (!customer.name) missing.push('customer ka naam')
     if (items.length === 0) {
-      const fallbackItems = extractItems(normalizedRaw)
+      const fallbackItems = extractItems(normalizedRaw, domain)
       if (fallbackItems.length > 0) {
         items.push(...fallbackItems)
       }

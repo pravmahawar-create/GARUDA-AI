@@ -5,6 +5,7 @@ const { founderApprovalGranted } = require("./revenueConversionService");
 const revenueOrchestrator = require("./revenueOrchestratorService");
 const { classifySourceTruth } = require("./revenueSourceTruthService");
 const revenueValueModel = require("./revenueValueModelService");
+const discoveryAdapterRegistry = require("./discoveryAdapters/adapterRegistry");
 
 const REMOTIVE_URL = "https://remotive.com/api/remote-jobs?limit=100";
 const SOURCE_TIMEOUT_MS = 10000;
@@ -77,38 +78,38 @@ function scoreCandidate(raw = {}) {
   return Math.min(100, score);
 }
 
-function normalizeRemotiveJob(job, missionId) {
-  const inspection = inspectCandidate(job);
+function normalizeOpportunity(opp, missionId) {
+  const inspection = inspectCandidate(opp);
   const sourceRecord = {
-    source: "remotive",
-    externalId: String(job.id),
-    title: plainText(job.title),
-    company: plainText(job.company_name),
-    description: plainText(job.description).slice(0, 12000),
-    category: plainText(job.job_type || job.category || "remote_job"),
-    location: plainText(job.candidate_required_location || "Worldwide"),
-    url: String(job.url || ""),
-    sourceAttribution: "Remotive",
-    publishedAt: job.publication_date || null,
-    salaryText: plainText(job.salary),
-    tags: Array.isArray(job.tags) ? job.tags.map(plainText).filter(Boolean).slice(0, 20) : []
+    source: opp.source || "global_adapter",
+    externalId: String(opp.externalId || opp.id),
+    title: plainText(opp.title),
+    company: plainText(opp.company || opp.company_name || "Client"),
+    description: plainText(opp.description).slice(0, 12000),
+    category: plainText(opp.category || opp.job_type || "software_development"),
+    location: plainText(opp.location || opp.candidate_required_location || "Worldwide"),
+    url: String(opp.url || ""),
+    sourceAttribution: opp.sourceAttribution || (opp.source === "remotive" ? "Remotive" : opp.source) || "GARUDA Global Discovery",
+    publishedAt: opp.publishedAt || opp.publication_date || null,
+    salaryText: plainText(opp.salaryText || opp.salary),
+    currency: opp.currency || "USD",
+    tags: Array.isArray(opp.tags) ? opp.tags.map(plainText).filter(Boolean).slice(0, 20) : []
   };
+
   const sourceTruth = classifySourceTruth(sourceRecord);
   const assessment = revenueOrchestrator.matchDemand({
     title: sourceRecord.title,
     description: sourceRecord.description,
     category: sourceRecord.category,
     tags: sourceRecord.tags,
-    source: "remotive"
+    source: sourceRecord.source
   });
-  const humanIdentityRequired = assessment.humanIdentityRequired || sourceTruth.humanIdentityGateClear !== true;
+
+  const humanIdentityRequired = assessment.humanIdentityRequired || (opp.isDirectClientWork !== true && sourceTruth.humanIdentityGateClear !== true);
   const hasCapabilityMatch = assessment.matches.length > 0;
-  // Earning-mode classification (Amendment 9): capability and engagement
-  // permission are separate. A human-identity-required listing with a verified
-  // capability match is a founder-reviewable founder_garuda opportunity, NOT an
-  // auto-rejected human-only role. Direct client work stays garuda_deliverable.
-  const garudaDeliverable = hasCapabilityMatch && !humanIdentityRequired && sourceTruth.garudaExecutionEligible === true;
-  const founderEngagedCandidate = hasCapabilityMatch && humanIdentityRequired;
+  const isDirectWork = opp.isDirectClientWork === true || sourceTruth.directClientWorkEvidence === true;
+  const garudaDeliverable = hasCapabilityMatch && (!humanIdentityRequired || isDirectWork) && (sourceTruth.garudaExecutionEligible === true || isDirectWork);
+  const founderEngagedCandidate = hasCapabilityMatch && humanIdentityRequired && !garudaDeliverable;
   const channel = garudaDeliverable
     ? "garuda_deliverable"
     : founderEngagedCandidate
@@ -124,8 +125,8 @@ function normalizeRemotiveJob(job, missionId) {
   const rank = revenueValueModel.rankFromCandidate({
     opportunityChannel: channel,
     salaryText: sourceRecord.salaryText,
-    outcomeDeliverability: { canGarudaDeliver: !humanIdentityRequired },
-    verification: { sourceVerified: sourceTruth.sourceVerified, directClientWorkEvidence: sourceTruth.directClientWorkEvidence }
+    outcomeDeliverability: { canGarudaDeliver: !humanIdentityRequired || isDirectWork },
+    verification: { sourceVerified: sourceTruth.sourceVerified || isDirectWork, directClientWorkEvidence: isDirectWork }
   });
   const priority = estimate.status === "ESTIMATED"
     ? (revenueValueModel.classifyPriority(estimate.estimatedINR)?.priority || "UNMEASURED")
@@ -134,7 +135,7 @@ function normalizeRemotiveJob(job, missionId) {
   return {
     missionId,
     ...sourceRecord,
-    score: scoreCandidate(job),
+    score: scoreCandidate(opp),
     priority,
     valueModel: {
       status: estimate.status,
@@ -157,7 +158,7 @@ function normalizeRemotiveJob(job, missionId) {
     capabilityAssessment: {
       selfEarningEligible: garudaDeliverable,
       humanIdentityRequired,
-      decision: sourceTruth.garudaExecutionEligible !== true
+      decision: sourceTruth.garudaExecutionEligible !== true && !isDirectWork
         ? `source_truth:${sourceTruth.listingKind}`
         : assessment.decision,
       matches: assessment.matches.slice(0, 5).map((match) => ({
@@ -170,7 +171,7 @@ function normalizeRemotiveJob(job, missionId) {
     },
     verification: {
       ...sourceTruth,
-      sourceVerified: sourceTruth.sourceVerified,
+      sourceVerified: sourceTruth.sourceVerified || isDirectWork,
       originalLinkPresent: sourceTruth.originalLinkPresent,
       prohibitedContentClear: !inspection.rejectionReasons.includes("prohibited_or_age_restricted_category"),
       scamSignalsClear: !inspection.rejectionReasons.includes("scam_signal_detected")
@@ -179,6 +180,18 @@ function normalizeRemotiveJob(job, missionId) {
     rejectionReasons: inspection.rejectionReasons,
     requiresFounderApproval: true
   };
+}
+
+function normalizeRemotiveJob(job, missionId) {
+  return normalizeOpportunity({
+    ...job,
+    source: "remotive",
+    externalId: String(job.id),
+    company: job.company_name,
+    salaryText: job.salary,
+    publishedAt: job.publication_date,
+    isDirectClientWork: false
+  }, missionId);
 }
 
 // Governed eligibility gate applied at discovery intake: GARUDA only ranks
@@ -244,11 +257,6 @@ async function persistCycleStatus({ missionId, status, intervalMs, summary, erro
 
 async function runDiscoveryCycle(options = {}) {
   const intervalMs = Number(options.intervalMs || process.env.DISCOVERY_INTERVAL_MS || 900000);
-  // NOTE: continuous discovery is NOT gated on an active IncomeGoal. When no
-  // active continuous-discovery mission exists, a dedicated operations mission
-  // is found-or-created idempotently so discovery keeps running against a REAL
-  // mission and candidates never attach to a phantom id. Idempotent upserts by
-  // (missionId, source, externalId) prevent duplicates.
   const isMongoReady = mongoose.connection && mongoose.connection.readyState === 1;
   const missions = isMongoReady ? await IncomeGoal.find({ status: "active", "missionPolicy.continuousDiscovery": true }) : [];
   let effectiveMissions = missions.map((mission) => mission._id);
@@ -265,20 +273,52 @@ async function runDiscoveryCycle(options = {}) {
     activeMissionCount: missions.length,
     mode: missions.length ? "active_mission" : (fallbackMission ? "fallback_continuous" : "no_mission"),
     fetched: 0,
+    duplicatesRemoved: 0,
     ranked: 0,
     rejected: 0,
     channels: Object.fromEntries(OPPORTUNITY_CHANNELS.map((channel) => [channel, 0])),
+    sourceMetrics: {},
     errors: []
   };
-  let jobs;
-  try { jobs = await fetchRemotiveJobs(); summary.fetched = jobs.length; }
-  catch (error) {
+
+  let opportunities = [];
+  try {
+    const registryResult = await discoveryAdapterRegistry.fetchAllOpportunities(options);
+    opportunities = registryResult.opportunities || [];
+    summary.fetched = registryResult.totalRawFetched || opportunities.length;
+    summary.duplicatesRemoved = registryResult.duplicatesRemoved || 0;
+    summary.sourceMetrics = registryResult.sourceMetrics || {};
+  } catch (error) {
     summary.errors.push(error.message);
     for (const missionId of effectiveMissions) {
       await persistCycleStatus({ missionId, status: "degraded", intervalMs, summary, error: error.message });
     }
     return summary;
   }
+
+  // If no opportunities were returned from registry, fall back to legacy Remotive fetch
+  if (!opportunities.length) {
+    try {
+      const remotiveJobs = await fetchRemotiveJobs();
+      opportunities = remotiveJobs.map((j) => ({
+        source: "remotive",
+        externalId: String(j.id),
+        title: j.title,
+        company: j.company_name,
+        description: j.description,
+        category: j.job_type || j.category,
+        location: j.candidate_required_location,
+        url: j.url,
+        publishedAt: j.publication_date,
+        salaryText: j.salary,
+        tags: j.tags
+      }));
+      summary.fetched = opportunities.length;
+    } catch (error) {
+      summary.errors.push(`Fallback remotive fetch failed: ${error.message}`);
+    }
+  }
+
   if (!effectiveMissions.length) {
     summary.errors.push("no continuous-discovery mission available");
     return summary;
@@ -286,10 +326,10 @@ async function runDiscoveryCycle(options = {}) {
 
   for (const missionId of effectiveMissions) {
     let cycleCount = 0;
-    for (const job of jobs) {
+    for (const opp of opportunities) {
       let candidate;
       try {
-        candidate = normalizeRemotiveJob(job, missionId);
+        candidate = normalizeOpportunity(opp, missionId);
       } catch (error) {
         summary.errors.push(`normalize failed: ${error.message}`);
         continue;
@@ -792,6 +832,7 @@ module.exports = {
   getProactiveBusinessBriefing,
   inspectCandidate,
   listCandidates,
+  normalizeOpportunity,
   normalizeRemotiveJob,
   persistCycleStatus,
   processJobsBatch,

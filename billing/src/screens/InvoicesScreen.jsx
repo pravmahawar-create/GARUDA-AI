@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { db, getSetting } from '../db'
+import { db, getSetting, getInvoices } from '../db'
 import { inrFull } from '../lib/money'
 import { navigate } from '../App'
 import useCompanyScope from '../lib/useCompanyScope'
@@ -14,13 +14,19 @@ export default function InvoicesScreen() {
   const { scope, setScope, companies, activeId, matches } = useCompanyScope()
 
   useEffect(() => {
+    let cancelled = false
+    setInvoices([]) // INSTANT SYNCHRONOUS CLEAR TO PREVENT FLASHING OLD COMPANY DATA
     ;(async () => {
-      const list = await db.invoices.orderBy('createdAt').reverse().toArray()
-      setInvoices(list)
+      if (!activeId && scope !== 'all') return
+      const list = scope === 'all'
+        ? await db.invoices.orderBy('createdAt').reverse().toArray()
+        : await getInvoices(activeId)
+      if (!cancelled) setInvoices(list)
       const stored = await getSetting('kacchaMode', null)
-      setKacchaMode(stored === null ? true : Boolean(stored))
+      if (!cancelled) setKacchaMode(stored === null ? true : Boolean(stored))
     })()
-  }, [])
+    return () => { cancelled = true }
+  }, [activeId, scope])
 
   const shown = invoices
     .filter(matches)
@@ -49,7 +55,7 @@ export default function InvoicesScreen() {
       </header>
       <CompanyScopeBar scope={scope} setScope={setScope} activeName={companies.find((c) => c.id === activeId)?.name} companies={companies} />
       <div className="scope-bar">
-        <button className={`chip ${kacchaMode ? 'chip-active' : 'chip-other'}`} onClick={() => setKacchaMode((k) => !k)}>Kaccha {kacchaMode ? 'ON' : 'OFF'}</button>
+        <button className={`chip ${kacchaMode ? 'chip-active' : 'chip-other'}`} onClick={() => setKacchaMode((k) => !k)}>Non-GST {kacchaMode ? 'ON' : 'OFF'}</button>
         <button className={`chip ${showCancelled ? 'chip-active' : 'chip-other'}`} onClick={() => setShowCancelled((s) => !s)}>Cancelled</button>
       </div>
       <input className="input search-input" placeholder="Bill no / customer se dhundo" value={q} onChange={(e) => setQ(e.target.value)} />
@@ -57,7 +63,7 @@ export default function InvoicesScreen() {
         <div className="empty">
           <div className="empty-sigil"><Icon name="list" size={44} /></div>
           <div className="empty-title">No bills found</div>
-          <div className="empty-sub">{!kacchaMode && invoices.some((i) => matches(i) && i.billType === 'kaccha') ? 'Kaccha bills hidden — turn "Kaccha ON" above.' : 'Create your first bill to see it here.'}</div>
+          <div className="empty-sub">{!kacchaMode && invoices.some((i) => matches(i) && i.billType === 'kaccha') ? 'Non-GST bills hidden — turn "Non-GST ON" above.' : 'Create your first bill to see it here.'}</div>
         </div>
       )}
       {shown.map((i) => {
@@ -67,7 +73,7 @@ export default function InvoicesScreen() {
             <div>
               <div className="cust-name">
                 #{i.invoiceNo} — {i.customerName}
-                {i.billType === 'kaccha' && <span className="billtype-badge bt-kaccha" style={{ marginLeft: 6 }}>KACCHA</span>}
+                {i.billType === 'kaccha' && <span className="billtype-badge bt-kaccha" style={{ marginLeft: 6 }}>NON-GST</span>}
               </div>
               <div className="ip-muted" style={{ marginTop: 4 }}>{i.date}{scope === 'all' && i.companyName ? ' · ' + i.companyName : ''}</div>
               <span className={`status-badge ${st.cls}`} style={{ marginTop: 6 }}>{st.label}</span>

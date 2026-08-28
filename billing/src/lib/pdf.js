@@ -37,7 +37,7 @@ function dataUrlToBytes(dataUrl) {
 }
 
 function titleFor(invoice) {
-  return invoice.billType === 'kaccha' ? 'KACCHA BILL' : 'TAX INVOICE'
+  return invoice.billType === 'kaccha' ? 'NON-GST BILL' : 'TAX INVOICE'
 }
 
 function drawItemsTable(pg, font, bold, y, items, colX, colored = false, headColor = C.classic.a) {
@@ -205,7 +205,7 @@ async function renderClassic(pg, font, bold, invoice, company, customer, ctx) {
   const sellerLines = [
     company.address,
     company.phone && 'Phone: ' + company.phone,
-    invoice.billType !== 'kaccha' && company.gstin && 'GSTIN: ' + company.gstin
+    company.gstin && 'GSTIN: ' + company.gstin
   ].filter(Boolean)
   for (const l of sellerLines) {
     page.drawText(String(l), { x: 50, y, size: 9, font, color: GRAY })
@@ -241,7 +241,7 @@ async function renderModern(pg, font, bold, invoice, company, customer, ctx) {
   y -= 14
   if (company.address) { page.drawText(String(company.address), { x: 50, y, size: 9, font, color: rgb(0.9, 0.93, 0.97) }); y -= 12 }
   if (company.phone) { page.drawText('Phone: ' + String(company.phone), { x: 50, y, size: 9, font, color: rgb(0.9, 0.93, 0.97) }); y -= 12 }
-  if (invoice.billType !== 'kaccha' && company.gstin) { page.drawText('GSTIN: ' + String(company.gstin), { x: 50, y, size: 9, font, color: rgb(0.9, 0.93, 0.97) }); y -= 12 }
+  if (company.gstin) { page.drawText('GSTIN: ' + String(company.gstin), { x: 50, y, size: 9, font, color: rgb(0.9, 0.93, 0.97) }); y -= 12 }
   page.drawText(titleFor(invoice), { x: width - 200, y: 806, size: 16, font: bold, color: WHITE })
   page.drawText('#' + String(invoice.invoiceNo) + '  ·  ' + String(invoice.date), { x: width - 200, y: 786, size: 10, font, color: rgb(0.9, 0.93, 0.97) })
   y = 742
@@ -275,7 +275,7 @@ async function renderPremium(pg, font, bold, invoice, company, customer, ctx) {
   y -= 14
   if (company.address) { page.drawText(String(company.address), { x: 50, y, size: 9, font, color: rgb(0.82, 0.82, 0.9) }); y -= 12 }
   if (company.phone) { page.drawText('Phone: ' + String(company.phone), { x: 50, y, size: 9, font, color: rgb(0.82, 0.82, 0.9) }); y -= 12 }
-  if (invoice.billType !== 'kaccha' && company.gstin) { page.drawText('GSTIN: ' + String(company.gstin), { x: 50, y, size: 9, font, color: rgb(0.82, 0.82, 0.9) }); y -= 12 }
+  if (company.gstin) { page.drawText('GSTIN: ' + String(company.gstin), { x: 50, y, size: 9, font, color: rgb(0.82, 0.82, 0.9) }); y -= 12 }
   page.drawText(titleFor(invoice), { x: width - 200, y: 806, size: 16, font: bold, color: WHITE })
   page.drawText('No: ' + String(invoice.invoiceNo), { x: width - 200, y: 786, size: 10, font, color: rgb(0.82, 0.82, 0.9) })
   page.drawText('Date: ' + String(invoice.date), { x: width - 200, y: 772, size: 10, font, color: rgb(0.82, 0.82, 0.9) })
@@ -304,7 +304,7 @@ async function renderMinimal(pg, font, bold, invoice, company, customer, ctx) {
   page.drawText(String(company.name || '').toUpperCase(), { x: 50, y, size: 16, font: bold, color: C.minimal.a })
   y -= 14
   if (company.address) { page.drawText(String(company.address), { x: 50, y, size: 9, font, color: GRAY }); y -= 12 }
-  if (company.phone || company.gstin) { page.drawText([company.phone && 'Ph: ' + company.phone, invoice.billType !== 'kaccha' && company.gstin && 'GSTIN: ' + company.gstin].filter(Boolean).join('   '), { x: 50, y, size: 9, font, color: GRAY }); y -= 14 }
+  if (company.phone || company.gstin) { page.drawText([company.phone && 'Ph: ' + company.phone, company.gstin && 'GSTIN: ' + company.gstin].filter(Boolean).join('   '), { x: 50, y, size: 9, font, color: GRAY }); y -= 14 }
   page.drawLine({ start: { x: 50, y }, end: { x: 545, y }, thickness: 0.7, color: LINE })
   y -= 16
   page.drawText(titleFor(invoice) + ' #' + String(invoice.invoiceNo), { x: 50, y, size: 11, font: bold, color: C.minimal.a })
@@ -334,7 +334,7 @@ async function renderTransport(pg, font, bold, invoice, company, customer, ctx) 
   y -= 14
   if (company.address) { page.drawText(String(company.address), { x: 50, y, size: 9, font, color: rgb(0.97, 0.92, 0.85) }); y -= 12 }
   if (company.phone) { page.drawText('Phone: ' + String(company.phone), { x: 50, y, size: 9, font, color: rgb(0.97, 0.92, 0.85) }); y -= 12 }
-  if (invoice.billType !== 'kaccha' && company.gstin) { page.drawText('GSTIN: ' + String(company.gstin), { x: 50, y, size: 9, font, color: rgb(0.97, 0.92, 0.85) }); y -= 12 }
+  if (company.gstin) { page.drawText('GSTIN: ' + String(company.gstin), { x: 50, y, size: 9, font, color: rgb(0.97, 0.92, 0.85) }); y -= 12 }
   page.drawText(titleFor(invoice), { x: width - 200, y: 806, size: 15, font: bold, color: WHITE })
   page.drawText('#' + String(invoice.invoiceNo) + '  ·  ' + String(invoice.date), { x: width - 200, y: 786, size: 10, font, color: rgb(0.97, 0.92, 0.85) })
   y = 740
@@ -429,7 +429,7 @@ export async function buildKhataPdf(customer, invoices, payments, company) {
   page.drawText('BALANCE', { x: 500, y, size: 9, font: bold, color: WHITE })
   y -= 16
   const all = [
-    ...(invoices || []).map((i) => ({ date: i.date, desc: 'Bill #' + i.invoiceNo + (i.billType === 'kaccha' ? ' (Kaccha)' : ''), bill: i.totals?.grandTotal || 0, paid: 0 })),
+    ...(invoices || []).map((i) => ({ date: i.date, desc: 'Bill #' + i.invoiceNo + (i.billType === 'kaccha' ? ' (Non-GST)' : ''), bill: i.totals?.grandTotal || 0, paid: 0 })),
     ...(payments || []).map((p) => ({ date: p.date, desc: 'Payment (' + (p.mode || '') + ')', bill: 0, paid: p.amount }))
   ].sort((a, b) => String(a.date).localeCompare(String(b.date)))
   let running = 0

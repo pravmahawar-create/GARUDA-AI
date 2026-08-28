@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /founder
+Disallow: /revenue
+Disallow: /api/
+
+Sitemap: https://garudaos.in/sitemap.xml

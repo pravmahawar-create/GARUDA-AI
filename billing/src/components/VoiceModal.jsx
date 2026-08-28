@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { db, applyStockOp, getStockQty, findStockItem, getActiveCompany, canonicalName } from '../db'
+import { db, applyStockOp, getStockQty, findStockItem, getActiveCompany, canonicalName, convertToItemUnit, bagWeightFor, saveVehicle, getVehicles, getCustomers, getItems, saveCustomer, getPayments, recordPayment, getOrders, getOrderTrips, getSuppliers, getSupplierList, getSupplierLedger, getActiveCompanySession } from '../db'
 import { inrFull, calcBill } from '../lib/money'
 import { parseVoice, normalizeDevanagari } from '../lib/voice'
+import { resolveProfile } from '../lib/domainProfiles'
 import { ConversationManager } from '../lib/conversation'
 import { getCustomerHistory, findCustomerByRef } from '../lib/customerContext'
 import { executeCreateBill } from '../lib/voiceExecutor'
-import { recordPayment, getLedger, getLastPayment, getTotalPaid, customerOutstanding } from '../lib/ledger'
+import { createOrderWithTrips } from '../db'
+import { getLedger, getLastPayment, getTotalPaid, customerOutstanding } from '../lib/ledger'
 import UpiQrModal from './UpiQrModal'
 import { SpeechRecognition } from '@capacitor-community/speech-recognition'
 import { navigate } from '../App'
@@ -23,60 +25,111 @@ const withTimeout = (promise, ms, label) => Promise.race([
 function speak(text) {
   try {
     const u = new SpeechSynthesisUtterance(text)
-    u.lang = 'hi-IN'
+    u.lang = 'en-IN'
     u.rate = 0.95
     window.speechSynthesis.cancel()
     window.speechSynthesis.speak(u)
   } catch (e) {}
 }
 
-export default function VoiceModal({ open, onClose, initialCustomer }) {
+export default function VoiceModal({ open, onClose, initialCustomer = null }) {
   const [listening, setListening] = useState(false)
   const [transcript, setTranscript] = useState('')
-  const [result, setResult] = useState(null)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
+  const [result, setResult] = useState(null)
   const [errMsg, setErrMsg] = useState('')
   const [confirmedBill, setConfirmedBill] = useState(null)
   const [confirmedInvoiceId, setConfirmedInvoiceId] = useState(null)
+  const [customers, setCustomers] = useState([])
   const [stockResult, setStockResult] = useState(null)
-  const [company, setCompany] = useState(null)
-  const [clickDiag, setClickDiag] = useState(false)
   const [draftNote, setDraftNote] = useState('')
+  const [company, setCompany] = useState(null)
   const [financeDraft, setFinanceDraft] = useState(null)
-  const [inventoryDraft, setInventoryDraft] = useState(null)
   const [upiOpen, setUpiOpen] = useState(false)
   const [upiAmount, setUpiAmount] = useState(0)
-  const inventoryExecutedRef = useRef(false)
-  const recRef = useRef(null)
+  const [inventoryDraft, setInventoryDraft] = useState(null)
+  const [orderDraft, setOrderDraft] = useState(null)
+  const [vehicleDraft, setVehicleDraft] = useState(null)
+  const [clickDiag, setClickDiag] = useState(false)
+
   const mediaRef = useRef(null)
-  const streamRef = useRef(null)
+  const recRef = useRef(null)
   const chunksRef = useRef([])
+  const streamRef = useRef(null)
   const listenTimerRef = useRef(null)
+  const transcriptRef = useRef('')
+  const lastHandledTranscriptRef = useRef('')
+  const sttStateRef = useRef('IDLE') // IDLE | STARTING | LISTENING | STOPPING | ERROR
+  const inventoryExecutedRef = useRef(false)
+
   const conversation = useRef(new ConversationManager())
   const convoIdRef = useRef(null)
   const executingRef = useRef(false)
-  const langRef = useRef('hi-IN')
+  const langRef = useRef('en-IN')
   const restartTimerRef = useRef(null)
+  const companyRef = useRef(null)
 
   useEffect(() => {
     if (!open) return
-    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setConfirmedInvoiceId(null); setErrMsg(''); setStockResult(null); setDraftNote(''); setFinanceDraft(null); setUpiOpen(false); setInventoryDraft(null); inventoryExecutedRef.current = false
-    ;(async () => setCompany(await getActiveCompany()))()
-  }, [open])
+    setTranscript(''); setResult(null); setMessage(''); setConfirmedBill(null); setConfirmedInvoiceId(null); setErrMsg(''); setStockResult(null); setDraftNote(''); setFinanceDraft(null); setUpiOpen(false); setInventoryDraft(null); setOrderDraft(null); inventoryExecutedRef.current = false; lastHandledTranscriptRef.current = ''
+    ;(async () => {
+      const comp = await getActiveCompany()
+      companyRef.current = comp
+      setCompany(comp)
+
+      // Phase V2 Session Recovery & UI Restoration
+      const dbSess = await getActiveCompanySession(comp.id)
+      if (dbSess && dbSess.id) {
+        convoIdRef.current = dbSess.id
+        await conversation.current.restoreSessionFromDb(dbSess.id, comp.id)
+        const activeConvo = conversation.current.get(dbSess.id)
+        if (activeConvo && (activeConvo.customer || (activeConvo.items && activeConvo.items.length) || activeConvo.billType)) {
+          const rDraft = {
+            intent: 'create_bill',
+            customer: activeConvo.customer || { name: '' },
+            items: (activeConvo.items || []).map((it) => ({ name: it.name, qty: Number(it.qty), unit: it.unit || 'bag', rate: Number(it.rate) || 0, hsn: it.hsn || '' })),
+            transport: activeConvo.transport || {},
+            billType: activeConvo.billType,
+            customerGstin: activeConvo.gstin || '',
+            missing: []
+          }
+          setResult(rDraft)
+          setDraftNote(activeConvo.lastSummaryNote || 'Restored active bill draft from session.')
+          if (activeConvo.lastAssistantMessage) setMessage(activeConvo.lastAssistantMessage)
+          if (activeConvo.lastUserMessage) setTranscript(activeConvo.lastUserMessage)
+        }
+      } else {
+        const id = conversation.current.newConversation()
+        convoIdRef.current = id
+        if (initialCustomer) conversation.current.seedCustomer(id, initialCustomer)
+        await conversation.current.saveSessionToDb(id, comp.id)
+      }
+    })()
+  }, [open, initialCustomer])
 
   useEffect(() => {
-    const id = conversation.current.newConversation()
-    convoIdRef.current = id
-    if (initialCustomer) conversation.current.seedCustomer(id, initialCustomer)
-    return () => conversation.current.endConversation(id)
-  }, [initialCustomer])
+    if (!company || !companyRef.current) return
+    if (companyRef.current.id !== company.id) {
+      companyRef.current = company
+      conversation.current.endConversation(convoIdRef.current)
+      const id = conversation.current.newConversation()
+      convoIdRef.current = id
+      setOrderDraft(null); setFinanceDraft(null); setInventoryDraft(null); setVehicleDraft(null); setDraftNote(''); setResult(null)
+      setMessage('Company switch ho gaya. Naya session start hua.')
+    }
+  }, [company?.id])
 
   useEffect(() => {
     return () => {
       try { streamRef.current && streamRef.current.getTracks().forEach((t) => t.stop()) } catch (e) {}
       try { if (mediaRef.current) mediaRef.current.stop() } catch (e) {}
-      try { if (native) SpeechRecognition.stop() } catch (e) {}
+      try {
+        if (native && (sttStateRef.current === 'LISTENING' || sttStateRef.current === 'STARTING')) {
+          sttStateRef.current = 'IDLE'
+          SpeechRecognition.stop().catch(() => {})
+        }
+      } catch (e) {}
       if (listenTimerRef.current) clearTimeout(listenTimerRef.current)
       if (restartTimerRef.current) { clearTimeout(restartTimerRef.current); restartTimerRef.current = null }
     }
@@ -89,7 +142,10 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
   const stop = async () => {
     clearListenTimer()
     if (restartTimerRef.current) { clearTimeout(restartTimerRef.current); restartTimerRef.current = null }
-    try { if (native) await SpeechRecognition.stop() } catch (e) {}
+    if (native && (sttStateRef.current === 'LISTENING' || sttStateRef.current === 'STARTING')) {
+      try { await SpeechRecognition.stop() } catch (e) {}
+    }
+    sttStateRef.current = 'IDLE'
     try { if (mediaRef.current) mediaRef.current.stop() } catch (e) {}
     try { recRef.current && recRef.current.stop() } catch (e) {}
     setListening(false)
@@ -267,12 +323,12 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
           return
         }
         if (!avail || !avail.available) { setMessage('Is phone par voice recognition available nahi hai.'); console.log('[VOICE ERROR] not available'); setListening(false); clearListenTimer(); return }
-        let lang = 'hi-IN'
+        let lang = 'en-IN'
         try {
           const sup = await withTimeout(SpeechRecognition.getSupportedLanguages(), 3000, 'getSupportedLanguages')
           const list = sup && sup.languages ? sup.languages : []
-          if (list.length && !list.includes('hi-IN') && !list.includes('hi')) lang = 'en-IN'
-        } catch (e) { console.log('[VOICE] getSupportedLanguages timeout/error, using hi-IN') }
+          if (list.length && !list.includes('en-IN') && list.includes('en-US')) lang = 'en-US'
+        } catch (e) { console.log('[VOICE] getSupportedLanguages timeout/error, using en-IN') }
         langRef.current = lang
         console.log('[VOICE] start lang=' + lang)
         setListening(true); setTranscript(''); setMessage('Sun raha hoon… (' + lang + ') pura bolo'); setResult(null)
@@ -293,7 +349,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
       return startRecording()
     }
     const rec = new SpeechRec()
-    rec.lang = 'hi-IN'
+    rec.lang = 'en-IN'
     rec.interimResults = true
     rec.continuous = false
     rec.onresult = (e) => {
@@ -324,7 +380,6 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
     listenTimerRef.current = setTimeout(() => { try { rec.stop() } catch (e) {} }, LISTEN_MAX_MS)
   }
 
-  const transcriptRef = useRef('')
   useEffect(() => { transcriptRef.current = transcript }, [transcript])
 
   const handle = async (text) => {
@@ -344,13 +399,13 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
     try {
       stage = 'db_customers'
       console.log('[VOICE_DB_CUSTOMERS_BEFORE]')
-      customers = await withTimeout(db.customers.toArray(), 5000, 'db customers')
+      customers = await withTimeout(getCustomers(company ? company.id : null), 5000, 'db customers')
       console.log('[VOICE_DB_CUSTOMERS_AFTER] count=' + customers.length)
       stage = 'db_items'
-      const stockItems = await withTimeout(db.items.toArray(), 5000, 'db items')
+      const stockItems = await withTimeout(getItems(company ? company.id : null), 5000, 'db items')
       stage = 'parse'
       console.log('[VOICE_PARSE_BEFORE]')
-      parsed = await parseVoice(text, customers.map((c) => c.name), apiBase, stockItems)
+      parsed = await parseVoice(text, customers.map((c) => c.name), apiBase, stockItems, resolveProfile(company))
       console.log('[VOICE_PARSE_AFTER] ' + JSON.stringify(parsed).slice(0,800))
       console.log('[VOICE_INTENT] ' + (parsed && parsed.intent))
       stage = 'exec_' + (parsed && parsed.intent)
@@ -360,9 +415,16 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
       const isNonBill = ['query_outstanding', 'query_report', 'query_delivery', 'stock_entry', 'stock_query', 'stock_ledger_query'].includes(parsed.intent)
       if (!isNonBill) {
         // BILL / FIELD / CLARIFY turn → conversational layer (never auto-executes)
-        const bizCtx = { customers, stockItems, company, getHistory: (cid) => getCustomerHistory(cid), resolveCustomer: (name) => findCustomerByRef(customers, name) }
+        const bizCtx = { customers, stockItems, company, domain: resolveProfile(company), getHistory: (cid) => getCustomerHistory(cid, company ? company.id : null), resolveCustomer: (name) => findCustomerByRef(customers, name, company ? company.id : null) }
         const turn = await conversation.current.processTurn(convoIdRef.current, text, parsed, bizCtx)
         setDraftNote(turn.summary || '')
+        const curConvo = conversation.current.get(convoIdRef.current)
+        if (curConvo) {
+          curConvo.lastUserMessage = text
+          curConvo.lastAssistantMessage = turn.message || ''
+          curConvo.lastSummaryNote = turn.summary || ''
+        }
+        await conversation.current.saveSessionToDb(convoIdRef.current, companyRef.current?.id || (company ? company.id : null))
         if (turn.status === 'execute') {
           try {
             executingRef.current = true
@@ -414,6 +476,84 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
         }
         if (turn.status === 'payment_needs_info') {
           setResult(null); setFinanceDraft(null); setMessage(turn.message); speak(turn.message); return
+        }
+        if (turn.status === 'vehicle_needs_info') {
+          setResult(null); setFinanceDraft(null); setVehicleDraft(null); setMessage(turn.message); speak(turn.message); return
+        }
+        if (turn.status === 'vehicle_confirm') {
+          setResult(null); setFinanceDraft(null); setVehicleDraft({ number: turn.summary || '' }); setMessage(turn.message); speak(turn.message); return
+        }
+        if (turn.status === 'vehicle_execute') {
+          try {
+            const v = conversation.current.get(convoIdRef.current) && conversation.current.get(convoIdRef.current).vehicle
+            if (!v || v.executed || !v.number || !v.capacity) { setMessage('Vehicle details nahi hain.'); return }
+            const saved = await saveVehicle(v)
+            conversation.current.markVehicleExecuted(convoIdRef.current)
+            setVehicleDraft(null)
+            const msg = 'Vehicle ' + saved.number + ' add ho gaya — capacity ' + saved.capacity + ' ' + saved.unit + '.'
+            setMessage(msg); speak(msg)
+          } catch (e) { console.error('[GARUDA] vehicle error:', e); setErrMsg('Vehicle add nahi hua: ' + (e && e.message ? e.message : e)) }
+          return
+        }
+        if (turn.status === 'vehicle_query') {
+          const vs = await getVehicles()
+          const msg = vs.length ? (vs.length + ' vehicles registered hain.') : 'Abhi koi vehicle registered nahi hai.'
+          setMessage(msg); speak(msg)
+          return
+        }
+        if (turn.status === 'order_needs_info') {
+          const od = conversation.current.get(convoIdRef.current) && conversation.current.get(convoIdRef.current).order
+          setOrderDraft(od ? { ...od } : null)
+          setResult(null); setMessage(turn.message); speak(turn.message); return
+        }
+        if (turn.status === 'order_confirm') {
+          const od = conversation.current.get(convoIdRef.current) && conversation.current.get(convoIdRef.current).order
+          setOrderDraft(od ? { ...od } : null)
+          setResult(null); setMessage(turn.message); speak('Order review. Banau?'); return
+        }
+        if (turn.status === 'order_execute') {
+          try {
+            const o = conversation.current.get(convoIdRef.current) && conversation.current.get(convoIdRef.current).order
+            if (!o || o.executed || !o.customer || !o.customer.name || !o.value || !o.product || !o.rate) { setMessage('Order details nahi hain.'); return }
+            // Auto-register any vehicle numbers that are not in the registry yet
+            for (const vno of (o.vehicleNos || [])) {
+              const existing = (await getVehicles()).find((v) => v.number === vno)
+              if (!existing) await saveVehicle({ number: vno, type: '', capacity: 0, unit: 'kg' })
+            }
+            const qty = Math.round((o.value / o.rate) * 100) / 100
+            const billParsed = {
+              intent: 'create_bill',
+              customer: { name: o.customer.name, mobile: '', gstin: '' },
+              items: [{ name: o.product, qty, unit: o.unit || 'kg', rate: o.rate, hsn: '' }],
+              billType: 'kaccha',
+              missing: []
+            }
+            const { invoice, totals } = await executeCreateBill(billParsed, company)
+            const order = {
+              id: 'ord' + Date.now(),
+              invoiceNo: invoice.invoiceNo,
+              customerId: invoice.customerId,
+              customerName: invoice.customerName,
+              companyId: company ? company.id : '',
+              value: o.value,
+              startDate: o.startDate,
+              endDate: o.endDate,
+              vehicles: o.vehicles || 1,
+              tripsPerDay: o.tripsPerDay || 1,
+              product: o.product,
+              rate: o.rate,
+              status: 'created',
+              createdAt: new Date().toISOString()
+            }
+            const { trips } = await createOrderWithTrips(order)
+            conversation.current.markOrderExecuted(convoIdRef.current)
+            setOrderDraft(null)
+            setConfirmedBill(invoice.invoiceNo)
+            setConfirmedInvoiceId(invoice.id)
+            const msg = 'Bill #' + invoice.invoiceNo + ' ban gaya — ' + invoice.customerName + ' ₹' + totals.grandTotal.toLocaleString('en-IN') + '. ' + trips.length + ' trips planned.'
+            setMessage(msg); speak('Bill ban gaya. ' + trips.length + ' trips planned.')
+          } catch (e) { console.error('[GARUDA] order error:', e); setErrMsg('Order nahi bana: ' + (e && e.message ? e.message : e)) }
+          return
         }
         if (turn.status === 'payment_execute') {
           try {
@@ -524,22 +664,29 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
       } else if (parsed.intent === 'stock_entry') {
         console.log('[VOICE] executor stock_entry start', parsed)
         const op = parsed.operation || 'add'
-        // SAFETY: never mutate on ambiguous/conflicting input — clarify instead.
-        const allItems = await db.items.toArray()
+        const allItems = await getItems(company ? company.id : null)
         const steelFamily = (name) => {
           const n = String(name || '').toLowerCase()
           return /sariya|tmt|steel|rod/.test(n)
         }
         const sizeOf = (name) => (String(name || '').match(/\d+mm/) || [])[0] || ''
         for (const it of (parsed.items || [])) {
-          const target = await findStockItem(it.name)
+          const target = await findStockItem(it.name, company ? company.id : null)
           if (target) {
-            // Unit mismatch: never silently use a different unit than the item's inventory unit.
+            // Unit mismatch: auto-convert weight→bag (e.g. "50 ton cement" = 1000 bag when 1 bag = 50 kg),
+            // otherwise clarify — never silently use a different unit.
             if (it.unit && target.unit && String(it.unit).toLowerCase() !== String(target.unit).toLowerCase()) {
-              const msg = it.name + ' ' + target.unit + ' mein hai — aapne ' + it.unit + ' kaha. ' + it.qty + ' ' + target.unit + ' hi sahi lagega. Dobara bolo.'
-              setMessage(msg); speak(msg)
-              setStockResult({ operation: 'clarify', lines: [msg] })
-              return
+              const conv = convertToItemUnit(target, it.qty, it.unit)
+              if (conv) {
+                const note = it.name + ': ' + it.qty + ' ' + it.unit + ' = ' + conv.qty + ' ' + conv.unit + ' (1 ' + conv.unit + ' = ' + bagWeightFor(target) + ' kg)'
+                it.qty = conv.qty; it.unit = conv.unit
+                console.log('[VOICE] auto-converted', note)
+              } else {
+                const msg = it.name + ' ' + target.unit + ' mein hai — aapne ' + it.unit + ' kaha. ' + it.qty + ' ' + target.unit + ' hi sahi lagega. Dobara bolo.'
+                setMessage(msg); speak(msg)
+                setStockResult({ operation: 'clarify', lines: [msg] })
+                return
+              }
             }
             // Size ambiguity: sariya/tmt/steel without a size when multiple sizes exist.
             if (!sizeOf(it.name) && steelFamily(it.name)) {
@@ -587,21 +734,26 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
         setMessage(fullMsg)
         speak(msg)
       } else if (parsed.intent === 'stock_query') {
+        const activeCompId = company ? company.id : null
+        console.log('[REAL_DB_QUERY_COMPANY_ID]', activeCompId)
         // Category aggregate query — sum real persisted items in that category
         if (parsed.operation === 'query_category') {
           const cat = parsed.category
-          const all = await db.items.toArray()
+          console.log('[REAL_DB_QUERY]', 'querying all items for category: ' + cat + ', companyId: ' + activeCompId)
+          const all = await getItems(activeCompId)
           const label = cat === 'cement' ? 'Cement' : cat === 'steel' ? 'Steel' : 'Other'
-          const rawMembers = all.filter((it) => cat === 'other' ? !['cement', 'steel'].includes(it.category) : it.category === cat)
+          const rawMembers = all.filter((it) => cat === 'other' ? !['cement', 'steel'].includes(it.category) : (it.category === cat || String(it.name).toLowerCase().includes(cat)))
+          console.log('[REAL_DB_RESULT]', JSON.stringify(rawMembers.map((m) => ({ name: m.name, qty: m.qty, unit: m.unit }))))
           // Merge canonical duplicates (e.g. "ACC Cement" + "Cement - ACC" are one product)
           const mergedMap = new Map()
           for (const it of rawMembers) {
-            const key = canonicalName(it.name)
+            const key = (typeof canonicalName === 'function' ? canonicalName(it.name || '') : String(it.name || '').toLowerCase().replace(/[^a-z0-9]/g, ''))
             if (!mergedMap.has(key)) {
-              mergedMap.set(key, { ...it, aliases: 1 })
+              mergedMap.set(key, { ...it, qty: Number(it.qty || 0), aliases: 1 })
             } else {
               const cur = mergedMap.get(key)
               cur.aliases += 1
+              cur.qty = Number(cur.qty || 0) + Number(it.qty || 0)
               if (it.name.length < cur.name.length) cur.name = it.name
             }
           }
@@ -612,14 +764,20 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
             setStockResult({ operation: 'query_category', lines: [msg], category: cat, members: [] })
           } else {
             const byUnit = {}
+            let grandTotal = 0
             for (const it of members) {
               const u = it.unit || 'bag'
-              byUnit[u] = (byUnit[u] || 0) + Number(it.qty || 0)
+              const q = Number(it.qty || 0)
+              byUnit[u] = (byUnit[u] || 0) + q
+              grandTotal += q
             }
-            const parts = Object.entries(byUnit).map(([u, v]) => v + ' ' + u)
-            const msg = label + ': ' + parts.join(' + ') + ' (' + members.length + ' item)'
-            setMessage(msg); speak(label + ': ' + parts.join(' + '))
-            setStockResult({ operation: 'query_category', lines: [msg], category: cat, members: members.map((m) => ({ name: m.name, qty: Number(m.qty || 0), unit: m.unit })) })
+            console.log('[REAL_DB_SUM_CALCULATION]', members.map((m) => `${m.name}: ${m.qty}`).join(' + ') + ' = ' + grandTotal)
+            const parts = Object.entries(byUnit).map(([u, v]) => v.toLocaleString('en-IN') + ' ' + u + 's')
+            const msg = `Total ${grandTotal.toLocaleString('en-IN')} bags ${label.toLowerCase()} hai.`
+            const fullMsg = `${msg} (${members.map((m) => m.name + ': ' + Number(m.qty || 0).toLocaleString('en-IN') + ' ' + (m.unit || 'bag')).join(' + ')})`
+            setMessage(fullMsg)
+            speak(msg)
+            setStockResult({ operation: 'query_category', lines: [fullMsg], category: cat, members: members.map((m) => ({ name: m.name, qty: Number(m.qty || 0), unit: m.unit })) })
           }
           return
         }
@@ -627,7 +785,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
         // If a stated qty was captured ("ACC cement ka stock 120 bag hai") show current and offer Set
         if (parsed.stated) {
           const target = names[0] || ''
-          const curItem = target ? await findStockItem(target) : null
+          const curItem = target ? await findStockItem(target, company ? company.id : null) : null
           const cur = curItem ? Number(curItem.qty || 0) : 0
           const curName = (curItem && curItem.name) || target || 'Item'
           const msg = curName + ' ka stock abhi ' + cur + ' ' + (curItem?.unit || 'bag') + ' hai — aapne kaha ' + parsed.stated.qty + ' ' + parsed.stated.unit + '. Set karna hai?'
@@ -638,27 +796,36 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
         }
         if (names.length) {
           const lines = []
+          let sumTotal = 0
+          let commonUnit = 'bag'
           for (const n of names) {
-            const it = await findStockItem(n)
+            const it = await findStockItem(n, company ? company.id : null)
             const qty = it ? Number(it.qty || 0) : 0
             const unit = (it && it.unit) || 'bag'
+            commonUnit = unit
             const label = (it && it.name) || n
-            lines.push(label + ': ' + qty + ' ' + unit)
+            lines.push(label + ': ' + qty.toLocaleString('en-IN') + ' ' + unit)
+            sumTotal += qty
           }
-          const msg = lines.join(' — ')
-          setMessage(msg); speak(msg)
-          setStockResult({ operation: 'query', lines })
+          let msg = lines.join(' — ')
+          let speakMsg = msg
+          if (names.length > 1) {
+            msg += ` (Total: ${sumTotal.toLocaleString('en-IN')} ${commonUnit}s)`
+            speakMsg = names.length === 2 ? `${names.join(' aur ')} total ${sumTotal.toLocaleString('en-IN')} ${commonUnit} hai.` : msg
+          }
+          setMessage(msg); speak(speakMsg)
+          setStockResult({ operation: 'query', lines: [msg] })
         } else {
-          const all = await db.items.toArray()
+          const all = await getItems(company ? company.id : null)
           if (!all.length) { setMessage('Stock mein koi item nahi hai.'); speak('Stock khali hai') }
           else {
-            const qtyLines = all.slice(0, 8).map((it) => it.name + ' ' + Number(it.qty || 0) + ' ' + it.unit)
+            const qtyLines = all.slice(0, 8).map((it) => it.name + ' ' + Number(it.qty || 0).toLocaleString('en-IN') + ' ' + it.unit)
             const msg = qtyLines.join(' — ')
             setMessage(msg); setStockResult({ operation: 'query_all', lines: [msg] })
           }
         }
       } else if (parsed.intent === 'stock_ledger_query') {
-        const allItems = await db.items.toArray()
+        const allItems = await getItems(company ? company.id : null)
         const catOf = (itemName) => {
           const key = canonicalName(itemName)
           const hit = allItems.find((it) => canonicalName(it.name) === key)
@@ -669,7 +836,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
           return 'other'
         }
         const catLabel = (c) => c === 'cement' ? 'Cement' : c === 'steel' ? 'Steel' : 'Other'
-        const txs = await db.stockTransactions.toArray()
+        const txs = await db.stockTransactions.where('companyId').equals(company ? company.id : '').toArray()
         const scope = parsed.scope || 'inward'
         const today = new Date().toISOString().slice(0, 10)
         const inTxs = txs.filter((t) => t.movementType === 'stock_in' || t.movementType === 'opening')
@@ -688,7 +855,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
           if (matches.length) msg = 'Aaj ka inward: ' + groupByItem(matches)
         } else if (scope === 'last_incoming') {
           const name = parsed.itemName || ''
-          const target = name ? await findStockItem(name) : null
+          const target = name ? await findStockItem(name, company ? company.id : null) : null
           const targetName = target ? target.name : name
           const matches = inTxs.filter((t) => !targetName || String(t.itemName).toLowerCase() === String(targetName).toLowerCase())
           const last = matches.slice().sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')))[0]
@@ -709,7 +876,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
       }
     } catch (e) {
       setBusy(false)
-      console.log('[VOICE_ERROR] ' + stage + ' ' + (e && e.message ? e.message : e))
+      console.error('[VOICE_HANDLE_ERROR] stage=' + stage, e)
       setErrMsg('Error: ' + (e && e.message ? e.message : e))
     } finally {
       console.log('[VOICE_HANDLE_FINALLY]')
@@ -729,7 +896,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
       conversation.current.markExecuted(convoIdRef.current, invoice)
       setConfirmedBill(invoice.invoiceNo)
       setConfirmedInvoiceId(invoice.id)
-      speak((invoice.billType === 'kaccha' ? 'Kaccha bill ban gaya' : 'Bill ban gaya') + '. Invoice number ' + invoice.invoiceNo)
+      speak((invoice.billType === 'kaccha' ? 'Non-GST bill ban gaya' : 'Bill ban gaya') + '. Invoice number ' + invoice.invoiceNo)
       setMessage('Bill created successfully — #' + invoice.invoiceNo + ' — ' + invoice.customerName + ' — ' + totals.grandTotal.toLocaleString('en-IN') + ' rupaye')
     } catch (e) {
       console.error('[GARUDA] voice create error:', e)
@@ -761,6 +928,18 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
     } catch (e) { console.error('[GARUDA] payment error:', e); setErrMsg('Payment nahi hua: ' + (e && e.message ? e.message : e)) }
   }
 
+  const confirmVehicle = async () => {
+    try {
+      const v = conversation.current.get(convoIdRef.current) && conversation.current.get(convoIdRef.current).vehicle
+      if (!v || v.executed || !v.number || !v.capacity) { setMessage('Vehicle details nahi hain.'); return }
+      const saved = await saveVehicle(v)
+      conversation.current.markVehicleExecuted(convoIdRef.current)
+      setVehicleDraft(null)
+      const msg = 'Vehicle ' + saved.number + ' add ho gaya — capacity ' + saved.capacity + ' ' + saved.unit + '.'
+      setMessage(msg); speak(msg)
+    } catch (e) { console.error('[GARUDA] vehicle error:', e); setErrMsg('Vehicle add nahi hua: ' + (e && e.message ? e.message : e)) }
+  }
+
   const confirmInventory = async () => {
     try {
       if (inventoryExecutedRef.current) { setMessage('Inventory already commit ho gaya tha.'); return }
@@ -768,14 +947,14 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
       if (!items || !items.length) { setMessage('Inventory khali hai.'); return }
       inventoryExecutedRef.current = true
       for (const it of items) {
-        const target = await findStockItem(it.name)
+        const target = await findStockItem(it.name, company ? company.id : null)
         if (target && it.unit && target.unit && String(it.unit).toLowerCase() !== String(target.unit).toLowerCase()) {
           inventoryExecutedRef.current = false
           setInventoryDraft(null)
           setErrMsg(it.name + ' ' + target.unit + ' mein hai — aapne ' + it.unit + ' kaha. Item skip kar diya.')
           return
         }
-        await applyStockOp({ name: it.name, qty: it.qty, unit: it.unit, operation: 'add', sourceType: 'inward' })
+        await applyStockOp({ name: it.name, qty: it.qty, unit: it.unit, operation: 'add', sourceType: 'inward', companyId: company ? company.id : null })
       }
       setInventoryDraft(null)
       setMessage('Inventory commit ho gaya — ' + items.length + ' item add hua.')
@@ -804,6 +983,27 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
         {listening && !busy && <div className="status">Listening…</div>}
         {errMsg && <div className="err">{errMsg}</div>}
         {draftNote && !result && <div className="card"><div className="vm-sec">Draft so far</div><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{draftNote}</div></div>}
+        {orderDraft && (
+          <div className="card">
+            <div className="vm-sec vm-accent">ORDER DRAFT</div>
+            <div className="vm-block">
+              <div className="vc-item"><span>Customer</span><span>{orderDraft.customer && orderDraft.customer.name ? orderDraft.customer.name : '—'}</span></div>
+              <div className="vc-item"><span>Amount</span><span>{orderDraft.value ? inrFull(orderDraft.value) : '—'}</span></div>
+              <div className="vc-item"><span>Product</span><span>{orderDraft.product || '—'}</span></div>
+              <div className="vc-item"><span>Rate</span><span>{orderDraft.rate ? inrFull(orderDraft.rate) + '/' + (orderDraft.unit || 'kg') : '—'}</span></div>
+              <div className="vc-item"><span>Dates</span><span>{orderDraft.startDate && orderDraft.endDate ? orderDraft.startDate.slice(5) + ' → ' + orderDraft.endDate.slice(5) : '—'}</span></div>
+              <div className="vc-item"><span>Vehicles</span><span>{orderDraft.vehicleNos && orderDraft.vehicleNos.length ? orderDraft.vehicleNos.join(', ') : (orderDraft.vehicles ? orderDraft.vehicles + ' gaadi (numbers nahi)' : '—')}</span></div>
+              <div className="vc-item"><span>Capacity</span><span>{orderDraft.capacity ? orderDraft.capacity + ' ' + (orderDraft.capacityUnit || 'kg') : '—'}</span></div>
+              <div className="vc-item"><span>Trips/day</span><span>{orderDraft.tripsPerDay || '—'}</span></div>
+            </div>
+            {orderDraft.customer && orderDraft.customer.name && orderDraft.value && orderDraft.product && orderDraft.rate && orderDraft.vehicleNos && orderDraft.vehicleNos.length && orderDraft.capacity && (
+              <div className="actions" style={{ marginTop: 8 }}>
+                <button className="primary" onClick={() => { handle('haan bana do') }}><Icon name="check" size={14} /> Confirm & Create Order</button>
+                <button className="ghost" onClick={() => { conversation.current.discard(convoIdRef.current); setOrderDraft(null); setMessage('') }}>Cancel</button>
+              </div>
+            )}
+          </div>
+        )}
         {message && !['stock_entry', 'stock_query', 'query_outstanding', 'query_report', 'query_delivery', 'clarify'].includes(result?.intent) && (
           <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>
         )}
@@ -885,6 +1085,17 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
           </div>
         )}
 
+        {vehicleDraft && (
+          <div className="card">
+            <div className="vm-sec vm-accent">Vehicle</div>
+            <div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div>
+            <div className="actions" style={{ marginTop: 8 }}>
+              <button className="primary" onClick={confirmVehicle}><Icon name="check" size={14} /> Confirm & Add Vehicle</button>
+              <button className="ghost" onClick={() => { conversation.current.get(convoIdRef.current) && (conversation.current.get(convoIdRef.current).vehicle = null); setVehicleDraft(null) }}>Cancel</button>
+            </div>
+          </div>
+        )}
+
         {inventoryDraft && inventoryDraft.length > 0 && (
           <div className="card">
             <div className="vm-sec vm-accent">Inventory Review</div>
@@ -898,7 +1109,7 @@ export default function VoiceModal({ open, onClose, initialCustomer }) {
 
         {!result && message && !busy && !listening && !financeDraft && !inventoryDraft && <div className="card"><div className="answer" style={{ whiteSpace: 'pre-wrap' }}>{message}</div></div>}
 
-        {upiOpen && <UpiQrModal open={upiOpen} onClose={() => setUpiOpen(false)} company={company} amount={upiAmount} ref={confirmedInvoiceId ? 'Inv-' + confirmedInvoiceId : ''} />}
+        {upiOpen && <UpiQrModal open={upiOpen} onClose={() => setUpiOpen(false)} company={company} amount={upiAmount} txnRef={confirmedInvoiceId ? 'Inv-' + confirmedInvoiceId : ''} />}
       </div>
     </div>
   )

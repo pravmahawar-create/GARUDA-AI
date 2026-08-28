@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { navigate } from '../App'
-import { db, getCompanies, getActiveCompany, setActiveCompany } from '../db'
+import { db, getCompanies, getActiveCompany, setActiveCompany, getInvoices, getPayments } from '../db'
 import { syncNow } from '../lib/sync'
 import VoiceModal from '../components/VoiceModal'
 import GarudaSigil from '../components/GarudaSigil'
@@ -13,6 +13,9 @@ const COMMANDS = [
   { id: 'invoices', label: 'Invoices', sub: 'Purane bills', icon: 'list' },
   { id: 'stock', label: 'Stock / Rates', sub: 'Cement · steel · rate list', icon: 'stack' },
   { id: 'transport', label: 'Transport', sub: 'Deliveries, vehicle, LR', icon: 'truck' },
+  { id: 'vehicles', label: 'Vehicles', sub: 'Gaadi register, capacity', icon: 'truck' },
+  { id: 'inventory', label: 'Inventory', sub: 'Supplier arrivals, ledger', icon: 'stack' },
+  { id: 'orders', label: 'Orders', sub: 'Multi-trip order bills', icon: 'list' },
   { id: 'reports', label: 'Reports', sub: 'Bechna, baki, GST', icon: 'chart' },
   { id: 'import', label: 'Import', sub: 'Photo / PDF se', icon: 'scan' }
 ]
@@ -31,6 +34,33 @@ export default function HomeScreen() {
   const [syncBadge, setSyncBadge] = useState('')
   const [kpi, setKpi] = useState(null)
   const [recent, setRecent] = useState([])
+  const activeCompIdRef = useRef(null)
+
+  const loadHomeData = async (actComp) => {
+    if (!actComp) return
+    activeCompIdRef.current = actComp.id
+    const invoices = await getInvoices(actComp.id)
+    const payments = await getPayments(actComp.id)
+    if (activeCompIdRef.current !== actComp.id) return // Race condition guard
+
+    const today = new Date().toISOString().slice(0, 10)
+    const live = invoices.filter((i) => i.status !== 'cancelled')
+    const todaySales = live.filter((i) => i.date === today).reduce((s, i) => s + (i.totals?.grandTotal || 0), 0)
+    const billed = live.reduce((s, i) => s + (i.totals?.grandTotal || 0), 0)
+    const custIds = new Set(live.map((i) => i.customerId))
+    const paid = payments.filter((p) => custIds.has(p.customerId)).reduce((s, p) => s + (p.amount || 0), 0)
+
+    setKpi({
+      todaySales,
+      collection: paid,
+      outstanding: Math.max(0, billed - paid),
+      bills: live.length
+    })
+    setRecent(invoices.slice(0, 5))
+
+    const s = await syncNow()
+    setSyncBadge(s.ok ? (s.pushed ? `Synced ${s.pushed}` : 'In sync') : `Pending ${s.queued}`)
+  }
 
   useEffect(() => {
     ;(async () => {
@@ -38,32 +68,28 @@ export default function HomeScreen() {
       const act = await getActiveCompany()
       setCompanies(comps)
       setActive(act)
-
-      const invoices = (await db.invoices.toArray()).filter((i) => !i.companyId || i.companyId === act.id)
-      const payments = await db.payments.toArray()
-      const today = new Date().toISOString().slice(0, 10)
-      const live = invoices.filter((i) => i.status !== 'cancelled')
-      const todaySales = live.filter((i) => i.date === today).reduce((s, i) => s + i.totals.grandTotal, 0)
-      const billed = live.reduce((s, i) => s + i.totals.grandTotal, 0)
-      const custIds = new Set(live.map((i) => i.customerId))
-      const paid = payments.filter((p) => custIds.has(p.customerId)).reduce((s, p) => s + p.amount, 0)
-      setKpi({
-        todaySales,
-        collection: paid,
-        outstanding: Math.max(0, billed - paid),
-        bills: live.length
-      })
-      setRecent(invoices.slice(0, 5))
-
-      const s = await syncNow()
-      setSyncBadge(s.ok ? (s.pushed ? `Synced ${s.pushed}` : 'In sync') : `Pending ${s.queued}`)
+      await loadHomeData(act)
     })()
+
+    const onFocus = async () => {
+      const act = await getActiveCompany()
+      setActive(act)
+      await loadHomeData(act)
+    }
+    window.addEventListener('focus', onFocus)
+    return () => window.removeEventListener('focus', onFocus)
   }, [])
 
   const switchTo = async (id) => {
-    await setActiveCompany(id)
-    setActive(await getActiveCompany())
+    // INSTANTLY INVALIDATE STALE KPI AND RECENT INVOICES BEFORE THE ASYNC LOAD BEGINS
+    setKpi(null)
+    setRecent([])
     setPicker(false)
+
+    await setActiveCompany(id)
+    const newComp = await getActiveCompany()
+    setActive(newComp)
+    await loadHomeData(newComp)
   }
 
   const formatINR = (n) => '₹' + Number(n || 0).toLocaleString('en-IN')

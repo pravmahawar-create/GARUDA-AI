@@ -98,7 +98,7 @@ export default function ImportScreen() {
         }
         await db.invoices.put(invoice)
         await enqueue('invoice', 'create', invoice)
-        setImported('Import ho gaya — ' + (billType === 'kaccha' ? 'Kaccha bill' : 'Invoice') + ' #' + invoiceNo)
+        setImported('Import ho gaya — ' + (billType === 'kaccha' ? 'Non-GST bill' : 'Invoice') + ' #' + invoiceNo)
       }
     } else {
       setImported('Business/customer record import ho gaya')

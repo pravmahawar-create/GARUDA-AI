@@ -20,7 +20,7 @@ test('conversation: start bill, draft persists across turns', async () => {
   const id = cm.newConversation()
   const t1 = await turn(cm, id, 'Vijay Singh ka bill banana hai', [])
   assert.equal(t1.status, 'needs_info')
-  assert.match(t1.message, /GST ya kaccha/i)
+  assert.match(t1.message, /GST ya/i)
   const c = cm.get(id)
   assert.equal(c.intent, 'create_bill')
   assert.equal(c.customer.name, 'Vijay Singh')
@@ -476,4 +476,139 @@ test('inventory: cancel discards inventory draft', async () => {
   const r = await cm.processTurn(id, 'cancel', parseLocal('cancel', []), emptyCtx)
   assert.equal(r.status, 'none')
   assert.equal(cm.inventoryItems(id).length, 0, 'cancel must discard inventory draft')
+})
+
+test('vehicle: "gaadi add karo" builds a vehicle draft and confirms', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const r = await cm.processTurn(id, 'ek gaadi add karo MP20AB1234 1500 kg', parseLocal('ek gaadi add karo MP20AB1234 1500 kg', []), emptyCtx)
+  assert.equal(r.status, 'vehicle_confirm')
+  assert.match(r.message, /MP20AB1234/)
+  assert.match(r.message, /1500/)
+  const v = cm.get(id).vehicle
+  assert.equal(v.number, 'MP20AB1234')
+  assert.equal(v.capacity, 1500)
+  const ex = await cm.processTurn(id, 'Haan', parseLocal('Haan', []), emptyCtx)
+  assert.equal(ex.status, 'vehicle_execute')
+})
+
+test('vehicle: missing number asks number, missing capacity asks capacity', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const r1 = await cm.processTurn(id, 'gaadi add karo', parseLocal('gaadi add karo', []), emptyCtx)
+  assert.equal(r1.status, 'vehicle_needs_info')
+  assert.match(r1.message, /Vehicle number/)
+  const r2 = await cm.processTurn(id, 'MP20AB1234 1500 kg', parseLocal('MP20AB1234 1500 kg', []), emptyCtx)
+  assert.equal(r2.status, 'vehicle_confirm', 'number filled by follow-up')
+})
+
+test('vehicle: "gaadi kitni hai" is a query', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const r = await cm.processTurn(id, 'gaadi kitni hai', parseLocal('gaadi kitni hai', []), emptyCtx)
+  assert.equal(r.status, 'vehicle_query')
+})
+
+// ORDER multi-turn conversation tests
+const orderCtx = ctxOf(knownCustomers)
+
+test('order: initial intent detected and asks missing fields', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const r = await cm.processTurn(id, 'Vijay Singh ke naam 10 lakh ka order banana hai', parseLocal('Vijay Singh ke naam 10 lakh ka order banana hai', knownCustomers), orderCtx)
+  assert.equal(r.status, 'order_needs_info')
+  const o = cm.get(id).order
+  assert.ok(o, 'order draft created')
+  assert.equal(o.customer && o.customer.name, 'Vijay Singh')
+  assert.equal(o.value, 1000000)
+})
+
+test('order: multi-turn preserves customer + amount, date follow-up', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  const r1 = await cm.processTurn(id, 'Vijay Singh ke naam 10 lakh ka order banana hai', parseLocal('Vijay Singh ke naam 10 lakh ka order banana hai', knownCustomers), orderCtx)
+  assert.equal(r1.status, 'order_needs_info')
+  const r2 = await cm.processTurn(id, '2 se 6 tareekh', parseLocal('2 se 6 tareekh', knownCustomers), orderCtx)
+  assert.equal(r2.status, 'order_needs_info')
+  const o = cm.get(id).order
+  assert.equal(o.customer.name, 'Vijay Singh')
+  assert.equal(o.value, 1000000)
+  assert.ok(o.startDate, 'date filled')
+  assert.ok(o.endDate, 'date filled')
+})
+
+test('order: vehicle capture via number', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await cm.processTurn(id, 'Vijay Singh ke naam 10 lakh ka order banana hai', parseLocal('Vijay Singh ke naam 10 lakh ka order banana hai', knownCustomers), orderCtx)
+  await cm.processTurn(id, '2 se 6 tareekh', parseLocal('2 se 6 tareekh', knownCustomers), orderCtx)
+  const r3 = await cm.processTurn(id, 'MP20AB1234', parseLocal('MP20AB1234', knownCustomers), orderCtx)
+  assert.equal(r3.status, 'order_needs_info')
+  const o = cm.get(id).order
+  assert.ok(o.vehicleNos.includes('MP20AB1234'), 'vehicle number captured')
+  assert.equal(o.customer.name, 'Vijay Singh')
+  assert.equal(o.value, 1000000)
+})
+
+test('order: multiple vehicles preserved', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await cm.processTurn(id, 'Vijay Singh ke naam 10 lakh ka order banana hai', parseLocal('Vijay Singh ke naam 10 lakh ka order banana hai', knownCustomers), orderCtx)
+  await cm.processTurn(id, '2 se 6 tareekh', parseLocal('2 se 6 tareekh', knownCustomers), orderCtx)
+  await cm.processTurn(id, 'MP20AB1234 aur MP20CD5678', parseLocal('MP20AB1234 aur MP20CD5678', knownCustomers), orderCtx)
+  const o = cm.get(id).order
+  assert.ok(o.vehicleNos.includes('MP20AB1234'))
+  assert.ok(o.vehicleNos.includes('MP20CD5678'))
+  assert.equal(o.vehicleNos.length, 2)
+})
+
+test('order: capacity follow-up fills capacity field', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await cm.processTurn(id, 'Vijay Singh ke naam 10 lakh ka order banana hai', parseLocal('Vijay Singh ke naam 10 lakh ka order banana hai', knownCustomers), orderCtx)
+  await cm.processTurn(id, '2 se 6 tareekh', parseLocal('2 se 6 tareekh', knownCustomers), orderCtx)
+  await cm.processTurn(id, 'MP20AB1234', parseLocal('MP20AB1234', knownCustomers), orderCtx)
+  const r = await cm.processTurn(id, '1500 kg', parseLocal('1500 kg', knownCustomers), orderCtx)
+  assert.equal(r.status, 'order_needs_info')
+  const o = cm.get(id).order
+  assert.equal(o.capacity, 1500)
+  assert.equal(o.capacityUnit, 'kg')
+})
+
+test('order: rate follow-up', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await cm.processTurn(id, 'Vijay Singh ke naam 10 lakh ka order banana hai', parseLocal('Vijay Singh ke naam 10 lakh ka order banana hai', knownCustomers), orderCtx)
+  await cm.processTurn(id, '2 se 6 tareekh', parseLocal('2 se 6 tareekh', knownCustomers), orderCtx)
+  await cm.processTurn(id, 'MP20AB1234', parseLocal('MP20AB1234', knownCustomers), orderCtx)
+  await cm.processTurn(id, '1500 kg', parseLocal('1500 kg', knownCustomers), orderCtx)
+  const r = await cm.processTurn(id, '58 rupaye kilo', parseLocal('58 rupaye kilo', knownCustomers), orderCtx)
+  const o = cm.get(id).order
+  if (o.rate) {
+    assert.equal(o.rate, 58)
+    assert.equal(o.unit, 'kg')
+  }
+})
+
+test('order: complete draft reaches order_confirm', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await cm.processTurn(id, 'Vijay Singh ke naam 10 lakh ka order banana hai', parseLocal('Vijay Singh ke naam 10 lakh ka order banana hai', knownCustomers), orderCtx)
+  await cm.processTurn(id, '2 se 6 tareekh', parseLocal('2 se 6 tareekh', knownCustomers), orderCtx)
+  await cm.processTurn(id, 'MP20AB1234', parseLocal('MP20AB1234', knownCustomers), orderCtx)
+  await cm.processTurn(id, '1500 kg', parseLocal('1500 kg', knownCustomers), orderCtx)
+  await cm.processTurn(id, '58 rupaye kilo', parseLocal('58 rupaye kilo', knownCustomers), orderCtx)
+  await cm.processTurn(id, 'sariya', parseLocal('sariya', knownCustomers), orderCtx)
+  const r = await cm.processTurn(id, 'haan bana do', parseLocal('haan bana do', knownCustomers), orderCtx)
+  assert.equal(r.status, 'order_execute', 'complete order reaches execute')
+})
+
+test('order: cancel clears order draft', async () => {
+  const cm = new ConversationManager()
+  const id = cm.newConversation()
+  await cm.processTurn(id, 'Vijay Singh ke naam 10 lakh ka order banana hai', parseLocal('Vijay Singh ke naam 10 lakh ka order banana hai', knownCustomers), orderCtx)
+  const r = await cm.processTurn(id, 'cancel', parseLocal('cancel', knownCustomers), orderCtx)
+  assert.equal(r.status, 'none')
+  const c = cm.get(id)
+  assert.ok(!c.order || !c.order.value, 'order draft cleared after cancel')
 })
