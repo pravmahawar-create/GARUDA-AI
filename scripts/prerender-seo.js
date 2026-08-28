@@ -126,7 +126,10 @@ const ROUTES = [
   },
   {
     path: "/services/custom-ai-development",
-    filePaths: [path.join(DIST_DIR, "services", "custom-ai-development", "index.html")],
+    filePaths: [
+      path.join(DIST_DIR, "services", "custom-ai-development", "index.html"),
+      path.join(DIST_DIR, "services", "custom-ai-development.html")
+    ],
     title: "Custom AI Development Services | AI Agents & Automation | GARUDA",
     description: "Enterprise-grade custom AI development, autonomous multi-agent systems, and specialized RAG pipelines engineered with verified deterministic quality.",
     canonical: "https://www.garudaos.in/services/custom-ai-development",
@@ -161,7 +164,10 @@ const ROUTES = [
   },
   {
     path: "/services/ai-agent-development",
-    filePaths: [path.join(DIST_DIR, "services", "ai-agent-development", "index.html")],
+    filePaths: [
+      path.join(DIST_DIR, "services", "ai-agent-development", "index.html"),
+      path.join(DIST_DIR, "services", "ai-agent-development.html")
+    ],
     title: "AI Agent Development Company | Multi-Agent Systems | GARUDA",
     description: "Build autonomous multi-agent AI systems, supervisor-worker agent graphs, and self-verifying AI workers that execute complex business operations.",
     canonical: "https://www.garudaos.in/services/ai-agent-development",
@@ -196,7 +202,10 @@ const ROUTES = [
   },
   {
     path: "/services/custom-software-development",
-    filePaths: [path.join(DIST_DIR, "services", "custom-software-development", "index.html")],
+    filePaths: [
+      path.join(DIST_DIR, "services", "custom-software-development", "index.html"),
+      path.join(DIST_DIR, "services", "custom-software-development.html")
+    ],
     title: "Custom Software Development Company | Enterprise Web Apps | GARUDA",
     description: "High-performance custom software engineering, scalable cloud backends, and responsive web applications built with React, Node.js, and PostgreSQL.",
     canonical: "https://www.garudaos.in/services/custom-software-development",
@@ -231,7 +240,10 @@ const ROUTES = [
   },
   {
     path: "/services/website-development",
-    filePaths: [path.join(DIST_DIR, "services", "website-development", "index.html")],
+    filePaths: [
+      path.join(DIST_DIR, "services", "website-development", "index.html"),
+      path.join(DIST_DIR, "services", "website-development.html")
+    ],
     title: "Custom Website Development Company | High-Converting Web Design | GARUDA",
     description: "Custom-engineered modern business websites with sub-second page speeds, dynamic lead capture forms, technical SEO, and conversion-focused design.",
     canonical: "https://www.garudaos.in/services/website-development",
@@ -268,7 +280,9 @@ const ROUTES = [
     path: "/services/saas-mvp-development",
     filePaths: [
       path.join(DIST_DIR, "services", "saas-mvp-development", "index.html"),
-      path.join(DIST_DIR, "services", "custom-software-saas-mvp", "index.html")
+      path.join(DIST_DIR, "services", "saas-mvp-development.html"),
+      path.join(DIST_DIR, "services", "custom-software-saas-mvp", "index.html"),
+      path.join(DIST_DIR, "services", "custom-software-saas-mvp.html")
     ],
     title: "SaaS MVP Development Company | Build Startup Software | GARUDA",
     description: "Turn your product idea into a production-ready SaaS MVP in 2-3 weeks with authentication, Stripe/Razorpay subscriptions, database models, and automated QA.",
@@ -306,7 +320,9 @@ const ROUTES = [
     path: "/services/business-automation",
     filePaths: [
       path.join(DIST_DIR, "services", "business-automation", "index.html"),
-      path.join(DIST_DIR, "services", "business-workflow-ai-automation", "index.html")
+      path.join(DIST_DIR, "services", "business-automation.html"),
+      path.join(DIST_DIR, "services", "business-workflow-ai-automation", "index.html"),
+      path.join(DIST_DIR, "services", "business-workflow-ai-automation.html")
     ],
     title: "Business Process Automation Services | Workflow AI | GARUDA",
     description: "Autonomous business workflow automation connecting CRMs, payment gateways, document pipelines, and enterprise data with zero loss.",
@@ -341,7 +357,10 @@ const ROUTES = [
   },
   {
     path: "/services/rag-development",
-    filePaths: [path.join(DIST_DIR, "services", "rag-development", "index.html")],
+    filePaths: [
+      path.join(DIST_DIR, "services", "rag-development", "index.html"),
+      path.join(DIST_DIR, "services", "rag-development.html")
+    ],
     title: "Enterprise RAG Development Services | AI Knowledge Bases | GARUDA",
     description: "Build custom enterprise RAG pipelines, dense-sparse vector search, and document AI extraction with strict citation grounding and 0% hallucinations.",
     canonical: "https://www.garudaos.in/services/rag-development",
@@ -376,7 +395,10 @@ const ROUTES = [
   },
   {
     path: "/services/whatsapp-telegram-ai-bots",
-    filePaths: [path.join(DIST_DIR, "services", "whatsapp-telegram-ai-bots", "index.html")],
+    filePaths: [
+      path.join(DIST_DIR, "services", "whatsapp-telegram-ai-bots", "index.html"),
+      path.join(DIST_DIR, "services", "whatsapp-telegram-ai-bots.html")
+    ],
     title: "WhatsApp & Telegram AI Commercial Bots | Customer Automation | GARUDA",
     description: "Custom WhatsApp and Telegram AI commercial bots with multi-turn sales scoping, automated lead qualification, and instant payment checkout.",
     canonical: "https://www.garudaos.in/services/whatsapp-telegram-ai-bots",

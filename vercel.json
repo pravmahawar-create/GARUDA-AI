@@ -46,8 +46,48 @@
       "destination": "/chat/index.html"
     },
     {
+      "source": "/services/custom-ai-development",
+      "destination": "/services/custom-ai-development/index.html"
+    },
+    {
+      "source": "/services/ai-agent-development",
+      "destination": "/services/ai-agent-development/index.html"
+    },
+    {
+      "source": "/services/custom-software-development",
+      "destination": "/services/custom-software-development/index.html"
+    },
+    {
+      "source": "/services/website-development",
+      "destination": "/services/website-development/index.html"
+    },
+    {
+      "source": "/services/saas-mvp-development",
+      "destination": "/services/saas-mvp-development/index.html"
+    },
+    {
+      "source": "/services/custom-software-saas-mvp",
+      "destination": "/services/custom-software-saas-mvp/index.html"
+    },
+    {
+      "source": "/services/business-automation",
+      "destination": "/services/business-automation/index.html"
+    },
+    {
+      "source": "/services/business-workflow-ai-automation",
+      "destination": "/services/business-workflow-ai-automation/index.html"
+    },
+    {
+      "source": "/services/rag-development",
+      "destination": "/services/rag-development/index.html"
+    },
+    {
+      "source": "/services/whatsapp-telegram-ai-bots",
+      "destination": "/services/whatsapp-telegram-ai-bots/index.html"
+    },
+    {
       "source": "/services/:slug",
-      "destination": "/services/:slug/index.html"
+      "destination": "/index.html"
     },
     {
       "source": "/:path*",
