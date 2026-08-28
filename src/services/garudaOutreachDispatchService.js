@@ -116,6 +116,36 @@ class GarudaOutreachDispatchService {
   }
 
   /**
+   * Founder rejects the outreach draft.
+   */
+  async rejectOutreach(prospectId, rejectionContext = {}) {
+    let record = outreachStore.get(prospectId);
+    if (!record) {
+      record = {
+        prospectId,
+        company: rejectionContext.company || "Prospective Client",
+        projectTitle: rejectionContext.title || "Custom Software & AI Project",
+        status: OUTREACH_STATES.REJECTED,
+        createdAt: new Date().toISOString(),
+        auditTrail: []
+      };
+      outreachStore.set(prospectId, record);
+    }
+
+    record.status = OUTREACH_STATES.REJECTED;
+    record.rejectedAt = new Date().toISOString();
+    record.rejectedBy = rejectionContext.actor || "founder";
+
+    record.auditTrail.push({
+      action: "OUTREACH_REJECTED",
+      actor: record.rejectedBy,
+      timestamp: new Date().toISOString()
+    });
+
+    return record;
+  }
+
+  /**
    * Dispatches governed single communication to the prospect.
    */
   async dispatchOutreach(prospectId, options = {}) {

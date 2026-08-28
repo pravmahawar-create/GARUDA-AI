@@ -463,9 +463,11 @@ class ClientProposalService {
     if (!proposal) throw Object.assign(new Error("Proposal not found"), { statusCode: 404 });
 
     const manifestHash = sha256(deliveryPayload.artifacts || { code: "verified_build" });
+    const sha256Manifest = deliveryPayload.sha256Manifest || manifestHash;
     proposal.delivery = {
       deliveredAt: new Date().toISOString(),
       manifestHash,
+      sha256Manifest,
       qaReportUrl: deliveryPayload.qaReportUrl || null,
       testSuiteResults: deliveryPayload.testResults || "100% Passed (Deterministic QA)",
       releaseNotes: deliveryPayload.releaseNotes || "Governed milestone delivery completed."

@@ -63,4 +63,22 @@ router.post("/:id/action", async (req, res) => {
   }
 });
 
+// POST /api/missions/:id/execute — Autonomous Builder Execution with QA & SHA-256 Manifest
+router.post("/:id/execute", async (req, res) => {
+  try {
+    const founderApproved = req.body.founderApproved === true || req.get("x-garuda-founder-approved") === "true";
+    const options = {
+      founderApproved,
+      proposalId: req.body.proposalId || null,
+      customTask: req.body.task || null,
+      maxAttempts: Number(req.body.maxAttempts) || 3
+    };
+
+    const result = await missionControlService.executeMissionWithBuilder(req.params.id, options);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return sendError(res, error, "Failed to execute builder mission");
+  }
+});
+
 module.exports = router;

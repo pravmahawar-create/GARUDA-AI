@@ -67,16 +67,28 @@ function detectCommand(message) {
     if (goalText) return { command: "mission", params: { goal: goalText } };
   }
 
-  const approveMatch = rawText.match(/(?:^|\s)\/(?:approve|accept_action|confirm)\s+([a-zA-Z0-9_\-:]+)|approve\s+([a-zA-Z0-9_\-:]+)/i);
-  if (approveMatch) {
-    const targetId = (approveMatch[1] || approveMatch[2] || "").trim();
-    if (targetId) return { command: "approve", params: { targetId } };
+  const approveOutreachMatch = rawText.match(/(?:^|\s)\/(?:approve_outreach|dispatch_outreach|send_outreach)(?:\s+([a-zA-Z0-9_\-:]+))?|^approve_outreach(?:\s+([a-zA-Z0-9_\-:]+))?/i);
+  if (approveOutreachMatch) {
+    const prospectId = (approveOutreachMatch[1] || approveOutreachMatch[2] || "").trim();
+    return { command: "approve_outreach", params: { prospectId } };
   }
 
-  const rejectMatch = rawText.match(/(?:^|\s)\/(?:reject|cancel_action|deny)\s+([a-zA-Z0-9_\-:]+)|reject\s+([a-zA-Z0-9_\-:]+)/i);
+  const rejectOutreachMatch = rawText.match(/(?:^|\s)\/(?:reject_outreach|cancel_outreach)(?:\s+([a-zA-Z0-9_\-:]+))?|^reject_outreach(?:\s+([a-zA-Z0-9_\-:]+))?/i);
+  if (rejectOutreachMatch) {
+    const prospectId = (rejectOutreachMatch[1] || rejectOutreachMatch[2] || "").trim();
+    return { command: "reject_outreach", params: { prospectId } };
+  }
+
+  const approveMatch = rawText.match(/(?:^|\s)\/(?:approve|accept_action|confirm)(?:\s+([a-zA-Z0-9_\-:]+))?|^approve(?:\s+([a-zA-Z0-9_\-:]+))?/i);
+  if (approveMatch) {
+    const targetId = (approveMatch[1] || approveMatch[2] || "").trim();
+    return { command: "approve", params: { targetId } };
+  }
+
+  const rejectMatch = rawText.match(/(?:^|\s)\/(?:reject|cancel_action|deny)(?:\s+([a-zA-Z0-9_\-:]+))?|^reject(?:\s+([a-zA-Z0-9_\-:]+))?/i);
   if (rejectMatch) {
     const targetId = (rejectMatch[1] || rejectMatch[2] || "").trim();
-    if (targetId) return { command: "reject", params: { targetId } };
+    return { command: "reject", params: { targetId } };
   }
 
   const scopeMatch = rawText.match(/(?:^|\s)\/(?:scope|quote|price|estimate)\s+(.+)|(?:scope|price|estimate|quote)\s+(?:for\s+)?(.+)/i);
@@ -206,6 +218,8 @@ function handleHelp() {
     "• /scope <description> — Get instant software architecture scope & pricing",
     "• /approve <id> — Authorize pending mission, candidate, or outreach",
     "• /reject <id> — Reject or cancel a pending mission/action",
+    "• /approve_outreach <id> — Authorize cold email dispatch for queued prospect",
+    "• /reject_outreach <id> — Reject a queued prospect brief",
     "• /deals — View top market opportunities & proactive daily briefing",
     "• /revenue — Check verified revenue records & payment truth",
     "• /pipeline — Live pipeline status (insurance, tutoring, outreach)",
@@ -264,10 +278,68 @@ async function handleMissionsList() {
   return { success: true, command: "missions_list", message: lines.join("\n") };
 }
 
+async function handleApproveOutreach(params = {}, context = {}) {
+  const prospectId = String(params.prospectId || params.targetId || "").trim();
+  if (!prospectId) {
+    return { success: false, command: "approve_outreach", message: "Prospect ID required. Example: /approve_outreach outreach_sprint_123" };
+  }
+  const outreachService = require("./garudaOutreachDispatchService");
+  try {
+    const approved = await outreachService.approveOutreach(prospectId, { approver: "founder_telegram" });
+    const dispatched = await outreachService.dispatchOutreach(prospectId, { authorizedBy: "founder_telegram" });
+    return {
+      success: true,
+      command: "approve_outreach",
+      prospectId,
+      status: dispatched.status || "SENT",
+      message: `🎯 OUTREACH APPROVED & DISPATCHED!\n` +
+        `Prospect: ${approved.company || "Client"} (${prospectId})\n` +
+        `Relay Provider: Brevo HTTPS Relay\n` +
+        `Status: ${dispatched.status || "SENT"}\n\n` +
+        `Inbound scoping responses will route to Public Chat.`
+    };
+  } catch (err) {
+    return {
+      success: false,
+      command: "approve_outreach",
+      prospectId,
+      message: `Outreach approval failed for ${prospectId}: ${err.message}`
+    };
+  }
+}
+
+async function handleRejectOutreach(params = {}, context = {}) {
+  const prospectId = String(params.prospectId || params.targetId || "").trim();
+  if (!prospectId) {
+    return { success: false, command: "reject_outreach", message: "Prospect ID required. Example: /reject_outreach outreach_sprint_123" };
+  }
+  const outreachService = require("./garudaOutreachDispatchService");
+  try {
+    const rejected = await outreachService.rejectOutreach(prospectId, { actor: "founder_telegram" });
+    return {
+      success: true,
+      command: "reject_outreach",
+      prospectId,
+      message: `Outreach draft ${prospectId} REJECTED by Founder.`
+    };
+  } catch (err) {
+    return {
+      success: false,
+      command: "reject_outreach",
+      prospectId,
+      message: `Outreach rejection failed for ${prospectId}: ${err.message}`
+    };
+  }
+}
+
 async function handleApprove(params = {}, context = {}) {
   const targetId = String(params.targetId || "").trim();
   if (!targetId) {
     return { success: false, command: "approve", message: "Target ID required. Example: /approve mission_172483..." };
+  }
+
+  if (targetId.startsWith("outreach_")) {
+    return await handleApproveOutreach({ prospectId: targetId }, context);
   }
 
   if (targetId.startsWith("mission_")) {
@@ -320,6 +392,10 @@ async function handleReject(params = {}, context = {}) {
   const targetId = String(params.targetId || "").trim();
   if (!targetId) {
     return { success: false, command: "reject", message: "Target ID required. Example: /reject mission_172483..." };
+  }
+
+  if (targetId.startsWith("outreach_")) {
+    return await handleRejectOutreach({ prospectId: targetId }, context);
   }
 
   if (targetId.startsWith("mission_")) {
@@ -761,6 +837,10 @@ async function dispatchCommand(message, context = {}) {
       return handleApprove(params, { ...context, founderApproved });
     case "reject":
       return handleReject(params, { ...context, founderApproved });
+    case "approve_outreach":
+      return handleApproveOutreach(params, { ...context, founderApproved });
+    case "reject_outreach":
+      return handleRejectOutreach(params, { ...context, founderApproved });
     case "scope":
       return handleScope(params, { ...context, founderApproved });
     case "revenue":
@@ -789,6 +869,7 @@ module.exports = {
   dispatchCommand,
   handleAffiliate,
   handleApprove,
+  handleApproveOutreach,
   handleDeals,
   handleHelp,
   handleIncomeGoal,
@@ -799,6 +880,7 @@ module.exports = {
   handleOutreach,
   handlePipeline,
   handleReject,
+  handleRejectOutreach,
   handleRevenue,
   handleScope,
   handleStatus,

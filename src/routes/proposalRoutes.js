@@ -7,7 +7,7 @@ router.post("/", async (req, res) => {
   try {
     const founderApproved = req.get("x-garuda-founder-approved") === "true" || req.body?.founderApproved === true;
     const proposal = await clientProposalService.createProposal(req.body || {}, { founderApproved });
-    return res.status(201).json({ success: true, proposal });
+    return res.status(201).json({ success: true, proposal, data: proposal });
   } catch (err) {
     return res.status(err.statusCode || 500).json({ success: false, message: err.message });
   }
@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 // 2. Funnel Metrics
 router.get("/metrics/funnel", (req, res) => {
   const metrics = clientProposalService.getCommercialFunnelMetrics();
-  return res.json({ success: true, metrics });
+  return res.json({ success: true, metrics, data: metrics });
 });
 
 // 3. Get Proposal by ID (Supports sanitized public view)
@@ -27,7 +27,7 @@ router.get("/:proposalId", async (req, res) => {
     if (!proposal) {
       return res.status(404).json({ success: false, message: "Proposal not found" });
     }
-    return res.json({ success: true, proposal });
+    return res.json({ success: true, proposal, data: proposal });
   } catch (err) {
     return res.status(err.statusCode || 500).json({ success: false, message: err.message });
   }
@@ -42,7 +42,7 @@ router.post("/:proposalId/accept", async (req, res) => {
       ip: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1"
     };
     const proposal = await clientProposalService.acceptProposal(req.params.proposalId, clientSignature);
-    return res.json({ success: true, proposal });
+    return res.json({ success: true, proposal, data: proposal });
   } catch (err) {
     return res.status(err.statusCode || 500).json({ success: false, message: err.message });
   }
@@ -52,7 +52,7 @@ router.post("/:proposalId/accept", async (req, res) => {
 router.post("/:proposalId/verify-deposit", async (req, res) => {
   try {
     const result = await clientProposalService.recordDepositPayment(req.params.proposalId, req.body || {});
-    return res.status(result.verified ? 200 : 422).json(result);
+    return res.status(result.verified ? 200 : 422).json({ ...result, data: result });
   } catch (err) {
     return res.status(err.statusCode || 500).json({ success: false, message: err.message });
   }

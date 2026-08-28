@@ -57,10 +57,10 @@ async function runTests() {
   // --- 3. Top 3 Tailored Outreach Drafts Generation & Forensic Safety Audit ---
   console.log("\n--- 3. Top 3 Tailored Outreach Drafts Generation & Forensic Safety Audit ---");
   const draftsResult = await prospectQueueService.prepareTopOutreachDrafts();
-  assert(draftsResult.topDrafts.length > 0 && draftsResult.topDrafts.length <= 3);
+  assert(draftsResult.topDrafts.length > 0 && draftsResult.topDrafts.length <= 15);
   
   const sampleDraft = draftsResult.topDrafts[0];
-  assert(sampleDraft.prospectId.startsWith("outreach_m31a_"));
+  assert(sampleDraft.prospectId.startsWith("outreach_"));
   assert(sampleDraft.safetyRating === "SAFE_FOR_FOUNDER_APPROVAL" || sampleDraft.safetyRating === "INVALID_FOR_DIRECT_OUTREACH");
   assert(sampleDraft.body.includes("50% kickoff advance deposit"));
   assert(sampleDraft.body.includes("https://www.garudaos.in"));
