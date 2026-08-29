@@ -132,7 +132,7 @@ async function runFounderCommandTests() {
   assert.strictEqual(verifiedMetric.status, "AUTHORITATIVE");
   const pendingMetric = statusBody.data.summary.commercial.pendingDepositTotalINR;
   assert.strictEqual(pendingMetric.status, "DERIVED_FROM_AUTHORITATIVE_DATA");
-  assert.ok(["HEALTHY", "LOCAL_STORAGE_ONLY", "UNAVAILABLE"].includes(statusBody.data.systemHealth.database.status));
+  assert.ok(["HEALTHY", "LOCAL_STORAGE_FALLBACK", "UNAVAILABLE"].includes(statusBody.data.systemHealth.database.status));
   console.log("✔ Truth Law enforced: Verified metrics marked AUTHORITATIVE, pipeline marked DERIVED.");
 
   // -------------------------------------------------------------

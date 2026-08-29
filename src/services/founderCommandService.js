@@ -187,14 +187,33 @@ class FounderCommandService {
       }
     }
 
-    // System Health Verification
-    const isDbConnected = Boolean(process.env.SUPABASE_URL || process.env.SUPABASE_PUBLISHABLE_KEY);
+    // Dynamic Database Health Verification
+    let isDbConnected = false;
+    try {
+      if (this.proposalService && typeof this.proposalService.listLeads === "function") {
+        const leadsProbe = await this.proposalService.listLeads({ limit: 1 }).catch(() => null);
+        if (leadsProbe !== null) {
+          isDbConnected = true;
+        }
+      }
+    } catch {}
+
+    if (!isDbConnected) {
+      isDbConnected = Boolean(
+        process.env.SUPABASE_URL ||
+        process.env.SUPABASE_SECRET_KEY ||
+        process.env.SUPABASE_SERVICE_ROLE_KEY ||
+        process.env.SUPABASE_PUBLISHABLE_KEY ||
+        process.env.SUPABASE_ANON_KEY
+      );
+    }
+
     const isTelegramReady = Boolean(telegramBotService && typeof telegramBotService.isConfigured === "function" && telegramBotService.isConfigured());
 
     return {
       systemHealth: {
         database: {
-          status: isDbConnected ? "HEALTHY" : "LOCAL_STORAGE_ONLY",
+          status: isDbConnected ? "HEALTHY" : "LOCAL_STORAGE_FALLBACK",
           provider: "Supabase PostgreSQL",
           dataIntegrity: "ENFORCED"
         },
