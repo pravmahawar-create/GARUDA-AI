@@ -690,6 +690,207 @@ class PersistentProposalService {
 
     return project;
   }
+
+  /**
+   * Lists all persistent proposals with optional status filter and limit.
+   */
+  async listProposals(options = {}) {
+    const limit = Math.min(Number(options.limit || 50), 100);
+    const statusFilter = options.status ? String(options.status).trim() : null;
+    const proposalMap = new Map();
+
+    // 1. In-memory cache
+    for (const [id, prop] of memoryProposalCache.entries()) {
+      if (prop && prop.proposalId) {
+        proposalMap.set(prop.proposalId, prop);
+      }
+    }
+
+    // 2. Local file
+    try {
+      const localData = loadLocalProposals();
+      for (const [id, prop] of Object.entries(localData)) {
+        if (prop && prop.proposalId && !proposalMap.has(prop.proposalId)) {
+          proposalMap.set(prop.proposalId, prop);
+        }
+      }
+    } catch {}
+
+    // 3. Supabase PostgreSQL
+    try {
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        const { data, error } = await supabase
+          .from("leads")
+          .select("message, status, captured_at")
+          .like("source", "proposal:%")
+          .order("id", { ascending: false })
+          .limit(limit);
+
+        if (!error && Array.isArray(data)) {
+          for (const row of data) {
+            try {
+              if (row.message) {
+                const parsed = JSON.parse(row.message);
+                if (parsed && parsed.proposalId && !proposalMap.has(parsed.proposalId)) {
+                  proposalMap.set(parsed.proposalId, parsed);
+                }
+              }
+            } catch {}
+          }
+        }
+      }
+    } catch {}
+
+    let results = Array.from(proposalMap.values());
+    if (statusFilter) {
+      results = results.filter(p => p.status === statusFilter);
+    }
+
+    // Sort newest first
+    results.sort((a, b) => {
+      const tA = new Date(a.createdAt || a.updatedAt || 0).getTime();
+      const tB = new Date(b.createdAt || b.updatedAt || 0).getTime();
+      return tB - tA;
+    });
+
+    return results.slice(0, limit);
+  }
+
+  /**
+   * Lists all persistent projects with optional status filter and limit.
+   */
+  async listProjects(options = {}) {
+    const limit = Math.min(Number(options.limit || 50), 100);
+    const statusFilter = options.status ? String(options.status).trim() : null;
+    const projectMap = new Map();
+
+    // 1. In-memory cache
+    for (const [id, proj] of memoryProjectCache.entries()) {
+      if (proj && proj.projectId) {
+        projectMap.set(proj.projectId, proj);
+      }
+    }
+
+    // 2. Local file
+    try {
+      const localData = loadLocalProjects();
+      for (const [id, proj] of Object.entries(localData)) {
+        if (proj && proj.projectId && !projectMap.has(proj.projectId)) {
+          projectMap.set(proj.projectId, proj);
+        }
+      }
+    } catch {}
+
+    // 3. Supabase PostgreSQL
+    try {
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        const { data, error } = await supabase
+          .from("leads")
+          .select("message, status, captured_at")
+          .like("source", "project:%")
+          .order("id", { ascending: false })
+          .limit(limit);
+
+        if (!error && Array.isArray(data)) {
+          for (const row of data) {
+            try {
+              if (row.message) {
+                const parsed = JSON.parse(row.message);
+                if (parsed && parsed.projectId && !projectMap.has(parsed.projectId)) {
+                  projectMap.set(parsed.projectId, parsed);
+                }
+              }
+            } catch {}
+          }
+        }
+      }
+    } catch {}
+
+    let results = Array.from(projectMap.values());
+    if (statusFilter) {
+      results = results.filter(p => p.status === statusFilter);
+    }
+
+    // Sort newest first
+    results.sort((a, b) => {
+      const tA = new Date(a.createdAt || a.updatedAt || 0).getTime();
+      const tB = new Date(b.createdAt || b.updatedAt || 0).getTime();
+      return tB - tA;
+    });
+
+    return results.slice(0, limit);
+  }
+
+  /**
+   * Lists all inbound leads.
+   */
+  async listLeads(options = {}) {
+    const limit = Math.min(Number(options.limit || 50), 100);
+    const leadsList = [];
+    const seenIds = new Set();
+
+    // 1. Supabase PostgreSQL leads
+    try {
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        const { data, error } = await supabase
+          .from("leads")
+          .select("id, email, phone, first_name, source, message, status, captured_at")
+          .not("source", "like", "proposal:%")
+          .not("source", "like", "project:%")
+          .not("source", "like", "event:%")
+          .order("id", { ascending: false })
+          .limit(limit);
+
+        if (!error && Array.isArray(data)) {
+          for (const row of data) {
+            const id = row.id ? String(row.id) : `lead_${leadsList.length}`;
+            if (!seenIds.has(id)) {
+              seenIds.add(id);
+              leadsList.push({
+                id,
+                email: row.email,
+                phone: row.phone,
+                name: row.first_name,
+                source: row.source,
+                message: row.message,
+                status: row.status,
+                capturedAt: row.captured_at || new Date().toISOString()
+              });
+            }
+          }
+        }
+      }
+    } catch {}
+
+    // 2. Local file leads
+    try {
+      const file = path.join(__dirname, "..", "..", "data", "leads.json");
+      if (fs.existsSync(file)) {
+        const data = JSON.parse(fs.readFileSync(file, "utf8"));
+        if (data && Array.isArray(data.leads)) {
+          for (const l of data.leads) {
+            const id = l.id ? String(l.id) : `lead_${leadsList.length}`;
+            if (!seenIds.has(id)) {
+              seenIds.add(id);
+              leadsList.push(l);
+            }
+          }
+        }
+      }
+    } catch {}
+
+    // Sort newest first
+    leadsList.sort((a, b) => {
+      const tA = new Date(a.capturedAt || a.createdAt || 0).getTime();
+      const tB = new Date(b.capturedAt || b.createdAt || 0).getTime();
+      return tB - tA;
+    });
+
+    return leadsList.slice(0, limit);
+  }
 }
 
 module.exports = new PersistentProposalService();

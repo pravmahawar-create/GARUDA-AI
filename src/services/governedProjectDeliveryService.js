@@ -310,7 +310,8 @@ class GovernedProjectDeliveryService {
 
     // If options explicitly passed a failed validation
     if (options.forceValidationFailure || !validationSuccess) {
-      const issues = (valResult && valResult.validation && valResult.validation.issues) || ["Validation checks failed"];
+      const rawIssues = (valResult && valResult.validation && valResult.validation.issues) || [];
+      const issues = Array.isArray(rawIssues) && rawIssues.length > 0 ? rawIssues : ["Validation checks failed"];
       await this.proposalService.updateProjectStatus(projectId, "VALIDATION_FAILED", {
         validationIssues: issues,
         failedAt: new Date().toISOString()

@@ -14,6 +14,22 @@
       "destination": "/api/customer?path=:path*"
     },
     {
+      "source": "/api/founder/command/:path*",
+      "destination": "/api/founder-command?path=:path*"
+    },
+    {
+      "source": "/api/founder/command",
+      "destination": "/api/founder-command"
+    },
+    {
+      "source": "/api/founder/:path*",
+      "destination": "/api/founder-command?path=:path*"
+    },
+    {
+      "source": "/api/founder",
+      "destination": "/api/founder-command"
+    },
+    {
       "source": "/api/public-chat",
       "destination": "/api/public-chat"
     },
