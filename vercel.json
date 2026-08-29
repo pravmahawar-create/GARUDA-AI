@@ -30,6 +30,26 @@
       "destination": "/api/project-scope"
     },
     {
+      "source": "/api/proposals/:proposalId/accept",
+      "destination": "/api/proposals?proposalId=:proposalId&action=accept"
+    },
+    {
+      "source": "/api/proposals/:proposalId/payment/:subAction",
+      "destination": "/api/proposals?proposalId=:proposalId&action=payment&subAction=:subAction"
+    },
+    {
+      "source": "/api/proposals/:proposalId",
+      "destination": "/api/proposals?proposalId=:proposalId"
+    },
+    {
+      "source": "/api/proposals",
+      "destination": "/api/proposals"
+    },
+    {
+      "source": "/api/webhook/razorpay",
+      "destination": "/api/proposals?action=webhook"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
     },

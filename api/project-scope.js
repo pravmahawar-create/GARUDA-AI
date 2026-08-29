@@ -37,6 +37,13 @@ try {
   revenueValueModelService = null;
 }
 
+let persistentProposalService;
+try {
+  persistentProposalService = require("../src/services/persistentProposalService");
+} catch {
+  persistentProposalService = null;
+}
+
 const inMemoryScopes = new Map();
 
 module.exports = async function handler(req, res) {
@@ -140,15 +147,26 @@ module.exports = async function handler(req, res) {
         currency: "INR",
         totalINR: estimatedINR,
         totalUSD: estimatedUSD,
+        totalAmount: estimatedINR,
+        depositAmount: milestones[0] ? milestones[0].amount : estimatedINR,
+        depositAmountINR: milestones[0] ? milestones[0].amount : estimatedINR,
         pricingModel: estimatedINR >= 30000 ? "milestone_based" : "fixed_price",
         milestones
       },
       estimatedTimeline: timeline || bestCap.estimatedDeliveryTime || "3-7 business days",
-      status: "SCOPED",
+      status: "APPROVED",
+      publicUrl: `https://garudaos.in/proposal/${scopeId}`,
       createdAt: new Date().toISOString()
     };
 
     inMemoryScopes.set(scopeId, proposal);
+    if (persistentProposalService) {
+      try {
+        await persistentProposalService.saveProposal(proposal);
+      } catch (err) {
+        console.warn("[ProjectScope] Error persisting proposal:", err.message);
+      }
+    }
 
     const leadRecord = {
       id: `lead_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`,
@@ -159,6 +177,8 @@ module.exports = async function handler(req, res) {
       source: (attribution && attribution.summary) || "project_scope_form",
       attribution: attribution || null,
       scopeId,
+      proposalId: scopeId,
+      proposalUrl: proposal.publicUrl,
       service: proposal.customer.service,
       requirements: cleanRequirements,
       estimatedINR,
@@ -196,7 +216,7 @@ module.exports = async function handler(req, res) {
       try {
         await telegramBotService.notifyLeadCaptured({
           ...leadRecord,
-          message: `Project Scope Form: ${cleanRequirements.slice(0, 140)} (Estimated: ₹${estimatedINR.toLocaleString("en-IN")})`
+          message: `Project Scope Form: ${cleanRequirements.slice(0, 140)} (Estimated: ₹${estimatedINR.toLocaleString("en-IN")})\nProposal: ${proposal.publicUrl}`
         });
       } catch {}
     }
@@ -204,6 +224,8 @@ module.exports = async function handler(req, res) {
     return res.status(201).json({
       success: true,
       leadId: leadRecord.id,
+      proposalId: scopeId,
+      proposalUrl: proposal.publicUrl,
       proposal
     });
   } catch (err) {

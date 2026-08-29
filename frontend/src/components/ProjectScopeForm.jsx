@@ -125,7 +125,7 @@ export default function ProjectScopeForm({
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
           <a
-            href={`/chat?topic=${encodeURIComponent(service)}`}
+            href={`/proposal/${scopeId}`}
             style={{
               background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
               color: "#05070a",
@@ -137,7 +137,22 @@ export default function ProjectScopeForm({
               boxShadow: "0 6px 20px rgba(245,215,110,0.25)"
             }}
           >
-            Discuss Requirements on Live AI Chat →
+            View Formal Digital Scope & Proposal →
+          </a>
+          <a
+            href={`/chat?topic=${encodeURIComponent(service)}`}
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(245,215,110,0.3)",
+              color: "#f5d76e",
+              padding: "0.85rem 1.8rem",
+              borderRadius: "999px",
+              fontWeight: 700,
+              textDecoration: "none",
+              fontSize: "0.92rem"
+            }}
+          >
+            Live AI Architect Chat →
           </a>
           {import.meta.env.VITE_WHATSAPP_NUMBER && (
             <a

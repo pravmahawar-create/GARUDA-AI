@@ -30,12 +30,17 @@ const PROPOSAL_STATUSES = [
   "EXPIRED"
 ];
 
+const persistentProposalService = require("./persistentProposalService");
+
 const AUTONOMOUS_AUTHORIZATION_INR_LIMIT = 25000;
 const proposalStore = new Map();
 
 async function persistProposalDoc(proposal) {
   if (!proposal || !proposal.proposalId) return;
   proposalStore.set(proposal.proposalId, proposal);
+  try {
+    await persistentProposalService.saveProposal(proposal);
+  } catch {}
   try {
     if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
       await mongoose.connection.db.collection("clientproposals").updateOne(
@@ -49,6 +54,13 @@ async function persistProposalDoc(proposal) {
 
 async function findProposalDoc(proposalId) {
   if (proposalStore.has(proposalId)) return proposalStore.get(proposalId);
+  try {
+    const persistent = await persistentProposalService.getProposal(proposalId);
+    if (persistent) {
+      proposalStore.set(proposalId, persistent);
+      return persistent;
+    }
+  } catch {}
   try {
     if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
       const doc = await mongoose.connection.db.collection("clientproposals").findOne({ proposalId });
