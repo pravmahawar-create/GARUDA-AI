@@ -756,6 +756,42 @@ const ROUTES = [
     description: "Client project governance and milestone portal.",
     canonical: "https://www.garudaos.in/app",
     robots: "noindex, nofollow"
+  },
+  {
+    path: "/scholar",
+    filePaths: [
+      path.join(DIST_DIR, "scholar", "index.html"),
+      path.join(DIST_DIR, "scholar.html"),
+      path.join(DIST_DIR, "vidya", "index.html"),
+      path.join(DIST_DIR, "vidya.html"),
+      path.join(DIST_DIR, "research", "index.html"),
+      path.join(DIST_DIR, "research.html")
+    ],
+    title: "GARUDA Vidya Studio (विद्या) | Autonomous Academic Intelligence & Scholar Copilot",
+    description: "Free, unrestricted academic research synthesis, literature reviews, thesis structuring, step-by-step derivations, coding studio, and verified plagiarism integrity checks.",
+    canonical: "https://www.garudaos.in/scholar",
+    h1: "GARUDA Vidya Studio — The Autonomous Academic Powerhouse",
+    eyebrow: "ACADEMIC INTELLIGENCE & RESEARCH STUDIO",
+    contentSnippet: `
+      <h2>Autonomous Academic Synthesis, Code Studio & Originality Engine</h2>
+      <p>GARUDA Vidya Studio empowers school and college students, teachers, university scholars, scientists, and software engineers with deep 8,192-token research papers, thesis synthesis, mathematical derivations, and verified Turnitin-safe integrity audits.</p>
+      <ul>
+        <li>Peer-Review Ready Academic Research Papers & Citations (APA / IEEE / Nature)</li>
+        <li>Production-Grade Code Generation, Algorithms & Debugging</li>
+        <li>Step-by-Step Mathematical, Physics & Chemistry Derivations</li>
+        <li>Multimodal Voice Dictation & PDF / Document Parsing</li>
+        <li>Authentic Plagiarism & Academic Originality Verification (0% Fake Commitment)</li>
+      </ul>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "GARUDA Vidya Studio",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "All",
+      "url": "https://www.garudaos.in/scholar",
+      "description": "Autonomous Academic Intelligence & Research Synthesis Studio"
+    }
   }
 ];
 

@@ -735,4 +735,40 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.strictEqual(snapshot.performanceMarketing.adPlatformIntegration.metaAds.status, "META_ADS_NOT_CONNECTED");
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // 13. SCHOLAR INTELLIGENCE & ACADEMIC ORIGINALITY INTEGRITY AUDIT
+  // ---------------------------------------------------------------------------
+  describe("13. Scholar Intelligence & Academic Originality Integrity Audit", () => {
+    it("Audits academic text and mathematically derives originality, citations, and peer-review safety", () => {
+      const academicIntegrityService = require("./academicIntegrityService");
+      const sampleResearchText = `
+        Abstract: This research paper investigates multi-agent deterministic orchestrations in autonomous operating systems.
+        Recent advancements in transformer architectures [Vaswani et al., 2017] and self-governing multi-agent systems [1] have revealed significant efficiencies in automated software delivery.
+        
+        Methodology: We formulate an event-driven nervous system where agents communicate through cryptographically sealed events.
+        Let S represent the system state and T the transition matrix. The probability of zero-hallucination convergence is maximized when validation gates are strictly decoupled from execution planners.
+        
+        References:
+        [1] GARUDA Foundation. Autonomous Operating Systems & Multi-Agent Architecture. doi:10.1000/182
+        [2] Vaswani, A., et al. (2017). Attention Is All You Need. Advances in Neural Information Processing Systems.
+      `;
+
+      const audit = academicIntegrityService.evaluateIntegrity(sampleResearchText);
+      assert.strictEqual(audit.success, true);
+      assert.ok(audit.originalityNumeric >= 90, "Originality score must be >= 90% for diverse academic text");
+      assert.ok(audit.citationCount >= 2, "Citations must be accurately recognized");
+      assert.strictEqual(audit.hasBibliography, true);
+      assert.strictEqual(audit.safetyRating, "PUBLICATION_GRADE_EXCELLENCE");
+      assert.strictEqual(audit.statusBadge, "PEER_REVIEW_SAFE");
+      assert.ok(audit.recommendations.length > 0);
+    });
+
+    it("Rejects insufficient text input for integrity evaluation safely", () => {
+      const academicIntegrityService = require("./academicIntegrityService");
+      const res = academicIntegrityService.evaluateIntegrity("too short");
+      assert.strictEqual(res.success, false);
+      assert.strictEqual(res.status, "INSUFFICIENT_TEXT");
+    });
+  });
 });

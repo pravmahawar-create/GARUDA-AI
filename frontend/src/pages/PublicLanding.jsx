@@ -199,6 +199,22 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           </button>
           <button
             type="button"
+            onClick={() => navigate("/scholar")}
+            style={{
+              background: "linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(212, 175, 55, 0.15) 100%)",
+              border: "1px solid rgba(56, 189, 248, 0.4)",
+              color: "#38bdf8",
+              borderRadius: 999,
+              padding: "0.55rem 1.3rem",
+              fontWeight: 800,
+              cursor: "pointer",
+              fontSize: "0.9rem"
+            }}
+          >
+            🎓 Vidya Studio
+          </button>
+          <button
+            type="button"
             onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
             style={{
               background: "rgba(255,255,255,0.05)",
@@ -278,6 +294,25 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               }}
             >
               Talk to AI Architect →
+            </button>
+            <button
+              onClick={() => {
+                trackEvent("scholar_cta_click", { location: "hero" });
+                navigate("/scholar");
+              }}
+              style={{
+                background: "linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(212, 175, 55, 0.15) 100%)",
+                border: "1px solid rgba(56, 189, 248, 0.5)",
+                color: "#38bdf8",
+                padding: "1rem 2.2rem",
+                borderRadius: 999,
+                fontWeight: 800,
+                fontSize: "1rem",
+                cursor: "pointer",
+                boxShadow: "0 8px 24px rgba(56,189,248,0.15)"
+              }}
+            >
+              🎓 Vidya Studio (Free) →
             </button>
           </div>
           <p style={{ color: "#5b6472", fontSize: "0.85rem", marginTop: "2rem", letterSpacing: "0.04em" }}>

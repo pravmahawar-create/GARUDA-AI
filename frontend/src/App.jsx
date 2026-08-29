@@ -20,6 +20,7 @@ import WhatIsGarudaAI from "./pages/WhatIsGarudaAI";
 import GuidesIndex from "./pages/GuidesIndex";
 import GuideArticle from "./pages/GuideArticle";
 import HighCommandCenter from "./pages/HighCommandCenter";
+import ScholarStudio from "./pages/ScholarStudio";
 import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
@@ -109,6 +110,10 @@ function AppRoutes() {
       <Route path="/what-is-garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/chat" element={<PublicChat />} />
+      <Route path="/scholar" element={<ScholarStudio />} />
+      <Route path="/vidya" element={<ScholarStudio />} />
+      <Route path="/research" element={<ScholarStudio />} />
+      <Route path="/studio" element={<ScholarStudio />} />
       <Route path="/command" element={<Navigate to="/command-center" replace />} />
       <Route path="/command-center" element={commandCenterRoute} />
       <Route path="/high-command" element={<Navigate to="/command-center" replace />} />
