@@ -1017,6 +1017,33 @@ class FounderCommandService {
       };
     }
 
+    // 8. REAL ESTATE GROWTH OS SECTION
+    let realEstateSection;
+    try {
+      const realEstateService = require("./realEstateGrowthService");
+      realEstateSection = await realEstateService.getProjectIntelligence();
+    } catch (err) {
+      realEstateSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
+    }
+
+    // 9. CREATIVE STUDIO SECTION
+    let creativeSection;
+    try {
+      const creativeService = require("./creativeStudioService");
+      creativeSection = await creativeService.getAssetLibrary();
+    } catch (err) {
+      creativeSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
+    }
+
+    // 10. LEARNING & OUTCOME SECTION
+    let learningSection;
+    try {
+      const outcomeService = require("./outcomeLearningService");
+      learningSection = await outcomeService.getLearningSignals();
+    } catch (err) {
+      learningSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
+    }
+
     return {
       generatedAt,
       freshness: "REALTIME",
@@ -1029,7 +1056,10 @@ class FounderCommandService {
         revenue: revenueSection.available,
         approvals: approvalsSection.available,
         alerts: alertsSection.available,
-        activity: activitySection.available
+        activity: activitySection.available,
+        realEstate: realEstateSection.available,
+        creative: creativeSection.available,
+        learning: learningSection.available
       },
       partialErrors: partialErrors.length > 0 ? partialErrors : null,
       system: systemSection,
@@ -1039,7 +1069,10 @@ class FounderCommandService {
       revenue: revenueSection,
       approvals: approvalsSection,
       alerts: alertsSection,
-      activity: activitySection
+      activity: activitySection,
+      realEstate: realEstateSection,
+      creative: creativeSection,
+      learning: learningSection
     };
   }
 }
