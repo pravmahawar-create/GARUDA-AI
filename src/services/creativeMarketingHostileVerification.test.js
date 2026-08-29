@@ -679,7 +679,19 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
         { id: "agent.video_generation_router", input: { title: "Agent Reel", format: "REEL_9_16" } },
         { id: "agent.seo_intelligence", input: { keyword: "luxury penthouses" } },
         { id: "agent.performance_analysis", input: {} },
-        { id: "agent.digital_marketing", input: { brandName: "GARUDA", weeksCount: 2 } }
+        { id: "agent.digital_marketing", input: { brandName: "GARUDA", weeksCount: 2 } },
+        { id: "agent.hospitality_hotel_hunter", input: { hotelName: "Seaside Grand Resort" } },
+        { id: "agent.restaurant_dining_hunter", input: { brandName: "Urban Spice Cafe" } },
+        { id: "agent.mobile_app_saas_hunter", input: { clientName: "Swift Fleet Logistics" } },
+        { id: "agent.business_erp_hunter", input: { company: "National Timber Merchants" } },
+        { id: "agent.factory_industrial_hunter", input: { plantName: "Apex Die Castings" } },
+        { id: "agent.dairy_agro_hunter", input: { dairyName: "Shree Krishna Dairy" } },
+        { id: "agent.surplus_wholesale_hunter", input: { traderName: "Metro Industrial Surplus" } },
+        { id: "agent.legacy_web_rescuer", input: { domain: "old-hardware-wholesaler.in" } },
+        { id: "agent.healthcare_clinic_hunter", input: { clinicName: "Smile Care Dental Clinic" } },
+        { id: "agent.real_estate_hunter", input: { builderName: "Crown Heights Builders" } },
+        { id: "agent.global_international_hunter", input: { companyName: "Hyperion SaaS Inc (San Francisco, CA)" } },
+        { id: "agent.lead_qualifier_pitcher", input: { lead: { company: "Vertex Global", currency: "USD" } } }
       ];
 
       for (const t of agentTasks) {

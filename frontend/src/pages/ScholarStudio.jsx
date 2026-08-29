@@ -191,6 +191,8 @@ export default function ScholarStudio() {
     scrollToBottom();
   }, [messages, isGenerating]);
 
+  const basePromptTextRef = useRef("");
+
   // Voice Command (Web Speech API)
   const toggleVoiceRecording = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -206,6 +208,7 @@ export default function ScholarStudio() {
     }
 
     try {
+      basePromptTextRef.current = inputText;
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
@@ -217,11 +220,17 @@ export default function ScholarStudio() {
       };
 
       recognition.onresult = (event) => {
-        let transcript = "";
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
+        let finalSpeech = "";
+        let interimSpeech = "";
+        for (let i = 0; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalSpeech += event.results[i][0].transcript + " ";
+          } else {
+            interimSpeech += event.results[i][0].transcript;
+          }
         }
-        setInputText((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        const base = basePromptTextRef.current ? basePromptTextRef.current.trim() + " " : "";
+        setInputText(`${base}${finalSpeech}${interimSpeech}`.trim());
       };
 
       recognition.onerror = (event) => {

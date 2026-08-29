@@ -145,17 +145,19 @@ async function generateWithGemini({ message, history, mode, attachments }) {
   const currentParts = [];
   if (Array.isArray(attachments) && attachments.length > 0) {
     for (const att of attachments) {
-      if (att.dataUrl && att.mimeType && att.mimeType.startsWith("image/")) {
-        const b64Data = att.dataUrl.replace(/^data:image\/[a-z]+;base64,/, "");
+      if (att.dataUrl && (att.mimeType?.startsWith("image/") || String(att.dataUrl).startsWith("data:image/"))) {
+        const parts = String(att.dataUrl).split(",");
+        const b64Data = parts.length > 1 ? parts[1].trim() : parts[0].trim();
+        const cleanMime = att.mimeType || (String(att.dataUrl).match(/^data:([^;]+);/)?.[1]) || "image/jpeg";
         currentParts.push({
           inlineData: {
-            mimeType: att.mimeType,
+            mimeType: cleanMime,
             data: b64Data
           }
         });
       } else if (att.textContent) {
         currentParts.push({
-          text: `\n[ATTACHED FILE: ${att.name || "document"} (${att.mimeType || "text/plain"})]:\n\`\`\`\n${att.textContent.slice(0, 15000)}\n\`\`\`\n`
+          text: `\n[ATTACHED DOCUMENT/CODE: ${att.name || "file"} (${att.mimeType || "text/plain"})]:\n\`\`\`\n${att.textContent.slice(0, 15000)}\n\`\`\`\n`
         });
       }
     }

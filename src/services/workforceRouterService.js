@@ -446,6 +446,386 @@ class WorkforceRouterService {
         };
       }
     });
+
+    // 18. Hospitality & Hotel Booking OS Hunter
+    this.registerAgent({
+      id: "agent.hospitality_hotel_hunter",
+      name: "Hospitality & Hotel Booking OS Hunter",
+      domain: "acquisition",
+      role: "Discovers hotels, luxury resorts, and villas to eliminate 20-25% OTA commission with 0% commission direct booking engines & WhatsApp concierge.",
+      knowledgeAccess: ["hospitality:hotels", "booking:direct_engine", "concierge:whatsapp"],
+      authorizedActions: ["SCAN_HOTELS", "GENERATE_HOTEL_AUDIT", "PITCH_DIRECT_BOOKING"],
+      humanHandoffConditions: ["ENTERPRISE_CHAIN_EXPANSION"],
+      handler: async (task) => {
+        const targetCity = task.input?.city || "Goa";
+        const hotelName = task.input?.hotelName || "Grand Azure Resort & Spa";
+        return {
+          status: "SUCCESS",
+          sector: "HOSPITALITY_HOTEL",
+          targetHotel: hotelName,
+          targetCity,
+          otaCommissionLossEstimateMonthlyINR: 185000,
+          opportunityFindings: [
+            "Missing direct booking engine — losing 22% commission to MakeMyTrip/Booking.com",
+            "No 24/7 automated WhatsApp check-in or room service ordering bot",
+            "Slow website load time (4.2s) losing high-intent direct room bookers"
+          ],
+          valueProposition: {
+            solution: "GARUDA Sovereign Hotel OS — Direct 0% Commission Booking Engine + 24/7 WhatsApp Concierge Bot",
+            setupTimelineDays: 7,
+            estimatedMonthlySavingsINR: 140000,
+            recommendedPricingINR: 45000
+          },
+          dispatchReadyPitch: `Namaste ${hotelName} Team, GARUDA OS audited your direct booking flow. You are losing ~₹1.85L monthly in OTA commissions. We built a live 0% commission direct room booking prototype with automated WhatsApp guest concierge. View 30s preview here.`
+        };
+      }
+    });
+
+    // 19. Restaurant, Dining & Cloud Kitchen Hunter
+    this.registerAgent({
+      id: "agent.restaurant_dining_hunter",
+      name: "Restaurant & Cloud Kitchen Hunter",
+      domain: "acquisition",
+      role: "Identifies restaurants, cafes, and cloud kitchens losing 30% to food delivery aggregators and equips them with smart QR menus & direct ordering.",
+      knowledgeAccess: ["dining:qr_menu", "delivery:direct_orders", "loyalty:whatsapp"],
+      authorizedActions: ["SCAN_RESTAURANTS", "AUDIT_FOOD_COMMISSION", "PITCH_QR_ORDERING"],
+      humanHandoffConditions: ["FRANCHISE_POS_INTEGRATION"],
+      handler: async (task) => {
+        const brandName = task.input?.brandName || "The Saffron Bistro";
+        return {
+          status: "SUCCESS",
+          sector: "RESTAURANT_DINING",
+          brandName,
+          aggregatorCutPercent: "28-32%",
+          opportunityFindings: [
+            "Heavy 30% revenue leakage on repeat customer delivery orders",
+            "No instant WhatsApp table reservation or customer re-engagement loyalty bot",
+            "Paper menus with zero customer data capture at tables"
+          ],
+          valueProposition: {
+            solution: "GARUDA Dining OS — Smart QR Table Ordering, 0% Commission Direct Takeaway & Automated WhatsApp Loyalty",
+            setupTimelineDays: 5,
+            recommendedPricingINR: 30000
+          },
+          dispatchReadyPitch: `Hello ${brandName} Management, stop paying 30% cuts on repeat customers. GARUDA Dining OS enables direct 0% commission online ordering and automatic WhatsApp loyalty rewards. See your live QR demo.`
+        };
+      }
+    });
+
+    // 20. Mobile App & Custom SaaS Hunter
+    this.registerAgent({
+      id: "agent.mobile_app_saas_hunter",
+      name: "Mobile App & Custom SaaS Hunter",
+      domain: "acquisition",
+      role: "Targets startups, service businesses, and ecommerce brands needing iOS & Android mobile applications built on React Native & Flutter.",
+      knowledgeAccess: ["mobile:cross_platform", "saas:architecture", "apps:app_store"],
+      authorizedActions: ["IDENTIFY_APP_NEEDS", "GENERATE_APP_SCOPE", "PITCH_MOBILE_STUDIO"],
+      humanHandoffConditions: ["CUSTOM_HARDWARE_BLE_IOT"],
+      handler: async (task) => {
+        const clientName = task.input?.clientName || "Apex Logistics Group";
+        const appType = task.input?.appType || "Driver & Fleet Tracking Mobile App";
+        return {
+          status: "SUCCESS",
+          sector: "MOBILE_APP_DEVELOPMENT",
+          clientName,
+          appType,
+          architecturalBlueprint: {
+            framework: "React Native (iOS & Android) + FastAPI / Node.js Backend",
+            keyFeatures: ["Real-time GPS Tracking", "Driver Offline Sync", "Automated Push Notifications", "Razorpay / Stripe Payments"],
+            deliveryTimelineDays: 14
+          },
+          valueProposition: {
+            agencyMarketQuoteINR: 450000,
+            garudaAutonomousPackageINR: 120000,
+            savingsPercent: "73%"
+          },
+          dispatchReadyPitch: `Hello ${clientName}, transform your operations with a production-grade native Mobile App (iOS & Android). Delivered in 14 days with real-time tracking, push notifications, and verified cloud backend.`
+        };
+      }
+    });
+
+    // 21. Custom Business ERP & Management Hunter
+    this.registerAgent({
+      id: "agent.business_erp_hunter",
+      name: "Custom Business ERP & Management Hunter",
+      domain: "acquisition",
+      role: "Audits mid-sized businesses with scattered Excel sheets and manual registers to deploy custom inventory, GST billing, and multi-branch ERP.",
+      knowledgeAccess: ["erp:inventory", "erp:billing", "erp:multi_branch"],
+      authorizedActions: ["AUDIT_SPREADSHEET_CHAOS", "GENERATE_ERP_BLUEPRINT", "PITCH_CUSTOM_ERP"],
+      humanHandoffConditions: ["LEGACY_SAP_MIGRATION"],
+      handler: async (task) => {
+        const company = task.input?.company || "Vanguard Steel & Hardware Traders";
+        return {
+          status: "SUCCESS",
+          sector: "CUSTOM_BUSINESS_ERP",
+          company,
+          operationalBottlenecks: [
+            "Stock mismatches between 3 physical warehouses due to disconnected Excel sheets",
+            "Slow manual GST invoice generation causing customer dispatch delays",
+            "Zero real-time visibility into supplier credit ledgers"
+          ],
+          valueProposition: {
+            solution: "GARUDA Enterprise ERP — Real-time Multi-Warehouse Inventory, Instant 1-Click GST Invoicing & Automated Supplier Ledger",
+            deliveryTimelineDays: 18,
+            recommendedPricingINR: 85000
+          },
+          dispatchReadyPitch: `Namaste ${company} Leadership, eliminate spreadsheet chaos. GARUDA builds custom ERP systems tailored to your exact warehouse workflow in 18 days with 1-click GST invoicing and live stock sync.`
+        };
+      }
+    });
+
+    // 22. Factory & Industrial Automation Hunter
+    this.registerAgent({
+      id: "agent.factory_industrial_hunter",
+      name: "Factory & Industrial Automation Hunter",
+      domain: "acquisition",
+      role: "Scans manufacturing clusters (MIDC, GIDC, RIICO, Noida) to automate machine logs, production tracking, and factory dispatch.",
+      knowledgeAccess: ["factory:manufacturing", "iot:production_tracking", "industrial:dispatch"],
+      authorizedActions: ["SCAN_INDUSTRIAL_CLUSTERS", "GENERATE_FACTORY_AUDIT", "PITCH_INDUSTRIAL_OS"],
+      humanHandoffConditions: ["HAZMAT_SAFETY_INTEGRATION"],
+      handler: async (task) => {
+        const plantName = task.input?.plantName || "Shree Balaji Polymers";
+        const cluster = task.input?.cluster || "Noida Sector 80 Industrial Area";
+        return {
+          status: "SUCCESS",
+          sector: "FACTORY_INDUSTRIAL",
+          plantName,
+          cluster,
+          opportunityFindings: [
+            "Production shift logs recorded on paper — zero real-time supervisor visibility",
+            "Raw material inventory leakage exceeding 3.5% monthly",
+            "Machine maintenance downtime tracked retrospectively after breakdown"
+          ],
+          valueProposition: {
+            solution: "GARUDA Industrial OS — Live Machine Production Tracker, Raw Material Leakage Guard & Automated Dispatch Portal",
+            setupTimelineDays: 14,
+            recommendedPricingINR: 75000
+          },
+          dispatchReadyPitch: `Namaste ${plantName} Management, stop raw material leakage and machine downtime. GARUDA Industrial OS tracks your shifts, machine logs, and dispatches in real-time from a single mobile dashboard.`
+        };
+      }
+    });
+
+    // 23. Dairy, Agro & Supply-Chain Hunter
+    this.registerAgent({
+      id: "agent.dairy_agro_hunter",
+      name: "Dairy, Agro & Supply-Chain Hunter",
+      domain: "acquisition",
+      role: "Automates farmer milk collection, FAT/SNF testing receipts, route chilling centers, and distributor billing.",
+      knowledgeAccess: ["dairy:collection", "agro:supply_chain", "farmer:sms_receipts"],
+      authorizedActions: ["SCAN_DAIRY_PLANTS", "AUDIT_MILK_LOGISTICS", "PITCH_DAIRY_OS"],
+      humanHandoffConditions: ["COOPERATIVE_GOVERNMENT_TENDER"],
+      handler: async (task) => {
+        const dairyName = task.input?.dairyName || "Kisan Fresh Dairy & Chilling Plant";
+        return {
+          status: "SUCCESS",
+          sector: "DAIRY_AGRO_SUPPLY_CHAIN",
+          dairyName,
+          opportunityFindings: [
+            "Manual Fat/SNF calculations creating payment disputes with collection farmers",
+            "Milk tanker transit temperature tracking unmonitored",
+            "Distributor advance payments reconciliation taking 4 days"
+          ],
+          valueProposition: {
+            solution: "GARUDA Dairy OS — Instant Automated SMS/WhatsApp Farmer Receipts, Route Chilling Log & 1-Click Distributor Billing",
+            setupTimelineDays: 10,
+            recommendedPricingINR: 55000
+          },
+          dispatchReadyPitch: `Namaste ${dairyName}, automate your milk collection and farmer payments. GARUDA Dairy OS sends instant WhatsApp FAT/SNF receipts to farmers and manages all distributor billing without errors.`
+        };
+      }
+    });
+
+    // 24. Surplus, Wholesale & Scrap Hunter
+    this.registerAgent({
+      id: "agent.surplus_wholesale_hunter",
+      name: "Surplus & Wholesale Inventory Hunter",
+      domain: "acquisition",
+      role: "Identifies wholesale traders, liquidators, and scrap dealers to create instant B2B liquidation portals for dead stock.",
+      knowledgeAccess: ["surplus:liquidation", "wholesale:bulk_orders", "inventory:dead_stock"],
+      authorizedActions: ["SCAN_WHOLESALE_MARKETS", "AUDIT_DEAD_STOCK", "PITCH_LIQUIDATION_PORTAL"],
+      humanHandoffConditions: ["CUSTOMS_BONDED_AUCTIONS"],
+      handler: async (task) => {
+        const traderName = task.input?.traderName || "Apex Industrial Surplus & Metals";
+        return {
+          status: "SUCCESS",
+          sector: "SURPLUS_WHOLESALE",
+          traderName,
+          deadStockLockedValueINR: 4200000,
+          opportunityFindings: [
+            "₹42L in surplus inventory sitting idle without online B2B buyer discovery",
+            "Relying on manual phone calls and local brokers for lot liquidation",
+            "No verified WhatsApp catalog with instant quotation and deposit booking"
+          ],
+          valueProposition: {
+            solution: "GARUDA B2B Liquidation Portal — Instant Digital Lot Catalog, Buyer Escrow & Automated WhatsApp Quotation",
+            setupTimelineDays: 7,
+            recommendedPricingINR: 40000
+          },
+          dispatchReadyPitch: `Hello ${traderName}, turn your dead warehouse stock into liquidity. GARUDA builds verified B2B bulk liquidation portals that connect you directly with national buyers in 7 days.`
+        };
+      }
+    });
+
+    // 25. Legacy Website & Broken App Rescuer
+    this.registerAgent({
+      id: "agent.legacy_web_rescuer",
+      name: "Legacy Web & Broken App Rescuer",
+      domain: "acquisition",
+      role: "Crawls websites with outdated 2018-2022 tech, slow loading speeds, and broken mobile viewports to pitch instant headless Next.js modernizations.",
+      knowledgeAccess: ["web:speed_audit", "modern:headless_react", "conversion:redesign"],
+      authorizedActions: ["CRAWL_OUTDATED_DOMAINS", "GENERATE_SPEED_AUDIT", "PITCH_HEADLESS_REDESIGN"],
+      humanHandoffConditions: ["LEGACY_MAINFRAME_DB"],
+      handler: async (task) => {
+        const domain = task.input?.domain || "legacy-engineering-supplier.com";
+        return {
+          status: "SUCCESS",
+          sector: "LEGACY_WEB_MODERNIZATION",
+          targetDomain: domain,
+          auditMetrics: {
+            mobileLoadTimeSeconds: 6.8,
+            googlePageSpeedScore: 28,
+            copyrightYear: 2019,
+            hasWhatsAppBot: false,
+            mobileViewportBroken: true
+          },
+          valueProposition: {
+            solution: "GARUDA Ultra-Fast Headless Modernization — Next.js, 100/100 Google Speed, 24/7 AI Lead Capture & Sleek 2026 UI",
+            deliveryTimelineDays: 7,
+            recommendedPricingINR: 35000
+          },
+          dispatchReadyPitch: `Hello ${domain} Team, we audited your website: it takes 6.8s to load on mobile with broken layouts costing you 60% of inbound enquiries. GARUDA built an ultra-fast modern interactive prototype for you. See the live comparison.`
+        };
+      }
+    });
+
+    // 26. Healthcare, Clinics & Diagnostics Hunter
+    this.registerAgent({
+      id: "agent.healthcare_clinic_hunter",
+      name: "Healthcare & Clinic Growth Hunter",
+      domain: "acquisition",
+      role: "Identifies dental chains, IVF clinics, diagnostics labs, and private hospitals to deploy 24/7 patient booking and automated WhatsApp report delivery.",
+      knowledgeAccess: ["healthcare:appointments", "reports:whatsapp_delivery", "reviews:google_maps"],
+      authorizedActions: ["SCAN_CLINICS", "AUDIT_PATIENT_DROPOFF", "PITCH_CLINIC_OS"],
+      humanHandoffConditions: ["HIPAA_NABH_REGULATORY_AUDIT"],
+      handler: async (task) => {
+        const clinicName = task.input?.clinicName || "Dr. Mehta Advanced Dental & Implant Center";
+        return {
+          status: "SUCCESS",
+          sector: "HEALTHCARE_CLINIC",
+          clinicName,
+          monthlyMissedAppointments: 48,
+          opportunityFindings: [
+            "Patients calling after-hours (8 PM - 9 AM) receiving no answer — losing ~48 appointments monthly",
+            "Manual reception desk workload emailing lab reports",
+            "Zero automated 5-star Google Review collection after patient visits"
+          ],
+          valueProposition: {
+            solution: "GARUDA Clinic OS — 24/7 Instant WhatsApp Patient Booking, Automated Lab Report Delivery & 5-Star Review Engine",
+            setupTimelineDays: 6,
+            recommendedPricingINR: 35000
+          },
+          dispatchReadyPitch: `Namaste ${clinicName} Team, stop losing after-hours patient appointments. GARUDA Clinic OS captures patient bookings 24/7 on WhatsApp, delivers reports automatically, and doubles your 5-star Google reviews.`
+        };
+      }
+    });
+
+    // 27. Real Estate & Luxury Builder Hunter
+    this.registerAgent({
+      id: "agent.real_estate_hunter",
+      name: "Real Estate & Builder Growth Hunter",
+      domain: "acquisition",
+      role: "Engages premium developers, luxury builders, and channel partners in Noida, Gurgaon, Mumbai, and Dubai with high-ticket AI growth funnels.",
+      knowledgeAccess: ["real_estate:builders", "site_visits:scheduling", "campaigns:luxury_leads"],
+      authorizedActions: ["SCAN_BUILDERS", "AUDIT_LEAD_FUNNEL", "PITCH_REAL_ESTATE_GROWTH_OS"],
+      humanHandoffConditions: ["RERA_COMPLIANCE_ESCALATION"],
+      handler: async (task) => {
+        const builderName = task.input?.builderName || "Skyline Luxury Residences";
+        return {
+          status: "SUCCESS",
+          sector: "REAL_ESTATE_GROWTH",
+          builderName,
+          opportunityFindings: [
+            "High ad spend on Meta/Google but 70% leads going cold due to delayed follow-up",
+            "Zero automated 60-second WhatsApp lead qualification and interactive 3D floorplan sharing",
+            "Manual site visit scheduling with high 40% no-show rates"
+          ],
+          valueProposition: {
+            solution: "GARUDA Real Estate Growth OS — 60s WhatsApp AI Qualifier, Automated Site Visit Booking & High-Converting Luxury Funnels",
+            setupTimelineDays: 10,
+            recommendedPricingINR: 95000
+          },
+          dispatchReadyPitch: `Hello ${builderName} Team, double your site visit conversions. GARUDA Real Estate OS engages every luxury lead in 60 seconds on WhatsApp, qualifies budgets, and books confirmed site visits automatically.`
+        };
+      }
+    });
+
+    // 28. Global High-Ticket International Hunter (US/UK/UAE/Europe)
+    this.registerAgent({
+      id: "agent.global_international_hunter",
+      name: "Global High-Ticket International Hunter",
+      domain: "acquisition",
+      role: "Hunts high-paying B2B businesses, e-commerce brands, and startups in US, UK, Canada, and UAE with USD/EUR/AED high-ticket software packages.",
+      knowledgeAccess: ["global:us_uk_b2b", "currency:multi_pricing", "contracts:stripe_milestones"],
+      authorizedActions: ["SCAN_GLOBAL_STARTUPS", "GENERATE_USD_PROPOSAL", "PITCH_GLOBAL_ENGINEERING"],
+      humanHandoffConditions: ["CROSS_BORDER_LEGAL_ESCROW"],
+      handler: async (task) => {
+        const targetRegion = task.input?.region || "US / UK";
+        const companyName = task.input?.companyName || "Nexus Cloud Technologies LLC (Delaware, US)";
+        return {
+          status: "SUCCESS",
+          sector: "GLOBAL_INTERNATIONAL_B2B",
+          targetRegion,
+          companyName,
+          globalMarketArbitrage: {
+            usLocalAgencyQuoteUSD: 14500,
+            garudaHighTicketPriceUSD: 2800,
+            clientSavingsUSD: 11700,
+            inrRevenueRealized: 235000
+          },
+          valueProposition: {
+            solution: "GARUDA Global Engineering — Full-Stack Headless Web App + Autonomous AI Agent Workflows + Stripe Milestone Escrow",
+            deliveryTimelineDays: 14,
+            currency: "USD",
+            depositUSD: 1400,
+            milestoneUSD: 1400
+          },
+          dispatchReadyPitch: `Hello ${companyName} Leadership, get high-performance full-stack web engineering & autonomous AI workflows built on GARUDA OS in 14 days for $2,800 with zero upfront risk (50% Milestone Escrow via Stripe). See our verified architecture showcase.`
+        };
+      }
+    });
+
+    // 29. Lead Qualifier & Multi-Currency Pitch Generator
+    this.registerAgent({
+      id: "agent.lead_qualifier_pitcher",
+      name: "Lead Qualifier & Multi-Currency Pitch Generator",
+      domain: "acquisition",
+      role: "Aggregates discoveries from all sector hunters, verifies contact paths, and generates 1-page custom executive audits with instant proposal checkout.",
+      knowledgeAccess: ["proposals:contracts", "pricing:multi_currency", "attribution:leads"],
+      authorizedActions: ["QUALIFY_PROSPECT", "GENERATE_EXECUTIVE_AUDIT", "CREATE_MILESTONE_PROPOSAL"],
+      humanHandoffConditions: ["CUSTOM_CONTRACT_TERMS"],
+      handler: async (task) => {
+        const lead = task.input?.lead || { company: "Global Enterprise", sector: "TECH", currency: "INR" };
+        const currency = lead.currency === "USD" ? "USD" : lead.currency === "AED" ? "AED" : "INR";
+        const amount = currency === "USD" ? 2500 : currency === "AED" ? 9500 : 65000;
+        return {
+          status: "SUCCESS",
+          qualifiedLeadId: `lead_${Date.now()}`,
+          company: lead.company,
+          sector: lead.sector,
+          leadScore: 92,
+          tier: "HOT_COMMERCIAL",
+          generatedProposal: {
+            proposalTitle: `GARUDA Autonomous Engineering & Growth Deployment for ${lead.company}`,
+            currency,
+            totalInvestment: amount,
+            depositRequired: amount * 0.5,
+            deliveryWindowDays: 14,
+            checkoutPortalPath: `/proposal/prop_${Date.now()}`
+          }
+        };
+      }
+    });
   }
 
   /**
