@@ -27,12 +27,25 @@ try {
   telegramBotService = null;
 }
 
+const { createClient } = require("@supabase/supabase-js");
+
+const DEFAULT_SUPABASE_URL = "https://gcifzzuyswrcwvkcfqbr.supabase.co";
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_uYLXTH4M1PFyem5pQSMJtQ_7YqZ2rFp";
+
 const memoryProposalCache = new Map();
 const memoryProjectCache = new Map();
 
 function getSupabaseClient() {
   if (authHelpers && typeof authHelpers.supabaseClient === "function") {
-    return authHelpers.supabaseAdminClient() || authHelpers.supabaseClient();
+    const client = authHelpers.supabaseAdminClient() || authHelpers.supabaseClient();
+    if (client) return client;
+  }
+  const url = process.env.SUPABASE_URL || DEFAULT_SUPABASE_URL;
+  const key = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || DEFAULT_SUPABASE_PUBLISHABLE_KEY;
+  if (url && key) {
+    return createClient(String(url).trim(), String(key).trim(), {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+    });
   }
   return null;
 }

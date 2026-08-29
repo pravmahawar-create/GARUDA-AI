@@ -52,15 +52,21 @@ module.exports = async function handler(req, res) {
   }
 
   // Parse path & parameters
-  const url = new URL(req.url, `https://${req.headers.host || "garudaos.in"}`);
-  const pathParts = url.pathname.replace(/^\/api\/proposals\/?/, "").split("/").filter(Boolean);
+  const pathParam = String(req.query.path || "").replace(/^\/+/, "");
+  const pathFromQuery = pathParam ? pathParam.split("/") : [];
 
-  let proposalId = req.query.proposalId || pathParts[0] || "";
-  let action = req.query.action || pathParts[1] || "";
+  const url = new URL(req.url, `https://${req.headers.host || "garudaos.in"}`);
+  const pathFromUrl = url.pathname.replace(/^\/api\/proposals\/?/, "").split("/").filter(Boolean);
+
+  const pathParts = pathFromQuery.length > 0 ? pathFromQuery : pathFromUrl;
+
+  let proposalId = req.query.proposalId || (pathParts[0] !== "webhook" ? pathParts[0] : "") || "";
+  let action = req.query.action || pathParts[1] || (pathParts[0] === "webhook" ? "webhook" : "");
   let subAction = req.query.subAction || pathParts[2] || "";
 
-  if (url.pathname.includes("/webhook") || action === "webhook") {
+  if (url.pathname.includes("/webhook") || action === "webhook" || proposalId === "webhook") {
     action = "webhook";
+    proposalId = "";
   }
 
   // 1. WEBHOOK HANDLER: POST /api/proposals/webhook or /api/webhook/razorpay
