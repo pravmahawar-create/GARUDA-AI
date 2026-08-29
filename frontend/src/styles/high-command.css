@@ -1,39 +1,48 @@
 /* ==========================================================================
    🦅 GARUDA HIGH COMMAND CENTER — SOVEREIGN AEROSPACE MOBILE DESIGN SYSTEM
-   Phase 5.2B — Live Intelligence Modules
+   Mobile-First Personal AI Headquarters for Boss
    ========================================================================== */
 
 :root {
+  --hcc-bg-void: #04060a;
   --hcc-bg: #06080d;
-  --hcc-bg-elevated: #090d14;
-  --hcc-surface-1: #0e131d;
-  --hcc-surface-2: #141b29;
-  --hcc-surface-3: #1a2334;
+  --hcc-bg-elevated: #0a0f18;
+  --hcc-surface-1: #0e1420;
+  --hcc-surface-2: #131b2c;
+  --hcc-surface-3: #182338;
+  --hcc-surface-glass: rgba(14, 20, 32, 0.75);
   
   --hcc-gold-50: #fffbeb;
   --hcc-gold-100: #fef3c7;
+  --hcc-gold-300: #fcd34d;
   --hcc-gold-400: #fbbf24;
   --hcc-gold-500: #f59e0b;
   --hcc-gold-600: #d97706;
-  --hcc-gold-glow: rgba(245, 158, 11, 0.18);
-  --hcc-gold-border: rgba(245, 158, 11, 0.24);
+  --hcc-gold-glow: rgba(245, 158, 11, 0.25);
+  --hcc-gold-subtle: rgba(245, 158, 11, 0.08);
+  --hcc-gold-border: rgba(245, 158, 11, 0.32);
+  --hcc-gold-border-subtle: rgba(245, 158, 11, 0.16);
 
   --hcc-emerald: #10b981;
-  --hcc-emerald-glow: rgba(16, 185, 129, 0.2);
+  --hcc-emerald-glow: rgba(16, 185, 129, 0.25);
   --hcc-amber: #f59e0b;
   --hcc-rose: #f43f5e;
+  --hcc-rose-glow: rgba(244, 63, 94, 0.25);
   --hcc-cyan: #06b6d4;
+  --hcc-cyan-glow: rgba(6, 182, 212, 0.2);
 
   --hcc-text-main: #f8fafc;
   --hcc-text-muted: #94a3b8;
   --hcc-text-dim: #64748b;
+  --hcc-text-gold: #fbbf24;
 
-  --hcc-border: rgba(148, 163, 184, 0.1);
-  --hcc-border-strong: rgba(245, 158, 11, 0.28);
+  --hcc-border: rgba(148, 163, 184, 0.12);
+  --hcc-border-strong: rgba(245, 158, 11, 0.35);
 
   --hcc-radius-sm: 8px;
   --hcc-radius-md: 14px;
   --hcc-radius-lg: 20px;
+  --hcc-radius-xl: 28px;
   --hcc-radius-full: 9999px;
 
   --hcc-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -45,14 +54,32 @@
   min-height: 100vh;
   min-height: 100dvh;
   background: 
-    radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 50% -10%, rgba(245, 158, 11, 0.12) 0%, transparent 55%),
+    radial-gradient(circle at 100% 60%, rgba(6, 182, 212, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 0% 90%, rgba(245, 158, 11, 0.04) 0%, transparent 40%),
     var(--hcc-bg);
   color: var(--hcc-text-main);
   font-family: var(--hcc-font-sans);
-  padding-bottom: calc(88px + env(safe-area-inset-bottom, 20px));
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 20px));
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Sacred Geometry Ambient Watermark */
+.hcc-ambient-mandala {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: radial-gradient(circle, var(--hcc-gold-500) 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: 0;
 }
 
 .hcc-wrapper {
@@ -60,6 +87,8 @@
   margin: 0 auto;
   padding: 16px;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 768px) {
@@ -69,7 +98,9 @@
   }
 }
 
-/* Header */
+/* ==========================================================================
+   TOP HEADER
+   ========================================================================== */
 .hcc-header {
   display: flex;
   align-items: center;
@@ -82,20 +113,30 @@
 .hcc-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
+  user-select: none;
 }
 
 .hcc-crest {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--hcc-radius-sm);
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.1) 100%);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--hcc-radius-md);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(14, 20, 32, 0.9) 100%);
   border: 1px solid var(--hcc-gold-border);
   display: grid;
   place-items: center;
-  font-size: 18px;
-  box-shadow: 0 0 12px var(--hcc-gold-glow);
+  font-size: 22px;
+  box-shadow: 0 0 16px var(--hcc-gold-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.hcc-crest-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.6));
 }
 
 .hcc-title-area {
@@ -104,18 +145,21 @@
 }
 
 .hcc-title {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--hcc-gold-400);
-  line-height: 1.1;
+  line-height: 1.15;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .hcc-subtitle {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--hcc-text-dim);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .hcc-header-actions {
@@ -125,8 +169,8 @@
 }
 
 .hcc-btn-icon {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--hcc-radius-sm);
   background: var(--hcc-surface-1);
   border: 1px solid var(--hcc-border);
@@ -135,12 +179,14 @@
   place-items: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  touch-action: manipulation;
 }
 
 .hcc-btn-icon:hover, .hcc-btn-icon:active {
   background: var(--hcc-surface-2);
   color: var(--hcc-gold-400);
   border-color: var(--hcc-gold-border);
+  box-shadow: 0 0 10px var(--hcc-gold-glow);
 }
 
 /* Status Pill */
@@ -150,28 +196,28 @@
   gap: 6px;
   padding: 4px 10px;
   border-radius: var(--hcc-radius-full);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .hcc-status-pill.live {
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
   color: var(--hcc-emerald);
-  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .hcc-status-pill.limited {
-  background: rgba(245, 158, 11, 0.12);
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
   color: var(--hcc-amber);
-  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .hcc-status-pill.unavailable {
-  background: rgba(244, 63, 94, 0.12);
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.35);
   color: var(--hcc-rose);
-  border: 1px solid rgba(244, 63, 94, 0.3);
 }
 
 .hcc-dot {
@@ -179,60 +225,305 @@
   height: 6px;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: 0 0 8px currentColor;
+  box-shadow: 0 0 6px currentColor;
+  animation: hccPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Hero Card */
-.hcc-hero-card {
-  background: linear-gradient(165deg, rgba(26, 35, 52, 0.6) 0%, rgba(14, 19, 29, 0.9) 100%);
-  border: 1px solid var(--hcc-border-strong);
+@keyframes hccPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* ==========================================================================
+   MODULE SUB-NAVIGATION (HORIZONTAL SCROLL CHIPS)
+   ========================================================================== */
+.hcc-module-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hcc-module-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.hcc-nav-chip {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: var(--hcc-radius-full);
+  background: var(--hcc-surface-1);
+  border: 1px solid var(--hcc-border);
+  color: var(--hcc-text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hcc-nav-chip:hover {
+  border-color: var(--hcc-gold-border-subtle);
+  color: var(--hcc-text-main);
+}
+
+.hcc-nav-chip.active {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.1) 100%);
+  border-color: var(--hcc-gold-border);
+  color: var(--hcc-gold-400);
+  box-shadow: 0 0 12px var(--hcc-gold-glow);
+}
+
+/* ==========================================================================
+   KINGDOM PULSE — HERO CENTERPIECE
+   ========================================================================== */
+.hcc-kingdom-pulse {
+  background: linear-gradient(145deg, rgba(19, 27, 44, 0.9) 0%, rgba(10, 15, 24, 0.95) 100%);
+  border: 1px solid var(--hcc-gold-border);
   border-radius: var(--hcc-radius-lg);
-  padding: 18px;
+  padding: 22px 18px;
   margin-bottom: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 24px var(--hcc-gold-subtle);
+  backdrop-filter: blur(16px);
 }
 
-.hcc-hero-card::before {
-  content: '';
+.hcc-pulse-mandala-bg {
   position: absolute;
   top: -40px;
   right: -40px;
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(circle, var(--hcc-gold-glow) 0%, transparent 70%);
+  width: 200px;
+  height: 200px;
   pointer-events: none;
+  opacity: 0.08;
+}
+
+.hcc-pulse-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.hcc-pulse-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hcc-gold-400);
+}
+
+.hcc-pulse-core {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.hcc-pulse-emblem-wrap {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, rgba(14, 20, 32, 0.9) 80%);
+  border: 1.5px solid var(--hcc-gold-400);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 20px var(--hcc-gold-glow);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.hcc-pulse-emblem-wrap::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px dashed rgba(245, 158, 11, 0.35);
+  animation: hccRotate 24s linear infinite;
+}
+
+@keyframes hccRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.hcc-pulse-emblem {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8));
+}
+
+.hcc-pulse-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.hcc-pulse-main-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--hcc-text-main);
+  line-height: 1.2;
+  margin: 0 0 4px 0;
+}
+
+.hcc-pulse-sub-text {
+  font-size: 0.76rem;
+  color: var(--hcc-text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Kingdom KPI Summary Grid */
+.hcc-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hcc-border);
+}
+
+.hcc-kpi-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: var(--hcc-radius-sm);
+  background: rgba(14, 20, 32, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.hcc-kpi-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  font-family: var(--hcc-font-mono);
+  color: var(--hcc-gold-400);
+  line-height: 1.1;
+  margin-bottom: 3px;
+}
+
+.hcc-kpi-lbl {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--hcc-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   QUICK COMMAND ACTION GRID
+   ========================================================================== */
+.hcc-quick-command-section {
+  margin-bottom: 18px;
+}
+
+.hcc-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.hcc-quick-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px;
+  border-radius: var(--hcc-radius-md);
+  background: var(--hcc-surface-1);
+  border: 1px solid var(--hcc-border);
+  color: var(--hcc-text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 68px;
+  touch-action: manipulation;
+  text-align: center;
+}
+
+.hcc-quick-btn:hover, .hcc-quick-btn:active {
+  background: var(--hcc-surface-2);
+  border-color: var(--hcc-gold-border);
+  box-shadow: 0 0 12px var(--hcc-gold-glow);
+  transform: translateY(-2px);
+}
+
+.hcc-quick-icon {
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+  display: grid;
+  place-items: center;
+}
+
+.hcc-quick-lbl {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hcc-text-muted);
+}
+
+.hcc-quick-btn:hover .hcc-quick-lbl {
+  color: var(--hcc-gold-400);
+}
+
+/* ==========================================================================
+   HERO / SUMMARY CARDS
+   ========================================================================== */
+.hcc-hero-card {
+  background: linear-gradient(135deg, rgba(19, 27, 44, 0.85) 0%, rgba(14, 20, 32, 0.9) 100%);
+  border: 1px solid var(--hcc-border);
+  border-radius: var(--hcc-radius-lg);
+  padding: 18px 16px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
 }
 
 .hcc-hero-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .hcc-hero-greeting {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--hcc-text-dim);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  color: var(--hcc-gold-400);
 }
 
 .hcc-hero-headline {
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 800;
-  color: var(--hcc-text-main);
-  line-height: 1.2;
-  margin: 0 0 8px 0;
   letter-spacing: -0.01em;
+  margin: 0 0 6px 0;
+  color: var(--hcc-text-main);
+  line-height: 1.25;
 }
 
 .hcc-hero-sub {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   color: var(--hcc-text-muted);
-  line-height: 1.4;
+  line-height: 1.45;
   margin: 0 0 14px 0;
 }
 
@@ -240,57 +531,55 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  padding-top: 12px;
+  padding-top: 14px;
   border-top: 1px solid var(--hcc-border);
 }
 
 .hcc-stat-box {
-  background: rgba(6, 8, 13, 0.5);
-  border: 1px solid var(--hcc-border);
-  border-radius: var(--hcc-radius-sm);
-  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .hcc-stat-val {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 800;
   font-family: var(--hcc-font-mono);
-  color: var(--hcc-gold-400);
-  line-height: 1.1;
+  color: var(--hcc-text-main);
+  line-height: 1.2;
 }
 
 .hcc-stat-lbl {
-  font-size: 0.65rem;
+  font-size: 0.64rem;
   font-weight: 600;
   color: var(--hcc-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 /* Boss Priority Card */
 .hcc-priority-card {
-  border-radius: var(--hcc-radius-md);
-  padding: 14px 16px;
-  margin-bottom: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  border: 1px solid;
+  padding: 14px 16px;
+  border-radius: var(--hcc-radius-md);
+  margin-bottom: 16px;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  min-height: 52px;
 }
 
 .hcc-priority-card.attention {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(20, 16, 8, 0.8) 100%);
-  border-color: rgba(245, 158, 11, 0.4);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(20, 16, 8, 0.85) 100%);
+  border: 1px solid var(--hcc-gold-border);
+  box-shadow: 0 0 16px var(--hcc-gold-glow);
 }
 
 .hcc-priority-card.steady {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(8, 20, 16, 0.6) 100%);
-  border-color: rgba(16, 185, 129, 0.25);
-  cursor: default;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(8, 18, 14, 0.85) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .hcc-priority-info {
@@ -300,62 +589,52 @@
 }
 
 .hcc-priority-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--hcc-radius-sm);
+  font-size: 1.3rem;
   display: grid;
   place-items: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-.hcc-priority-card.attention .hcc-priority-icon {
-  background: rgba(245, 158, 11, 0.2);
-  color: var(--hcc-gold-400);
-}
-
-.hcc-priority-card.steady .hcc-priority-icon {
-  background: rgba(16, 185, 129, 0.15);
-  color: var(--hcc-emerald);
 }
 
 .hcc-priority-title {
-  font-size: 0.88rem;
-  font-weight: 700;
-  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 800;
   color: var(--hcc-text-main);
+  margin: 0 0 2px 0;
 }
 
 .hcc-priority-desc {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   color: var(--hcc-text-muted);
-  margin: 2px 0 0 0;
+  margin: 0;
+  line-height: 1.35;
 }
 
-/* Section Title */
+/* ==========================================================================
+   SECTION HEADERS & INTEL GRIDS
+   ========================================================================== */
 .hcc-section-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20px 0 10px 0;
+  margin: 20px 0 12px 0;
 }
 
 .hcc-section-title {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--hcc-text-dim);
+  color: var(--hcc-gold-400);
   margin: 0;
 }
 
 .hcc-section-badge {
-  font-size: 0.68rem;
-  color: var(--hcc-gold-400);
-  font-weight: 600;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--hcc-text-dim);
+  text-transform: uppercase;
 }
 
-/* Intelligence Cards Grid */
 .hcc-intel-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -367,39 +646,36 @@
   background: var(--hcc-surface-1);
   border: 1px solid var(--hcc-border);
   border-radius: var(--hcc-radius-md);
-  padding: 14px;
+  padding: 14px 12px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 108px;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
 }
 
 .hcc-intel-card:hover, .hcc-intel-card:active {
-  transform: translateY(-2px);
   background: var(--hcc-surface-2);
-  border-color: var(--hcc-gold-border);
+  border-color: var(--hcc-gold-border-subtle);
+  box-shadow: 0 0 12px var(--hcc-gold-glow);
 }
 
 .hcc-intel-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 .hcc-intel-icon {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .hcc-intel-pill {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 700;
   padding: 2px 6px;
   border-radius: var(--hcc-radius-full);
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .hcc-intel-pill.green {
@@ -412,78 +688,46 @@
   color: var(--hcc-gold-400);
 }
 
-.hcc-intel-pill.gray {
-  background: rgba(148, 163, 184, 0.1);
-  color: var(--hcc-text-dim);
-}
-
 .hcc-intel-pill.rose {
   background: rgba(244, 63, 94, 0.15);
   color: var(--hcc-rose);
 }
 
+.hcc-intel-pill.gray {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--hcc-text-muted);
+}
+
 .hcc-intel-body {
-  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .hcc-intel-val {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 800;
   font-family: var(--hcc-font-mono);
   color: var(--hcc-text-main);
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .hcc-intel-lbl {
-  font-size: 0.72rem;
-  color: var(--hcc-text-muted);
-  font-weight: 500;
-  margin-top: 2px;
-}
-
-/* Module Sub-Header Navigation */
-.hcc-module-nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 4px 0 12px 0;
-  margin-bottom: 12px;
-  scrollbar-width: none;
-}
-
-.hcc-module-nav::-webkit-scrollbar {
-  display: none;
-}
-
-.hcc-nav-chip {
-  padding: 10px 16px;
-  border-radius: var(--hcc-radius-full);
-  background: var(--hcc-surface-1);
-  border: 1px solid var(--hcc-border);
-  color: var(--hcc-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.66rem;
   font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  transition: all 0.15s ease;
+  color: var(--hcc-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 3px;
 }
 
-.hcc-nav-chip:hover, .hcc-nav-chip.active {
-  background: var(--hcc-surface-2);
-  color: var(--hcc-gold-400);
-  border-color: var(--hcc-gold-border);
-}
-
-/* Data List Items */
+/* ==========================================================================
+   CARD LISTS & DATA ITEMS
+   ========================================================================== */
 .hcc-card-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .hcc-card-item {
@@ -491,11 +735,7 @@
   border: 1px solid var(--hcc-border);
   border-radius: var(--hcc-radius-md);
   padding: 14px;
-  transition: all 0.15s ease;
-}
-
-.hcc-card-item:hover {
-  border-color: var(--hcc-gold-border);
+  transition: all 0.2s ease;
 }
 
 .hcc-card-top {
@@ -506,72 +746,73 @@
 }
 
 .hcc-card-title {
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 0.84rem;
+  font-weight: 800;
   color: var(--hcc-text-main);
   margin: 0;
 }
 
 .hcc-card-badge {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: var(--hcc-radius-full);
-  font-family: var(--hcc-font-mono);
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .hcc-card-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   color: var(--hcc-text-dim);
+  font-family: var(--hcc-font-mono);
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid rgba(148, 163, 184, 0.06);
+  border-top: 1px solid var(--hcc-border);
 }
 
-/* Alert Severity Banners */
+/* Alert Items */
 .hcc-alert-item {
-  background: var(--hcc-surface-1);
-  border: 1px solid;
   border-radius: var(--hcc-radius-md);
   padding: 14px;
   margin-bottom: 10px;
+  border: 1px solid var(--hcc-border);
 }
 
 .hcc-alert-item.critical {
-  border-color: rgba(244, 63, 94, 0.4);
-  background: linear-gradient(135deg, rgba(244, 63, 94, 0.1) 0%, rgba(14, 19, 29, 0.95) 100%);
+  background: rgba(244, 63, 94, 0.08);
+  border-color: rgba(244, 63, 94, 0.35);
+  box-shadow: 0 0 12px var(--hcc-rose-glow);
 }
 
 .hcc-alert-item.warning {
-  border-color: rgba(245, 158, 11, 0.4);
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(14, 19, 29, 0.95) 100%);
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.35);
 }
 
 .hcc-alert-item.info {
-  border-color: rgba(6, 182, 212, 0.3);
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(14, 19, 29, 0.95) 100%);
+  background: var(--hcc-surface-1);
+  border-color: var(--hcc-border);
 }
 
-/* Activity Strip & Feed */
+/* Activity Items */
 .hcc-activity-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 20px;
 }
 
 .hcc-activity-item {
-  background: var(--hcc-surface-1);
-  border: 1px solid var(--hcc-border);
-  border-radius: var(--hcc-radius-sm);
-  padding: 10px 12px;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--hcc-radius-md);
+  background: var(--hcc-surface-1);
+  border: 1px solid var(--hcc-border);
+  transition: all 0.2s ease;
 }
 
 .hcc-activity-dot {
@@ -586,123 +827,137 @@
 
 .hcc-activity-content {
   flex: 1;
-  min-width: 0;
 }
 
 .hcc-activity-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  margin-bottom: 4px;
 }
 
 .hcc-activity-type {
-  font-size: 0.74rem;
-  font-weight: 700;
-  color: var(--hcc-gold-400);
+  font-size: 0.7rem;
+  font-weight: 800;
   font-family: var(--hcc-font-mono);
+  color: var(--hcc-gold-400);
+  text-transform: uppercase;
 }
 
 .hcc-activity-time {
   font-size: 0.65rem;
   color: var(--hcc-text-dim);
-  flex-shrink: 0;
+  font-family: var(--hcc-font-mono);
 }
 
 .hcc-activity-msg {
-  font-size: 0.78rem;
-  color: var(--hcc-text-muted);
-  margin: 3px 0 0 0;
+  font-size: 0.76rem;
+  color: var(--hcc-text-main);
+  margin: 0 0 6px 0;
   line-height: 1.35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .hcc-activity-seal {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.62rem;
-  color: var(--hcc-emerald);
+  gap: 6px;
+  font-size: 0.65rem;
+  color: var(--hcc-text-dim);
   font-family: var(--hcc-font-mono);
-  margin-top: 4px;
 }
 
-/* Bottom Navigation Bar */
+/* ==========================================================================
+   BOTTOM NAVIGATION BAR & CENTER COMMAND ORB
+   ========================================================================== */
 .hcc-bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   height: calc(64px + env(safe-area-inset-bottom, 16px));
-  background: rgba(9, 13, 20, 0.95);
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+  background: rgba(6, 9, 15, 0.94);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--hcc-border);
+  border-top: 1px solid var(--hcc-gold-border-subtle);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-around;
-  padding-top: 8px;
   z-index: 100;
-  box-sizing: border-box;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.6);
 }
 
 .hcc-nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  justify-content: center;
   background: transparent;
   border: none;
   color: var(--hcc-text-dim);
   cursor: pointer;
-  padding: 4px 12px;
-  font-family: var(--hcc-font-sans);
-  transition: color 0.15s ease;
+  padding: 8px 12px;
+  min-width: 58px;
+  min-height: 48px;
+  touch-action: manipulation;
+  transition: all 0.2s ease;
 }
 
-.hcc-nav-item:hover, .hcc-nav-item.active {
+.hcc-nav-item:hover {
+  color: var(--hcc-text-main);
+}
+
+.hcc-nav-item.active {
   color: var(--hcc-gold-400);
 }
 
 .hcc-nav-icon {
   font-size: 1.15rem;
+  margin-bottom: 2px;
 }
 
 .hcc-nav-lbl {
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-/* Command Orb */
+/* Elevated Center Command Orb */
 .hcc-orb-wrapper {
   position: relative;
   top: -18px;
 }
 
 .hcc-command-orb {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
-  border: 2px solid #fef3c7;
+  background: radial-gradient(circle at 35% 35%, #fbbf24 0%, #d97706 60%, #78350f 100%);
+  border: 2px solid var(--hcc-gold-100);
   color: #000;
+  font-size: 1.35rem;
+  font-weight: 900;
   display: grid;
   place-items: center;
-  font-size: 22px;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.45);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  box-shadow: 
+    0 0 24px rgba(245, 158, 11, 0.6),
+    0 4px 14px rgba(0, 0, 0, 0.6);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  touch-action: manipulation;
 }
 
 .hcc-command-orb:hover, .hcc-command-orb:active {
-  transform: scale(1.08);
-  box-shadow: 0 6px 28px rgba(245, 158, 11, 0.65);
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 
+    0 0 32px rgba(245, 158, 11, 0.85),
+    0 6px 18px rgba(0, 0, 0, 0.7);
 }
 
-/* Modal / Command Sheet */
+/* ==========================================================================
+   COMMAND ACTION SHEET MODAL
+   ========================================================================== */
 .hcc-sheet-backdrop {
   position: fixed;
   inset: 0;
@@ -718,19 +973,29 @@
 .hcc-sheet {
   width: 100%;
   max-width: 480px;
-  background: var(--hcc-surface-1);
-  border-top: 1px solid var(--hcc-gold-border);
-  border-radius: var(--hcc-radius-lg) var(--hcc-radius-lg) 0 0;
-  padding: 20px 20px calc(24px + env(safe-area-inset-bottom, 16px)) 20px;
-  box-sizing: border-box;
+  background: var(--hcc-bg-elevated);
+  border: 1px solid var(--hcc-gold-border);
+  border-radius: var(--hcc-radius-xl) var(--hcc-radius-xl) 0 0;
+  padding: 16px 20px calc(24px + env(safe-area-inset-bottom, 20px)) 20px;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.7), 0 0 24px var(--hcc-gold-subtle);
   animation: hccSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@keyframes hccFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hccSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
 .hcc-sheet-handle {
-  width: 36px;
+  width: 40px;
   height: 4px;
-  border-radius: 2px;
-  background: var(--hcc-text-dim);
+  background: var(--hcc-border);
+  border-radius: var(--hcc-radius-full);
   margin: 0 auto 16px auto;
 }
 
@@ -738,12 +1003,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .hcc-sheet-title {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 800;
+  letter-spacing: 0.04em;
   color: var(--hcc-gold-400);
   margin: 0;
 }
@@ -755,49 +1021,40 @@
 }
 
 .hcc-sheet-btn {
-  background: var(--hcc-surface-2);
-  border: 1px solid var(--hcc-border);
-  border-radius: var(--hcc-radius-md);
-  padding: 12px 14px;
-  color: var(--hcc-text-main);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
+  padding: 14px 16px;
+  border-radius: var(--hcc-radius-md);
+  background: var(--hcc-surface-1);
+  border: 1px solid var(--hcc-border);
+  color: var(--hcc-text-main);
   text-align: left;
-  font-family: var(--hcc-font-sans);
-  transition: all 0.15s ease;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  min-height: 52px;
 }
 
 .hcc-sheet-btn:hover {
+  background: var(--hcc-surface-2);
   border-color: var(--hcc-gold-border);
-  background: var(--hcc-surface-3);
 }
 
 .hcc-sheet-btn.disabled {
-  opacity: 0.5;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
-/* Loading Skeleton Shimmer */
+/* Skeleton Loading State */
 .hcc-skeleton {
-  background: linear-gradient(90deg, #0e131d 25%, #182030 50%, #0e131d 75%);
+  background: linear-gradient(90deg, var(--hcc-surface-1) 25%, var(--hcc-surface-2) 50%, var(--hcc-surface-1) 75%);
   background-size: 200% 100%;
   animation: hccShimmer 1.5s infinite;
-  border-radius: var(--hcc-radius-sm);
+  border-radius: var(--hcc-radius-md);
 }
 
 @keyframes hccShimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
-}
-
-@keyframes hccFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes hccSlideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
 }

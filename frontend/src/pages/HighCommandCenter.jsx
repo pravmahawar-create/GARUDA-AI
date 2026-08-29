@@ -8,7 +8,7 @@ const MODULES = [
   { id: "brain", label: "BRAIN", icon: "🧠" },
   { id: "money", label: "MONEY", icon: "₹" },
   { id: "approvals", label: "APPROVALS", icon: "⚡" },
-  { id: "operations", label: "OPERATIONS", icon: "◉" },
+  { id: "operations", label: "SYSTEM", icon: "◉" },
   { id: "alerts", label: "ALERTS", icon: "🚨" },
   { id: "activity", label: "ACTIVITY", icon: "📜" }
 ];
@@ -23,8 +23,9 @@ export default function HighCommandCenter({ onLogout }) {
   const [activeModule, setActiveModule] = useState("home");
   const [commandSheetOpen, setCommandSheetOpen] = useState(false);
   const [expandedActivityId, setExpandedActivityId] = useState(null);
+  const [activityFilter, setActivityFilter] = useState("ALL");
 
-  // Fetch command center snapshot from Phase 5.1 API
+  // Fetch command center snapshot from Phase 5.1 / 5.2B API
   const fetchSnapshot = useCallback(async (isManual = false) => {
     if (isManual) setRefreshing(true);
     setError(null);
@@ -102,7 +103,7 @@ export default function HighCommandCenter({ onLogout }) {
     }).format(val);
   };
 
-  // Truth-safe helpers: never convert unavailable into 0.
+  // Truth-safe helpers: never convert unavailable into 0
   const sectionAvailable = (section) => section && section.available !== false;
   const moneyOrUnavailable = (value, available) => {
     if (!available) return "UNAVAILABLE";
@@ -148,6 +149,12 @@ export default function HighCommandCenter({ onLogout }) {
     </div>
   );
 
+  // Filtered activity events
+  const rawEvents = snapshot?.activity?.recentEvents || [];
+  const filteredEvents = activityFilter === "ALL"
+    ? rawEvents
+    : rawEvents.filter(e => e.eventType === activityFilter || e.entityType === activityFilter.toLowerCase());
+
   return (
     <div className="hcc-container">
       <SEOHead
@@ -157,14 +164,22 @@ export default function HighCommandCenter({ onLogout }) {
         robots="noindex, nofollow"
       />
 
+      <div className="hcc-ambient-mandala" aria-hidden="true"></div>
+
       <div className="hcc-wrapper">
-        {/* TOP HEADER */}
+        {/* ========================================================= */}
+        {/* TOP HEADER                                                */}
+        {/* ========================================================= */}
         <header className="hcc-header">
           <div className="hcc-brand" onClick={() => selectModule("home")}>
-            <div className="hcc-crest">🦅</div>
+            <div className="hcc-crest">
+              <img src="/favicon/garuda-sigil-icon.svg" alt="GARUDA Sigil" className="hcc-crest-img" onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerText = '🦅'; }} />
+            </div>
             <div className="hcc-title-area">
-              <span className="hcc-title">HIGH COMMAND</span>
-              <span className="hcc-subtitle">GARUDA Live Intelligence</span>
+              <span className="hcc-title">
+                GARUDA
+              </span>
+              <span className="hcc-subtitle">HIGH COMMAND CENTER</span>
             </div>
           </div>
 
@@ -177,17 +192,20 @@ export default function HighCommandCenter({ onLogout }) {
             <button
               className="hcc-btn-icon"
               onClick={() => fetchSnapshot(true)}
-              title="Refresh Intelligence"
+              title="Synchronize Kingdom"
               disabled={refreshing}
+              aria-label="Synchronize command center"
             >
               <span style={{ display: "inline-block", transform: refreshing ? "rotate(360deg)" : "none", transition: "transform 0.6s ease" }}>
-                🔄
+                ↻
               </span>
             </button>
           </div>
         </header>
 
-        {/* MODULE SUB-NAVIGATION */}
+        {/* ========================================================= */}
+        {/* MODULE SUB-NAVIGATION (HORIZONTAL CHIPS)                  */}
+        {/* ========================================================= */}
         <nav className="hcc-module-nav" aria-label="Intelligence modules">
           {MODULES.map(mod => (
             <button
@@ -195,7 +213,8 @@ export default function HighCommandCenter({ onLogout }) {
               className={`hcc-nav-chip ${activeModule === mod.id ? "active" : ""}`}
               onClick={() => selectModule(mod.id)}
             >
-              {mod.label}
+              <span>{mod.icon}</span>
+              <span>{mod.label}</span>
             </button>
           ))}
         </nav>
@@ -203,11 +222,11 @@ export default function HighCommandCenter({ onLogout }) {
         {/* LOADING SKELETON */}
         {loading && (
           <div>
-            <div className="hcc-hero-card hcc-skeleton" style={{ height: 180, marginBottom: 16 }}></div>
-            <div className="hcc-priority-card hcc-skeleton" style={{ height: 60, marginBottom: 16 }}></div>
+            <div className="hcc-kingdom-pulse hcc-skeleton" style={{ height: 200, marginBottom: 16 }}></div>
+            <div className="hcc-hero-card hcc-skeleton" style={{ height: 140, marginBottom: 16 }}></div>
             <div className="hcc-intel-grid">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="hcc-intel-card hcc-skeleton" style={{ height: 108 }}></div>
+                <div key={i} className="hcc-intel-card hcc-skeleton" style={{ height: 96 }}></div>
               ))}
             </div>
           </div>
@@ -215,9 +234,9 @@ export default function HighCommandCenter({ onLogout }) {
 
         {/* ERROR STATE */}
         {!loading && error && (
-          <div className="hcc-hero-card" style={{ borderColor: "rgba(244, 63, 94, 0.4)", background: "rgba(20, 8, 12, 0.8)" }}>
+          <div className="hcc-hero-card" style={{ borderColor: "rgba(244, 63, 94, 0.4)", background: "rgba(20, 8, 12, 0.85)" }}>
             <div className="hcc-hero-headline" style={{ color: "var(--hcc-rose)", fontSize: "1.1rem" }}>
-              ⚠️ Command Data Stream Interrupted
+              ⚠️ Command Stream Interrupted
             </div>
             <p className="hcc-hero-sub" style={{ color: "var(--hcc-text-muted)" }}>
               {error}
@@ -225,44 +244,162 @@ export default function HighCommandCenter({ onLogout }) {
             <button
               onClick={() => fetchSnapshot(true)}
               style={{
-                padding: "8px 16px",
+                padding: "10px 20px",
                 background: "var(--hcc-gold-500)",
                 color: "#000",
-                fontWeight: 700,
+                fontWeight: 800,
                 border: "none",
                 borderRadius: "var(--hcc-radius-sm)",
-                cursor: "pointer"
+                cursor: "pointer",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em"
               }}
             >
-              Retry Stream
+              Reconnect Stream
             </button>
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* ACTIVE MODULE CONTENT                                     */}
+        {/* ACTIVE MODULE VIEW                                        */}
         {/* ========================================================= */}
         {!loading && !error && snapshot && (
           <>
-            {/* ================= HOME ================= */}
+            {/* ===================================================== */}
+            {/* TAB: HOME                                             */}
+            {/* ===================================================== */}
             {activeModule === "home" && (
               <>
-                {/* HERO STATUS CARD */}
-                <div className="hcc-hero-card">
+                {/* 1. KINGDOM PULSE (EMOTIONAL CENTERPIECE) */}
+                <section className="hcc-kingdom-pulse">
+                  <div className="hcc-pulse-header">
+                    <div className="hcc-pulse-tag">
+                      <span>👑</span>
+                      <span>KINGDOM PULSE</span>
+                    </div>
+                    <div className={`hcc-status-pill ${statusLevel}`}>
+                      <span className="hcc-dot"></span>
+                      <span>● LIVE</span>
+                    </div>
+                  </div>
+
+                  <div className="hcc-pulse-core">
+                    <div className="hcc-pulse-emblem-wrap">
+                      <img
+                        src="/favicon/garuda-sigil-icon.svg"
+                        alt="GARUDA Sovereign Sigil"
+                        className="hcc-pulse-emblem"
+                        onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerText = '🦅'; }}
+                      />
+                    </div>
+                    <div className="hcc-pulse-titles">
+                      <h1 className="hcc-pulse-main-title">
+                        {snapshot.system?.status === "HEALTHY" ? "Kingdom Operational" : "Kingdom Active (Limited)"}
+                      </h1>
+                      <p className="hcc-pulse-sub-text">
+                        Everything is under your command. Welcome, Boss.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Real KPI Grid */}
+                  <div className="hcc-kpi-grid">
+                    <div className="hcc-kpi-cell">
+                      <div className="hcc-kpi-val">
+                        {countOrUnavailable(snapshot.brain?.activeMissions, sectionAvailable(snapshot.brain))}
+                      </div>
+                      <div className="hcc-kpi-lbl">Missions</div>
+                    </div>
+                    <div className="hcc-kpi-cell">
+                      <div className="hcc-kpi-val">
+                        {countOrUnavailable(snapshot.brain?.activeTasks, sectionAvailable(snapshot.brain))}
+                      </div>
+                      <div className="hcc-kpi-lbl">Tasks</div>
+                    </div>
+                    <div className="hcc-kpi-cell">
+                      <div className="hcc-kpi-val">
+                        {countOrUnavailable(snapshot.commercial?.activeProjects, sectionAvailable(snapshot.commercial))}
+                      </div>
+                      <div className="hcc-kpi-lbl">Projects</div>
+                    </div>
+                    <div className="hcc-kpi-cell">
+                      <div className="hcc-kpi-val">
+                        {countOrUnavailable(snapshot.workforce?.activeAgents?.length, sectionAvailable(snapshot.workforce))}
+                      </div>
+                      <div className="hcc-kpi-lbl">Engines</div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* 2. QUICK COMMAND ACTIONS */}
+                <section className="hcc-quick-command-section">
+                  <div className="hcc-section-head" style={{ marginTop: 0, marginBottom: 8 }}>
+                    <h2 className="hcc-section-title">Quick Command</h2>
+                    <span className="hcc-section-badge">Actions</span>
+                  </div>
+
+                  <div className="hcc-quick-grid">
+                    <button
+                      className="hcc-quick-btn"
+                      onClick={() => setCommandSheetOpen(true)}
+                      title="Run Agents"
+                    >
+                      <span className="hcc-quick-icon">🤖</span>
+                      <span className="hcc-quick-lbl">Agents</span>
+                    </button>
+
+                    <button
+                      className="hcc-quick-btn"
+                      onClick={() => navigate("/chat")}
+                      title="Start New Mission via Solution Architect"
+                    >
+                      <span className="hcc-quick-icon">✨</span>
+                      <span className="hcc-quick-lbl">Mission</span>
+                    </button>
+
+                    <button
+                      className="hcc-quick-btn"
+                      onClick={() => navigate("/chat")}
+                      title="Ask GARUDA Intelligence"
+                    >
+                      <span className="hcc-quick-icon">💬</span>
+                      <span className="hcc-quick-lbl">Ask AI</span>
+                    </button>
+
+                    <button
+                      className="hcc-quick-btn"
+                      onClick={() => selectModule("approvals")}
+                      title="Boss Approvals"
+                    >
+                      <span className="hcc-quick-icon">⚡</span>
+                      <span className="hcc-quick-lbl">Approve</span>
+                    </button>
+
+                    <button
+                      className="hcc-quick-btn"
+                      onClick={() => fetchSnapshot(true)}
+                      title="Synchronize Kingdom"
+                    >
+                      <span className="hcc-quick-icon">🔄</span>
+                      <span className="hcc-quick-lbl">Sync</span>
+                    </button>
+                  </div>
+                </section>
+
+                {/* 3. MOTHER BRAIN STATUS HERO */}
+                <section className="hcc-hero-card">
                   <div className="hcc-hero-meta">
-                    <span className="hcc-hero-greeting">Welcome, Boss</span>
-                    <span style={{ fontSize: "0.7rem", color: "var(--hcc-text-dim)", fontFamily: "var(--hcc-font-mono)" }}>
-                      {getRelativeTime(lastFetched)}
+                    <span className="hcc-hero-greeting">MOTHER BRAIN STATUS</span>
+                    <span className={`hcc-status-pill ${snapshot.brain?.status === "EXECUTING" ? "live" : "limited"}`}>
+                      {snapshot.brain?.status || "UNKNOWN"}
                     </span>
                   </div>
 
-                  <h1 className="hcc-hero-headline">
-                    {snapshot.system?.status === "HEALTHY" ? "Kingdom Operational" : "Kingdom Active (Limited)"}
-                  </h1>
+                  <h2 className="hcc-hero-headline" style={{ fontSize: "1rem", color: "var(--hcc-gold-400)" }}>
+                    EXECUTION TRUTH • {snapshot.brain?.mode || "GOVERNED_EXECUTION_RUNTIME"}
+                  </h2>
                   <p className="hcc-hero-sub">
-                    {sectionAvailable(snapshot.workforce)
-                      ? `Sovereign intelligence synchronized across ${snapshot.workforce.activeAgents?.length || 0} registered runtime engines.`
-                      : "Sovereign intelligence synchronized across GARUDA runtime."}
+                    All systems operational. Agents executing governed tasks with cryptographic verification.
                   </p>
 
                   <div className="hcc-hero-stats">
@@ -275,9 +412,9 @@ export default function HighCommandCenter({ onLogout }) {
 
                     <div className="hcc-stat-box">
                       <div className="hcc-stat-val">
-                        {countOrUnavailable(snapshot.commercial?.activeProjects, sectionAvailable(snapshot.commercial))}
+                        {moneyOrUnavailable(snapshot.revenue?.pipelineValueINR?.amount, sectionAvailable(snapshot.revenue))}
                       </div>
-                      <div className="hcc-stat-lbl">Active Projects</div>
+                      <div className="hcc-stat-lbl">Pipeline</div>
                     </div>
 
                     <div className="hcc-stat-box">
@@ -287,9 +424,9 @@ export default function HighCommandCenter({ onLogout }) {
                       <div className="hcc-stat-lbl">Boss Actions</div>
                     </div>
                   </div>
-                </div>
+                </section>
 
-                {/* BOSS PRIORITY CARD (truth-aware three-state) */}
+                {/* 4. BOSS PRIORITY / ATTENTION STRIP */}
                 {priorityState === "attention" && (
                   <div className="hcc-priority-card attention" onClick={() => selectModule("approvals")}>
                     <div className="hcc-priority-info">
@@ -335,10 +472,10 @@ export default function HighCommandCenter({ onLogout }) {
                   </div>
                 )}
 
-                {/* INTELLIGENCE GRIDS */}
+                {/* 5. INTELLIGENCE GRIDS */}
                 <div className="hcc-section-head">
                   <h2 className="hcc-section-title">Command Intelligence</h2>
-                  <span className="hcc-section-badge">Realtime Pulse</span>
+                  <span className="hcc-section-badge">Realtime Modules</span>
                 </div>
 
                 <div className="hcc-intel-grid">
@@ -407,17 +544,49 @@ export default function HighCommandCenter({ onLogout }) {
                   </div>
                 </div>
 
-                {/* LIVE ACTIVITY STRIP */}
+                {/* 6. RECENT EXECUTION SNIPPET */}
+                <div className="hcc-section-head">
+                  <h2 className="hcc-section-title">Recent Execution</h2>
+                  <span className="hcc-section-badge" onClick={() => selectModule("brain")} style={{ cursor: "pointer", color: "var(--hcc-gold-400)" }}>
+                    VIEW ALL ➔
+                  </span>
+                </div>
+
+                <div className="hcc-card-list">
+                  {sectionAvailable(snapshot.brain) && snapshot.brain.recentExecution && snapshot.brain.recentExecution.length > 0 ? (
+                    snapshot.brain.recentExecution.slice(0, 3).map(proj => (
+                      <div key={proj.projectId} className="hcc-card-item">
+                        <div className="hcc-card-top">
+                          <h3 className="hcc-card-title">{proj.title || proj.projectId}</h3>
+                          <span className="hcc-card-badge" style={{ background: "rgba(16,185,129,0.12)", color: "var(--hcc-emerald)" }}>{proj.status}</span>
+                        </div>
+                        <p className="hcc-priority-desc">
+                          Phase: {proj.currentPhase} {proj.milestonesCount ? `• ${proj.milestonesCount} milestone(s)` : ""}
+                        </p>
+                        <div className="hcc-card-meta">
+                          <span>{proj.projectId}</span>
+                          <span>{getRelativeTime(proj.updatedAt)}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="hcc-card-item">
+                      <p className="hcc-priority-desc">No active execution projects currently recorded.</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* 7. LIVE ACTIVITY STRIP */}
                 <div className="hcc-section-head">
                   <h2 className="hcc-section-title">Live Activity</h2>
-                  <span className="hcc-section-badge" onClick={() => selectModule("activity")} style={{ cursor: "pointer" }}>
+                  <span className="hcc-section-badge" onClick={() => selectModule("activity")} style={{ cursor: "pointer", color: "var(--hcc-gold-400)" }}>
                     FULL TIMELINE ➔
                   </span>
                 </div>
 
                 <div className="hcc-activity-list">
                   {sectionAvailable(snapshot.activity) && snapshot.activity.recentEvents.length > 0 ? (
-                    snapshot.activity.recentEvents.slice(0, 5).map((evt, idx) => (
+                    snapshot.activity.recentEvents.slice(0, 4).map((evt, idx) => (
                       <div key={evt.eventId || idx} className="hcc-activity-item">
                         <div className="hcc-activity-dot"></div>
                         <div className="hcc-activity-content">
@@ -445,7 +614,9 @@ export default function HighCommandCenter({ onLogout }) {
               </>
             )}
 
-            {/* ================= BRAIN INTELLIGENCE ================= */}
+            {/* ===================================================== */}
+            {/* TAB: BRAIN INTELLIGENCE                               */}
+            {/* ===================================================== */}
             {activeModule === "brain" && (
               <div>
                 <div className="hcc-section-head">
@@ -541,7 +712,9 @@ export default function HighCommandCenter({ onLogout }) {
               </div>
             )}
 
-            {/* ================= MONEY / COMMERCIAL INTELLIGENCE ================= */}
+            {/* ===================================================== */}
+            {/* TAB: MONEY COMMAND                                    */}
+            {/* ===================================================== */}
             {activeModule === "money" && (
               <div>
                 <div className="hcc-section-head">
@@ -564,7 +737,7 @@ export default function HighCommandCenter({ onLogout }) {
                       </div>
                       <div style={{ fontSize: "0.75rem", color: "var(--hcc-text-dim)", marginTop: 4 }}>
                         {sectionAvailable(snapshot.revenue)
-                          ? `${snapshot.revenue.verifiedWonINR.transactionsCount || 0} verified transaction(s) recorded in payment ledger.`
+                          ? `${snapshot.revenue.verifiedWonINR?.transactionsCount || 0} verified transaction(s) recorded in payment ledger.`
                           : "Verified revenue unavailable."}
                       </div>
                     </div>
@@ -580,7 +753,7 @@ export default function HighCommandCenter({ onLogout }) {
                       </div>
                       <div style={{ fontSize: "0.75rem", color: "var(--hcc-text-dim)", marginTop: 4 }}>
                         {sectionAvailable(snapshot.revenue)
-                          ? `${snapshot.revenue.pipelineValueINR.proposalsCount || 0} proposal(s) awaiting deposit binding. Derived — not yet collected.`
+                          ? `${snapshot.revenue.pipelineValueINR?.proposalsCount || 0} proposal(s) awaiting deposit binding. Derived — not yet collected.`
                           : "Pipeline valuation unavailable."}
                       </div>
                     </div>
@@ -600,17 +773,17 @@ export default function HighCommandCenter({ onLogout }) {
                     {sectionAvailable(snapshot.commercial) && (
                       <>
                         <div className="hcc-section-head">
-                          <h2 className="hcc-section-title">Commercial Funnel</h2>
-                          <span className="hcc-section-badge">Counts</span>
+                          <h2 className="hcc-section-title">Commercial Conversion Pulse</h2>
+                          <span className="hcc-section-badge">Funnel Truth</span>
                         </div>
                         <div className="hcc-card-list">
                           {[
-                            { label: "Leads", value: snapshot.commercial.totalLeads, sub: "Total inbound + sourced leads" },
-                            { label: "Qualified", value: snapshot.commercial.qualifiedLeads, sub: "Contacted or qualified" },
-                            { label: "Proposals", value: snapshot.commercial.totalProposals, sub: "Proposals created" },
-                            { label: "Accepted", value: snapshot.commercial.acceptedProposals, sub: "Client accepted or paid" },
-                            { label: "Projects", value: snapshot.commercial.activeProjects, sub: "Active delivery projects" },
-                            { label: "Payments", value: snapshot.commercial.paidProposals, sub: "Deposit confirmed" }
+                            { label: "Total Leads", value: snapshot.commercial.totalLeads, sub: "Total inbound + sourced leads" },
+                            { label: "Qualified Prospects", value: snapshot.commercial.qualifiedLeads, sub: "Contacted or qualified" },
+                            { label: "Active Proposals", value: snapshot.commercial.totalProposals, sub: "Proposals created" },
+                            { label: "Accepted Proposals", value: snapshot.commercial.acceptedProposals, sub: "Client accepted or paid" },
+                            { label: "Active Projects", value: snapshot.commercial.activeProjects, sub: "Active delivery projects" },
+                            { label: "Confirmed Payments", value: snapshot.commercial.paidProposals, sub: "Deposit confirmed" }
                           ].map(row => (
                             <div key={row.label} className="hcc-card-item">
                               <div className="hcc-card-top">
@@ -630,7 +803,7 @@ export default function HighCommandCenter({ onLogout }) {
                       <span className="hcc-section-badge">Latest</span>
                     </div>
 
-                    {sectionAvailable(snapshot.revenue) && snapshot.revenue.recentTransactions.length > 0 && (
+                    {sectionAvailable(snapshot.revenue) && snapshot.revenue.recentTransactions?.length > 0 && (
                       <div className="hcc-card-list">
                         {snapshot.revenue.recentTransactions.map((tx, idx) => (
                           <div key={idx} className="hcc-card-item">
@@ -667,7 +840,7 @@ export default function HighCommandCenter({ onLogout }) {
                       </div>
                     )}
 
-                    {(!sectionAvailable(snapshot.revenue) || snapshot.revenue.recentTransactions.length === 0) &&
+                    {(!sectionAvailable(snapshot.revenue) || snapshot.revenue.recentTransactions?.length === 0) &&
                       (!sectionAvailable(snapshot.commercial) || !snapshot.commercial.recentLeads || snapshot.commercial.recentLeads.length === 0) && (
                       <div className="hcc-card-item">
                         <p className="hcc-priority-desc">No recent commercial activity available from the command layer.</p>
@@ -678,12 +851,14 @@ export default function HighCommandCenter({ onLogout }) {
               </div>
             )}
 
-            {/* ================= BOSS APPROVALS ================= */}
+            {/* ===================================================== */}
+            {/* TAB: BOSS APPROVALS                                   */}
+            {/* ===================================================== */}
             {activeModule === "approvals" && (
               <div>
                 <div className="hcc-section-head">
                   <h2 className="hcc-section-title">Boss Approvals</h2>
-                  <span className="hcc-section-badge">Review Only</span>
+                  <span className="hcc-section-badge">Decision Queue</span>
                 </div>
 
                 {!approvalsAvailable ? (
@@ -691,28 +866,28 @@ export default function HighCommandCenter({ onLogout }) {
                 ) : snapshot.approvals.pendingCount === 0 ? (
                   <div className="hcc-hero-card">
                     <div className="hcc-hero-headline" style={{ color: "var(--hcc-emerald)", fontSize: "1.1rem", marginBottom: 6 }}>
-                      🛡️ No Approvals Pending
+                      🛡️ Kingdom Clear • No Actions Required
                     </div>
                     <p className="hcc-hero-sub" style={{ marginBottom: 0 }}>
-                      No proposals currently in WAITING_APPROVAL state require Boss review.
+                      No governed proposals or validation checkpoints currently require Boss review.
                     </p>
                   </div>
                 ) : (
                   <>
                     <div className="hcc-card-item" style={{ marginBottom: 14 }}>
                       <div className="hcc-card-top">
-                        <h3 className="hcc-card-title">Pending Reviews</h3>
+                        <h3 className="hcc-card-title">Pending Decisions</h3>
                         <span className="hcc-card-badge" style={{ background: "rgba(245,158,11,0.15)", color: "var(--hcc-gold-400)" }}>
                           {snapshot.approvals.pendingCount}
                         </span>
                       </div>
                       <p className="hcc-priority-desc">
-                        Governed proposals awaiting Boss approval before client presentation. View + context only — no execution controls in this phase.
+                        Proposals awaiting Boss approval before client dispatch. Controlled execution actions arrive in Phase 5.2C.
                       </p>
                     </div>
 
                     <div className="hcc-card-list">
-                      {snapshot.approvals.items.map(item => (
+                      {snapshot.approvals.items?.map(item => (
                         <div key={item.id} className="hcc-card-item">
                           <div className="hcc-card-top">
                             <h3 className="hcc-card-title">{item.title}</h3>
@@ -736,12 +911,14 @@ export default function HighCommandCenter({ onLogout }) {
               </div>
             )}
 
-            {/* ================= OPERATIONS INTELLIGENCE ================= */}
+            {/* ===================================================== */}
+            {/* TAB: SYSTEM / OPERATIONS INTELLIGENCE                 */}
+            {/* ===================================================== */}
             {activeModule === "operations" && (
               <div>
                 <div className="hcc-section-head">
                   <h2 className="hcc-section-title">Operations Intelligence</h2>
-                  <span className="hcc-section-badge">System Truth</span>
+                  <span className="hcc-section-badge">Core Matrix</span>
                 </div>
 
                 <div className="hcc-hero-card" style={{ marginBottom: 14 }}>
@@ -752,7 +929,7 @@ export default function HighCommandCenter({ onLogout }) {
                     </span>
                   </div>
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: "0.8rem" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: "0.8rem" }}>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <span style={{ color: "var(--hcc-text-dim)" }}>Environment</span>
                       <strong style={{ color: "var(--hcc-text-main)" }}>{snapshot.system?.environment || "production"}</strong>
@@ -760,7 +937,7 @@ export default function HighCommandCenter({ onLogout }) {
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <span style={{ color: "var(--hcc-text-dim)" }}>Database</span>
                       <strong style={{ color: snapshot.system?.database?.status === "HEALTHY" ? "var(--hcc-emerald)" : "var(--hcc-amber)" }}>
-                        {snapshot.system?.database?.status === "HEALTHY" ? "HEALTHY" : "LOCAL STORAGE FALLBACK"} ({snapshot.system?.database?.provider})
+                        {snapshot.system?.database?.status === "HEALTHY" ? "HEALTHY" : "LOCAL FALLBACK"} ({snapshot.system?.database?.provider})
                       </strong>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -788,7 +965,7 @@ export default function HighCommandCenter({ onLogout }) {
 
                 {/* WORKFORCE TRUTH */}
                 <div className="hcc-section-head">
-                  <h2 className="hcc-section-title">Workforce</h2>
+                  <h2 className="hcc-section-title">Workforce & Registered Engines</h2>
                   <span className="hcc-section-badge">{sectionAvailable(snapshot.workforce) ? "Live" : "Limited"}</span>
                 </div>
 
@@ -818,19 +995,16 @@ export default function HighCommandCenter({ onLogout }) {
                         </div>
                         <p className="hcc-priority-desc">Projects VALIDATION_FAILED or BLOCKED.</p>
                       </div>
-                      <div className="hcc-card-item">
-                        <div className="hcc-card-top">
-                          <h3 className="hcc-card-title">Registered Runtime Engines</h3>
-                          <span className="hcc-card-badge" style={{ background: "rgba(6,182,212,0.12)", color: "var(--hcc-cyan)" }}>{snapshot.workforce.activeAgents?.length || 0}</span>
-                        </div>
-                        <p className="hcc-priority-desc">
-                          Registered engine identifiers. Live worker telemetry is not yet instrumented — counts shown are derived from project state only.
-                        </p>
-                      </div>
                     </div>
+
                     <div className="hcc-card-item" style={{ marginBottom: 16 }}>
-                      <h3 className="hcc-card-title" style={{ marginBottom: 8 }}>Registered Engines</h3>
-                      <ul style={{ margin: 0, paddingLeft: 18, color: "var(--hcc-text-muted)", fontSize: "0.8rem", lineHeight: 1.7 }}>
+                      <div className="hcc-card-top">
+                        <h3 className="hcc-card-title">Registered Runtime Engines</h3>
+                        <span className="hcc-card-badge" style={{ background: "rgba(6,182,212,0.12)", color: "var(--hcc-cyan)" }}>
+                          {snapshot.workforce.activeAgents?.length || 0} Registered
+                        </span>
+                      </div>
+                      <ul style={{ margin: "8px 0 0 0", paddingLeft: 18, color: "var(--hcc-text-muted)", fontSize: "0.8rem", lineHeight: 1.7 }}>
                         {snapshot.workforce.activeAgents?.map((agent, i) => (
                           <li key={i}><strong style={{ color: "var(--hcc-text-main)" }}>{agent}</strong></li>
                         ))}
@@ -844,36 +1018,27 @@ export default function HighCommandCenter({ onLogout }) {
 
                 {/* SUBSYSTEM AVAILABILITY */}
                 <div className="hcc-section-head">
-                  <h2 className="hcc-section-title">Subsystem Availability</h2>
-                  <span className="hcc-section-badge">Isolation</span>
+                  <h2 className="hcc-section-title">Subsystem Isolation</h2>
+                  <span className="hcc-section-badge">Matrix</span>
                 </div>
                 <div className="hcc-card-list">
                   {snapshot.subsystemAvailability && Object.entries(snapshot.subsystemAvailability).map(([key, ok]) => (
                     <div key={key} className="hcc-card-item">
                       <div className="hcc-card-top">
-                        <h3 className="hcc-card-title">{key}</h3>
-                        <span className={`hcc-card-badge ${ok ? "" : ""}`} style={{ background: ok ? "rgba(16,185,129,0.12)" : "rgba(244,63,94,0.12)", color: ok ? "var(--hcc-emerald)" : "var(--hcc-rose)" }}>
+                        <h3 className="hcc-card-title">{key.toUpperCase()}</h3>
+                        <span className="hcc-card-badge" style={{ background: ok ? "rgba(16,185,129,0.12)" : "rgba(244,63,94,0.12)", color: ok ? "var(--hcc-emerald)" : "var(--hcc-rose)" }}>
                           {ok ? "LIVE" : "UNAVAILABLE"}
                         </span>
                       </div>
                     </div>
                   ))}
                 </div>
-
-                {snapshot.partialErrors && snapshot.partialErrors.length > 0 && (
-                  <div className="hcc-card-item" style={{ marginBottom: 16 }}>
-                    <h3 className="hcc-card-title" style={{ marginBottom: 8 }}>Partial Failures</h3>
-                    {snapshot.partialErrors.map((pe, i) => (
-                      <p key={i} className="hcc-priority-desc" style={{ fontSize: "0.72rem", color: "var(--hcc-rose)" }}>
-                        {pe.subsystem}: {pe.error}
-                      </p>
-                    ))}
-                  </div>
-                )}
               </div>
             )}
 
-            {/* ================= ALERT CENTER ================= */}
+            {/* ===================================================== */}
+            {/* TAB: ALERTS                                           */}
+            {/* ===================================================== */}
             {activeModule === "alerts" && (
               <div>
                 <div className="hcc-section-head">
@@ -886,10 +1051,10 @@ export default function HighCommandCenter({ onLogout }) {
                 ) : snapshot.alerts.items && snapshot.alerts.items.length === 0 ? (
                   <div className="hcc-hero-card">
                     <div className="hcc-hero-headline" style={{ color: "var(--hcc-emerald)", fontSize: "1.1rem", marginBottom: 6 }}>
-                      🛡️ No Active Alerts
+                      🛡️ No Active Critical Alerts
                     </div>
                     <p className="hcc-hero-sub" style={{ marginBottom: 0 }}>
-                      The attention queue returned zero records. Nothing requires Boss action right now.
+                      The attention queue returned zero issues. Kingdom is operating within nominal parameters.
                     </p>
                   </div>
                 ) : (
@@ -905,7 +1070,7 @@ export default function HighCommandCenter({ onLogout }) {
                       </div>
                     </div>
 
-                    {snapshot.alerts.items.map(item => (
+                    {snapshot.alerts.items?.map(item => (
                       <div
                         key={item.id}
                         className={`hcc-alert-item ${item.severity === "CRITICAL" || item.severity === "HIGH" ? "critical" : item.severity === "MEDIUM" ? "warning" : "info"}`}
@@ -932,7 +1097,9 @@ export default function HighCommandCenter({ onLogout }) {
               </div>
             )}
 
-            {/* ================= FULL ACTIVITY TIMELINE ================= */}
+            {/* ===================================================== */}
+            {/* TAB: ACTIVITY                                         */}
+            {/* ===================================================== */}
             {activeModule === "activity" && (
               <div>
                 <div className="hcc-section-head">
@@ -940,15 +1107,29 @@ export default function HighCommandCenter({ onLogout }) {
                   <span className="hcc-section-badge">Chronological</span>
                 </div>
 
+                {/* Filter Chips */}
+                <div className="hcc-module-nav" style={{ marginBottom: 12 }}>
+                  {["ALL", "PROPOSAL_CREATED", "LEAD_CAPTURED", "PAYMENT_RECORDED", "PROJECT_ACTIVATED"].map(f => (
+                    <button
+                      key={f}
+                      className={`hcc-nav-chip ${activityFilter === f ? "active" : ""}`}
+                      onClick={() => setActivityFilter(f)}
+                      style={{ fontSize: "0.64rem", padding: "4px 10px", minHeight: "30px" }}
+                    >
+                      {f.replace("_", " ")}
+                    </button>
+                  ))}
+                </div>
+
                 {!sectionAvailable(snapshot.activity) ? (
                   renderUnavailableBanner(snapshot.activity?.error || "Activity timeline is not available from the command layer.")
-                ) : snapshot.activity.recentEvents.length === 0 ? (
+                ) : filteredEvents.length === 0 ? (
                   <div className="hcc-hero-card">
                     <div className="hcc-hero-headline" style={{ color: "var(--hcc-text-dim)", fontSize: "1.1rem", marginBottom: 6 }}>
-                      No Production Events
+                      No Events In View
                     </div>
                     <p className="hcc-hero-sub" style={{ marginBottom: 0 }}>
-                      No production lifecycle events are currently reachable. Test-generated events are excluded by the command layer.
+                      No production lifecycle events match the selected filter. Test events are excluded server-side.
                     </p>
                   </div>
                 ) : (
@@ -957,14 +1138,14 @@ export default function HighCommandCenter({ onLogout }) {
                       <div className="hcc-card-top">
                         <h3 className="hcc-card-title">Events in Window</h3>
                         <span className="hcc-card-badge" style={{ background: "rgba(6,182,212,0.12)", color: "var(--hcc-cyan)" }}>
-                          {snapshot.activity.totalEvents}
+                          {filteredEvents.length} Events
                         </span>
                       </div>
-                      <p className="hcc-priority-desc">Test-generated events (unit_test / TEST_EVENT) are excluded server-side.</p>
+                      <p className="hcc-priority-desc">Test-generated events (unit_test / TEST_EVENT) are filtered server-side.</p>
                     </div>
 
                     <div className="hcc-activity-list">
-                      {snapshot.activity.recentEvents.map((evt, idx) => (
+                      {filteredEvents.map((evt, idx) => (
                         <div
                           key={evt.eventId || idx}
                           className="hcc-activity-item"
@@ -987,7 +1168,7 @@ export default function HighCommandCenter({ onLogout }) {
                             </div>
                           </div>
                           {expandedActivityId === evt.eventId && (
-                            <div style={{ marginTop: 8, padding: "10px 12px", borderRadius: "var(--hcc-radius-sm)", background: "rgba(6,8,13,0.5)", fontSize: "0.68rem", color: "var(--hcc-text-dim)", fontFamily: "var(--hcc-font-mono)", lineHeight: 1.6, wordBreak: "break-all" }}>
+                            <div style={{ marginTop: 8, padding: "10px 12px", borderRadius: "var(--hcc-radius-sm)", background: "rgba(6,8,13,0.75)", fontSize: "0.68rem", color: "var(--hcc-text-dim)", fontFamily: "var(--hcc-font-mono)", lineHeight: 1.6, wordBreak: "break-all", border: "1px solid var(--hcc-border)" }}>
                               <div>EVENT {evt.eventId}</div>
                               <div>STATUS: {evt.status || "—"}</div>
                               <div>OCCURRED: {formatDateTime(evt.occurredAt)}</div>
@@ -1007,7 +1188,9 @@ export default function HighCommandCenter({ onLogout }) {
         )}
       </div>
 
-      {/* BOTTOM NAVIGATION BAR */}
+      {/* ========================================================= */}
+      {/* BOTTOM NAVIGATION BAR                                     */}
+      {/* ========================================================= */}
       <nav className="hcc-bottom-nav">
         <button
           className={`hcc-nav-item ${activeModule === "home" ? "active" : ""}`}
@@ -1025,15 +1208,15 @@ export default function HighCommandCenter({ onLogout }) {
           <span className="hcc-nav-lbl">BRAIN</span>
         </button>
 
-        {/* CENTER COMMAND ORB */}
+        {/* CENTER ELEVATED COMMAND ORB */}
         <div className="hcc-orb-wrapper">
           <button
             className="hcc-command-orb"
             onClick={() => setCommandSheetOpen(true)}
-            title="Open Command Sheet"
+            title="Open Sovereign Command Core"
             aria-label="Open command sheet"
           >
-            ⚡
+            🦅
           </button>
         </div>
 
@@ -1054,13 +1237,15 @@ export default function HighCommandCenter({ onLogout }) {
         </button>
       </nav>
 
-      {/* COMMAND ORB SHEET MODAL */}
+      {/* ========================================================= */}
+      {/* COMMAND ACTIONS BOTTOM SHEET                              */}
+      {/* ========================================================= */}
       {commandSheetOpen && (
         <div className="hcc-sheet-backdrop" onClick={() => setCommandSheetOpen(false)}>
           <div className="hcc-sheet" onClick={e => e.stopPropagation()}>
             <div className="hcc-sheet-handle"></div>
             <div className="hcc-sheet-head">
-              <h3 className="hcc-sheet-title">GARUDA Command Actions</h3>
+              <h3 className="hcc-sheet-title">GARUDA Sovereign Command</h3>
               <button
                 onClick={() => setCommandSheetOpen(false)}
                 style={{ background: "transparent", border: "none", color: "var(--hcc-text-dim)", fontSize: "1.2rem", cursor: "pointer" }}
@@ -1079,8 +1264,8 @@ export default function HighCommandCenter({ onLogout }) {
                 }}
               >
                 <div>
-                  <strong>Ask GARUDA Intelligence</strong>
-                  <div style={{ fontSize: "0.72rem", color: "var(--hcc-text-muted)" }}>Open conversational interface</div>
+                  <strong style={{ color: "var(--hcc-gold-400)" }}>Ask GARUDA Intelligence</strong>
+                  <div style={{ fontSize: "0.72rem", color: "var(--hcc-text-muted)" }}>Open conversational interface / solution architect</div>
                 </div>
                 <span>💬</span>
               </button>
@@ -1108,18 +1293,18 @@ export default function HighCommandCenter({ onLogout }) {
               >
                 <div>
                   <strong>Open Boss Approvals</strong>
-                  <div style={{ fontSize: "0.72rem", color: "var(--hcc-gold-400)" }}>Review governed proposals</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--hcc-gold-400)" }}>Review governed proposals in WAITING_APPROVAL</div>
                 </div>
                 <span>⚡</span>
               </button>
 
               <button
                 className="hcc-sheet-btn disabled"
-                title="Coming in Phase 5.3"
+                title="Coming in Phase 5.2C"
               >
                 <div>
-                  <strong>Autonomous Revenue Dispatch</strong>
-                  <div style={{ fontSize: "0.72rem", color: "var(--hcc-gold-400)" }}>COMING IN PHASE 5.3</div>
+                  <strong>Autonomous Action Execution</strong>
+                  <div style={{ fontSize: "0.72rem", color: "var(--hcc-gold-400)" }}>COMING IN PHASE 5.2C</div>
                 </div>
                 <span>🔒</span>
               </button>
@@ -1131,11 +1316,11 @@ export default function HighCommandCenter({ onLogout }) {
                   if (typeof onLogout === "function") onLogout();
                   else navigate("/founder");
                 }}
-                style={{ background: "rgba(244, 63, 94, 0.1)", borderColor: "rgba(244, 63, 94, 0.3)", color: "var(--hcc-rose)" }}
+                style={{ background: "rgba(244, 63, 94, 0.08)", borderColor: "rgba(244, 63, 94, 0.3)", color: "var(--hcc-rose)" }}
               >
                 <div>
                   <strong>Lock Command Center</strong>
-                  <div style={{ fontSize: "0.72rem", color: "var(--hcc-text-dim)" }}>End session</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--hcc-text-dim)" }}>End secure founder session</div>
                 </div>
                 <span>🔒</span>
               </button>
