@@ -114,7 +114,7 @@ module.exports = async function handler(req, res) {
   }
 
   // 2. RETRIEVE DELIVERY PACKAGE: GET /api/proposals/:proposalId/delivery
-  if (req.method === "GET" && action === "delivery") {
+  if (req.method === "GET" && (action === "delivery" || pathParts.includes("delivery"))) {
     if (!proposalId) {
       return res.status(400).json({ success: false, message: "proposalId is required" });
     }
@@ -129,7 +129,7 @@ module.exports = async function handler(req, res) {
   }
 
   // 3. RETRIEVE EVENT HISTORY: GET /api/proposals/:proposalId/events
-  if (req.method === "GET" && action === "events") {
+  if (req.method === "GET" && (action === "events" || pathParts.includes("events"))) {
     if (!proposalId) {
       return res.status(400).json({ success: false, message: "proposalId is required" });
     }
