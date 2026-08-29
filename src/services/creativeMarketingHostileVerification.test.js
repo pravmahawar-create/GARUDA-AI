@@ -102,15 +102,47 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   // 2. FORENSIC PROVIDER DISCOVERY & PHYSICAL ASSET TRUTH
   // ---------------------------------------------------------------------------
   describe("2. Forensic Provider Discovery & 6-Point Physical Asset Verification", () => {
-    it("Discovers provider capabilities truthfully with canonical health statuses", async () => {
+    it("Discovers provider capabilities truthfully with canonical health statuses and machine audit", async () => {
       const discovery = await imageGenerationRouter.discoverProviderCapabilities();
       assert.ok(discovery.timestamp);
       assert.ok(discovery.providers);
+      assert.ok(discovery.machineAudit);
+      assert.ok(discovery.machineAudit.cpu.model);
+      assert.ok(discovery.machineAudit.os.platform);
+      assert.ok(discovery.machineAudit.capabilityCategory);
+      assert.ok(discovery.machineAudit.feasibilityDecision);
+
       assert.strictEqual(discovery.providers.garuda_sovereign_svg_renderer.status, PROVIDER_HEALTH_STATUSES.READY);
       assert.strictEqual(discovery.providers.openai_dalle.status, PROVIDER_HEALTH_STATUSES.NOT_CONFIGURED);
       assert.strictEqual(discovery.providers.huggingface_diffusers.status, PROVIDER_HEALTH_STATUSES.NOT_CONFIGURED);
       assert.strictEqual(discovery.providers.stability_ai.status, PROVIDER_HEALTH_STATUSES.NOT_CONFIGURED);
       assert.strictEqual(discovery.providers.local_sd.status, PROVIDER_HEALTH_STATUSES.NOT_CONFIGURED);
+    });
+
+    it("Audits machine hardware and identifies local AI feasibility truthfully", async () => {
+      const machineHardwareAuditor = require("./machineHardwareAuditor");
+      const audit = await machineHardwareAuditor.auditMachineHardware();
+
+      assert.ok(audit.os.totalMemMB > 0);
+      assert.ok(audit.cpu.cores > 0);
+      assert.ok(["Intel", "NVIDIA", "AMD", "Apple", "Unknown"].includes(audit.gpu.manufacturer));
+      assert.ok(["GPU_ACCELERATED_READY", "GPU_ACCELERATED_FEASIBLE", "CPU_ONLY_FEASIBLE", "INSUFFICIENT_HARDWARE"].includes(audit.capabilityCategory));
+      assert.ok(["LOCAL_REAL_AI_IMAGE_FEASIBLE", "LOCAL_REAL_AI_IMAGE_NOT_FEASIBLE"].includes(audit.feasibilityDecision));
+      assert.strictEqual(typeof audit.localPorts.port7860InUse, "boolean");
+      assert.strictEqual(typeof audit.localPorts.port8188InUse, "boolean");
+    });
+
+    it("Handles unreachable local engine endpoint safely without crashing or hanging", async () => {
+      const prevLocal = process.env.LOCAL_SD_URL;
+      process.env.LOCAL_SD_URL = "http://127.0.0.1:59999"; // Non-existent port
+
+      const health = await imageGenerationRouter.checkProviderHealth("local_sd");
+      assert.strictEqual(health.configured, true);
+      assert.strictEqual(health.reachable, false);
+      assert.strictEqual(health.status, PROVIDER_HEALTH_STATUSES.UNREACHABLE);
+
+      if (prevLocal) process.env.LOCAL_SD_URL = prevLocal;
+      else delete process.env.LOCAL_SD_URL;
     });
 
     it("Truthfully returns PROVIDER_UNAVAILABLE with PRODUCTION_PROMPT_READY & VECTOR_CREATIVE_READY fallback when unconfigured", async () => {

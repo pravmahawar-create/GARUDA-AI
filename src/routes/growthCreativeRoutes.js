@@ -109,6 +109,16 @@ router.get("/creative/provider-discovery", async (req, res) => {
   }
 });
 
+router.get("/creative/machine-audit", async (req, res) => {
+  try {
+    const machineHardwareAuditor = require("../services/machineHardwareAuditor");
+    const audit = await machineHardwareAuditor.auditMachineHardware();
+    res.json({ success: true, data: audit });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 router.get("/creative/operations-snapshot", (req, res) => {
   try {
     const imageOps = imageGenerationRouter.getCreativeOperationsSnapshot();

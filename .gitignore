@@ -21,5 +21,11 @@ scratch/
 projects/
 backend-node/dist/
 models/
+local-ai/
+*.safetensors
+*.ckpt
+*.pt
+*.bin
+*.onnx
 *.apk
 .continue/

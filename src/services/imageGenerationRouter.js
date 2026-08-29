@@ -3,7 +3,7 @@
  * Phase 1 & Phase B — Real Creative Generation Activation & Forensic Provider Discovery
  *
  * Directs creative generation requests to real AI image providers (Google Imagen, Hugging Face,
- * OpenAI DALL-E, Stability AI, Local SD) or sovereign vector layout renderers with cryptographic
+ * OpenAI DALL-E, Stability AI, Local SD / ComfyUI) or sovereign vector layout renderers with cryptographic
  * artifact persistence and strict truth law governance.
  *
  * Strict Output Categories:
@@ -22,6 +22,7 @@ const path = require("path");
 const garudaEventService = require("./garudaEventService");
 const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("./garudaEventTypes");
 const identityLockService = require("./identityLockService");
+const machineHardwareAuditor = require("./machineHardwareAuditor");
 const {
   PROVIDER_LIFECYCLE_STATES,
   PROVIDER_HEALTH_STATUSES,
@@ -167,7 +168,7 @@ class ImageGenerationRouter {
       },
       local_sd: {
         id: "local_sd",
-        name: "Local Stable Diffusion WebUI / ComfyUI",
+        name: "Local Stable Diffusion / ComfyUI",
         type: "AI_GENERATIVE_IMAGE",
         configured: Boolean(localSdUrl),
         endpoint: localSdUrl,
@@ -198,13 +199,16 @@ class ImageGenerationRouter {
   }
 
   /**
-   * 2. Forensic Provider Discovery & Deep Health Check (Phase A).
+   * 2. Forensic Provider Discovery & Deep Health Check (Phase A & Phase 1).
    * Verifies actual reachability and authentication without exposing secrets.
    * Returns canonical statuses: READY | NOT_CONFIGURED | UNREACHABLE | AUTH_FAILED | RATE_LIMITED | UNSUPPORTED.
    */
   async discoverProviderCapabilities() {
+    const machineAudit = await machineHardwareAuditor.auditMachineHardware();
+
     const discovery = {
       timestamp: new Date().toISOString(),
+      machineAudit,
       providers: {},
       readyAIProviderCount: 0,
       activeAIProviders: [],
@@ -410,25 +414,51 @@ class ImageGenerationRouter {
       if (!endpoint) {
         return {
           provider: "local_sd",
-          name: "Local Stable Diffusion WebUI / ComfyUI",
+          name: "Local Stable Diffusion / ComfyUI",
           configured: false,
           reachable: false,
           authenticated: false,
           type: "AI_GENERATIVE_IMAGE",
-          status: PROVIDER_HEALTH_STATUSES.NOT_CONFIGURED
+          status: PROVIDER_HEALTH_STATUSES.NOT_CONFIGURED,
+          notice: "LOCAL_SD_URL not configured. Machine feasibility audited by machineHardwareAuditor."
         };
       }
       try {
-        const res = await fetchWithTimeout(`${endpoint.replace(/\/$/, '')}/sdapi/v1/options`, { method: "GET" }, 2000);
+        // Probe SD WebUI or ComfyUI
+        const cleanUrl = endpoint.replace(/\/$/, '');
+        let isReachable = false;
+        let engineType = "UNKNOWN";
+
+        // Probe 1: ComfyUI /system_stats
+        try {
+          const comfyRes = await fetchWithTimeout(`${cleanUrl}/system_stats`, { method: "GET" }, 2000);
+          if (comfyRes.ok) {
+            isReachable = true;
+            engineType = "COMFYUI";
+          }
+        } catch {}
+
+        // Probe 2: SD WebUI /sdapi/v1/options
+        if (!isReachable) {
+          try {
+            const sdRes = await fetchWithTimeout(`${cleanUrl}/sdapi/v1/options`, { method: "GET" }, 2000);
+            if (sdRes.ok) {
+              isReachable = true;
+              engineType = "SD_WEBUI";
+            }
+          } catch {}
+        }
+
         return {
           provider: "local_sd",
-          name: "Local Stable Diffusion WebUI / ComfyUI",
+          name: "Local Stable Diffusion / ComfyUI",
           configured: true,
-          reachable: res.ok,
-          authenticated: true,
-          capabilities: ["local_txt2img", "no_cost"],
+          reachable: isReachable,
+          authenticated: isReachable,
+          engineType,
+          capabilities: isReachable ? ["local_diffuser", "no_cost"] : [],
           type: "AI_GENERATIVE_IMAGE",
-          status: res.ok ? PROVIDER_HEALTH_STATUSES.READY : PROVIDER_HEALTH_STATUSES.UNREACHABLE
+          status: isReachable ? PROVIDER_HEALTH_STATUSES.READY : PROVIDER_HEALTH_STATUSES.UNREACHABLE
         };
       } catch (err) {
         return {
@@ -566,6 +596,7 @@ class ImageGenerationRouter {
           fallbackState: GENERATION_OUTPUT_TYPES.VECTOR_CREATIVE_READY,
           error: job.error,
           providersEvaluated: discovery.providers,
+          machineAudit: discovery.machineAudit,
           promptPackage,
           fallbackAsset: vectorFallback.asset,
           truthClassification: "TRUTHFUL_UNAVAILABLE",
@@ -720,9 +751,10 @@ class ImageGenerationRouter {
       });
     }
 
-    // 5.3 Local Stable Diffusion WebUI Adapter
+    // 5.3 Local Stable Diffusion / ComfyUI Adapter
     if (providerId === "local_sd" && process.env.LOCAL_SD_URL) {
-      const endpoint = `${process.env.LOCAL_SD_URL.replace(/\/$/, '')}/sdapi/v1/txt2img`;
+      const cleanUrl = process.env.LOCAL_SD_URL.replace(/\/$/, '');
+      const endpoint = `${cleanUrl}/sdapi/v1/txt2img`;
       const res = await fetchWithTimeout(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -973,6 +1005,7 @@ class ImageGenerationRouter {
     return {
       imageCapability: detection.aiGeneratorsAvailable ? "READY" : "VECTOR_CREATIVE_ONLY",
       activeProvider: detection.aiGeneratorsAvailable ? detection.activeAIProviders[0] : "garuda_sovereign_svg_renderer",
+      providerLocation: detection.aiGeneratorsAvailable && detection.activeAIProviders[0] === "local_sd" ? "LOCAL" : "SOVEREIGN_LOCAL",
       totalJobsRecorded: allJobs.length,
       totalAssetsRecorded: allAssets.length,
       lastGenerationJob: lastJob ? {
