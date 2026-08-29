@@ -3,9 +3,12 @@ const path = require("path");
 const sharp = require("sharp");
 
 /**
- * GARUDA Favicon & Brand Icon Generator
- * Crops the authentic Golden Eagle Sigil from garuda-sigil.png and creates
- * high-contrast, multi-resolution, Google-compliant favicon and app icon assets.
+ * GARUDA Favicon & Brand Icon Generator (Tiny-Size Optimized)
+ * Generates ultra-crisp, multi-resolution, high-contrast favicon assets
+ * from the authentic master GARUDA Golden Eagle Sigil.
+ *
+ * - High-res icons (512, 192, 180): Full majestic eagle wingspan & sigil.
+ * - Tiny-scale icons (48, 32, 24, 16, ico): Maximized high-contrast eagle crest with razor-sharp silhouette.
  */
 
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -43,30 +46,32 @@ function createIco(pngBuffers) {
 }
 
 async function generateFavicons() {
-  console.log("=== GENERATING AUTHENTIC GARUDA GOLDEN EAGLE FAVICONS ===");
+  console.log("=== GENERATING AUTHENTIC GARUDA GOLDEN EAGLE FAVICONS (TINY-SCALE OPTIMIZED) ===");
 
   if (!fs.existsSync(SOURCE_IMAGE)) {
     throw new Error(`Source image not found: ${SOURCE_IMAGE}`);
   }
 
-  // 1. Extract the crisp PRIMARY GOLD mark from garuda-sigil.png (left: 55, top: 924, width: 235, height: 216)
-  const rawMark = await sharp(SOURCE_IMAGE)
-    .extract({ left: 55, top: 924, width: 235, height: 216 })
+  // 1. Extract Master Full Sigil from top center (x: 345, y: 155, w: 846, h: 672)
+  const masterCrop = await sharp(SOURCE_IMAGE)
+    .extract({ left: 345, top: 155, width: 846, height: 672 })
     .toBuffer();
 
-  // 2. Build 512x512 master on #05070b background
-  const masterBuffer = await sharp({
+  // 512x512 Master on #04060a obsidian black
+  const p512 = await sharp({
     create: {
       width: 512,
       height: 512,
       channels: 4,
-      background: { r: 5, g: 7, b: 11, alpha: 1 }
+      background: { r: 4, g: 6, b: 10, alpha: 1 }
     }
   })
     .composite([
       {
-        input: await sharp(rawMark)
-          .resize(450, 414, { fit: "contain", background: { r: 5, g: 7, b: 11, alpha: 1 } })
+        input: await sharp(masterCrop)
+          .resize(470, 374, { fit: "contain" })
+          .modulate({ brightness: 1.15, saturation: 1.25 })
+          .sharpen({ sigma: 1.2 })
           .toBuffer(),
         gravity: "center"
       }
@@ -74,30 +79,57 @@ async function generateFavicons() {
     .png()
     .toBuffer();
 
-  // 3. Generate PNG sizes
-  const p512 = masterBuffer;
-  const p192 = await sharp(masterBuffer).resize(192, 192).png().toBuffer();
-  const p180 = await sharp(masterBuffer).resize(180, 180).png().toBuffer();
-  const p64 = await sharp(masterBuffer).resize(64, 64).png().toBuffer();
-  const p48 = await sharp(masterBuffer).resize(48, 48).png().toBuffer();
-  const p32 = await sharp(masterBuffer).resize(32, 32).png().toBuffer();
-  const p16 = await sharp(masterBuffer).resize(16, 16).png().toBuffer();
+  const p192 = await sharp(p512).resize(192, 192, { kernel: sharp.kernel.lanczos3 }).png().toBuffer();
+  const p180 = await sharp(p512).resize(180, 180, { kernel: sharp.kernel.lanczos3 }).png().toBuffer();
 
-  // 4. Generate multi-resolution favicon.ico
+  // 2. Extract Maximized High-Impact Eagle Crest (x: 450, y: 190, w: 636, h: 570) for Tiny-Scale Recognizability
+  const crestCrop = await sharp(SOURCE_IMAGE)
+    .extract({ left: 450, top: 190, width: 636, height: 570 })
+    .toBuffer();
+
+  const tinyMaster = await sharp({
+    create: {
+      width: 256,
+      height: 256,
+      channels: 4,
+      background: { r: 4, g: 6, b: 10, alpha: 1 }
+    }
+  })
+    .composite([
+      {
+        input: await sharp(crestCrop)
+          .resize(236, 212, { fit: "contain" })
+          .modulate({ brightness: 1.22, saturation: 1.35 })
+          .sharpen({ sigma: 1.8 })
+          .toBuffer(),
+        gravity: "center"
+      }
+    ])
+    .png()
+    .toBuffer();
+
+  // Generate tiny PNGs with lanczos3 downsampling
+  const p64 = await sharp(tinyMaster).resize(64, 64, { kernel: sharp.kernel.lanczos3 }).png().toBuffer();
+  const p48 = await sharp(tinyMaster).resize(48, 48, { kernel: sharp.kernel.lanczos3 }).png().toBuffer();
+  const p32 = await sharp(tinyMaster).resize(32, 32, { kernel: sharp.kernel.lanczos3 }).png().toBuffer();
+  const p24 = await sharp(tinyMaster).resize(24, 24, { kernel: sharp.kernel.lanczos3 }).png().toBuffer();
+  const p16 = await sharp(tinyMaster).resize(16, 16, { kernel: sharp.kernel.lanczos3 }).png().toBuffer();
+
+  // 3. Generate multi-resolution favicon.ico containing 16x16, 32x32, 48x48
   const icoBuffer = createIco([
     { width: 16, height: 16, buffer: p16 },
     { width: 32, height: 32, buffer: p32 },
     { width: 48, height: 48, buffer: p48 }
   ]);
 
-  // 5. Generate SVG wrapping the high-res gold mark with zero loss
+  // 4. Generate SVG wrapping the high-res gold mark with zero loss
   const base64Png = p512.toString("base64");
   const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
-  <rect width="512" height="512" rx="64" fill="#05070b" stroke="#f5d76e" stroke-width="4" />
+  <rect width="512" height="512" rx="64" fill="#04060a" stroke="#f5d76e" stroke-width="4" />
   <image href="data:image/png;base64,${base64Png}" width="512" height="512" />
 </svg>`;
 
-  // 6. Generate site.webmanifest
+  // 5. Generate site.webmanifest
   const webManifest = {
     name: "GARUDA AI Operating System",
     short_name: "GARUDA AI",
@@ -114,8 +146,8 @@ async function generateFavicons() {
         type: "image/png"
       }
     ],
-    theme_color: "#05070b",
-    background_color: "#05070b",
+    theme_color: "#04060a",
+    background_color: "#04060a",
     display: "standalone",
     start_url: "/"
   };
@@ -140,6 +172,7 @@ async function generateFavicons() {
     fs.writeFileSync(path.join(t.dest, "favicon-64x64.png"), p64);
     fs.writeFileSync(path.join(t.dest, "favicon-48x48.png"), p48);
     fs.writeFileSync(path.join(t.dest, "favicon-32x32.png"), p32);
+    fs.writeFileSync(path.join(t.dest, "favicon-24x24.png"), p24);
     fs.writeFileSync(path.join(t.dest, "favicon-16x16.png"), p16);
 
     fs.writeFileSync(path.join(t.dest, "favicon", "garuda-sigil-icon.svg"), svgContent, "utf8");
@@ -148,10 +181,10 @@ async function generateFavicons() {
 
     fs.writeFileSync(path.join(t.dest, "site.webmanifest"), JSON.stringify(webManifest, null, 2), "utf8");
 
-    console.log(`✔ Generated favicon suite in ${path.relative(REPO_ROOT, t.dest)}`);
+    console.log(`✔ Generated tiny-scale optimized favicon suite in ${path.relative(REPO_ROOT, t.dest)}`);
   }
 
-  console.log("🎉 All authentic GARUDA favicon assets generated successfully!");
+  console.log("🎉 Tiny-scale optimized GARUDA favicon assets generated successfully!");
 }
 
 if (require.main === module) {
