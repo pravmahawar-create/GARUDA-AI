@@ -464,6 +464,232 @@ const ROUTES = [
       <p>Launch the interactive GARUDA AI demonstration to evaluate multi-agent orchestration, custom software generation, and business automation workflows.</p>
       <p><a href="/chat">Discuss Custom Project Scope →</a> | <a href="/what-is-garuda-ai">Learn About GARUDA Architecture →</a></p>
     `
+  },
+  {
+    path: "/guides",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "index.html"),
+      path.join(DIST_DIR, "guides.html")
+    ],
+    title: "Engineering & AI Architecture Guides | GARUDA AI",
+    description: "Comprehensive technical guides, architectural comparisons, and engineering blueprints for custom AI development, autonomous agents, RAG, SaaS MVPs, and business automation.",
+    canonical: "https://www.garudaos.in/guides",
+    h1: "Engineering Guides & AI Architectural Blueprints",
+    eyebrow: "GARUDA KNOWLEDGE & ARCHITECTURE LIBRARY",
+    contentSnippet: `
+      <h2>Technical Guides & Decision Frameworks for Engineering Leaders</h2>
+      <p>Explore in-depth architectural comparisons and implementation roadmaps for custom AI, multi-agent graphs, RAG systems, and SaaS development.</p>
+      <ul>
+        <li><a href="/guides/ai-agent-vs-chatbot">AI Agent vs Chatbot: What Businesses Actually Need</a></li>
+        <li><a href="/guides/how-business-workflow-automation-works">How Business Workflow Automation with AI Works</a></li>
+        <li><a href="/guides/rag-systems-architecture-implementation-guide">RAG Systems for Business: Architecture, Vector Search, and Implementation</a></li>
+        <li><a href="/guides/how-to-build-saas-mvp-architecture-timeline">How to Build a SaaS MVP in 2-3 Weeks: Scope, Architecture & Timeline</a></li>
+        <li><a href="/guides/custom-software-vs-off-the-shelf-software">Custom Software vs Off-the-Shelf SaaS: The Enterprise Decision Framework</a></li>
+        <li><a href="/guides/automate-whatsapp-business-operations-ai">How Businesses Can Automate WhatsApp Operations with AI</a></li>
+        <li><a href="/guides/what-custom-ai-development-actually-involves">What Does Custom AI Development Actually Involve?</a></li>
+        <li><a href="/guides/how-to-plan-ai-automation-project">How to Plan an AI Automation Project Before Development</a></li>
+      </ul>
+    `
+  },
+  {
+    path: "/guides/ai-agent-vs-chatbot",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "ai-agent-vs-chatbot", "index.html"),
+      path.join(DIST_DIR, "guides", "ai-agent-vs-chatbot.html")
+    ],
+    title: "AI Agent vs Chatbot for Business: Key Differences & Architecture Guide | GARUDA",
+    description: "Understand the critical differences between conversational chatbots and autonomous AI agents. Learn when your business needs multi-step agentic workflows vs simple LLM chats.",
+    canonical: "https://www.garudaos.in/guides/ai-agent-vs-chatbot",
+    h1: "AI Agent vs Chatbot: What Businesses Actually Need",
+    eyebrow: "AGENTIC AI & ARCHITECTURE GUIDE",
+    contentSnippet: `
+      <h2>Conversational Text vs Autonomous Multi-Step Execution</h2>
+      <p>While chatbots generate text responses to single prompts, autonomous AI agents plan multi-step workflows, call external APIs, query databases, verify their own work, and execute real business tasks.</p>
+      <p>Related Service: <a href="/services/ai-agent-development">Autonomous AI Agent Development Services →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://www.garudaos.in/guides/ai-agent-vs-chatbot#article",
+      "headline": "AI Agent vs Chatbot: What Businesses Actually Need",
+      "description": "Understand the critical differences between conversational chatbots and autonomous AI agents.",
+      "url": "https://www.garudaos.in/guides/ai-agent-vs-chatbot"
+    }
+  },
+  {
+    path: "/guides/how-business-workflow-automation-works",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "how-business-workflow-automation-works", "index.html"),
+      path.join(DIST_DIR, "guides", "how-business-workflow-automation-works.html")
+    ],
+    title: "How Business Workflow AI Automation Works: Architecture & Guide | GARUDA",
+    description: "Discover how modern AI workflow automation connects CRMs, document pipelines, payment gateways, and databases with zero data leakage.",
+    canonical: "https://www.garudaos.in/guides/how-business-workflow-automation-works",
+    h1: "How Business Workflow Automation with AI Works",
+    eyebrow: "OPERATIONS & AUTOMATION ARCHITECTURE",
+    contentSnippet: `
+      <h2>Event-Driven Automation, Document Parsing & Zero-Loss Webhooks</h2>
+      <p>Learn how event-driven architecture, cognitive OCR parsers, and HMAC webhook verification automate inbound leads, invoice processing, and customer onboarding.</p>
+      <p>Related Service: <a href="/services/business-automation">Enterprise Business Workflow AI Automation →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://www.garudaos.in/guides/how-business-workflow-automation-works#article",
+      "headline": "How Business Workflow Automation with AI Works",
+      "description": "Discover how modern AI workflow automation connects CRMs, document pipelines, payment gateways, and databases with zero data leakage.",
+      "url": "https://www.garudaos.in/guides/how-business-workflow-automation-works"
+    }
+  },
+  {
+    path: "/guides/rag-systems-architecture-implementation-guide",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "rag-systems-architecture-implementation-guide", "index.html"),
+      path.join(DIST_DIR, "guides", "rag-systems-architecture-implementation-guide.html")
+    ],
+    title: "Enterprise RAG Systems: Architecture & Implementation Guide | GARUDA",
+    description: "Comprehensive engineering guide to Retrieval-Augmented Generation (RAG). Learn hybrid search, vector embeddings, chunking strategies, and zero-hallucination citation grounding.",
+    canonical: "https://www.garudaos.in/guides/rag-systems-architecture-implementation-guide",
+    h1: "RAG Systems for Business: Architecture, Use Cases & Implementation",
+    eyebrow: "ENTERPRISE RAG & KNOWLEDGE AI",
+    contentSnippet: `
+      <h2>Hybrid Vector Search, Semantic Chunking & Citation Grounding</h2>
+      <p>Standard LLMs cannot read private company documents and frequently hallucinate. Retrieval-Augmented Generation (RAG) grounds AI in verified enterprise knowledge.</p>
+      <p>Related Service: <a href="/services/rag-development">Enterprise RAG Systems Development →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://www.garudaos.in/guides/rag-systems-architecture-implementation-guide#article",
+      "headline": "RAG Systems for Business: Architecture, Use Cases & Implementation",
+      "description": "Comprehensive engineering guide to Retrieval-Augmented Generation (RAG).",
+      "url": "https://www.garudaos.in/guides/rag-systems-architecture-implementation-guide"
+    }
+  },
+  {
+    path: "/guides/how-to-build-saas-mvp-architecture-timeline",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "how-to-build-saas-mvp-architecture-timeline", "index.html"),
+      path.join(DIST_DIR, "guides", "how-to-build-saas-mvp-architecture-timeline.html")
+    ],
+    title: "How to Build a SaaS MVP in 2-3 Weeks: Architecture & Roadmap | GARUDA",
+    description: "Step-by-step technical roadmap for founders building a production SaaS MVP in 14-21 days. Learn stack selection, authentication, database schema, and Stripe billing.",
+    canonical: "https://www.garudaos.in/guides/how-to-build-saas-mvp-architecture-timeline",
+    h1: "How to Build a SaaS MVP in 2-3 Weeks: Scope, Architecture & Timeline",
+    eyebrow: "STARTUP PRODUCT & FULL-STACK ROADMAP",
+    contentSnippet: `
+      <h2>Scope, Multi-Tenant Architecture & Production Billing Engine</h2>
+      <p>The deterministic 2-3 week engineering blueprint to get your SaaS MVP in front of paying customers with automated test verification and clean multi-tenant isolation.</p>
+      <p>Related Service: <a href="/services/saas-mvp-development">Rapid Startup SaaS MVP Development →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://www.garudaos.in/guides/how-to-build-saas-mvp-architecture-timeline#article",
+      "headline": "How to Build a SaaS MVP in 2-3 Weeks: Scope, Architecture & Timeline",
+      "description": "Step-by-step technical roadmap for founders building a production SaaS MVP in 14-21 days.",
+      "url": "https://www.garudaos.in/guides/how-to-build-saas-mvp-architecture-timeline"
+    }
+  },
+  {
+    path: "/guides/custom-software-vs-off-the-shelf-software",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "custom-software-vs-off-the-shelf-software", "index.html"),
+      path.join(DIST_DIR, "guides", "custom-software-vs-off-the-shelf-software.html")
+    ],
+    title: "Custom Software vs Off-the-Shelf SaaS: Complete Decision Framework | GARUDA",
+    description: "Detailed business comparison between custom software development and off-the-shelf SaaS subscriptions. Evaluate TCO, IP ownership, and operational fit.",
+    canonical: "https://www.garudaos.in/guides/custom-software-vs-off-the-shelf-software",
+    h1: "Custom Software vs Off-the-Shelf SaaS: The Enterprise Decision Framework",
+    eyebrow: "SOFTWARE STRATEGY & TCO FRAMEWORK",
+    contentSnippet: `
+      <h2>Total Cost of Ownership, IP Ownership & Vendor Lock-In</h2>
+      <p>Evaluate whether your company should build custom software or pay for monthly SaaS licenses using our 3-year TCO comparison and 5-question decision matrix.</p>
+      <p>Related Service: <a href="/services/custom-software-development">Full-Stack Custom Software Engineering →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://www.garudaos.in/guides/custom-software-vs-off-the-shelf-software#article",
+      "headline": "Custom Software vs Off-the-Shelf SaaS: The Enterprise Decision Framework",
+      "description": "Detailed business comparison between custom software development and off-the-shelf SaaS subscriptions.",
+      "url": "https://www.garudaos.in/guides/custom-software-vs-off-the-shelf-software"
+    }
+  },
+  {
+    path: "/guides/automate-whatsapp-business-operations-ai",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "automate-whatsapp-business-operations-ai", "index.html"),
+      path.join(DIST_DIR, "guides", "automate-whatsapp-business-operations-ai.html")
+    ],
+    title: "Automate WhatsApp Business Operations with AI: Guide & Blueprint | GARUDA",
+    description: "Learn how to build 24/7 commercial WhatsApp AI bots for customer scoping, automated lead qualification, instant payments, and CRM sync.",
+    canonical: "https://www.garudaos.in/guides/automate-whatsapp-business-operations-ai",
+    h1: "How Businesses Can Automate WhatsApp Operations with AI",
+    eyebrow: "CONVERSATIONAL COMMERCIAL AI",
+    contentSnippet: `
+      <h2>WhatsApp Cloud API, Multi-Turn Lead Scoping & Dynamic Payment Links</h2>
+      <p>Learn the technical blueprint to deploy intelligent, commercial WhatsApp AI bots that scope requirements and generate instant checkout links with human handoff safeguards.</p>
+      <p>Related Service: <a href="/services/whatsapp-telegram-ai-bots">Custom WhatsApp & Telegram AI Commercial Bots →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://www.garudaos.in/guides/automate-whatsapp-business-operations-ai#article",
+      "headline": "How Businesses Can Automate WhatsApp Operations with AI",
+      "description": "Learn how to build 24/7 commercial WhatsApp AI bots for customer scoping, automated lead qualification, instant payments, and CRM sync.",
+      "url": "https://www.garudaos.in/guides/automate-whatsapp-business-operations-ai"
+    }
+  },
+  {
+    path: "/guides/what-custom-ai-development-actually-involves",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "what-custom-ai-development-actually-involves", "index.html"),
+      path.join(DIST_DIR, "guides", "what-custom-ai-development-actually-involves.html")
+    ],
+    title: "What Does Custom AI Development Actually Involve? (Process & Cost) | GARUDA",
+    description: "A transparent, technical guide to what custom AI engineering actually entails. Learn data prep, model selection, prompt graphs, automated evaluation, and deployment costs.",
+    canonical: "https://www.garudaos.in/guides/what-custom-ai-development-actually-involves",
+    h1: "What Does Custom AI Development Actually Involve?",
+    eyebrow: "AI ENGINEERING & STRATEGY",
+    contentSnippet: `
+      <h2>Beyond the Hype: Data Preparation, Tool Graphs & Deterministic QA</h2>
+      <p>A transparent engineering reality check on custom AI development: data readiness, model selection, prompt graphs, automated evaluation, and realistic milestone budgets.</p>
+      <p>Related Service: <a href="/services/custom-ai-development">Custom AI Development Services →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://www.garudaos.in/guides/what-custom-ai-development-actually-involves#article",
+      "headline": "What Does Custom AI Development Actually Involve?",
+      "description": "A transparent, technical guide to what custom AI engineering actually entails.",
+      "url": "https://www.garudaos.in/guides/what-custom-ai-development-actually-involves"
+    }
+  },
+  {
+    path: "/guides/how-to-plan-ai-automation-project",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "how-to-plan-ai-automation-project", "index.html"),
+      path.join(DIST_DIR, "guides", "how-to-plan-ai-automation-project.html")
+    ],
+    title: "How to Plan an AI Automation Project: Scoping & ROI Framework | GARUDA",
+    description: "Actionable framework for business leaders planning an AI automation initiative. Learn how to calculate ROI, define acceptance criteria, and prevent scope creep.",
+    canonical: "https://www.garudaos.in/guides/how-to-plan-ai-automation-project",
+    h1: "How to Plan an AI Automation Project Before Development",
+    eyebrow: "AI STRATEGY & SCOPING FRAMEWORK",
+    contentSnippet: `
+      <h2>ROI Calculation, Data Readiness Audits & Deterministic Acceptance Criteria</h2>
+      <p>The step-by-step framework to scope, validate, and budget your AI automation project before development to prevent pilot purgatory and guarantee positive ROI.</p>
+      <p>Related Service: <a href="/services/custom-ai-development">Custom AI Development & Architecture →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://www.garudaos.in/guides/how-to-plan-ai-automation-project#article",
+      "headline": "How to Plan an AI Automation Project Before Development",
+      "description": "Actionable framework for business leaders planning an AI automation initiative.",
+      "url": "https://www.garudaos.in/guides/how-to-plan-ai-automation-project"
+    }
   }
 ];
 

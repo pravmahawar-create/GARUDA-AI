@@ -3,6 +3,7 @@ Allow: /
 Allow: /what-is-garuda-ai
 Allow: /chat
 Allow: /services/
+Allow: /guides/
 Allow: /demo
 
 # Protect private, authenticated & internal administrative routes

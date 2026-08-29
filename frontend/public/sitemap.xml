@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Core Platform & Brand Entity -->
   <url>
     <loc>https://www.garudaos.in/</loc>
     <lastmod>2026-08-29</lastmod>
@@ -18,6 +19,14 @@
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
+  <url>
+    <loc>https://www.garudaos.in/demo</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <!-- Commercial Services Landers -->
   <url>
     <loc>https://www.garudaos.in/services/custom-ai-development</loc>
     <lastmod>2026-08-29</lastmod>
@@ -66,10 +75,60 @@
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
+
+  <!-- Engineering & Architecture Authority Guides -->
   <url>
-    <loc>https://www.garudaos.in/demo</loc>
+    <loc>https://www.garudaos.in/guides</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/guides/ai-agent-vs-chatbot</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.70</priority>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/guides/how-business-workflow-automation-works</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/guides/rag-systems-architecture-implementation-guide</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/guides/how-to-build-saas-mvp-architecture-timeline</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/guides/custom-software-vs-off-the-shelf-software</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/guides/automate-whatsapp-business-operations-ai</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/guides/what-custom-ai-development-actually-involves</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/guides/how-to-plan-ai-automation-project</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
   </url>
 </urlset>

@@ -17,6 +17,8 @@ import ProposalPortal from "./pages/ProposalPortal";
 import ServiceLanding from "./pages/ServiceLanding";
 import FounderAcquisitionCockpit from "./pages/FounderAcquisitionCockpit";
 import WhatIsGarudaAI from "./pages/WhatIsGarudaAI";
+import GuidesIndex from "./pages/GuidesIndex";
+import GuideArticle from "./pages/GuideArticle";
 import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
@@ -106,6 +108,8 @@ function AppRoutes() {
       <Route path="/pay/:ref" element={<PayLink />} />
       <Route path="/proposal/:proposalId" element={<ProposalPortal />} />
       <Route path="/services/:slug" element={<ServiceLanding />} />
+      <Route path="/guides" element={<GuidesIndex />} />
+      <Route path="/guides/:slug" element={<GuideArticle />} />
       <Route path="*" element={publicLanding} />
     </Routes>
   );

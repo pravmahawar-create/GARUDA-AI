@@ -90,6 +90,46 @@
       "destination": "/services/whatsapp-telegram-ai-bots/index.html"
     },
     {
+      "source": "/guides",
+      "destination": "/guides/index.html"
+    },
+    {
+      "source": "/guides/ai-agent-vs-chatbot",
+      "destination": "/guides/ai-agent-vs-chatbot/index.html"
+    },
+    {
+      "source": "/guides/how-business-workflow-automation-works",
+      "destination": "/guides/how-business-workflow-automation-works/index.html"
+    },
+    {
+      "source": "/guides/rag-systems-architecture-implementation-guide",
+      "destination": "/guides/rag-systems-architecture-implementation-guide/index.html"
+    },
+    {
+      "source": "/guides/how-to-build-saas-mvp-architecture-timeline",
+      "destination": "/guides/how-to-build-saas-mvp-architecture-timeline/index.html"
+    },
+    {
+      "source": "/guides/custom-software-vs-off-the-shelf-software",
+      "destination": "/guides/custom-software-vs-off-the-shelf-software/index.html"
+    },
+    {
+      "source": "/guides/automate-whatsapp-business-operations-ai",
+      "destination": "/guides/automate-whatsapp-business-operations-ai/index.html"
+    },
+    {
+      "source": "/guides/what-custom-ai-development-actually-involves",
+      "destination": "/guides/what-custom-ai-development-actually-involves/index.html"
+    },
+    {
+      "source": "/guides/how-to-plan-ai-automation-project",
+      "destination": "/guides/how-to-plan-ai-automation-project/index.html"
+    },
+    {
+      "source": "/guides/:slug",
+      "destination": "/index.html"
+    },
+    {
       "source": "/services/:slug",
       "destination": "/index.html"
     },
