@@ -62,6 +62,30 @@
       "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
     },
     {
+      "source": "/command-center",
+      "destination": "/command-center/index.html"
+    },
+    {
+      "source": "/command",
+      "destination": "/command/index.html"
+    },
+    {
+      "source": "/high-command",
+      "destination": "/high-command/index.html"
+    },
+    {
+      "source": "/founder",
+      "destination": "/founder/index.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login/index.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/app/index.html"
+    },
+    {
       "source": "/what-is-garuda-ai",
       "destination": "/what-is-garuda-ai/index.html"
     },

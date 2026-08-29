@@ -690,6 +690,72 @@ const ROUTES = [
       "description": "Actionable framework for business leaders planning an AI automation initiative.",
       "url": "https://www.garudaos.in/guides/how-to-plan-ai-automation-project"
     }
+  },
+  {
+    path: "/command-center",
+    filePaths: [
+      path.join(DIST_DIR, "command-center", "index.html"),
+      path.join(DIST_DIR, "command-center.html")
+    ],
+    title: "GARUDA High Command Center | Private Sovereign Intelligence",
+    description: "Private mobile-first command center for Boss to observe and govern the GARUDA Kingdom.",
+    canonical: "https://www.garudaos.in/command-center",
+    robots: "noindex, nofollow"
+  },
+  {
+    path: "/command",
+    filePaths: [
+      path.join(DIST_DIR, "command", "index.html"),
+      path.join(DIST_DIR, "command.html")
+    ],
+    title: "GARUDA High Command Center | Private Sovereign Intelligence",
+    description: "Private mobile-first command center for Boss to observe and govern the GARUDA Kingdom.",
+    canonical: "https://www.garudaos.in/command-center",
+    robots: "noindex, nofollow"
+  },
+  {
+    path: "/high-command",
+    filePaths: [
+      path.join(DIST_DIR, "high-command", "index.html"),
+      path.join(DIST_DIR, "high-command.html")
+    ],
+    title: "GARUDA High Command Center | Private Sovereign Intelligence",
+    description: "Private mobile-first command center for Boss to observe and govern the GARUDA Kingdom.",
+    canonical: "https://www.garudaos.in/command-center",
+    robots: "noindex, nofollow"
+  },
+  {
+    path: "/founder",
+    filePaths: [
+      path.join(DIST_DIR, "founder", "index.html"),
+      path.join(DIST_DIR, "founder.html")
+    ],
+    title: "GARUDA Founder Workspace | Sovereign Console",
+    description: "Private management console for GARUDA operations.",
+    canonical: "https://www.garudaos.in/founder",
+    robots: "noindex, nofollow"
+  },
+  {
+    path: "/login",
+    filePaths: [
+      path.join(DIST_DIR, "login", "index.html"),
+      path.join(DIST_DIR, "login.html")
+    ],
+    title: "GARUDA Client Login | Portal Access",
+    description: "Secure client login portal for GARUDA projects.",
+    canonical: "https://www.garudaos.in/login",
+    robots: "noindex, nofollow"
+  },
+  {
+    path: "/app",
+    filePaths: [
+      path.join(DIST_DIR, "app", "index.html"),
+      path.join(DIST_DIR, "app.html")
+    ],
+    title: "GARUDA Customer Dashboard | Project Execution",
+    description: "Client project governance and milestone portal.",
+    canonical: "https://www.garudaos.in/app",
+    robots: "noindex, nofollow"
   }
 ];
 
@@ -715,7 +781,17 @@ function injectSeoMetadata(html, route) {
     output = output.replace(/<\/head>/i, `  ${canonicalTag}\n</head>`);
   }
 
-  // 4. OpenGraph and Twitter Meta Tags
+  // 4. Robots Meta Tag (for private routes)
+  if (route.robots) {
+    const robotsTag = `<meta name="robots" content="${route.robots}" />`;
+    if (/<meta\s+name=["']robots["'][\s\S]*?>/i.test(output)) {
+      output = output.replace(/<meta\s+name=["']robots["'][\s\S]*?>/i, robotsTag);
+    } else {
+      output = output.replace(/<\/head>/i, `  ${robotsTag}\n</head>`);
+    }
+  }
+
+  // 5. OpenGraph and Twitter Meta Tags
   const ogTags = [
     `<meta property="og:title" content="${route.title.replace(/"/g, "&quot;")}" />`,
     `<meta property="og:description" content="${route.description.replace(/"/g, "&quot;")}" />`,
@@ -728,25 +804,26 @@ function injectSeoMetadata(html, route) {
 
   output = output.replace(/<\/head>/i, `  ${ogTags}\n</head>`);
 
-  // 5. Inject Structured Data (Schema.org JSON-LD)
+  // 6. Inject Structured Data (Schema.org JSON-LD)
   if (route.schema) {
     const schemaScript = `<script type="application/ld+json">\n${JSON.stringify(route.schema, null, 2)}\n</script>`;
     output = output.replace(/<\/head>/i, `  ${schemaScript}\n</head>`);
   }
 
-  // 6. Inject Semantic, Crawler-Visible Fallback Content inside #root
-  const fallbackHtml = `
-    <div id="seo-fallback" style="padding: 2rem; max-width: 900px; margin: 0 auto; font-family: sans-serif; line-height: 1.6; color: #111;">
-      ${route.eyebrow ? `<p style="font-size: 0.85rem; font-weight: bold; color: #b8860b; text-transform: uppercase; letter-spacing: 0.1em;">${route.eyebrow}</p>` : ""}
-      <h1 style="font-size: 2.2rem; margin-top: 0.5rem; margin-bottom: 1rem;">${route.h1 || route.title}</h1>
-      <p style="font-size: 1.1rem; color: #444;">${route.description}</p>
-      ${route.contentSnippet || ""}
-      <p style="margin-top: 2rem; font-size: 0.85rem; color: #888;">© 2026 GARUDA Operating System. Official Entity Domain: https://www.garudaos.in</p>
-    </div>
-  `;
-
-  // Inject fallbackHtml inside <div id="root"></div> so crawlers without JS immediately see full page content
-  output = output.replace(/<div id="root"><\/div>/i, `<div id="root">${fallbackHtml}</div>`);
+  // 7. Inject Semantic, Crawler-Visible Fallback Content inside #root (Public SEO pages only)
+  // Security Law: Private/noindex routes NEVER have static data or metrics injected.
+  if (!route.robots || !route.robots.includes("noindex")) {
+    const fallbackHtml = `
+      <div id="seo-fallback" style="padding: 2rem; max-width: 900px; margin: 0 auto; font-family: sans-serif; line-height: 1.6; color: #111;">
+        ${route.eyebrow ? `<p style="font-size: 0.85rem; font-weight: bold; color: #b8860b; text-transform: uppercase; letter-spacing: 0.1em;">${route.eyebrow}</p>` : ""}
+        <h1 style="font-size: 2.2rem; margin-top: 0.5rem; margin-bottom: 1rem;">${route.h1 || route.title}</h1>
+        <p style="font-size: 1.1rem; color: #444;">${route.description}</p>
+        ${route.contentSnippet || ""}
+        <p style="margin-top: 2rem; font-size: 0.85rem; color: #888;">© 2026 GARUDA Operating System. Official Entity Domain: https://www.garudaos.in</p>
+      </div>
+    `;
+    output = output.replace(/<div id="root"><\/div>/i, `<div id="root">${fallbackHtml}</div>`);
+  }
 
   return output;
 }
