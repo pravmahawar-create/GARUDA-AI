@@ -4,24 +4,79 @@
  *
  * Canonical Architecture:
  * CREATIVE INPUT ENGINE -> CREATIVE UNDERSTANDING -> CREATIVE COMPOSITION / CONCEPT ->
- * ORCHESTRATION ENGINE -> GENERATION PROVIDER ADAPTER -> OUTPUT / ASSET LIBRARY
+ * ORCHESTRATION ENGINE -> GENERATION PROVIDER ADAPTER -> OUTPUT / PHYSICAL ASSET ARTIFACT
  *
  * Core Capabilities:
  * - Multi-channel Ad Concepts (Headlines, Hooks, Ad Copy, Storyboards)
  * - IdentityLock™ Brand Consistency (Colors, Typography, Negative Prompts, Logo Placement)
  * - Multi-provider Generation Adapter (Local Deterministic -> Free Tier -> External Provider)
- * - Sovereign Asset Library with Cryptographic SHA-256 Hashing
+ * - Sovereign Physical SVG Asset Writer with Cryptographic SHA-256 Hashing
+ * - Persistent JSONL Store with Multi-Tier Fallback
  * - Cross-Universe Event Integration (Event Nervous System)
  *
  * Doctrine: FREE FIRST -> REVENUE FIRST -> SOVEREIGN ALWAYS
  */
 
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 const garudaEventService = require("./garudaEventService");
 const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("./garudaEventTypes");
 
+const DATA_DIR = path.join(__dirname, "..", "..", "data");
+const ASSETS_DIR = path.join(DATA_DIR, "creative-assets");
+const BRIEFS_FILE = path.join(DATA_DIR, "creative-briefs.jsonl");
+const ASSETS_INDEX_FILE = path.join(DATA_DIR, "creative-assets.jsonl");
+
+function ensureDirs() {
+  try {
+    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+    if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR, { recursive: true });
+  } catch {}
+}
+
 const creativeBriefs = new Map();
 const creativeAssets = new Map();
+
+function loadFromDisk() {
+  ensureDirs();
+  try {
+    if (fs.existsSync(BRIEFS_FILE)) {
+      const lines = fs.readFileSync(BRIEFS_FILE, "utf8").split("\n").filter(Boolean);
+      for (const line of lines) {
+        try {
+          const doc = JSON.parse(line);
+          if (doc && doc.briefId) creativeBriefs.set(doc.briefId, doc);
+        } catch {}
+      }
+    }
+    if (fs.existsSync(ASSETS_INDEX_FILE)) {
+      const lines = fs.readFileSync(ASSETS_INDEX_FILE, "utf8").split("\n").filter(Boolean);
+      for (const line of lines) {
+        try {
+          const doc = JSON.parse(line);
+          if (doc && doc.assetId) creativeAssets.set(doc.assetId, doc);
+        } catch {}
+      }
+    }
+  } catch {}
+}
+
+loadFromDisk();
+
+function appendBriefToFile(brief) {
+  ensureDirs();
+  try {
+    fs.appendFileSync(BRIEFS_FILE, JSON.stringify(brief) + "\n", "utf8");
+  } catch {}
+}
+
+function appendAssetToFile(asset) {
+  ensureDirs();
+  try {
+    fs.appendFileSync(ASSETS_INDEX_FILE, JSON.stringify(asset) + "\n", "utf8");
+  } catch {}
+}
 
 function sha256(data) {
   const str = typeof data === "string" ? data : JSON.stringify(data);
@@ -32,13 +87,23 @@ class CreativeStudioService {
   constructor() {
     this.briefs = creativeBriefs;
     this.assets = creativeAssets;
+    this.assetsDir = ASSETS_DIR;
+  }
+
+  clearForTesting() {
+    this.briefs.clear();
+    this.assets.clear();
   }
 
   /**
    * 1. Create a Structured Creative Brief with IdentityLock™ Constraints.
    */
   async createCreativeBrief(briefInput = {}) {
-    const title = String(briefInput.title || briefInput.name || "Real Estate Growth Campaign").trim();
+    const title = String(briefInput.title || briefInput.name || "").trim();
+    if (!title) {
+      throw new Error("Brief title or campaign name is required");
+    }
+
     const briefId = briefInput.briefId || `cb_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
     const targetChannel = briefInput.channel || "meta_instagram";
     const targetAudience = briefInput.targetAudience || "High-income families & luxury investors seeking high rental yield";
@@ -70,9 +135,13 @@ class CreativeStudioService {
       productSpecs: {
         priceRange: briefInput.priceRange || "₹85 Lakhs - ₹2.4 Crores",
         location: briefInput.location || "Prime Highway Corridor, Jaipur",
-        usps: Array.isArray(briefInput.usps) ? briefInput.usps : ["RERA Approved", "Clubhouse & Pool", "Ready Possession"]
+        usps: Array.isArray(briefInput.usps) && briefInput.usps.length
+          ? briefInput.usps
+          : ["RERA Approved", "Clubhouse & Pool", "Ready Possession"]
       },
-      formatsRequested: Array.isArray(briefInput.formats) ? briefInput.formats : ["AD_COPY_SET", "IMAGE_CREATIVE", "VIDEO_STORYBOARD"],
+      formatsRequested: Array.isArray(briefInput.formats) && briefInput.formats.length
+        ? briefInput.formats
+        : ["AD_COPY_SET", "IMAGE_CREATIVE", "VIDEO_STORYBOARD"],
       identityLock,
       status: "BRIEF_CREATED",
       createdAt: new Date().toISOString(),
@@ -80,6 +149,7 @@ class CreativeStudioService {
     };
 
     this.briefs.set(briefId, brief);
+    appendBriefToFile(brief);
 
     await garudaEventService.emitGarudaEvent({
       eventType: GARUDA_EVENT_TYPES.CREATIVE_BRIEF_CREATED,
@@ -193,11 +263,22 @@ class CreativeStudioService {
 
   /**
    * 3. Orchestrate Asset Generation via Multi-Provider Adapter Layer.
-   * Free/Local Deterministic Sovereign Adapter -> External Providers.
+   * Free/Local Deterministic Sovereign Adapter -> Physical SVG File Artifact on Disk.
    */
   async generateAsset(briefId, format = "IMAGE_SQUARE") {
     const brief = this.briefs.get(briefId);
-    if (!brief) throw new Error(`Creative brief not found: ${briefId}`);
+    if (!brief) {
+      const err = new Error(`Creative brief not found: ${briefId}`);
+      await garudaEventService.emitGarudaEvent({
+        eventType: GARUDA_EVENT_TYPES.CREATIVE_ASSET_FAILED,
+        entityType: GARUDA_ENTITY_TYPES.CREATIVE_ASSET,
+        entityId: `err_${Date.now()}`,
+        source: "creative_orchestrator",
+        status: "FAILED",
+        metadata: { error: err.message, briefId }
+      }).catch(() => {});
+      throw err;
+    }
 
     const assetId = `asset_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
     const identity = brief.identityLock;
@@ -239,6 +320,13 @@ class CreativeStudioService {
     ].join("\n");
 
     const assetHash = sha256(svgContent);
+    const fileName = `${assetId}.svg`;
+    const filePath = path.join(ASSETS_DIR, fileName);
+
+    // Write real physical SVG artifact to disk
+    ensureDirs();
+    fs.writeFileSync(filePath, svgContent, "utf8");
+    const fileStats = fs.statSync(filePath);
 
     const asset = {
       assetId,
@@ -246,6 +334,10 @@ class CreativeStudioService {
       projectId: brief.projectId,
       format,
       visualSpec,
+      fileName,
+      filePath,
+      fileSize: fileStats.size,
+      mimeType: "image/svg+xml",
       assetUrl: `data:image/svg+xml;utf8,${encodeURIComponent(svgContent)}`,
       assetHash,
       provider: "garuda_sovereign_renderer",
@@ -255,6 +347,7 @@ class CreativeStudioService {
     };
 
     this.assets.set(assetId, asset);
+    appendAssetToFile(asset);
 
     await garudaEventService.emitGarudaEvent({
       eventType: GARUDA_EVENT_TYPES.CREATIVE_ASSET_GENERATED,
@@ -267,6 +360,7 @@ class CreativeStudioService {
         briefId,
         format,
         assetHash,
+        fileSize: asset.fileSize,
         provider: asset.provider
       }
     });

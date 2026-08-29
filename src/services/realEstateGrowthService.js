@@ -7,22 +7,87 @@
  * 2. Multi-channel Lead Ingestion & Deterministic Deduplication
  * 3. Explainable 0-100 Lead Scoring & Tier Qualification
  * 4. Site Visit Booking & Execution Lifecycle
- * 5. Verified Booking Attribution & Performance Intelligence
+ * 5. Verified Booking Attribution & Double-Booking Protection
  * 6. Cryptographic Cross-Universe Event Emission
+ * 7. Multi-Tier File System & Memory Persistence
  *
  * Truth Law:
  * Never invent lead scores or bookings. All metrics are traceable to authoritative records.
  */
 
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 const garudaEventService = require("./garudaEventService");
 const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("./garudaEventTypes");
 
-// In-Memory persistent stores with multi-tier fallback
+const DATA_DIR = path.join(__dirname, "..", "..", "data");
+const PROJECTS_FILE = path.join(DATA_DIR, "real-estate-projects.jsonl");
+const LEADS_FILE = path.join(DATA_DIR, "real-estate-leads.jsonl");
+const VISITS_FILE = path.join(DATA_DIR, "real-estate-visits.jsonl");
+const BOOKINGS_FILE = path.join(DATA_DIR, "real-estate-bookings.jsonl");
+
+function ensureDirs() {
+  try {
+    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  } catch {}
+}
+
 const realEstateProjects = new Map();
 const realEstateLeads = new Map();
 const siteVisits = new Map();
 const realEstateBookings = new Map();
+
+function loadFromDisk() {
+  ensureDirs();
+  try {
+    if (fs.existsSync(PROJECTS_FILE)) {
+      const lines = fs.readFileSync(PROJECTS_FILE, "utf8").split("\n").filter(Boolean);
+      for (const line of lines) {
+        try {
+          const doc = JSON.parse(line);
+          if (doc && doc.projectId) realEstateProjects.set(doc.projectId, doc);
+        } catch {}
+      }
+    }
+    if (fs.existsSync(LEADS_FILE)) {
+      const lines = fs.readFileSync(LEADS_FILE, "utf8").split("\n").filter(Boolean);
+      for (const line of lines) {
+        try {
+          const doc = JSON.parse(line);
+          if (doc && doc.leadId) realEstateLeads.set(doc.leadId, doc);
+        } catch {}
+      }
+    }
+    if (fs.existsSync(VISITS_FILE)) {
+      const lines = fs.readFileSync(VISITS_FILE, "utf8").split("\n").filter(Boolean);
+      for (const line of lines) {
+        try {
+          const doc = JSON.parse(line);
+          if (doc && doc.visitId) siteVisits.set(doc.visitId, doc);
+        } catch {}
+      }
+    }
+    if (fs.existsSync(BOOKINGS_FILE)) {
+      const lines = fs.readFileSync(BOOKINGS_FILE, "utf8").split("\n").filter(Boolean);
+      for (const line of lines) {
+        try {
+          const doc = JSON.parse(line);
+          if (doc && doc.bookingId) realEstateBookings.set(doc.bookingId, doc);
+        } catch {}
+      }
+    }
+  } catch {}
+}
+
+loadFromDisk();
+
+function appendDocToFile(filePath, doc) {
+  ensureDirs();
+  try {
+    fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
+  } catch {}
+}
 
 function sha256(data) {
   const str = typeof data === "string" ? data : JSON.stringify(data);
@@ -49,6 +114,13 @@ class RealEstateGrowthService {
     this.bookings = realEstateBookings;
   }
 
+  clearForTesting() {
+    this.projects.clear();
+    this.leads.clear();
+    this.visits.clear();
+    this.bookings.clear();
+  }
+
   /**
    * 1. Register a Real Estate Project Profile with Inventory Specifications.
    */
@@ -58,9 +130,14 @@ class RealEstateGrowthService {
       throw new Error("Project name is required for Real Estate profile");
     }
 
-    const projectId = projectData.projectId || `re_proj_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
     const minPriceINR = Number(projectData.minPriceINR || projectData.startingPrice || 5000000);
     const maxPriceINR = Number(projectData.maxPriceINR || 25000000);
+
+    if (minPriceINR <= 0 || maxPriceINR < minPriceINR) {
+      throw new Error("Invalid pricing range: minPriceINR must be > 0 and maxPriceINR >= minPriceINR");
+    }
+
+    const projectId = projectData.projectId || `re_proj_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
 
     const projectProfile = {
       projectId,
@@ -86,10 +163,10 @@ class RealEstateGrowthService {
         availableUnits: Number(projectData.availableUnits || 100),
         soldUnits: Number(projectData.soldUnits || 20)
       },
-      amenities: Array.isArray(projectData.amenities)
+      amenities: Array.isArray(projectData.amenities) && projectData.amenities.length
         ? projectData.amenities
         : ["Clubhouse", "Swimming Pool", "24x7 Security", "EV Charging", "Landscaped Gardens"],
-      usps: Array.isArray(projectData.usps)
+      usps: Array.isArray(projectData.usps) && projectData.usps.length
         ? projectData.usps
         : ["Prime connectivity", "High rental yield", "RERA approved"],
       reraNumber: String(projectData.reraNumber || "RAJ/P/2026/001").trim(),
@@ -99,6 +176,7 @@ class RealEstateGrowthService {
     };
 
     this.projects.set(projectId, projectProfile);
+    appendDocToFile(PROJECTS_FILE, projectProfile);
 
     // Emit standard lifecycle event
     await garudaEventService.emitGarudaEvent({
@@ -145,8 +223,8 @@ class RealEstateGrowthService {
       existing.interactionCount = (existing.interactionCount || 1) + 1;
       existing.lastActiveAt = new Date().toISOString();
       if (leadInput.notes) existing.notes.push({ text: leadInput.notes, at: new Date().toISOString() });
-      if (leadInput.budgetINR) existing.budgetINR = Number(leadInput.budgetINR);
-      if (leadInput.bhkPreference) existing.bhkPreference = leadInput.bhkPreference;
+      if (leadInput.budgetINR) existing.requirements.budgetINR = Number(leadInput.budgetINR);
+      if (leadInput.bhkPreference) existing.requirements.bhkPreference = leadInput.bhkPreference;
 
       await garudaEventService.emitGarudaEvent({
         eventType: GARUDA_EVENT_TYPES.REAL_ESTATE_LEAD_DEDUPLICATED,
@@ -208,6 +286,7 @@ class RealEstateGrowthService {
     };
 
     this.leads.set(leadId, newLead);
+    appendDocToFile(LEADS_FILE, newLead);
 
     // Emit Ingestion Event
     await garudaEventService.emitGarudaEvent({
@@ -423,6 +502,8 @@ class RealEstateGrowthService {
     };
 
     this.visits.set(visitId, siteVisit);
+    appendDocToFile(VISITS_FILE, siteVisit);
+
     lead.stage = "SITE_VISIT_SCHEDULED";
     lead.siteVisitId = visitId;
     lead.updatedAt = new Date().toISOString();
@@ -488,6 +569,7 @@ class RealEstateGrowthService {
 
   /**
    * 6. Confirm Booking with Authoritative Sales & Attribution Tracking.
+   * Includes double-booking prevention.
    */
   async confirmBooking(bookingInput = {}) {
     const leadId = String(bookingInput.leadId || "").trim();
@@ -497,15 +579,24 @@ class RealEstateGrowthService {
     const lead = this.leads.get(leadId);
     if (!lead) throw new Error(`Lead not found: ${leadId}`);
 
-    const bookingId = bookingInput.bookingId || `bk_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
     const unitNumber = String(bookingInput.unitNumber || bookingInput.unitId || "Tower A - 504").trim();
+    const targetProjId = projectId || lead.projectId || "default";
+
+    // Double booking guard
+    for (const b of this.bookings.values()) {
+      if (b.projectId === targetProjId && b.unitNumber.toLowerCase() === unitNumber.toLowerCase() && b.status === "CONFIRMED") {
+        throw new Error(`Unit ${unitNumber} is already booked in project ${targetProjId}`);
+      }
+    }
+
+    const bookingId = bookingInput.bookingId || `bk_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
     const agreedAmountINR = Number(bookingInput.agreedAmountINR || bookingInput.totalPrice || 8500000);
     const tokenAmountPaidINR = Number(bookingInput.tokenAmountPaidINR || bookingInput.tokenAmount || 100000);
 
     const booking = {
       bookingId,
       leadId,
-      projectId: projectId || lead.projectId || null,
+      projectId: targetProjId,
       buyerName: lead.name,
       buyerPhone: lead.phone,
       buyerEmail: lead.email,
@@ -529,6 +620,8 @@ class RealEstateGrowthService {
     };
 
     this.bookings.set(bookingId, booking);
+    appendDocToFile(BOOKINGS_FILE, booking);
+
     lead.stage = "BOOKING_CONFIRMED";
     lead.bookingId = bookingId;
     lead.updatedAt = new Date().toISOString();

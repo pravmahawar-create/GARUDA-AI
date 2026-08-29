@@ -21,7 +21,7 @@
  * 17. Regression: Founder Authentication & Key Verification
  */
 
-const { describe, it } = require("node:test");
+const { describe, it, beforeEach } = require("node:test");
 const assert = require("node:assert");
 
 const garudaEventService = require("./garudaEventService");
@@ -35,6 +35,10 @@ const capabilityRegistry = require("./capabilityRegistryService");
 const founderCommandService = require("./founderCommandService");
 
 describe("🦅 GARUDA Cross-Universe Integration & Activation Program", () => {
+  beforeEach(() => {
+    realEstateGrowthService.clearForTesting();
+    creativeStudioService.clearForTesting();
+  });
 
   // ---------------------------------------------------------------------------
   // 1. Universe Capability Registry Truth
@@ -232,6 +236,7 @@ describe("🦅 GARUDA Cross-Universe Integration & Activation Program", () => {
   it("7. Orchestrates creative briefs with IdentityLock brand consistency and SVG assets", async () => {
     // 1. Create Brief
     const brief = await creativeStudioService.createCreativeBrief({
+      title: "Sovereign Heights Launch Campaign",
       brandName: "Sovereign Heights",
       primaryColorHex: "#D4AF37",
       channel: "meta_instagram",
@@ -278,6 +283,7 @@ describe("🦅 GARUDA Cross-Universe Integration & Activation Program", () => {
 
     // Dispatch task to Creative Campaign Agent
     const creativeTask = await workforceRouterService.dispatchAgentTask("agent.creative_campaign", {
+      title: "Skyline Oasis Campaign",
       brandName: "Skyline Oasis",
       location: "C-Scheme, Jaipur",
       priceRange: "₹1.5Cr - ₹4Cr"
