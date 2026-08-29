@@ -208,29 +208,21 @@ export default function ScholarStudio() {
     }
 
     try {
-      basePromptTextRef.current = inputText;
       const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
+      recognition.continuous = false;
+      recognition.interimResults = false;
       recognition.lang = "en-US";
 
       recognition.onstart = () => {
         setIsRecordingVoice(true);
-        setStatusNotice("🎙️ Listening... Speak your research topic or question clearly.");
+        setStatusNotice("🎙️ Listening... Speak now.");
       };
 
       recognition.onresult = (event) => {
-        let finalSpeech = "";
-        let interimSpeech = "";
-        for (let i = 0; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            finalSpeech += event.results[i][0].transcript + " ";
-          } else {
-            interimSpeech += event.results[i][0].transcript;
-          }
+        const transcript = event.results?.[0]?.[0]?.transcript || "";
+        if (transcript) {
+          setInputText((prev) => (prev ? `${prev.trim()} ${transcript.trim()}` : transcript.trim()));
         }
-        const base = basePromptTextRef.current ? basePromptTextRef.current.trim() + " " : "";
-        setInputText(`${base}${finalSpeech}${interimSpeech}`.trim());
       };
 
       recognition.onerror = (event) => {
@@ -354,19 +346,12 @@ export default function ScholarStudio() {
         }
       ]);
     } catch (err) {
-      const rawErrMsg = String(err?.message || "");
-      let friendlyText = "GARUDA Scholar Engine is currently experiencing peak traffic. Please re-send your query in a few moments.";
-      if (/quota|rate|limit|429/i.test(rawErrMsg)) {
-        friendlyText = "High compute volume detected across cloud nodes. GARUDA Sovereign Engine is balancing capacity. Please send your query again.";
-      } else if (/network|failed to fetch|abort/i.test(rawErrMsg)) {
-        friendlyText = "Network connection interrupted. Please check your internet connection and try again.";
-      }
-
+      const rawErrMsg = String(err?.message || "Failed to generate response.");
       setMessages((prev) => [
         ...prev,
         {
           role: "model",
-          text: `💡 **Scholar Intelligence Note:** ${friendlyText}`,
+          text: `⚠️ **Notice:** ${rawErrMsg}`,
           instantAudit: null
         }
       ]);

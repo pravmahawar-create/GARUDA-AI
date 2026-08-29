@@ -163,15 +163,21 @@ async function generateWithGemini({ message, history, mode, attachments }) {
     }
   }
 
-  currentParts.push({ text: message.trim() });
+  const userText = message ? String(message).trim() : "";
+  if (userText) {
+    currentParts.push({ text: userText });
+  } else if (currentParts.length > 0) {
+    currentParts.push({ text: "Please carefully analyze and solve/explain the attached image or document in full step-by-step detail." });
+  }
+
   contents.push({ role: "user", parts: currentParts });
 
   const systemInstruction = buildScholarSystemPrompt(mode);
   const candidateModels = [
-    process.env.SCHOLAR_GEMINI_MODEL || "gemini-2.5-flash",
-    "gemini-flash-latest",
+    process.env.SCHOLAR_GEMINI_MODEL || "gemini-1.5-flash",
     "gemini-2.0-flash",
-    "gemini-3.5-flash"
+    "gemini-1.5-pro",
+    "gemini-1.5-flash-8b"
   ];
 
   let lastError = null;
