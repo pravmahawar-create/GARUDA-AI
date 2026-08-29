@@ -345,11 +345,19 @@ export default function ScholarStudio() {
         }
       ]);
     } catch (err) {
+      const rawErrMsg = String(err?.message || "");
+      let friendlyText = "GARUDA Scholar Engine is currently experiencing peak traffic. Please re-send your query in a few moments.";
+      if (/quota|rate|limit|429/i.test(rawErrMsg)) {
+        friendlyText = "High compute volume detected across cloud nodes. GARUDA Sovereign Engine is balancing capacity. Please send your query again.";
+      } else if (/network|failed to fetch|abort/i.test(rawErrMsg)) {
+        friendlyText = "Network connection interrupted. Please check your internet connection and try again.";
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           role: "model",
-          text: `⚠️ **Scholar Intelligence Notice:** ${err.message || "Failed to connect to GARUDA Scholar Engine. Please check connection and try again."}`,
+          text: `💡 **Scholar Intelligence Note:** ${friendlyText}`,
           instantAudit: null
         }
       ]);
