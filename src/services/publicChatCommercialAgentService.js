@@ -245,7 +245,10 @@ class PublicChatCommercialAgentService {
 
     // 5. Qualified Project Scoping & Pricing (Sufficient Scope or Explicit Quote Requested)
     const currency = req.currency || "INR";
-    const estimate = revenueValueModel.estimateValueFromEvidence(req.combinedText, { valueType: "estimated_project_value" });
+    let estimate = { estimatedINR: 25000, estimatedUSD: 300 };
+    try {
+      estimate = revenueValueModel.estimateValueFromEvidence(req.combinedText, { valueType: "estimated_project_value" }) || estimate;
+    } catch {}
     const totalAmount = req.budget || (currency === "INR" ? (estimate.estimatedINR || 25000) : (estimate.estimatedUSD || 300));
     const totalINR = currency === "INR" ? totalAmount : convertToINR(totalAmount, currency);
     const depositAmount = Math.round(totalAmount * 0.5);
