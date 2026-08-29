@@ -958,4 +958,120 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.strictEqual(approved.currentStage, "OUTREACH_SENT");
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // 15. MARKET INTELLIGENCE & AUTONOMOUS DISCOVERY ENGINE
+  // ---------------------------------------------------------------------------
+  describe("15. Market Intelligence & Autonomous Discovery Engine", () => {
+    const marketIntelligenceService = require("./marketIntelligence/marketIntelligenceService");
+    const sourceRegistry = require("./marketIntelligence/sourceRegistry");
+    const evidenceCollector = require("./marketIntelligence/evidenceCollector");
+
+    it("1. Rejects candidate lacking verifiable sourceUrl or companyName", () => {
+      assert.throws(
+        () => evidenceCollector.collectEvidence({}),
+        /verifiable sourceUrl/
+      );
+    });
+
+    it("2. Truthfully handles NO_VERIFIED_RESULTS when search yields zero candidate records", async () => {
+      const run = await marketIntelligenceService.runMarketDiscovery({
+        industry: "REAL_ESTATE",
+        region: "DELHI_NCR",
+        isTest: true,
+        mockResults: []
+      });
+
+      assert.strictEqual(run.candidatesFound, 0);
+      assert.strictEqual(run.state, "NO_VERIFIED_RESULTS");
+    });
+
+    it("3. Ingests mock public search candidate into canonical pipeline with evidence-grounded facts", async () => {
+      const mockCandidate = {
+        companyName: "Civitech Developers",
+        sourceUrl: "https://civitech.example.in",
+        sourceType: "PUBLIC_SEARCH",
+        snippet: "Civitech Stadia Sector 79 Noida luxury homes",
+        projectNames: ["Civitech Stadia"]
+      };
+
+      const run = await marketIntelligenceService.runMarketDiscovery({
+        industry: "REAL_ESTATE",
+        region: "DELHI_NCR",
+        isTest: true,
+        mockResults: [mockCandidate]
+      });
+
+      assert.strictEqual(run.candidatesFound, 1);
+      assert.strictEqual(run.qualifiedProspects, 1);
+      assert.strictEqual(run.dossiersReady, 1);
+      assert.strictEqual(run.state, "FOUNDER_REVIEW");
+
+      const discovered = run.discoveredProspects[0];
+      assert.strictEqual(discovered.companyName, "Civitech Developers");
+      assert.strictEqual(discovered.outreachStatus, "PENDING_FOUNDER_APPROVAL");
+      assert.ok(discovered.dossierId);
+    });
+
+    it("4. Deduplicates identical candidates across multiple search queries into single prospect", async () => {
+      const mockCandidate1 = {
+        companyName: "Mahagun Group",
+        sourceUrl: "https://mahagunindia.example.com",
+        sourceType: "PUBLIC_SEARCH"
+      };
+      const mockCandidate2 = {
+        companyName: "mahagun group",
+        sourceUrl: "https://www.mahagunindia.example.com/projects",
+        sourceType: "PUBLIC_SEARCH"
+      };
+
+      const run = await marketIntelligenceService.runMarketDiscovery({
+        industry: "REAL_ESTATE",
+        region: "DELHI_NCR",
+        isTest: true,
+        mockResults: [mockCandidate1, mockCandidate2]
+      });
+
+      assert.strictEqual(run.candidatesFound, 2);
+      assert.strictEqual(run.duplicatesRejected, 1);
+      assert.strictEqual(run.qualifiedProspects, 1);
+    });
+
+    it("5. Merges multiple evidence records without mutating existing records", () => {
+      const ev1 = { sourceUrl: "https://example.com/page1", type: "PUBLIC_SEARCH" };
+      const ev2 = { sourceUrl: "https://example.com/page1", type: "RERA_REGISTRY" };
+      const ev3 = { sourceUrl: "https://example.com/page2", type: "OFFICIAL_WEB" };
+
+      const merged = evidenceCollector.mergeEvidence([ev1], [ev2, ev3]);
+      assert.strictEqual(merged.length, 2);
+    });
+
+    it("6. Audits registered discovery sources and reports truthful availability status", async () => {
+      const status = await marketIntelligenceService.getMarketIntelligenceStatus();
+      assert.ok(status.sourcesCount >= 1);
+      assert.ok(Array.isArray(status.sources));
+      assert.ok(status.supportedIndustries.includes("REAL_ESTATE"));
+    });
+
+    it("7. Dispatches market discovery task autonomously via Workforce Scout Agent", async () => {
+      const workforceRouterService = require("./workforceRouterService");
+      const res = await workforceRouterService.dispatchAgentTask("agent.market_scout", {
+        industry: "REAL_ESTATE",
+        region: "DELHI_NCR",
+        isTest: true,
+        mockResults: [
+          {
+            companyName: "Express Builders",
+            sourceUrl: "https://expressbuilders.example.in",
+            sourceType: "PUBLIC_SEARCH"
+          }
+        ]
+      });
+
+      assert.strictEqual(res.success, true);
+      assert.strictEqual(res.result.status, "SUCCESS");
+      assert.strictEqual(res.result.candidatesFound, 1);
+      assert.strictEqual(res.result.qualifiedProspects, 1);
+    });
+  });
 });

@@ -1075,6 +1075,16 @@ class FounderCommandService {
       clientOnboardingSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
     }
 
+    // 13. MARKET INTELLIGENCE SECTION
+    let marketIntelligenceSection;
+    try {
+      const marketIntelligenceService = require("./marketIntelligence/marketIntelligenceService");
+      marketIntelligenceSection = await marketIntelligenceService.getMarketIntelligenceStatus();
+      marketIntelligenceSection.available = true;
+    } catch (err) {
+      marketIntelligenceSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
+    }
+
     return {
       generatedAt,
       freshness: "REALTIME",
@@ -1092,7 +1102,8 @@ class FounderCommandService {
         creative: creativeSection.available,
         performanceMarketing: performanceMarketingSection.available,
         clientOnboarding: clientOnboardingSection.available,
-        learning: learningSection.available
+        learning: learningSection.available,
+        marketIntelligence: marketIntelligenceSection.available
       },
       partialErrors: partialErrors.length > 0 ? partialErrors : null,
       system: systemSection,
@@ -1107,7 +1118,8 @@ class FounderCommandService {
       creative: creativeSection,
       performanceMarketing: performanceMarketingSection,
       clientOnboarding: clientOnboardingSection,
-      learning: learningSection
+      learning: learningSection,
+      marketIntelligence: marketIntelligenceSection
     };
   }
 }

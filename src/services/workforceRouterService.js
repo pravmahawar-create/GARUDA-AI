@@ -61,9 +61,14 @@ class WorkforceRouterService {
       domain: "growth",
       role: "Analyzes geographic corridor trends, pricing benchmarks, and demographic demand shifts.",
       knowledgeAccess: ["market:corridors", "market:pricing", "market:trends"],
-      authorizedActions: ["ANALYZE_MARKET_CORRIDOR", "BENCHMARK_PRICING"],
+      authorizedActions: ["ANALYZE_MARKET_CORRIDOR", "BENCHMARK_PRICING", "RUN_MARKET_DISCOVERY"],
       humanHandoffConditions: ["MACRO_REGULATORY_SHIFT"],
       handler: async (task) => {
+        if (task.input?.action === "RUN_MARKET_DISCOVERY" || task.input?.runDiscovery) {
+          const marketIntelligenceService = require("./marketIntelligence/marketIntelligenceService");
+          const run = await marketIntelligenceService.runMarketDiscovery(task.input);
+          return { status: "SUCCESS", discoveryRun: run };
+        }
         const location = task.input?.location || "Jaipur Prime Corridor";
         const industry = task.input?.industry || "Real Estate";
         return {
@@ -82,6 +87,37 @@ class WorkforceRouterService {
             recommendedFloorPriceINR: 5200
           },
           demographicDemand: "High influx of senior professionals and wealth allocators seeking luxury gated communities"
+        };
+      }
+    });
+
+    // 1b. Autonomous Market Scout Agent
+    this.registerAgent({
+      id: "agent.market_scout",
+      name: "Autonomous Market Scout Agent",
+      domain: "growth",
+      role: "Discovers real-world business prospects from legitimate public sources with verifiable evidence records.",
+      knowledgeAccess: ["discovery:public_search", "prospects:evidence", "market:signals"],
+      authorizedActions: ["DISCOVER_PROSPECTS", "COLLECT_SOURCE_EVIDENCE", "QUALIFY_MARKET_CANDIDATES"],
+      humanHandoffConditions: ["SOURCE_RATE_LIMIT", "AMBIGUOUS_LEGAL_ENTITY"],
+      handler: async (task) => {
+        const marketIntelligenceService = require("./marketIntelligence/marketIntelligenceService");
+        const run = await marketIntelligenceService.runMarketDiscovery({
+          industry: task.input?.industry || "REAL_ESTATE",
+          region: task.input?.region || "DELHI_NCR",
+          limit: task.input?.limit || 5,
+          isTest: task.input?.isTest === true || process.env.NODE_ENV === "test",
+          mockResults: task.input?.mockResults
+        });
+        return {
+          status: "SUCCESS",
+          runId: run.runId,
+          state: run.state,
+          candidatesFound: run.candidatesFound,
+          qualifiedProspects: run.qualifiedProspects,
+          dossiersReady: run.dossiersReady,
+          duplicatesRejected: run.duplicatesRejected,
+          discoveredProspects: run.discoveredProspects
         };
       }
     });
