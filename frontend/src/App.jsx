@@ -19,6 +19,7 @@ import FounderAcquisitionCockpit from "./pages/FounderAcquisitionCockpit";
 import WhatIsGarudaAI from "./pages/WhatIsGarudaAI";
 import GuidesIndex from "./pages/GuidesIndex";
 import GuideArticle from "./pages/GuideArticle";
+import HighCommandCenter from "./pages/HighCommandCenter";
 import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
@@ -92,12 +93,25 @@ function AppRoutes() {
     <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
   );
 
+  const commandCenterRoute = authenticated === null ? (
+    <div style={{ minHeight: "100vh", background: "#06080d", display: "grid", placeItems: "center", color: "#f59e0b", fontFamily: "sans-serif", fontSize: "0.9rem", letterSpacing: "0.1em" }}>
+      GARUDA HIGH COMMAND CENTER...
+    </div>
+  ) : authenticated ? (
+    <HighCommandCenter onLogout={handleLogout} />
+  ) : (
+    <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
+  );
+
   return (
     <Routes>
       <Route path="/" element={publicLanding} />
       <Route path="/what-is-garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/chat" element={<PublicChat />} />
+      <Route path="/command" element={commandCenterRoute} />
+      <Route path="/command-center" element={commandCenterRoute} />
+      <Route path="/high-command" element={commandCenterRoute} />
       <Route path="/founder" element={founderRoute} />
       <Route path="/founder/acquisition" element={acquisitionRoute} />
       <Route path="/revenue" element={revenueRoute} />
