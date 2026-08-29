@@ -1172,4 +1172,52 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.strictEqual(approved.currentStage, "OUTREACH_SENT");
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // 16. AGENT WORKFORCE FORENSIC REALITY & TELEMETRY VERIFICATION
+  // ---------------------------------------------------------------------------
+  describe("16. Agent Workforce Forensic Reality & Telemetry Verification", () => {
+    const workforceRouterService = require("./workforceRouterService");
+    const founderCommandService = require("./founderCommandService");
+
+    it("1. Verifies exact agent workforce count matches registry truth (30 agents in WorkforceRouter)", () => {
+      const agents = workforceRouterService.listRegisteredAgents();
+      assert.strictEqual(agents.length, 30, "Must have exactly 30 registered workforce agents");
+    });
+
+    it("2. Verifies all 30 workforce agents have executable handlers (Declared === Executable)", () => {
+      const agents = workforceRouterService.listRegisteredAgents();
+      for (const agent of agents) {
+        const registered = workforceRouterService.registry.get(agent.id);
+        assert.ok(typeof registered.handler === "function", `Agent ${agent.id} must have executable handler`);
+      }
+    });
+
+    it("3. Rejects dispatch to unregistered agents truthfully", async () => {
+      await assert.rejects(
+        async () => workforceRouterService.dispatchAgentTask("agent.fake_nonexistent", {}),
+        /Agent not registered: agent.fake_nonexistent/
+      );
+    });
+
+    it("4. Dispatches and validates execution result across all 30 agents", async () => {
+      const agents = workforceRouterService.listRegisteredAgents();
+      for (const agent of agents) {
+        const res = await workforceRouterService.dispatchAgentTask(agent.id, { isTest: true, verificationMode: true });
+        assert.strictEqual(res.success, true, `Agent ${agent.id} must execute verification task successfully`);
+        assert.ok(res.taskId, `Agent ${agent.id} task must have a valid taskId`);
+        assert.ok(res.result, `Agent ${agent.id} must return execution result payload`);
+      }
+    });
+
+    it("5. Verifies High Command Center snapshot reflects exact workforce telemetry", async () => {
+      const snapshot = await founderCommandService.getCommandCenterSnapshot();
+      assert.strictEqual(snapshot.workforce.available, true);
+      assert.strictEqual(snapshot.workforce.registered, 30);
+      assert.strictEqual(snapshot.workforce.wired, 30);
+      assert.strictEqual(snapshot.workforce.executable, 30);
+      assert.strictEqual(snapshot.workforce.roster.length, 30);
+      assert.strictEqual(snapshot.workforce.truthClassification, "LIVE_PERSISTED");
+    });
+  });
 });

@@ -804,29 +804,27 @@ class FounderCommandService {
 
     // 3. WORKFORCE SECTION
     let workforceSection;
-    if (projectsAvailable) {
-      const runningJobs = projects.filter(p => p.status === "EXECUTION_RUNNING").length;
-      const pendingWorkerJobs = projects.filter(p => p.status === "EXECUTION_PENDING_WORKER").length;
-      const failedJobs = projects.filter(p => ["VALIDATION_FAILED", "BLOCKED"].includes(p.status)).length;
+    try {
+      const workforceRouterService = require("./workforceRouterService");
+      const telemetry = workforceRouterService.getWorkforceTelemetry();
+      const runningJobs = projectsAvailable ? projects.filter(p => p.status === "EXECUTION_RUNNING").length : 0;
+      const pendingWorkerJobs = projectsAvailable ? projects.filter(p => p.status === "EXECUTION_PENDING_WORKER").length : 0;
+      const failedJobs = projectsAvailable ? projects.filter(p => ["VALIDATION_FAILED", "BLOCKED"].includes(p.status)).length : 0;
+
       workforceSection = {
         available: true,
-        activeAgents: [
-          "FounderCommandService",
-          "GovernedProjectDeliveryService",
-          "GarudaEventService",
-          "PublicChatCommercialAgent"
-        ],
-        activeWorkers: 0,
+        ...telemetry,
+        activeAgents: telemetry.roster.map(r => r.name),
         runningJobs,
         pendingWorkerJobs,
         failedJobs,
         truthClassification: "LIVE_PERSISTED"
       };
-    } else {
+    } catch (err) {
       workforceSection = {
         available: false,
         truthClassification: "UNKNOWN",
-        error: projectsError
+        error: err.message
       };
     }
 

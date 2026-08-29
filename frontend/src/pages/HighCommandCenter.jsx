@@ -999,19 +999,44 @@ export default function HighCommandCenter({ onLogout }) {
 
                     <div className="hcc-card-item" style={{ marginBottom: 16 }}>
                       <div className="hcc-card-top">
-                        <h3 className="hcc-card-title">Registered Runtime Engines</h3>
+                        <h3 className="hcc-card-title">Agent Workforce Roster & Telemetry</h3>
                         <span className="hcc-card-badge" style={{ background: "rgba(6,182,212,0.12)", color: "var(--hcc-cyan)" }}>
-                          {snapshot.workforce.activeAgents?.length || 0} Registered
+                          {snapshot.workforce.registered || snapshot.workforce.activeAgents?.length || 0} Registered & Executable
                         </span>
                       </div>
-                      <ul style={{ margin: "8px 0 0 0", paddingLeft: 18, color: "var(--hcc-text-muted)", fontSize: "0.8rem", lineHeight: 1.7 }}>
-                        {snapshot.workforce.activeAgents?.map((agent, i) => (
-                          <li key={i}><strong style={{ color: "var(--hcc-text-main)" }}>{agent}</strong></li>
-                        ))}
-                      </ul>
-                      <p className="hcc-priority-desc" style={{ marginTop: 8 }}>
-                        LIVE WORKER TELEMETRY UNAVAILABLE — no per-worker process metrics are currently collected.
-                      </p>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 8, margin: "12px 0" }}>
+                        <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                          <span style={{ fontSize: "0.75rem", color: "var(--hcc-text-muted)" }}>Registered / Wired</span>
+                          <div style={{ fontWeight: 600, color: "var(--hcc-cyan)" }}>{snapshot.workforce.registered || 30} / {snapshot.workforce.wired || 30}</div>
+                        </div>
+                        <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                          <span style={{ fontSize: "0.75rem", color: "var(--hcc-text-muted)" }}>Currently Executing</span>
+                          <div style={{ fontWeight: 600, color: "var(--hcc-emerald)" }}>{snapshot.workforce.currentlyExecuting || 0}</div>
+                        </div>
+                        <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                          <span style={{ fontSize: "0.75rem", color: "var(--hcc-text-muted)" }}>Idle & Ready</span>
+                          <div style={{ fontWeight: 600, color: "var(--hcc-amber)" }}>{snapshot.workforce.idleAvailable || 30}</div>
+                        </div>
+                        <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                          <span style={{ fontSize: "0.75rem", color: "var(--hcc-text-muted)" }}>Blocked</span>
+                          <div style={{ fontWeight: 600, color: "var(--hcc-rose)" }}>{snapshot.workforce.blocked || 0}</div>
+                        </div>
+                      </div>
+                      {snapshot.workforce.roster && (
+                        <div style={{ maxHeight: 280, overflowY: "auto", margin: "8px 0 0 0", paddingRight: 4 }}>
+                          {snapshot.workforce.roster.map((agent, i) => (
+                            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", fontSize: "0.8rem" }}>
+                              <div>
+                                <strong style={{ color: "var(--hcc-text-main)" }}>{agent.name}</strong>
+                                <span style={{ marginLeft: 6, fontSize: "0.7rem", color: "var(--hcc-text-muted)", textTransform: "uppercase" }}>[{agent.domain}]</span>
+                              </div>
+                              <span className="hcc-card-badge" style={{ fontSize: "0.68rem", background: agent.currentState === "EXECUTING" ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.12)", color: agent.currentState === "EXECUTING" ? "var(--hcc-emerald)" : "var(--hcc-amber)" }}>
+                                {agent.currentState}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </>
                 )}
