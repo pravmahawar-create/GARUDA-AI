@@ -52,13 +52,18 @@ module.exports = async function handler(req, res) {
   }
 
   // Parse path & parameters
-  const pathParam = String(req.query.path || "").replace(/^\/+/, "");
-  const pathFromQuery = pathParam ? pathParam.split("/") : [];
+  let pathStr = "";
+  if (Array.isArray(req.query.path)) {
+    pathStr = req.query.path.join("/");
+  } else if (typeof req.query.path === "string") {
+    pathStr = req.query.path;
+  }
 
   const url = new URL(req.url, `https://${req.headers.host || "garudaos.in"}`);
-  const pathFromUrl = url.pathname.replace(/^\/api\/proposals\/?/, "").split("/").filter(Boolean);
+  const pathFromUrl = url.pathname.replace(/^\/api\/proposals\/?/, "");
 
-  const pathParts = pathFromQuery.length > 0 ? pathFromQuery : pathFromUrl;
+  const combinedPath = pathStr || pathFromUrl;
+  const pathParts = combinedPath.split(/[/,]+/).filter(Boolean);
 
   let proposalId = req.query.proposalId || (pathParts[0] !== "webhook" ? pathParts[0] : "") || "";
   let action = req.query.action || pathParts[1] || (pathParts[0] === "webhook" ? "webhook" : "");
