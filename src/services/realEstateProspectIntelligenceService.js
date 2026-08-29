@@ -372,15 +372,29 @@ class RealEstateProspectIntelligenceService {
       "Current monthly cost per qualified walkthrough"
     ];
 
+    const officialCompanyUrl = input.officialCompanyUrl || input.website || sourceUrl;
+    const officialDomain = extractDomain(officialCompanyUrl);
+    const entityType = input.entityType || "REAL_ESTATE_DEVELOPER";
+
     const prospectDoc = {
       prospectId,
       companyName,
+      entityType,
+      officialCompanyUrl,
+      officialDomain,
       sourceUrl,
       sourceType,
+      discoverySources: [
+        {
+          sourceUrl,
+          sourceType,
+          discoveredAt
+        }
+      ],
       discoveredAt,
       verificationState,
       geography,
-      website: input.website || sourceUrl,
+      website: officialCompanyUrl,
       projectNames,
       propertyCategory: input.propertyCategory || "LUXURY_RESIDENTIAL",
       stage: PROSPECT_LIFECYCLE_STAGES.PROSPECT_DISCOVERED,

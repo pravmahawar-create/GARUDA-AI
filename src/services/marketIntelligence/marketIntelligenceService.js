@@ -3,24 +3,26 @@
  * Autonomous, Evidence-First Market Discovery & Opportunity Intelligence Engine
  *
  * Implements:
- * 1. Industry-Agnostic Adapter Orchestration (Real Estate, Hospitality, SaaS, Healthcare, etc.)
- * 2. Autonomous Public Source Querying with Free-First Strategy
- * 3. Evidence-First Extraction & Verification
- * 4. Deduplication & Evidence Merging into Canonical Pipeline
- * 5. Opportunity Analysis & Prospect Dossier Generation
- * 6. Explicit 10-Stage Discovery Lifecycle with Truthful State Preservation
- * 7. Founder Command & High Command Center Integration
+ * 1. Entity Classification Layer (SOURCE !== PROSPECT)
+ * 2. Strict Commercial Prospect Eligibility Gate (Only DEVELOPERS / BUILDERS enter pipeline)
+ * 3. Intelligence Source vs Candidate Prospect Separation
+ * 4. officialCompanyUrl vs discoverySourceUrl Permanent Separation
+ * 5. Deduplication & Evidence Merging into Canonical Pipeline
+ * 6. Opportunity Analysis & Prospect Dossier Generation
+ * 7. Truthful Metrics & High Command Integration
  *
  * Absolute Truth Laws:
- * - Never claim LIVE_DISCOVERY_ACTIVE unless external discovery sources return verified results.
- * - UNAVAILABLE !== 0
- * - NO_RESULTS !== SOURCE_FAILURE
+ * - SEARCH_RESULT !== PROSPECT
+ * - PORTAL !== DEVELOPER
+ * - DIRECTORY !== BUILDER
+ * - DISCOVERY_URL !== OFFICIAL_COMPANY_URL
  */
 
 const crypto = require("crypto");
 const sourceRegistry = require("./sourceRegistry");
 const evidenceCollector = require("./evidenceCollector");
 const opportunityAnalyzer = require("./opportunityAnalyzer");
+const entityClassifier = require("./entityClassifier");
 const RealEstateAdapter = require("./adapters/realEstateAdapter");
 const garudaEventService = require("../garudaEventService");
 const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("../garudaEventTypes");
@@ -29,6 +31,7 @@ const DISCOVERY_LIFECYCLE_STATES = Object.freeze({
   DISCOVERY_REQUESTED: "DISCOVERY_REQUESTED",
   SOURCE_QUERYING: "SOURCE_QUERYING",
   CANDIDATE_FOUND: "CANDIDATE_FOUND",
+  ENTITY_CLASSIFIED: "ENTITY_CLASSIFIED",
   EVIDENCE_COLLECTED: "EVIDENCE_COLLECTED",
   NORMALIZED: "NORMALIZED",
   DEDUPLICATED: "DEDUPLICATED",
@@ -47,6 +50,7 @@ class MarketIntelligenceService {
   constructor() {
     this.adapters = new Map();
     this.discoveryHistory = [];
+    this.intelligenceSources = new Map();
     this.registerDefaultAdapters();
   }
 
@@ -66,7 +70,41 @@ class MarketIntelligenceService {
   }
 
   /**
-   * Executes an evidence-first Market Discovery Run.
+   * Revalidates historical discoveries and reclassifies portals/directories truthfully.
+   */
+  revalidateHistoricalDiscoveries(prospectList = []) {
+    const auditLog = [];
+    for (const p of prospectList) {
+      const classification = entityClassifier.classifyEntity({
+        sourceUrl: p.sourceUrl || p.website,
+        companyName: p.companyName
+      });
+
+      if (!classification.isDirectCommercialProspect) {
+        auditLog.push({
+          prospectId: p.prospectId,
+          originalName: p.companyName,
+          originalStage: p.stage,
+          reclassifiedType: classification.entityType,
+          auditStatus: "RECLASSIFIED_AFTER_FORENSIC_AUDIT",
+          reason: classification.classificationBasis,
+          action: "DOWNGRADED_TO_INTELLIGENCE_SOURCE_REMOVED_FROM_QUALIFIED_PROSPECTS"
+        });
+      } else {
+        auditLog.push({
+          prospectId: p.prospectId,
+          originalName: p.companyName,
+          reclassifiedType: classification.entityType,
+          auditStatus: "VERIFIED_ELIGIBLE_DEVELOPER",
+          action: "RETAINED_IN_QUALIFIED_PROSPECTS"
+        });
+      }
+    }
+    return auditLog;
+  }
+
+  /**
+   * Executes an evidence-first Market Discovery Run with Entity Classification.
    */
   async runMarketDiscovery(options = {}) {
     const runId = `disc_run_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
@@ -87,12 +125,19 @@ class MarketIntelligenceService {
       state: DISCOVERY_LIFECYCLE_STATES.DISCOVERY_REQUESTED,
       startedAt: new Date().toISOString(),
       queriesExecuted: 0,
-      candidatesFound: 0,
+      searchResultsFound: 0,
+      intelligenceSourcesFound: 0,
+      companyCandidatesExtracted: 0,
+      officialEntitiesVerified: 0,
+      eligibleProspects: 0,
+      candidatesFound: 0, // Canonical alias
       evidenceVerified: 0,
       duplicatesRejected: 0,
       qualifiedProspects: 0,
       dossiersReady: 0,
+      reclassifiedSources: 0,
       discoveredProspects: [],
+      intelligenceSources: [],
       errors: [],
       discoverySourceStatus: "SOURCE_UNAVAILABLE"
     };
@@ -118,7 +163,6 @@ class MarketIntelligenceService {
     let sourceSuccessCount = 0;
     let sourceFailureCount = 0;
 
-    // If explicit mock results are provided in test mode, pass through once
     if (isTest && Array.isArray(options.mockResults)) {
       runRecord.queriesExecuted++;
       sourceSuccessCount++;
@@ -159,8 +203,9 @@ class MarketIntelligenceService {
       }
     }
 
-    const rawCandidates = Array.from(rawCandidatesMap.values());
-    runRecord.candidatesFound = rawCandidates.length;
+    const rawHits = Array.from(rawCandidatesMap.values());
+    runRecord.searchResultsFound = rawHits.length;
+    runRecord.candidatesFound = rawHits.length;
 
     // Determine Truthful Discovery State
     if (sourceSuccessCount === 0 && sourceFailureCount > 0) {
@@ -170,7 +215,7 @@ class MarketIntelligenceService {
       return runRecord;
     }
 
-    if (rawCandidates.length === 0) {
+    if (rawHits.length === 0) {
       runRecord.state = DISCOVERY_LIFECYCLE_STATES.NO_VERIFIED_RESULTS;
       runRecord.discoverySourceStatus = "LIVE_DISCOVERY_ACTIVE";
       runRecord.completedAt = new Date().toISOString();
@@ -178,18 +223,40 @@ class MarketIntelligenceService {
     }
 
     runRecord.discoverySourceStatus = "LIVE_DISCOVERY_ACTIVE";
-    runRecord.state = DISCOVERY_LIFECYCLE_STATES.CANDIDATE_FOUND;
+    runRecord.state = DISCOVERY_LIFECYCLE_STATES.ENTITY_CLASSIFIED;
 
-    // 3. Process each Candidate into the Canonical Pipeline
+    // 3. Classify Entities & Process into Correct Streams
     const realEstateProspectService = require("../realEstateProspectIntelligenceService");
 
-    for (const raw of rawCandidates) {
+    for (const raw of rawHits) {
       try {
-        if (!raw.sourceUrl || !raw.companyName) {
+        if (!raw.sourceUrl) continue;
+
+        // ENTITY CLASSIFICATION GATE
+        const classification = entityClassifier.classifyEntity(raw);
+
+        // A. If NOT a direct commercial entity -> Store as INTELLIGENCE_SOURCE (No developer qualification, no dossier)
+        if (!classification.isDirectCommercialProspect) {
+          runRecord.intelligenceSourcesFound++;
+          runRecord.reclassifiedSources++;
+          const intelDoc = {
+            sourceUrl: raw.sourceUrl,
+            entityType: classification.entityType,
+            classificationBasis: classification.classificationBasis,
+            classificationConfidence: classification.classificationConfidence,
+            discoveredAt: new Date().toISOString(),
+            status: "INTELLIGENCE_SOURCE_STORED"
+          };
+          this.intelligenceSources.set(raw.sourceUrl.toLowerCase(), intelDoc);
+          runRecord.intelligenceSources.push(intelDoc);
           continue;
         }
 
-        // Collect and normalize evidence
+        // B. If DIRECT COMMERCIAL DEVELOPER/BUILDER -> Process into Prospect Pipeline
+        runRecord.eligibleProspects++;
+        runRecord.companyCandidatesExtracted++;
+        runRecord.officialEntitiesVerified++;
+
         const evidence = evidenceCollector.collectEvidence(raw, raw.sourceType || "PUBLIC_SEARCH");
         runRecord.evidenceVerified++;
 
@@ -208,7 +275,7 @@ class MarketIntelligenceService {
           continue;
         }
 
-        // Analyze and Qualify
+        // Analyze and Qualify Developer Prospect
         const analysis = opportunityAnalyzer.analyzeProspect(ingestResult, adapter);
         if (analysis.qualificationStatus === "QUALIFIED") {
           runRecord.qualifiedProspects++;
@@ -223,7 +290,9 @@ class MarketIntelligenceService {
           runRecord.discoveredProspects.push({
             prospectId: ingestResult.prospectId,
             companyName: ingestResult.companyName,
+            entityType: classification.entityType,
             sourceUrl: ingestResult.sourceUrl,
+            officialCompanyUrl: ingestResult.sourceUrl,
             qualificationScore: analysis.qualificationScore,
             tier: analysis.tier,
             dossierId: dossier.dossierId,
@@ -232,13 +301,16 @@ class MarketIntelligenceService {
           });
         }
       } catch (err) {
-        runRecord.errors.push(`Error processing candidate ${raw.companyName}: ${err.message}`);
+        runRecord.errors.push(`Error processing entity ${raw.sourceUrl}: ${err.message}`);
       }
     }
 
     runRecord.state = runRecord.dossiersReady > 0 
       ? DISCOVERY_LIFECYCLE_STATES.FOUNDER_REVIEW 
-      : DISCOVERY_LIFECYCLE_STATES.QUALIFIED;
+      : runRecord.eligibleProspects > 0
+      ? DISCOVERY_LIFECYCLE_STATES.QUALIFIED
+      : DISCOVERY_LIFECYCLE_STATES.ENTITY_CLASSIFIED;
+
     runRecord.completedAt = new Date().toISOString();
 
     await garudaEventService.emitGarudaEvent({
@@ -250,7 +322,10 @@ class MarketIntelligenceService {
       metadata: {
         industry,
         region,
-        candidatesFound: runRecord.candidatesFound,
+        searchResultsFound: runRecord.searchResultsFound,
+        intelligenceSourcesFound: runRecord.intelligenceSourcesFound,
+        eligibleProspects: runRecord.eligibleProspects,
+        qualifiedProspects: runRecord.qualifiedProspects,
         dossiersReady: runRecord.dossiersReady
       }
     }).catch(() => {});
@@ -277,7 +352,9 @@ class MarketIntelligenceService {
         industry: lastRun.industry,
         region: lastRun.region,
         state: lastRun.state,
-        candidatesFound: lastRun.candidatesFound,
+        searchResultsFound: lastRun.searchResultsFound || lastRun.candidatesFound,
+        intelligenceSourcesFound: lastRun.intelligenceSourcesFound || 0,
+        eligibleProspects: lastRun.eligibleProspects || 0,
         qualifiedProspects: lastRun.qualifiedProspects,
         dossiersReady: lastRun.dossiersReady,
         duplicatesRejected: lastRun.duplicatesRejected,

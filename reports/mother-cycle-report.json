@@ -1,6 +1,6 @@
 {
   "engine": "GARUDA Mother Reporter v1",
-  "generatedAt": "2026-08-29T21:23:33.203Z",
+  "generatedAt": "2026-08-29T21:28:08.684Z",
   "scan": {
     "clean": false,
     "summary": {
@@ -945,7 +945,7 @@
     "executionReady": true,
     "externalExecutionEnabled": false,
     "founderApproved": true,
-    "createdAt": "2026-08-29T21:23:31.569Z"
+    "createdAt": "2026-08-29T21:28:07.058Z"
   },
   "workerExecution": {
     "worker": "local_brain_worker",
@@ -2325,6 +2325,90 @@
             "depth": 2
           },
           {
+            "name": "img_1788038862267_99f1d2.svg",
+            "path": "data/creative-assets/img_1788038862267_99f1d2.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038862282_b2b33e.svg",
+            "path": "data/creative-assets/img_1788038862282_b2b33e.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038862319_f3cbf3.svg",
+            "path": "data/creative-assets/img_1788038862319_f3cbf3.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038862442_e002a6.svg",
+            "path": "data/creative-assets/img_1788038862442_e002a6.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038862473_351d4d.svg",
+            "path": "data/creative-assets/img_1788038862473_351d4d.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038862638_a25bb6.svg",
+            "path": "data/creative-assets/img_1788038862638_a25bb6.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038876019_86e563.svg",
+            "path": "data/creative-assets/img_1788038876019_86e563.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038876036_55cf11.svg",
+            "path": "data/creative-assets/img_1788038876036_55cf11.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038876079_761f60.svg",
+            "path": "data/creative-assets/img_1788038876079_761f60.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038876201_2f7ed1.svg",
+            "path": "data/creative-assets/img_1788038876201_2f7ed1.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038876239_4272d7.svg",
+            "path": "data/creative-assets/img_1788038876239_4272d7.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038876388_0197f7.svg",
+            "path": "data/creative-assets/img_1788038876388_0197f7.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038881673_cc92c5.svg",
+            "path": "data/creative-assets/img_1788038881673_cc92c5.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
+            "name": "img_1788038881725_35648d.svg",
+            "path": "data/creative-assets/img_1788038881725_35648d.svg",
+            "type": "file",
+            "depth": 2
+          },
+          {
             "name": "creative-assets.jsonl",
             "path": "data/creative-assets.jsonl",
             "type": "file",
@@ -3277,90 +3361,6 @@
             "path": "GARUDA_BIBLE/09_ROADMAP.md",
             "type": "file",
             "depth": 1
-          },
-          {
-            "name": "10_DECISION_REGISTRY.json",
-            "path": "GARUDA_BIBLE/10_DECISION_REGISTRY.json",
-            "type": "file",
-            "depth": 1
-          },
-          {
-            "name": "10_DECISION_REGISTRY.md",
-            "path": "GARUDA_BIBLE/10_DECISION_REGISTRY.md",
-            "type": "file",
-            "depth": 1
-          },
-          {
-            "name": "11_FOUNDER_DECISION_REGISTRY.md",
-            "path": "GARUDA_BIBLE/11_FOUNDER_DECISION_REGISTRY.md",
-            "type": "file",
-            "depth": 1
-          },
-          {
-            "name": "12_FOUNDER_DECISION_LOG_2026_08_11.md",
-            "path": "GARUDA_BIBLE/12_FOUNDER_DECISION_LOG_2026_08_11.md",
-            "type": "file",
-            "depth": 1
-          },
-          {
-            "name": "12_FOUNDER_DECISION_LOG_2026_08_16.md",
-            "path": "GARUDA_BIBLE/12_FOUNDER_DECISION_LOG_2026_08_16.md",
-            "type": "file",
-            "depth": 1
-          },
-          {
-            "name": "README.md",
-            "path": "GARUDA_BIBLE/README.md",
-            "type": "file",
-            "depth": 1
-          },
-          {
-            "name": "schema",
-            "path": "GARUDA_BIBLE/schema",
-            "type": "directory",
-            "depth": 1
-          },
-          {
-            "name": "brain-definition.schema.json",
-            "path": "GARUDA_BIBLE/schema/brain-definition.schema.json",
-            "type": "file",
-            "depth": 2
-          },
-          {
-            "name": "decision-record.schema.json",
-            "path": "GARUDA_BIBLE/schema/decision-record.schema.json",
-            "type": "file",
-            "depth": 2
-          },
-          {
-            "name": "garuda-bible.schema.json",
-            "path": "GARUDA_BIBLE/schema/garuda-bible.schema.json",
-            "type": "file",
-            "depth": 2
-          },
-          {
-            "name": "garuda-chapter.schema.json",
-            "path": "GARUDA_BIBLE/schema/garuda-chapter.schema.json",
-            "type": "file",
-            "depth": 2
-          },
-          {
-            "name": "worker-definition.schema.json",
-            "path": "GARUDA_BIBLE/schema/worker-definition.schema.json",
-            "type": "file",
-            "depth": 2
-          },
-          {
-            "name": "GARUDA_BRAIN_ENGINE_AGENT_AUDIT.md",
-            "path": "GARUDA_BRAIN_ENGINE_AGENT_AUDIT.md",
-            "type": "file",
-            "depth": 0
-          },
-          {
-            "name": "GARUDA_BUILDER_EXECUTION_AUDIT.md",
-            "path": "GARUDA_BUILDER_EXECUTION_AUDIT.md",
-            "type": "file",
-            "depth": 0
           }
         ],
         "fileSample": [
@@ -3548,7 +3548,7 @@
         "reportDraft": {
           "role": "architect",
           "summary": "Mother read-only local analysis complete.",
-          "generatedAt": "2026-08-29T21:23:31.661Z",
+          "generatedAt": "2026-08-29T21:28:07.149Z",
           "readOnly": true
         }
       },
@@ -4056,7 +4056,7 @@
         "executionReady": true,
         "externalExecutionEnabled": false,
         "founderApproved": true,
-        "createdAt": "2026-08-29T21:23:31.569Z"
+        "createdAt": "2026-08-29T21:28:07.058Z"
       }
     }
   },
@@ -4107,7 +4107,7 @@
       "route": "mother",
       "status": "SUCCESS",
       "reason": "executed_by_available_engine",
-      "executedAt": "2026-08-29T21:23:32.420Z",
+      "executedAt": "2026-08-29T21:28:07.776Z",
       "approvalState": {
         "required": false,
         "approved": false
@@ -6070,6 +6070,90 @@
               "depth": 2
             },
             {
+              "name": "img_1788038862267_99f1d2.svg",
+              "path": "data/creative-assets/img_1788038862267_99f1d2.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862282_b2b33e.svg",
+              "path": "data/creative-assets/img_1788038862282_b2b33e.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862319_f3cbf3.svg",
+              "path": "data/creative-assets/img_1788038862319_f3cbf3.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862442_e002a6.svg",
+              "path": "data/creative-assets/img_1788038862442_e002a6.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862473_351d4d.svg",
+              "path": "data/creative-assets/img_1788038862473_351d4d.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862638_a25bb6.svg",
+              "path": "data/creative-assets/img_1788038862638_a25bb6.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876019_86e563.svg",
+              "path": "data/creative-assets/img_1788038876019_86e563.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876036_55cf11.svg",
+              "path": "data/creative-assets/img_1788038876036_55cf11.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876079_761f60.svg",
+              "path": "data/creative-assets/img_1788038876079_761f60.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876201_2f7ed1.svg",
+              "path": "data/creative-assets/img_1788038876201_2f7ed1.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876239_4272d7.svg",
+              "path": "data/creative-assets/img_1788038876239_4272d7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876388_0197f7.svg",
+              "path": "data/creative-assets/img_1788038876388_0197f7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881673_cc92c5.svg",
+              "path": "data/creative-assets/img_1788038881673_cc92c5.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881725_35648d.svg",
+              "path": "data/creative-assets/img_1788038881725_35648d.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
               "name": "creative-assets.jsonl",
               "path": "data/creative-assets.jsonl",
               "type": "file",
@@ -6446,90 +6530,6 @@
               "path": "docs/foundation/README.md",
               "type": "file",
               "depth": 2
-            },
-            {
-              "name": "GARUDA_APPROVAL_MATRIX.md",
-              "path": "docs/GARUDA_APPROVAL_MATRIX.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_CONSTITUTION.md",
-              "path": "docs/GARUDA_CONSTITUTION.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_FRONTEND_VISION.md",
-              "path": "docs/GARUDA_FRONTEND_VISION.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_IMPLEMENTATION_STATUS.md",
-              "path": "docs/GARUDA_IMPLEMENTATION_STATUS.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_MASTER_INVENTORY.md",
-              "path": "docs/GARUDA_MASTER_INVENTORY.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_REVENUE_CAPABILITY_MAP.md",
-              "path": "docs/GARUDA_REVENUE_CAPABILITY_MAP.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_UNIVERSE_ACTIVATION_MAP.md",
-              "path": "docs/GARUDA_UNIVERSE_ACTIVATION_MAP.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_VISION.md",
-              "path": "docs/GARUDA_VISION.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "kingdom",
-              "path": "docs/kingdom",
-              "type": "directory",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_KINGDOM_MANIFEST.json",
-              "path": "docs/kingdom/GARUDA_KINGDOM_MANIFEST.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "GARUDA_KINGDOM_MASTER.md",
-              "path": "docs/kingdom/GARUDA_KINGDOM_MASTER.md",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "KINGDOM_GOVERNANCE.md",
-              "path": "docs/kingdom/KINGDOM_GOVERNANCE.md",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "KINGDOM_RECOVERY_STATUS.md",
-              "path": "docs/kingdom/KINGDOM_RECOVERY_STATUS.md",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "universes",
-              "path": "docs/kingdom/universes",
-              "type": "directory",
-              "depth": 2
             }
           ],
           "fileSample": [
@@ -6843,7 +6843,7 @@
       "route": "mother",
       "status": "SUCCESS",
       "reason": "executed_by_available_engine",
-      "executedAt": "2026-08-29T21:23:32.511Z",
+      "executedAt": "2026-08-29T21:28:07.852Z",
       "approvalState": {
         "required": false,
         "approved": false
@@ -9184,88 +9184,88 @@
               "depth": 2
             },
             {
-              "name": "creative-assets.jsonl",
-              "path": "data/creative-assets.jsonl",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "creative-briefs.jsonl",
-              "path": "data/creative-briefs.jsonl",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "creative-jobs.jsonl",
-              "path": "data/creative-jobs.jsonl",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "dev-agent",
-              "path": "data/dev-agent",
-              "type": "directory",
-              "depth": 1
-            },
-            {
-              "name": "agent-missions.json",
-              "path": "data/dev-agent/agent-missions.json",
+              "name": "img_1788038862267_99f1d2.svg",
+              "path": "data/creative-assets/img_1788038862267_99f1d2.svg",
               "type": "file",
               "depth": 2
             },
             {
-              "name": "project-memory.backup.json",
-              "path": "data/dev-agent/project-memory.backup.json",
+              "name": "img_1788038862282_b2b33e.svg",
+              "path": "data/creative-assets/img_1788038862282_b2b33e.svg",
               "type": "file",
               "depth": 2
             },
             {
-              "name": "project-memory.backup2.json",
-              "path": "data/dev-agent/project-memory.backup2.json",
+              "name": "img_1788038862319_f3cbf3.svg",
+              "path": "data/creative-assets/img_1788038862319_f3cbf3.svg",
               "type": "file",
               "depth": 2
             },
             {
-              "name": "project-memory.json",
-              "path": "data/dev-agent/project-memory.json",
+              "name": "img_1788038862442_e002a6.svg",
+              "path": "data/creative-assets/img_1788038862442_e002a6.svg",
               "type": "file",
               "depth": 2
             },
             {
-              "name": "education-contacts.csv",
-              "path": "data/education-contacts.csv",
+              "name": "img_1788038862473_351d4d.svg",
+              "path": "data/creative-assets/img_1788038862473_351d4d.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "education-outreach-ledger.json",
-              "path": "data/education-outreach-ledger.json",
+              "name": "img_1788038862638_a25bb6.svg",
+              "path": "data/creative-assets/img_1788038862638_a25bb6.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "education-prospects.json",
-              "path": "data/education-prospects.json",
+              "name": "img_1788038876019_86e563.svg",
+              "path": "data/creative-assets/img_1788038876019_86e563.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "founder-memory.json",
-              "path": "data/founder-memory.json",
+              "name": "img_1788038876036_55cf11.svg",
+              "path": "data/creative-assets/img_1788038876036_55cf11.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "garuda-events.jsonl",
-              "path": "data/garuda-events.jsonl",
+              "name": "img_1788038876079_761f60.svg",
+              "path": "data/creative-assets/img_1788038876079_761f60.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "genuine-lead-outreach-draft.md",
-              "path": "data/genuine-lead-outreach-draft.md",
+              "name": "img_1788038876201_2f7ed1.svg",
+              "path": "data/creative-assets/img_1788038876201_2f7ed1.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876239_4272d7.svg",
+              "path": "data/creative-assets/img_1788038876239_4272d7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876388_0197f7.svg",
+              "path": "data/creative-assets/img_1788038876388_0197f7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881673_cc92c5.svg",
+              "path": "data/creative-assets/img_1788038881673_cc92c5.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881725_35648d.svg",
+              "path": "data/creative-assets/img_1788038881725_35648d.svg",
+              "type": "file",
+              "depth": 2
             }
           ],
           "inspectedFiles": [
@@ -9873,7 +9873,7 @@
           "report": {
             "role": "executor",
             "summary": "Local Brain inspected the current project for missing brain or module coverage.",
-            "generatedAt": "2026-08-29T21:23:32.511Z",
+            "generatedAt": "2026-08-29T21:28:07.852Z",
             "readOnly": true
           }
         }
@@ -9885,7 +9885,7 @@
       "route": "general",
       "status": "SUCCESS",
       "reason": "executed_by_available_engine",
-      "executedAt": "2026-08-29T21:23:32.537Z",
+      "executedAt": "2026-08-29T21:28:07.878Z",
       "approvalState": {
         "required": false,
         "approved": false
@@ -9911,7 +9911,7 @@
           "report": {
             "role": "executor",
             "summary": "Implementation planning completed for task: Generate implementation plan",
-            "generatedAt": "2026-08-29T21:23:32.511Z",
+            "generatedAt": "2026-08-29T21:28:07.852Z",
             "readOnly": true
           },
           "projectStructure": [
@@ -11278,6 +11278,90 @@
               "depth": 2
             },
             {
+              "name": "img_1788038862267_99f1d2.svg",
+              "path": "data/creative-assets/img_1788038862267_99f1d2.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862282_b2b33e.svg",
+              "path": "data/creative-assets/img_1788038862282_b2b33e.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862319_f3cbf3.svg",
+              "path": "data/creative-assets/img_1788038862319_f3cbf3.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862442_e002a6.svg",
+              "path": "data/creative-assets/img_1788038862442_e002a6.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862473_351d4d.svg",
+              "path": "data/creative-assets/img_1788038862473_351d4d.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862638_a25bb6.svg",
+              "path": "data/creative-assets/img_1788038862638_a25bb6.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876019_86e563.svg",
+              "path": "data/creative-assets/img_1788038876019_86e563.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876036_55cf11.svg",
+              "path": "data/creative-assets/img_1788038876036_55cf11.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876079_761f60.svg",
+              "path": "data/creative-assets/img_1788038876079_761f60.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876201_2f7ed1.svg",
+              "path": "data/creative-assets/img_1788038876201_2f7ed1.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876239_4272d7.svg",
+              "path": "data/creative-assets/img_1788038876239_4272d7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876388_0197f7.svg",
+              "path": "data/creative-assets/img_1788038876388_0197f7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881673_cc92c5.svg",
+              "path": "data/creative-assets/img_1788038881673_cc92c5.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881725_35648d.svg",
+              "path": "data/creative-assets/img_1788038881725_35648d.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
               "name": "creative-assets.jsonl",
               "path": "data/creative-assets.jsonl",
               "type": "file",
@@ -12230,90 +12314,6 @@
               "path": "GARUDA_BIBLE/09_ROADMAP.md",
               "type": "file",
               "depth": 1
-            },
-            {
-              "name": "10_DECISION_REGISTRY.json",
-              "path": "GARUDA_BIBLE/10_DECISION_REGISTRY.json",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "10_DECISION_REGISTRY.md",
-              "path": "GARUDA_BIBLE/10_DECISION_REGISTRY.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "11_FOUNDER_DECISION_REGISTRY.md",
-              "path": "GARUDA_BIBLE/11_FOUNDER_DECISION_REGISTRY.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "12_FOUNDER_DECISION_LOG_2026_08_11.md",
-              "path": "GARUDA_BIBLE/12_FOUNDER_DECISION_LOG_2026_08_11.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "12_FOUNDER_DECISION_LOG_2026_08_16.md",
-              "path": "GARUDA_BIBLE/12_FOUNDER_DECISION_LOG_2026_08_16.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "README.md",
-              "path": "GARUDA_BIBLE/README.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "schema",
-              "path": "GARUDA_BIBLE/schema",
-              "type": "directory",
-              "depth": 1
-            },
-            {
-              "name": "brain-definition.schema.json",
-              "path": "GARUDA_BIBLE/schema/brain-definition.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "decision-record.schema.json",
-              "path": "GARUDA_BIBLE/schema/decision-record.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "garuda-bible.schema.json",
-              "path": "GARUDA_BIBLE/schema/garuda-bible.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "garuda-chapter.schema.json",
-              "path": "GARUDA_BIBLE/schema/garuda-chapter.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "worker-definition.schema.json",
-              "path": "GARUDA_BIBLE/schema/worker-definition.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "GARUDA_BRAIN_ENGINE_AGENT_AUDIT.md",
-              "path": "GARUDA_BRAIN_ENGINE_AGENT_AUDIT.md",
-              "type": "file",
-              "depth": 0
-            },
-            {
-              "name": "GARUDA_BUILDER_EXECUTION_AUDIT.md",
-              "path": "GARUDA_BUILDER_EXECUTION_AUDIT.md",
-              "type": "file",
-              "depth": 0
             }
           ]
         }
@@ -12325,7 +12325,7 @@
       "route": "test",
       "status": "SKIPPED",
       "reason": "test_task_requires_explicit_test_files",
-      "executedAt": "2026-08-29T21:23:32.546Z",
+      "executedAt": "2026-08-29T21:28:07.889Z",
       "approvalState": {
         "required": false,
         "approved": false
@@ -14315,6 +14315,90 @@
               "depth": 2
             },
             {
+              "name": "img_1788038862267_99f1d2.svg",
+              "path": "data/creative-assets/img_1788038862267_99f1d2.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862282_b2b33e.svg",
+              "path": "data/creative-assets/img_1788038862282_b2b33e.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862319_f3cbf3.svg",
+              "path": "data/creative-assets/img_1788038862319_f3cbf3.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862442_e002a6.svg",
+              "path": "data/creative-assets/img_1788038862442_e002a6.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862473_351d4d.svg",
+              "path": "data/creative-assets/img_1788038862473_351d4d.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862638_a25bb6.svg",
+              "path": "data/creative-assets/img_1788038862638_a25bb6.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876019_86e563.svg",
+              "path": "data/creative-assets/img_1788038876019_86e563.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876036_55cf11.svg",
+              "path": "data/creative-assets/img_1788038876036_55cf11.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876079_761f60.svg",
+              "path": "data/creative-assets/img_1788038876079_761f60.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876201_2f7ed1.svg",
+              "path": "data/creative-assets/img_1788038876201_2f7ed1.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876239_4272d7.svg",
+              "path": "data/creative-assets/img_1788038876239_4272d7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876388_0197f7.svg",
+              "path": "data/creative-assets/img_1788038876388_0197f7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881673_cc92c5.svg",
+              "path": "data/creative-assets/img_1788038881673_cc92c5.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881725_35648d.svg",
+              "path": "data/creative-assets/img_1788038881725_35648d.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
               "name": "creative-assets.jsonl",
               "path": "data/creative-assets.jsonl",
               "type": "file",
@@ -14690,90 +14774,6 @@
               "name": "README.md",
               "path": "docs/foundation/README.md",
               "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "GARUDA_APPROVAL_MATRIX.md",
-              "path": "docs/GARUDA_APPROVAL_MATRIX.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_CONSTITUTION.md",
-              "path": "docs/GARUDA_CONSTITUTION.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_FRONTEND_VISION.md",
-              "path": "docs/GARUDA_FRONTEND_VISION.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_IMPLEMENTATION_STATUS.md",
-              "path": "docs/GARUDA_IMPLEMENTATION_STATUS.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_MASTER_INVENTORY.md",
-              "path": "docs/GARUDA_MASTER_INVENTORY.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_REVENUE_CAPABILITY_MAP.md",
-              "path": "docs/GARUDA_REVENUE_CAPABILITY_MAP.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_UNIVERSE_ACTIVATION_MAP.md",
-              "path": "docs/GARUDA_UNIVERSE_ACTIVATION_MAP.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_VISION.md",
-              "path": "docs/GARUDA_VISION.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "kingdom",
-              "path": "docs/kingdom",
-              "type": "directory",
-              "depth": 1
-            },
-            {
-              "name": "GARUDA_KINGDOM_MANIFEST.json",
-              "path": "docs/kingdom/GARUDA_KINGDOM_MANIFEST.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "GARUDA_KINGDOM_MASTER.md",
-              "path": "docs/kingdom/GARUDA_KINGDOM_MASTER.md",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "KINGDOM_GOVERNANCE.md",
-              "path": "docs/kingdom/KINGDOM_GOVERNANCE.md",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "KINGDOM_RECOVERY_STATUS.md",
-              "path": "docs/kingdom/KINGDOM_RECOVERY_STATUS.md",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "universes",
-              "path": "docs/kingdom/universes",
-              "type": "directory",
               "depth": 2
             }
           ],
@@ -15168,7 +15168,7 @@
         "required": false,
         "approved": false
       },
-      "executedAt": "2026-08-29T21:23:32.420Z"
+      "executedAt": "2026-08-29T21:28:07.776Z"
     },
     {
       "step": 2,
@@ -17504,88 +17504,88 @@
               "depth": 2
             },
             {
-              "name": "creative-assets.jsonl",
-              "path": "data/creative-assets.jsonl",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "creative-briefs.jsonl",
-              "path": "data/creative-briefs.jsonl",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "creative-jobs.jsonl",
-              "path": "data/creative-jobs.jsonl",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "dev-agent",
-              "path": "data/dev-agent",
-              "type": "directory",
-              "depth": 1
-            },
-            {
-              "name": "agent-missions.json",
-              "path": "data/dev-agent/agent-missions.json",
+              "name": "img_1788038862267_99f1d2.svg",
+              "path": "data/creative-assets/img_1788038862267_99f1d2.svg",
               "type": "file",
               "depth": 2
             },
             {
-              "name": "project-memory.backup.json",
-              "path": "data/dev-agent/project-memory.backup.json",
+              "name": "img_1788038862282_b2b33e.svg",
+              "path": "data/creative-assets/img_1788038862282_b2b33e.svg",
               "type": "file",
               "depth": 2
             },
             {
-              "name": "project-memory.backup2.json",
-              "path": "data/dev-agent/project-memory.backup2.json",
+              "name": "img_1788038862319_f3cbf3.svg",
+              "path": "data/creative-assets/img_1788038862319_f3cbf3.svg",
               "type": "file",
               "depth": 2
             },
             {
-              "name": "project-memory.json",
-              "path": "data/dev-agent/project-memory.json",
+              "name": "img_1788038862442_e002a6.svg",
+              "path": "data/creative-assets/img_1788038862442_e002a6.svg",
               "type": "file",
               "depth": 2
             },
             {
-              "name": "education-contacts.csv",
-              "path": "data/education-contacts.csv",
+              "name": "img_1788038862473_351d4d.svg",
+              "path": "data/creative-assets/img_1788038862473_351d4d.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "education-outreach-ledger.json",
-              "path": "data/education-outreach-ledger.json",
+              "name": "img_1788038862638_a25bb6.svg",
+              "path": "data/creative-assets/img_1788038862638_a25bb6.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "education-prospects.json",
-              "path": "data/education-prospects.json",
+              "name": "img_1788038876019_86e563.svg",
+              "path": "data/creative-assets/img_1788038876019_86e563.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "founder-memory.json",
-              "path": "data/founder-memory.json",
+              "name": "img_1788038876036_55cf11.svg",
+              "path": "data/creative-assets/img_1788038876036_55cf11.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "garuda-events.jsonl",
-              "path": "data/garuda-events.jsonl",
+              "name": "img_1788038876079_761f60.svg",
+              "path": "data/creative-assets/img_1788038876079_761f60.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
             },
             {
-              "name": "genuine-lead-outreach-draft.md",
-              "path": "data/genuine-lead-outreach-draft.md",
+              "name": "img_1788038876201_2f7ed1.svg",
+              "path": "data/creative-assets/img_1788038876201_2f7ed1.svg",
               "type": "file",
-              "depth": 1
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876239_4272d7.svg",
+              "path": "data/creative-assets/img_1788038876239_4272d7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876388_0197f7.svg",
+              "path": "data/creative-assets/img_1788038876388_0197f7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881673_cc92c5.svg",
+              "path": "data/creative-assets/img_1788038881673_cc92c5.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881725_35648d.svg",
+              "path": "data/creative-assets/img_1788038881725_35648d.svg",
+              "type": "file",
+              "depth": 2
             }
           ],
           "inspectedFiles": [
@@ -18193,7 +18193,7 @@
           "report": {
             "role": "executor",
             "summary": "Local Brain inspected the current project for missing brain or module coverage.",
-            "generatedAt": "2026-08-29T21:23:32.511Z",
+            "generatedAt": "2026-08-29T21:28:07.852Z",
             "readOnly": true
           }
         }
@@ -18233,7 +18233,7 @@
         "required": false,
         "approved": false
       },
-      "executedAt": "2026-08-29T21:23:32.511Z"
+      "executedAt": "2026-08-29T21:28:07.852Z"
     },
     {
       "step": 3,
@@ -18254,7 +18254,7 @@
           "report": {
             "role": "executor",
             "summary": "Implementation planning completed for task: Generate implementation plan",
-            "generatedAt": "2026-08-29T21:23:32.511Z",
+            "generatedAt": "2026-08-29T21:28:07.852Z",
             "readOnly": true
           },
           "projectStructure": [
@@ -19621,6 +19621,90 @@
               "depth": 2
             },
             {
+              "name": "img_1788038862267_99f1d2.svg",
+              "path": "data/creative-assets/img_1788038862267_99f1d2.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862282_b2b33e.svg",
+              "path": "data/creative-assets/img_1788038862282_b2b33e.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862319_f3cbf3.svg",
+              "path": "data/creative-assets/img_1788038862319_f3cbf3.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862442_e002a6.svg",
+              "path": "data/creative-assets/img_1788038862442_e002a6.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862473_351d4d.svg",
+              "path": "data/creative-assets/img_1788038862473_351d4d.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038862638_a25bb6.svg",
+              "path": "data/creative-assets/img_1788038862638_a25bb6.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876019_86e563.svg",
+              "path": "data/creative-assets/img_1788038876019_86e563.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876036_55cf11.svg",
+              "path": "data/creative-assets/img_1788038876036_55cf11.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876079_761f60.svg",
+              "path": "data/creative-assets/img_1788038876079_761f60.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876201_2f7ed1.svg",
+              "path": "data/creative-assets/img_1788038876201_2f7ed1.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876239_4272d7.svg",
+              "path": "data/creative-assets/img_1788038876239_4272d7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038876388_0197f7.svg",
+              "path": "data/creative-assets/img_1788038876388_0197f7.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881673_cc92c5.svg",
+              "path": "data/creative-assets/img_1788038881673_cc92c5.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
+              "name": "img_1788038881725_35648d.svg",
+              "path": "data/creative-assets/img_1788038881725_35648d.svg",
+              "type": "file",
+              "depth": 2
+            },
+            {
               "name": "creative-assets.jsonl",
               "path": "data/creative-assets.jsonl",
               "type": "file",
@@ -20573,90 +20657,6 @@
               "path": "GARUDA_BIBLE/09_ROADMAP.md",
               "type": "file",
               "depth": 1
-            },
-            {
-              "name": "10_DECISION_REGISTRY.json",
-              "path": "GARUDA_BIBLE/10_DECISION_REGISTRY.json",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "10_DECISION_REGISTRY.md",
-              "path": "GARUDA_BIBLE/10_DECISION_REGISTRY.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "11_FOUNDER_DECISION_REGISTRY.md",
-              "path": "GARUDA_BIBLE/11_FOUNDER_DECISION_REGISTRY.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "12_FOUNDER_DECISION_LOG_2026_08_11.md",
-              "path": "GARUDA_BIBLE/12_FOUNDER_DECISION_LOG_2026_08_11.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "12_FOUNDER_DECISION_LOG_2026_08_16.md",
-              "path": "GARUDA_BIBLE/12_FOUNDER_DECISION_LOG_2026_08_16.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "README.md",
-              "path": "GARUDA_BIBLE/README.md",
-              "type": "file",
-              "depth": 1
-            },
-            {
-              "name": "schema",
-              "path": "GARUDA_BIBLE/schema",
-              "type": "directory",
-              "depth": 1
-            },
-            {
-              "name": "brain-definition.schema.json",
-              "path": "GARUDA_BIBLE/schema/brain-definition.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "decision-record.schema.json",
-              "path": "GARUDA_BIBLE/schema/decision-record.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "garuda-bible.schema.json",
-              "path": "GARUDA_BIBLE/schema/garuda-bible.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "garuda-chapter.schema.json",
-              "path": "GARUDA_BIBLE/schema/garuda-chapter.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "worker-definition.schema.json",
-              "path": "GARUDA_BIBLE/schema/worker-definition.schema.json",
-              "type": "file",
-              "depth": 2
-            },
-            {
-              "name": "GARUDA_BRAIN_ENGINE_AGENT_AUDIT.md",
-              "path": "GARUDA_BRAIN_ENGINE_AGENT_AUDIT.md",
-              "type": "file",
-              "depth": 0
-            },
-            {
-              "name": "GARUDA_BUILDER_EXECUTION_AUDIT.md",
-              "path": "GARUDA_BUILDER_EXECUTION_AUDIT.md",
-              "type": "file",
-              "depth": 0
             }
           ]
         }
@@ -20696,7 +20696,7 @@
         "required": false,
         "approved": false
       },
-      "executedAt": "2026-08-29T21:23:32.537Z"
+      "executedAt": "2026-08-29T21:28:07.878Z"
     },
     {
       "step": 4,
@@ -20768,7 +20768,7 @@
         "required": false,
         "approved": false
       },
-      "executedAt": "2026-08-29T21:23:32.546Z"
+      "executedAt": "2026-08-29T21:28:07.889Z"
     }
   ]
 }

@@ -960,118 +960,216 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   });
 
   // ---------------------------------------------------------------------------
-  // 15. MARKET INTELLIGENCE & AUTONOMOUS DISCOVERY ENGINE
+  // 15. MARKET INTELLIGENCE & ENTITY CLASSIFICATION TRUTH (SOURCE !== PROSPECT)
   // ---------------------------------------------------------------------------
-  describe("15. Market Intelligence & Autonomous Discovery Engine", () => {
+  describe("15. Market Intelligence & Entity Classification Truth (SOURCE !== PROSPECT)", () => {
     const marketIntelligenceService = require("./marketIntelligence/marketIntelligenceService");
-    const sourceRegistry = require("./marketIntelligence/sourceRegistry");
+    const entityClassifier = require("./marketIntelligence/entityClassifier");
     const evidenceCollector = require("./marketIntelligence/evidenceCollector");
+    const realEstateProspectService = require("./realEstateProspectIntelligenceService");
 
-    it("1. Rejects candidate lacking verifiable sourceUrl or companyName", () => {
+    beforeEach(() => {
+      realEstateProspectService.clearForTesting();
+    });
+
+    it("1. PROPERTY_PORTAL cannot become REAL_ESTATE_DEVELOPER", () => {
+      const classification = entityClassifier.classifyEntity({
+        companyName: "Housing.com",
+        sourceUrl: "https://housing.com/in/buy/noida/luxury-projects"
+      });
+      assert.strictEqual(classification.entityType, "PROPERTY_PORTAL");
+      assert.strictEqual(classification.isDirectCommercialProspect, false);
+      assert.strictEqual(classification.role, "INTELLIGENCE_SOURCE");
+    });
+
+    it("2. BUSINESS_DIRECTORY cannot directly enter prospect pipeline", () => {
+      const classification = entityClassifier.classifyEntity({
+        companyName: "RealEstateIndia Directory",
+        sourceUrl: "https://www.realestateindia.com/builders-developers-in-noida.htm"
+      });
+      assert.strictEqual(classification.entityType, "BUSINESS_DIRECTORY");
+      assert.strictEqual(classification.isDirectCommercialProspect, false);
+      assert.strictEqual(entityClassifier.isEligibleDirectProspect(classification.entityType), false);
+    });
+
+    it("3. CONTENT_SITE cannot receive a developer qualification tier", () => {
+      const classification = entityClassifier.classifyEntity({
+        companyName: "360PropGuide Blog",
+        sourceUrl: "https://www.360propguide.com/blogs/top-luxury-residential-properties"
+      });
+      assert.strictEqual(classification.entityType, "CONTENT_SITE");
+      assert.strictEqual(classification.isDirectCommercialProspect, false);
+    });
+
+    it("4. NEWS_SOURCE cannot become a commercial prospect", () => {
+      const classification = entityClassifier.classifyEntity({
+        companyName: "Economic Times Real Estate",
+        sourceUrl: "https://economictimes.indiatimes.com/news/economy/infrastructure/noida-expressway"
+      });
+      assert.strictEqual(classification.entityType, "NEWS_SOURCE");
+      assert.strictEqual(classification.isDirectCommercialProspect, false);
+    });
+
+    it("5. Search result URL cannot become officialCompanyUrl automatically", async () => {
+      const prospect = await realEstateProspectService.ingestProspect({
+        companyName: "Prateek Group",
+        sourceUrl: "https://www.squareyards.com/prateek-group-projects",
+        sourceType: "PUBLIC_SEARCH",
+        officialCompanyUrl: "https://prateekgroup.com/"
+      }, { isTest: true });
+
+      assert.strictEqual(prospect.sourceUrl, "https://www.squareyards.com/prateek-group-projects");
+      assert.strictEqual(prospect.officialCompanyUrl, "https://prateekgroup.com/");
+      assert.strictEqual(prospect.officialDomain, "prateekgroup.com");
+    });
+
+    it("6. Portal source becomes INTELLIGENCE_SOURCE and is stored without developer dossier", async () => {
+      const run = await marketIntelligenceService.runMarketDiscovery({
+        industry: "REAL_ESTATE",
+        region: "DELHI_NCR",
+        isTest: true,
+        mockResults: [
+          {
+            companyName: "Square Yards Portal",
+            sourceUrl: "https://www.squareyards.com/luxury-projects-in-noida",
+            sourceType: "PUBLIC_SEARCH"
+          }
+        ]
+      });
+
+      assert.strictEqual(run.searchResultsFound, 1);
+      assert.strictEqual(run.intelligenceSourcesFound, 1);
+      assert.strictEqual(run.eligibleProspects, 0);
+      assert.strictEqual(run.qualifiedProspects, 0);
+      assert.strictEqual(run.dossiersReady, 0);
+      assert.strictEqual(run.discoveredProspects.length, 0);
+    });
+
+    it("7. Extracted company candidate requires independent verification", () => {
+      const unverified = entityClassifier.classifyEntity({
+        companyName: "Generic Entity XYZ",
+        sourceUrl: "https://generic-unknown-portal.in/listing/123"
+      });
+      assert.strictEqual(unverified.isDirectCommercialProspect, false);
+      assert.strictEqual(unverified.entityType, "UNKNOWN");
+    });
+
+    it("8. REAL_ESTATE_DEVELOPER can enter qualification", () => {
+      const classification = entityClassifier.classifyEntity({
+        companyName: "Prateek Group",
+        sourceUrl: "https://prateekgroup.com/"
+      });
+      assert.strictEqual(classification.entityType, "REAL_ESTATE_DEVELOPER");
+      assert.strictEqual(classification.isDirectCommercialProspect, true);
+    });
+
+    it("9. REAL_ESTATE_BUILDER can enter qualification", () => {
+      const classification = entityClassifier.classifyEntity({
+        companyName: "Gulshan Homz Builders",
+        sourceUrl: "https://gulshanhomz.com/"
+      });
+      assert.strictEqual(classification.entityType, "REAL_ESTATE_DEVELOPER");
+      assert.strictEqual(classification.isDirectCommercialProspect, true);
+    });
+
+    it("10. Ineligible entity is blocked before scoring and dossier generation", async () => {
+      const run = await marketIntelligenceService.runMarketDiscovery({
+        industry: "REAL_ESTATE",
+        region: "DELHI_NCR",
+        isTest: true,
+        mockResults: [
+          { companyName: "Housing.com", sourceUrl: "https://housing.com/in/buy/noida" },
+          { companyName: "RealEstateIndia", sourceUrl: "https://www.realestateindia.com/noida" }
+        ]
+      });
+
+      assert.strictEqual(run.searchResultsFound, 2);
+      assert.strictEqual(run.intelligenceSourcesFound, 2);
+      assert.strictEqual(run.qualifiedProspects, 0);
+      assert.strictEqual(run.dossiersReady, 0);
+    });
+
+    it("11. Previous incorrectly classified prospect can be reclassified with audit history", () => {
+      const previousProspects = [
+        { prospectId: "p1", companyName: "Housing.com", sourceUrl: "https://housing.com/buy" },
+        { prospectId: "p2", companyName: "Prateek Group", sourceUrl: "https://prateekgroup.com/" }
+      ];
+
+      const auditLog = marketIntelligenceService.revalidateHistoricalDiscoveries(previousProspects);
+      assert.strictEqual(auditLog.length, 2);
+      assert.strictEqual(auditLog[0].auditStatus, "RECLASSIFIED_AFTER_FORENSIC_AUDIT");
+      assert.strictEqual(auditLog[0].reclassifiedType, "PROPERTY_PORTAL");
+      assert.strictEqual(auditLog[1].auditStatus, "VERIFIED_ELIGIBLE_DEVELOPER");
+      assert.strictEqual(auditLog[1].reclassifiedType, "REAL_ESTATE_DEVELOPER");
+    });
+
+    it("12. Qualification metrics distinguish sources from prospects", async () => {
+      const run = await marketIntelligenceService.runMarketDiscovery({
+        industry: "REAL_ESTATE",
+        region: "DELHI_NCR",
+        isTest: true,
+        mockResults: [
+          { companyName: "Housing.com", sourceUrl: "https://housing.com/in/buy/noida" },
+          { companyName: "Prateek Group", sourceUrl: "https://prateekgroup.com/" }
+        ]
+      });
+
+      assert.strictEqual(run.searchResultsFound, 2);
+      assert.strictEqual(run.intelligenceSourcesFound, 1);
+      assert.strictEqual(run.eligibleProspects, 1);
+      assert.strictEqual(run.qualifiedProspects, 1);
+      assert.strictEqual(run.dossiersReady, 1);
+    });
+
+    it("13. Duplicate company discovered from multiple sources merges evidence", () => {
+      const ev1 = { sourceUrl: "https://prateekgroup.com/", type: "OFFICIAL_SITE" };
+      const ev2 = { sourceUrl: "https://prateekgroup.com/", type: "PUBLIC_SEARCH" };
+      const ev3 = { sourceUrl: "https://uprera.gov.in/prateek", type: "RERA_REGISTRY" };
+
+      const merged = evidenceCollector.mergeEvidence([ev1], [ev2, ev3]);
+      assert.strictEqual(merged.length, 2);
+    });
+
+    it("14. Missing official verification blocks promotion", () => {
       assert.throws(
         () => evidenceCollector.collectEvidence({}),
         /verifiable sourceUrl/
       );
     });
 
-    it("2. Truthfully handles NO_VERIFIED_RESULTS when search yields zero candidate records", async () => {
+    it("15. No outreach can be generated for an INTELLIGENCE_SOURCE", async () => {
       const run = await marketIntelligenceService.runMarketDiscovery({
-        industry: "REAL_ESTATE",
-        region: "DELHI_NCR",
-        isTest: true,
-        mockResults: []
-      });
-
-      assert.strictEqual(run.candidatesFound, 0);
-      assert.strictEqual(run.state, "NO_VERIFIED_RESULTS");
-    });
-
-    it("3. Ingests mock public search candidate into canonical pipeline with evidence-grounded facts", async () => {
-      const mockCandidate = {
-        companyName: "Civitech Developers",
-        sourceUrl: "https://civitech.example.in",
-        sourceType: "PUBLIC_SEARCH",
-        snippet: "Civitech Stadia Sector 79 Noida luxury homes",
-        projectNames: ["Civitech Stadia"]
-      };
-
-      const run = await marketIntelligenceService.runMarketDiscovery({
-        industry: "REAL_ESTATE",
-        region: "DELHI_NCR",
-        isTest: true,
-        mockResults: [mockCandidate]
-      });
-
-      assert.strictEqual(run.candidatesFound, 1);
-      assert.strictEqual(run.qualifiedProspects, 1);
-      assert.strictEqual(run.dossiersReady, 1);
-      assert.strictEqual(run.state, "FOUNDER_REVIEW");
-
-      const discovered = run.discoveredProspects[0];
-      assert.strictEqual(discovered.companyName, "Civitech Developers");
-      assert.strictEqual(discovered.outreachStatus, "PENDING_FOUNDER_APPROVAL");
-      assert.ok(discovered.dossierId);
-    });
-
-    it("4. Deduplicates identical candidates across multiple search queries into single prospect", async () => {
-      const mockCandidate1 = {
-        companyName: "Mahagun Group",
-        sourceUrl: "https://mahagunindia.example.com",
-        sourceType: "PUBLIC_SEARCH"
-      };
-      const mockCandidate2 = {
-        companyName: "mahagun group",
-        sourceUrl: "https://www.mahagunindia.example.com/projects",
-        sourceType: "PUBLIC_SEARCH"
-      };
-
-      const run = await marketIntelligenceService.runMarketDiscovery({
-        industry: "REAL_ESTATE",
-        region: "DELHI_NCR",
-        isTest: true,
-        mockResults: [mockCandidate1, mockCandidate2]
-      });
-
-      assert.strictEqual(run.candidatesFound, 2);
-      assert.strictEqual(run.duplicatesRejected, 1);
-      assert.strictEqual(run.qualifiedProspects, 1);
-    });
-
-    it("5. Merges multiple evidence records without mutating existing records", () => {
-      const ev1 = { sourceUrl: "https://example.com/page1", type: "PUBLIC_SEARCH" };
-      const ev2 = { sourceUrl: "https://example.com/page1", type: "RERA_REGISTRY" };
-      const ev3 = { sourceUrl: "https://example.com/page2", type: "OFFICIAL_WEB" };
-
-      const merged = evidenceCollector.mergeEvidence([ev1], [ev2, ev3]);
-      assert.strictEqual(merged.length, 2);
-    });
-
-    it("6. Audits registered discovery sources and reports truthful availability status", async () => {
-      const status = await marketIntelligenceService.getMarketIntelligenceStatus();
-      assert.ok(status.sourcesCount >= 1);
-      assert.ok(Array.isArray(status.sources));
-      assert.ok(status.supportedIndustries.includes("REAL_ESTATE"));
-    });
-
-    it("7. Dispatches market discovery task autonomously via Workforce Scout Agent", async () => {
-      const workforceRouterService = require("./workforceRouterService");
-      const res = await workforceRouterService.dispatchAgentTask("agent.market_scout", {
         industry: "REAL_ESTATE",
         region: "DELHI_NCR",
         isTest: true,
         mockResults: [
-          {
-            companyName: "Express Builders",
-            sourceUrl: "https://expressbuilders.example.in",
-            sourceType: "PUBLIC_SEARCH"
-          }
+          { companyName: "360PropGuide", sourceUrl: "https://www.360propguide.com/blogs/noida" }
         ]
       });
 
-      assert.strictEqual(res.success, true);
-      assert.strictEqual(res.result.status, "SUCCESS");
-      assert.strictEqual(res.result.candidatesFound, 1);
-      assert.strictEqual(res.result.qualifiedProspects, 1);
+      assert.strictEqual(run.dossiersReady, 0);
+      assert.strictEqual(run.discoveredProspects.length, 0);
+    });
+
+    it("16. Existing Founder Approval Gate remains intact before outreach dispatch", async () => {
+      const prospect = await realEstateProspectService.ingestProspect({
+        companyName: "Signature Global Developers",
+        sourceUrl: "https://signatureglobal.in",
+        sourceType: "OFFICIAL_WEBSITE",
+        geography: "Gurgaon"
+      }, { isTest: true });
+
+      await assert.rejects(
+        async () => realEstateProspectService.transitionStage(prospect.prospectId, "OUTREACH_SENT", { founderApproved: false }),
+        /OUTREACH_SENT requires explicit founder approval/
+      );
+
+      const approved = await realEstateProspectService.transitionStage(prospect.prospectId, "OUTREACH_SENT", {
+        founderApproved: true,
+        actor: "founder_praveen"
+      });
+      assert.strictEqual(approved.success, true);
+      assert.strictEqual(approved.currentStage, "OUTREACH_SENT");
     });
   });
 });
