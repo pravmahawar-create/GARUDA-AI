@@ -222,6 +222,27 @@ module.exports = async function handler(req, res) {
       fs.writeFileSync(file, JSON.stringify(existing, null, 2), "utf8");
     } catch {}
 
+    // 3. Emit Immutable LEAD_CREATED Event
+    try {
+      const garudaEventService = require("../src/services/garudaEventService");
+      garudaEventService.emitGarudaEvent({
+        eventType: "LEAD_CREATED",
+        entityType: "lead",
+        entityId: leadRecord.id,
+        leadId: leadRecord.id,
+        proposalId: scopeId,
+        source: "projectScopeForm",
+        actor: { type: "visitor", name: leadRecord.name, email: leadRecord.email, phone: leadRecord.phone },
+        newState: "new",
+        idempotencyKey: `lead_created_${leadRecord.id}`,
+        metadata: {
+          service: leadRecord.service,
+          estimatedINR,
+          channel: leadRecord.attribution?.channel
+        }
+      }).catch(() => {});
+    } catch {}
+
     // Notify Founder Telegram
     if (telegramBotService) {
       try {

@@ -128,7 +128,25 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // 3. RETRIEVE PROPOSAL: GET /api/proposals/:proposalId
+  // 3. RETRIEVE EVENT HISTORY: GET /api/proposals/:proposalId/events
+  if (req.method === "GET" && action === "events") {
+    if (!proposalId) {
+      return res.status(400).json({ success: false, message: "proposalId is required" });
+    }
+    try {
+      const garudaEventService = require("../src/services/garudaEventService");
+      const events = await garudaEventService.getGarudaEvents({
+        proposalId,
+        limit: Math.min(Number(req.query.limit || 50), 100),
+        ascending: true
+      });
+      return res.status(200).json({ success: true, proposalId, eventsCount: events.length, events });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: err.message || "Failed to retrieve events" });
+    }
+  }
+
+  // 4. RETRIEVE PROPOSAL: GET /api/proposals/:proposalId
   if (req.method === "GET") {
     if (!proposalId) {
       return res.status(400).json({ success: false, message: "proposalId is required" });
@@ -172,7 +190,7 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // 3. ACCEPT PROPOSAL TERMS: POST /api/proposals/:proposalId/accept
+  // 5. ACCEPT PROPOSAL TERMS: POST /api/proposals/:proposalId/accept
   if (req.method === "POST" && action === "accept") {
     if (!proposalId) {
       return res.status(400).json({ success: false, message: "proposalId is required" });
@@ -202,7 +220,7 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // 4. CREATE PAYMENT ORDER: POST /api/proposals/:proposalId/payment/order
+  // 6. CREATE PAYMENT ORDER: POST /api/proposals/:proposalId/payment/order
   if (req.method === "POST" && action === "payment" && subAction === "order") {
     if (!proposalId) return res.status(400).json({ success: false, message: "proposalId is required" });
 
@@ -216,6 +234,26 @@ module.exports = async function handler(req, res) {
       const amountSmallestUnit = currency === "INR" ? Math.round(amountINR * 100) : Math.round(Number(proposal.pricing?.depositAmount || 150) * 100);
 
       const orderId = `order_${proposalId.replace("prop_", "")}_${Date.now()}`;
+
+      // Emit PAYMENT_ORDER_CREATED event
+      try {
+        const garudaEventService = require("../src/services/garudaEventService");
+        garudaEventService.emitGarudaEvent({
+          eventType: "PAYMENT_ORDER_CREATED",
+          entityType: "payment",
+          entityId: orderId,
+          proposalId,
+          source: "proposalsApi",
+          newState: "ORDER_CREATED",
+          idempotencyKey: `order_created_${orderId}`,
+          metadata: {
+            orderId,
+            amount: amountINR,
+            currency,
+            amountSmallestUnit
+          }
+        }).catch(() => {});
+      } catch {}
 
       return res.status(200).json({
         success: true,

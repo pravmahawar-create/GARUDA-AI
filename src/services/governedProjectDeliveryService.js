@@ -16,6 +16,13 @@ const ArchitectBrain = require("../../scripts/dev-agent/core/ArchitectBrain");
 const MultiBrainPlanner = require("../../scripts/dev-agent/core/MultiBrainPlanner");
 const { validationAgent } = require("../agents/validationAgent");
 
+let garudaEventService;
+try {
+  garudaEventService = require("./garudaEventService");
+} catch {
+  garudaEventService = null;
+}
+
 function sha256(data) {
   const str = typeof data === "string" ? data : JSON.stringify(data);
   return crypto.createHash("sha256").update(str).digest("hex");
@@ -115,6 +122,26 @@ class GovernedProjectDeliveryService {
     // 4. Persist execution plan
     await this.proposalService.recordProjectExecutionPlan(projectId, executionPlan);
 
+    // Emit EXECUTION_PLANNED event
+    if (garudaEventService) {
+      garudaEventService.emitGarudaEvent({
+        eventType: "EXECUTION_PLANNED",
+        entityType: "project",
+        entityId: projectId,
+        projectId,
+        proposalId: project.proposalId,
+        source: "governedDeliveryEngine",
+        previousState: project.status,
+        newState: "EXECUTION_PLANNED",
+        idempotencyKey: `execution_planned_${projectId}`,
+        metadata: {
+          planId: executionPlan.planId,
+          tasksCount: executionPlan.tasks.length,
+          selectedBrains: executionPlan.selectedBrains
+        }
+      }).catch(() => {});
+    }
+
     // If options explicitly ask for plan only or handoff
     if (options.mode === "plan_only") {
       return {
@@ -130,6 +157,24 @@ class GovernedProjectDeliveryService {
         workerRequirement: options.workerRequirement || "Local dev-agent CLI worker or external IDE adapter",
         handoffAt: new Date().toISOString()
       });
+
+      if (garudaEventService) {
+        garudaEventService.emitGarudaEvent({
+          eventType: "EXECUTION_PENDING_WORKER",
+          entityType: "project",
+          entityId: projectId,
+          projectId,
+          proposalId: project.proposalId,
+          source: "governedDeliveryEngine",
+          previousState: "EXECUTION_PLANNED",
+          newState: "EXECUTION_PENDING_WORKER",
+          idempotencyKey: `execution_pending_worker_${projectId}`,
+          metadata: {
+            workerRequirement: options.workerRequirement || "Local dev-agent CLI worker or external IDE adapter"
+          }
+        }).catch(() => {});
+      }
+
       return {
         success: true,
         status: "EXECUTION_PENDING_WORKER",
@@ -158,6 +203,23 @@ class GovernedProjectDeliveryService {
     await this.proposalService.updateProjectStatus(projectId, "EXECUTION_RUNNING", {
       startedAt: new Date().toISOString()
     });
+
+    if (garudaEventService) {
+      garudaEventService.emitGarudaEvent({
+        eventType: "EXECUTION_RUNNING",
+        entityType: "project",
+        entityId: projectId,
+        projectId,
+        proposalId: project.proposalId,
+        source: "governedDeliveryEngine",
+        previousState: "EXECUTION_PLANNED",
+        newState: "EXECUTION_RUNNING",
+        idempotencyKey: `execution_running_${projectId}`,
+        metadata: {
+          tasksCount: executionPlan.tasks.length
+        }
+      }).catch(() => {});
+    }
 
     // 1. Gather or generate execution artifacts and evidence
     let executionOutput = options.executionOutput || null;
@@ -253,6 +315,23 @@ class GovernedProjectDeliveryService {
         validationIssues: issues,
         failedAt: new Date().toISOString()
       });
+
+      if (garudaEventService) {
+        garudaEventService.emitGarudaEvent({
+          eventType: "VALIDATION_FAILED",
+          entityType: "project",
+          entityId: projectId,
+          projectId,
+          proposalId: project.proposalId,
+          source: "governedDeliveryEngine",
+          previousState: "EXECUTION_RUNNING",
+          newState: "VALIDATION_FAILED",
+          status: "FAILED",
+          idempotencyKey: `validation_failed_${projectId}_${Date.now()}`,
+          metadata: { issues }
+        }).catch(() => {});
+      }
+
       return {
         success: false,
         status: "VALIDATION_FAILED",
@@ -315,6 +394,26 @@ class GovernedProjectDeliveryService {
 
     // 5. Persist delivery package & transition project to DELIVERY_READY
     const updatedProject = await this.proposalService.recordDeliveryPackage(projectId, deliveryPackage);
+
+    if (garudaEventService) {
+      garudaEventService.emitGarudaEvent({
+        eventType: "DELIVERY_READY",
+        entityType: "delivery",
+        entityId: projectId,
+        projectId,
+        proposalId: project.proposalId,
+        source: "governedDeliveryEngine",
+        previousState: "EXECUTION_RUNNING",
+        newState: "DELIVERY_READY",
+        idempotencyKey: `delivery_ready_${projectId}`,
+        metadata: {
+          deliveryHash: deliveryPackage.deliveryHash,
+          manifestCount: manifest.length,
+          automatedTestsCount: deliveryPackage.automatedTests.length,
+          scopeIntegrity: deliveryPackage.scopeIntegrity
+        }
+      }).catch(() => {});
+    }
 
     return {
       success: true,

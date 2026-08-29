@@ -27,6 +27,13 @@ try {
   telegramBotService = null;
 }
 
+let garudaEventService;
+try {
+  garudaEventService = require("./garudaEventService");
+} catch {
+  garudaEventService = null;
+}
+
 const { createClient } = require("@supabase/supabase-js");
 
 const DEFAULT_SUPABASE_URL = "https://gcifzzuyswrcwvkcfqbr.supabase.co";
@@ -163,6 +170,26 @@ class PersistentProposalService {
       console.warn("[PersistentProposalService] Supabase proposal save note:", err.message);
     }
 
+    // 4. Emit Immutable Event for new proposal
+    if (garudaEventService && proposal.proposalId) {
+      garudaEventService.emitGarudaEvent({
+        eventType: "PROPOSAL_CREATED",
+        entityType: "proposal",
+        entityId: proposalId,
+        proposalId,
+        source: "persistentProposalService",
+        newState: proposal.status || "APPROVED",
+        idempotencyKey: `proposal_created_${proposalId}`,
+        metadata: {
+          title: proposal.project?.title || proposal.title,
+          amount: proposal.pricing?.totalAmount,
+          depositAmount: proposal.pricing?.depositAmount,
+          currency: proposal.pricing?.currency || "INR",
+          clientName: proposal.client?.name || proposal.customer?.name
+        }
+      }).catch(() => {});
+    }
+
     return proposal;
   }
 
@@ -251,6 +278,27 @@ class PersistentProposalService {
     });
 
     await this.saveProposal(proposal);
+
+    // 4. Emit Immutable Event for proposal acceptance
+    if (garudaEventService && proposal.proposalId) {
+      garudaEventService.emitGarudaEvent({
+        eventType: "PROPOSAL_ACCEPTED",
+        entityType: "proposal",
+        entityId: proposal.proposalId,
+        proposalId: proposal.proposalId,
+        source: "proposalPortal",
+        actor: { type: "client", name: signerName, email: signerEmail, ip: signature.ip || "127.0.0.1" },
+        previousState: "APPROVED",
+        newState: "CLIENT_ACCEPTED",
+        idempotencyKey: `proposal_accepted_${proposal.proposalId}`,
+        metadata: {
+          signerName,
+          signerEmail,
+          depositRequired: proposal.pricing?.depositAmount,
+          currency: proposal.pricing?.currency || "INR"
+        }
+      }).catch(() => {});
+    }
 
     // Telegram Alert to Founder
     if (telegramBotService) {
@@ -356,7 +404,48 @@ class PersistentProposalService {
     await this.saveProposal(proposal);
     await this.saveProject(projectRecord);
 
-    // 3. Dispatch High-Priority Telegram Alert to Founder
+    // 3. Emit Immutable Lifecycle Events for Payment & Project Activation
+    if (garudaEventService) {
+      garudaEventService.emitGarudaEvent({
+        eventType: "PAYMENT_VERIFIED",
+        entityType: "payment",
+        entityId: paymentId || `pay_${Date.now()}`,
+        proposalId: proposal.proposalId,
+        projectId,
+        source: "paymentWebhook",
+        actor: { type: "payment_gateway", provider },
+        previousState: "PAYMENT_PENDING",
+        newState: "PAYMENT_VERIFIED",
+        idempotencyKey: `payment_verified_${paymentId || proposalId}`,
+        metadata: {
+          paymentId,
+          orderId: paymentDetails.orderId || null,
+          amountPaid,
+          currency,
+          provider
+        }
+      }).catch(() => {});
+
+      garudaEventService.emitGarudaEvent({
+        eventType: "PROJECT_ACTIVATED",
+        entityType: "project",
+        entityId: projectId,
+        projectId,
+        proposalId: proposal.proposalId,
+        source: "persistentProposalService",
+        previousState: "PENDING_ACTIVATION",
+        newState: "ACTIVE_IN_DEVELOPMENT",
+        idempotencyKey: `project_activated_${projectId}`,
+        metadata: {
+          title: projectRecord.title,
+          clientName: projectRecord.client.name,
+          deliverablesCount: projectRecord.deliverables?.length || 0,
+          scopeIntegrity: proposal.scopeIntegrity
+        }
+      }).catch(() => {});
+    }
+
+    // 4. Dispatch High-Priority Telegram Alert to Founder
     if (telegramBotService) {
       try {
         await telegramBotService.sendFounderAlert(

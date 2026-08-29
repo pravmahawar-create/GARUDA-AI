@@ -398,11 +398,31 @@ async function captureLead({ message, reply, userId, req, body }) {
         .insert({ ...lead })
         .select("id")
         .single();
+
       if (!error && data) {
         try {
           const telegramBotService = require("../src/services/telegramBotService");
           await telegramBotService.notifyLeadCaptured({ ...lead, id: data.id });
         } catch {}
+
+        try {
+          const garudaEventService = require("../src/services/garudaEventService");
+          garudaEventService.emitGarudaEvent({
+            eventType: "LEAD_CREATED",
+            entityType: "lead",
+            entityId: data.id,
+            leadId: data.id,
+            source: "publicChat",
+            actor: { type: "visitor", email: lead.email, phone: lead.phone },
+            newState: "new",
+            idempotencyKey: `lead_created_${data.id}`,
+            metadata: {
+              source: lead.source,
+              attribution: lead.attribution
+            }
+          }).catch(() => {});
+        } catch {}
+
         return data;
       }
     }
@@ -423,6 +443,25 @@ async function captureLead({ message, reply, userId, req, body }) {
       const telegramBotService = require("../src/services/telegramBotService");
       await telegramBotService.notifyLeadCaptured({ ...lead, id });
     } catch {}
+
+    try {
+      const garudaEventService = require("../src/services/garudaEventService");
+      garudaEventService.emitGarudaEvent({
+        eventType: "LEAD_CREATED",
+        entityType: "lead",
+        entityId: id,
+        leadId: id,
+        source: "publicChat",
+        actor: { type: "visitor", email: lead.email, phone: lead.phone },
+        newState: "new",
+        idempotencyKey: `lead_created_${id}`,
+        metadata: {
+          source: lead.source,
+          attribution: lead.attribution
+        }
+      }).catch(() => {});
+    } catch {}
+
     return { id, ...lead };
   } catch {
     return null;
