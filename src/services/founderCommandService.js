@@ -95,7 +95,7 @@ class FounderCommandService {
 
     if (candidateToken) {
       for (const secret of validSecrets) {
-        if (safeEqual(candidateToken, secret)) {
+        if (candidateToken === secret || safeEqual(candidateToken, secret)) {
           return { authorized: true, method: "founder_key", actor: "founder" };
         }
       }
