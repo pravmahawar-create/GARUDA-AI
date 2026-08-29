@@ -740,22 +740,39 @@ class WorkforceRouterService {
       authorizedActions: ["SCAN_BUILDERS", "AUDIT_LEAD_FUNNEL", "PITCH_REAL_ESTATE_GROWTH_OS"],
       humanHandoffConditions: ["RERA_COMPLIANCE_ESCALATION"],
       handler: async (task) => {
-        const builderName = task.input?.builderName || "Skyline Luxury Residences";
+        const realEstateProspectService = require("./realEstateProspectIntelligenceService");
+        const builderName = task.input?.builderName || task.input?.companyName || "Skyline Luxury Residences";
+        const slug = String(builderName).toLowerCase().replace(/[^a-z0-9]/g, "");
+        const sourceUrl = task.input?.sourceUrl || task.input?.website || `https://${slug}.example.in`;
+        const sourceType = task.input?.sourceType || "MANUAL_REAL_PROSPECT_INGESTION";
+        const prospect = await realEstateProspectService.ingestProspect({
+          companyName: builderName,
+          sourceUrl,
+          sourceType,
+          geography: task.input?.geography || "Noida / Delhi NCR",
+          website: task.input?.website || sourceUrl,
+          projectNames: task.input?.projectNames || [`${builderName} Signature Towers`],
+          reraNumber: task.input?.reraNumber || "UPRERAPRJ123456",
+          isTestFixture: true
+        });
+        const prospectId = prospect.prospectId;
+        const dossier = await realEstateProspectService.buildProspectDossier(prospectId);
+        const outreach = await realEstateProspectService.generateOutreachSuite(prospectId);
+
         return {
           status: "SUCCESS",
           sector: "REAL_ESTATE_GROWTH",
+          prospectId: prospect.prospectId,
           builderName,
-          opportunityFindings: [
-            "High ad spend on Meta/Google but 70% leads going cold due to delayed follow-up",
-            "Zero automated 60-second WhatsApp lead qualification and interactive 3D floorplan sharing",
-            "Manual site visit scheduling with high 40% no-show rates"
-          ],
-          valueProposition: {
-            solution: "GARUDA Real Estate Growth OS — 60s WhatsApp AI Qualifier, Automated Site Visit Booking & High-Converting Luxury Funnels",
-            setupTimelineDays: 10,
-            recommendedPricingINR: 95000
+          dossierId: dossier.dossierId,
+          confidenceScore: dossier.confidenceScore,
+          opportunityFindings: dossier.inferredGrowthGaps.map(g => g.hypothesis),
+          outreachSuite: {
+            whatsappIntro: outreach.channels.whatsappIntro.message,
+            emailSubject: outreach.channels.emailOutreach.subject,
+            founderToFounder: outreach.channels.founderToFounder.message
           },
-          dispatchReadyPitch: `Hello ${builderName} Team, double your site visit conversions. GARUDA Real Estate OS engages every luxury lead in 60 seconds on WhatsApp, qualifies budgets, and books confirmed site visits automatically.`
+          canonicalPackage: "GARUDA_GROWTH_ENGINE"
         };
       }
     });

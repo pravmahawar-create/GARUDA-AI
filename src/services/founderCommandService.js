@@ -1017,11 +1017,17 @@ class FounderCommandService {
       };
     }
 
-    // 8. REAL ESTATE GROWTH OS SECTION
+    // 8. REAL ESTATE GROWTH OS & ACQUISITION SECTION
     let realEstateSection;
     try {
       const realEstateService = require("./realEstateGrowthService");
-      realEstateSection = await realEstateService.getProjectIntelligence();
+      const prospectIntelligenceService = require("./realEstateProspectIntelligenceService");
+      const projectIntel = await realEstateService.getProjectIntelligence();
+      const pipelineIntel = prospectIntelligenceService.getPipelineMetrics();
+      realEstateSection = {
+        ...projectIntel,
+        acquisitionPipeline: pipelineIntel
+      };
     } catch (err) {
       realEstateSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
     }

@@ -783,4 +783,179 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.strictEqual(res.status, "INSUFFICIENT_TEXT");
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // 14. REAL ESTATE PROSPECT INTELLIGENCE & ACQUISITION LIFECYCLE
+  // ---------------------------------------------------------------------------
+  describe("14. Real Estate Prospect Intelligence & Client Acquisition", () => {
+    const realEstateProspectService = require("./realEstateProspectIntelligenceService");
+
+    beforeEach(() => {
+      realEstateProspectService.clearForTesting();
+    });
+
+    it("1. Enforces all canonical packages default strictly to DRAFT with zero false FOUNDER_APPROVED state", () => {
+      const packages = realEstateProspectService.getOfferPackages();
+      assert.strictEqual(packages.length, 3);
+      for (const pkg of packages) {
+        assert.strictEqual(pkg.pricingState, "DRAFT", `Package ${pkg.title} must default to DRAFT`);
+        assert.strictEqual(pkg.founderApprovalReference, null);
+        assert.strictEqual(pkg.approvedAt, null);
+        assert.strictEqual(pkg.approvedBy, null);
+      }
+    });
+
+    it("2. Rejects package price approval when missing founderId or audit reference", () => {
+      assert.throws(
+        () => realEstateProspectService.approvePackagePricing("pkg_re_command", {}),
+        /requires explicit founderId and approvalReference/
+      );
+      assert.throws(
+        () => realEstateProspectService.approvePackagePricing("pkg_re_command", { founderId: "founder_1" }),
+        /requires explicit founderId and approvalReference/
+      );
+    });
+
+    it("3. Rejects representing DRAFT price as final approved commercial quote", () => {
+      const quote = realEstateProspectService.getCommercialQuote("pkg_re_starter");
+      assert.strictEqual(quote.isApprovedCommercialQuote, false);
+      assert.strictEqual(quote.pricingState, "DRAFT");
+      assert.strictEqual(quote.error, "DRAFT_PRICE_CANNOT_BE_PRESENTED_AS_FINAL_COMMERCIAL_QUOTE");
+    });
+
+    it("4. Successfully records FOUNDER_APPROVED state with explicit audit record", () => {
+      const approved = realEstateProspectService.approvePackagePricing("pkg_re_command", {
+        founderId: "founder_praveen",
+        approvalReference: "AUDIT_SIGN_OFF_2026_Q3",
+        approvedPriceINR: 175000,
+        note: "Authorized by Principal Architect Praveen Mahawar"
+      });
+
+      assert.strictEqual(approved.pricingState, "FOUNDER_APPROVED");
+      assert.strictEqual(approved.approvedBy, "founder_praveen");
+      assert.strictEqual(approved.founderApprovalReference, "AUDIT_SIGN_OFF_2026_Q3");
+      assert.strictEqual(approved.approvedPriceINR, 175000);
+      assert.ok(approved.approvedAt);
+
+      const quote = realEstateProspectService.getCommercialQuote("pkg_re_command");
+      assert.strictEqual(quote.isApprovedCommercialQuote, true);
+      assert.strictEqual(quote.approvedPriceINR, 175000);
+      assert.strictEqual(quote.approvalReference, "AUDIT_SIGN_OFF_2026_Q3");
+    });
+
+    it("5. Rejects prospect ingestion when missing verifiable sourceUrl or sourceType", async () => {
+      await assert.rejects(
+        async () => realEstateProspectService.ingestProspect({ companyName: "Unverified Builders" }, { isTest: true }),
+        /requires a valid public sourceUrl/
+      );
+
+      await assert.rejects(
+        async () => realEstateProspectService.ingestProspect({ companyName: "Unverified Builders", sourceUrl: "https://example.com" }, { isTest: true }),
+        /requires a valid sourceType/
+      );
+    });
+
+    it("6. Ingests real prospect with traceable evidence and fact/inference separation", async () => {
+      const prospect = await realEstateProspectService.ingestProspect({
+        companyName: "Gulshan Homz (Noida)",
+        sourceUrl: "https://gulshanhomz.example.com",
+        sourceType: "OFFICIAL_WEBSITE",
+        geography: "Noida Sector 144 / Expressway",
+        projectNames: ["Gulshan Dynasty", "Gulshan One29"],
+        reraNumber: "UPRERAPRJ998877",
+        googleRating: 4.6
+      }, { isTest: true });
+
+      assert.strictEqual(prospect.companyName, "Gulshan Homz (Noida)");
+      assert.strictEqual(prospect.stage, "PROSPECT_DISCOVERED");
+      assert.strictEqual(prospect.isTestFixture, true);
+      assert.ok(prospect.evidence.length >= 3, "Must capture structured evidence records");
+      assert.ok(prospect.observedFacts.length >= 3, "Must capture verified observed facts");
+      assert.ok(prospect.inferences.length >= 1, "Must separate analytical inferences");
+      assert.ok(prospect.unknowns.length >= 3, "Must acknowledge verified unknowns");
+
+      // Verify every observed fact has sourceUrl and evidenceType
+      for (const fact of prospect.observedFacts) {
+        assert.ok(fact.sourceUrl, `Fact ${fact.field} must have sourceUrl`);
+        assert.ok(fact.evidenceType, `Fact ${fact.field} must have evidenceType`);
+      }
+    });
+
+    it("7. Detects duplicate prospects across normalized company name and domain without polluting pipeline", async () => {
+      await realEstateProspectService.ingestProspect({
+        companyName: "ATS Greens Infrastructure",
+        sourceUrl: "https://atsgreens.example.com",
+        sourceType: "OFFICIAL_WEBSITE",
+        geography: "Greater Noida West"
+      }, { isTest: true });
+
+      // Duplicate 1: same name with different casing / spacing
+      const dup1 = await realEstateProspectService.ingestProspect({
+        companyName: "  aTs greens infrastructure  ",
+        sourceUrl: "https://different-url.example.com",
+        sourceType: "PUBLIC_DIRECTORY"
+      }, { isTest: true });
+      assert.strictEqual(dup1.isDuplicate, true);
+
+      // Duplicate 2: same domain
+      const dup2 = await realEstateProspectService.ingestProspect({
+        companyName: "ATS Group Real Estate",
+        sourceUrl: "https://www.atsgreens.example.com/projects",
+        sourceType: "OFFICIAL_WEBSITE"
+      }, { isTest: true });
+      assert.strictEqual(dup2.isDuplicate, true);
+    });
+
+    it("8. Truthfully reports PROSPECT_DISCOVERY_SOURCE_NOT_CONNECTED for live discovery", () => {
+      const status = realEstateProspectService.getDiscoverySourceStatus();
+      assert.strictEqual(status.status, "PROSPECT_DISCOVERY_SOURCE_NOT_CONNECTED");
+      assert.strictEqual(status.liveDiscoveryActive, false);
+      assert.ok(status.supportedIngestionModes.includes("MANUAL_REAL_PROSPECT_INGESTION"));
+    });
+
+    it("9. Builds canonical Dossier and 5-Format outreach suite with evidence anchors", async () => {
+      const prospect = await realEstateProspectService.ingestProspect({
+        companyName: "Ace Group India",
+        sourceUrl: "https://acegroupindia.example.com",
+        sourceType: "OFFICIAL_WEBSITE",
+        geography: "Noida Sector 150",
+        projectNames: ["Ace Parkway"]
+      }, { isTest: true });
+
+      const dossier = await realEstateProspectService.buildProspectDossier(prospect.prospectId);
+      assert.strictEqual(dossier.prospectId, prospect.prospectId);
+      assert.strictEqual(dossier.status, "DOSSIER_COMPLETE");
+
+      const outreach = await realEstateProspectService.generateOutreachSuite(prospect.prospectId);
+      assert.strictEqual(outreach.approvalStatus, "PENDING_FOUNDER_APPROVAL");
+      assert.ok(outreach.channels.whatsappIntro.message.includes("Ace Group India"));
+      assert.ok(outreach.channels.linkedInMessage.message.includes("Ace Parkway"));
+      assert.ok(outreach.channels.emailOutreach.body.includes("Praveen Mahawar"));
+      assert.ok(outreach.channels.founderToFounder.message.includes("GARUDA OS"));
+      assert.ok(outreach.channels.followUpMessage.message.includes("Ace Parkway"));
+    });
+
+    it("10. Enforces Founder Approval Gate when transitioning to OUTREACH_SENT", async () => {
+      const prospect = await realEstateProspectService.ingestProspect({
+        companyName: "Eldeco Housing & Industries",
+        sourceUrl: "https://eldeco.example.com",
+        sourceType: "OFFICIAL_WEBSITE",
+        geography: "Noida"
+      }, { isTest: true });
+
+      // Attempting OUTREACH_SENT without founder approval must be rejected by governance
+      await assert.rejects(
+        async () => realEstateProspectService.transitionStage(prospect.prospectId, "OUTREACH_SENT", { founderApproved: false }),
+        /OUTREACH_SENT requires explicit founder approval/
+      );
+
+      // Transition with explicit founder approval succeeds
+      const approved = await realEstateProspectService.transitionStage(prospect.prospectId, "OUTREACH_SENT", {
+        founderApproved: true,
+        actor: "founder_praveen"
+      });
+      assert.strictEqual(approved.success, true);
+      assert.strictEqual(approved.currentStage, "OUTREACH_SENT");
+    });
+  });
 });
