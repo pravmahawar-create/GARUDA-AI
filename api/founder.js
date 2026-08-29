@@ -65,6 +65,18 @@ module.exports = async function handler(req, res) {
 
   try {
     // -------------------------------------------------------------
+    // ACTION: COMMAND CENTER (GET /api/founder/command-center OR /api/founder/command/center)
+    // -------------------------------------------------------------
+    if (action === "command-center" || action === "center" || action === "snapshot" || action === "cockpit") {
+      const snapshot = await founderCommandService.getCommandCenterSnapshot();
+      return res.status(200).json({
+        success: true,
+        generatedAt: snapshot.generatedAt,
+        data: snapshot
+      });
+    }
+
+    // -------------------------------------------------------------
     // ACTION: STATUS (GET /api/founder/command/status)
     // -------------------------------------------------------------
     if (action === "status" || action === "kingdom" || action === "") {

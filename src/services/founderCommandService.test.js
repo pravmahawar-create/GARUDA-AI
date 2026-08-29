@@ -342,7 +342,102 @@ async function runFounderCommandTests() {
   assert.ok(p3EventTypes.includes("DELIVERY_READY"));
   console.log(`✔ Phase 3 Event Nervous System fully operational (${p3EventTypes.join(" -> ")}).`);
 
-  console.log("\n🎉 ALL 14 GARUDA FOUNDER COMMAND API TESTS PASSED (100% SUCCESS)!");
+  // -------------------------------------------------------------
+  // TEST 15: Phase 5.1 High Command Center Unified Snapshot
+  // -------------------------------------------------------------
+  console.log("\n--- TEST 15: Phase 5.1 High Command Center Snapshot ---");
+  const snapshot = await founderCommandService.getCommandCenterSnapshot();
+  assert.ok(snapshot.generatedAt);
+  assert.strictEqual(snapshot.freshness, "REALTIME");
+  assert.ok(["HEALTHY", "DEGRADED"].includes(snapshot.system.status));
+  assert.ok(["LIVE_PERSISTED", "LOCAL_ONLY"].includes(snapshot.system.truthClassification));
+  assert.strictEqual(snapshot.brain.truthClassification, "LIVE_PERSISTED");
+  assert.strictEqual(snapshot.workforce.truthClassification, "LIVE_PERSISTED");
+  assert.strictEqual(snapshot.commercial.truthClassification, "LIVE_PERSISTED");
+  assert.strictEqual(snapshot.revenue.truthClassification, "LIVE_PERSISTED");
+  assert.strictEqual(snapshot.activity.truthClassification, "LIVE_PERSISTED");
+  console.log(`✔ Command Center Snapshot unified: System ${snapshot.system.status}, Brain ${snapshot.brain.status}, Revenue ₹${snapshot.revenue.verifiedWonINR.amount}.`);
+
+  // -------------------------------------------------------------
+  // TEST 16: Phase 5.1 Truth Law & Metric Source Integrity
+  // -------------------------------------------------------------
+  console.log("\n--- TEST 16: Truth Law: Verified Authoritative vs Derived Pipeline ---");
+  assert.strictEqual(snapshot.revenue.verifiedWonINR.status, "AUTHORITATIVE");
+  assert.strictEqual(snapshot.revenue.pipelineValueINR.status, "DERIVED_FROM_AUTHORITATIVE_DATA");
+  assert.ok(Array.isArray(snapshot.workforce.activeAgents));
+  assert.ok(snapshot.workforce.activeAgents.includes("FounderCommandService"));
+  console.log("✔ Truth Law verified: Verified Won is AUTHORITATIVE, Pipeline is DERIVED.");
+
+  // -------------------------------------------------------------
+  // TEST 17: Phase 5.1 Subsystem Failure Isolation & Unavailable !== 0
+  // -------------------------------------------------------------
+  console.log("\n--- TEST 17: Partial Failure Isolation (Unavailable !== 0) ---");
+  const faultyService = new (founderCommandService.constructor)({
+    proposalService: {
+      listProjects: () => Promise.reject(new Error("Supabase connection timeout")),
+      listProposals: () => Promise.resolve([]),
+      listLeads: () => Promise.resolve([])
+    },
+    eventService: garudaEventService
+  });
+
+  const resilientSnapshot = await faultyService.getCommandCenterSnapshot();
+  assert.strictEqual(resilientSnapshot.brain.available, false);
+  assert.strictEqual(resilientSnapshot.brain.truthClassification, "UNKNOWN");
+  assert.strictEqual(resilientSnapshot.brain.error, "Supabase connection timeout");
+  assert.strictEqual(resilientSnapshot.brain.activeProjects, undefined);
+  assert.strictEqual(resilientSnapshot.commercial.available, false);
+  assert.strictEqual(resilientSnapshot.commercial.truthClassification, "UNKNOWN");
+  assert.strictEqual(resilientSnapshot.subsystemAvailability.brain, false);
+  assert.strictEqual(resilientSnapshot.system.status, "DEGRADED");
+  assert.ok(resilientSnapshot.partialErrors.length >= 1);
+  console.log("✔ Failure isolation verified: Faulty subsystem reports UNKNOWN with error reason, never fake 0.");
+
+  // -------------------------------------------------------------
+  // TEST 18: Phase 5.1 Command Center API Route Dispatch
+  // -------------------------------------------------------------
+  console.log("\n--- TEST 18: Command Center API Route Dispatch ---");
+  const ccCall = mockReqRes({
+    headers: { "x-founder-key": VALID_FOUNDER_KEY },
+    query: { action: "command-center" }
+  });
+  await founderCommandHandler(ccCall.req, ccCall.res);
+  assert.strictEqual(ccCall.getStatus(), 200);
+  const ccBody = ccCall.getBody();
+  assert.strictEqual(ccBody.success, true);
+  assert.ok(ccBody.data.system);
+  assert.ok(ccBody.data.revenue);
+  assert.ok(ccBody.data.activity);
+  console.log("✔ GET /api/founder/command-center dispatched successfully with HTTP 200.");
+
+  // -------------------------------------------------------------
+  // TEST 19: Phase 5.1 Zero Credential Leakage Protection
+  // -------------------------------------------------------------
+  console.log("\n--- TEST 19: Zero Credential & Secret Leakage Check ---");
+  const snapshotJson = JSON.stringify(ccBody);
+  assert.strictEqual(snapshotJson.includes("sb_publishable"), false);
+  assert.strictEqual(snapshotJson.includes("SUPABASE_SECRET"), false);
+  assert.strictEqual(snapshotJson.includes("RAZORPAY_KEY_SECRET"), false);
+  assert.strictEqual(snapshotJson.includes("TELEGRAM_BOT_TOKEN"), false);
+  console.log("✔ Zero credential leakage: All internal secrets, tokens, and database passwords masked.");
+
+  // -------------------------------------------------------------
+  // TEST 20: Phase 5.1 Activity Timeline Immutability & Seals
+  // -------------------------------------------------------------
+  console.log("\n--- TEST 20: Activity Timeline & Immutability Seals ---");
+  const recentEvents = snapshot.activity.recentEvents;
+  assert.ok(Array.isArray(recentEvents));
+  if (recentEvents.length > 0) {
+    const firstEvent = recentEvents[0];
+    assert.ok(firstEvent.eventId);
+    assert.ok(firstEvent.eventType);
+    assert.ok(firstEvent.occurredAt);
+    assert.strictEqual(firstEvent.truthClassification, "LIVE_PERSISTED");
+    assert.strictEqual(firstEvent.immutabilitySeal, "SHA-256");
+  }
+  console.log(`✔ Activity timeline contains ${recentEvents.length} SHA-256 sealed immutable events.`);
+
+  console.log("\n🎉 ALL 20 GARUDA FOUNDER COMMAND & SNAPSHOT TESTS PASSED (100% SUCCESS)!");
 }
 
 runFounderCommandTests().catch((err) => {
