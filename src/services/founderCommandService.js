@@ -325,8 +325,30 @@ class FounderCommandService {
       }
     }
 
-    // 4. Check for Accepted Proposals with Pending Deposit (Severity: MEDIUM)
+    // 4. Check for Proposals Waiting for Boss Approval (Severity: MEDIUM)
+    // Maps the genuine WAITING_APPROVAL lifecycle state produced by
+    // clientProposalService when a governed proposal requires Boss review.
     for (const prop of proposals) {
+      if (prop.status === "WAITING_APPROVAL") {
+        const totalAmount = Number(prop.pricing?.totalAmountINR || prop.pricing?.totalAmount || prop.amount || 0);
+        const depositAmount = Number(prop.pricing?.depositAmountINR || prop.pricing?.depositAmount || 0);
+        const clientName = prop.client?.name || prop.customer?.name || "Prospect";
+        attentionItems.push({
+          id: `att_approval_${prop.proposalId}`,
+          type: "PROPOSAL_AWAITING_FOUNDER_APPROVAL",
+          severity: "MEDIUM",
+          title: `Proposal awaiting Boss approval: ${prop.title || prop.project?.title || prop.proposalId}`,
+          entityType: "proposal",
+          entityId: prop.proposalId,
+          proposalId: prop.proposalId,
+          projectId: null,
+          createdAt: prop.updatedAt || prop.createdAt || new Date().toISOString(),
+          reason: `${clientName} — ${prop.pricing?.currency || "INR"} ${totalAmount.toLocaleString("en-IN")}${depositAmount ? ` (deposit ${depositAmount.toLocaleString("en-IN")})` : ""}. Governed proposal requires Boss review before client presentation`,
+          recommendedAction: "Review proposal terms and approve for client presentation"
+        });
+      }
+
+      // 5. Check for Accepted Proposals with Pending Deposit (Severity: MEDIUM)
       if (prop.status === "CLIENT_ACCEPTED") {
         const depositAmount = Number(prop.pricing?.depositAmountINR || prop.pricing?.depositAmount || 0);
         attentionItems.push({
@@ -664,7 +686,7 @@ class FounderCommandService {
       this.proposalService.listProjects({ limit: 100 }),
       this.proposalService.listProposals({ limit: 100 }),
       this.proposalService.listLeads({ limit: 100 }),
-      this.eventService.getRecentGarudaEvents(20)
+      this.eventService.getRecentGarudaEvents(200)
     ]);
 
     // Subsystem 1: Projects
@@ -750,6 +772,8 @@ class FounderCommandService {
     let brainSection;
     if (projectsAvailable) {
       const activeDevelopmentProjects = projects.filter(p => ["ACTIVE_IN_DEVELOPMENT", "EXECUTION_PLANNED", "EXECUTION_RUNNING"].includes(p.status));
+      const completedProjects = projects.filter(p => ["DELIVERY_READY", "CLOSED", "ARCHIVED"].includes(p.status));
+      const failedProjects = projects.filter(p => ["VALIDATION_FAILED", "BLOCKED"].includes(p.status));
       brainSection = {
         available: true,
         status: activeDevelopmentProjects.length > 0 ? "EXECUTING" : "AVAILABLE_IDLE",
@@ -758,12 +782,15 @@ class FounderCommandService {
         activeGoals: activeDevelopmentProjects.length,
         activeMissions: activeDevelopmentProjects.length,
         activeTasks: activeDevelopmentProjects.reduce((sum, p) => sum + (p.milestones?.length || p.tasks?.length || 1), 0),
-        recentExecution: activeDevelopmentProjects.slice(0, 5).map(p => ({
+        completedWorkCount: completedProjects.length,
+        failedWorkCount: failedProjects.length,
+        recentExecution: activeDevelopmentProjects.slice(0, 10).map(p => ({
           projectId: p.projectId,
           title: p.title,
           status: p.status,
           currentPhase: p.executionPlan?.phases?.[0]?.name || p.status,
-          updatedAt: p.updatedAt
+          milestonesCount: p.milestones?.length || 1,
+          updatedAt: p.updatedAt || p.createdAt
         })),
         truthClassification: "LIVE_PERSISTED"
       };
@@ -806,6 +833,34 @@ class FounderCommandService {
     // 4. COMMERCIAL SECTION
     let commercialSection;
     if (leadsAvailable && proposalsAvailable && projectsAvailable) {
+      const activeProposalsList = proposals.slice(0, 10).map(p => ({
+        proposalId: p.proposalId,
+        title: p.title || p.requirements?.slice(0, 40) || "Commercial Proposal",
+        clientName: p.client?.name || p.customer?.name || "Private Client",
+        totalAmountINR: Number(p.pricing?.totalAmountINR || p.amount || 0),
+        depositAmountINR: Number(p.pricing?.depositAmountINR || p.depositAmount || 0),
+        status: p.status,
+        createdAt: p.createdAt
+      }));
+
+      const topProjectsList = projects.slice(0, 10).map(p => ({
+        projectId: p.projectId,
+        title: p.title,
+        status: p.status,
+        currentPhase: p.executionPlan?.phases?.[0]?.name || p.status,
+        depositPaid: p.depositPaid || p.amountPaid || 0,
+        updatedAt: p.updatedAt || p.createdAt
+      }));
+
+      const recentLeadsList = leads.slice(0, 10).map(l => ({
+        leadId: l.id || l.leadId || "lead",
+        maskedContact: l.email ? l.email.replace(/(.{2})(.*)(@.*)/, "$1***$3") : "Direct Inbound",
+        source: l.source || "Organic Web",
+        status: l.status || "new",
+        message: l.message ? l.message.slice(0, 60) : "Direct Inquiry",
+        capturedAt: l.createdAt
+      }));
+
       commercialSection = {
         available: true,
         totalLeads: leads.length,
@@ -816,6 +871,9 @@ class FounderCommandService {
         acceptedProposals: proposals.filter(p => ["CLIENT_ACCEPTED", "DEPOSIT_PAID", "IN_EXECUTION", "DELIVERY_READY"].includes(p.status)).length,
         paidProposals: proposals.filter(p => ["DEPOSIT_PAID", "IN_EXECUTION", "DELIVERY_READY"].includes(p.status) || p.payment?.depositStatus === "PAID").length,
         activeProjects: projects.filter(p => !["DELIVERY_READY", "ARCHIVED", "CLOSED"].includes(p.status)).length,
+        recentProposals: activeProposalsList,
+        topActiveProjects: topProjectsList,
+        recentLeads: recentLeadsList,
         truthClassification: "LIVE_PERSISTED"
       };
     } else {
@@ -841,7 +899,7 @@ class FounderCommandService {
           const amount = Number(p.payment?.paymentTruth?.amountPaid || p.pricing?.depositAmountINR || p.pricing?.depositAmount || 0);
           verifiedDepositTotalINR += amount;
           verifiedTransactionsCount++;
-          if (recentTransactions.length < 5) {
+          if (recentTransactions.length < 10) {
             recentTransactions.push({
               proposalId: p.proposalId,
               clientName: p.client?.name || p.customer?.name || "Client",
@@ -926,10 +984,17 @@ class FounderCommandService {
     // 7. ACTIVITY TIMELINE SECTION
     let activitySection;
     if (eventsAvailable) {
+      // Exclude known test-generated events from the production command read model.
+      // Historical event data is never modified or deleted — filtering is read-output only.
+      const isTestGenerated = (e) =>
+        e.eventType === "TEST_EVENT" ||
+        e.source === "unit_test" ||
+        String(e.source || "").toLowerCase().startsWith("test_");
+      const productionEvents = recentEvents.filter(e => !isTestGenerated(e));
       activitySection = {
         available: true,
-        totalEvents: recentEvents.length,
-        recentEvents: recentEvents.slice(0, 10).map(e => ({
+        totalEvents: productionEvents.length,
+        recentEvents: productionEvents.slice(0, 25).map(e => ({
           eventId: e.eventId,
           eventType: e.eventType,
           occurredAt: e.occurredAt,

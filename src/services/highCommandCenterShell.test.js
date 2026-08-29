@@ -170,14 +170,14 @@ async function runHighCommandCenterShellTests() {
   // -------------------------------------------------------------
   // TEST 7: Route Integration in App.jsx
   // -------------------------------------------------------------
-  console.log("\n--- TEST 7: Route Integration in App.jsx ---");
+  console.log("\n--- TEST 7: Route Integration in App.jsx (Canonical /command-center) ---");
   const appPath = path.join(__dirname, "..", "..", "frontend", "src", "App.jsx");
   const appContent = fs.readFileSync(appPath, "utf8");
   assert.ok(appContent.includes('import HighCommandCenter from "./pages/HighCommandCenter";'));
-  assert.ok(appContent.includes('<Route path="/command" element={commandCenterRoute} />'));
   assert.ok(appContent.includes('<Route path="/command-center" element={commandCenterRoute} />'));
-  assert.ok(appContent.includes('<Route path="/high-command" element={commandCenterRoute} />'));
-  console.log("✔ Route mapping verified: /command, /command-center, /high-command wired with protected route.");
+  assert.ok(appContent.includes('<Route path="/command" element={<Navigate to="/command-center" replace />} />'));
+  assert.ok(appContent.includes('<Route path="/high-command" element={<Navigate to="/command-center" replace />} />'));
+  console.log("✔ Route mapping verified: /command-center canonical, /command + /high-command redirect to canonical route.");
 
   console.log("\n🎉 ALL 7 GARUDA HIGH COMMAND CENTER SHELL TESTS PASSED (100% SUCCESS)!");
 }

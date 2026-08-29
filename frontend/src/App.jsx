@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 import Home from "./pages/Home";
 import FounderLogin from "./pages/FounderLogin";
@@ -109,9 +109,9 @@ function AppRoutes() {
       <Route path="/what-is-garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/chat" element={<PublicChat />} />
-      <Route path="/command" element={commandCenterRoute} />
+      <Route path="/command" element={<Navigate to="/command-center" replace />} />
       <Route path="/command-center" element={commandCenterRoute} />
-      <Route path="/high-command" element={commandCenterRoute} />
+      <Route path="/high-command" element={<Navigate to="/command-center" replace />} />
       <Route path="/founder" element={founderRoute} />
       <Route path="/founder/acquisition" element={acquisitionRoute} />
       <Route path="/revenue" element={revenueRoute} />

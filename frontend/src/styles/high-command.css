@@ -1,6 +1,6 @@
 /* ==========================================================================
    🦅 GARUDA HIGH COMMAND CENTER — SOVEREIGN AEROSPACE MOBILE DESIGN SYSTEM
-   Phase 5.2A — Mobile-First Founder Command Shell
+   Phase 5.2B — Live Intelligence Modules
    ========================================================================== */
 
 :root {
@@ -83,17 +83,18 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  cursor: pointer;
 }
 
 .hcc-crest {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--hcc-radius-sm);
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.1) 100%);
   border: 1px solid var(--hcc-gold-border);
   display: grid;
   place-items: center;
-  font-size: 16px;
+  font-size: 18px;
   box-shadow: 0 0 12px var(--hcc-gold-glow);
 }
 
@@ -277,6 +278,7 @@
   justify-content: space-between;
   gap: 12px;
   border: 1px solid;
+  cursor: pointer;
   transition: transform 0.15s ease;
 }
 
@@ -288,6 +290,7 @@
 .hcc-priority-card.steady {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(8, 20, 16, 0.6) 100%);
   border-color: rgba(16, 185, 129, 0.25);
+  cursor: default;
 }
 
 .hcc-priority-info {
@@ -414,6 +417,11 @@
   color: var(--hcc-text-dim);
 }
 
+.hcc-intel-pill.rose {
+  background: rgba(244, 63, 94, 0.15);
+  color: var(--hcc-rose);
+}
+
 .hcc-intel-body {
   margin-top: 10px;
 }
@@ -433,7 +441,122 @@
   margin-top: 2px;
 }
 
-/* Activity Strip */
+/* Module Sub-Header Navigation */
+.hcc-module-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 12px 0;
+  margin-bottom: 12px;
+  scrollbar-width: none;
+}
+
+.hcc-module-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.hcc-nav-chip {
+  padding: 10px 16px;
+  border-radius: var(--hcc-radius-full);
+  background: var(--hcc-surface-1);
+  border: 1px solid var(--hcc-border);
+  color: var(--hcc-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.hcc-nav-chip:hover, .hcc-nav-chip.active {
+  background: var(--hcc-surface-2);
+  color: var(--hcc-gold-400);
+  border-color: var(--hcc-gold-border);
+}
+
+/* Data List Items */
+.hcc-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.hcc-card-item {
+  background: var(--hcc-surface-1);
+  border: 1px solid var(--hcc-border);
+  border-radius: var(--hcc-radius-md);
+  padding: 14px;
+  transition: all 0.15s ease;
+}
+
+.hcc-card-item:hover {
+  border-color: var(--hcc-gold-border);
+}
+
+.hcc-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.hcc-card-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--hcc-text-main);
+  margin: 0;
+}
+
+.hcc-card-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--hcc-radius-full);
+  font-family: var(--hcc-font-mono);
+  text-transform: uppercase;
+}
+
+.hcc-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: var(--hcc-text-dim);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(148, 163, 184, 0.06);
+}
+
+/* Alert Severity Banners */
+.hcc-alert-item {
+  background: var(--hcc-surface-1);
+  border: 1px solid;
+  border-radius: var(--hcc-radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.hcc-alert-item.critical {
+  border-color: rgba(244, 63, 94, 0.4);
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.1) 0%, rgba(14, 19, 29, 0.95) 100%);
+}
+
+.hcc-alert-item.warning {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(14, 19, 29, 0.95) 100%);
+}
+
+.hcc-alert-item.info {
+  border-color: rgba(6, 182, 212, 0.3);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(14, 19, 29, 0.95) 100%);
+}
+
+/* Activity Strip & Feed */
 .hcc-activity-list {
   display: flex;
   flex-direction: column;
