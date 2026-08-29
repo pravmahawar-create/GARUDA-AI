@@ -1,18 +1,20 @@
 /**
- * 🦅 GARUDA Creative Studio Service
- * Phase 4 — Flagship Multimodal Creative Universe & Orchestration Engine
+ * 🦅 GARUDA Creative Studio & Creative Intelligence Engine
+ * Phase 4 & Phase B — Flagship Creative Intelligence & Orchestration Engine
  *
- * Canonical Architecture:
- * CREATIVE INPUT ENGINE -> CREATIVE UNDERSTANDING -> CREATIVE COMPOSITION / CONCEPT ->
- * ORCHESTRATION ENGINE -> GENERATION PROVIDER ADAPTER -> OUTPUT / PHYSICAL ASSET ARTIFACT
+ * Full Lifecycle:
+ * BUSINESS/CLIENT PROFILE -> AUDIENCE & MARKET INTEL -> CAMPAIGN STRATEGY ->
+ * MULTI-CONCEPT CREATIVE INTELLIGENCE -> IDENTITYLOCK™ GOVERNANCE ->
+ * IMAGE / VIDEO GENERATION ROUTER -> OBJECTIVE QUALITY ENGINE -> PHYSICAL ASSET LIBRARY
  *
  * Core Capabilities:
- * - Multi-channel Ad Concepts (Headlines, Hooks, Ad Copy, Storyboards)
- * - IdentityLock™ Brand Consistency (Colors, Typography, Negative Prompts, Logo Placement)
- * - Multi-provider Generation Adapter (Local Deterministic -> Free Tier -> External Provider)
- * - Sovereign Physical SVG Asset Writer with Cryptographic SHA-256 Hashing
- * - Persistent JSONL Store with Multi-Tier Fallback
- * - Cross-Universe Event Integration (Event Nervous System)
+ * 1. Deep Campaign Strategy (Objective, Audience, Pain Points, Emotional Response, Positioning, Angles, Hooks, CTAs)
+ * 2. Genuinely Differentiated Creative Concepts (Visual direction, composition, subject, lighting, mood, typography, copy angles)
+ * 3. Campaign Families (Master creative direction + Ad Variant A, B, C, Carousel, Story, Reel, Landing Page Visual)
+ * 4. Image Generation Router integration (Free/Local Sovereign SVG + Configured AI Image Providers)
+ * 5. Video Generation Router & Storyboard integration
+ * 6. Objective Quality Validation (Dimensions, SHA-256 byte verification, CTA presence, Brand Lock checks)
+ * 7. Cryptographic Cross-Universe Event Emission (Event Nervous System)
  *
  * Doctrine: FREE FIRST -> REVENUE FIRST -> SOVEREIGN ALWAYS
  */
@@ -22,6 +24,10 @@ const fs = require("fs");
 const path = require("path");
 const garudaEventService = require("./garudaEventService");
 const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("./garudaEventTypes");
+const identityLockService = require("./identityLockService");
+const imageGenerationRouter = require("./imageGenerationRouter");
+const videoGenerationRouter = require("./videoGenerationRouter");
+const creativeQualityService = require("./creativeQualityService");
 
 const DATA_DIR = path.join(__dirname, "..", "..", "data");
 const ASSETS_DIR = path.join(DATA_DIR, "creative-assets");
@@ -35,8 +41,8 @@ function ensureDirs() {
   } catch {}
 }
 
-const creativeBriefs = new Map();
-const creativeAssets = new Map();
+const creativeBriefsStore = new Map();
+const creativeAssetsStore = new Map();
 
 function loadFromDisk() {
   ensureDirs();
@@ -46,7 +52,7 @@ function loadFromDisk() {
       for (const line of lines) {
         try {
           const doc = JSON.parse(line);
-          if (doc && doc.briefId) creativeBriefs.set(doc.briefId, doc);
+          if (doc && doc.briefId) creativeBriefsStore.set(doc.briefId, doc);
         } catch {}
       }
     }
@@ -55,7 +61,7 @@ function loadFromDisk() {
       for (const line of lines) {
         try {
           const doc = JSON.parse(line);
-          if (doc && doc.assetId) creativeAssets.set(doc.assetId, doc);
+          if (doc && doc.assetId) creativeAssetsStore.set(doc.assetId, doc);
         } catch {}
       }
     }
@@ -78,25 +84,23 @@ function appendAssetToFile(asset) {
   } catch {}
 }
 
-function sha256(data) {
-  const str = typeof data === "string" ? data : JSON.stringify(data);
-  return crypto.createHash("sha256").update(str).digest("hex");
-}
-
 class CreativeStudioService {
   constructor() {
-    this.briefs = creativeBriefs;
-    this.assets = creativeAssets;
+    this.briefs = creativeBriefsStore;
+    this.assets = creativeAssetsStore;
     this.assetsDir = ASSETS_DIR;
   }
 
   clearForTesting() {
     this.briefs.clear();
     this.assets.clear();
+    identityLockService.clearForTesting();
+    imageGenerationRouter.clearForTesting();
+    videoGenerationRouter.clearForTesting();
   }
 
   /**
-   * 1. Create a Structured Creative Brief with IdentityLock™ Constraints.
+   * 1. Create a Full Creative Brief with Campaign Strategy & IdentityLock™ Constraints.
    */
   async createCreativeBrief(briefInput = {}) {
     const title = String(briefInput.title || briefInput.name || "").trim();
@@ -105,44 +109,78 @@ class CreativeStudioService {
     }
 
     const briefId = briefInput.briefId || `cb_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
-    const targetChannel = briefInput.channel || "meta_instagram";
+    const targetChannel = briefInput.channel || briefInput.targetChannel || "meta_instagram";
     const targetAudience = briefInput.targetAudience || "High-income families & luxury investors seeking high rental yield";
-    const keyObjective = briefInput.objective || "Generate qualified lead inquiries for 3 BHK luxury inventory";
+    const keyObjective = briefInput.objective || briefInput.keyObjective || "Generate qualified lead inquiries for 3 BHK luxury inventory";
+    const industry = briefInput.industry || "Real Estate & Luxury Living";
+    const offer = briefInput.offer || "Exclusive Pre-Launch Pricing with Flexible 10:90 Milestone Payment Plan";
+    const geographicMarket = briefInput.geographicMarket || briefInput.location || "Jaipur, Rajasthan";
 
-    // IdentityLock™ Profile
-    const identityLock = {
-      brandName: briefInput.brandName || "GARUDA Living",
-      primaryColorHex: briefInput.primaryColorHex || "#D4AF37", // Sovereign Gold
-      secondaryColorHex: briefInput.secondaryColorHex || "#0B0F16", // Aerospace Obsidian
-      accentColorHex: briefInput.accentColorHex || "#1E3A8A", // Deep Navy
-      fontFamily: briefInput.fontFamily || "Inter, -apple-system, sans-serif",
-      logoPlacement: "top_right",
-      visualTone: "Sophisticated, modern, architectural excellence, truthful luxury",
-      negativePrompts: ["distorted buildings", "unrealistic renders", "blurry text", "cluttered layout", "cheap looking"],
-      lockHash: sha256({
-        brand: briefInput.brandName || "GARUDA Living",
-        colors: ["#D4AF37", "#0B0F16", "#1E3A8A"]
-      })
+    // Bind or Create Brand Profile in IdentityLock™
+    let brandProfile = null;
+    if (briefInput.brandId) {
+      brandProfile = identityLockService.getBrandProfile(briefInput.brandId);
+    }
+    if (!brandProfile) {
+      brandProfile = await identityLockService.createOrUpdateBrandProfile({
+        brandName: briefInput.brandName || "GARUDA Living",
+        industry,
+        primaryColorHex: briefInput.primaryColorHex || "#D4AF37",
+        secondaryColorHex: briefInput.secondaryColorHex || "#0B0F16",
+        accentColorHex: briefInput.accentColorHex || "#1E3A8A",
+        fontFamily: briefInput.fontFamily || "Inter, -apple-system, sans-serif"
+      });
+    }
+
+    // Comprehensive Campaign Strategy Architecture
+    const strategy = {
+      objective: keyObjective,
+      audience: targetAudience,
+      industry,
+      geographicMarket,
+      offer,
+      painPoints: [
+        "Delayed construction timelines and lack of RERA transparency in the market",
+        "Substandard layout planning and missing dedicated open green spaces",
+        "Overpriced inventory with hidden maintenance charges and opaque payment terms"
+      ],
+      emotionalResponse: "Confidence, sovereign pride, family security, and decisive financial assurance",
+      positioning: `${brandProfile.brandName} is the undisputed benchmark of architectural integrity and modern lifestyle in ${geographicMarket}.`,
+      campaignAngle: "Exclusivity, verifiable milestone progress, and sovereign living standards",
+      hookStrategy: "Disrupt conventional real estate ads with architectural contrast and direct price transparency",
+      ctaStrategy: "Direct, frictionless VIP site visit booking and instant brochure download"
     };
 
     const brief = {
       briefId,
       projectId: briefInput.projectId || null,
+      campaignId: briefInput.campaignId || null,
       title,
       targetChannel,
       targetAudience,
       keyObjective,
+      offer,
+      geographicMarket,
+      strategy,
       productSpecs: {
         priceRange: briefInput.priceRange || "₹85 Lakhs - ₹2.4 Crores",
-        location: briefInput.location || "Prime Highway Corridor, Jaipur",
+        location: geographicMarket,
         usps: Array.isArray(briefInput.usps) && briefInput.usps.length
           ? briefInput.usps
-          : ["RERA Approved", "Clubhouse & Pool", "Ready Possession"]
+          : ["RERA Approved", "Clubhouse & Pool", "Ready Possession", "High Rental Yield"]
       },
       formatsRequested: Array.isArray(briefInput.formats) && briefInput.formats.length
         ? briefInput.formats
-        : ["AD_COPY_SET", "IMAGE_CREATIVE", "VIDEO_STORYBOARD"],
-      identityLock,
+        : ["AD_COPY_SET", "IMAGE_CREATIVE", "VIDEO_STORYBOARD", "CAROUSEL_SET"],
+      identityLock: {
+        brandId: brandProfile.brandId,
+        brandName: brandProfile.brandName,
+        primaryColorHex: brandProfile.visualIdentity.primaryColorHex,
+        secondaryColorHex: brandProfile.visualIdentity.secondaryColorHex,
+        accentColorHex: brandProfile.visualIdentity.accentColorHex,
+        fontFamily: brandProfile.typography.headingFont,
+        lockHash: brandProfile.lockHash
+      },
       status: "BRIEF_CREATED",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -161,7 +199,7 @@ class CreativeStudioService {
       metadata: {
         title,
         channel: targetChannel,
-        identityLockHash: identityLock.lockHash
+        identityLockHash: brief.identityLock.lockHash
       }
     });
 
@@ -169,7 +207,8 @@ class CreativeStudioService {
   }
 
   /**
-   * 2. Generate Grounded Creative Concepts (Ad Copy, Headlines, Hooks, Storyboards).
+   * 2. Generate Multi-Concept Creative Intelligence Suite.
+   * Generates multiple genuinely differentiated creative concepts with complete visual and copy directions.
    */
   async generateConcept(briefId) {
     const brief = this.briefs.get(briefId);
@@ -177,33 +216,79 @@ class CreativeStudioService {
 
     const specs = brief.productSpecs;
     const brand = brief.identityLock.brandName;
+    const location = specs.location;
+    const priceRange = specs.priceRange;
 
-    // Generate 3 High-Conversion Ad Copy Angles
-    const adCopyVariants = [
-      {
-        angle: "EXCLUSIVITY & LIFESTYLE",
-        headline: `Experience Sovereign Living at ${brand} — From ${specs.priceRange}`,
+    // 1. Concept A: Exclusivity & Sovereign Lifestyle (Aspirational / Status)
+    const conceptA = {
+      conceptId: `concept_exclusivity_${Date.now()}`,
+      angleName: "EXCLUSIVITY & SOVEREIGN LIFESTYLE",
+      targetPersona: "High-net-worth families & luxury homeowners",
+      visualDirection: {
+        composition: "Centered architectural perspective with golden hour backlight",
+        subject: "Modern luxury high-rise elevation with illuminated double-height balconies",
+        environment: "Lush landscaped gardens and ambient evening skyline",
+        lighting: "Warm golden hour natural glow with subtle architectural rim lighting",
+        mood: "Sovereign, refined, exclusive, peaceful",
+        typographyDirection: "Bold uppercase sans-serif headers with gold accent underline",
+        colorPalette: [brief.identityLock.primaryColorHex, brief.identityLock.secondaryColorHex, "#1E3A8A"]
+      },
+      copyDirection: {
         hook: "What if your home gave you resort-style luxury every single day?",
-        primaryText: `Step into luxury in the heart of ${specs.location}. Featuring world-class amenities, expansive balconies, and seamless city connectivity.\n\n✨ RERA Verified\n✨ High Rental Appreciation\n✨ Limited 3 & 4 BHK Luxury Residences\n\nBook your private VIP site walkthrough today.`,
-        cta: "Schedule Private Site Visit →"
-      },
-      {
-        angle: "HIGH-YIELD INVESTMENT",
-        headline: `High Capital Growth & Rental Yields at ${specs.location}`,
-        hook: "Smart real estate investors are locking in pre-launch rates this quarter.",
-        primaryText: `Secure prime real estate in ${specs.location} with transparent milestone payment schedules and proven builder track record.\n\n📈 Starting from ${specs.priceRange}\n🏢 Premium Gated Community with 25+ Amenities\n\nGet the investor deck and ROI projection sheet now.`,
-        cta: "Download ROI Deck →"
-      },
-      {
-        angle: "FAMILY-FIRST LIVING",
-        headline: `The Perfect Sanctuary for Your Family at ${brand}`,
-        hook: "Give your children open green spaces, 24x7 security, and a vibrant community.",
-        primaryText: `Modern homes designed with natural lighting, clubhouse, swimming pool, and dedicated kids play zones in ${specs.location}.\n\n🏡 Ready Possession & Flexible Financing Options Available.\n\nVisit our model apartment this weekend.`,
-        cta: "Book Weekend Walkthrough →"
+        headline: `Experience Sovereign Living at ${brand} — From ${priceRange}`,
+        primaryText: `Step into luxury in the heart of ${location}. Featuring world-class clubhouse amenities, expansive panoramic balconies, and seamless city connectivity.\n\n✨ RERA Verified\n✨ Ready Possession / Early Possession Milestones\n✨ Limited 3 & 4 BHK Luxury Residences\n\nBook your private VIP site walkthrough today.`,
+        cta: "Schedule Private Site Visit →",
+        platformSuitability: ["Instagram Feed", "Facebook Feed", "LinkedIn Sponsored"]
       }
-    ];
+    };
 
-    // Generate Video Storyboard (15s Reel / Short)
+    // 2. Concept B: High Capital Growth & Investor ROI (Financial / Logical)
+    const conceptB = {
+      conceptId: `concept_investment_${Date.now()}`,
+      angleName: "HIGH-YIELD CAPITAL APPRECIATION",
+      targetPersona: "Active real estate investors & NRI wealth allocators",
+      visualDirection: {
+        composition: "Clean split-screen comparing infrastructure corridor growth with project render",
+        subject: "Aerial masterplan highlighting proximity to upcoming metro & airport highway",
+        environment: "Rapidly appreciating commercial growth corridor",
+        lighting: "Bright high-clarity daylight rendering with crisp architectural detail",
+        mood: "Analytical, lucrative, high-confidence, transparent",
+        typographyDirection: "Clean tabular typography emphasizing ROI percentages and starting price",
+        colorPalette: ["#10B981", brief.identityLock.secondaryColorHex, brief.identityLock.primaryColorHex]
+      },
+      copyDirection: {
+        hook: "Smart real estate investors are locking in pre-launch rates this quarter.",
+        headline: `High Capital Growth & Rental Yields at ${location}`,
+        primaryText: `Secure prime real estate in ${location} with transparent milestone payment schedules and proven builder track record.\n\n📈 Starting from ${priceRange}\n🏢 Premium Gated Community with 25+ Amenities\n📊 Projected 14-18% Capital Appreciation\n\nGet the investor deck and ROI projection sheet now.`,
+        cta: "Download ROI Deck →",
+        platformSuitability: ["Google Display", "LinkedIn Ads", "WhatsApp Direct"]
+      }
+    };
+
+    // 3. Concept C: Family-First Sanctuary & Safety (Emotional / Security)
+    const conceptC = {
+      conceptId: `concept_family_${Date.now()}`,
+      angleName: "FAMILY-FIRST SANCTUARY & SECURITY",
+      targetPersona: "Young expanding families & working couples",
+      visualDirection: {
+        composition: "Medium shot of family enjoying sunlit living room opening into lush green central courtyard",
+        subject: "Children playing in secured green park with parents in clubhouse lounge",
+        environment: "Vehicle-free podium level with 24x7 gated security",
+        lighting: "Soft morning diffused natural sunlight",
+        mood: "Warm, wholesome, secure, joyful",
+        typographyDirection: "Friendly modern geometric typography with high legibility",
+        colorPalette: ["#3B82F6", brief.identityLock.primaryColorHex, "#FFFFFF"]
+      },
+      copyDirection: {
+        hook: "Give your children open green spaces, 24x7 security, and a vibrant community.",
+        headline: `The Perfect Sanctuary for Your Family at ${brand}`,
+        primaryText: `Modern homes designed with natural cross-ventilation, children's play zones, swimming pool, and senior citizen relaxation gardens in ${location}.\n\n🏡 100% Vastu Compliant Layouts\n🌳 70% Open Green Spaces\n💳 Zero Bank Processing Fee & Flexible Financing\n\nVisit our model apartment this weekend.`,
+        cta: "Book Weekend Walkthrough →",
+        platformSuitability: ["Instagram Stories", "Facebook Ads", "WhatsApp Ads"]
+      }
+    };
+
+    // Video Storyboard
     const videoStoryboard = {
       title: `${brand} - 15s High-Energy Reel Storyboard`,
       durationSeconds: 15,
@@ -212,15 +297,15 @@ class CreativeStudioService {
         {
           sceneNumber: 1,
           timeCode: "00:00 - 00:03",
-          visual: "Aerial drone shot sweeping across luxury architectural elevation into modern lobby.",
-          onScreenText: "Redefining Modern Living in Jaipur",
+          visual: `Aerial drone shot sweeping across luxury architectural elevation of ${brand} into the grand entrance lobby.`,
+          onScreenText: `Redefining Modern Living in ${location}`,
           audioVoiceover: "Welcome to a life designed for those who expect more."
         },
         {
           sceneNumber: 2,
           timeCode: "00:03 - 00:08",
-          visual: "Cut to expansive sunlit living room with floor-to-ceiling glass, then infinity pool.",
-          onScreenText: `Luxury 3 & 4 BHK • Starting ${specs.priceRange}`,
+          visual: "Cut to expansive sunlit living room with floor-to-ceiling glass, transitioning to infinity pool.",
+          onScreenText: `Luxury 3 & 4 BHK • Starting ${priceRange}`,
           audioVoiceover: "Expansive layouts, resort amenities, and unmatched connectivity."
         },
         {
@@ -236,10 +321,16 @@ class CreativeStudioService {
     const concept = {
       conceptId: `concept_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`,
       briefId,
-      adCopyVariants,
+      campaignStrategy: brief.strategy,
+      concepts: [conceptA, conceptB, conceptC],
+      adCopyVariants: [conceptA.copyDirection, conceptB.copyDirection, conceptC.copyDirection],
       videoStoryboard,
       generatedAt: new Date().toISOString()
     };
+
+    // Quality check on concept
+    const quality = creativeQualityService.validateConcept(concept);
+    concept.qualityValidation = quality;
 
     brief.concept = concept;
     brief.status = "CONCEPT_APPROVED";
@@ -253,8 +344,10 @@ class CreativeStudioService {
       source: "creative_concept_engine",
       newState: "CONCEPT_APPROVED",
       metadata: {
-        variantsCount: adCopyVariants.length,
-        storyboardDuration: videoStoryboard.durationSeconds
+        variantsCount: concept.adCopyVariants.length,
+        conceptsCount: concept.concepts.length,
+        storyboardDuration: videoStoryboard.durationSeconds,
+        qualityStatus: quality.status
       }
     });
 
@@ -262,10 +355,10 @@ class CreativeStudioService {
   }
 
   /**
-   * 3. Orchestrate Asset Generation via Multi-Provider Adapter Layer.
+   * 3. Orchestrate Asset Generation via Multi-Provider Image/Video Router.
    * Free/Local Deterministic Sovereign Adapter -> Physical SVG File Artifact on Disk.
    */
-  async generateAsset(briefId, format = "IMAGE_SQUARE") {
+  async generateAsset(briefId, format = "IMAGE_SQUARE", options = {}) {
     const brief = this.briefs.get(briefId);
     if (!brief) {
       const err = new Error(`Creative brief not found: ${briefId}`);
@@ -280,100 +373,120 @@ class CreativeStudioService {
       throw err;
     }
 
-    const assetId = `asset_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
-    const identity = brief.identityLock;
+    const platformPreset = format === "IMAGE_STORY"
+      ? "instagram_story"
+      : format === "IMAGE_HERO"
+        ? "website_hero"
+        : format === "LINKEDIN"
+          ? "linkedin_post"
+          : "instagram_post";
 
-    // Deterministic Sovereign Asset Specification
-    const visualSpec = {
-      format,
-      aspectRatio: format === "IMAGE_SQUARE" ? "1:1" : format === "IMAGE_STORY" ? "9:16" : "16:9",
-      dimensions: format === "IMAGE_SQUARE" ? { width: 1080, height: 1080 } : { width: 1080, height: 1920 },
-      colorPalette: [identity.primaryColorHex, identity.secondaryColorHex, identity.accentColorHex],
-      headlineText: brief.concept?.adCopyVariants[0]?.headline || `Luxury Living at ${identity.brandName}`,
-      ctaText: brief.concept?.adCopyVariants[0]?.cta || "Learn More →",
-      stylePreset: "photorealistic_architectural_render",
-      renderEngine: "garuda_sovereign_svg_renderer"
-    };
+    const headline = brief.concept?.adCopyVariants[0]?.headline || `Luxury Living at ${brief.identityLock.brandName}`;
+    const cta = brief.concept?.adCopyVariants[0]?.cta || "Schedule VIP Walkthrough →";
 
-    // Generate Deterministic SVG Mockup / Image Asset Representation
-    const svgContent = [
-      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${visualSpec.dimensions.width} ${visualSpec.dimensions.height}" width="100%" height="100%">`,
-      `  <defs>`,
-      `    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">`,
-      `      <stop offset="0%" stop-color="${identity.secondaryColorHex}" />`,
-      `      <stop offset="100%" stop-color="#111827" />`,
-      `    </linearGradient>`,
-      `    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">`,
-      `      <stop offset="0%" stop-color="${identity.primaryColorHex}" />`,
-      `      <stop offset="100%" stop-color="#fef08a" />`,
-      `    </linearGradient>`,
-      `  </defs>`,
-      `  <rect width="100%" height="100%" fill="url(#bgGrad)" />`,
-      `  <circle cx="${visualSpec.dimensions.width * 0.5}" cy="${visualSpec.dimensions.height * 0.4}" r="${visualSpec.dimensions.width * 0.28}" fill="none" stroke="${identity.primaryColorHex}" stroke-width="2" opacity="0.4" />`,
-      `  <text x="80" y="140" fill="url(#goldGrad)" font-family="${identity.fontFamily}" font-size="32" font-weight="bold" letter-spacing="4">GARUDA CREATIVE STUDIO</text>`,
-      `  <text x="80" y="240" fill="#ffffff" font-family="${identity.fontFamily}" font-size="54" font-weight="900">${identity.brandName.toUpperCase()}</text>`,
-      `  <text x="80" y="320" fill="${identity.primaryColorHex}" font-family="${identity.fontFamily}" font-size="36" font-weight="700">${brief.productSpecs.location}</text>`,
-      `  <text x="80" y="420" fill="#9ca3af" font-family="${identity.fontFamily}" font-size="28" font-weight="500">Starting from ${brief.productSpecs.priceRange}</text>`,
-      `  <rect x="80" y="${visualSpec.dimensions.height - 180}" width="420" height="70" rx="12" fill="url(#goldGrad)" />`,
-      `  <text x="120" y="${visualSpec.dimensions.height - 134}" fill="#000000" font-family="${identity.fontFamily}" font-size="24" font-weight="800">${visualSpec.ctaText}</text>`,
-      `</svg>`
-    ].join("\n");
-
-    const assetHash = sha256(svgContent);
-    const fileName = `${assetId}.svg`;
-    const filePath = path.join(ASSETS_DIR, fileName);
-
-    // Write real physical SVG artifact to disk
-    ensureDirs();
-    fs.writeFileSync(filePath, svgContent, "utf8");
-    const fileStats = fs.statSync(filePath);
-
-    const asset = {
-      assetId,
+    const routeResult = await imageGenerationRouter.routeGeneration({
       briefId,
       projectId: brief.projectId,
-      format,
-      visualSpec,
-      fileName,
-      filePath,
-      fileSize: fileStats.size,
-      mimeType: "image/svg+xml",
-      assetUrl: `data:image/svg+xml;utf8,${encodeURIComponent(svgContent)}`,
-      assetHash,
-      provider: "garuda_sovereign_renderer",
-      identityLocked: true,
-      status: "GENERATED",
-      generatedAt: new Date().toISOString()
-    };
-
-    this.assets.set(assetId, asset);
-    appendAssetToFile(asset);
-
-    await garudaEventService.emitGarudaEvent({
-      eventType: GARUDA_EVENT_TYPES.CREATIVE_ASSET_GENERATED,
-      entityType: GARUDA_ENTITY_TYPES.CREATIVE_ASSET,
-      entityId: assetId,
-      projectId: brief.projectId,
-      source: "creative_orchestrator",
-      newState: "GENERATED",
-      metadata: {
-        briefId,
-        format,
-        assetHash,
-        fileSize: asset.fileSize,
-        provider: asset.provider
-      }
+      brandId: brief.identityLock.brandId,
+      brandName: brief.identityLock.brandName,
+      headline,
+      subheadline: brief.productSpecs.location,
+      cta,
+      platformPreset,
+      mode: options.mode || "SOVEREIGN_LAYOUT"
     });
+
+    if (!routeResult.success && routeResult.status === "IMAGE_GENERATION_PROVIDER_UNAVAILABLE") {
+      return routeResult;
+    }
+
+    const asset = routeResult.asset;
+
+    // Quality check
+    const quality = creativeQualityService.validateAsset(asset);
+    asset.qualityValidation = quality;
+
+    this.assets.set(asset.assetId, asset);
+    appendAssetToFile(asset);
 
     return asset;
   }
 
   /**
-   * 4. Retrieve Authoritative Asset Library.
+   * 4. Orchestrate Video Storyboard Generation.
+   */
+  async generateVideoStoryboard(briefId, format = "REEL_9_16") {
+    const brief = this.briefs.get(briefId);
+    if (!brief) throw new Error(`Creative brief not found: ${briefId}`);
+
+    const result = await videoGenerationRouter.routeVideoGeneration({
+      briefId,
+      projectId: brief.projectId,
+      brandId: brief.identityLock.brandId,
+      brandName: brief.identityLock.brandName,
+      title: brief.title,
+      location: brief.productSpecs.location,
+      priceRange: brief.productSpecs.priceRange,
+      format,
+      style: "REAL_ESTATE_CINEMATIC"
+    });
+
+    return result;
+  }
+
+  /**
+   * 5. Generate Campaign Family of Assets.
+   */
+  async generateCampaignFamily(briefId) {
+    const brief = this.briefs.get(briefId);
+    if (!brief) throw new Error(`Creative brief not found: ${briefId}`);
+
+    if (!brief.concept) {
+      await this.generateConcept(briefId);
+    }
+
+    const brand = identityLockService.getBrandProfile(brief.identityLock.brandId);
+    const familySpec = identityLockService.buildCampaignFamilySpec(
+      brand,
+      brief.title,
+      brief.strategy?.campaignAngle
+    );
+
+    const generatedAssets = [];
+    const formats = ["IMAGE_SQUARE", "IMAGE_STORY", "IMAGE_HERO"];
+
+    for (const fmt of formats) {
+      try {
+        const asset = await this.generateAsset(briefId, fmt);
+        if (asset && asset.assetId) {
+          generatedAssets.push(asset);
+        }
+      } catch {}
+    }
+
+    const storyboard = await this.generateVideoStoryboard(briefId);
+
+    return {
+      familyId: familySpec.familyId,
+      briefId,
+      campaignTitle: brief.title,
+      brandName: brand.brandName,
+      lockHash: brand.lockHash,
+      familySpec,
+      assets: generatedAssets,
+      videoStoryboard: storyboard.storyboard,
+      generatedAt: new Date().toISOString()
+    };
+  }
+
+  /**
+   * 6. Retrieve Authoritative Creative Asset Library.
    */
   async getAssetLibrary(projectId = null) {
     const allBriefs = Array.from(this.briefs.values()).filter(b => !projectId || b.projectId === projectId);
     const allAssets = Array.from(this.assets.values()).filter(a => !projectId || a.projectId === projectId);
+    const providerStatus = imageGenerationRouter.detectProviders();
+    const videoProviderStatus = videoGenerationRouter.detectProviders();
 
     return {
       available: true,
@@ -381,6 +494,10 @@ class CreativeStudioService {
       totalAssets: allAssets.length,
       briefs: allBriefs.slice(0, 10),
       assets: allAssets.slice(0, 20),
+      providerStatus: {
+        imageGenerators: providerStatus,
+        videoGenerators: videoProviderStatus
+      },
       identityLockCompliant: true,
       truthClassification: "AUTHORITATIVE_PERSISTED",
       generatedAt: new Date().toISOString()

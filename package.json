@@ -21,6 +21,8 @@
     "test:inbound:decisioning": "node src/tools/inboundClientDecisioning.test.js",
     "test:revenue:engine": "node src/tools/revenueConversionEngine.test.js",
     "test:founder:offline": "node src/tools/founderOfflineOperatingTest.test.js",
+    "test:creative": "node src/services/creativeMarketingHostileVerification.test.js",
+    "test:cross": "node src/services/crossUniverseHostileReality.test.js",
     "test:mother": "node scripts/mother/mother.js",
     "test:risk": "npm --prefix backend-node test",
     "test": "npm run test:mother && npm run test:risk",

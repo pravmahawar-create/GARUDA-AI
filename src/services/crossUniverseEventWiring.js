@@ -1,11 +1,12 @@
 /**
  * 🦅 GARUDA Cross-Universe Event Nervous System Wiring
- * Phase 2 & 5 — Active Cross-Universe Subscriptions & Event Propagation
+ * Phase 2, 4, 5 & Cross-Universe Integration
  *
  * Connects producers and consumers across:
  * - Commercial / Lead Universe
  * - Real Estate Growth OS
- * - Creative Studio Universe
+ * - Creative Studio & IdentityLock™ Universe
+ * - Digital & Performance Marketing Engine
  * - Agent Workforce Router
  * - Vertical Knowledge & RAG
  * - Outcome Learning Engine
@@ -102,12 +103,29 @@ class CrossUniverseEventWiring {
       } catch {}
     });
 
-    // 7. Agent Task State Tracking
+    // 7. Campaign Lifecycle Events
+    garudaEventService.on(GARUDA_EVENT_TYPES.CAMPAIGN_CREATED, (event) => {
+      this.incrementCounter(GARUDA_EVENT_TYPES.CAMPAIGN_CREATED);
+    });
+
+    garudaEventService.on(GARUDA_EVENT_TYPES.CAMPAIGN_ASSET_READY, (event) => {
+      this.incrementCounter(GARUDA_EVENT_TYPES.CAMPAIGN_ASSET_READY);
+    });
+
+    garudaEventService.on(GARUDA_EVENT_TYPES.BRAND_PROFILE_UPDATED, (event) => {
+      this.incrementCounter(GARUDA_EVENT_TYPES.BRAND_PROFILE_UPDATED);
+    });
+
+    garudaEventService.on(GARUDA_EVENT_TYPES.PERFORMANCE_SIGNAL_RECORDED, (event) => {
+      this.incrementCounter(GARUDA_EVENT_TYPES.PERFORMANCE_SIGNAL_RECORDED);
+    });
+
+    // 8. Agent Task State Tracking
     garudaEventService.on(GARUDA_EVENT_TYPES.AGENT_TASK_STARTED, () => this.incrementCounter(GARUDA_EVENT_TYPES.AGENT_TASK_STARTED));
     garudaEventService.on(GARUDA_EVENT_TYPES.AGENT_TASK_COMPLETED, () => this.incrementCounter(GARUDA_EVENT_TYPES.AGENT_TASK_COMPLETED));
     garudaEventService.on(GARUDA_EVENT_TYPES.AGENT_TASK_FAILED, () => this.incrementCounter(GARUDA_EVENT_TYPES.AGENT_TASK_FAILED));
 
-    // 8. Inbound Lead and Site Visit Tracking
+    // 9. Inbound Lead, Attribution, and Site Visit Tracking
     garudaEventService.on(GARUDA_EVENT_TYPES.REAL_ESTATE_LEAD_CAPTURED, () => this.incrementCounter(GARUDA_EVENT_TYPES.REAL_ESTATE_LEAD_CAPTURED));
     garudaEventService.on(GARUDA_EVENT_TYPES.REAL_ESTATE_LEAD_DEDUPLICATED, () => this.incrementCounter(GARUDA_EVENT_TYPES.REAL_ESTATE_LEAD_DEDUPLICATED));
     garudaEventService.on(GARUDA_EVENT_TYPES.SITE_VISIT_BOOKED, () => this.incrementCounter(GARUDA_EVENT_TYPES.SITE_VISIT_BOOKED));

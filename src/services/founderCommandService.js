@@ -1035,7 +1035,16 @@ class FounderCommandService {
       creativeSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
     }
 
-    // 10. LEARNING & OUTCOME SECTION
+    // 10. PERFORMANCE MARKETING SECTION
+    let performanceMarketingSection;
+    try {
+      const performanceMarketingService = require("./performanceMarketingService");
+      performanceMarketingSection = await performanceMarketingService.getAggregatePerformance();
+    } catch (err) {
+      performanceMarketingSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
+    }
+
+    // 11. LEARNING & OUTCOME SECTION
     let learningSection;
     try {
       const outcomeService = require("./outcomeLearningService");
@@ -1059,6 +1068,7 @@ class FounderCommandService {
         activity: activitySection.available,
         realEstate: realEstateSection.available,
         creative: creativeSection.available,
+        performanceMarketing: performanceMarketingSection.available,
         learning: learningSection.available
       },
       partialErrors: partialErrors.length > 0 ? partialErrors : null,
@@ -1072,6 +1082,7 @@ class FounderCommandService {
       activity: activitySection,
       realEstate: realEstateSection,
       creative: creativeSection,
+      performanceMarketing: performanceMarketingSection,
       learning: learningSection
     };
   }
