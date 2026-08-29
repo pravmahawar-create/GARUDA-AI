@@ -350,7 +350,8 @@ async function handleAuthenticated(conversationId, message, db, userId, isTest =
     conversationId: targetConversationId,
     mode: advisor.handled ? "insurance_advisor" : commercial.handled ? "commercial_architect" : undefined,
     proposalUrl: commercial.proposalUrl,
-    proposalId: commercial.proposalId
+    proposalId: commercial.proposalId,
+    qualification: commercial.qualification
   };
 }
 
