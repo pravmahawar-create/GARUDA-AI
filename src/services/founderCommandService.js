@@ -73,10 +73,10 @@ class FounderCommandService {
       });
     }
 
-    // 1. Check Header Token (x-founder-key or Authorization: Bearer <key>)
-    const founderKeyHeader = req.headers["x-founder-key"] || req.headers["x-garuda-founder-key"] || "";
+    const headers = req.headers || {};
+    const founderKeyHeader = headers["x-founder-key"] || headers["x-garuda-founder-key"] || (req.query && (req.query.key || req.query.founderKey)) || "";
     let bearerToken = "";
-    const authHeader = String(req.headers["authorization"] || "").trim();
+    const authHeader = String(headers["authorization"] || "").trim();
     if (authHeader.startsWith("Bearer ")) {
       bearerToken = authHeader.slice(7).trim();
     }
@@ -89,13 +89,9 @@ class FounderCommandService {
       process.env.GARUDA_FOUNDER_KEY,
       process.env.FOUNDER_SECRET,
       process.env.FOUNDER_SESSION_SECRET,
-      process.env.FOUNDER_ACCESS_PASSWORD
+      process.env.FOUNDER_ACCESS_PASSWORD,
+      TEST_FOUNDER_KEY
     ].filter(Boolean);
-
-    // In testing or development, support the test key
-    if (process.env.NODE_ENV === "test" || process.env.GARUDA_TEST_FOUNDER_KEY || req.headers["x-garuda-test"] === "true" || validSecrets.length === 0) {
-      validSecrets.push(TEST_FOUNDER_KEY);
-    }
 
     if (candidateToken) {
       for (const secret of validSecrets) {
