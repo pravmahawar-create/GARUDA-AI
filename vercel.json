@@ -15,19 +15,19 @@
     },
     {
       "source": "/api/founder/command/:path*",
-      "destination": "/api/founder-command?path=:path*"
+      "destination": "/api/founder?path=:path*"
     },
     {
       "source": "/api/founder/command",
-      "destination": "/api/founder-command"
+      "destination": "/api/founder"
     },
     {
       "source": "/api/founder/:path*",
-      "destination": "/api/founder-command?path=:path*"
+      "destination": "/api/founder?path=:path*"
     },
     {
       "source": "/api/founder",
-      "destination": "/api/founder-command"
+      "destination": "/api/founder"
     },
     {
       "source": "/api/public-chat",
