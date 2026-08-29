@@ -345,15 +345,49 @@ export default function ProposalPortal() {
           {isDepositPaid && (
             <div style={{ textAlign: "center", padding: "1.5rem 0", color: "#75f4ab" }}>
               <div style={{ fontSize: "2.2rem", marginBottom: "0.5rem" }}>✓</div>
-              <div style={{ fontSize: "1.3rem", fontWeight: 800 }}>Deposit Verified & Project Workspace Active</div>
-              {activatedProject?.projectId && (
+              <div style={{ fontSize: "1.3rem", fontWeight: 800 }}>
+                {p.status === "DELIVERY_READY" ? "🚀 Governed Engineering Deliverables Ready" : "Deposit Verified & Project Workspace Active"}
+              </div>
+              {(activatedProject?.projectId || p.projectActivation?.projectId) && (
                 <div style={{ margin: "0.8rem 0", padding: "0.6rem 1.2rem", display: "inline-block", background: "rgba(117,244,171,0.1)", border: "1px solid rgba(117,244,171,0.3)", borderRadius: 8, fontFamily: "monospace", fontSize: "0.9rem" }}>
-                  Active Project ID: {activatedProject.projectId}
+                  Active Project ID: {activatedProject?.projectId || p.projectActivation?.projectId}
                 </div>
               )}
               <p style={{ color: "#9ca3af", fontSize: "0.92rem", marginTop: "0.5rem", maxWidth: 600, margin: "0.5rem auto 0", lineHeight: 1.6 }}>
-                GARUDA Governed Execution Engine is actively building and validating your solution with automated tests. Your technical milestones and deliverables are locked under cryptographic scope integrity.
+                {p.status === "DELIVERY_READY"
+                  ? "GARUDA Governed Execution Engine has completed code generation and passing test validation. Review your cryptographic delivery manifest below."
+                  : "GARUDA Governed Execution Engine is actively building and validating your solution with automated tests. Your technical milestones and deliverables are locked under cryptographic scope integrity."}
               </p>
+
+              {/* Delivery Manifest & Verification Card */}
+              {p.deliveryPackage && (
+                <div style={{ marginTop: "2rem", textAlign: "left", background: "#05070a", border: "1px solid rgba(117,244,171,0.3)", borderRadius: 14, padding: "1.5rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.5rem" }}>
+                    <div style={{ fontWeight: 800, color: "#fff", fontSize: "1rem" }}>📦 Verified Delivery Manifest</div>
+                    <span style={{ fontSize: "0.75rem", background: "rgba(117,244,171,0.15)", color: "#75f4ab", padding: "0.2rem 0.6rem", borderRadius: 4, fontFamily: "monospace" }}>
+                      SHA-256 Verified
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", marginBottom: "1.2rem" }}>
+                    {(p.deliveryManifest || p.deliveryPackage.manifest || []).map((m, idx) => (
+                      <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.6rem 0.8rem", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 8, fontSize: "0.85rem" }}>
+                        <div style={{ color: "#fff" }}>
+                          <span style={{ color: "#f5d76e", marginRight: "0.5rem" }}>◈</span>
+                          {m.name || m.label || `Deliverable ${idx + 1}`}
+                        </div>
+                        <div style={{ fontFamily: "monospace", color: "#8d95a7", fontSize: "0.75rem" }}>
+                          {m.sha256 ? `${m.sha256.slice(0, 10)}…${m.sha256.slice(-6)}` : "Verified"}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ fontSize: "0.82rem", color: "#9ca3af", borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "0.8rem" }}>
+                    {p.deliveryPackage.releaseNotes || "All milestones verified against formal acceptance criteria."}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

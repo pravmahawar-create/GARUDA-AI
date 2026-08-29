@@ -108,7 +108,22 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // 2. RETRIEVE PROPOSAL: GET /api/proposals/:proposalId
+  // 2. RETRIEVE DELIVERY PACKAGE: GET /api/proposals/:proposalId/delivery
+  if (req.method === "GET" && action === "delivery") {
+    if (!proposalId) {
+      return res.status(400).json({ success: false, message: "proposalId is required" });
+    }
+    try {
+      const governedProjectDeliveryService = require("../src/services/governedProjectDeliveryService");
+      const delivery = await governedProjectDeliveryService.getClientDelivery(proposalId);
+      return res.status(200).json({ success: true, delivery });
+    } catch (err) {
+      const status = err.statusCode || (err.message.includes("not found") ? 404 : 400);
+      return res.status(status).json({ success: false, message: err.message || "Failed to retrieve delivery" });
+    }
+  }
+
+  // 3. RETRIEVE PROPOSAL: GET /api/proposals/:proposalId
   if (req.method === "GET") {
     if (!proposalId) {
       return res.status(400).json({ success: false, message: "proposalId is required" });
@@ -133,6 +148,8 @@ module.exports = async function handler(req, res) {
         timeline: proposal.timeline || { estimatedDeliveryDays: "3-7 business days" },
         status: proposal.status || "APPROVED",
         clientAcceptance: proposal.clientAcceptance || null,
+        deliveryPackage: proposal.deliveryPackage || null,
+        deliveryManifest: proposal.deliveryPackage?.manifest || [],
         payment: {
           depositRequired: proposal.pricing?.depositAmount || Math.round((proposal.pricing?.totalAmount || 25000) * 0.5),
           depositStatus: proposal.payment?.depositStatus || (proposal.status === "DEPOSIT_PAID" ? "PAID" : "UNPAID"),

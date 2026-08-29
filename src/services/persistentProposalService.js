@@ -502,6 +502,105 @@ class PersistentProposalService {
 
     return null;
   }
+
+  /**
+   * Alias for getProject(projectId)
+   */
+  async getProjectById(projectId) {
+    return this.getProject(projectId);
+  }
+
+  /**
+   * Updates project execution status and metadata.
+   */
+  async updateProjectStatus(projectId, status, metadata = {}) {
+    const project = await this.getProject(projectId);
+    if (!project) throw Object.assign(new Error("Project not found"), { statusCode: 404 });
+
+    project.status = status;
+    project.updatedAt = new Date().toISOString();
+    project.executionMetadata = Object.assign({}, project.executionMetadata, metadata);
+
+    project.auditTrail = project.auditTrail || [];
+    project.auditTrail.push({
+      action: "PROJECT_STATUS_UPDATED",
+      status,
+      timestamp: new Date().toISOString(),
+      metadata
+    });
+
+    await this.saveProject(project);
+
+    // Sync proposal status if delivery ready
+    if (status === "DELIVERY_READY" && project.proposalId) {
+      try {
+        const proposal = await this.getProposal(project.proposalId);
+        if (proposal) {
+          proposal.status = "DELIVERY_READY";
+          await this.saveProposal(proposal);
+        }
+      } catch {}
+    }
+
+    return project;
+  }
+
+  /**
+   * Records structured project execution plan.
+   */
+  async recordProjectExecutionPlan(projectId, executionPlan) {
+    const project = await this.getProject(projectId);
+    if (!project) throw Object.assign(new Error("Project not found"), { statusCode: 404 });
+
+    project.executionPlan = executionPlan;
+    project.status = "EXECUTION_PLANNED";
+    project.updatedAt = new Date().toISOString();
+
+    return this.saveProject(project);
+  }
+
+  /**
+   * Records project execution evidence.
+   */
+  async recordProjectExecutionEvidence(projectId, evidence) {
+    const project = await this.getProject(projectId);
+    if (!project) throw Object.assign(new Error("Project not found"), { statusCode: 404 });
+
+    project.executionEvidence = evidence;
+    project.updatedAt = new Date().toISOString();
+
+    return this.saveProject(project);
+  }
+
+  /**
+   * Records validated delivery package and transitions project to DELIVERY_READY.
+   */
+  async recordDeliveryPackage(projectId, deliveryPackage) {
+    const project = await this.getProject(projectId);
+    if (!project) throw Object.assign(new Error("Project not found"), { statusCode: 404 });
+
+    project.deliveryPackage = deliveryPackage;
+    project.deliveryManifest = deliveryPackage.manifest || [];
+    project.status = "DELIVERY_READY";
+    project.deliveredAt = new Date().toISOString();
+    project.updatedAt = new Date().toISOString();
+
+    await this.saveProject(project);
+
+    // Update parent proposal status
+    if (project.proposalId) {
+      try {
+        const proposal = await this.getProposal(project.proposalId);
+        if (proposal) {
+          proposal.status = "DELIVERY_READY";
+          proposal.deliveryPackage = deliveryPackage;
+          await this.saveProposal(proposal);
+        }
+      } catch {}
+    }
+
+    return project;
+  }
 }
 
 module.exports = new PersistentProposalService();
