@@ -113,8 +113,8 @@ export const UNIVERSES = [
 
   /* RING 3 — CREATIVE & DIGITAL (19-23) */
   U(19, "Creative Universe", "Flagship creator operating system.", "✦", [
-    "Image Studio", "Video Studio", "Music Studio", "Voice Studio", "Writing Studio", "Design Studio"
-  ], { status: "LOCKED", flagship: "One-Tap Composer + One-Tap Film Creator", note: "The most detailed universe in the original vision — architecturally locked for progressive build.", scope: "public", group: "CREATE" }),
+    "Ad Copywriting Studio", "Vector & SVG Creative Engine", "Video Blueprint Studio", "IdentityLock™ Governance", "Multi-Angle Campaign Hooks", "SEO Cluster Architecture"
+  ], { status: "LIVE", flagship: "Multi-Angle Creative Studio + IdentityLock™ Engine", note: "Autonomous creative generation, multi-format ad copy, and IdentityLock brand governance.", scope: "public", group: "CREATE" }),
 
   U(20, "Content Universe", "Create for every platform.", "✎", [
     "YouTube", "Instagram", "LinkedIn", "Blogs", "Podcasts", "Shorts/Reels"
@@ -133,9 +133,9 @@ export const UNIVERSES = [
   ], { scope: "public", group: "LIVE" }),
 
   /* RING 4 — CIVILIZATION & FUTURE (24-27) */
-  U(24, "Wealth Universe", "Assets and legacy.", "◈", [
-    "Real estate", "Construction", "Asset intelligence", "Generational planning"
-  ], { status: "LOCKED", note: "Architecturally locked in the original vision.", scope: "founder" }),
+  U(24, "Wealth & Real Estate Universe", "Assets, developers, and growth.", "◈", [
+    "Real Estate Growth OS", "Builder Acquisition Engine", "Lead Scoring & Deduplication", "Site Visit Orchestration"
+  ], { status: "LIVE", note: "Real Estate Growth OS, Developer Dossiers & Conversion Intelligence.", scope: "founder", group: "LIVE" }),
 
   U(25, "Innovation Universe", "Invent new systems.", "◎", [
     "R&D", "Patents", "Experimentation", "Discovery engine"
