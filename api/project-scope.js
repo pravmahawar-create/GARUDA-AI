@@ -121,7 +121,18 @@ module.exports = async function handler(req, res) {
     }
 
     const proposal = {
+      proposalId: scopeId,
       scopeId,
+      project: {
+        title: `${bestCap.name}: Custom Architecture`,
+        requirements: cleanRequirements
+      },
+      client: {
+        name: String(name || "Prospective Client").trim(),
+        email: String(email || (contact && contact.includes("@") ? contact : "")).trim() || null,
+        phone: String(phone || (contact && !contact.includes("@") ? contact : "")).trim() || null,
+        organization: "Web Lead"
+      },
       customer: {
         name: String(name || "Prospective Client").trim(),
         email: String(email || (contact && contact.includes("@") ? contact : "")).trim() || null,
