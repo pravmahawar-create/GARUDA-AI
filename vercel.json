@@ -34,6 +34,10 @@
       "destination": "/api/public-chat"
     },
     {
+      "source": "/api/scholar-chat",
+      "destination": "/api/scholar-chat"
+    },
+    {
       "source": "/api/telegram",
       "destination": "/api/telegram"
     },
@@ -96,6 +100,22 @@
     {
       "source": "/chat",
       "destination": "/chat/index.html"
+    },
+    {
+      "source": "/scholar",
+      "destination": "/scholar/index.html"
+    },
+    {
+      "source": "/vidya",
+      "destination": "/scholar/index.html"
+    },
+    {
+      "source": "/research",
+      "destination": "/scholar/index.html"
+    },
+    {
+      "source": "/studio",
+      "destination": "/scholar/index.html"
     },
     {
       "source": "/demo",
