@@ -64,17 +64,37 @@ function authUserId(accessToken) {
     const payload = String(accessToken || "").split(".")[1];
     if (!payload) return "";
     const json = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    if (json.exp && Number(json.exp) * 1000 < Date.now()) {
+      return ""; // Token is expired
+    }
     return String(json.sub || "");
   } catch {
     return "";
   }
 }
 
+function cookieTokens(req) {
+  // 1. Check Authorization header (Bearer token)
+  const authHeader = String(req?.headers?.authorization || "").trim();
+  if (authHeader.startsWith("Bearer ")) {
+    const headerToken = authHeader.slice(7).trim();
+    if (headerToken) {
+      return { accessToken: headerToken, refreshToken: "" };
+    }
+  }
+
+  // 2. Check Cookie
+  const token = cookieValue(req);
+  if (!token) return { accessToken: "", refreshToken: "" };
+  const [accessToken, refreshToken] = token.split("~");
+  return { accessToken: accessToken || "", refreshToken: refreshToken || "" };
+}
+
 // A Supabase client that impersonates the signed-in customer via their access token.
 // PostgREST resolves auth.uid() from the Bearer token, so row-level security applies per user.
 function authenticatedDbClient(req) {
   const { accessToken } = cookieTokens(req);
-  if (!accessToken) return null;
+  if (!accessToken || !authUserId(accessToken)) return null;
   const { url, key } = supabaseConfig();
   return createClient(String(url).trim(), String(key).trim(), {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
@@ -96,13 +116,6 @@ function issueSession(res, session) {
 
 function clearSession(res) {
   res.setHeader("Set-Cookie", `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
-}
-
-function cookieTokens(req) {
-  const token = cookieValue(req);
-  if (!token) return { accessToken: "", refreshToken: "" };
-  const [accessToken, refreshToken] = token.split("~");
-  return { accessToken: accessToken || "", refreshToken: refreshToken || "" };
 }
 
 async function currentCustomer(req) {

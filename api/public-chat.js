@@ -1,6 +1,6 @@
 const { GoogleGenAI } = require("@google/genai");
 const { createClient } = require("@supabase/supabase-js");
-const { authenticatedDbClient, authenticatedUserId, isSupabaseConfigured, supabaseClient, supabaseAdminClient } = require("./customer/_auth");
+const { authenticatedDbClient, authenticatedUserId, isSupabaseConfigured, supabaseClient, supabaseAdminClient, clearSession } = require("./customer/_auth");
 
 const NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
 const FETCH_TIMEOUT_MS = 20000;
@@ -460,13 +460,13 @@ module.exports = async function handler(req, res) {
       await captureLead({ message, reply: result.reply, userId, req, body: req.body });
       return res.status(200).json(result);
     } catch (error) {
-      console.error("Public Chat Persistence Error:", error);
-      const status = typeof error.status === "number" && error.status >= 400 && error.status < 600
-        ? error.status
-        : 500;
-      return res.status(status).json({
-        error: error.message || "Unable to process the message"
-      });
+      console.warn("[PublicChat] Authenticated session handling failed, falling back to public chat response:", error?.message || error);
+      if (/jwt|expired|token|unauthorized|not authenticated/i.test(String(error?.message || ""))) {
+        if (typeof clearSession === "function") {
+          try { clearSession(res); } catch {}
+        }
+      }
+      // Fall through to public chat generation below
     }
   }
 

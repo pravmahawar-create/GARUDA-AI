@@ -61,6 +61,9 @@ function authUserId(accessToken) {
     const payload = String(accessToken || "").split(".")[1];
     if (!payload) return "";
     const json = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    if (json.exp && Number(json.exp) * 1000 < Date.now()) {
+      return ""; // Token is expired
+    }
     return String(json.sub || "");
   } catch {
     return "";
@@ -68,6 +71,16 @@ function authUserId(accessToken) {
 }
 
 function cookieTokens(req) {
+  // 1. Check Authorization header (Bearer token)
+  const authHeader = String(req?.headers?.authorization || "").trim();
+  if (authHeader.startsWith("Bearer ")) {
+    const headerToken = authHeader.slice(7).trim();
+    if (headerToken) {
+      return { accessToken: headerToken, refreshToken: "" };
+    }
+  }
+
+  // 2. Check Cookie
   const token = cookieValue(req);
   if (!token) return { accessToken: "", refreshToken: "" };
   const [accessToken, refreshToken] = token.split("~");
@@ -76,7 +89,7 @@ function cookieTokens(req) {
 
 function authenticatedDbClient(req) {
   const { accessToken } = cookieTokens(req);
-  if (!accessToken) return null;
+  if (!accessToken || !authUserId(accessToken)) return null;
   const { url, key } = supabaseConfig();
   return createClient(String(url).trim(), String(key).trim(), {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },

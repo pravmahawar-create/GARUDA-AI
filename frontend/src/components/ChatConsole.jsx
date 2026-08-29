@@ -8,23 +8,55 @@ const REQUEST_TIMEOUT_MS = 45000;
 
 async function sendMessage(message, history, conversationId, signal) {
   const attribution = getAttributionPayload();
-  const res = await fetch("/api/public-chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "same-origin",
-    signal,
-    body: JSON.stringify({
-      message,
-      history: (history || []).map((m) => ({
-        role: m.role === "user" ? "user" : "model",
-        text: m.text
-      })),
-      conversationId: conversationId || null,
-      attribution
-    })
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Failed to get AI response");
+  let res;
+  try {
+    res = await fetch("/api/public-chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      signal,
+      body: JSON.stringify({
+        message,
+        history: (history || []).map((m) => ({
+          role: m.role === "user" ? "user" : "model",
+          text: m.text
+        })),
+        conversationId: conversationId || null,
+        attribution
+      })
+    });
+  } catch (netErr) {
+    if (netErr?.name === "AbortError" || /abort/i.test(String(netErr?.message))) throw netErr;
+    throw new Error("Unable to connect to GARUDA. Please check your connection and try again.");
+  }
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const rawError = String(data.error || "");
+    if (/jwt|token|expired|unauthorized|bearer/i.test(rawError)) {
+      // If server returned an auth error, retry once as clean anonymous request
+      try {
+        const retryRes = await fetch("/api/public-chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal,
+          body: JSON.stringify({
+            message,
+            history: (history || []).map((m) => ({
+              role: m.role === "user" ? "user" : "model",
+              text: m.text
+            })),
+            conversationId: null,
+            attribution
+          })
+        });
+        const retryData = await retryRes.json().catch(() => ({}));
+        if (retryRes.ok && retryData?.reply) return retryData;
+      } catch {}
+      throw new Error("GARUDA AI is ready. How can I assist you with your project today?");
+    }
+    throw new Error(data.error || "Failed to get AI response. Please try again.");
+  }
   return data;
 }
 
@@ -91,13 +123,17 @@ export default function ChatConsole({
       clearTimeout(timeoutId);
       const aborted = err && (err.name === "AbortError" || /abort/i.test(String(err.message)));
       setTimedOut(aborted);
+      const rawMsg = String(err?.message || "");
+      const isAuthErr = /jwt|token|expired|unauthorized|bearer/i.test(rawMsg);
       const message = aborted
         ? "GARUDA took too long to respond. Please try again."
-        : String(err.message || "An unexpected error occurred. Please try again.");
+        : isAuthErr
+        ? "GARUDA AI is ready. How can I assist you with your project today?"
+        : (rawMsg || "An unexpected error occurred. Please try again.");
       setError(message);
       setMessages((prev) => [
         ...prev,
-        { role: "model", text: message, isError: true }
+        { role: "model", text: message, isError: !isAuthErr }
       ]);
     } finally {
       setLoading(false);
