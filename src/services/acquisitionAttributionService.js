@@ -268,6 +268,13 @@ class AcquisitionAttributionService {
     }
     return `${parts[0]} (direct / none)`;
   }
+
+  /**
+   * Convenience helper to parse UTM parameters from an object.
+   */
+  parseUtmParameters(input = {}) {
+    return this.resolveAttribution({ attribution: input });
+  }
 }
 
 module.exports = new AcquisitionAttributionService();

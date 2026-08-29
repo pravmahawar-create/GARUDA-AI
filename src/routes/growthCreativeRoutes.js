@@ -1,7 +1,7 @@
 /**
  * 🦅 GARUDA Creative & Growth OS API Routes
  * Endpoints for Creative Studio, IdentityLock™, Digital Marketing OS,
- * and Performance Marketing Attribution.
+ * Performance Marketing Attribution, and Client Production Onboarding.
  */
 
 const express = require("express");
@@ -15,6 +15,7 @@ const creativeQualityService = require("../services/creativeQualityService");
 const digitalMarketingOsService = require("../services/digitalMarketingOsService");
 const performanceMarketingService = require("../services/performanceMarketingService");
 const realEstateGrowthService = require("../services/realEstateGrowthService");
+const clientProductionPipelineService = require("../services/clientProductionPipelineService");
 
 // ===========================================================================
 // CREATIVE STUDIO & ASSET GENERATION
@@ -94,6 +95,24 @@ router.get("/creative/providers", (req, res) => {
         truthNotice: "Providers reporting configured: false will return truthful UNAVAILABLE states on generation attempts."
       }
     });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.get("/creative/image-providers/health/:id", async (req, res) => {
+  try {
+    const health = await imageGenerationRouter.checkProviderHealth(req.params.id);
+    res.json({ success: true, data: health });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.get("/creative/video-providers/health/:id", async (req, res) => {
+  try {
+    const health = await videoGenerationRouter.checkProviderHealth(req.params.id);
+    res.json({ success: true, data: health });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -249,6 +268,24 @@ router.get("/growth/campaigns/:id", async (req, res) => {
   }
 });
 
+router.get("/growth/campaigns/:id/meta-mapping", (req, res) => {
+  try {
+    const mapping = performanceMarketingService.buildMetaCampaignMapping(req.params.id);
+    res.json({ success: true, data: mapping });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+router.get("/growth/campaigns/:id/google-mapping", (req, res) => {
+  try {
+    const mapping = performanceMarketingService.buildGoogleCampaignMapping(req.params.id);
+    res.json({ success: true, data: mapping });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
 router.post("/growth/conversions", async (req, res) => {
   try {
     const conversion = await performanceMarketingService.recordConversionEvent(req.body);
@@ -275,6 +312,47 @@ router.post("/growth/real-estate/orchestrate", async (req, res) => {
     res.json({ success: true, data: result });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// ===========================================================================
+// CLIENT PRODUCTION ONBOARDING PIPELINE
+// ===========================================================================
+
+router.post("/growth/clients/register", async (req, res) => {
+  try {
+    const client = await clientProductionPipelineService.registerClient(req.body);
+    res.json({ success: true, data: client });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+router.post("/growth/clients/onboard", async (req, res) => {
+  try {
+    const result = await clientProductionPipelineService.onboardRealClient(req.body);
+    res.json({ success: true, data: result });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+router.get("/growth/clients/:id", (req, res) => {
+  try {
+    const client = clientProductionPipelineService.getClient(req.params.id);
+    if (!client) return res.status(404).json({ success: false, error: "Client not found" });
+    res.json({ success: true, data: client });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.get("/growth/clients/:id/readiness", (req, res) => {
+  try {
+    const readiness = clientProductionPipelineService.evaluateLaunchReadiness(req.params.id);
+    res.json({ success: true, data: readiness });
+  } catch (err) {
+    res.status(404).json({ success: false, error: err.message });
   }
 });
 

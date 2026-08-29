@@ -1053,6 +1053,22 @@ class FounderCommandService {
       learningSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
     }
 
+    // 12. CLIENT ONBOARDING SECTION
+    let clientOnboardingSection;
+    try {
+      const clientService = require("./clientProductionPipelineService");
+      const clients = Array.from(clientService.clients.values());
+      clientOnboardingSection = {
+        available: true,
+        totalOnboardingClients: clients.length,
+        launchableCount: clients.filter(c => c.status === "LAUNCHABLE").length,
+        pendingConfigCount: clients.filter(c => c.status !== "LAUNCHABLE").length,
+        truthClassification: "LIVE_PERSISTED"
+      };
+    } catch (err) {
+      clientOnboardingSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
+    }
+
     return {
       generatedAt,
       freshness: "REALTIME",
@@ -1069,6 +1085,7 @@ class FounderCommandService {
         realEstate: realEstateSection.available,
         creative: creativeSection.available,
         performanceMarketing: performanceMarketingSection.available,
+        clientOnboarding: clientOnboardingSection.available,
         learning: learningSection.available
       },
       partialErrors: partialErrors.length > 0 ? partialErrors : null,
@@ -1083,6 +1100,7 @@ class FounderCommandService {
       realEstate: realEstateSection,
       creative: creativeSection,
       performanceMarketing: performanceMarketingSection,
+      clientOnboarding: clientOnboardingSection,
       learning: learningSection
     };
   }

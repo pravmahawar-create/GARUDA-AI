@@ -4,13 +4,15 @@
  * Forensic Truth Laws Enforced:
  * 1. ZERO fake AI images or fake MP4 videos (Truthful IMAGE_GENERATION_PROVIDER_UNAVAILABLE / VIDEO_GENERATION_UNAVAILABLE).
  * 2. Physical disk verification of sovereign SVG artifacts with exact SHA-256 byte matching.
- * 3. ZERO fake ad spend, impressions, CTR, or ROAS (Truthful AD_PLATFORM_DATA_UNAVAILABLE).
+ * 3. ZERO fake ad spend, impressions, CTR, or ROAS (Truthful AD_PLATFORM_DATA_UNAVAILABLE, META_ADS_NOT_CONNECTED, GOOGLE_ADS_NOT_CONNECTED).
  * 4. Genuine, multi-concept creative intelligence (differentiated angles, visual directions, hooks, and copy).
  * 5. IdentityLock™ brand governance with prohibited element scanning and lockHash integrity.
- * 6. Full Real Estate end-to-end commercial lifecycle (Project -> Personas -> Brief -> Assets -> Lead -> Deduplication -> Scoring -> Visit -> Booking -> Attribution).
- * 7. Specialized Agent Workforce real task execution and failure isolation.
- * 8. Cross-Universe Event Nervous System active event propagation.
- * 9. High Command Center snapshot truth compliance (UNAVAILABLE !== 0).
+ * 6. Full Real Estate end-to-end commercial lifecycle (Client -> Project -> Personas -> Brief -> Assets -> Lead -> Deduplication -> Scoring -> Visit -> Booking -> Attribution).
+ * 7. Live Ad Platform Adapters (Meta Ads & Google Ads payload mapping without duplicate campaign entities).
+ * 8. Client Production Onboarding Pipeline & 8-Step Launch Readiness Checklist.
+ * 9. Specialized Agent Workforce real task execution and failure isolation.
+ * 10. Cross-Universe Event Nervous System active event propagation.
+ * 11. High Command Center snapshot truth compliance (UNAVAILABLE !== 0).
  */
 
 const { describe, it, beforeEach } = require("node:test");
@@ -27,6 +29,7 @@ const creativeQualityService = require("./creativeQualityService");
 const digitalMarketingOsService = require("./digitalMarketingOsService");
 const performanceMarketingService = require("./performanceMarketingService");
 const realEstateGrowthService = require("./realEstateGrowthService");
+const clientProductionPipelineService = require("./clientProductionPipelineService");
 const workforceRouterService = require("./workforceRouterService");
 const outcomeLearningService = require("./outcomeLearningService");
 const founderCommandService = require("./founderCommandService");
@@ -39,6 +42,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
     creativeStudioService.clearForTesting();
     performanceMarketingService.clearForTesting();
     workforceRouterService.clearForTesting();
+    clientProductionPipelineService.clearForTesting();
   });
 
   // ---------------------------------------------------------------------------
@@ -92,11 +96,10 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   });
 
   // ---------------------------------------------------------------------------
-  // 2. IMAGE GENERATION ROUTER & PHYSICAL ARTIFACT TRUTH
+  // 2. IMAGE GENERATION ROUTER & PHYSICAL ASSET TRUTH
   // ---------------------------------------------------------------------------
   describe("2. Image Generation Router & Physical Asset Truth", () => {
     it("Truthfully returns IMAGE_GENERATION_PROVIDER_UNAVAILABLE when AI photorealistic generation is attempted without configured keys", async () => {
-      // Intentionally unset any generative AI keys for this test
       const prevGemini = process.env.IMAGEN_ENABLED;
       delete process.env.IMAGEN_ENABLED;
 
@@ -133,7 +136,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.ok(stats.size > 0, "Physical file size must be > 0 bytes");
 
       // Verify SHA-256 hash match against actual bytes on disk
-      const fileBytes = fs.readFileSync(assetResult.filePath, "utf8");
+      const fileBytes = fs.readFileSync(assetResult.filePath);
       const computedHash = crypto.createHash("sha256").update(fileBytes).digest("hex");
       assert.strictEqual(assetResult.assetHash, computedHash, "Asset hash must match physical disk bytes");
 
@@ -142,6 +145,15 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.strictEqual(quality.status, "PASSED");
       assert.strictEqual(quality.passed, true);
       assert.strictEqual(quality.failedChecks.length, 0);
+    });
+
+    it("Checks provider health truthfully", async () => {
+      const svgHealth = await imageGenerationRouter.checkProviderHealth("garuda_sovereign_svg_renderer");
+      assert.strictEqual(svgHealth.available, true);
+      assert.strictEqual(svgHealth.type, "VECTOR_CREATIVE");
+
+      const dalleHealth = await imageGenerationRouter.checkProviderHealth("openai_dalle");
+      assert.strictEqual(typeof dalleHealth.available, "boolean");
     });
 
     it("Supports platform presets (1:1 Square, 9:16 Story, 16:9 Hero Banner)", async () => {
@@ -173,6 +185,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
 
       assert.strictEqual(result.success, true);
       assert.strictEqual(result.status, "VIDEO_GENERATION_UNAVAILABLE");
+      assert.strictEqual(result.fallbackState, "STORYBOARD_READY");
       assert.strictEqual(result.mp4Generated, false);
       assert.ok(result.capabilityNotice.includes("Generative AI Video API (Runway/Luma/Sora) is not configured"));
       assert.ok(result.storyboard);
@@ -180,7 +193,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       // Verify complete shot plan & scene details
       const sb = result.storyboard;
       assert.strictEqual(sb.aspectRatio, "9:16");
-      assert.strictEqual(sb.durationSeconds, 15);
+      assert.strictEqual(sb.totalDurationSeconds, 15);
       assert.strictEqual(sb.sceneCount, 3);
       assert.ok(sb.scenes[0].shotPlan.cameraMovement);
       assert.ok(sb.scenes[0].shotPlan.lighting);
@@ -189,6 +202,12 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.ok(sb.scenes[0].generativeScenePrompt.includes("--ar 9:16"));
 
       if (prevRunway) process.env.RUNWAY_API_KEY = prevRunway;
+    });
+
+    it("Checks video provider health truthfully", async () => {
+      const sbHealth = await videoGenerationRouter.checkProviderHealth("garuda_storyboard_engine");
+      assert.strictEqual(sbHealth.available, true);
+      assert.strictEqual(sbHealth.type, "STORYBOARD_BLUEPRINT");
     });
   });
 
@@ -247,12 +266,10 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   // ---------------------------------------------------------------------------
   describe("5. Digital Marketing OS Multi-Channel Workflows", () => {
     it("Generates 4 Content Pillars, 4-Week Editorial Calendar, and 5-Slide Carousel Concept", async () => {
-      // Content Pillars
       const pillars = digitalMarketingOsService.generateContentPillars("GARUDA Prime Living");
       assert.strictEqual(pillars.pillars.length, 4);
       assert.ok(pillars.pillars.some(p => p.pillarId === "pillar_authority"));
 
-      // Editorial Calendar
       const calendar = await digitalMarketingOsService.generateEditorialCalendar({
         brandName: "GARUDA Prime Living",
         weeksCount: 4,
@@ -264,7 +281,6 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.ok(calendar.posts[0].hook);
       assert.ok(calendar.posts[0].captionOutline);
 
-      // Carousel Concept
       const carousel = digitalMarketingOsService.generateCarouselConcept({
         brandName: "GARUDA Prime Living"
       });
@@ -275,19 +291,16 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
     });
 
     it("Generates SEO Topic Clusters, Technical Article Brief, and High-Converting Landing Page Blueprint", () => {
-      // SEO Topic Clusters (with Truth Notice)
       const clusters = digitalMarketingOsService.generateTopicClusters("luxury flats jaipur");
       assert.strictEqual(clusters.clusters.length, 3);
       assert.ok(clusters.truthNotice.includes("Live SERP rankings require connected"));
 
-      // Article Brief
       const articleBrief = digitalMarketingOsService.generateArticleBrief("luxury flats jaipur");
       assert.ok(articleBrief.briefId);
       assert.strictEqual(articleBrief.targetWordCount, 1600);
       assert.ok(articleBrief.outline.length >= 4);
       assert.ok(articleBrief.faqSchema.length >= 3);
 
-      // Landing Page Blueprint
       const landingPage = digitalMarketingOsService.generateLandingPageBlueprint({
         projectName: "Regal Sovereign Palms",
         location: "Tonk Road, Jaipur",
@@ -317,46 +330,57 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   });
 
   // ---------------------------------------------------------------------------
-  // 6. PERFORMANCE MARKETING & AD PLATFORM TRUTH
+  // 6. PERFORMANCE MARKETING & LIVE AD PLATFORM ADAPTERS
   // ---------------------------------------------------------------------------
-  describe("6. Performance Marketing Lifecycle & Attribution Truth", () => {
-    it("Enforces AD_PLATFORM_DATA_UNAVAILABLE and reports authoritative internal funnel metrics", async () => {
+  describe("6. Performance Marketing Lifecycle & Ad Platform Adapters", () => {
+    it("Enforces AD_PLATFORM_DATA_UNAVAILABLE when disconnected and maps Meta / Google schemas", async () => {
       const campaign = await performanceMarketingService.createCampaign({
         name: "Forensic Q3 Performance Launch",
-        channel: "meta_facebook",
+        channel: "meta_ads",
         objective: "LEAD_GENERATION",
         budgetINR: 100000,
         utmCampaign: "forensic_q3_launch"
       });
       assert.ok(campaign.campaignId);
 
+      // Meta Campaign Mapping
+      const metaMapping = performanceMarketingService.buildMetaCampaignMapping(campaign.campaignId);
+      assert.ok(metaMapping.mappingId);
+      assert.strictEqual(metaMapping.metaPayloadSchema.objective, "OUTCOME_LEADS");
+      assert.strictEqual(metaMapping.metaPayloadSchema.status, "PAUSED");
+
+      // Google Campaign Mapping
+      const googleMapping = performanceMarketingService.buildGoogleCampaignMapping(campaign.campaignId);
+      assert.ok(googleMapping.mappingId);
+      assert.strictEqual(googleMapping.googlePayloadSchema.advertising_channel_type, "SEARCH");
+
       // Record Attribution Events
       await performanceMarketingService.recordConversionEvent({
         campaignId: campaign.campaignId,
         eventType: "LEAD_CAPTURED",
         valueINR: 8500000,
-        attribution: { utm_campaign: "forensic_q3_launch", utm_source: "meta_facebook", utm_medium: "cpc" }
+        attribution: { utm_campaign: "forensic_q3_launch", utm_source: "meta_ads", utm_medium: "cpc" }
       });
 
       await performanceMarketingService.recordConversionEvent({
         campaignId: campaign.campaignId,
         eventType: "SITE_VISIT_COMPLETED",
         valueINR: 8500000,
-        attribution: { utm_campaign: "forensic_q3_launch", utm_source: "meta_facebook" }
+        attribution: { utm_campaign: "forensic_q3_launch", utm_source: "meta_ads" }
       });
 
       await performanceMarketingService.recordConversionEvent({
         campaignId: campaign.campaignId,
         eventType: "BOOKING_CONFIRMED",
         valueINR: 8500000,
-        attribution: { utm_campaign: "forensic_q3_launch", utm_source: "meta_facebook" }
+        attribution: { utm_campaign: "forensic_q3_launch", utm_source: "meta_ads" }
       });
 
       const report = await performanceMarketingService.getCampaignPerformance(campaign.campaignId);
       assert.strictEqual(report.available, true);
 
       // Verify Ad Platform Truth Law: No fake spend or CTR
-      assert.strictEqual(report.adPlatformData.status, "AD_PLATFORM_DATA_UNAVAILABLE");
+      assert.strictEqual(report.adPlatformData.status, "META_ADS_NOT_CONNECTED");
       assert.strictEqual(report.adPlatformData.connected, false);
       assert.strictEqual(report.adPlatformData.spend, null);
       assert.strictEqual(report.adPlatformData.impressions, null);
@@ -373,9 +397,51 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   });
 
   // ---------------------------------------------------------------------------
-  // 7. REAL ESTATE END-TO-END COMMERCIAL WORKFLOW
+  // 7. REAL CLIENT PRODUCTION ONBOARDING PIPELINE
   // ---------------------------------------------------------------------------
-  describe("7. Real Estate End-to-End Growth Orchestration", () => {
+  describe("7. Real Client Production Onboarding Pipeline & Launch Readiness", () => {
+    it("Executes full client onboarding pipeline and evaluates 8-step launch readiness with honest blocker reporting", async () => {
+      const onboarding = await clientProductionPipelineService.onboardRealClient({
+        businessName: "Sovereign Crown Builders",
+        industry: "Luxury Real Estate",
+        contactPerson: "Rajeshwar Singhal",
+        contactEmail: "singhal@sovereigncrown.in",
+        contactPhone: "9829099887",
+        minPriceINR: 12000000,
+        maxPriceINR: 35000000,
+        city: "Jaipur",
+        submarket: "C-Scheme"
+      });
+
+      assert.strictEqual(onboarding.success, true);
+      assert.ok(onboarding.client.clientId);
+      assert.ok(onboarding.brand.lockHash);
+      assert.ok(onboarding.project.projectId);
+      assert.ok(onboarding.brief.briefId);
+      assert.ok(onboarding.generatedAsset.assetId);
+      assert.ok(onboarding.videoStoryboard.storyboardId);
+      assert.ok(onboarding.landingPage.pageId);
+      assert.ok(onboarding.campaign.campaignId);
+
+      // Check 8-Step Launch Readiness
+      const readiness = onboarding.launchReadiness;
+      assert.ok(readiness.checklist.BUSINESS_PROFILE_READY.ready);
+      assert.ok(readiness.checklist.BRAND_PROFILE_READY.ready);
+      assert.ok(readiness.checklist.PROJECT_DATA_READY.ready);
+      assert.ok(readiness.checklist.CREATIVE_READY.ready);
+      assert.ok(readiness.checklist.LANDING_PAGE_READY.ready);
+
+      // Since ad platform keys (Meta access token) are unconfigured in test runtime:
+      assert.strictEqual(readiness.checklist.AD_PLATFORM_READY.ready, false);
+      assert.strictEqual(readiness.canLaunchCampaign, false);
+      assert.ok(readiness.blockers.some(b => b.includes("CONNECTION_MISSING") || b.includes("PIXEL")));
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // 8. REAL ESTATE END-TO-END COMMERCIAL WORKFLOW
+  // ---------------------------------------------------------------------------
+  describe("8. Real Estate End-to-End Growth Orchestration", () => {
     it("Executes end-to-end vertical integration from Project -> Personas -> Brief -> Assets -> Lead -> Deduplication -> Score -> Visit -> Booking -> Revenue Attribution", async () => {
       // 1. Project Creation
       const project = await realEstateGrowthService.createProjectProfile({
@@ -410,7 +476,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
         possessionTimeline: "Immediate",
         purpose: "Investment",
         projectId: project.projectId,
-        source: "meta_facebook",
+        source: "meta_ads",
         utmCampaign: "royal_crest_launch"
       });
       assert.strictEqual(leadResult.isDuplicate, false);
@@ -472,9 +538,9 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   });
 
   // ---------------------------------------------------------------------------
-  // 8. SPECIALIZED AGENT WORKFORCE DISPATCH & OBSERVABILITY
+  // 9. SPECIALIZED AGENT WORKFORCE DISPATCH & OBSERVABILITY
   // ---------------------------------------------------------------------------
-  describe("8. Specialized Agent Workforce Autonomous Execution", () => {
+  describe("9. Specialized Agent Workforce Autonomous Execution", () => {
     it("Dispatches real tasks across all growth & marketing agents and verifies structured outputs", async () => {
       const agentTasks = [
         { id: "agent.market_intelligence", input: { location: "Jaipur Highway" } },
@@ -506,9 +572,9 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   });
 
   // ---------------------------------------------------------------------------
-  // 9. CROSS-UNIVERSE EVENT NERVOUS SYSTEM
+  // 10. CROSS-UNIVERSE EVENT NERVOUS SYSTEM
   // ---------------------------------------------------------------------------
-  describe("9. Cross-Universe Event Propagation", () => {
+  describe("10. Cross-Universe Event Propagation", () => {
     it("Verifies event wiring counters and active propagation without orphan events", () => {
       const stats = eventWiring.getEventStats();
       assert.ok(typeof stats === "object");
@@ -517,9 +583,9 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   });
 
   // ---------------------------------------------------------------------------
-  // 10. HIGH COMMAND CENTER SNAPSHOT TRUTH
+  // 11. HIGH COMMAND CENTER SNAPSHOT TRUTH
   // ---------------------------------------------------------------------------
-  describe("10. High Command Center Snapshot Truth Compliance", () => {
+  describe("11. High Command Center Snapshot Truth Compliance", () => {
     it("Enforces UNAVAILABLE !== 0 and returns authoritative reads across all active growth subsystems", async () => {
       const snapshot = await founderCommandService.getCommandCenterSnapshot();
       assert.ok(snapshot.generatedAt);
@@ -530,6 +596,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.strictEqual(snapshot.subsystemAvailability.realEstate, true);
       assert.strictEqual(snapshot.subsystemAvailability.creative, true);
       assert.strictEqual(snapshot.subsystemAvailability.performanceMarketing, true);
+      assert.strictEqual(snapshot.subsystemAvailability.clientOnboarding, true);
       assert.strictEqual(snapshot.subsystemAvailability.learning, true);
 
       // Verify creative section
@@ -539,7 +606,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
 
       // Verify performance marketing section
       assert.ok(snapshot.performanceMarketing.funnel);
-      assert.strictEqual(snapshot.performanceMarketing.adPlatformIntegration.status, "AD_PLATFORM_DATA_UNAVAILABLE");
+      assert.strictEqual(snapshot.performanceMarketing.adPlatformIntegration.metaAds.status, "META_ADS_NOT_CONNECTED");
     });
   });
 });
