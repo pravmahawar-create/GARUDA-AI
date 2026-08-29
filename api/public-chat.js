@@ -34,15 +34,17 @@ function buildSystemPrompt() {
 
   return [
     "You are GARUDA, the AI Operating System behind garudaos.in. Your founder is Praveen Mahawar.",
-    "PERSONA: confident, warm, direct, action-oriented. You were built to be the most powerful AI assistant.",
-    capabilityBlock ? "WHAT YOU CAN ACTUALLY DO (be honest, use this when pitching services):\n" + capabilityBlock : "",
-    "BEHAVIOUR:",
+    "PERSONA: confident, warm, direct, action-oriented, and conversational. You were built to be the most powerful AI assistant.",
+    capabilityBlock ? "WHAT YOU CAN ACTUALLY DO (use this when relevant to the user's inquiry):\n" + capabilityBlock : "",
+    "CONVERSATION GUIDELINES:",
+    "- When the user gives a normal greeting (e.g. 'Hi', 'Hello', 'Hey', 'How are you?', 'Namaste'), respond naturally, warmly, and politely. DO NOT immediately pitch services, dump project scopes, or mention prices/deposits on a greeting.",
+    "- When the user asks general technical, coding, or knowledge questions, provide high-quality, direct, and helpful explanations.",
+    "- When the user asks about what you can do or who you are, introduce GARUDA AI clearly, explaining your core capabilities (AI agents, custom software engineering, SaaS MVP development, automation workflows, RAG systems).",
+    "- When the user expresses a business or project need, understand their problem and guide them toward the right solution architecture.",
     "- NEVER output your internal reasoning or chain-of-thought. Do not write 'We need to', 'I should', or meta-commentary about instructions. Output ONLY the final spoken answer directly.",
     "- Reply in the same language the user uses. If they write in Hinglish, reply in Hinglish.",
-    "- Give PRACTICAL, ACTIONABLE answers immediately. Never say 'main vichar kar raha hoon', 'let me think', or any placeholder — always answer directly.",
-    "- If the user has a business problem, offer a concrete next step AND offer that GARUDA can build/set up the solution (website, AI agent, automation, lead-generation, chatbot).",
     "- Be warm, honest, and clear. Never invent facts, prices, or policies you are not sure about. If unsure, say so and suggest a safe next step.",
-    "- Keep responses reasonably short and easy to read (short paragraphs, simple words).",
+    "- Keep responses reasonably concise and easy to read.",
     "- Never claim to be human or reveal a personal phone number.",
     "RULES:",
     "- No fabricated figures. No fake promises. No guaranteed-income claims.",
@@ -80,6 +82,20 @@ function buildHistoryMessages(history, message) {
 
   messages.push({ role: "user", content: message.trim() });
   return messages;
+}
+
+function generateLocalFallback(message = "") {
+  const clean = String(message || "").trim().toLowerCase();
+  if (/^(?:hi|hello|hey|heya|howdy|hola|namaste|namaskar|good\s*(?:morning|afternoon|evening|day))\b/i.test(clean)) {
+    return "Hello! I am GARUDA, an AI Operating System and intelligent solution architect. How can I help you today?";
+  }
+  if (/^(?:how\s*are\s*you|kya\s*haal|kem\s*cho|whats\s*up|sup)\b/i.test(clean)) {
+    return "I am doing great and operating at full capacity! How can I assist you today?";
+  }
+  if (/^(?:who\s*are\s*you|what\s*is\s*garuda|what\s*can\s*you\s*do|tell\s*me\s*about\s*yourself)\b/i.test(clean)) {
+    return "I am GARUDA, an AI Operating System founded by Praveen Mahawar. I specialize in designing and delivering custom AI agents, full-stack software development, SaaS MVPs, automated workflows, RAG knowledge systems, and autonomous execution pipelines. What kind of project or challenge are you working on?";
+  }
+  return "I am GARUDA AI. I am here to help you solve problems, architect software solutions, build AI agents, and streamline business workflows. What would you like to explore today?";
 }
 
 async function generateWithNvidia({ message, history }) {
@@ -199,22 +215,25 @@ async function generateReply(message, history) {
   const nvidiaKey = getNvidiaApiKey();
   const geminiKey = process.env.GEMINI_API_KEY;
 
-  if (!nvidiaKey && !geminiKey) {
-    const err = new Error("No AI provider is configured for public chat");
-    err.status = 500;
-    throw err;
-  }
-
   if (nvidiaKey) {
     try {
       return await generateWithNvidia({ message, history });
     } catch (error) {
-      console.error("Public Chat NVIDIA Error:", error && error.message ? error.message : error);
-      if (!geminiKey) throw error;
+      console.warn("Public Chat NVIDIA Error:", error && error.message ? error.message : error);
+      if (!geminiKey) return generateLocalFallback(message);
     }
   }
 
-  return generateWithGemini({ message, history });
+  if (geminiKey) {
+    try {
+      return await generateWithGemini({ message, history });
+    } catch (error) {
+      console.warn("Public Chat Gemini Error:", error && error.message ? error.message : error);
+      return generateLocalFallback(message);
+    }
+  }
+
+  return generateLocalFallback(message);
 }
 
 // Resolve the conversation to write into. Reuses an existing one when it belongs to
@@ -370,6 +389,10 @@ function leadSource(userId, req, attribution) {
 }
 
 async function captureLead({ message, reply, userId, req, body }) {
+  if (!looksLeadLike(message) && !extractLeadEmail(message) && !extractLeadPhone(message)) {
+    return null;
+  }
+
   let attribution = null;
   if (attributionService) {
     try {

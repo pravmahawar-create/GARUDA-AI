@@ -172,7 +172,9 @@ const HANDLERS = {
 };
 
 module.exports = async function authRouter(req, res) {
-  const path = String(req.query.path || "").split(/[/?]/)[0];
+  const pathFromQuery = String(req.query && req.query.path ? req.query.path : "");
+  const pathFromUrl = String(req.path || req.url || "").replace(/^\/api\/auth\/?/, "").replace(/^\//, "").split(/[/?]/)[0];
+  const path = (pathFromQuery || pathFromUrl || "session").toLowerCase();
   const handler = HANDLERS[path] || HANDLERS.session;
   return handler(req, res);
 };

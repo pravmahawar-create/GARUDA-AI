@@ -6,6 +6,109 @@ const GREETING = { role: "model", text: "Hello! I am GARUDA. How can I help you 
 
 const REQUEST_TIMEOUT_MS = 45000;
 
+function formatInlineText(text) {
+  if (!text) return null;
+  const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]*)\)|(https?:\/\/[^\s)]+)/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    if (match[1] && match[2]) {
+      parts.push(
+        <a
+          key={`link-${match.index}`}
+          href={match[2]}
+          target={match[2].startsWith("http") ? "_blank" : undefined}
+          rel="noopener noreferrer"
+          style={{ color: "#f59e0b", textDecoration: "underline", fontWeight: 600 }}
+        >
+          {match[1]}
+        </a>
+      );
+    } else if (match[3]) {
+      parts.push(
+        <a
+          key={`raw-${match.index}`}
+          href={match[3]}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "#f59e0b", textDecoration: "underline", wordBreak: "break-all" }}
+        >
+          {match[3]}
+        </a>
+      );
+    }
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.map((part, pIdx) => {
+    if (typeof part !== "string") return part;
+    const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
+    return boldParts.map((bPart, bIdx) => {
+      if (bPart.startsWith("**") && bPart.endsWith("**") && bPart.length > 4) {
+        return <strong key={`b-${pIdx}-${bIdx}`} style={{ color: "#fff", fontWeight: 700 }}>{bPart.slice(2, -2)}</strong>;
+      }
+      return bPart;
+    });
+  });
+}
+
+function FormattedContent({ content }) {
+  if (!content) return null;
+  const lines = String(content).split("\n");
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+      {lines.map((line, lIdx) => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          return <div key={`empty-${lIdx}`} style={{ height: "0.4rem" }} />;
+        }
+        if (trimmed.startsWith("### ")) {
+          return (
+            <div key={`h3-${lIdx}`} style={{ fontWeight: 800, color: "#d4af37", fontSize: "0.98rem", marginTop: "0.35rem", marginBottom: "0.15rem" }}>
+              {formatInlineText(trimmed.slice(4))}
+            </div>
+          );
+        }
+        if (trimmed.startsWith("## ")) {
+          return (
+            <div key={`h2-${lIdx}`} style={{ fontWeight: 800, color: "#d4af37", fontSize: "1.05rem", marginTop: "0.4rem", marginBottom: "0.2rem" }}>
+              {formatInlineText(trimmed.slice(3))}
+            </div>
+          );
+        }
+        if (trimmed.startsWith("• ") || trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+          return (
+            <div key={`bullet-${lIdx}`} style={{ display: "flex", gap: "0.45rem", paddingLeft: "0.35rem" }}>
+              <span style={{ color: "#d4af37", flexShrink: 0 }}>•</span>
+              <span style={{ flex: 1 }}>{formatInlineText(trimmed.slice(2))}</span>
+            </div>
+          );
+        }
+        const numMatch = trimmed.match(/^(\d+\.)\s+(.*)$/);
+        if (numMatch) {
+          return (
+            <div key={`num-${lIdx}`} style={{ display: "flex", gap: "0.45rem", paddingLeft: "0.35rem" }}>
+              <span style={{ color: "#d4af37", fontWeight: 700, flexShrink: 0 }}>{numMatch[1]}</span>
+              <span style={{ flex: 1 }}>{formatInlineText(numMatch[2])}</span>
+            </div>
+          );
+        }
+        return <div key={`p-${lIdx}`}>{formatInlineText(line)}</div>;
+      })}
+    </div>
+  );
+}
+
 async function sendMessage(message, history, conversationId, signal) {
   const attribution = getAttributionPayload();
   let res;
@@ -34,7 +137,6 @@ async function sendMessage(message, history, conversationId, signal) {
   if (!res.ok) {
     const rawError = String(data.error || "");
     if (/jwt|token|expired|unauthorized|bearer/i.test(rawError)) {
-      // If server returned an auth error, retry once as clean anonymous request
       try {
         const retryRes = await fetch("/api/public-chat", {
           method: "POST",
@@ -53,7 +155,7 @@ async function sendMessage(message, history, conversationId, signal) {
         const retryData = await retryRes.json().catch(() => ({}));
         if (retryRes.ok && retryData?.reply) return retryData;
       } catch {}
-      throw new Error("GARUDA AI is ready. How can I assist you with your project today?");
+      throw new Error("GARUDA AI is ready. How can I assist you today?");
     }
     throw new Error(data.error || "Failed to get AI response. Please try again.");
   }
@@ -116,7 +218,8 @@ export default function ChatConsole({
           text: data.reply || "No response text received.",
           proposalUrl: data.proposalUrl || null,
           proposalId: data.proposalId || null,
-          qualification: data.qualification || null
+          qualification: data.qualification || null,
+          mode: data.mode || null
         }
       ]);
     } catch (err) {
@@ -128,7 +231,7 @@ export default function ChatConsole({
       const message = aborted
         ? "GARUDA took too long to respond. Please try again."
         : isAuthErr
-        ? "GARUDA AI is ready. How can I assist you with your project today?"
+        ? "GARUDA AI is ready. How can I assist you today?"
         : (rawMsg || "An unexpected error occurred. Please try again.");
       setError(message);
       setMessages((prev) => [
@@ -164,7 +267,6 @@ export default function ChatConsole({
     color: isError ? "#f87171" : "#f3f4f6",
     fontSize: "0.92rem",
     lineHeight: 1.55,
-    whiteSpace: "pre-wrap",
     wordBreak: "break-word"
   });
 
@@ -186,9 +288,12 @@ export default function ChatConsole({
         {messages.map((msg, idx) => {
           const isUser = msg.role === "user";
           const isModel = msg.role === "model" && idx > 0 && !msg.isError;
+          const isCommercial = Boolean(msg.qualification || msg.mode === "commercial_architect" || msg.proposalUrl);
           return (
             <div key={`${msg.role}-${idx}`} style={{ display: "flex", flexDirection: "column", alignItems: isUser ? "flex-end" : "flex-start" }}>
-              <div style={bubbleStyle(isUser, msg.isError)}>{msg.text}</div>
+              <div style={bubbleStyle(isUser, msg.isError)}>
+                <FormattedContent content={msg.text} />
+              </div>
               {msg.proposalUrl && (
                 <div style={{ marginTop: "0.5rem" }}>
                   <a
@@ -213,7 +318,7 @@ export default function ChatConsole({
                   </a>
                 </div>
               )}
-              {isModel && !msg.proposalUrl && idx === messages.length - 1 && (
+              {isModel && isCommercial && !msg.proposalUrl && idx === messages.length - 1 && (
                 <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                   <a
                     href="/#project-scope"

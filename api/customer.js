@@ -371,7 +371,9 @@ const HANDLERS = {
 };
 
 module.exports = async function customerRouter(req, res) {
-  const path = String(req.query.path || "").split(/[/?]/)[0];
+  const pathFromQuery = String(req.query && req.query.path ? req.query.path : "");
+  const pathFromUrl = String(req.path || req.url || "").replace(/^\/api\/customer\/?/, "").replace(/^\//, "").split(/[/?]/)[0];
+  const path = (pathFromQuery || pathFromUrl || "session").toLowerCase();
   const handler = HANDLERS[path] || HANDLERS.session;
 
   if (req.method === "POST" && ["signup", "login", "logout", "demo"].includes(path)) {

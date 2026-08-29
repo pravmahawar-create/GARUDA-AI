@@ -23,13 +23,15 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     tags: [
       "software", "development", "implementation", "automation", "api", "backend", "frontend",
       "testing", "javascript", "node", "docker", "container", "kubernetes", "python", "react",
-      "nextjs", "oauth", "auth0", "jwt", "scraping", "database migration", "schema migration",
-      "sql migration", "migration", "iam", "aws", "policy", "permission", "smart contract",
-      "ethereum", "solidity", "crypto", "contract deployment", "token contract", "presale contract",
-      "crypto token", "html", "css", "flexbox", "layout fix", "landing page", "frontend styling",
-      "full-stack", "online store", "e-commerce", "e-commerce web app", "payment gateway",
-      "react native", "mobile app", "fitness tracking", "prototype", "database schema",
-      "schema refactoring", "tenant isolation", "relational database"
+      "nextjs", "oauth", "auth0", "jwt", "auth", "user auth", "authentication", "scraping",
+      "database migration", "schema migration", "sql migration", "migration", "iam", "aws",
+      "policy", "permission", "smart contract", "ethereum", "solidity", "crypto",
+      "contract deployment", "token contract", "presale contract", "crypto token", "html", "css",
+      "flexbox", "layout fix", "landing page", "frontend styling", "full-stack", "online store",
+      "e-commerce", "e-commerce web app", "payment gateway", "payment", "payments", "stripe",
+      "razorpay", "react native", "mobile app", "fitness tracking", "prototype", "database schema",
+      "schema refactoring", "tenant isolation", "relational database", "saas", "mvp", "saas mvp",
+      "dashboard", "portal", "crm", "ai", "agent", "ai agent", "chatbot", "bot", "workflow"
     ],
     commercializable: true,
     executionMode: "founder_authorized_supervised",

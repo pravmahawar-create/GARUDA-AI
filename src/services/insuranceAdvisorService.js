@@ -27,20 +27,21 @@ const INTENT_KEYWORDS = [
   "health plan",
   "mediclaim",
   "sum assured",
-  "premium",
-  "policy",
-  "suraksha",
+  "policy premium",
+  "suraksha plan",
   "bima",
-  "jeevan",
-  "health",
-  "term",
+  "jeevan bima",
   "80c",
   "critical illness",
   "savings plan",
-  "retirement",
   "pension",
   "child plan",
   "activ one"
+];
+
+const INTENT_PATTERNS = [
+  /\b(?:life\s*insurance|term\s*insurance|term\s*plan|health\s*insurance|health\s*plan|mediclaim|absli|aditya\s*birla|jeevan\s*bima|suraksha\s*plan|bima\s*policy|critical\s*illness\s*plan|savings\s*plan|pension\s*plan|retirement\s*plan|child\s*plan|activ\s*one)\b/i,
+  /\b(?:insurance|sum\s*assured|policy\s*premium|80c\s*tax\s*saving)\b/i
 ];
 
 const TOPIC_HOOK = {
@@ -57,8 +58,9 @@ const TOPIC_HOOK = {
 };
 
 function detectInsuranceIntent(text) {
-  const t = String(text || "").toLowerCase();
-  return INTENT_KEYWORDS.some((kw) => t.includes(kw));
+  const t = String(text || "").trim();
+  if (!t) return false;
+  return INTENT_PATTERNS.some((pattern) => pattern.test(t));
 }
 
 function detectTopic(text = "") {
