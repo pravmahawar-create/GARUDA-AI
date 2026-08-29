@@ -100,6 +100,25 @@ router.get("/creative/providers", (req, res) => {
   }
 });
 
+router.get("/creative/provider-discovery", async (req, res) => {
+  try {
+    const discovery = await imageGenerationRouter.discoverProviderCapabilities();
+    res.json({ success: true, data: discovery });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.get("/creative/operations-snapshot", (req, res) => {
+  try {
+    const imageOps = imageGenerationRouter.getCreativeOperationsSnapshot();
+    const videoOps = videoGenerationRouter.getVideoOperationsSnapshot();
+    res.json({ success: true, data: { imageOps, videoOps } });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 router.get("/creative/image-providers/health/:id", async (req, res) => {
   try {
     const health = await imageGenerationRouter.checkProviderHealth(req.params.id);

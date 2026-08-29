@@ -401,6 +401,7 @@ class CreativeStudioService {
     }
 
     const asset = routeResult.asset;
+    asset.classification = routeResult.classification || (asset.format === "SVG_VECTOR_LAYOUT" ? "VECTOR_CREATIVE" : "REAL_AI_IMAGE");
 
     // Quality check
     const quality = creativeQualityService.validateAsset(asset);
@@ -487,6 +488,8 @@ class CreativeStudioService {
     const allAssets = Array.from(this.assets.values()).filter(a => !projectId || a.projectId === projectId);
     const providerStatus = imageGenerationRouter.detectProviders();
     const videoProviderStatus = videoGenerationRouter.detectProviders();
+    const imageOps = imageGenerationRouter.getCreativeOperationsSnapshot();
+    const videoOps = videoGenerationRouter.getVideoOperationsSnapshot();
 
     return {
       available: true,
@@ -494,6 +497,14 @@ class CreativeStudioService {
       totalAssets: allAssets.length,
       briefs: allBriefs.slice(0, 10),
       assets: allAssets.slice(0, 20),
+      creativeOperations: {
+        imageCapability: imageOps.imageCapability,
+        activeProvider: imageOps.activeProvider,
+        lastGenerationJob: imageOps.lastGenerationJob,
+        lastVerifiedAsset: imageOps.lastVerifiedAsset,
+        generationType: imageOps.generationType,
+        videoCapability: videoOps.videoCapability
+      },
       providerStatus: {
         imageGenerators: providerStatus,
         videoGenerators: videoProviderStatus

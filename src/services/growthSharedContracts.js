@@ -1,6 +1,6 @@
 /**
  * 🦅 GARUDA Growth OS — Canonical Shared Contracts & Types
- * Phase 1, 2, 3, 4 Shared Architecture
+ * Phase 1, 2, 3, 4 & Creative Activation Shared Architecture
  *
  * Central repository for all canonical contracts across Creative Generation,
  * IdentityLock™, Image/Video Generation, Performance Marketing, and Client Onboarding.
@@ -8,6 +8,13 @@
  * Enforces strict provider lifecycle states:
  * REQUESTED -> QUEUED -> PROCESSING -> GENERATED -> VALIDATING -> READY
  * Failures: FAILED | PROVIDER_UNAVAILABLE
+ *
+ * Provider Health Statuses:
+ * READY | NOT_CONFIGURED | UNREACHABLE | AUTH_FAILED | RATE_LIMITED | UNSUPPORTED
+ *
+ * Generation Output Classifications:
+ * REAL_AI_IMAGE | VECTOR_CREATIVE | PROVIDER_UNAVAILABLE | GENERATION_FAILED |
+ * PRODUCTION_PROMPT_READY | VECTOR_CREATIVE_READY
  *
  * Doctrine: UNAVAILABLE !== 0. NEVER COLLAPSE STATES.
  */
@@ -26,6 +33,30 @@ const PROVIDER_LIFECYCLE_STATES = Object.freeze({
   READY: "READY",
   FAILED: "FAILED",
   PROVIDER_UNAVAILABLE: "PROVIDER_UNAVAILABLE"
+});
+
+/**
+ * Canonical Provider Health Statuses
+ */
+const PROVIDER_HEALTH_STATUSES = Object.freeze({
+  READY: "READY",
+  NOT_CONFIGURED: "NOT_CONFIGURED",
+  UNREACHABLE: "UNREACHABLE",
+  AUTH_FAILED: "AUTH_FAILED",
+  RATE_LIMITED: "RATE_LIMITED",
+  UNSUPPORTED: "UNSUPPORTED"
+});
+
+/**
+ * Canonical Generation Output Classifications
+ */
+const GENERATION_OUTPUT_TYPES = Object.freeze({
+  REAL_AI_IMAGE: "REAL_AI_IMAGE",
+  VECTOR_CREATIVE: "VECTOR_CREATIVE",
+  PROVIDER_UNAVAILABLE: "PROVIDER_UNAVAILABLE",
+  GENERATION_FAILED: "GENERATION_FAILED",
+  PRODUCTION_PROMPT_READY: "PRODUCTION_PROMPT_READY",
+  VECTOR_CREATIVE_READY: "VECTOR_CREATIVE_READY"
 });
 
 /**
@@ -94,6 +125,7 @@ function createCreativeAsset({
   projectId = null,
   title = "Creative Asset",
   format = "SVG_VECTOR_LAYOUT", // SVG_VECTOR_LAYOUT | IMAGE_PNG | IMAGE_JPEG | VIDEO_MP4 | STORYBOARD_BLUEPRINT
+  classification = "VECTOR_CREATIVE", // REAL_AI_IMAGE | VECTOR_CREATIVE | PROVIDER_UNAVAILABLE
   mimeType = "image/svg+xml",
   dimensions = { width: 1080, height: 1080 },
   aspectRatio = "1:1",
@@ -115,6 +147,7 @@ function createCreativeAsset({
     projectId,
     title,
     format,
+    classification,
     mimeType,
     dimensions,
     aspectRatio,
@@ -133,6 +166,8 @@ function createCreativeAsset({
 
 module.exports = {
   PROVIDER_LIFECYCLE_STATES,
+  PROVIDER_HEALTH_STATUSES,
+  GENERATION_OUTPUT_TYPES,
   METRIC_TRUTH_CLASSIFICATIONS,
   ONBOARDING_READINESS_CATEGORIES,
   createCreativeGenerationJob,
