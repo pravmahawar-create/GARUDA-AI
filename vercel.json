@@ -91,15 +91,15 @@
     },
     {
       "source": "/proposal/:proposalId",
-      "destination": "/index.html"
+      "destination": "/proposal.html"
     },
     {
       "source": "/proposal/:path*",
-      "destination": "/index.html"
+      "destination": "/proposal.html"
     },
     {
       "source": "/proposal",
-      "destination": "/index.html"
+      "destination": "/proposal.html"
     },
     {
       "source": "/what-is-garuda-ai",
