@@ -90,12 +90,16 @@
       "destination": "/app/index.html"
     },
     {
+      "source": "/proposal/:proposalId",
+      "destination": "/proposal.html"
+    },
+    {
       "source": "/proposal/:path*",
-      "destination": "/proposal/prop_kudos_2026/index.html"
+      "destination": "/proposal.html"
     },
     {
       "source": "/proposal",
-      "destination": "/proposal/prop_kudos_2026/index.html"
+      "destination": "/proposal.html"
     },
     {
       "source": "/what-is-garuda-ai",
