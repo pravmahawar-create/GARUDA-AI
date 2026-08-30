@@ -153,7 +153,14 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-      const proposal = await persistentProposalService.getProposal(proposalId);
+      let proposal = await persistentProposalService.getProposal(proposalId);
+      if (!proposal) {
+        try {
+          const seeds = require("../src/services/persistentProposalService");
+          proposal = await seeds.getProposal(proposalId);
+        } catch {}
+      }
+
       if (!proposal) {
         return res.status(404).json({ success: false, message: "Proposal not found or expired" });
       }

@@ -339,6 +339,12 @@ class PersistentProposalService {
       }
     } catch {}
 
+    // 4. Guaranteed seed fallback
+    if (DEFAULT_PROPOSAL_SEEDS && DEFAULT_PROPOSAL_SEEDS[cleanId]) {
+      memoryProposalCache.set(cleanId, DEFAULT_PROPOSAL_SEEDS[cleanId]);
+      return DEFAULT_PROPOSAL_SEEDS[cleanId];
+    }
+
     return null;
   }
 
