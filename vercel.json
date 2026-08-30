@@ -135,7 +135,11 @@
     },
     {
       "source": "/proposal/:path*",
-      "destination": "/index.html"
+      "destination": "/proposal/index.html"
+    },
+    {
+      "source": "/proposal",
+      "destination": "/proposal/index.html"
     },
     {
       "source": "/demo",
