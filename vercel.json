@@ -83,7 +83,7 @@
     },
     {
       "source": "/kingdom",
-      "destination": "/founder/access/index.html"
+      "destination": "/kingdom/index.html"
     },
     {
       "source": "/founder",
