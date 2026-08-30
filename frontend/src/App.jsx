@@ -22,7 +22,12 @@ import GuidesIndex from "./pages/GuidesIndex";
 import GuideArticle from "./pages/GuideArticle";
 import HighCommandCenter from "./pages/HighCommandCenter";
 import ScholarStudio from "./pages/ScholarStudio";
-import CreativeAgencyStudio from "./pages/CreativeAgencyStudio";
+import CreativeStudio from "./pages/CreativeStudio";
+import ContentStudio from "./pages/ContentStudio";
+import BrandStudio from "./pages/BrandStudio";
+import DigitalPresenceStudio from "./pages/DigitalPresenceStudio";
+import EntertainmentStudio from "./pages/EntertainmentStudio";
+import FounderKingdomAccess from "./pages/FounderKingdomAccess";
 import KudosPitchDeck from "./pages/KudosPitchDeck";
 import { initAttribution } from "./utils/attribution";
 
@@ -135,10 +140,20 @@ function AppRoutes() {
       <Route path="/scholar" element={<ScholarStudio />} />
       <Route path="/vidya" element={<ScholarStudio />} />
       <Route path="/research" element={<ScholarStudio />} />
-      <Route path="/studio" element={<CreativeAgencyStudio />} />
-      <Route path="/agency" element={<CreativeAgencyStudio />} />
-      <Route path="/creator" element={<CreativeAgencyStudio />} />
-      <Route path="/marketing" element={<CreativeAgencyStudio />} />
+      
+      {/* Ring 3 Canonical Universes */}
+      <Route path="/creative" element={<CreativeStudio />} />
+      <Route path="/studio" element={<CreativeStudio />} />
+      <Route path="/agency" element={<CreativeStudio />} />
+      <Route path="/creator" element={<CreativeStudio />} />
+      <Route path="/content" element={<ContentStudio />} />
+      <Route path="/brand" element={<BrandStudio />} />
+      <Route path="/digital-presence" element={<DigitalPresenceStudio />} />
+      <Route path="/entertainment" element={<EntertainmentStudio />} />
+
+      {/* Founder Sovereign Access */}
+      <Route path="/founder/access" element={<FounderKingdomAccess />} />
+      <Route path="/kingdom" element={<Navigate to="/founder/access" replace />} />
       <Route path="/command" element={<Navigate to="/command-center" replace />} />
       <Route path="/command-center" element={commandCenterRoute} />
       <Route path="/high-command" element={<Navigate to="/command-center" replace />} />

@@ -48,12 +48,44 @@ export default function FounderWorkspace({ onLogout }) {
   };
 
   const handleSelectNav = (label) => {
+    if (label === "GARUDA Kingdom") {
+      navigate("/founder/access");
+      return;
+    }
     if (label === "Revenue Universe") {
       navigate("/revenue");
       return;
     }
     if (label === "Sales Cockpit") {
       navigate("/founder/acquisition");
+      return;
+    }
+    if (label === "Creative Universe") {
+      navigate("/creative");
+      return;
+    }
+    if (label === "Content Factory") {
+      navigate("/content");
+      return;
+    }
+    if (label === "Brand Studio") {
+      navigate("/brand");
+      return;
+    }
+    if (label === "Digital Presence") {
+      navigate("/digital-presence");
+      return;
+    }
+    if (label === "Entertainment Studio") {
+      navigate("/entertainment");
+      return;
+    }
+    if (label === "Knowledge") {
+      navigate("/chat");
+      return;
+    }
+    if (label === "Projects") {
+      navigate("/app");
       return;
     }
     setActiveNav(label);

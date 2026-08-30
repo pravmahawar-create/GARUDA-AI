@@ -78,6 +78,14 @@
       "destination": "/high-command/index.html"
     },
     {
+      "source": "/founder/access",
+      "destination": "/founder/access/index.html"
+    },
+    {
+      "source": "/kingdom",
+      "destination": "/founder/access/index.html"
+    },
+    {
       "source": "/founder",
       "destination": "/founder/index.html"
     },
@@ -118,16 +126,36 @@
       "destination": "/scholar/index.html"
     },
     {
+      "source": "/creative",
+      "destination": "/creative/index.html"
+    },
+    {
       "source": "/studio",
-      "destination": "/studio/index.html"
+      "destination": "/creative/index.html"
     },
     {
       "source": "/agency",
-      "destination": "/studio/index.html"
+      "destination": "/creative/index.html"
     },
     {
       "source": "/creator",
-      "destination": "/studio/index.html"
+      "destination": "/creative/index.html"
+    },
+    {
+      "source": "/content",
+      "destination": "/content/index.html"
+    },
+    {
+      "source": "/brand",
+      "destination": "/brand/index.html"
+    },
+    {
+      "source": "/digital-presence",
+      "destination": "/digital-presence/index.html"
+    },
+    {
+      "source": "/entertainment",
+      "destination": "/entertainment/index.html"
     },
     {
       "source": "/kudos",

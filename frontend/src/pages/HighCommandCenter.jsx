@@ -202,7 +202,27 @@ export default function HighCommandCenter({ onLogout }) {
             </div>
           </div>
 
-          <div className="hcc-header-actions">
+          <div className="hcc-header-actions" style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <button
+              type="button"
+              onClick={() => navigate("/founder/access")}
+              style={{
+                background: "linear-gradient(135deg, rgba(212,175,55,0.25), rgba(184,134,11,0.5))",
+                color: "#fef08a",
+                border: "1px solid #d4af37",
+                borderRadius: "8px",
+                padding: "0.4rem 0.9rem",
+                fontWeight: "bold",
+                fontSize: "0.8rem",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.3rem"
+              }}
+            >
+              👑 Access Kingdom
+            </button>
+
             <div className={`hcc-status-pill ${statusLevel}`}>
               <span className="hcc-dot"></span>
               <span>{statusLevel.toUpperCase()}</span>

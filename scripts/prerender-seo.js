@@ -805,8 +805,10 @@ const ROUTES = [
     }
   },
   {
-    path: "/studio",
+    path: "/creative",
     filePaths: [
+      path.join(DIST_DIR, "creative", "index.html"),
+      path.join(DIST_DIR, "creative.html"),
       path.join(DIST_DIR, "studio", "index.html"),
       path.join(DIST_DIR, "studio.html"),
       path.join(DIST_DIR, "agency", "index.html"),
@@ -814,15 +816,90 @@ const ROUTES = [
       path.join(DIST_DIR, "creator", "index.html"),
       path.join(DIST_DIR, "creator.html")
     ],
-    title: "GARUDA Creative Studio & Marketing Operating System | 360° Campaigns & Media",
-    description: "Autonomous creative studio for 360° digital marketing campaigns, high-ROAS ad hooks, video blueprints, and presentation decks.",
-    canonical: "https://www.garudaos.in/studio",
-    h1: "GARUDA Creative & Marketing Studio — Autonomous Campaign Engine",
-    eyebrow: "CREATIVE & MARKETING OPERATING SYSTEM",
+    title: "GARUDA Creative Universe (U19) | Multimodal Creative OS & One-Tap Composer",
+    description: "Multimodal creative operating system featuring One-Tap Music Composer, Cinematic Film Storyboard Engine, and character consistency architecture.",
+    canonical: "https://www.garudaos.in/creative",
+    h1: "GARUDA Creative Universe OS — One-Tap Music, Film & Visual Engine",
+    eyebrow: "MULTIMODAL CREATIVE OPERATING SYSTEM",
     contentSnippet: `
-      <h2>Autonomous Campaign Creation, Video Blueprints & Presentation Decks</h2>
-      <p>GARUDA Creative Studio generates multi-phase social calendars, high-converting Meta & Google ad hooks, cinematic short-form video storyboards, and executive presentation decks with 1-click white PDF export.</p>
+      <h2>One-Tap Composer, Cinematic Storyboard Engine & Character Consistency</h2>
+      <p>GARUDA Creative Universe provides complete multimodal creation: humming to master music composition, multi-track stems, cinematic script breakdown, and visual storyboards with 1-click white PDF export.</p>
     `
+  },
+  {
+    path: "/content",
+    filePaths: [
+      path.join(DIST_DIR, "content", "index.html"),
+      path.join(DIST_DIR, "content.html")
+    ],
+    title: "GARUDA Content Universe (U20) | High-Velocity Content Factory",
+    description: "Autonomous content factory for 4-week editorial calendars, high-converting copy hooks, and omnichannel repurposing.",
+    canonical: "https://www.garudaos.in/content",
+    h1: "GARUDA Content Factory — 4-Week Editorial Schedules & Copy Hooks",
+    eyebrow: "CONTENT UNIVERSE (U20)",
+    contentSnippet: `
+      <h2>High-Velocity Editorial Planning & Multi-Platform Copywriting</h2>
+      <p>Autonomous generation of 4-week thought leadership calendars, Reels & Shorts scripts, and direct response ad copy hooks.</p>
+    `
+  },
+  {
+    path: "/brand",
+    filePaths: [
+      path.join(DIST_DIR, "brand", "index.html"),
+      path.join(DIST_DIR, "brand.html")
+    ],
+    title: "GARUDA Brand Universe (U21) | Sovereign IdentityLock™ Studio",
+    description: "Brand identity architecture, typography systems, color governance, and sovereign voice discipline.",
+    canonical: "https://www.garudaos.in/brand",
+    h1: "Sovereign IdentityLock™ Brand Studio — Voice & Visual Governance",
+    eyebrow: "BRAND UNIVERSE (U21)",
+    contentSnippet: `
+      <h2>IdentityLock™ Brand Governance & Typography Architecture</h2>
+      <p>Enforce consistent brand voice rules, color palettes, and executive presentation formatting across all digital touchpoints.</p>
+    `
+  },
+  {
+    path: "/digital-presence",
+    filePaths: [
+      path.join(DIST_DIR, "digital-presence", "index.html"),
+      path.join(DIST_DIR, "digital-presence.html")
+    ],
+    title: "GARUDA Digital Presence Universe (U22) | Living Web & SEO Engine",
+    description: "High-converting landing page blueprints, SEO topic clusters, and service portfolio architectures.",
+    canonical: "https://www.garudaos.in/digital-presence",
+    h1: "Digital Presence & Landing Engine — Search Dominance Clusters",
+    eyebrow: "DIGITAL PRESENCE UNIVERSE (U22)",
+    contentSnippet: `
+      <h2>High-Converting Landing Pages & SEO Topic Clusters</h2>
+      <p>Living web surfaces, conversion-optimized service landing wireframes, and high-intent organic search dominance clusters.</p>
+    `
+  },
+  {
+    path: "/entertainment",
+    filePaths: [
+      path.join(DIST_DIR, "entertainment", "index.html"),
+      path.join(DIST_DIR, "entertainment.html")
+    ],
+    title: "GARUDA Entertainment Universe (U23) | Event Experience War Room",
+    description: "Interactive media architectures, celebrity hype orchestration, and 13-day live event war rooms.",
+    canonical: "https://www.garudaos.in/entertainment",
+    h1: "Entertainment & Event Experience Studio — 13-Day Campaign War Rooms",
+    eyebrow: "ENTERTAINMENT UNIVERSE (U23)",
+    contentSnippet: `
+      <h2>Live Event Campaign War Rooms & Celebrity Hype Blueprints</h2>
+      <p>Interactive spectacle orchestration, VIP guest line management, and corporate sponsor pitch frameworks.</p>
+    `
+  },
+  {
+    path: "/founder/access",
+    filePaths: [
+      path.join(DIST_DIR, "founder", "access", "index.html"),
+      path.join(DIST_DIR, "founder", "access.html")
+    ],
+    title: "Founder Kingdom Access | GARUDA 27 Universes Sovereign Map",
+    description: "Sovereign central control surface for Founder Praveen Mahawar across all 27 Canonical Universes, client workspaces, and system tools.",
+    canonical: "https://www.garudaos.in/founder/access",
+    robots: "noindex, nofollow"
   },
   {
     path: "/kudos",
