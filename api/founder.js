@@ -148,14 +148,33 @@ module.exports = async function handler(req, res) {
     }
 
     // -------------------------------------------------------------
-    // ACTION: COMMERCIAL (GET /api/founder/command/commercial)
+    // ACTION: WORKFORCE (GET /api/founder/command/workforce)
     // -------------------------------------------------------------
-    if (action === "commercial" || action === "revenue" || action === "pipeline") {
-      const commercialData = await founderCommandService.getCommercialSnapshot();
+    if (action === "workforce" || action === "agents") {
+      const workforceRouterService = require("../src/services/workforceRouterService");
+      const telemetry = workforceRouterService.getWorkforceTelemetry();
       return res.status(200).json({
         success: true,
         generatedAt: new Date().toISOString(),
-        data: commercialData
+        data: telemetry
+      });
+    }
+
+    // -------------------------------------------------------------
+    // ACTION: DISPATCH (POST /api/founder/command/dispatch)
+    // -------------------------------------------------------------
+    if (action === "dispatch" || action === "agent-task") {
+      const workforceRouterService = require("../src/services/workforceRouterService");
+      const { agentId, input, goal } = req.body || {};
+      if (!agentId && !goal) {
+        return res.status(400).json({ success: false, error: { message: "agentId or goal is required" } });
+      }
+      const targetAgentId = agentId || "agent.lead_qualifier_pitcher";
+      const result = await workforceRouterService.dispatchAgentTask(targetAgentId, input || { goal });
+      return res.status(200).json({
+        success: true,
+        generatedAt: new Date().toISOString(),
+        execution: result
       });
     }
 

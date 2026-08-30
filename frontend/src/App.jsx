@@ -74,19 +74,25 @@ function AppRoutes() {
   ) : (
     <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
   );
-  const customerRoute = (
+  const customerRoute = customer === null ? (
+    <div style={{ minHeight: "100vh", background: "#030712", display: "grid", placeItems: "center", color: "#d4af37", fontFamily: "sans-serif", fontSize: "0.9rem", letterSpacing: "0.1em" }}>
+      GARUDA CLIENT WORKSPACE...
+    </div>
+  ) : customer ? (
     <CustomerDashboard
-      customer={customer || { email: "Sovereign Leader / Founder Access" }}
-      onLogout={
-        customer
-          ? async () => {
-              await fetch("/api/customer/logout", { method: "POST", credentials: "same-origin" });
-              setCustomer(false);
-              navigate("/");
-            }
-          : null
-      }
+      customer={customer}
+      onLogout={async () => {
+        await fetch("/api/customer/logout", { method: "POST", credentials: "same-origin" });
+        setCustomer(false);
+        navigate("/");
+      }}
     />
+  ) : (
+    <div style={{ minHeight: "100vh", background: "#030712", padding: "2rem", display: "grid", placeItems: "center" }}>
+      <div style={{ width: "min(420px, 100%)" }}>
+        <CustomerAuthForm onAuthenticated={(cust) => setCustomer(cust)} />
+      </div>
+    </div>
   );
   const publicLanding = <PublicLanding onGetStarted={() => navigate("/signup")} onFounderLogin={() => navigate("/founder")} />;
   const revenueRoute = authenticated === null ? (
