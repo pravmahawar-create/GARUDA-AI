@@ -115,7 +115,27 @@
     },
     {
       "source": "/studio",
-      "destination": "/scholar/index.html"
+      "destination": "/studio/index.html"
+    },
+    {
+      "source": "/agency",
+      "destination": "/studio/index.html"
+    },
+    {
+      "source": "/creator",
+      "destination": "/studio/index.html"
+    },
+    {
+      "source": "/kudos",
+      "destination": "/kudos/index.html"
+    },
+    {
+      "source": "/pitch/:path*",
+      "destination": "/kudos/index.html"
+    },
+    {
+      "source": "/proposal/:path*",
+      "destination": "/index.html"
     },
     {
       "source": "/demo",
