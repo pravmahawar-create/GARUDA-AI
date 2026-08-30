@@ -894,7 +894,9 @@ const ROUTES = [
     path: "/founder/access",
     filePaths: [
       path.join(DIST_DIR, "founder", "access", "index.html"),
-      path.join(DIST_DIR, "founder", "access.html")
+      path.join(DIST_DIR, "founder", "access.html"),
+      path.join(DIST_DIR, "kingdom", "index.html"),
+      path.join(DIST_DIR, "kingdom.html")
     ],
     title: "Founder Kingdom Access | GARUDA 27 Universes Sovereign Map",
     description: "Sovereign central control surface for Founder Praveen Mahawar across all 27 Canonical Universes, client workspaces, and system tools.",
