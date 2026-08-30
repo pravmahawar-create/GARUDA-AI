@@ -825,6 +825,19 @@ const ROUTES = [
     description: "13-day celebrity mega event digital marketing war room for Kudos Entertainment, Kajal Sharma, and Celina Jaitly at Radisson Blu Dwarka.",
     canonical: "https://www.garudaos.in/kudos",
     robots: "noindex, nofollow"
+  },
+  {
+    path: "/proposal",
+    filePaths: [
+      path.join(DIST_DIR, "proposal", "index.html"),
+      path.join(DIST_DIR, "proposal.html"),
+      path.join(DIST_DIR, "proposal", "prop_kudos_2026", "index.html"),
+      path.join(DIST_DIR, "proposal", "prop_kudos_2026.html")
+    ],
+    title: "Commercial Proposal & Milestone Agreement | GARUDA OS",
+    description: "Cryptographically locked commercial proposal, deliverable schedule, and milestone escrow checkout.",
+    canonical: "https://www.garudaos.in/proposal",
+    robots: "noindex, nofollow"
   }
 ];
 
