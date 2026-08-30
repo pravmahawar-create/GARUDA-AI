@@ -385,8 +385,15 @@ export default function ProposalPortal() {
 
         {/* Project Hero Banner */}
         <div style={{ background: "linear-gradient(135deg, rgba(245,215,110,0.08), rgba(11,15,22,0.95))", border: `1px solid ${BORDER}`, borderRadius: 20, padding: "2.5rem 2rem", marginBottom: "2rem", boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}>
-          <div style={{ display: "inline-block", background: "rgba(245,215,110,0.12)", color: GOLD, fontSize: "0.75rem", fontWeight: 800, letterSpacing: "0.12em", padding: "0.3rem 0.8rem", borderRadius: 999, marginBottom: "1rem" }}>
-            {p.capabilityMatch?.category || "CUSTOM ENGINEERING"}
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center", marginBottom: "1rem" }}>
+            <div style={{ display: "inline-block", background: "rgba(245,215,110,0.12)", color: GOLD, fontSize: "0.75rem", fontWeight: 800, letterSpacing: "0.12em", padding: "0.3rem 0.8rem", borderRadius: 999 }}>
+              {p.capabilityMatch?.category || "CUSTOM ENGINEERING"}
+            </div>
+            {(p.activatedUniverses || ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"]).map((u, i) => (
+              <span key={i} style={{ fontSize: "0.68rem", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#cbd5e1", padding: "0.2rem 0.6rem", borderRadius: 999, fontWeight: 600 }}>
+                {u}
+              </span>
+            ))}
           </div>
           <h1 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 800, margin: "0 0 0.8rem", color: "#fff", lineHeight: 1.25 }}>
             {p.project?.title || p.title}

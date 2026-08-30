@@ -148,6 +148,9 @@ module.exports = async function handler(req, res) {
         matchScore: assessment ? assessment.capabilityMatchScore : 85,
         canExecuteAutonomously: bestCap.canMotherExecuteAutonomously || false
       },
+      primaryUniverse: assessment ? assessment.primaryUniverse : "U06 Automation",
+      activatedUniverses: assessment && assessment.activatedUniverses ? assessment.activatedUniverses : ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"],
+      selectedCapabilities: assessment && assessment.selectedCapabilities ? assessment.selectedCapabilities : [],
       deliverables: [
         "Complete source code repository with clean architecture & tests",
         "Deterministic QA & Automated Validation report with evidence logs",
@@ -159,8 +162,8 @@ module.exports = async function handler(req, res) {
         totalINR: estimatedINR,
         totalUSD: estimatedUSD,
         totalAmount: estimatedINR,
-        depositAmount: milestones[0] ? milestones[0].amount : estimatedINR,
-        depositAmountINR: milestones[0] ? milestones[0].amount : estimatedINR,
+        depositAmount: milestones[0] ? (milestones[0].amountINR || milestones[0].amount) : estimatedINR,
+        depositAmountINR: milestones[0] ? (milestones[0].amountINR || milestones[0].amount) : estimatedINR,
         pricingModel: estimatedINR >= 30000 ? "milestone_based" : "fixed_price",
         milestones
       },

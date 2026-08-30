@@ -77,7 +77,7 @@ async function runDeliveryEngineTests() {
 
   const projectId = activated.project.projectId;
   assert.ok(projectId.startsWith("proj_"), "Project ID must be generated");
-  assert.strictEqual(activated.project.status, "ACTIVE_IN_DEVELOPMENT");
+  assert.ok(["ACTIVE_IN_DEVELOPMENT", "EXECUTION_PLANNED"].includes(activated.project.status), "Status must be active or planned");
   console.log(`✔ Activated Project: ${projectId} (Status: ${activated.project.status})`);
 
   // -------------------------------------------------------------

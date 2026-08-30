@@ -23,105 +23,145 @@ const INDUSTRIES = [
 
 export default function CreativeAgencyStudio() {
   const navigate = useNavigate();
-  const [brandName, setBrandName] = useState("Kudos Entertainment");
-  const [industry, setIndustry] = useState("Celebrity & Entertainment Events");
-  const [objective, setObjective] = useState("Full-House Event Conversion & 360° Omnipresent Celebrity Hype for 12th Sept at Radisson Blu");
+  const [brandName, setBrandName] = useState("Imperial Estates & Luxury Living");
+  const [industry, setIndustry] = useState("Real Estate & Property Developers");
+  const [objective, setObjective] = useState("High-Intent HNI Buyer Acquisition & Omnipresent Project Launch Campaign");
   const [activeTab, setActiveTab] = useState("calendar");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedOutput, setGeneratedOutput] = useState(null);
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setIsGenerating(true);
-    setTimeout(() => {
+    try {
+      let calendarRes = null;
+      let conceptRes = null;
+      let lpRes = null;
+
+      try {
+        const [cRes, conRes, lRes] = await Promise.all([
+          fetch("/growth/calendar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ brandName, industry, durationWeeks: 4 })
+          }).then(r => r.ok ? r.json() : null).catch(() => null),
+          fetch("/creative/concept", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ brandName, industry, objective })
+          }).then(r => r.ok ? r.json() : null).catch(() => null),
+          fetch("/growth/landing-page", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ brandName, industry, keyOffer: objective })
+          }).then(r => r.ok ? r.json() : null).catch(() => null)
+        ]);
+        calendarRes = cRes;
+        conceptRes = conRes;
+        lpRes = lRes;
+      } catch {}
+
+      // Synthesize output from live backend or deterministic domain logic
+      const calendarItems = (calendarRes && calendarRes.calendar && Array.isArray(calendarRes.calendar.weeks))
+        ? calendarRes.calendar.weeks.flatMap((w) => w.posts.map(p => ({
+            day: `Week ${w.weekNumber} — ${p.dayOfWeek}`,
+            pillar: p.pillar,
+            focus: p.contentFormat,
+            copy: p.captionConcept,
+            cta: p.callToAction
+          })))
+        : [
+            {
+              day: "Phase 1 (Authority Kickoff)",
+              pillar: "Brand Positioning & Trust",
+              focus: "Launch High-Impact Brand Story & Core Proposition",
+              copy: `When ${brandName} establishes a benchmark in ${industry}, industry leaders pay attention. Discover precision, elevated standards, and uncompromising quality.`,
+              cta: "Explore Portfolio"
+            },
+            {
+              day: "Phase 2 (Value Proposition)",
+              pillar: "Social Proof & Unique Advantages",
+              focus: "Demonstrate Differentiated Capabilities & Client Success",
+              copy: `Why leading partners choose ${brandName}: engineered excellence, direct accountability, and predictable outcomes tailored for high-growth objectives.`,
+              cta: "Request Consultation"
+            },
+            {
+              day: "Phase 3 (Omnipresent Blitz)",
+              pillar: "Conversion Acceleration",
+              focus: "Multi-Channel Retargeting & Direct Inbound Ingestion",
+              copy: `Demand for ${brandName}'s exclusive tier is scaling rapidly. Secure priority access before availability closes for the quarter.`,
+              cta: "Claim Priority Access"
+            },
+            {
+              day: "Phase 4 (Final Urgency)",
+              pillar: "Direct Response & Action",
+              focus: "Final Allocation & Direct Commercial Sign-off",
+              copy: `Final phase is now live. Experience the gold standard in ${industry} with ${brandName}. Schedule your private executive walkthrough.`,
+              cta: "Book Private Session"
+            }
+          ];
+
+      const adHooks = (conceptRes && conceptRes.concept && Array.isArray(conceptRes.concept.adCopyVariants))
+        ? conceptRes.concept.adCopyVariants.map(v => ({
+            angle: `${v.angle.toUpperCase()} ANGLE`,
+            headline: v.headline,
+            body: v.primaryText,
+            cta: v.cta
+          }))
+        : [
+            {
+              angle: "🌟 Authority & Market Leadership",
+              headline: `${brandName}: The Sovereign Gold Standard in ${industry}`,
+              body: `Engineered for visionary leaders and organizations that demand excellence. Discover how ${brandName} delivers unmatched performance.`,
+              cta: "Explore The Offering"
+            },
+            {
+              angle: "🚨 Scarcity & High-Intent Priority",
+              headline: `Limited Allocation Available for Q1 Execution`,
+              body: `When ${brandName} opens availability, private slots fill quickly. Guarantee your enterprise partnership today.`,
+              cta: "Lock Priority Slot"
+            },
+            {
+              angle: "💼 Measurable ROI & Precision",
+              headline: `Transform Outcomes with Governed Execution`,
+              body: `Eliminate execution variance with cryptographic governance and verified milestone delivery. Partner with ${brandName}.`,
+              cta: "Schedule Private Briefing"
+            }
+          ];
+
       setGeneratedOutput({
         brandName,
         industry,
         objective,
-        calendar: [
-          {
-            day: "Day 1 (Kickoff)",
-            pillar: "Authority & Celebrity Reveal",
-            focus: "Launch Dark Teaser & Celebrity Judge Drop",
-            copy: `When ${brandName} announces a milestone, the city gathers. Experience world-class production, curated hospitality, and unmatched energy.`,
-            cta: "Register Now"
-          },
-          {
-            day: "Day 3 (Nomination Wave)",
-            pillar: "Social Proof & Nominations",
-            focus: "Open Category Nominations (Excellence & Talent)",
-            copy: `Elevate your personal brand. Get recognized on a national stage in front of industry icons. Limited nominee slots.`,
-            cta: "Nominate Today"
-          },
-          {
-            day: "Day 6 (Saturation)",
-            pillar: "Omnipresent Ad Blitz",
-            focus: "Scale Meta Ads by 3x & Google Search Launch",
-            copy: `Delhi/NCR's most anticipated luxury night is filling fast. Reserved VIP tables & runway couture slots.`,
-            cta: "Reserve Access"
-          },
-          {
-            day: "Day 10 (Extreme FOMO)",
-            pillar: "72-Hour Countdown",
-            focus: "Final VIP Table & Passes Rush",
-            copy: `Only 72 hours left. Final Phase passes are now live. Experience the gold standard with ${brandName}.`,
-            cta: "Claim Final Tickets"
-          },
-          {
-            day: "D-Day (Live Machine)",
-            pillar: "Real-Time Broadcasting",
-            focus: "Live Red Carpet & 2-Hour Aftermovie Dispatch",
-            copy: `Live from the Red Carpet. Watch the crowning moments and high-octane stage performances.`,
-            cta: "Watch Live Highlights"
-          }
-        ],
-        adHooks: [
-          {
-            angle: "🌟 Celebrity & Authority Magnet",
-            headline: `${brandName}: The Gold Standard Arrives in Delhi`,
-            body: `Witness India's top talent, visionary leaders, and designer couture under one roof. Curated exclusively for those who value excellence.`,
-            cta: "Apply / Reserve Seat"
-          },
-          {
-            angle: "🚨 Extreme FOMO & Scarcity",
-            headline: `Final VIP Tables & Passes Closing Soon`,
-            body: `When ${brandName} puts on a grand celebration, seats sell out in hours. Ensure your presence at the grandest night of the season.`,
-            cta: "Get Tickets Now"
-          },
-          {
-            angle: "💼 Business Prestige & ROI",
-            headline: `Get Honored on a National Stage`,
-            body: `Position your company at the forefront of your industry with full press coverage, high-net-worth networking, and celebrity honors.`,
-            cta: "Nominate for Award"
-          }
-        ],
+        calendar: calendarItems,
+        adHooks,
         videoScripts: [
           {
-            title: "Reel 1: 8-Second High-Energy Teaser",
-            hook: "[0:00-0:02] Rapid visual cuts of red carpet, strobe lights, and gold typography with deep bass drop.",
-            visual: "[0:03-0:06] Celebrity silhouette + 5-Star venue grandeur + 'Delhi, 12.09.26'.",
-            audio: "Trending cinematic bass drop / Luxury runway beat",
-            cta: "[0:07-0:08] 'Are you on the list? Tap link in bio.'"
+            title: "Reel 1: 15-Second Cinematic Hook",
+            hook: "[0:00-0:03] High-contrast visual reveal with gold typography and deep ambient soundscape.",
+            visual: `[0:04-0:10] Dynamic showcases of ${brandName}'s core solution and premium brand cues.`,
+            audio: "Cinematic orchestral synth / Modern luxury pulse",
+            cta: "[0:11-0:15] 'Engineered for those who lead. Tap link below to learn more.'"
           },
           {
-            title: "Reel 2: Why This Night Changes Everything",
-            hook: "[0:00-0:03] '3 reasons why this event is redefining Delhi's luxury entertainment scene...'",
-            visual: "[0:04-0:12] Showcase 4 pillars: Designers, Runway, Talent, and Business Leaders.",
-            audio: "Upbeat motivational synthwave",
-            cta: "[0:13-0:15] 'Passes & Nominations open for next 48 hours.'"
+            title: "Reel 2: 30-Second Strategic Breakdown",
+            hook: `[0:00-0:04] '3 critical reasons why ${brandName} is changing the game in ${industry}...'`,
+            visual: "[0:05-0:22] Rapid breakdown of 3 structural advantages: Speed, Precision, and Proof.",
+            audio: "Upbeat motivational electronic cadence",
+            cta: "[0:23-0:30] 'Private consultations open for select partners this week.'"
           }
         ],
         deckBlueprint: [
-          { slide: "01", name: "Executive Cover & Identity Lock", takeaway: `${brandName} 360° Omnipresence Strategy` },
-          { slide: "02", name: "Target Audience & Geo-Fencing", takeaway: "Affluent HNI & High-Intent Demographics" },
-          { slide: "03", name: "4-Tier Acquisition Funnels", takeaway: "Nominations, Runway, Sponsors & VIP Tables" },
-          { slide: "04", name: "Day-by-Day Tactical War Room", takeaway: "Structured Multi-Phase Campaign Cadence" },
-          { slide: "05", name: "Performance Meta & Google Ads", takeaway: "High-ROAS retargeting with multi-angle copy" },
-          { slide: "06", name: "D-Day Live Broadcasting Machine", takeaway: "Real-time coverage & 2-Hour Aftermovie" },
-          { slide: "07", name: "Execution Assurance & War Room SLA", takeaway: "24/7 Monitoring & Daily Telemetry" }
+          { slide: "01", name: "Executive Cover & IdentityLock™", takeaway: `${brandName} 360° Omnipresence Strategy` },
+          { slide: "02", name: "Target Market & Geo-Fenced Audience", takeaway: "High-Net-Worth & High-Intent Client Profile" },
+          { slide: "03", name: "Commercial Funnel Architecture", takeaway: "Awareness, Lead Scoring & Conversion Path" },
+          { slide: "04", name: "Tactical Execution Roadmap", takeaway: "4-Week Governed Multi-Phase Campaign Cadence" },
+          { slide: "05", name: "Performance Meta & Search Ads", takeaway: "High-ROAS retargeting with multi-angle copy" },
+          { slide: "06", name: "Reporting & Verification SLA", takeaway: "Cryptographic SHA-256 deliverable manifests" }
         ]
       });
+    } finally {
       setIsGenerating(false);
-    }, 400);
+    }
   };
 
   const handlePrintCampaignDocument = () => {

@@ -26,6 +26,65 @@ class MultiBrainPlanner {
     const brains = ["architect", "reviewer", "documentation"];
 
     if (
+      text.includes("creative") ||
+      text.includes("ad copy") ||
+      text.includes("campaign") ||
+      text.includes("concept") ||
+      text.includes("storyboard")
+    ) {
+      brains.splice(1, 0, "creative");
+    }
+
+    if (
+      text.includes("content") ||
+      text.includes("calendar") ||
+      text.includes("social") ||
+      text.includes("editorial") ||
+      text.includes("reels")
+    ) {
+      brains.splice(1, 0, "content");
+    }
+
+    if (
+      text.includes("brand") ||
+      text.includes("identity") ||
+      text.includes("logo") ||
+      text.includes("typography") ||
+      text.includes("style")
+    ) {
+      brains.splice(1, 0, "brand");
+    }
+
+    if (
+      text.includes("seo") ||
+      text.includes("search") ||
+      text.includes("topic cluster") ||
+      text.includes("landing") ||
+      text.includes("presence")
+    ) {
+      brains.splice(1, 0, "digital_presence");
+    }
+
+    if (
+      text.includes("real estate") ||
+      text.includes("property") ||
+      text.includes("builder") ||
+      text.includes("site visit") ||
+      text.includes("rera")
+    ) {
+      brains.splice(1, 0, "real_estate");
+    }
+
+    if (
+      text.includes("research") ||
+      text.includes("market study") ||
+      text.includes("analysis") ||
+      text.includes("synthesis")
+    ) {
+      brains.splice(1, 0, "research");
+    }
+
+    if (
       text.includes("frontend") ||
       text.includes("dashboard") ||
       text.includes("ui") ||
@@ -65,7 +124,7 @@ class MultiBrainPlanner {
       {
         id: `${slug}-01`,
         title:
-          "Scan the repository and identify the current implementation surface",
+          "Scan the repository and requirements surface to identify the architecture context",
         workerType: "architect",
         dependencies: [],
         allowedActions: ["read", "analyze", "map_dependencies"],
@@ -79,6 +138,66 @@ class MultiBrainPlanner {
         approvalRequired: true
       }
     ];
+
+    if (/creative|ad copy|campaign|concept|hook/i.test(text)) {
+      tasks.push({
+        id: `${slug}-creative-01`,
+        title: "Synthesize multimodal creative brief and 5-angle ad copy hooks",
+        workerType: "creative",
+        dependencies: [`${slug}-01`],
+        allowedActions: ["read", "generate_brief", "generate_copy_angles", "orchestrate_concept"],
+        blockedActions: ["commit", "merge", "deploy"],
+        approvalRequired: true
+      });
+    }
+
+    if (/content|calendar|social|editorial|reels|shorts/i.test(text)) {
+      tasks.push({
+        id: `${slug}-content-01`,
+        title: "Generate 4-week multi-phase editorial calendar and social content pillars",
+        workerType: "content",
+        dependencies: tasks.map(t => t.id),
+        allowedActions: ["read", "generate_calendar", "generate_pillars", "draft_scripts"],
+        blockedActions: ["commit", "merge", "deploy"],
+        approvalRequired: true
+      });
+    }
+
+    if (/brand|identity|logo|typography|tone/i.test(text)) {
+      tasks.push({
+        id: `${slug}-brand-01`,
+        title: "Establish IdentityLock™ brand tokens, tone-of-voice rules, and compliance gates",
+        workerType: "brand",
+        dependencies: [`${slug}-01`],
+        allowedActions: ["read", "validate_brand", "build_tokens", "generate_white_pdf"],
+        blockedActions: ["commit", "merge", "deploy"],
+        approvalRequired: true
+      });
+    }
+
+    if (/seo|search|topic cluster|landing|presence|website/i.test(text)) {
+      tasks.push({
+        id: `${slug}-presence-01`,
+        title: "Formulate SEO topic clusters and high-converting landing page conversion blueprint",
+        workerType: "digital_presence",
+        dependencies: tasks.map(t => t.id),
+        allowedActions: ["read", "map_keywords", "generate_landing_blueprint"],
+        blockedActions: ["commit", "merge", "deploy"],
+        approvalRequired: true
+      });
+    }
+
+    if (/real estate|property|builder|inventory|site visit/i.test(text)) {
+      tasks.push({
+        id: `${slug}-re-01`,
+        title: "Evaluate project intelligence, corridor trends, buyer personas, and site visit funnel",
+        workerType: "real_estate",
+        dependencies: [`${slug}-01`],
+        allowedActions: ["read", "analyze_project", "qualify_leads", "book_walkthrough"],
+        blockedActions: ["commit", "merge", "deploy"],
+        approvalRequired: true
+      });
+    }
 
     if (
       text.includes("frontend") ||
@@ -188,8 +307,8 @@ class MultiBrainPlanner {
     tasks.push(...roadmapPhaseTasks);
 
     tasks.push({
-      id: `${slug}-04`,
-      title: "Define validation checks and read-only test strategy",
+      id: `${slug}-qa`,
+      title: "Define validation checks and automated test verification suite",
       workerType: "tester",
       dependencies: tasks.map((task) => task.id),
       allowedActions: [
@@ -209,11 +328,11 @@ class MultiBrainPlanner {
     });
 
     tasks.push({
-      id: `${slug}-05`,
+      id: `${slug}-review`,
       title:
-        "Review the merged proposal for safety and approval boundaries",
+        "Review the merged deliverables for safety and governance boundaries",
       workerType: "reviewer",
-      dependencies: [`${slug}-04`],
+      dependencies: [`${slug}-qa`],
       allowedActions: [
         "read",
         "review",
@@ -231,10 +350,10 @@ class MultiBrainPlanner {
     });
 
     tasks.push({
-      id: `${slug}-06`,
-      title: "Prepare a founder-facing implementation report",
+      id: `${slug}-doc`,
+      title: "Prepare a client-facing delivery package and executive white documentation",
       workerType: "documentation",
-      dependencies: [`${slug}-05`],
+      dependencies: [`${slug}-review`],
       allowedActions: [
         "read",
         "summarize",

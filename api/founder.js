@@ -104,9 +104,23 @@ module.exports = async function handler(req, res) {
     }
 
     // -------------------------------------------------------------
-    // ACTION: PROJECTS (GET /api/founder/command/projects OR /:projectId)
+    // ACTION: PROJECTS (GET /api/founder/command/projects OR /:projectId OR POST execute)
     // -------------------------------------------------------------
-    if (action === "projects" || action === "project") {
+    if (action === "projects" || action === "project" || action === "execute-project") {
+      if (req.method === "POST" && (pathParts[2] === "execute" || action === "execute-project" || req.query.execute === "true")) {
+        const governedDelivery = require("../src/services/governedProjectDeliveryService");
+        const executeProjectId = targetId || req.body?.projectId || pathParts[1];
+        if (!executeProjectId) {
+          return res.status(400).json({ success: false, error: { message: "projectId is required for execution" } });
+        }
+        const result = await governedDelivery.executeAndValidateDelivery(executeProjectId);
+        return res.status(200).json({
+          success: true,
+          generatedAt: new Date().toISOString(),
+          execution: result
+        });
+      }
+
       if (targetId) {
         const detail = await founderCommandService.getProjectCommandTimeline(targetId);
         return res.status(200).json({

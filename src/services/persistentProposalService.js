@@ -468,6 +468,19 @@ class PersistentProposalService {
     }
 
     // 2. Automatically Create & Activate the Project
+    let matchResult = null;
+    try {
+      const capabilityRegistry = require("./capabilityRegistryService");
+      matchResult = capabilityRegistry.matchDemandUniversal({
+        title: proposal.project?.title || proposal.title,
+        description: proposal.project?.requirements || proposal.requirements
+      });
+    } catch {}
+
+    const activatedUniverses = proposal.activatedUniverses || (matchResult && matchResult.activatedUniverses) || ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"];
+    const selectedCapabilities = proposal.selectedCapabilities || (matchResult && matchResult.selectedCapabilities) || [];
+    const primaryUniverse = proposal.primaryUniverse || (matchResult && matchResult.primaryUniverse) || "U06 Automation";
+
     const projectId = `proj_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
     const projectRecord = {
       projectId,
@@ -484,6 +497,9 @@ class PersistentProposalService {
       pricing: proposal.pricing || {},
       timeline: proposal.timeline || {},
       paymentTruth: proposal.payment.paymentTruth,
+      primaryUniverse,
+      activatedUniverses,
+      selectedCapabilities,
       status: "ACTIVE_IN_DEVELOPMENT",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -508,6 +524,14 @@ class PersistentProposalService {
     // Save updated proposal and new project
     await this.saveProposal(proposal);
     await this.saveProject(projectRecord);
+
+    // Auto-initialize governed execution plan
+    try {
+      const governedDelivery = require("./governedProjectDeliveryService");
+      await governedDelivery.initializeProjectExecution(projectId, { mode: "plan_only" });
+    } catch (e) {
+      console.warn("[PersistentProposalService] Auto-plan initialization note:", e.message);
+    }
 
     // 3. Emit Immutable Lifecycle Events for Payment & Project Activation
     if (garudaEventService) {
@@ -545,6 +569,7 @@ class PersistentProposalService {
           title: projectRecord.title,
           clientName: projectRecord.client.name,
           deliverablesCount: projectRecord.deliverables?.length || 0,
+          activatedUniverses,
           scopeIntegrity: proposal.scopeIntegrity
         }
       }).catch(() => {});
@@ -559,6 +584,7 @@ class PersistentProposalService {
           `Proposal ID: ${proposal.proposalId}\n` +
           `Client: ${projectRecord.client.name} (${projectRecord.client.email || "no email"})\n` +
           `Amount Received: ${currency} ${amountPaid.toLocaleString("en-IN")} (Milestone 1 Kickoff)\n` +
+          `Universes Activated: ${activatedUniverses.join(", ")}\n` +
           `Payment ID: ${paymentId}\n` +
           `Scope Integrity: ${proposal.scopeIntegrity || proposal.governance?.scopeHash || "Verified"}\n` +
           `Status: ACTIVE_IN_DEVELOPMENT`
@@ -570,7 +596,7 @@ class PersistentProposalService {
       success: true,
       alreadyProcessed: false,
       proposal,
-      project: projectRecord
+      project: (await this.getProject(projectId)) || projectRecord
     };
   }
 
@@ -671,6 +697,13 @@ class PersistentProposalService {
     } catch {}
 
     return null;
+  }
+
+  /**
+   * Alias for getProject(projectId)
+   */
+  async getProjectById(projectId) {
+    return this.getProject(projectId);
   }
 
   /**

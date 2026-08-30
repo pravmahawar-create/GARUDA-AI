@@ -429,6 +429,9 @@ class FounderCommandService {
         projectId: p.projectId,
         proposalId: p.proposalId || null,
         title: p.title || "Custom Software Project",
+        primaryUniverse: p.primaryUniverse || "U06 Automation",
+        activatedUniverses: p.activatedUniverses || (p.executionPlan?.selectedBrains ? p.executionPlan.selectedBrains.map(b => `Universe for ${b}`) : ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"]),
+        selectedCapabilities: p.selectedCapabilities || [],
         client: {
           name: p.client?.name || "Client",
           organization: p.client?.organization || "Commercial Prospect",
@@ -510,6 +513,9 @@ class FounderCommandService {
         proposalId: project.proposalId,
         title: project.title,
         status: project.status,
+        primaryUniverse: project.primaryUniverse || "U06 Automation",
+        activatedUniverses: project.activatedUniverses || ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"],
+        selectedCapabilities: project.selectedCapabilities || [],
         client: {
           name: project.client?.name || "Client",
           organization: project.client?.organization || "Commercial Prospect",
@@ -518,6 +524,7 @@ class FounderCommandService {
         },
         scopeIntegrity: project.scopeIntegrity || null,
         deliverablesCount: project.deliverables?.length || 0,
+        executionPlan: project.executionPlan || null,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt
       },
@@ -788,8 +795,11 @@ class FounderCommandService {
           projectId: p.projectId,
           title: p.title,
           status: p.status,
+          primaryUniverse: p.primaryUniverse || "U06 Automation",
+          activatedUniverses: p.activatedUniverses || (p.executionPlan?.selectedBrains ? p.executionPlan.selectedBrains.map(b => `Universe for ${b}`) : ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"]),
           currentPhase: p.executionPlan?.phases?.[0]?.name || p.status,
           milestonesCount: p.milestones?.length || 1,
+          deliverablesCount: p.deliverables?.length || p.executionPlan?.tasks?.length || 0,
           updatedAt: p.updatedAt || p.createdAt
         })),
         truthClassification: "LIVE_PERSISTED"
@@ -814,7 +824,7 @@ class FounderCommandService {
       workforceSection = {
         available: true,
         ...telemetry,
-        activeAgents: telemetry.roster.map(r => r.name),
+        activeAgents: ["FounderCommandService", ...telemetry.roster.map(r => r.name)],
         runningJobs,
         pendingWorkerJobs,
         failedJobs,

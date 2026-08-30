@@ -418,6 +418,90 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
     evidenceFiles: ["src/services/creativeStudioService.js"]
+  },
+  {
+    id: "digital_marketing.editorial_growth",
+    category: "Digital Marketing",
+    universe: "content",
+    name: "Editorial Calendars & Multi-Channel Content Factory",
+    description: "Multi-week social media content plans, high-converting carousel concepts, reel scripts, and omnichannel brand messaging.",
+    confidenceScore: 94,
+    requiredSkills: ["Content Strategy", "Social Media Cadence", "Carousel Architecture", "Scriptwriting"],
+    requiredTools: ["node", "fs"],
+    estimatedDeliveryTime: "1-3 days",
+    pricingGuidance: { minimumFeeUSD: 300, billingModel: "fixed_deliverable" },
+    humanApprovalRequired: true,
+    canMotherExecuteAutonomously: true,
+    dependencies: ["creative.studio_orchestration"],
+    relatedCapabilities: ["brand.identity_lock_system", "seo.topic_clusters_and_landing"],
+    tags: ["content", "marketing", "editorial", "calendar", "social media", "instagram", "reels", "shorts", "carousel", "copywriting", "campaign", "brand", "growth", "facebook", "linkedin", "ads"],
+    commercializable: true,
+    executionMode: "founder_authorized_supervised",
+    humanIdentityRequired: false,
+    evidenceFiles: ["src/services/digitalMarketingOsService.js"]
+  },
+  {
+    id: "brand.identity_lock_system",
+    category: "Brand Identity",
+    universe: "brand",
+    name: "IdentityLock™ Brand Governance & Executive Styling",
+    description: "Brand tokens, visual palette, typography hierarchy, tone of voice governance, and executive White PDF document generation.",
+    confidenceScore: 95,
+    requiredSkills: ["Brand Architecture", "Design Tokens", "Tone of Voice Enforcement", "PDF Styling"],
+    requiredTools: ["node", "fs"],
+    estimatedDeliveryTime: "1-2 days",
+    pricingGuidance: { minimumFeeUSD: 250, billingModel: "fixed_deliverable" },
+    humanApprovalRequired: true,
+    canMotherExecuteAutonomously: true,
+    dependencies: [],
+    relatedCapabilities: ["creative.studio_orchestration"],
+    tags: ["brand", "identity", "identitylock", "logo", "typography", "color palette", "guidelines", "tone of voice", "style", "design tokens", "compliance"],
+    commercializable: true,
+    executionMode: "founder_authorized_supervised",
+    humanIdentityRequired: false,
+    evidenceFiles: ["src/services/identityLockService.js", "frontend/src/utils/printPdf.js"]
+  },
+  {
+    id: "seo.topic_clusters_and_landing",
+    category: "Digital Presence & SEO",
+    universe: "digital_presence",
+    name: "Search Intent Topic Clusters & High-Converting Landing Page Blueprints",
+    description: "SEO keyword cluster architecture, structured article briefs, high-converting landing page blueprints, and Google review reputation workflows.",
+    confidenceScore: 92,
+    requiredSkills: ["SEO Strategy", "Keyword Clustering", "Landing Page UX", "Conversion Architecture"],
+    requiredTools: ["node", "fs"],
+    estimatedDeliveryTime: "1-3 days",
+    pricingGuidance: { minimumFeeUSD: 350, billingModel: "fixed_deliverable" },
+    humanApprovalRequired: true,
+    canMotherExecuteAutonomously: true,
+    dependencies: ["digital_marketing.editorial_growth"],
+    relatedCapabilities: ["brand.identity_lock_system", "creative.studio_orchestration"],
+    tags: ["seo", "search", "topic cluster", "keywords", "article brief", "landing page", "conversion", "google", "reputation", "reviews", "digital presence", "web"],
+    commercializable: true,
+    executionMode: "founder_authorized_supervised",
+    humanIdentityRequired: false,
+    evidenceFiles: ["src/services/digitalMarketingOsService.js"]
+  },
+  {
+    id: "entertainment.campaign_war_room",
+    category: "Event & Entertainment Campaigns",
+    universe: "entertainment",
+    name: "360° Celebrity & Event Digital War Room",
+    description: "High-octane multi-phase event marketing, nominee/sponsor acquisition funnels, VIP RSVP concierge, and aftermovie blueprints.",
+    confidenceScore: 96,
+    requiredSkills: ["Event War Room", "Celebrity Hype Mechanics", "RSVP Concierge", "Sponsor Acquisition"],
+    requiredTools: ["node", "fs"],
+    estimatedDeliveryTime: "3-7 days",
+    pricingGuidance: { minimumFeeUSD: 600, billingModel: "milestone_based" },
+    humanApprovalRequired: true,
+    canMotherExecuteAutonomously: true,
+    dependencies: ["creative.studio_orchestration", "digital_marketing.editorial_growth"],
+    relatedCapabilities: ["brand.identity_lock_system", "seo.topic_clusters_and_landing"],
+    tags: ["celebrity", "event", "entertainment", "war room", "pageant", "concert", "festival", "ticketing", "vip", "sponsor", "rsvp", "aftermovie", "kudos"],
+    commercializable: true,
+    executionMode: "founder_authorized_supervised",
+    humanIdentityRequired: false,
+    evidenceFiles: ["src/services/kudosEntertainmentService.js", "src/services/creativeStudioService.js"]
   }
 ]);
 
@@ -489,6 +573,66 @@ function matchDemandUniversal(opportunity = {}, options = {}) {
     bestScore = matches[0].score;
   }
 
+  // Canonical Universes Mapping & Project-Driven Activation Cluster
+  const universeNameMap = {
+    knowledge: "U01 Knowledge",
+    reasoning: "U02 Reasoning",
+    memory: "U03 Memory",
+    learning: "U04 Learning",
+    decision: "U05 Decision",
+    automation: "U06 Automation",
+    communication: "U07 Communication",
+    security: "U08 Security",
+    governance: "U09 Governance",
+    revenue: "U10 Revenue",
+    business: "U11 Business",
+    finance: "U12 Finance",
+    creative: "U19 Creative",
+    content: "U20 Content",
+    brand: "U21 Brand",
+    digital_presence: "U22 Digital Presence",
+    entertainment: "U23 Entertainment",
+    wealth: "U24 Wealth & Real Estate",
+    collective_intelligence: "U26 Collective Intelligence"
+  };
+
+  const activatedUniversesSet = new Set();
+  // Core mind & commercial backbone active for every project
+  activatedUniversesSet.add("U01 Knowledge");
+  activatedUniversesSet.add("U02 Reasoning");
+  activatedUniversesSet.add("U09 Governance");
+  activatedUniversesSet.add("U10 Revenue");
+
+  matches.forEach((m) => {
+    if (m.score >= 35 && universeNameMap[m.universe]) {
+      activatedUniversesSet.add(universeNameMap[m.universe]);
+    }
+  });
+
+  if (/creative|ad copy|design|visual|concept|hook|storyboard/i.test(textToScan)) {
+    activatedUniversesSet.add("U19 Creative");
+  }
+  if (/content|calendar|social|reels|shorts|editorial|posts/i.test(textToScan)) {
+    activatedUniversesSet.add("U20 Content");
+  }
+  if (/brand|logo|identity|identitylock|typography|tone/i.test(textToScan)) {
+    activatedUniversesSet.add("U21 Brand");
+  }
+  if (/seo|search|topic cluster|landing|website|digital presence/i.test(textToScan)) {
+    activatedUniversesSet.add("U22 Digital Presence");
+  }
+  if (/event|celebrity|entertainment|pageant|war room|rsvp|aftermovie/i.test(textToScan)) {
+    activatedUniversesSet.add("U23 Entertainment");
+  }
+  if (/real estate|property|builder|inventory|rera|site visit|housing|bhk|villa/i.test(textToScan)) {
+    activatedUniversesSet.add("U24 Wealth & Real Estate");
+  }
+  if (/agent|workforce|hunter|swarm|multi-agent/i.test(textToScan)) {
+    activatedUniversesSet.add("U26 Collective Intelligence");
+  }
+
+  const activatedUniverses = Array.from(activatedUniversesSet);
+
   const parseVal = require("./revenueCommandCenterService").parseMonetaryValue;
   const commercialValueNum = parseVal(opportunity.salaryText || opportunity.salary || 0);
 
@@ -497,6 +641,9 @@ function matchDemandUniversal(opportunity = {}, options = {}) {
     title: String(opportunity.title || ""),
     capabilityMatchScore: bestScore,
     bestCapability: bestMatch,
+    primaryUniverse: bestMatch && universeNameMap[bestMatch.universe] ? universeNameMap[bestMatch.universe] : "U06 Automation",
+    activatedUniverses,
+    selectedCapabilities: matches.slice(0, 5),
     matches,
     commercialValue: `$${commercialValueNum.toLocaleString()} USD`,
     executionRisk: opportunity.humanIdentityRequired ? "HIGH" : bestScore >= 70 ? "LOW" : "MEDIUM",
