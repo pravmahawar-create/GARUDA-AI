@@ -134,6 +134,14 @@
       "destination": "/kudos/index.html"
     },
     {
+      "source": "/proposal/prop_kudos_2026",
+      "destination": "/proposal/prop_kudos_2026/index.html"
+    },
+    {
+      "source": "/proposal/:proposalId",
+      "destination": "/proposal/index.html"
+    },
+    {
       "source": "/proposal/:path*",
       "destination": "/proposal/index.html"
     },
