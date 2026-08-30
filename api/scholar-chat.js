@@ -298,12 +298,17 @@ module.exports = async function handler(req, res) {
   try {
     const { message, history = [], mode = "academic_research", attachments = [] } = req.body || {};
 
-    if (!message || !String(message).trim()) {
-      return res.status(400).json({ success: false, error: "Message is required" });
+    const hasAttachments = Array.isArray(attachments) && attachments.length > 0;
+    const cleanMessage = String(message || "").trim();
+
+    if (!cleanMessage && !hasAttachments) {
+      return res.status(400).json({ success: false, error: "Message or file/image attachment is required" });
     }
 
+    const finalMessage = cleanMessage || (hasAttachments ? "Please thoroughly analyze this uploaded image/document, extract all key details, and provide a comprehensive structured breakdown." : "Hello");
+
     const reply = await generateScholarReplyWithFallbacks({
-      message: String(message).trim(),
+      message: finalMessage,
       history,
       mode,
       attachments

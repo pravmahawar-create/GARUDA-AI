@@ -360,6 +360,55 @@ async function provisionDemoAccount(admin, email, password) {
   }
 }
 
+async function workforceHandler(req, res) {
+  try {
+    const workforceRouterService = require("../src/services/workforceRouterService");
+    const telemetry = workforceRouterService.getWorkforceTelemetry();
+    return res.status(200).json({ success: true, workforce: telemetry });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+async function dispatchHandler(req, res) {
+  if (req.method !== "POST") return res.status(405).json({ success: false, message: "Method not allowed" });
+  try {
+    const workforceRouterService = require("../src/services/workforceRouterService");
+    const { agentId, input, goal } = req.body || {};
+    if (!agentId && !goal) {
+      return res.status(400).json({ success: false, message: "agentId or goal is required" });
+    }
+
+    // Direct agent dispatch
+    if (agentId) {
+      const result = await workforceRouterService.dispatchAgentTask(agentId, input || {});
+      return res.status(200).json({ success: true, execution: result });
+    }
+
+    // Goal-based autonomous routing
+    const targetAgentId = goal.toLowerCase().includes("hotel") || goal.toLowerCase().includes("hospitality")
+      ? "agent.hospitality_hotel_hunter"
+      : goal.toLowerCase().includes("restaurant") || goal.toLowerCase().includes("food")
+      ? "agent.restaurant_dining_hunter"
+      : goal.toLowerCase().includes("app") || goal.toLowerCase().includes("mobile")
+      ? "agent.mobile_app_saas_hunter"
+      : goal.toLowerCase().includes("real estate") || goal.toLowerCase().includes("builder")
+      ? "agent.real_estate_hunter"
+      : goal.toLowerCase().includes("copy") || goal.toLowerCase().includes("ad") || goal.toLowerCase().includes("hook")
+      ? "agent.copywriting"
+      : "agent.lead_qualifier_pitcher";
+
+    const result = await workforceRouterService.dispatchAgentTask(targetAgentId, input || { goal });
+    return res.status(200).json({
+      success: true,
+      routedAgentId: targetAgentId,
+      execution: result
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+}
+
 const HANDLERS = {
   conversations: conversationsHandler,
   demo: demoSignInHandler,
@@ -367,7 +416,9 @@ const HANDLERS = {
   logout: logoutHandler,
   messages: messagesHandler,
   session: sessionHandler,
-  signup: signupHandler
+  signup: signupHandler,
+  workforce: workforceHandler,
+  dispatch: dispatchHandler
 };
 
 module.exports = async function customerRouter(req, res) {

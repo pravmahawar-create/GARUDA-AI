@@ -137,7 +137,7 @@ async function generateWithNvidia({ message, history }) {
   return reply.trim();
 }
 
-async function generateWithGemini({ message, history }) {
+async function generateWithGemini({ message, history, attachments = [] }) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     console.error("GEMINI_API_KEY environment variable is not configured.");
@@ -168,7 +168,35 @@ async function generateWithGemini({ message, history }) {
     }
   }
 
-  contents.push({ role: "user", parts: [{ text: message.trim() }] });
+  const currentParts = [];
+  if (Array.isArray(attachments) && attachments.length > 0) {
+    for (const att of attachments) {
+      if (att.dataUrl && (att.mimeType?.startsWith("image/") || String(att.dataUrl).startsWith("data:image/"))) {
+        const parts = String(att.dataUrl).split(",");
+        const b64Data = parts.length > 1 ? parts[1].trim() : parts[0].trim();
+        const cleanMime = att.mimeType || (String(att.dataUrl).match(/^data:([^;]+);/)?.[1]) || "image/jpeg";
+        currentParts.push({
+          inlineData: {
+            mimeType: cleanMime,
+            data: b64Data
+          }
+        });
+      } else if (att.textContent) {
+        currentParts.push({
+          text: `\n[ATTACHED FILE: ${att.name || "file"} (${att.mimeType || "text/plain"})]:\n\`\`\`\n${att.textContent.slice(0, 15000)}\n\`\`\`\n`
+        });
+      }
+    }
+  }
+
+  const userText = message ? String(message).trim() : "";
+  if (userText) {
+    currentParts.push({ text: userText });
+  } else if (currentParts.length > 0) {
+    currentParts.push({ text: "Please analyze the attached image/file in detail." });
+  }
+
+  contents.push({ role: "user", parts: currentParts });
 
   const candidateModels = [
     process.env.GEMINI_MODEL || process.env.GARUDA_GEMINI_MODEL || "gemini-1.5-flash",
@@ -211,24 +239,24 @@ async function generateWithGemini({ message, history }) {
   throw err;
 }
 
-async function generateReply(message, history) {
+async function generateReply(message, history, attachments = []) {
   const nvidiaKey = getNvidiaApiKey();
   const geminiKey = process.env.GEMINI_API_KEY;
+
+  if (geminiKey) {
+    try {
+      return await generateWithGemini({ message, history, attachments });
+    } catch (error) {
+      console.warn("Public Chat Gemini Error:", error && error.message ? error.message : error);
+      if (!nvidiaKey) return generateLocalFallback(message);
+    }
+  }
 
   if (nvidiaKey) {
     try {
       return await generateWithNvidia({ message, history });
     } catch (error) {
       console.warn("Public Chat NVIDIA Error:", error && error.message ? error.message : error);
-      if (!geminiKey) return generateLocalFallback(message);
-    }
-  }
-
-  if (geminiKey) {
-    try {
-      return await generateWithGemini({ message, history });
-    } catch (error) {
-      console.warn("Public Chat Gemini Error:", error && error.message ? error.message : error);
       return generateLocalFallback(message);
     }
   }
@@ -509,18 +537,23 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { message, history, conversationId } = req.body || {};
-  if (!message || typeof message !== "string" || !message.trim()) {
-    return res.status(400).json({ error: "Message string is required" });
+  const { message, history, conversationId, attachments = [] } = req.body || {};
+  const hasAttachments = Array.isArray(attachments) && attachments.length > 0;
+  const cleanMessage = String(message || "").trim();
+
+  if (!cleanMessage && !hasAttachments) {
+    return res.status(400).json({ error: "Message string or attachment is required" });
   }
+
+  const finalMessage = cleanMessage || (hasAttachments ? "Please analyze the attached image/file." : "Hello");
 
   const db = authenticatedDbClient(req);
   const userId = authenticatedUserId(req);
 
   if (db && userId) {
     try {
-      const result = await handleAuthenticated(conversationId || "", message.trim(), db, userId);
-      await captureLead({ message, reply: result.reply, userId, req, body: req.body });
+      const result = await handleAuthenticated(conversationId || "", finalMessage, db, userId);
+      await captureLead({ message: finalMessage, reply: result.reply, userId, req, body: req.body });
       return res.status(200).json(result);
     } catch (error) {
       console.warn("[PublicChat] Authenticated session handling failed, falling back to public chat response:", error?.message || error);
@@ -535,10 +568,10 @@ module.exports = async function handler(req, res) {
 
   try {
     const isTest = req.headers["x-garuda-test"] === "true" || (req.body && req.body.isTest === true);
-    const advisor = await tryInsuranceAdvisor(message.trim());
-    const commercial = advisor.handled ? { handled: false } : await tryCommercialAgent(message.trim(), Array.isArray(history) ? history : [], { isTest, conversationId: conversationId || null });
-    const reply = advisor.handled ? advisor.reply : commercial.handled ? commercial.reply : await generateReply(message.trim(), Array.isArray(history) ? history : []);
-    await captureLead({ message, reply, userId: null, req, body: req.body });
+    const advisor = await tryInsuranceAdvisor(finalMessage);
+    const commercial = advisor.handled ? { handled: false } : await tryCommercialAgent(finalMessage, Array.isArray(history) ? history : [], { isTest, conversationId: conversationId || null });
+    const reply = advisor.handled ? advisor.reply : commercial.handled ? commercial.reply : await generateReply(finalMessage, Array.isArray(history) ? history : [], attachments);
+    await captureLead({ message: finalMessage, reply, userId: null, req, body: req.body });
     return res.status(200).json({
       reply,
       mode: advisor.handled ? "insurance_advisor" : commercial.handled ? "commercial_architect" : undefined,

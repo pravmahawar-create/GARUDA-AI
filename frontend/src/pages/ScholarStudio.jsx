@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
+import { openPristineWhitePdf, formatMarkdownForPrint } from "../utils/printPdf";
 
 const MODES = [
   { id: "academic_research", label: "📚 Research & Thesis", desc: "Peer-review ready papers, literature reviews & methodology" },
@@ -373,35 +374,6 @@ export default function ScholarStudio() {
     setTimeout(() => setStatusNotice(null), 2500);
   };
 
-  // 1-Click Export to Markdown / PDF
-  const handleExportDocument = (text, idx) => {
-    const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `GARUDA_Scholar_Research_Doc_${idx + 1}.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    setStatusNotice("📄 Document exported as Markdown (.md)!");
-    setTimeout(() => setStatusNotice(null), 2500);
-  };
-
-  // Mobile Web Share
-  const handleShare = async (text) => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "GARUDA Scholar Research Note",
-          text: text.slice(0, 500) + "...\n\nGenerated via GARUDA Vidya Studio"
-        });
-      } catch {}
-    } else {
-      handleCopyAllText(text);
-    }
-  };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100dvh", background: "#030712", color: "#f8fafc", fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
       <SEOHead
@@ -513,17 +485,36 @@ export default function ScholarStudio() {
                     </button>
 
                     <button
-                      onClick={() => handleExportDocument(msg.text, idx)}
-                      style={{ background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.35)", color: "#d4af37", borderRadius: "6px", padding: "0.3rem 0.65rem", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}
+                      onClick={() => openPristineWhitePdf(msg.text, idx)}
+                      style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.2), rgba(56,189,248,0.2))", border: "1px solid #d4af37", color: "#fef08a", borderRadius: "6px", padding: "0.35rem 0.75rem", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.35rem" }}
                     >
-                      📄 Export .MD / PDF
+                      👑 Print / Save Executive White PDF
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        const blob = new Blob([msg.text], { type: "text/markdown;charset=utf-8" });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `GARUDA_Scholar_Doc_${idx + 1}.md`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        setStatusNotice("📄 Downloaded Markdown (.md) file!");
+                        setTimeout(() => setStatusNotice(null), 2500);
+                      }}
+                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", color: "#94a3b8", borderRadius: "6px", padding: "0.35rem 0.65rem", fontSize: "0.78rem", fontWeight: 500, cursor: "pointer" }}
+                    >
+                      💾 Save .MD
                     </button>
 
                     <button
                       onClick={() => handleCopyAllText(msg.text)}
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", color: "#cbd5e1", borderRadius: "6px", padding: "0.3rem 0.65rem", fontSize: "0.78rem", fontWeight: 500, cursor: "pointer" }}
+                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", color: "#cbd5e1", borderRadius: "6px", padding: "0.35rem 0.65rem", fontSize: "0.78rem", fontWeight: 500, cursor: "pointer" }}
                     >
-                      📋 Copy All
+                      📋 Copy
                     </button>
 
                     <button

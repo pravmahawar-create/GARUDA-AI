@@ -21,6 +21,8 @@ import GuidesIndex from "./pages/GuidesIndex";
 import GuideArticle from "./pages/GuideArticle";
 import HighCommandCenter from "./pages/HighCommandCenter";
 import ScholarStudio from "./pages/ScholarStudio";
+import CreativeAgencyStudio from "./pages/CreativeAgencyStudio";
+import KudosPitchDeck from "./pages/KudosPitchDeck";
 import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
@@ -72,7 +74,20 @@ function AppRoutes() {
   ) : (
     <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
   );
-  const customerRoute = customer === null ? null : customer ? <CustomerDashboard customer={customer} onLogout={async () => { await fetch("/api/customer/logout", { method: "POST", credentials: "same-origin" }); setCustomer(false); navigate("/"); }} /> : <Login />;
+  const customerRoute = (
+    <CustomerDashboard
+      customer={customer || { email: "Sovereign Leader / Founder Access" }}
+      onLogout={
+        customer
+          ? async () => {
+              await fetch("/api/customer/logout", { method: "POST", credentials: "same-origin" });
+              setCustomer(false);
+              navigate("/");
+            }
+          : null
+      }
+    />
+  );
   const publicLanding = <PublicLanding onGetStarted={() => navigate("/signup")} onFounderLogin={() => navigate("/founder")} />;
   const revenueRoute = authenticated === null ? (
     <div style={{ minHeight: "100vh", background: "#030712", display: "grid", placeItems: "center", color: "#d4af37", fontFamily: "sans-serif", fontSize: "0.9rem", letterSpacing: "0.1em" }}>
@@ -113,7 +128,10 @@ function AppRoutes() {
       <Route path="/scholar" element={<ScholarStudio />} />
       <Route path="/vidya" element={<ScholarStudio />} />
       <Route path="/research" element={<ScholarStudio />} />
-      <Route path="/studio" element={<ScholarStudio />} />
+      <Route path="/studio" element={<CreativeAgencyStudio />} />
+      <Route path="/agency" element={<CreativeAgencyStudio />} />
+      <Route path="/creator" element={<CreativeAgencyStudio />} />
+      <Route path="/marketing" element={<CreativeAgencyStudio />} />
       <Route path="/command" element={<Navigate to="/command-center" replace />} />
       <Route path="/command-center" element={commandCenterRoute} />
       <Route path="/high-command" element={<Navigate to="/command-center" replace />} />
@@ -127,6 +145,9 @@ function AppRoutes() {
       <Route path="/pay/:ref" element={<PayLink />} />
       <Route path="/proposal/:proposalId" element={<ProposalPortal />} />
       <Route path="/services/:slug" element={<ServiceLanding />} />
+      <Route path="/kudos" element={<KudosPitchDeck />} />
+      <Route path="/pitch/kudos" element={<KudosPitchDeck />} />
+      <Route path="/kudos-entertainment" element={<KudosPitchDeck />} />
       <Route path="/guides" element={<GuidesIndex />} />
       <Route path="/guides/:slug" element={<GuideArticle />} />
       <Route path="*" element={publicLanding} />

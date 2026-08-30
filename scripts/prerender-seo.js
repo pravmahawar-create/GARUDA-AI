@@ -792,6 +792,39 @@ const ROUTES = [
       "url": "https://www.garudaos.in/scholar",
       "description": "Autonomous Academic Intelligence & Research Synthesis Studio"
     }
+  },
+  {
+    path: "/studio",
+    filePaths: [
+      path.join(DIST_DIR, "studio", "index.html"),
+      path.join(DIST_DIR, "studio.html"),
+      path.join(DIST_DIR, "agency", "index.html"),
+      path.join(DIST_DIR, "agency.html"),
+      path.join(DIST_DIR, "creator", "index.html"),
+      path.join(DIST_DIR, "creator.html")
+    ],
+    title: "GARUDA Creative Studio & Marketing Operating System | 360° Campaigns & Media",
+    description: "Autonomous creative studio for 360° digital marketing campaigns, high-ROAS ad hooks, video blueprints, and presentation decks.",
+    canonical: "https://www.garudaos.in/studio",
+    h1: "GARUDA Creative & Marketing Studio — Autonomous Campaign Engine",
+    eyebrow: "CREATIVE & MARKETING OPERATING SYSTEM",
+    contentSnippet: `
+      <h2>Autonomous Campaign Creation, Video Blueprints & Presentation Decks</h2>
+      <p>GARUDA Creative Studio generates multi-phase social calendars, high-converting Meta & Google ad hooks, cinematic short-form video storyboards, and executive presentation decks with 1-click white PDF export.</p>
+    `
+  },
+  {
+    path: "/kudos",
+    filePaths: [
+      path.join(DIST_DIR, "kudos", "index.html"),
+      path.join(DIST_DIR, "kudos.html"),
+      path.join(DIST_DIR, "pitch", "kudos", "index.html"),
+      path.join(DIST_DIR, "pitch", "kudos.html")
+    ],
+    title: "Kudos Face of India 2026 | 360° Digital Omnipresence Blueprint",
+    description: "13-day celebrity mega event digital marketing war room for Kudos Entertainment, Kajal Sharma, and Celina Jaitly at Radisson Blu Dwarka.",
+    canonical: "https://www.garudaos.in/kudos",
+    robots: "noindex, nofollow"
   }
 ];
 

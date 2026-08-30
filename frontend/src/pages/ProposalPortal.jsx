@@ -188,6 +188,157 @@ export default function ProposalPortal() {
     );
   }
 
+  function handlePrintWhiteProposal() {
+    const p = proposal;
+    if (!p) return;
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      alert("Please allow popups to generate the print-ready proposal document.");
+      return;
+    }
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${p.project?.title || p.title || "Commercial Proposal"} — GARUDA</title>
+  <style>
+    @page { size: A4; margin: 18mm 15mm 18mm 15mm; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.6;
+      color: #0f172a;
+      background: #ffffff !important;
+      margin: 0;
+      padding: 24px;
+    }
+    .header {
+      border-bottom: 2px solid #d4af37;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .brand { font-size: 16pt; font-weight: 900; letter-spacing: 0.05em; color: #0f172a; }
+    .brand-sub { font-size: 8.5pt; color: #b8860b; font-weight: 700; text-transform: uppercase; }
+    .meta { font-size: 8.5pt; color: #64748b; text-align: right; }
+    .hero {
+      background: #fafafa;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #d4af37;
+      padding: 16px 20px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 16pt; color: #0f172a; font-weight: 800; }
+    .hero p { margin: 0; color: #475569; font-size: 10pt; }
+    .financials {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+    }
+    .fin-box-title { font-size: 8pt; color: #64748b; text-transform: uppercase; font-weight: 700; }
+    .fin-box-val { font-size: 13pt; font-weight: 800; color: #0f172a; margin-top: 2px; }
+    .fin-box-gold { color: #b8860b; }
+    h2 { font-size: 12pt; font-weight: 700; color: #0f172a; margin: 20px 0 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
+    .deliverable-card {
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: #fff;
+    }
+    .del-title { font-weight: 700; font-size: 10pt; color: #0f172a; }
+    .del-desc { font-size: 9.5pt; color: #475569; margin-top: 2px; }
+    .footer {
+      margin-top: 36px;
+      padding-top: 10px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 8pt;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+    @media print {
+      body { padding: 0; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="brand">GARUDA COMMERCIAL ARCHITECTURE</div>
+      <div class="brand-sub">Sovereign Software & AI Engineering Proposal</div>
+    </div>
+    <div class="meta">
+      <div><strong>Proposal Ref:</strong> ${p.proposalId}</div>
+      <div><strong>Date:</strong> ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1>${p.project?.title || p.title}</h1>
+    <p>Prepared for <strong>${p.client?.name || "Client"}</strong> ${p.client?.organization ? `(${p.client.organization})` : ""}</p>
+  </div>
+
+  <div class="financials">
+    <div>
+      <div class="fin-box-title">Total Project Scope</div>
+      <div class="fin-box-val fin-box-gold">${formatMoney(p.pricing?.totalAmount, p.pricing?.currency)}</div>
+    </div>
+    <div>
+      <div class="fin-box-title">Milestone 1 Advance (50%)</div>
+      <div class="fin-box-val">${formatMoney(p.pricing?.depositAmount, p.pricing?.currency)}</div>
+    </div>
+    <div>
+      <div class="fin-box-title">Execution Timeline</div>
+      <div class="fin-box-val">${p.timeline?.estimatedDeliveryDays || "3-7 Days"}</div>
+    </div>
+  </div>
+
+  <h2>Scope & Core Deliverables</h2>
+  ${(p.deliverables || p.scope?.deliverables || []).map((d, i) => `
+    <div class="deliverable-card">
+      <div class="del-title">${i + 1}. ${typeof d === 'string' ? d : (d.title || d.name || 'Deliverable')}</div>
+      ${d.description ? `<div class="del-desc">${d.description}</div>` : ''}
+    </div>
+  `).join('')}
+
+  <h2>Governance & Acceptance Terms</h2>
+  <div style="font-size: 9.5pt; color: #475569; line-height: 1.5;">
+    • <strong>Milestone Governance:</strong> 50% advance kickoff deposit unlocks engineering. Final 50% due upon verified test passage and sign-off.<br/>
+    • <strong>Full IP & Code Ownership:</strong> 100% intellectual property, configuration and source code transferred to client upon final payment.<br/>
+    • <strong>Deterministic QA Guarantee:</strong> All deliverables undergo 100% automated regression verification before production deployment.
+  </div>
+
+  <div class="footer">
+    <span>GARUDA AI Operating System • Founder: Praveen Mahawar</span>
+    <span>Scope Hash: ${p.scopeIntegrity || "Verified"}</span>
+  </div>
+
+  <script>
+    window.onload = function() {
+      setTimeout(function() { window.print(); }, 400);
+    };
+  <\/script>
+</body>
+</html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+  }
+
   const p = proposal;
   const isAccepted = ["CLIENT_ACCEPTED", "DEPOSIT_PAID", "IN_EXECUTION", "DELIVERY_READY", "FINAL_ACCEPTED", "CLOSED"].includes(p.status);
   const isDepositPaid = ["DEPOSIT_PAID", "IN_EXECUTION", "DELIVERY_READY", "FINAL_ACCEPTED", "CLOSED"].includes(p.status);
@@ -196,7 +347,7 @@ export default function ProposalPortal() {
     <div style={{ minHeight: "100vh", background: BG, color: "#f7f2dc", fontFamily: "Inter, system-ui, sans-serif", padding: "2.5rem 1.25rem" }}>
       <div style={{ maxWidth: 880, margin: "0 auto" }}>
         {/* Top Header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem", paddingBottom: "1.5rem", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem", paddingBottom: "1.5rem", borderBottom: "1px solid rgba(255,255,255,0.08)", flexWrap: "wrap", gap: "1rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             <span style={{ width: 38, height: 38, display: "grid", placeItems: "center", borderRadius: 8, overflow: "hidden" }}>
               <BrandAssetImage kind="branding" alt="GARUDA sigil" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
@@ -206,9 +357,29 @@ export default function ProposalPortal() {
               <div style={{ fontSize: "0.75rem", color: "#8d95a7" }}>COMMERCIAL SOFTWARE PROPOSAL</div>
             </div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: "0.75rem", color: "#8d95a7" }}>Proposal ID</div>
-            <div style={{ fontFamily: "monospace", fontSize: "0.85rem", color: GOLD, fontWeight: 700 }}>{p.proposalId}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <button
+              onClick={handlePrintWhiteProposal}
+              style={{
+                background: "linear-gradient(135deg, rgba(245,215,110,0.15), rgba(255,255,255,0.08))",
+                border: `1px solid ${GOLD}`,
+                color: "#fef08a",
+                borderRadius: 8,
+                padding: "0.45rem 0.9rem",
+                cursor: "pointer",
+                fontSize: "0.82rem",
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem"
+              }}
+            >
+              👑 Print / Save Executive White PDF
+            </button>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: "0.75rem", color: "#8d95a7" }}>Proposal ID</div>
+              <div style={{ fontFamily: "monospace", fontSize: "0.85rem", color: GOLD, fontWeight: 700 }}>{p.proposalId}</div>
+            </div>
           </div>
         </div>
 

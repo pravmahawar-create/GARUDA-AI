@@ -52,11 +52,11 @@ export const UNIVERSES = [
 
   U(4, "Learning Universe", "Improves from outcomes.", "◈", [
     "Feedback", "Pattern extraction", "Strategy evolution", "Skill growth"
-  ], { scope: "founder" }),
+  ], { status: "ACTIVE", scope: "founder" }),
 
   U(5, "Decision Universe", "Chooses actions.", "✦", [
     "Risk scoring", "Priority engine", "Confidence model", "Approval logic"
-  ], { scope: "founder" }),
+  ], { status: "ACTIVE", scope: "founder" }),
 
   U(6, "Automation Universe", "Turns intent into execution.", "⚙", [
     "Workflows", "Schedulers", "Triggers", "Agent orchestration"
@@ -68,7 +68,7 @@ export const UNIVERSES = [
 
   U(8, "Security Universe", "Protects identity and data.", "🛡", [
     "Permissions", "Encryption", "Audit logs", "Threat detection"
-  ], { scope: "founder" }),
+  ], { status: "ACTIVE", scope: "founder" }),
 
   U(9, "Governance Universe", "Ensures control and ethics.", "⛔", [
     "Founder authority", "Policies", "Compliance", "Safe execution"
@@ -81,35 +81,35 @@ export const UNIVERSES = [
 
   U(11, "Business Universe", "Run companies.", "▣", [
     "CRM", "Operations", "Analytics", "SOPs"
-  ], { scope: "public", group: "GROW" }),
+  ], { status: "ACTIVE", scope: "public", group: "GROW" }),
 
   U(12, "Finance Universe", "Manage money.", "▤", [
     "Budgeting", "Cash flow", "Forecasting", "Investments"
-  ], { scope: "public", group: "GROW" }),
+  ], { status: "ACTIVE", scope: "public", group: "GROW" }),
 
   U(13, "Career Universe", "Grow professionally.", "☰", [
     "Resume", "Interview", "Skill roadmap", "Networking"
-  ], { scope: "public", group: "GROW" }),
+  ], { status: "ACTIVE", scope: "public", group: "GROW" }),
 
   U(14, "Education Universe", "Learn anything.", "◎", [
     "Courses", "Tutoring", "Exams", "Research"
-  ], { scope: "public", group: "GROW" }),
+  ], { status: "ACTIVE", scope: "public", group: "GROW" }),
 
   U(15, "Health Universe", "Support wellbeing.", "◈", [
     "Habits", "Fitness", "Nutrition", "Medical records"
-  ], { scope: "public", group: "GROW" }),
+  ], { status: "ACTIVE", scope: "public", group: "GROW" }),
 
   U(16, "Relationship Universe", "Strengthen human connections.", "✦", [
     "Reminders", "Context", "Conflict help", "Celebrations"
-  ], { scope: "public", group: "GROW" }),
+  ], { status: "ACTIVE", scope: "public", group: "GROW" }),
 
   U(17, "Travel Universe", "Move intelligently.", "◈", [
     "Planning", "Booking", "Local guides", "Expense tracking"
-  ], { scope: "public", group: "GROW" }),
+  ], { status: "ACTIVE", scope: "public", group: "GROW" }),
 
   U(18, "Lifestyle Universe", "Upgrade daily life.", "◈", [
     "Home", "Shopping", "Routines", "Personal systems"
-  ], { scope: "public", group: "GROW" }),
+  ], { status: "ACTIVE", scope: "public", group: "GROW" }),
 
   /* RING 3 — CREATIVE & DIGITAL (19-23) */
   U(19, "Creative Universe", "Flagship creator operating system.", "✦", [
@@ -118,19 +118,19 @@ export const UNIVERSES = [
 
   U(20, "Content Universe", "Create for every platform.", "✎", [
     "YouTube", "Instagram", "LinkedIn", "Blogs", "Podcasts", "Shorts/Reels"
-  ], { scope: "public", group: "LIVE" }),
+  ], { status: "ACTIVE", scope: "public", group: "LIVE" }),
 
   U(21, "Brand Universe", "Build identity.", "◈", [
     "Logo", "Color system", "Typography", "Brand voice", "IdentityLock™"
-  ], { scope: "public", group: "LIVE" }),
+  ], { status: "ACTIVE", scope: "public", group: "LIVE" }),
 
   U(22, "Digital Presence Universe", "Represent the founder online.", "☰", [
     "Social management", "DM handling", "Scheduling", "Reputation monitoring"
-  ], { scope: "public", group: "LIVE" }),
+  ], { status: "ACTIVE", scope: "public", group: "LIVE" }),
 
   U(23, "Entertainment Universe", "Create experiences.", "◈", [
     "Games", "Interactive stories", "Virtual characters", "AR/VR experiences"
-  ], { scope: "public", group: "LIVE" }),
+  ], { status: "ACTIVE", scope: "public", group: "LIVE" }),
 
   /* RING 4 — CIVILIZATION & FUTURE (24-27) */
   U(24, "Wealth & Real Estate Universe", "Assets, developers, and growth.", "◈", [
@@ -139,15 +139,15 @@ export const UNIVERSES = [
 
   U(25, "Innovation Universe", "Invent new systems.", "◎", [
     "R&D", "Patents", "Experimentation", "Discovery engine"
-  ], { scope: "public", group: "FUTURE" }),
+  ], { status: "ACTIVE", scope: "public", group: "FUTURE" }),
 
   U(26, "Collective Intelligence Universe", "Many minds working together.", "◌", [
     "Agent swarms", "Human collaboration", "Knowledge networks", "Shared memory"
-  ], { scope: "public", group: "FUTURE" }),
+  ], { status: "ACTIVE", scope: "public", group: "FUTURE" }),
 
   U(27, "Consciousness & Future Universe", "Philosophical and exploratory.", "◈", [
     "Intent understanding", "Values", "Meaning", "Human-AI coexistence"
-  ], { scope: "public", group: "FUTURE" })
+  ], { status: "ACTIVE", scope: "public", group: "FUTURE" })
 ];
 
 export const LOCKED_UNIVERSE_COUNT = 8;
