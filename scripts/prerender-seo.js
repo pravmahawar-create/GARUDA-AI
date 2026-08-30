@@ -747,6 +747,17 @@ const ROUTES = [
     robots: "noindex, nofollow"
   },
   {
+    path: "/signup",
+    filePaths: [
+      path.join(DIST_DIR, "signup", "index.html"),
+      path.join(DIST_DIR, "signup.html")
+    ],
+    title: "GARUDA Client Signup | Get Started",
+    description: "Create your client portal account for GARUDA projects.",
+    canonical: "https://www.garudaos.in/signup",
+    robots: "noindex, nofollow"
+  },
+  {
     path: "/app",
     filePaths: [
       path.join(DIST_DIR, "app", "index.html"),
