@@ -90,18 +90,6 @@
       "destination": "/app/index.html"
     },
     {
-      "source": "/proposal/:proposalId",
-      "destination": "/proposal.html"
-    },
-    {
-      "source": "/proposal/:path*",
-      "destination": "/proposal.html"
-    },
-    {
-      "source": "/proposal",
-      "destination": "/proposal.html"
-    },
-    {
       "source": "/what-is-garuda-ai",
       "destination": "/what-is-garuda-ai/index.html"
     },
@@ -144,6 +132,14 @@
     {
       "source": "/pitch/:path*",
       "destination": "/kudos/index.html"
+    },
+    {
+      "source": "/proposal/:path*",
+      "destination": "/proposal/index.html"
+    },
+    {
+      "source": "/proposal",
+      "destination": "/proposal/index.html"
     },
     {
       "source": "/demo",
