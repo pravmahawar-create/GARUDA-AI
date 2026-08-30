@@ -1032,11 +1032,12 @@ class PersistentProposalService {
 
   /**
    * Returns projects strictly scoped to a customer's email.
-   * If customer is Founder or email is null, returns all projects.
+   * Only returns all projects if explicitly requested via wildcard "*" or "FOUNDER_ALL".
    */
   async listCustomerProjects(email) {
     const all = await this.listProjects({ limit: 100 });
-    if (!email || email.includes("founder") || email.includes("demo@garudaos.in")) {
+    if (!email) return [];
+    if (email === "*" || email === "FOUNDER_ALL") {
       return all;
     }
     const cleanEmail = String(email).trim().toLowerCase();
@@ -1048,11 +1049,12 @@ class PersistentProposalService {
 
   /**
    * Returns proposals strictly scoped to a customer's email.
-   * If customer is Founder or email is null, returns all proposals.
+   * Only returns all proposals if explicitly requested via wildcard "*" or "FOUNDER_ALL".
    */
   async listCustomerProposals(email) {
     const all = await this.listProposals({ limit: 100 });
-    if (!email || email.includes("founder") || email.includes("demo@garudaos.in")) {
+    if (!email) return [];
+    if (email === "*" || email === "FOUNDER_ALL") {
       return all;
     }
     const cleanEmail = String(email).trim().toLowerCase();

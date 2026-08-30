@@ -24,6 +24,25 @@ export default function HighCommandCenter({ onLogout }) {
   const [commandSheetOpen, setCommandSheetOpen] = useState(false);
   const [expandedActivityId, setExpandedActivityId] = useState(null);
   const [activityFilter, setActivityFilter] = useState("ALL");
+  const [executingProjectId, setExecutingProjectId] = useState(null);
+
+  const handleExecuteProject = async (projectId) => {
+    setExecutingProjectId(projectId);
+    try {
+      const res = await fetch(`/api/founder/command/projects/${projectId}/execute`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin"
+      });
+      if (res.ok) {
+        await fetchSnapshot(true);
+      }
+    } catch (e) {
+      console.warn("Project execution trigger note:", e.message);
+    } finally {
+      setExecutingProjectId(null);
+    }
+  };
 
   // Fetch command center snapshot from Phase 5.1 / 5.2B API
   const fetchSnapshot = useCallback(async (isManual = false) => {
@@ -554,18 +573,64 @@ export default function HighCommandCenter({ onLogout }) {
 
                 <div className="hcc-card-list">
                   {sectionAvailable(snapshot.brain) && snapshot.brain.recentExecution && snapshot.brain.recentExecution.length > 0 ? (
-                    snapshot.brain.recentExecution.slice(0, 3).map(proj => (
+                    snapshot.brain.recentExecution.slice(0, 5).map(proj => (
                       <div key={proj.projectId} className="hcc-card-item">
                         <div className="hcc-card-top">
                           <h3 className="hcc-card-title">{proj.title || proj.projectId}</h3>
-                          <span className="hcc-card-badge" style={{ background: "rgba(16,185,129,0.12)", color: "var(--hcc-emerald)" }}>{proj.status}</span>
+                          <span className="hcc-card-badge" style={{
+                            background: proj.status === "DELIVERY_READY" ? "rgba(16,185,129,0.15)" : "rgba(212,175,55,0.15)",
+                            color: proj.status === "DELIVERY_READY" ? "var(--hcc-emerald)" : "var(--hcc-gold-400)"
+                          }}>
+                            {proj.status}
+                          </span>
                         </div>
+
+                        {/* Activated Universes Badges */}
+                        {Array.isArray(proj.activatedUniverses) && proj.activatedUniverses.length > 0 && (
+                          <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap", margin: "0.35rem 0 0.5rem" }}>
+                            {proj.activatedUniverses.slice(0, 4).map((u, i) => (
+                              <span key={i} style={{ fontSize: "0.65rem", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#cbd5e1", padding: "0.1rem 0.4rem", borderRadius: 4 }}>
+                                {u}
+                              </span>
+                            ))}
+                            {proj.activatedUniverses.length > 4 && (
+                              <span style={{ fontSize: "0.65rem", color: "var(--hcc-gold-400)" }}>
+                                +{proj.activatedUniverses.length - 4} more
+                              </span>
+                            )}
+                          </div>
+                        )}
+
                         <p className="hcc-priority-desc">
                           Phase: {proj.currentPhase} {proj.milestonesCount ? `• ${proj.milestonesCount} milestone(s)` : ""}
                         </p>
-                        <div className="hcc-card-meta">
-                          <span>{proj.projectId}</span>
-                          <span>{getRelativeTime(proj.updatedAt)}</span>
+
+                        <div className="hcc-card-meta" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.5rem" }}>
+                          <div>
+                            <span>{proj.projectId}</span> • <span>{getRelativeTime(proj.updatedAt)}</span>
+                          </div>
+
+                          {proj.status !== "DELIVERY_READY" && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleExecuteProject(proj.projectId);
+                              }}
+                              disabled={executingProjectId === proj.projectId}
+                              style={{
+                                background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)",
+                                color: "#000",
+                                border: "none",
+                                borderRadius: 4,
+                                padding: "0.25rem 0.65rem",
+                                fontSize: "0.72rem",
+                                fontWeight: 800,
+                                cursor: "pointer"
+                              }}
+                            >
+                              {executingProjectId === proj.projectId ? "Executing…" : "Execute Governed Plan ⚡"}
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))

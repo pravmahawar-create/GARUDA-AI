@@ -609,6 +609,30 @@ function matchDemandUniversal(opportunity = {}, options = {}) {
     }
   });
 
+  if (/memory|session persistence|continuous context|chat history/i.test(textToScan)) {
+    activatedUniversesSet.add("U03 Memory");
+  }
+  if (/learning|feedback loop|model training|fine-tuning|continuous improvement/i.test(textToScan)) {
+    activatedUniversesSet.add("U04 Learning");
+  }
+  if (/decision|triage|qualification|trade-off/i.test(textToScan)) {
+    activatedUniversesSet.add("U05 Decision");
+  }
+  if (/automation|workflow|pipeline|cron|queue/i.test(textToScan)) {
+    activatedUniversesSet.add("U06 Automation");
+  }
+  if (/communication|notification|email|sms|whatsapp|alert/i.test(textToScan)) {
+    activatedUniversesSet.add("U07 Communication");
+  }
+  if (/security|iam|encryption|firewall|penetration test|vulnerability|audit/i.test(textToScan)) {
+    activatedUniversesSet.add("U08 Security");
+  }
+  if (/business|crm|saas|operations|erp/i.test(textToScan)) {
+    activatedUniversesSet.add("U11 Business");
+  }
+  if (/finance|payment|invoice|billing|accounting|tax|gst|settlement/i.test(textToScan)) {
+    activatedUniversesSet.add("U12 Finance");
+  }
   if (/creative|ad copy|design|visual|concept|hook|storyboard/i.test(textToScan)) {
     activatedUniversesSet.add("U19 Creative");
   }

@@ -171,9 +171,13 @@ async function verifyRealExecution() {
   console.log("\n[STEP 6] Customer Tenancy & Authorization Security Gate");
   const ownerProjects = await persistentProposalService.listCustomerProjects(testClientEmail);
   const intruderProjects = await persistentProposalService.listCustomerProjects("competitor@otherorg.com");
+  const cofounderProjects = await persistentProposalService.listCustomerProjects("cofounder@clientco.com");
+  const emptyEmailProjects = await persistentProposalService.listCustomerProjects("");
 
   assert.ok(ownerProjects.some(p => p.projectId === projectId), "Owner client must see their project");
   assert.ok(!intruderProjects.some(p => p.projectId === projectId), "Competitor client MUST NOT see owner's project");
+  assert.ok(!cofounderProjects.some(p => p.projectId === projectId), "Client with 'cofounder' in email MUST NOT leak all projects");
+  assert.equal(emptyEmailProjects.length, 0, "Empty email query MUST return 0 projects");
   console.log("  ✔ Strict customer tenancy verified 100%. Cross-tenant leakage blocked.");
 
   // ---------------------------------------------------------------------------
