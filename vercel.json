@@ -86,6 +86,10 @@
       "destination": "/login/index.html"
     },
     {
+      "source": "/signup",
+      "destination": "/signup/index.html"
+    },
+    {
       "source": "/app",
       "destination": "/app/index.html"
     },
