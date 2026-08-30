@@ -1,6 +1,12 @@
 const fs = require("fs");
 const path = require("path");
-const sharp = require("sharp");
+
+let sharp = null;
+try {
+  sharp = require("sharp");
+} catch (e) {
+  // sharp is optional in serverless/CI environments where pre-built assets exist
+}
 
 /**
  * GARUDA Favicon & Brand Icon Generator (Tiny-Size Optimized)
@@ -47,6 +53,41 @@ function createIco(pngBuffers) {
 
 async function generateFavicons() {
   console.log("=== GENERATING AUTHENTIC GARUDA GOLDEN EAGLE FAVICONS (TINY-SCALE OPTIMIZED) ===");
+
+  if (!sharp) {
+    console.log("ℹ sharp not installed. Copying pre-built favicons from frontend/public to frontend/dist...");
+    if (fs.existsSync(DIST_DIR) && fs.existsSync(PUBLIC_DIR)) {
+      const filesToCopy = [
+        "favicon.ico", "favicon-512x512.png", "favicon-192x192.png",
+        "apple-touch-icon.png", "favicon-64x64.png", "favicon-48x48.png",
+        "favicon-32x32.png", "favicon-24x24.png", "favicon-16x16.png",
+        "site.webmanifest"
+      ];
+      for (const file of filesToCopy) {
+        const src = path.join(PUBLIC_DIR, file);
+        const dst = path.join(DIST_DIR, file);
+        if (fs.existsSync(src)) {
+          fs.copyFileSync(src, dst);
+        }
+      }
+
+      const subdirs = [
+        path.join("favicon", "garuda-sigil-icon.svg"),
+        path.join("assets", "icons", "garuda-sigil-icon.svg"),
+        path.join("assets", "splash", "garuda-sigil-splash.svg")
+      ];
+      for (const sub of subdirs) {
+        const src = path.join(PUBLIC_DIR, sub);
+        const dst = path.join(DIST_DIR, sub);
+        if (fs.existsSync(src)) {
+          fs.mkdirSync(path.dirname(dst), { recursive: true });
+          fs.copyFileSync(src, dst);
+        }
+      }
+    }
+    console.log("✔ Copied existing favicon suite to frontend/dist.");
+    return;
+  }
 
   if (!fs.existsSync(SOURCE_IMAGE)) {
     throw new Error(`Source image not found: ${SOURCE_IMAGE}`);
