@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-route
 import Home from "./pages/Home";
 import FounderLogin from "./pages/FounderLogin";
 import CustomerDashboard from "./pages/CustomerDashboard";
+import CustomerAuthForm from "./pages/CustomerAuthForm";
 import Login from "./pages/Login";
 import PublicLanding from "./pages/PublicLanding";
 import PublicChat from "./pages/PublicChat";
