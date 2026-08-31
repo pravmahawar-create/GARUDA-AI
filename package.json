@@ -34,6 +34,7 @@
     "test:git:isolation": "node src/services/gitIsolation/gitIsolationService.test.js",
     "test:code:review": "node src/services/codeReview/codeReviewService.test.js",
     "test:goal:engine": "node src/services/goalEngine/goalEngineService.test.js",
+    "test:memory": "node src/services/persistentMemory/memoryService.test.js",
     "test:mother": "node scripts/mother/mother.js",
     "test:risk": "npm --prefix backend-node test",
     "test": "npm run test:mother && npm run test:risk",
