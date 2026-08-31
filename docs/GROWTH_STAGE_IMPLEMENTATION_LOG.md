@@ -199,11 +199,65 @@ MISSING (to be built):
 
 - Phase 0 reconnaissance: COMPLETE (commit `11abbf7`).
 - Phase 1 Growth Domain Foundation: COMPLETE (commits `0bc60df`, `5269512`).
-- Phase 2 Campaign Orchestration: COMPLETE.
+- Phase 2 Campaign Orchestration: COMPLETE (commit `7305837`).
+- Phase 3 Universe Adapters: COMPLETE.
 
 ## WHAT REMAINS
 
-- Phases 3–8 (see G above). Phase 3 is the exact next step.
+- Phases 4–8 (see G above). Phase 4 is the exact next step.
+
+## PHASE 3 — UNIVERSE ADAPTERS ✅ COMPLETE
+
+Date completed: 2026-08-31
+
+### Created
+- `src/services/growthUniverseAdapters.js` — thin, backward-compatible adapters that
+  INVOKE existing canonical engines without modifying them:
+  - `generateBrandContextPack` (U21): binds-or-creates the IdentityLock brand profile,
+    returns lockHash + toneOfVoice + visualIdentity + compliance check. Reuses existing
+    profile on second call (no duplication).
+  - `generateContentPack` (U20): content pillars + persisted 4-week editorial calendar +
+    carousel concept via digitalMarketingOsService deterministic engines.
+  - `generateCreativePack` (U19): brief → concept → campaign family spec via
+    creativeStudioService. `deliverableScope: BRIEF_AND_CONCEPT_AND_FAMILY_SPEC_ONLY` +
+    truth notice — rendering requires a connected provider (currently UNAVAILABLE);
+    no rendering implied.
+  - `generatePresencePack` (U22): landing blueprint + SEO topic clusters (SERP truth
+    notice preserved) + digital presence profile.
+  - Every pack carries `classification: LIVE_ENGINE_OUTPUT` (deterministic engines),
+    engine attribution, and per-pack truth notices.
+- `src/services/growthUniverseAdapters.test.js` — 6 groups, all passing (validation,
+  U21 binding+reuse, U20 engines, U19 truthful scope, U22 engines, backward compat).
+- `package.json` — added `test:growth:adapters`.
+
+### Tests / build results
+- `node src/services/growthUniverseAdapters.test.js` → ALL TESTS PASSED (6 groups).
+
+### Architecture decisions
+- Pure adapter layer: zero modifications to identityLockService / digitalMarketingOsService /
+  creativeStudioService or their existing routes — engines stay canonical.
+- Note: DMOS template copy remains real-estate-flavored (Phase 3 scope = adapters only);
+  brief-driven parameterization of templates is deferred to a later phase as an optional
+  backward-compatible enhancement.
+- Creative adapter returns spec/concept objects only — provider truth flows from the
+  routers (no external image/video keys configured; honestly surfaced).
+
+### Git commit
+- `refactor(growth): align digital capabilities with canonical universe boundaries`
+
+### Exact next step (Phase 4)
+Create `src/routes/growthCommandRoutes.js` mounted at `/api/growth` in `src/app.js`
+(placed BEFORE the existing `/api` growthCreativeRoutes mount so explicit routes win):
+- `POST /api/growth/strategy` — brief → GrowthStrategy
+- `POST /api/growth/campaign` — brief or strategyId → Campaign (STRATEGIZED)
+- `GET  /api/growth/campaign/:id` — full campaign object
+- `GET  /api/growth/campaigns` — list
+- `POST /api/growth/campaign/:id/approve` — founder approval token gate
+- `GET  /api/growth/campaign/:id/plan/:universe` — per-universe plan slice (U19/U20/U21/U22/U07/U10)
+- `POST /api/growth/packs/:packType` — run a universe pack (brand|content|creative|presence)
+- Same `{success,data}` convention; statusCode-aware error mapping (400/403/404/409/501).
+- Tests `growthCommandRoutes.test.js` + `test:growth:api`; run, log, commit
+  `feat(growth): expose campaign orchestration API`.
 
 ## PHASE 2 — CAMPAIGN ORCHESTRATION ✅ COMPLETE
 

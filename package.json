@@ -25,6 +25,7 @@
     "test:cross": "node src/services/crossUniverseHostileReality.test.js",
     "test:growth:strategy": "node src/services/growthStrategyService.test.js",
     "test:growth:campaign": "node src/services/campaignOrchestratorService.test.js",
+    "test:growth:adapters": "node src/services/growthUniverseAdapters.test.js",
     "test:mother": "node scripts/mother/mother.js",
     "test:risk": "npm --prefix backend-node test",
     "test": "npm run test:mother && npm run test:risk",
