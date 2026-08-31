@@ -163,59 +163,48 @@ async function executeMission(mission, options = {}) {
     }
 
     // ═══════════════════════════════════════════
-    // STEP 4: ISOLATE — Create safe workspace
+    // STEP 4: ISOLATE — Create real git worktree
     // ═══════════════════════════════════════════
     addStep("isolate", "running");
 
     let workspace = null;
+    let worktreeTaskId = null;
     try {
       const gitIsolation = require("../gitIsolation/gitIsolationService");
       const branchName = `mission/${goal.id}`;
+      worktreeTaskId = goal.id;
 
-      // Check if git is available
-      const { execSync } = require("child_process");
-      try {
-        execSync("git status", { cwd: rootDir, stdio: "pipe" });
-
-        // Create worktree for isolation
+      // Try to create a real git worktree for isolation
+      const worktreeResult = gitIsolation.createWorktree(worktreeTaskId, branchName);
+      if (worktreeResult.success) {
         workspace = {
           branch: branchName,
-          rootDir,
-          isolated: true,
-          method: "worktree",
-        };
-
-        addStep("isolate", "done", { branch: branchName, method: "worktree" });
-        addEvidence("workspace", { branch: branchName });
-      } catch (gitErr) {
-        // Git not available — use temp directory isolation
-        const os = require("os");
-        const tempDir = path.join(os.tmpdir(), `garuda-${goal.id}`);
-        if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
-
-        workspace = {
-          branch: null,
-          rootDir: tempDir,
+          rootDir: worktreeResult.path,
           originalDir: rootDir,
           isolated: true,
-          method: "tempdir",
+          method: "worktree",
+          worktreePath: worktreeResult.path,
         };
-
-        addStep("isolate", "done", { method: "tempdir", path: tempDir });
-        addEvidence("workspace", { method: "tempdir", path: tempDir });
+        addStep("isolate", "done", { branch: branchName, method: "worktree", path: worktreeResult.path });
+        addEvidence("workspace", { branch: branchName, path: worktreeResult.path });
+      } else {
+        // Worktree creation failed — fall back to original directory with warning
+        workspace = { branch: null, rootDir, originalDir: rootDir, isolated: false, method: "direct" };
+        addStep("isolate", "degraded", { method: "direct" }, worktreeResult.error);
       }
     } catch (err) {
       // Non-fatal — proceed without isolation
-      workspace = { branch: null, rootDir, isolated: false, method: "none" };
-      addStep("isolate", "degraded", { method: "none" }, err.message);
+      workspace = { branch: null, rootDir, originalDir: rootDir, isolated: false, method: "direct" };
+      addStep("isolate", "degraded", { method: "direct" }, err.message);
     }
 
     // ═══════════════════════════════════════════
-    // STEP 5: EXECUTE — Implement changes
+    // STEP 5: EXECUTE — Real file modification
     // ═══════════════════════════════════════════
     addStep("execute", "running");
 
     let executionResult = null;
+    const workDir = workspace?.rootDir || rootDir;
     try {
       // Find relevant files from the plan
       const targetFiles = findTargetFiles(goal, repoGraph, rootDir);
@@ -228,32 +217,117 @@ async function executeMission(mission, options = {}) {
           filesModified: [],
         };
         addStep("execute", "done", { type: "analysis", findings: executionResult.findings.length });
-      } else {
-        // Modification mission — read files and prepare changes
+      } else if (dryRun) {
+        // Dry run — read files and report what would change
         const modifications = [];
         for (const file of targetFiles) {
           const absPath = path.resolve(rootDir, file);
           if (fs.existsSync(absPath)) {
             const content = fs.readFileSync(absPath, "utf8");
+            modifications.push({ file, absPath, lines: content.split("\n").length, exists: true });
+          }
+        }
+        executionResult = { type: "dry_run", targetFiles: modifications, filesModified: targetFiles };
+        result.filesModified = targetFiles;
+        addStep("execute", "done", { type: "dry_run", files: targetFiles.length });
+      } else {
+        // Real modification — use safeModificationService to apply changes
+        const safeMod = require("../safeModification/safeModificationService");
+        const modifications = [];
+        const applied = [];
+
+        for (const file of targetFiles) {
+          const absPath = path.resolve(rootDir, file);
+          if (!fs.existsSync(absPath)) continue;
+
+          const originalContent = fs.readFileSync(absPath, "utf8");
+
+          // Generate modification using the selected LLM model or template engine
+          let newContent = null;
+          try {
+            newContent = await generateModification(mission, file, originalContent, routing?.selected, workDir);
+          } catch (genErr) {
+            // If generation fails, skip this file
+            addStep("execute_warning", "degraded", { file, error: genErr.message });
+            continue;
+          }
+
+          if (!newContent || newContent === originalContent) {
+            // No change generated — skip
+            modifications.push({ file, absPath, lines: originalContent.split("\n").length, changed: false, reason: "no_change_generated" });
+            continue;
+          }
+
+          // Create backup before modification
+          let backupPath = null;
+          try {
+            const backupResult = safeMod.createBackup(absPath);
+            if (backupResult.success) backupPath = backupResult.backupPath;
+          } catch {}
+
+          // Compute diff
+          const diff = safeMod.computeLineDiff(originalContent, newContent);
+
+          // Apply the modification to the workspace file
+          const targetAbsPath = workspace?.worktreePath
+            ? path.resolve(workspace.worktreePath, file)
+            : absPath;
+
+          const patchResult = safeMod.applyPatchToFile(targetAbsPath, newContent);
+          if (patchResult.success && patchResult.changed) {
+            // Validate imports after modification
+            let importsValid = true;
+            try {
+              const importCheck = safeMod.validateImports(targetAbsPath);
+              importsValid = importCheck.valid;
+            } catch {}
+
             modifications.push({
               file,
-              absPath,
-              lines: content.split("\n").length,
-              exists: true,
+              absPath: targetAbsPath,
+              originalAbsPath: absPath,
+              lines: originalContent.split("\n").length,
+              newLines: newContent.split("\n").length,
+              changed: true,
+              backupPath,
+              diff: diff.summary,
+              importsValid,
             });
+            applied.push({ file, absPath: targetAbsPath, backupPath, importsValid });
+
+            // Log the modification
+            try {
+              safeMod.logModification({
+                file,
+                action: "pipeline_execute",
+                mission: mission.substring(0, 100),
+                diff: diff.summary,
+                importsValid,
+                backupPath,
+              });
+            } catch {}
+          } else {
+            modifications.push({ file, absPath, changed: false, error: patchResult.error });
           }
         }
 
         executionResult = {
           type: "modification",
           targetFiles: modifications,
-          filesModified: targetFiles,
+          applied,
+          filesModified: applied.map((a) => a.file),
         };
-        result.filesModified = targetFiles;
-        addStep("execute", "done", { type: "modification", files: targetFiles.length });
+        result.filesModified = applied.map((a) => a.file);
+
+        // If we're in the original directory (no worktree), record modified files for cleanup tracking
+        if (!workspace?.worktreePath && applied.length > 0) {
+          result._modifiedPaths = applied.map((a) => a.originalAbsPath || a.absPath);
+        }
+
+        addStep("execute", "done", { type: "modification", files: targetFiles.length, applied: applied.length, dryRun: false });
       }
 
-      addEvidence("execution", { type: executionResult.type, files: targetFiles.length });
+      addEvidence("execution", { type: executionResult.type, files: targetFiles.length, applied: executionResult.applied?.length || 0 });
     } catch (err) {
       addStep("execute", "failed", null, err.message);
 
@@ -330,7 +404,7 @@ async function executeMission(mission, options = {}) {
     }
 
     // ═══════════════════════════════════════════
-    // STEP 7: RETRY LOOP — If tests failed
+    // STEP 7: RETRY LOOP — Diagnose + corrective patch
     // ═══════════════════════════════════════════
     if (result.testsFailed > 0 && result.retries < maxRetries) {
       addStep("retry", "running");
@@ -348,6 +422,70 @@ async function executeMission(mission, options = {}) {
 
         addEvidence("diagnosis", diagnosis);
 
+        // If we have a worktree and target files, attempt corrective patch
+        if (workspace?.worktreePath && executionResult?.applied?.length > 0 && !dryRun) {
+          try {
+            const safeMod = require("../safeModification/safeModificationService");
+            let corrected = 0;
+
+            for (const mod of executionResult.applied) {
+              const worktreeFile = path.resolve(workspace.worktreePath, mod.file);
+              if (!fs.existsSync(worktreeFile)) continue;
+
+              const currentContent = fs.readFileSync(worktreeFile, "utf8");
+
+              // Generate corrective modification based on diagnosis
+              try {
+                const correctedContent = await generateCorrectiveModification(
+                  mission, mod.file, currentContent, diagnosis, routing?.selected, workDir
+                );
+                if (correctedContent && correctedContent !== currentContent) {
+                  const patchResult = safeMod.applyPatchToFile(worktreeFile, correctedContent);
+                  if (patchResult.success && patchResult.changed) {
+                    corrected++;
+                    safeMod.logModification({
+                      file: mod.file,
+                      action: "pipeline_retry_corrective",
+                      attempt: result.retries,
+                      diagnosis: diagnosis.summary,
+                      diff: patchResult.diff?.summary,
+                    });
+                  }
+                }
+              } catch {}
+            }
+
+            if (corrected > 0) {
+              // Retest after corrective patches
+              addStep(`retest_${result.retries}`, "running");
+              result.testsPassed = 0;
+              result.testsFailed = 0;
+              testResults.results = [];
+
+              for (const testFile of relevantTests.slice(0, 5)) {
+                try {
+                  const runResult = testDiscovery.runTestFile(testFile);
+                  testResults.results.push({
+                    file: testFile,
+                    passed: runResult.exitCode === 0,
+                    exitCode: runResult.exitCode,
+                    duration: runResult.duration,
+                    output: (runResult.stdout || "").substring(0, 200),
+                  });
+                  if (runResult.exitCode === 0) result.testsPassed++;
+                  else result.testsFailed++;
+                } catch (testErr) {
+                  testResults.results.push({ file: testFile, passed: false, error: testErr.message });
+                  result.testsFailed++;
+                }
+              }
+              addStep(`retest_${result.retries}`, "done", { corrected, testsPassed: result.testsPassed, testsFailed: result.testsFailed });
+            }
+          } catch (retryErr) {
+            addStep(`retry_attempt_${result.retries}`, "degraded", null, retryErr.message);
+          }
+        }
+
         // Record the failure pattern for learning
         try {
           const memory = require("../persistentMemory/memoryService");
@@ -357,19 +495,23 @@ async function executeMission(mission, options = {}) {
             attempt: result.retries,
             failures: failures.length,
             diagnosis: diagnosis.summary,
-            outcome: "retrying",
+            testsPassed: result.testsPassed,
+            testsFailed: result.testsFailed,
+            outcome: result.testsFailed === 0 ? "recovered" : "retrying",
           });
         } catch {}
 
         addStep(`retry_attempt_${result.retries}`, "done", {
           diagnosis: diagnosis.summary,
           recommendation: diagnosis.recommendation,
+          testsPassed: result.testsPassed,
+          testsFailed: result.testsFailed,
         });
       }
     }
 
     // ═══════════════════════════════════════════
-    // STEP 8: REVIEW — Semantic review
+    // STEP 8: REVIEW — Real code review
     // ═══════════════════════════════════════════
     addStep("review", "running");
 
@@ -387,14 +529,52 @@ async function executeMission(mission, options = {}) {
         routing: routing?.selected,
       };
 
-      // Build review verdict based on evidence
+      // Perform structural code review on modified files
+      let structuralReviews = [];
+      if (executionResult?.applied?.length > 0 && !dryRun) {
+        for (const mod of executionResult.applied) {
+          try {
+            const reviewTarget = workspace?.worktreePath
+              ? path.resolve(workspace.worktreePath, mod.file)
+              : mod.originalAbsPath || mod.absPath;
+            if (fs.existsSync(reviewTarget)) {
+              const code = fs.readFileSync(reviewTarget, "utf8");
+              const review = codeReview.reviewFileSync(code, reviewTarget, { root: rootDir });
+              structuralReviews.push({ file: mod.file, ...review });
+            }
+          } catch {}
+        }
+      }
+
+      // Build review verdict based on evidence + structural review
       const verdict = buildReviewVerdict(reviewContext, testResults);
+      verdict.structuralReviews = structuralReviews;
+      verdict.filesReviewed = structuralReviews.length;
+      if (structuralReviews.length > 0) {
+        const totalIssues = structuralReviews.reduce((sum, r) => sum + (r.issues?.length || 0), 0);
+        const avgScore = structuralReviews.reduce((sum, r) => sum + (r.score || 0), 0) / structuralReviews.length;
+        verdict.structuralScore = Math.round(avgScore);
+        verdict.structuralIssues = totalIssues;
+      }
       result.reviewVerdict = verdict;
 
       addStep("review", "done", verdict);
       addEvidence("review", verdict);
     } catch (err) {
       addStep("review", "degraded", null, err.message);
+    }
+
+    // ═══════════════════════════════════════════
+    // CLEANUP: Remove worktree if created
+    // ═══════════════════════════════════════════
+    if (workspace?.worktreePath && worktreeTaskId) {
+      try {
+        const gitIsolation = require("../gitIsolation/gitIsolationService");
+        gitIsolation.removeWorktree(worktreeTaskId);
+        addStep("cleanup", "done", { removed: true, taskId: worktreeTaskId });
+      } catch (cleanupErr) {
+        addStep("cleanup", "degraded", null, cleanupErr.message);
+      }
     }
 
     // ═══════════════════════════════════════════
@@ -728,6 +908,116 @@ function determineFinalStatus(result) {
   if (result.reviewVerdict?.verdict === "APPROVED") return "completed";
   if (result.steps.every((s) => s.status === "done" || s.status === "degraded")) return "completed";
   return "partial";
+}
+
+// ═══════════════════════════════════════════
+// MODIFICATION GENERATION
+// Uses LLM when available, falls back to templates
+// ═══════════════════════════════════════════
+
+async function generateModification(mission, file, originalContent, routingInfo, workDir) {
+  // Try to use the routed LLM model
+  if (routingInfo?.provider && routingInfo?.model) {
+    try {
+      const llmAdapter = require("../../../rag/llmAdapter");
+      if (llmAdapter && llmAdapter.generateAnswer) {
+        const prompt = buildModificationPrompt(mission, file, originalContent);
+        const response = await llmAdapter.generateAnswer({
+          query: prompt,
+          model: routingInfo.model,
+          provider: routingInfo.provider,
+        });
+        const newContent = extractCodeFromResponse(response.answer || response.text || "", originalContent);
+        if (newContent && newContent !== originalContent) return newContent;
+      }
+    } catch {}
+  }
+
+  // Fallback: try Ollama directly
+  try {
+    const { execSync } = require("child_process");
+    const prompt = buildModificationPrompt(mission, file, originalContent);
+    const escapedPrompt = prompt.replace(/"/g, '\\"').substring(0, 1500);
+    const response = execSync(
+      `ollama run phi3:mini "${escapedPrompt}"`,
+      { timeout: 15000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+    );
+    const newContent = extractCodeFromResponse(response, originalContent);
+    if (newContent && newContent !== originalContent) return newContent;
+  } catch {}
+
+  // Fallback: use template engine for known patterns
+  try {
+    const codeGen = require("../codeGeneration/codeGenerationEngine");
+    if (codeGen && codeGen.generate) {
+      const generated = codeGen.generate({ mission, file, language: "javascript" });
+      if (generated?.code) return generated.code;
+    }
+  } catch {}
+
+  // No modification generated
+  return null;
+}
+
+async function generateCorrectiveModification(mission, file, currentContent, diagnosis, routingInfo, workDir) {
+  const retryPrompt = `The previous modification to ${file} caused test failures.
+Diagnosis: ${diagnosis.summary}
+Recommendation: ${diagnosis.recommendation}
+Original mission: ${mission}
+Current file content:
+${currentContent.substring(0, 3000)}
+
+Fix the issue. Return ONLY the complete corrected file content.`;
+
+  // Try routed LLM
+  if (routingInfo?.provider && routingInfo?.model) {
+    try {
+      const llmAdapter = require("../../../rag/llmAdapter");
+      if (llmAdapter && llmAdapter.generateAnswer) {
+        const response = await llmAdapter.generateAnswer({
+          query: retryPrompt,
+          model: routingInfo.model,
+          provider: routingInfo.provider,
+        });
+        const newContent = extractCodeFromResponse(response.answer || response.text || "", currentContent);
+        if (newContent && newContent !== currentContent) return newContent;
+      }
+    } catch {}
+  }
+
+  // Fallback: Ollama
+  try {
+    const { execSync } = require("child_process");
+    const escapedPrompt = retryPrompt.replace(/"/g, '\\"').substring(0, 1500);
+    const response = execSync(
+      `ollama run phi3:mini "${escapedPrompt}"`,
+      { timeout: 15000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+    );
+    const newContent = extractCodeFromResponse(response, currentContent);
+    if (newContent && newContent !== currentContent) return newContent;
+  } catch {}
+
+  return null;
+}
+
+function buildModificationPrompt(mission, file, originalContent) {
+  return `You are GARUDA, an autonomous engineering AI.
+Mission: ${mission}
+File: ${file}
+Current content:
+${originalContent.substring(0, 4000)}
+
+Apply the requested change. Return ONLY the complete modified file content.
+Do not include markdown fences, explanations, or anything else — just the raw code.`;
+}
+
+function extractCodeFromResponse(response, fallback) {
+  if (!response || typeof response !== "string") return fallback;
+  // Strip markdown code fences if present
+  let cleaned = response.replace(/^```(?:javascript|js|typescript|ts)?\n/mi, "").replace(/\n```\s*$/mi, "").trim();
+  // If response is too short or looks like an error message, use fallback
+  if (cleaned.length < 20 || cleaned.startsWith("Error:") || cleaned.startsWith("I cannot")) return fallback;
+  return cleaned;
 }
 
 module.exports = { executeMission, logEvent, analyzeMission, findTargetFiles, findRelevantTests, diagnoseFailures, buildReviewVerdict, categorizeMission };
