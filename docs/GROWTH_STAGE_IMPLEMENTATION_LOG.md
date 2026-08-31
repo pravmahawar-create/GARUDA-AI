@@ -198,11 +198,65 @@ MISSING (to be built):
 ## WHAT IS COMPLETE (running total)
 
 - Phase 0 reconnaissance: COMPLETE (commit `11abbf7`).
-- Phase 1 Growth Domain Foundation: COMPLETE.
+- Phase 1 Growth Domain Foundation: COMPLETE (commits `0bc60df`, `5269512`).
+- Phase 2 Campaign Orchestration: COMPLETE.
 
 ## WHAT REMAINS
 
-- Phases 2–8 (see G above). Phase 2 is the exact next step.
+- Phases 3–8 (see G above). Phase 3 is the exact next step.
+
+## PHASE 2 — CAMPAIGN ORCHESTRATION ✅ COMPLETE
+
+Date completed: 2026-08-31
+
+### Created
+- `src/services/campaignOrchestratorService.js` — cross-universe Campaign orchestrator:
+  - Campaign object: campaignId (`gc_…`), status, businessBrief, growthStrategyRef
+    (strategyId + engine + SHA-256 strategyHash), embedded growthStrategy, brandContext
+    (U21), contentPlan (U20), creativeBriefs (U19, per asset family), presencePlan (U22),
+    communicationPlan (U07), revenueHandoff (U10), measurementPlan, lifecycleLog,
+    SHA-256 statusHash.
+  - Creation from `briefInput` (auto-synthesizes strategy) or `strategyId` (reuse).
+  - Per-universe plan builders emit structured CONTRACTS (deliverables + governance
+    notices), not executions.
+  - Lifecycle: DRAFT → STRATEGIZED → READY_FOR_APPROVAL → APPROVED → EXECUTION_PENDING
+    with transition map enforcement (409 on invalid transitions).
+  - `markReadyForApproval`, `approveCampaign` (founder approval token REQUIRED — 403
+    without; token stored as SHA-256 hash only), `markExecutionPending` (staging only —
+    truthful "No automatic spend or dispatch" notice).
+  - Emits canonical CAMPAIGN_CREATED / CAMPAIGN_UPDATED events via garudaEventService.
+  - JSONL persistence `data/growth-campaigns.jsonl` (Mongo-degraded safe).
+- `src/services/campaignOrchestratorService.test.js` — 7 groups, all passing.
+- `package.json` — added `test:growth:campaign`.
+
+### Tests / build results
+- `node src/services/campaignOrchestratorService.test.js` → ALL TESTS PASSED (7 groups).
+- Fixed during phase: `buildBrandContext` argument bug (brief vs strategy) — caught by test 1.
+
+### Architecture decisions
+- Campaign EMBEDS the strategy but references it by (strategyId, strategyHash) — the
+  hash anchors determinism verification; embedded copy serves cross-universe consumers.
+- Approval token stored ONLY as SHA-256 hash (never verbatim) — mirrors governed
+  delivery patterns.
+- EXECUTION_PENDING is staging, not execution: per-universe services own execution under
+  their own governance. The growth layer never dispatches communication or spends money.
+- Reuses canonical event types (CAMPAIGN_CREATED/UPDATED) — no new event taxonomy.
+
+### Git commit
+- `feat(growth): add cross-universe campaign orchestration` (SHA in git log).
+
+### Exact next step (Phase 3)
+Create `src/services/growthUniverseAdapters.js`:
+1. Thin adapter functions that CALL existing services (no modification of them):
+   - `generateBrandContextPack` → identityLockService (profile lookup/compliance check)
+   - `generateContentPack` → digitalMarketingOsService (pillars, calendar, carousel)
+   - `generateCreativePack` → creativeStudioService (brief → concept → family; truthful
+     provider states, no fake generation claims)
+   - `generatePresencePack` → digitalMarketingOsService (landing blueprint, clusters,
+     presence profile)
+2. Backward compatible: new optional inputs only; all existing route contracts untouched.
+3. Tests `growthUniverseAdapters.test.js` + `test:growth:adapters`; run, log, commit
+   `refactor(growth): align digital capabilities with canonical universe boundaries`.
 
 ## PHASE 1 — GROWTH DOMAIN FOUNDATION ✅ COMPLETE
 
