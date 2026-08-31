@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 import { openPristineWhitePdf } from "../utils/printPdf";
 
@@ -11,38 +11,87 @@ const BORDER = "rgba(212, 175, 55, 0.25)";
 
 export default function DigitalPresenceStudio() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get("campaignId");
+
   const [serviceName, setServiceName] = useState("Custom Enterprise AI & Multi-Agent Development");
   const [targetMarket, setTargetMarket] = useState("Global B2B, Fintech, and Autonomous SaaS Companies");
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [presenceDossier, setPresenceDossier] = useState(null);
+  const [campaignContext, setCampaignContext] = useState(null);
+  const [loadingCampaign, setLoadingCampaign] = useState(false);
 
-  const handleSynthesize = () => {
+  useEffect(() => {
+    if (!campaignId) return;
+    setLoadingCampaign(true);
+    fetch(`/api/growth/campaign/${campaignId}`, { credentials: "same-origin" })
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success) {
+          setCampaignContext(json.data);
+          const brief = json.data.businessBrief || {};
+          if (brief.productOrService) setServiceName(brief.productOrService);
+          if (brief.targetAudience) setTargetMarket(brief.targetAudience);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingCampaign(false));
+  }, [campaignId]);
+
+  const handleSynthesize = async () => {
     setIsSynthesizing(true);
-    setTimeout(() => {
-      setPresenceDossier({
-        serviceName,
-        targetMarket,
-        landingBlueprint: {
-          heroHeadline: "Autonomous Custom AI Systems Built for Uncompromising Scale",
-          subheadline: "Replace fragile AI prototypes with governed, multi-brain intelligence architectures.",
-          primaryCta: "Schedule Technical Scoping Session",
-          secondaryCta: "Explore Verified Case Studies"
-        },
-        seoTopicClusters: [
-          { pillar: "Core Service", query: "enterprise custom ai development services", intent: "Commercial High-Intent", volume: "High" },
-          { pillar: "Comparison", query: "ai agent architecture vs rule-based chatbots", intent: "Informational Authority", volume: "Medium" },
-          { pillar: "Case Study", query: "how to build autonomous multi-agent systems", intent: "Technical Consideration", volume: "High" },
-          { pillar: "Pricing & Scope", query: "enterprise rag system implementation cost", intent: "Direct Inbound", volume: "Medium" }
-        ],
-        canonicalRoutes: [
-          "/services/custom-ai-development",
-          "/services/ai-agent-development",
-          "/services/rag-development",
-          "/services/saas-mvp-development"
-        ]
+    try {
+      const res = await fetch("/api/growth/packs/presence", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ serviceName, targetMarket })
       });
+      const json = await res.json();
+      if (json.success && json.data) {
+        const pack = json.data;
+        const landing = pack.landingPage || {};
+        const seo = pack.seoStrategy || {};
+        setPresenceDossier({
+          serviceName: pack.serviceName || serviceName,
+          targetMarket: pack.targetMarket || targetMarket,
+          engine: pack.engine || "digitalMarketingOsService",
+          classification: pack.classification || "LIVE_ENGINE_OUTPUT",
+          truthNotice: pack.truthNotice || "Deterministic template — not AI-generated.",
+          landingBlueprint: {
+            heroHeadline: landing.heroHeadline || "Autonomous Custom AI Systems Built for Uncompromising Scale",
+            subheadline: landing.subheadline || "Replace fragile prototypes with governed, multi-brain intelligence architectures.",
+            primaryCta: landing.primaryCta || "Schedule Technical Scoping Session",
+            secondaryCta: landing.secondaryCta || "Explore Verified Case Studies"
+          },
+          seoTopicClusters: (seo.primaryKeywords || []).map((kw) => ({
+            pillar: "Core Service", query: kw, intent: "Commercial High-Intent", volume: "High"
+          })).concat((seo.longTailKeywords || []).slice(0, 3).map((kw) => ({
+            pillar: "Long-Tail", query: kw, intent: "Informational Authority", volume: "Medium"
+          }))),
+          canonicalRoutes: (seo.pageStructure || []).map((s) => s.route || "/services")
+        });
+      } else {
+        setPresenceDossier({
+          serviceName, targetMarket,
+          engine: "DETERMINISTIC_TEMPLATE_V1", classification: "LOCAL_TEMPLATE",
+          truthNotice: "Local template — structured planning output.",
+          landingBlueprint: { heroHeadline: `${serviceName} — Sovereign Delivery`, subheadline: `Purpose-built for ${targetMarket}`, primaryCta: "Book Discovery", secondaryCta: "View Case Studies" },
+          seoTopicClusters: [{ pillar: "Core", query: serviceName.toLowerCase(), intent: "Commercial", volume: "High" }],
+          canonicalRoutes: ["/services/custom-ai-development"]
+        });
+      }
+    } catch {
+      setPresenceDossier({
+        serviceName, targetMarket,
+        engine: "DETERMINISTIC_TEMPLATE_V1", classification: "LOCAL_TEMPLATE",
+        truthNotice: "API unavailable — local template used.",
+        landingBlueprint: { heroHeadline: serviceName, subheadline: targetMarket, primaryCta: "Book Discovery", secondaryCta: "Case Studies" },
+        seoTopicClusters: [], canonicalRoutes: []
+      });
+    } finally {
       setIsSynthesizing(false);
-    }, 600);
+    }
   };
 
   const handlePrintPdf = () => {
@@ -86,6 +135,11 @@ export default function DigitalPresenceStudio() {
               <span style={{ background: "rgba(117, 244, 171, 0.15)", color: "#75f4ab", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
                 PRODUCTION VERIFIED
               </span>
+              {campaignContext && (
+                <span style={{ background: "rgba(117, 244, 171, 0.15)", color: "#75f4ab", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
+                  CAMPAIGN MODE
+                </span>
+              )}
             </div>
             <h1 style={{ fontSize: "1.8rem", margin: "0.3rem 0 0", color: "#fff" }}>
               Digital Presence & Landing Engine
@@ -96,6 +150,15 @@ export default function DigitalPresenceStudio() {
           </div>
 
           <div style={{ display: "flex", gap: "0.75rem" }}>
+            {campaignContext && (
+              <button
+                type="button"
+                onClick={() => navigate("/growth")}
+                style={{ background: "rgba(117,244,171,0.12)", color: "#75f4ab", border: "1px solid rgba(117,244,171,0.3)", borderRadius: "8px", padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: "bold", cursor: "pointer" }}
+              >
+                ← Growth Command
+              </button>
+            )}
             <button
               type="button"
               onClick={() => navigate("/founder/access")}
@@ -105,6 +168,17 @@ export default function DigitalPresenceStudio() {
             </button>
           </div>
         </div>
+
+        {campaignContext && (
+          <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(117,244,171,0.2)", borderRadius: "8px", padding: "0.7rem 1rem", marginBottom: "1.25rem", fontSize: "0.8rem" }}>
+            <span style={{ color: "#75f4ab", fontWeight: "bold" }}>Campaign:</span>{" "}
+            <span style={{ color: "#fff" }}>{campaignContext.businessBrief?.businessName || campaignContext.campaignId}</span>
+            <span style={{ color: "#64748b", marginLeft: "0.5rem" }}>• {campaignContext.campaignId} • {campaignContext.status}</span>
+          </div>
+        )}
+        {loadingCampaign && (
+          <div style={{ textAlign: "center", padding: "1rem", color: "#64748b", fontSize: "0.85rem" }}>Loading campaign context...</div>
+        )}
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "1.5rem" }}>
           <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1.5rem" }}>
@@ -161,6 +235,17 @@ export default function DigitalPresenceStudio() {
               </div>
             ) : (
               <div>
+                {presenceDossier.engine && (
+                  <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "6px", padding: "0.6rem 0.8rem", marginBottom: "1rem", fontSize: "0.75rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+                    <span style={{ color: "#94a3b8" }}>Engine: <strong style={{ color: presenceDossier.engine === "DETERMINISTIC_TEMPLATE_V1" ? "#84cc16" : "#75f4ab" }}>{presenceDossier.engine}</strong></span>
+                    <span style={{ color: "#94a3b8" }}>{presenceDossier.classification}</span>
+                  </div>
+                )}
+                {presenceDossier.truthNotice && (
+                  <p style={{ margin: "0 0 0.75rem", color: "#94a3b8", fontSize: "0.7rem", fontStyle: "italic" }}>
+                    {presenceDossier.truthNotice}
+                  </p>
+                )}
                 <div style={{ background: "rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "1rem", marginBottom: "1rem" }}>
                   <span style={{ color: "#38bdf8", fontSize: "0.75rem", fontWeight: "bold" }}>HERO WIREFRAME</span>
                   <h4 style={{ color: "#fff", fontSize: "1.1rem", margin: "0.3rem 0" }}>{presenceDossier.landingBlueprint.heroHeadline}</h4>

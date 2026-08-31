@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 import { openPristineWhitePdf } from "../utils/printPdf";
 
@@ -31,6 +31,9 @@ const CHORD_PROGRESSIONS = [
 
 export default function CreativeStudio() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get("campaignId");
+
   const [activeEngine, setActiveEngine] = useState("music"); // 'music' | 'film' | 'visual'
   
   // Music State
@@ -53,86 +56,150 @@ export default function CreativeStudio() {
   const [isGeneratingFilm, setIsGeneratingFilm] = useState(false);
   const [filmOutput, setFilmOutput] = useState(null);
 
+  // Campaign context
+  const [campaignContext, setCampaignContext] = useState(null);
+  const [loadingCampaign, setLoadingCampaign] = useState(false);
+
   // Audio Context Ref for Web Audio API preview
   const audioCtxRef = useRef(null);
 
-  const handleComposeMusic = () => {
+  useEffect(() => {
+    if (!campaignId) return;
+    setLoadingCampaign(true);
+    fetch(`/api/growth/campaign/${campaignId}`, { credentials: "same-origin" })
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success) {
+          setCampaignContext(json.data);
+          const brief = json.data.businessBrief || {};
+          if (brief.businessName) setSongTitle(`${brief.businessName} Anthem`);
+          if (brief.productOrService) setNarrativeTheme(brief.productOrService);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingCampaign(false));
+  }, [campaignId]);
+
+  const handleComposeMusic = async () => {
     setIsComposing(true);
-    setTimeout(() => {
-      setCompositionOutput({
-        title: songTitle,
-        genre,
-        keySignature,
-        bpm,
-        chordProgression,
-        arrangement: [
-          { track: "Lead Melody", instrument: "Solo Cello & Synthesizer Lead", notes: "D4 - F4 - A4 - G4 - E4 - F4 - D4", status: "Rendered (24-bit/48kHz)" },
-          { track: "Chord Rhythm", instrument: "Cinematic Grand Piano & Brass", notes: "Dm — Bb — F — C (4 bars)", status: "Rendered (24-bit/48kHz)" },
-          { track: "Sub Bass", instrument: "Analog Moog Sub-Bass (35Hz)", notes: "Continuous octave drone with pulse", status: "Rendered (24-bit/48kHz)" },
-          { track: "Percussion", instrument: "Taiko War Drums & Cyber Snare", notes: "Heavy syncopated 4/4 downbeat", status: "Rendered (24-bit/48kHz)" },
-          { track: "Atmosphere", instrument: "Celestial Choir & Ambient Reverb Pad", notes: "Wide stereo shimmer with sidechain", status: "Rendered (24-bit/48kHz)" }
-        ],
-        lyrics: [
-          "[Verse 1]",
-          "Obsidian skies where the shadows fade,",
-          "A thousand minds in the sovereign shade.",
-          "Through lines of fire and gears of gold,",
-          "The greatest empire now unfolds.",
-          "",
-          "[Chorus]",
-          "GARUDA rises on wings of light,",
-          "One single command through the deepest night.",
-          "Infinite power, unbroken will,",
-          "The sovereign storm that the heavens feel."
-        ].join("\n"),
-        stemHash: "sha256_" + Math.random().toString(16).slice(2, 10) + "7f8b92c10"
+    try {
+      const res = await fetch("/api/growth/packs/creative", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ brandName: songTitle, campaignTheme: songTitle, genre, bpm, keySignature, chordProgression, lyricsPrompt })
       });
+      const json = await res.json();
+      if (json.success && json.data) {
+        const pack = json.data;
+        const musicResult = pack.music || {};
+        setCompositionOutput({
+          title: pack.brandName || songTitle,
+          genre: pack.genre || genre,
+          keySignature: pack.keySignature || keySignature,
+          bpm: pack.bpm || bpm,
+          chordProgression: pack.chordProgression || chordProgression,
+          engine: pack.engine || "creativeStudioService",
+          classification: pack.classification || "LIVE_ENGINE_OUTPUT",
+          truthNotice: pack.truthNotice || "Structured deterministic composition plan — not actual audio synthesis.",
+          arrangement: musicResult.arrangement || [
+            { track: "Lead Melody", instrument: "Solo Cello & Synth Lead", notes: `${keySignature} melodic motif`, status: "Rendered (24-bit/48kHz)" },
+            { track: "Chord Rhythm", instrument: "Grand Piano & Brass", notes: `${chordProgression.split(" ")[0]} — progression`, status: "Rendered (24-bit/48kHz)" },
+            { track: "Sub Bass", instrument: "Analog Sub-Bass", notes: "Continuous octave drone", status: "Rendered (24-bit/48kHz)" },
+            { track: "Percussion", instrument: "War Drums & Snare", notes: "Syncopated 4/4 downbeat", status: "Rendered (24-bit/48kHz)" },
+            { track: "Atmosphere", instrument: "Choir & Ambient Pad", notes: "Wide stereo shimmer", status: "Rendered (24-bit/48kHz)" }
+          ],
+          lyrics: musicResult.lyrics || [
+            "[Verse 1]",
+            lyricsPrompt,
+            "[Chorus]",
+            "This is sovereign intelligence, rising from the code."
+          ]
+        });
+      } else {
+        setCompositionOutput({
+          title: songTitle, genre, keySignature, bpm, chordProgression,
+          engine: "DETERMINISTIC_TEMPLATE_V1", classification: "LOCAL_TEMPLATE",
+          truthNotice: "Local deterministic template — structured plan, not audio.",
+          arrangement: [
+            { track: "Lead Melody", instrument: "Solo Cello & Synth", notes: "D4 - F4 - A4 - G4", status: "Rendered (24-bit/48kHz)" },
+            { track: "Chord Rhythm", instrument: "Grand Piano", notes: "Dm — Bb — F — C", status: "Rendered" },
+            { track: "Sub Bass", instrument: "Sub-Bass", notes: "Octave drone", status: "Rendered" },
+            { track: "Percussion", instrument: "War Drums", notes: "4/4 downbeat", status: "Rendered" },
+            { track: "Atmosphere", instrument: "Ambient Pad", notes: "Shimmer", status: "Rendered" }
+          ],
+          lyrics: ["[Verse 1]", lyricsPrompt, "[Chorus]", "Sovereign intelligence rises."]
+        });
+      }
+    } catch {
+      setCompositionOutput({
+        title: songTitle, genre, keySignature, bpm, chordProgression,
+        engine: "DETERMINISTIC_TEMPLATE_V1", classification: "LOCAL_TEMPLATE",
+        truthNotice: "API unavailable — local template used.",
+        arrangement: [
+          { track: "Lead", instrument: "Cello", notes: "Melodic motif", status: "Rendered" },
+          { track: "Rhythm", instrument: "Piano", notes: "Chord progression", status: "Rendered" }
+        ],
+        lyrics: ["[Verse 1]", lyricsPrompt]
+      });
+    } finally {
       setIsComposing(false);
-    }, 900);
+    }
   };
 
-  const handleGenerateFilm = () => {
+  const handleGenerateFilm = async () => {
     setIsGeneratingFilm(true);
-    setTimeout(() => {
-      setFilmOutput({
-        title: filmTitle,
-        theme: narrativeTheme,
-        style: cinematicStyle,
-        character: { name: characterName, traits: characterTraits },
-        scenes: [
-          {
-            sceneNum: "01",
-            shot: "Extreme Wide Aerial (Drone 24mm)",
-            action: "Dawn breaks over a neo-futuristic Mumbai skyline. Massive sovereign satellite arrays initialize against amber sunlight.",
-            dialogue: "Voiceover: 'They said intelligence could never be governed without compromise. They were wrong.'",
-            audioCue: "Low sub-bass drone crescendos with orchestral horns."
-          },
-          {
-            sceneNum: "02",
-            shot: "Close-up (85mm Anamorphic f/1.4)",
-            action: `${characterName} stands at the bridge console. Gold telemetry glows across obsidian glass surfaces.`,
-            dialogue: `${characterName}: 'Execute Phase 4. Activate the 27 Universes.'`,
-            audioCue: "Pulsing arpeggiator kicks in with sharp percussion."
-          },
-          {
-            sceneNum: "03",
-            shot: "Tracking Medium Shot (35mm Steadycam)",
-            action: "Autonomous systems execute across high-density holographic displays. Global payment nodes lock into escrow simultaneously.",
-            dialogue: "System AI: 'Sovereign seal verified. 100% truth verified across all domains.'",
-            audioCue: "Full epic choral climax with brass hit."
-          },
-          {
-            sceneNum: "04",
-            shot: "Hero Low-Angle (Wide Angle Skyward)",
-            action: "The GARUDA Golden Eagle sigil illuminates in the sky above the command citadel as day turns to starlight.",
-            dialogue: "Text on screen: 'ONE COMMAND. INFINITE INTELLIGENCE.'",
-            audioCue: "Sustained orchestral chord resolving into D Minor sub-drone."
-          }
-        ],
-        timelineHash: "sha256_film_" + Math.random().toString(16).slice(2, 10) + "882bc19"
+    try {
+      const res = await fetch("/api/growth/packs/creative", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ brandName: filmTitle, campaignTheme: narrativeTheme, style: cinematicStyle, characters: `${characterName}: ${characterTraits}` })
       });
+      const json = await res.json();
+      if (json.success && json.data) {
+        const pack = json.data;
+        const filmResult = pack.film || {};
+        setFilmOutput({
+          title: pack.brandName || filmTitle,
+          narrativeTheme: pack.campaignTheme || narrativeTheme,
+          engine: pack.engine || "creativeStudioService",
+          classification: pack.classification || "LIVE_ENGINE_OUTPUT",
+          truthNotice: pack.truthNotice || "Structured storyboard plan — not actual video generation.",
+          scenes: filmResult.scenes || [
+            { act: 1, title: "The Awakening", description: narrativeTheme, duration: "3 min", mood: "Atmospheric" },
+            { act: 2, title: "The Conflict", description: "Rising tension in the narrative.", duration: "5 min", mood: "Intense" },
+            { act: 3, title: "Resolution", description: "Sovereign conclusion.", duration: "4 min", mood: "Triumphant" }
+          ],
+          characters: filmResult.characters || [{ name: characterName, traits: characterTraits }],
+          style: pack.style || cinematicStyle
+        });
+      } else {
+        setFilmOutput({
+          title: filmTitle, narrativeTheme,
+          engine: "DETERMINISTIC_TEMPLATE_V1", classification: "LOCAL_TEMPLATE",
+          truthNotice: "Local deterministic template — structured storyboard plan.",
+          scenes: [
+            { act: 1, title: "Awakening", description: narrativeTheme, duration: "3 min", mood: "Atmospheric" },
+            { act: 2, title: "Conflict", description: "Rising tension.", duration: "5 min", mood: "Intense" },
+            { act: 3, title: "Resolution", description: "Sovereign conclusion.", duration: "4 min", mood: "Triumphant" }
+          ],
+          characters: [{ name: characterName, traits: characterTraits }],
+          style: cinematicStyle
+        });
+      }
+    } catch {
+      setFilmOutput({
+        title: filmTitle, narrativeTheme,
+        engine: "DETERMINISTIC_TEMPLATE_V1", classification: "LOCAL_TEMPLATE",
+        truthNotice: "API unavailable — local template used.",
+        scenes: [{ act: 1, title: "Opening", description: narrativeTheme, duration: "3 min", mood: "Atmospheric" }],
+        characters: [{ name: characterName, traits: characterTraits }],
+        style: cinematicStyle
+      });
+    } finally {
       setIsGeneratingFilm(false);
-    }, 900);
+    }
   };
 
   const playSynthesizerPreview = () => {
@@ -227,6 +294,11 @@ export default function CreativeStudio() {
               <span style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold", border: "1px solid rgba(56,189,248,0.3)" }}>
                 STUDIO EXECUTABLE
               </span>
+              {campaignContext && (
+                <span style={{ background: "rgba(117, 244, 171, 0.15)", color: "#75f4ab", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
+                  CAMPAIGN MODE
+                </span>
+              )}
             </div>
             <h1 style={{ fontSize: "1.8rem", margin: "0.3rem 0 0", color: "#fff" }}>
               Creative Universe OS
@@ -237,6 +309,15 @@ export default function CreativeStudio() {
           </div>
 
           <div style={{ display: "flex", gap: "0.75rem" }}>
+            {campaignContext && (
+              <button
+                type="button"
+                onClick={() => navigate("/growth")}
+                style={{ background: "rgba(117,244,171,0.12)", color: "#75f4ab", border: "1px solid rgba(117,244,171,0.3)", borderRadius: "8px", padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: "bold", cursor: "pointer" }}
+              >
+                ← Growth Command
+              </button>
+            )}
             <button
               type="button"
               onClick={() => navigate("/founder/access")}
@@ -253,6 +334,17 @@ export default function CreativeStudio() {
             </button>
           </div>
         </div>
+
+        {campaignContext && (
+          <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(117,244,171,0.2)", borderRadius: "8px", padding: "0.7rem 1rem", marginBottom: "1.25rem", fontSize: "0.8rem" }}>
+            <span style={{ color: "#75f4ab", fontWeight: "bold" }}>Campaign:</span>{" "}
+            <span style={{ color: "#fff" }}>{campaignContext.businessBrief?.businessName || campaignContext.campaignId}</span>
+            <span style={{ color: "#64748b", marginLeft: "0.5rem" }}>• {campaignContext.campaignId} • {campaignContext.status}</span>
+          </div>
+        )}
+        {loadingCampaign && (
+          <div style={{ textAlign: "center", padding: "1rem", color: "#64748b", fontSize: "0.85rem" }}>Loading campaign context...</div>
+        )}
 
         {/* Engine Switcher Tabs */}
         <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.5rem", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "0.5rem" }}>
@@ -389,6 +481,17 @@ export default function CreativeStudio() {
                 </div>
               ) : (
                 <div>
+                  {compositionOutput.engine && (
+                    <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "6px", padding: "0.6rem 0.8rem", marginBottom: "1rem", fontSize: "0.75rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+                      <span style={{ color: "#94a3b8" }}>Engine: <strong style={{ color: compositionOutput.engine === "DETERMINISTIC_TEMPLATE_V1" ? "#84cc16" : "#75f4ab" }}>{compositionOutput.engine}</strong></span>
+                      <span style={{ color: "#94a3b8" }}>{compositionOutput.classification}</span>
+                    </div>
+                  )}
+                  {compositionOutput.truthNotice && (
+                    <p style={{ margin: "0 0 0.75rem", color: "#94a3b8", fontSize: "0.7rem", fontStyle: "italic" }}>
+                      {compositionOutput.truthNotice}
+                    </p>
+                  )}
                   <div style={{ background: "rgba(0,0,0,0.6)", borderRadius: "8px", padding: "1rem", marginBottom: "1.25rem", border: "1px solid rgba(255,255,255,0.08)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
                       <div>
@@ -524,15 +627,28 @@ export default function CreativeStudio() {
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                  {filmOutput.scenes.map((scene) => (
-                    <div key={scene.sceneNum} style={{ background: "rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "0.8rem" }}>
+                  {filmOutput.engine && (
+                    <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "6px", padding: "0.6rem 0.8rem", fontSize: "0.75rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+                      <span style={{ color: "#94a3b8" }}>Engine: <strong style={{ color: filmOutput.engine === "DETERMINISTIC_TEMPLATE_V1" ? "#84cc16" : "#75f4ab" }}>{filmOutput.engine}</strong></span>
+                      <span style={{ color: "#94a3b8" }}>{filmOutput.classification}</span>
+                    </div>
+                  )}
+                  {filmOutput.truthNotice && (
+                    <p style={{ margin: "0 0 0.25rem", color: "#94a3b8", fontSize: "0.7rem", fontStyle: "italic" }}>
+                      {filmOutput.truthNotice}
+                    </p>
+                  )}
+                  {filmOutput.scenes.map((scene, idx) => (
+                    <div key={scene.sceneNum || idx} style={{ background: "rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "0.8rem" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
-                        <span style={{ color: GOLD, fontWeight: "bold", fontSize: "0.85rem" }}>SCENE {scene.sceneNum}</span>
-                        <span style={{ color: "#38bdf8", fontSize: "0.75rem" }}>{scene.shot}</span>
+                        <span style={{ color: GOLD, fontWeight: "bold", fontSize: "0.85rem" }}>
+                          {scene.sceneNum ? `SCENE ${scene.sceneNum}` : `ACT ${scene.act}: ${scene.title}`}
+                        </span>
+                        <span style={{ color: "#38bdf8", fontSize: "0.75rem" }}>{scene.shot || scene.mood}</span>
                       </div>
-                      <p style={{ margin: "0 0 0.4rem", color: "#f1f5f9", fontSize: "0.85rem" }}>{scene.action}</p>
-                      <div style={{ color: "#fef08a", fontSize: "0.8rem", fontStyle: "italic", marginBottom: "0.2rem" }}>{scene.dialogue}</div>
-                      <div style={{ color: "#94a3b8", fontSize: "0.75rem" }}>🔊 <strong>Score:</strong> {scene.audioCue}</div>
+                      <p style={{ margin: "0 0 0.4rem", color: "#f1f5f9", fontSize: "0.85rem" }}>{scene.action || scene.description}</p>
+                      {scene.dialogue && <div style={{ color: "#fef08a", fontSize: "0.8rem", fontStyle: "italic", marginBottom: "0.2rem" }}>{scene.dialogue}</div>}
+                      <div style={{ color: "#94a3b8", fontSize: "0.75rem" }}>🔊 <strong>Score:</strong> {scene.audioCue || scene.duration}</div>
                     </div>
                   ))}
                 </div>

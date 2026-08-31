@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 import { openPristineWhitePdf } from "../utils/printPdf";
 
@@ -11,59 +11,100 @@ const BORDER = "rgba(212, 175, 55, 0.25)";
 
 export default function ContentStudio() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get("campaignId");
+
   const [topic, setTopic] = useState("Enterprise AI Operating Systems & Autonomous Engineering");
   const [targetAudience, setTargetAudience] = useState("Founders, CXOs & Enterprise Leaders");
   const [durationWeeks, setDurationWeeks] = useState(4);
   const [isGenerating, setIsGenerating] = useState(false);
   const [contentOutput, setContentOutput] = useState(null);
+  const [campaignContext, setCampaignContext] = useState(null);
+  const [loadingCampaign, setLoadingCampaign] = useState(false);
 
-  const handleGenerateContent = () => {
+  // Load campaign context if campaignId is present
+  useEffect(() => {
+    if (!campaignId) return;
+    setLoadingCampaign(true);
+    fetch(`/api/growth/campaign/${campaignId}`, { credentials: "same-origin" })
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success) {
+          setCampaignContext(json.data);
+          const brief = json.data.businessBrief || {};
+          if (brief.businessName) setTopic(brief.productOrService || brief.businessName);
+          if (brief.targetAudience) setTargetAudience(brief.targetAudience);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingCampaign(false));
+  }, [campaignId]);
+
+  const handleGenerateContent = async () => {
     setIsGenerating(true);
-    setTimeout(() => {
-      setContentOutput({
-        topic,
-        targetAudience,
-        weeks: [
-          {
-            week: 1,
-            theme: "Authority & Paradigm Shift",
-            posts: [
-              { day: "Mon", format: "LinkedIn Thought Leadership", hook: "Why 90% of AI wrappers fail while AI Operating Systems compound.", cta: "Read the architectural breakdown." },
+    try {
+      // Try live API first
+      const res = await fetch("/api/growth/packs/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ brandName: topic, campaignTheme: topic, weeksCount: durationWeeks })
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        const pack = json.data;
+        const calendar = pack.calendar || {};
+        const pillars = pack.pillars || {};
+        setContentOutput({
+          topic,
+          targetAudience,
+          engine: pack.engine || "digitalMarketingOsService",
+          classification: pack.classification || "LIVE_ENGINE_OUTPUT",
+          truthNotice: pack.truthNotice || "Structured deterministic output — not AI-generated copy.",
+          pillars: pillars.pillars || [],
+          weeks: calendar.weeks || calendar.editorialWeeks || []
+        });
+      } else {
+        // Fallback to local deterministic template
+        setContentOutput({
+          topic,
+          targetAudience,
+          engine: "DETERMINISTIC_TEMPLATE_V1",
+          classification: "LOCAL_TEMPLATE",
+          truthNotice: "Local deterministic template — structured planning output, not AI-generated.",
+          pillars: [
+            `Authority: engineering standards behind ${topic}`,
+            "Proof: outcomes, demonstrations and verifiable evidence",
+            `Education: buying guidance for ${targetAudience}`,
+            "Offer: transparent value-first positioning"
+          ],
+          weeks: [
+            { week: 1, theme: "Authority & Paradigm Shift", posts: [
+              { day: "Mon", format: "LinkedIn Thought Leadership", hook: `Why 90% of AI wrappers fail while ${topic} compound.`, cta: "Read the architectural breakdown." },
               { day: "Wed", format: "Shorts / Reels Script", hook: "The 3 critical flaws in traditional custom software agencies.", cta: "Follow for enterprise systems." },
               { day: "Fri", format: "Case Study Breakdown", hook: "How autonomous engineering replaces 10-person dev shops.", cta: "Explore GARUDA delivery." }
-            ]
-          },
-          {
-            week: 2,
-            theme: "Proof & Operational Reality",
-            posts: [
+            ]},
+            { week: 2, theme: "Proof & Operational Reality", posts: [
               { day: "Mon", format: "Technical Deep Dive", hook: "Inside the 27 Universes: Specialization without isolation.", cta: "See the architecture." },
               { day: "Wed", format: "Shorts / Reels Script", hook: "Stop building AI prototypes. Build production-grade backends.", cta: "DM for blueprint." },
               { day: "Fri", format: "Client Milestone Proof", hook: "Milestone-verified payments and SHA-256 deliverable seals.", cta: "View escrow workflow." }
-            ]
-          },
-          {
-            week: 3,
-            theme: "Commercial Conversion & Urgency",
-            posts: [
-              { day: "Mon", format: "Direct Response Framework", hook: "Quarterly allocation for custom enterprise software is closing.", cta: "Book discovery session." },
-              { day: "Wed", format: "Shorts / Reels Script", hook: "How to ship your full-stack SaaS MVP in 14 days.", cta: "Start interactive scoping." },
-              { day: "Fri", format: "ROI & Impact Matrix", hook: "Real business automation: 80% reduction in manual intake time.", cta: "Claim priority slot." }
-            ]
-          },
-          {
-            week: 4,
-            theme: "Quarterly Close & Retargeting",
-            posts: [
-              { day: "Mon", format: "Founder Letter", hook: "The next decade of autonomous software execution.", cta: "Join our partner network." },
-              { day: "Wed", format: "Shorts / Reels Script", hook: "One command. Infinite intelligence. This is GARUDA.", cta: "Visit garudaos.in." },
-              { day: "Fri", format: "Executive Summary", hook: "Month in review: 100% verified delivery across all active projects.", cta: "Request project proposal." }
-            ]
-          }
-        ]
+            ]}
+          ]
+        });
+      }
+    } catch {
+      setContentOutput({
+        topic,
+        targetAudience,
+        engine: "DETERMINISTIC_TEMPLATE_V1",
+        classification: "LOCAL_TEMPLATE",
+        truthNotice: "API unavailable — local template used.",
+        pillars: [`Authority: ${topic}`, "Proof: outcomes", `Education: ${targetAudience}`, "Offer: positioning"],
+        weeks: [{ week: 1, theme: "Launch", posts: [{ day: "Mon", format: "Post", hook: topic, cta: "Learn more" }] }]
       });
+    } finally {
       setIsGenerating(false);
-    }, 700);
+    }
   };
 
   const handlePrintPdf = () => {
@@ -97,6 +138,11 @@ export default function ContentStudio() {
               <span style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
                 STUDIO EXECUTABLE
               </span>
+              {campaignContext && (
+                <span style={{ background: "rgba(117, 244, 171, 0.15)", color: "#75f4ab", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
+                  CAMPAIGN MODE
+                </span>
+              )}
             </div>
             <h1 style={{ fontSize: "1.8rem", margin: "0.3rem 0 0", color: "#fff" }}>
               Content Factory Studio
@@ -107,6 +153,15 @@ export default function ContentStudio() {
           </div>
 
           <div style={{ display: "flex", gap: "0.75rem" }}>
+            {campaignContext && (
+              <button
+                type="button"
+                onClick={() => navigate("/growth")}
+                style={{ background: "rgba(117,244,171,0.12)", color: "#75f4ab", border: "1px solid rgba(117,244,171,0.3)", borderRadius: "8px", padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: "bold", cursor: "pointer" }}
+              >
+                ← Growth Command
+              </button>
+            )}
             <button
               type="button"
               onClick={() => navigate("/founder/access")}
@@ -116,6 +171,19 @@ export default function ContentStudio() {
             </button>
           </div>
         </div>
+
+        {/* Campaign context banner */}
+        {campaignContext && (
+          <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(117,244,171,0.2)", borderRadius: "8px", padding: "0.7rem 1rem", marginBottom: "1.25rem", fontSize: "0.8rem" }}>
+            <span style={{ color: "#75f4ab", fontWeight: "bold" }}>Campaign:</span>{" "}
+            <span style={{ color: "#fff" }}>{campaignContext.businessBrief?.businessName || campaignContext.campaignId}</span>
+            <span style={{ color: "#64748b", marginLeft: "0.5rem" }}>• {campaignContext.campaignId} • {campaignContext.status}</span>
+          </div>
+        )}
+
+        {loadingCampaign && (
+          <div style={{ textAlign: "center", padding: "1rem", color: "#64748b", fontSize: "0.85rem" }}>Loading campaign context...</div>
+        )}
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "1.5rem" }}>
           {/* Intake Controls */}
@@ -174,6 +242,24 @@ export default function ContentStudio() {
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxHeight: "480px", overflowY: "auto" }}>
+                {contentOutput.engine && (
+                  <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "6px", padding: "0.6rem 0.8rem", fontSize: "0.75rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+                    <span style={{ color: "#94a3b8" }}>Engine: <strong style={{ color: contentOutput.engine === "DETERMINISTIC_TEMPLATE_V1" ? "#84cc16" : "#75f4ab" }}>{contentOutput.engine}</strong></span>
+                    <span style={{ color: "#94a3b8" }}>{contentOutput.classification}</span>
+                  </div>
+                )}
+                {contentOutput.pillars && contentOutput.pillars.length > 0 && (
+                  <div style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(212,175,55,0.15)", borderRadius: "6px", padding: "0.6rem 0.8rem" }}>
+                    <div style={{ fontSize: "0.7rem", textTransform: "uppercase", color: "#64748b", marginBottom: "0.3rem" }}>Content Pillars</div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                      {contentOutput.pillars.map((p, i) => (
+                        <span key={i} style={{ background: "rgba(212,175,55,0.12)", color: GOLD_LIGHT, fontSize: "0.7rem", padding: "0.15rem 0.45rem", borderRadius: "4px" }}>
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {contentOutput.weeks.map((w) => (
                   <div key={w.week} style={{ background: "rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "0.8rem" }}>
                     <div style={{ color: GOLD, fontWeight: "bold", fontSize: "0.9rem", marginBottom: "0.4rem" }}>

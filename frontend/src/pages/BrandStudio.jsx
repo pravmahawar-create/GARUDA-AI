@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 import { openPristineWhitePdf } from "../utils/printPdf";
 
@@ -11,38 +11,99 @@ const BORDER = "rgba(212, 175, 55, 0.25)";
 
 export default function BrandStudio() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get("campaignId");
+
   const [brandName, setBrandName] = useState("GARUDA AI Operating System");
   const [positioning, setPositioning] = useState("Sovereign AI Operating System for Autonomous Business Execution");
   const [isAuditing, setIsAuditing] = useState(false);
   const [brandDossier, setBrandDossier] = useState(null);
+  const [campaignContext, setCampaignContext] = useState(null);
+  const [loadingCampaign, setLoadingCampaign] = useState(false);
 
-  const handleAuditBrand = () => {
+  useEffect(() => {
+    if (!campaignId) return;
+    setLoadingCampaign(true);
+    fetch(`/api/growth/campaign/${campaignId}`, { credentials: "same-origin" })
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success) {
+          setCampaignContext(json.data);
+          const brief = json.data.businessBrief || {};
+          if (brief.businessName) setBrandName(brief.businessName);
+          if (brief.productOrService) setPositioning(brief.productOrService);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingCampaign(false));
+  }, [campaignId]);
+
+  const handleAuditBrand = async () => {
     setIsAuditing(true);
-    setTimeout(() => {
-      setBrandDossier({
-        brandName,
-        positioning,
-        colorPalette: [
-          { name: "Obsidian Core", hex: "#030712", rgb: "rgb(3, 7, 18)", role: "Primary Background & Depth" },
-          { name: "Sovereign Gold", hex: "#d4af37", rgb: "rgb(212, 175, 55)", role: "Primary Accent, Sigil & Borders" },
-          { name: "Gold Radiance", hex: "#fef08a", rgb: "rgb(254, 240, 138)", role: "High-Contrast Highlights" },
-          { name: "Verification Green", hex: "#75f4ab", rgb: "rgb(117, 244, 171)", role: "Live Truth & Cryptographic Status" }
-        ],
-        typography: {
-          display: "Cinzel / Syne (Sovereign Authority)",
-          body: "Inter / Manrope (Clean Enterprise Legibility)",
-          code: "Fira Code (Deterministic Integrity)"
-        },
-        voiceRules: [
-          "Never use generic marketing buzzwords without operational proof.",
-          "State technical limits honestly — Truth Law (Amendment 7) strictly enforced.",
-          "Maintain sovereign, calm, high-conviction executive tone.",
-          "All quantitative performance metrics must tie to verifiable SHA-256 seals."
-        ],
-        identitySeal: "sha256_brand_" + Math.random().toString(16).slice(2, 10) + "99c1"
+    try {
+      const res = await fetch("/api/growth/packs/brand", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ businessName: brandName, positioning })
       });
+      const json = await res.json();
+      if (json.success && json.data) {
+        const pack = json.data;
+        const assets = pack.assets || {};
+        const identity = pack.identity || {};
+        setBrandDossier({
+          brandName: pack.brandName || brandName,
+          positioning: pack.positioning || positioning,
+          engine: pack.engine || "identityLockService",
+          classification: pack.classification || "LIVE_ENGINE_OUTPUT",
+          truthNotice: pack.truthNotice || "Deterministic output — no AI claims.",
+          colorPalette: assets.colorPalette || [],
+          typography: assets.typography || {},
+          voiceRules: assets.voiceTone ? [assets.voiceTone] : [],
+          identitySeal: identity.seal || `sha256_brand_${Math.random().toString(16).slice(2, 10)}99c1`
+        });
+      } else {
+        setBrandDossier({
+          brandName, positioning,
+          engine: "DETERMINISTIC_TEMPLATE_V1",
+          classification: "LOCAL_TEMPLATE",
+          truthNotice: "Local deterministic template — not AI-generated.",
+          colorPalette: [
+            { name: "Obsidian Core", hex: "#030712", role: "Primary Background" },
+            { name: "Sovereign Gold", hex: "#d4af37", role: "Primary Accent" },
+            { name: "Gold Radiance", hex: "#fef08a", role: "Highlights" },
+            { name: "Verification Green", hex: "#75f4ab", role: "Truth Status" }
+          ],
+          typography: { display: "Cinzel / Syne", body: "Inter / Manrope", code: "Fira Code" },
+          voiceRules: [
+            "Never use generic buzzwords without operational proof.",
+            "State technical limits honestly.",
+            "Maintain sovereign, calm, high-conviction tone.",
+            "Metrics must tie to verifiable seals."
+          ],
+          identitySeal: `sha256_brand_${Math.random().toString(16).slice(2, 10)}99c1`
+        });
+      }
+    } catch {
+      setBrandDossier({
+        brandName, positioning,
+        engine: "DETERMINISTIC_TEMPLATE_V1",
+        classification: "LOCAL_TEMPLATE",
+        truthNotice: "API unavailable — local template used.",
+        colorPalette: [
+          { name: "Obsidian Core", hex: "#030712", role: "Primary Background" },
+          { name: "Sovereign Gold", hex: "#d4af37", role: "Primary Accent" },
+          { name: "Gold Radiance", hex: "#fef08a", role: "Highlights" },
+          { name: "Verification Green", hex: "#75f4ab", role: "Truth Status" }
+        ],
+        typography: { display: "Cinzel / Syne", body: "Inter / Manrope", code: "Fira Code" },
+        voiceRules: ["Honest tone", "Verifiable metrics"],
+        identitySeal: `sha256_brand_${Math.random().toString(16).slice(2, 10)}99c1`
+      });
+    } finally {
       setIsAuditing(false);
-    }, 600);
+    }
   };
 
   const handlePrintPdf = () => {
@@ -90,6 +151,11 @@ export default function BrandStudio() {
               <span style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
                 STUDIO EXECUTABLE
               </span>
+              {campaignContext && (
+                <span style={{ background: "rgba(117, 244, 171, 0.15)", color: "#75f4ab", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
+                  CAMPAIGN MODE
+                </span>
+              )}
             </div>
             <h1 style={{ fontSize: "1.8rem", margin: "0.3rem 0 0", color: "#fff" }}>
               Sovereign IdentityLock™ Studio
@@ -100,6 +166,15 @@ export default function BrandStudio() {
           </div>
 
           <div style={{ display: "flex", gap: "0.75rem" }}>
+            {campaignContext && (
+              <button
+                type="button"
+                onClick={() => navigate("/growth")}
+                style={{ background: "rgba(117,244,171,0.12)", color: "#75f4ab", border: "1px solid rgba(117,244,171,0.3)", borderRadius: "8px", padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: "bold", cursor: "pointer" }}
+              >
+                ← Growth Command
+              </button>
+            )}
             <button
               type="button"
               onClick={() => navigate("/founder/access")}
@@ -109,6 +184,17 @@ export default function BrandStudio() {
             </button>
           </div>
         </div>
+
+        {campaignContext && (
+          <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(117,244,171,0.2)", borderRadius: "8px", padding: "0.7rem 1rem", marginBottom: "1.25rem", fontSize: "0.8rem" }}>
+            <span style={{ color: "#75f4ab", fontWeight: "bold" }}>Campaign:</span>{" "}
+            <span style={{ color: "#fff" }}>{campaignContext.businessBrief?.businessName || campaignContext.campaignId}</span>
+            <span style={{ color: "#64748b", marginLeft: "0.5rem" }}>• {campaignContext.campaignId} • {campaignContext.status}</span>
+          </div>
+        )}
+        {loadingCampaign && (
+          <div style={{ textAlign: "center", padding: "1rem", color: "#64748b", fontSize: "0.85rem" }}>Loading campaign context...</div>
+        )}
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "1.5rem" }}>
           <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1.5rem" }}>
@@ -165,6 +251,17 @@ export default function BrandStudio() {
               </div>
             ) : (
               <div>
+                {brandDossier.engine && (
+                  <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "6px", padding: "0.6rem 0.8rem", marginBottom: "1rem", fontSize: "0.75rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+                    <span style={{ color: "#94a3b8" }}>Engine: <strong style={{ color: brandDossier.engine === "DETERMINISTIC_TEMPLATE_V1" ? "#84cc16" : "#75f4ab" }}>{brandDossier.engine}</strong></span>
+                    <span style={{ color: "#94a3b8" }}>{brandDossier.classification}</span>
+                  </div>
+                )}
+                {brandDossier.truthNotice && (
+                  <p style={{ margin: "0 0 0.75rem", color: "#94a3b8", fontSize: "0.7rem", fontStyle: "italic" }}>
+                    {brandDossier.truthNotice}
+                  </p>
+                )}
                 <h4 style={{ fontSize: "0.85rem", color: GOLD, margin: "0 0 0.5rem", textTransform: "uppercase" }}>Color Architecture</h4>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "1rem" }}>
                   {brandDossier.colorPalette.map((c) => (
