@@ -56,6 +56,8 @@ app.use("/api/billing", require("./routes/billingRoutes"));
 app.use("/api/inbound", require("./routes/inboundRoutes"));
 app.use("/api/proposals", require("./routes/proposalRoutes"));
 app.use("/api/acquisition", require("./routes/acquisitionRoutes"));
+// Cross-Universe Growth Command API (mounted BEFORE legacy /api router so explicit routes win)
+app.use("/api/growth", require("./routes/growthCommandRoutes"));
 app.use("/api", require("./routes/growthCreativeRoutes"));
 app.use("/api/auth", (req, res) => require("../api/auth")(req, res));
 app.use("/api/customer", (req, res) => require("../api/customer")(req, res));

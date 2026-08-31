@@ -200,11 +200,12 @@ MISSING (to be built):
 - Phase 0 reconnaissance: COMPLETE (commit `11abbf7`).
 - Phase 1 Growth Domain Foundation: COMPLETE (commits `0bc60df`, `5269512`).
 - Phase 2 Campaign Orchestration: COMPLETE (commit `7305837`).
-- Phase 3 Universe Adapters: COMPLETE.
+- Phase 3 Universe Adapters: COMPLETE (commits `ee2c34f`, `8a52089`).
+- Phase 4 Growth Command API: COMPLETE (commit pending — `feat(growth): expose cross-universe campaign orchestration API`).
 
 ## WHAT REMAINS
 
-- Phases 4–8 (see G above). Phase 4 is the exact next step.
+- Phases 5–8 (see G above). Phase 5 (Growth Command Center UI) is the next step — requires founder authorization.
 
 ## PHASE 3 — UNIVERSE ADAPTERS ✅ COMPLETE
 
@@ -370,14 +371,70 @@ Create `src/services/campaignOrchestratorService.js`:
 4. Tests `campaignOrchestratorService.test.js` + `test:growth:campaign` script;
    run, update this log, commit `feat(growth): add cross-universe campaign orchestration`.
 
+## PHASE 4 — GROWTH COMMAND API ✅ COMPLETE
+
+Date completed: 2026-08-31
+
+### Created
+- `src/routes/growthCommandRoutes.js` (195 lines) — Cross-Universe Growth Command API:
+  - `POST /api/growth/strategy` — brief → GrowthStrategy (deterministic template engine)
+  - `GET /api/growth/strategies` — list strategies (newest-first)
+  - `GET /api/growth/strategy/:id` — get strategy by ID
+  - `POST /api/growth/campaign` — brief or strategyId → Campaign (STRATEGIZED status)
+  - `GET /api/growth/campaigns` — list campaigns
+  - `GET /api/growth/campaign/:id` — get campaign by ID
+  - `POST /api/growth/campaign/:id/ready-for-approval` — STRATEGIZED → READY_FOR_APPROVAL
+  - `POST /api/growth/campaign/:id/approve` — founder approval token gate (403 without, 409 on invalid transition, SHA-256 token hash only)
+  - `POST /api/growth/campaign/:id/execution-pending` — APPROVED → EXECUTION_PENDING (staging only)
+  - `GET /api/growth/campaign/:id/plan/:universe` — per-universe plan slice (U19/U20/U21/U22/U07/U10)
+  - `POST /api/growth/packs/:packType` — run universe pack (brand|content|creative|presence)
+  - Same `{success,data}` convention; statusCode-aware error mapping (400/403/404/409).
+- `src/routes/growthCommandRoutes.test.js` (213 lines) — E2E HTTP test suite:
+  - Section 1: Strategy create/get/list + honest 400/404 errors
+  - Section 2: Campaign lifecycle (create → ready → approve → execution-pending) with 409/403 gates
+  - Section 3: Universe packs (brand/content/presence/creative) live over HTTP
+  - Section 4: Legacy /api/growth route compatibility after mount reorder
+- `src/app.js` — Mounts `growthCommandRoutes` at `/api/growth` BEFORE legacy `/api` router
+- `package.json` — Added `test:growth:api` script
+
+### Tests / build results
+- `node src/routes/growthCommandRoutes.test.js` → ALL TESTS PASSED (4 sections)
+- `node src/services/growthStrategyService.test.js` → ALL TESTS PASSED (7 groups) — regression
+- `node src/services/campaignOrchestratorService.test.js` → ALL TESTS PASSED (7 groups) — regression
+- `node src/services/growthUniverseAdapters.test.js` → ALL TESTS PASSED (6 groups) — regression
+
+### Architecture decisions
+- Mount order: `/api/growth` explicit routes are registered BEFORE the legacy `/api` router
+  (`growthCreativeRoutes`) so Express 5 resolves specific routes first. Legacy endpoints remain
+  intact (verified by test section 4).
+- All 11 endpoints follow the canonical `{success: true, data}` / `{success: false, error}`
+  convention. Errors include statusCode for honest HTTP mapping.
+- Founder approval token is stored as SHA-256 hash only (never verbatim) — mirrors governed
+  delivery patterns.
+- Universe packs delegate to `growthUniverseAdapters` which invoke existing canonical engines
+  (identityLockService, digitalMarketingOsService, creativeStudioService) without modification.
+
+### Git commit
+- `feat(growth): expose cross-universe campaign orchestration API`
+
+### Exact next step (Phase 5)
+Build `frontend/src/pages/GrowthCommandCenter.jsx` — a founder-gated React page that:
+- Calls `POST /api/growth/strategy` to generate strategies from business briefs
+- Calls `POST /api/growth/campaign` to create campaigns
+- Displays campaign lifecycle with approval gate UI
+- Shows per-universe plan slices
+- Calls universe packs for live engine output
+- Route: `/growth-command` (founder-gated like `/command-center`)
+- Vercel rewrite + prerender-seo route entry
+- Vite dev proxy for `/api` (low-risk addition to `vite.config.mjs`)
+
 ## EXACT NEXT STEP FOR NEXT AGENT
 
-Implement Phase 1:
-1. Create `src/services/growthStrategyService.js` — deterministic brief→strategy engine,
-   JSONL persistence `data/growth-strategies.jsonl`, pluggable `strategyIntelligence`
-   hook interface (LLM later, clearly labeled `engine: "DETERMINISTIC_TEMPLATE_V1"`).
-2. Create `src/services/growthStrategyService.test.js` following
-   capabilityRegistryService.test.js style (plain assert, run via node).
-3. Add `"test:growth:strategy": "node src/services/growthStrategyService.test.js"` to package.json.
-4. Run the test, update this log (PHASE 1 section), commit:
-   `feat(growth): add cross-universe growth strategy foundation`.
+Implement Phase 5 (requires founder authorization):
+1. Create `frontend/src/pages/GrowthCommandCenter.jsx` — founder-gated React page consuming the
+   `/api/growth/*` API surface (strategy generation, campaign lifecycle, approval gate, universe packs).
+2. Add route `/growth-command` in `frontend/src/App.jsx` (founder-gated pattern like command-center).
+3. Add vercel.json page rewrite + prerender-seo route entry for `/growth-command`.
+4. Add `/api` proxy to `vite.config.mjs` for local dev (low-risk).
+5. Test: visual verification + API integration test.
+6. Update this log, commit `feat(growth): build Growth Command Center UI`.
