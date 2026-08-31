@@ -9,6 +9,10 @@ const assert = require("assert");
 const adapters = require("./growthUniverseAdapters");
 const identityLockService = require("./identityLockService");
 
+// Hermetic: reset in-memory brand profiles so prior runs' persisted
+// "Aster Heights" profiles (data/brand-profiles.jsonl) don't leak into assertions.
+identityLockService.clearForTesting();
+
 const BRAND = {
   brandName: "Aster Heights",
   industry: "Real Estate",
