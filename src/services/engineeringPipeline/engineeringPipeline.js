@@ -916,53 +916,51 @@ function determineFinalStatus(result) {
 // ═══════════════════════════════════════════
 
 async function generateModification(mission, file, originalContent, routingInfo, workDir) {
-  // Try to use the routed LLM model
-  if (routingInfo?.provider && routingInfo?.model) {
-    try {
-      const llmAdapter = require("../../../rag/llmAdapter");
-      if (llmAdapter && llmAdapter.generateAnswer) {
-        const prompt = buildModificationPrompt(mission, file, originalContent);
-        const response = await llmAdapter.generateAnswer({
-          query: prompt,
-          model: routingInfo.model,
-          provider: routingInfo.provider,
-        });
-        const newContent = extractCodeFromResponse(response.answer || response.text || "", originalContent);
-        if (newContent && newContent !== originalContent) return newContent;
-      }
-    } catch {}
-  }
-
-  // Fallback: try Ollama directly (only if Ollama is running)
-  try {
-    const { execSync } = require("child_process");
-    // Quick check if Ollama is responsive
-    execSync("ollama list", { timeout: 5000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
-    const prompt = buildModificationPrompt(mission, file, originalContent);
-    const escapedPrompt = prompt.replace(/"/g, '\\"').substring(0, 1500);
-    const response = execSync(
-      `ollama run phi3:mini "${escapedPrompt}"`,
-      { timeout: 10000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
-    );
-    const newContent = extractCodeFromResponse(response, originalContent);
-    if (newContent && newContent !== originalContent) return newContent;
-  } catch {}
-
-  // Fallback: use template engine for known patterns
+  // Priority 1: Try template engine (fastest, most reliable)
   try {
     const codeGen = require("../codeGeneration/codeGenerationEngine");
     if (codeGen && codeGen.generate) {
       const generated = codeGen.generate({ mission, file, language: "javascript" });
-      if (generated?.code) return generated.code;
+      if (generated?.code && generated.code !== originalContent) return generated.code;
     }
   } catch {}
 
-  // No modification generated
+  // Priority 2: Use smart engine decision tree (fast, local)
+  try {
+    const smartEngine = require("../smartEngine/speedEngine");
+    if (smartEngine && smartEngine.solve) {
+      const decision = smartEngine.solve({ type: "code_modification", mission, file, content: originalContent });
+      if (decision?.solution) return decision.solution;
+    }
+  } catch {}
+
+  // Priority 3: Try Ollama directly (async, non-blocking)
+  try {
+    const { exec } = require("child_process");
+    const prompt = buildModificationPrompt(mission, file, originalContent);
+    const newContent = await new Promise((resolve) => {
+      const child = exec(
+        `echo '${prompt.replace(/'/g, "'\\''").substring(0, 1500)}' | ollama run phi3:mini`,
+        { timeout: 10000, shell: true, maxBuffer: 1024 * 1024 },
+        (err, stdout) => {
+          if (err) return resolve(null);
+          resolve(extractCodeFromResponse(stdout || "", originalContent));
+        }
+      );
+      setTimeout(() => { try { child.kill(); } catch {} resolve(null); }, 12000);
+    });
+    if (newContent && newContent !== originalContent) return newContent;
+  } catch {}
+
+  // No modification generated — return null (pipeline will skip this file)
   return null;
 }
 
 async function generateCorrectiveModification(mission, file, currentContent, diagnosis, routingInfo, workDir) {
-  const retryPrompt = `The previous modification to ${file} caused test failures.
+  // Priority 1: Try Ollama for corrective fix (async)
+  try {
+    const { exec } = require("child_process");
+    const retryPrompt = `The previous modification to ${file} caused test failures.
 Diagnosis: ${diagnosis.summary}
 Recommendation: ${diagnosis.recommendation}
 Original mission: ${mission}
@@ -971,32 +969,17 @@ ${currentContent.substring(0, 3000)}
 
 Fix the issue. Return ONLY the complete corrected file content.`;
 
-  // Try routed LLM
-  if (routingInfo?.provider && routingInfo?.model) {
-    try {
-      const llmAdapter = require("../../../rag/llmAdapter");
-      if (llmAdapter && llmAdapter.generateAnswer) {
-        const response = await llmAdapter.generateAnswer({
-          query: retryPrompt,
-          model: routingInfo.model,
-          provider: routingInfo.provider,
-        });
-        const newContent = extractCodeFromResponse(response.answer || response.text || "", currentContent);
-        if (newContent && newContent !== currentContent) return newContent;
-      }
-    } catch {}
-  }
-
-  // Fallback: Ollama (only if running)
-  try {
-    const { execSync } = require("child_process");
-    execSync("ollama list", { timeout: 5000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
-    const escapedPrompt = retryPrompt.replace(/"/g, '\\"').substring(0, 1500);
-    const response = execSync(
-      `ollama run phi3:mini "${escapedPrompt}"`,
-      { timeout: 10000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
-    );
-    const newContent = extractCodeFromResponse(response, currentContent);
+    const newContent = await new Promise((resolve) => {
+      const child = exec(
+        `echo '${retryPrompt.replace(/'/g, "'\\''").substring(0, 1500)}' | ollama run phi3:mini`,
+        { timeout: 10000, shell: true, maxBuffer: 1024 * 1024 },
+        (err, stdout) => {
+          if (err) return resolve(null);
+          resolve(extractCodeFromResponse(stdout || "", currentContent));
+        }
+      );
+      setTimeout(() => { try { child.kill(); } catch {} resolve(null); }, 12000);
+    });
     if (newContent && newContent !== currentContent) return newContent;
   } catch {}
 
