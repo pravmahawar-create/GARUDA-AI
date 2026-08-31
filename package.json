@@ -37,6 +37,7 @@
     "test:memory": "node src/services/persistentMemory/memoryService.test.js",
     "test:router": "node src/services/adaptiveRouter/adaptiveRouterService.test.js",
     "test:self:awareness": "node src/services/selfAwareness/selfAwarenessService.test.js",
+    "test:independence": "node src/services/independence/independenceService.test.js",
     "test:mother": "node scripts/mother/mother.js",
     "test:risk": "npm --prefix backend-node test",
     "test": "npm run test:mother && npm run test:risk",
