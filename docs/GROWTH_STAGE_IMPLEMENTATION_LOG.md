@@ -197,11 +197,70 @@ MISSING (to be built):
 
 ## WHAT IS COMPLETE (running total)
 
-- Phase 0 reconnaissance: COMPLETE (this document).
+- Phase 0 reconnaissance: COMPLETE (commit `11abbf7`).
+- Phase 1 Growth Domain Foundation: COMPLETE.
 
 ## WHAT REMAINS
 
-- Phases 1–8 (see G above). Phase 1 is the exact next step.
+- Phases 2–8 (see G above). Phase 2 is the exact next step.
+
+## PHASE 1 — GROWTH DOMAIN FOUNDATION ✅ COMPLETE
+
+Date completed: 2026-08-31
+
+### Created
+- `src/services/growthStrategyService.js` — cross-universe Growth Strategy engine:
+  - `validateBusinessBrief` — validates/normalizes the canonical business brief
+    (businessName, industry, productOrService, targetAudience, campaignGoal, geography,
+    channels, budgetLevel, website, brandContext, notes). Unknown channels dropped,
+    goal normalized to canonical enum. 400-class errors with truthful messages.
+  - `synthesizeDeterministicStrategy(brief)` — pure deterministic synthesis producing
+    the canonical GrowthStrategy body: audience, positioning, campaignObjective,
+    funnelStages (6 canonical stages), channelStrategy, contentRequirements (U20),
+    creativeRequirements (U19), presenceRequirements (U22),
+    communicationRequirements (U07), revenueHandoffRequirements (U10), measurementPlan.
+    Goal-dependent variation (LEAD_GENERATION / BRAND_AWARENESS / LAUNCH /
+    SALES_CONVERSION / SEO_AUTHORITY produce different strategies).
+  - `generateStrategy` — full strategy doc with strategyId (`gs_…`), SHA-256
+    `strategyHash`, `engine: DETERMINISTIC_TEMPLATE_V1` + honest engine notice,
+    JSONL persistence (`data/growth-strategies.jsonl`).
+  - `getStrategy` / `listStrategies` — retrieval (newest-first).
+  - `generateWithIntelligence` — RESERVED LLM hook contract. Throws 501
+    STRATEGY_INTELLIGENCE_NOT_CONNECTED. No fake AI claims.
+  - Canonical enums exported: STRATEGY_ENGINE, CAMPAIGN_GOALS, FUNNEL_STAGES, CHANNELS.
+  - Truth law: strategy contains plans/requirements only — NO invented metrics.
+    Measurement plan explicitly declares UNAVAILABLE policy for disconnected platforms.
+- `src/services/growthStrategyService.test.js` — 7 test groups, all passing:
+  brief validation, normalization, canonical structure + universe ownership,
+  determinism (same brief → same SHA-256), goal variation, persistence/retrieval,
+  LLM hook honesty (501).
+- `package.json` — added `test:growth:strategy` script.
+
+### Tests / build results
+- `node src/services/growthStrategyService.test.js` → ALL TESTS PASSED (7 groups).
+
+### Architecture decisions
+- Deterministic engine first, LLM later via a same-shape hook — service contract stays
+  stable when intelligence is plugged in.
+- JSONL persistence follows sibling growth-service convention (works Mongo-degraded).
+- Strategy references universe ownership via `ownedByUniverse` labels — the layer
+  orchestrates U19/U20/U21/U22/U07/U10 without becoming a universe.
+- strategyHash is SHA-256 of {brief, body} — deterministic verification anchor.
+
+### Git commit
+- `feat(growth): add cross-universe growth strategy foundation` (SHA recorded in git log).
+
+### Exact next step (Phase 2)
+Create `src/services/campaignOrchestratorService.js`:
+1. Campaign object: campaignId, businessBrief, growthStrategy(ref), brandContext,
+   contentPlan, creativeBriefs, presencePlan, communicationPlan, revenueHandoff,
+   measurementPlan, status.
+2. Lifecycle: DRAFT → STRATEGIZED → READY_FOR_APPROVAL → APPROVED → EXECUTION_PENDING
+   (founder approval REQUIRED for the transition; no auto-dispatch, no spend).
+3. JSONL persistence `data/growth-campaigns.jsonl`; emits CAMPAIGN_CREATED/UPDATED via
+   garudaEventService.
+4. Tests `campaignOrchestratorService.test.js` + `test:growth:campaign` script;
+   run, update this log, commit `feat(growth): add cross-universe campaign orchestration`.
 
 ## EXACT NEXT STEP FOR NEXT AGENT
 
