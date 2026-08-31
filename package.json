@@ -42,6 +42,7 @@
     "test:code:gen": "node src/services/codeGeneration/codeGenerationService.test.js",
     "test:orchestrator": "node src/services/orchestrator/orchestratorService.test.js",
     "test:smart": "node src/services/smartEngine/smartEngine.test.js",
+    "test:smart:router": "node src/services/smartModelRouter/smartModelRouter.test.js",
     "test:self:modify": "node src/services/selfModification/selfModificationService.test.js",
     "test:self:heal": "node src/services/selfHealing/selfHealingService.test.js",
     "test:self:expand": "node src/services/selfExpansion/selfExpansionService.test.js",
