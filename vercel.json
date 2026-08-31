@@ -78,6 +78,14 @@
       "destination": "/high-command/index.html"
     },
     {
+      "source": "/growth",
+      "destination": "/growth/index.html"
+    },
+    {
+      "source": "/growth-command",
+      "destination": "/growth/index.html"
+    },
+    {
       "source": "/founder/access",
       "destination": "/founder/access/index.html"
     },

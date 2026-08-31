@@ -725,6 +725,17 @@ const ROUTES = [
     robots: "noindex, nofollow"
   },
   {
+    path: "/growth",
+    filePaths: [
+      path.join(DIST_DIR, "growth", "index.html"),
+      path.join(DIST_DIR, "growth.html")
+    ],
+    title: "Growth Command Center — Cross-Universe Intelligence",
+    description: "Command interface for GARUDA Growth Intelligence: cross-universe campaign orchestration with founder approval gates.",
+    canonical: "https://www.garudaos.in/growth",
+    robots: "noindex, nofollow"
+  },
+  {
     path: "/founder",
     filePaths: [
       path.join(DIST_DIR, "founder", "index.html"),

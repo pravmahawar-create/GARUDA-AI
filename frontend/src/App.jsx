@@ -21,6 +21,7 @@ import WhatIsGarudaAI from "./pages/WhatIsGarudaAI";
 import GuidesIndex from "./pages/GuidesIndex";
 import GuideArticle from "./pages/GuideArticle";
 import HighCommandCenter from "./pages/HighCommandCenter";
+import GrowthCommandCenter from "./pages/GrowthCommandCenter";
 import ScholarStudio from "./pages/ScholarStudio";
 import CreativeStudio from "./pages/CreativeStudio";
 import ContentStudio from "./pages/ContentStudio";
@@ -131,6 +132,16 @@ function AppRoutes() {
     <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
   );
 
+  const growthRoute = authenticated === null ? (
+    <div style={{ minHeight: "100vh", background: "#030712", display: "grid", placeItems: "center", color: "#d4af37", fontFamily: "sans-serif", fontSize: "0.9rem", letterSpacing: "0.1em" }}>
+      GARUDA GROWTH INTELLIGENCE...
+    </div>
+  ) : authenticated ? (
+    <GrowthCommandCenter onLogout={handleLogout} />
+  ) : (
+    <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
+  );
+
   return (
     <Routes>
       <Route path="/" element={publicLanding} />
@@ -157,6 +168,8 @@ function AppRoutes() {
       <Route path="/command" element={<Navigate to="/command-center" replace />} />
       <Route path="/command-center" element={commandCenterRoute} />
       <Route path="/high-command" element={<Navigate to="/command-center" replace />} />
+      <Route path="/growth" element={growthRoute} />
+      <Route path="/growth-command" element={<Navigate to="/growth" replace />} />
       <Route path="/founder" element={founderRoute} />
       <Route path="/founder/acquisition" element={acquisitionRoute} />
       <Route path="/revenue" element={revenueRoute} />
