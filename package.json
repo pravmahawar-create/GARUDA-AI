@@ -27,6 +27,7 @@
     "test:growth:campaign": "node src/services/campaignOrchestratorService.test.js",
     "test:growth:adapters": "node src/services/growthUniverseAdapters.test.js",
     "test:growth:api": "node src/routes/growthCommandRoutes.test.js",
+    "test:growth:handoff": "node src/services/growthHandoffService.test.js",
     "test:mother": "node scripts/mother/mother.js",
     "test:risk": "npm --prefix backend-node test",
     "test": "npm run test:mother && npm run test:risk",

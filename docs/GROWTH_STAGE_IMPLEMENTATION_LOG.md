@@ -527,11 +527,56 @@ All four Ring 3 studio pages now support campaign context and live API integrati
 ### Git commit
 - `feat(growth): connect ring 3 studios to campaign orchestration`
 
+## Phase 7: Communication + Revenue Handoff Contracts
+
+### What was built
+Formalized cross-universe handoff contracts between Growth Intelligence and the governed Communication (U07) + Revenue (U10) universes:
+
+**New Files:**
+- `src/services/growthHandoffService.js` — Core handoff service
+- `src/services/growthHandoffService.test.js` — 31 test assertions across 6 sections
+
+**Communication Handoff (Growth → U07):**
+- `draftCampaignCommunication()` creates a DRAFTED/APPROVAL_REQUIRED communication in the U07 outbound system
+- Supports email, telegram, webhook, api channels
+- Founder approval gate: NEVER auto-sends
+- Emits `CAMPAIGN_CREATED` event through canonical event system
+- Persists handoff record to `data/growth-handoffs.jsonl`
+
+**Revenue Handoff (Growth → U10):**
+- `draftCampaignProposal()` creates a proposal with milestone-based pricing in the U10 persistent proposal system
+- Auto-calculates totalValue from milestones when not provided
+- Creates proposal in APPROVED status (awaiting client acceptance)
+- Emits `PROPOSAL_CREATED` event through canonical event system
+- Persists handoff record to `data/growth-handoffs.jsonl`
+
+**API Endpoints Added to `/api/growth`:**
+- `POST /api/growth/handoff/communication` — campaign → U07 Communication draft
+- `POST /api/growth/handoff/proposal` — campaign → U10 Revenue proposal
+- `GET /api/growth/handoffs` — list handoff records (filterable by campaignId)
+
+**Test Results:**
+- `growthHandoffService.test.js`: ALL PASSED (31 assertions, 6 sections)
+- `growthCommandRoutes.test.js`: ALL PASSED (5 sections) — regression
+- `growthStrategyService.test.js`: ALL PASSED (8 groups) — regression
+- `campaignOrchestratorService.test.js`: ALL PASSED (7 groups) — regression
+- `growthUniverseAdapters.test.js`: ALL PASSED (7 groups) — regression
+
+### Architecture decisions
+- Handoff service bridges Growth Intelligence to existing governed services (U07/U10) without modifying them
+- All handoffs emit events through canonical garudaEventService for audit trail
+- Communication handoffs ALWAYS require founder approval — no auto-send
+- Proposal handoffs create proposals in APPROVED status (ready for client acceptance)
+- Handoff records persisted to JSONL for cross-session continuity
+- Graceful degradation: if U07/U10 services are unavailable, local records are created
+
+### Git commit
+- `feat(growth): formalize communication + revenue handoff contracts`
+
 ## EXACT NEXT STEP FOR NEXT AGENT
 
-Implement Phase 7 (requires founder authorization):
-1. Formalize handoff contracts between Growth Intelligence and Communication (U07) + Revenue (U10) universes
-2. Verify existing `outboundCommunicationService` and `persistentProposalService` integration points
-3. Add campaign-triggered communication events (DRAFTED → APPROVAL_REQUIRED → SENT)
-4. Add campaign-triggered proposal creation from growth campaigns
-5. Update this log, commit `feat(growth): formalize communication + revenue handoff contracts`.
+Implement Phase 8 (requires founder authorization):
+1. Run full E2E demonstration: brief → strategy → campaign → handoff → communication + proposal
+2. Verify all 7 phase test suites pass in sequence
+3. Produce final Growth Intelligence Truth Report documenting what each phase actually does
+4. Update this log, commit `feat(growth): e2e demonstration and truth report`.

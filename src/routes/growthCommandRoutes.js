@@ -27,6 +27,7 @@ const router = express.Router();
 const growthStrategyService = require("../services/growthStrategyService");
 const campaignOrchestratorService = require("../services/campaignOrchestratorService");
 const growthUniverseAdapters = require("../services/growthUniverseAdapters");
+const growthHandoffService = require("../services/growthHandoffService");
 
 const UNIVERSE_PLAN_KEYS = {
   U21: "brandContext",
@@ -186,6 +187,47 @@ router.post("/packs/:packType", async (req, res) => {
     }
     const pack = await handler(req.body || {});
     res.json({ success: true, data: pack });
+  } catch (err) {
+    sendError(res, err);
+  }
+});
+
+// ===========================================================================
+// HANDOFF CONTRACTS (Communication U07 + Revenue U10)
+// ===========================================================================
+
+router.post("/handoff/communication", async (req, res) => {
+  try {
+    const { campaignId, campaignBrief, channel, recipient, body, subject } = req.body || {};
+    const result = await growthHandoffService.draftCampaignCommunication({
+      campaignId, campaignBrief, channel, recipient, body, subject
+    });
+    res.json(result);
+  } catch (err) {
+    sendError(res, err);
+  }
+});
+
+router.post("/handoff/proposal", async (req, res) => {
+  try {
+    const { campaignId, campaignBrief, milestones, totalValue, currency } = req.body || {};
+    const result = await growthHandoffService.draftCampaignProposal({
+      campaignId, campaignBrief, milestones, totalValue, currency
+    });
+    res.json(result);
+  } catch (err) {
+    sendError(res, err);
+  }
+});
+
+router.get("/handoffs", (req, res) => {
+  try {
+    const { campaignId, limit } = req.query || {};
+    const result = growthHandoffService.listCampaignHandoffs({
+      campaignId: campaignId || undefined,
+      limit: limit ? Number(limit) : undefined
+    });
+    res.json(result);
   } catch (err) {
     sendError(res, err);
   }
