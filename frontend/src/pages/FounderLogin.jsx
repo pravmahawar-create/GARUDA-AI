@@ -46,8 +46,8 @@ export default function FounderLogin({ onAuthenticated }) {
     event.preventDefault();
     setError("");
     setNotice("");
-    if (newPassword.length < 12) {
-      setError("Password must be at least 12 characters.");
+    if (newPassword.length < 5) {
+      setError("Password must be at least 5 characters.");
       return;
     }
     setLoading(true);
@@ -163,7 +163,7 @@ export default function FounderLogin({ onAuthenticated }) {
               <label htmlFor="setup-token" style={label}>Setup / reset token</label>
               <input id="setup-token" type="password" autoComplete="off" value={setupToken} onChange={(event) => setSetupToken(event.target.value)} style={field} placeholder="GARUDA_FOUNDER_SETUP_TOKEN value" />
               <label htmlFor="new-password" style={label}>New founder password</label>
-              <input id="new-password" type="password" autoComplete="new-password" minLength="12" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required style={field} placeholder="At least 12 characters" />
+              <input id="new-password" type="password" autoComplete="new-password" minLength="5" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required style={field} placeholder="At least 5 characters" />
             </>
           )}
 

@@ -46,7 +46,7 @@ function normalizeEmail(value) {
 
 function validatePassword(value) {
   const password = String(value || "");
-  if (password.length < 12) throw new Error("Password must be at least 12 characters");
+  if (password.length < 5) throw new Error("Password must be at least 5 characters");
   if (password.length > 128) throw new Error("Password is too long");
   return password;
 }
@@ -145,7 +145,7 @@ function friendlyAuthError(err, fallback) {
     return "An account already exists for this email";
   }
   if (code === "weak_password" || /password should be at least/i.test(message)) {
-    return "Password is too weak — use at least 12 characters";
+    return "Password is too weak — use at least 5 characters";
   }
   if (code === "email_not_confirmed" || /email not confirmed/i.test(message)) {
     return "Please confirm your email address before signing in";

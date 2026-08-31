@@ -78,8 +78,8 @@ async function passwordMatches(password) {
 async function setFounderPassword(password) {
   const connected = await connectCredentialStore();
   if (!connected) return { stored: false, message: "MongoDB is not configured for founder credential storage" };
-  if (typeof password !== "string" || password.length < 12) {
-    return { stored: false, message: "Password must be at least 12 characters" };
+  if (typeof password !== "string" || password.length < 5) {
+    return { stored: false, message: "Password must be at least 5 characters" };
   }
   const passwordSalt = crypto.randomBytes(16).toString("base64url");
   const passwordHash = (await scrypt(password, passwordSalt, 64)).toString("base64url");
@@ -141,7 +141,7 @@ async function managePasswordHandler(req, res) {
   const newPassword = String(req.body?.newPassword || "");
   const currentPassword = String(req.body?.currentPassword || "");
   const setupToken = String(req.body?.setupToken || "");
-  if (newPassword.length < 12) return res.status(400).json({ success: false, message: "Password must be at least 12 characters" });
+  if (newPassword.length < 5) return res.status(400).json({ success: false, message: "Password must be at least 5 characters" });
 
   const sessionGranted = hasValidSession(req);
   let currentAccepted = false;

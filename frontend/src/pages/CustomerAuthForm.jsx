@@ -84,11 +84,11 @@ export default function CustomerAuthForm({ mode, onAuthenticated }) {
           autoComplete={isSignup ? "new-password" : "current-password"}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          minLength="12"
+          minLength="5"
           required
           style={{ width: "100%", margin: "0.5rem 0 1rem", padding: "0.75rem" }}
         />
-        {isSignup && <p style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Use at least 12 characters.</p>}
+        {isSignup && <p style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Use at least 5 characters.</p>}
         {error && <p role="alert" style={{ color: "#fca5a5" }}>{error}</p>}
         <button type="submit" disabled={loading || demoLoading} className="hero-panel__button hero-panel__button--primary" style={{ width: "100%" }}>
           {loading ? "Please wait..." : isSignup ? "Create account" : "Log in"}
