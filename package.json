@@ -42,6 +42,7 @@
     "test:code:gen": "node src/services/codeGeneration/codeGenerationService.test.js",
     "test:orchestrator": "node src/services/orchestrator/orchestratorService.test.js",
     "test:self:modify": "node src/services/selfModification/selfModificationService.test.js",
+    "test:self:heal": "node src/services/selfHealing/selfHealingService.test.js",
     "test:mother": "node scripts/mother/mother.js",
     "test:risk": "npm --prefix backend-node test",
     "test": "npm run test:mother && npm run test:risk",
