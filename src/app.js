@@ -58,6 +58,8 @@ app.use("/api/proposals", require("./routes/proposalRoutes"));
 app.use("/api/acquisition", require("./routes/acquisitionRoutes"));
 // Cross-Universe Growth Command API (mounted BEFORE legacy /api router so explicit routes win)
 app.use("/api/growth", require("./routes/growthCommandRoutes"));
+// Repository Intelligence Engine — GARUDA's self-understanding layer
+app.use("/api/repo-intel", require("./routes/repositoryIntelRoutes"));
 app.use("/api", require("./routes/growthCreativeRoutes"));
 app.use("/api/auth", (req, res) => require("../api/auth")(req, res));
 app.use("/api/customer", (req, res) => require("../api/customer")(req, res));

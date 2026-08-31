@@ -28,6 +28,7 @@
     "test:growth:adapters": "node src/services/growthUniverseAdapters.test.js",
     "test:growth:api": "node src/routes/growthCommandRoutes.test.js",
     "test:growth:handoff": "node src/services/growthHandoffService.test.js",
+    "test:repo:intel": "node src/services/repositoryIntelligence/repositoryIntelligenceService.test.js",
     "test:mother": "node scripts/mother/mother.js",
     "test:risk": "npm --prefix backend-node test",
     "test": "npm run test:mother && npm run test:risk",
@@ -93,6 +94,7 @@
   },
   "homepage": "https://github.com/pravmahawar-create/GARUDA-AI#readme",
   "dependencies": {
+    "@babel/parser": "^8.0.4",
     "@google/genai": "^2.16.0",
     "@huggingface/transformers": "^4.2.0",
     "@supabase/supabase-js": "^2.112.2",
