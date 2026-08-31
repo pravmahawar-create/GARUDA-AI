@@ -28,6 +28,10 @@ function initAll() {
   try { registerService("independence", require("../independence/localDecisionEngine")); } catch {}
   try { registerService("codeGen", require("../codeGeneration/codeGenerationService")); } catch {}
   try { registerService("router", require("../adaptiveRouter/adaptiveRouterService")); } catch {}
+  try { registerService("smartEngine", require("../smartEngine/speedEngine")); } catch {}
+  try { registerService("smartRouter", require("../smartModelRouter/smartModelRouterService")); } catch {}
+  try { registerService("independenceRules", require("../independence/ruleEngine")); } catch {}
+  try { registerService("pipeline", require("../engineeringPipeline/engineeringPipeline")); } catch {}
   return listServices();
 }
 

@@ -20,6 +20,8 @@ function generateResponse(commandResult, context = {}) {
     case "remember": return getRemember(args[0], context);
     case "learn": return getLearn(args[0], context);
     case "goals": return getGoals(context);
+    case "mission": return getMission(context);
+    case "pipeline": return getPipeline(context);
     case "quit": return "Alvida! GARUDA ready hai jab bhi bulao.";
     case "chat": return getChat(args[0], context);
     default: return "Samajh nahi aaya. 'help' likh ke dekho.";
@@ -40,6 +42,8 @@ GARUDA Commands:
   find <query>  — Code dhundho
   explain <file>— File explain karo
   generate <type> — Code generate karo
+  mission <task> — Full engineering pipeline chalao
+  pipeline status — Pipeline ka status dekho
   remember <msg>— Yaad mein rakho
   learn <goal>  — Goal se seekho
   goals         — Active goals dikhao
@@ -52,6 +56,7 @@ Hindi mein bhi bol sakte ho:
   sudhar       — Fix
   dhundh       — Find
   bana         — Generate
+  mission      — Engineering pipeline
 `;
 }
 
@@ -190,6 +195,30 @@ function getChat(input, context) {
     return "Code review, fix, plan, generate, yaad rakhna, seekhna — sab kar sakta hoon. 'help' likh ke dekho.";
   }
   return `"${input}" — Samajh gaya. Aur kuch?`;
+}
+
+function getMission(context) {
+  const m = context.mission;
+  if (!m) return "Mission batao: mission <description>";
+  if (m.status === "error") return `Mission error: ${m.error}`;
+  if (m.status === "queued") {
+    return `Mission queued: "${m.text}"\nPipeline chal raha hai... Result ka wait karo.\nTip: 'pipeline status' se dekh sakte ho.`;
+  }
+  return `Mission: ${JSON.stringify(m)}`;
+}
+
+function getPipeline(context) {
+  const p = context.pipelineStatus;
+  if (!p) return "Pipeline status unavailable.";
+  if (p.totalMissions === 0) return "Abhi koi mission execute nahi hua. 'mission <task>' se start karo.";
+  let msg = `Pipeline Status: ${p.totalMissions} mission(s) executed\n`;
+  if (p.last5) {
+    msg += "Last 5:\n";
+    for (const entry of p.last5) {
+      msg += `  [${entry.finalStatus || entry.status || "?"}] ${entry.mission || "?"} (${entry.timeMs || "?"}ms)\n`;
+    }
+  }
+  return msg;
 }
 
 module.exports = { generateResponse };

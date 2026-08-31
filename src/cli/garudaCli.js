@@ -91,6 +91,27 @@ function buildContext(command, args) {
     } catch { ctx.goals = []; }
   }
 
+  if (command === "mission" && args.length > 0) {
+    try {
+      const pipeline = require("../services/engineeringPipeline/engineeringPipeline");
+      const missionText = args.join(" ");
+      ctx.mission = { text: missionText, status: "queued" };
+    } catch (err) { ctx.mission = { text: args.join(" "), status: "error", error: err.message }; }
+  }
+
+  if (command === "pipeline" && args[0] === "status") {
+    try {
+      const fs = require("fs");
+      const logPath = require("path").join(__dirname, "..", "..", "data", "engineering", "pipeline-log.jsonl");
+      if (fs.existsSync(logPath)) {
+        const lines = fs.readFileSync(logPath, "utf8").trim().split("\n");
+        ctx.pipelineStatus = { totalMissions: lines.length, last5: lines.slice(-5).map((l) => JSON.parse(l)) };
+      } else {
+        ctx.pipelineStatus = { totalMissions: 0, message: "No missions executed yet" };
+      }
+    } catch { ctx.pipelineStatus = { totalMissions: 0 }; }
+  }
+
   return ctx;
 }
 
