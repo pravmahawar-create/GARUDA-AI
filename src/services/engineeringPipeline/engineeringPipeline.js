@@ -933,14 +933,16 @@ async function generateModification(mission, file, originalContent, routingInfo,
     } catch {}
   }
 
-  // Fallback: try Ollama directly
+  // Fallback: try Ollama directly (only if Ollama is running)
   try {
     const { execSync } = require("child_process");
+    // Quick check if Ollama is responsive
+    execSync("ollama list", { timeout: 5000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
     const prompt = buildModificationPrompt(mission, file, originalContent);
     const escapedPrompt = prompt.replace(/"/g, '\\"').substring(0, 1500);
     const response = execSync(
       `ollama run phi3:mini "${escapedPrompt}"`,
-      { timeout: 15000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+      { timeout: 10000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
     );
     const newContent = extractCodeFromResponse(response, originalContent);
     if (newContent && newContent !== originalContent) return newContent;
@@ -985,13 +987,14 @@ Fix the issue. Return ONLY the complete corrected file content.`;
     } catch {}
   }
 
-  // Fallback: Ollama
+  // Fallback: Ollama (only if running)
   try {
     const { execSync } = require("child_process");
+    execSync("ollama list", { timeout: 5000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
     const escapedPrompt = retryPrompt.replace(/"/g, '\\"').substring(0, 1500);
     const response = execSync(
       `ollama run phi3:mini "${escapedPrompt}"`,
-      { timeout: 15000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+      { timeout: 10000, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
     );
     const newContent = extractCodeFromResponse(response, currentContent);
     if (newContent && newContent !== currentContent) return newContent;
