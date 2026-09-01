@@ -17,6 +17,12 @@ function understandGoal(goal = "") {
   const selfDevelopmentSignal = !hasNegativeWriteConstraint && /\b(capability|weakness|self-development|self development|improvement|weaknesses)\b/i.test(text);
   const selfDevelopmentMetaSignal = !hasNegativeWriteConstraint && /\b(inspect\s+your(?:self|\s+currently\s+available\s+runtime\s+capabilities)|choose\s+the\s+target\s+yourself|identify\s+one\s+highest-value\s+capability|self-development\s+engineering\s+mission)\b/i.test(text);
 
+  const creativeSignal = !hasNegativeWriteConstraint && (
+    /\b(create|generate|build|make|bana|banao|banado|design)\b[^.]{0,60}\b(premium|cinematic|luxury|poster|image|visual|creative|banner|social\s*media|instagram|cinematic\s*poster|premium\s*poster|social\s*media\s*image)\b/i.test(text) ||
+    /\b(premium cinematic|cinematic poster|luxury social|social media image|premium poster|premium image|cinematic image|poster for my product)\b/i.test(text) ||
+    /\b(ek\s+premium|ek\s+cinematic|luxury\s+social\s*media)\b/i.test(text)
+  );
+
   const isReadOnlyInspection = /\b(inspect|audit|analyze|determine\s+whether|check\s+whether|verify\s+whether|find\s+whether|read)\b/i.test(text);
   const hasAffirmativeWriteCommand = !hasNegativeWriteConstraint && (
     /\b(create|build|implement|add|write|generate|fix|repair|modify|update|patch|refactor)\s+([a-z0-9_\-\.\/]+)\b/i.test(text) ||
@@ -75,6 +81,14 @@ function understandGoal(goal = "") {
     domain = "mother";
     intent = "self_development_improvement";
     priority = "high";
+  } else if (creativeSignal) {
+    domain = "creative";
+    intent = "create_creative_asset";
+    priority = "high";
+    if (!targetName) {
+      const creativeMatch = rawGoal.match(/\bfor\s+my\s+(\w+)|for\s+(\w+)\s+product|my\s+product/i);
+      targetName = (creativeMatch && (creativeMatch[1] || creativeMatch[2])) || "premium_creative_asset";
+    }
   } else if (actionType === "revenue") {
     domain = "revenue";
     intent = "develop_revenue_model";

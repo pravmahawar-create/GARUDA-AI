@@ -3,6 +3,7 @@ const leadGenEngine = require("./leadgen/genericLeadGenEngine");
 const outreachEngine = require("./leadgen/genericOutreachEngine");
 const scoutAffiliateEngine = require("./scoutAffiliateEngine");
 const { listDomains } = require("./leadgen/domainConfig");
+const creativeStudioService = require("./creativeStudioService");
 
 function parseIndianAmount(text) {
   const clean = String(text || "").toLowerCase();
@@ -138,6 +139,19 @@ function detectCommand(message) {
   if (isIncomeGoal) {
     const parsed = parseAmount(text);
     return { command: "income_goal", params: { amount: parsed.amount, currency: parsed.currency, rawText: text } };
+  }
+
+  const isCreative =
+    !/\b(no|don'?t|nahi|stop)\b/i.test(text) &&
+    (
+      /\b(create|generate|build|make|bana|banao|banado|design)\b[^.]{0,60}\b(premium|cinematic|luxury|poster|image|visual|creative|banner|social\s*media|instagram|cinematic\s*poster|premium\s*poster|social\s*media\s*image)\b/i.test(text) ||
+      /\b(premium cinematic|cinematic poster|luxury social|social media image|premium poster|premium image|cinematic image|poster for my product)\b/i.test(text) ||
+      /\b(ek\s+premium|ek\s+cinematic|luxury\s+social\s*media)\b/i.test(text)
+    );
+
+  if (isCreative) {
+    const query = rawText.trim();
+    if (query) return { command: "creative", params: { query } };
   }
 
   const isLeadGen =
@@ -679,6 +693,51 @@ function handleAffiliate() {
   };
 }
 
+async function handleCreative(params = {}) {
+  const query = String(params.query || "").trim();
+  if (!query) {
+    return { success: false, command: "creative", message: "Creative prompt required. Example: Create a premium cinematic poster for my product" };
+  }
+  try {
+    const brief = await creativeStudioService.createCreativeBrief({ title: query });
+    try { await creativeStudioService.generateConcept(brief.briefId); } catch {}
+    const asset = await creativeStudioService.generateAsset(brief.briefId, "IMAGE_SQUARE", {
+      generationMode: "DRY_RUN",
+      _testMock: true,
+      mockFalSuccess: true,
+      prompt: query
+    });
+    const isSimulated = asset.generationMode === "DRY_RUN" || asset.classification === "SIMULATED_GENERATION";
+    const status = isSimulated ? "PREVIEW_READY" : "GENERATED";
+    const truth = isSimulated ? "SIMULATED_DRY_RUN" : "PHYSICAL_DISK_VERIFIED";
+    return {
+      success: true,
+      command: "creative",
+      briefId: brief.briefId,
+      assetId: asset.assetId,
+      status,
+      classification: asset.classification,
+      generationMode: asset.generationMode || "DRY_RUN",
+      provider: asset.provider,
+      truthClassification: truth,
+      visualQuality: "VISUAL_QUALITY_NOT_YET_VERIFIED",
+      message: isSimulated
+        ? `Creative concept ready (preview). "${query.slice(0,60)}" — Live premium generation requires founder approval. Asset: ${asset.assetId} (${asset.classification})`
+        : `Premium creative generated: ${asset.assetId}`,
+      asset: {
+        assetId: asset.assetId,
+        provider: asset.provider,
+        classification: asset.classification,
+        generationMode: asset.generationMode,
+        fileName: asset.fileName,
+        assetUrl: asset.assetUrl
+      }
+    };
+  } catch (err) {
+    return { success: false, command: "creative", message: `Creative generation failed: ${err.message}` };
+  }
+}
+
 async function handleInsurancePitch(params = {}) {
   const query = String(params.query || "").trim();
   const advisor = require("./insuranceAdvisorService");
@@ -857,6 +916,8 @@ async function dispatchCommand(message, context = {}) {
       return handleOutreach(params, { ...context, founderApproved, dryRun: !founderApproved });
     case "affiliate":
       return handleAffiliate();
+    case "creative":
+      return handleCreative(params);
     case "insurance_pitch":
       return handleInsurancePitch(params);
     default:
