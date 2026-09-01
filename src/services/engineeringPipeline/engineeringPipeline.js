@@ -38,6 +38,79 @@ function logEvent(event) {
   } catch {}
 }
 
+function getLearningContext(mission) {
+  try {
+    const memory = require("../persistentMemory/memoryService");
+    const q = String(mission || "").substring(0, 200);
+    let relevant = memory.recall({ query: q, limit: 20 }) || [];
+    const lessons = memory.getWisdom(q) || [];
+    // Fallback: memorySearch does not index `mission` field — also match on mission text directly
+    if (!relevant.length) {
+      const { readExperiences } = require("../persistentMemory/experienceLogger");
+      const all = readExperiences(5000);
+      const ql = q.toLowerCase();
+      const byMission = all.filter(e => e.mission && String(e.mission).toLowerCase().includes(ql.substring(0,30).toLowerCase()));
+      if (byMission.length) relevant = byMission.slice(-20);
+      else {
+        // broader: token overlap
+        const tokens = ql.split(/\s+/).filter(w=>w.length>3);
+        const scored = all.map(e=>{
+          const txt = `${e.mission||''} ${e.action||''} ${e.error||''} ${(e.tags||[]).join(' ')}`.toLowerCase();
+          let score=0; for(const t of tokens) if(txt.includes(t)) score++; return {e,score};
+        }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).map(x=>x.e);
+        if (scored.length) relevant = scored.slice(0,20);
+      }
+    }
+    const recentRelevant = relevant.slice(-20);
+    const total = recentRelevant.length;
+    const successes = recentRelevant.filter(e => e.outcome === "success" || e.outcome === "recovered").length;
+    const failures = recentRelevant.filter(e => e.outcome === "failure" || e.outcome === "failed" || e.error).length;
+    const historicalSuccessRate = total > 0 ? successes / total : null;
+    // Most frequent routing model among successes
+    let preferredModel = null;
+    if (recentRelevant.length) {
+      const byModel = {};
+      for (const e of recentRelevant) {
+        const m = e.context && (e.context.routing || e.context.model || e.routing);
+        const key = typeof m === "string" ? m : (m && m.provider ? `${m.provider}:${m.model}` : null);
+        if (!key && e.routing) {
+          const k2 = typeof e.routing === "string" ? e.routing : (e.routing.provider ? `${e.routing.provider}:${e.routing.model}` : null);
+          if (k2) byModel[k2] = (byModel[k2] || 0) + 1;
+        } else if (key) {
+          byModel[key] = (byModel[key] || 0) + 1;
+        }
+        // also check top-level routing field stored by pipeline learn step
+        if (e.routing && typeof e.routing === "object" && e.routing.provider) {
+          const k = `${e.routing.provider}:${e.routing.model}`;
+          byModel[k] = (byModel[k] || 0) + 1;
+        }
+      }
+      const sorted = Object.entries(byModel).sort((a,b)=>b[1]-a[1]);
+      if (sorted.length) preferredModel = sorted[0][0];
+    }
+    // Failures with the would-be selected provider unknown yet -> caller will compute
+    return {
+      relevantExperiences: recentRelevant,
+      lessons,
+      historicalSuccessRate,
+      preferredModel,
+      totalRelevant: total,
+      successes,
+      failures,
+    };
+  } catch { return null; }
+}
+
+function getFailureLessons(diagnosis) {
+  try {
+    const memory = require("../persistentMemory/memoryService");
+    const q = diagnosis && (diagnosis.primaryType || diagnosis.summary) ? String(diagnosis.primaryType || diagnosis.summary).substring(0, 150) : "";
+    const lessons = q ? memory.getWisdom(q) : [];
+    const exps = q ? memory.recall({ query: q, limit: 10 }) : [];
+    return { lessons: lessons.slice(0,5), experiences: exps.slice(0,5) };
+  } catch { return { lessons: [], experiences: [] }; }
+}
+
 /**
  * Execute a full engineering mission through the closed loop.
  *
@@ -145,17 +218,60 @@ async function executeMission(mission, options = {}) {
     // ═══════════════════════════════════════════
     addStep("route", "running");
 
+    // — Learning retrieval BEFORE routing (adaptive loop)
+    let learningContext = null;
+    try {
+      learningContext = getLearningContext(mission);
+      if (learningContext && learningContext.totalRelevant > 0) {
+        addEvidence("learning_context", {
+          totalRelevant: learningContext.totalRelevant,
+          successes: learningContext.successes,
+          failures: learningContext.failures,
+          historicalSuccessRate: learningContext.historicalSuccessRate,
+          preferredModel: learningContext.preferredModel,
+          lessonsConsidered: learningContext.lessons.length,
+        });
+        addStep("learning_recall", "done", {
+          relevant: learningContext.totalRelevant,
+          successRate: learningContext.historicalSuccessRate,
+          preferredModel: learningContext.preferredModel,
+          lessons: learningContext.lessons.length,
+        });
+      } else {
+        addStep("learning_recall", "done", { relevant: 0, message: "No relevant history" });
+      }
+    } catch (e) {
+      addStep("learning_recall", "degraded", null, e.message);
+    }
+
     let routing = null;
     try {
       const smartRouter = require("../smartModelRouter/smartRouter");
-      routing = await smartRouter.route(mission);
+      // Pass learningContext so router can adapt (weighted signal, not blind dictate)
+      routing = await smartRouter.route(mission, { learningContext });
+      // Enrich routing with learning influence for evidence
+      if (learningContext) {
+        const failuresWithSelected = learningContext.relevantExperiences.filter(e => {
+          const prov = e.context && e.context.routing ? e.context.routing.provider : (e.routing ? e.routing.provider : null);
+          return prov && prov === routing.selected.provider && (e.outcome === "failure" || e.outcome === "failed" || e.error);
+        }).length;
+        routing.learningContext = {
+          historicalSuccessRate: learningContext.historicalSuccessRate,
+          preferredModel: learningContext.preferredModel,
+          failuresWithSelectedProvider: failuresWithSelected,
+          lessonsConsidered: learningContext.lessons.length,
+        };
+        // Also attach to result for tests
+        result.learningContext = routing.learningContext;
+      }
       addStep("route", "done", {
         provider: routing.selected.provider,
         model: routing.selected.model,
         tier: routing.selected.tier,
         reason: routing.selected.reason,
+        learningContext: routing.learningContext || null,
       });
-      addEvidence("routing", routing.selected);
+      addEvidence("routing", { ...routing.selected, learningContext: routing.learningContext || null });
     } catch (err) {
       // Non-fatal — continue with default
       routing = { selected: { provider: "smart_engine", model: "rules+cache", tier: "internal", reason: "Router unavailable" } };
@@ -627,18 +743,24 @@ async function executeMission(mission, options = {}) {
 
       const lesson = {
         type: "engineering_mission",
-        mission,
-        category: categorizeMission(mission),
-        filesModified: result.filesModified.length,
-        testsRun: result.testsRun.length,
-        testsPassed: result.testsPassed,
-        testsFailed: result.testsFailed,
-        retries: result.retries,
-        reviewVerdict: result.reviewVerdict?.verdict || "UNKNOWN",
-        routing: routing?.selected?.provider || "unknown",
+        action: mission,
+        outcome: result.status === "completed" ? "success" : (result.status === "failed" ? "failure" : result.status),
+        error: result.testsFailed > 0 ? `${result.testsFailed} tests failed` : null,
+        tags: [categorizeMission(mission), "engineering", `retries:${result.retries}`, `verdict:${result.reviewVerdict?.verdict || "UNKNOWN"}`],
+        context: {
+          mission,
+          category: categorizeMission(mission),
+          filesModified: result.filesModified.length,
+          testsRun: result.testsRun.length,
+          testsPassed: result.testsPassed,
+          testsFailed: result.testsFailed,
+          retries: result.retries,
+          reviewVerdict: result.reviewVerdict?.verdict || "UNKNOWN",
+          routing: routing?.selected || null,
+          duration: Date.now() - startTime,
+          learnings: extractLearnings(result, testResults),
+        },
         duration: Date.now() - startTime,
-        outcome: result.status === "completed" ? "success" : result.status,
-        learnings: extractLearnings(result, testResults),
       };
 
       memory.remember(lesson);

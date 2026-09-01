@@ -91,14 +91,48 @@ function selectBestProvider(classification, providers) {
   };
 }
 
-async function route(input) {
+async function route(input, options = {}) {
   const startTime = Date.now();
   const text = typeof input === "string" ? input : input?.text || input?.problem || JSON.stringify(input);
 
   const classification = classifyTask(text);
   const providers = await getProviders();
 
-  const decision = selectBestProvider(classification, providers);
+  let decision = selectBestProvider(classification, providers);
+  // Adaptive learning influence: historical evidence can bias tier/model choice
+  const learningContext = options.learningContext || options.historicalContext || null;
+  if (learningContext && typeof learningContext === "object") {
+    const hist = learningContext;
+    // Derive failuresWithProvider from relevantExperiences if not precomputed
+    let failuresWithProvider = hist.failuresWithSelectedProvider || 0;
+    if (!failuresWithProvider && Array.isArray(hist.relevantExperiences) && hist.relevantExperiences.length) {
+      failuresWithProvider = hist.relevantExperiences.filter(e=>{
+        const prov = e.context && e.context.routing ? e.context.routing.provider : (e.routing ? e.routing.provider : null);
+        const err = e.error || (e.outcome === "failure" || e.outcome === "failed");
+        return prov && prov === decision.provider && err;
+      }).length;
+    }
+    const successRate = typeof hist.historicalSuccessRate === "number" ? hist.historicalSuccessRate : null;
+    const preferredModel = hist.preferredModel || null;
+    if (failuresWithProvider >= 2) {
+      // Prefer alternative: if local failed, try cloud; if cloud failed, try internal
+      if (decision.tier === "local" && providers.cloud && providers.cloud.length) {
+        const cloudAlt = selectCloudModel(classification, providers);
+        if (cloudAlt) decision = { ...cloudAlt, tier: "cloud", reason: decision.reason + ` + learning: ${failuresWithProvider} prior failures with ${decision.provider} → trying ${cloudAlt.provider}` };
+      } else if (decision.tier !== "internal") {
+        const fallback = { provider: "smart_engine", model: "rules+cache+cases", reason: decision.reason + ` + learning: ${failuresWithProvider} prior failures → fallback to smart_engine`, tier: "internal" };
+        decision = fallback;
+      }
+    } else if (preferredModel && preferredModel !== decision.model && successRate !== null && successRate > 0.7) {
+      // High success with another model -> hint but don't override if current is healthy; record influence
+      decision.reason = decision.reason + ` + learning: preferred ${preferredModel} has ${(successRate*100).toFixed(0)}% success`;
+      decision.learningHint = preferredModel;
+      decision.historicalSuccessRate = successRate;
+    }
+    if (hist.lessons && hist.lessons.length) {
+      decision.lessonsConsidered = hist.lessons.length;
+    }
+  }
 
   const result = {
     input: text.substring(0, 200),
