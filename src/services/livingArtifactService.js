@@ -18,6 +18,19 @@ function ensureDir() {
 
 const livingStore = new Map();
 
+// Optional MongoDB model — loaded lazily, fallback to file/memory if not available
+let LivingArtifactModel = null;
+try {
+  LivingArtifactModel = require("../models/LivingArtifact");
+} catch {}
+function isDbAvailable() {
+  try {
+    const mongoose = require("mongoose");
+    const db = require("../database/db");
+    return db.isMongoConnected && db.isMongoConnected() && mongoose.connection && mongoose.connection.readyState === 1 && LivingArtifactModel;
+  } catch { return false; }
+}
+
 function loadFromDisk() {
   ensureDir();
   try {
@@ -100,10 +113,13 @@ function createLivingArtifactContext(input = {}) {
     anticipatedQuestions: anticipatedQuestions.map(q => q.question)
   };
 
-  const continuityScopeId = input.continuityScopeId || input.sessionId || input.projectId || input.briefId || null;
-  const sessionId = input.sessionId || input.continuityScopeId || null;
+  const continuityScopeId = input.continuityScopeId || input.sessionId || input.conversationId || input.projectId || input.briefId || null;
+  const sessionId = input.sessionId || input.conversationId || input.continuityScopeId || null;
+  const conversationId = input.conversationId || input.sessionId || null;
   const sourceArtifactId = input.sourceArtifactId || null;
   const rootArtifactId = input.rootArtifactId || sourceArtifactId || artifactId;
+  const continuationInstruction = input.continuationInstruction || input.continuationOf || null;
+  const status = input.status || "CREATED";
 
   const doc = {
     artifactId,
@@ -125,15 +141,25 @@ function createLivingArtifactContext(input = {}) {
     briefId: input.briefId || null,
     goalId: input.goalId || null,
     sessionId: sessionId,
+    conversationId: conversationId,
     continuityScopeId: continuityScopeId,
     sourceArtifactId: sourceArtifactId,
     rootArtifactId: rootArtifactId,
+    continuationInstruction: continuationInstruction,
+    status: status,
     createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     version: "1.0.0"
   };
 
   livingStore.set(artifactId, doc);
   appendDoc(doc);
+  // Durable DB persistence (MongoDB) — file remains fallback for free/local
+  if (isDbAvailable()) {
+    try {
+      LivingArtifactModel.create({ ...doc, createdAt: new Date(doc.createdAt), updatedAt: new Date(doc.updatedAt) }).catch(() => {});
+    } catch {}
+  }
   // Also persist to persistentMemory for continuity
   try {
     const memory = require("./persistentMemory/memoryService");
@@ -231,23 +257,84 @@ function getMostRecentCreativeArtifact() {
 }
 
 function getMostRecentCreativeArtifactScoped(filter = {}) {
-  const { projectId, sessionId, continuityScopeId, briefId } = filter || {};
-  if (!projectId && !sessionId && !continuityScopeId && !briefId) return null;
+  const { projectId, sessionId, continuityScopeId, briefId, conversationId } = filter || {};
+  const effectiveSessionId = sessionId || conversationId || null;
+  if (!projectId && !effectiveSessionId && !continuityScopeId && !briefId) return null;
   let mostRecent = null;
+  // Check in-memory first
   for (const doc of livingStore.values()) {
     const isCreative = String(doc.artifactType || "").toLowerCase().includes("creative") || String(doc.artifactType || "") === "creative_asset";
     if (!isCreative) continue;
     let matches = false;
     if (continuityScopeId && doc.continuityScopeId && doc.continuityScopeId === continuityScopeId) matches = true;
     else if (projectId && doc.projectId && doc.projectId === projectId) matches = true;
-    else if (sessionId && doc.sessionId && doc.sessionId === sessionId) matches = true;
+    else if (effectiveSessionId && doc.sessionId && doc.sessionId === effectiveSessionId) matches = true;
+    else if (effectiveSessionId && doc.conversationId && doc.conversationId === effectiveSessionId) matches = true;
     else if (briefId && doc.briefId && doc.briefId === briefId) matches = true;
     if (!matches) continue;
     if (!mostRecent || new Date(doc.createdAt) > new Date(mostRecent.createdAt)) {
       mostRecent = doc;
     }
   }
-  return mostRecent;
+  if (mostRecent) return mostRecent;
+  // Fallback to file (durable across restart, sync)
+  try {
+    if (fs.existsSync(LIVING_ARTIFACTS_FILE)) {
+      const lines = fs.readFileSync(LIVING_ARTIFACTS_FILE, "utf8").split("\n").filter(Boolean);
+      let fileMostRecent = null;
+      for (const line of lines) {
+        try {
+          const doc = JSON.parse(line);
+          const isCreative = String(doc.artifactType || "").toLowerCase().includes("creative") || String(doc.artifactType || "") === "creative_asset";
+          if (!isCreative) continue;
+          let matches = false;
+          if (continuityScopeId && doc.continuityScopeId && doc.continuityScopeId === continuityScopeId) matches = true;
+          else if (projectId && doc.projectId && doc.projectId === projectId) matches = true;
+          else if (effectiveSessionId && doc.sessionId && doc.sessionId === effectiveSessionId) matches = true;
+          else if (effectiveSessionId && doc.conversationId && doc.conversationId === effectiveSessionId) matches = true;
+          else if (briefId && doc.briefId && doc.briefId === briefId) matches = true;
+          if (!matches) continue;
+          if (!fileMostRecent || new Date(doc.createdAt) > new Date(fileMostRecent.createdAt)) {
+            fileMostRecent = doc;
+          }
+        } catch {}
+      }
+      if (fileMostRecent) {
+        // Hydrate into memory for future calls
+        livingStore.set(fileMostRecent.artifactId, fileMostRecent);
+        return fileMostRecent;
+      }
+    }
+  } catch {}
+  // DB fallback is async — for sync path, return null if not found in memory/file
+  // Async DB check is available via getMostRecentCreativeArtifactScopedAsync
+  return null;
+}
+
+async function getMostRecentCreativeArtifactScopedAsync(filter = {}) {
+  const syncResult = getMostRecentCreativeArtifactScoped(filter);
+  if (syncResult) return syncResult;
+  if (!isDbAvailable()) return null;
+  const { projectId, sessionId, continuityScopeId, briefId, conversationId } = filter || {};
+  const effectiveSessionId = sessionId || conversationId || null;
+  if (!projectId && !effectiveSessionId && !continuityScopeId && !briefId) return null;
+  const query = { artifactType: /creative/i };
+  // Build strict scope filter — never global
+  const orConditions = [];
+  if (continuityScopeId) orConditions.push({ continuityScopeId });
+  if (projectId) orConditions.push({ projectId });
+  if (effectiveSessionId) orConditions.push({ sessionId: effectiveSessionId }, { conversationId: effectiveSessionId });
+  if (briefId) orConditions.push({ briefId });
+  if (!orConditions.length) return null;
+  query.$or = orConditions;
+  try {
+    const doc = await LivingArtifactModel.findOne(query).sort({ createdAt: -1 }).lean();
+    if (doc) {
+      livingStore.set(doc.artifactId, doc);
+      return doc;
+    }
+  } catch {}
+  return null;
 }
 
 function prepareArtifactPresentation(artifactId) {
