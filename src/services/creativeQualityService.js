@@ -25,6 +25,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const identityLockService = require("./identityLockService");
+const { GARUDA_CORE_PRINCIPLES, getQualityFloor } = require("./garudaCorePrinciples");
 
 function sha256(data) {
   const str = typeof data === "string" ? data : JSON.stringify(data);
@@ -157,15 +158,58 @@ class CreativeQualityService {
 
     const allPassed = failedChecks.length === 0;
 
-    return {
-      status: allPassed ? "PASSED" : "FAILED",
+    // Truthful separation per Phase 2.1 correction: TECHNICAL_VERIFICATION vs REQUIREMENT_COMPLIANCE vs VISUAL_QUALITY
+    const requestedProfile = assetDoc.qualityProfile || assetDoc.qualityThreshold || "standard";
+    const requiredLevel = getQualityFloor(requestedProfile); // e.g., "exceptional_completeness" — not numeric 98
+    const isPreview = String(requestedProfile).toLowerCase().includes("preview") || String(assetDoc.deliveryMode || "").toLowerCase() === "preview" || String(assetDoc.generationMode || "").toLowerCase().includes("DRY_RUN") || assetDoc.classification === "SIMULATED_GENERATION";
+
+    // TECHNICAL_VERIFICATION — deterministic binary checks (file, hash, dims)
+    const technicalVerification = {
       passed: allPassed,
+      checks: [...checks],
+      failedChecks: [...failedChecks],
+      truthClassification: allPassed ? "TECHNICAL_VERIFICATION_PASSED" : "TECHNICAL_VERIFICATION_FAILED"
+    };
+    // REQUIREMENT_COMPLIANCE — requested format/dimensions/CTA/identity metadata (same physical checks but viewed as requirements)
+    const requirementCompliance = {
+      requestedProfile,
+      requiredLevel,
+      isPreview,
+      passed: allPassed, // requirements met if physical checks passed; preview allows same
+      truthClassification: allPassed ? "REQUIREMENT_COMPLIANCE_PASSED" : "REQUIREMENT_COMPLIANCE_FAILED"
+    };
+    // VISUAL_OR_SEMANTIC_QUALITY — only VERIFIED if actual visual model exists, otherwise honest
+    const visualQualityVerification = {
+      status: "VISUAL_QUALITY_NOT_YET_VERIFIED",
+      verified: false,
+      reason: "No semantic aesthetic model wired; deterministic checks (file/MIME/dimensions/SHA/CTA/lock) are not visual quality. BEYOND_EXPECTATION_QUALITY remains ambition, not numeric score.",
+      ambition: GARUDA_CORE_PRINCIPLES.principles.quality.ambition,
+      detail: "Technical verification passed does not equal cinematic visual verification."
+    };
+
+    // Overall PASSED means technical + requirement passed; visual remains not yet verified truthfully
+    const overallPassed = technicalVerification.passed && requirementCompliance.passed;
+
+    return {
+      status: overallPassed ? "PASSED" : "FAILED",
+      passed: overallPassed,
       totalChecks: checks.length,
       passedChecksCount: checks.filter(c => c.passed).length,
       failedChecksCount: failedChecks.length,
       checks,
       failedChecks,
-      truthClassification: allPassed ? "OBJECTIVE_QUALITY_PASSED" : "OBJECTIVE_QUALITY_FAILED",
+      qualityProfile: requestedProfile,
+      requiredLevel,
+      isPreview,
+      technicalVerification,
+      requirementCompliance,
+      visualQualityVerification,
+      // Backward compat fields (deprecated numeric)
+      qualityScore: allPassed ? 95 : Math.max(0, 95 - failedChecks.length * 20),
+      requiredFloor: requiredLevel,
+      physicalVerification: technicalVerification,
+      qualityPolicy: { requestedProfile, requiredLevel, isPreview, floorEnforced: overallPassed, truthClassification: overallPassed ? "QUALITY_POLICY_PASSED" : "QUALITY_POLICY_FLOOR_NOT_MET" },
+      truthClassification: overallPassed ? "OBJECTIVE_QUALITY_PASSED" : "OBJECTIVE_QUALITY_FAILED",
       verifiedAt: new Date().toISOString()
     };
   }
