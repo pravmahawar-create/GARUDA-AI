@@ -25,6 +25,7 @@ const {
   createCreativeGenerationJob,
   createCreativeAsset
 } = require("./growthSharedContracts");
+const { getQualityFloor } = require("./garudaCorePrinciples");
 
 const DATA_DIR = path.join(__dirname, "..", "..", "data");
 const STORYBOARDS_FILE = path.join(DATA_DIR, "video-storyboards.jsonl");
@@ -105,8 +106,12 @@ class VideoGenerationRouter {
   /**
    * 1. Detect Configured Video Providers with Capability Analysis.
    */
+  // Backward-compatible Runway resolver: supports both RUNWAY_API_KEY and legacy RUNWAYML_API_SECRET (no secret duplication)
+  _getRunwayKey() {
+    return process.env.RUNWAY_API_KEY || process.env.RUNWAYML_API_SECRET || null;
+  }
   detectProviders() {
-    const runwayKey = process.env.RUNWAY_API_KEY || null;
+    const runwayKey = this._getRunwayKey();
     const lumaKey = process.env.LUMA_API_KEY || null;
     const klingKey = process.env.KLING_API_KEY || null;
     const soraKey = process.env.OPENAI_SORA_API_KEY || null;
@@ -214,6 +219,8 @@ class VideoGenerationRouter {
    * 3. Route Video Generation Request through Canonical Job Lifecycle.
    */
   async routeVideoGeneration(request = {}) {
+    const qualityProfile = request.qualityProfile || request.qualityThreshold || (String(request.title||"").toLowerCase().includes("cinematic")||String(request.title||"").toLowerCase().includes("flagship") ? "cinematic" : "standard");
+    const requiredFloor = getQualityFloor(qualityProfile);
     const providerStatus = this.detectProviders();
     const format = request.format || "REEL_9_16"; // "REEL_9_16" | "FEED_SQUARE_1_1" | "LANDSCAPE_16_9"
     const aspectRatio = format === "REEL_9_16" ? "9:16" : format === "FEED_SQUARE_1_1" ? "1:1" : "16:9";
@@ -231,7 +238,7 @@ class VideoGenerationRouter {
     this.storyboards.set(storyboard.storyboardId, storyboard);
     appendDocToFile(STORYBOARDS_FILE, storyboard);
 
-    // Initialize Canonical CreativeGenerationJob
+    // Initialize Canonical CreativeGenerationJob — carry identity continuity per GARUDA_CORE_PRINCIPLES.brand_consistency
     const job = createCreativeGenerationJob({
       briefId: request.briefId,
       campaignId: request.campaignId,
@@ -241,7 +248,14 @@ class VideoGenerationRouter {
         title: request.title,
         format,
         aspectRatio,
-        storyboardId: storyboard.storyboardId
+        storyboardId: storyboard.storyboardId,
+        projectId: request.projectId || null,
+        brandId: request.brandId || null,
+        identityId: request.identityId || null,
+        styleProfileId: request.styleProfileId || null,
+        continuityRequired: Boolean(request.continuityRequired),
+        qualityProfile,
+        requiredFloor
       },
       status: providerStatus.aiVideoGeneratorsAvailable
         ? PROVIDER_LIFECYCLE_STATES.PROCESSING
@@ -294,14 +308,15 @@ class VideoGenerationRouter {
     ensureDirs();
     const assetId = `vid_ai_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
 
-    if (providerId === "runway_gen3" && process.env.RUNWAY_API_KEY) {
+    if ((providerId === "runway_gen3" || providerId === "runway") && this._getRunwayKey()) {
+      const runwayKey = this._getRunwayKey();
       const endpoint = "https://api.dev.runwayml.com/v1/image_to_video";
       const promptText = storyboard.scenes[0]?.generativeScenePrompt || request.title;
 
       const res = await fetchWithTimeout(endpoint, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.RUNWAY_API_KEY}`,
+          Authorization: `Bearer ${runwayKey}`,
           "X-Runway-Version": "2024-09-13",
           "Content-Type": "application/json"
         },

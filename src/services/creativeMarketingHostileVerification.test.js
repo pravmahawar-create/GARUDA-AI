@@ -147,7 +147,11 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
 
     it("Truthfully returns PROVIDER_UNAVAILABLE with PRODUCTION_PROMPT_READY & VECTOR_CREATIVE_READY fallback when unconfigured", async () => {
       const prevGemini = process.env.IMAGEN_ENABLED;
+      const prevFal = process.env.FAL_KEY;
+      const prevReplicate = process.env.REPLICATE_API_TOKEN;
       delete process.env.IMAGEN_ENABLED;
+      delete process.env.FAL_KEY;
+      delete process.env.REPLICATE_API_TOKEN;
 
       const result = await imageGenerationRouter.routeGeneration({
         headline: "Photorealistic Penthouse",
@@ -164,6 +168,8 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.strictEqual(result.truthClassification, "TRUTHFUL_UNAVAILABLE");
 
       if (prevGemini) process.env.IMAGEN_ENABLED = prevGemini;
+      if (prevFal) process.env.FAL_KEY = prevFal;
+      if (prevReplicate) process.env.REPLICATE_API_TOKEN = prevReplicate;
     });
 
     it("Generates sovereign SVG layout, writes physical file to disk, and verifies SHA-256 byte match (VECTOR_CREATIVE)", async () => {
@@ -299,7 +305,9 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
   describe("4. Video Generation Router & Storyboard Truth", () => {
     it("Truthfully returns VIDEO_GENERATION_UNAVAILABLE when video AI generator is unconfigured, and returns complete cinematic shot blueprint", async () => {
       const prevRunway = process.env.RUNWAY_API_KEY;
+      const prevRunwayAlt = process.env.RUNWAYML_API_SECRET;
       delete process.env.RUNWAY_API_KEY;
+      delete process.env.RUNWAYML_API_SECRET;
 
       const result = await videoGenerationRouter.routeVideoGeneration({
         title: "Forensic Cinematic Video",
@@ -328,6 +336,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       assert.ok(sb.scenes[0].generativeScenePrompt.includes("--ar 9:16"));
 
       if (prevRunway) process.env.RUNWAY_API_KEY = prevRunway;
+      if (prevRunwayAlt) process.env.RUNWAYML_API_SECRET = prevRunwayAlt;
     });
 
     it("Checks video provider health truthfully", async () => {

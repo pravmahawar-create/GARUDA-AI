@@ -28,6 +28,7 @@ const identityLockService = require("./identityLockService");
 const imageGenerationRouter = require("./imageGenerationRouter");
 const videoGenerationRouter = require("./videoGenerationRouter");
 const creativeQualityService = require("./creativeQualityService");
+const { GARUDA_CORE_PRINCIPLES, getQualityFloor } = require("./garudaCorePrinciples");
 
 const DATA_DIR = path.join(__dirname, "..", "..", "data");
 const ASSETS_DIR = path.join(DATA_DIR, "creative-assets");
@@ -383,17 +384,34 @@ class CreativeStudioService {
 
     const headline = brief.concept?.adCopyVariants[0]?.headline || `Luxury Living at ${brief.identityLock.brandName}`;
     const cta = brief.concept?.adCopyVariants[0]?.cta || "Schedule VIP Walkthrough →";
+    // Quality floor per GARUDA_CORE_PRINCIPLES (section 3 & 12): cinematic/brand-critical requires 98, premium 95, preview 65
+    const qualityProfile = options.qualityProfile || brief.qualityProfile || (String(brief.title||"").toLowerCase().includes("cinematic")||String(brief.title||"").toLowerCase().includes("flagship")||String(brief.title||"").toLowerCase().includes("brand film")||String(brief.title||"").toLowerCase().includes("premium") ? "cinematic" : "standard");
+    const requiredFloor = getQualityFloor(qualityProfile);
+    // Natural-language excellence: premium cinematic without explicit provider → internally route to AI_PHOTOREALISTIC when provider ready, else sovereign
+    const implicitPremium = !options.mode && (qualityProfile === "cinematic" || qualityProfile === "premium" || qualityProfile === "brand_critical");
+    const effectiveMode = options.mode || (implicitPremium && imageGenerationRouter.detectProviders().aiGeneratorsAvailable ? "AI_PHOTOREALISTIC" : "SOVEREIGN_LAYOUT");
+    const generationMode = options.generationMode || (effectiveMode === "AI_PHOTOREALISTIC" ? "DRY_RUN" : undefined); // DRY_RUN by default, LIVE requires explicit founder flag
 
     const routeResult = await imageGenerationRouter.routeGeneration({
       briefId,
       projectId: brief.projectId,
       brandId: brief.identityLock.brandId,
       brandName: brief.identityLock.brandName,
+      identityId: options.identityId || brief.identityId || null,
+      styleProfileId: options.styleProfileId || brief.styleProfileId || null,
+      continuityRequired: Boolean(options.continuityRequired || brief.continuityRequired),
+      qualityProfile,
+      qualityThreshold: requiredFloor,
       headline,
       subheadline: brief.productSpecs.location,
       cta,
       platformPreset,
-      mode: options.mode || "SOVEREIGN_LAYOUT"
+      mode: effectiveMode,
+      generationMode,
+      prompt: options.prompt || headline,
+      model: options.model || null,
+      _testMock: options._testMock || false,
+      mockFalSuccess: options.mockFalSuccess || false
     });
 
     if (!routeResult.success && routeResult.status === "IMAGE_GENERATION_PROVIDER_UNAVAILABLE") {
@@ -420,11 +438,16 @@ class CreativeStudioService {
     const brief = this.briefs.get(briefId);
     if (!brief) throw new Error(`Creative brief not found: ${briefId}`);
 
+    const qualityProfile = brief.qualityProfile || (String(brief.title||"").toLowerCase().includes("cinematic")||String(brief.title||"").toLowerCase().includes("flagship") ? "cinematic" : "standard");
     const result = await videoGenerationRouter.routeVideoGeneration({
       briefId,
       projectId: brief.projectId,
       brandId: brief.identityLock.brandId,
       brandName: brief.identityLock.brandName,
+      identityId: brief.identityId || null,
+      styleProfileId: brief.styleProfileId || null,
+      continuityRequired: Boolean(brief.continuityRequired),
+      qualityProfile,
       title: brief.title,
       location: brief.productSpecs.location,
       priceRange: brief.productSpecs.priceRange,

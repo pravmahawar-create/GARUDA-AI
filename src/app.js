@@ -61,6 +61,7 @@ app.use("/api/growth", require("./routes/growthCommandRoutes"));
 // Repository Intelligence Engine — GARUDA's self-understanding layer
 app.use("/api/repo-intel", require("./routes/repositoryIntelRoutes"));
 app.use("/api/engineering", require("./routes/engineeringPipelineRoutes"));
+app.use("/api/creative", require("./routes/creativeRoutes"));
 app.use("/api", require("./routes/growthCreativeRoutes"));
 app.use("/api/auth", (req, res) => require("../api/auth")(req, res));
 app.use("/api/customer", (req, res) => require("../api/customer")(req, res));
