@@ -143,6 +143,32 @@ router.post("/generate", async (req, res) => {
       : "Creative concept ready. Live premium generation requires founder approval.";
     const truthClassification = isReal ? "PHYSICAL_DISK_VERIFIED" : "SIMULATED_DRY_RUN";
 
+    // Create Living Artifact for durability and continuation — governed secondary step
+    let livingArtifact = null;
+    try {
+      const livingArtifactService = require("../services/livingArtifactService");
+      const continuityScopeId = projectId || req.body.sessionId || req.body.conversationId || req.body.continuityScopeId || brief.briefId || null;
+      const sessionId = req.body.sessionId || req.body.conversationId || null;
+      livingArtifact = livingArtifactService.createLivingArtifactContext({
+        artifactType: "creative_asset",
+        purpose: prompt,
+        audience: brief.targetAudience || "general",
+        sourceGoal: { intent: intent.intent, domain: "creative", rawGoal: prompt },
+        sourceBrief: brief,
+        narrative: `Created via /api/creative/generate for prompt: "${prompt}" with asset ${finalAsset.assetId}`,
+        keyClaims: [
+          { claim: `Creative asset ${finalAsset.assetId} with classification ${finalAsset.classification}`, evidence: finalAsset.filePath, confidence: "EVIDENCE_BACKED" }
+        ],
+        evidence: [{ type: "creative_asset", assetId: finalAsset.assetId, filePath: finalAsset.filePath, classification: finalAsset.classification, generationMode: finalAsset.generationMode }],
+        projectId: projectId,
+        sessionId: sessionId,
+        continuityScopeId: continuityScopeId,
+        briefId: brief.briefId,
+        sourceArtifactId: null,
+        rootArtifactId: null
+      });
+    } catch {}
+
     return res.json({
       success: true,
       status,
@@ -175,11 +201,15 @@ router.post("/generate", async (req, res) => {
         qualityProfile: intent.qualityProfile,
         requiredFloor: intent.requiredFloor
       },
+      visualQuality: "VISUAL_QUALITY_NOT_YET_VERIFIED",
       qualityProfile: intent.qualityProfile,
       truthClassification,
+      livingArtifactId: livingArtifact ? livingArtifact.artifactId : null,
+      continuityScopeId: livingArtifact ? livingArtifact.continuityScopeId : (projectId || null),
       metadata: {
         briefId: brief.briefId,
-        brandLockHash: brief.identityLock?.lockHash?.slice(0, 12) || null
+        brandLockHash: brief.identityLock?.lockHash?.slice(0, 12) || null,
+        livingArtifactId: livingArtifact ? livingArtifact.artifactId : null
       }
     });
   } catch (err) {
@@ -233,6 +263,255 @@ router.get("/assets/:id", (req, res) => {
       brandId: safeAsset.identityLock?.brandId || safeAsset.brandId
     }
   });
+});
+
+// GET /api/creative/artifacts/:artifactId — retrieve single Living Artifact
+router.get("/artifacts/:artifactId", (req, res) => {
+  const artifactId = String(req.params.artifactId || "").trim();
+  if (!artifactId) return res.status(400).json({ success: false, message: "artifactId required" });
+  const livingArtifactService = require("../services/livingArtifactService");
+  const doc = livingArtifactService.getLivingArtifactContext(artifactId);
+  if (!doc) return res.status(404).json({ success: false, message: "Living artifact not found", artifactId });
+  // Truthful fields only, never claim REAL_AI_IMAGE for simulation
+  return res.json({
+    success: true,
+    artifactId: doc.artifactId,
+    sourceArtifactId: doc.sourceArtifactId || null,
+    rootArtifactId: doc.rootArtifactId || null,
+    continuityScopeId: doc.continuityScopeId || null,
+    projectId: doc.projectId || null,
+    sessionId: doc.sessionId || null,
+    conversationId: doc.conversationId || null,
+    status: doc.status || "CREATED",
+    classification: doc.evidence && doc.evidence[0] ? doc.evidence[0].classification : doc.artifactType,
+    generationMode: doc.evidence && doc.evidence[0] ? doc.evidence[0].generationMode : null,
+    visualQuality: "VISUAL_QUALITY_NOT_YET_VERIFIED",
+    artifactType: doc.artifactType,
+    purpose: doc.purpose,
+    audience: doc.audience,
+    createdAt: doc.createdAt,
+    updatedAt: doc.updatedAt || doc.createdAt,
+    briefId: doc.briefId || null,
+    evidence: doc.evidence || [],
+    narrative: doc.narrative || null
+  });
+});
+
+// GET /api/creative/artifacts/:artifactId/lineage — lineage/history retrieval
+router.get("/artifacts/:artifactId/lineage", (req, res) => {
+  const artifactId = String(req.params.artifactId || "").trim();
+  if (!artifactId) return res.status(400).json({ success: false, message: "artifactId required" });
+  const livingArtifactService = require("../services/livingArtifactService");
+  try {
+    const lineage = livingArtifactService.getArtifactLineage(artifactId);
+    const safeLineage = lineage.map(doc => ({
+      artifactId: doc.artifactId,
+      artifactType: doc.artifactType,
+      status: doc.status || "CREATED",
+      sourceArtifactId: doc.sourceArtifactId || null,
+      rootArtifactId: doc.rootArtifactId || null,
+      continuityScopeId: doc.continuityScopeId || null,
+      projectId: doc.projectId || null,
+      sessionId: doc.sessionId || null,
+      conversationId: doc.conversationId || null,
+      purpose: doc.purpose,
+      audience: doc.audience,
+      continuationInstruction: doc.continuationInstruction || null,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt || doc.createdAt,
+      briefId: doc.briefId || null,
+      evidence: doc.evidence || [],
+      narrative: doc.narrative || null
+    }));
+    return res.json({
+      success: true,
+      artifactId,
+      lineageCount: safeLineage.length,
+      rootArtifactId: safeLineage.length > 0 ? safeLineage[0].rootArtifactId || safeLineage[0].artifactId : null,
+      lineage: safeLineage
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message, error: String(err.message).slice(0, 300) });
+  }
+});
+
+// GET /api/creative/artifacts?projectId=&sessionId=&continuityScopeId=&briefId=&limit= — scoped list, never global
+router.get("/artifacts", (req, res) => {
+  const projectId = req.query.projectId ? String(req.query.projectId).trim() : null;
+  const sessionId = req.query.sessionId ? String(req.query.sessionId).trim() : null;
+  const conversationId = req.query.conversationId ? String(req.query.conversationId).trim() : null;
+  const continuityScopeId = req.query.continuityScopeId ? String(req.query.continuityScopeId).trim() : null;
+  const briefId = req.query.briefId ? String(req.query.briefId).trim() : null;
+  const limit = req.query.limit ? parseInt(String(req.query.limit), 10) : 20;
+  const effectiveSessionId = sessionId || conversationId || null;
+  if (!projectId && !effectiveSessionId && !continuityScopeId && !briefId) {
+    return res.status(400).json({
+      success: false,
+      status: "CLARIFICATION_REQUIRED",
+      message: "At least one scope filter required: projectId, sessionId, continuityScopeId, or briefId. Global listing not allowed.",
+      artifacts: []
+    });
+  }
+  const livingArtifactService = require("../services/livingArtifactService");
+  const list = livingArtifactService.listLivingArtifacts({
+    projectId,
+    sessionId: effectiveSessionId,
+    continuityScopeId,
+    briefId,
+    artifactType: "creative",
+    limit: Math.max(1, Math.min(limit || 20, 100))
+  });
+  const safeList = list.map(doc => ({
+    artifactId: doc.artifactId,
+    sourceArtifactId: doc.sourceArtifactId || null,
+    rootArtifactId: doc.rootArtifactId || null,
+    continuityScopeId: doc.continuityScopeId || null,
+    projectId: doc.projectId || null,
+    sessionId: doc.sessionId || null,
+    status: doc.status || "CREATED",
+    classification: doc.evidence && doc.evidence[0] ? doc.evidence[0].classification : doc.artifactType,
+    generationMode: doc.evidence && doc.evidence[0] ? doc.evidence[0].generationMode : null,
+    visualQuality: "VISUAL_QUALITY_NOT_YET_VERIFIED",
+    artifactType: doc.artifactType,
+    purpose: doc.purpose,
+    createdAt: doc.createdAt
+  }));
+  return res.json({ success: true, count: safeList.length, artifacts: safeList });
+});
+
+// POST /api/creative/continue — scoped continuation, lineage preserved, DRY_RUN default
+router.post("/continue", async (req, res) => {
+  try {
+    const instruction = String(req.body.instruction || req.body.prompt || req.body.text || "").trim();
+    if (!instruction || instruction.length < 5) {
+      return res.status(400).json({ success: false, status: "CLARIFICATION_REQUIRED", message: "instruction is required (e.g., 'make it darker')" });
+    }
+    const projectId = req.body.projectId ? String(req.body.projectId).trim() : null;
+    const sessionId = req.body.sessionId ? String(req.body.sessionId).trim() : null;
+    const conversationId = req.body.conversationId ? String(req.body.conversationId).trim() : null;
+    const continuityScopeId = req.body.continuityScopeId ? String(req.body.continuityScopeId).trim() : null;
+    const artifactId = req.body.artifactId ? String(req.body.artifactId).trim() : null;
+    const briefId = req.body.briefId ? String(req.body.briefId).trim() : null;
+
+    const livingArtifactService = require("../services/livingArtifactService");
+    const creativeStudioService = require("../services/creativeStudioService");
+
+    let sourceArtifact = null;
+    if (artifactId) {
+      sourceArtifact = livingArtifactService.getLivingArtifactContext(artifactId);
+      if (!sourceArtifact) {
+        return res.status(404).json({ success: false, status: "CLARIFICATION_REQUIRED", message: `Explicit artifact ${artifactId} not found`, artifactId });
+      }
+    } else {
+      const scopeFilter = { projectId, sessionId: sessionId || conversationId, continuityScopeId, briefId };
+      const hasScope = projectId || sessionId || conversationId || continuityScopeId || briefId;
+      if (!hasScope) {
+        return res.status(400).json({ success: false, status: "CLARIFICATION_REQUIRED", message: "No resolvable scope: provide projectId, sessionId, continuityScopeId, briefId, or explicit artifactId", scopeFilter });
+      }
+      sourceArtifact = livingArtifactService.getMostRecentCreativeArtifactScoped(scopeFilter);
+      if (!sourceArtifact) {
+        return res.status(404).json({ success: false, status: "CLARIFICATION_REQUIRED", message: `No previous creative found for scope ${JSON.stringify(scopeFilter)}`, scopeFilter });
+      }
+    }
+
+    // Combine previous context + new instruction — reuse previous creative context truthfully
+    const originalPurpose = sourceArtifact.purpose || sourceArtifact.sourceGoal?.rawGoal || "premium cinematic poster";
+    const wantsInstagram = /\binstagram\b/i.test(instruction);
+    const newPrompt = `${originalPurpose} with modification: ${instruction}`;
+    const newTitle = wantsInstagram ? `${originalPurpose} - Instagram version` : `${originalPurpose} - ${instruction.slice(0,40)}`;
+
+    const brief = await creativeStudioService.createCreativeBrief({
+      title: newTitle,
+      brandName: sourceArtifact.sourceBrief?.brandName || "GARUDA",
+      projectId: sourceArtifact.projectId || projectId || null,
+      brandId: sourceArtifact.sourceBrief?.brandId || null
+    });
+    try { await creativeStudioService.generateConcept(brief.briefId); } catch {}
+    const platform = wantsInstagram ? "instagram_story" : "instagram_post";
+    const asset = await creativeStudioService.generateAsset(brief.briefId, wantsInstagram ? "IMAGE_STORY" : "IMAGE_SQUARE", {
+      generationMode: "DRY_RUN",
+      _testMock: true,
+      mockFalSuccess: true,
+      prompt: newPrompt,
+      platformPreset: platform
+    });
+
+    const isSimulated = asset.generationMode === "DRY_RUN" || asset.classification === "SIMULATED_GENERATION";
+    const status = isSimulated ? "PREVIEW_READY" : "GENERATED";
+
+    // Persist new Living Artifact with lineage — never overwrite original
+    let newArtifact = null;
+    let livingArtifactError = null;
+    try {
+      const effectiveProjectId = projectId || sourceArtifact.projectId || null;
+      const effectiveSessionId = sessionId || conversationId || sourceArtifact.sessionId || sourceArtifact.conversationId || null;
+      const effectiveContinuityScopeId = continuityScopeId || sourceArtifact.continuityScopeId || sourceArtifact.projectId || sourceArtifact.sessionId || brief.briefId;
+      newArtifact = livingArtifactService.createLivingArtifactContext({
+        artifactType: "creative_asset",
+        purpose: newPrompt,
+        audience: sourceArtifact.audience || "general",
+        sourceGoal: { intent: "create_creative_asset", domain: "creative", rawGoal: instruction, continuationOf: sourceArtifact.artifactId, rootArtifactId: sourceArtifact.rootArtifactId || sourceArtifact.artifactId },
+        sourceBrief: brief,
+        narrative: `Continuation of ${sourceArtifact.artifactId}: ${instruction}. Original: "${originalPurpose}". New asset ${asset.assetId} with classification ${asset.classification}.`,
+        keyClaims: [
+          { claim: `Continuation asset ${asset.assetId} derived from ${sourceArtifact.artifactId}`, evidence: asset.filePath, confidence: "EVIDENCE_BACKED" },
+          { claim: `Modification instruction: ${instruction}`, evidence: instruction, confidence: "EVIDENCE_BACKED" },
+          { claim: `Visual quality not yet verified`, evidence: null, confidence: "ASSUMPTION" }
+        ],
+        evidence: [
+          { type: "creative_asset", assetId: asset.assetId, filePath: asset.filePath, assetHash: asset.assetHash, verified: true, classification: asset.classification, generationMode: asset.generationMode },
+          { type: "source_artifact", artifactId: sourceArtifact.artifactId, purpose: sourceArtifact.purpose }
+        ],
+        assumptions: [],
+        decisions: [{ decision: `Applied continuation: ${instruction}`, reason: "User requested modification of previous creative" }],
+        risks: [],
+        projectId: effectiveProjectId,
+        briefId: brief.briefId,
+        sessionId: effectiveSessionId,
+        continuityScopeId: effectiveContinuityScopeId,
+        conversationId: conversationId || effectiveSessionId,
+        continuationInstruction: instruction,
+        rootArtifactId: sourceArtifact.rootArtifactId || sourceArtifact.artifactId,
+        sourceArtifactId: sourceArtifact.artifactId
+      });
+      if (newArtifact) {
+        newArtifact.sourceArtifactId = sourceArtifact.artifactId;
+        newArtifact.rootArtifactId = sourceArtifact.rootArtifactId || sourceArtifact.artifactId;
+        newArtifact.continuationInstruction = instruction;
+      }
+    } catch (e) {
+      livingArtifactError = e.message;
+    }
+
+    return res.json({
+      success: true,
+      status,
+      classification: asset.classification,
+      generationMode: asset.generationMode || "DRY_RUN",
+      visualQuality: "VISUAL_QUALITY_NOT_YET_VERIFIED",
+      truthClassification: isSimulated ? "SIMULATED_DRY_RUN" : "PHYSICAL_DISK_VERIFIED",
+      briefId: brief.briefId,
+      assetId: asset.assetId,
+      artifactId: newArtifact ? newArtifact.artifactId : null,
+      sourceArtifactId: sourceArtifact.artifactId,
+      rootArtifactId: sourceArtifact.rootArtifactId || sourceArtifact.artifactId,
+      continuityScopeId: newArtifact ? newArtifact.continuityScopeId : (sourceArtifact.continuityScopeId || null),
+      projectId: newArtifact ? newArtifact.projectId : (sourceArtifact.projectId || projectId),
+      sessionId: newArtifact ? newArtifact.sessionId : (sourceArtifact.sessionId || sessionId),
+      livingArtifactStatus: newArtifact ? "CREATED" : (livingArtifactError ? "PERSISTENCE_FAILED" : "NOT_CREATED"),
+      livingArtifactError: livingArtifactError,
+      asset: {
+        assetId: asset.assetId,
+        provider: asset.provider,
+        classification: asset.classification,
+        generationMode: asset.generationMode,
+        fileName: asset.fileName,
+        assetUrl: asset.assetUrl
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message, error: String(err.message).slice(0, 300) });
+  }
 });
 
 module.exports = router;
