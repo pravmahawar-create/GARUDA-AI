@@ -231,115 +231,143 @@ async function executeMission(mission, options = {}) {
         result.filesModified = targetFiles;
         addStep("execute", "done", { type: "dry_run", files: targetFiles.length });
       } else {
-        // Real modification — use safeModificationService to apply changes
-        const safeMod = require("../safeModification/safeModificationService");
-        const modifications = [];
-        const applied = [];
+        // Founder approval gate: permanent direct modifications require approval
+        // Worktree-isolated experimentation is allowed per canonical architecture
+        const founderApprovalGiven = options['founderApproval'] === true || options['founderApproved'] === true;
+        const isWorktreeExperimentation = workspace?.method === "worktree";
 
-        for (const file of targetFiles) {
-          const absPath = path.resolve(rootDir, file);
-          if (!fs.existsSync(absPath)) continue;
+        if (!founderApprovalGiven && !isWorktreeExperimentation && !options['dryRun']) {
+          addStep("founder-approval", "blocked", {
+            message: "Founder approval required for permanent direct modifications. Worktree experimentation allowed without approval per canonical architecture."
+          });
+          // Blocked — do not apply patches; record evidence and continue lifecycle (test/review/learn will see 0 files)
+          executionResult = {
+            type: "modification_blocked_by_approval",
+            targetFiles: targetFiles,
+            applied: [],
+            filesModified: [],
+            founderApprovalBlocked: true,
+          };
+          result.filesModified = [];
+          result._founderApprovalBlocked = true;
+          addStep("execute", "blocked", { type: "modification_blocked_by_approval", files: targetFiles.length, reason: "founder_approval_required" });
+          addEvidence("execution", { type: executionResult.type, files: targetFiles.length, applied: 0, blocked: true });
+        } else {
+          // Real modification — use safeModificationService to apply changes
+          const safeMod = require("../safeModification/safeModificationService");
+          const modifications = [];
+          const applied = [];
 
-          const originalContent = fs.readFileSync(absPath, "utf8");
+          for (const file of targetFiles) {
+            const absPath = path.resolve(rootDir, file);
+            if (!fs.existsSync(absPath)) continue;
 
-          // Generate modification using the selected LLM model or template engine
-          let newContent = null;
-          try {
-            newContent = await generateModification(mission, file, originalContent, routing?.selected, workDir);
-          } catch (genErr) {
-            // If generation fails, skip this file
-            addStep("execute_warning", "degraded", { file, error: genErr.message });
-            continue;
-          }
+            const originalContent = fs.readFileSync(absPath, "utf8");
 
-          if (!newContent || newContent === originalContent) {
-            // No change generated — skip
-            modifications.push({ file, absPath, lines: originalContent.split("\n").length, changed: false, reason: "no_change_generated" });
-            continue;
-          }
-
-          // Create backup before modification
-          let backupPath = null;
-          try {
-            const backupResult = safeMod.createBackup(absPath);
-            if (backupResult.success) backupPath = backupResult.backupPath;
-          } catch {}
-
-          // Compute diff
-          const diff = safeMod.computeLineDiff(originalContent, newContent);
-
-          // Apply the modification to the workspace file
-          const targetAbsPath = workspace?.worktreePath
-            ? path.resolve(workspace.worktreePath, file)
-            : absPath;
-
-          const patchResult = safeMod.applyPatchToFile(targetAbsPath, newContent);
-          if (patchResult.success && patchResult.changed) {
-            // Validate imports after modification
-            let importsValid = true;
+            // Generate modification using the selected LLM model or template engine
+            let newContent = null;
             try {
-              const importCheck = safeMod.validateImports(targetAbsPath);
-              importsValid = importCheck.valid;
+              newContent = await generateModification(mission, file, originalContent, routing?.selected, workDir);
+            } catch (genErr) {
+              // If generation fails, skip this file
+              addStep("execute_warning", "degraded", { file, error: genErr.message });
+              continue;
+            }
+
+            if (!newContent || newContent === originalContent) {
+              // No change generated — skip
+              modifications.push({ file, absPath, lines: originalContent.split("\n").length, changed: false, reason: "no_change_generated" });
+              continue;
+            }
+
+            // Create backup before modification
+            let backupPath = null;
+            try {
+              const backupResult = safeMod.createBackup(absPath);
+              if (backupResult.success) backupPath = backupResult.backupPath;
             } catch {}
 
-            modifications.push({
-              file,
-              absPath: targetAbsPath,
-              originalAbsPath: absPath,
-              lines: originalContent.split("\n").length,
-              newLines: newContent.split("\n").length,
-              changed: true,
-              backupPath,
-              diff: diff.summary,
-              importsValid,
-            });
-            applied.push({ file, absPath: targetAbsPath, backupPath, importsValid });
+            // Compute diff
+            const diff = safeMod.computeLineDiff(originalContent, newContent);
 
-            // Log the modification
-            try {
-              safeMod.logModification({
+            // Apply the modification to the workspace file
+            const targetAbsPath = workspace?.worktreePath
+              ? path.resolve(workspace.worktreePath, file)
+              : absPath;
+
+            const patchResult = safeMod.applyPatchToFile(targetAbsPath, newContent);
+            if (patchResult.success && patchResult.changed) {
+              // Validate imports after modification
+              let importsValid = true;
+              try {
+                const importCheck = safeMod.validateImports(targetAbsPath);
+                importsValid = importCheck.valid;
+              } catch {}
+
+              modifications.push({
                 file,
-                action: "pipeline_execute",
-                mission: mission.substring(0, 100),
+                absPath: targetAbsPath,
+                originalAbsPath: absPath,
+                lines: originalContent.split("\n").length,
+                newLines: newContent.split("\n").length,
+                changed: true,
+                backupPath,
                 diff: diff.summary,
                 importsValid,
-                backupPath,
               });
-            } catch {}
-          } else {
-            modifications.push({ file, absPath, changed: false, error: patchResult.error });
+              applied.push({ file, absPath: targetAbsPath, backupPath, importsValid });
+
+              // Log the modification
+              try {
+                safeMod.logModification({
+                  file,
+                  action: "pipeline_execute",
+                  mission: mission.substring(0, 100),
+                  diff: diff.summary,
+                  importsValid,
+                  backupPath,
+                });
+              } catch {}
+            } else {
+              modifications.push({ file, absPath, changed: false, error: patchResult.error });
+            }
           }
+
+          executionResult = {
+            type: "modification",
+            targetFiles: modifications,
+            applied,
+            filesModified: applied.map((a) => a.file),
+          };
+          result.filesModified = applied.map((a) => a.file);
+
+          // If we're in the original directory (no worktree), record modified files for cleanup tracking
+          if (!workspace?.worktreePath && applied.length > 0) {
+            result._modifiedPaths = applied.map((a) => a.originalAbsPath || a.absPath);
+          }
+
+          addStep("execute", "done", { type: "modification", files: targetFiles.length, applied: applied.length, dryRun: false });
+          addEvidence("execution", { type: executionResult.type, files: targetFiles.length, applied: applied.length });
         }
-
-        executionResult = {
-          type: "modification",
-          targetFiles: modifications,
-          applied,
-          filesModified: applied.map((a) => a.file),
-        };
-        result.filesModified = applied.map((a) => a.file);
-
-        // If we're in the original directory (no worktree), record modified files for cleanup tracking
-        if (!workspace?.worktreePath && applied.length > 0) {
-          result._modifiedPaths = applied.map((a) => a.originalAbsPath || a.absPath);
-        }
-
-        addStep("execute", "done", { type: "modification", files: targetFiles.length, applied: applied.length, dryRun: false });
       }
 
-      addEvidence("execution", { type: executionResult.type, files: targetFiles.length, applied: executionResult.applied?.length || 0 });
+      // evidence already added in branches above; fallback if not yet added
+      if (!executionResult || !result.evidence.some(e => e.type === "execution" && e.data && (e.data.type === executionResult.type || e.data.blocked))) {
+        addEvidence("execution", { type: executionResult.type, files: targetFiles.length, applied: executionResult.applied?.length || 0 });
+      }
     } catch (err) {
       addStep("execute", "failed", null, err.message);
 
-      // Record failure for learning
+      // Record failure for learning — store mission as action + context for retrieval
       try {
         const memory = require("../persistentMemory/memoryService");
         memory.remember({
           type: "engineering_failure",
-          mission,
-          step: "execute",
+          action: mission,
           error: err.message,
           outcome: "failed",
+          tags: [categorizeMission(mission), "engineering", "failure"],
+          context: { mission, step: "execute", routing: routing?.selected || null },
         });
       } catch {}
 
@@ -354,14 +382,17 @@ async function executeMission(mission, options = {}) {
     addStep("test", "running");
 
     let testResults = null;
+    // Hoisted to executeMission scope so the STEP 7 retry/retest loop can re-run them
+    let testDiscovery = null;
+    let relevantTests = [];
     try {
-      const testDiscovery = require("../testDiscovery/testDiscoveryService");
+      testDiscovery = require("../testDiscovery/testDiscoveryService");
 
       // Discover test files
       const discovered = testDiscovery.scanTestFiles(rootDir);
 
       // Find tests relevant to modified files
-      const relevantTests = findRelevantTests(result.filesModified, discovered, repoGraph);
+      relevantTests = findRelevantTests(result.filesModified, discovered, repoGraph);
 
       if (relevantTests.length > 0) {
         // Run relevant tests
@@ -421,6 +452,16 @@ async function executeMission(mission, options = {}) {
         const diagnosis = diagnoseFailures(failures);
 
         addEvidence("diagnosis", diagnosis);
+        // Retrieve relevant prior failure lessons for adaptive retry
+        let retryLearning = null;
+        try {
+          retryLearning = getFailureLessons(diagnosis);
+          if (retryLearning && (retryLearning.lessons.length || retryLearning.experiences.length)) {
+            addEvidence("retry_learning", { lessons: retryLearning.lessons.length, experiences: retryLearning.experiences.length, primaryType: diagnosis.primaryType });
+            diagnosis.priorLessons = retryLearning.lessons.map(l => l.lesson).slice(0,3);
+            diagnosis.learningAvailable = true;
+          }
+        } catch {}
 
         // If we have a worktree and target files, attempt corrective patch
         if (workspace?.worktreePath && executionResult?.applied?.length > 0 && !dryRun) {
@@ -455,12 +496,13 @@ async function executeMission(mission, options = {}) {
               } catch {}
             }
 
-            if (corrected > 0) {
+            if (corrected > 0 && testDiscovery) {
               // Retest after corrective patches
               addStep(`retest_${result.retries}`, "running");
               result.testsPassed = 0;
               result.testsFailed = 0;
               testResults.results = [];
+              result.testsRun = [];
 
               for (const testFile of relevantTests.slice(0, 5)) {
                 try {
@@ -486,18 +528,16 @@ async function executeMission(mission, options = {}) {
           }
         }
 
-        // Record the failure pattern for learning
+        // Record the failure pattern for learning — searchable via action/tags
         try {
           const memory = require("../persistentMemory/memoryService");
           memory.remember({
             type: "engineering_retry",
-            mission,
-            attempt: result.retries,
-            failures: failures.length,
-            diagnosis: diagnosis.summary,
-            testsPassed: result.testsPassed,
-            testsFailed: result.testsFailed,
+            action: mission,
+            error: diagnosis.summary,
             outcome: result.testsFailed === 0 ? "recovered" : "retrying",
+            tags: [diagnosis.primaryType || "unknown", "retry", categorizeMission(mission)],
+            context: { mission, attempt: result.retries, failures: failures.length, diagnosis: diagnosis.summary, testsPassed: result.testsPassed, testsFailed: result.testsFailed, routing: routing?.selected || null },
           });
         } catch {}
 
@@ -957,12 +997,15 @@ async function generateModification(mission, file, originalContent, routingInfo,
 }
 
 async function generateCorrectiveModification(mission, file, currentContent, diagnosis, routingInfo, workDir) {
-  // Priority 1: Try Ollama for corrective fix (async)
+  // Priority 1: Try Ollama for corrective fix (async) — includes prior lessons if available
   try {
     const { exec } = require("child_process");
+    const prior = diagnosis && diagnosis.priorLessons && diagnosis.priorLessons.length
+      ? `\nPrior similar failure lessons:\n- ${diagnosis.priorLessons.join("\n- ")}\n`
+      : "";
     const retryPrompt = `The previous modification to ${file} caused test failures.
 Diagnosis: ${diagnosis.summary}
-Recommendation: ${diagnosis.recommendation}
+Recommendation: ${diagnosis.recommendation}${prior}
 Original mission: ${mission}
 Current file content:
 ${currentContent.substring(0, 3000)}

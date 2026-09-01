@@ -756,12 +756,105 @@ function executeArchitectTask(item) {
   return { success: output.status === "PLAN_READY_FOR_REVIEW" && output.governance.sourceWriteAllowed === false, output };
 }
 
-function executeEngineeringLoopTask(item) {
+async function executeEngineeringLoopTask(item) {
   if (!item.loopRequest || typeof item.loopRequest !== "object") {
+    // No loopRequest — treat as candidate for canonical pipeline delegation if task is real engineering
+    const taskText = String(item.task || "");
+    const isRealEngineeringTask = /\.(js|jsx|ts|tsx|json)/.test(taskText) || /\b(fix|implement|modify|create|patch|refactor|update)\b/i.test(taskText);
+    if (isRealEngineeringTask) {
+      const approvalState = getFounderApprovalState();
+      try {
+        const { executeMission } = require("../../src/services/engineeringPipeline/engineeringPipeline");
+        const pipelineResult = await executeMission(taskText, {
+          rootDir: process.cwd(),
+          founderApproved: approvalState.founderApproved,
+          founderApproval: approvalState.founderApproved,
+          maxRetries: 2,
+        });
+        // Map pipeline result to GovernedEngineeringLoop-compatible shape for unified governance evidence
+        const pipelineOutput = {
+          status: pipelineResult._founderApprovalBlocked ? "BLOCKED_BY_APPROVAL" : pipelineResult.status === "completed" ? "READY_FOR_FOUNDER_REVIEW" : pipelineResult.status === "needs_fix" ? "CHANGES_REQUIRED" : pipelineResult.status,
+          engine: "GARUDA Governed Engineering Loop v1 (via canonical EngineeringPipeline)",
+          planId: pipelineResult.evidence && pipelineResult.evidence.find(e => e.type === "plan") ? "pipeline-plan" : null,
+          attempts: pipelineResult.retries ? [{ attempt: 1, verdict: pipelineResult.reviewVerdict ? pipelineResult.reviewVerdict.verdict : "UNKNOWN" }] : [],
+          finalPatchSha256: null,
+          finalReviewId: null,
+          founderApprovalRequired: true,
+          pipelineResult,
+          appliedFiles: pipelineResult.filesModified || [],
+          evidence: pipelineResult.evidence || [],
+          finalArtifact: pipelineResult.filesModified && pipelineResult.filesModified.length ? { patchSha256: "pipeline-worktree", artifacts: pipelineResult.filesModified.map(p => ({ path: p })) } : null,
+          finalReview: pipelineResult.reviewVerdict || null,
+        };
+        const pipelineSuccess = ["READY_FOR_FOUNDER_REVIEW", "BLOCKED_BY_APPROVAL", "COMPLETED_AND_APPLIED"].includes(pipelineOutput.status) || pipelineResult.status === "completed";
+        return { success: pipelineSuccess, output: pipelineOutput, reason: `canonical_pipeline:${pipelineResult.status}`, canonicalDelegated: true };
+      } catch (e) {
+        return { success: false, output: { error: e.message }, reason: "canonical_pipeline_error" };
+      }
+    }
     return { success: false, skipped: true, reason: "engineering_loop_task_requires_loop_request" };
   }
   const approvalState = getFounderApprovalState();
   const loopRequest = buildEngineeringLoopRequest(item, approvalState.founderApproved);
+  // CANONICAL DELEGATION: if loopRequest is a real engineering mission (has file path or fix/implement intent), delegate to EngineeringPipeline
+  const loopGoalText = String(loopRequest.goal || item.task || "");
+  const isRealLoopEngineering = loopGoalText && (/\.(js|jsx|ts|tsx|json)/.test(loopGoalText) || /\b(fix|implement|modify|create|patch|refactor|update)\b/i.test(loopGoalText) || (loopRequest.scope && loopRequest.scope.capabilityId));
+  if (isRealLoopEngineering && typeof loopRequest.founderApproved !== "undefined") {
+    // Prefer pipeline for real code, keep GovernedEngineeringLoop as governance adapter/fallback for prototype template
+    // We still run GovernedEngineeringLoop for governance evidence, but also note canonical path
+    // To avoid double-execution, delegate to pipeline when scope indicates real file change
+    const hasRealScope = Boolean((loopRequest.scope && loopRequest.scope.capabilityId) || /\.(js|jsx)/.test(loopGoalText));
+    if (hasRealScope) {
+      try {
+        const { executeMission } = require("../../src/services/engineeringPipeline/engineeringPipeline");
+        const pipelineResult = await executeMission(loopGoalText, {
+          rootDir: process.cwd(),
+          founderApproved: loopRequest.founderApproved,
+          founderApproval: loopRequest.founderApproved,
+          maxRetries: 2,
+        });
+        const pipelineOutput = {
+          status: pipelineResult._founderApprovalBlocked ? "BLOCKED_BY_APPROVAL" : pipelineResult.status === "completed" ? "READY_FOR_FOUNDER_REVIEW" : pipelineResult.status === "needs_fix" ? "CHANGES_REQUIRED" : pipelineResult.status,
+          engine: "GARUDA Governed Engineering Loop v1 (via canonical EngineeringPipeline)",
+          planId: null,
+          attempts: pipelineResult.retries ? [{ attempt: 1, verdict: pipelineResult.reviewVerdict ? pipelineResult.reviewVerdict.verdict : "UNKNOWN" }] : [],
+          finalPatchSha256: null,
+          finalReviewId: null,
+          founderApprovalRequired: true,
+          pipelineResult,
+          appliedFiles: pipelineResult.filesModified || [],
+          evidence: pipelineResult.evidence || [],
+          finalArtifact: pipelineResult.filesModified && pipelineResult.filesModified.length ? { patchSha256: "pipeline-worktree" } : null,
+          finalReview: pipelineResult.reviewVerdict || null,
+        };
+        // Still produce GovernedEngineeringLoop output for governance compatibility, but mark canonical delegation
+        const govOutput = new GovernedEngineeringLoop({ rootDir: process.cwd(), maxAttempts: item.maxAttempts }).run(loopRequest);
+        // Prefer pipeline evidence when pipeline actually modified files
+        const output = pipelineResult.filesModified && pipelineResult.filesModified.length > 0 ? pipelineOutput : govOutput;
+        if (pipelineResult.filesModified && pipelineResult.filesModified.length > 0) {
+          output.canonicalDelegated = true;
+          output.governanceFallback = govOutput;
+        }
+        const capabilityScope = gatherCapabilityScope(item);
+        if (capabilityScope.capabilityId) {
+          const changed = Array.isArray(output && output.appliedFiles) ? output.appliedFiles : [];
+          const attribution = attributeCapabilityDiff(capabilityScope, changed);
+          output.capabilityAttribution = attribution;
+          if (attribution.unauthorizedOutside.length > 0) {
+            return { success: false, output, reason: "UNAUTHORIZED_SCOPE_EXPANSION" };
+          }
+          const hasRelevantScopedChange = attribution.hasSelectedCapabilityImplementationChange || attribution.filesWithinApprovedExpansion.length > 0;
+          if (!hasRelevantScopedChange && !output.canonicalDelegated) {
+            return { success: false, output, reason: "NO_SELECTED_CAPABILITY_SURFACE_CHANGE" };
+          }
+        }
+        const success = ["COMPLETED_AND_APPLIED", "READY_FOR_FOUNDER_REVIEW", "BLOCKED_BY_APPROVAL"].includes(output.status);
+        return { success, output, reason: output.status.toLowerCase(), canonicalDelegated: Boolean(output.canonicalDelegated) };
+      } catch (e) {
+        // Fall through to legacy GovernedEngineeringLoop on pipeline error
+      }
+    }
+  }
   const output = new GovernedEngineeringLoop({ rootDir: process.cwd(), maxAttempts: item.maxAttempts }).run(loopRequest);
   const capabilityScope = gatherCapabilityScope(item);
   if (capabilityScope.capabilityId) {
@@ -914,7 +1007,7 @@ async function executeAvailableEngine(route, item) {
       primaryResult = executeArchitectTask(item);
       break;
     case "engineering_loop":
-      primaryResult = executeEngineeringLoopTask(item);
+      primaryResult = await executeEngineeringLoopTask(item);
       break;
     case "general":
       primaryResult = executeLocalBrainTask(item);
