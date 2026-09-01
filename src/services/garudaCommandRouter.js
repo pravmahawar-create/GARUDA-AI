@@ -707,7 +707,21 @@ function handleAffiliate() {
   };
 }
 
-async function handleCreative(params = {}) {
+function resolveContinuityScope(params = {}, context = {}, brief = null) {
+  if (params.projectId) return String(params.projectId);
+  if (context.projectId) return String(context.projectId);
+  if (params.sessionId) return String(params.sessionId);
+  if (context.sessionId) return String(context.sessionId);
+  if (params.conversationId) return String(params.conversationId);
+  if (context.conversationId) return String(context.conversationId);
+  if (params.continuityScopeId) return String(params.continuityScopeId);
+  if (context.continuityScopeId) return String(context.continuityScopeId);
+  if (brief && brief.briefId) return String(brief.briefId);
+  if (params.briefId) return String(params.briefId);
+  return null;
+}
+
+async function handleCreative(params = {}, context = {}) {
   const query = String(params.query || "").trim();
   if (!query) {
     return { success: false, command: "creative", message: "Creative prompt required. Example: Create a premium cinematic poster for my product" };
@@ -728,6 +742,9 @@ async function handleCreative(params = {}) {
     // Living Artifact persistence — governed secondary step, must not fail creative result
     let livingArtifact = null;
     let livingArtifactError = null;
+    const continuityScopeId = resolveContinuityScope(params, context, brief) || `cs_${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
+    const sessionId = params.sessionId || context.sessionId || context.conversationId || null;
+    const projectId = params.projectId || context.projectId || brief.projectId || null;
     try {
       livingArtifact = livingArtifactService.createLivingArtifactContext({
         artifactType: "creative_asset",
@@ -745,8 +762,10 @@ async function handleCreative(params = {}) {
         assumptions: [],
         decisions: [{ decision: `Selected provider ${asset.provider} via internal routing`, reason: "Provider abstraction" }],
         risks: [],
-        projectId: brief.projectId || null,
+        projectId: projectId,
         briefId: brief.briefId,
+        sessionId: sessionId,
+        continuityScopeId: continuityScopeId,
         goalId: null
       });
     } catch (e) {
@@ -778,10 +797,14 @@ async function handleCreative(params = {}) {
       livingArtifactId: livingArtifact ? livingArtifact.artifactId : null,
       livingArtifactStatus: livingArtifact ? "CREATED" : (livingArtifactError ? "PERSISTENCE_FAILED" : "NOT_CREATED"),
       livingArtifactError: livingArtifactError,
+      continuityScopeId: continuityScopeId,
+      projectId: projectId,
+      sessionId: sessionId,
       evidence: {
         creativeAssetId: asset.assetId,
         livingArtifactId: livingArtifact ? livingArtifact.artifactId : null,
-        livingArtifactError: livingArtifactError
+        livingArtifactError: livingArtifactError,
+        continuityScopeId: continuityScopeId
       }
     };
   } catch (err) {
@@ -789,27 +812,36 @@ async function handleCreative(params = {}) {
   }
 }
 
-async function handleCreativeContinuation(params = {}) {
+async function handleCreativeContinuation(params = {}, context = {}) {
   const query = String(params.query || "").trim();
   if (!query) {
     return { success: false, command: "creative_continuation", message: "Continuation instruction required. Example: Make it more cinematic" };
   }
-  // Resolve most recent creative living artifact
+  // Resolve most recent creative living artifact — SCOPED, never global cross-contamination
   let sourceArtifact = null;
+  const continuityScopeId = resolveContinuityScope(params, context, null);
+  const scopeFilter = {
+    projectId: params.projectId || context.projectId || null,
+    sessionId: params.sessionId || context.sessionId || context.conversationId || null,
+    continuityScopeId: continuityScopeId,
+    briefId: params.briefId || context.briefId || null
+  };
+  // If no resolvable scope, require clarification — do not silently use global-most-recent
+  if (!scopeFilter.projectId && !scopeFilter.sessionId && !scopeFilter.continuityScopeId && !scopeFilter.briefId) {
+    return {
+      success: false,
+      command: "creative_continuation",
+      status: "CLARIFICATION_REQUIRED",
+      message: "No resolvable creative context found. Please specify project or session, or create a premium poster first: 'Create a premium cinematic poster for GARUDA'",
+      query
+    };
+  }
   try {
     const livingArtifactService = require("./livingArtifactService");
-    if (typeof livingArtifactService.getMostRecentCreativeArtifact === "function") {
+    if (typeof livingArtifactService.getMostRecentCreativeArtifactScoped === "function") {
+      sourceArtifact = livingArtifactService.getMostRecentCreativeArtifactScoped(scopeFilter);
+    } else if (typeof livingArtifactService.getMostRecentCreativeArtifact === "function") {
       sourceArtifact = livingArtifactService.getMostRecentCreativeArtifact();
-    } else {
-      // Fallback: search in-memory store
-      const store = livingArtifactService._store;
-      if (store) {
-        for (const doc of store.values()) {
-          if (String(doc.artifactType || "").includes("creative") && (!sourceArtifact || new Date(doc.createdAt) > new Date(sourceArtifact.createdAt))) {
-            sourceArtifact = doc;
-          }
-        }
-      }
     }
   } catch {}
   if (!sourceArtifact) {
@@ -817,8 +849,9 @@ async function handleCreativeContinuation(params = {}) {
       success: false,
       command: "creative_continuation",
       status: "CLARIFICATION_REQUIRED",
-      message: "No previous creative found. Please create a premium poster first: 'Create a premium cinematic poster for GARUDA'",
-      query
+      message: `No previous creative found for scope ${JSON.stringify(scopeFilter)}. Please create a premium poster first in this project/session.`,
+      query,
+      scopeFilter
     };
   }
   // Combine previous context + new modification instruction
@@ -876,6 +909,8 @@ async function handleCreativeContinuation(params = {}) {
         projectId: sourceArtifact.projectId || null,
         briefId: brief.briefId,
         goalId: null,
+        sessionId: sourceArtifact.sessionId || scopeFilter.sessionId || null,
+        continuityScopeId: sourceArtifact.continuityScopeId || continuityScopeId,
         rootArtifactId: sourceArtifact.rootArtifactId || sourceArtifact.artifactId,
         sourceArtifactId: sourceArtifact.artifactId
       });
@@ -884,6 +919,8 @@ async function handleCreativeContinuation(params = {}) {
         newArtifact.sourceArtifactId = sourceArtifact.artifactId;
         newArtifact.rootArtifactId = sourceArtifact.rootArtifactId || sourceArtifact.artifactId;
         newArtifact.continuationInstruction = query;
+        newArtifact.sessionId = sourceArtifact.sessionId || scopeFilter.sessionId || null;
+        newArtifact.continuityScopeId = sourceArtifact.continuityScopeId || continuityScopeId;
       }
     } catch (e) {
       livingArtifactError = e.message;
@@ -913,6 +950,9 @@ async function handleCreativeContinuation(params = {}) {
       sourceArtifactId: sourceArtifact.artifactId,
       rootArtifactId: sourceArtifact.rootArtifactId || sourceArtifact.artifactId,
       continuationInstruction: query,
+      continuityScopeId: continuityScopeId,
+      sessionId: scopeFilter.sessionId || null,
+      projectId: scopeFilter.projectId || null,
       livingArtifactId: newArtifact ? newArtifact.artifactId : null,
       livingArtifactStatus: newArtifact ? "CREATED" : (livingArtifactError ? "PERSISTENCE_FAILED" : "NOT_CREATED"),
       livingArtifactError: livingArtifactError,
@@ -920,7 +960,8 @@ async function handleCreativeContinuation(params = {}) {
         sourceArtifactId: sourceArtifact.artifactId,
         newAssetId: asset.assetId,
         livingArtifactId: newArtifact ? newArtifact.artifactId : null,
-        livingArtifactError: livingArtifactError
+        livingArtifactError: livingArtifactError,
+        continuityScopeId: continuityScopeId
       }
     };
   } catch (err) {
@@ -1107,9 +1148,9 @@ async function dispatchCommand(message, context = {}) {
     case "affiliate":
       return handleAffiliate();
     case "creative_continuation":
-      return handleCreativeContinuation(params);
+      return handleCreativeContinuation(params, context);
     case "creative":
-      return handleCreative(params);
+      return handleCreative(params, context);
     case "insurance_pitch":
       return handleInsurancePitch(params);
     default:

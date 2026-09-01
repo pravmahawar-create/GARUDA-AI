@@ -100,6 +100,11 @@ function createLivingArtifactContext(input = {}) {
     anticipatedQuestions: anticipatedQuestions.map(q => q.question)
   };
 
+  const continuityScopeId = input.continuityScopeId || input.sessionId || input.projectId || input.briefId || null;
+  const sessionId = input.sessionId || input.continuityScopeId || null;
+  const sourceArtifactId = input.sourceArtifactId || null;
+  const rootArtifactId = input.rootArtifactId || sourceArtifactId || artifactId;
+
   const doc = {
     artifactId,
     artifactType,
@@ -119,6 +124,10 @@ function createLivingArtifactContext(input = {}) {
     projectId: input.projectId || null,
     briefId: input.briefId || null,
     goalId: input.goalId || null,
+    sessionId: sessionId,
+    continuityScopeId: continuityScopeId,
+    sourceArtifactId: sourceArtifactId,
+    rootArtifactId: rootArtifactId,
     createdAt: new Date().toISOString(),
     version: "1.0.0"
   };
@@ -133,7 +142,7 @@ function createLivingArtifactContext(input = {}) {
       action: `LivingArtifact ${artifactType} for ${audience}: ${purpose}`.slice(0, 200),
       outcome: "created",
       tags: ["living_artifact", artifactType, audience],
-      context: { artifactId, artifactType, purpose, audience, projectId: doc.projectId, briefId: doc.briefId }
+      context: { artifactId, artifactType, purpose, audience, projectId: doc.projectId, briefId: doc.briefId, sessionId: doc.sessionId, continuityScopeId: doc.continuityScopeId, sourceArtifactId: doc.sourceArtifactId, rootArtifactId: doc.rootArtifactId }
     });
   } catch {}
   return doc;
@@ -221,6 +230,26 @@ function getMostRecentCreativeArtifact() {
   return mostRecent;
 }
 
+function getMostRecentCreativeArtifactScoped(filter = {}) {
+  const { projectId, sessionId, continuityScopeId, briefId } = filter || {};
+  if (!projectId && !sessionId && !continuityScopeId && !briefId) return null;
+  let mostRecent = null;
+  for (const doc of livingStore.values()) {
+    const isCreative = String(doc.artifactType || "").toLowerCase().includes("creative") || String(doc.artifactType || "") === "creative_asset";
+    if (!isCreative) continue;
+    let matches = false;
+    if (continuityScopeId && doc.continuityScopeId && doc.continuityScopeId === continuityScopeId) matches = true;
+    else if (projectId && doc.projectId && doc.projectId === projectId) matches = true;
+    else if (sessionId && doc.sessionId && doc.sessionId === sessionId) matches = true;
+    else if (briefId && doc.briefId && doc.briefId === briefId) matches = true;
+    if (!matches) continue;
+    if (!mostRecent || new Date(doc.createdAt) > new Date(mostRecent.createdAt)) {
+      mostRecent = doc;
+    }
+  }
+  return mostRecent;
+}
+
 function prepareArtifactPresentation(artifactId) {
   const ctx = getLivingArtifactContext(artifactId);
   if (!ctx) throw new Error(`Living artifact not found: ${artifactId}`);
@@ -262,6 +291,7 @@ module.exports = {
   createLivingArtifactContext,
   getLivingArtifactContext,
   getMostRecentCreativeArtifact,
+  getMostRecentCreativeArtifactScoped,
   prepareArtifactPresentation,
   answerArtifactQuestion,
   anticipateQuestions,
