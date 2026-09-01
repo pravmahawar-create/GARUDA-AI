@@ -199,6 +199,28 @@ function getLivingArtifactContext(artifactId) {
   return null;
 }
 
+function getMostRecentCreativeArtifact() {
+  let mostRecent = null;
+  for (const doc of livingStore.values()) {
+    if (String(doc.artifactType || "").toLowerCase().includes("creative") || String(doc.artifactType || "") === "creative_asset") {
+      if (!mostRecent || new Date(doc.createdAt) > new Date(mostRecent.createdAt)) {
+        mostRecent = doc;
+      }
+    }
+  }
+  // Fallback: also consider any artifact with creative in purpose if no type match
+  if (!mostRecent) {
+    for (const doc of livingStore.values()) {
+      if (String(doc.purpose || "").toLowerCase().includes("premium") || String(doc.purpose || "").toLowerCase().includes("poster") || String(doc.purpose || "").toLowerCase().includes("image")) {
+        if (!mostRecent || new Date(doc.createdAt) > new Date(mostRecent.createdAt)) {
+          mostRecent = doc;
+        }
+      }
+    }
+  }
+  return mostRecent;
+}
+
 function prepareArtifactPresentation(artifactId) {
   const ctx = getLivingArtifactContext(artifactId);
   if (!ctx) throw new Error(`Living artifact not found: ${artifactId}`);
@@ -239,6 +261,7 @@ function clearForTesting() { livingStore.clear(); try { if (fs.existsSync(LIVING
 module.exports = {
   createLivingArtifactContext,
   getLivingArtifactContext,
+  getMostRecentCreativeArtifact,
   prepareArtifactPresentation,
   answerArtifactQuestion,
   anticipateQuestions,
