@@ -4,6 +4,7 @@ const outreachEngine = require("./leadgen/genericOutreachEngine");
 const scoutAffiliateEngine = require("./scoutAffiliateEngine");
 const { listDomains } = require("./leadgen/domainConfig");
 const creativeStudioService = require("./creativeStudioService");
+const livingArtifactService = require("./livingArtifactService");
 
 function parseIndianAmount(text) {
   const clean = String(text || "").toLowerCase();
@@ -710,6 +711,35 @@ async function handleCreative(params = {}) {
     const isSimulated = asset.generationMode === "DRY_RUN" || asset.classification === "SIMULATED_GENERATION";
     const status = isSimulated ? "PREVIEW_READY" : "GENERATED";
     const truth = isSimulated ? "SIMULATED_DRY_RUN" : "PHYSICAL_DISK_VERIFIED";
+
+    // Living Artifact persistence — governed secondary step, must not fail creative result
+    let livingArtifact = null;
+    let livingArtifactError = null;
+    try {
+      livingArtifact = livingArtifactService.createLivingArtifactContext({
+        artifactType: "creative_asset",
+        purpose: query,
+        audience: brief.targetAudience || "general",
+        sourceGoal: { intent: "create_creative_asset", domain: "creative", rawGoal: query },
+        sourceBrief: brief,
+        narrative: `Created premium cinematic poster for query: "${query}" via CreativeStudioService. Asset ${asset.assetId} with classification ${asset.classification} and generationMode ${asset.generationMode}.`,
+        keyClaims: [
+          { claim: `Creative asset ${asset.assetId} created with classification ${asset.classification}`, evidence: asset.filePath, confidence: "EVIDENCE_BACKED" },
+          { claim: `Generation mode ${asset.generationMode} truthfully preserved`, evidence: asset.generationMode, confidence: "EVIDENCE_BACKED" },
+          { claim: `Visual quality not yet verified`, evidence: null, confidence: "ASSUMPTION" }
+        ],
+        evidence: [{ type: "creative_asset", assetId: asset.assetId, filePath: asset.filePath, assetHash: asset.assetHash, verified: true, classification: asset.classification, generationMode: asset.generationMode, truthClassification: truth, visualQuality: "VISUAL_QUALITY_NOT_YET_VERIFIED" }],
+        assumptions: [],
+        decisions: [{ decision: `Selected provider ${asset.provider} via internal routing`, reason: "Provider abstraction" }],
+        risks: [],
+        projectId: brief.projectId || null,
+        briefId: brief.briefId,
+        goalId: null
+      });
+    } catch (e) {
+      livingArtifactError = e.message;
+    }
+
     return {
       success: true,
       command: "creative",
@@ -731,6 +761,14 @@ async function handleCreative(params = {}) {
         generationMode: asset.generationMode,
         fileName: asset.fileName,
         assetUrl: asset.assetUrl
+      },
+      livingArtifactId: livingArtifact ? livingArtifact.artifactId : null,
+      livingArtifactStatus: livingArtifact ? "CREATED" : (livingArtifactError ? "PERSISTENCE_FAILED" : "NOT_CREATED"),
+      livingArtifactError: livingArtifactError,
+      evidence: {
+        creativeAssetId: asset.assetId,
+        livingArtifactId: livingArtifact ? livingArtifact.artifactId : null,
+        livingArtifactError: livingArtifactError
       }
     };
   } catch (err) {
