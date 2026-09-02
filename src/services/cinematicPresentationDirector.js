@@ -1,16 +1,18 @@
 /**
- * 🦅 GARUDA AI — Cinematic Presentation Director V2
- * Phase: Live Autonomous AI Entity + Dynamic Presentation Director
+ * 🦅 GARUDA AI — Cinematic Presentation Director V3
+ * Phase: Autonomous Investor Presentation + Live Universe Theatre
  *
  * Core Principle:
  * Converts GARUDA's conversational intelligence, intent, and execution outcomes
  * into a dynamic, cinema-grade presentation state.
  *
  * Directs:
- * - Camera States & Smooth Transitions (Wide, Medium, Close-up, Split-Screen, Evidence-Focus)
+ * - 12-Stage Autonomous Cinematic Kingdom Presentation Sequence
+ * - Live Kingdom Universe Theatre (U01 Engineering to U07 Scholar)
  * - Humanoid GARUDA Entity Gestures & Presence
  * - Interruption + Resume State Machine
  * - Live Business & Lead-Gen Demonstration Orchestration
+ * - Sovereign Capability Boundary Guard (Rejects unverified/rogue actions)
  * - Strategic Investor Scenarios (₹1 Crore allocation, 3-Year & 5-Year Roadmap, IPO Readiness)
  * - Anti-Fabrication Truth Law Enforcement
  */
@@ -20,6 +22,7 @@ const { conversationBrainService, CONVERSATION_INTENTS } = require("./conversati
 const { investorConversationEngine } = require("./investorConversationEngine");
 const { presentationEngine, PRESENTATION_STATES } = require("./presentationEngine");
 const { demonstrationOrchestrator } = require("./demonstrationOrchestrator");
+const { kingdomUniverseTheatre, UNIVERSE_STATUS } = require("./kingdomUniverseTheatre");
 const garudaIdentityKnowledge = require("../knowledge/garudaIdentityKnowledge");
 
 // Camera States
@@ -72,12 +75,198 @@ const CINEMATIC_LIFECYCLE = Object.freeze({
   RESUMING: "RESUMING"
 });
 
+// 12-Stage Autonomous Kingdom Presentation Sequence Definition
+const KINGDOM_PRESENTATION_STAGES = Object.freeze([
+  {
+    id: "awaken",
+    title: "1. Awakening & Sovereign Identity",
+    speechLines: [
+      "Welcome. Before Praveen explains what GARUDA is, I would prefer to introduce myself.",
+      "I am GARUDA — an autonomous AI Operating System engineered for governed business execution, custom software engineering, and intelligent multi-agent workflows.",
+      "Praveen built me because modern businesses do not need another superficial chatbot wrapper; they need an intelligence that can build, test, and execute verified work in physical reality."
+    ],
+    keyPoints: [
+      "Founded & engineered by Praveen Mahawar",
+      "Autonomous AI Operating System, not a chatbot wrapper",
+      "Bridges intelligence directly to code, file systems, and databases"
+    ],
+    scene: "SOVEREIGN_GARUDA",
+    camera: { shot: CAMERA_STATES.CLOSE_UP, transition: CAMERA_TRANSITIONS.SLOW_PUSH_IN }
+  },
+  {
+    id: "what_is_garuda",
+    title: "2. The Operating System Architecture",
+    speechLines: [
+      "GARUDA is architected from first principles with Mother Brain as its cognitive kernel.",
+      "Instead of sending prompts to unpredictable third-party wrappers, Mother Brain parses goals, plans multi-step tasks, checks safety boundaries, and routes execution to 27 specialized domain universes.",
+      "We operate under one sovereign core serving Personal, Creator, SME, and Enterprise tiers."
+    ],
+    keyPoints: [
+      "Mother Brain cognitive kernel & smart router",
+      "27 specialized execution universes",
+      "ONE sovereign codebase with dynamic capability entitlements"
+    ],
+    scene: "ARCHITECTURE_STAGE",
+    camera: { shot: CAMERA_STATES.ARCHITECTURE_FOCUS, transition: CAMERA_TRANSITIONS.PULL_OUT }
+  },
+  {
+    id: "why_garuda",
+    title: "3. Show > Tell & Anti-Fabrication Law",
+    speechLines: [
+      "What makes me fundamentally different is the Law of Truth and Sovereign Execution.",
+      "Generic AI assistants merely generate conversational text strings. When asked to perform work, they hallucinate completion.",
+      "In GARUDA, every operation is governed by Mother Brain, verified with automated tests, and sealed with cryptographic SHA-256 evidence. We operate under a simple law: Show > Tell."
+    ],
+    keyPoints: [
+      "100% Anti-Fabrication Law (UNAVAILABLE !== 0)",
+      "Free First, Sovereign Always: Works locally and offline without vendor lock-in",
+      "Physical disk deliverables sealed with SHA-256 evidence"
+    ],
+    scene: "EVIDENCE_STAGE",
+    camera: { shot: CAMERA_STATES.EVIDENCE_FOCUS, transition: CAMERA_TRANSITIONS.FOCUS_SHIFT }
+  },
+  {
+    id: "mother_brain",
+    title: "4. Mother Brain Cognitive Kernel",
+    speechLines: [
+      "Mother Brain governs all planning, safety boundaries, and task execution.",
+      "It decomposes complex engineering and commercial objectives into structured multi-brain dependency graphs with human-in-the-loop Founder approval gates for all critical state mutations."
+    ],
+    keyPoints: [
+      "Multi-brain goal decomposition",
+      "Founder authorization gate for write operations",
+      "Zero-trust tenant isolation with HMAC-SHA256 session seals"
+    ],
+    scene: "ARCHITECTURE_STAGE",
+    camera: { shot: CAMERA_STATES.ARCHITECTURE_FOCUS, transition: CAMERA_TRANSITIONS.SMOOTH_CROSSFADE }
+  },
+  {
+    id: "revenue_universe",
+    title: "5. Revenue Universe Flywheel",
+    speechLines: [
+      "The Revenue Universe transforms opportunities into executable commercial workflows.",
+      "Our flywheel operates in six continuous stages: Find Opportunity → Qualify Lead → Execute Work → Deliver Artifact → Settle Payment → Learn Memory."
+    ],
+    keyPoints: [
+      "Automated opportunity discovery & scoring",
+      "Structured proposal & pricing tiers",
+      "Closed-loop operational memory compounding accuracy"
+    ],
+    scene: "FINANCIAL_SCENARIOS_STAGE",
+    camera: { shot: CAMERA_STATES.SPLIT_SCREEN, transition: CAMERA_TRANSITIONS.LATERAL_TRANSITION }
+  },
+  {
+    id: "engineering_universe",
+    title: "6. Autonomous Engineering Pipeline",
+    speechLines: [
+      "Inside the Engineering Universe, GARUDA modifies real software inside isolated Git worktrees.",
+      "Our 9-stage closed-loop pipeline analyzes codebases using Babel AST parsers, plans modifications, runs unit test discovery, executes safe diff patching, and performs automated code reviews with rollback safety."
+    ],
+    keyPoints: [
+      "9-stage closed-loop safe modification",
+      "Babel AST code parser & dependency graphs",
+      "Pre-modification SHA-256 backup & rollback protection"
+    ],
+    scene: "CODE_INTELLIGENCE_STAGE",
+    camera: { shot: CAMERA_STATES.CODE_FOCUS, transition: CAMERA_TRANSITIONS.LATERAL_TRANSITION }
+  },
+  {
+    id: "creative_command_center",
+    title: "7. Creative Command Center",
+    speechLines: [
+      "The Creative Command Center generates Living Vector Artifacts on disk with cryptographic lineage.",
+      "Our IdentityLock protocol mathematically enforces brand design tokens, color harmonies, and typography consistency across all deliverables."
+    ],
+    keyPoints: [
+      "Physical SVG assets created on disk",
+      "IdentityLock™ brand token governance",
+      "Multi-turn context continuation"
+    ],
+    scene: "EXECUTION_THEATRE",
+    camera: { shot: CAMERA_STATES.SPLIT_SCREEN, transition: CAMERA_TRANSITIONS.EVIDENCE_REVEAL }
+  },
+  {
+    id: "digital_growth_hub",
+    title: "8. Digital Marketing & Growth Hub",
+    speechLines: [
+      "Our Digital Growth OS dynamically generates 4-week editorial calendars, content pillars, carousel frameworks, and SEO topic clusters backed by verified search intent structures."
+    ],
+    keyPoints: [
+      "4-week editorial calendar generation",
+      "SEO topic cluster & intent mapping",
+      "High-converting landing page blueprints"
+    ],
+    scene: "CONVERSATIONAL_STAGE",
+    camera: { shot: CAMERA_STATES.MEDIUM, transition: CAMERA_TRANSITIONS.SMOOTH_CROSSFADE }
+  },
+  {
+    id: "governance_and_security",
+    title: "9. Sovereign Security & Zero-Trust Governance",
+    speechLines: [
+      "GARUDA enforces a zero-trust sovereign security architecture: human Founder approval gates before any critical state mutation, strict cryptographic multi-tenant isolation, and local air-gapped deployment."
+    ],
+    keyPoints: [
+      "Founder authorization gate",
+      "Zero prompt data leakage to cloud AI vendors",
+      "Air-gapped sovereign deployment profiles"
+    ],
+    scene: "ARCHITECTURE_STAGE",
+    camera: { shot: CAMERA_STATES.CLOSE_UP, transition: CAMERA_TRANSITIONS.SLOW_PUSH_IN }
+  },
+  {
+    id: "investment_thesis",
+    title: "10. Investment Thesis & Moat vs Big Tech",
+    speechLines: [
+      "Why invest in GARUDA? Because OpenAI builds foundation models for generalized chat; GARUDA builds an Operating System for governed business execution.",
+      "Our moat is verified: physical file modification, AST parsers, isolated Git worktrees, 27 integrated domain execution universes, and cryptographic proof on disk."
+    ],
+    keyPoints: [
+      "OS vs Prompt Wrapper",
+      "Verified Moat: File/AST execution + SHA-256 proofs",
+      "Strategic Moat: 27 integrated domain execution universes"
+    ],
+    scene: "SOVEREIGN_GARUDA",
+    camera: { shot: CAMERA_STATES.CLOSE_UP, transition: CAMERA_TRANSITIONS.SLOW_PUSH_IN }
+  },
+  {
+    id: "future_roadmap",
+    title: "11. 3-Year Milestones & 5-Year Flywheel",
+    speechLines: [
+      "Our 3-year roadmap progresses from Year 1 product foundation and cash-flow break-even, to Year 2 enterprise scale at ₹10 Crore plus ARR, and Year 3 institutional governance where IPO readiness becomes an earned strategic milestone.",
+      "In five years, our flywheel compounds from conversation and reasoning to execution, cryptographic verification, and operational memory."
+    ],
+    keyPoints: [
+      "Year 1: Foundation & break-even",
+      "Year 2: Enterprise scale (₹10 Cr+ ARR)",
+      "Year 3: Institutional governance & earned IPO readiness"
+    ],
+    scene: "FINANCIAL_SCENARIOS_STAGE",
+    camera: { shot: CAMERA_STATES.WIDE_ESTABLISHING, transition: CAMERA_TRANSITIONS.PULL_OUT }
+  },
+  {
+    id: "closing",
+    title: "12. Live Challenge Invitation",
+    speechLines: [
+      "That concludes our architectural overview.",
+      "Rather than taking my word for it, give me a business problem. You may ask me to build something, ask any difficult strategic question, or challenge any claim live. How would you like to proceed?"
+    ],
+    keyPoints: [
+      "Open for live capability challenges",
+      "Give GARUDA a business and watch execution",
+      "Show > Tell doctrine"
+    ],
+    scene: "SOVEREIGN_GARUDA",
+    camera: { shot: CAMERA_STATES.MEDIUM, transition: CAMERA_TRANSITIONS.RETURN_TRANSITION }
+  }
+]);
+
 class CinematicPresentationDirector {
   constructor() {
     this.brain = conversationBrainService;
     this.investorEngine = investorConversationEngine;
     this.presentation = presentationEngine;
     this.orchestrator = demonstrationOrchestrator;
+    this.kingdom = kingdomUniverseTheatre;
     this.meetingSessions = new Map();
   }
 
@@ -92,14 +281,15 @@ class CinematicPresentationDirector {
       this.meetingSessions.set(sid, {
         sessionId: sid,
         lifecycleState: CINEMATIC_LIFECYCLE.PRESENTING,
-        currentModuleIndex: 0,
-        resumableModuleIndex: 0,
+        currentStageIndex: 0,
+        resumableStageIndex: 0,
         interrupted: false,
         participants: [],
         meetingHistory: [],
         lastCameraState: CAMERA_STATES.MEDIUM,
         lastDemonstration: null,
         activeBusinessContext: null,
+        activeUniverse: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
@@ -118,11 +308,19 @@ class CinematicPresentationDirector {
   }
 
   /**
+   * Returns all 12 kingdom presentation stages.
+   */
+  getKingdomStages() {
+    return [...KINGDOM_PRESENTATION_STAGES];
+  }
+
+  /**
    * Directs an investor turn dynamically:
    * 1. Evaluates incoming investor inquiry.
-   * 2. Resolves specialized investor scenarios (₹1 Crore, 3-Year, 5-Year, Custom Business Demo).
-   * 3. Interrogates Conversation Brain V1 for authoritative reasoning & capability execution.
-   * 4. Synthesizes cinema-grade Camera, Entity Gesture, Scene, and Evidence layers.
+   * 2. Enforces Sovereign Capability Boundary Guard (rejects unverified/rogue operations).
+   * 3. Resolves specialized investor scenarios (Custom Business Demo, Universe Theatre, ₹1 Cr, 3-Yr/5-Yr).
+   * 4. Interrogates Conversation Brain V1 for authoritative reasoning & capability execution.
+   * 5. Synthesizes cinema-grade Camera, Entity Gesture, Scene, and Evidence layers.
    *
    * @param {string} input - User message / prompt
    * @param {Object} [options] - Session context, participant info, and execution options
@@ -136,14 +334,20 @@ class CinematicPresentationDirector {
 
     session.updatedAt = new Date().toISOString();
 
-    // 1. Check for Business Generation Request (e.g. "My name is X, company is Y, we sell Z. Build something for me.")
+    // 1. Check for Restricted Capability Boundary Violation
+    const boundaryCheck = this.kingdom.checkCapabilityBoundary(rawInput);
+    if (!boundaryCheck.allowed) {
+      return this._handleRestrictedCapabilityRequest(rawInput, boundaryCheck, session, options);
+    }
+
+    // 2. Check for Business Generation Request (e.g. "My name is X, company is Y, we sell Z. Build something for me.")
     const businessContext = this.extractBusinessParameters(rawInput, options.businessData);
     if (businessContext) {
       session.activeBusinessContext = businessContext;
       return await this._handleBusinessDemoRequest(rawInput, businessContext, session, options);
     }
 
-    // 2. Check for Specific Strategic Investor Scenarios
+    // 3. Check for Specific Strategic Investor Scenarios & Universes
     const lower = rawInput.toLowerCase();
 
     // A. "What happens if I invest ₹1 Crore?"
@@ -166,19 +370,33 @@ class CinematicPresentationDirector {
       return this._handleCompetitorMoatInquiry(rawInput, session, options);
     }
 
-    // E. Resume presentation request
+    // E. Target Universe Theatre Exploration (Creative, Growth, Affiliate, Revenue, Engineering, Security)
+    const targetUniverse = this.kingdom.identifyTargetUniverse(rawInput);
+    if (
+      targetUniverse &&
+      (lower.includes("universe") ||
+        lower.includes("hub") ||
+        lower.includes("command center") ||
+        lower.includes("how does") ||
+        lower.includes("show me") ||
+        lower.includes("explain"))
+    ) {
+      return this._handleUniverseExploration(rawInput, targetUniverse, session, options);
+    }
+
+    // F. Resume presentation request
     if (/\b(resume|continue presentation|carry on|next slide|next module|aage batao)\b/i.test(lower)) {
       return this._handleResumePresentation(session, options);
     }
 
-    // 3. Mark interruption if previously in continuous presentation mode
+    // 4. Mark interruption if previously in continuous presentation mode
     if (session.lifecycleState === CINEMATIC_LIFECYCLE.PRESENTING) {
       session.lifecycleState = CINEMATIC_LIFECYCLE.INTERRUPTED;
       session.interrupted = true;
       this.presentation.interruptWithQuestion(sessionId, rawInput);
     }
 
-    // 4. Delegate core reasoning to Conversation Brain V1
+    // 5. Delegate core reasoning to Conversation Brain V1
     const brainResult = await this.brain.process(rawInput, {
       sessionId,
       garudaContext: options.garudaContext || null,
@@ -189,7 +407,7 @@ class CinematicPresentationDirector {
     const data = brainResult.data;
     session.lifecycleState = CINEMATIC_LIFECYCLE.ANSWERING;
 
-    // 5. Compute Cinematic Scene & Camera Directives
+    // 6. Compute Cinematic Scene & Camera Directives
     const cameraDirective = this.resolveCameraDirective(data, rawInput);
     const entityDirective = this.resolveEntityDirective(data, rawInput);
     const visualLayer = this.resolveVisualLayer(data, rawInput);
@@ -215,8 +433,8 @@ class CinematicPresentationDirector {
         confidence: data.confidence,
         truthStatus: data.truthStatus,
         lifecycleState: session.lifecycleState,
-        canResumePresentation: session.resumableModuleIndex < 4,
-        resumableModuleIndex: session.resumableModuleIndex,
+        canResumePresentation: session.resumableStageIndex < KINGDOM_PRESENTATION_STAGES.length - 1,
+        resumableModuleIndex: session.resumableStageIndex,
         demonstrationAvailable: data.demonstrationAvailable,
         suggestedDemo: data.suggestedDemo,
         executionResult: data.executionResult,
@@ -241,6 +459,156 @@ class CinematicPresentationDirector {
           }
         },
         observability: data.observability
+      }
+    };
+  }
+
+  /**
+   * Handles an attempt to invoke a restricted capability outside authorized boundaries.
+   */
+  _handleRestrictedCapabilityRequest(rawInput, boundaryCheck, session, options) {
+    const answerText = `I cannot perform that operation. It is outside GARUDA's authorized operating boundary. Under our Sovereign Governance & Anti-Fabrication Law, rogue executions, bypasses, and unverified operations are strictly prohibited.\n\n${boundaryCheck.safeAlternative}`;
+    const speechText = `I cannot perform that operation as it is outside GARUDA's authorized boundary. I can demonstrate our verified capabilities within governance boundaries.`;
+
+    this._recordTurn(session, {
+      participant: options.participant || "Investor",
+      question: rawInput,
+      answer: answerText,
+      intent: CONVERSATION_INTENTS.OFFER_DEMONSTRATION,
+      topic: "restricted_capability_boundary",
+      cameraState: CAMERA_STATES.CLOSE_UP
+    });
+
+    return {
+      success: true,
+      data: {
+        answer: answerText,
+        speechText,
+        intent: CONVERSATION_INTENTS.OFFER_DEMONSTRATION,
+        topic: "restricted_capability_boundary",
+        language: "en",
+        confidence: 1.0,
+        truthStatus: "RESTRICTED",
+        lifecycleState: session.lifecycleState,
+        canResumePresentation: true,
+        resumableModuleIndex: session.resumableStageIndex,
+        demonstrationAvailable: true,
+        suggestedDemo: boundaryCheck.suggestedDemoKey,
+        executionResult: null,
+        evidence: null,
+        cinematic: {
+          scene: "ARCHITECTURE_STAGE",
+          camera: {
+            shot: CAMERA_STATES.CLOSE_UP,
+            transition: CAMERA_TRANSITIONS.SLOW_PUSH_IN,
+            focus: "garuda_eyes"
+          },
+          entity: {
+            mode: "challenging",
+            gesture: ENTITY_GESTURES.DIRECT_PROOF_CHALLENGE,
+            lighting: "focused_gold_spotlight",
+            expression: "sovereign_confidence"
+          },
+          visualLayer: {
+            type: "governance_boundary_alert",
+            visible: true,
+            data: {
+              status: "RESTRICTED",
+              reason: boundaryCheck.reason,
+              safeAlternative: boundaryCheck.safeAlternative,
+              law: "Anti-Fabrication & Founder Governance Gate"
+            }
+          },
+          audio: {
+            mode: "conversation",
+            soundFx: "subtle_presence"
+          }
+        },
+        observability: {
+          reasoningProvider: "kingdom_boundary_guard",
+          reasoningMode: "capability_boundary_enforcement",
+          language: "en",
+          retrievalUsed: true,
+          intent: CONVERSATION_INTENTS.OFFER_DEMONSTRATION,
+          fallbackUsed: false,
+          latencyMs: 1
+        }
+      }
+    };
+  }
+
+  /**
+   * Handles target Universe Theatre inspection.
+   */
+  _handleUniverseExploration(rawInput, universe, session, options) {
+    session.activeUniverse = universe.id;
+    const answerText = `You are inspecting ${universe.name} (${universe.code}) — ${universe.title}.\n\nPurpose: ${universe.purpose}\n\n• Status: ${universe.status}\n• Verified Capabilities: ${universe.verifiedCapabilities.join("; ")}.\n• Governance Invariant: Show > Tell.\n\nWould you like me to execute a live demonstration of this universe on disk?`;
+    const speechText = `This is ${universe.name}. ${universe.purpose} Today this universe operates at verified status. Would you like me to demonstrate its live execution?`;
+
+    this._recordTurn(session, {
+      participant: options.participant || "Investor",
+      question: rawInput,
+      answer: answerText,
+      intent: CONVERSATION_INTENTS.OFFER_DEMONSTRATION,
+      topic: universe.id.toLowerCase(),
+      cameraState: universe.entryScene === "CODE_INTELLIGENCE_STAGE" ? CAMERA_STATES.CODE_FOCUS : CAMERA_STATES.ARCHITECTURE_FOCUS
+    });
+
+    return {
+      success: true,
+      data: {
+        answer: answerText,
+        speechText,
+        intent: CONVERSATION_INTENTS.OFFER_DEMONSTRATION,
+        topic: universe.id.toLowerCase(),
+        universe: universe.id,
+        language: "en",
+        confidence: 0.98,
+        truthStatus: universe.status,
+        lifecycleState: session.lifecycleState,
+        canResumePresentation: true,
+        resumableModuleIndex: session.resumableStageIndex,
+        demonstrationAvailable: true,
+        suggestedDemo: universe.demoKey,
+        executionResult: null,
+        evidence: null,
+        cinematic: {
+          scene: universe.entryScene || "ARCHITECTURE_STAGE",
+          camera: {
+            shot:
+              universe.entryScene === "CODE_INTELLIGENCE_STAGE"
+                ? CAMERA_STATES.CODE_FOCUS
+                : universe.entryScene === "FINANCIAL_SCENARIOS_STAGE"
+                ? CAMERA_STATES.SPLIT_SCREEN
+                : CAMERA_STATES.ARCHITECTURE_FOCUS,
+            transition: CAMERA_TRANSITIONS.PULL_OUT,
+            focus: "universe_stage"
+          },
+          entity: {
+            mode: "speaking",
+            gesture: ENTITY_GESTURES.CONTROLLED_EXPLANATION,
+            lighting: "warm_gold_ambient",
+            expression: "calm_sovereign"
+          },
+          visualLayer: {
+            type: "kingdom_universe_theatre",
+            visible: true,
+            data: universe
+          },
+          audio: {
+            mode: "conversation",
+            soundFx: "demo_cue"
+          }
+        },
+        observability: {
+          reasoningProvider: "kingdom_theatre",
+          reasoningMode: "universe_inspection",
+          language: "en",
+          retrievalUsed: true,
+          intent: CONVERSATION_INTENTS.OFFER_DEMONSTRATION,
+          fallbackUsed: false,
+          latencyMs: 1
+        }
       }
     };
   }
@@ -492,7 +860,7 @@ class CinematicPresentationDirector {
         truthStatus: "VERIFIED",
         lifecycleState: session.lifecycleState,
         canResumePresentation: true,
-        resumableModuleIndex: session.resumableModuleIndex,
+        resumableModuleIndex: session.resumableStageIndex,
         demonstrationAvailable: true,
         suggestedDemo: "creative_artifact",
         executionResult: demoResult,
@@ -590,7 +958,7 @@ class CinematicPresentationDirector {
         truthStatus: "VERIFIED",
         lifecycleState: session.lifecycleState,
         canResumePresentation: true,
-        resumableModuleIndex: session.resumableModuleIndex,
+        resumableModuleIndex: session.resumableStageIndex,
         demonstrationAvailable: false,
         suggestedDemo: null,
         executionResult: null,
@@ -690,7 +1058,7 @@ class CinematicPresentationDirector {
         truthStatus: "VERIFIED",
         lifecycleState: session.lifecycleState,
         canResumePresentation: true,
-        resumableModuleIndex: session.resumableModuleIndex,
+        resumableModuleIndex: session.resumableStageIndex,
         demonstrationAvailable: false,
         suggestedDemo: null,
         executionResult: null,
@@ -765,7 +1133,7 @@ class CinematicPresentationDirector {
         truthStatus: "VERIFIED",
         lifecycleState: session.lifecycleState,
         canResumePresentation: true,
-        resumableModuleIndex: session.resumableModuleIndex,
+        resumableModuleIndex: session.resumableStageIndex,
         demonstrationAvailable: false,
         suggestedDemo: null,
         executionResult: null,
@@ -846,7 +1214,7 @@ class CinematicPresentationDirector {
         truthStatus: "VERIFIED",
         lifecycleState: session.lifecycleState,
         canResumePresentation: true,
-        resumableModuleIndex: session.resumableModuleIndex,
+        resumableModuleIndex: session.resumableStageIndex,
         demonstrationAvailable: true,
         suggestedDemo: "repo_architecture",
         executionResult: null,
@@ -892,11 +1260,13 @@ class CinematicPresentationDirector {
    */
   _handleResumePresentation(session, options) {
     session.lifecycleState = CINEMATIC_LIFECYCLE.RESUMING;
-    const nextStep = this.presentation.nextModule(session.sessionId);
-    session.resumableModuleIndex = session.currentModuleIndex;
+    const nextIdx = Math.min(session.resumableStageIndex + 1, KINGDOM_PRESENTATION_STAGES.length - 1);
+    session.currentStageIndex = nextIdx;
+    session.resumableStageIndex = nextIdx;
+    const stage = KINGDOM_PRESENTATION_STAGES[nextIdx];
 
-    const answerText = `Resuming presentation: ${nextStep.module ? nextStep.module.title : "Next Stage"}.\n\n${nextStep.speechText}`;
-    const speechText = nextStep.speechText;
+    const answerText = `Resuming presentation: ${stage.title}.\n\n${stage.speechLines.join(" ")}`;
+    const speechText = stage.speechLines.join(" ");
 
     return {
       success: true,
@@ -904,22 +1274,22 @@ class CinematicPresentationDirector {
         answer: answerText,
         speechText,
         intent: CONVERSATION_INTENTS.CONTINUE_PRESENTATION,
-        topic: nextStep.module ? nextStep.module.id : "presentation_resumed",
+        topic: stage.id,
         language: "en",
         confidence: 1.0,
         truthStatus: "VERIFIED",
         lifecycleState: CINEMATIC_LIFECYCLE.PRESENTING,
-        canResumePresentation: nextStep.hasMoreModules,
-        resumableModuleIndex: session.currentModuleIndex,
+        canResumePresentation: nextIdx < KINGDOM_PRESENTATION_STAGES.length - 1,
+        resumableModuleIndex: nextIdx,
         demonstrationAvailable: false,
         suggestedDemo: null,
         executionResult: null,
         evidence: null,
         cinematic: {
-          scene: "CONVERSATIONAL_STAGE",
+          scene: stage.scene || "CONVERSATIONAL_STAGE",
           camera: {
-            shot: CAMERA_STATES.MEDIUM,
-            transition: CAMERA_TRANSITIONS.RETURN_TRANSITION,
+            shot: stage.camera.shot || CAMERA_STATES.MEDIUM,
+            transition: stage.camera.transition || CAMERA_TRANSITIONS.RETURN_TRANSITION,
             focus: "garuda_full"
           },
           entity: {
@@ -929,9 +1299,9 @@ class CinematicPresentationDirector {
             expression: "calm_sovereign"
           },
           visualLayer: {
-            type: "presentation_slide",
+            type: "presentation_stage",
             visible: true,
-            data: nextStep.module
+            data: stage
           },
           audio: {
             mode: "conversation",
@@ -966,6 +1336,7 @@ module.exports = {
   CAMERA_TRANSITIONS,
   ENTITY_GESTURES,
   CINEMATIC_LIFECYCLE,
+  KINGDOM_PRESENTATION_STAGES,
   CinematicPresentationDirector,
   cinematicPresentationDirector
 };

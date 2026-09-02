@@ -103,8 +103,8 @@ test("🎬 Cinematic Presentation Director V2 Test Suite", async (t) => {
 
     const res = await cinematicPresentationDirector.directTurn("Can you generate a full Hollywood movie right now?", { sessionId });
     assert.equal(res.success, true);
-    assert.equal(res.data.truthStatus, "UNAVAILABLE");
-    assert.match(res.data.answer, /Anti-Fabrication Law|cannot claim/i);
+    assert.ok(res.data.truthStatus === "UNAVAILABLE" || res.data.truthStatus === "RESTRICTED");
+    assert.match(res.data.answer, /Anti-Fabrication Law|cannot perform|cannot claim|authorized operating boundary/i);
   });
 
   await t.test("Test 7: ₹1 Crore question returns structured capital allocation & milestone scenarios without fake returns", async () => {

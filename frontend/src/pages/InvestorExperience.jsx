@@ -43,6 +43,24 @@ export default function InvestorExperience() {
   const [suggestedDemoKey, setSuggestedDemoKey] = useState("creative_artifact");
   const [theaterStep, setTheaterStep] = useState(0); // 0 to 7 (8-step pipeline)
   const [artifactViewTab, setArtifactViewTab] = useState("RENDERED"); // RENDERED | PROOF | RAW
+  const [selectedUniverse, setSelectedUniverse] = useState({
+    id: "U02_CREATIVE",
+    code: "U02",
+    name: "Creative Command Center",
+    title: "Living Vector Artifact & Brand Studio",
+    status: "VERIFIED",
+    themeColor: "#f59e0b",
+    icon: "✨",
+    purpose: "Generates Living Vector Artifacts (SVGs), design tokens, and editorial assets with cryptographic lineage across multi-turn continuations.",
+    verifiedCapabilities: [
+      "Living Vector Artifact generation with real physical SVG persistence on disk",
+      "IdentityLock™ Brand Governance (design tokens, typography, color harmony constraints)",
+      "Structured creative briefs with context-aware multi-turn continuations",
+      "Cryptographic SHA-256 evidence sealing on all generated visual assets"
+    ],
+    demoKey: "creative_artifact"
+  });
+  const [restrictedAlert, setRestrictedAlert] = useState(null);
 
   const speechSynthRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -522,7 +540,19 @@ export default function InvestorExperience() {
           if (reply.suggestedDemo) {
             setSuggestedDemoKey(reply.suggestedDemo);
           }
-          if (reply.executionResult || (reply.evidence && reply.intent === "EXECUTE_CAPABILITY")) {
+          if (reply.cinematic?.visualLayer?.type === "kingdom_universe_theatre" || reply.universe) {
+            if (reply.cinematic?.visualLayer?.data) {
+              setSelectedUniverse(reply.cinematic.visualLayer.data);
+            }
+            setStageMode("UNIVERSE_THEATRE");
+          } else if (reply.cinematic?.visualLayer?.type === "governance_boundary_alert" || reply.truthStatus === "RESTRICTED") {
+            setRestrictedAlert(reply.cinematic?.visualLayer?.data || {
+              status: "RESTRICTED",
+              reason: reply.answer,
+              law: "Anti-Fabrication & Founder Governance Gate"
+            });
+            setStageMode("RESTRICTED_ALERT");
+          } else if (reply.executionResult || (reply.evidence && reply.intent === "EXECUTE_CAPABILITY")) {
             setActiveDemoResult(reply.executionResult || {
               success: true,
               demoKey: reply.suggestedDemo || "creative_artifact",
@@ -877,6 +907,64 @@ export default function InvestorExperience() {
               </div>
             )}
 
+            {/* KINGDOM UNIVERSE THEATRE STRIP */}
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              overflowX: "auto",
+              paddingBottom: "0.85rem",
+              marginBottom: "1.5rem",
+              borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
+            }}>
+              <span style={{ fontSize: "0.75rem", color: PALETTE.gold, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }}>
+                🏰 KINGDOM UNIVERSES:
+              </span>
+              {[
+                { id: "U01_ENGINEERING", code: "U01", name: "Engineering OS", color: "#38bdf8", status: "VERIFIED", icon: "⚙️" },
+                { id: "U02_CREATIVE", code: "U02", name: "Creative Studio", color: "#f59e0b", status: "VERIFIED", icon: "✨" },
+                { id: "U03_DIGITAL_GROWTH", code: "U03", name: "Growth Hub", color: "#10b981", status: "VERIFIED", icon: "📈" },
+                { id: "U04_AFFILIATE", code: "U04", name: "Affiliate Hub", color: "#8b5cf6", status: "PARTIAL", icon: "🤝" },
+                { id: "U05_REVENUE", code: "U05", name: "Revenue Flywheel", color: "#fbbf24", status: "VERIFIED", icon: "💰" },
+                { id: "U06_GOVERNANCE", code: "U06", name: "Governance & Gates", color: "#ef4444", status: "VERIFIED", icon: "🛡️" },
+                { id: "U07_SCHOLAR", code: "U07", name: "Scholar Vidya RAG", color: "#06b6d4", status: "VERIFIED", icon: "📚" }
+              ].map(u => (
+                <button
+                  key={u.id}
+                  onClick={() => {
+                    handleAskQuestion(`Explain ${u.name}`);
+                  }}
+                  style={{
+                    background: selectedUniverse?.id === u.id ? `rgba(245, 158, 11, 0.2)` : "rgba(15, 23, 42, 0.6)",
+                    border: `1px solid ${selectedUniverse?.id === u.id ? u.color : "rgba(255, 255, 255, 0.1)"}`,
+                    color: u.color,
+                    padding: "0.35rem 0.75rem",
+                    borderRadius: "6px",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.35rem",
+                    whiteSpace: "nowrap",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  <span>{u.icon}</span>
+                  <span>{u.code}: {u.name}</span>
+                  <span style={{
+                    fontSize: "0.6rem",
+                    padding: "0.1rem 0.35rem",
+                    borderRadius: "4px",
+                    background: u.status === "VERIFIED" ? "rgba(34, 197, 94, 0.2)" : "rgba(245, 158, 11, 0.2)",
+                    color: u.status === "VERIFIED" ? "#22c55e" : "#fbbf24"
+                  }}>
+                    {u.status}
+                  </span>
+                </button>
+              ))}
+            </div>
+
             {/* MODE 1: SPEAKER / PRESENTATION MODULE VIEW */}
             {stageMode === "SPEAKER" && presentationData && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
@@ -1185,6 +1273,121 @@ export default function InvestorExperience() {
                     style={{ background: PALETTE.gold, color: "#000", border: "none", padding: "0.75rem 1.75rem", borderRadius: "8px", fontWeight: 800, cursor: "pointer", fontSize: "0.9rem" }}
                   >
                     ⚡ Challenge with Live Capability Demo →
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* MODE: KINGDOM UNIVERSE THEATRE VIEW */}
+            {stageMode === "UNIVERSE_THEATRE" && selectedUniverse && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", flexWrap: "wrap", gap: "0.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <span style={{ fontSize: "1.8rem" }}>{selectedUniverse.icon || "🏰"}</span>
+                    <div>
+                      <h2 style={{ fontSize: "1.35rem", fontWeight: 800, color: selectedUniverse.themeColor || selectedUniverse.color || PALETTE.gold, margin: 0 }}>
+                        {selectedUniverse.name} ({selectedUniverse.code})
+                      </h2>
+                      <div style={{ fontSize: "0.85rem", color: PALETTE.textMuted }}>{selectedUniverse.title}</div>
+                    </div>
+                  </div>
+                  <span style={{
+                    fontSize: "0.75rem",
+                    color: selectedUniverse.status === "VERIFIED" ? "#22c55e" : selectedUniverse.status === "PARTIAL" ? "#fbbf24" : "#94a3b8",
+                    border: `1px solid currentColor`,
+                    padding: "0.25rem 0.75rem",
+                    borderRadius: "12px",
+                    fontWeight: 700
+                  }}>
+                    {selectedUniverse.status}
+                  </span>
+                </div>
+
+                <div style={{ background: "rgba(0, 0, 0, 0.3)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "10px", padding: "1.25rem", marginBottom: "1.5rem" }}>
+                  <div style={{ fontSize: "0.8rem", color: PALETTE.gold, fontWeight: 800, textTransform: "uppercase", marginBottom: "0.4rem" }}>Universe Mission &amp; Purpose</div>
+                  <div style={{ fontSize: "0.95rem", color: "#f1f5f9", lineHeight: "1.6" }}>{selectedUniverse.purpose || selectedUniverse.desc}</div>
+                </div>
+
+                {/* Verified Capabilities Grid */}
+                {selectedUniverse.verifiedCapabilities && (
+                  <div style={{ marginBottom: "1.5rem" }}>
+                    <div style={{ fontSize: "0.8rem", color: PALETTE.cyan, fontWeight: 800, textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                      ✔ Verified Physical Capabilities
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "0.75rem" }}>
+                      {selectedUniverse.verifiedCapabilities.map((cap, idx) => (
+                        <div key={idx} style={{ background: PALETTE.cardBg, border: "1px solid rgba(56, 189, 248, 0.2)", borderRadius: "8px", padding: "0.85rem 1rem", display: "flex", gap: "0.5rem" }}>
+                          <span style={{ color: "#22c55e", fontWeight: 900 }}>✔</span>
+                          <span style={{ fontSize: "0.85rem", color: "#e2e8f0", lineHeight: "1.4" }}>{cap}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem", flexWrap: "wrap" }}>
+                  <button
+                    onClick={() => handleExecuteDemo(selectedUniverse.demoKey || "creative_artifact")}
+                    style={{
+                      background: `linear-gradient(135deg, ${selectedUniverse.themeColor || selectedUniverse.color || '#f59e0b'} 0%, #d97706 100%)`,
+                      color: "#000",
+                      border: "none",
+                      padding: "0.75rem 1.75rem",
+                      borderRadius: "8px",
+                      fontWeight: 800,
+                      cursor: "pointer",
+                      fontSize: "0.9rem"
+                    }}
+                  >
+                    ⚡ Execute {selectedUniverse.name} Live Demo →
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* MODE: SOVEREIGN GOVERNANCE BOUNDARY ALERT */}
+            {stageMode === "RESTRICTED_ALERT" && restrictedAlert && (
+              <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
+                <div style={{
+                  background: "rgba(239, 68, 68, 0.12)",
+                  border: "1px solid rgba(239, 68, 68, 0.4)",
+                  borderRadius: "12px",
+                  padding: "1.5rem",
+                  marginBottom: "1.5rem"
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" }}>
+                    <span style={{ fontSize: "1.5rem" }}>🛡️</span>
+                    <div>
+                      <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "#f87171" }}>
+                        SOVEREIGN CAPABILITY BOUNDARY ENFORCED
+                      </div>
+                      <div style={{ fontSize: "0.8rem", color: PALETTE.textMuted }}>
+                        {restrictedAlert.law || "Anti-Fabrication Law & Founder Gate Guard"}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: "0.95rem", color: "#f1f5f9", lineHeight: "1.6", marginBottom: "1.25rem" }}>
+                    {restrictedAlert.reason}
+                  </div>
+                  {restrictedAlert.safeAlternative && (
+                    <div style={{
+                      background: "rgba(0, 0, 0, 0.4)",
+                      borderLeft: "3px solid #22c55e",
+                      padding: "0.75rem 1rem",
+                      borderRadius: "0 6px 6px 0",
+                      fontSize: "0.85rem",
+                      color: "#86efac"
+                    }}>
+                      💡 Safe Verified Alternative: {restrictedAlert.safeAlternative}
+                    </div>
+                  )}
+                </div>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
+                  <button
+                    onClick={() => handleExecuteDemo("repo_architecture")}
+                    style={{ background: PALETTE.gold, color: "#000", border: "none", padding: "0.75rem 1.5rem", borderRadius: "8px", fontWeight: 800, cursor: "pointer", fontSize: "0.9rem" }}
+                  >
+                    🔍 Inspect Verified Boundaries
                   </button>
                 </div>
               </motion.div>

@@ -1,6 +1,6 @@
 /**
  * 🦅 GARUDA AI — Investor Presentation API Routes
- * Phase: Investor Autonomous Presentation Experience (Cinematic Director V2)
+ * Phase: Autonomous Investor Presentation + Live Universe Theatre (V3)
  *
  * Endpoints:
  * - POST /api/investor/presentation/start
@@ -9,6 +9,9 @@
  * - POST /api/investor/director/turn
  * - POST /api/investor/demonstrate
  * - GET  /api/investor/capabilities
+ * - GET  /api/investor/kingdom/universes
+ * - GET  /api/investor/kingdom/stages
+ * - POST /api/investor/kingdom/demo
  * - GET  /api/investor/presentation/session/:sessionId
  */
 
@@ -16,7 +19,8 @@ const express = require("express");
 const router = express.Router();
 const { presentationEngine } = require("../services/presentationEngine");
 const { investorConversationEngine } = require("../services/investorConversationEngine");
-const { cinematicPresentationDirector } = require("../services/cinematicPresentationDirector");
+const { cinematicPresentationDirector, KINGDOM_PRESENTATION_STAGES } = require("../services/cinematicPresentationDirector");
+const { kingdomUniverseTheatre } = require("../services/kingdomUniverseTheatre");
 const { demonstrationOrchestrator } = require("../services/demonstrationOrchestrator");
 const garudaIdentityKnowledge = require("../knowledge/garudaIdentityKnowledge");
 
@@ -30,7 +34,10 @@ router.post("/presentation/start", (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: presentation
+      data: {
+        ...presentation,
+        kingdomStages: KINGDOM_PRESENTATION_STAGES
+      }
     });
   } catch (error) {
     return res.status(500).json({
@@ -97,7 +104,14 @@ router.post("/chat", async (req, res) => {
         confidence: d.confidence,
         topic: d.topic,
         title: d.topic ? `GARUDA — ${d.topic.toUpperCase().replace(/_/g, " ")}` : "GARUDA Sovereign Response",
-        presentationMode: d.cinematic?.scene === "EXECUTION_THEATRE" ? "DEMO" : (d.cinematic?.scene === "ARCHITECTURE_STAGE" ? "ARCHITECTURE" : "CONVERSATION"),
+        presentationMode:
+          d.cinematic?.scene === "EXECUTION_THEATRE"
+            ? "DEMO"
+            : d.cinematic?.scene === "ARCHITECTURE_STAGE"
+            ? "ARCHITECTURE"
+            : d.cinematic?.scene === "FINANCIAL_SCENARIOS_STAGE"
+            ? "DIFFERENTIATION_MOAT"
+            : "CONVERSATION",
         capabilityMentioned: d.suggestedDemo,
         demonstrationAvailable: d.demonstrationAvailable,
         suggestedDemo: d.suggestedDemo,
@@ -171,6 +185,57 @@ router.post("/demonstrate", async (req, res) => {
     return res.status(500).json({
       success: false,
       error: error.message || "Demonstration execution error"
+    });
+  }
+});
+
+// GET /api/investor/kingdom/universes
+router.get("/kingdom/universes", (_req, res) => {
+  try {
+    const universes = kingdomUniverseTheatre.getAllUniverses();
+    return res.status(200).json({
+      success: true,
+      data: universes
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Failed to retrieve Kingdom universes"
+    });
+  }
+});
+
+// GET /api/investor/kingdom/stages
+router.get("/kingdom/stages", (_req, res) => {
+  try {
+    const stages = cinematicPresentationDirector.getKingdomStages();
+    return res.status(200).json({
+      success: true,
+      data: stages
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Failed to retrieve presentation stages"
+    });
+  }
+});
+
+// POST /api/investor/kingdom/demo
+router.post("/kingdom/demo", async (req, res) => {
+  try {
+    const universeId = String(req.body?.universeId || "U02_CREATIVE").trim();
+    const options = req.body?.options || {};
+    const demoResponse = await kingdomUniverseTheatre.executeUniverseDemo(universeId, options);
+
+    return res.status(200).json({
+      success: true,
+      data: demoResponse
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Failed to execute universe demonstration"
     });
   }
 });
