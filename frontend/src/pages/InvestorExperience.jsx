@@ -67,34 +67,44 @@ export default function InvestorExperience() {
   const recognitionRef = useRef(null);
 
   // Triple-Redundant API Gateway Caller (Vercel Proxy -> Render Production Backend Failover)
+  // Triple-Redundant Ultra-Fast API Gateway Caller (Vercel Proxy -> Render Backend Failover with Strict 2.5s Timeout)
   const callInvestorApi = async (endpoint, body = {}) => {
+    // 1. Try Vercel local edge proxy with 2500ms timeout
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
       const res = await fetch(`/api/investor/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
       if (res.ok) {
         const data = await res.json();
         if (data && data.success) return data;
       }
     } catch (err) {
-      console.warn(`Direct fetch to /api/investor/${endpoint} failed, engaging Render failover:`, err);
+      console.warn(`Direct fetch to /api/investor/${endpoint} timed out or failed, engaging fast Render failover:`, err.message);
     }
 
-    // Failover directly to Render Backend
+    // 2. Failover directly to Render Backend with 2500ms timeout
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
       const res = await fetch(`https://garuda-ai-xfif.onrender.com/api/investor/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
       if (res.ok) {
         const data = await res.json();
         if (data && data.success) return data;
       }
     } catch (renderErr) {
-      console.warn(`Render failover for ${endpoint} error:`, renderErr);
+      console.warn(`Render failover for ${endpoint} error:`, renderErr.message);
     }
 
     return null;
@@ -287,12 +297,23 @@ export default function InvestorExperience() {
     try {
       speechSynthRef.current.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.95;
-      utterance.pitch = 0.9;
+      utterance.rate = 1.0;
+      utterance.pitch = 0.78; // Deep resonant masculine JARVIS tone across all devices
       
-      // Select deep/sovereign voice if available
+      const isHindiText = /[\u0900-\u097F]|kya|kaise|tum|mera|nahi|karo|batao|hoon|hai/i.test(text);
       const voices = speechSynthRef.current.getVoices();
-      const preferred = voices.find(v => (v.name.includes("Male") || v.name.includes("David") || v.name.includes("Natural")) && v.lang.startsWith("en"));
+      
+      let preferred = null;
+      if (isHindiText) {
+        utterance.lang = "hi-IN";
+        preferred = voices.find(v => (v.name.includes("Male") || v.name.includes("Hemant") || v.name.includes("Madhur") || v.name.includes("Google") || v.name.includes("Hindi")) && (v.lang.startsWith("hi") || v.lang.startsWith("en-IN"))) ||
+                    voices.find(v => v.lang.startsWith("hi")) ||
+                    voices.find(v => v.name.includes("David") || v.name.includes("Male") || v.name.includes("Guy"));
+      } else {
+        utterance.lang = "en-IN";
+        preferred = voices.find(v => (v.name.includes("Male") || v.name.includes("David") || v.name.includes("Guy") || v.name.includes("George") || v.name.includes("Google UK English Male") || v.name.includes("Natural") || v.name.includes("Ravi")) && v.lang.startsWith("en")) ||
+                    voices.find(v => v.lang.startsWith("en"));
+      }
       if (preferred) utterance.voice = preferred;
 
       utterance.onstart = () => {
@@ -525,6 +546,38 @@ export default function InvestorExperience() {
         answer: "GARUDA's Digital Marketing OS dynamically generates 4-week editorial calendars, content pillars, carousel frameworks, and SEO topic clusters backed by verified search intent structures.",
         demonstrationAvailable: true,
         suggestedDemo: "marketing_seo"
+      };
+    } else if (/(hindi me (batao|bolo|samjhao)|hindi please|ab hindi me)/i.test(text)) {
+      match = {
+        topic: "hindi_conversation",
+        title: "GARUDA Hindi Sovereign Intelligence",
+        answer: "नमस्ते! मैं गरुड़ (GARUDA) हूँ — प्रवीण महावर द्वारा निर्मित एक स्वायत्त एआई ऑपरेटिंग सिस्टम। मैं 27 विशेष निष्पादन ब्रह्मांडों में वास्तविक कोड, एसवीजी आर्टिफैक्ट्स और बिज़नेस वर्कफ़्लो निष्पादित करता हूँ। आप मुझसे वास्तुकला, क्षमताओं या लाइव प्रदर्शन के बारे में पूछ सकते हैं।",
+        demonstrationAvailable: true,
+        suggestedDemo: "creative_artifact"
+      };
+    } else if (/(tum sirf answer|actual kaam|real work|kya kaam karte ho)/i.test(text)) {
+      match = {
+        topic: "real_work_vs_answers",
+        title: "Real Execution vs Text Chatbots",
+        answer: "GARUDA sirf text answers nahi deta balki real work execute karta hai. Yeh isolated worktrees me actual code patch karta hai, disk par SVG visual assets generate karta hai, test suites run karta hai aur SHA-256 evidence seals provide karta hai.",
+        demonstrationAvailable: true,
+        suggestedDemo: "creative_artifact"
+      };
+    } else if (/(galat ho jao|pata kaise chalega|error|rollback|self-correction)/i.test(text)) {
+      match = {
+        topic: "error_handling_and_self_correction",
+        title: "Closed-Loop Error Recovery",
+        answer: "GARUDA closed-loop regression safety par kaam karta hai: modification se pehle disk backup aur baseline tests run hote hain. Agar test fail ho, toh automatic rollback ho jata hai. Sath hi critical write operations Founder approval gate ke under hote hain.",
+        demonstrationAvailable: true,
+        suggestedDemo: "repo_architecture"
+      };
+    } else if (/(limitation|kamzori|kamiyan|sabse badi limitation)/i.test(text)) {
+      match = {
+        topic: "limitations_and_boundaries",
+        title: "Sovereign Reality & Limitations",
+        answer: "GARUDA Anti-Fabrication Law ke tahat apni limitations transparently batata hai: Photorealistic 3D human avatars abhi PLANNED hain, external banking payouts Founder manual approval ke bina PARTIAL hain, aur Hollywood movies supported nahi hain.",
+        demonstrationAvailable: false,
+        suggestedDemo: "repo_architecture"
       };
     } else if (/(tum kya ho|aap kaun ho|kya ho|alag kaise ho|baaki.*alag|duniya ke baaki|kya kar sakte ho)/i.test(text)) {
       match = {
