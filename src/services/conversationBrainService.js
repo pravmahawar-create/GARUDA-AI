@@ -31,6 +31,7 @@
 const crypto = require("crypto");
 const garudaIdentityKnowledge = require("../knowledge/garudaIdentityKnowledge");
 const { demonstrationOrchestrator } = require("./demonstrationOrchestrator");
+const { garudaAIEngine } = require("../ai/engine");
 
 // Intent Taxonomy
 const CONVERSATION_INTENTS = Object.freeze({
@@ -597,7 +598,45 @@ class ConversationBrainService {
       });
     }
 
-    // 8. GARUDA Identity & Truth-Aware Differentiation
+    // 8. Cloud AI Sovereign Gateway (Groq / NVIDIA / Multi-Provider Intelligence)
+    if (garudaAIEngine.groqApiKey || garudaAIEngine.nvidiaApiKey) {
+      try {
+        const cloudResult = await garudaAIEngine.generateResponse(effectiveQuery, {
+          history: session.history,
+          language: activeLanguage
+        });
+
+        if (cloudResult && cloudResult.content && cloudResult.content.length > 10 && cloudResult.provider !== "local_sovereign_fallback") {
+          answerText = cloudResult.content;
+          speechText = cloudResult.content;
+          topic = session.currentTopic || "sovereign_intelligence";
+          suggestedDemo = cloudResult.suggestedDemo || session.lastExecutableCapability || "creative_artifact";
+          session.lastExecutableCapability = suggestedDemo;
+
+          return this._finalizeResponse(session, rawInput, {
+            intent: cloudResult.intent === "EXECUTE_CAPABILITY" ? CONVERSATION_INTENTS.EXECUTE_CAPABILITY : (cloudResult.intent === "OFFER_DEMONSTRATION" ? CONVERSATION_INTENTS.OFFER_DEMONSTRATION : CONVERSATION_INTENTS.ANSWER_ONLY),
+            answer: answerText,
+            speechText,
+            topic,
+            confidence: 0.98,
+            truthStatus: "VERIFIED",
+            capabilitySelected: null,
+            demonstrationAvailable: true,
+            suggestedDemo,
+            executionResult: null,
+            evidence: null,
+            activeLanguage,
+            startTime,
+            reasoningMode: `cloud_ai_${cloudResult.provider}_gateway`,
+            fallbackUsed: false
+          });
+        }
+      } catch (cloudErr) {
+        console.warn("⚠️ Cloud AI Gateway error, engaging local sovereign fallback:", cloudErr.message);
+      }
+    }
+
+    // 9. GARUDA Identity & Grounded Local Knowledge Match
     let knowledgeMatch = garudaIdentityKnowledge.findKnowledgeForQuery(effectiveQuery);
 
     if (knowledgeMatch && knowledgeMatch.topic && knowledgeMatch.topic !== "general" && knowledgeMatch.topic !== "general_inquiry") {
@@ -645,7 +684,7 @@ class ConversationBrainService {
       });
     }
 
-    // 9. Provider-Neutral Reasoning Fallback with Grounded Answering
+    // 10. Provider-Neutral Reasoning Fallback with Grounded Answering
     fallbackUsed = true;
     reasoningMode = "grounded_knowledge_fallback";
     topic = session.currentTopic || "general_inquiry";

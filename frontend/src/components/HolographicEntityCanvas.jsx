@@ -231,42 +231,119 @@ export default function HolographicEntityCanvas({
       ctx.arc(centerX, centerY, coreRadius, 0, Math.PI * 2);
       ctx.fill();
 
-      // 7. Central Sovereign Eagle / Crown Sigil Matrix
+      // 7. Extended Cybernetic Garuda Sovereign Wings & Neural Optics
       ctx.save();
       ctx.translate(centerX, centerY);
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.85 + Math.sin(time * 2) * 0.15})`;
-      ctx.fillStyle = `rgba(255, 255, 255, ${0.9 + Math.sin(time * 2) * 0.1})`;
-      ctx.lineWidth = 1.8;
-      ctx.setLineDash([]);
 
-      // Draw stylized golden sovereign eagle wing geometry
-      const scale = 0.52;
+      // A. Dynamic Aerodynamic Cyber-Wings (Iron Man / Cybernetic Garuda Matrix)
+      const wingFlap = Math.sin(time * (state === "SPEAKING" ? 5 : 2)) * 0.12;
+      const wingSpanScale = 1.35;
+      ctx.save();
+      ctx.scale(wingSpanScale, wingSpanScale);
+
+      // Left Cyber-Wing
+      ctx.save();
+      ctx.rotate(-wingFlap);
+      ctx.strokeStyle = `rgba(${primaryColor}, ${0.7 + Math.sin(time * 3) * 0.2})`;
+      ctx.fillStyle = `rgba(${secondaryColor}, 0.25)`;
+      ctx.lineWidth = 1.6;
       ctx.beginPath();
-      // Center apex
-      ctx.moveTo(0, -18 * scale);
-      // Left wing spread
-      ctx.lineTo(-14 * scale, -8 * scale);
-      ctx.lineTo(-24 * scale, -2 * scale);
-      ctx.lineTo(-16 * scale, 6 * scale);
-      ctx.lineTo(-6 * scale, 12 * scale);
-      // Base tail
-      ctx.lineTo(0, 18 * scale);
-      // Right wing spread
-      ctx.lineTo(6 * scale, 12 * scale);
-      ctx.lineTo(16 * scale, 6 * scale);
-      ctx.lineTo(24 * scale, -2 * scale);
-      ctx.lineTo(14 * scale, -8 * scale);
+      ctx.moveTo(-8, -12);
+      ctx.lineTo(-32, -28);
+      ctx.lineTo(-58, -22);
+      ctx.lineTo(-72, -6);
+      ctx.lineTo(-50, 14);
+      ctx.lineTo(-26, 18);
+      ctx.lineTo(-8, 6);
       ctx.closePath();
       ctx.stroke();
-
-      // Inner crown beacon diamond
-      ctx.beginPath();
-      ctx.moveTo(0, -12 * scale);
-      ctx.lineTo(5 * scale, -4 * scale);
-      ctx.lineTo(0, 4 * scale);
-      ctx.lineTo(-5 * scale, -4 * scale);
-      ctx.closePath();
       ctx.fill();
+
+      // Left Feather Energy Filaments
+      ctx.strokeStyle = `rgba(${accentColor}, 0.6)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(-32, -28); ctx.lineTo(-45, -2);
+      ctx.moveTo(-58, -22); ctx.lineTo(-42, 8);
+      ctx.stroke();
+      ctx.restore();
+
+      // Right Cyber-Wing
+      ctx.save();
+      ctx.rotate(wingFlap);
+      ctx.strokeStyle = `rgba(${primaryColor}, ${0.7 + Math.sin(time * 3) * 0.2})`;
+      ctx.fillStyle = `rgba(${secondaryColor}, 0.25)`;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(8, -12);
+      ctx.lineTo(32, -28);
+      ctx.lineTo(58, -22);
+      ctx.lineTo(72, -6);
+      ctx.lineTo(50, 14);
+      ctx.lineTo(26, 18);
+      ctx.lineTo(8, 6);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
+
+      // Right Feather Energy Filaments
+      ctx.strokeStyle = `rgba(${accentColor}, 0.6)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(32, -28); ctx.lineTo(45, -2);
+      ctx.moveTo(58, -22); ctx.lineTo(42, 8);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.restore();
+
+      // B. Central Sovereign Garuda Crest & Head
+      ctx.strokeStyle = `rgba(255, 255, 255, ${0.9 + Math.sin(time * 2) * 0.1})`;
+      ctx.fillStyle = `rgba(${primaryColor}, 0.85)`;
+      ctx.lineWidth = 2.0;
+
+      const scale = 0.65;
+      ctx.beginPath();
+      // Crown Apex
+      ctx.moveTo(0, -26 * scale);
+      ctx.lineTo(-10 * scale, -14 * scale);
+      ctx.lineTo(-18 * scale, -2 * scale);
+      ctx.lineTo(-10 * scale, 10 * scale);
+      ctx.lineTo(0, 22 * scale); // Beak tip
+      ctx.lineTo(10 * scale, 10 * scale);
+      ctx.lineTo(18 * scale, -2 * scale);
+      ctx.lineTo(10 * scale, -14 * scale);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
+
+      // Neural Eye Optics (Twin glowing conscious sensors)
+      const eyeAlpha = 0.85 + Math.sin(time * 6) * 0.15;
+      ctx.fillStyle = state === "THINKING" ? `rgba(56, 189, 248, ${eyeAlpha})` : `rgba(255, 255, 255, ${eyeAlpha})`;
+      // Left eye
+      ctx.beginPath();
+      ctx.ellipse(-6 * scale, -4 * scale, 2.5 * scale, 1.2 * scale, -0.2, 0, Math.PI * 2);
+      ctx.fill();
+      // Right eye
+      ctx.beginPath();
+      ctx.ellipse(6 * scale, -4 * scale, 2.5 * scale, 1.2 * scale, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // HUD Targeting Brackets (Iron Man JARVIS style)
+      ctx.strokeStyle = `rgba(${accentColor}, 0.5)`;
+      ctx.lineWidth = 1.2;
+      const bSize = coreRadius + 18;
+      // Top-left bracket
+      ctx.beginPath();
+      ctx.moveTo(-bSize, -bSize + 12); ctx.lineTo(-bSize, -bSize); ctx.lineTo(-bSize + 12, -bSize);
+      // Top-right bracket
+      ctx.moveTo(bSize - 12, -bSize); ctx.lineTo(bSize, -bSize); ctx.lineTo(bSize, -bSize + 12);
+      // Bottom-left bracket
+      ctx.moveTo(-bSize, bSize - 12); ctx.lineTo(-bSize, bSize); ctx.lineTo(-bSize + 12, bSize);
+      // Bottom-right bracket
+      ctx.moveTo(bSize - 12, bSize); ctx.lineTo(bSize, bSize); ctx.lineTo(bSize, bSize - 12);
+      ctx.stroke();
+
       ctx.restore();
 
       // 8. Cryptographic Confirmation Shockwave Ring (Upon Demo Complete)
