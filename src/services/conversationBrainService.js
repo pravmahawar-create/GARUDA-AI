@@ -225,7 +225,10 @@ class ConversationBrainService {
     const isProofRequest =
       /^(proof|proof\?|prove it|prove that|can you prove it|proof kya hai|kya proof hai|prove it now)$/i.test(cleanNoPunct) ||
       /\b(challenge you to prove|prove it to me|show me proof)\b/i.test(textLower);
-    const isWhyUseIt = /\b(why do you use it|why use it|tum kyu use karte ho|iska kya use hai|why is that used|why do you use that)\b/i.test(textLower);
+    const isWhyUseIt =
+      /\b(why (do you|does garuda|is it|is this) use (it|that|sha-256|sha256)|why use (it|that|sha-256|sha256)|tum kyu use karte ho|iska kya use hai|why is that used|why do you use that)\b/i.test(
+        textLower
+      );
     const isExplainThatInHindi = /\b(explain that in hindi|hindi me samjhao|explain in hindi|ab hindi me batao|translate that|ab roman hindi me batao|english please)\b/i.test(textLower);
     const isLanguageSwitchOnly = /^(explain that in hindi|hindi me samjhao|explain in hindi|ab hindi me batao|ab roman hindi me batao|english please|in english|hindi please)$/i.test(cleanNoPunct);
 
@@ -654,6 +657,18 @@ class ConversationBrainService {
         return "गरुड़ का मुख्य मस्तिष्क 'मदर ब्रेन' है, जो संज्ञानात्मक रूटिंग, लक्ष्य अपघटन और संस्थापक शासन सीमाओं को लागू करता है। यह 27 विशेष ब्रह्मांडों के साथ मिलकर काम करता है।";
       }
       return "GARUDA ka core architecture 'Mother Brain' par based hai jo cognitive routing, goal planning aur Founder governance gates enforce karta hai. Yeh 27 specialized domain universes ke sath real work execute karta hai.";
+    }
+    if (match.topic === "revenue_and_business") {
+      if (lang === "hi") {
+        return "गरुड़ 4 एकीकृत उत्पाद स्तरों (पर्सनल, क्रिएटर, एसएमई, एंटरप्राइज) के माध्यम से राजस्व उत्पन्न करता है। रेवेन्यू यूनिवर्स वाणिज्यिक प्रस्तावों, लीड स्कोरिंग और क्लाइंट रूपांतरण को स्वायत्त रूप से प्रबंधित करता है।";
+      }
+      return "GARUDA 4 unified product tiers (Personal, Creator, SME, Enterprise) ke dwara revenue generate karta hai. Revenue Universe commercial proposals, lead scoring aur client conversion workflows ko autonomously manage karta hai.";
+    }
+    if (match.topic === "capability_reality") {
+      if (lang === "hi") {
+        return "गरुड़ 27 विशेष निष्पादन ब्रह्मांडों में वास्तविक सॉफ्टवेयर इंजीनियरिंग, क्रिएटिव लिविंग आर्टिफैक्ट्स, ब्रांड आइडेंटिटी लॉक और डिजिटल मार्केटिंग को सत्यापित रूप से निष्पादित करता है।";
+      }
+      return "GARUDA 27 specialized execution universes me real software engineering, Creative Living Vector Artifacts (SVGs), IdentityLock brand governance aur SEO editorial growth ko physically execute aur SHA-256 se verify karta hai.";
     }
     return match.answer;
   }

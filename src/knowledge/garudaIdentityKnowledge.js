@@ -259,6 +259,13 @@ const TOPIC_KNOWLEDGE = Object.freeze({
     demonstrationAvailable: true,
     suggestedDemo: "repo_architecture"
   },
+  capability_reality: {
+    title: "What Can GARUDA Actually Do Today?",
+    answer: "GARUDA operates with verified execution across 27 specialized execution universes: (1) Software Engineering with 9-stage closed-loop safe modifications and AST code review; (2) Creative Command Center generating Living Vector Artifacts (SVGs) on disk; (3) IdentityLock Brand Governance enforcing brand tokens; (4) Digital Marketing OS formulating 4-week editorial calendars and SEO topic clusters; and (5) Revenue Universe managing commercial proposals. Every deliverable is sealed with cryptographic SHA-256 evidence.",
+    capabilityId: "creative.living_artifact_continue",
+    demonstrationAvailable: true,
+    suggestedDemo: "creative_artifact"
+  },
   revenue_and_business: {
     title: "How Does GARUDA Generate Revenue & Monitize?",
     answer: "GARUDA operates across 4 unified product tiers served from a single sovereign core: Personal (free sovereign core), Creator (brand & living artifacts), SME (full business & digital marketing OS), and Enterprise (private air-gapped deployment with sovereign SLAs). Revenue Universe (U10) autonomously manages commercial proposals and conversion loops under Founder governance.",
@@ -309,6 +316,13 @@ function getPresentationModule(moduleId) {
 function findKnowledgeForQuery(queryText = "") {
   const text = String(queryText).toLowerCase().trim();
 
+  if (/what (can you do|are your capabilities|exactly can you do|can garuda do)|what capabilities|capabilities|kya kar sakte ho/i.test(text)) {
+    return {
+      topic: "capability_reality",
+      ...TOPIC_KNOWLEDGE.capability_reality
+    };
+  }
+
   if (/who (are you|is garuda|built|created)|what is garuda|introduce yourself/i.test(text)) {
     return {
       topic: "what_is_garuda",
@@ -337,7 +351,14 @@ function findKnowledgeForQuery(queryText = "") {
     };
   }
 
-  if (/create|design|image|poster|creative|visual|generate|artwork/i.test(text)) {
+  if (/revenue|monetiz|make money|earn money|pricing|business model|tiers|commercial|sales|charge|paisa kaise|kamai|generate.*revenue|paisa kaise kamaoge/i.test(text)) {
+    return {
+      topic: "revenue_and_business",
+      ...TOPIC_KNOWLEDGE.revenue_and_business
+    };
+  }
+
+  if (/(?:create|design|image|poster|creative|visual|artwork|drawing|svg|asset)/i.test(text) && !/revenue|money|monetiz/i.test(text)) {
     return {
       topic: "creative_capabilities",
       ...TOPIC_KNOWLEDGE.creative_capabilities
@@ -362,13 +383,6 @@ function findKnowledgeForQuery(queryText = "") {
     return {
       topic: "marketing_growth",
       ...TOPIC_KNOWLEDGE.marketing_growth
-    };
-  }
-
-  if (/revenue|monetiz|pricing|business model|tiers|commercial|sales|charge/i.test(text)) {
-    return {
-      topic: "revenue_and_business",
-      ...TOPIC_KNOWLEDGE.revenue_and_business
     };
   }
 

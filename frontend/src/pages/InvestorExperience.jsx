@@ -61,9 +61,94 @@ export default function InvestorExperience() {
     demoKey: "creative_artifact"
   });
   const [restrictedAlert, setRestrictedAlert] = useState(null);
+  const [isListening, setIsListening] = useState(false);
 
   const speechSynthRef = useRef(null);
   const recognitionRef = useRef(null);
+
+  // Triple-Redundant API Gateway Caller (Vercel Proxy -> Render Production Backend Failover)
+  const callInvestorApi = async (endpoint, body = {}) => {
+    try {
+      const res = await fetch(`/api/investor/${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success) return data;
+      }
+    } catch (err) {
+      console.warn(`Direct fetch to /api/investor/${endpoint} failed, engaging Render failover:`, err);
+    }
+
+    // Failover directly to Render Backend
+    try {
+      const res = await fetch(`https://garuda-ai-xfif.onrender.com/api/investor/${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success) return data;
+      }
+    } catch (renderErr) {
+      console.warn(`Render failover for ${endpoint} error:`, renderErr);
+    }
+
+    return null;
+  };
+
+  const toggleListening = () => {
+    if (isListening) {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch {}
+      }
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) {
+      alert("Voice input is not supported in this browser. Please use Chrome, Edge, or Safari.");
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRec();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        soundFxService.playThinking();
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join("");
+        setInvestorInput(transcript);
+      };
+
+      recognition.onerror = (event) => {
+        console.warn("Speech recognition error:", event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err) {
+      console.warn("Speech recognition initialization error:", err);
+      setIsListening(false);
+    }
+  };
 
   // 8-Stage Execution Theater Pipeline Definition
   const THEATER_STEPS = [
@@ -305,13 +390,8 @@ export default function InvestorExperience() {
       speakNarration(initialMod.speechLines.join(" "));
 
       try {
-        const res = await fetch("/api/investor/presentation/start", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ metadata: { source: "investor_experience_ui" } })
-        });
-        const data = await res.json();
-        if (data.success && data.data) {
+        const data = await callInvestorApi("presentation/start", { metadata: { source: "investor_experience_ui" } });
+        if (data && data.success && data.data) {
           setSessionId(data.data.sessionId);
           setPresentationData(data.data);
         }
@@ -331,13 +411,8 @@ export default function InvestorExperience() {
     soundFxService.playTransition();
     try {
       if (sessionId && !sessionId.startsWith("pres_live_init")) {
-        const res = await fetch("/api/investor/presentation/next", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId })
-        });
-        const data = await res.json();
-        if (data.success && data.data) {
+        const data = await callInvestorApi("presentation/next", { sessionId });
+        if (data && data.success && data.data) {
           setPresentationData(data.data);
           if (data.data.state === "DIFFERENTIATION_AND_TRUTH") {
             setStageMode("ARCHITECTURE");
@@ -519,59 +594,52 @@ export default function InvestorExperience() {
     let responseDelivered = false;
 
     try {
-      const res = await fetch("/api/investor/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, question: q })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.success && data.data) {
-          const reply = data.data;
-          const garudaReply = {
-            role: "garuda",
-            text: reply.answer || reply.speechText,
-            topic: reply.topic,
-            suggestedDemo: reply.suggestedDemo,
-            demonstrationAvailable: reply.demonstrationAvailable,
-            timestamp: new Date().toLocaleTimeString()
-          };
-          setChatHistory(prev => [...prev, garudaReply]);
-          if (reply.suggestedDemo) {
-            setSuggestedDemoKey(reply.suggestedDemo);
-          }
-          if (reply.cinematic?.visualLayer?.type === "kingdom_universe_theatre" || reply.universe) {
-            if (reply.cinematic?.visualLayer?.data) {
-              setSelectedUniverse(reply.cinematic.visualLayer.data);
-            }
-            setStageMode("UNIVERSE_THEATRE");
-          } else if (reply.cinematic?.visualLayer?.type === "governance_boundary_alert" || reply.truthStatus === "RESTRICTED") {
-            setRestrictedAlert(reply.cinematic?.visualLayer?.data || {
-              status: "RESTRICTED",
-              reason: reply.answer,
-              law: "Anti-Fabrication & Founder Governance Gate"
-            });
-            setStageMode("RESTRICTED_ALERT");
-          } else if (reply.executionResult || (reply.evidence && reply.intent === "EXECUTE_CAPABILITY")) {
-            setActiveDemoResult(reply.executionResult || {
-              success: true,
-              demoKey: reply.suggestedDemo || "creative_artifact",
-              name: reply.topic || "Verified Capability",
-              narrative: reply.speechText || reply.answer,
-              evidence: reply.evidence
-            });
-            setTheaterStep(7);
-            setStageMode("DEMO");
-          } else if (reply.cinematic?.scene === "FINANCIAL_SCENARIOS_STAGE" || reply.topic === "one_crore_scenario" || reply.topic === "three_year_vision" || reply.topic === "five_year_vision") {
-            setStageMode("DIFFERENTIATION_MOAT");
-          } else if (reply.cinematic?.scene === "ARCHITECTURE_STAGE" || reply.topic === "mother_brain") {
-            setStageMode("ARCHITECTURE");
-          }
-          setVisualState("ANSWERING");
-          soundFxService.playTransition();
-          speakNarration(reply.speechText || reply.answer);
-          responseDelivered = true;
+      const data = await callInvestorApi("chat", { sessionId, question: q });
+      if (data && data.success && data.data) {
+        const reply = data.data;
+        const garudaReply = {
+          role: "garuda",
+          text: reply.answer || reply.speechText,
+          topic: reply.topic,
+          suggestedDemo: reply.suggestedDemo,
+          demonstrationAvailable: reply.demonstrationAvailable,
+          timestamp: new Date().toLocaleTimeString()
+        };
+        setChatHistory(prev => [...prev, garudaReply]);
+        if (reply.suggestedDemo) {
+          setSuggestedDemoKey(reply.suggestedDemo);
         }
+        if (reply.cinematic?.visualLayer?.type === "kingdom_universe_theatre" || reply.universe) {
+          if (reply.cinematic?.visualLayer?.data) {
+            setSelectedUniverse(reply.cinematic.visualLayer.data);
+          }
+          setStageMode("UNIVERSE_THEATRE");
+        } else if (reply.cinematic?.visualLayer?.type === "governance_boundary_alert" || reply.truthStatus === "RESTRICTED") {
+          setRestrictedAlert(reply.cinematic?.visualLayer?.data || {
+            status: "RESTRICTED",
+            reason: reply.answer,
+            law: "Anti-Fabrication & Founder Governance Gate"
+          });
+          setStageMode("RESTRICTED_ALERT");
+        } else if (reply.executionResult || (reply.evidence && reply.intent === "EXECUTE_CAPABILITY")) {
+          setActiveDemoResult(reply.executionResult || {
+            success: true,
+            demoKey: reply.suggestedDemo || "creative_artifact",
+            name: reply.topic || "Verified Capability",
+            narrative: reply.speechText || reply.answer,
+            evidence: reply.evidence
+          });
+          setTheaterStep(7);
+          setStageMode("DEMO");
+        } else if (reply.cinematic?.scene === "FINANCIAL_SCENARIOS_STAGE" || reply.topic === "one_crore_scenario" || reply.topic === "three_year_vision" || reply.topic === "five_year_vision") {
+          setStageMode("DIFFERENTIATION_MOAT");
+        } else if (reply.cinematic?.scene === "ARCHITECTURE_STAGE" || reply.topic === "mother_brain") {
+          setStageMode("ARCHITECTURE");
+        }
+        setVisualState("ANSWERING");
+        soundFxService.playTransition();
+        speakNarration(reply.speechText || reply.answer);
+        responseDelivered = true;
       }
     } catch (err) {
       console.warn("Backend chat fetch unavailable, engaging sovereign client-side knowledge resolution:", err);
@@ -609,17 +677,12 @@ export default function InvestorExperience() {
     stopSpeaking();
 
     try {
-      const res = await fetch("/api/investor/demonstrate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          demoKey: demoKey || "creative_artifact",
-          options: { prompt: "Autonomous Sovereign Intelligence Core" }
-        })
+      const data = await callInvestorApi("demonstrate", {
+        sessionId,
+        demoKey: demoKey || "creative_artifact",
+        options: { prompt: "Autonomous Sovereign Intelligence Core" }
       });
-      const data = await res.json();
-      if (data.success && data.data) {
+      if (data && data.success && data.data) {
         setActiveDemoResult(data.data);
         setVisualState("DEMONSTRATION_COMPLETE");
         soundFxService.playCryptoConfirm();
@@ -630,7 +693,7 @@ export default function InvestorExperience() {
       } else {
         setActiveDemoResult({
           success: false,
-          reason: data.error || "Demonstration failed to execute"
+          reason: data?.error || "Demonstration failed to execute"
         });
         setVisualState("IDLE");
       }
@@ -1753,6 +1816,27 @@ export default function InvestorExperience() {
                   outline: "none"
                 }}
               />
+              <button
+                type="button"
+                onClick={toggleListening}
+                style={{
+                  background: isListening ? "rgba(239, 68, 68, 0.25)" : "rgba(245, 158, 11, 0.15)",
+                  border: `1px solid ${isListening ? "#ef4444" : PALETTE.gold}`,
+                  color: isListening ? "#ef4444" : PALETTE.gold,
+                  padding: "0.85rem 1.15rem",
+                  borderRadius: "8px",
+                  fontSize: "1.1rem",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: isListening ? "0 0 15px rgba(239, 68, 68, 0.5)" : "none",
+                  transition: "all 0.2s ease"
+                }}
+                title={isListening ? "Listening... (Click to stop)" : "Click to speak with GARUDA"}
+              >
+                {isListening ? "🔴" : "🎙️"}
+              </button>
               <button
                 type="submit"
                 style={{

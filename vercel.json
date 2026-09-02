@@ -39,11 +39,11 @@
     },
     {
       "source": "/api/investor/:path*",
-      "destination": "/api/investor?path=:path*"
+      "destination": "https://garuda-ai-xfif.onrender.com/api/investor/:path*"
     },
     {
       "source": "/api/investor",
-      "destination": "/api/investor"
+      "destination": "https://garuda-ai-xfif.onrender.com/api/investor"
     },
     {
       "source": "/api/telegram",
