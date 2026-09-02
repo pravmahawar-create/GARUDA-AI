@@ -83,6 +83,8 @@ getProactiveBusinessBriefing().then((briefing) => {
   console.log("Proactive Business Development Briefing test PASSED cleanly.");
   return runListCandidatesTest();
 }).then(() => {
+  return runPersistCycleStatusTest();
+}).then(() => {
   console.log("Opportunity discovery validation test passed.");
 }).catch((err) => {
   console.error("Proactive briefing test failed:", err);
@@ -147,5 +149,35 @@ async function runListCandidatesTest() {
     assert.ok(unmeasuredIdx > verifiedIdx, "UNMEASURED must not outrank the well-verified buyer");
   } finally {
     DiscoveryCandidate.find = originalFind;
+  }
+}
+
+async function runPersistCycleStatusTest() {
+  const mongoose = require("mongoose");
+  const { persistCycleStatus } = require("./opportunityDiscoveryService");
+  let captured = null;
+  const originalDb = mongoose.connection.db;
+  mongoose.connection.db = {
+    collection: () => ({
+      updateOne: async (filter, update) => {
+        captured = { filter, update };
+        return { acknowledged: true };
+      }
+    })
+  };
+  try {
+    const hexId = "65e01234567890abcdef1234";
+    await persistCycleStatus({
+      missionId: hexId,
+      status: "healthy",
+      intervalMs: 900000,
+      summary: { fetched: 10, ranked: 5, rejected: 5, channels: {}, errors: [] }
+    });
+    assert.ok(captured, "persistCycleStatus should update cycle status collection");
+    assert.ok(captured.update["$set"].missionId instanceof mongoose.Types.ObjectId, "missionId should be converted to ObjectId");
+    assert.strictEqual(captured.update["$set"].missionId.toHexString(), hexId);
+    assert.strictEqual(captured.update["$set"].status, "healthy");
+  } finally {
+    mongoose.connection.db = originalDb;
   }
 }

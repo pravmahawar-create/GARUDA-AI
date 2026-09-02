@@ -234,7 +234,7 @@ async function persistCycleStatus({ missionId, status, intervalMs, summary, erro
   const db = mongoose.connection.db;
   if (!db) return;
   const doc = {
-    missionId: mongoose.Types.ObjectId.isValid(missionId) ? mongoose.Types.ObjectId(missionId) : missionId,
+    missionId: mongoose.Types.ObjectId.isValid(missionId) ? new mongoose.Types.ObjectId(missionId) : missionId,
     status,
     lastCycleAt: new Date(),
     nextCycleAt: new Date(Date.now() + intervalMs),
