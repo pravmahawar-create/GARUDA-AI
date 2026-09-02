@@ -286,6 +286,41 @@ const TOPIC_KNOWLEDGE = Object.freeze({
     capabilityId: "engineering.repository-audit",
     demonstrationAvailable: true,
     suggestedDemo: "creative_artifact"
+  },
+  real_work_vs_answers: {
+    title: "Does GARUDA Only Answer Questions or Actually Do Work?",
+    answer: "GARUDA is an autonomous execution operating system, not a conversational chatbot. When given a mission, it doesn't just return text explanations—it modifies ASTs, runs tests in isolated worktrees, generates physical SVG design assets on disk, structures 4-week SEO content pipelines, and produces verifiable deliverables sealed with cryptographic SHA-256 evidence. We operate under one law: Show > Tell.",
+    capabilityId: "engineering.repository-audit",
+    demonstrationAvailable: true,
+    suggestedDemo: "creative_artifact"
+  },
+  error_handling_and_self_correction: {
+    title: "How Does GARUDA Detect & Correct Mistakes?",
+    answer: "GARUDA operates under closed-loop regression safety: (1) Pre-execution baseline automated testing; (2) Pre-modification SHA-256 backups on disk; (3) AST validation; (4) Post-execution test execution; and (5) Automatic rollback if any test fails. Furthermore, all state mutations require explicit Founder approval gates.",
+    capabilityId: "engineering.repository-audit",
+    demonstrationAvailable: true,
+    suggestedDemo: "repo_architecture"
+  },
+  limitations_and_boundaries: {
+    title: "What are GARUDA's Biggest Current Limitations?",
+    answer: "Under our 100% Anti-Fabrication Law, we are transparent about current boundaries: (1) Photorealistic 3D digital human avatars remain PLANNED; (2) External banking disbursements remain PARTIAL (require human Founder approval); (3) We do not generate Hollywood-style full movies; and (4) Critical write mutations cannot bypass Founder authorization.",
+    capabilityId: "engineering.repository-audit",
+    demonstrationAvailable: false,
+    suggestedDemo: "repo_architecture"
+  },
+  founder_approval_gate: {
+    title: "What Happens If Founder Approval Is Not Granted?",
+    answer: "If Founder approval is not granted, Mother Brain halts the write mutation immediately with a RESTRICTED status. The system can still perform read-only architectural audits, simulate the change in an isolated Git worktree, or produce a local visual artifact, but no production state or file modification is committed.",
+    capabilityId: "engineering.repository-audit",
+    demonstrationAvailable: true,
+    suggestedDemo: "repo_architecture"
+  },
+  practical_business_logistics: {
+    title: "How Would GARUDA Handle a Practical Business / Logistics Company?",
+    answer: "For a real business like a logistics company, GARUDA executes across multiple universes simultaneously: (1) U01 Engineering builds and patches fleet tracking/dispatch modules with unit tests; (2) U02 Creative synthesizes branded fleet management UI components and SVG maps; (3) U03 Digital Marketing formulates B2B logistics SEO keywords and content pillars; and (4) U05 Revenue prepares commercial proposals and ROI models.",
+    capabilityId: "creative.living_artifact_continue",
+    demonstrationAvailable: true,
+    suggestedDemo: "creative_artifact"
   }
 });
 
@@ -320,6 +355,41 @@ function findKnowledgeForQuery(queryText = "") {
     return {
       topic: "capability_reality",
       ...TOPIC_KNOWLEDGE.capability_reality
+    };
+  }
+
+  if (/tum sirf answer dete ho|actual kaam|real work|sirf answer|only text|do real work|actual work|do you do real work|kya kaam karte ho/i.test(text)) {
+    return {
+      topic: "real_work_vs_answers",
+      ...TOPIC_KNOWLEDGE.real_work_vs_answers
+    };
+  }
+
+  if (/galat ho jao|kya pata chalega|mistake|error handling|self-correction|if you are wrong|hallucination|how do you know if you are wrong|rollback|pata kaise chalega/i.test(text)) {
+    return {
+      topic: "error_handling_and_self_correction",
+      ...TOPIC_KNOWLEDGE.error_handling_and_self_correction
+    };
+  }
+
+  if (/sabse badi limitation|limitation|boundaries|weakness|kamzori|what can you not do|what is not supported|kamiyan/i.test(text)) {
+    return {
+      topic: "limitations_and_boundaries",
+      ...TOPIC_KNOWLEDGE.limitations_and_boundaries
+    };
+  }
+
+  if (/founder approval na mile|bina founder approval|without founder approval|unauthorized|approval not granted|if founder rejects|founder.*approval/i.test(text)) {
+    return {
+      topic: "founder_approval_gate",
+      ...TOPIC_KNOWLEDGE.founder_approval_gate
+    };
+  }
+
+  if (/logistics company|logistics|fleet|agar main tumhe.*company|agar main ek company doon|real business/i.test(text)) {
+    return {
+      topic: "practical_business_logistics",
+      ...TOPIC_KNOWLEDGE.practical_business_logistics
     };
   }
 

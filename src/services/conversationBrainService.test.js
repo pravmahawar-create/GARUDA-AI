@@ -206,4 +206,48 @@ test("🧠 Intelligent Conversation Brain V1 Test Suite", async (t) => {
     assert.equal(res.data.capabilitySelected, "engineering.execute_mission");
     assert.match(res.data.answer, /engineering goal|worktree/i);
   });
+
+  await t.test("Test 14: Arbitrary Investor Questions — reasons from architecture rather than generic greetings", async () => {
+    const sessionId = "test-session-arbitrary-14";
+    conversationBrainService.clearSession(sessionId);
+
+    const r1 = await conversationBrainService.process("Tum sirf answer dete ho ya actual kaam bhi karte ho?", { sessionId });
+    assert.equal(r1.data.topic, "real_work_vs_answers");
+    assert.match(r1.data.answer, /worktrees|execute|disk/i);
+
+    const r2 = await conversationBrainService.process("Agar tum galat ho jao to kaise pata chalega?", { sessionId });
+    assert.equal(r2.data.topic, "error_handling_and_self_correction");
+    assert.match(r2.data.answer, /rollback|regression|backup/i);
+
+    const r3 = await conversationBrainService.process("Tumhari sabse badi limitation kya hai?", { sessionId });
+    assert.equal(r3.data.topic, "limitations_and_boundaries");
+    assert.match(r3.data.answer, /Anti-Fabrication|PLANNED|PARTIAL/i);
+
+    const r4 = await conversationBrainService.process("Agar founder approval na mile to kya karoge?", { sessionId });
+    assert.equal(r4.data.topic, "founder_approval_gate");
+    assert.match(r4.data.answer, /RESTRICTED|halt|read-only/i);
+
+    const r5 = await conversationBrainService.process("Agar main tumhe ek logistics company doon to tum practically kya karoge?", { sessionId });
+    assert.equal(r5.data.topic, "practical_business_logistics");
+    assert.match(r5.data.answer, /fleet|tracking|logistics/i);
+  });
+
+  await t.test("Test 15: Artifact Lineage Recall — 'What did you just create?' describes the preceding materialized deliverable", async () => {
+    const sessionId = "test-session-lineage-15";
+    conversationBrainService.clearSession(sessionId);
+
+    // Turn 1: Propose demo
+    await conversationBrainService.process("Show me what you can create live", { sessionId });
+
+    // Turn 2: Execute
+    const execRes = await conversationBrainService.process("Do it.", { sessionId });
+    assert.equal(execRes.data.intent, CONVERSATION_INTENTS.EXECUTE_CAPABILITY);
+    assert.ok(execRes.data.evidence?.sha256Hash);
+
+    // Turn 3: Follow-up on created artifact
+    const recallRes = await conversationBrainService.process("What did you just create?", { sessionId });
+    assert.equal(recallRes.data.topic, "created_artifact_summary");
+    assert.match(recallRes.data.answer, /materialized|physical disk|evidence seal|SHA-256/i);
+    assert.ok(recallRes.data.evidence?.sha256Hash);
+  });
 });

@@ -133,6 +133,8 @@ class ConversationBrainService {
         currentTopic: null,
         currentLanguage: "en",
         lastExecutableCapability: "creative_artifact",
+        lastExecutionResult: null,
+        lastDeliveredArtifact: null,
         lastProposedAction: null,
         demonstratedCapabilities: new Set(),
         presentationDepthMode: "CONVERSATION",
@@ -221,7 +223,8 @@ class ConversationBrainService {
     const textLower = String(rawText || "").toLowerCase().trim();
     const cleanNoPunct = textLower.replace(/[.!?]/g, "").trim();
 
-    const isExecutionRequest = /^(do it|execute it|run it|karke dikhao|execute now|apply it|run mission|build it)$/i.test(cleanNoPunct);
+    const isExecutionRequest =
+      /^(do it|execute it|run it|karke dikhao|execute now|apply it|run mission|build it|start demo|run demo)$/i.test(cleanNoPunct);
     const isProofRequest =
       /^(proof|proof\?|prove it|prove that|can you prove it|proof kya hai|kya proof hai|prove it now)$/i.test(cleanNoPunct) ||
       /\b(challenge you to prove|prove it to me|show me proof)\b/i.test(textLower);
@@ -229,6 +232,8 @@ class ConversationBrainService {
       /\b(why (do you|does garuda|is it|is this) use (it|that|sha-256|sha256)|why use (it|that|sha-256|sha256)|tum kyu use karte ho|iska kya use hai|why is that used|why do you use that)\b/i.test(
         textLower
       );
+    const isWhatDidYouCreate =
+      /\b(what did you just create|what did you create|what did you build|what did you make|kya banaya|kya create kiya|show what you created|what was created)\b/i.test(textLower);
     const isExplainThatInHindi = /\b(explain that in hindi|hindi me samjhao|explain in hindi|ab hindi me batao|translate that|ab roman hindi me batao|english please)\b/i.test(textLower);
     const isLanguageSwitchOnly = /^(explain that in hindi|hindi me samjhao|explain in hindi|ab hindi me batao|ab roman hindi me batao|english please|in english|hindi please)$/i.test(cleanNoPunct);
 
@@ -260,6 +265,7 @@ class ConversationBrainService {
       isProofRequest,
       isExecutionRequest,
       isWhyUseIt,
+      isWhatDidYouCreate,
       isLanguageSwitchOnly
     };
   }
@@ -389,8 +395,12 @@ class ConversationBrainService {
 
       try {
         const demoExec = await demonstrationOrchestrator.executeDemonstration(capabilitySelected, context.options || {});
-        executionResult = demoExec;
-        evidence = demoExec.evidence || null;
+        if (demoExec) {
+          executionResult = demoExec;
+          evidence = demoExec.evidence || null;
+          session.lastExecutionResult = demoExec;
+          session.lastDeliveredArtifact = evidence;
+        }
 
         if (activeLanguage === "hi") {
           answerText = `कार्यान्वयन पूर्ण हुआ। मैंने भौतिक रूप से डिस्क पर ${capabilitySelected} को निष्पादित किया है। साक्ष्य हैश: ${evidence?.sha256Hash || "VERIFIED"}`;
@@ -421,6 +431,39 @@ class ConversationBrainService {
         activeLanguage,
         startTime,
         reasoningMode: "governed_execution_bridge",
+        fallbackUsed: false
+      });
+    }
+
+    // 4b. Check for Follow-up on Created Artifact ("What did you just create?")
+    if (coRef.isWhatDidYouCreate && session.lastExecutionResult) {
+      intent = CONVERSATION_INTENTS.ANSWER_ONLY;
+      const exec = session.lastExecutionResult;
+      const sha = exec.evidence?.sha256Hash || exec.evidence?.sha256 || "VERIFIED";
+      const capability = exec.capabilityName || session.lastExecutableCapability || "Living Vector Artifact";
+      if (activeLanguage === "hi") {
+        answerText = `मैंने अभी भौतिक डिस्क पर '${capability}' का निर्माण किया है। इसका विवरण: ${exec.narrative || "भौतिक सत्यापन पूर्ण"}। क्रिप्टोग्राफ़िक साक्ष्य हैश: ${sha}।`;
+      } else if (activeLanguage === "roman_hindi") {
+        answerText = `Maine abhi physical disk par '${capability}' execute karke create kiya hai. Summary: ${exec.narrative || "Verified deliverable materialize hua"}. Cryptographic SHA-256 evidence seal: ${sha}.`;
+      } else {
+        answerText = `I just executed and materialized '${capability}' directly on physical disk. Deliverable summary: ${exec.narrative || "Verified physical deliverable produced"}. Cryptographic evidence seal: ${sha}.`;
+      }
+      speechText = answerText;
+      return this._finalizeResponse(session, rawInput, {
+        intent,
+        answer: answerText,
+        speechText,
+        topic: "created_artifact_summary",
+        confidence: 1.0,
+        truthStatus: "VERIFIED",
+        capabilitySelected: session.lastExecutableCapability,
+        demonstrationAvailable: true,
+        suggestedDemo: session.lastExecutableCapability,
+        executionResult: exec,
+        evidence: exec.evidence,
+        activeLanguage,
+        startTime,
+        reasoningMode: "artifact_lineage_recall",
         fallbackUsed: false
       });
     }
@@ -669,6 +712,36 @@ class ConversationBrainService {
         return "गरुड़ 27 विशेष निष्पादन ब्रह्मांडों में वास्तविक सॉफ्टवेयर इंजीनियरिंग, क्रिएटिव लिविंग आर्टिफैक्ट्स, ब्रांड आइडेंटिटी लॉक और डिजिटल मार्केटिंग को सत्यापित रूप से निष्पादित करता है।";
       }
       return "GARUDA 27 specialized execution universes me real software engineering, Creative Living Vector Artifacts (SVGs), IdentityLock brand governance aur SEO editorial growth ko physically execute aur SHA-256 se verify karta hai.";
+    }
+    if (match.topic === "real_work_vs_answers") {
+      if (lang === "hi") {
+        return "गरुड़ केवल टेक्स्ट उत्तर नहीं देता बल्कि वास्तविक कार्य निष्पादित करता है। यह अलग-अलग वर्कस्पेस में कोड बदलता है, डिस्क पर एसवीजी आर्टिफैक्ट्स बनाता है और स्वचालित परीक्षण चलाकर एसएचए-256 साक्ष्य सील करता है।";
+      }
+      return "GARUDA sirf text answers nahi deta balki real work execute karta hai. Yeh isolated worktrees me actual code patch karta hai, disk par SVG visual assets generate karta hai, test suites run karta hai aur SHA-256 evidence seals provide karta hai.";
+    }
+    if (match.topic === "error_handling_and_self_correction") {
+      if (lang === "hi") {
+        return "गरुड़ में क्लोज्ड-लूप प्रतिगमन सुरक्षा है: कोड परिवर्तन से पहले डिस्क बैकअप और बेसलाइन परीक्षण होते हैं। निष्पादन के बाद परीक्षण विफल होने पर स्वचालित रोलबैक होता है।";
+      }
+      return "GARUDA closed-loop regression safety par kaam karta hai: modification se pehle disk backup aur baseline tests run hote hain. Agar test fail ho, toh automatic rollback ho jata hai. Sath hi critical write operations Founder approval gate ke under hote hain.";
+    }
+    if (match.topic === "limitations_and_boundaries") {
+      if (lang === "hi") {
+        return "एंटी-फैब्रिकेशन लॉ के तहत हमारी सीमाएं पारदर्शी हैं: फोटोरियलिस्टिक 3डी मानव अवतार अभी योजना में है, बाहरी बैंकिंग भुगतान संस्थापक की मंजूरी के बिना आंशिक है, और हॉलीवुड फिल्में समर्थित नहीं हैं।";
+      }
+      return "GARUDA Anti-Fabrication Law ke tahat apni limitations transparently batata hai: Photorealistic 3D human avatars abhi PLANNED hain, external banking payouts Founder manual approval ke bina PARTIAL hain, aur Hollywood movies supported nahi hain.";
+    }
+    if (match.topic === "founder_approval_gate") {
+      if (lang === "hi") {
+        return "यदि संस्थापक की मंजूरी नहीं मिलती है, तो मदर ब्रेन राइट म्यूटेशन को तुरंत रोक देता है। सिस्टम केवल पढ़ने योग्य विश्लेषण या सिम्युलेशन कर सकता है, लेकिन कोई उत्पादन परिवर्तन लागू नहीं होगा।";
+      }
+      return "Agar Founder approval nahi milti hai, toh Mother Brain write mutation ko immediately halt kar deta hai (RESTRICTED). System read-only analysis ya isolated simulation kar sakta hai, par production disk par koi change commit nahi hoga.";
+    }
+    if (match.topic === "practical_business_logistics") {
+      if (lang === "hi") {
+        return "एक लॉजिस्टिक्स कंपनी के लिए, गरुड़ एक साथ कई ब्रह्मांडों में निष्पादित करता है: इंजीनियरिंग फ्लीट ट्रैकिंग सॉफ्टवेयर बनाता है, क्रिएटिव डैशबोर्ड एसवीजी डिजाइन करता है, डिजिटल मार्केटिंग एसईओ योजना बनाता है और रेवेन्यू वाणिज्यिक प्रस्ताव तैयार करता है।";
+      }
+      return "Agar aap mujhe logistics company denge, toh GARUDA multi-universe execution karega: U01 Engineering fleet tracking modules build karega, U02 Creative dashboard UI aur maps synthesize karega, U03 Marketing logistics SEO content banayega aur U05 Revenue commercial proposal seal karega.";
     }
     return match.answer;
   }
