@@ -505,6 +505,31 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
   }
 ]);
 
+const capabilityEntitlementService = require("./capabilityEntitlementService");
+
+const CAPABILITY_TIER_MAP = Object.freeze({
+  "engineering.software-implementation": "personal",
+  "engineering.repository-audit": "personal",
+  "engineering.api-integration": "creator",
+  "automation.workflow-automation": "sme",
+  "automation.spreadsheet-automation": "creator",
+  "knowledge.research-synthesis": "personal",
+  "documentation.technical-documentation": "personal",
+  "writing.proposal-writing": "personal",
+  "ai.agent-engineering": "creator",
+  "testing.quality-assurance": "personal",
+  "creative.vector-design": "creator",
+  "creative.motion-graphics": "sme",
+  "creative.3d-rendering": "sme",
+  "localization.translation-services": "creator",
+  "real_estate.growth_os": "sme",
+  "creative.studio_orchestration": "creator",
+  "digital_marketing.editorial_growth": "creator",
+  "brand.identity_lock_system": "creator",
+  "seo.topic_clusters_and_landing": "creator",
+  "entertainment.campaign_war_room": "enterprise"
+});
+
 function inspectCapability(definition, rootDir = process.cwd()) {
   const evidence = (definition.evidenceFiles || []).map((file) => ({
     file,
@@ -513,10 +538,13 @@ function inspectCapability(definition, rootDir = process.cwd()) {
   const evidenceCount = evidence.filter((item) => item.exists).length;
   const minimumEvidenceCount = definition.minimumEvidenceCount || (definition.evidenceFiles ? definition.evidenceFiles.length : 0);
   const readiness = evidenceCount >= minimumEvidenceCount ? "verified" : evidenceCount > 0 ? "partial" : "planned";
+  const tier = definition.tier || CAPABILITY_TIER_MAP[definition.id] || "personal";
 
   return {
     ...definition,
     capabilityId: definition.id,
+    tier,
+    requiredEntitlements: definition.requiredEntitlements || [definition.id],
     readiness,
     eligibleForMatching: readiness === "verified" && definition.commercializable,
     evidence
@@ -529,6 +557,7 @@ function listCapabilities(filters = {}, options = {}) {
     .map((definition) => inspectCapability(definition, rootDir))
     .filter((capability) => !filters.universe || capability.universe === String(filters.universe).toLowerCase())
     .filter((capability) => !filters.category || capability.category.toLowerCase().includes(String(filters.category).toLowerCase()))
+    .filter((capability) => !filters.tier || capability.tier === String(filters.tier).toLowerCase())
     .filter((capability) => !filters.readiness || capability.readiness === filters.readiness)
     .filter((capability) => filters.eligible === undefined || capability.eligibleForMatching === filters.eligible);
 }
@@ -697,13 +726,22 @@ function getRegistrySummary(options = {}) {
   };
 }
 
+function getCapabilityTier(id) {
+  const cap = getCapability(id);
+  return cap ? cap.tier : (CAPABILITY_TIER_MAP[id] || "personal");
+}
+
 module.exports = {
   CAPABILITY_DEFINITIONS,
   CAPABILITY_READINESS,
+  CAPABILITY_TIER_MAP,
   getCapability,
+  getCapabilityTier,
   getGarudaIdentityStatement,
   getRegistrySummary,
+  hasCapability: capabilityEntitlementService.hasCapability,
   inspectCapability,
   listCapabilities,
-  matchDemandUniversal
+  matchDemandUniversal,
+  resolveCapabilities: capabilityEntitlementService.resolveCapabilities
 };

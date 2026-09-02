@@ -134,6 +134,14 @@
       "destination": "/scholar/index.html"
     },
     {
+      "source": "/experience",
+      "destination": "/experience/index.html"
+    },
+    {
+      "source": "/investor",
+      "destination": "/investor/index.html"
+    },
+    {
       "source": "/creative",
       "destination": "/creative/index.html"
     },

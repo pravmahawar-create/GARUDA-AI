@@ -3,7 +3,7 @@ const path = require("path");
 
 const IGNORED_DIRS = new Set([
   "node_modules", ".git", "dist", "build", ".next",
-  "coverage", ".cache", "tmp", "temp"
+  "coverage", ".cache", "tmp", "temp", "data", "projects", "scratch", "uploads"
 ]);
 
 const SOURCE_EXTENSIONS = new Set([".js", ".jsx", ".ts", ".tsx", ".mjs"]);

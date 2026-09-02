@@ -20,7 +20,7 @@ data/
 scratch/
 projects/
 backend-node/dist/
-models/
+/models/
 local-ai/
 *.safetensors
 *.ckpt

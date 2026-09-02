@@ -10,13 +10,22 @@ const fs = require("fs");
 const path = require("path");
 
 const DATA_DIR = path.join(__dirname, "..", "..", "data");
-const LIVING_ARTIFACTS_FILE = path.join(DATA_DIR, "living-artifacts.jsonl");
+function getArtifactsFile() {
+  return process.env.LIVING_ARTIFACTS_FILE || path.join(DATA_DIR, "living-artifacts.jsonl");
+}
+const LIVING_ARTIFACTS_FILE = getArtifactsFile();
 
 function ensureDir() {
   try { if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true }); } catch {}
 }
 
-const livingStore = new Map();
+const stores = new Map();
+function getStore() {
+  const file = getArtifactsFile();
+  if (!stores.has(file)) stores.set(file, new Map());
+  return stores.get(file);
+}
+const livingStore = getStore();
 
 // Optional MongoDB model — loaded lazily, fallback to file/memory if not available
 let LivingArtifactModel = null;
@@ -337,6 +346,64 @@ async function getMostRecentCreativeArtifactScopedAsync(filter = {}) {
   return null;
 }
 
+function getArtifactLineage(artifactId) {
+  const lineage = [];
+  let current = getLivingArtifactContext(artifactId);
+  // Also try file if not in memory
+  if (!current) {
+    try {
+      if (fs.existsSync(LIVING_ARTIFACTS_FILE)) {
+        const lines = fs.readFileSync(LIVING_ARTIFACTS_FILE, "utf8").split("\n").filter(Boolean);
+        for (const line of lines) {
+          try {
+            const doc = JSON.parse(line);
+            if (doc.artifactId === artifactId) { current = doc; break; }
+          } catch {}
+        }
+      }
+    } catch {}
+  }
+  const visited = new Set();
+  while (current && !visited.has(current.artifactId)) {
+    visited.add(current.artifactId);
+    lineage.unshift(current);
+    if (!current.sourceArtifactId || visited.has(current.sourceArtifactId)) break;
+    const parentId = current.sourceArtifactId;
+    let parent = getLivingArtifactContext(parentId);
+    if (!parent) {
+      try {
+        if (fs.existsSync(LIVING_ARTIFACTS_FILE)) {
+          const lines = fs.readFileSync(LIVING_ARTIFACTS_FILE, "utf8").split("\n").filter(Boolean);
+          for (const line of lines) {
+            try {
+              const doc = JSON.parse(line);
+              if (doc.artifactId === parentId) { parent = doc; break; }
+            } catch {}
+          }
+        }
+      } catch {}
+    }
+    current = parent;
+  }
+  return lineage;
+}
+
+function getContinuationContext(filter = {}) {
+  // Safe retrieval for continuation: uses scoped lookup, never global fallback
+  const artifact = getMostRecentCreativeArtifactScoped(filter);
+  if (!artifact) return null;
+  return {
+    sourceArtifactId: artifact.artifactId,
+    rootArtifactId: artifact.rootArtifactId || artifact.artifactId,
+    continuityScopeId: artifact.continuityScopeId,
+    projectId: artifact.projectId,
+    sessionId: artifact.sessionId,
+    conversationId: artifact.conversationId,
+    purpose: artifact.purpose,
+    briefId: artifact.briefId
+  };
+}
+
 function prepareArtifactPresentation(artifactId) {
   const ctx = getLivingArtifactContext(artifactId);
   if (!ctx) throw new Error(`Living artifact not found: ${artifactId}`);
@@ -372,13 +439,67 @@ function answerArtifactQuestion(artifactId, question) {
   return { question: q, answer: "I don't have enough verified information to answer that confidently.", confidence: "UNKNOWN", evidence: null, artifactId };
 }
 
-function clearForTesting() { livingStore.clear(); try { if (fs.existsSync(LIVING_ARTIFACTS_FILE)) fs.writeFileSync(LIVING_ARTIFACTS_FILE, "", "utf8"); } catch {} }
+function listLivingArtifacts(filter = {}) {
+  const { projectId, sessionId, continuityScopeId, briefId, artifactType, limit = 20 } = filter || {};
+  // Strict scope isolation: require at least one scope filter, never global fallback
+  if (!projectId && !sessionId && !continuityScopeId && !briefId) return [];
+  const effectiveSessionId = sessionId || filter.conversationId || null;
+  let results = [];
+  // Check in-memory first
+  for (const doc of livingStore.values()) {
+    if (artifactType && !String(doc.artifactType || "").toLowerCase().includes(String(artifactType).toLowerCase())) continue;
+    let matches = false;
+    if (continuityScopeId && doc.continuityScopeId && doc.continuityScopeId === continuityScopeId) matches = true;
+    else if (projectId && doc.projectId && doc.projectId === projectId) matches = true;
+    else if (effectiveSessionId && doc.sessionId && doc.sessionId === effectiveSessionId) matches = true;
+    else if (effectiveSessionId && doc.conversationId && doc.conversationId === effectiveSessionId) matches = true;
+    else if (briefId && doc.briefId && doc.briefId === briefId) matches = true;
+    if (!matches) continue;
+    results.push(doc);
+  }
+  // File fallback for durability (sync)
+  try {
+    if (fs.existsSync(LIVING_ARTIFACTS_FILE)) {
+      const lines = fs.readFileSync(LIVING_ARTIFACTS_FILE, "utf8").split("\n").filter(Boolean);
+      for (const line of lines) {
+        try {
+          const doc = JSON.parse(line);
+          if (results.some(r => r.artifactId === doc.artifactId)) continue; // already in memory
+          if (artifactType && !String(doc.artifactType || "").toLowerCase().includes(String(artifactType).toLowerCase())) continue;
+          let matches = false;
+          if (continuityScopeId && doc.continuityScopeId && doc.continuityScopeId === continuityScopeId) matches = true;
+          else if (projectId && doc.projectId && doc.projectId === projectId) matches = true;
+          else if (effectiveSessionId && doc.sessionId && doc.sessionId === effectiveSessionId) matches = true;
+          else if (effectiveSessionId && doc.conversationId && doc.conversationId === effectiveSessionId) matches = true;
+          else if (briefId && doc.briefId && doc.briefId === briefId) matches = true;
+          if (!matches) continue;
+          results.push(doc);
+        } catch {}
+      }
+    }
+  } catch {}
+  results.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const lim = Math.max(1, Math.min(Number(limit) || 20, 100));
+  return results.slice(0, lim);
+}
+
+function clearForTesting() {
+  livingStore.clear();
+  try { if (fs.existsSync(LIVING_ARTIFACTS_FILE)) fs.writeFileSync(LIVING_ARTIFACTS_FILE, "", "utf8"); } catch {}
+  // Also clear DB if available
+  if (isDbAvailable()) {
+    try { LivingArtifactModel.deleteMany({}).then(() => {}).catch(() => {}); } catch {}
+  }
+}
 
 module.exports = {
   createLivingArtifactContext,
   getLivingArtifactContext,
   getMostRecentCreativeArtifact,
   getMostRecentCreativeArtifactScoped,
+  listLivingArtifacts,
+  getArtifactLineage,
+  getContinuationContext,
   prepareArtifactPresentation,
   answerArtifactQuestion,
   anticipateQuestions,

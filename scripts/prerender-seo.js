@@ -125,6 +125,40 @@ const ROUTES = [
     `
   },
   {
+    path: "/experience",
+    filePaths: [
+      path.join(DIST_DIR, "experience", "index.html"),
+      path.join(DIST_DIR, "experience.html")
+    ],
+    title: "THE GARUDA EXPERIENCE | Autonomous AI Presentation & Live Demonstration",
+    description: "Experience GARUDA AI explaining itself autonomously. An interactive sovereign AI Operating System presentation, architectural dialogue, and live capability demonstration.",
+    canonical: "https://www.garudaos.in/experience",
+    h1: "The GARUDA Experience",
+    eyebrow: "AUTONOMOUS SOVEREIGN PRESENTATION ENGINE",
+    contentSnippet: `
+      <h2>Autonomous Sovereign Self-Introduction & Live Proof</h2>
+      <p>Experience GARUDA AI presenting its own architecture, philosophy, and verified capabilities live. Founded by Praveen Mahawar.</p>
+      <p><a href="/experience">Enter The GARUDA Experience</a> | <a href="/what-is-garuda-ai">Learn More</a></p>
+    `
+  },
+  {
+    path: "/investor",
+    filePaths: [
+      path.join(DIST_DIR, "investor", "index.html"),
+      path.join(DIST_DIR, "investor.html")
+    ],
+    title: "GARUDA AI Investor Autonomous Briefing | Sovereign Intelligence",
+    description: "Autonomous briefing for investors, partners, and enterprise leaders. Live architectural demonstration, 100% Anti-Fabrication Truth Law, and multi-tier sovereign core.",
+    canonical: "https://www.garudaos.in/investor",
+    h1: "GARUDA AI Investor Briefing",
+    eyebrow: "AUTONOMOUS COMMERCIAL BRIEFING",
+    contentSnippet: `
+      <h2>Autonomous Architectural Briefing for Investors & Partners</h2>
+      <p>GARUDA introduces itself, explains why it is fundamentally different from LLM wrappers, and demonstrates real verified capabilities live.</p>
+      <p><a href="/investor">Start Autonomous Briefing</a> | <a href="/chat">Talk to Solution Architect</a></p>
+    `
+  },
+  {
     path: "/services/custom-ai-development",
     filePaths: [
       path.join(DIST_DIR, "services", "custom-ai-development", "index.html"),

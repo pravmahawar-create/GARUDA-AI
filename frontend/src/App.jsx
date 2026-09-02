@@ -30,6 +30,7 @@ import DigitalPresenceStudio from "./pages/DigitalPresenceStudio";
 import EntertainmentStudio from "./pages/EntertainmentStudio";
 import FounderKingdomAccess from "./pages/FounderKingdomAccess";
 import KudosPitchDeck from "./pages/KudosPitchDeck";
+import InvestorExperience from "./pages/InvestorExperience";
 import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
@@ -185,6 +186,8 @@ function AppRoutes() {
       <Route path="/kudos-entertainment" element={<KudosPitchDeck />} />
       <Route path="/guides" element={<GuidesIndex />} />
       <Route path="/guides/:slug" element={<GuideArticle />} />
+      <Route path="/experience" element={<InvestorExperience />} />
+      <Route path="/investor" element={<InvestorExperience />} />
       <Route path="*" element={publicLanding} />
     </Routes>
   );

@@ -1110,7 +1110,21 @@ async function dispatchCommand(message, context = {}) {
   if (!detection) return null;
 
   const params = detection.params || {};
-  const founderApproved = Boolean(context.founderApproved);
+  const garudaContext = context.garudaContext || null;
+  const founderApproved =
+    Boolean(garudaContext && garudaContext.isFounderApproved) ||
+    Boolean(context.founderApproved);
+
+  const mergedContext = {
+    ...context,
+    founderApproved,
+    projectId: context.projectId || garudaContext?.metadata?.projectId || null,
+    sessionId: context.sessionId || garudaContext?.metadata?.sessionId || null,
+    conversationId: context.conversationId || garudaContext?.metadata?.conversationId || null,
+    continuityScopeId: context.continuityScopeId || garudaContext?.metadata?.continuityScopeId || null,
+    briefId: context.briefId || garudaContext?.metadata?.briefId || null,
+    garudaContext
+  };
 
   switch (detection.command) {
     case "help":
@@ -1120,37 +1134,37 @@ async function dispatchCommand(message, context = {}) {
     case "pipeline":
       return handlePipeline();
     case "mission":
-      return handleMission(params, { ...context, founderApproved });
+      return handleMission(params, mergedContext);
     case "missions_list":
       return handleMissionsList();
     case "approve":
-      return handleApprove(params, { ...context, founderApproved });
+      return handleApprove(params, mergedContext);
     case "reject":
-      return handleReject(params, { ...context, founderApproved });
+      return handleReject(params, mergedContext);
     case "approve_outreach":
-      return handleApproveOutreach(params, { ...context, founderApproved });
+      return handleApproveOutreach(params, mergedContext);
     case "reject_outreach":
-      return handleRejectOutreach(params, { ...context, founderApproved });
+      return handleRejectOutreach(params, mergedContext);
     case "scope":
-      return handleScope(params, { ...context, founderApproved });
+      return handleScope(params, mergedContext);
     case "revenue":
       return handleRevenue();
     case "deals":
       return handleDeals();
     case "tutoring_leads":
-      return handleTutoringLeads(params, { ...context, founderApproved });
+      return handleTutoringLeads(params, mergedContext);
     case "income_goal":
-      return handleIncomeGoal(params, { ...context, founderApproved });
+      return handleIncomeGoal(params, mergedContext);
     case "leadgen":
-      return handleLeadGen(params, { ...context, founderApproved });
+      return handleLeadGen(params, mergedContext);
     case "outreach":
-      return handleOutreach(params, { ...context, founderApproved, dryRun: !founderApproved });
+      return handleOutreach(params, { ...mergedContext, dryRun: !founderApproved });
     case "affiliate":
       return handleAffiliate();
     case "creative_continuation":
-      return handleCreativeContinuation(params, context);
+      return handleCreativeContinuation(params, mergedContext);
     case "creative":
-      return handleCreative(params, context);
+      return handleCreative(params, mergedContext);
     case "insurance_pitch":
       return handleInsurancePitch(params);
     default:

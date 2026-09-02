@@ -3,6 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
+const fs = require("fs");
+
 const app = express();
 
 app.use(cors());
@@ -12,7 +14,13 @@ app.use(express.json({
     req.rawBody = buffer.toString("utf8");
   }
 }));
+
+const distPath = path.join(__dirname, "..", "frontend", "dist");
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
 app.use(express.static(path.join(__dirname, "..", "public")));
+app.use(require("./middleware/authContextMiddleware"));
 
 const healthResponse = (req, res) => {
   let database = "mongodb";
@@ -30,6 +38,10 @@ const healthResponse = (req, res) => {
 };
 
 app.get("/", (req, res) => {
+  const distIndex = path.join(__dirname, "..", "frontend", "dist", "index.html");
+  if (fs.existsSync(distIndex)) {
+    return res.sendFile(distIndex);
+  }
   res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
@@ -62,6 +74,7 @@ app.use("/api/growth", require("./routes/growthCommandRoutes"));
 app.use("/api/repo-intel", require("./routes/repositoryIntelRoutes"));
 app.use("/api/engineering", require("./routes/engineeringPipelineRoutes"));
 app.use("/api/creative", require("./routes/creativeRoutes"));
+app.use("/api/investor", require("./routes/investorPresentationRoutes"));
 app.use("/api", require("./routes/growthCreativeRoutes"));
 app.use("/api/auth", (req, res) => require("../api/auth")(req, res));
 app.use("/api/customer", (req, res) => require("../api/customer")(req, res));
@@ -128,6 +141,18 @@ app.post("/api/telegram", async (req, res) => {
   } catch (error) {
     return res.status(200).json({ ok: true, error: String(error && error.message ? error.message : error) });
   }
+});
+
+// SPA catch-all fallback for client-side routing (e.g. /experience, /investor, /command-center)
+app.use((req, res, next) => {
+  if (req.method !== "GET" || req.path.startsWith("/api") || req.path.startsWith("/webhook")) {
+    return next();
+  }
+  const distIndex = path.join(__dirname, "..", "frontend", "dist", "index.html");
+  if (fs.existsSync(distIndex)) {
+    return res.sendFile(distIndex);
+  }
+  return res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
 module.exports = app;
