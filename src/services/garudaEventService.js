@@ -63,9 +63,13 @@ class GarudaEventService extends EventEmitter {
     super();
     this.supabaseUrl = process.env.SUPABASE_URL || DEFAULT_SUPABASE_URL;
     this.supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || DEFAULT_SUPABASE_PUBLISHABLE_KEY;
-    this.supabase = createClient(this.supabaseUrl, this.supabaseKey, {
-      auth: { persistSession: false, autoRefreshToken: false }
-    });
+    try {
+      this.supabase = createClient(this.supabaseUrl, this.supabaseKey, {
+        auth: { persistSession: false, autoRefreshToken: false }
+      });
+    } catch {
+      this.supabase = null;
+    }
   }
 
   /**
@@ -178,6 +182,7 @@ class GarudaEventService extends EventEmitter {
    * Persists event record to Supabase PostgreSQL.
    */
   async persistToSupabase(event) {
+    if (!this.supabase) return;
     try {
       // First attempt primary garuda_events table
       const { error } = await this.supabase.from("garuda_events").insert({
