@@ -522,6 +522,21 @@ export default function InvestorExperience() {
           if (reply.suggestedDemo) {
             setSuggestedDemoKey(reply.suggestedDemo);
           }
+          if (reply.executionResult || (reply.evidence && reply.intent === "EXECUTE_CAPABILITY")) {
+            setActiveDemoResult(reply.executionResult || {
+              success: true,
+              demoKey: reply.suggestedDemo || "creative_artifact",
+              name: reply.topic || "Verified Capability",
+              narrative: reply.speechText || reply.answer,
+              evidence: reply.evidence
+            });
+            setTheaterStep(7);
+            setStageMode("DEMO");
+          } else if (reply.cinematic?.scene === "FINANCIAL_SCENARIOS_STAGE" || reply.topic === "one_crore_scenario" || reply.topic === "three_year_vision" || reply.topic === "five_year_vision") {
+            setStageMode("DIFFERENTIATION_MOAT");
+          } else if (reply.cinematic?.scene === "ARCHITECTURE_STAGE" || reply.topic === "mother_brain") {
+            setStageMode("ARCHITECTURE");
+          }
           setVisualState("ANSWERING");
           soundFxService.playTransition();
           speakNarration(reply.speechText || reply.answer);

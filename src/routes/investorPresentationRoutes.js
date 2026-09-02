@@ -1,11 +1,12 @@
 /**
  * 🦅 GARUDA AI — Investor Presentation API Routes
- * Phase: Investor Autonomous Presentation Experience
+ * Phase: Investor Autonomous Presentation Experience (Cinematic Director V2)
  *
  * Endpoints:
  * - POST /api/investor/presentation/start
  * - POST /api/investor/presentation/next
  * - POST /api/investor/chat
+ * - POST /api/investor/director/turn
  * - POST /api/investor/demonstrate
  * - GET  /api/investor/capabilities
  * - GET  /api/investor/presentation/session/:sessionId
@@ -15,6 +16,7 @@ const express = require("express");
 const router = express.Router();
 const { presentationEngine } = require("../services/presentationEngine");
 const { investorConversationEngine } = require("../services/investorConversationEngine");
+const { cinematicPresentationDirector } = require("../services/cinematicPresentationDirector");
 const { demonstrationOrchestrator } = require("../services/demonstrationOrchestrator");
 const garudaIdentityKnowledge = require("../knowledge/garudaIdentityKnowledge");
 
@@ -64,6 +66,8 @@ router.post("/chat", async (req, res) => {
   try {
     const question = String(req.body?.question || req.body?.message || "").trim();
     const sessionId = req.body?.sessionId || null;
+    const participant = req.body?.participant || "Investor";
+    const businessData = req.body?.businessData || null;
 
     if (!question) {
       return res.status(400).json({ success: false, error: "Question is required" });
@@ -73,22 +77,71 @@ router.post("/chat", async (req, res) => {
       presentationEngine.interruptWithQuestion(sessionId, question);
     }
 
-    const answer = await investorConversationEngine.processInquiry(question, {
+    const directorResult = await cinematicPresentationDirector.directTurn(question, {
       sessionId,
-      garudaContext: req.garudaContext || null
+      participant,
+      businessData,
+      garudaContext: req.garudaContext || null,
+      executionOptions: req.body?.options || {},
+      executeDirectly: Boolean(req.body?.executeDirectly)
     });
+
+    const d = directorResult.data;
 
     return res.status(200).json({
       success: true,
       data: {
         sessionId,
-        ...answer
+        answer: d.answer,
+        speechText: d.speechText,
+        confidence: d.confidence,
+        topic: d.topic,
+        title: d.topic ? `GARUDA — ${d.topic.toUpperCase().replace(/_/g, " ")}` : "GARUDA Sovereign Response",
+        presentationMode: d.cinematic?.scene === "EXECUTION_THEATRE" ? "DEMO" : (d.cinematic?.scene === "ARCHITECTURE_STAGE" ? "ARCHITECTURE" : "CONVERSATION"),
+        capabilityMentioned: d.suggestedDemo,
+        demonstrationAvailable: d.demonstrationAvailable,
+        suggestedDemo: d.suggestedDemo,
+        truthStatus: d.truthStatus,
+        keyTakeaway: `Sovereign response: ${d.topic || "general"}`,
+        intent: d.intent,
+        evidence: d.evidence,
+        executionResult: d.executionResult,
+        cinematic: d.cinematic,
+        lifecycleState: d.lifecycleState,
+        canResumePresentation: d.canResumePresentation,
+        observability: d.observability
       }
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       error: error.message || "Failed to process investor inquiry"
+    });
+  }
+});
+
+// POST /api/investor/director/turn
+router.post("/director/turn", async (req, res) => {
+  try {
+    const question = String(req.body?.question || req.body?.message || "").trim();
+    const sessionId = req.body?.sessionId || null;
+    const participant = req.body?.participant || "Investor";
+    const businessData = req.body?.businessData || null;
+
+    const turnResult = await cinematicPresentationDirector.directTurn(question, {
+      sessionId,
+      participant,
+      businessData,
+      garudaContext: req.garudaContext || null,
+      executionOptions: req.body?.options || {},
+      executeDirectly: Boolean(req.body?.executeDirectly)
+    });
+
+    return res.status(200).json(turnResult);
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Failed to direct cinematic presentation turn"
     });
   }
 });
