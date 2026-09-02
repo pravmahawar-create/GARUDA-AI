@@ -32,8 +32,8 @@ class GarudaAIEngine {
     this.groqApiKey = process.env.GROQ_API_KEY || null;
     this.nvidiaApiKey = process.env.NVIDIA_API_KEY || null;
     this.geminiApiKey = process.env.GEMINI_API_KEY || null;
-    this.primaryModel = "qwen/qwen3.8-27b";
-    this.fallbackModels = ["openai/gpt-oss-120b", "allam-2-7b", "groq/compound"];
+    this.primaryModel = "openai/gpt-oss-120b";
+    this.fallbackModels = ["qwen/qwen3.8-27b", "allam-2-7b", "groq/compound"];
   }
 
   /**

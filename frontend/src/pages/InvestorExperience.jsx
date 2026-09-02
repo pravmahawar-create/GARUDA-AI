@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 import HolographicEntityCanvas from "../components/HolographicEntityCanvas";
+import SovereignHeroAvatar from "../components/SovereignHeroAvatar";
 import soundFxService from "../services/soundFxService";
 
 const PALETTE = {
@@ -931,10 +932,10 @@ export default function InvestorExperience() {
       <main style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", padding: "1.5rem", zIndex: 10 }}>
         <div style={{ width: "min(1100px, 100%)", display: "flex", flexDirection: "column", gap: "1.75rem" }}>
 
-          {/* Central GARUDA Sovereign Visual Presence */}
+          {/* Central GARUDA Sovereign Visual Presence — Official Sovereign Hero Mascot */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginTop: "0.5rem" }}>
-            {/* Holographic Entity Canvas */}
-            <HolographicEntityCanvas visualState={visualState} isSpeaking={isSpeaking} size={260} />
+            {/* Sovereign Hero Mascot Presence */}
+            <SovereignHeroAvatar visualState={visualState} isSpeaking={isSpeaking} size={380} />
 
             {/* Sovereign State Telemetry Badge */}
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem" }}>
