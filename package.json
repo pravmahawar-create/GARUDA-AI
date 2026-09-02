@@ -31,6 +31,7 @@
     "test:entitlement": "node --test-concurrency=1 src/services/capabilityEntitlementService.test.js",
     "test:auth:context": "node --test-concurrency=1 src/middleware/authContextMiddleware.test.js",
     "test:investor": "node --test-concurrency=1 src/services/investorPresentationEngine.test.js",
+    "test:presence": "node --test-concurrency=1 src/services/visualPresenceAndAcousticEngine.test.js",
     "test:repo:intel": "node --test-concurrency=1 src/services/repositoryIntelligence/repositoryIntelligenceService.test.js",
     "test:safe:mod": "node --test-concurrency=1 src/services/safeModification/safeModificationService.test.js",
     "test:test:discovery": "node --test-concurrency=1 src/services/testDiscovery/testDiscoveryService.test.js",
@@ -112,7 +113,9 @@
   "bugs": {
     "url": "https://github.com/pravmahawar-create/GARUDA-AI/issues"
   },
-  "homepage": "https://github.com/pravmahawar-create/GARUDA-AI#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@babel/parser": "^8.0.4",
     "@google/genai": "^2.16.0",
