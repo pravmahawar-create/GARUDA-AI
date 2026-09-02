@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import heroImg from "../assets/garuda_sovereign_hero.png";
 
 /**
  * 🦅 GARUDA Sovereign Hero Avatar — Official Mascot Presence
@@ -81,7 +82,7 @@ export default function SovereignHeroAvatar({
         }}
       >
         <motion.img
-          src="/images/garuda_sovereign_hero.png"
+          src={heroImg || "/images/garuda_sovereign_hero.png"}
           alt="GARUDA — The King of Intelligence"
           animate={{
             y: effectiveState === "SPEAKING" ? [-4, 4, -4] : [-2, 2, -2],
