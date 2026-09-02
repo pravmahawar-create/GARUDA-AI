@@ -174,43 +174,54 @@ class ConversationBrainService {
     const raw = String(text || "").trim();
     const lower = raw.toLowerCase();
 
-    // 1. Check for explicit language switch requests
-    if (/\b(in english|english please|switch to english|speak in english|tell me in english)\b/i.test(lower)) {
-      return { language: "en", isExplicitSwitch: true, targetLang: "en" };
-    }
-    if (/\b(in hindi|hindi me|hindi please|shuddh hindi|hindi mein batao|explain in hindi|explain that in hindi)\b/i.test(lower)) {
+    // 1. Check for explicit switch to Hindi / Roman Hindi
+    const isHindiExplicit =
+      /\b(hindi|devanagari|shuddh hindi|talk in hindi|speak in hindi|answer in hindi|hindi me|hindi mein|hindi please|hindi me baat|hindi me bolo|hindi me batao|ab se hindi|hindi language|batao.*hindi|hindi.*baat|hindi.*bolo|hindi.*batao)\b/i.test(lower) ||
+      (lower.match(/\bhindi\b/gi) || []).length >= 2 ||
+      /^hindi[\s.,!]*$/i.test(lower);
+
+    if (isHindiExplicit) {
       const isDevanagari = /[\u0900-\u097F]/.test(raw);
-      return { language: isDevanagari ? "hi" : "roman_hindi", isExplicitSwitch: true, targetLang: isDevanagari ? "hi" : "roman_hindi" };
-    }
-    if (/\b(roman hindi|hinglish|simple hindi|aasan bhasha me|hindi me batao|ab hindi me)\b/i.test(lower)) {
-      return { language: "roman_hindi", isExplicitSwitch: true, targetLang: "roman_hindi" };
+      const targetLang = isDevanagari ? "hi" : "roman_hindi";
+      return { language: targetLang, isExplicitSwitch: true, targetLang };
     }
 
-    // 2. Check for Devanagari Unicode characters
+    // 2. Check for explicit switch to English
+    const isEnglishExplicit =
+      /\b(in english|english please|switch to english|speak in english|tell me in english|talk in english|answer in english|speak english|talk english)\b/i.test(lower) ||
+      /^english[\s.,!]*$/i.test(lower);
+
+    if (isEnglishExplicit) {
+      return { language: "en", isExplicitSwitch: true, targetLang: "en" };
+    }
+
+    // 3. Check for Devanagari Unicode characters
     if (/[\u0900-\u097F]/.test(raw)) {
       return { language: "hi", isExplicitSwitch: false, targetLang: "hi" };
     }
 
-    // 3. Check for Roman Hindi / Hinglish token markers
+    // 4. Check for Roman Hindi / Hinglish token markers
     const romanHindiTokens = [
       "kya", "hai", "kaise", "batao", "karo", "tumhara", "karke", "dikhao", "kyu", "kyon",
       "mujhe", "samjhao", "chahiye", "karna", "krna", "hoga", "bolo", "btao", "shuru",
-      "kaam", "praveen", "mahawar", "sabse", "accha", "kuch", "dikha", "sakte", "ho", "nahi"
+      "kaam", "praveen", "mahawar", "sabse", "accha", "kuch", "dikha", "sakte", "ho", "nahi",
+      "baat", "denge", "dena", "chalega", "kamiyan", "badi", "agar", "humara", "apna", "aur",
+      "karte", "main", "aapse", "tum", "mere", "liye", "practically", "bhi", "jaye"
     ];
     const words = lower.split(/[^a-z0-9]+/);
     const hindiMatches = words.filter((w) => romanHindiTokens.includes(w));
-    if (hindiMatches.length >= 2 || (words.length <= 4 && hindiMatches.length >= 1)) {
+    if (hindiMatches.length >= 1 && (words.length <= 5 || hindiMatches.length >= 2)) {
       return { language: "roman_hindi", isExplicitSwitch: false, targetLang: "roman_hindi" };
     }
 
-    // 4. If standard English words are present and no Hindi markers, naturally recognize English
-    const commonEnglishTokens = ["what", "why", "how", "who", "when", "can", "you", "show", "me", "create", "live", "is", "the", "are", "do", "explain", "prove", "it", "that", "this", "different", "from", "tell"];
+    // 5. If standard English words are present and no Hindi markers, naturally recognize English
+    const commonEnglishTokens = ["what", "why", "how", "who", "when", "can", "you", "show", "me", "create", "live", "is", "the", "are", "do", "explain", "prove", "it", "that", "this", "different", "from", "tell", "continue"];
     const englishMatches = words.filter((w) => commonEnglishTokens.includes(w));
     if (englishMatches.length >= 2 && hindiMatches.length === 0) {
       return { language: "en", isExplicitSwitch: false, targetLang: "en" };
     }
 
-    // 5. Default to current session language or English
+    // 6. Default to current session language or English
     return { language: fallbackLang || "en", isExplicitSwitch: false, targetLang: null };
   }
 
@@ -218,25 +229,32 @@ class ConversationBrainService {
    * Resolves contextual co-references ("it", "that", "why do you use it?", "proof?", "prove it", "do it").
    * @param {string} rawText
    * @param {Object} session
-   * @returns {{ resolvedQuery: string, isFollowUp: boolean, isProofRequest: boolean, isExecutionRequest: boolean, isWhyUseIt: boolean, isLanguageSwitchOnly: boolean }}
+   * @returns {{ resolvedQuery: string, isFollowUp: boolean, isProofRequest: boolean, isExecutionRequest: boolean, isWhyUseIt: boolean, isWhatDidYouCreate: boolean, isLanguageSwitchOnly: boolean }}
    */
   resolveContextualQuery(rawText = "", session = {}) {
     const textLower = String(rawText || "").toLowerCase().trim();
     const cleanNoPunct = textLower.replace(/[.!?]/g, "").trim();
 
     const isExecutionRequest =
-      /^(do it|execute it|run it|karke dikhao|execute now|apply it|run mission|build it|start demo|run demo)$/i.test(cleanNoPunct);
+      /^(do it|execute it|run it|karke dikhao|execute now|apply it|run mission|build it|start demo|run demo|kar do|karo)$/i.test(cleanNoPunct);
     const isProofRequest =
-      /^(proof|proof\?|prove it|prove that|can you prove it|proof kya hai|kya proof hai|prove it now)$/i.test(cleanNoPunct) ||
-      /\b(challenge you to prove|prove it to me|show me proof)\b/i.test(textLower);
+      /^(proof|proof\?|prove it|prove that|can you prove it|proof kya hai|kya proof hai|prove it now|prove)$/i.test(cleanNoPunct) ||
+      /\b(challenge you to prove|prove it to me|show me proof|prove it)\b/i.test(textLower);
     const isWhyUseIt =
       /\b(why (do you|does garuda|is it|is this) use (it|that|sha-256|sha256)|why use (it|that|sha-256|sha256)|tum kyu use karte ho|iska kya use hai|why is that used|why do you use that)\b/i.test(
         textLower
       );
     const isWhatDidYouCreate =
       /\b(what did you just create|what did you create|what did you build|what did you make|kya banaya|kya create kiya|show what you created|what was created)\b/i.test(textLower);
-    const isExplainThatInHindi = /\b(explain that in hindi|hindi me samjhao|explain in hindi|ab hindi me batao|translate that|ab roman hindi me batao|english please)\b/i.test(textLower);
-    const isLanguageSwitchOnly = /^(explain that in hindi|hindi me samjhao|explain in hindi|ab hindi me batao|ab roman hindi me batao|english please|in english|hindi please)$/i.test(cleanNoPunct);
+    
+    const isExplainThatInHindi = /\b(explain that in hindi|hindi me samjhao|explain in hindi|ab hindi me batao|translate that|ab roman hindi me batao|in hindi|hindi please)\b/i.test(textLower);
+    const isExplainThatInEnglish = /\b(explain that in english|english please|in english|switch to english|tell me in english|explain in english)\b/i.test(textLower);
+
+    // Pure language switch only (when NOT asking to explain a previous concept)
+    const isLanguageSwitchOnly =
+      (!session.currentTopic && (isExplainThatInHindi || isExplainThatInEnglish)) ||
+      /^(batao tum mujhse hindi mein baat karo|batao mujhse hindi mein baat karo|talk to me in hindi|can you speak hindi\??|ab hindi mein answer dena|mujhse hindi mein bolo|hindi hindi hindi hindi|speak in hindi|speak english|talk in english)$/i.test(cleanNoPunct) ||
+      ((textLower.match(/\bhindi\b/gi) || []).length >= 2 && cleanNoPunct.split(/\s+/).length <= 6);
 
     let resolvedQuery = rawText;
     let isFollowUp = false;
@@ -245,7 +263,7 @@ class ConversationBrainService {
       if (isWhyUseIt) {
         resolvedQuery = `Why does GARUDA use ${session.currentTopic}?`;
         isFollowUp = true;
-      } else if (isExplainThatInHindi) {
+      } else if (isExplainThatInHindi || isExplainThatInEnglish) {
         resolvedQuery = `Explain ${session.currentTopic}`;
         isFollowUp = true;
       } else if (isProofRequest) {
@@ -360,6 +378,40 @@ class ConversationBrainService {
     let evidence = null;
     let fallbackUsed = false;
     let reasoningMode = "authoritative_knowledge";
+
+    // 2b. Check for Explicit Language Switch Acknowledgement (e.g. "batao tum mujhse Hindi mein baat karo", "Hindi Hindi Hindi", "English please")
+    if (coRef.isLanguageSwitchOnly) {
+      intent = CONVERSATION_INTENTS.ANSWER_ONLY;
+      topic = "language_switch";
+      truthStatus = "VERIFIED";
+
+      if (activeLanguage === "hi") {
+        answerText = `नमस्ते! अब मैं आपसे हिंदी में संवाद करूँगा। आप मुझसे GARUDA की वास्तुकला, 27 ब्रह्मांडों या लाइव प्रदर्शन के बारे में क्या जानना चाहते हैं?`;
+      } else if (activeLanguage === "roman_hindi") {
+        answerText = `Bilkul! Ab main aapse Hindi mein baat karunga. Aap GARUDA ke architecture, 27 universes ya live demonstration ke baare mein kya poochna chahte hain?`;
+      } else {
+        answerText = `Understood. I will now converse with you in English. What would you like to explore regarding GARUDA's architecture, 27 universes, or live demonstrations?`;
+      }
+      speechText = answerText;
+
+      return this._finalizeResponse(session, rawInput, {
+        intent,
+        answer: answerText,
+        speechText,
+        topic,
+        confidence: 1.0,
+        truthStatus: "VERIFIED",
+        capabilitySelected: null,
+        demonstrationAvailable: true,
+        suggestedDemo: session.lastExecutableCapability || "creative_artifact",
+        executionResult: null,
+        evidence: null,
+        activeLanguage,
+        startTime,
+        reasoningMode: "language_switch_gateway",
+        fallbackUsed: false
+      });
+    }
 
     // 3. Check for Impossible / Unverified Capabilities (Anti-Fabrication Law)
     const unverifiedCheck = this.checkUnverifiedCapability(effectiveQuery);

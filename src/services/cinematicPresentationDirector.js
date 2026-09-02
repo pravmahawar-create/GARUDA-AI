@@ -385,7 +385,7 @@ class CinematicPresentationDirector {
     }
 
     // F. Resume presentation request
-    if (/\b(resume|continue presentation|carry on|next slide|next module|aage batao)\b/i.test(lower)) {
+    if (/\b(continue|resume|carry on|next slide|next module|aage batao|aage chalo|aage badho)\b/i.test(lower)) {
       return this._handleResumePresentation(session, options);
     }
 
@@ -606,6 +606,79 @@ class CinematicPresentationDirector {
           language: "en",
           retrievalUsed: true,
           intent: CONVERSATION_INTENTS.OFFER_DEMONSTRATION,
+          fallbackUsed: false,
+          latencyMs: 1
+        }
+      }
+    };
+  }
+
+  /**
+   * Resumes presentation seamlessly from the exact paused stage.
+   */
+  _handleResumePresentation(session, options = {}) {
+    const stageIndex = Math.min(session.resumableStageIndex || 0, KINGDOM_PRESENTATION_STAGES.length - 1);
+    const stage = KINGDOM_PRESENTATION_STAGES[stageIndex];
+    session.lifecycleState = CINEMATIC_LIFECYCLE.PRESENTING;
+    session.interrupted = false;
+    session.currentStageIndex = stageIndex;
+    if (stageIndex < KINGDOM_PRESENTATION_STAGES.length - 1) {
+      session.resumableStageIndex = stageIndex + 1;
+    }
+
+    const brainSession = this.brain.getSession(session.sessionId);
+    const lang = brainSession.currentLanguage || "en";
+
+    let answerText = `Resuming presentation from Module ${stageIndex + 1}: ${stage.title}.\n\n${stage.speechLines.join("\n\n")}`;
+    let speechText = `Resuming from Module ${stageIndex + 1}: ${stage.title}. ${stage.speechLines[0]}`;
+
+    if (lang === "roman_hindi" || lang === "hi") {
+      answerText = `Presentation Module ${stageIndex + 1} (${stage.title}) se resume ho rahi hai:\n\n${stage.speechLines.join("\n\n")}`;
+      speechText = `Presentation Module ${stageIndex + 1} se resume ho rahi hai. ${stage.speechLines[0]}`;
+    }
+
+    return {
+      success: true,
+      data: {
+        answer: answerText,
+        speechText,
+        intent: CONVERSATION_INTENTS.ANSWER_ONLY,
+        topic: stage.id,
+        language: lang,
+        confidence: 1.0,
+        truthStatus: "VERIFIED",
+        lifecycleState: session.lifecycleState,
+        canResumePresentation: session.resumableStageIndex < KINGDOM_PRESENTATION_STAGES.length - 1,
+        resumableModuleIndex: session.resumableStageIndex,
+        demonstrationAvailable: true,
+        suggestedDemo: "creative_artifact",
+        executionResult: null,
+        evidence: null,
+        cinematic: {
+          scene: stage.scene || "SOVEREIGN_GARUDA",
+          camera: stage.camera || { shot: CAMERA_STATES.MEDIUM, transition: CAMERA_TRANSITIONS.RETURN_TRANSITION },
+          entity: {
+            mode: "presenting",
+            gesture: ENTITY_GESTURES.WELCOMING_PRESENTATION,
+            lighting: "warm_gold_ambient",
+            expression: "calm_sovereign"
+          },
+          visualLayer: {
+            type: "presentation_stage",
+            visible: true,
+            data: stage
+          },
+          audio: {
+            mode: "presentation",
+            soundFx: "presentation_advance"
+          }
+        },
+        observability: {
+          reasoningProvider: "cinematic_director",
+          reasoningMode: "presentation_resume",
+          language: lang,
+          retrievalUsed: false,
+          intent: CONVERSATION_INTENTS.ANSWER_ONLY,
           fallbackUsed: false,
           latencyMs: 1
         }

@@ -66,14 +66,14 @@ export default function InvestorExperience() {
 
   const speechSynthRef = useRef(null);
   const recognitionRef = useRef(null);
+  const canonicalVoiceRef = useRef(null);
 
-  // Triple-Redundant API Gateway Caller (Vercel Proxy -> Render Production Backend Failover)
-  // Triple-Redundant Ultra-Fast API Gateway Caller (Vercel Proxy -> Render Backend Failover with Strict 2.5s Timeout)
+  // Triple-Redundant Ultra-Fast API Gateway Caller (Vercel Proxy -> Render Backend Failover with 8000ms Timeout)
   const callInvestorApi = async (endpoint, body = {}) => {
-    // 1. Try Vercel local edge proxy with 2500ms timeout
+    // 1. Try Vercel local edge proxy with 8000ms timeout
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(`/api/investor/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -89,10 +89,10 @@ export default function InvestorExperience() {
       console.warn(`Direct fetch to /api/investor/${endpoint} timed out or failed, engaging fast Render failover:`, err.message);
     }
 
-    // 2. Failover directly to Render Backend with 2500ms timeout
+    // 2. Failover directly to Render Backend with 8000ms timeout
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(`https://garuda-ai-xfif.onrender.com/api/investor/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -279,14 +279,31 @@ export default function InvestorExperience() {
     };
   };
 
-  // Initialize Speech Synthesis
+  // Initialize Speech Synthesis and pre-cache canonical Male voice
   useEffect(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       speechSynthRef.current = window.speechSynthesis;
+
+      const cacheCanonicalVoice = () => {
+        try {
+          const voices = window.speechSynthesis.getVoices();
+          if (voices && voices.length > 0) {
+            const maleVoice =
+              voices.find(v => (v.name.includes("Male") || v.name.includes("David") || v.name.includes("Guy") || v.name.includes("George") || v.name.includes("Google UK English Male") || v.name.includes("Ravi")) && v.lang.startsWith("en")) ||
+              voices.find(v => (v.name.includes("Male") || v.name.includes("Hemant") || v.name.includes("Madhur") || v.name.includes("Google")) && (v.lang.startsWith("hi") || v.lang.startsWith("en-IN"))) ||
+              voices.find(v => v.name.includes("Male") || v.name.includes("David")) ||
+              voices[0];
+            canonicalVoiceRef.current = maleVoice;
+          }
+        } catch {}
+      };
+
+      cacheCanonicalVoice();
+      window.speechSynthesis.onvoiceschanged = cacheCanonicalVoice;
     }
   }, []);
 
-  // Speak helper using Web Speech API
+  // Canonical Voice Speaker using Web Speech API (One Consistent Male GARUDA Voice)
   const speakNarration = (text) => {
     setCurrentSpeechText(text);
     if (!voiceEnabled || !speechSynthRef.current || !text) {
@@ -301,21 +318,23 @@ export default function InvestorExperience() {
       utterance.rate = 1.0;
       utterance.pitch = 0.78; // Deep resonant masculine JARVIS tone across all devices
       
-      const isHindiText = /[\u0900-\u097F]|kya|kaise|tum|mera|nahi|karo|batao|hoon|hai/i.test(text);
+      const isHindiText = /[\u0900-\u097F]|kya|kaise|tum|mera|nahi|karo|batao|hoon|hai|aapse|humara/i.test(text);
       const voices = speechSynthRef.current.getVoices();
       
-      let preferred = null;
+      let voice = canonicalVoiceRef.current;
       if (isHindiText) {
         utterance.lang = "hi-IN";
-        preferred = voices.find(v => (v.name.includes("Male") || v.name.includes("Hemant") || v.name.includes("Madhur") || v.name.includes("Google") || v.name.includes("Hindi")) && (v.lang.startsWith("hi") || v.lang.startsWith("en-IN"))) ||
-                    voices.find(v => v.lang.startsWith("hi")) ||
-                    voices.find(v => v.name.includes("David") || v.name.includes("Male") || v.name.includes("Guy"));
+        const hindiMale = voices.find(v => (v.name.includes("Male") || v.name.includes("Hemant") || v.name.includes("Madhur") || v.name.includes("Google") || v.name.includes("Hindi")) && (v.lang.startsWith("hi") || v.lang.startsWith("en-IN"))) ||
+                          voices.find(v => v.lang.startsWith("hi")) ||
+                          canonicalVoiceRef.current;
+        if (hindiMale) voice = hindiMale;
       } else {
         utterance.lang = "en-IN";
-        preferred = voices.find(v => (v.name.includes("Male") || v.name.includes("David") || v.name.includes("Guy") || v.name.includes("George") || v.name.includes("Google UK English Male") || v.name.includes("Natural") || v.name.includes("Ravi")) && v.lang.startsWith("en")) ||
-                    voices.find(v => v.lang.startsWith("en"));
+        if (!voice && voices.length > 0) {
+          voice = voices.find(v => (v.name.includes("Male") || v.name.includes("David") || v.name.includes("Guy") || v.name.includes("George") || v.name.includes("Google UK English Male") || v.name.includes("Natural") || v.name.includes("Ravi")) && v.lang.startsWith("en")) || voices[0];
+        }
       }
-      if (preferred) utterance.voice = preferred;
+      if (voice) utterance.voice = voice;
 
       utterance.onstart = () => {
         setIsSpeaking(true);
@@ -651,6 +670,9 @@ export default function InvestorExperience() {
       const data = await callInvestorApi("chat", { sessionId, question: q });
       if (data && data.success && data.data) {
         const reply = data.data;
+        if (reply.language) {
+          setSessionLanguage(reply.language);
+        }
         const garudaReply = {
           role: "garuda",
           text: reply.answer || reply.speechText,
