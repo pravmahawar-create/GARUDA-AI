@@ -251,6 +251,34 @@ const TOPIC_KNOWLEDGE = Object.freeze({
     capabilityId: "digital_marketing.editorial_growth",
     demonstrationAvailable: true,
     suggestedDemo: "marketing_seo"
+  },
+  security_and_governance: {
+    title: "How Does GARUDA Enforce Security & Governance?",
+    answer: "GARUDA enforces a zero-trust sovereign security architecture: (1) Mother Brain human-in-the-loop approval gates before any critical state mutation or write action; (2) Strict cryptographic multi-tenant isolation and capability entitlement middleware; (3) Anti-Fabrication Law where all execution outputs are physically verified and sealed with SHA-256 evidence; and (4) Sovereign local deployment eliminating data leakage to third-party clouds.",
+    capabilityId: "engineering.repository-audit",
+    demonstrationAvailable: true,
+    suggestedDemo: "repo_architecture"
+  },
+  revenue_and_business: {
+    title: "How Does GARUDA Generate Revenue & Monitize?",
+    answer: "GARUDA operates across 4 unified product tiers served from a single sovereign core: Personal (free sovereign core), Creator (brand & living artifacts), SME (full business & digital marketing OS), and Enterprise (private air-gapped deployment with sovereign SLAs). Revenue Universe (U10) autonomously manages commercial proposals and conversion loops under Founder governance.",
+    capabilityId: "writing.proposal-writing",
+    demonstrationAvailable: true,
+    suggestedDemo: "marketing_seo"
+  },
+  differentiation_and_moat: {
+    title: "Why Should You Invest in GARUDA?",
+    answer: "GARUDA's primary moat is the 100% Anti-Fabrication Law and Sovereign Execution. Unlike prompt wrapper chatbots that hallucinate completions, GARUDA bridges intelligence to physical software execution, test suites, and verifiable cryptographic proof on disk. We operate under one law: Show > Tell.",
+    capabilityId: "engineering.repository-audit",
+    demonstrationAvailable: true,
+    suggestedDemo: "repo_architecture"
+  },
+  hindi_identity_and_differentiation: {
+    title: "GARUDA Identity & Differentiation (Hindi / Hinglish)",
+    answer: "Main GARUDA hoon — Praveen Mahawar dwara engineered ek autonomous sovereign AI Operating System. Duniya ke baaki AI systems sirf prompt-and-response text wrappers hain, jabki GARUDA intelligence ko direct code execution, multi-agent pipelines, file systems, aur SHA-256 cryptographic evidence seals se connect karta hai.",
+    capabilityId: "engineering.repository-audit",
+    demonstrationAvailable: true,
+    suggestedDemo: "creative_artifact"
   }
 });
 
@@ -295,6 +323,13 @@ function findKnowledgeForQuery(queryText = "") {
     };
   }
 
+  if (/security|safe|safety|secure|privacy|trust|data protection|rogue|isolation|tenant|hack|vulnerability|leak|governance|compliance/i.test(text)) {
+    return {
+      topic: "security_and_governance",
+      ...TOPIC_KNOWLEDGE.security_and_governance
+    };
+  }
+
   if (/chatgpt|openai|wrapper|different|unique|why garuda|competitor|comparison/i.test(text)) {
     return {
       topic: "why_different",
@@ -327,6 +362,27 @@ function findKnowledgeForQuery(queryText = "") {
     return {
       topic: "marketing_growth",
       ...TOPIC_KNOWLEDGE.marketing_growth
+    };
+  }
+
+  if (/revenue|monetiz|pricing|business model|tiers|commercial|sales|charge/i.test(text)) {
+    return {
+      topic: "revenue_and_business",
+      ...TOPIC_KNOWLEDGE.revenue_and_business
+    };
+  }
+
+  if (/why (should i |to )?invest|moat|advantage|competitive|why buy|convince me/i.test(text)) {
+    return {
+      topic: "differentiation_and_moat",
+      ...TOPIC_KNOWLEDGE.differentiation_and_moat
+    };
+  }
+
+  if (/(tum kya ho|aap kaun ho|kya ho|alag kaise ho|baaki.*alag|duniya ke baaki|kya kar sakte ho)/i.test(text)) {
+    return {
+      topic: "hindi_identity_and_differentiation",
+      ...TOPIC_KNOWLEDGE.hindi_identity_and_differentiation
     };
   }
 

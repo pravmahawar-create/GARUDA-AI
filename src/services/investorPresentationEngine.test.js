@@ -152,8 +152,91 @@ async function runTests() {
   assert.strictEqual(closeResult.sessionSummary.totalDemonstrationsPerformed, 1);
   console.log("✔ Test 9: Complete round-trip lifecycle from Introduction through Live Execution to Closing verified");
 
+  // -------------------------------------------------------------
+  // TEST 10: Specific Investor Queries — "What is GARUDA?"
+  // -------------------------------------------------------------
+  const whatIsResult = await investorConversationEngine.processInquiry("What is GARUDA?");
+  assert.ok(whatIsResult.answer && whatIsResult.answer.length > 20, "Answer must not be empty");
+  assert.strictEqual(whatIsResult.topic, "what_is_garuda");
+  assert.ok(whatIsResult.answer.includes("GARUDA AI"));
+  console.log("✔ Test 10: 'What is GARUDA?' produces non-empty authoritative response");
+
+  // -------------------------------------------------------------
+  // TEST 11: Conversational Input — "bolo"
+  // -------------------------------------------------------------
+  const boloResult = await investorConversationEngine.processInquiry("bolo");
+  assert.ok(boloResult.answer && boloResult.answer.length > 20, "Answer must not be empty for casual prompts");
+  assert.ok(boloResult.answer.includes("Praveen Mahawar") || boloResult.answer.includes("GARUDA"));
+  console.log("✔ Test 11: 'bolo' produces non-empty sovereign response (zero silence)");
+
+  // -------------------------------------------------------------
+  // TEST 12: Direct Live Demonstration Request Intent Detection
+  // -------------------------------------------------------------
+  const liveCreateResult = await investorConversationEngine.processInquiry("Can you show me what you can create live?");
+  assert.strictEqual(liveCreateResult.demonstrationAvailable, true);
+  assert.strictEqual(liveCreateResult.suggestedDemo, "creative_artifact");
+  assert.ok(liveCreateResult.answer.includes("demonstrate that live"));
+  console.log("✔ Test 12: 'Can you show me what you can create live?' triggers demonstration intent");
+
+  // -------------------------------------------------------------
+  // TEST 14: Investor Security Challenge Inquiry
+  // -------------------------------------------------------------
+  const securityResult = await investorConversationEngine.processInquiry("How do you ensure security, safety, and tenant data privacy?");
+  assert.ok(securityResult.answer && securityResult.answer.length > 50);
+  assert.strictEqual(securityResult.topic, "security_and_governance");
+  assert.ok(securityResult.answer.includes("zero-trust") || securityResult.answer.includes("Mother Brain"));
+  assert.strictEqual(securityResult.demonstrationAvailable, true);
+  assert.strictEqual(securityResult.suggestedDemo, "repo_architecture");
+  assert.strictEqual(securityResult.presentationMode, "GOVERNANCE_SECURITY");
+  console.log("✔ Test 14: Investor Security Challenge handled authoritatively with zero-trust governance");
+
+  // -------------------------------------------------------------
+  // TEST 15: Multi-Turn Co-reference Resolution ("How is that different from ChatGPT?")
+  // -------------------------------------------------------------
+  const testSessionId = "session_coref_test_101";
+  await investorConversationEngine.processInquiry("What is GARUDA?", { sessionId: testSessionId });
+  const corefResult = await investorConversationEngine.processInquiry("How is that different from ChatGPT?", { sessionId: testSessionId });
+  assert.strictEqual(corefResult.topic, "why_different");
+  assert.ok(corefResult.answer.includes("Operating System") || corefResult.answer.includes("conversational interface"));
+  assert.strictEqual(corefResult.presentationMode, "DIFFERENTIATION_MOAT");
+  console.log("✔ Test 15: Multi-Turn Co-reference resolved 'that' -> 'GARUDA Operating System'");
+
+  // -------------------------------------------------------------
+  // TEST 16: Challenge-Proof Intent Resolution ("Prove it.")
+  // -------------------------------------------------------------
+  const proveItResult = await investorConversationEngine.processInquiry("Prove it.", { sessionId: testSessionId });
+  assert.strictEqual(proveItResult.demonstrationAvailable, true);
+  assert.strictEqual(proveItResult.presentationMode, "DEMO");
+  assert.ok(proveItResult.answer.includes("Anti-Fabrication Law") || proveItResult.answer.includes("execute"));
+  console.log("✔ Test 16: 'Prove it.' resolves contextually to live verified demonstration mode");
+
+  // -------------------------------------------------------------
+  // TEST 17: Dynamic Presentation Depth Routing (Revenue, Creative, Architecture)
+  // -------------------------------------------------------------
+  const revResult = await investorConversationEngine.processInquiry("How do you monetize and charge clients?");
+  assert.strictEqual(revResult.presentationMode, "REVENUE");
+  assert.strictEqual(revResult.topic, "revenue_and_business");
+
+  const creatResult = await investorConversationEngine.processInquiry("Can you show me what you create visually?");
+  assert.strictEqual(creatResult.presentationMode, "CREATIVE");
+
+  const archResult = await investorConversationEngine.processInquiry("Explain Mother Brain and your architectural layers");
+  assert.strictEqual(archResult.presentationMode, "ARCHITECTURE");
+  // -------------------------------------------------------------
+  // TEST 18: Multilingual / Roman Hindi Acceptance Inquiry
+  // -------------------------------------------------------------
+  const hindiResult = await investorConversationEngine.processInquiry(
+    "GARUDA, tum kya ho aur duniya ke baaki AI systems se alag kaise ho?"
+  );
+  assert.ok(hindiResult.answer && hindiResult.answer.length > 50);
+  assert.strictEqual(hindiResult.topic, "hindi_identity_and_differentiation");
+  assert.ok(hindiResult.answer.includes("Praveen Mahawar") || hindiResult.answer.includes("GARUDA"));
+  assert.ok(hindiResult.answer.includes("Operating System"));
+  assert.strictEqual(hindiResult.demonstrationAvailable, true);
+  console.log("✔ Test 18: Multilingual Roman Hindi query parsed and answered with sovereign identity");
+
   console.log("\n=======================================================");
-  console.log("🎉 All 9 Investor Presentation Engine tests PASSED cleanly.");
+  console.log("🎉 All 18 Investor Presentation Engine tests PASSED cleanly.");
   console.log("=======================================================\n");
 }
 
