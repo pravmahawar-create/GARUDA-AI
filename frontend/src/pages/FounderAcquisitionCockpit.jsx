@@ -19,7 +19,12 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
   const [prospectQueueData, setProspectQueueData] = useState(null);
   const [classifiedData, setClassifiedData] = useState(null);
   const [failureBlockers, setFailureBlockers] = useState([]);
-  
+
+  // Sent Box States (canonical persisted source)
+  const [sentOutreachData, setSentOutreachData] = useState(null);
+  const [sentLoading, setSentLoading] = useState(false);
+  const [selectedSent, setSelectedSent] = useState(null);
+
   // UI Tabs & Modals
   const [activeTab, setActiveTab] = useState("outreach_queue");
   const [selectedDraft, setSelectedDraft] = useState(null);
@@ -31,22 +36,25 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
   const loadData = async (isManual = false) => {
     if (isManual) setRefreshing(true);
     try {
-      const [ccRes, pqRes, clRes, fbRes] = await Promise.all([
+      const [ccRes, pqRes, clRes, fbRes, sentRes] = await Promise.all([
         fetch("/api/acquisition/command-center", { headers: { "x-garuda-test": "true" } }),
         fetch("/api/acquisition/prospect-queue"),
         fetch("/api/acquisition/opportunities/classified"),
-        fetch("/api/acquisition/failure-intelligence")
+        fetch("/api/acquisition/failure-intelligence"),
+        fetch("/api/acquisition/outreach/sent")
       ]);
 
       const cc = await ccRes.json();
       const pq = await pqRes.json();
       const cl = await clRes.json();
       const fb = await fbRes.json();
+      const sent = await sentRes.json().catch(() => ({ success: true, count: 0, sent: [] }));
 
       setCommandCenterData(cc);
       setProspectQueueData(pq);
       setClassifiedData(cl);
       if (fb?.blockers) setFailureBlockers(fb.blockers);
+      setSentOutreachData(sent);
     } catch (err) {
       console.error("Error loading acquisition telemetry:", err);
     } finally {
@@ -135,6 +143,9 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
     ...(classifiedData?.employmentListings || []),
     ...(classifiedData?.talentMarketplaceRejects || [])
   ];
+
+  const sentList = sentOutreachData?.sent || [];
+  const sentCount = sentOutreachData?.count ?? sentList.length;
 
   return (
     <div style={{ minHeight: "100vh", background: "#030712", color: "#f1f5f9", fontFamily: "system-ui, -apple-system, sans-serif", padding: "1.5rem 2rem" }}>
@@ -241,7 +252,7 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
           { label: "Outreach Ready", value: topDrafts.length ?? 0, color: "#fbbf24" },
           { label: "Approval Pending", value: topDrafts.filter(d => d.safetyRating === "SAFE_FOR_FOUNDER_APPROVAL").length, color: "#f59e0b" },
           { label: "Approved", value: funnel.outreachSent > 0 ? funnel.outreachSent : 0, color: "#10b981" },
-          { label: "Outreach Sent", value: funnel.outreachSent ?? 0, color: "#34d399" },
+          { label: "Outreach Sent", value: sentCount || funnel.outreachSent || 0, color: "#34d399" },
           { label: "Responses", value: funnel.outreachResponses ?? 0, color: "#6ee7b7" },
           { label: "Proposals Created", value: funnel.proposalsCreated ?? 0, color: "#c084fc" },
           { label: "Proposals Accepted", value: funnel.proposalsAccepted ?? 0, color: "#a855f7" },
@@ -331,6 +342,7 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
         <div style={{ display: "flex", borderBottom: "1px solid #1e293b", background: "#080e1e", overflowX: "auto" }}>
           {[
             { id: "outreach_queue", label: `🎯 Queued Briefs (${topDrafts.length})` },
+            { id: "sent_outreach", label: `📤 Sent Outreach (${sentCount})` },
             { id: "all_opportunities", label: `📋 All Discovered (${allOpportunities.length || 41})` },
             { id: "job_board_blocked", label: `⛔ Job-Board Blocked (${contactPathCounts.JOB_BOARD_APPLICATION_ONLY || 41})` },
             { id: "employment_rejects", label: `💼 Employment Rejects (${classifiedData?.employmentListings?.length || 20})` },
@@ -504,6 +516,168 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
           </div>
         )}
 
+        {/* Tab Content: Sent Outreach (CANONICAL) */}
+        {activeTab === "sent_outreach" && (
+          <div style={{ padding: "1.2rem" }}>
+            {/* Sent Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <div>
+                <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "#f8fafc" }}>📤 Sent Outreach — Canonical History</div>
+                <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "0.2rem" }}>
+                  Durable source: <code style={{ background: "#0f172a", padding: "0.1rem 0.35rem", borderRadius: "4px", border: "1px solid #1e293b" }}>prospects</code> + <code style={{ background: "#0f172a", padding: "0.1rem 0.35rem", borderRadius: "4px", border: "1px solid #1e293b" }}>governed_outreach_records</code> • Real Brevo Message IDs • Truthful telemetry
+                </div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "#34d399" }}>{sentCount}</div>
+                <div style={{ fontSize: "0.7rem", color: "#64748b" }}>Total Dispatched</div>
+              </div>
+            </div>
+
+            {/* Governance banner */}
+            <div style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.25)", borderRadius: "6px", padding: "0.7rem 0.9rem", marginBottom: "1rem", fontSize: "0.75rem", color: "#fef08a", display: "flex", gap: "0.5rem" }}>
+              <span>⚖️</span>
+              <div>
+                <b>Governed Truth Law:</b> Delivery / Open / Click are <code style={{ background: "rgba(0,0,0,0.2)", padding: "0.1rem 0.3rem", borderRadius: "3px" }}>AWAITING</code> until Brevo webhook confirms. <b>ACCEPTED_BY_RELAY ≠ DELIVERED.</b>  •  Next integration: <code style={{ background: "rgba(0,0,0,0.2)", padding: "0.1rem 0.3rem", borderRadius: "3px" }}>POST /api/acquisition/outreach/:id/response</code> / Brevo webhook.
+              </div>
+            </div>
+
+            {sentList.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "2.5rem", background: "#0f172a", border: "1px solid #1e293b", borderRadius: "8px", color: "#64748b" }}>
+                <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>📭</div>
+                <div style={{ fontWeight: "600", color: "#94a3b8" }}>No dispatched outreach yet</div>
+                <div style={{ fontSize: "0.75rem", marginTop: "0.3rem" }}>Approved dispatches will appear here durably after Brevo ACCEPTED response.</div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {sentList.map((s, idx) => {
+                  const isNiravi = s.businessName === "Niravi Jaipur" || s.prospectId === "6a86aa525aad4cda3107b931";
+                  return (
+                    <div
+                      key={s.prospectId || idx}
+                      style={{
+                        background: isNiravi ? "linear-gradient(135deg, #0f172a 0%, #111c2e 100%)" : "#0f172a",
+                        border: isNiravi ? "1px solid rgba(212,175,55,0.5)" : "1px solid #1e293b",
+                        borderRadius: "10px",
+                        overflow: "hidden",
+                        boxShadow: isNiravi ? "0 0 20px rgba(212,175,55,0.08)" : "none"
+                      }}
+                    >
+                      {/* Header bar */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "1rem 1.2rem", background: isNiravi ? "rgba(212,175,55,0.06)" : "#090d16", borderBottom: "1px solid #1e293b" }}>
+                        <div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                            <span style={{ fontSize: "1.15rem", fontWeight: "800", color: "#f8fafc" }}>{s.businessName}</span>
+                            {isNiravi && <span style={{ fontSize: "0.65rem", padding: "0.15rem 0.45rem", background: "rgba(212,175,55,0.15)", color: "#d4af37", border: "1px solid rgba(212,175,55,0.4)", borderRadius: "999px", fontWeight: "700" }}>REAL DISPATCH</span>}
+                            <span style={{ fontSize: "0.68rem", padding: "0.15rem 0.5rem", background: "rgba(16,185,129,0.15)", color: "#34d399", border: "1px solid #10b981", borderRadius: "4px", fontWeight: "700" }}>{s.dispatchStatus} / {s.relayState}</span>
+                          </div>
+                          <div style={{ fontSize: "0.8rem", color: "#cbd5e1", marginTop: "0.25rem", fontWeight: "500" }}>{s.subject}</div>
+                          <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "0.2rem" }}>
+                            {s.recipient} • Prospect ID: <code style={{ fontSize: "0.7rem", background: "#020617", padding: "0.1rem 0.3rem", borderRadius: "3px", border: "1px solid #1e293b" }}>{s.prospectId}</code>
+                          </div>
+                          {isNiravi && <div style={{ fontSize: "0.72rem", color: "#94a3b8", marginTop: "0.15rem" }}>A digital reservation concept for Niravi Jaipur</div>}
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.04em" }}>Dispatched</div>
+                          <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "#f8fafc" }}>{s.dispatchedAtIST || (s.dispatchedAt ? new Date(s.dispatchedAt).toLocaleString() : "—")}</div>
+                          <div style={{ fontSize: "0.68rem", color: "#64748b" }}>{s.dispatchedAt ? new Date(s.dispatchedAt).toISOString() : ""}</div>
+                        </div>
+                      </div>
+
+                      {/* Telemetry grid */}
+                      <div style={{ padding: "1rem 1.2rem" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "0.7rem", marginBottom: "0.9rem" }}>
+                          {[
+                            { label: "Provider", value: s.provider ? s.provider.toUpperCase() : "BREVO", sub: s.providerMessageId ? "Relay accepted" : "—", color: "#38bdf8" },
+                            { label: "Delivery", value: s.deliveryStatus, sub: "Awaiting provider delivery confirmation", color: "#fbbf24" },
+                            { label: "Open", value: s.openStatus, sub: "Awaiting", color: "#94a3b8" },
+                            { label: "Click", value: s.clickStatus, sub: "Awaiting", color: "#94a3b8" },
+                            { label: "Reply", value: s.replyStatus, sub: "Awaiting", color: "#94a3b8" }
+                          ].map((m) => (
+                            <div key={m.label} style={{ background: "#090d16", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.7rem" }}>
+                              <div style={{ fontSize: "0.65rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.04em" }}>{m.label}</div>
+                              <div style={{ fontSize: "0.9rem", fontWeight: "700", color: m.color, marginTop: "0.15rem" }}>{m.value}</div>
+                              <div style={{ fontSize: "0.68rem", color: "#64748b", marginTop: "0.1rem" }}>{m.sub}</div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Brevo Message ID + Meta */}
+                        <div style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.8rem", marginBottom: "0.9rem" }}>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", fontSize: "0.75rem" }}>
+                            <div>
+                              <div style={{ color: "#94a3b8", textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.04em", fontWeight: "700" }}>Brevo Message ID</div>
+                              <div style={{ color: "#34d399", fontFamily: "monospace", fontSize: "0.78rem", marginTop: "0.2rem", wordBreak: "break-all" }}>{s.providerMessageId || "—"}</div>
+                            </div>
+                            <div>
+                              <div style={{ color: "#94a3b8", textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.04em", fontWeight: "700" }}>Recipient</div>
+                              <div style={{ color: "#f1f5f9", marginTop: "0.2rem", fontWeight: "600" }}>{s.recipient}</div>
+                              <div style={{ color: "#64748b", fontSize: "0.7rem" }}>Relay: {s.relayProvider} • Status: {s.relayState}</div>
+                            </div>
+                            <div>
+                              <div style={{ color: "#94a3b8", textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.04em", fontWeight: "700" }}>Dispatch Timestamp</div>
+                              <div style={{ color: "#f1f5f9", marginTop: "0.2rem" }}>{s.dispatchedAtIST}</div>
+                              <div style={{ color: "#64748b", fontSize: "0.7rem" }}>{s.dispatchedAt}</div>
+                            </div>
+                            <div>
+                              <div style={{ color: "#94a3b8", textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.04em", fontWeight: "700" }}>Scoping / Chat URL</div>
+                              <a href={s.chatUrl} target="_blank" rel="noreferrer" style={{ color: "#38bdf8", textDecoration: "none", fontSize: "0.75rem", wordBreak: "break-all" }}>{s.chatUrl}</a>
+                            </div>
+                          </div>
+
+                          {s.attachment && (
+                            <div style={{ marginTop: "0.8rem", paddingTop: "0.7rem", borderTop: "1px solid #1e293b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <div>
+                                <div style={{ color: "#94a3b8", textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.04em", fontWeight: "700" }}>Attachment / Artifact</div>
+                                <div style={{ color: "#f8fafc", fontSize: "0.8rem", fontWeight: "600", marginTop: "0.15rem" }}>📎 {s.attachment.filename}</div>
+                                <div style={{ color: "#64748b", fontSize: "0.7rem" }}>{s.attachment.size ? `${Math.round(s.attachment.size/1024)} KB` : ""} {s.attachment.available ? "• Available" : "• Not available"}</div>
+                              </div>
+                              <div style={{ textAlign: "right" }}>
+                                <div style={{ color: "#94a3b8", textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.04em", fontWeight: "700" }}>SHA-256</div>
+                                <div style={{ fontFamily: "monospace", fontSize: "0.65rem", color: "#d4af37", background: "#0f172a", padding: "0.25rem 0.4rem", borderRadius: "4px", border: "1px solid rgba(212,175,55,0.25)", maxWidth: "260px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={s.sha256}>{s.sha256 || "—"}</div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Actions */}
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.6rem" }}>
+                          <div style={{ fontSize: "0.7rem", color: "#64748b" }}>
+                            Source: <span style={{ color: "#cbd5e1" }}>{s.source}</span> • Truthful telemetry (no synthetic open/click).
+                          </div>
+                          <div style={{ display: "flex", gap: "0.6rem" }}>
+                            <button
+                              onClick={() => setSelectedSent(s)}
+                              style={{ padding: "0.45rem 0.9rem", background: "#1e293b", border: "1px solid #334155", color: "#cbd5e1", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "600" }}
+                            >
+                              👁️ Inspect Details
+                            </button>
+                            {s.proposalPdfUrl && (
+                              <button
+                                onClick={() => window.open(s.proposalPdfUrl, "_blank")}
+                                style={{ padding: "0.45rem 0.9rem", background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.4)", color: "#d4af37", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "700" }}
+                              >
+                                📄 View PDF
+                              </button>
+                            )}
+                            {s.emailPreviewUrl && (
+                              <button
+                                onClick={() => window.open(s.emailPreviewUrl, "_blank")}
+                                style={{ padding: "0.45rem 0.9rem", background: "linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)", border: "none", color: "#fff", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "700" }}
+                              >
+                                ✉️ Email Preview
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Tab Content 2: All Discovered Opportunities */}
         {activeTab === "all_opportunities" && (
           <div style={{ padding: "1.2rem" }}>
@@ -660,6 +834,87 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
                     ⛔ Blocked (No Direct Email)
                   </button>
                 )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Sent Outreach Detail Modal */}
+      <AnimatePresence>
+        {selectedSent && (
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000, padding: "1.5rem" }}>
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              style={{ background: "#0b1329", border: "1px solid #d4af37", borderRadius: "10px", width: "100%", maxWidth: "780px", maxHeight: "90vh", overflowY: "auto", padding: "1.5rem" }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b", paddingBottom: "0.8rem", marginBottom: "1rem" }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: "1.05rem", color: "#f8fafc" }}>📤 SENT OUTREACH DETAILS</h3>
+                  <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>{selectedSent.businessName} • {selectedSent.recipient} • Prospect ID: {selectedSent.prospectId}</div>
+                </div>
+                <button onClick={() => setSelectedSent(null)} style={{ background: "transparent", border: "none", color: "#94a3b8", fontSize: "1.2rem", cursor: "pointer" }}>✕</button>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.9rem", marginBottom: "1rem" }}>
+                <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.7rem" }}>
+                  <div style={{ fontSize: "0.65rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>Recipient</div>
+                  <div style={{ color: "#f8fafc", fontSize: "0.9rem", fontWeight: "600" }}>{selectedSent.recipient}</div>
+                  <div style={{ fontSize: "0.7rem", color: "#64748b" }}>{selectedSent.businessName}</div>
+                </div>
+                <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.7rem" }}>
+                  <div style={{ fontSize: "0.65rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>Dispatch</div>
+                  <div style={{ color: "#f8fafc", fontSize: "0.9rem", fontWeight: "600" }}>{selectedSent.dispatchedAtIST}</div>
+                  <div style={{ fontSize: "0.7rem", color: "#64748b" }}>{selectedSent.dispatchedAt}</div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ fontSize: "0.7rem", textTransform: "uppercase", color: "#94a3b8", fontWeight: "700" }}>Subject</label>
+                <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.6rem 0.8rem", fontSize: "0.85rem", color: "#f8fafc", marginTop: "0.2rem", fontWeight: "500" }}>{selectedSent.subject}</div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.9rem", marginBottom: "1rem", fontSize: "0.75rem" }}>
+                <div style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.7rem" }}>
+                  <div style={{ fontSize: "0.65rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>Provider</div>
+                  <div style={{ color: "#38bdf8", fontWeight: "700" }}>{(selectedSent.provider || "brevo").toUpperCase()}</div>
+                  <div style={{ color: "#64748b", fontFamily: "monospace", fontSize: "0.7rem", wordBreak: "break-all", marginTop: "0.2rem" }}>{selectedSent.providerMessageId}</div>
+                  <div style={{ color: "#64748b", fontSize: "0.7rem" }}>State: {selectedSent.relayState}</div>
+                </div>
+                <div style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.7rem" }}>
+                  <div style={{ fontSize: "0.65rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>Telemetry</div>
+                  <div style={{ color: "#fbbf24", fontWeight: "600" }}>Delivery: {selectedSent.deliveryStatus}</div>
+                  <div style={{ color: "#94a3b8", fontSize: "0.7rem" }}>Open: {selectedSent.openStatus} • Click: {selectedSent.clickStatus} • Reply: {selectedSent.replyStatus}</div>
+                  <div style={{ color: "#64748b", fontSize: "0.7rem", marginTop: "0.2rem" }}>Awaiting Brevo webhook confirmation</div>
+                </div>
+              </div>
+
+              {selectedSent.attachment && (
+                <div style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.3)", borderRadius: "6px", padding: "0.8rem", marginBottom: "1rem" }}>
+                  <div style={{ fontSize: "0.7rem", color: "#d4af37", fontWeight: "700", textTransform: "uppercase" }}>Attachment / Artifact</div>
+                  <div style={{ fontSize: "0.85rem", color: "#f8fafc", fontWeight: "600", marginTop: "0.2rem" }}>📎 {selectedSent.attachment.filename}</div>
+                  <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "0.2rem" }}>Size: {selectedSent.attachment.size ? `${Math.round(selectedSent.attachment.size/1024)} KB` : "—"} • Available: {selectedSent.attachment.available ? "YES" : "NO"}</div>
+                  <div style={{ fontSize: "0.65rem", color: "#d4af37", fontFamily: "monospace", background: "#0f172a", padding: "0.3rem 0.5rem", borderRadius: "4px", marginTop: "0.4rem", wordBreak: "break-all" }}>SHA-256: {selectedSent.sha256}</div>
+                  <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.6rem" }}>
+                    {selectedSent.proposalPdfUrl && <a href={selectedSent.proposalPdfUrl} target="_blank" rel="noreferrer" style={{ fontSize: "0.75rem", padding: "0.4rem 0.8rem", background: "rgba(212,175,55,0.15)", border: "1px solid #d4af37", color: "#d4af37", borderRadius: "5px", textDecoration: "none", fontWeight: "700" }}>📄 Open PDF</a>}
+                    {selectedSent.emailPreviewUrl && <a href={selectedSent.emailPreviewUrl} target="_blank" rel="noreferrer" style={{ fontSize: "0.75rem", padding: "0.4rem 0.8rem", background: "#0ea5e9", color: "#fff", borderRadius: "5px", textDecoration: "none", fontWeight: "700" }}>✉️ Open Email Preview</a>}
+                  </div>
+                </div>
+              )}
+
+              <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.7rem", marginBottom: "1rem" }}>
+                <div style={{ fontSize: "0.65rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>Scoping / Chat URL</div>
+                <a href={selectedSent.chatUrl} target="_blank" rel="noreferrer" style={{ color: "#38bdf8", fontSize: "0.8rem", wordBreak: "break-all" }}>{selectedSent.chatUrl}</a>
+              </div>
+
+              <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: "6px", padding: "0.7rem", fontSize: "0.72rem", color: "#93c5fd" }}>
+                <b>Next integration point:</b> Brevo inbound webhook → <code style={{ background: "rgba(0,0,0,0.3)", padding: "0.1rem 0.3rem", borderRadius: "3px" }}>POST /api/acquisition/outreach/:id/response</code> to log reply • Delivery/open/click events wire to governed_outreach_records when available.
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
+                <button onClick={() => setSelectedSent(null)} style={{ padding: "0.5rem 1.2rem", background: "#1e293b", border: "1px solid #334155", color: "#cbd5e1", borderRadius: "6px", cursor: "pointer", fontSize: "0.8rem", fontWeight: "600" }}>Close</button>
               </div>
             </motion.div>
           </div>

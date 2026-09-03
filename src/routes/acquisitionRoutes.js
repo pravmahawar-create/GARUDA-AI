@@ -116,12 +116,56 @@ router.post("/outreach/:id/dispatch", async (req, res) => {
 });
 
 /**
+ * GET /api/acquisition/outreach/sent
+ * Canonical sent-history endpoint backed by durable persisted data (Prospect + governed_outreach_records).
+ * Returns real persisted sent records — never mock/demo data.
+ */
+router.get("/outreach/sent", async (req, res) => {
+  try {
+    const sentService = require("../services/sentOutreachService");
+    const result = await sentService.listSentOutreach();
+    return res.status(200).json(result);
+  } catch (err) {
+    console.error("[AcquisitionRoutes] /outreach/sent error:", err.message);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * GET /api/acquisition/outreach/sent/:id
+ * Returns single sent record detail.
+ */
+router.get("/outreach/sent/:id", async (req, res) => {
+  try {
+    const sentService = require("../services/sentOutreachService");
+    const record = await sentService.getSentRecordById(req.params.id);
+    if (!record) return res.status(404).json({ success: false, message: "Sent record not found" });
+    return res.status(200).json({ success: true, record });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+/**
  * POST /api/acquisition/outreach/:id/response
  * Records inbound response from prospect.
+ * Telemetry bridge for Brevo webhook / manual reply logging.
+ * Provider events should POST here to transition replyStatus from AWAITING.
  */
 router.post("/outreach/:id/response", async (req, res) => {
   try {
     const record = await outreachDispatch.recordResponse(req.params.id, req.body);
+    // Also update Prospect reply telemetry if the prospectId is a Mongo ObjectId
+    try {
+      const mongoose = require("mongoose");
+      if (mongoose.Types.ObjectId.isValid(req.params.id) && mongoose.connection.readyState === 1) {
+        const { Prospect } = require("../models/Prospect");
+        await Prospect.updateOne(
+          { _id: req.params.id },
+          { $set: { lastReplyAt: new Date().toISOString(), lastReplyText: String(req.body.message || req.body.text || "").slice(0, 2000) } }
+        );
+      }
+    } catch {}
     return res.status(200).json({ success: true, prospect: record });
   } catch (err) {
     const status = err.statusCode || 500;

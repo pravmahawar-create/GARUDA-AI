@@ -20,6 +20,11 @@ if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
 }
 app.use(express.static(path.join(__dirname, "..", "public")));
+// Serve Niravi attachment artifacts under /data/proposals (read-only, Founder gated previews)
+const proposalsDataPath = path.join(__dirname, "..", "data", "proposals");
+if (fs.existsSync(proposalsDataPath)) {
+  app.use("/data/proposals", express.static(proposalsDataPath, { maxAge: "1d", etag: true }));
+}
 app.use(require("./middleware/authContextMiddleware"));
 
 const healthResponse = (req, res) => {
