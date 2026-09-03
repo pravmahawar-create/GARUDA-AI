@@ -110,6 +110,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/founder/:path*",
+      "destination": "/index.html"
+    },
+    {
       "source": "/founder",
       "destination": "/founder/index.html"
     },

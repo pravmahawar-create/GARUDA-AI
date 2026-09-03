@@ -140,9 +140,11 @@ function prospectToSentRecord(doc) {
     outreachStatus: doc.outreachStatus || "dispatched",
     grade: doc.grade || null,
     score: doc.score != null ? doc.score : null,
-    // Preview links
-    emailPreviewUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Email_Preview.html" : null,
-    proposalPdfUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : null,
+    // Preview links - use API artifact proxy (reliable via Vercel /api/*) + fallback static
+    emailPreviewUrl: isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Email_Preview.html" : null,
+    proposalPdfUrl: isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : null,
+    proposalPdfDirectUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : null,
+    emailPreviewDirectUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Email_Preview.html" : null,
     // Original doc ref for debugging (not exposed as mock)
     _sourceCollection: "prospects"
   };
@@ -213,6 +215,10 @@ function governedToSentRecord(doc) {
     portalLink: doc.dispatchPayload?.portalLink || `https://www.garudaos.in/services/custom-software-development`,
     source: doc.source || "governed_outreach",
     dispatchedAtRaw: dispatchedAt,
+    emailPreviewUrl: isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Email_Preview.html" : null,
+    proposalPdfUrl: isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : null,
+    proposalPdfDirectUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : null,
+    emailPreviewDirectUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Email_Preview.html" : null,
     _sourceCollection: "governed_outreach_records",
     businessNotes: doc.notes || null
   };

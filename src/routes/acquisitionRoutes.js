@@ -174,6 +174,26 @@ router.post("/outreach/:id/response", async (req, res) => {
 });
 
 /**
+ * GET /api/acquisition/outreach/artifacts/:filename
+ * Serves Niravi attachment artifacts via API proxy (works through Vercel /api/* rewrite).
+ * Allows PDF/HTML preview even when /data/proposals static not directly proxied by Vercel.
+ */
+router.get("/outreach/artifacts/:filename", (req, res) => {
+  const path = require("path");
+  const fs = require("fs");
+  const filename = String(req.params.filename || "").replace(/[^a-zA-Z0-9._-]/g, "");
+  const allowed = ["GARUDA_Niravi_Jaipur_Executive_Proposal.pdf", "GARUDA_Niravi_Jaipur_Email_Preview.html", "GARUDA_Niravi_Jaipur_Visual_Boom_Email.html"];
+  if (!allowed.includes(filename)) return res.status(404).json({ success: false, message: "Artifact not found" });
+  const filePath = path.join(__dirname, "..", "..", "data", "proposals", filename);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ success: false, message: "Artifact file missing on server" });
+  const ext = path.extname(filename).toLowerCase();
+  if (ext === ".pdf") res.setHeader("Content-Type", "application/pdf");
+  else if (ext === ".html") res.setHeader("Content-Type", "text/html; charset=utf-8");
+  res.setHeader("Content-Disposition", ext === ".pdf" ? `inline; filename="${filename}"` : `inline`);
+  return res.sendFile(filePath);
+});
+
+/**
  * GET /api/acquisition/outreach/metrics
  */
 router.get("/outreach/metrics", (req, res) => {
