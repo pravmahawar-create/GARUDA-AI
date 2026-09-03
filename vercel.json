@@ -70,6 +70,10 @@
       "destination": "/api/proposals?action=webhook"
     },
     {
+      "source": "/data/proposals/:path*",
+      "destination": "https://garuda-ai-xfif.onrender.com/data/proposals/:path*"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
     },
@@ -100,6 +104,10 @@
     {
       "source": "/kingdom",
       "destination": "/kingdom/index.html"
+    },
+    {
+      "source": "/founder/acquisition",
+      "destination": "/index.html"
     },
     {
       "source": "/founder",
