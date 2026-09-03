@@ -570,14 +570,51 @@ module.exports = async function handler(req, res) {
     const isTest = req.headers["x-garuda-test"] === "true" || (req.body && req.body.isTest === true);
     const advisor = await tryInsuranceAdvisor(finalMessage);
     const commercial = advisor.handled ? { handled: false } : await tryCommercialAgent(finalMessage, Array.isArray(history) ? history : [], { isTest, conversationId: conversationId || null });
-    const reply = advisor.handled ? advisor.reply : commercial.handled ? commercial.reply : await generateReply(finalMessage, Array.isArray(history) ? history : [], attachments);
+
+    let reply = "";
+    let truthStatus = "VERIFIED";
+    let intent = "ANSWER_ONLY";
+    let evidence = null;
+    let executionResult = null;
+    let topic = "general";
+    let mode = undefined;
+
+    if (advisor.handled) {
+      reply = advisor.reply;
+      mode = "insurance_advisor";
+    } else if (commercial.handled) {
+      reply = commercial.reply;
+      mode = "commercial_architect";
+    } else {
+      // P1-B: Canonical Conversation Brain Integration
+      const { conversationBrainService } = require("../src/services/conversationBrainService");
+      const brainSessionId = conversationId || "public-chat-session";
+      const brainRes = await conversationBrainService.process(finalMessage, {
+        sessionId: brainSessionId,
+        garudaContext: { isPublicChat: true, source: "publicChat" }
+      });
+
+      reply = brainRes.data.answer || brainRes.data.speechText || "I am ready to assist you.";
+      truthStatus = brainRes.data.truthStatus;
+      intent = brainRes.data.intent;
+      evidence = brainRes.data.evidence;
+      executionResult = brainRes.data.executionResult;
+      topic = brainRes.data.topic;
+    }
+
     await captureLead({ message: finalMessage, reply, userId: null, req, body: req.body });
     return res.status(200).json({
       reply,
-      mode: advisor.handled ? "insurance_advisor" : commercial.handled ? "commercial_architect" : undefined,
-      proposalUrl: commercial.proposalUrl,
-      proposalId: commercial.proposalId,
-      qualification: commercial.qualification
+      truthStatus,
+      intent,
+      evidence,
+      executionResult,
+      topic,
+      conversationId: conversationId || "public-chat-session",
+      mode,
+      proposalUrl: commercial?.proposalUrl,
+      proposalId: commercial?.proposalId,
+      qualification: commercial?.qualification
     });
   } catch (error) {
     console.error("Public Chat API Error:", error);

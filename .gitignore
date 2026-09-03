@@ -29,3 +29,7 @@ local-ai/
 *.onnx
 *.apk
 .continue/
+frontend/dist/
+.claude/
+frontend/public/images/vid_local25d_*
+frontend/public/images/asset_garuda_*

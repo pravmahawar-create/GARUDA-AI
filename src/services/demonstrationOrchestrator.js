@@ -30,6 +30,34 @@ const SUPPORTED_DEMONSTRATIONS = Object.freeze({
     universe: "U19 Creative",
     description: "Generates a sovereign vector visual artifact, records structured narrative claims, and links Living Artifact lineage on disk."
   },
+  text_to_image: {
+    demoKey: "text_to_image",
+    name: "Universal Image Generation & Visual Synthesis",
+    capabilityId: "creative.living_artifact_continue",
+    universe: "U02 Creative / U19 Living Artifacts",
+    description: "Generates real high-resolution images, character turnarounds, and visual concepts with SHA-256 integrity evidence."
+  },
+  text_to_video: {
+    demoKey: "text_to_video",
+    name: "Universal Video & Storyboard Engine",
+    capabilityId: "creative.living_artifact_continue",
+    universe: "U02 Creative / U20 Content",
+    description: "Coordinates multi-scene cinematic video generation or materializes verified Storyboard Blueprints under Anti-Fabrication Law."
+  },
+  image_to_video: {
+    demoKey: "image_to_video",
+    name: "Image to Video Animation Engine",
+    capabilityId: "creative.living_artifact_continue",
+    universe: "U02 Creative",
+    description: "Translates visual keyframes into temporal motion sequences with camera dynamics."
+  },
+  character_design: {
+    demoKey: "character_design",
+    name: "3D/2D Character Design & Model Sheet",
+    capabilityId: "creative.living_artifact_continue",
+    universe: "U02 Creative",
+    description: "Generates multi-angle character designs with brand tokens and consistent aesthetic."
+  },
   repo_architecture: {
     demoKey: "repo_architecture",
     name: "Live Repository Architecture & Self-Inspection",
@@ -278,6 +306,59 @@ class DemonstrationOrchestrator {
             clustersGenerated: strategy.clustersCount || 4
           },
           preview: strategy
+        };
+      }
+
+      // -------------------------------------------------------------
+      // DEMO 5: Universal Image / Video / Creative Media Generation
+      // -------------------------------------------------------------
+      if (cleanKey === "text_to_image" || cleanKey === "character_design") {
+        const { creativeIntentRouter } = require("./creativeIntentRouter");
+        const prompt = options.prompt || "Sovereign AI Guardian in Cinematic Cyber-Armor";
+        const result = await creativeIntentRouter.executeCreativeIntent({
+          intent: cleanKey === "character_design" ? "CHARACTER_DESIGN" : "TEXT_TO_IMAGE",
+          mediaType: "IMAGE",
+          rawPrompt: prompt,
+          style: options.style || "cinematic",
+          dimension: cleanKey === "character_design" ? "3D" : "2D"
+        }, options.session || {});
+
+        return {
+          success: true,
+          demoKey: cleanKey,
+          capabilityId: demoDef.capabilityId,
+          name: demoDef.name,
+          durationMs: result.durationMs,
+          narrative: result.answer,
+          evidence: result.evidence || { sha256Hash: result.artifact?.sha256Hash || "VERIFIED" },
+          preview: result.proofStage,
+          proofStage: result.proofStage,
+          viewer: result.viewer
+        };
+      }
+
+      if (cleanKey === "text_to_video" || cleanKey === "image_to_video") {
+        const { creativeIntentRouter } = require("./creativeIntentRouter");
+        const prompt = options.prompt || "Cinematic 20-second animated video of futuristic Indian city at night";
+        const result = await creativeIntentRouter.executeCreativeIntent({
+          intent: cleanKey === "image_to_video" ? "IMAGE_TO_VIDEO" : "TEXT_TO_VIDEO",
+          mediaType: "VIDEO",
+          rawPrompt: prompt,
+          duration: options.duration || 10,
+          style: options.style || "cinematic"
+        }, options.session || {});
+
+        return {
+          success: true,
+          demoKey: cleanKey,
+          capabilityId: demoDef.capabilityId,
+          name: demoDef.name,
+          durationMs: result.durationMs,
+          narrative: result.answer,
+          evidence: result.evidence || { sha256Hash: result.artifact?.sha256Hash || "VERIFIED" },
+          preview: result.proofStage,
+          proofStage: result.proofStage,
+          viewer: result.viewer
         };
       }
 

@@ -39,6 +39,26 @@ function ensureDirs() {
   } catch {}
 }
 
+function loadEnv() {
+  try {
+    const envPath = path.join(__dirname, "..", "..", ".env");
+    if (fs.existsSync(envPath)) {
+      const lines = fs.readFileSync(envPath, "utf8").split("\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#")) continue;
+        const eqIdx = trimmed.indexOf("=");
+        if (eqIdx !== -1) {
+          const key = trimmed.slice(0, eqIdx).trim();
+          const val = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, "");
+          if (!process.env[key]) process.env[key] = val;
+        }
+      }
+    }
+  } catch {}
+}
+loadEnv();
+
 const storyboardsStore = new Map();
 const videoJobsStore = new Map();
 
@@ -110,22 +130,85 @@ class VideoGenerationRouter {
   _getRunwayKey() {
     return process.env.RUNWAY_API_KEY || process.env.RUNWAYML_API_SECRET || null;
   }
+  _getGeminiKey() {
+    return process.env.GEMINI_API_KEY || process.env.GARUDA_LLM_API_KEY || null;
+  }
+  _getHfToken() {
+    return process.env.HF_TOKEN || process.env.HUGGINGFACE_API_KEY || process.env.HUGGING_FACE_HUB_TOKEN || null;
+  }
+  _getFalKey() {
+    return process.env.FAL_KEY || process.env.FAL_API_KEY || null;
+  }
   detectProviders() {
+    const geminiKey = this._getGeminiKey();
+    const falKey = this._getFalKey();
     const runwayKey = this._getRunwayKey();
+    const hfToken = this._getHfToken();
     const lumaKey = process.env.LUMA_API_KEY || null;
     const klingKey = process.env.KLING_API_KEY || null;
     const soraKey = process.env.OPENAI_SORA_API_KEY || null;
     const localVideoUrl = process.env.LOCAL_VIDEO_GENERATOR_URL || null;
 
     const providers = {
+      local_25d_motion: {
+        id: "local_25d_motion",
+        name: "GARUDA Sovereign 2.5D Cinematic Motion Engine (Local / Free)",
+        type: "LOCAL_25D_MOTION",
+        configured: true,
+        defaultModel: "GARUDA Sovereign 2.5D Cinematic Motion Engine",
+        supportedModels: ["GARUDA Sovereign 2.5D Cinematic Motion Engine"],
+        durations: [3, 5, 8, 10],
+        formats: ["16:9", "9:16"],
+        priority: 0
+      },
+      gemini_veo: {
+        id: "gemini_veo",
+        name: "Google Veo 3.1 (Gemini API)",
+        type: "AI_GENERATIVE_VIDEO",
+        configured: Boolean(geminiKey),
+        defaultModel: "veo-3.1-generate-preview",
+        supportedModels: ["veo-3.1-generate-preview", "veo-3.1-fast-generate-preview", "veo-3.1-lite-generate-preview"],
+        durations: [4, 6, 8],
+        formats: ["16:9", "9:16"],
+        priority: 1
+      },
+      fal_video: {
+        id: "fal_video",
+        name: "fal.ai Generative Video (LTX-Video / HunyuanVideo / Wan)",
+        type: "AI_GENERATIVE_VIDEO",
+        configured: Boolean(falKey),
+        defaultModel: "fal-ai/ltx-video/image-to-video",
+        supportedModels: [
+          "fal-ai/ltx-video/image-to-video",
+          "fal-ai/wan/i2v",
+          "fal-ai/hunyuan-video/image-to-video"
+        ],
+        formats: ["16:9", "9:16"],
+        priority: 1
+      },
+      huggingface_video: {
+        id: "huggingface_video",
+        name: "Hugging Face Inference Providers (LTX-Video / HunyuanVideo / SVD)",
+        type: "AI_GENERATIVE_VIDEO",
+        configured: Boolean(hfToken),
+        defaultModel: "Lightricks/LTX-Video",
+        supportedModels: [
+          "Lightricks/LTX-Video",
+          "tencent/HunyuanVideo-I2V",
+          "stabilityai/stable-video-diffusion-img2vid-xt",
+          "Wan-AI/Wan2.1-T2V-1.3B-Diffusers"
+        ],
+        formats: ["16:9", "9:16"],
+        priority: 2
+      },
       runway_gen3: {
         id: "runway_gen3",
-        name: "Runway Gen-3 Alpha Turbo",
+        name: "Runway Gen-4 Turbo / Gen-3",
         type: "AI_GENERATIVE_VIDEO",
         configured: Boolean(runwayKey),
         maxDurationSeconds: 10,
         formats: ["16:9", "9:16"],
-        priority: 1
+        priority: 2
       },
       luma_dream_machine: {
         id: "luma_dream_machine",
@@ -268,7 +351,8 @@ class VideoGenerationRouter {
     // 2. If AI Video Provider is Configured, attempt execution
     if (providerStatus.aiVideoGeneratorsAvailable) {
       try {
-        const videoResult = await this.executeAIVideoProvider(providerStatus.activeAIProviders[0], {
+        const selectedProvider = request.provider || (providerStatus.providers.gemini_veo?.configured ? "gemini_veo" : providerStatus.activeAIProviders[0]);
+        const videoResult = await this.executeAIVideoProvider(selectedProvider, {
           request,
           storyboard,
           job
@@ -308,10 +392,264 @@ class VideoGenerationRouter {
     ensureDirs();
     const assetId = `vid_ai_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
 
-    if ((providerId === "runway_gen3" || providerId === "runway") && this._getRunwayKey()) {
+    // 0. GARUDA Sovereign 2.5D Cinematic Motion Engine (Local / Free)
+    if (providerId === "local_25d_motion" || providerId === "local" || providerId === "sovereign_25d" || providerId === "local_motion" || providerId === "2.5d") {
+      const localEngine = require("./local2dCinematicMotionEngine");
+      const renderResult = await localEngine.renderCinematicMotion({
+        sourceImagePath: request.imagePath || path.join(process.cwd(), "data", "creative-assets", "asset_garuda_1788374991807.jpg"),
+        sourceArtifactId: request.sourceImageArtifactId || "asset_garuda_1788374991807",
+        durationSeconds: request.durationSeconds || 5,
+        fps: 24,
+        width: 1920,
+        height: 1080,
+        prompt: request.prompt || "Cinematic slow camera push-in, subtle depth parallax, and neon glow enhancement on GARUDA guardian"
+      });
+
+      return {
+        success: true,
+        jobId: job.jobId,
+        status: "READY",
+        provider: "local_25d_motion",
+        model: "GARUDA Sovereign 2.5D Cinematic Motion Engine",
+        asset: renderResult.asset,
+        storyboard,
+        truthClassification: "LOCAL_25D_CINEMATIC_MOTION_VERIFIED",
+        generatedAt: new Date().toISOString()
+      };
+    }
+
+    // 1. Google Gemini Veo 3.1 Provider Adapter (Free First & Primary Generative Video Engine)
+    if ((providerId === "gemini_veo" || providerId === "gemini" || providerId === "veo") && this._getGeminiKey()) {
+      const geminiKey = this._getGeminiKey();
+      const model = request.model || "veo-3.1-generate-preview";
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predictLongRunning?key=${geminiKey}`;
+      const promptText = request.prompt || storyboard.scenes[0]?.generativeScenePrompt || request.title || "A cinematic futuristic Indian megacity at dusk with a soaring cybernetic Garuda guardian with glowing golden wings";
+
+      let base64Raw = null;
+      let mimeType = "image/jpeg";
+      if (request.promptImage && typeof request.promptImage === "string") {
+        if (request.promptImage.startsWith("data:")) {
+          const parts = request.promptImage.split(",");
+          const mimeMatch = parts[0].match(/:(.*?);/);
+          if (mimeMatch) mimeType = mimeMatch[1];
+          base64Raw = parts[1];
+        } else {
+          base64Raw = request.promptImage;
+        }
+      } else if (request.imagePath && fs.existsSync(request.imagePath)) {
+        const imgBuf = fs.readFileSync(request.imagePath);
+        base64Raw = imgBuf.toString("base64");
+        if (request.imagePath.endsWith(".png")) mimeType = "image/png";
+        else if (request.imagePath.endsWith(".webp")) mimeType = "image/webp";
+      }
+
+      // Veo duration normalization (strictly accepts 4, 6, 8)
+      let durationSeconds = 6;
+      if (request.durationSeconds) {
+        const reqDur = Number(request.durationSeconds);
+        if (reqDur <= 4) durationSeconds = 4;
+        else if (reqDur >= 7) durationSeconds = 8;
+        else durationSeconds = 6;
+      }
+
+      const aspectRatio = storyboard.aspectRatio === "9:16" ? "9:16" : "16:9";
+
+      const instanceObj = { prompt: promptText };
+      if (base64Raw) {
+        instanceObj.image = {
+          bytesBase64Encoded: base64Raw,
+          mimeType
+        };
+      }
+
+      const payload = {
+        instances: [instanceObj],
+        parameters: {
+          aspectRatio,
+          durationSeconds,
+          sampleCount: 1,
+          personGeneration: "allow_adult"
+        }
+      };
+
+      const res = await fetchWithTimeout(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const errDetail = data.error?.message || data.error || `Gemini Veo HTTP error ${res.status}`;
+        const errStatus = data.error?.status || "API_ERROR";
+        throw new Error(`[Gemini Veo API Error: ${errStatus}] ${errDetail}`);
+      }
+
+      const operationName = data.name;
+
+      return {
+        success: true,
+        jobId: job.jobId,
+        status: "PROCESSING",
+        provider: "gemini_veo",
+        model,
+        externalOperationName: operationName,
+        durationSeconds,
+        aspectRatio,
+        storyboard,
+        truthClassification: "AI_VIDEO_TASK_DISPATCHED",
+        generatedAt: new Date().toISOString()
+      };
+    }
+
+    // 2. Hugging Face Inference Providers Adapter (LTX-Video / HunyuanVideo / SVD / Wan)
+    if ((providerId === "huggingface_video" || providerId === "huggingface" || providerId === "hf") && this._getHfToken()) {
+      const hfToken = this._getHfToken();
+      const model = request.model || "Lightricks/LTX-Video";
+      const endpoint = request.endpoint || `https://router.huggingface.co/hf-inference/models/${model}`;
+      const promptText = request.prompt || storyboard.scenes[0]?.generativeScenePrompt || request.title || "Cinematic aerial flight";
+
+      let base64Raw = null;
+      if (request.promptImage && typeof request.promptImage === "string") {
+        base64Raw = request.promptImage.startsWith("data:") ? request.promptImage.split(",")[1] : request.promptImage;
+      } else if (request.imagePath && fs.existsSync(request.imagePath)) {
+        base64Raw = fs.readFileSync(request.imagePath).toString("base64");
+      }
+
+      const payload = {
+        inputs: base64Raw || promptText,
+        parameters: {
+          prompt: promptText,
+          duration: request.durationSeconds || 6,
+          aspect_ratio: storyboard.aspectRatio || "16:9"
+        }
+      };
+
+      const res = await fetchWithTimeout(endpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${hfToken}`,
+          "Content-Type": "application/json",
+          "x-wait-for-model": "true"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const contentType = res.headers.get("content-type") || "";
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const errMsg = errData.error || `Hugging Face HTTP error ${res.status}`;
+        throw new Error(`[Hugging Face Video Error: HTTP ${res.status}] ${errMsg}`);
+      }
+
+      // If binary video stream returned directly:
+      if (contentType.includes("video") || contentType.includes("octet-stream")) {
+        const videoBuffer = Buffer.from(await res.arrayBuffer());
+        const asset = await this.validateAndRegisterVideoArtifact({
+          videoBuffer,
+          sourceImageArtifactId: request.sourceImageArtifactId || null,
+          prompt: promptText,
+          model,
+          provider: "huggingface_video",
+          durationSeconds: request.durationSeconds || 6,
+          aspectRatio: storyboard.aspectRatio || "16:9"
+        });
+
+        return {
+          success: true,
+          jobId: job.jobId,
+          status: "READY",
+          provider: "huggingface_video",
+          model,
+          asset,
+          storyboard,
+          truthClassification: "AI_VIDEO_GENERATED_VERIFIED",
+          generatedAt: new Date().toISOString()
+        };
+      }
+
+      const data = await res.json().catch(() => ({}));
+      return {
+        success: true,
+        jobId: job.jobId,
+        status: "PROCESSING",
+        provider: "huggingface_video",
+        model,
+        externalTaskId: data.id || data.job_id || null,
+        storyboard,
+        truthClassification: "AI_VIDEO_TASK_DISPATCHED",
+        generatedAt: new Date().toISOString()
+      };
+    }
+
+    // 3. fal.ai Generative Video Adapter (LTX-Video / HunyuanVideo / Wan)
+    if ((providerId === "fal_video" || providerId === "fal_ai" || providerId === "fal" || providerId === "fal.ai") && this._getFalKey()) {
+      const falKey = this._getFalKey();
+      const model = request.model || "fal-ai/ltx-video/image-to-video";
+      const submitUrl = `https://queue.fal.run/${model}`;
+      const promptText = request.prompt || storyboard.scenes[0]?.generativeScenePrompt || request.title || "Cinematic aerial flight";
+
+      let promptImage = request.promptImage || null;
+      if (!promptImage && request.imagePath && fs.existsSync(request.imagePath)) {
+        const imgBuf = fs.readFileSync(request.imagePath);
+        promptImage = "data:image/jpeg;base64," + imgBuf.toString("base64");
+      }
+
+      const payload = {
+        prompt: promptText,
+        aspect_ratio: storyboard.aspectRatio || "16:9",
+        negative_prompt: "low quality, blur, distortion, deformed"
+      };
+      if (promptImage) payload.image_url = promptImage;
+
+      const res = await fetchWithTimeout(submitUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Key ${falKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const errMsg = data.detail || data.error || `fal.ai HTTP error ${res.status}`;
+        throw new Error(`[fal.ai Video Error: HTTP ${res.status}] ${errMsg}`);
+      }
+
+      const requestId = data.request_id || data.requestId;
+      return {
+        success: true,
+        jobId: job.jobId,
+        status: "PROCESSING",
+        provider: "fal_video",
+        model,
+        externalTaskId: requestId,
+        storyboard,
+        truthClassification: "AI_VIDEO_TASK_DISPATCHED",
+        generatedAt: new Date().toISOString()
+      };
+    }
+
+    if ((providerId === "runway_gen3" || providerId === "runway" || providerId === "runway_gen4") && this._getRunwayKey()) {
       const runwayKey = this._getRunwayKey();
       const endpoint = "https://api.dev.runwayml.com/v1/image_to_video";
-      const promptText = storyboard.scenes[0]?.generativeScenePrompt || request.title;
+      const promptText = request.prompt || storyboard.scenes[0]?.generativeScenePrompt || request.title || "Cinematic aerial flight";
+
+      let promptImage = request.promptImage || null;
+      if (!promptImage && request.imagePath && fs.existsSync(request.imagePath)) {
+        const imgBuf = fs.readFileSync(request.imagePath);
+        promptImage = "data:image/jpeg;base64," + imgBuf.toString("base64");
+      }
+
+      const ratio = storyboard.aspectRatio === "9:16" ? "720:1280" : "1280:720";
+      const payload = {
+        promptText,
+        model: "gen4_turbo",
+        duration: request.durationSeconds || 5,
+        ratio
+      };
+      if (promptImage) payload.promptImage = promptImage;
 
       const res = await fetchWithTimeout(endpoint, {
         method: "POST",
@@ -320,23 +658,22 @@ class VideoGenerationRouter {
           "X-Runway-Version": "2024-09-13",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          promptText,
-          model: "gen3a_turbo",
-          duration: 5,
-          ratio: storyboard.aspectRatio === "9:16" ? "768:1280" : "1280:768"
-        })
+        body: JSON.stringify(payload)
       });
 
-      if (!res.ok) throw new Error(`Runway HTTP error ${res.status}`);
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const errorMsg = data.error || `Runway HTTP error ${res.status}`;
+        throw new Error(errorMsg);
+      }
+
       const taskId = data.id;
 
       return {
         success: true,
         jobId: job.jobId,
         status: "PROCESSING",
-        provider: "runway_gen3",
+        provider: "runway_gen4",
         externalTaskId: taskId,
         storyboard,
         truthClassification: "AI_VIDEO_TASK_DISPATCHED",
@@ -448,22 +785,103 @@ class VideoGenerationRouter {
   }
 
   /**
-   * 7. Get Video Operations Snapshot for High Command.
+   * 8. Poll Gemini Veo Long-Running Operation.
    */
-  getVideoOperationsSnapshot() {
-    const detection = this.detectProviders();
-    const storyboards = Array.from(this.storyboards.values());
-    return {
-      videoCapability: detection.aiVideoGeneratorsAvailable ? "READY" : "STORYBOARD_ONLY",
-      activeProvider: detection.aiVideoGeneratorsAvailable ? detection.activeAIProviders[0] : "garuda_storyboard_engine",
-      totalStoryboardsCount: storyboards.length,
-      lastStoryboard: storyboards.length > 0 ? {
-        storyboardId: storyboards[storyboards.length - 1].storyboardId,
-        title: storyboards[storyboards.length - 1].campaignTitle,
-        aspectRatio: storyboards[storyboards.length - 1].aspectRatio,
-        durationSeconds: storyboards[storyboards.length - 1].totalDurationSeconds
-      } : null
+  async pollGeminiVeoOperation(operationName, options = {}) {
+    const geminiKey = this._getGeminiKey();
+    if (!geminiKey) throw new Error("GEMINI_API_KEY is not configured.");
+    const timeoutMs = options.timeoutMs || 360000;
+    const pollIntervalMs = options.pollIntervalMs || 4000;
+    const startTime = Date.now();
+
+    const cleanOpName = operationName.startsWith("operations/") ? operationName : `operations/${operationName}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/${cleanOpName}?key=${geminiKey}`;
+
+    while (Date.now() - startTime < timeoutMs) {
+      const res = await fetchWithTimeout(endpoint, { method: "GET" });
+      if (!res.ok) {
+        throw new Error(`Gemini Veo poll HTTP error: ${res.status}`);
+      }
+      const data = await res.json();
+      if (data.done) {
+        if (data.error) {
+          throw new Error(`[Gemini Veo Operation Failed: ${data.error.code || "ERROR"}] ${data.error.message}`);
+        }
+        return {
+          done: true,
+          response: data.response,
+          metadata: data.metadata,
+          raw: data
+        };
+      }
+      await new Promise(r => setTimeout(r, pollIntervalMs));
+    }
+    throw new Error(`Gemini Veo operation polling timed out after ${Math.round(timeoutMs / 1000)}s.`);
+  }
+
+  /**
+   * 9. Download, Validate and Register Real Video Deliverable with Lineage.
+   */
+  async validateAndRegisterVideoArtifact({ videoBuffer, videoUrl, sourceImageArtifactId, prompt, model, provider, durationSeconds, aspectRatio }) {
+    ensureDirs();
+    let buf = videoBuffer;
+    if (!buf && videoUrl) {
+      const res = await fetchWithTimeout(videoUrl);
+      if (!res.ok) throw new Error(`Failed to download video from ${videoUrl} (HTTP ${res.status})`);
+      buf = Buffer.from(await res.arrayBuffer());
+    }
+
+    if (!buf || buf.length === 0) {
+      throw new Error("Video payload validation failed: buffer is empty (0 bytes).");
+    }
+
+    // P0-4 Media Validator Hardening: A valid MP4 container requires non-trivial bytes,
+    // a valid 'ftyp' signature, and required container atoms ('moov' or 'mdat').
+    // Minimal mock/dummy headers (e.g. 16-byte ftypmp42) are strictly rejected under Anti-Fabrication Law.
+    if (buf.length < 10000) {
+      throw new Error(`Video payload validation failed: buffer size (${buf.length} bytes) is below minimum threshold for a valid video container. Dummy or truncated media rejected.`);
+    }
+
+    const ftyp = buf.slice(4, 8).toString("ascii");
+    if (ftyp !== "ftyp") {
+      throw new Error(`Video payload validation failed: invalid MP4 container signature '${ftyp}'. Expected 'ftyp'.`);
+    }
+
+    const hasMoovOrMdat = buf.includes(Buffer.from("moov")) || buf.includes(Buffer.from("mdat"));
+    if (!hasMoovOrMdat) {
+      throw new Error("Video payload validation failed: MP4 container missing required 'moov' or 'mdat' atoms.");
+    }
+
+    const sha256Hash = sha256(buf);
+    const assetId = `vid_${provider || "ai"}_${Date.now()}_${crypto.randomBytes(2).toString("hex")}`;
+    const filename = `${assetId}.mp4`;
+    const destPath = path.join(VIDEO_ASSETS_DIR, filename);
+    fs.writeFileSync(destPath, buf);
+
+    const assetRecord = {
+      assetId,
+      sourceImageArtifactId: sourceImageArtifactId || null,
+      title: prompt ? `Cinematic Video: ${prompt.slice(0, 40)}` : "Generated Video Deliverable",
+      prompt: prompt || "",
+      model: model || "veo-3.1-generate-preview",
+      provider: provider || "gemini_veo",
+      dimensions: {
+        width: aspectRatio === "9:16" ? 720 : 1280,
+        height: aspectRatio === "9:16" ? 1280 : 720,
+        aspectRatio: aspectRatio || "16:9"
+      },
+      durationSeconds: durationSeconds || 6,
+      fps: 24,
+      filePath: destPath,
+      publicUrl: `/images/${filename}`,
+      sha256Hash,
+      fileSizeBytes: buf.length,
+      status: "VERIFIED",
+      createdAt: new Date().toISOString()
     };
+
+    appendDocToFile(path.join(DATA_DIR, "creative-assets.jsonl"), assetRecord);
+    return assetRecord;
   }
 }
 

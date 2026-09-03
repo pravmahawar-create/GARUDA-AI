@@ -139,9 +139,9 @@ class ImageGenerationRouter {
     const providers = {
       gemini_imagen: {
         id: "gemini_imagen",
-        name: "Google Imagen (Gemini API)",
+        name: "Google Gemini Image (gemini-2.5-flash-image)",
         type: "AI_GENERATIVE_IMAGE",
-        configured: Boolean(imagenKey || (geminiKey && (process.env.IMAGEN_ENABLED === "true" || process.env.GARUDA_IMAGEN_KEY))),
+        configured: Boolean(imagenKey || geminiKey),
         freeTier: false,
         priority: 1
       },
@@ -309,29 +309,20 @@ class ImageGenerationRouter {
           };
         }
         if (res.ok) {
-          const isExplicitlyEnabled = process.env.IMAGEN_ENABLED === "true" || Boolean(process.env.IMAGEN_API_KEY);
-          if (!isExplicitlyEnabled) {
-            return {
-              provider: "gemini_imagen",
-              name: "Google Imagen (Gemini API)",
-              configured: true,
-              reachable: true,
-              authenticated: true,
-              capabilities: ["prompt_engineering"],
-              type: "AI_GENERATIVE_IMAGE",
-              status: PROVIDER_HEALTH_STATUSES.RATE_LIMITED,
-              notice: "Key authenticated for Gemini text. Set IMAGEN_ENABLED=true or IMAGEN_API_KEY to activate paid Imagen quota."
-            };
-          }
+          const data = await res.json().catch(() => ({}));
+          const models = data.models || [];
+          const hasImageModel = models.some(m => /image|imagen/i.test(m.name || ""));
           return {
             provider: "gemini_imagen",
-            name: "Google Imagen (Gemini API)",
+            name: "Google Gemini Image (gemini-2.5-flash-image)",
             configured: true,
             reachable: true,
             authenticated: true,
             capabilities: ["photorealistic_ai", "1:1", "9:16", "16:9"],
             type: "AI_GENERATIVE_IMAGE",
-            status: PROVIDER_HEALTH_STATUSES.READY
+            status: PROVIDER_HEALTH_STATUSES.READY,
+            defaultModel: "gemini-2.5-flash-image",
+            modelsFound: hasImageModel
           };
         }
         return {
@@ -755,6 +746,59 @@ class ImageGenerationRouter {
     const { width, height } = platformSpec.dimensions;
 
     ensureDirs();
+
+    // 5.0 Google Gemini Image Adapter (gemini-2.5-flash-image / Google GenAI SDK)
+    if (providerId === "gemini_imagen" && (process.env.GEMINI_API_KEY || process.env.IMAGEN_API_KEY)) {
+      const apiKey = process.env.GEMINI_API_KEY || process.env.IMAGEN_API_KEY;
+      const { GoogleGenAI } = require("@google/genai");
+      const client = new GoogleGenAI({ apiKey });
+      const requestedModel = request.model || "gemini-2.5-flash-image";
+
+      try {
+        const genRes = await client.models.generateContent({
+          model: requestedModel,
+          contents: prompt,
+          config: {
+            responseModalities: ["IMAGE"]
+          }
+        });
+
+        const parts = genRes.candidates?.[0]?.content?.parts || [];
+        const imagePart = parts.find(p => p.inlineData && p.inlineData.data);
+        if (!imagePart) {
+          throw new Error(`Gemini Image API returned no image bytes (candidate parts: ${parts.length})`);
+        }
+
+        const mimeType = imagePart.inlineData.mimeType || "image/png";
+        const ext = mimeType.includes("jpeg") || mimeType.includes("jpg") ? "jpg" : "png";
+        const imgBuffer = Buffer.from(imagePart.inlineData.data, "base64");
+        const fileName = `${assetId}.${ext}`;
+        const filePath = path.join(ASSETS_DIR, fileName);
+        fs.writeFileSync(filePath, imgBuffer);
+
+        return this.finalizeVerifiedAsset({
+          assetId,
+          jobId: job.jobId,
+          briefId: request.briefId,
+          campaignId: request.campaignId,
+          projectId: request.projectId,
+          title: prompt,
+          format: ext === "jpg" ? "IMAGE_JPEG" : "IMAGE_PNG",
+          mimeType,
+          platformSpec,
+          fileName,
+          filePath,
+          fileSize: imgBuffer.length,
+          assetHash: sha256(imgBuffer),
+          provider: "gemini_imagen",
+          classification: GENERATION_OUTPUT_TYPES.REAL_AI_IMAGE,
+          model: requestedModel,
+          brand
+        });
+      } catch (geminiErr) {
+        throw new Error(`Gemini Image Generation Error: ${geminiErr.message}`);
+      }
+    }
 
     // 5.1 OpenAI DALL-E 3 Adapter
     if (providerId === "openai_dalle" && process.env.OPENAI_API_KEY) {

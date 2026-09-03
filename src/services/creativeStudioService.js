@@ -374,9 +374,11 @@ class CreativeStudioService {
       throw err;
     }
 
-    const platformPreset = format === "IMAGE_STORY"
+    const isPortrait = format === "IMAGE_STORY" || format === "PORTRAIT_9_16" || format === "STORY_9_16" || options.aspectRatio === "9:16";
+    const isLandscape = format === "IMAGE_HERO" || format === "LANDSCAPE_16_9" || format === "HERO_16_9" || options.aspectRatio === "16:9";
+    const platformPreset = isPortrait
       ? "instagram_story"
-      : format === "IMAGE_HERO"
+      : isLandscape
         ? "website_hero"
         : format === "LINKEDIN"
           ? "linkedin_post"
@@ -406,6 +408,7 @@ class CreativeStudioService {
       subheadline: brief.productSpecs.location,
       cta,
       platformPreset,
+      aspectRatio: options.aspectRatio || (isPortrait ? "9:16" : isLandscape ? "16:9" : "1:1"),
       mode: effectiveMode,
       generationMode,
       prompt: options.prompt || headline,

@@ -284,13 +284,46 @@ class KingdomUniverseTheatre {
    * Checks if an action is within authorized capability boundaries.
    */
   checkCapabilityBoundary(actionDescription = "") {
-    const text = String(actionDescription || "").toLowerCase();
+    const text = String(actionDescription || "").toLowerCase().trim();
 
-    // Check for explicit restricted boundaries
-    const isRestricted =
-      /bypass.*approval|without.*approval|secretly execute|hack|cross-tenant|unauthorized|bypass gate|deploy to production directly|send real external spam|real money transfer without authorization|hollywood movie/i.test(
-        text
-      );
+    // Concept 1: Approval / Gate / Permission tokens (English, Roman Hindi, Devanagari Hindi)
+    const hasApprovalToken =
+      /\b(approval|permission|auth|gate|approv|manzoori|anumati|swikriti)\b/i.test(text) ||
+      /[\u0900-\u097F]*(अनुमति|मंजूरी|स्वीकृति|अप्रूवल)[\u0900-\u097F]*/i.test(text);
+
+    const hasFounderToken =
+      /\b(founder|founder's|praveen)\b/i.test(text) ||
+      /[\u0900-\u097F]*(फाउंडर)[\u0900-\u097F]*/i.test(text);
+
+    // Concept 2: Bypass / Without / Skip / Ke bina / Negative tokens (English, Roman Hindi, Hindi)
+    const hasBypassToken =
+      /\b(bypass|skip|without|ignore|circumvent|evade|override|overrule|bina|bagair)\b/i.test(text) ||
+      /ke\s+bina|ke\s+bagair|kare\s+bina|chhod\s+kar|hata\s+kar|tod\s+kar|bypass\s+karke|skip\s+karke/i.test(text) ||
+      /[\u0900-\u097F]*(बिना|बगैर|बाईपास|छोड़कर)[\u0900-\u097F]*/i.test(text);
+
+    // Concept 3: Deployment / Execution / Modification / Destructive actions
+    const hasDeployOrMutate =
+      /\b(deploy|deployment|production|prod|release|push|commit|mutate|shell|exec|delete db|drop table)\b/i.test(text) ||
+      /[\u0900-\u097F]*(डिप्लॉय|प्रोडक्शन|पुश|कमिट)[\u0900-\u097F]*/i.test(text);
+
+    // Concept 4: Direct explicit unauthorized patterns
+    const hasUnauthorizedToken =
+      /\b(unauthorized|secretly|directly|force push|rogue|bypass gate|without approval)\b/i.test(text) ||
+      /unauthorized\s+(deployment|execution|modify|production)|secretly\s+(deploy|execute|modify)/i.test(text) ||
+      /directly\s+deploy\s+to\s+production|deploy\s+to\s+production\s+directly/i.test(text);
+
+    // Concept combinations:
+    // A: (Bypass / Without / Ke bina) + (Approval / Gate / Founder)
+    const isApprovalBypass = hasBypassToken && (hasApprovalToken || hasFounderToken);
+
+    // B: Unauthorized deployment / Rogue execution
+    const isRogueDeployment = hasDeployOrMutate && (isApprovalBypass || hasUnauthorizedToken);
+
+    // C: Prohibited external actions (Spam, unverified financial transfers, Hollywood movies, hacking)
+    const isProhibitedOperation =
+      /\b(secretly execute|hack|cross-tenant|exfiltrate|send real external spam|real money transfer without authorization|hollywood movie)\b/i.test(text);
+
+    const isRestricted = isApprovalBypass || isRogueDeployment || isProhibitedOperation || hasUnauthorizedToken;
 
     if (isRestricted) {
       let suggestedSafe = "repo_architecture";
@@ -300,7 +333,8 @@ class KingdomUniverseTheatre {
       return {
         allowed: false,
         status: UNIVERSE_STATUS.RESTRICTED,
-        reason: "This operation is outside GARUDA's authorized capability boundary. Under our Sovereign Governance & Anti-Fabrication Law, unverified or rogue operations are strictly blocked.",
+        truthStatus: "RESTRICTED",
+        reason: "This operation is outside GARUDA's authorized capability boundary. Under our Sovereign Governance & Anti-Fabrication Law, bypassing Founder approval, unauthorized production deployments, or rogue operations are strictly blocked.",
         safeAlternative: `I can demonstrate our verified ${suggestedSafe.replace(/_/g, " ")} capability within authorized boundaries.`,
         suggestedDemoKey: suggestedSafe
       };

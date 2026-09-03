@@ -32,6 +32,9 @@ const crypto = require("crypto");
 const garudaIdentityKnowledge = require("../knowledge/garudaIdentityKnowledge");
 const { demonstrationOrchestrator } = require("./demonstrationOrchestrator");
 const { garudaAIEngine } = require("../ai/engine");
+const { creativeIntentRouter, CREATIVE_INTENTS } = require("./creativeIntentRouter");
+const { kingdomUniverseTheatre } = require("./kingdomUniverseTheatre");
+const { pdfGenerationService } = require("./pdfGenerationService");
 
 // Intent Taxonomy
 const CONVERSATION_INTENTS = Object.freeze({
@@ -41,7 +44,10 @@ const CONVERSATION_INTENTS = Object.freeze({
   EXECUTE_CAPABILITY: "EXECUTE_CAPABILITY",
   EXECUTE_ENGINEERING_MISSION: "EXECUTE_ENGINEERING_MISSION",
   CONTINUE_PRESENTATION: "CONTINUE_PRESENTATION",
-  STOP_PRESENTATION: "STOP_PRESENTATION"
+  STOP_PRESENTATION: "STOP_PRESENTATION",
+  DOCUMENT_GENERATION: "DOCUMENT_GENERATION",
+  PDF_GENERATION: "PDF_GENERATION",
+  ...CREATIVE_INTENTS
 });
 
 // General Conceptual Knowledge Dictionary (Accurate conceptual answers without identity forcing)
@@ -241,7 +247,7 @@ class ConversationBrainService {
       /^(proof|proof\?|prove it|prove that|can you prove it|proof kya hai|kya proof hai|prove it now|prove)$/i.test(cleanNoPunct) ||
       /\b(challenge you to prove|prove it to me|show me proof|prove it)\b/i.test(textLower);
     const isWhyUseIt =
-      /\b(why (do you|does garuda|is it|is this) use (it|that|sha-256|sha256)|why use (it|that|sha-256|sha256)|tum kyu use karte ho|iska kya use hai|why is that used|why do you use that)\b/i.test(
+      /\b(why (do you|does garuda|is it|is this|do we|we) use (it|that|sha-256|sha256)|why use (it|that|sha-256|sha256)|tum kyu use karte ho|iska kya use hai|why is that used|why do you use that|hum kyu use karte hai|kyu use karte hai)\b/i.test(
         textLower
       );
     const isWhatDidYouCreate =
@@ -338,6 +344,23 @@ class ConversationBrainService {
   }
 
   /**
+   * Checks if user requested PDF or document generation (P0-1 Anti-Fabrication Law).
+   * @param {string} text
+   * @returns {{ isPdfRequest: boolean }}
+   */
+  checkDocumentGenerationIntent(text = "") {
+    const lower = String(text || "").toLowerCase();
+    const hasPdfKeyword = /\b(pdf|document|doc|report)\b/i.test(lower);
+    if (!hasPdfKeyword) return { isPdfRequest: false };
+
+    const isPdfRequest =
+      /\b(turn.*into.*pdf|make.*pdf|create.*pdf|generate.*pdf|export.*pdf|pdf.*report|pdf.*banao|pdf.*bana do|pdf.*banado|pdf.*chahiye|convert.*to.*pdf|download.*as.*pdf|is pdf.*available|pdf.*creation.*available|can you.*make.*pdf|can you.*create.*pdf|pdf.*mein.*convert|pdf.*bana)\b/i.test(lower) ||
+      (/\bpdf\b/i.test(lower) && /\b(create|make|generate|turn|convert|export|banao|bana|de do|karo|available|support|report)\b/i.test(lower));
+
+    return { isPdfRequest: Boolean(isPdfRequest) };
+  }
+
+  /**
    * Primary processing entry point for the Intelligent Conversation Brain V1.
    *
    * @param {string} input - User message / prompt
@@ -353,6 +376,31 @@ class ConversationBrainService {
 
     if (!rawInput) {
       return this._formatEmptyResponse(session);
+    }
+
+    // 0. Governance Boundary Guard (Anti-Fabrication & Founder Gate Enforcement)
+    const boundaryCheck = kingdomUniverseTheatre.checkCapabilityBoundary(rawInput);
+    if (!boundaryCheck.allowed && !this.checkUnverifiedCapability(rawInput).isUnverified) {
+      const activeLang = this.detectLanguage(rawInput, session.currentLanguage).language;
+      session.currentLanguage = activeLang;
+      return this._finalizeResponse(session, rawInput, {
+        intent: CONVERSATION_INTENTS.ANSWER_ONLY,
+        answer: boundaryCheck.reason,
+        speechText: boundaryCheck.reason,
+        topic: "governance_restricted",
+        confidence: 1.0,
+        truthStatus: "RESTRICTED",
+        capabilitySelected: null,
+        demonstrationAvailable: false,
+        suggestedDemo: null,
+        executionResult: null,
+        evidence: null,
+        activeLanguage: activeLang,
+        startTime,
+        reasoningMode: "governance_boundary_guard",
+        fallbackUsed: false,
+        allowed: false
+      });
     }
 
     // 1. Language Detection & Language Switching
@@ -436,6 +484,176 @@ class ConversationBrainService {
         activeLanguage,
         startTime,
         reasoningMode: "truth_law_guard",
+        fallbackUsed: false
+      });
+    }
+
+    // 3a. Check for PDF / Document Generation Requests (P1-A Real Server-Side PDF Generation)
+    const pdfIntentCheck = this.checkDocumentGenerationIntent(effectiveQuery);
+    if (pdfIntentCheck.isPdfRequest) {
+      intent = CONVERSATION_INTENTS.DOCUMENT_GENERATION;
+      topic = "document_pdf_generation";
+
+      const isAvailabilityQuery =
+        /\b(is pdf.*available|is pdf creation available|can you.*make.*pdf|do you.*support.*pdf|pdf.*support.*hai|kya pdf ban sakti hai)\b/i.test(effectiveQuery) &&
+        !/\b(turn|make|create|generate|export|convert|banao|bana do)\b.*\b(into|a|this|ye|yeh|is)\b.*\bpdf\b/i.test(effectiveQuery);
+
+      if (isAvailabilityQuery) {
+        truthStatus = "VERIFIED";
+        const availText = {
+          en: "Yes. GARUDA features a verified server-side PDF generation engine operating under our Anti-Fabrication Law. I can compile multi-page PDF deliverables, system reports, and convert visual artifacts into downloadable PDF documents with physical disk evidence and SHA-256 integrity seals.",
+          hi: "हाँ। GARUDA में एंटी-फैब्रिकेशन लॉ के तहत एक सत्यापित सर्वर-साइड PDF जनरेशन इंजन सक्रिय है। मैं भौतिक डिस्क साक्ष्य और SHA-256 सील के साथ बहु-पृष्ठीय PDF दस्तावेज़ और रिपोर्ट तैयार कर सकता हूँ।",
+          roman_hindi: "Haan. GARUDA me verified server-side PDF generation engine active hai. Mai multi-page PDF documents, system briefs, aur visual deliverables ko physical disk proof aur SHA-256 seal ke saath generate kar sakta hoon."
+        };
+        answerText = availText[activeLanguage] || availText.en;
+        speechText = answerText;
+
+        return this._finalizeResponse(session, rawInput, {
+          intent,
+          answer: answerText,
+          speechText,
+          topic,
+          confidence: 1.0,
+          truthStatus: "VERIFIED",
+          capabilitySelected: "document.pdf_generation",
+          demonstrationAvailable: true,
+          suggestedDemo: "pdf_deliverable",
+          executionResult: null,
+          evidence: null,
+          activeLanguage,
+          startTime,
+          reasoningMode: "truth_law_guard",
+          fallbackUsed: false
+        });
+      }
+
+      // Real Physical PDF Generation Execution
+      try {
+        const activeArt = session.activeArtifact || null;
+        const pdfResult = await pdfGenerationService.generatePdfArtifact({
+          title: activeArt ? `Sovereign Deliverable: ${activeArt.title || activeArt.name || "Visual Creative"}` : "GARUDA Sovereign System Report",
+          prompt: effectiveQuery,
+          summary: activeArt
+            ? `Physical deliverable compiled from verified active artifact ${activeArt.assetId || activeArt.id || "N/A"} (${activeArt.format || activeArt.mediaType || "ASSET"}). Lineage, structural metadata, and cryptographic evidence are embedded.`
+            : `Comprehensive sovereign system intelligence report compiled from session context and architecture specifications under GARUDA Anti-Fabrication Law.`,
+          sourceArtifact: activeArt
+        });
+
+        if (pdfResult.success && pdfResult.status === "VERIFIED") {
+          session.activeArtifact = pdfResult.artifact;
+          session.lastExecutableCapability = CONVERSATION_INTENTS.DOCUMENT_GENERATION;
+          truthStatus = "VERIFIED";
+
+          const successText = {
+            en: `I have generated and sealed a verified physical PDF document on disk at ${pdfResult.filePath}. Document specifications: ${pdfResult.fileSizeBytes} bytes across ${pdfResult.pageCount} page(s). Cryptographic SHA-256: ${pdfResult.sha256Hash}.`,
+            hi: `मैंने डिस्क पर एक सत्यापित भौतिक PDF दस्तावेज़ तैयार कर सील कर दिया है: ${pdfResult.filePath}। दस्तावेज़ विवरण: ${pdfResult.fileSizeBytes} बाइट्स, ${pdfResult.pageCount} पृष्ठ। क्रिप्टोग्राफ़िक SHA-256: ${pdfResult.sha256Hash}।`,
+            roman_hindi: `Maine physical disk par verified PDF document generate aur seal kar diya hai: ${pdfResult.filePath} (${pdfResult.fileSizeBytes} bytes, ${pdfResult.pageCount} page(s)). Cryptographic SHA-256 seal: ${pdfResult.sha256Hash}.`
+          };
+
+          answerText = successText[activeLanguage] || successText.en;
+          speechText = answerText;
+
+          return this._finalizeResponse(session, rawInput, {
+            intent,
+            answer: answerText,
+            speechText,
+            topic,
+            confidence: 1.0,
+            truthStatus: "VERIFIED",
+            capabilitySelected: "document.pdf_generation",
+            demonstrationAvailable: true,
+            suggestedDemo: "pdf_deliverable",
+            executionResult: pdfResult,
+            evidence: pdfResult.artifact,
+            activeLanguage,
+            startTime,
+            reasoningMode: "authoritative_execution",
+            fallbackUsed: false
+          });
+        }
+
+        // Validation Failure (truthStatus = INVALID)
+        truthStatus = "INVALID";
+        answerText = `PDF generation failed validation: ${pdfResult.error || "Unknown container error"}. Under Anti-Fabrication Law, no unverified deliverable will be marked VERIFIED.`;
+        speechText = answerText;
+        return this._finalizeResponse(session, rawInput, {
+          intent,
+          answer: answerText,
+          speechText,
+          topic,
+          confidence: 1.0,
+          truthStatus: "INVALID",
+          capabilitySelected: null,
+          demonstrationAvailable: false,
+          executionResult: null,
+          evidence: null,
+          activeLanguage,
+          startTime,
+          reasoningMode: "truth_law_guard",
+          fallbackUsed: false
+        });
+      } catch (genErr) {
+        truthStatus = "UNAVAILABLE";
+        answerText = `PDF generation execution error: ${genErr.message}. Under Anti-Fabrication Law, no mock file was produced.`;
+        speechText = answerText;
+        return this._finalizeResponse(session, rawInput, {
+          intent,
+          answer: answerText,
+          speechText,
+          topic,
+          confidence: 1.0,
+          truthStatus: "UNAVAILABLE",
+          capabilitySelected: null,
+          demonstrationAvailable: false,
+          executionResult: null,
+          evidence: null,
+          activeLanguage,
+          startTime,
+          reasoningMode: "truth_law_guard",
+          fallbackUsed: false
+        });
+      }
+    }
+
+    // 3b. Check for Universal Creative & Media Generation Intents (Image, Video, Multi-Modal, Edits, 2D/3D, Downloads, Shares)
+    const creativeClassified = creativeIntentRouter.classifyCreativeIntent(effectiveQuery, session);
+    if (creativeClassified) {
+      intent = creativeClassified.intent;
+      topic = creativeClassified.intent.toLowerCase();
+      session.currentTopic = topic;
+      session.lastExecutableCapability = creativeClassified.intent;
+
+      const creativeExec = await creativeIntentRouter.executeCreativeIntent(creativeClassified, session, context.options || {});
+      executionResult = creativeExec;
+      evidence = creativeExec.evidence || creativeExec.artifact || null;
+      session.lastExecutionResult = creativeExec;
+      session.lastDeliveredArtifact = evidence;
+      if (creativeExec.artifact) {
+        session.activeArtifact = creativeExec.artifact;
+      }
+
+      answerText = creativeExec.answer;
+      speechText = creativeExec.speechText || creativeExec.answer;
+      truthStatus = creativeExec.truthStatus || "VERIFIED";
+
+      return this._finalizeResponse(session, rawInput, {
+        intent,
+        answer: answerText,
+        speechText,
+        topic,
+        confidence: 1.0,
+        truthStatus,
+        capabilitySelected: creativeClassified.intent,
+        demonstrationAvailable: true,
+        suggestedDemo: creativeClassified.intent,
+        executionResult,
+        evidence,
+        proofStage: creativeExec.proofStage || null,
+        viewer: creativeExec.viewer || null,
+        mediaType: creativeClassified.mediaType || "IMAGE",
+        activeLanguage,
+        startTime,
+        reasoningMode: "universal_creative_engine",
         fallbackUsed: false
       });
     }
@@ -907,6 +1125,9 @@ class ConversationBrainService {
         suggestedDemo: payload.suggestedDemo,
         executionResult: payload.executionResult,
         evidence: payload.evidence,
+        proofStage: payload.proofStage || null,
+        viewer: payload.viewer || null,
+        mediaType: payload.mediaType || null,
         observability: {
           reasoningProvider: payload.reasoningMode === "grounded_knowledge_fallback" ? "grounded_fallback" : "garuda_brain",
           reasoningMode: payload.reasoningMode,

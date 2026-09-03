@@ -895,6 +895,85 @@ class CinematicPresentationDirector {
   }
 
   /**
+   * Handles a restricted capability request (P0-2 Governance / Founder Gate Enforcement).
+   */
+  _handleRestrictedCapabilityRequest(rawInput, boundaryCheck, session, options = {}) {
+    session.lifecycleState = CINEMATIC_LIFECYCLE.IDLE;
+    const brainSession = this.brain.getSession(session.sessionId);
+    const lang = brainSession.currentLanguage || "en";
+
+    const reason = boundaryCheck.reason || "This operation is outside GARUDA's authorized capability boundary. Under our Sovereign Governance & Anti-Fabrication Law, bypassing Founder approval, unauthorized production deployments, or rogue operations are strictly blocked.";
+    const speechText = reason;
+
+    this._recordTurn(session, {
+      participant: options.participant || "Investor",
+      question: rawInput,
+      answer: reason,
+      intent: CONVERSATION_INTENTS.ANSWER_ONLY,
+      topic: "governance_restricted",
+      cameraState: CAMERA_STATES.CLOSE_UP
+    });
+
+    return {
+      success: false,
+      data: {
+        allowed: false,
+        status: UNIVERSE_STATUS.RESTRICTED,
+        truthStatus: "RESTRICTED",
+        answer: reason,
+        speechText,
+        intent: CONVERSATION_INTENTS.ANSWER_ONLY,
+        topic: "governance_restricted",
+        language: lang,
+        confidence: 1.0,
+        lifecycleState: session.lifecycleState,
+        canResumePresentation: true,
+        resumableModuleIndex: session.resumableStageIndex,
+        demonstrationAvailable: false,
+        suggestedDemo: null,
+        executionResult: null,
+        evidence: null,
+        cinematic: {
+          scene: "ARCHITECTURE_STAGE",
+          camera: {
+            shot: CAMERA_STATES.CLOSE_UP,
+            transition: CAMERA_TRANSITIONS.SNAP_CUT,
+            focus: "garuda_eyes"
+          },
+          entity: {
+            mode: "speaking",
+            gesture: ENTITY_GESTURES.CONTROLLED_EXPLANATION,
+            lighting: "crimson_security_alert",
+            expression: "stern_governance"
+          },
+          visualLayer: {
+            type: "governance_boundary_alert",
+            visible: true,
+            data: {
+              status: "RESTRICTED",
+              reason,
+              safeAlternative: boundaryCheck.safeAlternative
+            }
+          },
+          audio: {
+            mode: "conversation",
+            soundFx: "boundary_alert"
+          }
+        },
+        observability: {
+          reasoningProvider: "kingdom_governance_guard",
+          reasoningMode: "boundary_enforcement",
+          language: lang,
+          retrievalUsed: false,
+          intent: CONVERSATION_INTENTS.ANSWER_ONLY,
+          fallbackUsed: false,
+          latencyMs: 1
+        }
+      }
+    };
+  }
+
+  /**
    * Handles a live customized business demonstration.
    */
   async _handleBusinessDemoRequest(rawInput, businessContext, session, options = {}) {
