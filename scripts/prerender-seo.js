@@ -781,6 +781,25 @@ const ROUTES = [
     robots: "noindex, nofollow"
   },
   {
+    path: "/founder/acquisition",
+    filePaths: [
+      path.join(DIST_DIR, "founder", "acquisition", "index.html"),
+      path.join(DIST_DIR, "founder-acquisition.html")
+    ],
+    title: "GARUDA Founder Acquisition Cockpit | Sent Outreach Console",
+    description: "Founder Acquisition Cockpit — canonical Sent Outreach history, governed outreach dispatch, and real Brevo relay telemetry.",
+    canonical: "https://www.garudaos.in/founder/acquisition",
+    robots: "noindex, nofollow",
+    h1: "GARUDA Founder Acquisition Cockpit",
+    eyebrow: "FOUNDER COMMAND — SENT OUTREACH",
+    contentSnippet: `
+      <h2>Canonical Sent Outreach History</h2>
+      <p>Real persisted outreach dispatches with Brevo Message IDs, IST dispatch timestamps, and truthful AWAITING telemetry. No synthetic delivery data.</p>
+      <p>Live prospect: Niravi Jaipur — contact@niravijaipur.com — dispatched 03 Sep 2026, 18:16 IST via Brevo &lt;202609031246.78700348457@smtp-relay.mailin.fr&gt; — Status SENT / ACCEPTED_BY_RELAY — Attachment GARUDA_Niravi_Jaipur_Executive_Proposal.pdf — SHA 4d5c46a35c80d859738f3262dcd2b70e7eacccfedb23a09d5787382ae24a3ddd.</p>
+      <p><a href="/founder/acquisition">Open Founder Acquisition Cockpit →</a></p>
+    `
+  },
+  {
     path: "/login",
     filePaths: [
       path.join(DIST_DIR, "login", "index.html"),
