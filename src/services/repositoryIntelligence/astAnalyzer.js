@@ -1,5 +1,8 @@
 const fs = require("fs");
-const parser = require("@babel/parser");
+let parser = null;
+try {
+  parser = require("@babel/parser");
+} catch {}
 
 const PARSE_OPTIONS = {
   sourceType: "unambiguous",
@@ -164,6 +167,12 @@ function analyzeFile(filePath) {
 
   let ast;
   try {
+    if (!parser) {
+      try { parser = require("@babel/parser"); } catch {}
+    }
+    if (!parser || typeof parser.parse !== "function") {
+      return { path: filePath, error: "PARSER_UNAVAILABLE", requires: [], imports: [], exports: [], moduleExports: [], functions: [], classes: [] };
+    }
     ast = parser.parse(content, PARSE_OPTIONS);
   } catch {
     return { path: filePath, error: "PARSE_ERROR", requires: [], imports: [], exports: [], moduleExports: [], functions: [], classes: [] };

@@ -15,7 +15,6 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { PDFDocument, rgb, StandardFonts } = require("pdf-lib");
-const pdfParse = require("pdf-parse");
 
 const DATA_DIR = path.join(__dirname, "..", "..", "data");
 const ASSETS_DIR = path.join(DATA_DIR, "creative-assets");
@@ -401,28 +400,17 @@ class PdfGenerationService {
     }
 
     try {
-      // 1. Structural validation via PDFDocument.load
+      // Structural validation via PDFDocument.load (validates dictionary, page tree, and objects)
       const loadedDoc = await PDFDocument.load(buf);
       const pageCount = loadedDoc.getPageCount();
       if (!pageCount || pageCount < 1) {
         return { valid: false, pageCount: 0, error: "PDF parser reported 0 pages." };
       }
 
-      // 2. Text extraction validation via pdf-parse
-      let wordsCount = 0;
-      try {
-        const parsed = await pdfParse(buf);
-        if (parsed && parsed.text) {
-          wordsCount = parsed.text.trim().split(/\s+/).length;
-        }
-      } catch (parseErr) {
-        // Structural validation via PDFDocument.load already verified valid PDF structure and page count
-      }
-
       return {
         valid: true,
         pageCount,
-        wordsCount
+        fileSizeBytes: buf.length
       };
     } catch (err) {
       return { valid: false, pageCount: 0, error: `PDF parsing failed: ${err.message}` };

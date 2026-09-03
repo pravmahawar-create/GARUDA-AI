@@ -14,7 +14,6 @@ const capabilityRegistryService = require("./capabilityRegistryService");
 const creativeStudioService = require("./creativeStudioService");
 const livingArtifactService = require("./livingArtifactService");
 const identityLockService = require("./identityLockService");
-const { buildFullGraph } = require("./repositoryIntelligence/repositoryIntelligenceService");
 let digitalMarketingOsService;
 try {
   digitalMarketingOsService = require("./digitalMarketingOsService");
@@ -203,6 +202,7 @@ class DemonstrationOrchestrator {
       // DEMO 2: Repository Architecture Live Audit
       // -------------------------------------------------------------
       if (cleanKey === "repo_architecture") {
+        const { buildFullGraph } = require("./repositoryIntelligence/repositoryIntelligenceService");
         const graph = buildFullGraph(process.cwd());
         const durationMs = Date.now() - startTime;
 
