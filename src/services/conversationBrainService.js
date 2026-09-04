@@ -201,9 +201,15 @@ class ConversationBrainService {
       return { language: "en", isExplicitSwitch: true, targetLang: "en" };
     }
 
-    // 3. Check for Devanagari Unicode characters
+    // 3. Check for Devanagari / Kannada / Telugu Unicode characters (any-language)
     if (/[\u0900-\u097F]/.test(raw)) {
       return { language: "hi", isExplicitSwitch: false, targetLang: "hi" };
+    }
+    if (/[\u0C80-\u0CFF]/.test(raw)) {
+      return { language: "kn", isExplicitSwitch: false, targetLang: "kn" };
+    }
+    if (/[\u0C00-\u0C7F]/.test(raw)) {
+      return { language: "te", isExplicitSwitch: false, targetLang: "te" };
     }
 
     // 4. Check for Roman Hindi / Hinglish token markers
@@ -214,7 +220,18 @@ class ConversationBrainService {
       "baat", "denge", "dena", "chalega", "kamiyan", "badi", "agar", "humara", "apna", "aur",
       "karte", "main", "aapse", "tum", "mere", "liye", "practically", "bhi", "jaye"
     ];
+    // Kannada roman + Telugu roman tokens (any-language)
+    const kannadaTokens = ["preeti","prithi","preethi","usiru","jiva","nanna","nimage","hrudaya","namaskara","kannada"];
+    const teluguTokens = ["prema","prēma","ishtam","hrudayam","manasu","nenu","neeku","bagunnara","telugu"];
     const words = lower.split(/[^a-z0-9]+/);
+    const knMatches = words.filter((w) => kannadaTokens.includes(w));
+    if (knMatches.length >= 1) {
+      return { language: "kn", isExplicitSwitch: false, targetLang: "kn" };
+    }
+    const teMatches = words.filter((w) => teluguTokens.includes(w));
+    if (teMatches.length >= 1) {
+      return { language: "te", isExplicitSwitch: false, targetLang: "te" };
+    }
     const hindiMatches = words.filter((w) => romanHindiTokens.includes(w));
     if (hindiMatches.length >= 1 && (words.length <= 5 || hindiMatches.length >= 2)) {
       return { language: "roman_hindi", isExplicitSwitch: false, targetLang: "roman_hindi" };

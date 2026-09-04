@@ -412,10 +412,15 @@ class AudioGenerationRouter {
     ensureDirs();
     const moodLower = String(mood||text||"cinematic").toLowerCase();
     let baseFreq=220, desc="cinematic";
-    if(moodLower.includes("romantic")||moodLower.includes("love")){ baseFreq=330; desc="romantic"; }
-    else if(moodLower.includes("dark")||moodLower.includes("sad")){ baseFreq=165; desc="dark"; }
-    else if(moodLower.includes("happy")||moodLower.includes("upbeat")){ baseFreq=440; desc="upbeat"; }
-    else if(moodLower.includes("epic")){ baseFreq=110; desc="epic"; }
+    // Any-language mood mapping: Punjabi + Kannada (kn) + Telugu (te) both roman + native script
+    const isRomantic = /romantic|love|pyar|ishq|dil|prema|pr[eē]ma|ishtam|hrudayam|preeti|pr[eē]thi|usiru|ಪ್ರೀತಿ|ಪ್ರೇಮ|ప్రేమ|ఇష్టం|హృదయం/i.test(moodLower) || /[\u0C80-\u0CFF]/.test(moodLower) && /ಪ್ರೀತಿ|ಪ್ರೇಮ/.test(moodLower) || /[\u0C00-\u0C7F]/.test(moodLower) && /ప్రేమ|ఇష్టం/.test(moodLower);
+    const isDark = /dark|sad|dard|gham|ದುಃಖ|విషాదం/i.test(moodLower);
+    const isHappy = /happy|upbeat|bhangra|dance|punjabi|khushi|ಖುಷಿ|సంతోషం|santhosham/i.test(moodLower);
+    const isEpic = /epic|sufi|spiritual|ಅದ್ಭುತ|అద్భుతం/i.test(moodLower);
+    if(isRomantic){ baseFreq=330; desc="romantic"; }
+    else if(isDark){ baseFreq=165; desc="dark"; }
+    else if(isHappy){ baseFreq=440; desc="upbeat"; }
+    else if(isEpic){ baseFreq=110; desc="epic"; }
     const assetId=`aud_proc_${Date.now()}_${crypto.randomBytes(2).toString("hex")}`;
     const fileName=`${assetId}.wav`;
     const filePath=path.join(AUDIO_ASSETS_DIR, fileName);

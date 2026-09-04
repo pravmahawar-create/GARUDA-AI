@@ -56,11 +56,15 @@ function wavToFloat32(buf) {
   return out;
 }
 
-async function transcribeAudio(inputBuffer) {
+async function transcribeAudio(inputBuffer, opts = {}) {
   const wav = await runFfmpeg(inputBuffer);
   const audio = wavToFloat32(wav);
   const transcriber = await getPipeline();
-  const output = await transcriber(audio, { language: "hi", task: "transcribe", chunk_length_s: 30, stride_length_s: 5 });
+  // Any-language support: Punjabi already, now Kannada (kn) + Telugu (te) + auto for rest — pass opts.language or auto
+  const lang = String(opts.language || opts.lang || "auto").trim().toLowerCase();
+  // Whisper supports "auto" or specific codes: kn, te, pa, hi, mr, ta etc. Map node locale kn-IN->kn
+  const whisperLang = lang.includes("-") ? lang.split("-")[0] : lang;
+  const output = await transcriber(audio, { language: whisperLang === "auto" ? undefined : whisperLang, task: "transcribe", chunk_length_s: 30, stride_length_s: 5 });
   return String((output && output.text) || "").trim();
 }
 

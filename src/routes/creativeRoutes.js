@@ -765,13 +765,13 @@ router.post("/music-video", async (req,res)=>{
         const words = remainingWords.split(/\s+/).filter(Boolean);
         const wordsPerImage = Math.max(1, Math.ceil(words.length / gapImagesNeeded));
         const gapPerImageSec = Math.max(5, gap / gapImagesNeeded);
-        // Helper: mood to visual style (language-agnostic)
+        // Helper: mood to visual style — any-language (Punjabi + Kannada kn + Telugu te both roman + native \u0C80-\u0CFF \u0C00-\u0C7F)
         const moodLower = String(req.body.mood || remainingWords || style).toLowerCase();
         let styleHint = "cinematic anamorphic";
-        if(/romantic|love|pyar|ishq|dil/i.test(moodLower)) styleHint = "warm golden hour, bokeh, romantic";
-        else if(/sad|dark|dard|gham/i.test(moodLower)) styleHint = "moody blue hour, rain neon";
-        else if(/happy|bhangra|dance|punjabi|upbeat/i.test(moodLower)) styleHint = "vibrant Punjabi celebration, colorful";
-        else if(/epic|sufi|spiritual/i.test(moodLower)) styleHint = "monumental volumetric god rays";
+        if(/romantic|love|pyar|ishq|dil|prema|pr[eē]ma|ishtam|hrudayam|preeti|pr[eē]thi|usiru|jiva|ಪ್ರೀತಿ|ಪ್ರೇಮ|ప్రేమ|ఇష్టం|హృదయం/i.test(moodLower) || /[\u0C80-\u0CFF]/.test(moodLower) && /ಪ್ರೀತಿ|ಪ್ರೇಮ/.test(remainingWords) || /[\u0C00-\u0C7F]/.test(moodLower) && /ప్రేమ|ఇష్టం/.test(remainingWords)) styleHint = "warm golden hour, bokeh, romantic";
+        else if(/sad|dark|dard|gham|ದುಃಖ|విషాదం|badha/i.test(moodLower)) styleHint = "moody blue hour, rain neon";
+        else if(/happy|bhangra|dance|punjabi|upbeat|khushi|ಖುಷಿ|సంతోషం|santhosham|ananda/i.test(moodLower)) styleHint = "vibrant celebration, colorful";
+        else if(/epic|sufi|spiritual|ಅದ್ಭುತ|అద్భుతం|adbhuta/i.test(moodLower)) styleHint = "monumental volumetric god rays";
         for(let i=0;i<gapImagesNeeded;i++){
           const chunk = words.slice(i*wordsPerImage, (i+1)*wordsPerImage).join(" ") || remainingWords.slice(0,60);
           const imagePrompt = `Cinematic music-video frame ${i+1}/${gapImagesNeeded}, lyric: "${chunk}" — ${styleHint}, photorealistic 8k, vertical 9:16, high detail, song-synced visual`;
