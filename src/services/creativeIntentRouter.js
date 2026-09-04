@@ -551,14 +551,50 @@ class CreativeIntentRouter {
     const audioRouter = require("./audioGenerationRouter");
     const result = await audioRouter.routeAudioGeneration({ text: text || mood, capability: "music", mood, durationSec, generationMode: "MUSIC" });
     if(!result.success || !result.asset){
-      return { success:false, intent: classified.intent, mediaType:"AUDIO", truthStatus:"FAILED", answer: result.error || "Music generation failed", speechText: result.error, durationMs: Date.now()-startTime, error: result.error };
+      return { success:false, intent: classified.intent, mediaType:"AUDIO", truthStatus:"FAILED", answer: result.error || "Music generation failed", speechText: result.error, durationMs: Date.now()-startTime, error: result.error, observability: result.observability || null, truthClassification: result.truthClassification || "FAILED" };
     }
     const asset = result.asset;
-    const activeArtifact = { id: asset.assetId, type:"AUDIO", name: asset.fileName || "Generated Music", prompt: text, mood, filePath: asset.filePath, url: asset.publicUrl || asset.assetUrl, publicUrl: asset.publicUrl, assetUrl: asset.assetUrl, mimetype:"audio/wav", durationSec: asset.durationSec, sha256Hash: asset.assetHash };
+    const qc = result.qc || asset.qc || null;
+    const isRealMusic = result.isRealMusic === true;
+    const isProcedural = result.isProcedural === true || result.truthClassification === "PROCEDURAL_AUDIO_FALLBACK";
+    const activeArtifact = {
+      id: asset.assetId, type:"AUDIO",
+      name: isProcedural ? `Procedural Audio Fallback — ${asset.fileName}` : `Real AI Music — ${asset.fileName}`,
+      prompt: text, mood, filePath: asset.filePath, url: asset.publicUrl || asset.assetUrl, publicUrl: asset.publicUrl, assetUrl: asset.assetUrl, mimetype:"audio/wav",
+      durationSec: asset.durationSec, sha256Hash: asset.assetHash,
+      isRealMusic, isProcedural,
+      provider: result.provider, classification: result.classification, truthClassification: result.truthClassification,
+      qc, observability: result.observability || null
+    };
     creativeSession.activeArtifact = activeArtifact;
     creativeSession.revisions.push({ revisionId:`rev_${Date.now()}`, action: classified.intent, artifactId: asset.assetId });
-    const answer = `Music generated: ${asset.fileName} (${durationSec}s, ${mood}) — SHA ${asset.assetHash.slice(0,12)}… — ready to attach to video via music-video pipeline.`;
-    return { success:true, intent: classified.intent, mediaType:"AUDIO", truthStatus:"VERIFIED", answer, speechText: answer, artifact: activeArtifact, asset, evidence:{ assetId: asset.assetId, filePath: asset.filePath, sha256Hash: asset.assetHash, verified:true }, proofStage:{ request: text, interpretation:{ mood, durationSec }, engineUsed: asset.provider, status:"VERIFIED", integrityHash: asset.assetHash, downloadUrl: asset.publicUrl }, viewer:{ type:"AUDIO_PLAYER", src: asset.publicUrl, downloadUrl: asset.publicUrl }, durationMs: Date.now()-startTime };
+    let answer, truthStatus, speechText;
+    if(isRealMusic){
+      answer = `REAL AI MUSIC generated (VERIFIED): ${asset.fileName} (${durationSec}s, ${mood}) via ${result.provider} — QC variation:${qc?.toneCheck?.variationScore ?? "?"} duration:${qc?.durationSec ?? durationSec}s sampleRate:${qc?.sampleRate ?? "?"} — SHA ${asset.assetHash.slice(0,12)}…`;
+      truthStatus = "REAL_AI_MUSIC_VERIFIED";
+      speechText = answer;
+    } else if(isProcedural){
+      const obs = result.observability;
+      const hfReason = obs?.errorClass ? `HF ${obs.errorClass} (${obs.httpStatus||"?"}) — ${obs.errorMessage||""}` : "HF not attempted";
+      answer = `PROCEDURAL AUDIO FALLBACK (NOT real music): ${asset.fileName} (${durationSec}s, ${mood}) — continuous tone/chord via sovereign ffmpeg lavfi. Real AI music BLOCKED — ${hfReason}. QC tone:${qc?.isTone} variation:${qc?.toneCheck?.variationScore} — This is NOT AI music composition, only a guaranteed fallback tone. Attach to video pipeline if needed, but do not present as REAL MUSIC. SHA ${asset.assetHash.slice(0,12)}…`;
+      truthStatus = "PROCEDURAL_AUDIO_FALLBACK";
+      speechText = "Procedural audio fallback generated — not real AI music. Real music is blocked until HF inference endpoint is migrated.";
+    } else {
+      answer = `Audio generated: ${asset.fileName} (${durationSec}s, ${mood}) — provider ${result.provider} — SHA ${asset.assetHash.slice(0,12)}…`;
+      truthStatus = result.truthClassification || "VERIFIED";
+      speechText = answer;
+    }
+    return {
+      success:true, intent: classified.intent, mediaType:"AUDIO",
+      truthStatus, truthClassification: result.truthClassification, isRealMusic, isProcedural,
+      answer, speechText,
+      artifact: activeArtifact, asset,
+      assetId: asset.assetId, provider: result.provider, classification: result.classification,
+      evidence:{ assetId: asset.assetId, filePath: asset.filePath, sha256Hash: asset.assetHash, verified:true, isRealMusic, isProcedural, qc },
+      proofStage:{ request: text, interpretation:{ mood, durationSec }, engineUsed: asset.provider, status: truthStatus, integrityHash: asset.assetHash, downloadUrl: asset.publicUrl, isRealMusic, isProcedural, qc, observability: result.observability },
+      viewer:{ type:"AUDIO_PLAYER", src: asset.publicUrl, downloadUrl: asset.publicUrl, isRealMusic, isProcedural, provider: result.provider, qc, observability: result.observability },
+      qc, observability: result.observability, durationMs: Date.now()-startTime
+    };
   }
 
   /**

@@ -284,9 +284,26 @@ export default function CreativeProductionWorkspace(){
                         <video src={imgSrc} controls style={{width:"100%", maxHeight:200, background:"#000", borderRadius:6, marginTop:"0.4rem"}} />
                       )}
                       {isAudio && imgSrc && (
-                        <audio src={imgSrc} controls style={{width:"100%", marginTop:"0.4rem"}} />
+                        <div style={{marginTop:"0.4rem"}}>
+                          <audio src={imgSrc} controls style={{width:"100%"}} />
+                          {/* P0 Truth label: REAL_AI_MUSIC vs PROCEDURAL_AUDIO_FALLBACK */}
+                          {r.isProcedural || r.truthClassification==="PROCEDURAL_AUDIO_FALLBACK" || r.truthStatus==="PROCEDURAL_AUDIO_FALLBACK" ? (
+                            <div style={{fontSize:"0.72rem", color:"#f59e0b", background:"rgba(245,158,11,0.12)", border:"1px solid rgba(245,158,11,0.35)", borderRadius:6, padding:"0.4rem 0.6rem", marginTop:"0.4rem"}}>
+                              <strong>⚠ PROCEDURAL AUDIO FALLBACK</strong> — NOT real AI music. Continuous tone/chord via sovereign ffmpeg lavfi. Real AI music (HF MusicGen) is <strong>BLOCKED</strong> — model not supported by provider hf-inference (HTTP 400).<br/>
+                              {r.provider && <span>Provider: {r.provider} · </span>}{r.classification && <span>Classification: {r.classification} · </span>}{r.qc?.toneCheck && <span>Variation: {r.qc.toneCheck.variationScore} · Tone:{String(r.qc.isTone)} · </span>}{r.qc?.durationSec && <span>Duration: {r.qc.durationSec}s · </span>}{r.qc?.sampleRate && <span>{r.qc.sampleRate}Hz {r.qc.channels}</span>}
+                              {r.observability?.errorClass && <div style={{fontSize:"0.66rem", color:"#fbbf24", marginTop:2}}>HF failure: {r.observability.errorClass} ({r.observability.httpStatus||"?"}) — {r.observability.errorMessage?.slice(0,120)}</div>}
+                            </div>
+                          ) : r.isRealMusic || r.truthClassification==="REAL_AI_MUSIC_VERIFIED" ? (
+                            <div style={{fontSize:"0.72rem", color:"#34d399", background:"rgba(16,185,129,0.12)", border:"1px solid rgba(16,185,129,0.35)", borderRadius:6, padding:"0.4rem 0.6rem", marginTop:"0.4rem"}}>
+                              <strong>✓ REAL AI MUSIC — VERIFIED</strong> — Musical waveform via HF MusicGen with QC variation.<br/>
+                              {r.provider && <span>Provider: {r.provider} · </span>}{r.classification && <span>{r.classification} · </span>}{r.qc?.toneCheck && <span>Variation: {r.qc.toneCheck.variationScore} · hasVariation:{String(r.qc.hasVariation)} · </span>}{r.qc?.durationSec && <span>Duration: {r.qc.durationSec}s · </span>}{r.qc?.sampleRate && <span>{r.qc.sampleRate}Hz</span>}
+                            </div>
+                          ) : (
+                            <div style={{fontSize:"0.7rem", color:"#94a3b8", marginTop:"0.3rem"}}>Provider: {r.provider||r.classification||"unknown"} {r.qc?.toneCheck && `· Var ${r.qc.toneCheck.variationScore}`}</div>
+                          )}
+                        </div>
                       )}
-                      {r.qc && <div style={{fontSize:"0.7rem", color: r.qc.passed?"#34d399":"#f59e0b", marginTop:"0.3rem"}}>QC: {r.qc.status} {r.qc.reason||""}</div>}
+                      {r.qc && !isAudio && <div style={{fontSize:"0.7rem", color: r.qc.passed?"#34d399":"#f59e0b", marginTop:"0.3rem"}}>QC: {r.qc.status} {r.qc.reason||""}</div>}
                       {(r.beatAnalysis || r.beats) && <div style={{fontSize:"0.68rem", color:"#38bdf8", marginTop:"0.2rem"}}>♫ {r.beatAnalysis?.bpm ? `BPM ${r.beatAnalysis.bpm} · ${r.beatAnalysis.beatCount||r.beats?.length||0} beats · ${r.beatAnalysis.method?.includes("sovereign")?"SOVEREIGN":"PLACEHOLDER"}` : `beats ${r.beats?.length||0}`} {r.beatAnalysis?.probedDurationSec ? `· ${r.beatAnalysis.probedDurationSec}s` : ""}</div>}
                       {r.sha256 && <div style={{fontSize:"0.65rem", color:"#64748b"}}>SHA {String(r.sha256).slice(0,16)}…</div>}
                       <div style={{display:"flex", gap:"0.4rem", marginTop:"0.4rem"}}>

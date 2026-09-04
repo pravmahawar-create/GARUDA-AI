@@ -544,6 +544,45 @@ router.get("/media/capabilities", (req, res) => {
   res.json({ success:true, data: mediaEditingService.getCapabilities() });
 });
 
+// GET /api/creative/audio/truth — P0 REAL vs PROCEDURAL truth matrix (no secrets)
+router.get("/audio/truth", async (req, res) => {
+  try {
+    const audioRouter = require("../services/audioGenerationRouter");
+    const detection = audioRouter.detectProviders();
+    const matrix = await audioRouter.getTruthMatrix();
+    const snapshot = audioRouter.getAudioOperationsSnapshot();
+    res.json({
+      success: true,
+      truthMatrix: matrix,
+      snapshot,
+      detection,
+      pipeline: "REAL MUSIC GENERATION → AUDIO QC → ASYNC PCM DECODE → REAL BPM/BEAT MAP → FOOTAGE ANALYSIS → DIRECTOR/EDITOR → TIMELINE → FFMPEG → FINAL QC → WEBSITE",
+      doctrine: "REAL_AI_MUSIC is BLOCKED when HF model not supported by provider (HTTP 400). PROCEDURAL_AUDIO is verified fallback, never labelled as real music."
+    });
+  } catch (e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+// GET /api/creative/audio/health — per-provider health (HF blocked detail, never exposes token)
+router.get("/audio/health", async (req, res) => {
+  try {
+    const audioRouter = require("../services/audioGenerationRouter");
+    const caps = await audioRouter.discoverProviderCapabilities();
+    res.json({ success:true, data:caps });
+  } catch(e){ res.status(500).json({ success:false, message:e.message }); }
+});
+
+// POST /api/creative/audio/qc — verify audio file QC (exists, ffprobe, tone detection)
+router.post("/audio/qc", async (req, res) => {
+  const filePath = String(req.body.filePath || req.body.audioPath || "").trim();
+  if(!filePath) return res.status(400).json({ success:false, message:"filePath/audioPath required" });
+  try{
+    const audioRouter = require("../services/audioGenerationRouter");
+    const qc = await audioRouter.verifyAudioQC(filePath);
+    const success = qc.passed && !qc.isTone;
+    res.json({ success, qc, isRealMusic: qc.hasVariation && !qc.isTone, isProceduralTone: qc.isTone });
+  }catch(e){ res.status(500).json({ success:false, message:e.message }); }
+});
+
 // POST /api/creative/media/beat-analyze — REAL sovereign beat/BPM (non-blocking)
 router.post("/media/beat-analyze", async (req, res) => {
   const audioPath = String(req.body.audioPath||"").trim();
@@ -621,12 +660,22 @@ router.post("/music-video", async (req,res)=>{
     if(footagePaths.length===0) return res.status(400).json({success:false, message:"footagePaths[] required"});
     for(const p of footagePaths){ if(!require("fs").existsSync(p)) return res.status(400).json({success:false, message:`footage not found: ${p}`}); }
     let generatedMusic = null;
+    let generatedMusicResult = null;
     if(!audioPath && inventMusic){
       try{
         const audioRouter=require("../services/audioGenerationRouter");
         const mood=String(req.body.mood||req.body.musicMood||style||"cinematic");
         const gen=await audioRouter.routeAudioGeneration({ text: `invent ${mood} music for video`, capability:"music", mood, durationSec: Math.min(durationSec,15) });
-        if(gen.success && gen.asset?.filePath) { audioPath=gen.asset.filePath; generatedMusic=gen.asset; }
+        if(gen.success && gen.asset?.filePath) {
+          audioPath=gen.asset.filePath;
+          generatedMusic=gen.asset;
+          generatedMusicResult=gen; // keep full result with isRealMusic/isProcedural/qc/observability
+          generatedMusic.isRealMusic = gen.isRealMusic;
+          generatedMusic.isProcedural = gen.isProcedural;
+          generatedMusic.truthClassification = gen.truthClassification;
+          generatedMusic.qc = gen.qc;
+          generatedMusic.observability = gen.observability;
+        }
       }catch{}
     }
     // Convert image inputs to beautiful Ken Burns video segments — duration matches requested timeline
@@ -657,10 +706,20 @@ router.post("/music-video", async (req,res)=>{
     }
     const ingestRecords = processedInputs.map(p=> ({ assetId: p, filePath:p, fileSize: fs.existsSync(p)? require("fs").statSync(p).size:0, mimetype: p.match(/\.(mp4|mov|webm)$/i)?"video/mp4":"image/jpeg" }));
     const footageAnalysis = await creativeEditorService.analyzeFootage(ingestRecords);
+    // Pipeline: AUDIO QC → ASYNC PCM DECODE → REAL BPM/BEAT MAP (after real music verified or procedural fallback)
+    let audioQC = null;
+    if(audioPath){
+      try{
+        const audioRouter=require("../services/audioGenerationRouter");
+        audioQC = await audioRouter.verifyAudioQC(audioPath);
+      }catch{}
+    }
     let beatAnalysis = { beats:[], bpm:120, status:"NO_AUDIO" };
     if(audioPath){
       try{ beatAnalysis = await mediaEditingService.analyzeBeatsAsync(audioPath); } catch(e){ beatAnalysis = { status:"ANALYSIS_FAILED", reason:String(e.message), beats:[], bpm:null, fallback: mediaEditingService.analyzeBeats(audioPath) }; }
       if(!beatAnalysis.beats || beatAnalysis.beats.length===0) beatAnalysis.fallback = beatAnalysis.fallback || mediaEditingService.analyzeBeats(audioPath);
+      // Attach QC to beatAnalysis for downstream truth
+      beatAnalysis.audioQC = audioQC;
     }
     const { timeline } = await creativeEditorService.buildEditPlan({ footageAnalysis, beatAnalysis, durationSec, style });
     const renderOps = [];
@@ -671,8 +730,15 @@ router.post("/music-video", async (req,res)=>{
     // cleanup temp image videos
     for(const p of processedInputs){ if(p.includes("img2vid_") && fs.existsSync(p)){ try{ fs.unlinkSync(p);}catch{} } }
     const qc = mediaEditingService.validateMedia(render.filePath);
-    const artifact = { assetId: render.assetId, filePath: render.filePath, publicUrl: render.publicUrl, dataUrl: render.dataUrl, sha256: render.sha256, fileSize: render.fileSize, qc, timelineId: timeline.timelineId, edl: timeline.edl, beatAnalysis: { bpm: beatAnalysis.bpm, beatCount: beatAnalysis.beats?.length||0, status: beatAnalysis.status }, generatedMusic };
-    res.json({ success: qc.passed, status: qc.passed? "RENDERED_VERIFIED":"RENDERED_QC_FAILED", artifact, qc, timeline, footageAnalysis, beatAnalysis, generatedMusic });
+    const artifact = {
+      assetId: render.assetId, filePath: render.filePath, publicUrl: render.publicUrl, dataUrl: render.dataUrl, sha256: render.sha256, fileSize: render.fileSize, qc,
+      timelineId: timeline.timelineId, edl: timeline.edl,
+      beatAnalysis: { bpm: beatAnalysis.bpm, beatCount: beatAnalysis.beats?.length||0, status: beatAnalysis.status, audioQC: beatAnalysis.audioQC || audioQC },
+      generatedMusic,
+      generatedMusicResult, // includes isRealMusic/isProcedural/observability for truth display
+      audioQC
+    };
+    res.json({ success: qc.passed, status: qc.passed? "RENDERED_VERIFIED":"RENDERED_QC_FAILED", artifact, qc, timeline, footageAnalysis, beatAnalysis, generatedMusic, generatedMusicResult, audioQC });
   }catch(e){ res.status(500).json({success:false, message:e.message}); }
 });
 
