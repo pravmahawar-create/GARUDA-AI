@@ -100,7 +100,23 @@ export default function CreativeProductionWorkspace(){
         };
         setResults(prev=>[normalized, ...prev].slice(0,20));
       };
-      if(j.artifact) pushResult(j.artifact, j);
+      if(j.artifact) {
+        pushResult(j.artifact, j);
+        // If music was just generated and an image/video is uploaded, auto-create beautiful final video (image Ken Burns + music)
+        const isAudioResult = j.artifact.type==="AUDIO" || j.mediaType==="AUDIO" || j.artifact.mimetype?.startsWith("audio");
+        if(isAudioResult && uploads.length>0){
+          const hasMedia = uploads.some(u=> (u.mimetype||"").startsWith("image") || (u.mimetype||"").startsWith("video") || u.filePath?.match(/\.(jpg|jpeg|png|webp|svg|mp4|mov|webm)$/i));
+          if(hasMedia){
+            setStatusMsg("Music ready — now creating beautiful final video (image + music)…");
+            try{
+              const mediaInputs = uploads.filter(u=> (u.mimetype||"").startsWith("video") || u.mimetype?.startsWith("image") || u.filePath?.match(/\.(mp4|mov|webm|jpg|jpeg|png|webp|svg)$/i)).map(u=>u.filePath);
+              const rr2=await fetch("/api/creative/music-video",{method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin", body: JSON.stringify({ projectId: projectId||null, footagePaths: mediaInputs, audioPath: j.artifact.filePath || j.artifact.url, durationSec:10, style:"cinematic" })});
+              const rj2=await rr2.json();
+              if(rj2.success && rj2.artifact){ pushResult(rj2.artifact, rj2); setQc(rj2.qc||null); }
+            }catch{}
+          }
+        }
+      }
       else if(j.viewer?.storyboard) pushResult({ id: j.viewer.storyboard.storyboardId, type:"STORYBOARD_BLUEPRINT", storyboard: j.viewer.storyboard, filePath: null }, j);
       else if(j.storyboard) pushResult({ id: j.storyboard.storyboardId, type:"STORYBOARD_BLUEPRINT", storyboard: j.storyboard }, j);
       else if(j.asset) pushResult(j.asset, j);
@@ -134,20 +150,20 @@ export default function CreativeProductionWorkspace(){
   };
 
   const handleMusicVideo=async()=>{
-    if(uploads.length<2){ setStatusMsg("Upload at least 1 video + 1 audio for music video"); return; }
-    const videoInputs = uploads.filter(u=> (u.mimetype||"").startsWith("video") || u.filePath?.endsWith(".mp4")).map(u=>u.filePath);
+    const mediaInputs = uploads.filter(u=> (u.mimetype||"").startsWith("video") || u.mimetype?.startsWith("image") || u.filePath?.match(/\.(mp4|mov|webm|jpg|jpeg|png|webp|svg)$/i)).map(u=>u.filePath);
     const audio = uploads.find(u=> (u.mimetype||"").startsWith("audio"));
-    if(videoInputs.length===0){ setStatusMsg("No video footage found among uploads"); return; }
-    setStatus("ANALYZING"); setStatusMsg("Analyzing footage + beats…");
+    if(mediaInputs.length===0){ setStatusMsg("Upload at least 1 image or video — then music will be invented if not provided"); return; }
+    const willInvent = !audio;
+    setStatus("ANALYZING"); setStatusMsg(willInvent ? "No audio found — inventing cinematic music + analyzing beats…" : "Analyzing footage + beats…");
     try{
       let beat=null;
       if(audio?.filePath){
         const br=await fetch("/api/creative/media/beat-analyze",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ audioPath: audio.filePath })});
         const bj=await br.json(); beat=bj.data;
       }
-      setStatus("RENDERING"); setStatusMsg(`Rendering music video — BPM ${beat?.bpm||120} — via FFmpeg`);
+      setStatus("RENDERING"); setStatusMsg(willInvent ? `Rendering beautiful video — image Ken Burns + invented music (BPM ${beat?.bpm||120})` : `Rendering music video — BPM ${beat?.bpm||120} — via FFmpeg`);
       const rr=await fetch("/api/creative/music-video",{method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin",
-        body: JSON.stringify({ projectId: projectId||null, footagePaths: videoInputs, audioPath: audio?.filePath||null, durationSec:60, style:"cinematic" })
+        body: JSON.stringify({ projectId: projectId||null, footagePaths: mediaInputs, audioPath: audio?.filePath||null, inventMusic: willInvent, mood: willInvent ? "cinematic" : undefined, durationSec: willInvent ? 10 : 60, style:"cinematic" })
       });
       const rj=await rr.json();
       if(rj.success){

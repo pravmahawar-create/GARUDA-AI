@@ -74,6 +74,14 @@
       "destination": "https://garuda-ai-xfif.onrender.com/data/proposals/:path*"
     },
     {
+      "source": "/assets/creative/:path*",
+      "destination": "https://garuda-ai-xfif.onrender.com/assets/creative/:path*"
+    },
+    {
+      "source": "/data/creative-assets/:path*",
+      "destination": "https://garuda-ai-xfif.onrender.com/data/creative-assets/:path*"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
     },

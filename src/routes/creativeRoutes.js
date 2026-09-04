@@ -618,10 +618,8 @@ router.post("/music-video", async (req,res)=>{
     const durationSec = Number(req.body.durationSec||req.body.duration||60);
     const style = req.body.style||"cinematic";
     const inventMusic = req.body.inventMusic===true || req.body.autoMusic===true || (!audioPath && req.body.mood);
-    // Allow image inputs: if footagePaths contains images, keep as is (ffmpeg will handle via scale)
     if(footagePaths.length===0) return res.status(400).json({success:false, message:"footagePaths[] required"});
     for(const p of footagePaths){ if(!require("fs").existsSync(p)) return res.status(400).json({success:false, message:`footage not found: ${p}`}); }
-    // If inventMusic requested and no audio, generate music via sovereign/HF
     let generatedMusic = null;
     if(!audioPath && inventMusic){
       try{
@@ -631,7 +629,34 @@ router.post("/music-video", async (req,res)=>{
         if(gen.success && gen.asset?.filePath) { audioPath=gen.asset.filePath; generatedMusic=gen.asset; }
       }catch{}
     }
-    const ingestRecords = footagePaths.map(p=> ({ assetId: p, filePath:p, fileSize: require("fs").statSync(p).size, mimetype: p.match(/\.(mp4|mov|webm)$/i)?"video/mp4":"image/jpeg" }));
+    // Convert image inputs to 5s video segments via ffmpeg (beautiful Ken Burns via scale+zoompan)
+    const processedInputs=[];
+    const osTmp=require("os").tmpdir();
+    const ffmpegPath=(()=>{ try{ return require("ffmpeg-static"); }catch{ return "ffmpeg"; }})();
+    const { execFile } = require("child_process");
+    const crypto=require("crypto"), fs=require("fs"), path=require("path");
+    for(const p of footagePaths){
+      const isImage = /\.(jpg|jpeg|png|webp|svg)$/i.test(p);
+      if(isImage){
+        // SVG needs rasterization: ffmpeg can handle png/jpg/webp, for svg try convert via ffmpeg (may fail, fallback to copy as is)
+        const tmpVid=path.join(osTmp, `img2vid_${Date.now()}_${crypto.randomBytes(2).toString("hex")}.mp4`);
+        try{
+          await new Promise((res,rej)=>{
+            // Use loop 1 + t 5 + zoompan for beautiful effect; for svg use lavfi color fallback if ffmpeg fails
+            const vf = "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,zoompan=z='min(zoom+0.0015,1.2)':d=1:x='iw/2-(iw/zoom)/2':y='ih/2-(ih/zoom)/2',eq=contrast=1.05:saturation=1.1";
+            execFile(ffmpegPath, ["-loop","1","-i", p, "-t","5","-vf", vf, "-c:v","libx264","-pix_fmt","yuv420p","-r","24","-y", tmpVid], { timeout:20000, maxBuffer:4*1024*1024 }, (err,so,se)=> err? rej(new Error(String(se||err.message).slice(0,400))): res());
+          });
+          if(fs.existsSync(tmpVid) && fs.statSync(tmpVid).size>1000) processedInputs.push(tmpVid);
+          else processedInputs.push(p);
+        }catch{
+          // fallback: keep original (renderTimeline will try scale)
+          processedInputs.push(p);
+        }
+      } else {
+        processedInputs.push(p);
+      }
+    }
+    const ingestRecords = processedInputs.map(p=> ({ assetId: p, filePath:p, fileSize: fs.existsSync(p)? require("fs").statSync(p).size:0, mimetype: p.match(/\.(mp4|mov|webm)$/i)?"video/mp4":"image/jpeg" }));
     const footageAnalysis = await creativeEditorService.analyzeFootage(ingestRecords);
     let beatAnalysis = { beats:[], bpm:120, status:"NO_AUDIO" };
     if(audioPath){
@@ -639,13 +664,13 @@ router.post("/music-video", async (req,res)=>{
       if(!beatAnalysis.beats || beatAnalysis.beats.length===0) beatAnalysis.fallback = beatAnalysis.fallback || mediaEditingService.analyzeBeats(audioPath);
     }
     const { timeline } = await creativeEditorService.buildEditPlan({ footageAnalysis, beatAnalysis, durationSec, style });
-    // pass audio for mux
     const renderOps = [];
     if(req.body.targetSize) renderOps.push({ scale: req.body.targetSize });
     if(req.body.textOverlay) renderOps.push({ text: { text: String(req.body.textOverlay) } });
     if(audioPath) renderOps.push({ audio_replace: audioPath });
-    const render = await mediaEditingService.renderTimeline({ inputs: footagePaths, operations: renderOps, outputName: `musicvideo_${Date.now()}.mp4` });
-    // also use editor's render if no audio, else already muxed
+    const render = await mediaEditingService.renderTimeline({ inputs: processedInputs, operations: renderOps, outputName: `musicvideo_${Date.now()}.mp4` });
+    // cleanup temp image videos
+    for(const p of processedInputs){ if(p.includes("img2vid_") && fs.existsSync(p)){ try{ fs.unlinkSync(p);}catch{} } }
     const qc = mediaEditingService.validateMedia(render.filePath);
     const artifact = { assetId: render.assetId, filePath: render.filePath, publicUrl: render.publicUrl, dataUrl: render.dataUrl, sha256: render.sha256, fileSize: render.fileSize, qc, timelineId: timeline.timelineId, edl: timeline.edl, beatAnalysis: { bpm: beatAnalysis.bpm, beatCount: beatAnalysis.beats?.length||0, status: beatAnalysis.status }, generatedMusic };
     res.json({ success: qc.passed, status: qc.passed? "RENDERED_VERIFIED":"RENDERED_QC_FAILED", artifact, qc, timeline, footageAnalysis, beatAnalysis, generatedMusic });
