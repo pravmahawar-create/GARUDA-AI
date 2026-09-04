@@ -24,6 +24,7 @@ import HighCommandCenter from "./pages/HighCommandCenter";
 import GrowthCommandCenter from "./pages/GrowthCommandCenter";
 import ScholarStudio from "./pages/ScholarStudio";
 import CreativeStudio from "./pages/CreativeStudio";
+import CreativeProductionWorkspace from "./pages/CreativeProductionWorkspace";
 import ContentStudio from "./pages/ContentStudio";
 import BrandStudio from "./pages/BrandStudio";
 import DigitalPresenceStudio from "./pages/DigitalPresenceStudio";
@@ -153,11 +154,12 @@ function AppRoutes() {
       <Route path="/vidya" element={<ScholarStudio />} />
       <Route path="/research" element={<ScholarStudio />} />
       
-      {/* Ring 3 Canonical Universes */}
-      <Route path="/creative" element={<CreativeStudio />} />
-      <Route path="/studio" element={<CreativeStudio />} />
-      <Route path="/agency" element={<CreativeStudio />} />
-      <Route path="/creator" element={<CreativeStudio />} />
+      {/* Ring 3 Canonical — Creative Production OS (website-first) */}
+      <Route path="/creative" element={<CreativeProductionWorkspace />} />
+      <Route path="/creative/legacy" element={<CreativeStudio />} />
+      <Route path="/studio" element={<CreativeProductionWorkspace />} />
+      <Route path="/agency" element={<CreativeProductionWorkspace />} />
+      <Route path="/creator" element={<CreativeProductionWorkspace />} />
       <Route path="/content" element={<ContentStudio />} />
       <Route path="/brand" element={<BrandStudio />} />
       <Route path="/digital-presence" element={<DigitalPresenceStudio />} />

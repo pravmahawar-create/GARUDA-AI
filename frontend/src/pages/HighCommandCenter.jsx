@@ -5,6 +5,7 @@ import "../styles/high-command.css";
 
 const MODULES = [
   { id: "home", label: "HOME", icon: "⌂" },
+  { id: "creative", label: "CREATIVE", icon: "🎨" },
   { id: "brain", label: "BRAIN", icon: "🧠" },
   { id: "money", label: "MONEY", icon: "₹" },
   { id: "approvals", label: "APPROVALS", icon: "⚡" },
@@ -1202,6 +1203,57 @@ export default function HighCommandCenter({ onLogout }) {
                         )}
                       </div>
                     ))}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* ===================================================== */}
+            {/* TAB: CREATIVE STUDIO — WEBSITE-FIRST RESULT SURFACE      */}
+            {/* ===================================================== */}
+            {activeModule === "creative" && (
+              <div>
+                <div className="hcc-section-head">
+                  <h2 className="hcc-section-title">Creative Studio Command</h2>
+                  <span className="hcc-section-badge">GARUDA Creative OS</span>
+                </div>
+                {!snapshot?.creative || snapshot.creative.available===false ? (
+                  <div className="hcc-hero-card" style={{ borderColor:"rgba(244,63,94,0.35)", background:"rgba(20,8,12,0.7)" }}>
+                    <div className="hcc-hero-headline" style={{ color:"var(--hcc-rose)" }}>CREATIVE DATA UNAVAILABLE</div>
+                    <p className="hcc-hero-sub">{snapshot?.creative?.error || "Creative subsystem not available."}</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="hcc-hero-card">
+                      <div className="hcc-hero-meta"><span className="hcc-hero-greeting">Sovereign Creatives</span><span className="hcc-status-pill live">AUTHORITATIVE</span></div>
+                      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8 }}>
+                        <div className="hcc-stat-box"><div className="hcc-stat-val">{snapshot.creative.totalBriefs ?? 0}</div><div className="hcc-stat-lbl">Briefs</div></div>
+                        <div className="hcc-stat-box"><div className="hcc-stat-val">{snapshot.creative.totalAssets ?? 0}</div><div className="hcc-stat-lbl">Assets</div></div>
+                        <div className="hcc-stat-box"><div className="hcc-stat-val" style={{ fontSize:"0.85rem" }}>{snapshot.creative.creativeOperations?.imageCapability || snapshot.creative.mediaEditing?.ffmpegAvailable ? "READY" : "LIMITED"}</div><div className="hcc-stat-lbl">Pipeline</div></div>
+                      </div>
+                      <p className="hcc-hero-sub" style={{ marginTop:8 }}>
+                        Image: <strong style={{ color:"var(--hcc-emerald)" }}>{snapshot.creative.creativeOperations?.imageCapability || "VECTOR_CREATIVE_ONLY"}</strong> · Video: <strong style={{ color:"var(--hcc-gold-400)" }}>{snapshot.creative.creativeOperations?.videoCapability || "STORYBOARD_ONLY"}</strong> · Edit: <strong style={{ color: snapshot.creative.mediaEditing?.ffmpegAvailable ? "var(--hcc-emerald)" : "var(--hcc-amber)" }}>{snapshot.creative.mediaEditing?.ffmpegAvailable ? "FFmpeg READY" : "UNAVAILABLE"}</strong>
+                      </p>
+                    </div>
+                    <div className="hcc-card-list" style={{ marginTop:12 }}>
+                      {(snapshot.creative.assets||[]).slice(0,6).map((a,i)=>(
+                        <div key={i} className="hcc-card-item">
+                          <div className="hcc-card-top"><h3 className="hcc-card-title">{a.title || a.assetId}</h3><span className="hcc-card-badge" style={{ background:"rgba(212,175,55,0.12)", color:"var(--hcc-gold-400)" }}>{a.classification || a.format || "VECTOR_CREATIVE"}</span></div>
+                          <p className="hcc-priority-desc" style={{ wordBreak:"break-all" }}>{a.filePath || a.assetUrl || ""}</p>
+                          <div className="hcc-card-meta"><span>{a.dimensions ? `${a.dimensions.width}x${a.dimensions.height}` : ""}</span><span>{a.provider || ""}</span></div>
+                          {a.assetUrl && <a href={a.assetUrl} target="_blank" rel="noreferrer" style={{ fontSize:"0.75rem", color:"var(--hcc-gold-400)" }}>Open Preview →</a>}
+                          {a.publicUrl && <a href={a.publicUrl} target="_blank" rel="noreferrer" style={{ fontSize:"0.75rem", color:"var(--hcc-cyan)", marginLeft:8 }}>MP4 Preview →</a>}
+                        </div>
+                      ))}
+                      {(!snapshot.creative.assets || snapshot.creative.assets.length===0) && <div className="hcc-card-item"><p className="hcc-priority-desc">No creative assets yet. Generate via <code>/api/creative/generate</code> or visit <a href="/creative" style={{ color:"var(--hcc-gold-400)" }}>/creative</a>.</p></div>}
+                    </div>
+                    <div style={{ display:"flex", gap:8, marginTop:12 }}>
+                      <button onClick={()=>window.open("/creative","_blank")} style={{ background:"linear-gradient(135deg,#d4af37,#b8860b)", color:"#000", border:"none", borderRadius:6, padding:"0.5rem 1rem", fontWeight:800, cursor:"pointer" }}>Open Creative Studio →</button>
+                      <button onClick={()=>window.open("/studio","_blank")} style={{ background:"rgba(255,255,255,0.06)", color:"#cbd5e1", border:"1px solid rgba(255,255,255,0.1)", borderRadius:6, padding:"0.5rem 1rem", cursor:"pointer" }}>Agency Studio →</button>
+                    </div>
+                    <p className="hcc-hero-sub" style={{ marginTop:8, fontSize:"0.72rem" }}>
+                      EDIT mode: upload via <code>POST /api/creative/media/ingest</code> → <code>POST /api/creative/media/render</code> → QC → <code>/data/creative-assets</code> delivery. Artifacts served at <code>/assets/creative/*</code>.
+                    </p>
                   </>
                 )}
               </div>

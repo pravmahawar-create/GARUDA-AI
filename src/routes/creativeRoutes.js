@@ -514,4 +514,134 @@ router.post("/continue", async (req, res) => {
   }
 });
 
+// ── EDIT MODE: canonical media ingest + timeline render (website-first) ──
+const { creativeUpload } = require("../middleware/upload");
+const mediaEditingService = require("../services/mediaEditingService");
+
+// POST /api/creative/media/ingest — upload raw footage / audio / image for EDIT workflows
+router.post("/media/ingest", creativeUpload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success:false, message:"file field required (multipart/form-data)" });
+    const record = await mediaEditingService.ingestMedia(req.file);
+    return res.json({ success:true, status:"INGESTED", assetId: record.assetId, filePath: record.filePath, sha256: record.sha256, fileSize: record.fileSize, mimetype: record.mimetype });
+  } catch (e) { return res.status(500).json({ success:false, message:e.message }); }
+});
+
+// POST /api/creative/media/render — timeline render via FFmpeg (reuses ffmpeg-static)
+router.post("/media/render", async (req, res) => {
+  try {
+    const inputs = Array.isArray(req.body.inputs) ? req.body.inputs : [];
+    const operations = Array.isArray(req.body.operations) ? req.body.operations : [];
+    const outputName = req.body.outputName || null;
+    if (inputs.length===0) return res.status(400).json({ success:false, message:"inputs[] (filePaths) required" });
+    const result = await mediaEditingService.renderTimeline({ inputs, operations, outputName });
+    return res.json({ success:true, status: result.status, assetId: result.assetId, filePath: result.filePath, publicUrl: result.publicUrl, dataUrl: result.dataUrl, sha256: result.sha256, qc: result.qc });
+  } catch (e) { return res.status(500).json({ success:false, message:e.message }); }
+});
+
+// GET /api/creative/media/capabilities — truthful EDIT capability probe
+router.get("/media/capabilities", (req, res) => {
+  res.json({ success:true, data: mediaEditingService.getCapabilities() });
+});
+
+// POST /api/creative/media/beat-analyze — REAL sovereign beat/BPM (non-blocking)
+router.post("/media/beat-analyze", async (req, res) => {
+  const audioPath = String(req.body.audioPath||"").trim();
+  const useReal = req.body.real!==false; // default real
+  try{
+    const result = useReal ? await mediaEditingService.analyzeBeatsAsync(audioPath || null) : mediaEditingService.analyzeBeats(audioPath || null);
+    const success = result.status!=="UNAVAILABLE" && result.status!=="ANALYSIS_FAILED";
+    res.json({ success, data: result });
+  }catch(e){ res.status(500).json({ success:false, data:{ status:"ANALYSIS_FAILED", reason:String(e.message), beats:[], bpm:null }}); }
+});
+
+// GET /api/creative/media/qc?filePath= — QC for any media file
+router.get("/media/qc", (req, res) => {
+  const fp = String(req.query.filePath||"").trim();
+  if (!fp) return res.status(400).json({ success:false, message:"filePath query required" });
+  const qc = mediaEditingService.validateMedia(fp);
+  res.json({ success: qc.passed, qc });
+});
+
+// ── NATURAL-LANGUAGE FRONT DOOR (creativeIntentRouter) — canonical ──
+router.post("/intent", async (req,res)=>{
+  try{
+    const text = String(req.body.text||req.body.prompt||req.body.command||"").trim();
+    if(!text || text.length<3) return res.status(400).json({success:false, message:"text/command required"});
+    const creativeIntentRouter = require("../services/creativeIntentRouter").creativeIntentRouter;
+    const session = { sessionId: req.body.sessionId||req.body.projectId||"default", activeArtifact: req.body.activeArtifact||null, currentLanguage: req.body.lang||"en" };
+    const classified = creativeIntentRouter.classifyCreativeIntent(text, session);
+    if(!classified) return res.json({ success:true, intent:"UNKNOWN", mediaType:"UNKNOWN", message:"No creative intent detected — try 'create image', 'animate video', 'music video' etc.", raw:text });
+    const result = await creativeIntentRouter.executeCreativeIntent(classified, session);
+    return res.json({ success: result.success!==false, intent: classified.intent, mediaType: classified.mediaType, rawPrompt: classified.rawPrompt, ...result });
+  }catch(e){ return res.status(500).json({success:false, message:e.message}); }
+});
+
+// ── CHARACTER / WORLD / VISUAL BIBLES (extend Project Memory) ──
+const creativeBibleService = require("../services/creativeBibleService");
+router.post("/bibles/character", (req,res)=>{
+  try{ const doc = creativeBibleService.createCharacterBible(req.body); res.json({success:true, data:doc}); }catch(e){ res.status(400).json({success:false, message:e.message});}
+});
+router.post("/bibles/world", (req,res)=>{
+  try{ const doc = creativeBibleService.createWorldBible(req.body); res.json({success:true, data:doc}); }catch(e){ res.status(400).json({success:false, message:e.message});}
+});
+router.post("/bibles/visual", (req,res)=>{
+  try{ const doc = creativeBibleService.createVisualBible(req.body); res.json({success:true, data:doc}); }catch(e){ res.status(400).json({success:false, message:e.message});}
+});
+router.get("/bibles", (req,res)=>{
+  const pid = req.query.projectId ? String(req.query.projectId) : null;
+  if(!pid) return res.status(400).json({success:false, message:"projectId required"});
+  res.json({success:true, data: creativeBibleService.getProjectBibles(pid)});
+});
+router.get("/bibles/:id", (req,res)=>{
+  const doc = creativeBibleService.getBible(String(req.params.id));
+  if(!doc) return res.status(404).json({success:false, message:"Bible not found"});
+  res.json({success:true, data:doc});
+});
+
+// ── DIRECTOR / EDITOR ORCHESTRATION ──
+const creativeDirectorService = require("../services/creativeDirectorService");
+const creativeEditorService = require("../services/creativeEditorService");
+router.post("/director/plan", async (req,res)=>{
+  try{ const plan = await creativeDirectorService.createProductionPlan(req.body); res.json({success:true, data:plan}); }catch(e){ res.status(500).json({success:false, message:e.message});}
+});
+router.post("/editor/analyze-footage", async (req,res)=>{
+  try{ const r = await creativeEditorService.analyzeFootage(req.body.records||[]); res.json({success:true, data:r}); }catch(e){ res.status(500).json({success:false, message:e.message});}
+});
+router.post("/editor/build-plan", async (req,res)=>{
+  try{ const r = await creativeEditorService.buildEditPlan(req.body); res.json({success:true, data:r}); }catch(e){ res.status(500).json({success:false, message:e.message});}
+});
+router.post("/music-video", async (req,res)=>{
+  // High-priority commercial workflow: footagePaths + audioPath -> EDL -> FFmpeg -> QC
+  try{
+    const footagePaths = Array.isArray(req.body.footagePaths)? req.body.footagePaths : [];
+    const audioPath = req.body.audioPath||null;
+    const durationSec = Number(req.body.durationSec||req.body.duration||60);
+    const style = req.body.style||"cinematic";
+    if(footagePaths.length===0) return res.status(400).json({success:false, message:"footagePaths[] required"});
+    for(const p of footagePaths){ if(!require("fs").existsSync(p)) return res.status(400).json({success:false, message:`footage not found: ${p}`}); }
+    // Stage 1: analyze (real beat map via async sovereign PCM decode)
+    const ingestRecords = footagePaths.map(p=> ({ assetId: p, filePath:p, fileSize: require("fs").statSync(p).size, mimetype:"video/mp4" }));
+    const footageAnalysis = await creativeEditorService.analyzeFootage(ingestRecords);
+    let beatAnalysis = { beats:[], bpm:120, status:"NO_AUDIO" };
+    if(audioPath){
+      try{ beatAnalysis = await mediaEditingService.analyzeBeatsAsync(audioPath); } catch(e){ beatAnalysis = { status:"ANALYSIS_FAILED", reason:String(e.message), beats:[], bpm:null, fallback: mediaEditingService.analyzeBeats(audioPath) }; }
+      if(!beatAnalysis.beats || beatAnalysis.beats.length===0) {
+        // preserve safe fallback timeline while truthfully reporting failure
+        beatAnalysis.fallback = beatAnalysis.fallback || mediaEditingService.analyzeBeats(audioPath);
+      }
+    }
+    const { timeline } = await creativeEditorService.buildEditPlan({ footageAnalysis, beatAnalysis, durationSec, style });
+    const render = await creativeEditorService.renderFromPlan(timeline, { outputName: `musicvideo_${Date.now()}.mp4`, targetSize: req.body.targetSize||null, textOverlay: req.body.textOverlay||null });
+    const qc = mediaEditingService.validateMedia(render.filePath);
+    const artifact = { assetId: render.assetId, filePath: render.filePath, publicUrl: render.publicUrl, dataUrl: render.dataUrl, sha256: render.sha256, fileSize: render.fileSize, qc, timelineId: render.timelineId, edl: render.edl, beatAnalysis: { bpm: beatAnalysis.bpm, beatCount: beatAnalysis.beats?.length||0 } };
+    res.json({ success: qc.passed, status: qc.passed? "RENDERED_VERIFIED":"RENDERED_QC_FAILED", artifact, qc, timeline, footageAnalysis, beatAnalysis });
+  }catch(e){ res.status(500).json({success:false, message:e.message}); }
+});
+
+// Library with project filter (website result workspace)
+router.get("/library", async (req,res)=>{
+  try{ const lib = await creativeStudioService.getAssetLibrary(req.query.projectId||null); res.json({success:true, data:lib}); }catch(e){ res.status(500).json({success:false, message:e.message});}
+});
+
 module.exports = router;

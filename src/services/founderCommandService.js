@@ -1040,11 +1040,14 @@ class FounderCommandService {
       realEstateSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
     }
 
-    // 9. CREATIVE STUDIO SECTION
+    // 9. CREATIVE STUDIO SECTION (canonical + EDIT pipeline)
     let creativeSection;
     try {
       const creativeService = require("./creativeStudioService");
-      creativeSection = await creativeService.getAssetLibrary();
+      const base = await creativeService.getAssetLibrary();
+      let mediaCaps = null;
+      try { mediaCaps = require("./mediaEditingService").getCapabilities(); } catch {}
+      creativeSection = { ...base, mediaEditing: mediaCaps, video2_5D: base.creativeOperations?.videoCapability || null };
     } catch (err) {
       creativeSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
     }

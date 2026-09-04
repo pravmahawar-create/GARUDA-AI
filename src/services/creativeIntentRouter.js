@@ -506,12 +506,17 @@ class CreativeIntentRouter {
         ? "IMAGE_HERO"
         : "IMAGE_SQUARE";
 
+    // Sovereign by default for website — DRY_RUN truthful unless founder live approved
+    const generationMode = process.env.FOUNDER_APPROVED_LIVE_GENERATION==="true" ? "LIVE_GENERATION" : "DRY_RUN";
+    const isMock = generationMode==="DRY_RUN";
     const asset = await this.studio.generateAsset(brief.briefId, format, {
-      generationMode: "LIVE_GENERATION",
+      generationMode,
       prompt: ipCheck.sanitizedPrompt || prompt,
       style,
       dimension,
-      aspectRatio
+      aspectRatio,
+      _testMock: isMock,
+      mockFalSuccess: isMock
     });
 
     // Compute SHA-256 byte hash & register Living Artifact

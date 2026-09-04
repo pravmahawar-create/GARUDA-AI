@@ -25,6 +25,11 @@ const proposalsDataPath = path.join(__dirname, "..", "data", "proposals");
 if (fs.existsSync(proposalsDataPath)) {
   app.use("/data/proposals", express.static(proposalsDataPath, { maxAge: "1d", etag: true }));
 }
+// GARUDA Creative Studio — serve sovereign vector + local 2.5D MP4 artifacts (website-first delivery)
+const creativeAssetsPath = path.join(__dirname, "..", "data", "creative-assets");
+if (!fs.existsSync(creativeAssetsPath)) { try { fs.mkdirSync(creativeAssetsPath, { recursive: true }); } catch {} }
+app.use("/data/creative-assets", express.static(creativeAssetsPath, { maxAge: "1d", etag: true }));
+app.use("/assets/creative", express.static(creativeAssetsPath, { maxAge: "1d", etag: true }));
 app.use(require("./middleware/authContextMiddleware"));
 
 const healthResponse = (req, res) => {
