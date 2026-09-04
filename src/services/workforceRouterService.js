@@ -905,6 +905,59 @@ class WorkforceRouterService {
         };
       }
     });
+
+    // === PERSONAL HUNT — 10 Genuine Hunters for Highest Paying Markets (0₹ DuckDuckGo, no billing) ===
+    // All use genericWebScoutService (real scratch) + garudaos.ai@gmail.com (not Praveen wrong), no fake promises
+    const personalHunters = [
+      { id: "agent.personal_uk_web_hunter", name: "UK Web Hunter", loc: "uk", type: "web", domain: "web_services" },
+      { id: "agent.personal_usa_web_hunter", name: "USA Web Hunter", loc: "usa", type: "web", domain: "web_services" },
+      { id: "agent.personal_dubai_web_hunter", name: "Dubai Web Hunter", loc: "dubai", type: "web", domain: "web_services" },
+      { id: "agent.personal_australia_web_hunter", name: "Australia Web Hunter", loc: "australia", type: "web", domain: "web_services" },
+      { id: "agent.personal_nz_web_hunter", name: "NZ Web Hunter", loc: "nz", type: "web", domain: "web_services" },
+      { id: "agent.personal_silicon_valley_web_hunter", name: "Silicon Valley Web Hunter", loc: "silicon_valley", type: "web", domain: "web_services" },
+      { id: "agent.personal_uk_mobile_hunter", name: "UK Mobile App Hunter", loc: "uk", type: "mobile", domain: "web_services" },
+      { id: "agent.personal_usa_mobile_hunter", name: "USA Mobile App Hunter", loc: "usa", type: "mobile", domain: "web_services" },
+      { id: "agent.personal_global_software_hunter", name: "Global Software Hunter", loc: "europe", type: "software", domain: "web_services" },
+      { id: "agent.personal_global_automation_hunter", name: "Global Automation Hunter", loc: "europe", type: "automation", domain: "web_services" },
+    ];
+    for (const h of personalHunters) {
+      this.registerAgent({
+        id: h.id,
+        name: `${h.name} — Genuine (garudaos.ai@gmail.com)`,
+        domain: "acquisition",
+        role: `Hunts genuine clients needing ${h.type} (website/mobile/software/automation) in ${h.loc.toUpperCase()} via Google scratch for incomplete websites — no fake promises, garudaos.ai@gmail.com`,
+        knowledgeAccess: ["web:scratch", "audit:real", "contact:garudaos.ai@gmail.com"],
+        authorizedActions: ["SCAN_WEBSITES", "AUDIT_INCOMPLETE_SITE", "EXTRACT_CONTACT", "GENERATE_GENUINE_PITCH"],
+        humanHandoffConditions: ["FOUNDER_APPROVAL_REQUIRED"],
+        handler: async (task) => {
+          const scout = require("./leadgen/genericWebScoutService");
+          const result = await scout.runWebScoutOnce({
+            hunterId: h.id,
+            domain: h.domain,
+            location: h.loc,
+            type: h.type,
+            maxSites: Number(task.input?.limit || task.input?.maxSites || 5),
+            delayMs: 800,
+          });
+          // Genuine pitch — no fake 60% loss, no $14.5k invented arbitrage — only evidence from realAudit
+          const pitch = `Hello, we noticed your website may benefit from an update — ${result.sources.slice(0,2).join(", ") || "your online presence"}. GARUDA builds fast, modern websites and mobile apps (iOS/Android) and automation software. If you are looking for a website update, mobile app, or to automate work, we can help. Contact: garudaos.ai@gmail.com — no fake promises, only genuine audit evidence.`;
+          return {
+            status: result.emailsFound > 0 ? "SUCCESS" : "NO_LEADS_FOUND",
+            hunterId: h.id,
+            location: h.loc,
+            type: h.type,
+            domain: h.domain,
+            scanned: result.scanned,
+            emailsFound: result.emailsFound,
+            sources: result.sources,
+            pitch,
+            contact: "garudaos.ai@gmail.com",
+            evidence: `Scanned ${result.scanned} sites in ${h.loc}, found ${result.emailsFound} contacts via DuckDuckGo — audit: viewport/copyright check`,
+            rawResult: result,
+          };
+        }
+      });
+    }
   }
 
   /**
