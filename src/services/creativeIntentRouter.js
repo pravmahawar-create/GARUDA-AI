@@ -24,6 +24,9 @@ const identityLockService = require("./identityLockService");
 
 // 1. Universal Creative Intent Taxonomy
 const CREATIVE_INTENTS = Object.freeze({
+  // Audio/Music Intents
+  GENERATE_MUSIC: "GENERATE_MUSIC",
+  AUDIO_CLARIFICATION_NEEDED: "AUDIO_CLARIFICATION_NEEDED",
   // Image Intents
   TEXT_TO_IMAGE: "TEXT_TO_IMAGE",
   IMAGE_TO_IMAGE: "IMAGE_TO_IMAGE",
@@ -161,6 +164,23 @@ class CreativeIntentRouter {
     const lower = raw.toLowerCase();
     const cleanNoPunct = lower.replace(/[.!?]/g, "").trim();
     const creativeSession = this.getCreativeSession(session?.sessionId || "default");
+    // Pending audio: second step after "add music" asked for words
+    if (creativeSession.pendingAudio) {
+      const pending = creativeSession.pendingAudio;
+      creativeSession.pendingAudio = null;
+      creativeSession.updatedAt = new Date().toISOString();
+      // treat this input as lyrics/mood for pending music
+      return {
+        intent: CREATIVE_INTENTS.GENERATE_MUSIC,
+        mediaType: "AUDIO",
+        rawPrompt: raw,
+        text: raw,
+        capability: "music",
+        mood: pending.mood || raw,
+        durationSec: pending.durationSec || 15,
+        isPendingContinuation: true
+      };
+    }
 
     // Check standalone context updates (e.g. "8 second ka", "Cinematic rakho", "Veo use karo", "Hugging Face use karo", "Fal use karo", "Local 2.5D use karo")
     if (/\b(veo|gemini|runway|huggingface|hugging\s*face|hf\b|fal|fal\.ai|local|2\.5d|sovereign motion)\b/i.test(lower)) {
@@ -439,6 +459,32 @@ class CreativeIntentRouter {
       };
     }
 
+    // J. Check for Music/Audio Generation (add music, khud music, invent music)
+    if (/\b(add music|music dal|gaana dal|song dal|invent music|khud music|create music|generate music|music bana|song bana|gaana bana)\b/i.test(lower)) {
+      // short trigger without details → ask for words, store pending
+      const hasMood = /\b(romantic|cinematic|happy|sad|dark|epic|love|upbeat|chill|sufi|punjabi)\b/i.test(lower);
+      if (raw.length < 20 && !hasMood) {
+        creativeSession.pendingAudio = { intent: CREATIVE_INTENTS.GENERATE_MUSIC, mood: "cinematic", durationSec: 15 };
+        creativeSession.updatedAt = new Date().toISOString();
+        return {
+          intent: CREATIVE_INTENTS.AUDIO_CLARIFICATION_NEEDED,
+          mediaType: "AUDIO",
+          rawPrompt: raw,
+          needsText: true,
+          message: "Kuch words / mood batao — jaise 'romantic' ya 'Mere dil ke alfaaz...'"
+        };
+      }
+      return {
+        intent: CREATIVE_INTENTS.GENERATE_MUSIC,
+        mediaType: "AUDIO",
+        rawPrompt: raw,
+        text: raw,
+        capability: "music",
+        mood: raw,
+        durationSec: this._extractDuration(lower) || 15
+      };
+    }
+
     return null;
   }
 
@@ -455,6 +501,24 @@ class CreativeIntentRouter {
     const sid = session?.sessionId || "default";
     const creativeSession = this.getCreativeSession(sid);
     const lang = session?.currentLanguage || "en";
+
+    // 0. Audio clarification needed — ask for words
+    if (classified.intent === CREATIVE_INTENTS.AUDIO_CLARIFICATION_NEEDED) {
+      return {
+        success: true,
+        intent: classified.intent,
+        mediaType: "AUDIO",
+        truthStatus: "AWAITING_INPUT",
+        answer: classified.message || "Kuch words / mood batao — jaise 'romantic cinematic' ya 'Mere dil...'",
+        speechText: "Please tell me the words or mood for the music.",
+        needsInput: true,
+        durationMs: Date.now() - startTime
+      };
+    }
+    // 0b. Music generation
+    if (classified.intent === CREATIVE_INTENTS.GENERATE_MUSIC || classified.mediaType === "AUDIO") {
+      return await this._handleMusicGeneration(classified, creativeSession, lang, startTime);
+    }
 
     // 1. Handle Download Action Intent
     if (classified.intent === CREATIVE_INTENTS.DOWNLOAD_MEDIA) {
@@ -478,6 +542,23 @@ class CreativeIntentRouter {
 
     // 5. Handle Image Generation Intents (TEXT_TO_IMAGE, CHARACTER_DESIGN, IMAGE_EDIT, etc.)
     return await this._handleImageGeneration(classified, creativeSession, lang, startTime);
+  }
+
+  async _handleMusicGeneration(classified, creativeSession, lang, startTime) {
+    const text = String(classified.text || classified.rawPrompt || "").trim();
+    const mood = String(classified.mood || text).trim();
+    const durationSec = classified.durationSec || 15;
+    const audioRouter = require("./audioGenerationRouter");
+    const result = await audioRouter.routeAudioGeneration({ text: text || mood, capability: "music", mood, durationSec, generationMode: "MUSIC" });
+    if(!result.success || !result.asset){
+      return { success:false, intent: classified.intent, mediaType:"AUDIO", truthStatus:"FAILED", answer: result.error || "Music generation failed", speechText: result.error, durationMs: Date.now()-startTime, error: result.error };
+    }
+    const asset = result.asset;
+    const activeArtifact = { id: asset.assetId, type:"AUDIO", name: asset.fileName || "Generated Music", prompt: text, mood, filePath: asset.filePath, url: asset.publicUrl || asset.assetUrl, publicUrl: asset.publicUrl, assetUrl: asset.assetUrl, mimetype:"audio/wav", durationSec: asset.durationSec, sha256Hash: asset.assetHash };
+    creativeSession.activeArtifact = activeArtifact;
+    creativeSession.revisions.push({ revisionId:`rev_${Date.now()}`, action: classified.intent, artifactId: asset.assetId });
+    const answer = `Music generated: ${asset.fileName} (${durationSec}s, ${mood}) — SHA ${asset.assetHash.slice(0,12)}… — ready to attach to video via music-video pipeline.`;
+    return { success:true, intent: classified.intent, mediaType:"AUDIO", truthStatus:"VERIFIED", answer, speechText: answer, artifact: activeArtifact, asset, evidence:{ assetId: asset.assetId, filePath: asset.filePath, sha256Hash: asset.assetHash, verified:true }, proofStage:{ request: text, interpretation:{ mood, durationSec }, engineUsed: asset.provider, status:"VERIFIED", integrityHash: asset.assetHash, downloadUrl: asset.publicUrl }, viewer:{ type:"AUDIO_PLAYER", src: asset.publicUrl, downloadUrl: asset.publicUrl }, durationMs: Date.now()-startTime };
   }
 
   /**

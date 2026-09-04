@@ -114,6 +114,12 @@ export default function CreativeProductionWorkspace(){
           setQc(gj.verification||null);
         }
       }
+      // Audio clarification: ask for words, keep input focused
+      if(j.needsInput || j.truthStatus==="AWAITING_INPUT" || j.intent==="AUDIO_CLARIFICATION_NEEDED"){
+        setStatus("AWAITING_INPUT"); setStatusMsg(j.answer || j.message || "Kuch words / mood batao — jaise 'romantic' ya 'Mere dil...'");
+        if(j.proofStage) setQc({ status: j.truthStatus||"AWAITING_INPUT", proof:j.proofStage });
+        return;
+      }
       // Only show READY if we actually pushed something
       const hasResult = Boolean(j.artifact || j.viewer?.storyboard || j.storyboard || j.asset);
       if(hasResult){
