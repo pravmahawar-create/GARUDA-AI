@@ -658,7 +658,44 @@ router.post("/music-video", async (req,res)=>{
     const style = req.body.style||"cinematic";
     const inventMusic = req.body.inventMusic===true || req.body.autoMusic===true || (!audioPath && req.body.mood);
     if(footagePaths.length===0) return res.status(400).json({success:false, message:"footagePaths[] required"});
-    for(const p of footagePaths){ if(!require("fs").existsSync(p)) return res.status(400).json({success:false, message:`footage not found: ${p}`}); }
+    // Resolve footage paths robustly (mobile: backslashes, publicUrl, basename fallback)
+    const _path = require("path");
+    const fs2 = require("fs");
+    function resolveAssetPath(input){
+      if(!input) return null;
+      if(fs2.existsSync(input)) return input;
+      const base = _path.basename(String(input).replace(/\\/g, "/"));
+      const candidates = [
+        _path.join(process.cwd(), "uploads", "creative-ingest", base),
+        _path.join(process.cwd(), "data", "creative-assets", base),
+        _path.join(process.cwd(), "uploads", base),
+        _path.join(process.cwd(), base),
+        String(input).replace(/\\/g, "/"),
+      ];
+      for(const c of candidates) if(c && fs2.existsSync(c)) return c;
+      if(String(input).includes("/assets/creative/") || String(input).includes("/data/creative-assets/")){
+        const b2 = _path.basename(String(input).replace(/\\/g, "/"));
+        const c2 = _path.join(process.cwd(), "data", "creative-assets", b2);
+        if(fs2.existsSync(c2)) return c2;
+      }
+      return null;
+    }
+    const resolvedFootagePaths = [];
+    for(const p of footagePaths){
+      const r = resolveAssetPath(p);
+      if(!r) return res.status(400).json({success:false, message:`footage not found: ${p}`, hint:"Tried basename in uploads/creative-ingest and data/creative-assets. Re-upload via /media/ingest and use returned filePath.", received: p, basename: _path.basename(String(p).replace(/\\/g, "/"))});
+      resolvedFootagePaths.push(r);
+    }
+    footagePaths = resolvedFootagePaths;
+    if(audioPath){
+      const ra = resolveAssetPath(audioPath);
+      if(ra) audioPath = ra;
+      if(!ra && !fs2.existsSync(String(audioPath))) {
+        const baseA = _path.basename(String(audioPath).replace(/\\/g, "/"));
+        const candA = _path.join(process.cwd(), "data", "creative-assets", baseA);
+        if(fs2.existsSync(candA)) audioPath = candA;
+      }
+    }
     let generatedMusic = null;
     let generatedMusicResult = null;
     if(!audioPath && inventMusic){
