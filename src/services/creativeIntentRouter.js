@@ -459,8 +459,8 @@ class CreativeIntentRouter {
       };
     }
 
-    // J. Check for Music/Audio Generation (add music, khud music, invent music)
-    if (/\b(add music|music dal|gaana dal|song dal|invent music|khud music|create music|generate music|music bana|song bana|gaana bana)\b/i.test(lower)) {
+    // J. Check for Music/Audio Generation — broad: any music/gaana/song triggers, with flexible phrasing
+    if (/\b(add music|music dal|gaana dal|song dal|invent.*music|khud.*music|create.*music|generate.*music|music bana|song bana|gaana bana|music.*invent|song.*bana)\b/i.test(lower) || /\b(music|gaana|song)\b/i.test(lower)) {
       // short trigger without details → ask for words, store pending
       const hasMood = /\b(romantic|cinematic|happy|sad|dark|epic|love|upbeat|chill|sufi|punjabi)\b/i.test(lower);
       if (raw.length < 20 && !hasMood) {
