@@ -191,7 +191,7 @@ class AudioGenerationRouter {
     // Music path — sovereign procedural always available
     if(isMusicRequest){
       const mood = request.mood || text;
-      const durationSec = Math.min(Math.max(Number(request.durationSec||15),5),30);
+      const durationSec = Math.min(Math.max(Number(request.durationSec||30),5),60);
       // Try HuggingFace MusicGen if token present and not forced sovereign
       if(detection.huggingfaceMusicAvailable && request.preferHf!==false){
         // attempt HF, fallback to sovereign on failure — keep sovereign as truthful fallback

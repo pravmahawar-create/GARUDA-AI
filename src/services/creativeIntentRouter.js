@@ -464,7 +464,7 @@ class CreativeIntentRouter {
       // short trigger without details → ask for words, store pending
       const hasMood = /\b(romantic|cinematic|happy|sad|dark|epic|love|upbeat|chill|sufi|punjabi)\b/i.test(lower);
       if (raw.length < 20 && !hasMood) {
-        creativeSession.pendingAudio = { intent: CREATIVE_INTENTS.GENERATE_MUSIC, mood: "cinematic", durationSec: 15 };
+        creativeSession.pendingAudio = { intent: CREATIVE_INTENTS.GENERATE_MUSIC, mood: "cinematic", durationSec: 30 };
         creativeSession.updatedAt = new Date().toISOString();
         return {
           intent: CREATIVE_INTENTS.AUDIO_CLARIFICATION_NEEDED,
@@ -481,7 +481,7 @@ class CreativeIntentRouter {
         text: raw,
         capability: "music",
         mood: raw,
-        durationSec: this._extractDuration(lower) || 15
+        durationSec: this._extractDuration(lower) || 30
       };
     }
 
@@ -547,7 +547,7 @@ class CreativeIntentRouter {
   async _handleMusicGeneration(classified, creativeSession, lang, startTime) {
     const text = String(classified.text || classified.rawPrompt || "").trim();
     const mood = String(classified.mood || text).trim();
-    const durationSec = classified.durationSec || 15;
+    const durationSec = classified.durationSec || 30;
     const audioRouter = require("./audioGenerationRouter");
     const result = await audioRouter.routeAudioGeneration({ text: text || mood, capability: "music", mood, durationSec, generationMode: "MUSIC" });
     if(!result.success || !result.asset){
