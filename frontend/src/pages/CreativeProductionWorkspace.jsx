@@ -21,29 +21,53 @@ export default function CreativeProductionWorkspace(){
   const [replicateEnabled, setReplicateEnabled]=useState(false);
   const [replicateLoading, setReplicateLoading]=useState(false);
 
+  // Safe JSON fetch — handles Vercel/Render HTML (<!DOCTYPE) cold-start, never throws SyntaxError "Unexpected token '<'"
+  const safeJson = async (res) => {
+    const ct = res.headers.get('content-type') || '';
+    const text = await res.text();
+    if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html') || text.trim().startsWith('<HTML')) {
+      throw new Error(`Server returned HTML (status ${res.status}) — backend waking up or route not found. Snippet: ${text.slice(0,180).replace(/\s+/g,' ')}`);
+    }
+    try { return JSON.parse(text); } catch (e) {
+      throw new Error(`Invalid JSON (status ${res.status}, ct ${ct}): ${text.slice(0,180).replace(/\s+/g,' ')} — ${e.message}`);
+    }
+  };
+  const fetchJson = async (url, opts, retries=1) => {
+    try {
+      const r = await fetch(url, opts);
+      return await safeJson(r);
+    } catch (e) {
+      if (retries>0 && String(e.message).includes('HTML')) {
+        await new Promise(r=>setTimeout(r,2500));
+        const r2 = await fetch(url, opts);
+        return await safeJson(r2);
+      }
+      throw e;
+    }
+  };
+
   // Load history + bibles + replicate flag on mount / project change
   useEffect(()=>{
-    fetch(`/api/creative/admin/replicate-status`).then(r=>r.json()).then(j=>{ if(j.success) setReplicateEnabled(j.enabled); }).catch(()=>{});
+    fetchJson(`/api/creative/admin/replicate-status`).then(j=>{ if(j.success) setReplicateEnabled(j.enabled); }).catch(()=>{});
     if(!projectId) return;
     localStorage.setItem("garuda_creative_project", projectId);
-    fetch(`/api/creative/artifacts?projectId=${encodeURIComponent(projectId)}&limit=20`).then(r=>r.json()).then(j=>{
+    fetchJson(`/api/creative/artifacts?projectId=${encodeURIComponent(projectId)}&limit=20`).then(j=>{
       if(j.success) setHistory(j.artifacts||[]);
     }).catch(()=>{});
-    fetch(`/api/creative/bibles?projectId=${encodeURIComponent(projectId)}`).then(r=>r.json()).then(j=>{
+    fetchJson(`/api/creative/bibles?projectId=${encodeURIComponent(projectId)}`).then(j=>{
       if(j.success) setBibles(j.data||{characters:[],worlds:[],visuals:[]});
     }).catch(()=>{});
-    fetch(`/api/creative/library?projectId=${encodeURIComponent(projectId)}`).then(r=>r.json()).then(j=>{
+    fetchJson(`/api/creative/library?projectId=${encodeURIComponent(projectId)}`).then(j=>{
       if(j.success && j.data?.assets) setResults(j.data.assets);
     }).catch(()=>{});
   },[projectId]);
   const toggleReplicate=async()=>{
     setReplicateLoading(true);
     try{
-      const r=await fetch(`/api/creative/admin/replicate-toggle`,{method:"POST", headers:{"Content-Type":"application/json", "x-founder-key": localStorage.getItem("garuda_founder_key")||""}, body: JSON.stringify({enable: !replicateEnabled})});
-      const j=await r.json();
+      const j=await fetchJson(`/api/creative/admin/replicate-toggle`,{method:"POST", headers:{"Content-Type":"application/json", "x-founder-key": localStorage.getItem("garuda_founder_key")||""}, body: JSON.stringify({enable: !replicateEnabled})});
       if(j.success){ setReplicateEnabled(j.enabled); setStatusMsg(j.message); }
       else setStatusMsg(j.message||"Failed");
-    }catch(e){ setStatusMsg(String(e.message)); }
+    }catch(e){ setStatusMsg(String(e.message).slice(0,300)); }
     finally{ setReplicateLoading(false); }
   };
 
@@ -57,14 +81,12 @@ export default function CreativeProductionWorkspace(){
       const f=files[idx];
       const fd=new FormData(); fd.append("file", f);
       try{
-        const r=await fetch("/api/creative/media/ingest",{method:"POST", body:fd, credentials:"same-origin"});
-        const j=await r.json();
+        const j=await fetchJson("/api/creative/media/ingest",{method:"POST", body:fd, credentials:"same-origin"});
         if(j.success){
-          // attach permanent publicUrl + keep blob for instant preview
           const enriched={...j, blobUrl: blobs[idx]?.blobUrl, previewUrl: j.publicUrl||j.dataUrl||`/assets/creative/${j.filePath?.split(/[/\\]/).pop()}`};
           setUploads(prev=>[...prev, enriched]);
         } else setStatusMsg(j.message||"Ingest failed");
-      }catch(e){ setStatusMsg(String(e.message)); }
+      }catch(e){ setStatusMsg(String(e.message).slice(0,300)); }
     }
     setStatus("READY"); setStatusMsg(`${files.length} ingested — preview below, ready to command GARUDA`);
   };
@@ -77,10 +99,9 @@ export default function CreativeProductionWorkspace(){
     if(text.length<5){ setStatusMsg("Command too short — e.g., 'Is footage ko 60s reel bana'"); return; }
     setStatus("PLANNING"); setStatusMsg("GARUDA classifying intent…");
     try{
-      const r=await fetch("/api/creative/intent",{ method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin",
+      const j=await fetchJson("/api/creative/intent",{ method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin",
         body: JSON.stringify({ text, projectId: projectId||null, sessionId:"web_"+(projectId||"default") })
       });
-      const j=await r.json();
       if(!j.success && j.intent!=="UNKNOWN"){ setStatus("BLOCKED"); setStatusMsg(j.message||"Intent failed"); return; }
       setStatus("PROCESSING"); setStatusMsg(`Intent: ${j.intent} → ${j.mediaType} — executing…`);
       // Normalize any artifact shape so renderer always sees filePath/publicUrl/type
@@ -110,8 +131,8 @@ export default function CreativeProductionWorkspace(){
             setStatusMsg("Music ready — now creating beautiful final video (image + music)…");
             try{
               const mediaInputs = uploads.filter(u=> (u.mimetype||"").startsWith("video") || u.mimetype?.startsWith("image") || u.filePath?.match(/\.(mp4|mov|webm|jpg|jpeg|png|webp|svg)$/i)).map(u=>u.filePath);
-              const rr2=await fetch("/api/creative/music-video",{method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin", body: JSON.stringify({ projectId: projectId||null, footagePaths: mediaInputs, audioPath: j.artifact.filePath || j.artifact.url, durationSec:10, style:"cinematic" })});
-              const rj2=await rr2.json();
+              const rj2=await fetchJson("/api/creative/music-video",{method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin", body: JSON.stringify({ projectId: projectId||null, footagePaths: mediaInputs, audioPath: j.artifact.filePath || j.artifact.url, durationSec:10, style:"cinematic" })});
+              // rj2 already JSON
               if(rj2.success && rj2.artifact){ pushResult(rj2.artifact, rj2); setQc(rj2.qc||null); }
             }catch{}
           }
@@ -122,8 +143,7 @@ export default function CreativeProductionWorkspace(){
       else if(j.asset) pushResult(j.asset, j);
       // Legacy fallback for simple CREATE without artifact
       if(!j.artifact && !j.viewer?.storyboard && (j.intent==="TEXT_TO_IMAGE"||j.intent==="POSTER"||j.intent==="UNKNOWN")){
-        const g=await fetch("/api/creative/generate",{method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin", body: JSON.stringify({ prompt:text, projectId:projectId||null })});
-        const gj=await g.json();
+        const gj=await fetchJson("/api/creative/generate",{method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin", body: JSON.stringify({ prompt:text, projectId:projectId||null })});
         if(gj.success){
           const a=gj.asset||gj.storyboard||gj;
           pushResult(a, gj);
@@ -158,14 +178,13 @@ export default function CreativeProductionWorkspace(){
     try{
       let beat=null;
       if(audio?.filePath){
-        const br=await fetch("/api/creative/media/beat-analyze",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ audioPath: audio.filePath })});
-        const bj=await br.json(); beat=bj.data;
+        const bj=await fetchJson("/api/creative/media/beat-analyze",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ audioPath: audio.filePath })});
+        beat=bj.data;
       }
       setStatus("RENDERING"); setStatusMsg(willInvent ? `Rendering beautiful video — image Ken Burns + invented music (BPM ${beat?.bpm||120})` : `Rendering music video — BPM ${beat?.bpm||120} — via FFmpeg`);
-      const rr=await fetch("/api/creative/music-video",{method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin",
+      const rj=await fetchJson("/api/creative/music-video",{method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin",
         body: JSON.stringify({ projectId: projectId||null, footagePaths: mediaInputs, audioPath: audio?.filePath||null, inventMusic: willInvent, mood: willInvent ? "cinematic" : undefined, durationSec: willInvent ? 10 : 60, style:"cinematic" })
       });
-      const rj=await rr.json();
       if(rj.success){
         setResults(prev=>[rj.artifact||rj, ...prev]);
         setQc(rj.qc||null);

@@ -92,6 +92,18 @@ app.use("/api/founder", (req, res) => require("../api/founder")(req, res));
 app.use("/api/founder-command", (req, res) => require("../api/founder")(req, res));
 app.use("/api/project-scope", (req, res) => require("../api/project-scope")(req, res));
 
+// Ensure /api 404 always returns JSON (never HTML <!DOCTYPE) — prevents frontend Unexpected token '<'
+app.use("/api", (req, res) => res.status(404).json({ success:false, message:`API not found: ${req.method} ${req.path}`, status:404, hint:"Check vercel.json rewrite and ensure Render backend is awake (cold start ~30s)" }));
+// Global error handler — for /api always JSON, never HTML
+app.use((err, req, res, _next) => {
+  if (req.path && req.path.startsWith("/api")) {
+    const msg = String(err.message || err).slice(0,600).replace(/</g,'');
+    return res.status(err.status || 500).json({ success:false, message: msg, status: err.status||500, error: msg });
+  }
+  // non-API errors fall through to SPA
+  return res.status(500).send(err.message || "Internal error");
+});
+
 const telegramBotService = require("./services/telegramBotService");
 const abslKnowledgeService = require("./services/abslKnowledgeService");
 const abslKnowledgeSeedService = require("./services/abslKnowledgeSeedService");
