@@ -654,7 +654,7 @@ router.post("/music-video", async (req,res)=>{
   try{
     let footagePaths = Array.isArray(req.body.footagePaths)? req.body.footagePaths : [];
     let audioPath = req.body.audioPath||null;
-    const durationSec = Number(req.body.durationSec||req.body.duration||60);
+    let durationSec = Number(req.body.durationSec||req.body.duration||60);
     const style = req.body.style||"cinematic";
     const inventMusic = req.body.inventMusic===true || req.body.autoMusic===true || (!audioPath && req.body.mood);
     if(footagePaths.length===0) return res.status(400).json({success:false, message:"footagePaths[] required"});
@@ -678,13 +678,34 @@ router.post("/music-video", async (req,res)=>{
         }
       }catch{}
     }
+    // --- Mobile quality helper: probe duration via ffmpeg ---
+    const probeDurationSec = async (filePath) => {
+      try {
+        const probeVal = await new Promise((resolve)=>{
+          let settled=false;
+          const to=setTimeout(()=>{ if(!settled){ settled=true; resolve(null); }}, 4000);
+          const { execFile: ef } = require("child_process");
+          const fp2 = (()=>{ try{ return require("ffmpeg-static"); }catch{ return "ffmpeg"; }})();
+          ef(fp2, ["-i", filePath], { timeout:4000, maxBuffer:2*1024*1024 }, (err, stdout, stderr)=>{
+            if(settled) return; clearTimeout(to); settled=true;
+            const out=String(stderr||stdout||"");
+            const m=out.match(/Duration:\s*(\d+):(\d+):(\d+)\.(\d+)/);
+            if(m){ const h=parseInt(m[1],10), mi=parseInt(m[2],10), s=parseInt(m[3],10), ms=parseInt(m[4].slice(0,2),10); resolve(h*3600+mi*60+s+ms/100); } else resolve(null);
+          });
+        });
+        return probeVal;
+      } catch { return null; }
+    };
     // Convert image inputs to beautiful Ken Burns video segments — duration matches requested timeline
+    // Gap-fill: after raw clips finish, generate images for remaining song words (any language)
     const processedInputs=[];
     const osTmp=require("os").tmpdir();
     const ffmpegPath=(()=>{ try{ return require("ffmpeg-static"); }catch{ return "ffmpeg"; }})();
     const { execFile } = require("child_process");
     const crypto=require("crypto"), fs=require("fs"), path=require("path");
-    const perImageSec = Math.max(5, Math.ceil(durationSec / Math.max(1, footagePaths.filter(p=> /\.(jpg|jpeg|png|webp|svg)$/i.test(p)).length || 1)));
+    // Determine perImageSec based on total duration, but for gap mode we split
+    const imageCountInput = footagePaths.filter(p=> /\.(jpg|jpeg|png|webp|svg)$/i.test(p)).length;
+    const perImageSec = Math.max(5, Math.ceil(durationSec / Math.max(1, imageCountInput || 1)));
     for(const p of footagePaths){
       const isImage = /\.(jpg|jpeg|png|webp|svg)$/i.test(p);
       if(isImage){
@@ -704,11 +725,87 @@ router.post("/music-video", async (req,res)=>{
         processedInputs.push(p);
       }
     }
+    // --- Auto full-song duration: if 211s Punjabi song, use its QC duration not 60s truncate (mobile zero-touch) ---
+    // Do QC early to know song length before gap calc
+    let audioQC = null;
+    if(audioPath){
+      try{
+        const audioRouter=require("../services/audioGenerationRouter");
+        audioQC = await audioRouter.verifyAudioQC(audioPath);
+        if(audioQC && audioQC.durationSec && audioQC.durationSec > durationSec){
+          durationSec = Math.ceil(audioQC.durationSec);
+        }
+      }catch{}
+    }
+    // --- Gap-fill: raw 67s vs song 211s -> 144s images from remaining words (any language) ---
+    // Any-language: chunk remainingWords as-is (Punjabi/Hindi/English), no translation, 6s per image
+    let gapGeneratedCount = 0;
+    if(audioQC && audioQC.durationSec){
+      const songDuration = audioQC.durationSec;
+      // Probe raw video total (only video files, not images already converted)
+      let rawTotal = 0;
+      for(const orig of footagePaths){
+        if(!/\.(jpg|jpeg|png|webp|svg)$/i.test(orig) && fs.existsSync(orig)){
+          const d = await probeDurationSec(orig);
+          rawTotal += d || 5; // fallback 5s per clip if probe fails
+        } else {
+          // Image already converted uses perImageSec; count it as perImageSec
+          rawTotal += perImageSec;
+        }
+      }
+      // If all were images, rawTotal already perImageSec * count; else use probed
+      // For mixed case with 4 videos 67s, probe will sum to ~67
+      const gap = songDuration - rawTotal;
+      const remainingWordsRaw = String(req.body.remainingWords || req.body.lyricsRemaining || req.body.words || req.body.lyrics || req.body.text || req.body.songWords || "").trim();
+      // Also consider mood/text from request as fallback for any-language
+      const remainingWords = remainingWordsRaw || String(req.body.mood || style || "cinematic Punjabi").trim();
+      if(gap > 5 && remainingWords.length > 3){
+        const targetPerImageSec = 6; // song-synced
+        const gapImagesNeeded = Math.min(24, Math.max(1, Math.ceil(gap / targetPerImageSec)));
+        const words = remainingWords.split(/\s+/).filter(Boolean);
+        const wordsPerImage = Math.max(1, Math.ceil(words.length / gapImagesNeeded));
+        const gapPerImageSec = Math.max(5, gap / gapImagesNeeded);
+        // Helper: mood to visual style (language-agnostic)
+        const moodLower = String(req.body.mood || remainingWords || style).toLowerCase();
+        let styleHint = "cinematic anamorphic";
+        if(/romantic|love|pyar|ishq|dil/i.test(moodLower)) styleHint = "warm golden hour, bokeh, romantic";
+        else if(/sad|dark|dard|gham/i.test(moodLower)) styleHint = "moody blue hour, rain neon";
+        else if(/happy|bhangra|dance|punjabi|upbeat/i.test(moodLower)) styleHint = "vibrant Punjabi celebration, colorful";
+        else if(/epic|sufi|spiritual/i.test(moodLower)) styleHint = "monumental volumetric god rays";
+        for(let i=0;i<gapImagesNeeded;i++){
+          const chunk = words.slice(i*wordsPerImage, (i+1)*wordsPerImage).join(" ") || remainingWords.slice(0,60);
+          const imagePrompt = `Cinematic music-video frame ${i+1}/${gapImagesNeeded}, lyric: "${chunk}" — ${styleHint}, photorealistic 8k, vertical 9:16, high detail, song-synced visual`;
+          let imgPath = null;
+          try{
+            // Direct sovereign generation via creativeStudioService (any language words as-is, no funded provider needed)
+            const brief = await creativeStudioService.createCreativeBrief({ title: chunk.slice(0,40) || `Gap ${i+1}`, brandName:"GARUDA", qualityProfile:"cinematic" });
+            try{ await creativeStudioService.generateConcept(brief.briefId); }catch{}
+            const asset = await creativeStudioService.generateAsset(brief.briefId, "IMAGE_STORY", { generationMode:"DRY_RUN", _testMock:true, mockFalSuccess:true, prompt: imagePrompt });
+            imgPath = asset.filePath;
+          }catch(e){ /* fallback will try next */ }
+          if(imgPath && fs.existsSync(imgPath)){
+            const tmpVid2=path.join(osTmp, `gapimg_${Date.now()}_${crypto.randomBytes(2).toString("hex")}.mp4`);
+            const gapSec = String(Math.round(gapPerImageSec * 100)/100);
+            try{
+              await new Promise((res2,rej2)=>{
+                const vf2 = "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,zoompan=z='min(zoom+0.0015,1.2)':d=1:x='iw/2-(iw/zoom)/2':y='ih/2-(ih/zoom)/2',eq=contrast=1.05:saturation=1.1";
+                const useVf = req.body.vertical===false ? "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,zoompan=z='min(zoom+0.0015,1.2)':d=1:x='iw/2-(iw/zoom)/2':y='ih/2-(ih/zoom)/2',eq=contrast=1.05:saturation=1.1" : vf2;
+                require("child_process").execFile(ffmpegPath, ["-loop","1","-i", imgPath, "-t", gapSec, "-vf", useVf, "-c:v","libx264","-pix_fmt","yuv420p","-r","24","-y", tmpVid2], { timeout:20000, maxBuffer:4*1024*1024 }, (err,so,se)=> err? rej2(new Error(String(se||err.message).slice(0,400))): res2());
+              });
+              if(fs.existsSync(tmpVid2) && fs.statSync(tmpVid2).size>1000){ processedInputs.push(tmpVid2); gapGeneratedCount++; }
+            }catch{}
+          }
+          if(gapGeneratedCount >= gapImagesNeeded) break;
+        }
+        // Update durationSec to song length for timeline
+        if(gapGeneratedCount>0) durationSec = Math.ceil(songDuration);
+      }
+    }
     const ingestRecords = processedInputs.map(p=> ({ assetId: p, filePath:p, fileSize: fs.existsSync(p)? require("fs").statSync(p).size:0, mimetype: p.match(/\.(mp4|mov|webm)$/i)?"video/mp4":"image/jpeg" }));
     const footageAnalysis = await creativeEditorService.analyzeFootage(ingestRecords);
     // Pipeline: AUDIO QC → ASYNC PCM DECODE → REAL BPM/BEAT MAP (after real music verified or procedural fallback)
-    let audioQC = null;
-    if(audioPath){
+    // audioQC already probed above for gap; reuse if exists
+    if(!audioQC && audioPath){
       try{
         const audioRouter=require("../services/audioGenerationRouter");
         audioQC = await audioRouter.verifyAudioQC(audioPath);

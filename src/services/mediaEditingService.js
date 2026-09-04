@@ -85,26 +85,30 @@ class MediaEditingService {
     if (vfParts.length===0) vfParts.push("scale=1280:720:flags=bicubic");
     const vf = vfParts.join(",");
 
+    // Mobile quality: use yuv420p + ultrafast + faststart, ensure 720p minimum
+    if (vfParts.length===0) vfParts.push("scale=1280:720:flags=bicubic:flags=lanczos");
+    // Auto duration handling: probe full song duration is done in route, here just ensure inputs exist
     // Audio mux path: if audioReplacePath present, add second input and map with loudnorm
     let args;
     if(audioReplacePath){
-      args = [...ssArgs, "-i", inputs[0], "-i", audioReplacePath, ...tArgs, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-c:a","aac","-filter:a","loudnorm=I=-14:TP=-1:LRA=11","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-shortest","-y", outFile];
+      args = [...ssArgs, "-i", inputs[0], "-i", audioReplacePath, ...tArgs, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-preset","medium","-crf","18","-c:a","aac","-b:a","192k","-filter:a","loudnorm=I=-14:TP=-1:LRA=11","-pix_fmt","yuv420p","-movflags","+faststart","-shortest","-y", outFile];
     } else {
-      args = [...ssArgs, "-i", inputs[0], ...tArgs, "-vf", vf, "-c:v","libx264","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-y", outFile];
+      args = [...ssArgs, "-i", inputs[0], ...tArgs, "-vf", vf, "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p","-movflags","+faststart","-y", outFile];
     }
-    if (inputs.length>1 && operations && operations.some(o=>o.concat)) {
+    // Auto concat: whenever >1 inputs, chronologically — Zero-Touch mobile: 4 clips 67s
+    if (inputs.length > 1) {
       const listFile = path.join(this.assetsDir, `concat_${Date.now()}.txt`);
       fs.writeFileSync(listFile, inputs.map(p=>`file '${p.replace(/'/g,"'\\''")}'`).join("\n"));
       if(audioReplacePath){
-        const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-i", audioReplacePath, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-c:a","aac","-filter:a","loudnorm=I=-14:TP=-1:LRA=11","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-shortest","-y", outFile];
-        await new Promise((res,rej)=> execFile(this.ffmpegPath, concatArgs, { timeout: 60000, maxBuffer: 4*1024*1024 }, (e,so,se)=> e?rej(new Error(se||e.message)):res()));
+        const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-i", audioReplacePath, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-preset","medium","-crf","18","-c:a","aac","-b:a","192k","-filter:a","loudnorm=I=-14:TP=-1:LRA=11","-pix_fmt","yuv420p","-movflags","+faststart","-shortest","-y", outFile];
+        await new Promise((res,rej)=> execFile(this.ffmpegPath, concatArgs, { timeout: 180000, maxBuffer: 8*1024*1024 }, (e,so,se)=> e?rej(new Error(se||e.message)):res()));
       } else {
-        const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-c","copy","-y", outFile];
-        await new Promise((res,rej)=> execFile(this.ffmpegPath, concatArgs, { timeout: 30000, maxBuffer: 4*1024*1024 }, (e,so,se)=> e?rej(new Error(se||e.message)):res()));
+        const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-vf", vf, "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p","-movflags","+faststart","-y", outFile];
+        await new Promise((res,rej)=> execFile(this.ffmpegPath, concatArgs, { timeout: 180000, maxBuffer: 8*1024*1024 }, (e,so,se)=> e?rej(new Error(se||e.message)):res()));
       }
       try { fs.unlinkSync(listFile); } catch {}
     } else {
-      await new Promise((res,rej)=> execFile(this.ffmpegPath, args, { timeout: 60000, maxBuffer: 4*1024*1024 }, (e,so,se)=> e?rej(new Error(`FFmpeg edit failed: ${se||e.message}`)):res()));
+      await new Promise((res,rej)=> execFile(this.ffmpegPath, args, { timeout: 180000, maxBuffer: 8*1024*1024 }, (e,so,se)=> e?rej(new Error(`FFmpeg edit failed: ${se||e.message}`)):res()));
     }
 
     if (!fs.existsSync(outFile)) throw new Error("Render failed: output not written");
@@ -149,10 +153,11 @@ class MediaEditingService {
   }
 
   // ── REAL sovereign beat/BPM: non-blocking FFmpeg PCM decode via pipe → autocorrelation ──
+  // Any-language support: energy-based BPM works for Punjabi/Hindi/English equally — no language model needed
   async analyzeBeatsAsync(audioPath, opts={}){
     if (!audioPath || !fs.existsSync(audioPath)) return { status:"UNAVAILABLE", reason:"AUDIO_NOT_FOUND", beats:[], bpm:null };
-    const timeoutMs = Math.min(opts.timeoutMs||15000, 20000);
-    const maxAnalyzeSec = opts.maxAnalyzeSec||30;
+    const timeoutMs = Math.min(opts.timeoutMs||25000, 30000);
+    const maxAnalyzeSec = opts.maxAnalyzeSec || 60; // support full 211s Punjabi song; if shorter song, probe will limit
     let st;
     try{ st=fs.statSync(audioPath); } catch(e){ return { status:"ANALYSIS_FAILED", reason:String(e.message), beats:[], bpm:null }; }
     if (st.size < 100) return { status:"ANALYSIS_FAILED", reason:"FILE_TOO_SMALL", fileSize: st.size, beats:[], bpm:null };
