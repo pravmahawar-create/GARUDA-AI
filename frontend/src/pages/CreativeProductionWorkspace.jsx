@@ -17,9 +17,13 @@ export default function CreativeProductionWorkspace(){
   const [qc, setQc]=useState(null);
   const fileRef=useRef(null);
   const [dragOver,setDragOver]=useState(false);
+  const [previewUrls, setPreviewUrls]=useState([]); // blob URLs for instant upload preview
+  const [replicateEnabled, setReplicateEnabled]=useState(false);
+  const [replicateLoading, setReplicateLoading]=useState(false);
 
-  // Load history + bibles on mount / project change
+  // Load history + bibles + replicate flag on mount / project change
   useEffect(()=>{
+    fetch(`/api/creative/admin/replicate-status`).then(r=>r.json()).then(j=>{ if(j.success) setReplicateEnabled(j.enabled); }).catch(()=>{});
     if(!projectId) return;
     localStorage.setItem("garuda_creative_project", projectId);
     fetch(`/api/creative/artifacts?projectId=${encodeURIComponent(projectId)}&limit=20`).then(r=>r.json()).then(j=>{
@@ -32,20 +36,37 @@ export default function CreativeProductionWorkspace(){
       if(j.success && j.data?.assets) setResults(j.data.assets);
     }).catch(()=>{});
   },[projectId]);
+  const toggleReplicate=async()=>{
+    setReplicateLoading(true);
+    try{
+      const r=await fetch(`/api/creative/admin/replicate-toggle`,{method:"POST", headers:{"Content-Type":"application/json", "x-founder-key": localStorage.getItem("garuda_founder_key")||""}, body: JSON.stringify({enable: !replicateEnabled})});
+      const j=await r.json();
+      if(j.success){ setReplicateEnabled(j.enabled); setStatusMsg(j.message); }
+      else setStatusMsg(j.message||"Failed");
+    }catch(e){ setStatusMsg(String(e.message)); }
+    finally{ setReplicateLoading(false); }
+  };
 
   const handleFiles=async(files)=>{
     if(!files||files.length===0) return;
+    // instant blob preview (no wait for ingest)
+    const blobs=Array.from(files).map(f=>({ name:f.name, type:f.type, size:f.size, blobUrl: URL.createObjectURL(f) }));
+    setPreviewUrls(prev=>[...prev, ...blobs]);
     setStatus("INGESTING"); setStatusMsg(`${files.length} file(s) uploading…`);
-    for(const f of files){
+    for(let idx=0; idx<files.length; idx++){
+      const f=files[idx];
       const fd=new FormData(); fd.append("file", f);
       try{
         const r=await fetch("/api/creative/media/ingest",{method:"POST", body:fd, credentials:"same-origin"});
         const j=await r.json();
-        if(j.success) setUploads(prev=>[...prev, j]);
-        else setStatusMsg(j.message||"Ingest failed");
+        if(j.success){
+          // attach permanent publicUrl + keep blob for instant preview
+          const enriched={...j, blobUrl: blobs[idx]?.blobUrl, previewUrl: j.publicUrl||j.dataUrl||`/assets/creative/${j.filePath?.split(/[/\\]/).pop()}`};
+          setUploads(prev=>[...prev, enriched]);
+        } else setStatusMsg(j.message||"Ingest failed");
       }catch(e){ setStatusMsg(String(e.message)); }
     }
-    setStatus("READY"); setStatusMsg(`${files.length} ingested — ready to command GARUDA`);
+    setStatus("READY"); setStatusMsg(`${files.length} ingested — preview below, ready to command GARUDA`);
   };
 
   const onDrop=(e)=>{ e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files); };
@@ -56,26 +77,53 @@ export default function CreativeProductionWorkspace(){
     if(text.length<5){ setStatusMsg("Command too short — e.g., 'Is footage ko 60s reel bana'"); return; }
     setStatus("PLANNING"); setStatusMsg("GARUDA classifying intent…");
     try{
-      // Canonical natural-language front door via creativeIntentRouter
       const r=await fetch("/api/creative/intent",{ method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin",
         body: JSON.stringify({ text, projectId: projectId||null, sessionId:"web_"+(projectId||"default") })
       });
       const j=await r.json();
-      if(!j.success){ setStatus("BLOCKED"); setStatusMsg(j.message||"Intent failed"); return; }
+      if(!j.success && j.intent!=="UNKNOWN"){ setStatus("BLOCKED"); setStatusMsg(j.message||"Intent failed"); return; }
       setStatus("PROCESSING"); setStatusMsg(`Intent: ${j.intent} → ${j.mediaType} — executing…`);
-      // If intent produced an artifact, refresh results/history
-      if(j.artifact) setResults(prev=>[j.artifact, ...prev].slice(0,20));
-      // Also try legacy generate path for simple CREATE
-      if(!j.artifact && (j.intent==="TEXT_TO_IMAGE"||j.intent==="POSTER")){
+      // Normalize any artifact shape so renderer always sees filePath/publicUrl/type
+      const pushResult=(art, extra={})=>{
+        if(!art) return;
+        const normalized={
+          ...art, ...extra,
+          assetId: art.id || art.assetId || art.storyboardId || art.planId,
+          filePath: art.filePath || art.url || art.viewer?.src || extra.viewer?.src || art.downloadUrl,
+          publicUrl: art.publicUrl || art.url || art.assetUrl || art.downloadUrl || extra.viewer?.src,
+          assetUrl: art.assetUrl || art.url || art.publicUrl,
+          type: art.type || extra.viewer?.type || j.mediaType,
+          mimetype: art.mimetype || (art.filePath?.endsWith(".mp3")?"audio/mpeg": art.filePath?.endsWith(".wav")?"audio/wav": undefined),
+          // carry viewer/storyboard for rendering
+          storyboard: art.storyboard || extra.viewer?.storyboard || art.scenes ? art : null,
+          scenes: art.scenes || art.storyboard?.scenes || extra.viewer?.storyboard?.scenes,
+        };
+        setResults(prev=>[normalized, ...prev].slice(0,20));
+      };
+      if(j.artifact) pushResult(j.artifact, j);
+      else if(j.viewer?.storyboard) pushResult({ id: j.viewer.storyboard.storyboardId, type:"STORYBOARD_BLUEPRINT", storyboard: j.viewer.storyboard, filePath: null }, j);
+      else if(j.storyboard) pushResult({ id: j.storyboard.storyboardId, type:"STORYBOARD_BLUEPRINT", storyboard: j.storyboard }, j);
+      else if(j.asset) pushResult(j.asset, j);
+      // Legacy fallback for simple CREATE without artifact
+      if(!j.artifact && !j.viewer?.storyboard && (j.intent==="TEXT_TO_IMAGE"||j.intent==="POSTER"||j.intent==="UNKNOWN")){
         const g=await fetch("/api/creative/generate",{method:"POST", headers:{"Content-Type":"application/json"}, credentials:"same-origin", body: JSON.stringify({ prompt:text, projectId:projectId||null })});
         const gj=await g.json();
         if(gj.success){
-          setResults(prev=> [gj.asset||gj.storyboard||gj, ...prev]);
+          const a=gj.asset||gj.storyboard||gj;
+          pushResult(a, gj);
           setQc(gj.verification||null);
         }
       }
-      setStatus("READY"); setStatusMsg(j.answer ? j.answer.slice(0,220) : "Done — result visible below");
+      // Only show READY if we actually pushed something
+      const hasResult = Boolean(j.artifact || j.viewer?.storyboard || j.storyboard || j.asset);
+      if(hasResult){
+        setStatus("READY"); setStatusMsg(j.answer ? j.answer.slice(0,220) : "Done — result visible below");
+      } else {
+        setStatus(j.intent==="UNKNOWN" ? "BLOCKED" : "READY");
+        setStatusMsg(j.message || j.answer?.slice(0,220) || "No renderable artifact — try 'poster bana do' or upload image/video");
+      }
       if(j.proofStage) setQc({ status: j.truthStatus||"VERIFIED", proof:j.proofStage });
+      else if(j.truthStatus) setQc({ status: j.truthStatus });
     }catch(e){ setStatus("FAILED"); setStatusMsg(String(e.message)); }
   };
 
@@ -119,8 +167,9 @@ export default function CreativeProductionWorkspace(){
             <h1 style={{margin:"0.2rem 0 0", fontSize:"1.5rem"}}>Creative Workspace</h1>
             <p style={{margin:"0.15rem 0 0", color:"#94a3b8", fontSize:"0.82rem"}}>Upload → Command (“is footage ko reel bana”) → GARUDA agents → QC → Preview. No VS Code needed.</p>
           </div>
-          <div style={{display:"flex", gap:"0.5rem", alignItems:"center"}}>
-            <input value={projectId} onChange={e=>setProjectId(e.target.value)} placeholder="Project ID (auto)" style={{background:"rgba(0,0,0,0.5)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:6, color:"#fff", padding:"0.45rem 0.6rem", fontSize:"0.8rem", width:180}} />
+          <div style={{display:"flex", gap:"0.5rem", alignItems:"center", flexWrap:"wrap"}}>
+            <input value={projectId} onChange={e=>setProjectId(e.target.value)} placeholder="Project ID (auto)" style={{background:"rgba(0,0,0,0.5)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:6, color:"#fff", padding:"0.45rem 0.6rem", fontSize:"0.8rem", width:160}} />
+            <button onClick={toggleReplicate} disabled={replicateLoading} title="Founder: toggle Replicate paid (~₹60/min)" style={{background: replicateEnabled ? "rgba(168,85,247,0.2)" : "rgba(255,255,255,0.06)", color: replicateEnabled ? "#d8b4fe" : "#94a3b8", border:`1px solid ${replicateEnabled ? "#a855f7" : "rgba(255,255,255,0.1)"}`, borderRadius:6, padding:"0.4rem 0.7rem", cursor:"pointer", fontSize:"0.75rem", fontWeight:800}}>{replicateLoading ? "…" : replicateEnabled ? "💎 Replicate ON" : "💎 Replicate OFF"}</button>
             <button onClick={()=>navigate("/command-center")} style={{background:"rgba(255,255,255,0.06)", color:"#cbd5e1", border:"1px solid rgba(255,255,255,0.1)", borderRadius:6, padding:"0.45rem 0.8rem", cursor:"pointer", fontSize:"0.8rem"}}>High Command</button>
             <button onClick={()=>navigate("/founder/access")} style={{background:`linear-gradient(135deg, rgba(212,175,55,0.2), rgba(184,134,11,0.4))`, color:GOLD_LIGHT, border:`1px solid ${GOLD}`, borderRadius:6, padding:"0.45rem 0.8rem", cursor:"pointer", fontSize:"0.8rem", fontWeight:800}}>👑 Kingdom</button>
           </div>
@@ -151,12 +200,24 @@ export default function CreativeProductionWorkspace(){
             <button onClick={()=>fileRef.current?.click()} style={{background:"rgba(255,255,255,0.08)", color:"#fff", border:"1px solid rgba(255,255,255,0.15)", borderRadius:8, padding:"0.55rem 1rem", cursor:"pointer", fontWeight:700}}>📁 Choose Files</button>
             <button onClick={handleMusicVideo} style={{background:"linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,182,212,0.2))", color:"#34d399", border:"1px solid rgba(16,185,129,0.3)", borderRadius:8, padding:"0.55rem 1rem", cursor:"pointer", fontWeight:800}}>🎬 Auto Music Video (footage+song)</button>
           </div>
-          {uploads.length>0 && (
-            <div style={{marginTop:"0.8rem", display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(180px,1fr))", gap:"0.5rem", textAlign:"left"}}>
+          {(uploads.length>0 || previewUrls.length>0) && (
+            <div style={{marginTop:"0.8rem", display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(160px,1fr))", gap:"0.5rem", textAlign:"left"}}>
+              {/* instant blob previews */}
+              {previewUrls.map((p,i)=>(
+                <div key={`pv-${i}`} style={{background:"rgba(0,0,0,0.4)", border:"1px solid rgba(212,175,55,0.2)", borderRadius:8, padding:"0.5rem", fontSize:"0.72rem"}}>
+                  <div style={{fontWeight:700, color:GOLD, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{p.name}</div>
+                  {p.type?.startsWith("image/") && <img src={p.blobUrl} alt="preview" style={{width:"100%", height:90, objectFit:"cover", borderRadius:6, marginTop:4}} />}
+                  {p.type?.startsWith("video/") && <video src={p.blobUrl} muted style={{width:"100%", height:90, objectFit:"cover", borderRadius:6, marginTop:4}} />}
+                  {p.type?.startsWith("audio/") && <audio src={p.blobUrl} controls style={{width:"100%", marginTop:4, height:28}} />}
+                  <div style={{color:"#94a3b8"}}>{p.type} · {(p.size/1024).toFixed(1)} KB</div>
+                </div>
+              ))}
               {uploads.map((u,i)=>(
-                <div key={i} style={{background:"rgba(0,0,0,0.4)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:8, padding:"0.6rem", fontSize:"0.75rem"}}>
-                  <div style={{fontWeight:700, color:"#fff", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{u.originalName||u.assetId}</div>
+                <div key={`up-${i}`} style={{background:"rgba(0,0,0,0.4)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:8, padding:"0.6rem", fontSize:"0.75rem"}}>
+                  <div style={{fontWeight:700, color:"#fff", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>✓ {u.originalName||u.assetId}</div>
                   <div style={{color:"#94a3b8"}}>{u.mimetype} · {(u.fileSize/1024).toFixed(1)} KB</div>
+                  {(u.previewUrl||u.publicUrl) && u.mimetype?.startsWith("image/") && <img src={u.previewUrl||u.publicUrl} alt="ingested" style={{width:"100%", height:90, objectFit:"cover", borderRadius:6, marginTop:4}} />}
+                  {(u.previewUrl||u.publicUrl) && u.mimetype?.startsWith("video/") && <video src={u.previewUrl||u.publicUrl} controls muted style={{width:"100%", height:90, objectFit:"cover", borderRadius:6, marginTop:4}} />}
                   <div style={{color:"#64748b", wordBreak:"break-all"}}>{u.filePath?.slice(-40)}</div>
                   {u.sha256 && <div style={{color:"#34d399", fontSize:"0.65rem"}}>SHA {u.sha256.slice(0,12)}…</div>}
                 </div>
@@ -172,20 +233,31 @@ export default function CreativeProductionWorkspace(){
             {results.length===0 ? <div style={{color:"#64748b", fontSize:"0.85rem", textAlign:"center", padding:"2rem 0"}}>No results yet — upload + command to produce first artifact</div> : (
               <div style={{display:"flex", flexDirection:"column", gap:"0.7rem", maxHeight:520, overflowY:"auto"}}>
                 {results.map((r,i)=>{
-                  const isVideo = r.publicUrl?.endsWith(".mp4") || r.mimetype?.startsWith("video") || r.type==="VIDEO" || r.filePath?.endsWith(".mp4");
-                  const isAudio = r.mimetype?.startsWith("audio");
+                  const isVideo = r.publicUrl?.endsWith(".mp4") || r.dataUrl?.endsWith(".mp4") || r.assetUrl?.endsWith(".mp4") || r.mimetype?.startsWith("video") || r.type==="VIDEO" || r.type==="STORYBOARD_BLUEPRINT" && false || r.filePath?.endsWith(".mp4");
+                  const isAudio = r.mimetype?.startsWith("audio") || r.type==="AUDIO" || r.filePath?.endsWith(".mp3") || r.filePath?.endsWith(".wav");
                   const src = r.publicUrl || r.dataUrl || r.assetUrl || r.url || r.filePath;
-                  const imgSrc = src?.startsWith("/assets")||src?.startsWith("/data") ? src : (src?.startsWith("data/")? "/"+src : src);
+                  const imgSrc = src?.startsWith("/assets")||src?.startsWith("/data")||src?.startsWith("/api") ? src : (src?.startsWith("data/")? "/"+src : src);
+                  const isImage = !isVideo && !isAudio && (r.filePath?.match(/\.(svg|png|jpg|jpeg|webp)$/i) || src?.match(/\.(svg|png|jpg|jpeg|webp)$/i) || r.type==="IMAGE" || r.type==="POSTER");
+                  const isStoryboard = r.type==="STORYBOARD_BLUEPRINT" || r.storyboard || r.scenes;
                   return (
                     <div key={i} style={{background:"rgba(0,0,0,0.4)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:8, padding:"0.7rem"}}>
-                      <div style={{fontSize:"0.8rem", fontWeight:700, color:"#fff"}}>{r.assetId||r.storyboardId||r.planId||`Result ${i+1}`} <span style={{color:"#94a3b8", fontWeight:400}}>· {r.status||r.truthStatus||"READY"}</span></div>
+                      <div style={{fontSize:"0.8rem", fontWeight:700, color:"#fff"}}>{r.assetId||r.id||r.storyboardId||r.planId||`Result ${i+1}`} <span style={{color:"#94a3b8", fontWeight:400}}>· {r.status||r.truthStatus||"READY"}</span></div>
                       {r.filePath && <div style={{fontSize:"0.68rem", color:"#64748b", wordBreak:"break-all"}}>{r.filePath}</div>}
-                      {imgSrc && !isVideo && !isAudio && r.filePath?.endsWith(".svg") && (
-                        <img src={imgSrc} alt="preview" style={{width:"100%", maxHeight:180, objectFit:"contain", background:"#000", borderRadius:6, marginTop:"0.4rem"}} onError={e=>e.target.style.display="none"} />
-                      )}
-                      {imgSrc && r.filePath?.endsWith(".png") && (
-                        <img src={imgSrc} alt="preview" style={{width:"100%", maxHeight:180, objectFit:"contain", background:"#000", borderRadius:6, marginTop:"0.4rem"}} />
-                      )}
+                      {isStoryboard ? (
+                        <div style={{marginTop:"0.5rem", background:"rgba(0,0,0,0.6)", borderRadius:6, padding:"0.6rem", maxHeight:220, overflowY:"auto"}}>
+                          <div style={{fontSize:"0.75rem", color:GOLD, fontWeight:800, marginBottom:4}}>Storyboard — {(r.scenes||r.storyboard?.scenes||[]).length} scenes</div>
+                          {(r.scenes||r.storyboard?.scenes||[]).slice(0,4).map((s,si)=>(
+                            <div key={si} style={{fontSize:"0.72rem", color:"#cbd5e1", marginBottom:6, borderLeft:`2px solid ${GOLD}`, paddingLeft:6}}>
+                              <div style={{color:"#fff", fontWeight:700}}>Scene {s.sceneNumber||si+1}: {s.title||s.shotType||s.shotPlan?.framing||""}</div>
+                              <div>{s.visualDescription||s.subjectDescription||s.visual||s.generativeScenePrompt||""}</div>
+                              {s.audioVoiceover && <div style={{color:"#fef08a"}}>VO: {s.audioVoiceover}</div>}
+                            </div>
+                          ))}
+                        </div>
+                      ) : isImage && imgSrc ? (
+                        <img src={imgSrc} alt="preview" style={{width:"100%", maxHeight:220, objectFit:"contain", background:"#000", borderRadius:6, marginTop:"0.4rem"}} onError={e=>{ e.target.style.display="none"; e.target.nextSibling && (e.target.nextSibling.style.display="block"); }} />
+                      ) : null}
+                      {!isStoryboard && isImage && <div style={{display:"none", fontSize:"0.7rem", color:"#94a3b8", marginTop:6}}>Preview: <a href={imgSrc} target="_blank" rel="noreferrer" style={{color:GOLD}}>{imgSrc}</a></div>}
                       {isVideo && imgSrc && (
                         <video src={imgSrc} controls style={{width:"100%", maxHeight:200, background:"#000", borderRadius:6, marginTop:"0.4rem"}} />
                       )}

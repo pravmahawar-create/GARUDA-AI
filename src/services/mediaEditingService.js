@@ -68,6 +68,7 @@ class MediaEditingService {
     let vfParts = [];
     let ssArgs = [];
     let tArgs = [];
+    let audioReplacePath = null;
     for (const op of (operations||[])) {
       if (op.trim) { ssArgs = ["-ss", String(op.trim.start)]; if(op.trim.end) tArgs = ["-t", String(op.trim.end - op.trim.start)]; }
       if (op.scale) vfParts.push(`scale=${op.scale.w}:${op.scale.h}`);
@@ -76,19 +77,35 @@ class MediaEditingService {
         const safe = String(op.text.text).replace(/:/g,"\\:").replace(/'/g,"");
         vfParts.push(`drawtext=text='${safe}':x=${op.text.x||10}:y=${op.text.y||10}:fontsize=32:fontcolor=white`);
       }
+      if (op.audio_replace || op.audioReplace || op.audio) {
+        const p = op.audio_replace || op.audioReplace || op.audio;
+        if(typeof p==="string" && fs.existsSync(p)) audioReplacePath = p;
+      }
     }
     if (vfParts.length===0) vfParts.push("scale=1280:720:flags=bicubic");
     const vf = vfParts.join(",");
 
-    const args = [...ssArgs, "-i", inputs[0], ...tArgs, "-vf", vf, "-c:v","libx264","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-y", outFile];
+    // Audio mux path: if audioReplacePath present, add second input and map
+    let args;
+    if(audioReplacePath){
+      args = [...ssArgs, "-i", inputs[0], "-i", audioReplacePath, ...tArgs, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-c:a","aac","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-shortest","-y", outFile];
+    } else {
+      args = [...ssArgs, "-i", inputs[0], ...tArgs, "-vf", vf, "-c:v","libx264","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-y", outFile];
+    }
     if (inputs.length>1 && operations && operations.some(o=>o.concat)) {
       const listFile = path.join(this.assetsDir, `concat_${Date.now()}.txt`);
       fs.writeFileSync(listFile, inputs.map(p=>`file '${p.replace(/'/g,"'\\''")}'`).join("\n"));
-      const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-c","copy","-y", outFile];
-      await new Promise((res,rej)=> execFile(this.ffmpegPath, concatArgs, { timeout: 30000, maxBuffer: 4*1024*1024 }, (e,so,se)=> e?rej(new Error(se||e.message)):res()));
+      if(audioReplacePath){
+        // concat + audio mux needs re-encode, not copy
+        const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-i", audioReplacePath, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-c:a","aac","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-shortest","-y", outFile];
+        await new Promise((res,rej)=> execFile(this.ffmpegPath, concatArgs, { timeout: 60000, maxBuffer: 4*1024*1024 }, (e,so,se)=> e?rej(new Error(se||e.message)):res()));
+      } else {
+        const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-c","copy","-y", outFile];
+        await new Promise((res,rej)=> execFile(this.ffmpegPath, concatArgs, { timeout: 30000, maxBuffer: 4*1024*1024 }, (e,so,se)=> e?rej(new Error(se||e.message)):res()));
+      }
       try { fs.unlinkSync(listFile); } catch {}
     } else {
-      await new Promise((res,rej)=> execFile(this.ffmpegPath, args, { timeout: 30000, maxBuffer: 4*1024*1024 }, (e,so,se)=> e?rej(new Error(`FFmpeg edit failed: ${se||e.message}`)):res()));
+      await new Promise((res,rej)=> execFile(this.ffmpegPath, args, { timeout: 60000, maxBuffer: 4*1024*1024 }, (e,so,se)=> e?rej(new Error(`FFmpeg edit failed: ${se||e.message}`)):res()));
     }
 
     if (!fs.existsSync(outFile)) throw new Error("Render failed: output not written");

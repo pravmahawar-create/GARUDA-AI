@@ -509,6 +509,7 @@ class ImageGenerationRouter {
       if (!token) {
         return { provider: "replicate", name: "Replicate", configured: false, reachable: false, authenticated: false, type: "AI_GENERATIVE_IMAGE", status: PROVIDER_HEALTH_STATUSES.NOT_CONFIGURED };
       }
+      const allowPaid = process.env.FOUNDER_ALLOW_REPLICATE === "true";
       return {
         provider: "replicate",
         name: "Replicate (Flux/SDXL)",
@@ -517,8 +518,8 @@ class ImageGenerationRouter {
         authenticated: true,
         capabilities: ["replicate_flux", "replicate_sdxl"],
         type: "AI_GENERATIVE_IMAGE",
-        status: PROVIDER_HEALTH_STATUSES.UNSUPPORTED,
-        notice: "REPLICATE_API_TOKEN detected. Adapter interface ready; live generation marked UNSUPPORTED until model-specific wiring is founder-approved."
+        status: allowPaid ? PROVIDER_HEALTH_STATUSES.READY : PROVIDER_HEALTH_STATUSES.UNSUPPORTED,
+        notice: allowPaid ? "Replicate PAID live generation ENABLED — cost ~₹5/5s, ~₹60/min lip-sync" : "REPLICATE_API_TOKEN detected. Adapter interface ready; live generation marked UNSUPPORTED until FOUNDER_ALLOW_REPLICATE=true."
       };
     }
 

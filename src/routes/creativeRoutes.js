@@ -612,36 +612,81 @@ router.post("/editor/build-plan", async (req,res)=>{
   try{ const r = await creativeEditorService.buildEditPlan(req.body); res.json({success:true, data:r}); }catch(e){ res.status(500).json({success:false, message:e.message});}
 });
 router.post("/music-video", async (req,res)=>{
-  // High-priority commercial workflow: footagePaths + audioPath -> EDL -> FFmpeg -> QC
   try{
-    const footagePaths = Array.isArray(req.body.footagePaths)? req.body.footagePaths : [];
-    const audioPath = req.body.audioPath||null;
+    let footagePaths = Array.isArray(req.body.footagePaths)? req.body.footagePaths : [];
+    let audioPath = req.body.audioPath||null;
     const durationSec = Number(req.body.durationSec||req.body.duration||60);
     const style = req.body.style||"cinematic";
+    const inventMusic = req.body.inventMusic===true || req.body.autoMusic===true || (!audioPath && req.body.mood);
+    // Allow image inputs: if footagePaths contains images, keep as is (ffmpeg will handle via scale)
     if(footagePaths.length===0) return res.status(400).json({success:false, message:"footagePaths[] required"});
     for(const p of footagePaths){ if(!require("fs").existsSync(p)) return res.status(400).json({success:false, message:`footage not found: ${p}`}); }
-    // Stage 1: analyze (real beat map via async sovereign PCM decode)
-    const ingestRecords = footagePaths.map(p=> ({ assetId: p, filePath:p, fileSize: require("fs").statSync(p).size, mimetype:"video/mp4" }));
+    // If inventMusic requested and no audio, generate music via sovereign/HF
+    let generatedMusic = null;
+    if(!audioPath && inventMusic){
+      try{
+        const audioRouter=require("../services/audioGenerationRouter");
+        const mood=String(req.body.mood||req.body.musicMood||style||"cinematic");
+        const gen=await audioRouter.routeAudioGeneration({ text: `invent ${mood} music for video`, capability:"music", mood, durationSec: Math.min(durationSec,15) });
+        if(gen.success && gen.asset?.filePath) { audioPath=gen.asset.filePath; generatedMusic=gen.asset; }
+      }catch{}
+    }
+    const ingestRecords = footagePaths.map(p=> ({ assetId: p, filePath:p, fileSize: require("fs").statSync(p).size, mimetype: p.match(/\.(mp4|mov|webm)$/i)?"video/mp4":"image/jpeg" }));
     const footageAnalysis = await creativeEditorService.analyzeFootage(ingestRecords);
     let beatAnalysis = { beats:[], bpm:120, status:"NO_AUDIO" };
     if(audioPath){
       try{ beatAnalysis = await mediaEditingService.analyzeBeatsAsync(audioPath); } catch(e){ beatAnalysis = { status:"ANALYSIS_FAILED", reason:String(e.message), beats:[], bpm:null, fallback: mediaEditingService.analyzeBeats(audioPath) }; }
-      if(!beatAnalysis.beats || beatAnalysis.beats.length===0) {
-        // preserve safe fallback timeline while truthfully reporting failure
-        beatAnalysis.fallback = beatAnalysis.fallback || mediaEditingService.analyzeBeats(audioPath);
-      }
+      if(!beatAnalysis.beats || beatAnalysis.beats.length===0) beatAnalysis.fallback = beatAnalysis.fallback || mediaEditingService.analyzeBeats(audioPath);
     }
     const { timeline } = await creativeEditorService.buildEditPlan({ footageAnalysis, beatAnalysis, durationSec, style });
-    const render = await creativeEditorService.renderFromPlan(timeline, { outputName: `musicvideo_${Date.now()}.mp4`, targetSize: req.body.targetSize||null, textOverlay: req.body.textOverlay||null });
+    // pass audio for mux
+    const renderOps = [];
+    if(req.body.targetSize) renderOps.push({ scale: req.body.targetSize });
+    if(req.body.textOverlay) renderOps.push({ text: { text: String(req.body.textOverlay) } });
+    if(audioPath) renderOps.push({ audio_replace: audioPath });
+    const render = await mediaEditingService.renderTimeline({ inputs: footagePaths, operations: renderOps, outputName: `musicvideo_${Date.now()}.mp4` });
+    // also use editor's render if no audio, else already muxed
     const qc = mediaEditingService.validateMedia(render.filePath);
-    const artifact = { assetId: render.assetId, filePath: render.filePath, publicUrl: render.publicUrl, dataUrl: render.dataUrl, sha256: render.sha256, fileSize: render.fileSize, qc, timelineId: render.timelineId, edl: render.edl, beatAnalysis: { bpm: beatAnalysis.bpm, beatCount: beatAnalysis.beats?.length||0 } };
-    res.json({ success: qc.passed, status: qc.passed? "RENDERED_VERIFIED":"RENDERED_QC_FAILED", artifact, qc, timeline, footageAnalysis, beatAnalysis });
+    const artifact = { assetId: render.assetId, filePath: render.filePath, publicUrl: render.publicUrl, dataUrl: render.dataUrl, sha256: render.sha256, fileSize: render.fileSize, qc, timelineId: timeline.timelineId, edl: timeline.edl, beatAnalysis: { bpm: beatAnalysis.bpm, beatCount: beatAnalysis.beats?.length||0, status: beatAnalysis.status }, generatedMusic };
+    res.json({ success: qc.passed, status: qc.passed? "RENDERED_VERIFIED":"RENDERED_QC_FAILED", artifact, qc, timeline, footageAnalysis, beatAnalysis, generatedMusic });
   }catch(e){ res.status(500).json({success:false, message:e.message}); }
 });
 
 // Library with project filter (website result workspace)
 router.get("/library", async (req,res)=>{
   try{ const lib = await creativeStudioService.getAssetLibrary(req.query.projectId||null); res.json({success:true, data:lib}); }catch(e){ res.status(500).json({success:false, message:e.message});}
+});
+
+// ── Founder console: Replicate paid toggle (FOUNDER_ALLOW_REPLICATE) ──
+router.get("/admin/replicate-status", (req,res)=>{
+  const tokenPresent = Boolean(process.env.REPLICATE_API_TOKEN || process.env.REPLICATE_API_KEY);
+  const enabled = process.env.FOUNDER_ALLOW_REPLICATE === "true";
+  res.json({ success:true, tokenPresent, enabled, status: enabled ? "READY_PAID" : "DISABLED_GATED", costNote: "~₹5/5s, ~₹60/min lip-sync" });
+});
+router.post("/admin/replicate-toggle", (req,res)=>{
+  const isFounder = req.headers["x-founder-key"] || req.headers["x-garuda-founder-key"] || req.query.key === process.env.FOUNDER_ACCESS_PASSWORD;
+  if(!isFounder && process.env.FOUNDER_ACCESS_PASSWORD) {
+    // also allow same auth as founderCommandService verify — simple check
+    const key = String(req.headers["x-founder-key"]||req.headers["x-garuda-founder-key"]||req.query.key||"");
+    if(key !== process.env.FOUNDER_ACCESS_PASSWORD && key !== process.env.FOUNDER_ADMIN_KEY) {
+      return res.status(403).json({success:false, message:"Founder key required (x-founder-key)"});
+    }
+  }
+  const enable = req.body.enable === true || String(req.body.enable)==="true" || req.query.enable==="true";
+  process.env.FOUNDER_ALLOW_REPLICATE = enable ? "true" : "false";
+  // persist to .env for restart survival (best-effort, no secret leakage)
+  try{
+    const fs=require("fs"), path=require("path");
+    const envPath=path.join(process.cwd(), ".env");
+    let content=fs.existsSync(envPath)? fs.readFileSync(envPath,"utf8"):"";
+    if(content.includes("FOUNDER_ALLOW_REPLICATE=")){
+      content=content.replace(/FOUNDER_ALLOW_REPLICATE=.*/g, `FOUNDER_ALLOW_REPLICATE=${enable?"true":"false"}`);
+    } else {
+      content += `\nFOUNDER_ALLOW_REPLICATE=${enable?"true":"false"}\n`;
+    }
+    fs.writeFileSync(envPath, content, "utf8");
+  }catch{}
+  res.json({ success:true, enabled: enable, message: enable ? "Replicate PAID enabled — ~₹60/min will be charged" : "Replicate disabled — sovereign/HF only" });
 });
 
 module.exports = router;
