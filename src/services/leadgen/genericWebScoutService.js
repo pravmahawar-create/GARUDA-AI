@@ -8,7 +8,7 @@ const { addProspects, getPipeline } = require("./genericLeadGenEngine");
 const DEFAULT_STATUS_DIR = path.join(__dirname, "..", "..", "data");
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36";
 
-// Highest paying markets for website/mobile/app/software — UK, America, Dubai, Australia, NZ, Silicon Valley + Europe
+// Highest paying markets for website/mobile/app/software — UK, America, Dubai, Australia, NZ, Silicon Valley + Europe + India (new work)
 const LOCATIONS = {
   usa: { cities: ["New York","San Francisco","Palo Alto","Mountain View","Menlo Park","Sunnyvale","Austin","Boston","Chicago","Seattle","Los Angeles","Miami"], country:"US", currency:"USD" },
   uk: { cities: ["London","Manchester","Birmingham","Edinburgh","Leeds","Bristol","Glasgow","Liverpool"], country:"GB", currency:"GBP" },
@@ -17,6 +17,7 @@ const LOCATIONS = {
   nz: { cities: ["Auckland","Wellington","Christchurch","Hamilton","Tauranga"], country:"NZ", currency:"NZD" },
   silicon_valley: { cities: ["Palo Alto","Mountain View","Menlo Park","Sunnyvale","Cupertino","Santa Clara","San Francisco","Fremont"], country:"US", currency:"USD" },
   europe: { cities: ["Berlin","Munich","Paris","Lyon","London","Amsterdam","Warsaw","Barcelona","Milan","Stockholm","Dublin","Prague"], country:"DE", currency:"EUR" },
+  india: { cities: ["Mumbai","Delhi","Bangalore","Hyderabad","Pune","Chennai","Kolkata","Ahmedabad","Jaipur","Lucknow"], country:"IN", currency:"INR" },
 };
 
 function statusPathFor(hunterId){
@@ -38,7 +39,7 @@ function saveStatus(hunterId, status){
 }
 
 function buildWebQueries({type, locKey}){
-  const suffixMap={ usa:"USA", uk:"UK", dubai:"UAE Dubai", australia:"Australia", nz:"New Zealand", silicon_valley:"Silicon Valley", europe:"Europe" };
+  const suffixMap={ usa:"USA", uk:"UK", dubai:"UAE Dubai", australia:"Australia", nz:"New Zealand", silicon_valley:"Silicon Valley", europe:"Europe", india:"India" };
   const suffix=suffixMap[locKey]||"";
   if(type==="web"){
     return [
@@ -48,6 +49,11 @@ function buildWebQueries({type, locKey}){
       `copyright 2019 site contact email ${suffix}`,
       `incomplete website contact ${suffix}`,
       `website not mobile friendly contact ${suffix}`,
+      // New work — not just incomplete, also fresh need (user said incomplete was just example)
+      `need website development contact ${suffix}`,
+      `looking for website developer contact ${suffix}`,
+      `need digital marketing services contact ${suffix}`,
+      `looking for digital marketing agency contact ${suffix}`,
     ];
   }
   if(type==="mobile"){
@@ -206,11 +212,12 @@ async function runWebScoutOnce({hunterId="generic_web_hunter", domain="web_servi
         }
       } else errors.push(host+": "+(home.status||home.error));
       emails=[...new Set(emails.map(e=>e.toLowerCase().trim()))];
-      // Filter genuine: must have email and (isIncomplete or is mobile/software hunter)
+      // Filter genuine: must have email and (isIncomplete or mobile/software or new work query) — new website/digital marketing is new work, not just incomplete
       const isMobileOrSoftware = type==="mobile"||type==="software"||type==="automation";
-      const shouldKeep = emails.length>0 && (isIncomplete || isMobileOrSoftware);
-      if(!shouldKeep && emails.length>0 && !isIncomplete){
-        // For web hunters, skip complete sites
+      const isNewWorkQuery = /need website|looking for website|need digital marketing|looking for digital|need mobile app|looking for mobile/i.test(query);
+      const shouldKeep = emails.length>0 && (isIncomplete || isMobileOrSoftware || isNewWorkQuery);
+      if(!shouldKeep && emails.length>0 && !isIncomplete && !isNewWorkQuery){
+        // For web hunters, skip complete sites unless new work query
         continue;
       }
       const prospects=emails.map(email=>({

@@ -906,8 +906,8 @@ class WorkforceRouterService {
       }
     });
 
-    // === PERSONAL HUNT — 10 Genuine Hunters for Highest Paying Markets (0₹ DuckDuckGo, no billing) ===
-    // All use genericWebScoutService (real scratch) + garudaos.ai@gmail.com (not Praveen wrong), no fake promises
+    // === PERSONAL HUNT — 11 Genuine Hunters for Highest Paying Markets (0₹ DuckDuckGo + SERPER, no billing) ===
+    // All use genericWebScoutService (real scratch) + garudaos.ai@gmail.com (not Praveen wrong), genuine new work: website/mobile app/software/digital marketing
     const personalHunters = [
       { id: "agent.personal_uk_web_hunter", name: "UK Web Hunter", loc: "uk", type: "web", domain: "web_services" },
       { id: "agent.personal_usa_web_hunter", name: "USA Web Hunter", loc: "usa", type: "web", domain: "web_services" },
@@ -919,13 +919,14 @@ class WorkforceRouterService {
       { id: "agent.personal_usa_mobile_hunter", name: "USA Mobile App Hunter", loc: "usa", type: "mobile", domain: "web_services" },
       { id: "agent.personal_global_software_hunter", name: "Global Software Hunter", loc: "europe", type: "software", domain: "web_services" },
       { id: "agent.personal_global_automation_hunter", name: "Global Automation Hunter", loc: "europe", type: "automation", domain: "web_services" },
+      { id: "agent.personal_india_web_hunter", name: "India Web Hunter", loc: "india", type: "web", domain: "web_services" },
     ];
     for (const h of personalHunters) {
       this.registerAgent({
         id: h.id,
         name: `${h.name} — Genuine (garudaos.ai@gmail.com)`,
         domain: "acquisition",
-        role: `Hunts genuine clients needing ${h.type} (website/mobile/software/automation) in ${h.loc.toUpperCase()} via Google scratch for incomplete websites — no fake promises, garudaos.ai@gmail.com`,
+        role: `Hunts genuine clients needing new website / mobile app (Android/iOS) / digital marketing / software / automation in ${h.loc.toUpperCase()} via Google scratch for incomplete + new work — no fake promises, garudaos.ai@gmail.com`,
         knowledgeAccess: ["web:scratch", "audit:real", "contact:garudaos.ai@gmail.com"],
         authorizedActions: ["SCAN_WEBSITES", "AUDIT_INCOMPLETE_SITE", "EXTRACT_CONTACT", "GENERATE_GENUINE_PITCH"],
         humanHandoffConditions: ["FOUNDER_APPROVAL_REQUIRED"],
@@ -939,8 +940,8 @@ class WorkforceRouterService {
             maxSites: Number(task.input?.limit || task.input?.maxSites || 5),
             delayMs: 800,
           });
-          // Genuine pitch — no fake 60% loss, no $14.5k invented arbitrage — only evidence from realAudit
-          const pitch = `Hello, we noticed your website may benefit from an update — ${result.sources.slice(0,2).join(", ") || "your online presence"}. GARUDA builds fast, modern websites and mobile apps (iOS/Android) and automation software. If you are looking for a website update, mobile app, or to automate work, we can help. Contact: garudaos.ai@gmail.com — no fake promises, only genuine audit evidence.`;
+          // Genuine pitch — no fake promises — covers new website, mobile app (Android/iOS), digital marketing, software, automation — only evidence from realAudit
+          const pitch = `Hello, we noticed you may need a new website, mobile application (Android/iOS), digital marketing, or custom software/automation — ${result.sources.slice(0,2).join(", ") || "your online presence"}. GARUDA builds fast, modern websites, mobile apps (iOS/Android), and automation software for fast execution. If you are looking to build a new website, develop a mobile app, run digital marketing, or automate work, we can help. Contact: garudaos.ai@gmail.com — no fake promises, only genuine audit evidence.`;
           return {
             status: result.emailsFound > 0 ? "SUCCESS" : "NO_LEADS_FOUND",
             hunterId: h.id,
