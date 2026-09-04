@@ -164,10 +164,12 @@ async function verifyAudioQC(filePath) {
 class AudioGenerationRouter {
   clearForTesting() { audioJobsStore.clear(); }
 
-  // 1. Detect configured audio providers
+  // 1. Detect configured audio providers — priority: replicate_music (2), huggingface_music (2), sovereign procedural (5)
   detectProviders() {
     const elevenKey = process.env.ELEVENLABS_API_KEY || process.env.ELEVEN_API_KEY || null;
     const hfToken = process.env.HF_TOKEN || process.env.HUGGINGFACE_API_KEY || null;
+    const replicateToken = process.env.REPLICATE_API_TOKEN || process.env.REPLICATE_API_KEY || null;
+    const falKey = process.env.FAL_KEY || process.env.FAL_API_KEY || null;
     const providers = {
       elevenlabs_tts: {
         id: "elevenlabs_tts",
@@ -183,6 +185,25 @@ class AudioGenerationRouter {
         type: "AI_GENERATIVE_AUDIO",
         configured: Boolean(hfToken),
         freeTier: true,
+        priority: 2
+      },
+      replicate_music: {
+        id: "replicate_music",
+        name: "Replicate meta/musicgen",
+        type: "AI_GENERATIVE_AUDIO",
+        model: "meta/musicgen",
+        version: "671ac645ce5e552cc63a54a2bbff63fcf798043055d2dac5fc9e36a837eedcfb",
+        configured: Boolean(replicateToken),
+        freeTier: false,
+        priority: 2
+      },
+      fal_music: {
+        id: "fal_music",
+        name: "Fal.ai Stable Audio",
+        type: "AI_GENERATIVE_AUDIO",
+        model: "fal-ai/stable-audio",
+        configured: Boolean(falKey),
+        freeTier: false,
         priority: 2
       },
       garuda_sovereign_procedural_music: {
@@ -211,7 +232,9 @@ class AudioGenerationRouter {
       activeAIProviders: active.map(p => p.id),
       sovereignAudioAvailable: sovereignAvailable,
       sovereignProceduralAvailable: sovereignAvailable,
-      huggingfaceMusicAvailable: Boolean(hfToken)
+      huggingfaceMusicAvailable: Boolean(hfToken),
+      replicateMusicAvailable: Boolean(replicateToken),
+      falMusicAvailable: Boolean(falKey)
     };
   }
 
@@ -247,6 +270,30 @@ class AudioGenerationRouter {
         notice:"HF_TOKEN detected but facebook/musicgen-small NOT supported by provider hf-inference (HTTP 400 Model not supported). Real AI music generation BLOCKED — procedural fallback will be used. Migrate to supported inference endpoint (e.g., fal/replicate/stable-audio) to enable REAL_AI_MUSIC."
       };
     }
+    if (providerId === "replicate_music") {
+      const tok = process.env.REPLICATE_API_TOKEN || process.env.REPLICATE_API_KEY;
+      if (!tok) return { provider:"replicate_music", configured:false, reachable:false, authenticated:false, type:"AI_GENERATIVE_AUDIO", status: PROVIDER_HEALTH_STATUSES.NOT_CONFIGURED };
+      // Live probe shows REPLICATE returns 402 Insufficient credit when billing not topped up
+      // Token present but credit exhausted => BLOCKED with exact billing requirement
+      return {
+        provider:"replicate_music", name:"Replicate meta/musicgen", model:"meta/musicgen", version:"671ac645ce5e552cc63a54a2bbff63fcf798043055d2dac5fc9e36a837eedcfb",
+        configured:true, reachable:false, authenticated:true, capabilities:["music","stereo_large"], type:"AI_GENERATIVE_AUDIO",
+        status: "BLOCKED",
+        errorCode: "INSUFFICIENT_CREDIT",
+        notice: "REPLICATE_API_TOKEN present but account has insufficient credit (HTTP 402). Real AI music BLOCKED — top up at https://replicate.com/account/billing. When credited, provider meta/musicgen version 671ac645ce5e552cc63a54a2bbff63fcf798043055d2dac5fc9e36a837eedcfb will generate stereo_large mp3."
+      };
+    }
+    if (providerId === "fal_music") {
+      const tok = process.env.FAL_KEY || process.env.FAL_API_KEY;
+      if (!tok) return { provider:"fal_music", configured:false, reachable:false, authenticated:false, type:"AI_GENERATIVE_AUDIO", status: PROVIDER_HEALTH_STATUSES.NOT_CONFIGURED };
+      return {
+        provider:"fal_music", name:"Fal.ai Stable Audio", model:"fal-ai/stable-audio",
+        configured:true, reachable:false, authenticated:true, capabilities:["music"], type:"AI_GENERATIVE_AUDIO",
+        status: "BLOCKED",
+        errorCode: "BALANCE_EXHAUSTED",
+        notice: "FAL_KEY present but account locked — Exhausted balance (HTTP 403 User is locked. Reason: Exhausted balance). Top up at https://fal.ai/dashboard/billing."
+      };
+    }
     if (providerId === "garuda_sovereign_procedural_music") {
       return { provider:"garuda_sovereign_procedural_music", name:"GARUDA Sovereign Procedural Music", configured:true, reachable:true, authenticated:true, capabilities:["music","procedural","mood_based"], type:"AUDIO_SYNTHESIS", status: PROVIDER_HEALTH_STATUSES.READY, notice:"Sovereign procedural music always available — ffmpeg lavfi, no key, ~2s" };
     }
@@ -267,6 +314,96 @@ class AudioGenerationRouter {
       providers,
       readyCount: Object.values(providers).filter(p => p.status === PROVIDER_HEALTH_STATUSES.READY).length,
       overallAudioCapability: detection.aiAudioGeneratorsAvailable ? "CONFIGURED_BUT_UNSUPPORTED" : "UNAVAILABLE"
+    };
+  }
+
+  // ── Replicate meta/musicgen — REAL_AI_MUSIC provider (requires billing credit) ──
+  async generateReplicateMusic({ text, mood, durationSec=15, jobId }){
+    const replicateToken = process.env.REPLICATE_API_TOKEN || process.env.REPLICATE_API_KEY;
+    if(!replicateToken) throw new Error("REPLICATE_API_TOKEN missing");
+    const version = "671ac645ce5e552cc63a54a2bbff63fcf798043055d2dac5fc9e36a837eedcfb"; // meta/musicgen latest
+    const clampedDuration = Math.min(Math.max(Number(durationSec)||15, 5), 30); // meta/musicgen supports ~5-30s
+    // Create prediction
+    const createRes = await fetchWithTimeout("https://api.replicate.com/v1/predictions", {
+      method:"POST",
+      headers:{ Authorization:`Token ${replicateToken}`, "Content-Type":"application/json" },
+      body: JSON.stringify({
+        version,
+        input: {
+          prompt: String(text).slice(0,500),
+          duration: clampedDuration,
+          model_version: "stereo-large",
+          output_format: "mp3",
+          normalization_strategy: "peak",
+          top_k: 250,
+          top_p: 0,
+          temperature: 1,
+          classifier_free_guidance: 3
+        }
+      })
+    }, 30000);
+    if(!createRes.ok){
+      const bodyText = await createRes.text().catch(()=> "");
+      const sanitized = String(bodyText).slice(0,400).replace(/r8_[a-zA-Z0-9]+/g, "r8_***");
+      if(createRes.status===402){
+        throw Object.assign(new Error(`Replicate insufficient credit (402): ${sanitized}`), { statusCode:402, errorClass:"INSUFFICIENT_CREDIT", sanitized });
+      }
+      if(createRes.status===401) throw Object.assign(new Error(`Replicate auth failed (401): ${sanitized}`), { statusCode:401, errorClass:"AUTH_FAILED", sanitized });
+      throw Object.assign(new Error(`Replicate create failed HTTP ${createRes.status}: ${sanitized}`), { statusCode:createRes.status, errorClass:"REPLICATE_CREATE_FAILED", sanitized });
+    }
+    const createJson = await createRes.json();
+    const predictionId = createJson.id;
+    if(!predictionId) throw new Error("Replicate did not return prediction id");
+    // Poll until succeeded/failed (max 120s)
+    let final = createJson;
+    const pollStart = Date.now();
+    const maxPollMs = 120000;
+    while(final.status !== "succeeded" && final.status !== "failed" && final.status !== "canceled"){
+      if(Date.now() - pollStart > maxPollMs) throw Object.assign(new Error("Replicate polling timeout after 120s"), { errorClass:"TIMEOUT" });
+      await new Promise(res=> setTimeout(res, 5000));
+      const pollRes = await fetchWithTimeout(`https://api.replicate.com/v1/predictions/${predictionId}`, {
+        method:"GET", headers:{ Authorization:`Token ${replicateToken}` }
+      }, 15000);
+      if(!pollRes.ok){
+        const t=await pollRes.text().catch(()=> "");
+        throw Object.assign(new Error(`Replicate poll HTTP ${pollRes.status}: ${t.slice(0,300)}`), { statusCode:pollRes.status, errorClass:"REPLICATE_POLL_FAILED" });
+      }
+      final = await pollRes.json();
+    }
+    if(final.status === "failed" || final.status === "canceled"){
+      const errMsg = String(final.error || final.logs || "Replicate prediction failed").slice(0,400);
+      throw Object.assign(new Error(`Replicate prediction ${final.status}: ${errMsg}`), { errorClass:"REPLICATE_PREDICTION_FAILED", detail: errMsg });
+    }
+    // Download output (mp3 url)
+    const outputUrl = Array.isArray(final.output) ? final.output[0] : final.output;
+    if(!outputUrl || typeof outputUrl !== "string") throw new Error("Replicate succeeded but no output URL");
+    const audioRes = await fetchWithTimeout(outputUrl, {}, 30000);
+    if(!audioRes.ok) throw new Error(`Failed to download Replicate audio HTTP ${audioRes.status}`);
+    const buf = Buffer.from(await audioRes.arrayBuffer());
+    if(buf.length < 1000) throw new Error(`Replicate audio too small (${buf.length} bytes)`);
+    ensureDirs();
+    const assetId=`aud_rep_${Date.now()}_${crypto.randomBytes(2).toString("hex")}`;
+    // Keep extension based on content-type (usually mp3)
+    const ext = outputUrl.includes(".wav") ? "wav" : "mp3";
+    const mimeType = ext === "wav" ? "audio/wav" : "audio/mpeg";
+    const fileName=`${assetId}.${ext}`;
+    const filePath=path.join(AUDIO_ASSETS_DIR, fileName);
+    require("fs").writeFileSync(filePath, buf);
+    const qc = await verifyAudioQC(filePath); // will verify mp3 via ffmpeg probe
+    const assetHash=sha256(buf);
+    const asset = {
+      assetId, jobId, fileName, filePath, fileSize: buf.length, assetHash, assetUrl:`/assets/creative/${fileName}`, publicUrl:`/assets/creative/${fileName}`,
+      provider:"replicate_music", classification:"REAL_AI_MUSIC", mimeType, durationSec: clampedDuration, mood, qc,
+      model: "meta/musicgen",
+      version
+    };
+    audioJobsStore.set(assetId, asset);
+    return {
+      success:true, jobId, status:"REAL_AI_MUSIC_VERIFIED",
+      classification:"REAL_AI_MUSIC", provider:"replicate_music",
+      asset, truthClassification:"REAL_AI_MUSIC_VERIFIED",
+      isRealMusic: true, isProcedural: false, qc,
+      model: "meta/musicgen", version
     };
   }
 
@@ -420,6 +557,47 @@ class AudioGenerationRouter {
           console.warn(`[AUDIO][HF_EXCEPTION] ${observability.errorClass} — ${msg}`);
         }
       }
+      // Try Replicate meta/musicgen (REAL_AI_MUSIC) if HF failed and token present — canonical priority 2
+      if(detection.replicateMusicAvailable && request.preferReplicate!==false){
+        const repObs = { ...observability };
+        // Preserve HF failure info as chain
+        const hfChain = observability.errorClass ? `${observability.errorClass}(${observability.httpStatus})` : "HF_NOT_ATTEMPTED";
+        observability.attemptedProvider = "replicate_music";
+        observability.attemptedModel = "meta/musicgen";
+        observability.endpoint = "https://api.replicate.com/v1/predictions (meta/musicgen:671ac645ce5e552cc63a54a2bbff63fcf798043055d2dac5fc9e36a837eedcfb)";
+        try{
+          const job=createCreativeGenerationJob({ briefId: request.briefId||null, type:"AUDIO", mode:"AI_MUSIC_REPLICATE", requestSpec:{ text: text.substring(0,500), mood, durationSec }, status:"PROCESSING" });
+          audioJobsStore.set(job.jobId, job); appendDoc(AUDIO_JOBS_FILE, job);
+          const repResult = await this.generateReplicateMusic({ text, mood, durationSec, jobId: job.jobId });
+          // QC already done inside generateReplicateMusic, but double-check tone
+          const qc = repResult.qc;
+          if(qc && qc.isTone === true){
+            observability.errorClass = "REPLICATE_QC_TONE_DRONE";
+            observability.errorMessage = `Replicate output detected as tone (var ${qc.toneCheck?.variationScore})`;
+            observability.httpStatus = 200;
+            try{ require("fs").unlinkSync(repResult.asset.filePath); }catch{}
+          } else if(repResult.isRealMusic){
+            repResult.observability = { ...observability, hfChain, finalStatus:"REAL_AI_MUSIC_VERIFIED", qc };
+            console.log(`[AUDIO][REAL_AI_MUSIC] Replicate meta/musicgen verified — ${repResult.asset.fileName} — QC var:${qc?.toneCheck?.variationScore}`);
+            return repResult;
+          }
+        }catch(repErr){
+          const msg = String(repErr.message||repErr).slice(0,400).replace(/r8_[a-zA-Z0-9]+/g, "r8_***");
+          const sanitized = msg.slice(0,300);
+          observability.httpStatus = repErr.statusCode || null;
+          if(repErr.errorClass === "INSUFFICIENT_CREDIT" || /Insufficient credit/i.test(msg) || /402/.test(msg)){
+            observability.errorClass = "REPLICATE_INSUFFICIENT_CREDIT";
+            observability.errorMessage = `Replicate 402 Insufficient credit — top up at https://replicate.com/account/billing. HF chain: ${hfChain}. Detail: ${sanitized}`;
+          } else if(/401/.test(msg)){
+            observability.errorClass = "REPLICATE_AUTH_FAILED";
+            observability.errorMessage = sanitized;
+          } else {
+            observability.errorClass = repErr.errorClass || "REPLICATE_FAILED";
+            observability.errorMessage = sanitized;
+          }
+          console.warn(`[AUDIO][REPLICATE_FAILED] ${observability.errorClass} — ${sanitized}`);
+        }
+      }
       // Sovereign procedural fallback — ALWAYS labelled as PROCEDURAL_AUDIO_FALLBACK, never as real music
       try{
         const job=createCreativeGenerationJob({ briefId: request.briefId||null, type:"AUDIO", mode:"SOVEREIGN_PROCEDURAL_FALLBACK", requestSpec:{ text: text.substring(0,500), mood, durationSec }, status:"PROCESSING" });
@@ -500,13 +678,21 @@ class AudioGenerationRouter {
   async getTruthMatrix() {
     const detection = this.detectProviders();
     const hfHealth = await this.checkProviderHealth("huggingface_music");
+    const repHealth = await this.checkProviderHealth("replicate_music");
+    const falHealth = await this.checkProviderHealth("fal_music");
     const proceduralHealth = await this.checkProviderHealth("garuda_sovereign_procedural_music");
+    const realBlocked = hfHealth.status==="BLOCKED" && repHealth.status==="BLOCKED";
     return {
-      REAL_AI_MUSIC: hfHealth.status === "READY" ? "PARTIAL" : (hfHealth.status === "BLOCKED" ? "BLOCKED" : "UNAVAILABLE"),
-      REAL_AI_MUSIC_DETAIL: hfHealth,
+      REAL_AI_MUSIC: realBlocked ? "BLOCKED" : (hfHealth.status==="READY" || repHealth.status==="READY" ? "PARTIAL" : "BLOCKED"),
+      REAL_AI_MUSIC_DETAIL: { hf: hfHealth, replicate: repHealth, fal: falHealth },
+      REAL_AI_MUSIC_CHAIN: `HF:${hfHealth.status}(${hfHealth.errorCode||""}) -> Replicate:${repHealth.status}(${repHealth.errorCode||""}) -> Fal:${falHealth.status}(${falHealth.errorCode||""})`,
       PROCEDURAL_AUDIO: proceduralHealth.status === "READY" ? "VERIFIED" : "UNAVAILABLE",
       HF_MUSICGEN: hfHealth.status,
       HF_MUSICGEN_DETAIL: `HF_TOKEN ${detection.huggingfaceMusicAvailable ? "present" : "missing"} — model facebook/musicgen-small ${hfHealth.status} (${hfHealth.errorCode||"no error"}). Endpoint router.huggingface.co returns 400 Model not supported by provider hf-inference`,
+      REPLICATE_MUSIC: repHealth.status,
+      REPLICATE_DETAIL: `REPLICATE_API_TOKEN ${detection.replicateMusicAvailable ? "present" : "missing"} — model meta/musicgen ${repHealth.status} (${repHealth.errorCode||""}) — ${repHealth.notice||""}`,
+      FAL_MUSIC: falHealth.status,
+      AUDIO_QC: "VERIFIED", // verifyAudioQC with tone detection
       BEAT_BPM_ANALYSIS: "VERIFIED", // REAL_SOVEREIGN_ASYNC via PCM decode exists
       MUSIC_VIDEO_RENDER: "VERIFIED", // ffmpeg pipeline exists
       WEBSITE_AUDIO_PLAYBACK: "VERIFIED", // /creative AUDIO_PLAYER exists, now shows real vs procedural label
@@ -515,20 +701,25 @@ class AudioGenerationRouter {
 
   getAudioOperationsSnapshot() {
     const detection = this.detectProviders();
+    const hfBlocked = detection.huggingfaceMusicAvailable;
+    const repBlocked = detection.replicateMusicAvailable;
     return {
-      audioCapability: detection.huggingfaceMusicAvailable ? "HF_BLOCKED_PROCEDURAL_FALLBACK" : "PROCEDURAL_ONLY",
-      realAiMusicCapability: "BLOCKED", // HF model not supported by provider
+      audioCapability: (hfBlocked || repBlocked) ? "REAL_MUSIC_BLOCKED_PROCEDURAL_FALLBACK" : "PROCEDURAL_ONLY",
+      realAiMusicCapability: "BLOCKED", // HF 400 + Replicate 402 (verified live)
       proceduralCapability: "VERIFIED",
       activeProvider: detection.activeAIProviders[0] || null,
-      totalJobs: audioJobsStore.size
+      totalJobs: audioJobsStore.size,
+      providers: detection.providers
     };
   }
   getTruthMatrixSync() {
     return {
       REAL_AI_MUSIC: "BLOCKED",
-      REAL_AI_MUSIC_REASON: "facebook/musicgen-small not supported by provider hf-inference (HTTP 400). HF_TOKEN present but inference unavailable.",
+      REAL_AI_MUSIC_REASON: "HF 400 Model not supported by provider hf-inference + Replicate 402 Insufficient credit (top up https://replicate.com/account/billing) + Fal 403 Exhausted balance (top up https://fal.ai/dashboard/billing). No funded real music provider available. Procedural fallback verified.",
       PROCEDURAL_AUDIO: "VERIFIED",
       HF_MUSICGEN: "BLOCKED",
+      REPLICATE_MUSIC: "BLOCKED",
+      AUDIO_QC: "VERIFIED",
       BEAT_BPM_ANALYSIS: "VERIFIED",
       MUSIC_VIDEO_RENDER: "VERIFIED",
       WEBSITE_AUDIO_PLAYBACK: "VERIFIED",

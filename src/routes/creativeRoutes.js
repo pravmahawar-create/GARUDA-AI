@@ -665,7 +665,7 @@ router.post("/music-video", async (req,res)=>{
       try{
         const audioRouter=require("../services/audioGenerationRouter");
         const mood=String(req.body.mood||req.body.musicMood||style||"cinematic");
-        const gen=await audioRouter.routeAudioGeneration({ text: `invent ${mood} music for video`, capability:"music", mood, durationSec: Math.min(durationSec,15) });
+        const gen=await audioRouter.routeAudioGeneration({ text: `invent ${mood} music for video`, capability:"music", mood, durationSec: Math.min(durationSec,30) });
         if(gen.success && gen.asset?.filePath) {
           audioPath=gen.asset.filePath;
           generatedMusic=gen.asset;
