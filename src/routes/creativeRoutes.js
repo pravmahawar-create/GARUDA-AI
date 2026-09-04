@@ -629,27 +629,26 @@ router.post("/music-video", async (req,res)=>{
         if(gen.success && gen.asset?.filePath) { audioPath=gen.asset.filePath; generatedMusic=gen.asset; }
       }catch{}
     }
-    // Convert image inputs to 5s video segments via ffmpeg (beautiful Ken Burns via scale+zoompan)
+    // Convert image inputs to beautiful Ken Burns video segments — duration matches requested timeline
     const processedInputs=[];
     const osTmp=require("os").tmpdir();
     const ffmpegPath=(()=>{ try{ return require("ffmpeg-static"); }catch{ return "ffmpeg"; }})();
     const { execFile } = require("child_process");
     const crypto=require("crypto"), fs=require("fs"), path=require("path");
+    const perImageSec = Math.max(5, Math.ceil(durationSec / Math.max(1, footagePaths.filter(p=> /\.(jpg|jpeg|png|webp|svg)$/i.test(p)).length || 1)));
     for(const p of footagePaths){
       const isImage = /\.(jpg|jpeg|png|webp|svg)$/i.test(p);
       if(isImage){
-        // SVG needs rasterization: ffmpeg can handle png/jpg/webp, for svg try convert via ffmpeg (may fail, fallback to copy as is)
         const tmpVid=path.join(osTmp, `img2vid_${Date.now()}_${crypto.randomBytes(2).toString("hex")}.mp4`);
+        const targetSec = String(perImageSec);
         try{
           await new Promise((res,rej)=>{
-            // Use loop 1 + t 5 + zoompan for beautiful effect; for svg use lavfi color fallback if ffmpeg fails
             const vf = "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,zoompan=z='min(zoom+0.0015,1.2)':d=1:x='iw/2-(iw/zoom)/2':y='ih/2-(ih/zoom)/2',eq=contrast=1.05:saturation=1.1";
-            execFile(ffmpegPath, ["-loop","1","-i", p, "-t","5","-vf", vf, "-c:v","libx264","-pix_fmt","yuv420p","-r","24","-y", tmpVid], { timeout:20000, maxBuffer:4*1024*1024 }, (err,so,se)=> err? rej(new Error(String(se||err.message).slice(0,400))): res());
+            execFile(ffmpegPath, ["-loop","1","-i", p, "-t", targetSec, "-vf", vf, "-c:v","libx264","-pix_fmt","yuv420p","-r","24","-y", tmpVid], { timeout:20000, maxBuffer:4*1024*1024 }, (err,so,se)=> err? rej(new Error(String(se||err.message).slice(0,400))): res());
           });
           if(fs.existsSync(tmpVid) && fs.statSync(tmpVid).size>1000) processedInputs.push(tmpVid);
           else processedInputs.push(p);
         }catch{
-          // fallback: keep original (renderTimeline will try scale)
           processedInputs.push(p);
         }
       } else {

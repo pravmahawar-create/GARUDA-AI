@@ -151,16 +151,17 @@ class AudioGenerationRouter {
   async generateSovereignProceduralMusic({ text, mood, durationSec=15, jobId }){
     ensureDirs();
     const moodLower = String(mood||text||"cinematic").toLowerCase();
-    let freq=220, desc="cinematic";
-    if(moodLower.includes("romantic")||moodLower.includes("love")){ freq=330; desc="romantic"; }
-    else if(moodLower.includes("dark")||moodLower.includes("sad")){ freq=165; desc="dark"; }
-    else if(moodLower.includes("happy")||moodLower.includes("upbeat")){ freq=440; desc="upbeat"; }
-    else if(moodLower.includes("epic")){ freq=110; desc="epic"; }
+    let baseFreq=220, desc="cinematic";
+    if(moodLower.includes("romantic")||moodLower.includes("love")){ baseFreq=330; desc="romantic"; }
+    else if(moodLower.includes("dark")||moodLower.includes("sad")){ baseFreq=165; desc="dark"; }
+    else if(moodLower.includes("happy")||moodLower.includes("upbeat")){ baseFreq=440; desc="upbeat"; }
+    else if(moodLower.includes("epic")){ baseFreq=110; desc="epic"; }
     const assetId=`aud_proc_${Date.now()}_${crypto.randomBytes(2).toString("hex")}`;
     const fileName=`${assetId}.wav`;
     const filePath=path.join(AUDIO_ASSETS_DIR, fileName);
-    // ffmpeg lavfi: sine + subtle chorus via aevalsrc
-    const lavfi=`sine=frequency=${freq}:duration=${durationSec},aecho=0.8:0.88:60:0.4`;
+    // Musical procedural: rich chord via aevalsrc + echo + loudnorm for proper volume (not bell)
+    const f1=baseFreq, f2=Math.round(baseFreq*1.5), f3=baseFreq*2;
+    const lavfi=`aevalsrc=sin(2*PI*${f1}*t)*0.3+sin(2*PI*${f2}*t)*0.22+sin(2*PI*${f3}*t)*0.18:s=44100:d=${durationSec},aecho=0.8:0.88:45:0.35,volume=1.2,lowpass=f=3500,alimiter=limit=0.9,loudnorm=I=-14:TP=-1:LRA=11`;
     const ffmpegPath=(()=>{ try{ return require("ffmpeg-static"); }catch{ return "ffmpeg"; }})();
     const { execFile } = require("child_process");
     await new Promise((res,rej)=>{
@@ -174,7 +175,7 @@ class AudioGenerationRouter {
     const assetHash=sha256(buf);
     const asset = {
       assetId, jobId, fileName, filePath, fileSize: buf.length, assetHash, assetUrl:`/assets/creative/${fileName}`, publicUrl:`/assets/creative/${fileName}`,
-      provider:"garuda_sovereign_procedural_music", classification:"SOVEREIGN_PROCEDURAL_MUSIC", mimeType:"audio/wav", durationSec, mood:desc, frequency:freq
+      provider:"garuda_sovereign_procedural_music", classification:"SOVEREIGN_PROCEDURAL_MUSIC", mimeType:"audio/wav", durationSec, mood:desc, frequency:baseFreq
     };
     audioJobsStore.set(assetId, asset);
     return { success:true, jobId, status:"GENERATED", classification:"SOVEREIGN_PROCEDURAL_MUSIC", provider:"garuda_sovereign_procedural_music", asset, truthClassification:"SOVEREIGN_PROCEDURAL_VERIFIED" };
