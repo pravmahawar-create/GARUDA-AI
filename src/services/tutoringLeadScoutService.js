@@ -155,6 +155,20 @@ async function fetchPage(url, timeoutMs = 12000) {
 }
 
 async function searchWeb(query) {
+  const serperKey = process.env.SERPER_API_KEY;
+  if(serperKey){
+    try{
+      const res=await fetch("https://google.serper.dev/search", {
+        method:"POST",
+        headers:{"X-API-KEY": serperKey, "Content-Type":"application/json", "User-Agent": UA},
+        body: JSON.stringify({q: query, num:10})
+      });
+      const data=await res.json();
+      if(Array.isArray(data.organic)){
+        return data.organic.map(o=>({title:o.title, url:o.link, snippet:o.snippet||""}));
+      }
+    }catch{}
+  }
   const googleKey = process.env.GOOGLE_CSE_API_KEY;
   const googleCx = process.env.GOOGLE_CSE_ID;
   if (googleKey && googleCx) {

@@ -120,7 +120,22 @@ async function fetchPage(url, timeoutMs=12000){
   finally{ clearTimeout(timer); }
 }
 async function searchWeb(query){
-  // 0₹ — only DuckDuckGo, no GOOGLE_CSE/SERPAPI billing
+  // SERPER first (if key present, no billing enable needed for free tier 2500), then DuckDuckGo fallback — 0₹
+  const serperKey = process.env.SERPER_API_KEY;
+  if(serperKey){
+    try{
+      const res=await fetch("https://google.serper.dev/search", {
+        method:"POST",
+        headers:{"X-API-KEY": serperKey, "Content-Type":"application/json", "User-Agent": UA},
+        body: JSON.stringify({q: query, num:10})
+      });
+      const data=await res.json();
+      if(Array.isArray(data.organic)){
+        return data.organic.map(o=>({title:o.title, url:o.link, snippet:o.snippet||""}));
+      }
+    }catch{}
+  }
+  // Fallback DuckDuckGo free
   try{
     const url=`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
     const res=await fetch(url, {headers:{"User-Agent":UA}});
