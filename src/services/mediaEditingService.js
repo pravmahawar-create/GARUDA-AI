@@ -85,10 +85,10 @@ class MediaEditingService {
     if (vfParts.length===0) vfParts.push("scale=1280:720:flags=bicubic");
     const vf = vfParts.join(",");
 
-    // Audio mux path: if audioReplacePath present, add second input and map
+    // Audio mux path: if audioReplacePath present, add second input and map with loudnorm
     let args;
     if(audioReplacePath){
-      args = [...ssArgs, "-i", inputs[0], "-i", audioReplacePath, ...tArgs, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-c:a","aac","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-shortest","-y", outFile];
+      args = [...ssArgs, "-i", inputs[0], "-i", audioReplacePath, ...tArgs, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-c:a","aac","-filter:a","loudnorm=I=-14:TP=-1:LRA=11","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-shortest","-y", outFile];
     } else {
       args = [...ssArgs, "-i", inputs[0], ...tArgs, "-vf", vf, "-c:v","libx264","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-y", outFile];
     }
@@ -96,8 +96,7 @@ class MediaEditingService {
       const listFile = path.join(this.assetsDir, `concat_${Date.now()}.txt`);
       fs.writeFileSync(listFile, inputs.map(p=>`file '${p.replace(/'/g,"'\\''")}'`).join("\n"));
       if(audioReplacePath){
-        // concat + audio mux needs re-encode, not copy
-        const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-i", audioReplacePath, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-c:a","aac","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-shortest","-y", outFile];
+        const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-i", audioReplacePath, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-c:a","aac","-filter:a","loudnorm=I=-14:TP=-1:LRA=11","-pix_fmt","yuv420p","-preset","ultrafast","-movflags","+faststart","-shortest","-y", outFile];
         await new Promise((res,rej)=> execFile(this.ffmpegPath, concatArgs, { timeout: 60000, maxBuffer: 4*1024*1024 }, (e,so,se)=> e?rej(new Error(se||e.message)):res()));
       } else {
         const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-c","copy","-y", outFile];
