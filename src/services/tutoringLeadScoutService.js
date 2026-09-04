@@ -36,6 +36,10 @@ const LOCATIONS = {
   dubai: {
     cities: ["Dubai", "Abu Dhabi", "Sharjah", "Al Ain"],
     country: "AE"
+  },
+  australia: {
+    cities: ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Canberra", "Gold Coast", "Newcastle"],
+    country: "AU"
   }
 };
 
@@ -60,7 +64,7 @@ function saveStatus(status) {
 }
 
 function buildQueries(locKey) {
-  const suffix = locKey === "usa" ? "USA" : "UAE Dubai";
+  const suffix = locKey === "usa" ? "USA" : locKey === "australia" ? "Australia" : "UAE Dubai";
   const pairs = [
     ["tutoring center", "contact email"],
     ["tutoring academy", "contact"],
@@ -69,7 +73,12 @@ function buildQueries(locKey) {
     ["tuition centre", "contact"],
     ["math tutoring center", "contact"],
     ["private tutoring center", "email"],
-    ["test prep academy", "contact"]
+    ["test prep academy", "contact"],
+    // videshi (foreign) parents / B2C maths leads — sister wants foreign kids directly
+    ["parents looking for maths tutor", "contact"],
+    ["foreign parents maths tuition", "email"],
+    ["expat family maths tutor", "contact email"],
+    ["australian curriculum maths tutor", "contact"]
   ];
   return pairs.map(([a, b]) => `${a} in ${suffix} ${b}`);
 }
@@ -206,7 +215,8 @@ function pickCity(locKey) {
 
 async function runTutoringScanOnce(options = {}) {
   const jobId = options.jobId || `ts_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
-  const locations = options.location === "dubai" ? ["dubai"] : options.location === "usa" ? ["usa"] : ["usa", "dubai"];
+  const loc = String(options.location || "").toLowerCase();
+  const locations = loc === "dubai" ? ["dubai"] : loc === "usa" ? ["usa"] : loc === "australia" ? ["australia"] : loc === "all" || loc === "globe" || loc === "videshi" ? ["usa", "dubai", "australia"] : ["usa", "dubai", "australia"];
   const maxSites = Math.max(1, Number(options.maxSites) || DEFAULT_MAX_SITES);
   const delayMs = Math.max(0, Number(options.delayMs) || DEFAULT_DELAY_MS);
   const searchFn = typeof options.searchFn === "function" ? options.searchFn : searchWeb;

@@ -522,14 +522,17 @@ const DOMAINS = {
 
   tutoring: {
     id: "tutoring",
-    label: "Tutoring Centers (USA/UAE) — Online Maths Tutor Partnership",
+    label: "Tutoring Centers (USA/UAE/Australia) — Online Maths Tutor Partnership — Videshi & Australia",
     namespace: "tutoring",
-    topics: ["partner_maths_tutor", "online_tutor_network", "curriculum_maths", "quality_and_reports"],
+    topics: ["partner_maths_tutor", "online_tutor_network", "curriculum_maths", "quality_and_reports", "australia_hsc", "videshi_parents", "foreign_students"],
     topicKeywords: {
       partner_maths_tutor: ["partner", "tutor", "maths", "math", "teacher", "faculty", "staff", "hire", "add"],
       online_tutor_network: ["online", "virtual", "remote", "zoom", "live class", "network", "capacity"],
       curriculum_maths: ["cbse", "icse", "grade 8", "class 8", "middle school", "curriculum", "syllabus"],
-      quality_and_reports: ["quality", "results", "retention", "progress", "reports", "admin"]
+      quality_and_reports: ["quality", "results", "retention", "progress", "reports", "admin"],
+      australia_hsc: ["hsc", "atar", "naplan", "victorian curriculum", "australia", "sydney", "melbourne", "brisbane"],
+      videshi_parents: ["videshi", "foreign", "expat", "nri", "overseas", "indian community", "parents looking", "parent"],
+      foreign_students: ["foreign student", "international student", "expat family", "videshi", "australia", "america", "dubai"]
     },
     segments: {
       tutoring_center: {
@@ -541,20 +544,29 @@ const DOMAINS = {
         ]
       },
       small_business: { weight: 25, signals: ["small", "local", "independent", "family run", "mom and pop", "home tuition", "single location"] },
-      premium: { weight: 20, signals: ["international", "cbse", "icse", "american curriculum", "british curriculum", "premium", "elite", "private school"] },
-      chain: { weight: 15, signals: ["chain", "franchise", "multiple", "group", "locations", "brand", "network"] }
+      premium: { weight: 20, signals: ["international", "cbse", "icse", "american curriculum", "british curriculum", "premium", "elite", "private school", "hsc", "atar", "australia"] },
+      chain: { weight: 15, signals: ["chain", "franchise", "multiple", "group", "locations", "brand", "network"] },
+      parent_foreign: { weight: 35, signals: ["foreign parent", "expat", "expat family", "foreign student", "international student", "videshi", "overseas parent", "parents looking"] },
+      parent_videshi: { weight: 35, signals: ["videshi", "videshi parents", "foreign parents", "expat parents", "indian parents australia", "nri parents"] },
+      australia_centre: { weight: 30, signals: ["australia", "sydney", "melbourne", "brisbane", "perth", "hsc", "atar", "naplan"] }
     },
     hooks: {
       partner_maths_tutor: "We have a verified online maths tutor for Class 8 and below ready to join your roster — you pay only for the classes you use, no fixed salary, no recruitment cost.",
       online_tutor_network: "Expand your centre's capacity without hiring — an on-demand online maths tutor covers extra batches and waitlists instantly.",
       curriculum_maths: "Class 8 maths (CBSE, ICSE, or US curriculum) covered by a dedicated online tutor — a clean add-on to your existing batches.",
-      quality_and_reports: "Every class comes with a structured progress report — better results and retention for your families, zero extra admin for your staff."
+      quality_and_reports: "Every class comes with a structured progress report — better results and retention for your families, zero extra admin for your staff.",
+      australia_hsc: "Australia HSC/ATAR maths (Sydney, Melbourne, Brisbane) — verified online tutor for Year 7-8, NAPLAN aligned, weekly reports for Aussie parents.",
+      videshi_parents: "Videshi parents in Australia/Dubai/America looking for maths tutor for their kids — patient, English-fluent online teacher, IEP-aligned for every child including vishesh needs if required.",
+      foreign_students: "Foreign students (Australia, America, Dubai) — your child gets a dedicated online maths tutor, any curriculum (CBSE/ICSE/HSC/Common Core), pay per class."
     },
     hooksEn: {
       partner_maths_tutor: "We have a verified online maths tutor for Class 8 and below ready to join your roster — you pay only for the classes you use, no fixed salary, no recruitment cost.",
       online_tutor_network: "Expand your centre's capacity without hiring — an on-demand online maths tutor covers extra batches and waitlists instantly.",
       curriculum_maths: "Class 8 maths (CBSE, ICSE, or US curriculum) covered by a dedicated online tutor — a clean add-on to your existing batches.",
-      quality_and_reports: "Every class comes with a structured progress report — better results and retention for your families, zero extra admin for your staff."
+      quality_and_reports: "Every class comes with a structured progress report — better results and retention for your families, zero extra admin for your staff.",
+      australia_hsc: "Australia HSC/ATAR maths (Sydney, Melbourne, Brisbane) — verified online tutor for Year 7-8, NAPLAN aligned, weekly reports for Aussie parents.",
+      videshi_parents: "Videshi parents in Australia/Dubai/America looking for maths tutor for their kids — patient, English-fluent online teacher, IEP-aligned for every child including vishesh needs if required.",
+      foreign_students: "Foreign students (Australia, America, Dubai) — your child gets a dedicated online maths tutor, any curriculum (CBSE/ICSE/HSC/Common Core), pay per class."
     },
     brandLines: [
       "I'm GARUDA — connecting tutoring centres with verified online maths tutors for Class 8 and below.",
