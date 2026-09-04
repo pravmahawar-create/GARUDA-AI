@@ -112,6 +112,27 @@ const { initRevenueOperatingCycle } = require("./services/revenueOperatingCycleI
 // Boot 24x7 Revenue Operating Loop Workers
 initRevenueOperatingCycle();
 
+// Overnight Serper Hunters — laptop band ke baad bhi subah tak (Render pe) — Founder YES tonight
+try{
+  const overnight = require("./workers/overnightSerperHuntersWorker");
+  // Auto-start if env GARUDA_OVERNIGHT_HUNTERS === "true" or founder approved tonight (06:00)
+  if(process.env.GARUDA_OVERNIGHT_HUNTERS === "true" || overnight.founderApprovedTonight()){
+    console.log("[GARUDA] Overnight hunters loop starting (SERPER 2500, founder YES tonight)...");
+    overnight.startOvernightLoop();
+  }
+  // Expose API for manual control
+  const appRef = app;
+  appRef.get("/api/hunters/overnight/status", (req,res)=> res.json({success:true, ...overnight.getOvernightStatus()}));
+  appRef.post("/api/hunters/overnight/start", (req,res)=>{
+    const r=overnight.startOvernightLoop();
+    res.json({success:true, ...r, status: overnight.getOvernightStatus()});
+  });
+  appRef.post("/api/hunters/overnight/stop", (req,res)=>{
+    overnight.stopOvernightLoop();
+    res.json({success:true, stopped:true, status: overnight.getOvernightStatus()});
+  });
+}catch(e){ console.log("[Overnight] init failed", String(e.message).slice(0,100)); }
+
 app.get("/api/telegram", async (req, res) => {
   try {
     if (req.query.url) {
