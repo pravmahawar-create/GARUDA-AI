@@ -82,20 +82,31 @@ class MediaEditingService {
         if(typeof p==="string" && fs.existsSync(p)) audioReplacePath = p;
       }
     }
-    if (vfParts.length===0) vfParts.push("scale=1280:720:flags=bicubic");
+    // Auto-rotate left-rotated video (mobile 90°): probe first input's rotate tag and prepend transpose before scale
+    // For single input, manual transpose + -noautorotate; for concat, rely on ffmpeg autorotate per-file
+    if(inputs.length === 1){
+      try{
+        const rot = await this._probeRotation(inputs[0]);
+        if(rot === 90 || rot === -270) vfParts.unshift("transpose=1");
+        else if(rot === 270 || rot === -90) vfParts.unshift("transpose=2");
+        else if(rot === 180 || rot === -180) vfParts.unshift("transpose=2,transpose=2");
+      }catch{}
+    }
+    const hasScale = vfParts.some(v=> v.includes("scale="));
+    if(!hasScale) vfParts.push("scale=1280:720:force_original_aspect_ratio=increase:flags=lanczos,crop=1280:720");
     const vf = vfParts.join(",");
-
-    // Mobile quality: use yuv420p + ultrafast + faststart, ensure 720p minimum
-    if (vfParts.length===0) vfParts.push("scale=1280:720:flags=bicubic:flags=lanczos");
+    // Ensure manual rotation handling: disable autorotate and use transpose detected above
+    const noAutorotate = ["-noautorotate"];
     // Auto duration handling: probe full song duration is done in route, here just ensure inputs exist
     // Audio mux path: if audioReplacePath present, add second input and map with loudnorm
     let args;
     if(audioReplacePath){
-      args = [...ssArgs, "-i", inputs[0], "-i", audioReplacePath, ...tArgs, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-preset","medium","-crf","18","-c:a","aac","-b:a","192k","-filter:a","loudnorm=I=-14:TP=-1:LRA=11","-pix_fmt","yuv420p","-movflags","+faststart","-shortest","-y", outFile];
+      args = [...noAutorotate, ...ssArgs, "-i", inputs[0], "-i", audioReplacePath, ...tArgs, "-vf", vf, "-map","0:v:0", "-map","1:a:0", "-c:v","libx264","-preset","medium","-crf","18","-c:a","aac","-b:a","192k","-filter:a","loudnorm=I=-14:TP=-1:LRA=11","-pix_fmt","yuv420p","-movflags","+faststart","-shortest","-y", outFile];
     } else {
-      args = [...ssArgs, "-i", inputs[0], ...tArgs, "-vf", vf, "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p","-movflags","+faststart","-y", outFile];
+      args = [...noAutorotate, ...ssArgs, "-i", inputs[0], ...tArgs, "-vf", vf, "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p","-movflags","+faststart","-y", outFile];
     }
     // Auto concat: whenever >1 inputs, chronologically — Zero-Touch mobile: 4 clips 67s
+    // For concat, rely on ffmpeg autorotate per-file (no -noautorotate) so gap images (720:1280) stay vertical while raw 90° rotates
     if (inputs.length > 1) {
       const listFile = path.join(this.assetsDir, `concat_${Date.now()}.txt`);
       fs.writeFileSync(listFile, inputs.map(p=>`file '${p.replace(/'/g,"'\\''")}'`).join("\n"));
@@ -252,12 +263,40 @@ class MediaEditingService {
     return result;
   }
 
+  async _probeRotation(filePath){
+    try{
+      const out = await new Promise((resolve)=>{
+        const { execFile: ef2 } = require("child_process");
+        ef2(this.ffmpegPath, ["-i", filePath], { timeout:4000, maxBuffer:2*1024*1024 }, (err, stdout, stderr)=>{
+          resolve(String(stderr||stdout||""));
+        });
+      });
+      // Try rotate tag: "rotate          : 90" or "Side data: displaymatrix: rotation of -90.00 degrees"
+      let m = out.match(/rotate\s*:\s*(-?\d+)/i);
+      if(m) return parseInt(m[1],10);
+      m = out.match(/displaymatrix.*rotation of\s*(-?\d+\.?\d*)/i);
+      if(m) return Math.round(parseFloat(m[1]));
+      // Fallback: portrait dimensions (720x1280) left-rotated from phone — treat as 90° to auto-rotate to landscape
+      m = out.match(/Video:.*? (\d+)x(\d+) \[SAR/);
+      if(!m) m = out.match(/, (\d+)x(\d+) \[/);
+      if(m){
+        const w=parseInt(m[1],10), h=parseInt(m[2],10);
+        if(h > w && w === 720 && h === 1280) return 90; // common mobile portrait
+        if(h > w) {
+          // Generic portrait -> likely needs 90 CW to become landscape for 1280:720 timeline
+          return 90;
+        }
+      }
+      return 0;
+    }catch{ return 0; }
+  }
+
   getCapabilities() {
     const ffmpegReady = this.isAvailable();
     return {
       ffmpegAvailable: ffmpegReady,
       ingestAvailable: true,
-      operations: ["trim","concat","scale","crop","text_overlay","audio_replace"],
+      operations: ["trim","concat","scale","crop","text_overlay","audio_replace","auto_rotate"],
       timelineAvailable: ffmpegReady,
       qcAvailable: true,
       beatAnalysis: ffmpegReady ? "REAL_SOVEREIGN_ASYNC" : "PLACEHOLDER_ONLY",
