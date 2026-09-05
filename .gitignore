@@ -39,3 +39,6 @@ frontend/dist/
 .claude/
 frontend/public/images/vid_local25d_*
 frontend/public/images/asset_garuda_*
+output/raw/
+output/shorts/*.mp4
+output/shorts/*.webm
