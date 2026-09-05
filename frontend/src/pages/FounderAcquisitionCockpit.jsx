@@ -567,14 +567,14 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
                         <div>
                           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                             <span style={{ fontSize: "1.15rem", fontWeight: "800", color: "#f8fafc" }}>{s.businessName}</span>
-                            {isNiravi && <span style={{ fontSize: "0.65rem", padding: "0.15rem 0.45rem", background: "rgba(212,175,55,0.15)", color: "#d4af37", border: "1px solid rgba(212,175,55,0.4)", borderRadius: "999px", fontWeight: "700" }}>REAL DISPATCH</span>}
+                            <span style={{ fontSize: "0.65rem", padding: "0.15rem 0.45rem", background: "rgba(212,175,55,0.15)", color: "#d4af37", border: "1px solid rgba(212,175,55,0.4)", borderRadius: "999px", fontWeight: "700" }}>VERIFIED DISPATCH</span>
                             <span style={{ fontSize: "0.68rem", padding: "0.15rem 0.5rem", background: "rgba(16,185,129,0.15)", color: "#34d399", border: "1px solid #10b981", borderRadius: "4px", fontWeight: "700" }}>{s.dispatchStatus} / {s.relayState}</span>
                           </div>
                           <div style={{ fontSize: "0.8rem", color: "#cbd5e1", marginTop: "0.25rem", fontWeight: "500" }}>{s.subject}</div>
                           <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "0.2rem" }}>
                             {s.recipient} • Prospect ID: <code style={{ fontSize: "0.7rem", background: "#020617", padding: "0.1rem 0.3rem", borderRadius: "3px", border: "1px solid #1e293b" }}>{s.prospectId}</code>
                           </div>
-                          {isNiravi && <div style={{ fontSize: "0.72rem", color: "#94a3b8", marginTop: "0.15rem" }}>A digital reservation concept for Niravi Jaipur</div>}
+                          {s.businessNotes && <div style={{ fontSize: "0.72rem", color: "#94a3b8", marginTop: "0.15rem" }}>{s.businessNotes}</div>}
                         </div>
                         <div style={{ textAlign: "right" }}>
                           <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.04em" }}>Dispatched</div>
@@ -587,8 +587,8 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
                       <div style={{ padding: "1rem 1.2rem" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "0.7rem", marginBottom: "0.9rem" }}>
                           {[
-                            { label: "Provider", value: s.provider ? s.provider.toUpperCase() : "BREVO", sub: s.providerMessageId ? "Relay accepted" : "—", color: "#38bdf8" },
-                            { label: "Delivery", value: s.deliveryStatus, sub: "Awaiting provider delivery confirmation", color: "#fbbf24" },
+                            { label: "Provider", value: s.provider ? s.provider.toUpperCase().replace("_", " ") : "BREVO", sub: s.providerMessageId ? "Relay accepted" : "—", color: "#38bdf8" },
+                            { label: "Delivery", value: s.deliveryStatus, sub: "Awaiting provider confirmation", color: "#fbbf24" },
                             { label: "Open", value: s.openStatus, sub: "Awaiting", color: "#94a3b8" },
                             { label: "Click", value: s.clickStatus, sub: "Awaiting", color: "#94a3b8" },
                             { label: "Reply", value: s.replyStatus, sub: "Awaiting", color: "#94a3b8" }
@@ -601,11 +601,11 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
                           ))}
                         </div>
 
-                        {/* Brevo Message ID + Meta */}
+                        {/* Provider Message ID + Meta */}
                         <div style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.8rem", marginBottom: "0.9rem" }}>
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", fontSize: "0.75rem" }}>
                             <div>
-                              <div style={{ color: "#94a3b8", textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.04em", fontWeight: "700" }}>Brevo Message ID</div>
+                              <div style={{ color: "#94a3b8", textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.04em", fontWeight: "700" }}>Relay Message ID</div>
                               <div style={{ color: "#34d399", fontFamily: "monospace", fontSize: "0.78rem", marginTop: "0.2rem", wordBreak: "break-all" }}>{s.providerMessageId || "—"}</div>
                             </div>
                             <div>

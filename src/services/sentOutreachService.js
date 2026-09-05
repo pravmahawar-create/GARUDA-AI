@@ -57,6 +57,43 @@ function formatIST(iso) {
   }
 }
 
+function findPreviewArtifacts(businessName, recipient) {
+  const proposalsDir = path.join(__dirname, "..", "..", "data", "proposals");
+  let emailPreviewUrl = null;
+  let proposalPdfUrl = null;
+
+  try {
+    if (fs.existsSync(proposalsDir)) {
+      const files = fs.readdirSync(proposalsDir);
+      const recNorm = (recipient || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const bizNorm = (businessName || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+      let matchedHtml = files.find(f => {
+        if (!f.endsWith(".html")) return false;
+        const fnNorm = f.toLowerCase().replace(/[^a-z0-9]/g, "");
+        return recNorm && fnNorm.includes(recNorm);
+      });
+      if (!matchedHtml) {
+        matchedHtml = files.find(f => {
+          if (!f.endsWith(".html")) return false;
+          const fnNorm = f.toLowerCase().replace(/[^a-z0-9]/g, "");
+          return bizNorm && fnNorm.includes(bizNorm);
+        });
+      }
+      if (matchedHtml) emailPreviewUrl = `/api/acquisition/outreach/artifacts/${matchedHtml}`;
+
+      let matchedPdf = files.find(f => {
+        if (!f.endsWith(".pdf")) return false;
+        const fnNorm = f.toLowerCase().replace(/[^a-z0-9]/g, "");
+        return (recNorm && fnNorm.includes(recNorm)) || (bizNorm && fnNorm.includes(bizNorm));
+      });
+      if (matchedPdf) proposalPdfUrl = `/api/acquisition/outreach/artifacts/${matchedPdf}`;
+    }
+  } catch (e) {}
+
+  return { emailPreviewUrl, proposalPdfUrl };
+}
+
 function prospectToSentRecord(doc) {
   if (!doc) return null;
   const prospectId = String(doc._id);
@@ -98,6 +135,10 @@ function prospectToSentRecord(doc) {
   // Telemetry: truthful - never DELIVERED if only ACCEPTED_BY_RELAY
   const dispatchStatus = "SENT";
   const relayState = "ACCEPTED_BY_RELAY";
+
+  const previews = findPreviewArtifacts(businessName, recipient);
+  const emailPreviewUrl = isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Email_Preview.html" : previews.emailPreviewUrl;
+  const proposalPdfUrl = isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : previews.proposalPdfUrl;
 
   return {
     prospectId,
@@ -141,10 +182,10 @@ function prospectToSentRecord(doc) {
     grade: doc.grade || null,
     score: doc.score != null ? doc.score : null,
     // Preview links - use API artifact proxy (reliable via Vercel /api/*) + fallback static
-    emailPreviewUrl: isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Email_Preview.html" : null,
-    proposalPdfUrl: isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : null,
-    proposalPdfDirectUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : null,
-    emailPreviewDirectUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Email_Preview.html" : null,
+    emailPreviewUrl,
+    proposalPdfUrl,
+    proposalPdfDirectUrl: proposalPdfUrl ? proposalPdfUrl.replace("/api/acquisition/outreach/artifacts/", "/data/proposals/") : null,
+    emailPreviewDirectUrl: emailPreviewUrl ? emailPreviewUrl.replace("/api/acquisition/outreach/artifacts/", "/data/proposals/") : null,
     // Original doc ref for debugging (not exposed as mock)
     _sourceCollection: "prospects"
   };
@@ -215,10 +256,10 @@ function governedToSentRecord(doc) {
     portalLink: doc.dispatchPayload?.portalLink || `https://www.garudaos.in/services/custom-software-development`,
     source: doc.source || "governed_outreach",
     dispatchedAtRaw: dispatchedAt,
-    emailPreviewUrl: isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Email_Preview.html" : null,
-    proposalPdfUrl: isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : null,
-    proposalPdfDirectUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : null,
-    emailPreviewDirectUrl: isNiravi ? "/data/proposals/GARUDA_Niravi_Jaipur_Email_Preview.html" : null,
+    emailPreviewUrl: doc.emailPreviewUrl || (isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Email_Preview.html" : findPreviewArtifacts(businessName, recipient).emailPreviewUrl),
+    proposalPdfUrl: doc.proposalPdfUrl || (isNiravi ? "/api/acquisition/outreach/artifacts/GARUDA_Niravi_Jaipur_Executive_Proposal.pdf" : findPreviewArtifacts(businessName, recipient).proposalPdfUrl),
+    proposalPdfDirectUrl: (doc.proposalPdfUrl || findPreviewArtifacts(businessName, recipient).proposalPdfUrl) ? (doc.proposalPdfUrl || findPreviewArtifacts(businessName, recipient).proposalPdfUrl).replace("/api/acquisition/outreach/artifacts/", "/data/proposals/") : null,
+    emailPreviewDirectUrl: (doc.emailPreviewUrl || findPreviewArtifacts(businessName, recipient).emailPreviewUrl) ? (doc.emailPreviewUrl || findPreviewArtifacts(businessName, recipient).emailPreviewUrl).replace("/api/acquisition/outreach/artifacts/", "/data/proposals/") : null,
     _sourceCollection: "governed_outreach_records",
     businessNotes: doc.notes || null
   };
@@ -414,6 +455,96 @@ async function listSentOutreach() {
     }
   } catch (e) {
     console.error("[sentOutreachService] listSentOutreach error", e.message);
+  }
+
+  // 3. Merged canonical dispatches from data/outreach-dispatch-log.json
+  try {
+    const dispatchLogPath = path.join(__dirname, "..", "..", "data", "outreach-dispatch-log.json");
+    if (fs.existsSync(dispatchLogPath)) {
+      const fileDispatches = JSON.parse(fs.readFileSync(dispatchLogPath, "utf8"));
+      if (Array.isArray(fileDispatches)) {
+        for (const item of fileDispatches) {
+          const key = String(item.prospectId || item.email);
+          if (seen.has(key)) continue;
+          seen.add(key);
+
+          const businessName = item.businessName || "Prospect";
+          const recipient = String(item.email || "").toLowerCase();
+          const previews = findPreviewArtifacts(businessName, recipient);
+          const dispatchedAt = item.timestamp || item.dispatchedAt || new Date().toISOString();
+          const isGoogleSmtp = item.providerResponseId && (item.providerResponseId.includes("gsmtp") || item.providerResponseId.includes("250 2.0.0 OK"));
+          const provider = isGoogleSmtp ? "google_smtp" : (item.provider || "brevo");
+
+          const rec = {
+            prospectId: item.prospectId,
+            businessName,
+            recipient,
+            subject: item.subject || `Implementation Partner Inquiry: ${businessName} — GARUDA AI OS`,
+            dispatchedAt: new Date(dispatchedAt).toISOString(),
+            dispatchedAtIST: formatIST(dispatchedAt),
+            provider,
+            relayProvider: provider,
+            providerMessageId: item.providerResponseId || null,
+            brevoMessageId: item.providerResponseId || null,
+            dispatchStatus: "SENT",
+            relayState: "ACCEPTED_BY_RELAY",
+            status: "SENT",
+            deliveryStatus: "AWAITING",
+            openStatus: "AWAITING",
+            clickStatus: "AWAITING",
+            replyStatus: "AWAITING",
+            telemetry: {
+              delivery: "AWAITING",
+              open: "AWAITING",
+              click: "AWAITING",
+              reply: "AWAITING",
+              providerConfirmedDelivery: false,
+              note: isGoogleSmtp ? "Dispatched via Google SMTP relay. Awaiting prospect reply." : "Awaiting provider delivery confirmation."
+            },
+            attachment: previews.proposalPdfUrl ? { filename: path.basename(previews.proposalPdfUrl), available: true } : null,
+            artifact: previews.proposalPdfUrl ? { filename: path.basename(previews.proposalPdfUrl), available: true } : null,
+            sha256: item.sha256 || null,
+            chatUrl: `https://www.garudaos.in/chat?ref=${item.prospectId}`,
+            portalLink: "https://www.garudaos.in/services/custom-software-development",
+            source: item.theme ? `rfp_${item.theme}` : "hunter_public_discovery",
+            dispatchedAtRaw: dispatchedAt,
+            emailPreviewUrl: previews.emailPreviewUrl,
+            proposalPdfUrl: previews.proposalPdfUrl,
+            proposalPdfDirectUrl: previews.proposalPdfUrl ? previews.proposalPdfUrl.replace("/api/acquisition/outreach/artifacts/", "/data/proposals/") : null,
+            emailPreviewDirectUrl: previews.emailPreviewUrl ? previews.emailPreviewUrl.replace("/api/acquisition/outreach/artifacts/", "/data/proposals/") : null,
+            _sourceCollection: "outreach_dispatch_log"
+          };
+          sent.push(rec);
+
+          // Auto-bridge into MongoDB governed_outreach_records if DB is available
+          if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
+            mongoose.connection.db.collection("governed_outreach_records").updateOne(
+              { prospectId: item.prospectId },
+              {
+                $set: {
+                  prospectId: item.prospectId,
+                  company: businessName,
+                  contactEmail: recipient,
+                  subject: rec.subject,
+                  status: "SENT",
+                  relayProvider: provider,
+                  providerResponseId: item.providerResponseId,
+                  dispatchedAt: new Date(dispatchedAt).toISOString(),
+                  sha256: item.sha256 || null,
+                  emailPreviewUrl: previews.emailPreviewUrl,
+                  proposalPdfUrl: previews.proposalPdfUrl,
+                  source: rec.source,
+                  isTest: false
+                }
+              },
+              { upsert: true }
+            ).catch(() => {});
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("[sentOutreachService] Failed reading dispatch log:", err.message);
   }
 
   // Sort by dispatchedAt desc (newest first)
