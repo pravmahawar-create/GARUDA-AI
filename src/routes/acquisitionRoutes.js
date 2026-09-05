@@ -181,7 +181,17 @@ router.post("/outreach/:id/response", async (req, res) => {
 router.get("/outreach/artifacts/:filename", (req, res) => {
   const path = require("path");
   const fs = require("fs");
-  const filename = String(req.params.filename || "").replace(/[^a-zA-Z0-9._-]/g, "");
+  let filename = String(req.params.filename || "").replace(/[^a-zA-Z0-9._-]/g, "");
+
+  // Handle Vercel cleanUrls stripping .html or .pdf
+  if (!filename.endsWith(".html") && !filename.endsWith(".pdf")) {
+    if (fs.existsSync(path.join(__dirname, "..", "..", "data", "proposals", filename + ".html"))) {
+      filename = filename + ".html";
+    } else if (fs.existsSync(path.join(__dirname, "..", "..", "data", "proposals", filename + ".pdf"))) {
+      filename = filename + ".pdf";
+    }
+  }
+
   // Allow all proposal artifacts: must match GARUDA_*.html or GARUDA_*.pdf
   if (!/^GARUDA_[\w.-]+\.(html|pdf)$/i.test(filename)) {
     return res.status(404).json({ success: false, message: "Artifact not found or invalid filename format" });
