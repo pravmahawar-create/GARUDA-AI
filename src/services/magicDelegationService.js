@@ -27,7 +27,7 @@ const SUPPORTED_PLATFORMS = [
     portalUrl: "https://studio.youtube.com",
     instructions: "YouTube Studio > Settings > Permissions > Add 'garudaos.ai@gmail.com' as Editor.",
     marketRateMonthly: 25000,
-    garudaRateMonthly: 7999,
+    garudaRateMonthly: 18750,
     deliverables: "4 Long Video SEO + 20 Viral Shorts Scripts + Search Indexing"
   },
   {
@@ -38,7 +38,7 @@ const SUPPORTED_PLATFORMS = [
     portalUrl: "https://business.facebook.com/settings/people",
     instructions: "Meta Business Suite > Settings > People/Partners > Assign Content Manager.",
     marketRateMonthly: 20000,
-    garudaRateMonthly: 6999,
+    garudaRateMonthly: 14000,
     deliverables: "30 Kinetic Reel Hooks + Captions + Auto-DM Keyword Funnel"
   },
   {
@@ -49,7 +49,7 @@ const SUPPORTED_PLATFORMS = [
     portalUrl: "https://www.facebook.com/settings?tab=profile_access",
     instructions: "Page Settings > Professional Dashboard > Page Access > Add 'garudaos.ai@gmail.com'.",
     marketRateMonthly: 15000,
-    garudaRateMonthly: 4999,
+    garudaRateMonthly: 10500,
     deliverables: "Native Video Post Copies + Niche Community Discussion Sprints"
   },
   {
@@ -60,7 +60,7 @@ const SUPPORTED_PLATFORMS = [
     portalUrl: "https://www.linkedin.com/company/setup/new/",
     instructions: "LinkedIn Page > Admin Tools > Manage Admins > Add 'garudaos.ai@gmail.com' as Content Admin.",
     marketRateMonthly: 25000,
-    garudaRateMonthly: 7999,
+    garudaRateMonthly: 18750,
     deliverables: "8 Thought Leadership Carousels (5-Slide PDFs) + Executive Posts"
   },
   {
@@ -71,7 +71,7 @@ const SUPPORTED_PLATFORMS = [
     portalUrl: "https://pro.x.com",
     instructions: "TweetDeck / X Pro > Accounts > Teams > Invite Contributor.",
     marketRateMonthly: 15000,
-    garudaRateMonthly: 4999,
+    garudaRateMonthly: 10500,
     deliverables: "Viral Discussion Threads + Quote Breakdowns + Real-Time Trend Hijacks"
   },
   {
@@ -82,7 +82,7 @@ const SUPPORTED_PLATFORMS = [
     portalUrl: "https://search.google.com/search-console",
     instructions: "Google Search Console > Settings > Users & Permissions > Add 'garudaos.ai@gmail.com'.",
     marketRateMonthly: 30000,
-    garudaRateMonthly: 9999,
+    garudaRateMonthly: 21000,
     deliverables: "VideoObject JSON-LD Structured Schema + Search Moment Clips"
   }
 ];
@@ -93,29 +93,23 @@ function calculateOmniQuote(selectedPlatformIds = ["youtube"]) {
   const count = Math.max(1, selected.length);
 
   const rawMarketSum = selected.reduce((sum, p) => sum + p.marketRateMonthly, 0);
-  const rawGarudaSum = selected.reduce((sum, p) => sum + p.garudaRateMonthly, 0);
 
-  let bundleDiscountPercent = 0;
-  if (count >= 5) {
-    bundleDiscountPercent = 30; // 30% off for 5+ platforms
-  } else if (count >= 3) {
-    bundleDiscountPercent = 20; // 20% off for 3-4 platforms
-  } else if (count === 2) {
-    bundleDiscountPercent = 10; // 10% off for 2 platforms
-  }
-
-  const finalGarudaRate = Math.round(rawGarudaSum * (1 - bundleDiscountPercent / 100));
+  // Client savings is 25% for 1 platform, 30% for 2-4 platforms, 32% for 5+ platforms
+  // Founder keeps 70% to 75% of market price! Win-Win!
+  const clientSavingsPercent = count >= 5 ? 32 : count >= 2 ? 30 : 25;
+  const finalGarudaRate = Math.round(rawMarketSum * (1 - clientSavingsPercent / 100));
   const totalSavings = rawMarketSum - finalGarudaRate;
-  const savingsPercent = Math.round((totalSavings / rawMarketSum) * 100);
+  const annualSavings = totalSavings * 12;
 
   return {
     platformCount: count,
     selectedPlatforms: selected,
     marketRateMonthly: rawMarketSum,
     garudaRateMonthly: finalGarudaRate,
-    bundleDiscountPercent,
+    clientSavingsPercent,
     totalSavingsMonthly: totalSavings,
-    savingsPercent,
+    annualSavings,
+    savingsPercent: clientSavingsPercent,
     guarantee: "100% Governed AI Delivery with SHA-256 Audit Trail & 24/7 Autopilot"
   };
 }

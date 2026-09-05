@@ -10,7 +10,7 @@ const ALL_PLATFORMS = [
     portalUrl: "https://studio.youtube.com",
     instructions: "YouTube Studio > Settings > Permissions > Click 'Add Permissions' > Paste 'garudaos.ai@gmail.com' > Select role 'Editor'.",
     marketRateMonthly: 25000,
-    garudaRateMonthly: 7999,
+    garudaRateMonthly: 18750,
     deliverables: "4 Long Video SEO + 20 High-Retention Shorts Scripts + Search Indexing"
   },
   {
@@ -21,7 +21,7 @@ const ALL_PLATFORMS = [
     portalUrl: "https://business.facebook.com/settings/people",
     instructions: "Meta Business Suite > Settings > People/Partners > Assign 'garudaos.ai@gmail.com' as Content Manager.",
     marketRateMonthly: 20000,
-    garudaRateMonthly: 6999,
+    garudaRateMonthly: 14000,
     deliverables: "30 Kinetic Reel Hooks + Viral Captions + Auto-DM Keyword Funnel"
   },
   {
@@ -32,7 +32,7 @@ const ALL_PLATFORMS = [
     portalUrl: "https://www.facebook.com/settings?tab=profile_access",
     instructions: "Facebook Page Settings > Professional Dashboard > Page Access > Add 'garudaos.ai@gmail.com'.",
     marketRateMonthly: 15000,
-    garudaRateMonthly: 4999,
+    garudaRateMonthly: 10500,
     deliverables: "Native Video Upload Copy + B2B Community Discussion Infiltration"
   },
   {
@@ -43,7 +43,7 @@ const ALL_PLATFORMS = [
     portalUrl: "https://www.linkedin.com",
     instructions: "LinkedIn Page > Admin Tools > Manage Admins > Add 'garudaos.ai@gmail.com' as Content Admin.",
     marketRateMonthly: 25000,
-    garudaRateMonthly: 7999,
+    garudaRateMonthly: 18750,
     deliverables: "8 Thought Leadership 5-Slide PDF Carousels + Executive Posts"
   },
   {
@@ -54,7 +54,7 @@ const ALL_PLATFORMS = [
     portalUrl: "https://pro.x.com",
     instructions: "X Pro / TweetDeck > Accounts > Teams > Invite 'garudaos.ai@gmail.com' as Contributor.",
     marketRateMonthly: 15000,
-    garudaRateMonthly: 4999,
+    garudaRateMonthly: 10500,
     deliverables: "Viral Discussion Threads + Quote Breakdowns + Real-Time Trend Hijacks"
   },
   {
@@ -65,7 +65,7 @@ const ALL_PLATFORMS = [
     portalUrl: "https://search.google.com/search-console",
     instructions: "Google Search Console > Settings > Users & Permissions > Add 'garudaos.ai@gmail.com'.",
     marketRateMonthly: 30000,
-    garudaRateMonthly: 9999,
+    garudaRateMonthly: 21000,
     deliverables: "VideoObject JSON-LD Structured Schema + Search Moment Clips"
   }
 ];
@@ -163,14 +163,14 @@ export default function MagicDelegationPortal() {
     }
   };
 
-  // Pricing math
+  // Pricing math: Client saves 30% off market price (Annual 360% of monthly fee saved), Founder keeps 70-75%!
   const chosenObjects = ALL_PLATFORMS.filter((p) => selectedPlatforms.includes(p.id));
   const rawMarketTotal = chosenObjects.reduce((acc, p) => acc + p.marketRateMonthly, 0);
-  const rawGarudaTotal = chosenObjects.reduce((acc, p) => acc + p.garudaRateMonthly, 0);
-  let discountPct = chosenObjects.length >= 5 ? 30 : chosenObjects.length >= 3 ? 20 : chosenObjects.length === 2 ? 10 : 0;
-  const finalGarudaTotal = Math.round(rawGarudaTotal * (1 - discountPct / 100));
+  const discountPct = chosenObjects.length >= 5 ? 32 : chosenObjects.length >= 2 ? 30 : 25;
+  const finalGarudaTotal = Math.round(rawMarketTotal * (1 - discountPct / 100));
   const totalSavings = rawMarketTotal - finalGarudaTotal;
-  const savingsPct = Math.round((totalSavings / rawMarketTotal) * 100);
+  const annualSavings = totalSavings * 12;
+  const savingsPct = discountPct;
 
   if (loading) {
     return (
@@ -383,7 +383,7 @@ export default function MagicDelegationPortal() {
                 ₹{totalSavings.toLocaleString("en-IN")}/mo
               </div>
               <div style={{ fontSize: "0.7rem", color: "#a7f3d0" }}>
-                10x faster execution with cryptographic SHA-256 QA audit
+                ₹{annualSavings.toLocaleString("en-IN")} saved yearly (360% ROI vs traditional agency!)
               </div>
             </div>
           </div>

@@ -548,20 +548,20 @@ export default function BotVerseEngineStudio() {
             {/* 💰 Live Pricing & Market Rate Comparison Box */}
             {(() => {
               const platformCatalog = [
-                { id: "youtube", name: "YouTube", market: 25000, garuda: 7999 },
-                { id: "instagram", name: "Instagram", market: 20000, garuda: 6999 },
-                { id: "facebook", name: "Facebook", market: 15000, garuda: 4999 },
-                { id: "linkedin", name: "LinkedIn", market: 25000, garuda: 7999 },
-                { id: "twitter", name: "Twitter/X", market: 15000, garuda: 4999 },
-                { id: "googleSeo", name: "Google SEO", market: 30000, garuda: 9999 }
+                { id: "youtube", name: "YouTube", market: 25000, garuda: 18750 },
+                { id: "instagram", name: "Instagram", market: 20000, garuda: 14000 },
+                { id: "facebook", name: "Facebook", market: 15000, garuda: 10500 },
+                { id: "linkedin", name: "LinkedIn", market: 25000, garuda: 18750 },
+                { id: "twitter", name: "Twitter/X", market: 15000, garuda: 10500 },
+                { id: "googleSeo", name: "Google SEO", market: 30000, garuda: 21000 }
               ];
               const selectedItems = platformCatalog.filter((x) => studioSelectedPlatforms.includes(x.id));
               const mktTotal = selectedItems.reduce((sum, x) => sum + x.market, 0);
-              const gRawTotal = selectedItems.reduce((sum, x) => sum + x.garuda, 0);
-              const disc = selectedItems.length >= 5 ? 30 : selectedItems.length >= 3 ? 20 : selectedItems.length === 2 ? 10 : 0;
-              const gFinalTotal = Math.round(gRawTotal * (1 - disc / 100));
+              const clientSavingsPct = selectedItems.length >= 5 ? 32 : selectedItems.length >= 2 ? 30 : 25;
+              const gFinalTotal = Math.round(mktTotal * (1 - clientSavingsPct / 100));
               const savingsAmt = mktTotal - gFinalTotal;
-              const savingsPct = Math.round((savingsAmt / mktTotal) * 100);
+              const annualSavings = savingsAmt * 12;
+              const savingsPct = clientSavingsPct;
 
               const handleCopyPitch = () => {
                 const pitch = [
@@ -569,9 +569,9 @@ export default function BotVerseEngineStudio() {
                   `Client: ${clientName.trim() || "Valued Partner"}`,
                   `Scope: ${selectedItems.length} Platforms (${selectedItems.map((s) => s.name).join(", ")})`,
                   ``,
-                  `• Traditional Agency Market Cost: ~₹${mktTotal.toLocaleString("en-IN")}/month`,
-                  `• GARUDA AI Autonomous Rate: ₹${gFinalTotal.toLocaleString("en-IN")}/month ${disc > 0 ? `(Includes ${disc}% Multi-Platform Bundle Discount!)` : ""}`,
-                  `• Net Client Savings: ₹${savingsAmt.toLocaleString("en-IN")}/month (${savingsPct}% Less Cost!)`,
+                  `• Traditional Agency Market Cost: ~₹${mktTotal.toLocaleString("en-IN")}/month (Annual: ₹${(mktTotal * 12).toLocaleString("en-IN")})`,
+                  `• GARUDA AI Autonomous Rate: ₹${gFinalTotal.toLocaleString("en-IN")}/month`,
+                  `• Net Client Savings: ₹${savingsAmt.toLocaleString("en-IN")}/month (₹${annualSavings.toLocaleString("en-IN")} saved yearly — 360% of monthly budget!)`,
                   ``,
                   `🔒 *100% Zero-Password Delegation Law*: You never share any password. Simply grant Editor/Content access.`,
                   `Review & 1-Click Authorize here:`,
@@ -615,9 +615,12 @@ export default function BotVerseEngineStudio() {
                     </div>
 
                     <div style={{ background: "rgba(16,185,129,0.08)", padding: "0.6rem", borderRadius: "6px", border: "1px solid rgba(16,185,129,0.3)" }}>
-                      <div style={{ fontSize: "0.65rem", color: "#34d399", fontWeight: "700" }}>CLIENT SAVINGS</div>
+                      <div style={{ fontSize: "0.65rem", color: "#34d399", fontWeight: "700" }}>CLIENT SAVINGS (ANNUAL 360%)</div>
                       <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#34d399" }}>
-                        ₹{savingsAmt.toLocaleString("en-IN")}/mo ({savingsPct}%)
+                        ₹{savingsAmt.toLocaleString("en-IN")}/mo
+                      </div>
+                      <div style={{ fontSize: "0.65rem", color: "#a7f3d0", marginTop: "2px" }}>
+                        ₹{annualSavings.toLocaleString("en-IN")} / year saved
                       </div>
                     </div>
                   </div>
