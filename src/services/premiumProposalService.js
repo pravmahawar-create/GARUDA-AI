@@ -343,7 +343,7 @@ class PremiumProposalService {
     p1.drawText("PREPARED BY:", { x: rightColX, y: footerY + 28, size: 7.5, font: fontBold, color: COLORS.muted });
     p1.drawText("PRAVEEN MAHAWAR", { x: rightColX, y: footerY + 14, size: 11, font: fontBold, color: COLORS.white });
     p1.drawText("Founder - GARUDA AI Systems", { x: rightColX, y: footerY + 1, size: 8.5, font: fontRegular, color: COLORS.silver });
-    p1.drawText("garudaos.in  |  praveen@garudaos.in  |  +91 91114 55577", { x: rightColX, y: footerY - 12, size: 7.5, font: fontMono, color: COLORS.gold });
+    p1.drawText("garudaos.in  |  garudaos.ai@gmail.com", { x: rightColX, y: footerY - 12, size: 7.5, font: fontMono, color: COLORS.gold });
 
     // =========================================================================
     // PAGE 2: THE OPPORTUNITY
@@ -715,14 +715,14 @@ class PremiumProposalService {
       color: COLORS.white
     });
 
-    p5.drawText("Direct Line / WhatsApp:", { x: margin + 22, y: curY5 - 72, size: 9.5, font: fontBold, color: COLORS.muted });
-    p5.drawText("+91 91114 55577", { x: margin + 155, y: curY5 - 72, size: 10.5, font: fontBold, color: COLORS.white });
+    p5.drawText("Direct Founder Channel:", { x: margin + 22, y: curY5 - 72, size: 9.5, font: fontBold, color: COLORS.muted });
+    p5.drawText("garudaos.ai@gmail.com", { x: margin + 155, y: curY5 - 72, size: 10.5, font: fontMono, color: COLORS.gold });
 
-    p5.drawText("Direct Email:", { x: margin + 22, y: curY5 - 90, size: 9.5, font: fontBold, color: COLORS.muted });
-    p5.drawText("praveen@garudaos.in", { x: margin + 155, y: curY5 - 90, size: 10.5, font: fontMono, color: COLORS.gold });
+    p5.drawText("Online Platform:", { x: margin + 22, y: curY5 - 90, size: 9.5, font: fontBold, color: COLORS.muted });
+    p5.drawText("https://www.garudaos.in", { x: margin + 155, y: curY5 - 90, size: 10, font: fontMono, color: COLORS.white });
 
-    p5.drawText("Online Platform:", { x: margin + 22, y: curY5 - 108, size: 9.5, font: fontBold, color: COLORS.muted });
-    p5.drawText("https://www.garudaos.in", { x: margin + 155, y: curY5 - 108, size: 10, font: fontMono, color: COLORS.white });
+    p5.drawText("Direct Scoping Room:", { x: margin + 22, y: curY5 - 108, size: 9.5, font: fontBold, color: COLORS.muted });
+    p5.drawText("https://www.garudaos.in/chat", { x: margin + 155, y: curY5 - 108, size: 10, font: fontMono, color: COLORS.gold });
 
     curY5 -= ctaBoxH + 50;
 
@@ -868,7 +868,7 @@ class PremiumProposalService {
                 <div style="color:#F7F7FA; font-size:14px; font-weight:600;">Praveen Mahawar</div>
                 <div style="color:#7A8494; font-size:12px; margin-top:2px;">Founder &bull; GARUDA AI Systems</div>
                 <div style="color:#D9B347; font-size:12px; margin-top:6px; font-family:monospace;">
-                  garudaos.in &nbsp;|&nbsp; praveen@garudaos.in &nbsp;|&nbsp; +91 91114 55577
+                  garudaos.in &nbsp;|&nbsp; garudaos.ai@gmail.com
                 </div>
               </div>
             </td>

@@ -104,6 +104,11 @@ const GARUDA_CORE_PRINCIPLES = Object.freeze({
       statement: "Speak human: 'Bhai, cinematic version ready kar raha hoon.' not 'Initiating multimodal orchestration.' Adapt to user language.",
       consumer: "garudaCommandRouter, llmProvider, CreativeStudioService responses",
     },
+    outreach_visual_identity: {
+      id: "outreach_visual_identity",
+      statement: "All outreach emails & proposals must be visual-first, responsive, dynamically tailored to prospect's industry/brand ('Rang, Roop & Mood'), zero cross-brand pollution (no Niravi leakage), and zero fake phone numbers or fake emails. Strictly verified Founder channels.",
+      consumer: "premiumVisualEmailService, garudaOutreachDispatchService, emailRelayService",
+    },
   },
   finalTest10: [
     "Does this make UX simpler?",

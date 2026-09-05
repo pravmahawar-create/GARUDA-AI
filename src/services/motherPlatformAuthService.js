@@ -395,18 +395,47 @@ function sendSmtpNative(config, mail) {
       } else if (step === 9 && code === 354) {
         // DATA ok -> Send Email Content
         step = 10;
-        const msgId = `<${Date.now()}.${crypto.randomBytes(4).toString("hex")}@garuda.ai>`;
-        const emailContent = [
-          `From: GARUDA AI Operating System <${user}>`,
-          `To: <${mail.to}>`,
-          `Subject: ${mail.subject}`,
-          `Date: ${new Date().toUTCString()}`,
-          `Message-ID: ${msgId}`,
-          `Content-Type: text/plain; charset=utf-8`,
-          ``,
-          mail.body,
-          `.`
-        ].join("\r\n");
+        const msgId = `<${Date.now()}.${crypto.randomBytes(4).toString("hex")}@garudaos.in>`;
+        let emailContent;
+        if (mail.html) {
+          const boundary = `----=_Part_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;
+          emailContent = [
+            `From: GARUDA AI Systems <${user}>`,
+            `To: <${mail.to}>`,
+            `Subject: ${mail.subject}`,
+            `Date: ${new Date().toUTCString()}`,
+            `Message-ID: ${msgId}`,
+            `MIME-Version: 1.0`,
+            `Content-Type: multipart/alternative; boundary="${boundary}"`,
+            ``,
+            `--${boundary}`,
+            `Content-Type: text/plain; charset=utf-8`,
+            `Content-Transfer-Encoding: 7bit`,
+            ``,
+            mail.body || "Please view this message in an HTML-compatible client.",
+            ``,
+            `--${boundary}`,
+            `Content-Type: text/html; charset=utf-8`,
+            `Content-Transfer-Encoding: 7bit`,
+            ``,
+            mail.html,
+            ``,
+            `--${boundary}--`,
+            `.`
+          ].join("\r\n");
+        } else {
+          emailContent = [
+            `From: GARUDA AI Systems <${user}>`,
+            `To: <${mail.to}>`,
+            `Subject: ${mail.subject}`,
+            `Date: ${new Date().toUTCString()}`,
+            `Message-ID: ${msgId}`,
+            `Content-Type: text/plain; charset=utf-8`,
+            ``,
+            mail.body,
+            `.`
+          ].join("\r\n");
+        }
 
         sendCmd(emailContent);
       } else if (step === 10 && code === 250) {

@@ -35,31 +35,40 @@ function buildPayload(provider, config, mail) {
   const to = mail.to;
   const subject = String(mail.subject || "");
   const text = String(mail.body || "");
+  const html = mail.html ? String(mail.html) : null;
   if (provider === "brevo") {
+    const body = {
+      sender: { email: config.from, name: config.fromName },
+      to: [{ email: to }],
+      subject,
+      textContent: text
+    };
+    if (html) body.htmlContent = html;
     return {
       url: "https://api.brevo.com/v3/smtp/email",
       headers: { "api-key": config.key, "Content-Type": "application/json", Accept: "application/json" },
-      body: {
-        sender: { email: config.from, name: config.fromName },
-        to: [{ email: to }],
-        subject,
-        textContent: text
-      }
+      body
     };
   }
   if (provider === "resend") {
+    const body = {
+      from: from && from.email ? `${from.name} <${from.email}>` : config.from,
+      to: [to],
+      subject,
+      text: text
+    };
+    if (html) body.html = html;
     return {
       url: "https://api.resend.com/emails",
       headers: { Authorization: `Bearer ${config.key}`, "Content-Type": "application/json" },
-      body: {
-        from: from && from.email ? `${from.name} <${from.email}>` : config.from,
-        to: [to],
-        subject,
-        text: text
-      }
+      body
     };
   }
   // sendgrid
+  const content = [];
+  if (text) content.push({ type: "text/plain", value: text });
+  if (html) content.push({ type: "text/html", value: html });
+  if (content.length === 0) content.push({ type: "text/plain", value: "" });
   return {
     url: "https://api.sendgrid.com/v3/mail/send",
     headers: { Authorization: `Bearer ${config.key}`, "Content-Type": "application/json" },
@@ -67,7 +76,7 @@ function buildPayload(provider, config, mail) {
       personalizations: [{ to: [{ email: to }] }],
       from: from && from.email ? { email: from.email, name: from.name } : { email: config.from },
       subject,
-      content: [{ type: "text/plain", value: text }]
+      content
     }
   };
 }
