@@ -86,6 +86,7 @@ app.use("/api/engineering", require("./routes/engineeringPipelineRoutes"));
 app.use("/api/creative", require("./routes/creativeRoutes"));
 app.use("/api/investor", require("./routes/investorPresentationRoutes"));
 app.use("/api", require("./routes/growthCreativeRoutes"));
+app.use("/api/bot-verse", require("./routes/botVerseRoutes"));
 app.use("/api/auth", (req, res) => require("../api/auth")(req, res));
 app.use("/api/customer", (req, res) => require("../api/customer")(req, res));
 app.use("/api/founder", (req, res) => require("../api/founder")(req, res));
