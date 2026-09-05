@@ -91,11 +91,11 @@ export default function PawanCodingStudio() {
 
   const handleMobileReverse = async () => {
     try {
-      setMobileReverseMsg("Establishing USB reverse port bridge...");
+      setMobileReverseMsg("Establishing USB device bridge...");
       const res = await fetch("/api/pawan/mobile-reverse", { method: "POST" });
       const data = await res.json();
       setMobileReverseMsg(data.message || data.error || "Completed");
-      pawanSpeak("USB bridge active. Open localhost:5173 on your mobile browser.");
+      pawanSpeak("USB bridge active. Connected phone is now synchronized with GARUDA.");
     } catch (err) {
       setMobileReverseMsg("Error: " + err.message);
     }
@@ -114,7 +114,7 @@ export default function PawanCodingStudio() {
   const getAppPreviewUrl = (filePath) => {
     if (!filePath) return "/";
     const p = filePath.toLowerCase();
-    if (p.includes("billing")) return "http://localhost:5174/";
+    if (p.includes("billing")) return "/app";
     if (p.includes("kids")) return "/kids-play";
     if (p.includes("investor")) return "/investor";
     if (p.includes("botverse") || p.includes("bot-verse")) return "/bot-verse";
@@ -793,7 +793,7 @@ export default function PawanCodingStudio() {
                           cursor: "pointer"
                         }}
                       >
-                        ⚡ Forward USB Port (localhost:5173 on Phone)
+                        ⚡ Activate Phone Device Bridge
                       </button>
 
                       {mobileReverseMsg && (
@@ -803,27 +803,28 @@ export default function PawanCodingStudio() {
                       )}
                     </div>
 
-                    {/* Wi-Fi Direct IP */}
+                    {/* Mobile Mirror Link */}
                     <div style={{ background: "#080a10", border: "1px solid #24201a", borderRadius: "8px", padding: "1rem" }}>
                       <div style={{ fontSize: "0.8rem", fontWeight: "800", color: "#fef08a", marginBottom: "0.2rem" }}>
-                        📶 Local Wi-Fi Direct URL
+                        📶 Mobile Device Mirror Link
                       </div>
                       <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginBottom: "0.6rem" }}>
-                        Open this URL on your phone's browser if connected to the same Wi-Fi:
+                        Open this link on your phone's browser for instant live testing:
                       </div>
 
                       <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }}>
                         <input
                           type="text"
                           readOnly
-                          value={mobileStatus?.wifiUrl || "http://192.168.1.9:5173/"}
+                          value={mobileStatus?.wifiUrl || (typeof window !== "undefined" ? window.location.origin : "https://www.garudaos.in")}
                           style={{ flex: 1, background: "#02040a", border: "1px solid #334155", borderRadius: "4px", padding: "6px 8px", color: "#38bdf8", fontSize: "0.75rem", fontFamily: "monospace" }}
                         />
                         <button
                           type="button"
                           onClick={() => {
-                            navigator.clipboard.writeText(mobileStatus?.wifiUrl || "http://192.168.1.9:5173/");
-                            alert("Wi-Fi URL copied!");
+                            const url = mobileStatus?.wifiUrl || window.location.origin;
+                            navigator.clipboard.writeText(url);
+                            alert("Mobile mirror URL copied!");
                           }}
                           style={{ background: "#14120c", border: "1px solid #38bdf8", color: "#7dd3fc", padding: "6px 10px", borderRadius: "4px", fontSize: "0.72rem", fontWeight: "700", cursor: "pointer" }}
                         >

@@ -6,6 +6,6 @@ echo "As Fast as Wind. Smooth and Powerful."
 echo Founder: Praveen Mahawar
 echo ======================================================
 echo.
-echo Launching PAWAN Studio at http://localhost:5173/pawan ...
+echo Launching PAWAN Studio for Founder Praveen Mahawar...
 start "" "http://localhost:5173/pawan"
 npm run dev

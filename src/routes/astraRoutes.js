@@ -135,13 +135,14 @@ router.get("/mobile-status", (req, res) => {
       };
     }).filter(d => d.id && d.id !== "List");
 
+    const baseUrl = process.env.PUBLIC_APP_URL || process.env.BASE_URL || "https://www.garudaos.in";
     res.json({
       success: true,
       connected: devices.length > 0,
       devices,
       localIp,
-      wifiUrl: `http://${localIp}:5173/`,
-      usbUrl: "http://localhost:5173/",
+      wifiUrl: baseUrl,
+      usbUrl: baseUrl,
       chromeInspectUrl: "chrome://inspect/#devices",
       adbAvailable: true
     });
@@ -161,8 +162,7 @@ router.post("/mobile-reverse", (req, res) => {
       }
       res.json({
         success: true,
-        message: "USB Bridge Active! Now open Chrome on your phone and go to http://localhost:5173",
-        ports: [5173, 3000]
+        message: "USB Bridge Active! Mobile device is now synchronized with GARUDA Studio."
       });
     });
   });
