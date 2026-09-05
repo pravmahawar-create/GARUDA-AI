@@ -137,6 +137,14 @@
       "destination": "/index.html"
     },
     {
+      "source": "/delegate",
+      "destination": "/delegate/index.html"
+    },
+    {
+      "source": "/delegate/:path*",
+      "destination": "/delegate/index.html"
+    },
+    {
       "source": "/founder/:path*",
       "destination": "/index.html"
     },

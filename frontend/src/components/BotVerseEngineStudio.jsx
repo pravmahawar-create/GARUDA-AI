@@ -42,6 +42,12 @@ export default function BotVerseEngineStudio() {
   const [campaigns, setCampaigns] = useState([]);
   const [activeCampaign, setActiveCampaign] = useState(null);
   const [previewMeta, setPreviewMeta] = useState(null);
+  const [clientName, setClientName] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+  const [sendingDelegation, setSendingDelegation] = useState(false);
+  const [delegationResult, setDelegationResult] = useState(null);
+  const [copiedMagicLink, setCopiedMagicLink] = useState(false);
 
   // Load existing campaigns from backend
   const loadCampaigns = async () => {
@@ -136,6 +142,41 @@ export default function BotVerseEngineStudio() {
       setActionNotice({ type: "error", text: e.message });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendDelegation = async () => {
+    if (!clientEmail.trim() && !clientPhone.trim()) {
+      setActionNotice({ type: "error", text: "Please enter client's Email or Phone Number to dispatch magic invite." });
+      return;
+    }
+    setSendingDelegation(true);
+    try {
+      const res = await fetch("/api/bot-verse/magic-delegation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientName: clientName.trim() || "Creator",
+          clientEmail: clientEmail.trim(),
+          clientPhone: clientPhone.trim(),
+          videoUrl: videoUrl || activeCampaign?.seedVideoUrl || activeCampaign?.topic,
+          videoTitle: activeCampaign?.topic || "Target Media Asset",
+          videoThumbnail: activeCampaign?.seedVideoMetadata?.thumbnailUrl || previewMeta?.thumbnailUrl || "",
+          campaignId: activeCampaign?.campaignId,
+          proposedPackage: activeCampaign?.bots || activeCampaign
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.dispatch) {
+        setDelegationResult(data.dispatch);
+        setActionNotice({ type: "success", text: "Magic delegation invitation generated! You can copy the link or share via WhatsApp/Email." });
+      } else {
+        setActionNotice({ type: "error", text: data.error || "Failed to dispatch delegation invite." });
+      }
+    } catch (err) {
+      setActionNotice({ type: "error", text: err.message });
+    } finally {
+      setSendingDelegation(false);
     }
   };
 
@@ -389,6 +430,125 @@ export default function BotVerseEngineStudio() {
                 {copiedKey === "blueprint" ? "✓ Copied" : "📋 Export JSON"}
               </button>
             </div>
+          </div>
+
+          {/* ⚡ 1-Click Magic Delegation & Client Onboarding Section */}
+          <div style={{ background: "linear-gradient(135deg, #090e1a 0%, #131b2e 100%)", border: "1px solid #d4af37", borderRadius: "10px", padding: "1.2rem", marginBottom: "1.5rem", boxShadow: "0 8px 24px rgba(212,175,55,0.15)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem", flexWrap: "wrap", gap: "0.5rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                <span style={{ fontSize: "1.3rem" }}>✨</span>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: "800", color: "#d4af37", letterSpacing: "0.05em" }}>
+                    1-CLICK MAGIC DELEGATION (ZERO-PASSWORD CLIENT ONBOARDING)
+                  </h3>
+                  <p style={{ margin: "0.2rem 0 0 0", fontSize: "0.75rem", color: "#94a3b8" }}>
+                    Send a magic link to client via Gmail / WhatsApp. Client authorizes GARUDA with 1-click — no passwords or API keys needed.
+                  </p>
+                </div>
+              </div>
+              <span style={{ fontSize: "0.7rem", padding: "0.2rem 0.6rem", background: "rgba(16,185,129,0.15)", color: "#34d399", border: "1px solid rgba(16,185,129,0.3)", borderRadius: "4px", fontWeight: "700" }}>
+                ZERO PASSWORD LAW
+              </span>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.8rem", marginBottom: "1rem" }}>
+              <div>
+                <label style={{ display: "block", fontSize: "0.7rem", fontWeight: "700", color: "#cbd5e1", marginBottom: "0.3rem" }}>
+                  CLIENT NAME
+                </label>
+                <input
+                  type="text"
+                  value={clientName}
+                  onChange={(e) => setClientName(e.target.value)}
+                  placeholder="e.g. Rahul Sharma"
+                  style={{ width: "100%", padding: "0.55rem 0.75rem", background: "#020617", border: "1px solid #334155", borderRadius: "6px", color: "#f8fafc", fontSize: "0.8rem", boxSizing: "border-box" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "0.7rem", fontWeight: "700", color: "#cbd5e1", marginBottom: "0.3rem" }}>
+                  CLIENT GMAIL / EMAIL
+                </label>
+                <input
+                  type="email"
+                  value={clientEmail}
+                  onChange={(e) => setClientEmail(e.target.value)}
+                  placeholder="e.g. client@gmail.com"
+                  style={{ width: "100%", padding: "0.55rem 0.75rem", background: "#020617", border: "1px solid #334155", borderRadius: "6px", color: "#f8fafc", fontSize: "0.8rem", boxSizing: "border-box" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "0.7rem", fontWeight: "700", color: "#cbd5e1", marginBottom: "0.3rem" }}>
+                  CLIENT WHATSAPP / MOBILE
+                </label>
+                <input
+                  type="text"
+                  value={clientPhone}
+                  onChange={(e) => setClientPhone(e.target.value)}
+                  placeholder="e.g. +91 9876543210"
+                  style={{ width: "100%", padding: "0.55rem 0.75rem", background: "#020617", border: "1px solid #334155", borderRadius: "6px", color: "#f8fafc", fontSize: "0.8rem", boxSizing: "border-box" }}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "0.8rem", alignItems: "center", flexWrap: "wrap" }}>
+              <button
+                onClick={handleSendDelegation}
+                disabled={sendingDelegation}
+                style={{
+                  padding: "0.6rem 1.4rem",
+                  background: "linear-gradient(135deg, #d4af37 0%, #aa820a 100%)",
+                  color: "#000",
+                  border: "none",
+                  borderRadius: "6px",
+                  fontWeight: "800",
+                  fontSize: "0.85rem",
+                  cursor: sendingDelegation ? "wait" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem"
+                }}
+              >
+                {sendingDelegation ? "⚡ Generating Magic Invite..." : "🚀 Generate & Dispatch Magic Invite"}
+              </button>
+
+              {delegationResult && (
+                <>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(delegationResult.magicUrl);
+                      setCopiedMagicLink(true);
+                      setTimeout(() => setCopiedMagicLink(false), 2500);
+                    }}
+                    style={{ padding: "0.6rem 1rem", background: copiedMagicLink ? "#10b981" : "#1e293b", border: "1px solid #334155", color: "#fff", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer" }}
+                  >
+                    {copiedMagicLink ? "✓ Link Copied!" : "📋 Copy Magic Link"}
+                  </button>
+
+                  <button
+                    onClick={() => window.open(delegationResult.whatsappUrl, "_blank")}
+                    style={{ padding: "0.6rem 1rem", background: "rgba(37,211,102,0.15)", border: "1px solid rgba(37,211,102,0.5)", color: "#25d366", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer" }}
+                  >
+                    📱 Share on WhatsApp
+                  </button>
+
+                  <button
+                    onClick={() => window.open(delegationResult.magicUrl, "_blank")}
+                    style={{ padding: "0.6rem 1rem", background: "rgba(56,189,248,0.15)", border: "1px solid rgba(56,189,248,0.5)", color: "#38bdf8", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer" }}
+                  >
+                    ↗ Preview Client Portal
+                  </button>
+                </>
+              )}
+            </div>
+
+            {delegationResult && (
+              <div style={{ marginTop: "0.8rem", padding: "0.6rem 0.8rem", background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)", borderRadius: "6px", fontSize: "0.75rem", color: "#a7f3d0" }}>
+                <strong>Magic Link Generated:</strong> <span style={{ fontFamily: "monospace", color: "#ffffff" }}>{delegationResult.magicUrl}</span>
+                {delegationResult.emailResult?.sent && <span style={{ marginLeft: "0.6rem", color: "#34d399" }}>• ✉️ Email Dispatched!</span>}
+              </div>
+            )}
           </div>
 
           {/* Grid of 6 Bot Engines */}

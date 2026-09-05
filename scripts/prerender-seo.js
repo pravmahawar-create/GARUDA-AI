@@ -1010,6 +1010,17 @@ const ROUTES = [
       <h2>6-Platform Omni-Channel Video & Content Distribution Engine</h2>
       <p>YouTube High-CTR SEO, Instagram Reels Feeder, Facebook Native Video Syndication, LinkedIn 5-Slide PDF Carousels, and Google Search VideoObject structured schema.</p>
     `
+  },
+  {
+    path: "/delegate",
+    filePaths: [
+      path.join(DIST_DIR, "delegate", "index.html"),
+      path.join(DIST_DIR, "delegate.html")
+    ],
+    title: "GARUDA AI • Magic Delegation Portal | Channel Growth Authorization",
+    description: "Secure, zero-password client authorization portal for GARUDA YouTube channel optimization and algorithmic growth.",
+    canonical: "https://www.garudaos.in/delegate",
+    robots: "noindex, nofollow"
   }
 ];
 

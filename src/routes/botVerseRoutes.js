@@ -109,4 +109,79 @@ router.get("/campaigns/:id", (req, res) => {
   }
 });
 
+/**
+ * POST /api/bot-verse/magic-delegation
+ * Create and dispatch a 1-click magic delegation invite (email + WhatsApp)
+ */
+router.post("/magic-delegation", async (req, res) => {
+  try {
+    const magicDelegationService = require("../services/magicDelegationService");
+    const { clientName, clientEmail, clientPhone, videoUrl, videoTitle, videoThumbnail, campaignId, proposedPackage } = req.body || {};
+    
+    const record = magicDelegationService.createDelegation({
+      clientName,
+      clientEmail,
+      clientPhone,
+      videoUrl,
+      videoTitle,
+      videoThumbnail,
+      campaignId,
+      proposedPackage
+    });
+
+    const hostUrl = req.headers["x-forwarded-host"]
+      ? `${req.headers["x-forwarded-proto"] || "https"}://${req.headers["x-forwarded-host"]}`
+      : "https://www.garudaos.in";
+
+    const dispatchResult = await magicDelegationService.dispatchInvitation(record, hostUrl);
+    return res.status(201).json({
+      success: true,
+      message: "Magic delegation invitation created and dispatched successfully.",
+      record,
+      dispatch: dispatchResult
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * GET /api/bot-verse/magic-delegation/:token
+ * Fetch delegation details for client review portal
+ */
+router.get("/magic-delegation/:token", (req, res) => {
+  try {
+    const magicDelegationService = require("../services/magicDelegationService");
+    const delegation = magicDelegationService.getDelegationByToken(req.params.token);
+    if (!delegation) {
+      return res.status(404).json({ success: false, message: "Delegation record not found or expired." });
+    }
+    magicDelegationService.updateStatus(req.params.token, "OPENED");
+    return res.json({ success: true, delegation });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * POST /api/bot-verse/magic-delegation/:token/approve
+ * Client approves proposed SEO package and authorizes autopilot
+ */
+router.post("/magic-delegation/:token/approve", (req, res) => {
+  try {
+    const magicDelegationService = require("../services/magicDelegationService");
+    const updated = magicDelegationService.updateStatus(req.params.token, "APPROVED");
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "Delegation record not found or expired." });
+    }
+    return res.json({
+      success: true,
+      message: "Optimization package approved and authorized. GARUDA Autopilot activated.",
+      delegation: updated
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;
