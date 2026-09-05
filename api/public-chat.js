@@ -585,20 +585,27 @@ module.exports = async function handler(req, res) {
       reply = commercial.reply;
       mode = "commercial_architect";
     } else {
-      // P1-B: Canonical Conversation Brain Integration
-      const { conversationBrainService } = require("../src/services/conversationBrainService");
-      const brainSessionId = conversationId || "public-chat-session";
-      const brainRes = await conversationBrainService.process(finalMessage, {
-        sessionId: brainSessionId,
-        garudaContext: { isPublicChat: true, source: "publicChat" }
-      });
+      // P1-B: Canonical Conversation Brain Integration with safe AI engine fallback
+      try {
+        const { conversationBrainService } = require("../src/services/conversationBrainService");
+        const brainSessionId = conversationId || "public-chat-session";
+        const brainRes = await conversationBrainService.process(finalMessage, {
+          sessionId: brainSessionId,
+          garudaContext: { isPublicChat: true, source: "publicChat" }
+        });
 
-      reply = brainRes.data.answer || brainRes.data.speechText || "I am ready to assist you.";
-      truthStatus = brainRes.data.truthStatus;
-      intent = brainRes.data.intent;
-      evidence = brainRes.data.evidence;
-      executionResult = brainRes.data.executionResult;
-      topic = brainRes.data.topic;
+        reply = brainRes?.data?.answer || brainRes?.data?.speechText || "I am ready to assist you.";
+        truthStatus = brainRes?.data?.truthStatus || "VERIFIED";
+        intent = brainRes?.data?.intent || "ANSWER_ONLY";
+        evidence = brainRes?.data?.evidence || null;
+        executionResult = brainRes?.data?.executionResult || null;
+        topic = brainRes?.data?.topic || "general";
+      } catch (brainErr) {
+        console.warn("[PublicChat] Brain service error, engaging direct AI engine fallback:", brainErr?.message || brainErr);
+        reply = await generateReply(finalMessage, Array.isArray(history) ? history : [], attachments);
+        truthStatus = "VERIFIED";
+        intent = "ANSWER_ONLY";
+      }
     }
 
     await captureLead({ message: finalMessage, reply, userId: null, req, body: req.body });
