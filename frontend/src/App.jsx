@@ -35,6 +35,8 @@ import InvestorExperience from "./pages/InvestorExperience";
 import BotVerseStudio from "./pages/BotVerseStudio";
 import MagicDelegationPortal from "./pages/MagicDelegationPortal";
 import AstraCodingStudio from "./pages/AstraCodingStudio";
+import PawanCodingStudio from "./pages/PawanCodingStudio";
+import KidsVoiceApp from "./pages/KidsVoiceApp";
 import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
@@ -182,8 +184,12 @@ function AppRoutes() {
       <Route path="/founder/bot-verse" element={<BotVerseStudio />} />
       <Route path="/delegate" element={<MagicDelegationPortal />} />
       <Route path="/delegate/:token" element={<MagicDelegationPortal />} />
-      <Route path="/astra" element={<AstraCodingStudio />} />
-      <Route path="/founder/astra" element={<AstraCodingStudio />} />
+      <Route path="/pawan" element={<PawanCodingStudio />} />
+      <Route path="/founder/pawan" element={<PawanCodingStudio />} />
+      <Route path="/kids-play" element={<KidsVoiceApp />} />
+      <Route path="/kids-app" element={<KidsVoiceApp />} />
+      <Route path="/astra" element={<Navigate to="/pawan" replace />} />
+      <Route path="/founder/astra" element={<Navigate to="/founder/pawan" replace />} />
       <Route path="/revenue" element={revenueRoute} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />

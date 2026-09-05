@@ -92,8 +92,37 @@ app.use("/api/customer", (req, res) => require("../api/customer")(req, res));
 app.use("/api/founder", (req, res) => require("../api/founder")(req, res));
 app.use("/api/founder-command", (req, res) => require("../api/founder")(req, res));
 app.use("/api/project-scope", (req, res) => require("../api/project-scope")(req, res));
-// GARUDA Astra Autonomous Coding Agent
+// GARUDA PAWAN Sovereign Autonomous Coding Agent
+app.use("/api/pawan", require("./routes/astraRoutes"));
 app.use("/api/astra", require("./routes/astraRoutes"));
+
+// 🎙️ Natural Indian Voice Speech Engine (Google Natural TTS stream)
+app.get("/api/audio/tts", async (req, res) => {
+  try {
+    const text = (req.query.text || "").trim();
+    const lang = req.query.lang || "hi";
+    if (!text) return res.status(400).send("Text is required");
+    const safeText = text.slice(0, 200);
+    const googleUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(safeText)}&tl=${lang}&client=tw-ob`;
+    const response = await fetch(googleUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      }
+    });
+    if (!response.ok) {
+      return res.status(502).send("Upstream voice generation failed");
+    }
+    const buffer = Buffer.from(await response.arrayBuffer());
+    res.set({
+      "Content-Type": "audio/mpeg",
+      "Content-Length": buffer.length,
+      "Cache-Control": "public, max-age=86400"
+    });
+    res.send(buffer);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
 
 const telegramBotService = require("./services/telegramBotService");
 const abslKnowledgeService = require("./services/abslKnowledgeService");

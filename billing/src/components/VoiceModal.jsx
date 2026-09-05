@@ -99,6 +99,12 @@ export default function VoiceModal({ open, onClose, initialCustomer = null }) {
           if (activeConvo.lastAssistantMessage) setMessage(activeConvo.lastAssistantMessage)
           if (activeConvo.lastUserMessage) setTranscript(activeConvo.lastUserMessage)
         }
+        if (activeConvo && activeConvo.order && !activeConvo.order.executed) {
+          setOrderDraft(activeConvo.order)
+          setDraftNote(activeConvo.lastSummaryNote || 'Restored active order draft from session.')
+          if (activeConvo.lastAssistantMessage) setMessage(activeConvo.lastAssistantMessage)
+          if (activeConvo.lastUserMessage) setTranscript(activeConvo.lastUserMessage)
+        }
       } else {
         const id = conversation.current.newConversation()
         convoIdRef.current = id
@@ -412,7 +418,9 @@ export default function VoiceModal({ open, onClose, initialCustomer = null }) {
       setResult(parsed)
       setBusy(false)
 
-      const isNonBill = ['query_outstanding', 'query_report', 'query_delivery', 'stock_entry', 'stock_query', 'stock_ledger_query'].includes(parsed.intent)
+      const activeConvoState = conversation.current.get(convoIdRef.current)
+      const hasActiveOrder = Boolean(activeConvoState?.order && !activeConvoState?.order?.executed)
+      const isNonBill = !hasActiveOrder && ['query_outstanding', 'query_report', 'query_delivery', 'stock_entry', 'stock_query', 'stock_ledger_query'].includes(parsed.intent)
       if (!isNonBill) {
         // BILL / FIELD / CLARIFY turn → conversational layer (never auto-executes)
         const bizCtx = { customers, stockItems, company, domain: resolveProfile(company), getHistory: (cid) => getCustomerHistory(cid, company ? company.id : null), resolveCustomer: (name) => findCustomerByRef(customers, name, company ? company.id : null) }

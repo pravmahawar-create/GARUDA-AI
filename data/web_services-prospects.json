@@ -487,6 +487,417 @@
       },
       "dispatchedAt": "2026-09-05T06:13:54.476Z",
       "providerResponseId": "250 2.0.0 OK  1788588834 a92af1059eb24-1432424d27asm15345883c88.2 - gsmtp"
+    },
+    {
+      "id": "PL_1788634797963_fcf30c",
+      "firstName": "",
+      "lastName": "",
+      "email": "sales@zropixel.com",
+      "phone": "",
+      "businessName": "Why outdated websites are hurting UAE businesses and ...",
+      "city": "Sharjah",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "AE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_dubai_web_hunter (outdated website 2019 contact email UAE Dubai) — Audit: viewport:missing, copyright:unknown, load:1.0s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T18:59:57.963Z"
+    },
+    {
+      "id": "PL_1788634866658_e6aec3",
+      "firstName": "",
+      "lastName": "",
+      "email": "hello@thedistance.co.uk",
+      "phone": "",
+      "businessName": "The Distance | Award-Winning UK Mobile App Developers",
+      "city": "Glasgow",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (looking for mobile app developer contact UK) — Audit: viewport:ok, copyright:unknown, load:0.3s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:06.658Z"
+    },
+    {
+      "id": "PL_1788634889812_9faf41",
+      "firstName": "",
+      "lastName": "",
+      "email": "business@boldare.com",
+      "phone": "",
+      "businessName": "7 Trusted software development companies in Europe",
+      "city": "Prague",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:unknown, load:0.8s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:29.812Z"
+    },
+    {
+      "id": "PL_1788634889812_40d187",
+      "firstName": "",
+      "lastName": "",
+      "email": "hello@boldare.com",
+      "phone": "",
+      "businessName": "7 Trusted software development companies in Europe",
+      "city": "Barcelona",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:unknown, load:0.8s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:29.812Z"
+    },
+    {
+      "id": "PL_1788634889812_02b742",
+      "firstName": "",
+      "lastName": "",
+      "email": "career@boldare.com",
+      "phone": "",
+      "businessName": "7 Trusted software development companies in Europe",
+      "city": "Amsterdam",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:unknown, load:0.8s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:29.812Z"
+    },
+    {
+      "id": "PL_1788634889812_96a2bf",
+      "firstName": "",
+      "lastName": "",
+      "email": "aleksandra.krzyzak@boldare.com",
+      "phone": "",
+      "businessName": "7 Trusted software development companies in Europe",
+      "city": "Barcelona",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:unknown, load:0.8s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:29.812Z"
+    },
+    {
+      "id": "PL_1788634889812_6b53a7",
+      "firstName": "",
+      "lastName": "",
+      "email": "media@boldare.com",
+      "phone": "",
+      "businessName": "7 Trusted software development companies in Europe",
+      "city": "Paris",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:unknown, load:0.8s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:29.812Z"
+    },
+    {
+      "id": "PL_1788634897085_de3baf",
+      "firstName": "",
+      "lastName": "",
+      "email": "contact@mysite.com",
+      "phone": "",
+      "businessName": "Custom Software Development in Europe: Bespoke Solutions",
+      "city": "Stockholm",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:2026, load:0.8s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:37.085Z"
+    },
+    {
+      "id": "PL_1788634897085_138b3d",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@nposeuro.com",
+      "phone": "",
+      "businessName": "Custom Software Development in Europe: Bespoke Solutions",
+      "city": "Stockholm",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:2026, load:0.8s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:37.085Z"
+    },
+    {
+      "id": "PL_1788634903585_a4e20c",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@mordorintelligence.com",
+      "phone": "",
+      "businessName": "Top Europe Factory Automation And Industrial Controls ...",
+      "city": "Warsaw",
+      "segments": [],
+      "score": 33,
+      "grade": "LOW",
+      "action": "review_first",
+      "query": "awareness",
+      "signals": [
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_automation_hunter (factory automation need contact Europe) — Audit: viewport:ok, copyright:unknown, load:0.9s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:43.585Z"
+    },
+    {
+      "id": "PL_1788634903585_f60a69",
+      "firstName": "",
+      "lastName": "",
+      "email": "media@mordorintelligence.com",
+      "phone": "",
+      "businessName": "Top Europe Factory Automation And Industrial Controls ...",
+      "city": "Stockholm",
+      "segments": [],
+      "score": 33,
+      "grade": "LOW",
+      "action": "review_first",
+      "query": "awareness",
+      "signals": [
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_automation_hunter (factory automation need contact Europe) — Audit: viewport:ok, copyright:unknown, load:0.9s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:43.585Z"
+    },
+    {
+      "id": "PL_1788634903585_2351e1",
+      "firstName": "",
+      "lastName": "",
+      "email": "careers@mordorintelligence.com",
+      "phone": "",
+      "businessName": "Top Europe Factory Automation And Industrial Controls ...",
+      "city": "Prague",
+      "segments": [],
+      "score": 33,
+      "grade": "LOW",
+      "action": "review_first",
+      "query": "awareness",
+      "signals": [
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_automation_hunter (factory automation need contact Europe) — Audit: viewport:ok, copyright:unknown, load:0.9s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:01:43.585Z"
+    },
+    {
+      "id": "PL_1788635198774_950c8f",
+      "firstName": "",
+      "lastName": "",
+      "email": "holla@3sidedcube.com",
+      "phone": "",
+      "businessName": "Top UK App Developers (2026)",
+      "city": "Birmingham",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (looking for mobile app developer contact UK) — Audit: viewport:ok, copyright:unknown, load:2.8s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:06:38.774Z"
+    },
+    {
+      "id": "PL_1788635229966_9a9d32",
+      "firstName": "",
+      "lastName": "",
+      "email": "name.info@example.com",
+      "phone": "",
+      "businessName": "Custom Software Development in Germany",
+      "city": "Prague",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:unknown, load:1.6s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:07:09.966Z"
+    },
+    {
+      "id": "PL_1788635229966_7e7e7a",
+      "firstName": "",
+      "lastName": "",
+      "email": "office@webchain.ro",
+      "phone": "",
+      "businessName": "Custom Software Development in Germany",
+      "city": "Prague",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:unknown, load:1.6s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-05T19:07:09.966Z"
     }
   ]
 }

@@ -372,13 +372,24 @@ Output ONLY the JSON object.`;
     }
 
     const isSuccess = validation.valid;
+    let finalCode = parsedPlan.newContent;
+    try {
+      const fullPath = path.join(this.rootDir, appliedFile);
+      if (fs.existsSync(fullPath)) {
+        finalCode = fs.readFileSync(fullPath, "utf8");
+      }
+    } catch {}
+
     const finalResult = {
       taskId,
       success: isSuccess,
       file: appliedFile,
+      code: finalCode,
+      thought: parsedPlan.thought,
       sha256: validation.sha256 || patchMeta.afterSha,
       healCyclesRun: healCycle,
       summary: parsedPlan.summary,
+      bytesWritten: patchMeta.bytesWritten,
       validation,
       trajectory
     };

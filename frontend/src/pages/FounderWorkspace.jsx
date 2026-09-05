@@ -60,6 +60,10 @@ export default function FounderWorkspace({ onLogout }) {
       navigate("/bot-verse");
       return;
     }
+    if (label.includes("PAWAN") || label.includes("Astra")) {
+      navigate("/pawan");
+      return;
+    }
     if (label === "Sales Cockpit") {
       navigate("/founder/acquisition");
       return;

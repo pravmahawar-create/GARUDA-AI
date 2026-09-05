@@ -80,6 +80,8 @@ const DEMOS_AND_CASE_STUDIES = [
 
 const FOUNDER_SYSTEM_TOOLS = [
   { name: "High Command Center", route: "/command-center", icon: "⚡", description: "Sovereign aggregate telemetry, active project execution triggers, and workforce controls." },
+  { name: "PAWAN Coding Studio", route: "/pawan", icon: "💨", description: "Sovereign autonomous coding agent (As fast as wind, smooth & powerful) with two-way voice and self-healing." },
+  { name: "BOT-VERSE Engine", route: "/bot-verse", icon: "🌌", description: "Omni-channel video SEO and algorithmic growth distribution engine across 6 major platforms." },
   { name: "Founder Workspace", route: "/founder", icon: "👑", description: "Durable memory threads, system health monitoring, and direct RAG assistant." },
   { name: "Revenue Operations", route: "/revenue", icon: "⟡", description: "Commercial pipeline, proposal generator, payment reconciliation, and settlement ledger." },
   { name: "Acquisition Cockpit", route: "/founder/acquisition", icon: "🎯", description: "Inbound client decisioning, outreach dispatch, and prospect queue intelligence." }

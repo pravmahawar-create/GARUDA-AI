@@ -4,9 +4,9 @@ import BrandAssetImage from "./BrandAssetImage";
 
 const NAV = [
   { key: "", label: "Home", to: "/" },
+  { key: "pawan", label: "⚡ PAWAN Studio", to: "/pawan" },
   { key: "chat", label: "AI Chat", to: "/chat" },
-  { key: "portal", label: "Client Portal", to: "/app" },
-  { key: "founder", label: "Founder", to: "/founder" }
+  { key: "portal", label: "Client Portal", to: "/app" }
 ];
 
 export default function PublicChrome({ active = "", children, footer = true }) {
@@ -24,7 +24,7 @@ export default function PublicChrome({ active = "", children, footer = true }) {
             <span style={{ fontSize: "0.6rem", color: "#f5d76e", letterSpacing: "0.3em", fontWeight: 700, marginTop: "0.2rem" }}>AI OPERATING SYSTEM</span>
           </span>
         </button>
-        <nav style={{ display: "flex", gap: "clamp(0.9rem, 2vw, 1.9rem)", alignItems: "center" }}>
+        <nav style={{ display: "flex", gap: "clamp(0.9rem, 2vw, 1.5rem)", alignItems: "center" }}>
           {NAV.map((item) => (
             <Link key={item.to} to={item.to} style={{ color: active === item.key ? "#f5d76e" : "#9ca3af", textDecoration: "none", fontSize: "0.9rem", fontWeight: active === item.key ? 700 : 500 }}>
               {item.label}
@@ -32,6 +32,27 @@ export default function PublicChrome({ active = "", children, footer = true }) {
           ))}
           <button type="button" onClick={() => navigate("/signup")} style={{ background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)", color: "#05070b", border: "none", padding: "0.5rem 1.2rem", borderRadius: 999, fontWeight: 800, fontSize: "0.85rem", cursor: "pointer" }}>
             Get Started
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/founder")}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.4rem",
+              background: "linear-gradient(135deg, #2a1f04 0%, #4a370b 50%, #1a1303 100%)",
+              border: "2px solid #f5d76e",
+              color: "#fff",
+              borderRadius: 999,
+              padding: "0.5rem 1.25rem",
+              fontWeight: 900,
+              cursor: "pointer",
+              fontSize: "0.85rem",
+              letterSpacing: "0.03em",
+              boxShadow: "0 0 20px rgba(245, 215, 110, 0.4)"
+            }}
+          >
+            <span>👑</span> Founder Cockpit
           </button>
         </nav>
       </header>

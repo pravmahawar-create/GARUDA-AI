@@ -7,6 +7,7 @@ const navItems = [
   { icon: "⚡", label: "Mission Control" },
   { icon: "◈", label: "Dashboard" },
   { icon: "🌌", label: "BOT-VERSE Omni-Channel" },
+  { icon: "💨", label: "PAWAN Coding Studio" },
   { icon: "🎯", label: "Sales Cockpit" },
   { icon: "⟡", label: "Revenue Universe" },
   { icon: "✦", label: "Creative Universe" },

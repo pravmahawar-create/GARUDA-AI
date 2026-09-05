@@ -166,70 +166,76 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           <a href="#security" style={{ color: "#9ca3af", textDecoration: "none", fontSize: "0.92rem" }}>Security</a>
           <button
             type="button"
-            onClick={onGetStarted}
-            style={{
-              background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
-              color: "#05070b",
-              border: "none",
-              padding: "0.55rem 1.4rem",
-              borderRadius: 999,
-              fontWeight: 800,
-              cursor: "pointer",
-              fontSize: "0.9rem",
-              boxShadow: "0 8px 24px rgba(245,215,110,0.18)"
-            }}
-          >
-            Get Started
-          </button>
-          <button
-            type="button"
             onClick={() => navigate("/demo")}
             style={{
               background: "rgba(75, 200, 140, 0.12)",
               border: "1px solid rgba(75, 200, 140, 0.45)",
               color: "#7be8b4",
               borderRadius: 999,
-              padding: "0.55rem 1.3rem",
-              fontWeight: 800,
+              padding: "0.45rem 1.1rem",
+              fontWeight: 700,
               cursor: "pointer",
-              fontSize: "0.9rem"
+              fontSize: "0.85rem"
             }}
           >
             Live Demo
           </button>
           <button
             type="button"
-            onClick={() => navigate("/scholar")}
+            onClick={() => navigate("/pawan")}
             style={{
-              background: "linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(212, 175, 55, 0.15) 100%)",
-              border: "1px solid rgba(56, 189, 248, 0.4)",
-              color: "#38bdf8",
+              background: "rgba(212, 175, 55, 0.12)",
+              border: "1px solid rgba(245, 215, 110, 0.35)",
+              color: palette.gold,
               borderRadius: 999,
-              padding: "0.55rem 1.3rem",
-              fontWeight: 800,
+              padding: "0.45rem 1.1rem",
+              fontWeight: 700,
               cursor: "pointer",
-              fontSize: "0.9rem"
+              fontSize: "0.85rem"
             }}
           >
-            🎓 Vidya Studio
+            ⚡ PAWAN Studio
           </button>
           <button
             type="button"
-            onClick={() => window.open(PAYMENT_URL, "_blank", "noopener,noreferrer")}
+            onClick={onGetStarted}
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(245,215,110,0.4)",
-              color: palette.gold,
+              background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
+              color: "#05070b",
+              border: "none",
+              padding: "0.5rem 1.25rem",
               borderRadius: 999,
-              padding: "0.55rem 1.3rem",
               fontWeight: 800,
               cursor: "pointer",
-              fontSize: "0.9rem"
+              fontSize: "0.85rem",
+              boxShadow: "0 4px 16px rgba(245,215,110,0.2)"
             }}
           >
-            Pay
+            Get Started
           </button>
-          <button type="button" onClick={onFounderLogin} style={{ background: "none", border: "none", color: "#9ca3af", cursor: "pointer", fontSize: "0.9rem" }}>Founder Login</button>
+
+          {/* 👑 SUPREME FOUNDER COCKPIT (PROMINENT VIP BUTTON) */}
+          <button
+            type="button"
+            onClick={onFounderLogin}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.45rem",
+              background: "linear-gradient(135deg, #2a1f04 0%, #4a370b 50%, #1a1303 100%)",
+              border: "2px solid #f5d76e",
+              color: "#fff",
+              borderRadius: 999,
+              padding: "0.52rem 1.35rem",
+              fontWeight: 900,
+              cursor: "pointer",
+              fontSize: "0.88rem",
+              letterSpacing: "0.04em",
+              boxShadow: "0 0 25px rgba(245, 215, 110, 0.45), inset 0 1px 0 rgba(255,255,255,0.2)"
+            }}
+          >
+            <span style={{ fontSize: "1.05rem" }}>👑</span> Founder Cockpit
+          </button>
         </nav>
       </header>
 
@@ -639,6 +645,8 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
               <li><a href="/services/business-automation" style={{ color: "#9ca3af", textDecoration: "none" }}>Business Workflow Automation</a></li>
               <li><a href="/services/whatsapp-telegram-ai-bots" style={{ color: "#9ca3af", textDecoration: "none" }}>WhatsApp & Telegram Bots</a></li>
+              <li><a href="/pawan" style={{ color: palette.gold, textDecoration: "none", fontWeight: 700 }}>⚡ PAWAN Coding Studio</a></li>
+              <li><a href="/bot-verse" style={{ color: "#c084fc", textDecoration: "none", fontWeight: 700 }}>🌌 BOT-VERSE Omni-Channel</a></li>
               <li><a href="/guides" style={{ color: palette.gold, textDecoration: "none", fontWeight: 600 }}>Engineering & AI Guides →</a></li>
               <li><a href="/what-is-garuda-ai" style={{ color: "#9ca3af", textDecoration: "none" }}>What is GARUDA AI?</a></li>
               <li><a href="/chat" style={{ color: "#9ca3af", textDecoration: "none" }}>Talk to AI Architect</a></li>

@@ -5,7 +5,7 @@
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(.*\\.html|/|/founder.*|/bot-verse.*)",
+      "source": "/(.*\\.html|/|/founder.*|/bot-verse.*|/pawan.*|/astra.*|/kids-play.*|/kids-app.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -130,11 +130,27 @@
     },
     {
       "source": "/bot-verse",
-      "destination": "/index.html"
+      "destination": "/bot-verse/index.html"
     },
     {
       "source": "/founder/bot-verse",
-      "destination": "/index.html"
+      "destination": "/bot-verse/index.html"
+    },
+    {
+      "source": "/pawan",
+      "destination": "/pawan/index.html"
+    },
+    {
+      "source": "/founder/pawan",
+      "destination": "/pawan/index.html"
+    },
+    {
+      "source": "/astra",
+      "destination": "/pawan/index.html"
+    },
+    {
+      "source": "/founder/astra",
+      "destination": "/pawan/index.html"
     },
     {
       "source": "/delegate",

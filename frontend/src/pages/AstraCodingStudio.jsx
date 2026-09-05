@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+
+const SpeechRec = typeof window !== "undefined" ? (window.SpeechRecognition || window.webkitSpeechRecognition) : null;
 
 export default function AstraCodingStudio() {
   const [instruction, setInstruction] = useState("");
@@ -10,9 +12,19 @@ export default function AstraCodingStudio() {
   const [statusInfo, setStatusInfo] = useState(null);
   const [copied, setCopied] = useState(false);
 
+  // 🎙️ Voice & Conversational States
+  const [isListening, setIsListening] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  const [voiceMuted, setVoiceMuted] = useState(false);
+  const [voiceStatus, setVoiceStatus] = useState("");
+  const recognitionRef = useRef(null);
+
   useEffect(() => {
     fetchStatus();
     fetchHistory();
+    if (SpeechRec) {
+      setVoiceSupported(true);
+    }
   }, []);
 
   const fetchStatus = async () => {
@@ -31,6 +43,71 @@ export default function AstraCodingStudio() {
     } catch {}
   };
 
+  // 🔊 Astra Speech Response (Talk-Back)
+  const astraSpeak = (text) => {
+    if (voiceMuted || typeof window === "undefined" || !window.speechSynthesis) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "hi-IN";
+      utter.rate = 1.0;
+      utter.pitch = 1.05;
+      window.speechSynthesis.speak(utter);
+    } catch {}
+  };
+
+  // 🎙️ Toggle Voice Listening
+  const toggleVoiceInput = () => {
+    if (!SpeechRec) {
+      alert("Voice recognition is not supported in this browser. Please use Google Chrome or Edge.");
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      setVoiceStatus("");
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRec();
+      recognition.lang = "hi-IN"; // Supports Hindi & Hinglish
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        setVoiceStatus("🎙️ Sun raha hoon Praveen bhai, boliye...");
+        astraSpeak("Sun raha hoon Praveen bhai, boliye...");
+      };
+
+      recognition.onresult = (event) => {
+        let transcriptText = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcriptText += event.results[i][0].transcript;
+        }
+        setInstruction(transcriptText);
+      };
+
+      recognition.onerror = (event) => {
+        setIsListening(false);
+        setVoiceStatus("Mic error: " + event.error);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        setVoiceStatus("");
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err) {
+      setIsListening(false);
+      setVoiceStatus("Voice error: " + err.message);
+    }
+  };
+
   const handleExecute = async (e) => {
     e?.preventDefault();
     if (!instruction.trim()) return;
@@ -38,6 +115,7 @@ export default function AstraCodingStudio() {
     setLoading(true);
     setError(null);
     setResult(null);
+    astraSpeak("Task start kar diya hai. Codebase analyze aur validate kar raha hoon.");
 
     try {
       const res = await fetch("/api/astra/execute", {
@@ -56,17 +134,13 @@ export default function AstraCodingStudio() {
 
       setResult(data.data);
       fetchHistory();
+      astraSpeak("Praveen bhai, task complete ho gaya aur syntax verify ho chuka hai.");
     } catch (err) {
       setError(err.message);
+      astraSpeak("Execution mein error aayi hai. Screen par check kijiye.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const copyCode = (text) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -80,20 +154,27 @@ export default function AstraCodingStudio() {
               🦅 GARUDA ASTRA • SOVEREIGN CODING AGENT
             </div>
             <h1 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0.2rem 0", color: "#ffffff" }}>
-              Autonomous Software Engineering Console
+              Autonomous Software Engineering & Voice Console
             </h1>
             <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.9rem" }}>
-              Founder: Praveen Mahawar • High-Speed Frontier Inference (120B / 70B) • Self-Healing ReAct Loop
+              Founder: Praveen Mahawar • Two-Way Voice Command Engine • Local Repo Repair & Self-Healing
             </p>
           </div>
 
-          <div style={{ textAlign: "right" }}>
+          <div style={{ textAlign: "right", display: "flex", gap: "0.8rem", alignItems: "center" }}>
+            {/* Mute/Unmute Astra Speech */}
+            <button
+              type="button"
+              onClick={() => setVoiceMuted(!voiceMuted)}
+              title={voiceMuted ? "Astra Voice Muted" : "Astra Voice Active"}
+              style={{ background: voiceMuted ? "#1e293b" : "rgba(16,185,129,0.15)", border: `1px solid ${voiceMuted ? "#334155" : "#10b981"}`, color: voiceMuted ? "#94a3b8" : "#34d399", padding: "6px 12px", borderRadius: "8px", cursor: "pointer", fontSize: "0.8rem", fontWeight: "700" }}
+            >
+              {voiceMuted ? "🔇 Astra Voice Muted" : "🔊 Astra Voice ON"}
+            </button>
+
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.4rem 0.8rem", borderRadius: "8px", background: "#090d16", border: "1px solid #1e293b", fontSize: "0.8rem", color: "#34d399" }}>
               <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981", display: "inline-block" }}></span>
-              <strong>ASTRA ENGINE LIVE</strong>
-            </div>
-            <div style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "4px" }}>
-              Verified SHA-256 Audit Trail
+              <strong>ASTRA LIVE</strong>
             </div>
           </div>
         </div>
@@ -103,9 +184,41 @@ export default function AstraCodingStudio() {
           
           {/* Interactive Command Input Card */}
           <div style={{ background: "#0b0f19", border: "1px solid #1e293b", borderRadius: "14px", padding: "1.8rem", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
-            <div style={{ fontSize: "0.85rem", color: "#d4af37", fontWeight: "800", letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: "0.8rem" }}>
-              ⚡ Launch Autonomous Programming Task
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.5rem" }}>
+              <div style={{ fontSize: "0.85rem", color: "#d4af37", fontWeight: "800", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                ⚡ Launch Autonomous Task (Type or Speak)
+              </div>
+
+              {/* 🎙️ Big Voice Command Button */}
+              <button
+                type="button"
+                onClick={toggleVoiceInput}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  padding: "6px 16px",
+                  borderRadius: "999px",
+                  background: isListening ? "#ef4444" : "rgba(212, 175, 55, 0.15)",
+                  border: `1px solid ${isListening ? "#f87171" : "#d4af37"}`,
+                  color: isListening ? "#ffffff" : "#fbbf24",
+                  fontSize: "0.8rem",
+                  fontWeight: "800",
+                  cursor: "pointer",
+                  boxShadow: isListening ? "0 0 15px rgba(239, 68, 68, 0.6)" : "none",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                <span style={{ fontSize: "1rem" }}>{isListening ? "⏹️" : "🎙️"}</span>
+                {isListening ? "STOP LISTENING" : "BOL KAR KAAM BATAO"}
+              </button>
             </div>
+
+            {voiceStatus && (
+              <div style={{ marginBottom: "0.8rem", padding: "8px 12px", background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.3)", borderRadius: "6px", fontSize: "0.8rem", color: "#fef08a", fontWeight: "600" }}>
+                {voiceStatus}
+              </div>
+            )}
 
             <form onSubmit={handleExecute}>
               <div style={{ marginBottom: "1rem" }}>
@@ -116,7 +229,7 @@ export default function AstraCodingStudio() {
                   rows="3"
                   value={instruction}
                   onChange={(e) => setInstruction(e.target.value)}
-                  placeholder="e.g. Create a JWT session validator with token expiry check and unit tests in src/utils/jwtHelper.js"
+                  placeholder="e.g. Bol kar ya likh kar batao: 'billing folder mein order conversation session persistence fix karo'"
                   style={{ width: "100%", boxSizing: "border-box", background: "#040711", border: "1px solid #334155", borderRadius: "8px", padding: "12px", color: "#ffffff", fontSize: "0.95rem", resize: "vertical", outline: "none" }}
                 />
               </div>
@@ -130,7 +243,7 @@ export default function AstraCodingStudio() {
                     type="text"
                     value={targetFile}
                     onChange={(e) => setTargetFile(e.target.value)}
-                    placeholder="e.g. src/utils/jwtHelper.js"
+                    placeholder="e.g. billing/src/lib/conversation.js"
                     style={{ width: "100%", boxSizing: "border-box", background: "#040711", border: "1px solid #334155", borderRadius: "8px", padding: "10px 12px", color: "#ffffff", fontSize: "0.9rem", outline: "none" }}
                   />
                 </div>
@@ -155,15 +268,25 @@ export default function AstraCodingStudio() {
                       transition: "all 0.2s ease"
                     }}
                   >
-                    {loading ? "⚡ ASTRA IS CODING & VALIDATING..." : "🚀 RUN ASTRA TASK"}
+                    {loading ? "⚡ ASTRA IS WORKING..." : "🚀 RUN ASTRA TASK"}
                   </button>
                 </div>
               </div>
             </form>
 
-            {/* Quick Sample Prompts */}
+            {/* Quick Prompts for Billing Repair */}
             <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
-              <span style={{ fontSize: "0.75rem", color: "#64748b" }}>Quick Prompts:</span>
+              <span style={{ fontSize: "0.75rem", color: "#64748b" }}>Quick Repo Tasks:</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setInstruction("Diagnose and repair order session persistence across voice clicks in billing app");
+                  setTargetFile("billing/src/components/VoiceModal.jsx");
+                }}
+                style={{ background: "#111827", border: "1px solid #1f2937", color: "#d4af37", fontSize: "0.75rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer", fontWeight: "600" }}
+              >
+                🔧 Repair Billing Order Session
+              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -173,16 +296,6 @@ export default function AstraCodingStudio() {
                 style={{ background: "#111827", border: "1px solid #1f2937", color: "#94a3b8", fontSize: "0.75rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer" }}
               >
                 API Key Generator
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setInstruction("Create a rate-limiter middleware using sliding window algorithm");
-                  setTargetFile("src/middleware/slidingRateLimiter.js");
-                }}
-                style={{ background: "#111827", border: "1px solid #1f2937", color: "#94a3b8", fontSize: "0.75rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer" }}
-              >
-                Sliding Rate Limiter
               </button>
             </div>
           </div>

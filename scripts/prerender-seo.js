@@ -1021,6 +1021,44 @@ const ROUTES = [
     description: "Secure, zero-password client authorization portal for GARUDA YouTube channel optimization and algorithmic growth.",
     canonical: "https://www.garudaos.in/delegate",
     robots: "noindex, nofollow"
+  },
+  {
+    path: "/pawan",
+    filePaths: [
+      path.join(DIST_DIR, "pawan", "index.html"),
+      path.join(DIST_DIR, "pawan.html"),
+      path.join(DIST_DIR, "founder", "pawan", "index.html"),
+      path.join(DIST_DIR, "founder", "pawan.html"),
+      path.join(DIST_DIR, "astra", "index.html"),
+      path.join(DIST_DIR, "astra.html")
+    ],
+    title: "GARUDA PAWAN Sovereign Coding Agent | As Fast as Wind • Smooth & Powerful",
+    description: "GARUDA PAWAN Sovereign Autonomous Coding Agent with two-way voice command engine, multi-model LLM execution, self-healing repo repair, and SHA-256 audit trail.",
+    canonical: "https://www.garudaos.in/pawan",
+    h1: "GARUDA PAWAN • Sovereign Coding Agent",
+    eyebrow: "AS FAST AS WIND • SMOOTH & POWERFUL",
+    contentSnippet: `
+      <h2>Autonomous Sovereign AI Coding Agent & Voice Command Studio</h2>
+      <p>GARUDA PAWAN executes software tasks autonomously with a closed-loop ReAct cycle, syntax self-healing, multi-model inference, two-way Hindi/English voice control, and real-time repo repair.</p>
+    `
+  },
+  {
+    path: "/kids-play",
+    filePaths: [
+      path.join(DIST_DIR, "kids-play", "index.html"),
+      path.join(DIST_DIR, "kids-play.html"),
+      path.join(DIST_DIR, "kids-app", "index.html"),
+      path.join(DIST_DIR, "kids-app.html")
+    ],
+    title: "Kids Voice Fun World | Autonomous Interactive Voice Playground",
+    description: "Interactive voice application for kids with multiple character voices, animal sounds, jokes, and two-way talking characters. Built by GARUDA PAWAN.",
+    canonical: "https://www.garudaos.in/kids-play",
+    h1: "Kids Voice Fun World",
+    eyebrow: "AUTONOMOUS VOICE PLAYGROUND",
+    contentSnippet: `
+      <h2>Playful Voice Experience for Kids</h2>
+      <p>Interactive characters with distinct pitches, jokes, animal sounds, and speech synthesis.</p>
+    `
   }
 ];
 
