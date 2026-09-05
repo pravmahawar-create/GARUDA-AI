@@ -1,6 +1,75 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
+const ALL_PLATFORMS = [
+  {
+    id: "youtube",
+    name: "YouTube Channel",
+    icon: "🔴",
+    roleNeeded: "Editor",
+    portalUrl: "https://studio.youtube.com",
+    instructions: "YouTube Studio > Settings > Permissions > Click 'Add Permissions' > Paste 'garudaos.ai@gmail.com' > Select role 'Editor'.",
+    marketRateMonthly: 25000,
+    garudaRateMonthly: 7999,
+    deliverables: "4 Long Video SEO + 20 High-Retention Shorts Scripts + Search Indexing"
+  },
+  {
+    id: "instagram",
+    name: "Instagram Professional",
+    icon: "📸",
+    roleNeeded: "Partner / Content Manager",
+    portalUrl: "https://business.facebook.com/settings/people",
+    instructions: "Meta Business Suite > Settings > People/Partners > Assign 'garudaos.ai@gmail.com' as Content Manager.",
+    marketRateMonthly: 20000,
+    garudaRateMonthly: 6999,
+    deliverables: "30 Kinetic Reel Hooks + Viral Captions + Auto-DM Keyword Funnel"
+  },
+  {
+    id: "facebook",
+    name: "Facebook Page & Groups",
+    icon: "👥",
+    roleNeeded: "Page Task Manager",
+    portalUrl: "https://www.facebook.com/settings?tab=profile_access",
+    instructions: "Facebook Page Settings > Professional Dashboard > Page Access > Add 'garudaos.ai@gmail.com'.",
+    marketRateMonthly: 15000,
+    garudaRateMonthly: 4999,
+    deliverables: "Native Video Upload Copy + B2B Community Discussion Infiltration"
+  },
+  {
+    id: "linkedin",
+    name: "LinkedIn Company Page",
+    icon: "💼",
+    roleNeeded: "Content Admin",
+    portalUrl: "https://www.linkedin.com",
+    instructions: "LinkedIn Page > Admin Tools > Manage Admins > Add 'garudaos.ai@gmail.com' as Content Admin.",
+    marketRateMonthly: 25000,
+    garudaRateMonthly: 7999,
+    deliverables: "8 Thought Leadership 5-Slide PDF Carousels + Executive Posts"
+  },
+  {
+    id: "twitter",
+    name: "X / Twitter",
+    icon: "🐦",
+    roleNeeded: "Contributor",
+    portalUrl: "https://pro.x.com",
+    instructions: "X Pro / TweetDeck > Accounts > Teams > Invite 'garudaos.ai@gmail.com' as Contributor.",
+    marketRateMonthly: 15000,
+    garudaRateMonthly: 4999,
+    deliverables: "Viral Discussion Threads + Quote Breakdowns + Real-Time Trend Hijacks"
+  },
+  {
+    id: "googleSeo",
+    name: "Google Video & Search SEO",
+    icon: "🔍",
+    roleNeeded: "Search Console Access",
+    portalUrl: "https://search.google.com/search-console",
+    instructions: "Google Search Console > Settings > Users & Permissions > Add 'garudaos.ai@gmail.com'.",
+    marketRateMonthly: 30000,
+    garudaRateMonthly: 9999,
+    deliverables: "VideoObject JSON-LD Structured Schema + Search Moment Clips"
+  }
+];
+
 export default function MagicDelegationPortal() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
@@ -11,6 +80,9 @@ export default function MagicDelegationPortal() {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [approved, setApproved] = useState(false);
   const [approving, setApproving] = useState(false);
+
+  // Selected platforms state for multi-platform authorization
+  const [selectedPlatforms, setSelectedPlatforms] = useState(["youtube"]);
 
   useEffect(() => {
     if (!token) {
@@ -28,8 +100,14 @@ export default function MagicDelegationPortal() {
         const data = await res.json();
         if (data.delegation) {
           setDelegation(data.delegation);
+          if (data.delegation.selectedPlatforms && data.delegation.selectedPlatforms.length > 0) {
+            setSelectedPlatforms(data.delegation.selectedPlatforms);
+          }
           if (data.delegation.status === "APPROVED") {
             setApproved(true);
+            if (data.delegation.authorizedPlatforms && data.delegation.authorizedPlatforms.length > 0) {
+              setSelectedPlatforms(data.delegation.authorizedPlatforms);
+            }
           }
         }
       } catch (err) {
@@ -41,6 +119,16 @@ export default function MagicDelegationPortal() {
 
     fetchDelegation();
   }, [token]);
+
+  const togglePlatform = (id) => {
+    if (approved) return;
+    if (selectedPlatforms.includes(id)) {
+      if (selectedPlatforms.length === 1) return; // keep at least 1
+      setSelectedPlatforms(selectedPlatforms.filter((p) => p !== id));
+    } else {
+      setSelectedPlatforms([...selectedPlatforms, id]);
+    }
+  };
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText("garudaos.ai@gmail.com");
@@ -54,12 +142,18 @@ export default function MagicDelegationPortal() {
     try {
       const res = await fetch(`/api/bot-verse/magic-delegation/${token}/approve`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ authorizedPlatforms: selectedPlatforms })
       });
       if (res.ok) {
         setApproved(true);
         if (delegation) {
-          setDelegation({ ...delegation, status: "APPROVED", authorizedAt: new Date().toISOString() });
+          setDelegation({
+            ...delegation,
+            status: "APPROVED",
+            authorizedPlatforms: selectedPlatforms,
+            authorizedAt: new Date().toISOString()
+          });
         }
       }
     } catch (err) {
@@ -68,6 +162,15 @@ export default function MagicDelegationPortal() {
       setApproving(false);
     }
   };
+
+  // Pricing math
+  const chosenObjects = ALL_PLATFORMS.filter((p) => selectedPlatforms.includes(p.id));
+  const rawMarketTotal = chosenObjects.reduce((acc, p) => acc + p.marketRateMonthly, 0);
+  const rawGarudaTotal = chosenObjects.reduce((acc, p) => acc + p.garudaRateMonthly, 0);
+  let discountPct = chosenObjects.length >= 5 ? 30 : chosenObjects.length >= 3 ? 20 : chosenObjects.length === 2 ? 10 : 0;
+  const finalGarudaTotal = Math.round(rawGarudaTotal * (1 - discountPct / 100));
+  const totalSavings = rawMarketTotal - finalGarudaTotal;
+  const savingsPct = Math.round((totalSavings / rawMarketTotal) * 100);
 
   if (loading) {
     return (
@@ -101,7 +204,7 @@ export default function MagicDelegationPortal() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#030712", color: "#f8fafc", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", padding: "2rem 1rem" }}>
-      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "860px", margin: "0 auto" }}>
         
         {/* Header */}
         <div style={{ borderBottom: "1px solid #1e293b", paddingBottom: "1.5rem", marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
@@ -110,22 +213,22 @@ export default function MagicDelegationPortal() {
               GARUDA AI • 1-CLICK MAGIC DELEGATION PORTAL
             </div>
             <h1 style={{ fontSize: "1.6rem", fontWeight: "800", margin: "0.3rem 0 0 0", color: "#ffffff" }}>
-              Channel Growth & Video SEO Authorization
+              Multi-Channel Growth & Management Authorization
             </h1>
           </div>
           <div style={{ padding: "0.4rem 0.8rem", borderRadius: "999px", background: approved ? "rgba(16,185,129,0.15)" : "rgba(212,175,55,0.15)", border: `1px solid ${approved ? "rgba(16,185,129,0.4)" : "rgba(212,175,55,0.4)"}`, color: approved ? "#34d399" : "#fbbf24", fontSize: "0.75rem", fontWeight: "700" }}>
-            {approved ? "✅ AUTOPILOT AUTHORIZED" : "⚡ PENDING YOUR APPROVAL"}
+            {approved ? `✅ ${chosenObjects.length} PLATFORMS AUTHORIZED` : "⚡ CHOOSE PLATFORMS TO AUTHORIZE"}
           </div>
         </div>
 
-        {/* Video Card */}
-        <div style={{ background: "#0b0f19", border: "1px solid #1e293b", borderRadius: "12px", padding: "1.5rem", marginBottom: "2rem" }}>
+        {/* Video / Asset Card */}
+        <div style={{ background: "#0b0f19", border: "1px solid #1e293b", borderRadius: "12px", padding: "1.5rem", marginBottom: "1.5rem" }}>
           <div style={{ display: "flex", gap: "1.2rem", alignItems: "center", flexWrap: "wrap" }}>
             {delegation.videoThumbnail && (
               <img src={delegation.videoThumbnail} alt="Thumbnail" style={{ width: "160px", borderRadius: "8px", border: "1px solid #334155" }} />
             )}
             <div style={{ flex: 1, minWidth: "240px" }}>
-              <div style={{ fontSize: "0.8rem", color: "#38bdf8", fontWeight: "700", textTransform: "uppercase", marginBottom: "0.3rem" }}>
+              <div style={{ fontSize: "0.75rem", color: "#38bdf8", fontWeight: "700", textTransform: "uppercase", marginBottom: "0.3rem" }}>
                 Target Media Asset for Optimization
               </div>
               <h2 style={{ fontSize: "1.2rem", fontWeight: "700", margin: "0 0 0.5rem 0", color: "#ffffff" }}>
@@ -142,127 +245,183 @@ export default function MagicDelegationPortal() {
           </div>
         </div>
 
-        {/* Zero Password Notice */}
-        <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.25)", borderRadius: "10px", padding: "1.2rem", marginBottom: "2rem", display: "flex", gap: "1rem", alignItems: "flex-start" }}>
+        {/* Zero Password Guarantee */}
+        <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.25)", borderRadius: "10px", padding: "1.2rem", marginBottom: "1.5rem", display: "flex", gap: "1rem", alignItems: "flex-start" }}>
           <div style={{ fontSize: "1.5rem" }}>🔒</div>
           <div style={{ fontSize: "0.85rem", color: "#a7f3d0", lineHeight: "1.6" }}>
-            <strong style={{ color: "#ffffff" }}>100% Privacy & Zero Password Sharing Law:</strong> You never need to share any password with anyone. You simply invite GARUDA's official verified email (<code style={{ background: "rgba(0,0,0,0.4)", padding: "2px 6px", borderRadius: "4px", color: "#fbbf24" }}>garudaos.ai@gmail.com</code>) as an Editor in your YouTube Studio permissions. You retain 100% full ownership of your channel at all times.
+            <strong style={{ color: "#ffffff" }}>100% Zero-Password Delegation Law:</strong> You never need to share any account password. Simply invite GARUDA's official verified agent email (<code style={{ background: "rgba(0,0,0,0.4)", padding: "2px 6px", borderRadius: "4px", color: "#fbbf24" }}>garudaos.ai@gmail.com</code>) as Editor or Content Manager. You can revoke access at any second with 1 click.
           </div>
         </div>
 
-        {/* Step 1: Editor Invite Box */}
-        <div style={{ background: "#0b0f19", border: "1px solid #1e293b", borderRadius: "12px", padding: "1.5rem", marginBottom: "2rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1rem" }}>
-            <span style={{ width: "26px", height: "26px", borderRadius: "50%", background: "#d4af37", color: "#000", fontWeight: "800", display: "grid", placeItems: "center", fontSize: "0.85rem" }}>1</span>
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "#ffffff" }}>
-              Add GARUDA as Editor in YouTube Studio
-            </h3>
+        {/* 📊 Section 1: Multi-Platform Authorization Matrix */}
+        <div style={{ background: "#0b0f19", border: "1px solid #1e293b", borderRadius: "12px", padding: "1.5rem", marginBottom: "1.5rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+              <span style={{ width: "26px", height: "26px", borderRadius: "50%", background: "#d4af37", color: "#000", fontWeight: "800", display: "grid", placeItems: "center", fontSize: "0.85rem" }}>1</span>
+              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "#ffffff" }}>
+                Select Social Media Handlers to Connect
+              </h3>
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
+              Click cards to select/deselect ({selectedPlatforms.length} selected)
+            </div>
           </div>
 
-          <p style={{ fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", marginBottom: "1.2rem" }}>
-            Click the button below to open your YouTube Studio Permissions page directly. Then click <strong>"Add Permissions"</strong>, paste our official email, and select role <strong>"Editor"</strong>:
-          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "0.8rem", marginBottom: "1.2rem" }}>
+            {ALL_PLATFORMS.map((platform) => {
+              const isSelected = selectedPlatforms.includes(platform.id);
+              return (
+                <div
+                  key={platform.id}
+                  onClick={() => togglePlatform(platform.id)}
+                  style={{
+                    padding: "1rem",
+                    borderRadius: "8px",
+                    cursor: approved ? "default" : "pointer",
+                    background: isSelected ? "rgba(212,175,55,0.08)" : "#090d16",
+                    border: isSelected ? "2px solid #d4af37" : "1px solid #1e293b",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <span style={{ fontSize: "1.2rem" }}>{platform.icon}</span>
+                      <strong style={{ fontSize: "0.9rem", color: "#ffffff" }}>{platform.name}</strong>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      readOnly
+                      style={{ cursor: "pointer", accentColor: "#d4af37", width: "16px", height: "16px" }}
+                    />
+                  </div>
 
-          <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap", alignItems: "center" }}>
-            <button
-              onClick={handleCopyEmail}
-              style={{
-                padding: "0.7rem 1.2rem",
-                background: copiedEmail ? "#10b981" : "#1e293b",
-                border: "1px solid #334155",
-                color: "#ffffff",
-                borderRadius: "8px",
-                cursor: "pointer",
-                fontWeight: "700",
-                fontSize: "0.85rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem"
-              }}
-            >
-              {copiedEmail ? "✅ Copied (garudaos.ai@gmail.com)" : "📋 Copy Official Email: garudaos.ai@gmail.com"}
-            </button>
+                  <div style={{ fontSize: "0.75rem", color: "#38bdf8", fontWeight: "600", marginBottom: "0.3rem" }}>
+                    Role: {platform.roleNeeded}
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "#94a3b8", lineHeight: "1.4", marginBottom: "0.6rem" }}>
+                    {platform.instructions}
+                  </div>
 
-            <a
-              href="https://studio.youtube.com"
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                padding: "0.7rem 1.2rem",
-                background: "linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)",
-                color: "#ffffff",
-                borderRadius: "8px",
-                textDecoration: "none",
-                fontWeight: "700",
-                fontSize: "0.85rem",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.5rem"
-              }}
-            >
-              ↗ Open YouTube Studio
-            </a>
+                  {isSelected && (
+                    <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.4rem" }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCopyEmail();
+                        }}
+                        style={{ padding: "0.3rem 0.6rem", background: copiedEmail ? "#10b981" : "#1e293b", border: "1px solid #334155", color: "#fff", borderRadius: "4px", fontSize: "0.7rem", cursor: "pointer", fontWeight: "600" }}
+                      >
+                        {copiedEmail ? "✓ Copied" : "📋 Copy Email"}
+                      </button>
+                      <a
+                        href={platform.portalUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ padding: "0.3rem 0.6rem", background: "#334155", color: "#cbd5e1", borderRadius: "4px", fontSize: "0.7rem", textDecoration: "none", fontWeight: "600", display: "inline-flex", alignItems: "center" }}
+                      >
+                        ↗ Settings
+                      </a>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Step 2: Review Proposed SEO & Growth Package */}
+        {/* 💰 Section 2: Market Rate vs GARUDA Rate Transparency Matrix */}
+        <div style={{ background: "linear-gradient(135deg, #090e1a 0%, #172033 100%)", border: "1px solid rgba(56,189,248,0.4)", borderRadius: "12px", padding: "1.5rem", marginBottom: "1.5rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+              <span style={{ fontSize: "1.3rem" }}>💎</span>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "#ffffff" }}>
+                  Transparent Market Rate vs GARUDA AI Rate
+                </h3>
+                <p style={{ margin: "0.2rem 0 0 0", fontSize: "0.75rem", color: "#94a3b8" }}>
+                  Verified cost breakdown for managing {chosenObjects.length} chosen platform{chosenObjects.length > 1 ? "s" : ""}. Zero hidden fees.
+                </p>
+              </div>
+            </div>
+            <div style={{ padding: "0.3rem 0.8rem", background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.4)", color: "#34d399", borderRadius: "999px", fontSize: "0.75rem", fontWeight: "800" }}>
+              SAVE {savingsPct}% WITH AI AUTONOMY
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "1rem" }}>
+            <div style={{ background: "rgba(0,0,0,0.4)", padding: "1rem", borderRadius: "8px", border: "1px solid #1e293b", textAlign: "center" }}>
+              <div style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: "700", textTransform: "uppercase" }}>
+                Traditional Human Agency Rate
+              </div>
+              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#f87171", textDecoration: "line-through", margin: "0.4rem 0" }}>
+                ₹{rawMarketTotal.toLocaleString("en-IN")}/mo
+              </div>
+              <div style={{ fontSize: "0.7rem", color: "#64748b" }}>
+                Slow turnaround (7-14 days), human fatigue, manual errors
+              </div>
+            </div>
+
+            <div style={{ background: "rgba(212,175,55,0.08)", padding: "1rem", borderRadius: "8px", border: "2px solid #d4af37", textAlign: "center" }}>
+              <div style={{ fontSize: "0.75rem", color: "#d4af37", fontWeight: "800", textTransform: "uppercase" }}>
+                GARUDA AI Autonomous Rate
+              </div>
+              <div style={{ fontSize: "1.8rem", fontWeight: "900", color: "#ffffff", margin: "0.4rem 0" }}>
+                ₹{finalGarudaTotal.toLocaleString("en-IN")}<span style={{ fontSize: "0.85rem", fontWeight: "600", color: "#94a3b8" }}>/mo</span>
+              </div>
+              <div style={{ fontSize: "0.7rem", color: "#34d399", fontWeight: "700" }}>
+                {discountPct > 0 ? `Includes ${discountPct}% Multi-Platform Bundle Discount!` : "Direct AI Execution"}
+              </div>
+            </div>
+
+            <div style={{ background: "rgba(16,185,129,0.08)", padding: "1rem", borderRadius: "8px", border: "1px solid rgba(16,185,129,0.3)", textAlign: "center" }}>
+              <div style={{ fontSize: "0.75rem", color: "#34d399", fontWeight: "700", textTransform: "uppercase" }}>
+                Your Monthly Net Savings
+              </div>
+              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#34d399", margin: "0.4rem 0" }}>
+                ₹{totalSavings.toLocaleString("en-IN")}/mo
+              </div>
+              <div style={{ fontSize: "0.7rem", color: "#a7f3d0" }}>
+                10x faster execution with cryptographic SHA-256 QA audit
+              </div>
+            </div>
+          </div>
+
+          <div style={{ fontSize: "0.75rem", color: "#64748b", textAlign: "center" }}>
+            ✨ <strong>Zero-Ripoff Guarantee:</strong> Every asset delivered is governed by real performance metrics and anti-fabrication standards.
+          </div>
+        </div>
+
+        {/* 📝 Section 3: Review Proposed Package & Authorize Autopilot */}
         <div style={{ background: "#0b0f19", border: "1px solid #1e293b", borderRadius: "12px", padding: "1.5rem", marginBottom: "2rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1rem" }}>
             <span style={{ width: "26px", height: "26px", borderRadius: "50%", background: "#d4af37", color: "#000", fontWeight: "800", display: "grid", placeItems: "center", fontSize: "0.85rem" }}>2</span>
             <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "#ffffff" }}>
-              Review Proposed SEO & Algorithmic Growth Package
+              Authorize Autopilot for Selected Platforms
             </h3>
           </div>
 
-          <div style={{ display: "grid", gap: "1rem" }}>
-            {/* Optimized Titles */}
-            <div style={{ background: "#111827", padding: "1rem", borderRadius: "8px", border: "1px solid #1f2937" }}>
-              <div style={{ fontSize: "0.75rem", color: "#38bdf8", fontWeight: "700", textTransform: "uppercase", marginBottom: "0.4rem" }}>
-                High-CTR Title Proposals
-              </div>
-              {(ytPlan.optimizedTitles || []).map((t, idx) => (
-                <div key={idx} style={{ fontSize: "0.85rem", color: "#f1f5f9", marginBottom: "0.4rem", padding: "0.4rem", background: "#0b0f19", borderRadius: "4px" }}>
-                  <strong style={{ color: "#d4af37" }}>Option {idx + 1}:</strong> {t.title}
-                </div>
+          <div style={{ background: "#111827", padding: "1rem", borderRadius: "8px", border: "1px solid #1f2937", marginBottom: "1.5rem" }}>
+            <div style={{ fontSize: "0.8rem", color: "#38bdf8", fontWeight: "700", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+              Active Platforms in Scope:
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+              {chosenObjects.map((p) => (
+                <span key={p.id} style={{ background: "#1e293b", color: "#f8fafc", padding: "4px 10px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "600", border: "1px solid #334155" }}>
+                  {p.icon} {p.name}
+                </span>
               ))}
             </div>
-
-            {/* Description & Tags Preview */}
-            {ytPlan.tags && ytPlan.tags.length > 0 && (
-              <div style={{ background: "#111827", padding: "1rem", borderRadius: "8px", border: "1px solid #1f2937" }}>
-                <div style={{ fontSize: "0.75rem", color: "#38bdf8", fontWeight: "700", textTransform: "uppercase", marginBottom: "0.4rem" }}>
-                  Search Indexing Tags
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
-                  {ytPlan.tags.map((tag, idx) => (
-                    <span key={idx} style={{ fontSize: "0.75rem", background: "#1e293b", color: "#cbd5e1", padding: "2px 8px", borderRadius: "4px" }}>
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Viral Shorts Hook */}
-            {shortsPlan.hook_0_to_3s && (
-              <div style={{ background: "#111827", padding: "1rem", borderRadius: "8px", border: "1px solid #1f2937" }}>
-                <div style={{ fontSize: "0.75rem", color: "#a855f7", fontWeight: "700", textTransform: "uppercase", marginBottom: "0.4rem" }}>
-                  Viral YouTube Shorts Hook (0-3s)
-                </div>
-                <div style={{ fontSize: "0.85rem", color: "#e2e8f0", fontStyle: "italic" }}>
-                  "{shortsPlan.hook_0_to_3s}"
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Action Button */}
-          <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
+          <div style={{ textAlign: "center" }}>
             <button
               onClick={handleApprove}
               disabled={approving || approved}
               style={{
-                padding: "0.9rem 2.5rem",
+                padding: "1rem 2.8rem",
                 background: approved 
                   ? "#10b981" 
                   : "linear-gradient(135deg, #d4af37 0%, #aa820a 100%)",
@@ -270,19 +429,23 @@ export default function MagicDelegationPortal() {
                 border: "none",
                 borderRadius: "8px",
                 fontWeight: "800",
-                fontSize: "1rem",
+                fontSize: "1.05rem",
                 cursor: approved ? "default" : "pointer",
                 boxShadow: "0 4px 20px rgba(212, 175, 55, 0.4)",
                 textTransform: "uppercase",
                 letterSpacing: "0.05em"
               }}
             >
-              {approving ? "Authorizing Autopilot..." : approved ? "✅ Autopilot Approved & Activated" : "⚡ Approve & Authorize GARUDA Autopilot"}
+              {approving 
+                ? "Authorizing..." 
+                : approved 
+                ? `✅ ${chosenObjects.length} Platforms Authorized & Live` 
+                : `⚡ Authorize ${chosenObjects.length} Platform${chosenObjects.length > 1 ? "s" : ""} on Autopilot`}
             </button>
 
             {approved && (
-              <div style={{ marginTop: "0.8rem", fontSize: "0.85rem", color: "#34d399", fontWeight: "600" }}>
-                🎉 Thank you! GARUDA AI has received your authorization and will autonomously deploy this optimization.
+              <div style={{ marginTop: "1rem", padding: "0.8rem", background: "rgba(16,185,129,0.15)", borderRadius: "8px", border: "1px solid rgba(16,185,129,0.4)", fontSize: "0.9rem", color: "#34d399", fontWeight: "600" }}>
+                🎉 Authorization Complete! GARUDA AI has locked your permissions for {chosenObjects.map(p => p.name).join(", ")}. Autopilot growth execution is now active.
               </div>
             )}
           </div>

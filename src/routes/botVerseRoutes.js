@@ -110,18 +110,38 @@ router.get("/campaigns/:id", (req, res) => {
 });
 
 /**
+ * GET /api/bot-verse/pricing-quote
+ * Calculate market rate vs GARUDA autonomous rate for social media management
+ */
+router.get("/pricing-quote", (req, res) => {
+  try {
+    const magicDelegationService = require("../services/magicDelegationService");
+    const platformsQuery = req.query.platforms ? req.query.platforms.split(",").map(p => p.trim()) : ["youtube", "instagram", "facebook"];
+    const quote = magicDelegationService.calculateOmniQuote(platformsQuery);
+    return res.json({
+      success: true,
+      supportedPlatforms: magicDelegationService.SUPPORTED_PLATFORMS,
+      quote
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
  * POST /api/bot-verse/magic-delegation
  * Create and dispatch a 1-click magic delegation invite (email + WhatsApp)
  */
 router.post("/magic-delegation", async (req, res) => {
   try {
     const magicDelegationService = require("../services/magicDelegationService");
-    const { clientName, clientEmail, clientPhone, videoUrl, videoTitle, videoThumbnail, campaignId, proposedPackage } = req.body || {};
+    const { clientName, clientEmail, clientPhone, videoUrl, videoTitle, videoThumbnail, campaignId, proposedPackage, selectedPlatforms } = req.body || {};
     
     const record = magicDelegationService.createDelegation({
       clientName,
       clientEmail,
       clientPhone,
+      selectedPlatforms: selectedPlatforms || ["youtube", "instagram", "facebook"],
       videoUrl,
       videoTitle,
       videoThumbnail,
@@ -157,7 +177,11 @@ router.get("/magic-delegation/:token", (req, res) => {
       return res.status(404).json({ success: false, message: "Delegation record not found or expired." });
     }
     magicDelegationService.updateStatus(req.params.token, "OPENED");
-    return res.json({ success: true, delegation });
+    return res.json({
+      success: true,
+      delegation,
+      supportedPlatforms: magicDelegationService.SUPPORTED_PLATFORMS
+    });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }
@@ -165,12 +189,15 @@ router.get("/magic-delegation/:token", (req, res) => {
 
 /**
  * POST /api/bot-verse/magic-delegation/:token/approve
- * Client approves proposed SEO package and authorizes autopilot
+ * Client approves proposed SEO package and authorizes selected platforms
  */
 router.post("/magic-delegation/:token/approve", (req, res) => {
   try {
     const magicDelegationService = require("../services/magicDelegationService");
-    const updated = magicDelegationService.updateStatus(req.params.token, "APPROVED");
+    const { authorizedPlatforms } = req.body || {};
+    const updated = magicDelegationService.updateStatus(req.params.token, "APPROVED", {
+      authorizedPlatforms: Array.isArray(authorizedPlatforms) ? authorizedPlatforms : []
+    });
     if (!updated) {
       return res.status(404).json({ success: false, message: "Delegation record not found or expired." });
     }

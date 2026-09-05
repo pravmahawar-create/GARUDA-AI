@@ -48,6 +48,8 @@ export default function BotVerseEngineStudio() {
   const [sendingDelegation, setSendingDelegation] = useState(false);
   const [delegationResult, setDelegationResult] = useState(null);
   const [copiedMagicLink, setCopiedMagicLink] = useState(false);
+  const [studioSelectedPlatforms, setStudioSelectedPlatforms] = useState(["youtube", "instagram", "facebook"]);
+  const [copiedPitchSnippet, setCopiedPitchSnippet] = useState(false);
 
   // Load existing campaigns from backend
   const loadCampaigns = async () => {
@@ -163,7 +165,8 @@ export default function BotVerseEngineStudio() {
           videoTitle: activeCampaign?.topic || "Target Media Asset",
           videoThumbnail: activeCampaign?.seedVideoMetadata?.thumbnailUrl || previewMeta?.thumbnailUrl || "",
           campaignId: activeCampaign?.campaignId,
-          proposedPackage: activeCampaign?.bots || activeCampaign
+          proposedPackage: activeCampaign?.bots || activeCampaign,
+          selectedPlatforms: studioSelectedPlatforms
         })
       });
       const data = await res.json();
@@ -491,6 +494,136 @@ export default function BotVerseEngineStudio() {
                 />
               </div>
             </div>
+
+            {/* Platform Selection Matrix for Invitation */}
+            <div style={{ marginBottom: "1.2rem", background: "#020617", border: "1px solid #1e293b", borderRadius: "8px", padding: "0.8rem" }}>
+              <div style={{ fontSize: "0.75rem", fontWeight: "700", color: "#d4af37", marginBottom: "0.5rem" }}>
+                SELECT PLATFORMS CLIENT NEEDS MANAGED:
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                {[
+                  { id: "youtube", name: "YouTube Channel", icon: "🔴", market: 25000, garuda: 7999 },
+                  { id: "instagram", name: "Instagram Reels", icon: "📸", market: 20000, garuda: 6999 },
+                  { id: "facebook", name: "Facebook Page", icon: "👥", market: 15000, garuda: 4999 },
+                  { id: "linkedin", name: "LinkedIn Company", icon: "💼", market: 25000, garuda: 7999 },
+                  { id: "twitter", name: "X / Twitter", icon: "🐦", market: 15000, garuda: 4999 },
+                  { id: "googleSeo", name: "Google Video SEO", icon: "🔍", market: 30000, garuda: 9999 }
+                ].map((p) => {
+                  const isChecked = studioSelectedPlatforms.includes(p.id);
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => {
+                        if (isChecked) {
+                          if (studioSelectedPlatforms.length === 1) return;
+                          setStudioSelectedPlatforms(studioSelectedPlatforms.filter((x) => x !== p.id));
+                        } else {
+                          setStudioSelectedPlatforms([...studioSelectedPlatforms, p.id]);
+                        }
+                      }}
+                      style={{
+                        padding: "0.4rem 0.8rem",
+                        borderRadius: "6px",
+                        fontSize: "0.75rem",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        background: isChecked ? "rgba(212,175,55,0.15)" : "#090d16",
+                        border: isChecked ? "1px solid #d4af37" : "1px solid #334155",
+                        color: isChecked ? "#f8fafc" : "#94a3b8",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.4rem"
+                      }}
+                    >
+                      <span>{p.icon}</span>
+                      <span>{p.name}</span>
+                      {isChecked && <span style={{ color: "#34d399", fontWeight: "bold" }}>✓</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 💰 Live Pricing & Market Rate Comparison Box */}
+            {(() => {
+              const platformCatalog = [
+                { id: "youtube", name: "YouTube", market: 25000, garuda: 7999 },
+                { id: "instagram", name: "Instagram", market: 20000, garuda: 6999 },
+                { id: "facebook", name: "Facebook", market: 15000, garuda: 4999 },
+                { id: "linkedin", name: "LinkedIn", market: 25000, garuda: 7999 },
+                { id: "twitter", name: "Twitter/X", market: 15000, garuda: 4999 },
+                { id: "googleSeo", name: "Google SEO", market: 30000, garuda: 9999 }
+              ];
+              const selectedItems = platformCatalog.filter((x) => studioSelectedPlatforms.includes(x.id));
+              const mktTotal = selectedItems.reduce((sum, x) => sum + x.market, 0);
+              const gRawTotal = selectedItems.reduce((sum, x) => sum + x.garuda, 0);
+              const disc = selectedItems.length >= 5 ? 30 : selectedItems.length >= 3 ? 20 : selectedItems.length === 2 ? 10 : 0;
+              const gFinalTotal = Math.round(gRawTotal * (1 - disc / 100));
+              const savingsAmt = mktTotal - gFinalTotal;
+              const savingsPct = Math.round((savingsAmt / mktTotal) * 100);
+
+              const handleCopyPitch = () => {
+                const pitch = [
+                  `🦅 *GARUDA AI • Omni-Channel Growth Proposal*`,
+                  `Client: ${clientName.trim() || "Valued Partner"}`,
+                  `Scope: ${selectedItems.length} Platforms (${selectedItems.map((s) => s.name).join(", ")})`,
+                  ``,
+                  `• Traditional Agency Market Cost: ~₹${mktTotal.toLocaleString("en-IN")}/month`,
+                  `• GARUDA AI Autonomous Rate: ₹${gFinalTotal.toLocaleString("en-IN")}/month ${disc > 0 ? `(Includes ${disc}% Multi-Platform Bundle Discount!)` : ""}`,
+                  `• Net Client Savings: ₹${savingsAmt.toLocaleString("en-IN")}/month (${savingsPct}% Less Cost!)`,
+                  ``,
+                  `🔒 *100% Zero-Password Delegation Law*: You never share any password. Simply grant Editor/Content access.`,
+                  `Review & 1-Click Authorize here:`,
+                  `👉 ${delegationResult ? delegationResult.magicUrl : "https://www.garudaos.in/bot-verse"}`,
+                  ``,
+                  `Verified Founder Channel: garudaos.ai@gmail.com`
+                ].join("\n");
+                navigator.clipboard.writeText(pitch);
+                setCopiedPitchSnippet(true);
+                setTimeout(() => setCopiedPitchSnippet(false), 2500);
+              };
+
+              return (
+                <div style={{ background: "rgba(56,189,248,0.06)", border: "1px solid rgba(56,189,248,0.3)", borderRadius: "8px", padding: "0.9rem", marginBottom: "1.2rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem", flexWrap: "wrap", gap: "0.4rem" }}>
+                    <span style={{ fontSize: "0.75rem", fontWeight: "800", color: "#38bdf8", textTransform: "uppercase" }}>
+                      💰 Query Price Check ({selectedItems.length} Platform{selectedItems.length > 1 ? "s" : ""})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleCopyPitch}
+                      style={{ padding: "0.25rem 0.6rem", background: copiedPitchSnippet ? "#10b981" : "#1e293b", border: "1px solid #334155", color: "#fff", borderRadius: "4px", fontSize: "0.7rem", fontWeight: "700", cursor: "pointer" }}
+                    >
+                      {copiedPitchSnippet ? "✓ Proposal Copied!" : "📋 Copy Client Pitch & Pricing"}
+                    </button>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "0.6rem" }}>
+                    <div style={{ background: "#020617", padding: "0.6rem", borderRadius: "6px", border: "1px solid #1e293b" }}>
+                      <div style={{ fontSize: "0.65rem", color: "#94a3b8", fontWeight: "700" }}>MARKET AGENCY RATE</div>
+                      <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#f87171", textDecoration: "line-through" }}>
+                        ₹{mktTotal.toLocaleString("en-IN")}/mo
+                      </div>
+                    </div>
+
+                    <div style={{ background: "rgba(212,175,55,0.08)", padding: "0.6rem", borderRadius: "6px", border: "1px solid #d4af37" }}>
+                      <div style={{ fontSize: "0.65rem", color: "#d4af37", fontWeight: "800" }}>GARUDA AUTONOMOUS RATE</div>
+                      <div style={{ fontSize: "1.2rem", fontWeight: "900", color: "#ffffff" }}>
+                        ₹{gFinalTotal.toLocaleString("en-IN")}<span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>/mo</span>
+                      </div>
+                    </div>
+
+                    <div style={{ background: "rgba(16,185,129,0.08)", padding: "0.6rem", borderRadius: "6px", border: "1px solid rgba(16,185,129,0.3)" }}>
+                      <div style={{ fontSize: "0.65rem", color: "#34d399", fontWeight: "700" }}>CLIENT SAVINGS</div>
+                      <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#34d399" }}>
+                        ₹{savingsAmt.toLocaleString("en-IN")}/mo ({savingsPct}%)
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             <div style={{ display: "flex", gap: "0.8rem", alignItems: "center", flexWrap: "wrap" }}>
               <button
