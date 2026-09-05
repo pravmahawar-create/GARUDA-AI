@@ -6,6 +6,7 @@ const navItems = [
   { icon: "👑", label: "GARUDA Kingdom" },
   { icon: "⚡", label: "Mission Control" },
   { icon: "◈", label: "Dashboard" },
+  { icon: "🌌", label: "BOT-VERSE Omni-Channel" },
   { icon: "🎯", label: "Sales Cockpit" },
   { icon: "⟡", label: "Revenue Universe" },
   { icon: "✦", label: "Creative Universe" },

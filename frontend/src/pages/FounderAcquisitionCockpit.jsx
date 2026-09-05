@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import BrandAssetImage from "../components/BrandAssetImage";
+import BotVerseEngineStudio from "../components/BotVerseEngineStudio";
 
 const STAGES = [
   "DISCOVER", "QUALIFY", "PRIORITIZE", "OUTREACH", "CONVERSATION",
@@ -11,6 +12,8 @@ const STAGES = [
 
 export default function FounderAcquisitionCockpit({ onLogout }) {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabFromUrl = searchParams.get("tab");
 
   // Telemetry & Data States
   const [loading, setLoading] = useState(true);
@@ -75,7 +78,11 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
   };
 
   // UI Tabs & Modals
-  const [activeTab, setActiveTab] = useState("outreach_queue");
+  const [activeTab, setActiveTab] = useState(tabFromUrl || "bot_verse");
+  const handleSelectTab = (tabId) => {
+    setActiveTab(tabId);
+    setSearchParams({ tab: tabId });
+  };
   const [selectedDraft, setSelectedDraft] = useState(null);
   const [selectedProspect, setSelectedProspect] = useState(null);
   const [actionNotice, setActionNotice] = useState(null);
@@ -249,6 +256,60 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
         </div>
       </header>
 
+      {/* Top Universal Navigation Bar (Immediate Zero-Scroll Visibility) */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "0.5rem",
+        background: "#080e1e",
+        border: "1px solid #1e293b",
+        borderRadius: "8px",
+        padding: "0.5rem",
+        marginBottom: "1.5rem",
+        overflowX: "auto",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.4)"
+      }}>
+        {[
+          { id: "bot_verse", label: `🌌 BOT-VERSE Omni-Channel (${botVerseCampaigns.length})`, highlight: true, badge: "6 BOTS LIVE" },
+          { id: "outreach_queue", label: `🎯 Queued Briefs (${topDrafts.length})` },
+          { id: "sent_outreach", label: `📤 Sent Outreach (${sentCount})` },
+          { id: "all_opportunities", label: `📋 All Discovered (${allOpportunities.length || 41})` },
+          { id: "job_board_blocked", label: `⛔ Job-Board Blocked (${contactPathCounts.JOB_BOARD_APPLICATION_ONLY || 41})` },
+          { id: "employment_rejects", label: `💼 Employment Rejects (${classifiedData?.employmentListings?.length || 20})` },
+          { id: "failure_intel", label: `🧠 Failure Blockers (${failureBlockers.length || 15})` }
+        ].map((t) => (
+          <button
+            key={t.id}
+            onClick={() => handleSelectTab(t.id)}
+            style={{
+              padding: "0.6rem 1.1rem",
+              background: activeTab === t.id
+                ? (t.highlight ? "linear-gradient(135deg, rgba(168,85,247,0.35) 0%, rgba(59,130,246,0.35) 100%)" : "#0f172a")
+                : "transparent",
+              border: activeTab === t.id
+                ? (t.highlight ? "1px solid #a855f7" : "1px solid #334155")
+                : "1px solid transparent",
+              borderRadius: "6px",
+              color: activeTab === t.id ? "#f8fafc" : "#94a3b8",
+              fontWeight: activeTab === t.id ? "700" : "500",
+              fontSize: "0.82rem",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4rem"
+            }}
+          >
+            <span>{t.label}</span>
+            {t.badge && (
+              <span style={{ fontSize: "0.62rem", padding: "0.1rem 0.35rem", background: "rgba(168,85,247,0.3)", color: "#c084fc", borderRadius: "4px", fontWeight: "700" }}>
+                {t.badge}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
       {/* Global Status Banner / Bottleneck Alert */}
       <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: "8px", padding: "1rem 1.2rem", marginBottom: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
@@ -408,7 +469,7 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
           ].map((t) => (
             <button
               key={t.id}
-              onClick={() => setActiveTab(t.id)}
+              onClick={() => handleSelectTab(t.id)}
               style={{
                 padding: "0.8rem 1.2rem",
                 background: activeTab === t.id ? "#0f172a" : "transparent",
@@ -738,426 +799,8 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
 
         {/* Tab Content: BOT-VERSE Omni-Channel (Digital Marketing Universe) */}
         {activeTab === "bot_verse" && (
-          <div style={{ padding: "1.5rem" }}>
-            {/* Header Banner */}
-            <div style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.12) 0%, rgba(56,189,248,0.08) 100%)", border: "1px solid rgba(168,85,247,0.3)", borderRadius: "10px", padding: "1.2rem 1.5rem", marginBottom: "1.5rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                    <span style={{ fontSize: "1.3rem" }}>🌌</span>
-                    <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", color: "#f8fafc", letterSpacing: "0.03em" }}>
-                      GARUDA BOT-VERSE • OMNI-CHANNEL GROWTH & VIDEO INTELLIGENCE
-                    </h2>
-                    <span style={{ fontSize: "0.65rem", padding: "0.15rem 0.5rem", background: "rgba(168,85,247,0.2)", color: "#c084fc", border: "1px solid rgba(168,85,247,0.5)", borderRadius: "999px", fontWeight: "700" }}>
-                      UNIVERSE: U20 / U22
-                    </span>
-                  </div>
-                  <div style={{ fontSize: "0.8rem", color: "#cbd5e1", marginTop: "0.4rem", maxWidth: "800px", lineHeight: "1.4" }}>
-                    Deploy 6 synchronized autonomous bot agents across <b>YouTube, Instagram, Facebook, LinkedIn, Google Video SEO</b>, and <b>Unified Conversion Chat</b>. Revive dead content, dominate search key moments, and convert viewers into inbound paying clients.
-                  </div>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em" }}>Stored Campaigns</div>
-                  <div style={{ fontSize: "1.3rem", fontWeight: "800", color: "#38bdf8" }}>{botVerseCampaigns.length}</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Input & Control Center */}
-            <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: "10px", padding: "1.2rem", marginBottom: "1.5rem" }}>
-              <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "#f8fafc", marginBottom: "0.8rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <span>🎯</span> Configure Bot-Verse Mission
-              </div>
-
-              {/* Quick Niche Presets */}
-              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-                <span style={{ fontSize: "0.75rem", color: "#94a3b8", alignSelf: "center", marginRight: "0.2rem" }}>Quick Presets:</span>
-                {[
-                  { label: "🛍️ D2C Performance Marketing", topic: "How Indian D2C Brands Scale ROAS from 1.5X to 4.2X with WhatsApp Funnels", niche: "Performance Marketing & Client Acquisition", aud: "D2C Founders & Brand CMOs" },
-                  { label: "🏢 High-Ticket Real Estate", topic: "Automated WhatsApp Bot Qualification for ₹1Cr+ Luxury Apartments", niche: "Real Estate Digital Growth", aud: "Real Estate Developers & Brokers" },
-                  { label: "🏥 Clinic & Doctor Leads", topic: "High-ROI Patient Acquisition Funnel for Dental & Cosmetology Clinics", niche: "Healthcare Lead Generation", aud: "Clinic Owners & Doctors" },
-                  { label: "💻 B2B SaaS & Tech", topic: "Why Traditional Demo Forms Are Dead: The Instant Conversational Scoping Engine", niche: "B2B SaaS Growth & Custom AI", aud: "Tech Founders & Agency Owners" }
-                ].map((p, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setBvTopic(p.topic);
-                      setBvNiche(p.niche);
-                      setBvAudience(p.aud);
-                    }}
-                    style={{ padding: "0.35rem 0.7rem", background: "#090d16", border: "1px solid #334155", color: "#cbd5e1", borderRadius: "6px", fontSize: "0.75rem", cursor: "pointer", fontWeight: "500" }}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Form Grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1rem", marginBottom: "1rem" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#94a3b8", marginBottom: "0.3rem" }}>TOPIC / CONTENT THEME</label>
-                  <input
-                    type="text"
-                    value={bvTopic}
-                    onChange={(e) => setBvTopic(e.target.value)}
-                    placeholder="e.g. Scaling Indian B2B Agencies with AI Lead Funnels"
-                    style={{ width: "100%", padding: "0.6rem 0.8rem", background: "#020617", border: "1px solid #334155", borderRadius: "6px", color: "#f8fafc", fontSize: "0.85rem", boxSizing: "border-box" }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#94a3b8", marginBottom: "0.3rem" }}>TARGET INDUSTRY / NICHE</label>
-                  <input
-                    type="text"
-                    value={bvNiche}
-                    onChange={(e) => setBvNiche(e.target.value)}
-                    placeholder="e.g. Performance Marketing & Client Acquisition"
-                    style={{ width: "100%", padding: "0.6rem 0.8rem", background: "#020617", border: "1px solid #334155", borderRadius: "6px", color: "#f8fafc", fontSize: "0.85rem", boxSizing: "border-box" }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#94a3b8", marginBottom: "0.3rem" }}>TARGET AUDIENCE</label>
-                  <input
-                    type="text"
-                    value={bvAudience}
-                    onChange={(e) => setBvAudience(e.target.value)}
-                    placeholder="e.g. Indian D2C Brands & Tech Founders"
-                    style={{ width: "100%", padding: "0.6rem 0.8rem", background: "#020617", border: "1px solid #334155", borderRadius: "6px", color: "#f8fafc", fontSize: "0.85rem", boxSizing: "border-box" }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#94a3b8", marginBottom: "0.3rem" }}>SEED VIDEO URL (OPTIONAL FOR DEAD VIDEO REVIVAL)</label>
-                  <input
-                    type="text"
-                    value={bvVideoUrl}
-                    onChange={(e) => setBvVideoUrl(e.target.value)}
-                    placeholder="e.g. https://www.youtube.com/watch?v=your_video"
-                    style={{ width: "100%", padding: "0.6rem 0.8rem", background: "#020617", border: "1px solid #334155", borderRadius: "6px", color: "#f8fafc", fontSize: "0.85rem", boxSizing: "border-box" }}
-                  />
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap", justifyContent: "flex-end" }}>
-                {bvVideoUrl && (
-                  <button
-                    onClick={() => handleGenerateBotVerse(true)}
-                    disabled={botVerseLoading}
-                    style={{ padding: "0.6rem 1.2rem", background: "rgba(245,158,11,0.15)", border: "1px solid #f59e0b", color: "#fbbf24", borderRadius: "6px", cursor: "pointer", fontSize: "0.85rem", fontWeight: "700" }}
-                  >
-                    {botVerseLoading ? "🔄 Processing..." : "🔄 Revive Dead Video Mode"}
-                  </button>
-                )}
-                <button
-                  onClick={() => handleGenerateBotVerse(false)}
-                  disabled={botVerseLoading}
-                  style={{ padding: "0.6rem 1.4rem", background: "linear-gradient(135deg, #a855f7 0%, #3b82f6 100%)", border: "none", color: "#fff", borderRadius: "6px", cursor: "pointer", fontSize: "0.85rem", fontWeight: "800", boxShadow: "0 4px 15px rgba(168,85,247,0.3)" }}
-                >
-                  {botVerseLoading ? "⚡ Generating 6-Bot Pack..." : "⚡ Launch Omni-Channel Bot-Verse"}
-                </button>
-              </div>
-            </div>
-
-            {/* Campaign Selector Chips if multiple */}
-            {botVerseCampaigns.length > 0 && (
-              <div style={{ marginBottom: "1.2rem", display: "flex", alignItems: "center", gap: "0.5rem", overflowX: "auto", paddingBottom: "0.4rem" }}>
-                <span style={{ fontSize: "0.75rem", color: "#94a3b8", whiteSpace: "nowrap" }}>History:</span>
-                {botVerseCampaigns.map((c) => (
-                  <button
-                    key={c.campaignId}
-                    onClick={() => setActiveBotVerse(c)}
-                    style={{
-                      padding: "0.35rem 0.8rem",
-                      background: activeBotVerse?.campaignId === c.campaignId ? "#1e293b" : "#090d16",
-                      border: activeBotVerse?.campaignId === c.campaignId ? "1px solid #a855f7" : "1px solid #1e293b",
-                      color: activeBotVerse?.campaignId === c.campaignId ? "#f8fafc" : "#94a3b8",
-                      borderRadius: "6px",
-                      fontSize: "0.75rem",
-                      cursor: "pointer",
-                      whiteSpace: "nowrap",
-                      fontWeight: activeBotVerse?.campaignId === c.campaignId ? "700" : "500"
-                    }}
-                  >
-                    {c.topic.slice(0, 32)}...
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Live 6-Bot Strategy Display */}
-            {activeBotVerse ? (
-              <div>
-                {/* Meta Bar */}
-                <div style={{ background: "#090d16", border: "1px solid #1e293b", borderRadius: "8px", padding: "0.8rem 1.2rem", marginBottom: "1.2rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.6rem" }}>
-                  <div>
-                    <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Active Mission: </span>
-                    <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "#f8fafc" }}>{activeBotVerse.topic}</span>
-                    <span style={{ fontSize: "0.7rem", color: "#64748b", marginLeft: "0.5rem" }}>({activeBotVerse.campaignId})</span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
-                    <span style={{ fontSize: "0.7rem", color: "#d4af37", fontFamily: "monospace", background: "#020617", padding: "0.2rem 0.5rem", borderRadius: "4px", border: "1px solid rgba(212,175,55,0.3)" }} title={activeBotVerse.sha256Evidence}>
-                      SHA-256: {activeBotVerse.sha256Evidence?.slice(0, 16)}...
-                    </span>
-                    <button
-                      onClick={() => handleCopy(JSON.stringify(activeBotVerse, null, 2), "master_blueprint")}
-                      style={{ padding: "0.35rem 0.8rem", background: "#1e293b", border: "1px solid #334155", color: "#38bdf8", borderRadius: "6px", fontSize: "0.75rem", cursor: "pointer", fontWeight: "600" }}
-                    >
-                      {copiedKey === "master_blueprint" ? "✓ Copied Blueprint" : "📋 Export Full JSON"}
-                    </button>
-                  </div>
-                </div>
-
-                {/* The 6 Bot Grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(380px, 1fr))", gap: "1.2rem" }}>
-                  {/* Bot 1: YouTube Apex Bot */}
-                  <div style={{ background: "#0f172a", border: "1px solid rgba(239,68,68,0.4)", borderRadius: "10px", padding: "1.2rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b", paddingBottom: "0.6rem", marginBottom: "0.8rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{ fontSize: "1.2rem" }}>🔴</span>
-                        <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#f8fafc" }}>YouTube Apex Bot</span>
-                      </div>
-                      <span style={{ fontSize: "0.65rem", padding: "0.1rem 0.4rem", background: "rgba(239,68,68,0.15)", color: "#f87171", borderRadius: "4px", fontWeight: "700" }}>SEARCH & SHORTS</span>
-                    </div>
-
-                    {/* Titles */}
-                    <div style={{ marginBottom: "0.8rem" }}>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700", marginBottom: "0.3rem" }}>3 High-CTR Title Hooks:</div>
-                      {activeBotVerse.bots?.youtubeApexBot?.optimizedTitles?.map((t, idx) => (
-                        <div key={idx} style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.5rem 0.7rem", marginBottom: "0.4rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <div>
-                            <div style={{ fontSize: "0.8rem", color: "#f8fafc", fontWeight: "600" }}>{t.title}</div>
-                            <div style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{t.type} • {t.psychology}</div>
-                          </div>
-                          <button
-                            onClick={() => handleCopy(t.title, `yt_title_${idx}`)}
-                            style={{ background: "#1e293b", border: "none", color: "#38bdf8", padding: "0.2rem 0.5rem", borderRadius: "4px", fontSize: "0.7rem", cursor: "pointer", marginLeft: "0.5rem", whiteSpace: "nowrap" }}
-                          >
-                            {copiedKey === `yt_title_${idx}` ? "✓" : "Copy"}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Chapters */}
-                    <div style={{ marginBottom: "0.8rem" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
-                        <span style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>Google Video Chapters (Key Moments):</span>
-                        <button
-                          onClick={() => handleCopy(activeBotVerse.bots?.youtubeApexBot?.seoChapters?.map(c => `${c.timestamp} - ${c.title}`).join("\n"), "yt_chapters")}
-                          style={{ background: "transparent", border: "none", color: "#38bdf8", fontSize: "0.7rem", cursor: "pointer" }}
-                        >
-                          {copiedKey === "yt_chapters" ? "✓ Copied" : "Copy Chapters"}
-                        </button>
-                      </div>
-                      <pre style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.6rem", fontSize: "0.75rem", color: "#34d399", margin: 0, whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
-                        {activeBotVerse.bots?.youtubeApexBot?.seoChapters?.map(c => `${c.timestamp} - ${c.title}`).join("\n")}
-                      </pre>
-                    </div>
-
-                    {/* Shorts Hook */}
-                    <div>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700", marginBottom: "0.3rem" }}>Shorts Script (45s Hook-Retain-CTA):</div>
-                      <div style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.6rem", fontSize: "0.75rem", color: "#cbd5e1" }}>
-                        <div><b style={{ color: "#fbbf24" }}>Hook (0-3s):</b> {activeBotVerse.bots?.youtubeApexBot?.shortsFactory?.hook_0_to_3s}</div>
-                        <div style={{ marginTop: "0.3rem" }}><b style={{ color: "#38bdf8" }}>Story (3-25s):</b> {activeBotVerse.bots?.youtubeApexBot?.shortsFactory?.story_3_to_25s}</div>
-                        <div style={{ marginTop: "0.3rem" }}><b style={{ color: "#34d399" }}>CTA:</b> {activeBotVerse.bots?.youtubeApexBot?.shortsFactory?.cta_25_to_35s}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bot 2: Instagram Viral Bot */}
-                  <div style={{ background: "#0f172a", border: "1px solid rgba(168,85,247,0.4)", borderRadius: "10px", padding: "1.2rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b", paddingBottom: "0.6rem", marginBottom: "0.8rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{ fontSize: "1.2rem" }}>🟣</span>
-                        <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#f8fafc" }}>Instagram Viral Bot</span>
-                      </div>
-                      <span style={{ fontSize: "0.65rem", padding: "0.1rem 0.4rem", background: "rgba(168,85,247,0.15)", color: "#c084fc", borderRadius: "4px", fontWeight: "700" }}>REELS & DM FUNNEL</span>
-                    </div>
-
-                    <div style={{ marginBottom: "0.8rem" }}>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700", marginBottom: "0.3rem" }}>Recommended Reel Clip:</div>
-                      <div style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.5rem 0.7rem", fontSize: "0.8rem", color: "#c084fc", fontWeight: "600" }}>
-                        ⏱️ Cut Timestamp: {activeBotVerse.bots?.instagramViralBot?.reelClipTimestamp}
-                      </div>
-                    </div>
-
-                    {/* Caption with DM Trigger */}
-                    <div style={{ marginBottom: "0.8rem" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
-                        <span style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>Viral Caption + Comment Trigger:</span>
-                        <button
-                          onClick={() => handleCopy(activeBotVerse.bots?.instagramViralBot?.caption, "ig_caption")}
-                          style={{ background: "transparent", border: "none", color: "#38bdf8", fontSize: "0.7rem", cursor: "pointer" }}
-                        >
-                          {copiedKey === "ig_caption" ? "✓ Copied" : "Copy Caption"}
-                        </button>
-                      </div>
-                      <pre style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.6rem", fontSize: "0.75rem", color: "#cbd5e1", margin: 0, whiteSpace: "pre-wrap" }}>
-                        {activeBotVerse.bots?.instagramViralBot?.caption}
-                      </pre>
-                    </div>
-
-                    {/* Automated DM Response */}
-                    <div>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700", marginBottom: "0.3rem" }}>Automated DM Sequence (Instant Reply):</div>
-                      <div style={{ background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.25)", borderRadius: "6px", padding: "0.6rem", fontSize: "0.75rem", color: "#e9d5ff" }}>
-                        <div style={{ fontWeight: "700", color: "#c084fc", marginBottom: "0.2rem" }}>Trigger: When user comments "{activeBotVerse.bots?.instagramViralBot?.automatedDmTrigger?.keyword}"</div>
-                        <div style={{ whiteSpace: "pre-wrap" }}>{activeBotVerse.bots?.instagramViralBot?.automatedDmTrigger?.dmResponseText}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bot 3: Facebook Omni Bot */}
-                  <div style={{ background: "#0f172a", border: "1px solid rgba(59,130,246,0.4)", borderRadius: "10px", padding: "1.2rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b", paddingBottom: "0.6rem", marginBottom: "0.8rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{ fontSize: "1.2rem" }}>🔵</span>
-                        <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#f8fafc" }}>Facebook Omni Bot</span>
-                      </div>
-                      <span style={{ fontSize: "0.65rem", padding: "0.1rem 0.4rem", background: "rgba(59,130,246,0.15)", color: "#60a5fa", borderRadius: "4px", fontWeight: "700" }}>NATIVE & GROUPS</span>
-                    </div>
-
-                    <div style={{ marginBottom: "0.8rem" }}>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700", marginBottom: "0.3rem" }}>Native Video Strategy:</div>
-                      <div style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.6rem", fontSize: "0.75rem", color: "#cbd5e1" }}>
-                        {activeBotVerse.bots?.facebookOmniBot?.nativeUploadFormat}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
-                        <span style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>Target B2B Groups Value Post:</span>
-                        <button
-                          onClick={() => handleCopy(`${activeBotVerse.bots?.facebookOmniBot?.communityDiscussionPrompt?.postHeadline}\n\n${activeBotVerse.bots?.facebookOmniBot?.communityDiscussionPrompt?.valueSnippet}`, "fb_post")}
-                          style={{ background: "transparent", border: "none", color: "#38bdf8", fontSize: "0.7rem", cursor: "pointer" }}
-                        >
-                          {copiedKey === "fb_post" ? "✓ Copied" : "Copy Post"}
-                        </button>
-                      </div>
-                      <div style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.6rem", fontSize: "0.75rem", color: "#cbd5e1" }}>
-                        <div style={{ fontWeight: "700", color: "#60a5fa", marginBottom: "0.3rem" }}>{activeBotVerse.bots?.facebookOmniBot?.communityDiscussionPrompt?.postHeadline}</div>
-                        <div style={{ whiteSpace: "pre-wrap" }}>{activeBotVerse.bots?.facebookOmniBot?.communityDiscussionPrompt?.valueSnippet}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bot 4: LinkedIn Executive Bot */}
-                  <div style={{ background: "#0f172a", border: "1px solid rgba(14,165,233,0.4)", borderRadius: "10px", padding: "1.2rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b", paddingBottom: "0.6rem", marginBottom: "0.8rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{ fontSize: "1.2rem" }}>👔</span>
-                        <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#f8fafc" }}>LinkedIn Executive Bot</span>
-                      </div>
-                      <span style={{ fontSize: "0.65rem", padding: "0.1rem 0.4rem", background: "rgba(14,165,233,0.15)", color: "#38bdf8", borderRadius: "4px", fontWeight: "700" }}>5-SLIDE CAROUSEL & C-SUITE</span>
-                    </div>
-
-                    <div style={{ marginBottom: "0.8rem" }}>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700", marginBottom: "0.3rem" }}>5-Slide Document Carousel Deck:</div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-                        {activeBotVerse.bots?.linkedInExecutiveBot?.carouselSlideDeck?.map((s, idx) => (
-                          <div key={idx} style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "4px", padding: "0.4rem 0.6rem", fontSize: "0.75rem", display: "flex", gap: "0.6rem" }}>
-                            <span style={{ color: "#38bdf8", fontWeight: "700" }}>#{s.slideNumber}</span>
-                            <div>
-                              <div style={{ color: "#f8fafc", fontWeight: "600" }}>{s.title}</div>
-                              <div style={{ color: "#94a3b8", fontSize: "0.7rem" }}>{s.subtitle}</div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
-                        <span style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>Executive Thought Leadership Post:</span>
-                        <button
-                          onClick={() => handleCopy(activeBotVerse.bots?.linkedInExecutiveBot?.executivePostText, "li_post")}
-                          style={{ background: "transparent", border: "none", color: "#38bdf8", fontSize: "0.7rem", cursor: "pointer" }}
-                        >
-                          {copiedKey === "li_post" ? "✓ Copied" : "Copy Post"}
-                        </button>
-                      </div>
-                      <pre style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.6rem", fontSize: "0.75rem", color: "#cbd5e1", margin: 0, whiteSpace: "pre-wrap" }}>
-                        {activeBotVerse.bots?.linkedInExecutiveBot?.executivePostText}
-                      </pre>
-                    </div>
-                  </div>
-
-                  {/* Bot 5: Google Semantic Video SEO Bot */}
-                  <div style={{ background: "#0f172a", border: "1px solid rgba(16,185,129,0.4)", borderRadius: "10px", padding: "1.2rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b", paddingBottom: "0.6rem", marginBottom: "0.8rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{ fontSize: "1.2rem" }}>🔍</span>
-                        <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#f8fafc" }}>Google Semantic SEO Bot</span>
-                      </div>
-                      <span style={{ fontSize: "0.65rem", padding: "0.1rem 0.4rem", background: "rgba(16,185,129,0.15)", color: "#34d399", borderRadius: "4px", fontWeight: "700" }}>SCHEMA & GOOGLE HIGHLIGHTS</span>
-                    </div>
-
-                    <div style={{ marginBottom: "0.8rem" }}>
-                      <div style={{ fontSize: "0.75rem", color: "#cbd5e1", lineHeight: "1.4" }}>
-                        Google Search indexes videos that contain structured <code>VideoObject</code> schema. This enables your video to be displayed on top of Google.com with interactive jump clips!
-                      </div>
-                    </div>
-
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
-                        <span style={{ fontSize: "0.7rem", color: "#94a3b8", textTransform: "uppercase", fontWeight: "700" }}>JSON-LD Schema Markup:</span>
-                        <button
-                          onClick={() => handleCopy(JSON.stringify(activeBotVerse.bots?.googleSemanticSeoBot?.jsonLdSchema, null, 2), "seo_schema")}
-                          style={{ background: "transparent", border: "none", color: "#38bdf8", fontSize: "0.7rem", cursor: "pointer" }}
-                        >
-                          {copiedKey === "seo_schema" ? "✓ Copied Schema" : "Copy Schema"}
-                        </button>
-                      </div>
-                      <pre style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "6px", padding: "0.6rem", fontSize: "0.7rem", color: "#34d399", margin: 0, maxHeight: "180px", overflowY: "auto", fontFamily: "monospace" }}>
-                        {JSON.stringify(activeBotVerse.bots?.googleSemanticSeoBot?.jsonLdSchema, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-
-                  {/* Bot 6: Unified Conversion Bridge */}
-                  <div style={{ background: "#0f172a", border: "1px solid rgba(212,175,55,0.4)", borderRadius: "10px", padding: "1.2rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b", paddingBottom: "0.6rem", marginBottom: "0.8rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{ fontSize: "1.2rem" }}>⚡</span>
-                        <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#f8fafc" }}>Unified Conversion Bridge</span>
-                      </div>
-                      <span style={{ fontSize: "0.65rem", padding: "0.1rem 0.4rem", background: "rgba(212,175,55,0.15)", color: "#d4af37", borderRadius: "4px", fontWeight: "700" }}>CHAT & WHATSAPP ROUTING</span>
-                    </div>
-
-                    <div style={{ fontSize: "0.75rem", color: "#cbd5e1", marginBottom: "0.8rem" }}>
-                      Every click and inquiry across all 5 platforms funnels directly into trackable Founder scoping portals:
-                    </div>
-
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", fontSize: "0.75rem" }}>
-                      {Object.entries(activeBotVerse.bots?.unifiedConversionBridge?.channelRouting || {}).map(([ch, url]) => (
-                        <div key={ch} style={{ background: "#020617", border: "1px solid #1e293b", borderRadius: "4px", padding: "0.4rem 0.6rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <div>
-                            <span style={{ color: "#d4af37", textTransform: "capitalize", fontWeight: "700" }}>{ch}: </span>
-                            <span style={{ color: "#38bdf8", wordBreak: "break-all" }}>{url}</span>
-                          </div>
-                          <button
-                            onClick={() => handleCopy(url, `conv_${ch}`)}
-                            style={{ background: "#1e293b", border: "none", color: "#38bdf8", padding: "0.15rem 0.4rem", borderRadius: "3px", fontSize: "0.65rem", cursor: "pointer", marginLeft: "0.5rem" }}
-                          >
-                            {copiedKey === `conv_${ch}` ? "✓" : "Copy"}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div style={{ marginTop: "0.8rem", paddingTop: "0.6rem", borderTop: "1px solid #1e293b", fontSize: "0.7rem", color: "#94a3b8" }}>
-                      Verified Founder Email: <span style={{ color: "#f8fafc" }}>garudaos.ai@gmail.com</span> • Zero fake contact data law enforced.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div style={{ textAlign: "center", padding: "3rem", background: "#0f172a", border: "1px solid #1e293b", borderRadius: "8px", color: "#64748b" }}>
-                <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>🌌</div>
-                <div style={{ fontWeight: "600", color: "#94a3b8" }}>No Active Bot-Verse Mission Selected</div>
-                <div style={{ fontSize: "0.8rem", marginTop: "0.3rem" }}>Select a preset above or enter your topic and click <b>"Launch Omni-Channel Bot-Verse"</b> to generate the complete 6-platform pack.</div>
-              </div>
-            )}
+          <div style={{ padding: "1.2rem" }}>
+            <BotVerseEngineStudio />
           </div>
         )}
 

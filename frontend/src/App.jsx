@@ -32,6 +32,7 @@ import EntertainmentStudio from "./pages/EntertainmentStudio";
 import FounderKingdomAccess from "./pages/FounderKingdomAccess";
 import KudosPitchDeck from "./pages/KudosPitchDeck";
 import InvestorExperience from "./pages/InvestorExperience";
+import BotVerseStudio from "./pages/BotVerseStudio";
 import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
@@ -175,6 +176,8 @@ function AppRoutes() {
       <Route path="/growth-command" element={<Navigate to="/growth" replace />} />
       <Route path="/founder" element={founderRoute} />
       <Route path="/founder/acquisition" element={acquisitionRoute} />
+      <Route path="/bot-verse" element={<BotVerseStudio />} />
+      <Route path="/founder/bot-verse" element={<BotVerseStudio />} />
       <Route path="/revenue" element={revenueRoute} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />

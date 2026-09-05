@@ -3,8 +3,8 @@ const assert = require("node:assert");
 const botVerseEngine = require("./botVerseEngineService");
 
 test("GARUDA Bot-Verse Engine — Digital Marketing Universe", async (t) => {
-  await t.test("generates full 6-platform omni-channel bot campaign with SHA-256", () => {
-    const campaign = botVerseEngine.generateBotVerseCampaign({
+  await t.test("generates full 6-platform omni-channel bot campaign with SHA-256", async () => {
+    const campaign = await botVerseEngine.generateBotVerseCampaign({
       topic: "Scaling Indian B2B Agencies",
       niche: "Performance Marketing",
       targetAudience: "Founders"
@@ -36,8 +36,8 @@ test("GARUDA Bot-Verse Engine — Digital Marketing Universe", async (t) => {
     assert.ok(bots.unifiedConversionBridge.channelRouting.youtube.includes("garudaos.in/chat"));
   });
 
-  await t.test("optimizes and revives existing video", () => {
-    const revived = botVerseEngine.optimizeExistingVideo({
+  await t.test("optimizes and revives existing video with seed URL", async () => {
+    const revived = await botVerseEngine.optimizeExistingVideo({
       title: "Dead Marketing Video 2024",
       niche: "Ecommerce ROAS",
       videoUrl: "https://www.youtube.com/watch?v=sample123"
@@ -46,6 +46,17 @@ test("GARUDA Bot-Verse Engine — Digital Marketing Universe", async (t) => {
     assert.ok(revived.campaignId);
     assert.strictEqual(revived.seedVideoUrl, "https://www.youtube.com/watch?v=sample123");
     assert.ok(revived.bots.youtubeApexBot.optimizedTitles[0].title);
+  });
+
+  await t.test("auto-detects URL passed as topic", async () => {
+    const fromUrl = await botVerseEngine.generateBotVerseCampaign({
+      topic: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      industry: "Music & Entertainment"
+    });
+
+    assert.ok(fromUrl.campaignId);
+    assert.strictEqual(fromUrl.seedVideoUrl, "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+    assert.ok(fromUrl.topic.length > 0);
   });
 
   await t.test("lists persisted campaigns", () => {

@@ -56,6 +56,10 @@ export default function FounderWorkspace({ onLogout }) {
       navigate("/revenue");
       return;
     }
+    if (label === "BOT-VERSE Omni-Channel" || label === "BOT-VERSE") {
+      navigate("/bot-verse");
+      return;
+    }
     if (label === "Sales Cockpit") {
       navigate("/founder/acquisition");
       return;

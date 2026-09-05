@@ -27,12 +27,28 @@ router.get("/status", (req, res) => {
 });
 
 /**
+ * GET /api/bot-verse/oembed?url=...
+ * Real-time video preview metadata (YouTube, etc.)
+ */
+router.get("/oembed", async (req, res) => {
+  try {
+    const { url } = req.query;
+    if (!url) return res.status(400).json({ success: false, error: "Missing url parameter" });
+    const videoReachBooster = require("../services/videoReachBoosterService");
+    const meta = await videoReachBooster.fetchVideoMetadata(url);
+    return res.json({ success: true, metadata: meta });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
  * POST /api/bot-verse/generate
  * Generate a complete 6-platform Bot-Verse campaign
  */
-router.post("/generate", (req, res) => {
+router.post("/generate", async (req, res) => {
   try {
-    const campaign = botVerseEngine.generateBotVerseCampaign(req.body || {});
+    const campaign = await botVerseEngine.generateBotVerseCampaign(req.body || {});
     return res.status(201).json({
       success: true,
       message: "BOT-VERSE omni-channel growth campaign generated successfully.",
@@ -47,9 +63,9 @@ router.post("/generate", (req, res) => {
  * POST /api/bot-verse/revive-video
  * Optimize and revive an underperforming video
  */
-router.post("/revive-video", (req, res) => {
+router.post("/revive-video", async (req, res) => {
   try {
-    const campaign = botVerseEngine.optimizeExistingVideo(req.body || {});
+    const campaign = await botVerseEngine.optimizeExistingVideo(req.body || {});
     return res.status(200).json({
       success: true,
       message: "Video revival blueprint generated across all 6 bot vectors.",

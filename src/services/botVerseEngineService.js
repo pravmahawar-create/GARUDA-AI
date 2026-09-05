@@ -19,6 +19,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
+const videoReachBooster = require("./videoReachBoosterService");
 
 const DATA_DIR = path.join(__dirname, "..", "..", "data");
 const BOT_VERSE_FILE = path.join(DATA_DIR, "bot-verse-campaigns.jsonl");
@@ -43,16 +44,36 @@ class BotVerseEngine {
   /**
    * Generates a complete 6-Platform BOT-VERSE Growth & Reach Campaign
    */
-  generateBotVerseCampaign(params = {}) {
+  async generateBotVerseCampaign(params = {}) {
     ensureDataDir();
-    const {
+    let {
       topic = "High-ROI Performance Marketing & AI Lead Funnels",
-      niche = "Performance Marketing & Client Acquisition",
+      niche = params.industry || "Performance Marketing & Client Acquisition",
       targetAudience = "Indian D2C Brands & Enterprise Founders",
       brandName = "GARUDA AI OS",
-      seedVideoUrl = null,
+      seedVideoUrl = params.videoUrl || null,
       customGoal = "Convert cold viewers into inbound scoping chat inquiries"
     } = params;
+
+    // Smart URL Detection: If topic itself is a URL, route it to seedVideoUrl
+    if (typeof topic === "string" && /^https?:\/\//i.test(topic.trim())) {
+      if (!seedVideoUrl) seedVideoUrl = topic.trim();
+    }
+
+    // Live Video Metadata Resolution (YouTube oEmbed & URL parser)
+    let videoMetadata = null;
+    if (seedVideoUrl) {
+      try {
+        videoMetadata = await videoReachBooster.fetchVideoMetadata(seedVideoUrl);
+        if (videoMetadata && videoMetadata.title) {
+          if (/^https?:\/\//i.test(topic.trim()) || topic.trim() === "Optimized Video Revival") {
+            topic = videoMetadata.title;
+          }
+        }
+      } catch (err) {
+        console.warn("[BotVerseEngine] Metadata resolution fallback:", err.message);
+      }
+    }
 
     const campaignId = `bv_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;
     const timestamp = new Date().toISOString();
@@ -189,10 +210,10 @@ class BotVerseEngine {
       jsonLdSchema: {
         "@context": "https://schema.org",
         "@type": "VideoObject",
-        "name": youtubeApexBot.optimizedTitles[2].title,
+        "name": videoMetadata?.title || youtubeApexBot.optimizedTitles[2].title,
         "description": `Step-by-step masterclass on ${niche} and client acquisition funnels for ${targetAudience}.`,
         "thumbnailUrl": [
-          "https://www.garudaos.in/assets/branding/garuda_sovereign_hero.png"
+          videoMetadata?.thumbnailUrl || "https://www.garudaos.in/assets/branding/garuda_sovereign_hero.png"
         ],
         "uploadDate": timestamp,
         "hasPart": [
@@ -240,6 +261,7 @@ class BotVerseEngine {
       targetAudience,
       brandName,
       seedVideoUrl,
+      videoMetadata: videoMetadata || null,
       customGoal,
       universe: this.universe,
       bots: {
@@ -269,12 +291,12 @@ class BotVerseEngine {
   /**
    * Optimize and revive a specific existing/dead video across all 6 bot vectors
    */
-  optimizeExistingVideo(input = {}) {
-    return this.generateBotVerseCampaign({
+  async optimizeExistingVideo(input = {}) {
+    return await this.generateBotVerseCampaign({
       topic: input.title || input.topic || "Optimized Video Revival",
-      niche: input.niche || "Digital Marketing & Business Growth",
+      niche: input.niche || input.industry || "Digital Marketing & Business Growth",
       targetAudience: input.targetAudience || "Business Decision Makers",
-      seedVideoUrl: input.videoUrl || null,
+      seedVideoUrl: input.videoUrl || input.seedVideoUrl || null,
       customGoal: "Revive dead video CTR, search indexing, and multi-platform reach"
     });
   }

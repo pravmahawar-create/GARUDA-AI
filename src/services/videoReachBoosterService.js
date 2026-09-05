@@ -25,10 +25,81 @@ class VideoReachBooster {
   }
 
   /**
+   * Safely fetches video metadata (YouTube oEmbed or URL metadata) with timeout
+   */
+  async fetchVideoMetadata(videoUrl) {
+    if (!videoUrl || typeof videoUrl !== "string") return null;
+    const cleanUrl = videoUrl.trim();
+
+    // 1. YouTube normalization (watch, youtu.be, shorts)
+    const ytMatch = cleanUrl.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i);
+    if (ytMatch) {
+      const videoId = ytMatch[1];
+      const canonicalYtUrl = `https://www.youtube.com/watch?v=${videoId}`;
+      const oembedApi = `https://www.youtube.com/oembed?url=${encodeURIComponent(canonicalYtUrl)}&format=json`;
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch(oembedApi, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          return {
+            isYouTube: true,
+            videoId,
+            videoUrl: canonicalYtUrl,
+            title: data.title || null,
+            authorName: data.author_name || null,
+            authorUrl: data.author_url || null,
+            thumbnailUrl: data.thumbnail_url || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+            provider: "YouTube"
+          };
+        }
+      } catch (err) {
+        // Fallback to static YouTube construct if network times out
+        return {
+          isYouTube: true,
+          videoId,
+          videoUrl: canonicalYtUrl,
+          title: null,
+          authorName: null,
+          thumbnailUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+          provider: "YouTube"
+        };
+      }
+    }
+
+    // 2. Generic URL fallback — extract slug as fallback title
+    try {
+      const parsed = new URL(cleanUrl);
+      const slug = parsed.pathname.split("/").filter(Boolean).pop() || "";
+      const derivedTitle = slug.replace(/[-_]/g, " ").replace(/\.\w+$/, "").trim();
+      return {
+        isYouTube: false,
+        videoUrl: cleanUrl,
+        title: derivedTitle ? derivedTitle.charAt(0).toUpperCase() + derivedTitle.slice(1) : null,
+        thumbnailUrl: "https://www.garudaos.in/assets/branding/garuda_sovereign_hero.png",
+        provider: parsed.hostname
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Optimize an existing video for maximum algorithmic reach
    */
-  optimizeVideo(input) {
-    const { title, description, niche, targetAudience, currentViews = 0, videoDurationMinutes = 10 } = input;
+  optimizeVideo(input, metadata = null) {
+    const rawTitle = input.title || metadata?.title || input.topic || "Optimized Video";
+    const description = input.description || "";
+    const niche = input.niche || input.industry || "Digital Marketing & Business Growth";
+    const targetAudience = input.targetAudience || "Business Decision Makers";
+    const currentViews = input.currentViews || 0;
+    const videoDurationMinutes = input.videoDurationMinutes || 10;
+    const videoUrl = input.videoUrl || input.seedVideoUrl || metadata?.videoUrl || null;
+    const thumbnailUrl = metadata?.thumbnailUrl || "https://www.garudaos.in/assets/branding/garuda_sovereign_hero.png";
 
     // 1. Algorithmic Diagnostic
     const diagnostic = {
@@ -133,6 +204,8 @@ class VideoReachBooster {
       optimizedDescription,
       tags,
       crossPlatformDistribution,
+      thumbnailUrl,
+      videoMetadata: metadata,
       generatedAt: new Date().toISOString()
     };
   }

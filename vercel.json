@@ -118,6 +118,14 @@
       "destination": "/index.html"
     },
     {
+      "source": "/bot-verse",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/founder/bot-verse",
+      "destination": "/index.html"
+    },
+    {
       "source": "/founder/:path*",
       "destination": "/index.html"
     },
