@@ -42,3 +42,4 @@ frontend/public/images/asset_garuda_*
 output/raw/
 output/shorts/*.mp4
 output/shorts/*.webm
+output/*.jpg

@@ -92,6 +92,8 @@ app.use("/api/customer", (req, res) => require("../api/customer")(req, res));
 app.use("/api/founder", (req, res) => require("../api/founder")(req, res));
 app.use("/api/founder-command", (req, res) => require("../api/founder")(req, res));
 app.use("/api/project-scope", (req, res) => require("../api/project-scope")(req, res));
+// GARUDA Astra Autonomous Coding Agent
+app.use("/api/astra", require("./routes/astraRoutes"));
 
 const telegramBotService = require("./services/telegramBotService");
 const abslKnowledgeService = require("./services/abslKnowledgeService");
