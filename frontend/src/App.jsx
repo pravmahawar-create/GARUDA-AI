@@ -34,6 +34,7 @@ import KudosPitchDeck from "./pages/KudosPitchDeck";
 import InvestorExperience from "./pages/InvestorExperience";
 import BotVerseStudio from "./pages/BotVerseStudio";
 import MagicDelegationPortal from "./pages/MagicDelegationPortal";
+import AstraCodingStudio from "./pages/AstraCodingStudio";
 import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
@@ -181,6 +182,8 @@ function AppRoutes() {
       <Route path="/founder/bot-verse" element={<BotVerseStudio />} />
       <Route path="/delegate" element={<MagicDelegationPortal />} />
       <Route path="/delegate/:token" element={<MagicDelegationPortal />} />
+      <Route path="/astra" element={<AstraCodingStudio />} />
+      <Route path="/founder/astra" element={<AstraCodingStudio />} />
       <Route path="/revenue" element={revenueRoute} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
