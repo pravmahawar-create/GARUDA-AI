@@ -1,0 +1,136 @@
+[
+  {
+    "prospectId": "PL_1788543878143_b77f63",
+    "businessName": "Stellified",
+    "email": "hello@stellified.co.uk",
+    "subject": "Digital Architecture & Executive Blueprint for Stellified",
+    "sha256": "51165bb85dbd6dad89c46a77ba8f3430d3aaac6395ae09f76c58c81566bd8e8f",
+    "status": "dispatched",
+    "providerResponseId": "250 2.0.0 OK  1788588482 a92af1059eb24-143243767e1sm9710887c88.6 - gsmtp",
+    "timestamp": "2026-09-05T06:08:02.658Z"
+  },
+  {
+    "prospectId": "PL_1788544292562_e19866",
+    "businessName": "Global Media Insight",
+    "email": "liz@globalmedia.ae",
+    "subject": "Digital Architecture & Executive Blueprint for Global Media Insight",
+    "sha256": "278295a720618157f3444aff943a28d621d69fbf2cf34a27ca4534348642f478",
+    "status": "dispatched",
+    "providerResponseId": "250 2.0.0 OK  1788588511 5a478bee46e88-334fbd5e6f6sm3984632eec.23 - gsmtp",
+    "timestamp": "2026-09-05T06:08:31.496Z"
+  },
+  {
+    "prospectId": "PL_1788544292562_f37b74",
+    "businessName": "Global Media Insight",
+    "email": "liz@globalmediainsight.agency",
+    "subject": "Digital Architecture & Executive Blueprint for Global Media Insight",
+    "sha256": "daac23576e49c836c3d83dc2ba44c74cd041ab0d8e269e8d0fd4c45270a65f15",
+    "status": "dispatched",
+    "providerResponseId": "250 2.0.0 OK  1788588570 5a478bee46e88-3339befe870sm12566192eec.30 - gsmtp",
+    "timestamp": "2026-09-05T06:09:30.554Z"
+  },
+  {
+    "prospectId": "PL_1788544292562_fd90af",
+    "businessName": "Global Media Insight",
+    "email": "francis@globalmediainsight.agency",
+    "subject": "Digital Architecture & Executive Blueprint for Global Media Insight",
+    "sha256": "758fc020e4f2723c0c90a0dc6e6abfeca6d427bdd48e5bc3eca34b68e871d024",
+    "status": "dispatched",
+    "providerResponseId": "250 2.0.0 OK  1788588599 5a478bee46e88-3339a534df1sm13106151eec.7 - gsmtp",
+    "timestamp": "2026-09-05T06:09:59.403Z"
+  },
+  {
+    "prospectId": "PL_1788544292562_941b4a",
+    "businessName": "Global Media Insight",
+    "email": "francis@globalmedia.ae",
+    "subject": "Digital Architecture & Executive Blueprint for Global Media Insight",
+    "sha256": "15575c4f7f663462003b1e2d735fe78bd29a7418b7273c9bc057fde6720aa9aa",
+    "status": "dispatched",
+    "providerResponseId": "250 2.0.0 OK  1788588658 5a478bee46e88-33517b57ac8sm2873265eec.28 - gsmtp",
+    "timestamp": "2026-09-05T06:10:58.222Z"
+  },
+  {
+    "prospectId": "PL_1788544357758_c1f428",
+    "businessName": "Pixelfield",
+    "email": "hello@pixelfield.co.uk",
+    "subject": "Digital Architecture & Executive Blueprint for Pixelfield",
+    "sha256": "3cc82161a4dbe4e6f52a23ae873d09aed18644c873ad95721f60b8b221824c3f",
+    "status": "dispatched",
+    "providerResponseId": "250 2.0.0 OK  1788588686 a92af1059eb24-143243908a9sm10299764c88.9 - gsmtp",
+    "timestamp": "2026-09-05T06:11:27.166Z"
+  },
+  {
+    "prospectId": "PL_1788544361534_0757e6",
+    "businessName": "Appinventiv",
+    "email": "info@appinventiv.com",
+    "subject": "Digital Architecture & Executive Blueprint for Appinventiv",
+    "sha256": "83355bb3ea2d1e519a92f4e065766394861ae1e60d031d08648c566a98e74448",
+    "status": "dispatched",
+    "providerResponseId": "250 2.0.0 OK  1788588746 5a478bee46e88-3339b314cfcsm11597180eec.19 - gsmtp",
+    "timestamp": "2026-09-05T06:12:26.263Z"
+  },
+  {
+    "prospectId": "PL_1788545110924_34abf4",
+    "businessName": "Paviterjeet Kaur Web Studio",
+    "email": "paviterjeetkaur@gmail.com",
+    "subject": "Digital Architecture & Executive Blueprint for Paviterjeet Kaur Web Studio",
+    "sha256": "1aae8af7bac3cd7ee497abed9e61c843a51dd9f55596bfc6423b52affb058190",
+    "status": "dispatched",
+    "providerResponseId": "250 2.0.0 OK  1788588775 5a478bee46e88-3356dc5c04dsm1673815eec.8 - gsmtp",
+    "timestamp": "2026-09-05T06:12:55.424Z"
+  },
+  {
+    "prospectId": "PL_1788545490054_c42aca",
+    "businessName": "GIKS India",
+    "email": "info@giksindia.com",
+    "subject": "Digital Architecture & Executive Blueprint for GIKS India",
+    "sha256": "0da478498b8a6194e2217bb6866aeb0d722c841d04c366053c609d1d34dff27c",
+    "status": "dispatched",
+    "providerResponseId": "250 2.0.0 OK  1788588834 a92af1059eb24-1432424d27asm15345883c88.2 - gsmtp",
+    "timestamp": "2026-09-05T06:13:54.476Z"
+  },
+  {
+    "prospectId": "PL_MEOLA_INDIA_PM_01",
+    "businessName": "Meola India",
+    "email": "info@meolaindia.com",
+    "theme": "performance_marketing_roas",
+    "subject": "Performance Marketing & ROAS Scaling Blueprint for Meola India",
+    "sha256": "fd82c97ca97146c633ad7872a33688a9e671666543745bae782112c06f865f13",
+    "providerResponseId": "250 2.0.0 OK  1788590619 a92af1059eb24-1433171a97esm4174946c88.12 - gsmtp",
+    "dispatchedAt": "2026-09-05T06:43:39.981Z",
+    "status": "dispatched"
+  },
+  {
+    "prospectId": "PL_RFP_KANISHKA_GARG",
+    "businessName": "Orion Marine Concepts",
+    "email": "kanishka.garg@orionmarineconcepts.com",
+    "theme": "performance_marketing_roas",
+    "subject": "Performance Marketing & Client Acquisition Blueprint for Orion Marine Concepts",
+    "sha256": "752d2268336a80a0820d1e74601d7671cb811e507100e2c000e594bf1e757fca",
+    "providerResponseId": "250 2.0.0 OK  1788590873 a92af1059eb24-14324356931sm17212075c88.4 - gsmtp",
+    "dispatchedAt": "2026-09-05T06:47:54.148Z",
+    "status": "dispatched"
+  },
+  {
+    "prospectId": "PL_RFP_PRASHANTH_PATIL",
+    "businessName": "Prashanth Patil Ventures",
+    "email": "patilom61@gmail.com",
+    "theme": "performance_marketing_roas",
+    "subject": "Digital Marketing & High-ROI Lead Gen Blueprint for Pune Businesses",
+    "sha256": "ae3ffd71070769c131f13bb7d26a078390956420a0d79f997815245848fd83ad",
+    "providerResponseId": "250 2.0.0 OK  1788590903 a92af1059eb24-14332405e92sm3158017c88.8 - gsmtp",
+    "dispatchedAt": "2026-09-05T06:48:23.249Z",
+    "status": "dispatched"
+  },
+  {
+    "prospectId": "PL_RFP_LEAD_PRONTO",
+    "businessName": "Lead Pronto",
+    "email": "hello@leadpronto.co.uk",
+    "theme": "performance_marketing_roas",
+    "subject": "Performance Marketing & High-Velocity Funnels for Lead Pronto",
+    "sha256": "f4e9a9a8805686079803a279956bcaf53b2954325d7bc8ff0fbc30ab54f318f7",
+    "providerResponseId": "250 2.0.0 OK  1788590962 5a478bee46e88-333c9db92b1sm11122105eec.9 - gsmtp",
+    "dispatchedAt": "2026-09-05T06:49:22.210Z",
+    "status": "dispatched"
+  }
+]

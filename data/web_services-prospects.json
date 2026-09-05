@@ -1,0 +1,492 @@
+{
+  "prospects": [
+    {
+      "id": "PL_1786461911670_7ebceb",
+      "firstName": "",
+      "lastName": "",
+      "email": "rebeccaheartfly@gmail.com",
+      "phone": "",
+      "businessName": "Rebecca Heartfly",
+      "city": "Boulder",
+      "segments": [
+        "urgent",
+        "business_owner"
+      ],
+      "score": 54,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(2)",
+        "business_owner(1)",
+        "email_found",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "source": "public_post",
+      "notes": "public post: seeking website redesign, marketing assistance, online booking/store setup; email proposals invited",
+      "status": "queued_for_outreach",
+      "createdAt": "2026-08-11T15:25:11.670Z"
+    },
+    {
+      "id": "PL_1786461911675_617982",
+      "firstName": "",
+      "lastName": "",
+      "email": "hannah@smoliczsolutionsllc.com",
+      "phone": "",
+      "businessName": "Smolicz Solutions LLC",
+      "city": "",
+      "segments": [
+        "business_owner",
+        "urgent"
+      ],
+      "score": 56,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website"
+      ],
+      "locale": "en",
+      "source": "public_post",
+      "notes": "public post: hiring junior website designer (30h+/mo, Google Ads)",
+      "status": "queued_for_outreach",
+      "createdAt": "2026-08-11T15:25:11.675Z"
+    },
+    {
+      "id": "PL_1786461911677_7021cd",
+      "firstName": "",
+      "lastName": "",
+      "email": "director@mccallchamber.org",
+      "phone": "2086347631",
+      "businessName": "McCall Area Chamber of Commerce & Visitors Bureau",
+      "city": "McCall",
+      "segments": [
+        "non_profit",
+        "urgent",
+        "business_owner"
+      ],
+      "score": 87,
+      "grade": "HOT",
+      "action": "generate_now",
+      "query": "awareness",
+      "signals": [
+        "non_profit(2)",
+        "urgent(2)",
+        "business_owner(1)",
+        "email_found",
+        "phone_10+",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "source": "public_rfp",
+      "notes": "public RFP: full redesign/rebuild of VisitMcCall.org, budget not yet fixed, proposals invited",
+      "status": "queued_for_outreach",
+      "createdAt": "2026-08-11T15:25:11.677Z"
+    },
+    {
+      "id": "PL_1786461911680_b95aa1",
+      "firstName": "",
+      "lastName": "",
+      "email": "schlaut@gmail.com",
+      "phone": "",
+      "businessName": "Disruptor Creations",
+      "city": "",
+      "segments": [
+        "urgent",
+        "business_owner"
+      ],
+      "score": 57,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(3)",
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website"
+      ],
+      "locale": "en",
+      "source": "public_post",
+      "notes": "public post: seeking web designer contractor, streaming/merch/ticketing site, email proposals invited",
+      "status": "queued_for_outreach",
+      "createdAt": "2026-08-11T15:25:11.680Z"
+    },
+    {
+      "id": "PL_1786461911682_9206cb",
+      "firstName": "",
+      "lastName": "",
+      "email": "theshoptheracareer@gmail.com",
+      "phone": "",
+      "businessName": "Theshopthera",
+      "city": "Abuja",
+      "segments": [
+        "business_owner",
+        "urgent"
+      ],
+      "score": 67,
+      "grade": "STRONG",
+      "action": "generate_now",
+      "query": "growth",
+      "signals": [
+        "business_owner(2)",
+        "urgent(1)",
+        "email_found",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "source": "public_post",
+      "notes": "public job post: content & social media manager, sends CV by email",
+      "status": "queued_for_outreach",
+      "createdAt": "2026-08-11T15:25:11.682Z"
+    },
+    {
+      "id": "PL_1786461911685_9c959d",
+      "firstName": "",
+      "lastName": "",
+      "email": "doaagamalri@gmail.com",
+      "phone": "",
+      "businessName": "Doaa Gamal (agency)",
+      "city": "",
+      "segments": [
+        "business_owner",
+        "urgent"
+      ],
+      "score": 48,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "urgent(1)",
+        "email_found"
+      ],
+      "locale": "en",
+      "source": "public_post",
+      "notes": "public post: UAE/Egypt, content strategy + brand storytelling",
+      "status": "queued_for_outreach",
+      "createdAt": "2026-08-11T15:25:11.685Z"
+    },
+    {
+      "id": "PL_1788543878143_b77f63",
+      "firstName": "",
+      "lastName": "",
+      "email": "hello@stellified.co.uk",
+      "phone": "",
+      "businessName": "Stellified",
+      "city": "Glasgow",
+      "segments": [],
+      "score": 33,
+      "grade": "LOW",
+      "action": "review_first",
+      "query": "awareness",
+      "signals": [
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_web_hunter (outdated website 2019 contact email UK) — Audit: viewport:ok, copyright:unknown, load:3.7s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "dispatched",
+      "createdAt": "2026-09-04T17:44:38.143Z",
+      "visualProposal": {
+        "subject": "Digital Architecture & Executive Blueprint for Stellified",
+        "htmlPath": "C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/data/proposals/GARUDA_Stellified_hello_stellified_co_uk_Visual_Proposal.html",
+        "sha256": "51165bb85dbd6dad89c46a77ba8f3430d3aaac6395ae09f76c58c81566bd8e8f",
+        "generatedAt": "2026-09-05T05:55:00.472Z"
+      },
+      "dispatchedAt": "2026-09-05T06:08:02.658Z",
+      "providerResponseId": "250 2.0.0 OK  1788588482 a92af1059eb24-143243767e1sm9710887c88.6 - gsmtp"
+    },
+    {
+      "id": "PL_1788544292562_e19866",
+      "firstName": "",
+      "lastName": "",
+      "email": "liz@globalmedia.ae",
+      "phone": "",
+      "businessName": "Global Media Insight",
+      "city": "Dubai",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "AE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_dubai_web_hunter (outdated website 2019 contact email UAE Dubai) — Audit: viewport:ok, copyright:2001, load:2.6s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "dispatched",
+      "createdAt": "2026-09-04T17:51:32.562Z",
+      "visualProposal": {
+        "subject": "Digital Architecture & Executive Blueprint for Global Media Insight",
+        "htmlPath": "C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/data/proposals/GARUDA_Global_Media_Insight_liz_globalmedia_ae_Visual_Proposal.html",
+        "sha256": "278295a720618157f3444aff943a28d621d69fbf2cf34a27ca4534348642f478",
+        "generatedAt": "2026-09-05T05:55:00.473Z"
+      },
+      "dispatchedAt": "2026-09-05T06:08:31.496Z",
+      "providerResponseId": "250 2.0.0 OK  1788588511 5a478bee46e88-334fbd5e6f6sm3984632eec.23 - gsmtp"
+    },
+    {
+      "id": "PL_1788544292562_f37b74",
+      "firstName": "",
+      "lastName": "",
+      "email": "liz@globalmediainsight.agency",
+      "phone": "",
+      "businessName": "Global Media Insight",
+      "city": "Sharjah",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "AE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_dubai_web_hunter (outdated website 2019 contact email UAE Dubai) — Audit: viewport:ok, copyright:2001, load:2.6s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "dispatched",
+      "createdAt": "2026-09-04T17:51:32.562Z",
+      "visualProposal": {
+        "subject": "Digital Architecture & Executive Blueprint for Global Media Insight",
+        "htmlPath": "C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/data/proposals/GARUDA_Global_Media_Insight_liz_globalmediainsight_agency_Visual_Proposal.html",
+        "sha256": "daac23576e49c836c3d83dc2ba44c74cd041ab0d8e269e8d0fd4c45270a65f15",
+        "generatedAt": "2026-09-05T05:55:00.473Z"
+      },
+      "dispatchedAt": "2026-09-05T06:09:30.554Z",
+      "providerResponseId": "250 2.0.0 OK  1788588570 5a478bee46e88-3339befe870sm12566192eec.30 - gsmtp"
+    },
+    {
+      "id": "PL_1788544292562_fd90af",
+      "firstName": "",
+      "lastName": "",
+      "email": "francis@globalmediainsight.agency",
+      "phone": "",
+      "businessName": "Global Media Insight",
+      "city": "Sharjah",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "AE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_dubai_web_hunter (outdated website 2019 contact email UAE Dubai) — Audit: viewport:ok, copyright:2001, load:2.6s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "dispatched",
+      "createdAt": "2026-09-04T17:51:32.562Z",
+      "visualProposal": {
+        "subject": "Digital Architecture & Executive Blueprint for Global Media Insight",
+        "htmlPath": "C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/data/proposals/GARUDA_Global_Media_Insight_francis_globalmediainsight_agency_Visual_Proposal.html",
+        "sha256": "758fc020e4f2723c0c90a0dc6e6abfeca6d427bdd48e5bc3eca34b68e871d024",
+        "generatedAt": "2026-09-05T05:55:00.473Z"
+      },
+      "dispatchedAt": "2026-09-05T06:09:59.403Z",
+      "providerResponseId": "250 2.0.0 OK  1788588599 5a478bee46e88-3339a534df1sm13106151eec.7 - gsmtp"
+    },
+    {
+      "id": "PL_1788544292562_941b4a",
+      "firstName": "",
+      "lastName": "",
+      "email": "francis@globalmedia.ae",
+      "phone": "",
+      "businessName": "Global Media Insight",
+      "city": "Sharjah",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "AE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_dubai_web_hunter (outdated website 2019 contact email UAE Dubai) — Audit: viewport:ok, copyright:2001, load:2.6s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "dispatched",
+      "createdAt": "2026-09-04T17:51:32.562Z",
+      "visualProposal": {
+        "subject": "Digital Architecture & Executive Blueprint for Global Media Insight",
+        "htmlPath": "C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/data/proposals/GARUDA_Global_Media_Insight_francis_globalmedia_ae_Visual_Proposal.html",
+        "sha256": "15575c4f7f663462003b1e2d735fe78bd29a7418b7273c9bc057fde6720aa9aa",
+        "generatedAt": "2026-09-05T05:55:00.473Z"
+      },
+      "dispatchedAt": "2026-09-05T06:10:58.222Z",
+      "providerResponseId": "250 2.0.0 OK  1788588658 5a478bee46e88-33517b57ac8sm2873265eec.28 - gsmtp"
+    },
+    {
+      "id": "PL_1788544357758_c1f428",
+      "firstName": "",
+      "lastName": "",
+      "email": "hello@pixelfield.co.uk",
+      "phone": "",
+      "businessName": "Pixelfield",
+      "city": "Edinburgh",
+      "segments": [
+        "business_owner",
+        "urgent"
+      ],
+      "score": 75,
+      "grade": "STRONG",
+      "action": "generate_now",
+      "query": "growth",
+      "signals": [
+        "business_owner(2)",
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (looking for mobile app developer contact UK) — Audit: viewport:ok, copyright:2026, load:1.3s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "dispatched",
+      "createdAt": "2026-09-04T17:52:37.758Z",
+      "visualProposal": {
+        "subject": "Digital Architecture & Executive Blueprint for Pixelfield",
+        "htmlPath": "C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/data/proposals/GARUDA_Pixelfield_hello_pixelfield_co_uk_Visual_Proposal.html",
+        "sha256": "3cc82161a4dbe4e6f52a23ae873d09aed18644c873ad95721f60b8b221824c3f",
+        "generatedAt": "2026-09-05T05:55:00.473Z"
+      },
+      "dispatchedAt": "2026-09-05T06:11:27.166Z",
+      "providerResponseId": "250 2.0.0 OK  1788588686 a92af1059eb24-143243908a9sm10299764c88.9 - gsmtp"
+    },
+    {
+      "id": "PL_1788544361534_0757e6",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@appinventiv.com",
+      "phone": "",
+      "businessName": "Appinventiv",
+      "city": "Glasgow",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (looking for mobile app developer contact UK) — Audit: viewport:ok, copyright:2026, load:1.6s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "dispatched",
+      "createdAt": "2026-09-04T17:52:41.534Z",
+      "visualProposal": {
+        "subject": "Digital Architecture & Executive Blueprint for Appinventiv",
+        "htmlPath": "C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/data/proposals/GARUDA_Appinventiv_info_appinventiv_com_Visual_Proposal.html",
+        "sha256": "83355bb3ea2d1e519a92f4e065766394861ae1e60d031d08648c566a98e74448",
+        "generatedAt": "2026-09-05T05:55:00.473Z"
+      },
+      "dispatchedAt": "2026-09-05T06:12:26.263Z",
+      "providerResponseId": "250 2.0.0 OK  1788588746 5a478bee46e88-3339b314cfcsm11597180eec.19 - gsmtp"
+    },
+    {
+      "id": "PL_1788545110924_34abf4",
+      "firstName": "",
+      "lastName": "",
+      "email": "paviterjeetkaur@gmail.com",
+      "phone": "",
+      "businessName": "Paviterjeet Kaur Web Studio",
+      "city": "Chennai",
+      "segments": [],
+      "score": 33,
+      "grade": "LOW",
+      "action": "review_first",
+      "query": "awareness",
+      "signals": [
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "IN",
+      "source": "web_research",
+      "notes": "Found via agent.personal_india_web_hunter (outdated website 2019 contact email India) — Audit: viewport:ok, copyright:2019, load:0.6s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "dispatched",
+      "createdAt": "2026-09-04T18:05:10.924Z",
+      "visualProposal": {
+        "subject": "Digital Architecture & Executive Blueprint for Paviterjeet Kaur Web Studio",
+        "htmlPath": "C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/data/proposals/GARUDA_Paviterjeet_Kaur_Web_Studio_paviterjeetkaur_gmail_com_Visual_Proposal.html",
+        "sha256": "1aae8af7bac3cd7ee497abed9e61c843a51dd9f55596bfc6423b52affb058190",
+        "generatedAt": "2026-09-05T05:55:00.473Z"
+      },
+      "dispatchedAt": "2026-09-05T06:12:55.424Z",
+      "providerResponseId": "250 2.0.0 OK  1788588775 5a478bee46e88-3356dc5c04dsm1673815eec.8 - gsmtp"
+    },
+    {
+      "id": "PL_1788545490054_c42aca",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@giksindia.com",
+      "phone": "",
+      "businessName": "GIKS India",
+      "city": "Pune",
+      "segments": [],
+      "score": 33,
+      "grade": "LOW",
+      "action": "review_first",
+      "query": "awareness",
+      "signals": [
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "IN",
+      "source": "web_research",
+      "notes": "Found via agent.personal_india_web_hunter (legacy website slow mobile contact India) — Audit: viewport:ok, copyright:2017, load:0.5s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "dispatched",
+      "createdAt": "2026-09-04T18:11:30.054Z",
+      "visualProposal": {
+        "subject": "Digital Architecture & Executive Blueprint for GIKS India",
+        "htmlPath": "C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/data/proposals/GARUDA_GIKS_India_info_giksindia_com_Visual_Proposal.html",
+        "sha256": "0da478498b8a6194e2217bb6866aeb0d722c841d04c366053c609d1d34dff27c",
+        "generatedAt": "2026-09-05T05:55:00.473Z"
+      },
+      "dispatchedAt": "2026-09-05T06:13:54.476Z",
+      "providerResponseId": "250 2.0.0 OK  1788588834 a92af1059eb24-1432424d27asm15345883c88.2 - gsmtp"
+    }
+  ]
+}

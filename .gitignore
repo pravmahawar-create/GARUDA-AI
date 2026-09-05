@@ -15,7 +15,13 @@ test_orig.txt
 *.backup
 *.backup.js
 
-data/
+data/*
+!data/proposals/
+!data/outreach-dispatch-log.json
+!data/web_services-prospects.json
+!data/performance-marketing-buyers.json
+!data/deep-marketing-leads.json
+src/data/
 .aider*
 scratch/
 projects/
