@@ -253,9 +253,9 @@ export default function ScholarStudio() {
     for (const file of files) {
       const reader = new FileReader();
       const isImage = file.type.startsWith("image/");
-      const isTextOrCode = file.type.startsWith("text/") || /\.(txt|md|py|js|jsx|ts|tsx|json|cpp|c|java|html|css|sql|sh)$/i.test(file.name);
+      const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
 
-      if (isImage) {
+      if (isImage || isPdf) {
         reader.onload = (uploadEvt) => {
           setAttachments((prev) => [
             ...prev,
@@ -263,7 +263,7 @@ export default function ScholarStudio() {
               id: `att_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
               name: file.name,
               size: file.size,
-              mimeType: file.type,
+              mimeType: isPdf ? "application/pdf" : file.type,
               dataUrl: uploadEvt.target.result
             }
           ]);

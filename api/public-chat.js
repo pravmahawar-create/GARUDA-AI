@@ -171,10 +171,10 @@ async function generateWithGemini({ message, history, attachments = [] }) {
   const currentParts = [];
   if (Array.isArray(attachments) && attachments.length > 0) {
     for (const att of attachments) {
-      if (att.dataUrl && (att.mimeType?.startsWith("image/") || String(att.dataUrl).startsWith("data:image/"))) {
+      if (att.dataUrl && (att.mimeType?.startsWith("image/") || att.mimeType === "application/pdf" || String(att.dataUrl).startsWith("data:image/") || String(att.dataUrl).startsWith("data:application/pdf"))) {
         const parts = String(att.dataUrl).split(",");
         const b64Data = parts.length > 1 ? parts[1].trim() : parts[0].trim();
-        const cleanMime = att.mimeType || (String(att.dataUrl).match(/^data:([^;]+);/)?.[1]) || "image/jpeg";
+        const cleanMime = att.mimeType || (String(att.dataUrl).match(/^data:([^;]+);/)?.[1]) || (att.name?.endsWith(".pdf") ? "application/pdf" : "image/jpeg");
         currentParts.push({
           inlineData: {
             mimeType: cleanMime,
@@ -199,10 +199,9 @@ async function generateWithGemini({ message, history, attachments = [] }) {
   contents.push({ role: "user", parts: currentParts });
 
   const candidateModels = [
-    process.env.GEMINI_MODEL || process.env.GARUDA_GEMINI_MODEL || "gemini-1.5-flash",
-    "gemini-2.0-flash",
-    "gemini-1.5-pro",
-    "gemini-1.5-flash-8b"
+    process.env.GEMINI_MODEL || process.env.GARUDA_GEMINI_MODEL || "gemini-2.5-flash",
+    "gemini-3.6-flash",
+    "gemini-flash-latest"
   ].filter(Boolean);
 
   let lastError = null;

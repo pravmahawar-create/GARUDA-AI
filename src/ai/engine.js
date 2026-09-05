@@ -32,8 +32,8 @@ class GarudaAIEngine {
     this.groqApiKey = process.env.GROQ_API_KEY || null;
     this.nvidiaApiKey = process.env.NVIDIA_API_KEY || null;
     this.geminiApiKey = process.env.GEMINI_API_KEY || null;
-    this.primaryModel = "openai/gpt-oss-120b";
-    this.fallbackModels = ["qwen/qwen3.8-27b", "allam-2-7b", "groq/compound"];
+    this.primaryModel = "qwen/qwen3.8-27b";
+    this.fallbackModels = ["groq/compound-mini", "openai/gpt-oss-120b"];
   }
 
   /**
@@ -67,7 +67,27 @@ class GarudaAIEngine {
       }
     }
 
-    // 2. Try NVIDIA NIM Gateway if configured
+    // 2. Try Google Gemini Sovereign Gateway
+    if (this.geminiApiKey) {
+      try {
+        const geminiResult = await this._callGemini(rawQuery, history, languageHint);
+        if (geminiResult && geminiResult.content) {
+          return {
+            success: true,
+            provider: "gemini",
+            model: geminiResult.model,
+            content: geminiResult.content,
+            intent: this._detectIntent(rawQuery, geminiResult.content),
+            suggestedDemo: this._detectSuggestedDemo(rawQuery, geminiResult.content),
+            latencyMs: geminiResult.latencyMs
+          };
+        }
+      } catch (err) {
+        console.warn("⚠️ Gemini Cloud AI inference failed:", err.message);
+      }
+    }
+
+    // 3. Try NVIDIA NIM Gateway if configured
     if (this.nvidiaApiKey) {
       try {
         const nvidResult = await this._callNvidia(rawQuery, history);
@@ -87,7 +107,7 @@ class GarudaAIEngine {
       }
     }
 
-    // 3. Fallback to Local Sovereign Knowledge Base
+    // 4. Fallback to Local Sovereign Knowledge Base
     return this._localSovereignFallback(rawQuery, options);
   }
 
@@ -151,10 +171,44 @@ class GarudaAIEngine {
     }
 
     const data = await response.json();
-    const content = data.choices?.[0]?.message?.content?.trim() || "";
+    const content = data.choices?.[0]?.message?.content?.trim() || data.choices?.[0]?.message?.reasoning?.trim() || "";
     const latencyMs = Date.now() - startTime;
 
     return { content, model: chosenModel, latencyMs };
+  }
+
+  async _callGemini(query, history = [], languageHint = "auto") {
+    const startTime = Date.now();
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${this.geminiApiKey}`;
+
+    const contents = [];
+    const recent = history.slice(-4);
+    for (const h of recent) {
+      const role = (h.role === "user" || h.role === "investor") ? "user" : "model";
+      const text = h.text || h.content || "";
+      if (text) contents.push({ role, parts: [{ text }] });
+    }
+    contents.push({ role: "user", parts: [{ text: query }] });
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: GARUDA_SYSTEM_PROMPT }] },
+        contents,
+        generationConfig: { temperature: 0.7, maxOutputTokens: 600 }
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Gemini HTTP ${response.status}: ${errText}`);
+    }
+
+    const data = await response.json();
+    const content = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+    const latencyMs = Date.now() - startTime;
+    return { content, model: "gemini-2.5-flash", latencyMs };
   }
 
   async _callNvidia(query, history = []) {

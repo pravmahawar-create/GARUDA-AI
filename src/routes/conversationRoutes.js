@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 // POST /api/conversations - Create a new conversation thread
 router.post("/", async (req, res) => {
   try {
-    const threadId = req.body.threadId || conversationService.generateThreadId();
+    const threadId = (req.body && req.body.threadId) || conversationService.generateThreadId();
     const thread = await conversationService.getOrCreateThread(threadId);
     return res.json({ success: true, thread });
   } catch (error) {

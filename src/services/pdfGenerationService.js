@@ -21,8 +21,10 @@ const ASSETS_DIR = path.join(DATA_DIR, "creative-assets");
 const ASSETS_INDEX_FILE = path.join(DATA_DIR, "creative-assets.jsonl");
 
 function ensureDirs() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+    if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR, { recursive: true });
+  } catch {}
 }
 
 function sha256(data) {
@@ -328,9 +330,17 @@ class PdfGenerationService {
     const nonce = crypto.randomBytes(3).toString("hex");
     const assetId = `pdf_garuda_${Date.now()}_${nonce}`;
     const fileName = `${assetId}.pdf`;
-    const filePath = path.join(ASSETS_DIR, fileName);
+    let filePath = path.join(ASSETS_DIR, fileName);
 
-    fs.writeFileSync(filePath, Buffer.from(pdfBytes));
+    try {
+      fs.writeFileSync(filePath, Buffer.from(pdfBytes));
+    } catch {
+      const os = require("os");
+      filePath = path.join(os.tmpdir(), fileName);
+      try {
+        fs.writeFileSync(filePath, Buffer.from(pdfBytes));
+      } catch {}
+    }
 
     // Deep Validation (Step 3)
     const validation = await this.validatePdfArtifact(filePath);

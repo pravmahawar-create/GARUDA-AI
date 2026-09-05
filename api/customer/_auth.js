@@ -52,7 +52,7 @@ function validatePassword(value) {
 }
 
 function cookieValue(req) {
-  const cookie = String(req.headers.cookie || "")
+  const cookie = String(req?.headers?.cookie || "")
     .split(";")
     .find((value) => value.trim().startsWith(`${COOKIE_NAME}=`));
   return cookie ? decodeURIComponent(cookie.trim().slice(COOKIE_NAME.length + 1)) : "";

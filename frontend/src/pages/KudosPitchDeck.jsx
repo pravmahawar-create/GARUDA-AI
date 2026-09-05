@@ -287,12 +287,28 @@ export default function KudosPitchDeck() {
       justify-content: space-between;
     }
     @media print {
-      body { padding: 0; }
+      body { padding: 0 !important; }
       .slide-page { border: none; margin-bottom: 0; min-height: 100vh; }
+      .no-print { display: none !important; }
     }
   </style>
 </head>
 <body>
+  <div class="no-print" style="position: sticky; top: 0; background: #0f172a; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border-bottom: 2px solid #d4af37; margin: -20px -20px 20px -20px;">
+    <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 11pt; color: #d4af37;">
+      <span>👑</span>
+      <span>GARUDA Executive White Pitch Deck PDF</span>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button onclick="window.print()" style="background: linear-gradient(135deg, #d4af37, #b8860b); color: #000; border: none; padding: 6px 16px; border-radius: 6px; font-weight: 800; font-size: 9.5pt; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        🖨️ Print / Save as PDF
+      </button>
+      <button onclick="window.close()" style="background: rgba(255,255,255,0.1); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 9pt; cursor: pointer;">
+        ✕ Close
+      </button>
+    </div>
+  </div>
+
   ${slides.map((s, idx) => `
     <div class="slide-page">
       <div>
@@ -391,9 +407,20 @@ export default function KudosPitchDeck() {
   `).join('')}
 
   <script>
-    window.onload = function() {
-      setTimeout(function() { window.print(); }, 400);
-    };
+    (function() {
+      function triggerPrint() {
+        setTimeout(function() {
+          try { window.print(); } catch(e) {}
+        }, 350);
+      }
+      if (document.readyState === 'complete') {
+        triggerPrint();
+      } else {
+        window.addEventListener('DOMContentLoaded', triggerPrint);
+        window.addEventListener('load', triggerPrint);
+        setTimeout(triggerPrint, 500);
+      }
+    })();
   <\/script>
 </body>
 </html>

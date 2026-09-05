@@ -756,9 +756,9 @@ async function generateGeminiAnswer({
 
   const candidateModels = [
     configuredModel,
-    "gemini-flash-latest",
-    "gemini-3.5-flash",
-    "gemini-3.1-flash-lite"
+    "gemini-2.5-flash",
+    "gemini-3.6-flash",
+    "gemini-flash-latest"
   ].filter(Boolean);
 
   // Transient overload/rate-limit statuses: retry the SAME model with backoff.

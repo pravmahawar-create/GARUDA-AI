@@ -45,7 +45,28 @@ export function formatMarkdownForPrint(md) {
   }).join('\n');
 }
 
-export function openPristineWhitePdf(text, idx = 0, title = "GARUDA Document") {
+export function openPristineWhitePdf(data, idx = 0, defaultTitle = "GARUDA Document") {
+  let text = "";
+  let title = defaultTitle;
+
+  if (typeof data === "string") {
+    text = data;
+  } else if (data && typeof data === "object") {
+    if (data.title) title = data.title;
+    const parts = [];
+    if (data.subtitle) parts.push(`### ${data.subtitle}\n`);
+    if (Array.isArray(data.sections)) {
+      for (const sec of data.sections) {
+        if (sec.heading) parts.push(`## ${sec.heading}\n`);
+        if (sec.content) parts.push(`${sec.content}\n`);
+        if (sec.body) parts.push(`${sec.body}\n`);
+      }
+    } else if (data.content) {
+      parts.push(data.content);
+    }
+    text = parts.join("\n");
+  }
+
   const printWindow = window.open("", "_blank");
   if (!printWindow) {
     alert("Please allow popups in your browser to open the Executive White PDF view.");
@@ -118,12 +139,27 @@ export function openPristineWhitePdf(text, idx = 0, title = "GARUDA Document") {
       justify-content: space-between;
     }
     @media print {
-      body { padding: 0; }
-      .no-print { display: none; }
+      body { padding: 0 !important; }
+      .no-print { display: none !important; }
     }
   </style>
 </head>
 <body>
+  <div class="no-print" style="position: sticky; top: 0; background: #0f172a; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border-bottom: 2px solid #d4af37; margin: -24px -24px 24px -24px;">
+    <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 11pt; color: #d4af37;">
+      <span>👑</span>
+      <span>GARUDA Executive White PDF</span>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button onclick="window.print()" style="background: linear-gradient(135deg, #d4af37, #b8860b); color: #000; border: none; padding: 6px 16px; border-radius: 6px; font-weight: 800; font-size: 9.5pt; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        🖨️ Print / Save as PDF
+      </button>
+      <button onclick="window.close()" style="background: rgba(255,255,255,0.1); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 9pt; cursor: pointer;">
+        ✕ Close
+      </button>
+    </div>
+  </div>
+
   <div class="header">
     <div>
       <div class="brand">GARUDA EXECUTIVE ARCHITECTURE</div>
@@ -145,11 +181,20 @@ export function openPristineWhitePdf(text, idx = 0, title = "GARUDA Document") {
   </div>
 
   <script>
-    window.onload = function() {
-      setTimeout(function() {
-        window.print();
-      }, 400);
-    };
+    (function() {
+      function triggerPrint() {
+        setTimeout(function() {
+          try { window.print(); } catch(e) {}
+        }, 350);
+      }
+      if (document.readyState === 'complete') {
+        triggerPrint();
+      } else {
+        window.addEventListener('DOMContentLoaded', triggerPrint);
+        window.addEventListener('load', triggerPrint);
+        setTimeout(triggerPrint, 500);
+      }
+    })();
   <\/script>
 </body>
 </html>

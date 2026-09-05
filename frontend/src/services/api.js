@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "https://garuda-ai-xfif.onrender.com";
+const API_BASE = import.meta.env.VITE_API_URL || "";
 
 export async function checkHealth() {
   try {
@@ -115,7 +115,11 @@ export async function fetchThread(threadId) {
 
 export async function createThread() {
   try {
-    const res = await fetch(`${API_BASE}/api/conversations`, { method: "POST" });
+    const res = await fetch(`${API_BASE}/api/conversations`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({})
+    });
     if (!res.ok) throw new Error("Create thread failed");
     const data = await res.json();
     return data.thread || null;
