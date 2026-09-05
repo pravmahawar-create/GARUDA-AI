@@ -992,6 +992,24 @@ const ROUTES = [
     description: "Cryptographically locked commercial proposal, deliverable schedule, and milestone escrow checkout.",
     canonical: "https://www.garudaos.in/proposal",
     robots: "noindex, nofollow"
+  },
+  {
+    path: "/bot-verse",
+    filePaths: [
+      path.join(DIST_DIR, "bot-verse", "index.html"),
+      path.join(DIST_DIR, "bot-verse.html"),
+      path.join(DIST_DIR, "founder", "bot-verse", "index.html"),
+      path.join(DIST_DIR, "founder", "bot-verse.html")
+    ],
+    title: "GARUDA BOT-VERSE | Omni-Channel Video SEO & Algorithmic Growth Engine",
+    description: "Autonomous 6-Platform Growth Engine for YouTube, Instagram Reels, Facebook, LinkedIn, Google Search Video Highlights, and WhatsApp Funnels.",
+    canonical: "https://www.garudaos.in/bot-verse",
+    h1: "GARUDA BOT-VERSE • Omni-Channel Video Intelligence",
+    eyebrow: "DIGITAL MARKETING UNIVERSE (U20 & U22)",
+    contentSnippet: `
+      <h2>6-Platform Omni-Channel Video & Content Distribution Engine</h2>
+      <p>YouTube High-CTR SEO, Instagram Reels Feeder, Facebook Native Video Syndication, LinkedIn 5-Slide PDF Carousels, and Google Search VideoObject structured schema.</p>
+    `
   }
 ];
 
