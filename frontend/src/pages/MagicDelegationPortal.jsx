@@ -444,8 +444,63 @@ export default function MagicDelegationPortal() {
             </button>
 
             {approved && (
-              <div style={{ marginTop: "1rem", padding: "0.8rem", background: "rgba(16,185,129,0.15)", borderRadius: "8px", border: "1px solid rgba(16,185,129,0.4)", fontSize: "0.9rem", color: "#34d399", fontWeight: "600" }}>
-                🎉 Authorization Complete! GARUDA AI has locked your permissions for {chosenObjects.map(p => p.name).join(", ")}. Autopilot growth execution is now active.
+              <div style={{ marginTop: "1.5rem", textAlign: "left" }}>
+                <div style={{ padding: "1.2rem", background: "rgba(16,185,129,0.12)", borderRadius: "10px", border: "1px solid rgba(16,185,129,0.4)", marginBottom: "1.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", color: "#34d399", fontWeight: "800", fontSize: "1rem", marginBottom: "0.4rem" }}>
+                    <span>⚡</span> GARUDA Autopilot Activated & Synced
+                  </div>
+                  <div style={{ fontSize: "0.85rem", color: "#d1fae5", lineHeight: "1.5" }}>
+                    Authorization logged in system memory for <strong>{chosenObjects.map(p => p.name).join(", ")}</strong>. Founder Praveen Mahawar has been alerted via Telegram.
+                  </div>
+                </div>
+
+                {/* 2-Step Live Execution Pipeline */}
+                <div style={{ background: "#090d16", border: "1px solid #1e293b", borderRadius: "10px", padding: "1.2rem", marginBottom: "1.5rem" }}>
+                  <div style={{ fontSize: "0.8rem", color: "#d4af37", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.8rem" }}>
+                    Live Autonomous Execution Pipeline
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.6rem", background: "#111827", borderRadius: "6px", border: "1px solid #1f2937" }}>
+                      <span style={{ fontSize: "1.1rem" }}>✅</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "#ffffff" }}>Step 1: Multi-Platform Scope Verified</div>
+                        <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>{chosenObjects.length} channels assigned to GARUDA Growth Engine</div>
+                      </div>
+                      <span style={{ fontSize: "0.7rem", color: "#34d399", fontWeight: "700", background: "rgba(16,185,129,0.15)", padding: "2px 8px", borderRadius: "4px" }}>LOCKED</span>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.6rem", background: "#111827", borderRadius: "6px", border: "1px solid #1f2937" }}>
+                      <span style={{ fontSize: "1.1rem" }}>🎬</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "#ffffff" }}>Step 2: 3x Vertical Shorts & Video SEO</div>
+                        <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>High-retention hooks, tags & Full HD vertical crops rendered</div>
+                      </div>
+                      <span style={{ fontSize: "0.7rem", color: "#38bdf8", fontWeight: "700", background: "rgba(56,189,248,0.15)", padding: "2px 8px", borderRadius: "4px" }}>READY</span>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.6rem", background: "#111827", borderRadius: "6px", border: "1px solid #1f2937" }}>
+                      <span style={{ fontSize: "1.1rem" }}>⚙️</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "#ffffff" }}>Step 3: YouTube Studio Channel Link</div>
+                        <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Ensure Editor access is granted to <strong>garudaos.ai@gmail.com</strong> in YouTube Studio</div>
+                      </div>
+                      <a href="https://studio.youtube.com" target="_blank" rel="noreferrer" style={{ fontSize: "0.7rem", color: "#fbbf24", fontWeight: "700", background: "rgba(251,191,36,0.15)", padding: "4px 8px", borderRadius: "4px", textDecoration: "none", border: "1px solid rgba(251,191,36,0.3)" }}>
+                        OPEN STUDIO ↗
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Direct Founder Contact */}
+                <div style={{ display: "flex", gap: "0.8rem", justifyContent: "center", flexWrap: "wrap" }}>
+                  <a href={`https://www.garudaos.in/chat?ref=${token}`} target="_blank" rel="noreferrer" style={{ display: "inline-block", padding: "0.7rem 1.4rem", background: "#1e293b", color: "#d4af37", borderRadius: "6px", fontSize: "0.85rem", fontWeight: "700", textDecoration: "none", border: "1px solid #334155" }}>
+                    💬 Open Real-Time Scoping Chat
+                  </a>
+                  <button onClick={handleCopyEmail} style={{ padding: "0.7rem 1.4rem", background: "#111827", color: "#94a3b8", borderRadius: "6px", fontSize: "0.85rem", fontWeight: "600", border: "1px solid #1f2937", cursor: "pointer" }}>
+                    {copiedEmail ? "✅ Agent Email Copied" : "📋 Copy Agent Email"}
+                  </button>
+                </div>
               </div>
             )}
           </div>

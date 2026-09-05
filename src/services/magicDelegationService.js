@@ -231,7 +231,16 @@ class MagicDelegationService {
     let emailResult = { attempted: false, sent: false };
     if (delegation.clientEmail) {
       emailResult.attempted = true;
-      const subject = `🦅 1-Click Action: Authorize GARUDA AI to optimize "${delegation.videoTitle}"`;
+      const subject = `Optimization blueprint ready for "${delegation.videoTitle}" — GARUDA AI`;
+      
+      const plainText = 
+        `Hello ${delegation.clientName},\n\n` +
+        `GARUDA AI has analyzed your media asset: "${delegation.videoTitle}".\n\n` +
+        `We have structured a multi-platform algorithmic growth plan (3x Vertical Shorts, Search Chapter SEO, and Audience Retention Hooks) with zero password sharing required.\n\n` +
+        `You can review the proposed changes and authorize access on your secure portal:\n` +
+        `${magicUrl}\n\n` +
+        `Zero Password Sharing Law: You never share any credentials. Access is granted strictly via Google/YouTube Editor permissions and can be revoked at any time.\n\n` +
+        `Sincerely,\nPraveen Mahawar\nFounder, GARUDA AI Operating System\nhttps://www.garudaos.in`;
       
       const htmlBody = `
         <!DOCTYPE html>
@@ -336,7 +345,7 @@ class MagicDelegationService {
         if (relayStatus.ready) {
           const res = await emailRelayService.sendViaRelay(
             relayStatus.config,
-            { to: delegation.clientEmail, subject, html: htmlBody, body: `Please open your delegation link: ${magicUrl}` }
+            { to: delegation.clientEmail, subject, html: htmlBody, body: plainText }
           );
           emailResult.sent = true;
           emailResult.provider = res.relayProvider;
