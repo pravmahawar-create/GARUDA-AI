@@ -52,6 +52,7 @@ router.post("/execute", async (req, res) => {
 
     res.json({
       success: result.success,
+      error: result.error || null,
       data: result
     });
   } catch (err) {

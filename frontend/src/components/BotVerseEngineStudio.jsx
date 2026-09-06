@@ -435,6 +435,105 @@ export default function BotVerseEngineStudio() {
             </div>
           </div>
 
+          {/* 🎬 Cognitive Media Intelligence Badge */}
+          {activeCampaign.detectedEntity && activeCampaign.detectedEntity.movie && (
+            <div style={{
+              background: "linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(59,130,246,0.15) 100%)",
+              border: "1px solid rgba(168,85,247,0.5)",
+              borderRadius: "10px",
+              padding: "1rem 1.2rem",
+              marginBottom: "1.2rem"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.6rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ fontSize: "1.2rem" }}>🎬</span>
+                  <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "#c084fc", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    Recognized Media Intelligence
+                  </span>
+                </div>
+                <span style={{ fontSize: "0.7rem", padding: "0.2rem 0.6rem", background: "rgba(168,85,247,0.3)", color: "#e9d5ff", borderRadius: "999px", fontWeight: "700" }}>
+                  {activeCampaign.detectedEntity.detectedType || "Cinema & Music"}
+                </span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.6rem", fontSize: "0.8rem" }}>
+                {activeCampaign.detectedEntity.movie && (
+                  <div><strong style={{ color: "#94a3b8" }}>Movie/Album:</strong> <span style={{ color: "#f8fafc", fontWeight: "700" }}>{activeCampaign.detectedEntity.movie}</span></div>
+                )}
+                {activeCampaign.detectedEntity.artists && (
+                  <div><strong style={{ color: "#94a3b8" }}>Starring:</strong> <span style={{ color: "#f8fafc", fontWeight: "600" }}>{activeCampaign.detectedEntity.artists}</span></div>
+                )}
+                {activeCampaign.detectedEntity.director && (
+                  <div><strong style={{ color: "#94a3b8" }}>Director:</strong> <span style={{ color: "#38bdf8", fontWeight: "600" }}>{activeCampaign.detectedEntity.director}</span></div>
+                )}
+                {activeCampaign.detectedEntity.singers && (
+                  <div><strong style={{ color: "#94a3b8" }}>Singers:</strong> <span style={{ color: "#34d399", fontWeight: "600" }}>{activeCampaign.detectedEntity.singers}</span></div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ⚡ 1-Click Push / Sync Status Box */}
+          {activeCampaign.pushPackage && (
+            <div style={{
+              background: "rgba(15, 23, 42, 0.9)",
+              border: "1px solid #38bdf8",
+              borderRadius: "8px",
+              padding: "0.8rem 1.2rem",
+              marginBottom: "1.2rem",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "0.8rem"
+            }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ fontSize: "1rem" }}>🚀</span>
+                  <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "#38bdf8" }}>PUSH STATUS: READY FOR SYNC</span>
+                </div>
+                <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "0.2rem" }}>
+                  Target Platforms: YouTube, Instagram Reels, Facebook, LinkedIn
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                {activeCampaign.pushPackage.youtubeStudioUrl && (
+                  <a
+                    href={activeCampaign.pushPackage.youtubeStudioUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      padding: "0.4rem 0.8rem",
+                      background: "#ef4444",
+                      color: "#fff",
+                      borderRadius: "6px",
+                      fontSize: "0.75rem",
+                      fontWeight: "700",
+                      textDecoration: "none",
+                      display: "inline-block"
+                    }}
+                  >
+                    Open in YouTube Studio ↗
+                  </a>
+                )}
+                <button
+                  onClick={() => handleCopy(activeCampaign.pushPackage.publishPayload.title, "push_title")}
+                  style={{
+                    padding: "0.4rem 0.8rem",
+                    background: "#0284c7",
+                    color: "#fff",
+                    borderRadius: "6px",
+                    fontSize: "0.75rem",
+                    fontWeight: "700",
+                    border: "none",
+                    cursor: "pointer"
+                  }}
+                >
+                  {copiedKey === "push_title" ? "✓ Title Copied!" : "📋 Copy Push Title"}
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* ⚡ 1-Click Magic Delegation & Client Onboarding Section */}
           <div style={{ background: "linear-gradient(135deg, #090e1a 0%, #131b2e 100%)", border: "1px solid #d4af37", borderRadius: "10px", padding: "1.2rem", marginBottom: "1.5rem", boxShadow: "0 8px 24px rgba(212,175,55,0.15)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem", flexWrap: "wrap", gap: "0.5rem" }}>

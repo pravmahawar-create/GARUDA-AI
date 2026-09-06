@@ -129,6 +129,39 @@ class AstraExecutionEngine {
       } catch (err) {}
     }
 
+    // 3. Try Google Gemini
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (geminiKey) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [{ text: `You are GARUDA Astra, an elite autonomous software engineer created by Praveen Mahawar. Always return valid JSON only.\n\n${prompt}` }]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.1,
+              responseMimeType: "application/json"
+            }
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) return text;
+        }
+      } catch (err) {}
+    }
+
     return null;
   }
 

@@ -42,6 +42,127 @@ class BotVerseEngine {
   }
 
   /**
+   * AI Cognitive Entity Recognition & Dynamic Creative Synthesis via Gemini
+   */
+  async recognizeAndSynthesizeContent(seedVideoUrl, topic, videoMetadata = null) {
+    const candidateTitle = videoMetadata?.title && videoMetadata.title !== "Watch" ? videoMetadata.title : "";
+    const rawTitle = candidateTitle || (topic && topic !== "Watch" ? topic : "");
+    const author = videoMetadata?.authorName || "";
+
+    const prompt = `You are GARUDA BOT-VERSE Autonomous Media & Entertainment Intelligence.
+Analyze this video input:
+URL: "${seedVideoUrl || "N/A"}"
+Title / Search Query: "${rawTitle}"
+Author / Channel: "${author}"
+
+1. Entity Recognition:
+- Identify if this video relates to a movie, song, music video, trailer, scene, comedy clip, artist, actor, or director.
+- Extract:
+  * "detectedType": (e.g. "Cinema / Bollywood", "Music Video", "Trailer Breakdown", "Action Scene", "Business/Tech", etc.)
+  * "movie": Name of the movie / album / web series / show (or "N/A" if non-movie)
+  * "artists": Lead actors / stars / artists (e.g. "Shah Rukh Khan, Deepika Padukone")
+  * "director": Director / Creator / Showrunner
+  * "music": Music composer / Producer
+  * "singers": Singers / Vocalists
+  * "genre": Genre / mood (e.g. Action Drama, Romantic Anthem, Comedy, Thriller)
+  * "hookInsight": The single most viral / gripping hook or scene moment
+
+2. Viral Distribution Synthesis:
+- "optimizedTitles": Array of 3 high-CTR titles matching this specific movie/artist/topic:
+  [
+    { "type": "High-Curiosity & Dramatic Hook", "title": "...", "psychology": "..." },
+    { "type": "Star Power & Emotional Climax", "title": "...", "psychology": "..." },
+    { "type": "High-Volume Search & Ranking Query", "title": "...", "psychology": "..." }
+  ]
+- "seoChapters": Array of 5 timestamps and chapter titles [ { "timestamp": "00:00", "title": "..." }, ... ]
+- "richDescription": Complete rich YouTube description with industry-standard credits (Starring, Directed by, Music, Singers, Produced by), plot/scene synopsis, and official hashtags.
+- "tags": Array of 15-20 highly searched YouTube & Google tags.
+- "shortsFactory": Object with { "hook_0_to_3s": "...", "story_3_to_25s": "...", "cta_25_to_35s": "...", "pinnedCommentCTA": "..." }
+- "reelHook": 9:16 Instagram Reel caption with audio credit tag and trending hashtags.
+
+Return strictly valid JSON only.`;
+
+    // 1. Try Groq (Ultra-fast Frontier Inference)
+    const groqKey = process.env.GROQ_API_KEY;
+    if (groqKey) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${groqKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "openai/gpt-oss-120b",
+            messages: [
+              {
+                role: "system",
+                content: "You are GARUDA BOT-VERSE Autonomous Media & Entertainment Intelligence. Output strictly valid JSON."
+              },
+              { role: "user", content: prompt }
+            ],
+            temperature: 0.1
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          const rawContent = data.choices?.[0]?.message?.content;
+          if (rawContent) {
+            const jsonMatch = rawContent.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+              const parsed = JSON.parse(jsonMatch[0]);
+              const entity = parsed.entityRecognition || parsed.entity || {};
+              const synthesis = parsed.viralDistributionSynthesis || parsed.distribution || {};
+              return { ...parsed, ...entity, ...synthesis };
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("[BotVerseEngine] Groq recognition fallback:", err.message);
+      }
+    }
+
+    // 2. Try Google Gemini
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (geminiKey) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 20000);
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: "application/json", temperature: 0.2 }
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            const parsed = JSON.parse(text);
+            const entity = parsed.entityRecognition || parsed.entity || {};
+            const synthesis = parsed.viralDistributionSynthesis || parsed.distribution || {};
+            return { ...parsed, ...entity, ...synthesis };
+          }
+        }
+      } catch (err) {
+        console.warn("[BotVerseEngine] Gemini recognition fallback:", err.message);
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Generates a complete 6-Platform BOT-VERSE Growth & Reach Campaign
    */
   async generateBotVerseCampaign(params = {}) {
@@ -75,6 +196,14 @@ class BotVerseEngine {
       }
     }
 
+    // Cognitive Recognition via Gemini AI
+    const aiInsight = await this.recognizeAndSynthesizeContent(seedVideoUrl, topic, videoMetadata);
+
+    if (aiInsight && aiInsight.movie && aiInsight.movie !== "N/A") {
+      niche = `${aiInsight.movie} • Cinema & Entertainment`;
+      targetAudience = `${aiInsight.artists || "Fans"} & Indian Cinema Lovers`;
+    }
+
     const campaignId = `bv_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;
     const timestamp = new Date().toISOString();
 
@@ -82,7 +211,7 @@ class BotVerseEngine {
     const youtubeApexBot = {
       engine: "YOUTUBE_APEX_BOT_V1",
       strategy: "Algorithmic Search Indexing + High-CTR Curiosity Loops",
-      optimizedTitles: [
+      optimizedTitles: aiInsight?.optimizedTitles && Array.isArray(aiInsight.optimizedTitles) && aiInsight.optimizedTitles.length > 0 ? aiInsight.optimizedTitles : [
         {
           type: "Curiosity & High-Stakes Mistake",
           title: `Why 90% of Brands Burn Cash on Meta Ads in 2026 (And How We Fix It) 🚨`,
@@ -99,14 +228,14 @@ class BotVerseEngine {
           psychology: "Captures intentional intent from YouTube & Google search bars."
         }
       ],
-      seoChapters: [
-        { timestamp: "00:00", title: "The Hidden Leaks in Traditional Marketing" },
-        { timestamp: "02:15", title: "The 3-Step Algorithmic Funnel Architecture" },
-        { timestamp: "05:40", title: "WhatsApp Automated Retargeting Implementation" },
-        { timestamp: "08:15", title: "Live ROI Math & Unit Economics" },
-        { timestamp: "11:30", title: "How to Deploy This For Your Brand (Live Audit)" }
+      seoChapters: aiInsight?.seoChapters && Array.isArray(aiInsight.seoChapters) && aiInsight.seoChapters.length > 0 ? aiInsight.seoChapters : [
+        { timestamp: "00:00", title: "Introduction & Hook" },
+        { timestamp: "02:15", title: "Core Reveal & Key Moment" },
+        { timestamp: "05:40", title: "Climax & Highlights" },
+        { timestamp: "08:15", title: "Behind The Scenes & Context" },
+        { timestamp: "11:30", title: "Official Credits & Scoping" }
       ],
-      richDescription: [
+      richDescription: aiInsight?.richDescription || [
         `Looking to scale your business with predictable, high-ROI client acquisition in 2026?`,
         `In this masterclass, we deconstruct the exact end-to-end framework built for ${targetAudience}.`,
         "",
@@ -123,7 +252,7 @@ class BotVerseEngine {
         `Official Founder Contact: garudaos.ai@gmail.com`,
         `#${niche.replace(/[^a-zA-Z0-9]/g, "")} #DigitalMarketing #GARUDA #ClientAcquisition #Growth2026`
       ].join("\n"),
-      tags: [
+      tags: aiInsight?.tags && Array.isArray(aiInsight.tags) && aiInsight.tags.length > 0 ? aiInsight.tags : [
         niche,
         `${niche} 2026`,
         "lead generation strategy",
@@ -133,11 +262,10 @@ class BotVerseEngine {
         "garuda ai os",
         targetAudience
       ],
-      shortsFactory: {
+      shortsFactory: aiInsight?.shortsFactory || {
         hook_0_to_3s: `Agar aapka brand marketing par paise laga raha hai lekin leads nahi aa rahi, toh ye 30 second suniye.`,
         story_3_to_25s: `Problem ad budget nahi hai, problem hai landing page ka 80% drop-off. Log click karte hain aur chale jate hain. Humne isko ek instant WhatsApp automated verification loop se replace kiya.`,
         cta_25_to_35s: `Full strategy ka 12-minute breakdown channel par live hai. Pinned comment mein direct link diya hai, abhi dekhiye!`,
-        pinnedCommentCTA: `Watch full architecture masterclass + audit your funnel: https://www.garudaos.in/chat?ref=${campaignId}_yt_short`
       }
     };
 
@@ -145,9 +273,9 @@ class BotVerseEngine {
     const instagramViralBot = {
       engine: "INSTAGRAM_VIRAL_BOT_V1",
       strategy: "Reels Viral Feeder + Automated DM Conversion Funnel",
-      reelCutTimestamp: "02:15 - 03:00 (The WhatsApp Funnel Reveal)",
+      reelCutTimestamp: "02:15 - 03:00 (The Viral Hook Reveal)",
       visualStyle: "9:16 vertical, bold kinetic word-by-word subtitles, high-contrast dark theme",
-      caption: [
+      caption: aiInsight?.reelHook || [
         `Stop burning money on dead landing pages in 2026. 📉`,
         "",
         `Here is the exact framework we used to take client acquisition from 1.5X to 4.2X ROAS.`,
@@ -264,6 +392,27 @@ class BotVerseEngine {
       videoMetadata: videoMetadata || null,
       customGoal,
       universe: this.universe,
+      detectedEntity: aiInsight ? {
+        recognized: Boolean(aiInsight.movie || aiInsight.artists),
+        detectedType: aiInsight.detectedType || "Entertainment / Media",
+        movie: aiInsight.movie || null,
+        artists: aiInsight.artists || null,
+        director: aiInsight.director || null,
+        music: aiInsight.music || null,
+        singers: aiInsight.singers || null,
+        genre: aiInsight.genre || null,
+        hookInsight: aiInsight.hookInsight || null
+      } : null,
+      pushPackage: {
+        status: "ready_for_push",
+        targetPlatforms: ["YouTube", "Instagram", "Facebook", "LinkedIn"],
+        youtubeStudioUrl: videoMetadata?.videoId ? `https://studio.youtube.com/video/${videoMetadata.videoId}/edit` : null,
+        publishPayload: {
+          title: (aiInsight?.optimizedTitles?.[0]?.title) || youtubeApexBot.optimizedTitles[0].title,
+          description: (aiInsight?.richDescription) || youtubeApexBot.richDescription,
+          tags: (aiInsight?.tags) || youtubeApexBot.tags
+        }
+      },
       bots: {
         youtubeApexBot,
         instagramViralBot,

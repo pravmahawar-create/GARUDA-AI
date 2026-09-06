@@ -219,7 +219,7 @@ export default function PawanCodingStudio() {
       }
 
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Autonomous execution failed.");
+        throw new Error(data.error || data.data?.error || "Autonomous execution failed.");
       }
 
       setResult(data.data);

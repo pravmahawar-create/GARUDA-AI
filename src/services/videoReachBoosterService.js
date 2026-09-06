@@ -57,6 +57,16 @@ class VideoReachBooster {
             provider: "YouTube"
           };
         }
+
+        return {
+          isYouTube: true,
+          videoId,
+          videoUrl: canonicalYtUrl,
+          title: null,
+          authorName: null,
+          thumbnailUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+          provider: "YouTube"
+        };
       } catch (err) {
         // Fallback to static YouTube construct if network times out
         return {
