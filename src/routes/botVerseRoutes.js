@@ -240,4 +240,65 @@ router.post("/magic-delegation/:token/approve", async (req, res) => {
   }
 });
 
+/**
+ * ⚡ YOUTUBE AUTONOMOUS DIRECT PUSH ENDPOINTS
+ */
+const youtubeDirectPush = require("../services/youtubeDirectPushService");
+
+router.get("/youtube/status", (req, res) => {
+  try {
+    return res.json({ success: true, ...youtubeDirectPush.getStatus() });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get("/youtube/auth-url", (req, res) => {
+  try {
+    const host = req.headers["x-forwarded-host"] || req.headers.host || "www.garudaos.in";
+    const proto = req.headers["x-forwarded-proto"] || "https";
+    const redirectUri = `${proto}://${host}/api/bot-verse/youtube/callback`;
+    const result = youtubeDirectPush.getAuthUrl(redirectUri);
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get("/youtube/callback", async (req, res) => {
+  try {
+    const { code, error } = req.query;
+    if (error) {
+      return res.redirect(`/bot-verse?youtube_error=${encodeURIComponent(error)}`);
+    }
+    if (!code) {
+      return res.redirect(`/bot-verse?youtube_error=No+authorization+code+received`);
+    }
+    const host = req.headers["x-forwarded-host"] || req.headers.host || "www.garudaos.in";
+    const proto = req.headers["x-forwarded-proto"] || "https";
+    const redirectUri = `${proto}://${host}/api/bot-verse/youtube/callback`;
+    await youtubeDirectPush.handleCallback(code, redirectUri);
+    return res.redirect(`/bot-verse?youtube_connected=true`);
+  } catch (error) {
+    return res.redirect(`/bot-verse?youtube_error=${encodeURIComponent(error.message)}`);
+  }
+});
+
+router.post("/youtube/push", async (req, res) => {
+  try {
+    const { videoId, title, description, tags, categoryId } = req.body || {};
+    const result = await youtubeDirectPush.pushVideoUpdate({
+      videoId,
+      title,
+      description,
+      tags,
+      categoryId
+    });
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;
+

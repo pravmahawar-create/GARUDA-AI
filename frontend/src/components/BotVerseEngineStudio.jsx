@@ -50,6 +50,19 @@ export default function BotVerseEngineStudio() {
   const [copiedMagicLink, setCopiedMagicLink] = useState(false);
   const [studioSelectedPlatforms, setStudioSelectedPlatforms] = useState(["youtube", "instagram", "facebook"]);
   const [copiedPitchSnippet, setCopiedPitchSnippet] = useState(false);
+  const [pushingAutonomous, setPushingAutonomous] = useState(false);
+  const [autonomousPushResult, setAutonomousPushResult] = useState(null);
+  const [youtubeStatus, setYoutubeStatus] = useState(null);
+
+  const checkYouTubeStatus = async () => {
+    try {
+      const res = await fetch("/api/bot-verse/youtube/status");
+      if (res.ok) {
+        const data = await res.json();
+        setYoutubeStatus(data);
+      }
+    } catch {}
+  };
 
   // Load existing campaigns from backend
   const loadCampaigns = async () => {
@@ -69,6 +82,7 @@ export default function BotVerseEngineStudio() {
 
   useEffect(() => {
     loadCampaigns();
+    checkYouTubeStatus();
   }, []);
 
   // Live URL inspection and oEmbed fetch
@@ -211,6 +225,46 @@ export default function BotVerseEngineStudio() {
       setActionNotice({ type: "error", text: err.message });
     } finally {
       setSendingDelegation(false);
+    }
+  };
+
+  const handleAutonomousPush = async () => {
+    if (!activeCampaign?.pushPackage) return;
+    setPushingAutonomous(true);
+    try {
+      const payload = activeCampaign.pushPackage.publishPayload;
+      const res = await fetch("/api/bot-verse/youtube/push", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          videoId: payload.videoId || activeCampaign.seedVideoMetadata?.videoId || "s-uFBOXA0ME",
+          title: payload.title,
+          description: payload.description,
+          tags: payload.tags
+        })
+      });
+      const data = await res.json();
+      setAutonomousPushResult(data);
+      if (data.success) {
+        setActionNotice({
+          type: "success",
+          text: `🎉 100% Autonomous AI Push Successful! Updated video "${data.updatedTitle}" directly on YouTube.`
+        });
+      } else if (data.requiresAuth) {
+        setActionNotice({
+          type: "error",
+          text: data.message || "YouTube channel authorization required for autonomous API push."
+        });
+      } else {
+        setActionNotice({
+          type: "error",
+          text: data.error || "Autonomous push could not be completed."
+        });
+      }
+    } catch (err) {
+      setActionNotice({ type: "error", text: err.message });
+    } finally {
+      setPushingAutonomous(false);
     }
   };
 
@@ -549,7 +603,27 @@ export default function BotVerseEngineStudio() {
                   Target Platforms: YouTube, Instagram Reels, Facebook, LinkedIn
                 </div>
               </div>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
+              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                <button
+                  onClick={handleAutonomousPush}
+                  disabled={pushingAutonomous}
+                  style={{
+                    padding: "0.4rem 0.9rem",
+                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    color: "#fff",
+                    borderRadius: "6px",
+                    fontSize: "0.75rem",
+                    fontWeight: "800",
+                    border: "none",
+                    cursor: pushingAutonomous ? "wait" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    boxShadow: "0 2px 10px rgba(16,185,129,0.3)"
+                  }}
+                >
+                  {pushingAutonomous ? "⚡ Pushing to YouTube API..." : "🤖 100% Autonomous Push by AI"}
+                </button>
                 {activeCampaign.pushPackage.youtubeStudioUrl && (
                   <a
                     href={activeCampaign.pushPackage.youtubeStudioUrl}
@@ -585,6 +659,30 @@ export default function BotVerseEngineStudio() {
                   {copiedKey === "push_title" ? "✓ Title Copied!" : "📋 Copy Push Title"}
                 </button>
               </div>
+              {autonomousPushResult && autonomousPushResult.requiresAuth && (
+                <div style={{ width: "100%", marginTop: "0.8rem", padding: "0.75rem 1rem", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: "6px", fontSize: "0.75rem", color: "#fca5a5", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.6rem" }}>
+                  <div>
+                    <div style={{ fontWeight: "700", color: "#f87171" }}>🔒 1-Click YouTube Authorization Needed</div>
+                    <div style={{ color: "#cbd5e1", marginTop: "0.2rem" }}>
+                      To allow GARUDA to update videos autonomously without human copy-paste, Google requires a 1-time OAuth authorization.
+                    </div>
+                  </div>
+                  {autonomousPushResult.authUrl ? (
+                    <a
+                      href={autonomousPushResult.authUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ padding: "0.4rem 0.8rem", background: "#ef4444", color: "#fff", borderRadius: "6px", fontWeight: "700", textDecoration: "none", fontSize: "0.75rem", display: "inline-block" }}
+                    >
+                      ⚡ Connect YouTube Channel (1-Click)
+                    </a>
+                  ) : (
+                    <span style={{ color: "#94a3b8", fontSize: "0.7rem" }}>
+                      Add YOUTUBE_CLIENT_ID in .env to enable 1-click Google OAuth connect.
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
