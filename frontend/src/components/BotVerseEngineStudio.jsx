@@ -667,20 +667,14 @@ export default function BotVerseEngineStudio() {
                       To allow GARUDA to update videos autonomously without human copy-paste, Google requires a 1-time OAuth authorization.
                     </div>
                   </div>
-                  {autonomousPushResult.authUrl ? (
-                    <a
-                      href={autonomousPushResult.authUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ padding: "0.4rem 0.8rem", background: "#ef4444", color: "#fff", borderRadius: "6px", fontWeight: "700", textDecoration: "none", fontSize: "0.75rem", display: "inline-block" }}
-                    >
-                      ⚡ Connect YouTube Channel (1-Click)
-                    </a>
-                  ) : (
-                    <span style={{ color: "#94a3b8", fontSize: "0.7rem" }}>
-                      Add YOUTUBE_CLIENT_ID in .env to enable 1-click Google OAuth connect.
-                    </span>
-                  )}
+                  <a
+                    href={autonomousPushResult?.authUrl || "/api/bot-verse/youtube/auth-url?redirect=true"}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ padding: "0.4rem 0.8rem", background: "#ef4444", color: "#fff", borderRadius: "6px", fontWeight: "700", textDecoration: "none", fontSize: "0.75rem", display: "inline-block" }}
+                  >
+                    ⚡ Connect YouTube Channel (1-Click)
+                  </a>
                 </div>
               )}
             </div>

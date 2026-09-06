@@ -259,6 +259,9 @@ router.get("/youtube/auth-url", (req, res) => {
     const proto = req.headers["x-forwarded-proto"] || "https";
     const redirectUri = `${proto}://${host}/api/bot-verse/youtube/callback`;
     const result = youtubeDirectPush.getAuthUrl(redirectUri);
+    if (req.query.redirect === "true" && result.success && result.authUrl) {
+      return res.redirect(result.authUrl);
+    }
     return res.json(result);
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
