@@ -16,6 +16,7 @@
  * Core Governance: 100% Anti-Fabrication Law, SHA-256 verified audit trails, zero fake views.
  */
 
+require("dotenv").config();
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
@@ -45,15 +46,20 @@ class BotVerseEngine {
    * AI Cognitive Entity Recognition & Dynamic Creative Synthesis via Gemini
    */
   async recognizeAndSynthesizeContent(seedVideoUrl, topic, videoMetadata = null) {
-    const candidateTitle = videoMetadata?.title && videoMetadata.title !== "Watch" ? videoMetadata.title : "";
-    const rawTitle = candidateTitle || (topic && topic !== "Watch" ? topic : "");
+    const isDateCandidate = videoMetadata?.title && /^\d{1,2}\s+[a-zA-Z]+\s+\d{4}$/i.test(videoMetadata.title.trim());
+    const rawTitle = (topic && topic !== "Watch" && !/^https?:\/\//i.test(topic.trim()) && (topic !== videoMetadata?.title || !isDateCandidate))
+      ? topic
+      : (videoMetadata?.suggestedTopic || videoMetadata?.title || topic || "");
     const author = videoMetadata?.authorName || "";
+    const entityContext = videoMetadata?.detectedEntity
+      ? `\nVerified Recognition Context: Movie: "${videoMetadata.detectedEntity.movie}", Song: "${videoMetadata.detectedEntity.songTitle}", Live Performer: "${author}", Original Singers: "${videoMetadata.detectedEntity.originalSingers}", Music: "${videoMetadata.detectedEntity.musicDirector}", Actors: "${videoMetadata.detectedEntity.actors}"`
+      : "";
 
     const prompt = `You are GARUDA BOT-VERSE Autonomous Media & Entertainment Intelligence.
 Analyze this video input:
 URL: "${seedVideoUrl || "N/A"}"
 Title / Search Query: "${rawTitle}"
-Author / Channel: "${author}"
+Author / Channel: "${author}"${entityContext}
 
 1. Entity Recognition:
 - Identify if this video relates to a movie, song, music video, trailer, scene, comedy clip, artist, actor, or director.
@@ -186,9 +192,21 @@ Return strictly valid JSON only.`;
     if (seedVideoUrl) {
       try {
         videoMetadata = await videoReachBooster.fetchVideoMetadata(seedVideoUrl);
-        if (videoMetadata && videoMetadata.title) {
-          if (/^https?:\/\//i.test(topic.trim()) || topic.trim() === "Optimized Video Revival") {
-            topic = videoMetadata.title;
+        if (videoMetadata) {
+          const isDefaultOrUrlTopic = /^https?:\/\//i.test(topic.trim()) ||
+            topic.trim() === "Optimized Video Revival" ||
+            topic.trim() === "Scaling Indian B2B Agencies with AI Performance Marketing";
+
+          if (isDefaultOrUrlTopic) {
+            topic = videoMetadata.suggestedTopic || videoMetadata.title || topic;
+          }
+
+          if (niche === "Performance Marketing & Client Acquisition" && videoMetadata.suggestedIndustry) {
+            niche = videoMetadata.suggestedIndustry;
+          }
+
+          if (targetAudience === "Indian D2C Brands & Agency Founders" && videoMetadata.suggestedAudience) {
+            targetAudience = videoMetadata.suggestedAudience;
           }
         }
       } catch (err) {
@@ -197,11 +215,23 @@ Return strictly valid JSON only.`;
     }
 
     // Cognitive Recognition via Gemini AI
-    const aiInsight = await this.recognizeAndSynthesizeContent(seedVideoUrl, topic, videoMetadata);
+    let aiInsight = await this.recognizeAndSynthesizeContent(seedVideoUrl, topic, videoMetadata);
+
+    // Merge detected entity from metadata if available
+    if (videoMetadata?.detectedEntity) {
+      aiInsight = {
+        ...(aiInsight || {}),
+        ...videoMetadata.detectedEntity,
+        movie: videoMetadata.detectedEntity.movie || aiInsight?.movie,
+        artists: videoMetadata.detectedEntity.actors || videoMetadata.detectedEntity.performers || aiInsight?.artists,
+        singers: videoMetadata.detectedEntity.originalSingers || aiInsight?.singers,
+        music: videoMetadata.detectedEntity.musicDirector || aiInsight?.music
+      };
+    }
 
     if (aiInsight && aiInsight.movie && aiInsight.movie !== "N/A") {
-      niche = `${aiInsight.movie} • Cinema & Entertainment`;
-      targetAudience = `${aiInsight.artists || "Fans"} & Indian Cinema Lovers`;
+      niche = `${aiInsight.movie} • Bollywood & Entertainment`;
+      targetAudience = `${aiInsight.artists || "Music Fans"} & Bollywood Lovers`;
     }
 
     const campaignId = `bv_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;

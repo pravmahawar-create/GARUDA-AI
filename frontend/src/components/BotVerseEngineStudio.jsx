@@ -87,8 +87,28 @@ export default function BotVerseEngineStudio() {
           const data = await res.json();
           if (data.metadata) {
             setPreviewMeta(data.metadata);
-            if (data.metadata.title && /^https?:\/\//i.test(topic.trim())) {
-              setTopic(data.metadata.title);
+
+            // Auto-update topic, industry, and audience if still default or URL
+            const isDefaultOrUrlTopic = !topic ||
+              /^https?:\/\//i.test(topic.trim()) ||
+              topic === "Scaling Indian B2B Agencies with AI Performance Marketing" ||
+              topic === "High-ROI Client Acquisition Blueprint 2026";
+            
+            const isDefaultIndustry = !industry || industry === "Performance Marketing & Client Acquisition";
+            const isDefaultAudience = !audience || audience === "Indian D2C Brands & Agency Founders";
+
+            const newTopic = data.metadata.suggestedTopic || data.metadata.title;
+            const newIndustry = data.metadata.suggestedIndustry || "Live Music, Creative & Entertainment";
+            const newAudience = data.metadata.suggestedAudience || "Music Lovers, Event Audience & Fans";
+
+            if (isDefaultOrUrlTopic && newTopic) {
+              setTopic(newTopic);
+            }
+            if (isDefaultIndustry && newIndustry) {
+              setIndustry(newIndustry);
+            }
+            if (isDefaultAudience && newAudience) {
+              setAudience(newAudience);
             }
           }
         }
@@ -172,7 +192,18 @@ export default function BotVerseEngineStudio() {
       const data = await res.json();
       if (data.success && data.dispatch) {
         setDelegationResult(data.dispatch);
-        setActionNotice({ type: "success", text: "Magic delegation invitation generated! You can copy the link or share via WhatsApp/Email." });
+        if (clientPhone.trim() && data.dispatch.whatsappUrl) {
+          window.open(data.dispatch.whatsappUrl, "_blank");
+          setActionNotice({
+            type: "success",
+            text: "✓ WhatsApp invite generated & opened in new tab! You can also copy the magic link."
+          });
+        } else {
+          setActionNotice({
+            type: "success",
+            text: "Magic delegation invitation generated! You can copy the link or share via WhatsApp/Email."
+          });
+        }
       } else {
         setActionNotice({ type: "error", text: data.error || "Failed to dispatch delegation invite." });
       }
@@ -338,26 +369,49 @@ export default function BotVerseEngineStudio() {
 
         {/* Real-time Link Detection Banner */}
         {previewMeta && (
-          <div style={{ background: "rgba(56,189,248,0.1)", border: "1px solid rgba(56,189,248,0.3)", borderRadius: "8px", padding: "0.8rem 1rem", marginBottom: "1.2rem", display: "flex", alignItems: "center", gap: "1rem" }}>
+          <div style={{ background: "rgba(56,189,248,0.1)", border: "1px solid rgba(56,189,248,0.3)", borderRadius: "8px", padding: "0.8rem 1rem", marginBottom: "1.2rem", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
             {previewMeta.thumbnailUrl && (
               <img src={previewMeta.thumbnailUrl} alt="Thumbnail Preview" style={{ width: "80px", height: "45px", objectFit: "cover", borderRadius: "4px" }} />
             )}
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, minWidth: "220px" }}>
               <div style={{ fontSize: "0.7rem", color: "#38bdf8", fontWeight: "700", textTransform: "uppercase" }}>
                 ✓ {previewMeta.provider || "Video"} Link Detected & Verified
               </div>
               <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "#f8fafc", marginTop: "0.1rem" }}>
-                {previewMeta.title || "Authentic Video Found"}
+                {previewMeta.suggestedTopic || previewMeta.title || "Authentic Video Found"}
               </div>
               {previewMeta.authorName && (
                 <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
-                  Channel / Creator: {previewMeta.authorName}
+                  Channel / Creator: {previewMeta.authorName} {previewMeta.detectedEntity?.movie ? `• Recognized: ${previewMeta.detectedEntity.movie}` : ""}
                 </div>
               )}
             </div>
-            <span style={{ fontSize: "0.7rem", padding: "0.2rem 0.5rem", background: "#020617", color: "#34d399", borderRadius: "4px", border: "1px solid #10b981" }}>
-              Ready for Revival
-            </span>
+            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (previewMeta.suggestedTopic || previewMeta.title) setTopic(previewMeta.suggestedTopic || previewMeta.title);
+                  if (previewMeta.suggestedIndustry) setIndustry(previewMeta.suggestedIndustry);
+                  if (previewMeta.suggestedAudience) setAudience(previewMeta.suggestedAudience);
+                  setActionNotice({ type: "success", text: "✓ Autofilled form with detected video details!" });
+                }}
+                style={{
+                  padding: "0.35rem 0.75rem",
+                  background: "rgba(56,189,248,0.2)",
+                  border: "1px solid #38bdf8",
+                  color: "#38bdf8",
+                  borderRadius: "6px",
+                  fontSize: "0.75rem",
+                  fontWeight: "700",
+                  cursor: "pointer"
+                }}
+              >
+                ⚡ Apply Video Details to Form
+              </button>
+              <span style={{ fontSize: "0.7rem", padding: "0.2rem 0.5rem", background: "#020617", color: "#34d399", borderRadius: "4px", border: "1px solid #10b981" }}>
+                Ready for Revival
+              </span>
+            </div>
           </div>
         )}
 
