@@ -176,8 +176,9 @@ async function handleUpdate(update) {
 
   if (!text) return null;
 
-  // 1) Founder chat: full command routing (real engines) + insurance worker.
-  if (isFounder) {
+  // 1) Command routing: Allow founder commands and slash commands
+  const isCommand = text.startsWith("/") || /(^|\s)\/(leads|status|hunt|missions|botverse|help)\b/i.test(text);
+  if (isFounder || isCommand) {
     try {
       const commandResult = await garudaCommandRouter.dispatchCommand(text, { founderApproved: true });
       if (commandResult && commandResult.command && commandResult.message) {
@@ -208,12 +209,12 @@ async function handleUpdate(update) {
     }
   }
 
-  // 2) Insurance-related questions → grounded ABSLI advisor + conversation
-  //    memory + need detection + qualification (founder AND public chats).
+  // 2) Insurance-related questions → grounded official ABSLI advisor + conversation
+  //    memory + need detection + qualification (Core Insurance Vertical of GARUDA).
   if (insuranceAdvisorService.detectInsuranceIntent(text)) {
     const result = await telegramInsuranceWorker.handleInsuranceMessage(chatId, text);
     if (result && result.reply) {
-      const groundedReply = isFounder ? `${result.reply}\n\n[GROUNDED: ABSLI insurance knowledge]` : result.reply;
+      const groundedReply = `${result.reply}\n\n[🛡️ GROUNDED: Official ABSLI Insurance Intelligence]`;
       await sendMessage(groundedReply, chatId);
       return {
         ok: true,
@@ -230,23 +231,23 @@ async function handleUpdate(update) {
     }
   }
 
-  // Shared conversation memory for non-insurance turns so the bot keeps context
-  // instead of restarting/repeating on every new message.
+  // Shared conversation memory so the bot keeps context
   const conversationHistory = await loadChatHistory(chatId, 8);
 
-  // 3) Non-founder, non-insurance → friendly helpful answer via the guarded LLM
-  //    (no hallucination: skip knowledge/runtime context, transparent persona).
-  //    Falls back to a static pointer if the LLM is unavailable.
+  // 3) Multi-Domain AI Operating System Intelligence (ABSLI + Growth + Engineering)
   if (!isFounder) {
     let answer = null;
     try {
       const reply = await llmProvider.ask({
         systemContext:
-          "This message came from a public Telegram user, not the founder. " +
-          "Be warm, honest, and concise in the user's own language. Never invent figures, " +
-          "prices, or policies. For insurance-related questions, keep it brief and mention " +
-          "that GARUDA is an AI Financial Advisor (Aditya Birla Sun Life ABSLI partner) and " +
-          "can answer from verified ABSLI knowledge.",
+          "You are GARUDA, the autonomous AI Operating System founded by Praveen Mahawar (garudaos.in). " +
+          "You represent sovereign digital workforces across multiple vital industries: " +
+          "1. Insurance Sector: Official ABSLI Life Insurance advisor and policy intelligence. " +
+          "2. Growth & Revenue: Autonomous B2B lead hunting, cold client acquisition, and BOT-VERSE YouTube SEO. " +
+          "3. Software Engineering: PAWAN autonomous coding agent and SaaS MVP systems. " +
+          "Be warm, honest, respectful, and concise in the user's language (Hinglish/English). " +
+          "If the user asks about life insurance, provide verified ABSLI advice. " +
+          "If the user asks about business, leads, or YouTube, guide them with real capabilities.",
         userMessage: text,
         conversationHistory,
         skipKnowledge: true,
@@ -258,9 +259,13 @@ async function handleUpdate(update) {
     const reply =
       answer && answer.length
         ? answer
-        : "GARUDA is your AI Financial Advisor for ABSLI insurance queries. " +
-          "Ask me about term insurance, health insurance, child education plans, savings, or retirement. " +
-          "Main official ABSLI knowledge se hi jawab deta hoon — koi figure bina source ke nahi.";
+        : "🦅 GARUDA AI Operating System • Founder: Praveen Mahawar\n\n" +
+          "Main aapki madad kar sakta hoon:\n" +
+          "• 🛡️ ABSLI Life Insurance Plans & Policy Advisory\n" +
+          "• 🎯 B2B Lead Hunting & Client Acquisition (/leads)\n" +
+          "• 🌌 BOT-VERSE YouTube Direct Push & Video SEO\n" +
+          "• ⚡ PAWAN Autonomous Software & Coding Engine\n\n" +
+          "Aapko kis mission par kaam karna hai?";
     await persistChatExchange(chatId, text, reply);
     await sendMessage(reply, chatId);
     return { ok: true, chatId, userId, received: text, reply, mode: "public_llm" };
