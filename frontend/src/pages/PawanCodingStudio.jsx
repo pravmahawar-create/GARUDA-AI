@@ -66,7 +66,23 @@ export default function PawanCodingStudio() {
     if (SpeechRec) {
       setVoiceSupported(true);
     }
+    try {
+      const saved = localStorage.getItem("garuda_pawan_active_project");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.code) {
+          setActiveProject(parsed);
+          setResult({
+            file: parsed.file || "public/app.html",
+            code: parsed.code,
+            summary: parsed.summary || "Recovered previous project from memory",
+            taskId: parsed.taskId || "LOCAL-PERSISTED"
+          });
+        }
+      }
+    } catch {}
   }, []);
+
 
   const checkAuthSession = async () => {
     try {
@@ -129,18 +145,57 @@ export default function PawanCodingStudio() {
     }
   };
 
+  const handleLaunchLiveApp = () => {
+    const codeToRun = activeProject?.code || result?.code;
+    if (!codeToRun) {
+      alert("No application code available to test yet.");
+      return;
+    }
+
+    let fullHtml = codeToRun;
+    if (!codeToRun.includes("<html") && !codeToRun.includes("<!DOCTYPE") && !codeToRun.includes("<body")) {
+      fullHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>${activeProject?.file || result?.file || "GARUDA Live Application"}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #000; color: #fff; font-family: system-ui, -apple-system, sans-serif; overflow-x: hidden; }
+  </style>
+</head>
+<body>
+  ${codeToRun}
+</body>
+</html>`;
+    }
+
+    try {
+      const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
+      const blobUrl = URL.createObjectURL(blob);
+      const newWin = window.open(blobUrl, "_blank");
+      if (!newWin) {
+        window.location.href = blobUrl;
+      }
+    } catch (e) {
+      console.error("Blob launch error:", e);
+    }
+  };
+
   const getAppPreviewUrl = (filePath) => {
-    if (!filePath) return "/";
+    if (!filePath) return "";
     const p = filePath.toLowerCase();
+    if (p.includes("cloth-gst")) return "/cloth-gst.html";
     if (p.includes("billing")) return "/app";
     if (p.includes("kids")) return "/kids-play";
     if (p.includes("investor")) return "/investor";
     if (p.includes("botverse") || p.includes("bot-verse")) return "/bot-verse";
-    if (p.includes("publiclanding") || p.includes("landing")) return "/";
     if (p.includes("whatisgaruda")) return "/what-is-garuda-ai";
     if (p.includes("command")) return "/command-center";
-    return "/";
+    return "";
   };
+
 
   // 🔊 PAWAN Natural Speech (Streams Google Natural Voice)
   const pawanSpeak = (text) => {
@@ -260,22 +315,70 @@ export default function PawanCodingStudio() {
     }
   };
 
-  const handleAttachmentSelect = (e) => {
+  const compressImageIfNeeded = (file) => {
+    return new Promise((resolve) => {
+      if (!file.type || !file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ data: reader.result, size: file.size, isImage: false });
+        reader.readAsDataURL(file);
+        return;
+      }
+
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target.result;
+      };
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1600;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.82);
+          const sizeBytes = Math.round((compressedBase64.length * 3) / 4);
+          resolve({ data: compressedBase64, size: sizeBytes, isImage: true });
+        } catch {
+          resolve({ data: reader.result, size: file.size, isImage: true });
+        }
+      };
+      img.onerror = () => {
+        resolve({ data: reader.result, size: file.size, isImage: true });
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleAttachmentSelect = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
+    try {
+      const { data, size, isImage } = await compressImageIfNeeded(file);
       setActiveAttachment({
         name: file.name,
-        size: (file.size / 1024).toFixed(1) + " KB",
-        mimeType: file.type || (file.name.endsWith(".pdf") ? "application/pdf" : "image/jpeg"),
-        data: reader.result,
-        isImage: (file.type || "").startsWith("image/")
+        size: (size / 1024).toFixed(1) + " KB",
+        mimeType: isImage ? "image/jpeg" : (file.type || (file.name.endsWith(".pdf") ? "application/pdf" : "application/octet-stream")),
+        data,
+        isImage
       });
       pawanSpeak("Document attached: " + file.name);
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error("Attachment compression error:", err);
+    }
   };
 
   const handleRemoveAttachment = () => {
@@ -322,16 +425,22 @@ export default function PawanCodingStudio() {
       }
 
       const c = data.consultation;
+      const isConversational = c.isConversational || (!c.actionPlan && (!c.recommendations || c.recommendations.length === 0));
+      const messageText = c.reply || c.observation || "Ji Praveen bhai, boliye.";
       const pawanMsg = {
         id: "p_" + Date.now(),
         sender: "pawan",
-        consultation: c,
-        text: c.observation || "Analysis completed.",
+        consultation: isConversational ? null : c,
+        text: messageText,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
 
       setMessages(prev => [...prev, pawanMsg]);
-      pawanSpeak("Praveen ji, I have generated pro recommendations and action plan on screen.");
+      if (isConversational) {
+        pawanSpeak(messageText);
+      } else {
+        pawanSpeak("Plan taiyar hai, screen par dekh sakte hain.");
+      }
     } catch (err) {
       setError(err.message);
       setMessages(prev => [...prev, {
@@ -378,12 +487,16 @@ export default function PawanCodingStudio() {
 
       const resData = data.data;
       setResult(resData);
-      setActiveProject({
+      const newProj = {
         file: resData.file,
         code: resData.code,
         version: (activeProject?.version || 0) + 1,
         summary: resData.summary
-      });
+      };
+      setActiveProject(newProj);
+      try {
+        localStorage.setItem("garuda_pawan_active_project", JSON.stringify(newProj));
+      } catch {}
       setActiveTab("code");
       fetchHistory();
 
@@ -645,50 +758,47 @@ export default function PawanCodingStudio() {
                     {/* Pawan Consultative Message Cards */}
                     {m.sender === "pawan" && (
                       <div>
-                        {m.consultation ? (
+                        {m.consultation && m.consultation.actionPlan ? (
                           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                            {/* 1. Observation Box */}
-                            <div style={{ background: "rgba(15, 23, 42, 0.8)", border: "1px solid rgba(56, 189, 248, 0.3)", borderRadius: "10px", padding: "12px 14px" }}>
-                              <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#38bdf8", textTransform: "uppercase", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-                                <span>🔍</span> 1. Observation (आवश्यकता विश्लेषण)
+                            {/* Summary / Thought Bubble */}
+                            {(m.consultation.reply || m.consultation.observation) && (
+                              <div style={{ background: "#181511", color: "#fef08a", padding: "12px 14px", borderRadius: "12px 12px 12px 2px", fontSize: "0.88rem", lineHeight: 1.5, border: "1px solid rgba(212, 175, 55, 0.35)" }}>
+                                {m.consultation.reply || m.consultation.observation}
                               </div>
-                              <div style={{ fontSize: "0.85rem", color: "#e2e8f0", lineHeight: 1.5 }}>
-                                {m.consultation.observation}
-                              </div>
-                            </div>
+                            )}
 
-                            {/* 2. Pro Recommendations */}
+                            {/* Recommendations (Only if provided) */}
                             {m.consultation.recommendations?.length > 0 && (
-                              <div style={{ background: "rgba(6, 78, 59, 0.2)", border: "1px solid rgba(16, 185, 129, 0.4)", borderRadius: "10px", padding: "12px 14px" }}>
-                                <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#34d399", textTransform: "uppercase", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
-                                  <span>💡</span> 2. Pawan's Pro Recommendations (सलाह व सुधार)
+                              <div style={{ background: "rgba(6, 78, 59, 0.2)", border: "1px solid rgba(16, 185, 129, 0.4)", borderRadius: "10px", padding: "10px 14px" }}>
+                                <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#34d399", textTransform: "uppercase", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <span>💡</span> Key Recommendations
                                 </div>
-                                <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.83rem", color: "#d1fae5", lineHeight: 1.6 }}>
+                                <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.83rem", color: "#d1fae5", lineHeight: 1.5 }}>
                                   {m.consultation.recommendations.map((rec, idx) => (
-                                    <li key={idx} style={{ marginBottom: "3px" }}>{rec}</li>
+                                    <li key={idx} style={{ marginBottom: "2px" }}>{rec}</li>
                                   ))}
                                 </ul>
                               </div>
                             )}
 
-                            {/* 3. Risks & Loopholes */}
+                            {/* Risks & Loopholes (Only if provided) */}
                             {m.consultation.risksAndLoopholes?.length > 0 && (
-                              <div style={{ background: "rgba(127, 29, 29, 0.2)", border: "1px solid rgba(239, 68, 68, 0.4)", borderRadius: "10px", padding: "12px 14px" }}>
-                                <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#f87171", textTransform: "uppercase", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
-                                  <span>⚠️</span> 3. Hidden Risks & Loopholes (संभावित जोखिम व कमियां)
+                              <div style={{ background: "rgba(127, 29, 29, 0.2)", border: "1px solid rgba(239, 68, 68, 0.4)", borderRadius: "10px", padding: "10px 14px" }}>
+                                <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#f87171", textTransform: "uppercase", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <span>⚠️</span> Key Risks
                                 </div>
-                                <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.83rem", color: "#fee2e2", lineHeight: 1.6 }}>
+                                <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.83rem", color: "#fee2e2", lineHeight: 1.5 }}>
                                   {m.consultation.risksAndLoopholes.map((risk, idx) => (
-                                    <li key={idx} style={{ marginBottom: "3px" }}>{risk}</li>
+                                    <li key={idx} style={{ marginBottom: "2px" }}>{risk}</li>
                                   ))}
                                 </ul>
                               </div>
                             )}
 
-                            {/* 4. Action Plan & 1-Click Execution */}
+                            {/* Execution Plan & 1-Click Execution */}
                             <div style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(245,158,11,0.08) 100%)", border: "1px solid rgba(212, 175, 55, 0.45)", borderRadius: "10px", padding: "14px" }}>
                               <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#fbbf24", textTransform: "uppercase", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
-                                <span>🚀</span> 4. Execution Roadmap (निर्माण योजना)
+                                <span>🚀</span> Action Roadmap
                               </div>
                               <div style={{ fontSize: "0.84rem", color: "#fef08a", lineHeight: 1.5, marginBottom: "12px", whiteSpace: "pre-line" }}>
                                 {m.consultation.actionPlan}
@@ -1020,10 +1130,9 @@ export default function PawanCodingStudio() {
                 </div>
 
                 <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
-                  <a
-                    href={getAppPreviewUrl(result.file)}
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    type="button"
+                    onClick={handleLaunchLiveApp}
                     style={{
                       background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                       color: "#ffffff",
@@ -1033,7 +1142,6 @@ export default function PawanCodingStudio() {
                       fontWeight: "800",
                       fontSize: "0.78rem",
                       cursor: "pointer",
-                      textDecoration: "none",
                       display: "flex",
                       alignItems: "center",
                       gap: "0.4rem",
@@ -1041,7 +1149,7 @@ export default function PawanCodingStudio() {
                     }}
                   >
                     <span>📲</span> Test Live on Mobile ➔
-                  </a>
+                  </button>
 
                   <button
                     type="button"
@@ -1233,22 +1341,22 @@ export default function PawanCodingStudio() {
                       >
                         🔄 Reload
                       </button>
-                      <a
-                        href={getAppPreviewUrl(result.file)}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ background: "rgba(16,185,129,0.15)", border: "1px solid #10b981", color: "#6ee7b7", padding: "3px 8px", borderRadius: "4px", fontSize: "0.72rem", textDecoration: "none", fontWeight: "700" }}
+                      <button
+                        type="button"
+                        onClick={handleLaunchLiveApp}
+                        style={{ background: "rgba(16,185,129,0.15)", border: "1px solid #10b981", color: "#6ee7b7", padding: "3px 8px", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer", fontWeight: "700" }}
                       >
-                        🔗 Open New Tab
-                      </a>
+                        🔗 Open Fullscreen
+                      </button>
                     </div>
                   </div>
 
                   <div style={{ display: "flex", justifyContent: "center", background: "#080705", padding: "0.8rem", borderRadius: "6px", border: "1px solid #1a1712", minHeight: "440px" }}>
                     <iframe
                       key={previewKey}
-                      src={getAppPreviewUrl(result.file)}
-                      title="Fixed App Preview"
+                      srcDoc={result?.code || activeProject?.code || "<!DOCTYPE html><html><body style='background:#030712;color:#fbbf24;display:grid;place-items:center;height:100vh;font-family:sans-serif;margin:0;'><div style='text-align:center;'><h3>GARUDA Live Studio</h3><p style='color:#94a3b8;font-size:0.85rem;'>Code banne ke baad app ya game yahan live chalega.</p></div></body></html>"}
+                      title="Live App Preview"
+                      sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"
                       style={{
                         width: previewViewport === "mobile" ? "375px" : "100%",
                         height: "500px",
