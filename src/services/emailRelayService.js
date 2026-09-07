@@ -22,8 +22,8 @@ function isRelayConfigured(env = process.env) {
 function getRelayConfig(env = process.env) {
   const provider = String(env.GARUDA_EMAIL_RELAY_PROVIDER || "").trim().toLowerCase();
   const key = String(env.GARUDA_EMAIL_RELAY_KEY || "").trim();
-  const from = String(env.GARUDA_EMAIL_FROM || env.GARUDA_EMAIL_USER || "").trim();
-  const fromName = String(env.GARUDA_EMAIL_FROM_NAME || "GARUDA AI Operating System").trim();
+  const from = String(env.GARUDA_EMAIL_FROM || env.GARUDA_EMAIL_USER || "praveen@garudaos.in").trim();
+  const fromName = String(env.GARUDA_EMAIL_FROM_NAME || "Praveen Mahawar | Founder, GARUDA-AI").trim();
   if (!RELAY_PROVIDERS.includes(provider) || !key) {
     return { ready: false, config: null };
   }
