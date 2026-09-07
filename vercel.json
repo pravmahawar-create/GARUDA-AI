@@ -137,6 +137,14 @@
       "destination": "/bot-verse/index.html"
     },
     {
+      "source": "/cloth-gst",
+      "destination": "/cloth-gst.html"
+    },
+    {
+      "source": "/cloth-gst.html",
+      "destination": "/cloth-gst.html"
+    },
+    {
       "source": "/pawan",
       "destination": "/pawan/index.html"
     },
