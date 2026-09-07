@@ -40,6 +40,24 @@ export default function PawanCodingStudio() {
   const [voiceStatus, setVoiceStatus] = useState("");
   const recognitionRef = useRef(null);
 
+  // 💬 Consultative Brain, Attachments & Chat States
+  const [studioMode, setStudioMode] = useState("discuss"); // 'discuss' | 'execute'
+  const [messages, setMessages] = useState([
+    {
+      id: "welcome",
+      sender: "pawan",
+      text: "नमस्ते प्रवीण जी! मैं गरुड़ पवन हूँ — आपका Autonomous Software Architect। आप जो भी नया ऐप बनाना चाहते हैं या बदलाव करना चाहते हैं, मुझे बताइए या डॉक्यूमेंट/फोटो अटैच कीजिए। मैं पहले आपको Pro Recommendations और Action Plan दूँगा, और फिर आपके आदेश पर कोड करूँगा!",
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    }
+  ]);
+  const [activeAttachment, setActiveAttachment] = useState(null);
+  const [activeProject, setActiveProject] = useState(null); // { file, code, version, summary }
+  const [isConsulting, setIsConsulting] = useState(false);
+  const [apkBuilding, setApkBuilding] = useState(false);
+  const [apkDownloadUrl, setApkDownloadUrl] = useState(null);
+  const fileInputRef = useRef(null);
+  const chatBottomRef = useRef(null);
+
   useEffect(() => {
     fetchStatus();
     fetchHistory();
@@ -206,7 +224,8 @@ export default function PawanCodingStudio() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           instruction: instruction.trim(),
-          targetFile: targetFile.trim() || undefined
+          targetFile: targetFile.trim() || activeProject?.file || undefined,
+          currentCode: activeProject?.code
         })
       });
 
@@ -224,6 +243,12 @@ export default function PawanCodingStudio() {
       }
 
       setResult(data.data);
+      setActiveProject({
+        file: data.data.file,
+        code: data.data.code,
+        version: (activeProject?.version || 0) + 1,
+        summary: data.data.summary
+      });
       setActiveTab("code");
       fetchHistory();
       pawanSpeak("Praveen ji, task completed successfully! Verified code is ready on screen.");
@@ -232,6 +257,176 @@ export default function PawanCodingStudio() {
       pawanSpeak("Execution error occurred. Check screen details.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAttachmentSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setActiveAttachment({
+        name: file.name,
+        size: (file.size / 1024).toFixed(1) + " KB",
+        mimeType: file.type || (file.name.endsWith(".pdf") ? "application/pdf" : "image/jpeg"),
+        data: reader.result,
+        isImage: (file.type || "").startsWith("image/")
+      });
+      pawanSpeak("Document attached: " + file.name);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAttachment = () => {
+    setActiveAttachment(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleConsult = async (customText, customAttachment = null) => {
+    const textToSend = (customText || instruction).trim();
+    const attachmentToSend = customAttachment || activeAttachment;
+    if (!textToSend && !attachmentToSend) return;
+
+    const userMsg = {
+      id: "u_" + Date.now(),
+      sender: "user",
+      text: textToSend,
+      attachment: attachmentToSend ? { ...attachmentToSend } : null,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    };
+
+    setMessages(prev => [...prev, userMsg]);
+    setInstruction("");
+    setActiveAttachment(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setIsConsulting(true);
+    setError(null);
+    pawanSpeak("Analyzing requirements and formulating architectural recommendations.");
+
+    try {
+      const res = await fetch("/api/pawan/consult", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          instruction: textToSend,
+          attachment: attachmentToSend ? { data: attachmentToSend.data, mimeType: attachmentToSend.mimeType } : undefined,
+          currentCode: activeProject?.code,
+          targetFile: activeProject?.file || targetFile.trim() || undefined
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Consultation failed");
+      }
+
+      const c = data.consultation;
+      const pawanMsg = {
+        id: "p_" + Date.now(),
+        sender: "pawan",
+        consultation: c,
+        text: c.observation || "Analysis completed.",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      };
+
+      setMessages(prev => [...prev, pawanMsg]);
+      pawanSpeak("Praveen ji, I have generated pro recommendations and action plan on screen.");
+    } catch (err) {
+      setError(err.message);
+      setMessages(prev => [...prev, {
+        id: "err_" + Date.now(),
+        sender: "pawan",
+        text: "Error during consultation: " + err.message,
+        isError: true,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      }]);
+    } finally {
+      setIsConsulting(false);
+    }
+  };
+
+  const handleExecuteFromPlan = async (suggestedInstruction, suggestedFile) => {
+    const fileToUse = suggestedFile || activeProject?.file || targetFile || "public/app.html";
+    const instrToUse = suggestedInstruction || instruction;
+    
+    setLoading(true);
+    setError(null);
+    pawanSpeak("Order confirmed. Synthesizing verified application code.");
+
+    try {
+      const res = await fetch("/api/pawan/execute", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          instruction: instrToUse,
+          targetFile: fileToUse,
+          currentCode: activeProject?.code
+        })
+      });
+
+      const rawText = await res.text();
+      let data;
+      try { data = JSON.parse(rawText); } catch {
+        throw new Error(`Server returned HTTP ${res.status}: ${rawText.slice(0, 150)}`);
+      }
+
+      if (!res.ok || !data.success) {
+        const detail = data.error || data.data?.error || data.data?.validation?.stderr || "Autonomous execution failed.";
+        throw new Error(detail);
+      }
+
+      const resData = data.data;
+      setResult(resData);
+      setActiveProject({
+        file: resData.file,
+        code: resData.code,
+        version: (activeProject?.version || 0) + 1,
+        summary: resData.summary
+      });
+      setActiveTab("code");
+      fetchHistory();
+
+      setMessages(prev => [...prev, {
+        id: "exec_" + Date.now(),
+        sender: "pawan",
+        text: `✓ Code built and verified for ${resData.file}! Ready for instant mobile testing.`,
+        codeResult: resData,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      }]);
+
+      pawanSpeak("Praveen ji, application code is verified and ready on screen!");
+    } catch (err) {
+      setError(err.message);
+      pawanSpeak("Execution error occurred. Check screen details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBuildApk = async () => {
+    setApkBuilding(true);
+    pawanSpeak("Packaging mobile application and compiling APK bundle.");
+    try {
+      const res = await fetch("/api/pawan/build-apk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: activeProject?.code || result?.code,
+          targetFile: activeProject?.file || result?.file,
+          appName: (activeProject?.file || result?.file || "garuda-app").replace(/\.[^/.]+$/, "").replace(/^.*\//, "")
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setApkDownloadUrl(data.downloadUrl);
+        pawanSpeak("Mobile package is ready! Opening download link.");
+        window.open(data.downloadUrl, "_blank");
+      }
+    } catch (err) {
+      alert("APK build error: " + err.message);
+    } finally {
+      setApkBuilding(false);
     }
   };
 
@@ -333,26 +528,279 @@ export default function PawanCodingStudio() {
         {/* Main Workspace Layout */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1.5rem" }}>
           
-          {/* Integrated Sleek Command Box (Modern Prompt Console) */}
-          <div style={{ background: "#080705", border: "1px solid rgba(212, 175, 55, 0.28)", borderRadius: "12px", padding: "1.4rem", boxShadow: "0 10px 30px rgba(0,0,0,0.6)" }}>
+          {/* ================================================================= */}
+          {/* 🦅 PAWAN SOVEREIGN CONSULTATIVE CHATBOX & EXECUTION CONSOLE       */}
+          {/* ================================================================= */}
+          <div style={{ background: "#080705", border: "1px solid rgba(212, 175, 55, 0.35)", borderRadius: "14px", padding: "1.2rem", boxShadow: "0 15px 40px rgba(0,0,0,0.7)" }}>
             
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem", flexWrap: "wrap", gap: "0.5rem" }}>
-              <span style={{ fontSize: "0.82rem", color: "#d4af37", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                ⚡ Task Instruction / Engineering Prompt
-              </span>
-              <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
-                Press <kbd style={{ background: "#1c1917", padding: "2px 6px", borderRadius: "4px", border: "1px solid #44403c", color: "#fef08a" }}>Enter</kbd> to run • <kbd style={{ background: "#1c1917", padding: "2px 6px", borderRadius: "4px", border: "1px solid #44403c" }}>Shift+Enter</kbd> for newline
-              </span>
+            {/* Top Mode Switcher & Active Project Indicator */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.8rem", borderBottom: "1px solid rgba(212, 175, 55, 0.2)", paddingBottom: "0.8rem" }}>
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                <button
+                  type="button"
+                  onClick={() => setStudioMode("discuss")}
+                  style={{
+                    padding: "7px 14px",
+                    borderRadius: "8px",
+                    border: studioMode === "discuss" ? "1px solid #d4af37" : "1px solid #292524",
+                    background: studioMode === "discuss" ? "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(245,158,11,0.15) 100%)" : "#14120c",
+                    color: studioMode === "discuss" ? "#fef08a" : "#a8a29e",
+                    fontWeight: "800",
+                    fontSize: "0.82rem",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.4rem"
+                  }}
+                >
+                  <span>💬</span> Samvaad (Discuss & Plan)
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setStudioMode("execute")}
+                  style={{
+                    padding: "7px 14px",
+                    borderRadius: "8px",
+                    border: studioMode === "execute" ? "1px solid #10b981" : "1px solid #292524",
+                    background: studioMode === "execute" ? "rgba(16, 185, 129, 0.15)" : "#14120c",
+                    color: studioMode === "execute" ? "#6ee7b7" : "#a8a29e",
+                    fontWeight: "800",
+                    fontSize: "0.82rem",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.4rem"
+                  }}
+                >
+                  <span>⚡</span> Direct Code Execution
+                </button>
+              </div>
+
+              {/* Active Project Continuity Memory Indicator */}
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                {activeProject ? (
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(56, 189, 248, 0.12)", border: "1px solid rgba(56, 189, 248, 0.35)", padding: "4px 10px", borderRadius: "6px", fontSize: "0.75rem", color: "#38bdf8" }}>
+                    <span>📌 Active App:</span>
+                    <strong>{activeProject.file}</strong>
+                    <span style={{ background: "#0369a1", color: "#fff", padding: "1px 5px", borderRadius: "4px", fontSize: "0.68rem" }}>v{activeProject.version}</span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveProject(null)}
+                      title="Clear active project to start fresh"
+                      style={{ background: "transparent", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "0.75rem", padding: "0 2px" }}
+                    >
+                      ✕ New
+                    </button>
+                  </div>
+                ) : (
+                  <span style={{ fontSize: "0.72rem", color: "#78716c" }}>
+                    ✨ Mode: Fresh Architecture
+                  </span>
+                )}
+              </div>
             </div>
 
+            {/* Conversational Stream (Spacious Mobile Chat Area) */}
+            {studioMode === "discuss" && (
+              <div style={{ maxHeight: "420px", minHeight: "220px", overflowY: "auto", padding: "12px", background: "#040302", borderRadius: "10px", border: "1px solid #1c1917", marginBottom: "1rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {messages.map((m) => (
+                  <div
+                    key={m.id}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignSelf: m.sender === "user" ? "flex-end" : "flex-start",
+                      maxWidth: "92%",
+                      width: m.consultation ? "100%" : "auto"
+                    }}
+                  >
+                    {/* Message Header */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "4px", alignSelf: m.sender === "user" ? "flex-end" : "flex-start" }}>
+                      <span style={{ fontSize: "0.72rem", fontWeight: "700", color: m.sender === "user" ? "#93c5fd" : "#f59e0b" }}>
+                        {m.sender === "user" ? "👤 Praveen Mahawar" : "🦅 PAWAN Sovereign Architect"}
+                      </span>
+                      <span style={{ fontSize: "0.65rem", color: "#78716c" }}>{m.timestamp}</span>
+                    </div>
+
+                    {/* User Message Bubble */}
+                    {m.sender === "user" && (
+                      <div style={{ background: "#1e293b", color: "#f8fafc", padding: "10px 14px", borderRadius: "12px 12px 2px 12px", fontSize: "0.88rem", lineHeight: 1.5, border: "1px solid #334155" }}>
+                        {m.attachment && (
+                          <div style={{ marginBottom: "8px", padding: "6px 8px", background: "#0f172a", borderRadius: "6px", border: "1px solid #334155", display: "flex", alignItems: "center", gap: "8px" }}>
+                            {m.attachment.isImage ? (
+                              <img src={m.attachment.data} alt="attachment" style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "4px" }} />
+                            ) : (
+                              <span style={{ fontSize: "1.4rem" }}>📄</span>
+                            )}
+                            <div style={{ fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              <strong>{m.attachment.name}</strong> ({m.attachment.size})
+                            </div>
+                          </div>
+                        )}
+                        {m.text}
+                      </div>
+                    )}
+
+                    {/* Pawan Consultative Message Cards */}
+                    {m.sender === "pawan" && (
+                      <div>
+                        {m.consultation ? (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                            {/* 1. Observation Box */}
+                            <div style={{ background: "rgba(15, 23, 42, 0.8)", border: "1px solid rgba(56, 189, 248, 0.3)", borderRadius: "10px", padding: "12px 14px" }}>
+                              <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#38bdf8", textTransform: "uppercase", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                <span>🔍</span> 1. Observation (आवश्यकता विश्लेषण)
+                              </div>
+                              <div style={{ fontSize: "0.85rem", color: "#e2e8f0", lineHeight: 1.5 }}>
+                                {m.consultation.observation}
+                              </div>
+                            </div>
+
+                            {/* 2. Pro Recommendations */}
+                            {m.consultation.recommendations?.length > 0 && (
+                              <div style={{ background: "rgba(6, 78, 59, 0.2)", border: "1px solid rgba(16, 185, 129, 0.4)", borderRadius: "10px", padding: "12px 14px" }}>
+                                <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#34d399", textTransform: "uppercase", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <span>💡</span> 2. Pawan's Pro Recommendations (सलाह व सुधार)
+                                </div>
+                                <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.83rem", color: "#d1fae5", lineHeight: 1.6 }}>
+                                  {m.consultation.recommendations.map((rec, idx) => (
+                                    <li key={idx} style={{ marginBottom: "3px" }}>{rec}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {/* 3. Risks & Loopholes */}
+                            {m.consultation.risksAndLoopholes?.length > 0 && (
+                              <div style={{ background: "rgba(127, 29, 29, 0.2)", border: "1px solid rgba(239, 68, 68, 0.4)", borderRadius: "10px", padding: "12px 14px" }}>
+                                <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#f87171", textTransform: "uppercase", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <span>⚠️</span> 3. Hidden Risks & Loopholes (संभावित जोखिम व कमियां)
+                                </div>
+                                <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.83rem", color: "#fee2e2", lineHeight: 1.6 }}>
+                                  {m.consultation.risksAndLoopholes.map((risk, idx) => (
+                                    <li key={idx} style={{ marginBottom: "3px" }}>{risk}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {/* 4. Action Plan & 1-Click Execution */}
+                            <div style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(245,158,11,0.08) 100%)", border: "1px solid rgba(212, 175, 55, 0.45)", borderRadius: "10px", padding: "14px" }}>
+                              <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#fbbf24", textTransform: "uppercase", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                <span>🚀</span> 4. Execution Roadmap (निर्माण योजना)
+                              </div>
+                              <div style={{ fontSize: "0.84rem", color: "#fef08a", lineHeight: 1.5, marginBottom: "12px", whiteSpace: "pre-line" }}>
+                                {m.consultation.actionPlan}
+                              </div>
+
+                              {/* Action Footer Buttons */}
+                              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center", paddingTop: "8px", borderTop: "1px dashed rgba(212, 175, 55, 0.3)" }}>
+                                <button
+                                  type="button"
+                                  disabled={loading}
+                                  onClick={() => handleExecuteFromPlan(m.consultation.suggestedInstruction, m.consultation.targetFile)}
+                                  style={{
+                                    background: loading ? "#44403c" : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                                    color: "#ffffff",
+                                    border: "none",
+                                    padding: "8px 16px",
+                                    borderRadius: "8px",
+                                    fontWeight: "900",
+                                    fontSize: "0.82rem",
+                                    cursor: loading ? "wait" : "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "6px",
+                                    boxShadow: "0 0 15px rgba(16, 185, 129, 0.3)"
+                                  }}
+                                >
+                                  <span>{loading ? "⚡" : "🚀"}</span>
+                                  {loading ? "Building Code..." : "Execute This Plan (कोड निष्पादित करें)"}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setInstruction(m.consultation.suggestedInstruction || "");
+                                    setTargetFile(m.consultation.targetFile || "");
+                                  }}
+                                  style={{
+                                    background: "#1c1917",
+                                    color: "#fef08a",
+                                    border: "1px solid #44403c",
+                                    padding: "8px 12px",
+                                    borderRadius: "8px",
+                                    fontWeight: "700",
+                                    fontSize: "0.78rem",
+                                    cursor: "pointer"
+                                  }}
+                                >
+                                  ✏️ Tweak / Alter Plan
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div style={{ background: "#181511", color: "#fef08a", padding: "10px 14px", borderRadius: "12px 12px 12px 2px", fontSize: "0.88rem", lineHeight: 1.5, border: "1px solid rgba(212, 175, 55, 0.25)" }}>
+                            {m.text}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {isConsulting && (
+                  <div style={{ alignSelf: "flex-start", padding: "10px 14px", background: "#181511", borderRadius: "10px", border: "1px solid #d4af37", color: "#fef08a", fontSize: "0.82rem", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ animation: "spin 1s linear infinite" }}>⚙️</span> Pawan is analyzing requirements and structuring recommendations...
+                  </div>
+                )}
+                <div ref={chatBottomRef} />
+              </div>
+            )}
+
+            {/* Voice Status Alert */}
             {voiceStatus && (
               <div style={{ marginBottom: "0.8rem", padding: "8px 12px", background: "rgba(245, 158, 11, 0.12)", border: "1px solid rgba(245, 158, 11, 0.4)", borderRadius: "6px", fontSize: "0.8rem", color: "#fef08a", fontWeight: "700" }}>
                 {voiceStatus}
               </div>
             )}
 
-            <form onSubmit={handleExecute}>
-              {/* Main Textarea with Enter-to-Submit */}
+            {/* Hidden Attachment File Input (Camera & PDF picker) */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*,application/pdf"
+              capture="environment"
+              style={{ display: "none" }}
+              onChange={handleAttachmentSelect}
+            />
+
+            {/* Attachment Preview Chip (If Selected) */}
+            {activeAttachment && (
+              <div style={{ marginBottom: "8px", padding: "8px 12px", background: "rgba(56, 189, 248, 0.1)", border: "1px solid rgba(56, 189, 248, 0.35)", borderRadius: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  {activeAttachment.isImage ? (
+                    <img src={activeAttachment.data} alt="thumb" style={{ width: "32px", height: "32px", objectFit: "cover", borderRadius: "4px" }} />
+                  ) : (
+                    <span style={{ fontSize: "1.2rem" }}>📄</span>
+                  )}
+                  <div style={{ fontSize: "0.8rem", color: "#e2e8f0" }}>
+                    <strong>{activeAttachment.name}</strong> <span style={{ color: "#94a3b8" }}>({activeAttachment.size})</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRemoveAttachment}
+                  style={{ background: "transparent", border: "none", color: "#f87171", cursor: "pointer", fontWeight: "800", fontSize: "0.85rem" }}
+                >
+                  ✕ Remove
+                </button>
+              </div>
+            )}
+
+            {/* Input Textarea & Smart Action Bar */}
+            <form onSubmit={studioMode === "discuss" ? (e) => { e.preventDefault(); handleConsult(); } : handleExecute}>
               <div style={{ position: "relative", marginBottom: "0.8rem" }}>
                 <textarea
                   rows="3"
@@ -361,19 +809,27 @@ export default function PawanCodingStudio() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
-                      handleExecute();
+                      if (studioMode === "discuss") {
+                        handleConsult();
+                      } else {
+                        handleExecute();
+                      }
                     }
                   }}
-                  placeholder="Describe task, bug, or feature to build (e.g. 'Repair order conversation persistence in billing app' or 'Create random API key generator with checksum')..."
+                  placeholder={
+                    studioMode === "discuss"
+                      ? "Pawan se requirement discuss karein ya photo/PDF upload karke sujhav maangein (jaise: 'Client ko accounts sell karne ke liye app chahiye, batao kya-kya zaroori hai')..."
+                      : "Direct coding task describe karein (e.g. 'Add a trade discount toggle to cloth-gst.html')..."
+                  }
                   style={{
                     width: "100%",
                     boxSizing: "border-box",
                     background: "#030201",
-                    border: "1px solid rgba(212, 175, 55, 0.25)",
-                    borderRadius: "8px",
-                    padding: "12px 14px",
+                    border: "1px solid rgba(212, 175, 55, 0.35)",
+                    borderRadius: "10px",
+                    padding: "14px",
                     color: "#ffffff",
-                    fontSize: "0.92rem",
+                    fontSize: "0.94rem",
                     resize: "vertical",
                     outline: "none",
                     lineHeight: 1.5,
@@ -382,35 +838,32 @@ export default function PawanCodingStudio() {
                 />
               </div>
 
-              {/* Compact Integrated Action Toolbar (Sleek Proportions) */}
+              {/* Action Bar (Camera, Voice, File, Send) */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.8rem" }}>
                 
-                {/* Left: Compact Target File input */}
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flex: "1 1 260px", maxWidth: "420px" }}>
-                  <span style={{ fontSize: "0.75rem", color: "#a8a29e", whiteSpace: "nowrap", fontWeight: "700" }}>
-                    Target File:
-                  </span>
-                  <input
-                    type="text"
-                    value={targetFile}
-                    onChange={(e) => setTargetFile(e.target.value)}
-                    placeholder="e.g. billing/src/components/VoiceModal.jsx (optional)"
+                {/* Left: Camera/Attachment + Voice Mic + Target File */}
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    title="Upload photo from camera or PDF document"
                     style={{
-                      flex: 1,
-                      background: "#030201",
-                      border: "1px solid #292524",
-                      borderRadius: "6px",
-                      padding: "7px 10px",
-                      color: "#f8fafc",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      padding: "8px 12px",
+                      borderRadius: "8px",
+                      background: activeAttachment ? "rgba(56, 189, 248, 0.2)" : "#14120c",
+                      border: `1px solid ${activeAttachment ? "#38bdf8" : "#292524"}`,
+                      color: activeAttachment ? "#7dd3fc" : "#cbd5e1",
                       fontSize: "0.8rem",
-                      outline: "none",
-                      fontFamily: "ui-monospace, monospace"
+                      fontWeight: "700",
+                      cursor: "pointer"
                     }}
-                  />
-                </div>
+                  >
+                    <span>📷</span> Camera / PDF
+                  </button>
 
-                {/* Right: Compact Voice and Run Button */}
-                <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
                   <button
                     type="button"
                     onClick={toggleVoiceInput}
@@ -418,8 +871,8 @@ export default function PawanCodingStudio() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "0.4rem",
-                      padding: "7px 14px",
-                      borderRadius: "6px",
+                      padding: "8px 12px",
+                      borderRadius: "8px",
                       background: isListening ? "#b91c1c" : "#14120c",
                       border: `1px solid ${isListening ? "#ef4444" : "rgba(212, 175, 55, 0.4)"}`,
                       color: isListening ? "#ffffff" : "#fbbf24",
@@ -429,65 +882,111 @@ export default function PawanCodingStudio() {
                     }}
                   >
                     <span>{isListening ? "⏹️" : "🎙️"}</span>
-                    {isListening ? "Stop Listening" : "Voice"}
+                    {isListening ? "Listening..." : "Voice Mic"}
                   </button>
 
-                  <button
-                    type="submit"
-                    disabled={loading || !instruction.trim()}
+                  {/* Target File (Optional) */}
+                  <input
+                    type="text"
+                    value={targetFile}
+                    onChange={(e) => setTargetFile(e.target.value)}
+                    placeholder={activeProject?.file ? `Editing: ${activeProject.file}` : "Target file (optional)"}
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      padding: "8px 18px",
-                      background: loading ? "#292524" : "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)",
-                      color: "#050402",
-                      border: "none",
+                      background: "#030201",
+                      border: "1px solid #292524",
                       borderRadius: "6px",
-                      fontWeight: "900",
-                      fontSize: "0.85rem",
-                      cursor: loading ? "wait" : "pointer",
-                      boxShadow: "0 2px 15px rgba(212, 175, 55, 0.3)",
-                      letterSpacing: "0.04em",
-                      textTransform: "uppercase"
+                      padding: "7px 10px",
+                      color: "#f8fafc",
+                      fontSize: "0.78rem",
+                      outline: "none",
+                      fontFamily: "ui-monospace, monospace",
+                      width: "160px"
                     }}
-                  >
-                    <span>{loading ? "⚡" : "🚀"}</span>
-                    {loading ? "Synthesizing Code..." : "Run Pawan ↵"}
-                  </button>
+                  />
+                </div>
+
+                {/* Right: Submit Button (Discuss / Run) */}
+                <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
+                  {studioMode === "discuss" ? (
+                    <button
+                      type="submit"
+                      disabled={isConsulting || (!instruction.trim() && !activeAttachment)}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        padding: "9px 20px",
+                        background: isConsulting ? "#292524" : "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)",
+                        color: "#050402",
+                        border: "none",
+                        borderRadius: "8px",
+                        fontWeight: "900",
+                        fontSize: "0.85rem",
+                        cursor: isConsulting ? "wait" : "pointer",
+                        boxShadow: "0 2px 15px rgba(212, 175, 55, 0.3)",
+                        letterSpacing: "0.02em"
+                      }}
+                    >
+                      <span>{isConsulting ? "⚙️" : "💬"}</span>
+                      {isConsulting ? "Analyzing..." : "Ask Pawan / Plan ↵"}
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={loading || !instruction.trim()}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        padding: "9px 20px",
+                        background: loading ? "#292524" : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: "8px",
+                        fontWeight: "900",
+                        fontSize: "0.85rem",
+                        cursor: loading ? "wait" : "pointer",
+                        boxShadow: "0 2px 15px rgba(16, 185, 129, 0.3)",
+                        letterSpacing: "0.02em"
+                      }}
+                    >
+                      <span>{loading ? "⚡" : "🚀"}</span>
+                      {loading ? "Synthesizing..." : "Run Code ↵"}
+                    </button>
+                  )}
                 </div>
               </div>
             </form>
 
-            {/* Quick Task Shortcuts */}
+            {/* Quick Consultation Starters */}
             <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center", marginTop: "1rem", paddingTop: "0.8rem", borderTop: "1px solid #14120c" }}>
-              <span style={{ fontSize: "0.72rem", color: "#78716c", fontWeight: "600" }}>Quick Tasks:</span>
+              <span style={{ fontSize: "0.72rem", color: "#78716c", fontWeight: "600" }}>Quick Discussions:</span>
               <button
                 type="button"
                 onClick={() => {
-                  setInstruction("Diagnose and repair order session persistence across voice clicks in billing app");
-                  setTargetFile("billing/src/components/VoiceModal.jsx");
+                  setStudioMode("discuss");
+                  handleConsult("Client ko accounts selling ke liye app chahiye jisme ladke account layenge aur per-day % commission milega. Iska best structure aur anti-fraud logic suggest karo.");
                 }}
                 style={{ background: "#14120c", border: "1px solid rgba(212,175,55,0.3)", color: "#fef08a", fontSize: "0.72rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer", fontWeight: "700" }}
               >
-                🔧 Repair Billing Voice Orders
+                💼 Account Sourcing & Commission MIS
               </button>
               <button
                 type="button"
                 onClick={() => {
-                  setInstruction("Create a utility to generate secure random API keys with checksum validation");
-                  setTargetFile("src/utils/apiKeyGenerator.js");
+                  setStudioMode("discuss");
+                  handleConsult("Cloth wholesale business ke liye 2-device lock wala MIS app banana hai. Slabs aur invoice breakdown ki recommendations do.");
                 }}
                 style={{ background: "#14120c", border: "1px solid #292524", color: "#cbd5e1", fontSize: "0.72rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer" }}
               >
-                🔑 API Key Generator
+                🧵 Cloth Business 2-Device Lock MIS
               </button>
               <button
                 type="button"
-                onClick={() => navigate("/kids-play")}
-                style={{ background: "#14120c", border: "1px solid #38bdf8", color: "#7dd3fc", fontSize: "0.72rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer", fontWeight: "700" }}
+                onClick={() => window.open("/cloth-gst.html", "_blank")}
+                style={{ background: "#14120c", border: "1px solid #10b981", color: "#6ee7b7", fontSize: "0.72rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer", fontWeight: "700" }}
               >
-                🎈 Kids Voice Companion ➔
+                📱 Live Cloth GST Demo ➔
               </button>
             </div>
           </div>
@@ -541,8 +1040,30 @@ export default function PawanCodingStudio() {
                       boxShadow: "0 0 15px rgba(16, 185, 129, 0.3)"
                     }}
                   >
-                    <span>🌐</span> Launch Fixed App ➔
+                    <span>📲</span> Test Live on Mobile ➔
                   </a>
+
+                  <button
+                    type="button"
+                    disabled={apkBuilding}
+                    onClick={handleBuildApk}
+                    style={{
+                      background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+                      color: "#ffffff",
+                      border: "none",
+                      padding: "7px 14px",
+                      borderRadius: "6px",
+                      fontWeight: "800",
+                      fontSize: "0.78rem",
+                      cursor: apkBuilding ? "wait" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      boxShadow: "0 0 15px rgba(99, 102, 241, 0.3)"
+                    }}
+                  >
+                    <span>📦</span> {apkBuilding ? "Packaging APK..." : "Download APK / Package"}
+                  </button>
 
                   <button
                     type="button"

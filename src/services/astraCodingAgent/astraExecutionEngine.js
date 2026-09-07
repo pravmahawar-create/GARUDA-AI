@@ -166,6 +166,117 @@ class AstraExecutionEngine {
   }
 
   /**
+   * Consultative Brain: Analyze requirements, paper sketches, or PDFs and propose recommendations
+   */
+  async consultOnTask({ instruction, attachment, currentCode, targetFile }) {
+    const geminiKey = process.env.GEMINI_API_KEY;
+    const groqKey = process.env.GROQ_API_KEY;
+
+    let attachmentPart = null;
+    if (attachment && attachment.data && attachment.mimeType) {
+      let rawBase64 = attachment.data;
+      if (rawBase64.includes(",")) {
+        rawBase64 = rawBase64.split(",")[1];
+      }
+      attachmentPart = {
+        inlineData: {
+          mimeType: attachment.mimeType,
+          data: rawBase64
+        }
+      };
+    }
+
+    let codeSnippet = "";
+    if (currentCode) {
+      codeSnippet = `\nCurrent Active File (${targetFile || "Current App"}):\n\`\`\`\n${currentCode.slice(0, 3000)}\n\`\`\`\n`;
+    }
+
+    const consultPrompt = `You are GARUDA PAWAN, an elite sovereign AI Software Architect & Senior Technology Consultant created by Praveen Mahawar.
+User Query / Task: "${instruction || "Analyze the provided requirements and suggest optimal architecture"}"
+${codeSnippet}
+
+Your role is to act as a proactive, consultative partner in Roman Hindi (Hinglish).
+When looking at client requirements, drawings, or documents:
+- Deeply analyze what the client needs.
+- Suggest 3 concrete recommendations (UI improvements, anti-fraud, 2-device lock, automated reports).
+- Point out 2 hidden risks, missing pieces, or loopholes.
+- Outline a clean, actionable execution plan.
+- If existing code is present, explain how to ALTER and ENHANCE it rather than starting from scratch.
+
+Return ONLY a JSON object with this exact structure:
+{
+  "thought": "Internal reasoning",
+  "observation": "Clear summary in Roman Hindi of what you understood from the input",
+  "recommendations": [
+    "Pro Recommendation 1",
+    "Pro Recommendation 2",
+    "Pro Recommendation 3"
+  ],
+  "risksAndLoopholes": [
+    "Hidden risk or flaw 1",
+    "Missing requirement 2"
+  ],
+  "actionPlan": "Clear step-by-step roadmap in Roman Hindi of what will be built",
+  "suggestedInstruction": "Precise instruction prompt ready for code execution",
+  "targetFile": "${targetFile || "public/app.html"}",
+  "isExistingRefactor": ${!!currentCode}
+}`;
+
+    // 1. Try Gemini with multimodal support
+    if (geminiKey) {
+      try {
+        const parts = [];
+        if (attachmentPart) parts.push(attachmentPart);
+        parts.push({ text: consultPrompt });
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts }],
+            generationConfig: {
+              temperature: 0.2,
+              responseMimeType: "application/json"
+            }
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            return { success: true, consultation: parsed };
+          }
+        }
+      } catch (err) {}
+    }
+
+    // 2. Fallback to Groq for text-only consultation
+    if (groqKey) {
+      try {
+        const text = await this.callLLM(consultPrompt);
+        if (text) {
+          const jsonMatch = text.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            return { success: true, consultation: JSON.parse(jsonMatch[0]) };
+          }
+        }
+      } catch (err) {}
+    }
+
+    return {
+      success: false,
+      error: "Could not generate consultation at this moment."
+    };
+  }
+
+  /**
    * Scan codebase for relevant files matching keyword or extension
    */
   reconnaissance(searchQuery, maxFiles = 10) {
@@ -317,24 +428,32 @@ class AstraExecutionEngine {
     }
 
     let fileContext = "";
-    if (targetFile) {
+    let modeDirective = "MODE: NEW FILE CREATION.";
+
+    if (context.currentCode) {
+      fileContext = `CURRENT ACTIVE CODE IN PROGRESS:\n\`\`\`\n${context.currentCode}\n\`\`\`\n`;
+      modeDirective = `MODE: ITERATIVE ENHANCEMENT & ALTERATION (DO NOT START FROM SCRATCH).
+Existing code is provided above. You MUST preserve all existing working features, UI styles, structure, and functions. Cleanly apply the requested changes/alterations into this existing code.`;
+    } else if (targetFile) {
       const inspect = this.inspectFile(targetFile);
       if (!inspect.error) {
         fileContext = `Current content of ${targetFile}:\n\`\`\`\n${inspect.numberedContent}\n\`\`\`\n`;
+        modeDirective = `MODE: ITERATIVE ENHANCEMENT OF ${targetFile}. Preserve existing functionality and apply modifications.`;
       }
     }
 
     // 2. Call LLM to formulate plan and code
     const prompt = `Task: ${instruction}
-Target File: ${targetFile || "Autodetect / create appropriate file"}
+Target File: ${targetFile || "public/app.html"}
+${modeDirective}
 ${fileContext}
 You are an expert autonomous software engineer.
 You must return a JSON object formatted strictly as:
 {
   "thought": "Architecture reasoning",
-  "targetFile": "${targetFile || "src/utils/generatedUtility.js"}",
+  "targetFile": "${targetFile || "public/app.html"}",
   "newContent": "complete code string without markdown backticks inside this property",
-  "summary": "Short explanation of code"
+  "summary": "Short explanation of modifications applied"
 }
 Output ONLY the JSON object.`;
 
