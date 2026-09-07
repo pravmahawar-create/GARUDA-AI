@@ -7,6 +7,7 @@
  * 4. Audit Logging: Full SHA-256 and SMTP response tracking
  */
 
+require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
