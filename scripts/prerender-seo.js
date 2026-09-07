@@ -513,7 +513,7 @@ const ROUTES = [
     contentSnippet: `
       <h2>Data Governance & Google API Services User Data Policy</h2>
       <p>GARUDA AI adheres strictly to the Google API Services User Data Policy, including the Limited Use requirements. We do not sell user data, transfer it for advertising, or use it to train generalized AI models without affirmative consent.</p>
-      <p>Contact: garudaos.ai@gmail.com | Founder: Praveen Mahawar</p>
+      <p>Contact: praveen@garudaos.in | Founder: Praveen Mahawar</p>
     `
   },
   {
@@ -1122,7 +1122,7 @@ const ROUTES = [
         <li>Official Facebook Profile: <a href="https://www.facebook.com/praveen.mahawar.5/" rel="me">facebook.com/praveen.mahawar.5</a> (Praveen Mahawar, Jabalpur, MP)</li>
         <li>Official GitHub: <a href="https://github.com/pravmahawar-create" rel="me">github.com/pravmahawar-create</a></li>
         <li>Official Platform: <a href="https://www.garudaos.in">https://www.garudaos.in</a></li>
-        <li>Official Email: garudaos.ai@gmail.com</li>
+        <li>Official Email: praveen@garudaos.in</li>
       </ul>
     `,
     schema: {
