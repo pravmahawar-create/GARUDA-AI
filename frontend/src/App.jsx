@@ -39,6 +39,7 @@ import PawanCodingStudio from "./pages/PawanCodingStudio";
 import KidsVoiceApp from "./pages/KidsVoiceApp";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
+import FounderProfile from "./pages/FounderProfile";
 import { initAttribution } from "./utils/attribution";
 
 import "./styles/garuda-ui.css";
@@ -209,6 +210,10 @@ function AppRoutes() {
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsOfService />} />
       <Route path="/terms-of-service" element={<TermsOfService />} />
+      <Route path="/praveen-mahawar" element={<FounderProfile />} />
+      <Route path="/founder-profile" element={<FounderProfile />} />
+      <Route path="/about" element={<FounderProfile />} />
+      <Route path="/about-founder" element={<FounderProfile />} />
       <Route path="/experience" element={<InvestorExperience />} />
       <Route path="/investor" element={<InvestorExperience />} />
       <Route path="*" element={publicLanding} />

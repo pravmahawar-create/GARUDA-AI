@@ -662,7 +662,9 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           <div>
             © {new Date().getFullYear()} GARUDA AI Operating System. Built for deterministic, governed custom software and AI operations.
           </div>
-          <div style={{ display: "flex", gap: "1.2rem", fontSize: "0.85rem" }}>
+          <div style={{ display: "flex", gap: "1.2rem", fontSize: "0.85rem", flexWrap: "wrap", justifyContent: "center" }}>
+            <a href="/praveen-mahawar" style={{ color: palette.gold, textDecoration: "none", fontWeight: 700 }}>Praveen Mahawar (Founder)</a>
+            <span style={{ color: "rgba(255,255,255,0.2)" }}>•</span>
             <a href="/privacy" style={{ color: palette.gold, textDecoration: "none" }}>Privacy Policy</a>
             <span style={{ color: "rgba(255,255,255,0.2)" }}>•</span>
             <a href="/terms" style={{ color: palette.gold, textDecoration: "none" }}>Terms of Service</a>

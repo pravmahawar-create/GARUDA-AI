@@ -365,6 +365,22 @@
       "destination": "/terms/index.html"
     },
     {
+      "source": "/praveen-mahawar",
+      "destination": "/praveen-mahawar/index.html"
+    },
+    {
+      "source": "/founder-profile",
+      "destination": "/praveen-mahawar/index.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/praveen-mahawar/index.html"
+    },
+    {
+      "source": "/about-founder",
+      "destination": "/praveen-mahawar/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

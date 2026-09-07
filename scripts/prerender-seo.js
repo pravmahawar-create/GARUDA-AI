@@ -1093,6 +1093,113 @@ const ROUTES = [
       <h2>Playful Voice Experience for Kids</h2>
       <p>Interactive characters with distinct pitches, jokes, animal sounds, and speech synthesis.</p>
     `
+  },
+  {
+    path: "/praveen-mahawar",
+    filePaths: [
+      path.join(DIST_DIR, "praveen-mahawar", "index.html"),
+      path.join(DIST_DIR, "praveen-mahawar.html"),
+      path.join(DIST_DIR, "about", "index.html"),
+      path.join(DIST_DIR, "about.html")
+    ],
+    title: "Praveen Mahawar | Founder & Chief AI Architect of GARUDA-AI • Jabalpur, India",
+    description: "Praveen Mahawar is the Founder and Chief AI Architect of GARUDA-AI, an advanced autonomous AI Operating System engineered in Jabalpur, Madhya Pradesh, India.",
+    canonical: "https://www.garudaos.in/praveen-mahawar",
+    h1: "Praveen Mahawar — Founder & Chief AI Architect",
+    eyebrow: "FOUNDER ENTITY • JABALPUR, MADHYA PRADESH, INDIA",
+    contentSnippet: `
+      <h2>Founder Identity & Biography</h2>
+      <p>Praveen Mahawar is an Indian AI engineer, technologist, and entrepreneur from Jabalpur, Madhya Pradesh. He is the Founder and Chief Architect of GARUDA-AI (https://www.garudaos.in), an autonomous AI Operating System designed for governed software execution, multi-agent enterprise automation, and omnichannel media intelligence.</p>
+      <h2>Core Inventions & Platforms Built by Praveen Mahawar</h2>
+      <ul>
+        <li><strong>Autonomous Mother Brain:</strong> Orchestration network for autonomous digital workforces.</li>
+        <li><strong>BOT-VERSE Omnichannel Media Engine:</strong> Official YouTube Data API v3 direct push and viral video syndication.</li>
+        <li><strong>PAWAN Sovereign Coding Agent:</strong> Autonomous voice-directed coding engine with ReAct self-healing cycles.</li>
+        <li><strong>100% Anti-Fabrication Law:</strong> Deterministic verification and cryptographic SHA-256 evidence doctrine.</li>
+      </ul>
+      <h2>Verified Official Profiles & Attribution</h2>
+      <ul>
+        <li>Official Facebook Profile: <a href="https://www.facebook.com/praveen.mahawar.5/" rel="me">facebook.com/praveen.mahawar.5</a> (Praveen Mahawar, Jabalpur, MP)</li>
+        <li>Official GitHub: <a href="https://github.com/pravmahawar-create" rel="me">github.com/pravmahawar-create</a></li>
+        <li>Official Platform: <a href="https://www.garudaos.in">https://www.garudaos.in</a></li>
+        <li>Official Email: garudaos.ai@gmail.com</li>
+      </ul>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": "https://www.garudaos.in/#praveen-mahawar",
+      "name": "Praveen Mahawar",
+      "alternateName": [
+        "Praveen Mahawar Jabalpur",
+        "Founder Praveen Mahawar",
+        "Praveen Mahawar GARUDA AI",
+        "Praveen Mahawar Madhya Pradesh"
+      ],
+      "jobTitle": "Founder & Chief AI Architect",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "GARUDA AI",
+        "url": "https://www.garudaos.in"
+      },
+      "homeLocation": {
+        "@type": "Place",
+        "name": "Jabalpur, Madhya Pradesh, India",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Jabalpur",
+          "addressRegion": "Madhya Pradesh",
+          "addressCountry": "India"
+        }
+      },
+      "nationality": {
+        "@type": "Country",
+        "name": "India"
+      },
+      "description": "Praveen Mahawar is the Founder and Chief Architect of GARUDA-AI, an advanced autonomous AI Operating System engineered in Jabalpur, Madhya Pradesh, India.",
+      "url": "https://www.garudaos.in/praveen-mahawar",
+      "sameAs": [
+        "https://www.facebook.com/praveen.mahawar.5/",
+        "https://github.com/pravmahawar-create/GARUDA-AI",
+        "https://github.com/pravmahawar-create"
+      ],
+      "knowsAbout": [
+        "Artificial Intelligence",
+        "AI Operating Systems",
+        "Autonomous Software Execution",
+        "Multi-Agent Workflow Automation",
+        "Sovereign AI Infrastructure",
+        "Deterministic Software Verification"
+      ]
+    }
+  },
+  {
+    path: "/privacy",
+    filePaths: [
+      path.join(DIST_DIR, "privacy", "index.html"),
+      path.join(DIST_DIR, "privacy.html"),
+      path.join(DIST_DIR, "privacy-policy", "index.html"),
+      path.join(DIST_DIR, "privacy-policy.html")
+    ],
+    title: "Privacy Policy | GARUDA AI Operating System",
+    description: "GARUDA AI Privacy Policy, Google API Services User Data Policy compliance, YouTube Limited Use disclosures, and data protection terms.",
+    canonical: "https://www.garudaos.in/privacy",
+    h1: "Privacy Policy",
+    eyebrow: "LEGAL GOVERNANCE & USER DATA PRIVACY"
+  },
+  {
+    path: "/terms",
+    filePaths: [
+      path.join(DIST_DIR, "terms", "index.html"),
+      path.join(DIST_DIR, "terms.html"),
+      path.join(DIST_DIR, "terms-of-service", "index.html"),
+      path.join(DIST_DIR, "terms-of-service.html")
+    ],
+    title: "Terms of Service | GARUDA AI Operating System",
+    description: "GARUDA AI Terms of Service, YouTube API Terms of Service alignment, milestone governance, and commercial service stipulations.",
+    canonical: "https://www.garudaos.in/terms",
+    h1: "Terms of Service",
+    eyebrow: "LEGAL GOVERNANCE & OPERATING TERMS"
   }
 ];
 
