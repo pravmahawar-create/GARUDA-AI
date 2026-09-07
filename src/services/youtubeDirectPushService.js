@@ -1,3 +1,4 @@
+try { require("dotenv").config(); } catch {}
 /**
  * 🦅 GARUDA AUTONOMOUS YOUTUBE DIRECT PUSH SERVICE
  * Enables 100% autonomous background video updates via official YouTube Data API v3.
