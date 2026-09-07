@@ -219,7 +219,8 @@ export default function PawanCodingStudio() {
       }
 
       if (!res.ok || !data.success) {
-        throw new Error(data.error || data.data?.error || "Autonomous execution failed.");
+        const detail = data.error || data.data?.error || data.data?.validation?.stderr || (data.data?.validation?.valid === false ? "Syntax validation failed on generated code." : "Autonomous execution failed.");
+        throw new Error(detail);
       }
 
       setResult(data.data);

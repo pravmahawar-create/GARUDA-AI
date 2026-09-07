@@ -223,20 +223,44 @@ class AstraExecutionEngine {
   }
 
   /**
-   * Syntax and execution validation
+   * Syntax and execution validation (Multi-paradigm: Node.js, Babel JSX/TS, JSON, HTML)
    */
   validateFile(relPath) {
     const fullPath = path.join(this.rootDir, relPath);
     if (!fs.existsSync(fullPath)) return { valid: false, error: "File does not exist" };
 
     const ext = path.extname(relPath).toLowerCase();
-    if (ext === ".js" || ext === ".mjs" || ext === ".cjs") {
-      const check = spawnSync(process.execPath, ["--check", fullPath], { encoding: "utf8" });
-      if (check.status !== 0) {
+    if ([".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"].includes(ext)) {
+      const content = fs.readFileSync(fullPath, "utf8");
+
+      // 1. Try Babel Parser (handles modern ES Modules, React JSX, React Native, TypeScript)
+      try {
+        const babel = require("@babel/parser");
+        babel.parse(content, {
+          sourceType: "unambiguous",
+          plugins: [
+            "jsx",
+            "typescript",
+            "classProperties",
+            "dynamicImport",
+            "exportDefaultFrom",
+            "asyncGenerators"
+          ]
+        });
+        return { valid: true, exitCode: 0, sha256: this._computeSha256(fullPath), engine: "babel" };
+      } catch (babelErr) {
+        // 2. Fallback to node --check in case it's CommonJS or script
+        try {
+          const check = spawnSync(process.execPath, ["--check", fullPath], { encoding: "utf8" });
+          if (check.status === 0) {
+            return { valid: true, exitCode: 0, sha256: this._computeSha256(fullPath), engine: "node" };
+          }
+        } catch {}
+
         return {
           valid: false,
-          exitCode: check.status,
-          stderr: (check.stderr || check.stdout || "Syntax check failed").trim()
+          exitCode: 1,
+          stderr: babelErr.message || "Syntax check failed"
         };
       }
     } else if (ext === ".json") {
@@ -245,6 +269,8 @@ class AstraExecutionEngine {
       } catch (err) {
         return { valid: false, error: `Invalid JSON: ${err.message}` };
       }
+    } else if ([".html", ".htm", ".css", ".md", ".txt", ".svg", ".py"].includes(ext)) {
+      return { valid: true, exitCode: 0, sha256: this._computeSha256(fullPath) };
     }
 
     return { valid: true, exitCode: 0, sha256: this._computeSha256(fullPath) };
