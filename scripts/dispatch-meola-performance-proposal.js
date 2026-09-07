@@ -14,9 +14,9 @@ const emailService = require("../src/services/premiumVisualEmailService");
 const { sendSmtpWithFallback } = require("../src/services/motherPlatformAuthService");
 
 const smtpConfig = {
-  host: process.env.GARUDA_EMAIL_HOST || "smtp.gmail.com",
-  port: Number(process.env.GARUDA_EMAIL_PORT) || 587,
-  user: process.env.GARUDA_EMAIL_USER,
+  host: process.env.GARUDA_EMAIL_HOST || "smtp.zoho.in",
+  port: Number(process.env.GARUDA_EMAIL_PORT) || 465,
+  user: process.env.GARUDA_EMAIL_USER || "praveen@garudaos.in",
   pass: process.env.GARUDA_EMAIL_PASS
 };
 
@@ -64,9 +64,9 @@ async function executeMeolaDispatch() {
     `Please view the complete visual blueprint in this email or explore your interactive scoping room:\n` +
     `• Scoping Room: https://www.garudaos.in/chat?ref=meola_india_pm\n` +
     `• Platform: https://www.garudaos.in\n\n` +
-    `Sincerely,\nPraveen Mahawar\nFounder & Chief Architect, GARUDA AI Systems\ngarudaos.ai@gmail.com`;
+    `Sincerely,\nPraveen Mahawar\nFounder & Chief Architect, GARUDA AI Systems\npraveen@garudaos.in`;
 
-  console.log(`\n[2/3] Connecting to Google SMTP (smtp.gmail.com:587) via garudaos.ai@gmail.com...`);
+  console.log(`\n[2/3] Connecting to Zoho SMTP (smtp.zoho.in:465) via praveen@garudaos.in...`);
   const sendRes = await sendSmtpWithFallback(smtpConfig, {
     to: prospectSpec.email,
     subject,

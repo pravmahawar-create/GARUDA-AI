@@ -14,9 +14,9 @@ const emailService = require("../src/services/premiumVisualEmailService");
 const { sendSmtpWithFallback } = require("../src/services/motherPlatformAuthService");
 
 const smtpConfig = {
-  host: process.env.GARUDA_EMAIL_HOST || "smtp.gmail.com",
-  port: Number(process.env.GARUDA_EMAIL_PORT) || 587,
-  user: process.env.GARUDA_EMAIL_USER,
+  host: process.env.GARUDA_EMAIL_HOST || "smtp.zoho.in",
+  port: Number(process.env.GARUDA_EMAIL_PORT) || 465,
+  user: process.env.GARUDA_EMAIL_USER || "praveen@garudaos.in",
   pass: process.env.GARUDA_EMAIL_PASS
 };
 
@@ -97,9 +97,9 @@ async function dispatchRFPs() {
       `Please review the complete visual brief in this email or access your interactive scoping room:\n` +
       `• Scoping Room: https://www.garudaos.in/chat?ref=${buyer.prospectId}\n` +
       `• Platform: https://www.garudaos.in\n\n` +
-      `Sincerely,\nPraveen Mahawar\nFounder & Chief Architect, GARUDA AI Systems\ngarudaos.ai@gmail.com`;
+      `Sincerely,\nPraveen Mahawar\nFounder & Chief Architect, GARUDA AI Systems\npraveen@garudaos.in`;
 
-    console.log(`  Connecting to Google SMTP (smtp.gmail.com:587) for ${buyer.email}...`);
+    console.log(`  Connecting to Zoho SMTP (smtp.zoho.in:465) for ${buyer.email}...`);
 
     try {
       const sendRes = await sendSmtpWithFallback(smtpConfig, {

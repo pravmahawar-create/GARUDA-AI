@@ -341,11 +341,11 @@ function sendSmtpNative(config, mail) {
       if (step === 0 && code === 220) {
         // Connected, EHLO
         step = 1;
-        sendCmd("EHLO garuda.ai");
+        sendCmd("EHLO garudaos.in");
       } else if (step === 1 && code === 250) {
         // EHLO ok -> STARTTLS or AUTH
         if (port === 465) {
-          step = 3;
+          step = 4;
           sendCmd("AUTH LOGIN");
         } else {
           step = 2;
@@ -361,7 +361,7 @@ function sendSmtpNative(config, mail) {
           socket = secureSocket;
           socket.on("data", handleData);
           step = 3;
-          sendCmd("EHLO garuda.ai");
+          sendCmd("EHLO garudaos.in");
         });
         secureSocket.on("error", (err) => {
           clearTimeout(timer);
@@ -400,7 +400,7 @@ function sendSmtpNative(config, mail) {
         if (mail.html) {
           const boundary = `----=_Part_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;
           emailContent = [
-            `From: GARUDA AI Systems <${user}>`,
+            `From: Praveen Mahawar | Founder, GARUDA-AI <${user}>`,
             `To: <${mail.to}>`,
             `Subject: ${mail.subject}`,
             `Date: ${new Date().toUTCString()}`,
@@ -425,7 +425,7 @@ function sendSmtpNative(config, mail) {
           ].join("\r\n");
         } else {
           emailContent = [
-            `From: GARUDA AI Systems <${user}>`,
+            `From: Praveen Mahawar | Founder, GARUDA-AI <${user}>`,
             `To: <${mail.to}>`,
             `Subject: ${mail.subject}`,
             `Date: ${new Date().toUTCString()}`,
@@ -595,17 +595,23 @@ let SMTP_WORKING_PORT = null;
  * @returns {Promise<Object>} result of the first successful send
  */
 async function sendSmtpWithFallback(config, mail, options = {}) {
-  const preferred = Number(config.port) || 587;
-  const fallbacks = [preferred, 465, 25].filter((p, i, a) => a.indexOf(p) === i);
+  const effectiveConfig = config || {
+    host: process.env.GARUDA_EMAIL_HOST || "smtp.zoho.in",
+    port: Number(process.env.GARUDA_EMAIL_PORT) || 465,
+    user: process.env.GARUDA_EMAIL_USER || "praveen@garudaos.in",
+    pass: process.env.GARUDA_EMAIL_PASS
+  };
+  const preferred = Number(effectiveConfig.port) || 465;
+  const fallbacks = [preferred, 465, 587, 25].filter((p, i, a) => a.indexOf(p) === i);
   const order = SMTP_WORKING_PORT && fallbacks.includes(SMTP_WORKING_PORT)
     ? [SMTP_WORKING_PORT, ...fallbacks.filter((p) => p !== SMTP_WORKING_PORT)]
     : fallbacks;
-  const firstTimeout = Math.min(Number(config.timeoutMs) || 30000, 12000);
+  const firstTimeout = Math.min(Number(effectiveConfig.timeoutMs) || 30000, 12000);
   let lastError = null;
   for (let i = 0; i < order.length; i++) {
     const port = order[i];
     try {
-      const attemptConfig = { ...config, port, timeoutMs: i === 0 ? firstTimeout : (Number(config.timeoutMs) || 30000) };
+      const attemptConfig = { ...effectiveConfig, port, timeoutMs: i === 0 ? firstTimeout : (Number(effectiveConfig.timeoutMs) || 30000) };
       const result = await sendSmtpNative(attemptConfig, mail);
       SMTP_WORKING_PORT = port;
       return result;

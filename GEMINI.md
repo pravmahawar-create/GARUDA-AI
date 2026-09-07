@@ -18,7 +18,7 @@ Whenever generating or dispatching outreach emails, executive briefs, proposals,
    - NEVER generate, display, or transmit fake, hallucinated, or placeholder phone numbers (e.g. no random `+91 91114...` numbers).
    - NEVER use fictitious email addresses or unverified domains.
    - Communications must strictly feature verified, authorized Founder channels:
-     - **Official Verified Email**: `garudaos.ai@gmail.com` (from `.env` SMTP)
+     - **Official Verified Email**: `praveen@garudaos.in` (and backup `garudaos.ai@gmail.com`)
      - **Official Platform Portal**: `https://www.garudaos.in`
      - **Personalized Scoping Chat**: `https://www.garudaos.in/chat?ref={prospectId}`
    - If a personal phone number is not explicitly configured and verified, it must be completely omitted from outgoing collateral.

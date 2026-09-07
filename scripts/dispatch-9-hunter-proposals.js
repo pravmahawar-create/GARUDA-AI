@@ -20,9 +20,9 @@ const PROPOSALS_DIR = path.join(DATA_DIR, "proposals");
 const LOGS_PATH = path.join(DATA_DIR, "outreach-dispatch-log.json");
 
 const smtpConfig = {
-  host: process.env.GARUDA_EMAIL_HOST || "smtp.gmail.com",
-  port: Number(process.env.GARUDA_EMAIL_PORT) || 587,
-  user: process.env.GARUDA_EMAIL_USER,
+  host: process.env.GARUDA_EMAIL_HOST || "smtp.zoho.in",
+  port: Number(process.env.GARUDA_EMAIL_PORT) || 465,
+  user: process.env.GARUDA_EMAIL_USER || "praveen@garudaos.in",
   pass: process.env.GARUDA_EMAIL_PASS
 };
 
@@ -36,7 +36,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function runDispatch() {
   console.log("================================================================================");
   console.log("🦅 GARUDA SOVEREIGN OUTREACH DISPATCH ENGINE");
-  console.log(`Sender: GARUDA AI Systems <${smtpConfig.user}>`);
+  console.log(`Sender: Praveen Mahawar | Founder, GARUDA-AI <${smtpConfig.user}>`);
   console.log(`Gateway: ${smtpConfig.host}:${smtpConfig.port}`);
   console.log("================================================================================\n");
 
@@ -90,7 +90,7 @@ async function runDispatch() {
       `Please view the complete visual architectural brief in this email or explore your interactive scoping room:\n` +
       `• Scoping Room: https://www.garudaos.in/chat?ref=${p.id}\n` +
       `• Platform: https://www.garudaos.in\n\n` +
-      `Sincerely,\nPraveen Mahawar\nFounder & Chief Architect, GARUDA AI Systems\ngarudaos.ai@gmail.com`;
+      `Sincerely,\nPraveen Mahawar\nFounder & Chief Architect, GARUDA AI Systems\npraveen@garudaos.in`;
 
     console.log(`[${i + 1}/9] Dispatching to: ${p.email} (${p.businessName})...`);
 

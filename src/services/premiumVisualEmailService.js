@@ -8,7 +8,7 @@
  * - High-impact SVG concept banners & system architecture visuals (Zero broken image dependencies)
  * - Visual-first narrative: SEE -> FEEL -> UNDERSTAND -> BECOME CURIOUS -> CTA
  * - 100% Anti-Fabrication Law: Zero fake phone numbers, zero unverified emails, zero Niravi brand pollution
- * - Strict Founder identity: Praveen Mahawar, garudaos.ai@gmail.com, https://www.garudaos.in
+ * - Strict Founder identity: Praveen Mahawar, praveen@garudaos.in, https://www.garudaos.in
  */
 
 const fs = require("fs");
@@ -570,7 +570,7 @@ class PremiumVisualEmailService {
                 <div style="color:#F7F7FA; font-size:14px; font-weight:700;">Praveen Mahawar</div>
                 <div style="color:${theme.textMuted}; font-size:11.5px; margin-top:2px;">Founder & Chief Architect &bull; GARUDA AI Systems</div>
                 <div style="color:${theme.accent}; font-size:11.5px; margin-top:6px; font-family:monospace;">
-                  garudaos.in &nbsp;|&nbsp; garudaos.ai@gmail.com
+                  garudaos.in &nbsp;|&nbsp; praveen@garudaos.in
                 </div>
               </div>
             </td>
