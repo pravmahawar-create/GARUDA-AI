@@ -658,8 +658,17 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             </ul>
           </div>
         </div>
-        <div style={{ textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "1.5rem", color: "#5b6472" }}>
-          © {new Date().getFullYear()} GARUDA AI Operating System. Built for deterministic, governed custom software and AI operations.
+        <div style={{ textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "1.5rem", color: "#8d95a7", display: "flex", flexDirection: "column", gap: "0.5rem", alignItems: "center" }}>
+          <div>
+            © {new Date().getFullYear()} GARUDA AI Operating System. Built for deterministic, governed custom software and AI operations.
+          </div>
+          <div style={{ display: "flex", gap: "1.2rem", fontSize: "0.85rem" }}>
+            <a href="/privacy" style={{ color: palette.gold, textDecoration: "none" }}>Privacy Policy</a>
+            <span style={{ color: "rgba(255,255,255,0.2)" }}>•</span>
+            <a href="/terms" style={{ color: palette.gold, textDecoration: "none" }}>Terms of Service</a>
+            <span style={{ color: "rgba(255,255,255,0.2)" }}>•</span>
+            <a href="/what-is-garuda-ai" style={{ color: "#9ca3af", textDecoration: "none" }}>About Platform</a>
+          </div>
         </div>
       </footer>
 

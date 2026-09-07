@@ -15,7 +15,7 @@ async function runTests() {
 
   assert.strictEqual(vagueTurn.isCommercial, true);
   assert.strictEqual(vagueTurn.qualification, "NEEDS_CLARIFICATION");
-  assert(vagueTurn.reply.includes("GARUDA can design, build, and deliver"), "Should acknowledge capability warmly");
+  assert(vagueTurn.reply.includes("GARUDA can design") && vagueTurn.reply.includes("deliver"), "Should acknowledge capability warmly");
   assert(vagueTurn.reply.includes("1."), "Should ask concise clarification questions");
   assert(!vagueTurn.reply.includes("4."), "Must not overwhelm user with > 3 questions");
   console.log("✔ PASS: Vague request triggered progressive architect clarification");

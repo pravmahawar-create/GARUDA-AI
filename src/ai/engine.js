@@ -28,6 +28,18 @@ CRITICAL INSTRUCTIONS FOR INVESTOR INQUIRIES:
 5. Keep your response crisp, impactful, punchy, and conversational (typically 2-4 powerful sentences unless a deeper explanation is requested).
 `;
 
+const AI_FETCH_TIMEOUT_MS = 7000;
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = AI_FETCH_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(id);
+  }
+}
+
 class GarudaAIEngine {
   constructor() {
     this.groqApiKey = process.env.GROQ_API_KEY || null;
@@ -131,7 +143,7 @@ class GarudaAIEngine {
     messages.push({ role: "user", content: query });
 
     let chosenModel = this.primaryModel;
-    let response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    let response = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${this.groqApiKey}`,
@@ -149,7 +161,7 @@ class GarudaAIEngine {
       // Try fallback model
       for (const fallbackModel of this.fallbackModels) {
         chosenModel = fallbackModel;
-        response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        response = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${this.groqApiKey}`,
@@ -180,7 +192,8 @@ class GarudaAIEngine {
 
   async _callGemini(query, history = [], languageHint = "auto") {
     const startTime = Date.now();
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${this.geminiApiKey}`;
+    const geminiModel = process.env.GEMINI_MODEL || process.env.GARUDA_GEMINI_MODEL || "gemini-1.5-flash";
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${this.geminiApiKey}`;
 
     const contents = [];
     const recent = history.slice(-4);
@@ -191,7 +204,7 @@ class GarudaAIEngine {
     }
     contents.push({ role: "user", parts: [{ text: query }] });
 
-    const response = await fetch(endpoint, {
+    const response = await fetchWithTimeout(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -209,7 +222,7 @@ class GarudaAIEngine {
     const data = await response.json();
     const content = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
     const latencyMs = Date.now() - startTime;
-    return { content, model: "gemini-2.5-flash", latencyMs };
+    return { content, model: geminiModel, latencyMs };
   }
 
   async _callNvidia(query, history = []) {
@@ -219,7 +232,7 @@ class GarudaAIEngine {
     ];
     messages.push({ role: "user", content: query });
 
-    const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+    const response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${this.nvidiaApiKey}`,

@@ -59,7 +59,7 @@ function isGeneralKnowledgeOrCodeQuestion(text = "") {
   return false;
 }
 
-const EXPLICIT_COMMERCIAL_REGEX = /\b((?:i\s*)?(?:want|need|looking)\s*(?:to\s*build|an?\s*app|a\s*(?:custom\s*)?website|a\s*(?:custom\s*)?saas|an?\s*ai\s*agent|a\s*bot|a\s*crm|software)|build\s*me|develop\s*a|create\s*an?\s*(?:app|website|saas|bot|platform|system|portal|dashboard)|custom\s*(?:software|website|app|crm|saas|agent|bot|dashboard|portal)|software\s*development|web\s*development|mobile\s*app\s*development|ai\s*agent\s*development|saas\s*mvp|automation\s*workflow|whatsapp\s*bot|telegram\s*bot|rag\s*pipeline|crm\s*system|lead\s*generation\s*system|hire\s*developers?|looking\s*for\s*(?:a\s*)?(?:developer|engineer|agency|freelancer)|project\s*quote|cost\s*of\s*development|pricing\s*for|proposal\s*for|send\s*(?:a\s*|me\s*a\s*)?proposal|give\s*me\s*a\s*quote|what\s*is\s*(?:the|your)?\s*quote|quote\s*(?:and|&)\s*timeline|quote\s*for|how\s*much\s*(?:would\s*it\s*cost|for\s*(?:a|an)|to\s*build)|what\s*are\s*your\s*charges|what\s*is\s*the\s*cost|can\s*garuda\s*build)\b/i;
+const EXPLICIT_COMMERCIAL_REGEX = /\b((?:i\s*)?(?:want|need|looking)\s*(?:to\s*build|an?\s*app|a\s*(?:custom\s*)?website|a\s*(?:custom\s*)?saas|an?\s*ai\s*agent|a\s*bot|a\s*crm|software)|build\s*(?:me|an?|a)|develop\s*(?:a|an?)|create\s*an?\s*(?:app|website|saas|bot|platform|system|portal|dashboard)|custom\s*(?:software|website|app|crm|saas|agent|bot|dashboard|portal)|software\s*development|web\s*development|mobile\s*app\s*development|ai\s*agent\s*development|saas\s*mvp|automation\s*workflow|whatsapp\s*bot|telegram\s*bot|rag\s*pipeline|crm\s*system|lead\s*generation\s*system|hire\s*developers?|looking\s*for\s*(?:a\s*)?(?:developer|engineer|agency|freelancer)|project\s*quote|cost\s*of\s*development|pricing\s*for|proposal\s*for|send\s*(?:a\s*|me\s*a\s*)?proposal|give\s*me\s*a\s*quote|what\s*is\s*(?:the|your)?\s*quote|quote\s*(?:and|&)\s*timeline|quote\s*for|quote\s*in\s*(?:usd|inr)|how\s*much\s*(?:would\s*it\s*cost|for\s*(?:a|an)|to\s*build)|what\s*are\s*your\s*charges|what\s*is\s*the\s*cost|can\s*garuda\s*build)\b/i;
 
 function isCommercialIntent(text = "", history = []) {
   const clean = String(text || "").trim().toLowerCase();
@@ -261,9 +261,9 @@ class PublicChatCommercialAgentService {
           "Cryptographic SHA-256 delivery manifest and deployment support"
         ];
 
-    // If user explicitly asked for a proposal or conversation is mature, generate a canonical Proposal
+    // If user explicitly asked for a proposal, specified budget, or conversation is mature, generate a canonical Proposal
     let proposal = null;
-    if (req.hasExplicitQuoteRequest || rawMessage.toLowerCase().includes("proposal") || rawMessage.toLowerCase().includes("quote") || (history.length >= 2 && req.features.length >= 1)) {
+    if (req.hasExplicitQuoteRequest || req.budget || rawMessage.toLowerCase().includes("proposal") || rawMessage.toLowerCase().includes("quote") || (history.length >= 2 && req.features.length >= 1)) {
       try {
         proposal = await clientProposalService.createProposal({
           title: `${req.platform}: Custom Solution`,

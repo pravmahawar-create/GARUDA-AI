@@ -109,57 +109,87 @@ function FormattedContent({ content }) {
   );
 }
 
+const RENDER_CHAT_URL = "https://garuda-ai-xfif.onrender.com/api/public-chat";
+
 async function sendMessage(message, history, conversationId, signal) {
   const attribution = getAttributionPayload();
-  let res;
+  const payload = JSON.stringify({
+    message,
+    history: (history || []).map((m) => ({
+      role: m.role === "user" ? "user" : "model",
+      text: m.text
+    })),
+    conversationId: conversationId || null,
+    attribution
+  });
+
+  // 1. Try primary endpoint (/api/public-chat) with an 8-second internal race timeout
+  let primaryData = null;
+  let primaryFailed = false;
+
   try {
-    res = await fetch("/api/public-chat", {
+    const primaryCtrl = new AbortController();
+    const timer = setTimeout(() => primaryCtrl.abort(), 8000);
+    const combinedSignal = signal ? anySignal([signal, primaryCtrl.signal]) : primaryCtrl.signal;
+
+    const res = await fetch("/api/public-chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
-      signal,
-      body: JSON.stringify({
-        message,
-        history: (history || []).map((m) => ({
-          role: m.role === "user" ? "user" : "model",
-          text: m.text
-        })),
-        conversationId: conversationId || null,
-        attribution
-      })
+      signal: combinedSignal,
+      body: payload
     });
-  } catch (netErr) {
-    if (netErr?.name === "AbortError" || /abort/i.test(String(netErr?.message))) throw netErr;
-    throw new Error("Unable to connect to GARUDA. Please check your connection and try again.");
+    clearTimeout(timer);
+
+    if (res.ok) {
+      primaryData = await res.json().catch(() => null);
+      if (primaryData && (primaryData.reply || primaryData.success)) {
+        return primaryData;
+      }
+    } else {
+      primaryFailed = true;
+    }
+  } catch (err) {
+    if (signal?.aborted) throw err;
+    primaryFailed = true;
   }
 
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const rawError = String(data.error || "");
-    if (/jwt|token|expired|unauthorized|bearer/i.test(rawError)) {
-      try {
-        const retryRes = await fetch("/api/public-chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          signal,
-          body: JSON.stringify({
-            message,
-            history: (history || []).map((m) => ({
-              role: m.role === "user" ? "user" : "model",
-              text: m.text
-            })),
-            conversationId: null,
-            attribution
-          })
-        });
-        const retryData = await retryRes.json().catch(() => ({}));
-        if (retryRes.ok && retryData?.reply) return retryData;
-      } catch {}
-      throw new Error("GARUDA AI is ready. How can I assist you today?");
+  // 2. High-availability failover directly to active Render backend
+  if (primaryFailed || !primaryData) {
+    try {
+      const renderRes = await fetch(RENDER_CHAT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal,
+        body: payload
+      });
+
+      if (renderRes.ok) {
+        const renderData = await renderRes.json().catch(() => null);
+        if (renderData && (renderData.reply || renderData.success)) {
+          return renderData;
+        }
+      }
+    } catch (renderErr) {
+      if (renderErr?.name === "AbortError" || /abort/i.test(String(renderErr?.message))) throw renderErr;
     }
-    throw new Error(data.error || "Failed to get AI response. Please try again.");
   }
-  return data;
+
+  if (primaryData && primaryData.reply) return primaryData;
+  throw new Error("Unable to connect to GARUDA. Please check your connection and try again.");
+}
+
+function anySignal(signals) {
+  const controller = new AbortController();
+  for (const s of signals) {
+    if (!s) continue;
+    if (s.aborted) {
+      controller.abort();
+      return controller.signal;
+    }
+    s.addEventListener("abort", () => controller.abort(), { once: true });
+  }
+  return controller.signal;
 }
 
 export default function ChatConsole({

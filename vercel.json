@@ -42,7 +42,7 @@
     },
     {
       "source": "/api/public-chat",
-      "destination": "/api/public-chat"
+      "destination": "https://garuda-ai-xfif.onrender.com/api/public-chat"
     },
     {
       "source": "/api/scholar-chat",
@@ -347,6 +347,22 @@
     {
       "source": "/services/:slug",
       "destination": "/index.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy/index.html"
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/privacy/index.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms/index.html"
+    },
+    {
+      "source": "/terms-of-service",
+      "destination": "/terms/index.html"
     },
     {
       "source": "/(.*)",

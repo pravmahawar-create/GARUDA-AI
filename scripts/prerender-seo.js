@@ -500,6 +500,40 @@ const ROUTES = [
     `
   },
   {
+    path: "/privacy",
+    filePaths: [
+      path.join(DIST_DIR, "privacy", "index.html"),
+      path.join(DIST_DIR, "privacy.html")
+    ],
+    title: "Privacy Policy | GARUDA AI Operating System",
+    description: "Official Privacy Policy of GARUDA AI (garudaos.in). Comprehensive data governance, Google API Services User Data Policy disclosure, and user data rights.",
+    canonical: "https://www.garudaos.in/privacy",
+    h1: "GARUDA AI Privacy Policy",
+    eyebrow: "DATA GOVERNANCE & PRIVACY",
+    contentSnippet: `
+      <h2>Data Governance & Google API Services User Data Policy</h2>
+      <p>GARUDA AI adheres strictly to the Google API Services User Data Policy, including the Limited Use requirements. We do not sell user data, transfer it for advertising, or use it to train generalized AI models without affirmative consent.</p>
+      <p>Contact: garudaos.ai@gmail.com | Founder: Praveen Mahawar</p>
+    `
+  },
+  {
+    path: "/terms",
+    filePaths: [
+      path.join(DIST_DIR, "terms", "index.html"),
+      path.join(DIST_DIR, "terms.html")
+    ],
+    title: "Terms of Service | GARUDA AI Operating System",
+    description: "Official Terms of Service for GARUDA AI (garudaos.in). Operational terms, commercial milestone agreements, intellectual property rights, and third-party API terms.",
+    canonical: "https://www.garudaos.in/terms",
+    h1: "GARUDA AI Terms of Service",
+    eyebrow: "USER AGREEMENT & COMMERCIAL COVENANT",
+    contentSnippet: `
+      <h2>Platform Terms & Commercial Milestone Covenant</h2>
+      <p>By using GARUDA AI, you agree to our terms governing custom AI development, SaaS MVPs, BOT-VERSE YouTube automation, and deterministic milestone deliverables backed by SHA-256 evidence.</p>
+      <p>Founder: Praveen Mahawar | Official Platform: https://www.garudaos.in</p>
+    `
+  },
+  {
     path: "/guides",
     filePaths: [
       path.join(DIST_DIR, "guides", "index.html"),

@@ -589,10 +589,13 @@ module.exports = async function handler(req, res) {
       try {
         const { conversationBrainService } = require("../src/services/conversationBrainService");
         const brainSessionId = conversationId || "public-chat-session";
-        const brainRes = await conversationBrainService.process(finalMessage, {
-          sessionId: brainSessionId,
-          garudaContext: { isPublicChat: true, source: "publicChat" }
-        });
+        const brainRes = await Promise.race([
+          conversationBrainService.process(finalMessage, {
+            sessionId: brainSessionId,
+            garudaContext: { isPublicChat: true, source: "publicChat" }
+          }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Conversation brain processing timeout")), 7000))
+        ]);
 
         reply = brainRes?.data?.answer || brainRes?.data?.speechText || "I am ready to assist you.";
         truthStatus = brainRes?.data?.truthStatus || "VERIFIED";
@@ -602,7 +605,14 @@ module.exports = async function handler(req, res) {
         topic = brainRes?.data?.topic || "general";
       } catch (brainErr) {
         console.warn("[PublicChat] Brain service error, engaging direct AI engine fallback:", brainErr?.message || brainErr);
-        reply = await generateReply(finalMessage, Array.isArray(history) ? history : [], attachments);
+        try {
+          reply = await Promise.race([
+            generateReply(finalMessage, Array.isArray(history) ? history : [], attachments),
+            new Promise((_, reject) => setTimeout(() => reject(new Error("AI generateReply timeout")), 6000))
+          ]);
+        } catch {
+          reply = generateLocalFallback(finalMessage);
+        }
         truthStatus = "VERIFIED";
         intent = "ANSWER_ONLY";
       }
