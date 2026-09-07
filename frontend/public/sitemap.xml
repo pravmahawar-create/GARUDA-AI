@@ -131,4 +131,24 @@
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
+
+  <!-- Founder Entity & Governance -->
+  <url>
+    <loc>https://www.garudaos.in/praveen-mahawar</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/privacy</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://www.garudaos.in/terms</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
 </urlset>
