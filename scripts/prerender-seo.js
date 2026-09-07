@@ -1172,34 +1172,6 @@ const ROUTES = [
         "Deterministic Software Verification"
       ]
     }
-  },
-  {
-    path: "/privacy",
-    filePaths: [
-      path.join(DIST_DIR, "privacy", "index.html"),
-      path.join(DIST_DIR, "privacy.html"),
-      path.join(DIST_DIR, "privacy-policy", "index.html"),
-      path.join(DIST_DIR, "privacy-policy.html")
-    ],
-    title: "Privacy Policy | GARUDA AI Operating System",
-    description: "GARUDA AI Privacy Policy, Google API Services User Data Policy compliance, YouTube Limited Use disclosures, and data protection terms.",
-    canonical: "https://www.garudaos.in/privacy",
-    h1: "Privacy Policy",
-    eyebrow: "LEGAL GOVERNANCE & USER DATA PRIVACY"
-  },
-  {
-    path: "/terms",
-    filePaths: [
-      path.join(DIST_DIR, "terms", "index.html"),
-      path.join(DIST_DIR, "terms.html"),
-      path.join(DIST_DIR, "terms-of-service", "index.html"),
-      path.join(DIST_DIR, "terms-of-service.html")
-    ],
-    title: "Terms of Service | GARUDA AI Operating System",
-    description: "GARUDA AI Terms of Service, YouTube API Terms of Service alignment, milestone governance, and commercial service stipulations.",
-    canonical: "https://www.garudaos.in/terms",
-    h1: "Terms of Service",
-    eyebrow: "LEGAL GOVERNANCE & OPERATING TERMS"
   }
 ];
 
