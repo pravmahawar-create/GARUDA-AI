@@ -1,6 +1,9 @@
 User-agent: *
 Allow: /
 Allow: /what-is-garuda-ai
+Allow: /praveen-mahawar
+Allow: /pawan
+Allow: /cloth-gst
 Allow: /chat
 Allow: /services/
 Allow: /guides/
