@@ -400,7 +400,7 @@ function sendSmtpNative(config, mail) {
         if (mail.html) {
           const boundary = `----=_Part_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;
           emailContent = [
-            `From: Praveen Mahawar | Founder, GARUDA-AI <${user}>`,
+            `From: "Praveen Mahawar" <${user}>`,
             `To: <${mail.to}>`,
             `Subject: ${mail.subject}`,
             `Date: ${new Date().toUTCString()}`,
@@ -425,7 +425,7 @@ function sendSmtpNative(config, mail) {
           ].join("\r\n");
         } else {
           emailContent = [
-            `From: Praveen Mahawar | Founder, GARUDA-AI <${user}>`,
+            `From: "Praveen Mahawar" <${user}>`,
             `To: <${mail.to}>`,
             `Subject: ${mail.subject}`,
             `Date: ${new Date().toUTCString()}`,
