@@ -20,6 +20,7 @@ data/*
 !data/proposals/
 !data/revenue-wave2-dispatch-log.json
 !data/outreach-dispatch-log.json
+!data/subcontracting-50lakh-dispatch-log.json
 !data/web_services-prospects.json
 !data/performance-marketing-buyers.json
 !data/deep-marketing-leads.json

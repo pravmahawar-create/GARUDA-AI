@@ -1,4 +1,469 @@
 {
+  "prop_medident_indore": {
+    "proposalId": "prop_medident_indore",
+    "version": 1,
+    "candidateId": "cand_medident_indore",
+    "scopeId": "scope_medident_indore",
+    "project": {
+      "title": "Medident Clinic — 24/7 WhatsApp AI Receptionist & Paperless Intake PWA",
+      "requirements": "Deploy 24/7 intelligent patient triage on clinic WhatsApp, automatic treatment FAQ answers (Implants, RCT, Consultation fees), Google Calendar appointment booking, and 1-tap paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist",
+        "paperless_pwa_intake"
+      ]
+    },
+    "client": {
+      "name": "Dr. Priya Joshi & Dr. Prakash Joshi",
+      "email": "drpriyajoshi2010@gmail.com",
+      "phone": "+917314969589",
+      "organization": "Medident Clinic (Indore)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication & Automation OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
+        "Automated Treatment FAQs & Pricing Bands (RCT, Implants, General Consultation)",
+        "Zero-Wait Appointment Booking synced to Google Calendar / Reception Diary",
+        "1-Tap QR Paperless Patient Intake PWA (No app download required)",
+        "Automated WhatsApp Post-Treatment Care Instructions (Day 1, 3, 7 Follow-ups)",
+        "Dedicated 48-hour turnkey deployment by Founder Praveen Mahawar's engineering workforce",
+        "14-Day Zero-Defect Performance Warranty & Reception Staff Handover"
+      ],
+      "exclusions": [
+        "Official Meta WhatsApp API conversation fees if any (billed at actuals by Meta)",
+        "Physical hardware devices (runs directly on existing clinic smartphones & tablets)"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Kickoff Advance (Core WhatsApp AI Build)",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot, treatment knowledge base, and booking calendar integration."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Acceptance & Paperless Intake PWA",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Live reception testing, QR intake form rollout, staff training walkthrough, and final handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 35000,
+      "depositAmount": 17500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_medident_indore",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:33.803Z"
+  },
+  "prop_sanghvi_mumbai": {
+    "proposalId": "prop_sanghvi_mumbai",
+    "version": 1,
+    "candidateId": "cand_sanghvi_mumbai",
+    "scopeId": "scope_sanghvi_mumbai",
+    "project": {
+      "title": "Sanghvi's Dental Clinic — 24/7 WhatsApp AI Receptionist & Cosmetic Triage PWA",
+      "requirements": "Deploy 24/7 VIP cosmetic consultation pre-screening, treatment catalog showcase, Google Calendar booking, and 1-tap paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist",
+        "paperless_pwa_intake"
+      ]
+    },
+    "client": {
+      "name": "Dr. Aashal Sanghvi",
+      "email": "draashalsanghvi@gmail.com",
+      "phone": "+919819801940",
+      "organization": "Sanghvi's Dental Clinic (Santacruz West, Mumbai)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication & Automation OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
+        "Cosmetic Patient Triage & Smile Consultation Pre-Screening",
+        "Zero-Wait Appointment Booking synced to Google Calendar / Reception Diary",
+        "1-Tap QR Paperless Patient Intake PWA (No app download required)",
+        "Automated WhatsApp Post-Treatment Care Instructions (Day 1, 3, 7 Follow-ups)",
+        "Dedicated 48-hour turnkey deployment by Founder Praveen Mahawar's engineering workforce",
+        "14-Day Zero-Defect Performance Warranty & Reception Staff Handover"
+      ],
+      "exclusions": [
+        "Official Meta WhatsApp API conversation fees if any (billed at actuals by Meta)",
+        "Physical hardware devices (runs directly on existing clinic smartphones & tablets)"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Kickoff Advance (Core WhatsApp AI Build)",
+        "amount": 20000,
+        "amountINR": 20000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot, cosmetic catalog, and booking calendar integration."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Acceptance & Paperless Intake PWA",
+        "amount": 20000,
+        "amountINR": 20000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Live reception testing, QR intake form rollout, staff training walkthrough, and final handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 40000,
+      "depositAmount": 20000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_sanghvi_mumbai",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:47:52.550Z"
+  },
+  "prop_kanupriya_kolkata": {
+    "proposalId": "prop_kanupriya_kolkata",
+    "version": 1,
+    "candidateId": "cand_kanupriya_kolkata",
+    "scopeId": "scope_kanupriya_kolkata",
+    "project": {
+      "title": "Dr Kanupriya Advanced Dentistry — 24/7 WhatsApp AI Receptionist & Paperless Intake PWA",
+      "requirements": "Deploy 24/7 intelligent patient triage on clinic WhatsApp, automatic treatment FAQ answers (Orthodontics, Braces, Implants), and 1-tap paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist",
+        "paperless_pwa_intake"
+      ]
+    },
+    "client": {
+      "name": "Dr. Kanupriya",
+      "email": "care@drkanupriya.in",
+      "phone": "+919831246464",
+      "organization": "Dr Kanupriya Advanced Dentistry (Kolkata)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication & Automation OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
+        "Automated Treatment FAQs & Pricing Bands (Orthodontics, Clear Aligners, Implants)",
+        "Zero-Wait Appointment Booking synced to Google Calendar / Reception Diary",
+        "1-Tap QR Paperless Patient Intake PWA (No app download required)",
+        "Automated WhatsApp Post-Treatment Care Instructions (Day 1, 3, 7 Follow-ups)",
+        "Dedicated 48-hour turnkey deployment by Founder Praveen Mahawar's engineering workforce",
+        "14-Day Zero-Defect Performance Warranty & Reception Staff Handover"
+      ],
+      "exclusions": [
+        "Official Meta WhatsApp API conversation fees if any (billed at actuals by Meta)",
+        "Physical hardware devices (runs directly on existing clinic smartphones & tablets)"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Kickoff Advance (Core WhatsApp AI Build)",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot, treatment knowledge base, and booking calendar integration."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Acceptance & Paperless Intake PWA",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Live reception testing, QR intake form rollout, staff training walkthrough, and final handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 35000,
+      "depositAmount": 17500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_kanupriya_kolkata",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:36.550Z"
+  },
+  "prop_onedental_mumbai": {
+    "proposalId": "prop_onedental_mumbai",
+    "version": 1,
+    "candidateId": "cand_onedental_mumbai",
+    "scopeId": "scope_onedental_mumbai",
+    "project": {
+      "title": "One Dental Solutions — 24/7 WhatsApp AI Receptionist & Intake PWA",
+      "requirements": "Deploy 24/7 intelligent patient triage on clinic WhatsApp, automatic treatment FAQ answers, and 1-tap paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist",
+        "paperless_pwa_intake"
+      ]
+    },
+    "client": {
+      "name": "Dr. Aseem Agrawal",
+      "email": "aseem.dr@gmail.com",
+      "phone": "+918779376034",
+      "organization": "One Dental Solutions (Malad West, Mumbai)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication & Automation OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
+        "Automated Treatment FAQs & Pricing Bands",
+        "Zero-Wait Appointment Booking synced to Google Calendar",
+        "1-Tap QR Paperless Patient Intake PWA",
+        "Automated WhatsApp Post-Treatment Care Instructions",
+        "Dedicated 48-hour turnkey deployment",
+        "14-Day Zero-Defect Performance Warranty"
+      ],
+      "exclusions": [
+        "Official Meta fees if any"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Kickoff Advance",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot and booking integration."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Acceptance",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Live reception testing and staff training walkthrough."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 35000,
+      "depositAmount": 17500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_onedental_mumbai",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:37.004Z"
+  },
+  "prop_indore_dental": {
+    "proposalId": "prop_indore_dental",
+    "version": 1,
+    "candidateId": "cand_indore_dental",
+    "scopeId": "scope_indore_dental",
+    "project": {
+      "title": "Indore Dental Clinic — 24/7 WhatsApp AI Receptionist & Booking Node",
+      "requirements": "Automate repetitive treatment inquiries (RCT cost, cleaning, extraction) and appointment booking on WhatsApp in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist"
+      ]
+    },
+    "client": {
+      "name": "Chief Dental Surgeon",
+      "email": "contact@indoredentalclinic.com",
+      "phone": "+918461966613",
+      "organization": "Indore Dental Clinic (Indore)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist on clinic WhatsApp number",
+        "Treatment FAQs & Pricing Bands",
+        "Appointment Booking Integration",
+        "48-hour turnkey deployment",
+        "14-Day Warranty"
+      ],
+      "exclusions": [
+        "Official Meta fees if any"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance",
+        "amount": 15000,
+        "amountINR": 15000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Core WhatsApp bot deployment."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Handover",
+        "amount": 15000,
+        "amountINR": 15000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Staff handover & testing."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 30000,
+      "depositAmount": 15000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_indore_dental",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:37.528Z"
+  },
+  "prop_giggles_mumbai": {
+    "proposalId": "prop_giggles_mumbai",
+    "version": 1,
+    "candidateId": "cand_giggles_mumbai",
+    "scopeId": "scope_giggles_mumbai",
+    "project": {
+      "title": "Giggles & Grins Kids Dentistry — 24/7 Pediatric WhatsApp Concierge & Intake PWA",
+      "requirements": "Deploy 24/7 parent emergency triage, appointment booking, and paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "pediatric_dental_automation",
+        "whatsapp_ai_receptionist"
+      ]
+    },
+    "client": {
+      "name": "Pediatric Dental Team",
+      "email": "gigglesgrinsmumbai@gmail.com",
+      "phone": "+918072710242",
+      "organization": "Giggles & Grins Kids Dentistry (Dadar, Mumbai)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 Pediatric WhatsApp AI Concierge",
+        "Parent Emergency Dental Triage Guidance",
+        "Zero-Wait Appointment Booking",
+        "1-Tap QR Paperless Patient Intake PWA",
+        "48-hour turnkey deployment"
+      ],
+      "exclusions": [
+        "Official Meta fees if any"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Pediatric concierge deployment."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Handover",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Reception QR rollout & testing."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 35000,
+      "depositAmount": 17500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_giggles_mumbai",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:38.001Z"
+  },
   "prop_1787987601915_259c9e": {
     "proposalId": "prop_1787987601915_259c9e",
     "version": 1,
@@ -49049,469 +49514,952 @@
       }
     ]
   },
-  "prop_medident_indore": {
-    "proposalId": "prop_medident_indore",
+  "prop_agency_thedistance_uk": {
+    "proposalId": "prop_agency_thedistance_uk",
     "version": 1,
-    "candidateId": "cand_medident_indore",
-    "scopeId": "scope_medident_indore",
+    "candidateId": "cand_agency_thedistance_uk",
+    "scopeId": "scope_agency_thedistance_uk",
     "project": {
-      "title": "Medident Clinic — 24/7 WhatsApp AI Receptionist & Paperless Intake PWA",
-      "requirements": "Deploy 24/7 intelligent patient triage on clinic WhatsApp, automatic treatment FAQ answers (Implants, RCT, Consultation fees), Google Calendar appointment booking, and 1-tap paperless intake PWA in 48 hours.",
-      "category": "Healthcare & Clinic Automation",
+      "title": "The Distance App Developers — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "48-Hour Sovereign ReAct Sprint Node: Deploys complete React Native/PWA cross-platform modules, offline sync engine, and automated SHA-256 test manifests under white-label NDA.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
       "tags": [
-        "dental_clinic_automation",
-        "whatsapp_ai_receptionist",
-        "paperless_pwa_intake"
+        "uk_mobile_agency",
+        "react_native",
+        "pwa_sprint",
+        "sovereign_subcontract"
       ]
     },
     "client": {
-      "name": "Dr. Priya Joshi & Dr. Prakash Joshi",
-      "email": "drpriyajoshi2010@gmail.com",
-      "phone": "+917314969589",
-      "organization": "Medident Clinic (Indore)"
+      "name": "Partnership & Technology Director",
+      "email": "hello@thedistance.co.uk",
+      "phone": "+919098750362",
+      "organization": "The Distance App Developers"
     },
     "capabilityMatch": {
-      "name": "Autonomous Healthcare Growth Node",
-      "category": "Communication & Automation OS",
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
       "matchScore": 99,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
-        "Automated Treatment FAQs & Pricing Bands (RCT, Implants, General Consultation)",
-        "Zero-Wait Appointment Booking synced to Google Calendar / Reception Diary",
-        "1-Tap QR Paperless Patient Intake PWA (No app download required)",
-        "Automated WhatsApp Post-Treatment Care Instructions (Day 1, 3, 7 Follow-ups)",
-        "Dedicated 48-hour turnkey deployment by Founder Praveen Mahawar's engineering workforce",
-        "14-Day Zero-Defect Performance Warranty & Reception Staff Handover"
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
       ],
       "exclusions": [
-        "Official Meta WhatsApp API conversation fees if any (billed at actuals by Meta)",
-        "Physical hardware devices (runs directly on existing clinic smartphones & tablets)"
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Kickoff Advance (Core WhatsApp AI Build)",
-        "amount": 17500,
-        "amountINR": 17500,
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1750,
+        "amountINR": 187250,
         "percentage": 50,
         "status": "PENDING",
-        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot, treatment knowledge base, and booking calendar integration."
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Acceptance & Paperless Intake PWA",
-        "amount": 17500,
-        "amountINR": 17500,
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1750,
+        "amountINR": 187250,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Live reception testing, QR intake form rollout, staff training walkthrough, and final handover."
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
       }
     ],
     "pricing": {
-      "currency": "INR",
-      "totalAmount": 35000,
-      "depositAmount": 17500,
+      "currency": "GBP",
+      "totalAmount": 3500,
+      "depositAmount": 1750,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 2,
+      "estimatedDeliveryDays": 3,
       "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-10"
+      "targetDeliveryDate": "2026-09-11"
     },
-    "status": "APPROVED",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_medident_indore",
-    "createdAt": "2026-09-08T11:06:52.789Z",
-    "updatedAt": "2026-09-08T11:23:33.803Z"
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_thedistance_uk",
+    "createdAt": "2026-09-08T12:08:32.146Z",
+    "updatedAt": "2026-09-08T12:08:32.146Z"
   },
-  "prop_sanghvi_mumbai": {
-    "proposalId": "prop_sanghvi_mumbai",
+  "prop_agency_3sidedcube_uk": {
+    "proposalId": "prop_agency_3sidedcube_uk",
     "version": 1,
-    "candidateId": "cand_sanghvi_mumbai",
-    "scopeId": "scope_sanghvi_mumbai",
+    "candidateId": "cand_agency_3sidedcube_uk",
+    "scopeId": "scope_agency_3sidedcube_uk",
     "project": {
-      "title": "Sanghvi's Dental Clinic — 24/7 WhatsApp AI Receptionist & Cosmetic Triage PWA",
-      "requirements": "Deploy 24/7 VIP cosmetic consultation pre-screening, treatment catalog showcase, Google Calendar booking, and 1-tap paperless intake PWA in 48 hours.",
-      "category": "Healthcare & Clinic Automation",
+      "title": "3SidedCube Tech Agency — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Autonomous Cloud API & Webhook Node: Sub-100ms microservice pipelines, deterministic event bus, and cryptographic verification suite delivered in 72 hours.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
       "tags": [
-        "dental_clinic_automation",
-        "whatsapp_ai_receptionist",
-        "paperless_pwa_intake"
+        "uk_tech_agency",
+        "cloud_api",
+        "event_bus",
+        "sovereign_subcontract"
       ]
     },
     "client": {
-      "name": "Dr. Aashal Sanghvi",
-      "email": "draashalsanghvi@gmail.com",
-      "phone": "+919819801940",
-      "organization": "Sanghvi's Dental Clinic (Santacruz West, Mumbai)"
+      "name": "Executive Leadership & Tech Team",
+      "email": "holla@3sidedcube.com",
+      "phone": "+919098750362",
+      "organization": "3SidedCube Tech Agency"
     },
     "capabilityMatch": {
-      "name": "Autonomous Healthcare Growth Node",
-      "category": "Communication & Automation OS",
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
       "matchScore": 99,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
-        "Cosmetic Patient Triage & Smile Consultation Pre-Screening",
-        "Zero-Wait Appointment Booking synced to Google Calendar / Reception Diary",
-        "1-Tap QR Paperless Patient Intake PWA (No app download required)",
-        "Automated WhatsApp Post-Treatment Care Instructions (Day 1, 3, 7 Follow-ups)",
-        "Dedicated 48-hour turnkey deployment by Founder Praveen Mahawar's engineering workforce",
-        "14-Day Zero-Defect Performance Warranty & Reception Staff Handover"
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
       ],
       "exclusions": [
-        "Official Meta WhatsApp API conversation fees if any (billed at actuals by Meta)",
-        "Physical hardware devices (runs directly on existing clinic smartphones & tablets)"
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Kickoff Advance (Core WhatsApp AI Build)",
-        "amount": 20000,
-        "amountINR": 20000,
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1900,
+        "amountINR": 203300,
         "percentage": 50,
         "status": "PENDING",
-        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot, cosmetic catalog, and booking calendar integration."
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Acceptance & Paperless Intake PWA",
-        "amount": 20000,
-        "amountINR": 20000,
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1900,
+        "amountINR": 203300,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Live reception testing, QR intake form rollout, staff training walkthrough, and final handover."
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
       }
     ],
     "pricing": {
-      "currency": "INR",
-      "totalAmount": 40000,
-      "depositAmount": 20000,
+      "currency": "GBP",
+      "totalAmount": 3800,
+      "depositAmount": 1900,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 2,
+      "estimatedDeliveryDays": 3,
       "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-10"
+      "targetDeliveryDate": "2026-09-11"
     },
-    "status": "APPROVED",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_sanghvi_mumbai",
-    "createdAt": "2026-09-08T11:06:52.789Z",
-    "updatedAt": "2026-09-08T11:23:35.678Z"
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_3sidedcube_uk",
+    "createdAt": "2026-09-08T12:08:33.805Z",
+    "updatedAt": "2026-09-08T12:08:33.805Z"
   },
-  "prop_kanupriya_kolkata": {
-    "proposalId": "prop_kanupriya_kolkata",
+  "prop_agency_pixelfield_uk": {
+    "proposalId": "prop_agency_pixelfield_uk",
     "version": 1,
-    "candidateId": "cand_kanupriya_kolkata",
-    "scopeId": "scope_kanupriya_kolkata",
+    "candidateId": "cand_agency_pixelfield_uk",
+    "scopeId": "scope_agency_pixelfield_uk",
     "project": {
-      "title": "Dr Kanupriya Advanced Dentistry — 24/7 WhatsApp AI Receptionist & Paperless Intake PWA",
-      "requirements": "Deploy 24/7 intelligent patient triage on clinic WhatsApp, automatic treatment FAQ answers (Orthodontics, Braces, Implants), and 1-tap paperless intake PWA in 48 hours.",
-      "category": "Healthcare & Clinic Automation",
+      "title": "Pixelfield Mobile & Web Studio — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Zero-Debt Next.js 14 Full-Stack Sprint Pod: Server Actions, Tailwind CSS, secure auth, and automated QA delivered in 48-72 hours under strict white-label.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
       "tags": [
-        "dental_clinic_automation",
-        "whatsapp_ai_receptionist",
-        "paperless_pwa_intake"
+        "london_agency",
+        "nextjs14",
+        "mvp_sprint",
+        "sovereign_subcontract"
       ]
     },
     "client": {
-      "name": "Dr. Kanupriya",
-      "email": "care@drkanupriya.in",
-      "phone": "+919831246464",
-      "organization": "Dr Kanupriya Advanced Dentistry (Kolkata)"
+      "name": "Partnerships & Engineering Lead",
+      "email": "hello@pixelfield.co.uk",
+      "phone": "+919098750362",
+      "organization": "Pixelfield Mobile & Web Studio"
     },
     "capabilityMatch": {
-      "name": "Autonomous Healthcare Growth Node",
-      "category": "Communication & Automation OS",
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
       "matchScore": 99,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
-        "Automated Treatment FAQs & Pricing Bands (Orthodontics, Clear Aligners, Implants)",
-        "Zero-Wait Appointment Booking synced to Google Calendar / Reception Diary",
-        "1-Tap QR Paperless Patient Intake PWA (No app download required)",
-        "Automated WhatsApp Post-Treatment Care Instructions (Day 1, 3, 7 Follow-ups)",
-        "Dedicated 48-hour turnkey deployment by Founder Praveen Mahawar's engineering workforce",
-        "14-Day Zero-Defect Performance Warranty & Reception Staff Handover"
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
       ],
       "exclusions": [
-        "Official Meta WhatsApp API conversation fees if any (billed at actuals by Meta)",
-        "Physical hardware devices (runs directly on existing clinic smartphones & tablets)"
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Kickoff Advance (Core WhatsApp AI Build)",
-        "amount": 17500,
-        "amountINR": 17500,
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1800,
+        "amountINR": 192600,
         "percentage": 50,
         "status": "PENDING",
-        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot, treatment knowledge base, and booking calendar integration."
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Acceptance & Paperless Intake PWA",
-        "amount": 17500,
-        "amountINR": 17500,
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1800,
+        "amountINR": 192600,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Live reception testing, QR intake form rollout, staff training walkthrough, and final handover."
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
       }
     ],
     "pricing": {
-      "currency": "INR",
-      "totalAmount": 35000,
-      "depositAmount": 17500,
+      "currency": "GBP",
+      "totalAmount": 3600,
+      "depositAmount": 1800,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 2,
+      "estimatedDeliveryDays": 3,
       "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-10"
+      "targetDeliveryDate": "2026-09-11"
     },
-    "status": "APPROVED",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_kanupriya_kolkata",
-    "createdAt": "2026-09-08T11:06:52.789Z",
-    "updatedAt": "2026-09-08T11:23:36.550Z"
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_pixelfield_uk",
+    "createdAt": "2026-09-08T12:08:34.328Z",
+    "updatedAt": "2026-09-08T12:08:34.328Z"
   },
-  "prop_onedental_mumbai": {
-    "proposalId": "prop_onedental_mumbai",
+  "prop_agency_stellified_uk": {
+    "proposalId": "prop_agency_stellified_uk",
     "version": 1,
-    "candidateId": "cand_onedental_mumbai",
-    "scopeId": "scope_onedental_mumbai",
+    "candidateId": "cand_agency_stellified_uk",
+    "scopeId": "scope_agency_stellified_uk",
     "project": {
-      "title": "One Dental Solutions — 24/7 WhatsApp AI Receptionist & Intake PWA",
-      "requirements": "Deploy 24/7 intelligent patient triage on clinic WhatsApp, automatic treatment FAQ answers, and 1-tap paperless intake PWA in 48 hours.",
-      "category": "Healthcare & Clinic Automation",
+      "title": "Stellified Digital Studio — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Pixel-Perfect Headless Web Engine: 100/100 Lighthouse performance, instant PWA caching, and semantic SEO schema delivered with zero code debt.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
       "tags": [
-        "dental_clinic_automation",
-        "whatsapp_ai_receptionist",
-        "paperless_pwa_intake"
+        "uk_web_studio",
+        "headless_web",
+        "core_web_vitals",
+        "sovereign_subcontract"
       ]
     },
     "client": {
-      "name": "Dr. Aseem Agrawal",
-      "email": "aseem.dr@gmail.com",
-      "phone": "+918779376034",
-      "organization": "One Dental Solutions (Malad West, Mumbai)"
+      "name": "Client Services & Delivery Team",
+      "email": "hello@stellified.co.uk",
+      "phone": "+919098750362",
+      "organization": "Stellified Digital Studio"
     },
     "capabilityMatch": {
-      "name": "Autonomous Healthcare Growth Node",
-      "category": "Communication & Automation OS",
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
       "matchScore": 99,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
-        "Automated Treatment FAQs & Pricing Bands",
-        "Zero-Wait Appointment Booking synced to Google Calendar",
-        "1-Tap QR Paperless Patient Intake PWA",
-        "Automated WhatsApp Post-Treatment Care Instructions",
-        "Dedicated 48-hour turnkey deployment",
-        "14-Day Zero-Defect Performance Warranty"
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
       ],
       "exclusions": [
-        "Official Meta fees if any"
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Kickoff Advance",
-        "amount": 17500,
-        "amountINR": 17500,
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1600,
+        "amountINR": 171200,
         "percentage": 50,
         "status": "PENDING",
-        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot and booking integration."
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Acceptance",
-        "amount": 17500,
-        "amountINR": 17500,
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1600,
+        "amountINR": 171200,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Live reception testing and staff training walkthrough."
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
       }
     ],
     "pricing": {
-      "currency": "INR",
-      "totalAmount": 35000,
-      "depositAmount": 17500,
+      "currency": "GBP",
+      "totalAmount": 3200,
+      "depositAmount": 1600,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 2,
+      "estimatedDeliveryDays": 3,
       "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-10"
+      "targetDeliveryDate": "2026-09-11"
     },
-    "status": "APPROVED",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_onedental_mumbai",
-    "createdAt": "2026-09-08T11:06:52.789Z",
-    "updatedAt": "2026-09-08T11:23:37.004Z"
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_stellified_uk",
+    "createdAt": "2026-09-08T12:08:34.793Z",
+    "updatedAt": "2026-09-08T12:08:34.793Z"
   },
-  "prop_indore_dental": {
-    "proposalId": "prop_indore_dental",
+  "prop_agency_zropixel_uae": {
+    "proposalId": "prop_agency_zropixel_uae",
     "version": 1,
-    "candidateId": "cand_indore_dental",
-    "scopeId": "scope_indore_dental",
+    "candidateId": "cand_agency_zropixel_uae",
+    "scopeId": "scope_agency_zropixel_uae",
     "project": {
-      "title": "Indore Dental Clinic — 24/7 WhatsApp AI Receptionist & Booking Node",
-      "requirements": "Automate repetitive treatment inquiries (RCT cost, cleaning, extraction) and appointment booking on WhatsApp in 48 hours.",
-      "category": "Healthcare & Clinic Automation",
+      "title": "Zropixel UAE — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Gulf Luxury Tech Sovereign Execution Sprint: Obsidian-dark luxury aesthetics, sub-500ms global edge caching, and interactive 3D/AI showcases deployed in 72 hours.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
       "tags": [
-        "dental_clinic_automation",
-        "whatsapp_ai_receptionist"
+        "dubai_luxury_tech",
+        "ultra_fast_pwa",
+        "gulf_agency",
+        "sovereign_subcontract"
       ]
     },
     "client": {
-      "name": "Chief Dental Surgeon",
-      "email": "contact@indoredentalclinic.com",
-      "phone": "+918461966613",
-      "organization": "Indore Dental Clinic (Indore)"
+      "name": "Strategic Alliances & Delivery Team",
+      "email": "sales@zropixel.com",
+      "phone": "+919098750362",
+      "organization": "Zropixel UAE"
     },
     "capabilityMatch": {
-      "name": "Autonomous Healthcare Growth Node",
-      "category": "Communication OS",
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
       "matchScore": 99,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "24/7 WhatsApp AI Receptionist on clinic WhatsApp number",
-        "Treatment FAQs & Pricing Bands",
-        "Appointment Booking Integration",
-        "48-hour turnkey deployment",
-        "14-Day Warranty"
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
       ],
       "exclusions": [
-        "Official Meta fees if any"
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance",
-        "amount": 15000,
-        "amountINR": 15000,
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 8250,
+        "amountINR": 188100,
         "percentage": 50,
         "status": "PENDING",
-        "deliverableSummary": "Core WhatsApp bot deployment."
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Handover",
-        "amount": 15000,
-        "amountINR": 15000,
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 8250,
+        "amountINR": 188100,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Staff handover & testing."
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
       }
     ],
     "pricing": {
-      "currency": "INR",
-      "totalAmount": 30000,
-      "depositAmount": 15000,
+      "currency": "AED",
+      "totalAmount": 16500,
+      "depositAmount": 8250,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 2,
+      "estimatedDeliveryDays": 3,
       "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-10"
+      "targetDeliveryDate": "2026-09-11"
     },
-    "status": "APPROVED",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_indore_dental",
-    "createdAt": "2026-09-08T11:06:52.789Z",
-    "updatedAt": "2026-09-08T11:23:37.528Z"
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_zropixel_uae",
+    "createdAt": "2026-09-08T12:08:35.352Z",
+    "updatedAt": "2026-09-08T12:08:35.352Z"
   },
-  "prop_giggles_mumbai": {
-    "proposalId": "prop_giggles_mumbai",
+  "prop_agency_globalmedia_uae": {
+    "proposalId": "prop_agency_globalmedia_uae",
     "version": 1,
-    "candidateId": "cand_giggles_mumbai",
-    "scopeId": "scope_giggles_mumbai",
+    "candidateId": "cand_agency_globalmedia_uae",
+    "scopeId": "scope_agency_globalmedia_uae",
     "project": {
-      "title": "Giggles & Grins Kids Dentistry — 24/7 Pediatric WhatsApp Concierge & Intake PWA",
-      "requirements": "Deploy 24/7 parent emergency triage, appointment booking, and paperless intake PWA in 48 hours.",
-      "category": "Healthcare & Clinic Automation",
+      "title": "Global Media Insight UAE — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Omnichannel Enterprise Automation Suite: Meta Cloud API integration, zero-latency Arabic/English conversational routing, and enterprise CRM sync.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
       "tags": [
-        "pediatric_dental_automation",
-        "whatsapp_ai_receptionist"
+        "dubai_media_city",
+        "omnichannel_ai",
+        "enterprise_crm",
+        "sovereign_subcontract"
       ]
     },
     "client": {
-      "name": "Pediatric Dental Team",
-      "email": "gigglesgrinsmumbai@gmail.com",
-      "phone": "+918072710242",
-      "organization": "Giggles & Grins Kids Dentistry (Dadar, Mumbai)"
+      "name": "Digital Transformation Leadership",
+      "email": "liz@globalmedia.ae",
+      "phone": "+919098750362",
+      "organization": "Global Media Insight UAE"
     },
     "capabilityMatch": {
-      "name": "Autonomous Healthcare Growth Node",
-      "category": "Communication OS",
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
       "matchScore": 99,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "24/7 Pediatric WhatsApp AI Concierge",
-        "Parent Emergency Dental Triage Guidance",
-        "Zero-Wait Appointment Booking",
-        "1-Tap QR Paperless Patient Intake PWA",
-        "48-hour turnkey deployment"
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
       ],
       "exclusions": [
-        "Official Meta fees if any"
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance",
-        "amount": 17500,
-        "amountINR": 17500,
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 9000,
+        "amountINR": 205200,
         "percentage": 50,
         "status": "PENDING",
-        "deliverableSummary": "Pediatric concierge deployment."
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Handover",
-        "amount": 17500,
-        "amountINR": 17500,
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 9000,
+        "amountINR": 205200,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Reception QR rollout & testing."
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
       }
     ],
     "pricing": {
-      "currency": "INR",
-      "totalAmount": 35000,
-      "depositAmount": 17500,
+      "currency": "AED",
+      "totalAmount": 18000,
+      "depositAmount": 9000,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 2,
+      "estimatedDeliveryDays": 3,
       "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-10"
+      "targetDeliveryDate": "2026-09-11"
     },
-    "status": "APPROVED",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_giggles_mumbai",
-    "createdAt": "2026-09-08T11:06:52.789Z",
-    "updatedAt": "2026-09-08T11:23:38.001Z"
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_globalmedia_uae",
+    "createdAt": "2026-09-08T12:08:35.829Z",
+    "updatedAt": "2026-09-08T12:08:35.829Z"
+  },
+  "prop_agency_boldare_eu": {
+    "proposalId": "prop_agency_boldare_eu",
+    "version": 1,
+    "candidateId": "cand_agency_boldare_eu",
+    "scopeId": "scope_agency_boldare_eu",
+    "project": {
+      "title": "Boldare Custom Software — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Governed AI Engineering Sprint Pod: Multi-model AI agent pipelines, RAG vector architectures, and cryptographic SHA-256 release manifests.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "eu_software_agency",
+        "ai_agent_graphs",
+        "rag_systems",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Business Development & Tech Alliances",
+      "email": "business@boldare.com",
+      "phone": "+919098750362",
+      "organization": "Boldare Custom Software"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 2100,
+        "amountINR": 189000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 2100,
+        "amountINR": 189000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "EUR",
+      "totalAmount": 4200,
+      "depositAmount": 2100,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_boldare_eu",
+    "createdAt": "2026-09-08T12:08:36.310Z",
+    "updatedAt": "2026-09-08T12:08:36.310Z"
+  },
+  "prop_agency_webchain_eu": {
+    "proposalId": "prop_agency_webchain_eu",
+    "version": 1,
+    "candidateId": "cand_agency_webchain_eu",
+    "scopeId": "scope_agency_webchain_eu",
+    "project": {
+      "title": "Webchain Systems — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Deterministic Backend Refactoring Pod: High-throughput Node.js/PostgreSQL architecture, automated database index optimization, and 100% test coverage.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "eu_cloud_systems",
+        "backend_architecture",
+        "saas_migration",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Technical Leadership Team",
+      "email": "office@webchain.ro",
+      "phone": "+919098750362",
+      "organization": "Webchain Systems"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1900,
+        "amountINR": 171000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1900,
+        "amountINR": 171000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "EUR",
+      "totalAmount": 3800,
+      "depositAmount": 1900,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_webchain_eu",
+    "createdAt": "2026-09-08T12:08:36.811Z",
+    "updatedAt": "2026-09-08T12:08:36.811Z"
+  },
+  "prop_agency_disruptor_us": {
+    "proposalId": "prop_agency_disruptor_us",
+    "version": 1,
+    "candidateId": "cand_agency_disruptor_us",
+    "scopeId": "scope_agency_disruptor_us",
+    "project": {
+      "title": "Disruptor Creations — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "High-Concurrency Platform Architecture: Real-time socket event handling, Stripe Connect automated payouts, and sub-100ms ticketing checkout PWA.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "us_platform_agency",
+        "streaming_ticketing",
+        "stripe_connect",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Executive Architecture Team",
+      "email": "schlaut@gmail.com",
+      "phone": "+919098750362",
+      "organization": "Disruptor Creations"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 2250,
+        "amountINR": 189000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 2250,
+        "amountINR": 189000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "totalAmount": 4500,
+      "depositAmount": 2250,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_disruptor_us",
+    "createdAt": "2026-09-08T12:08:37.270Z",
+    "updatedAt": "2026-09-08T12:08:37.270Z"
+  },
+  "prop_agency_mccall_us": {
+    "proposalId": "prop_agency_mccall_us",
+    "version": 1,
+    "candidateId": "cand_agency_mccall_us",
+    "scopeId": "scope_agency_mccall_us",
+    "project": {
+      "title": "McCall Chamber Portal RFP — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Enterprise Civic & Tourism PWA: Instant directory search, interactive event calendar, zero-latency booking integrations, and 99+ Core Web Vitals.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "us_enterprise_rfp",
+        "civic_portal",
+        "tourism_engine",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Executive Director & Portal Committee",
+      "email": "director@mccallchamber.org",
+      "phone": "+919098750362",
+      "organization": "McCall Chamber Portal RFP"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 3000,
+        "amountINR": 252000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 3000,
+        "amountINR": 252000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "totalAmount": 6000,
+      "depositAmount": 3000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_mccall_us",
+    "createdAt": "2026-09-08T12:08:37.756Z",
+    "updatedAt": "2026-09-08T12:08:37.756Z"
+  },
+  "prop_agency_smolicz_us": {
+    "proposalId": "prop_agency_smolicz_us",
+    "version": 1,
+    "candidateId": "cand_agency_smolicz_us",
+    "scopeId": "scope_agency_smolicz_us",
+    "project": {
+      "title": "Smolicz Solutions LLC — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "High-CTR Conversion Engine: Sub-second landing pages, dynamic UTM personalization, and automated CRM webhook lead routing.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "us_ad_agency",
+        "conversion_funnel",
+        "landing_pwa",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Hannah Smolicz",
+      "email": "hannah@smoliczsolutionsllc.com",
+      "phone": "+919098750362",
+      "organization": "Smolicz Solutions LLC"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1750,
+        "amountINR": 147000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1750,
+        "amountINR": 147000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "totalAmount": 3500,
+      "depositAmount": 1750,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_smolicz_us",
+    "createdAt": "2026-09-08T12:08:38.227Z",
+    "updatedAt": "2026-09-08T12:08:38.227Z"
+  },
+  "prop_agency_heartfly_us": {
+    "proposalId": "prop_agency_heartfly_us",
+    "version": 1,
+    "candidateId": "cand_agency_heartfly_us",
+    "scopeId": "scope_agency_heartfly_us",
+    "project": {
+      "title": "Rebecca Heartfly Platform — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "All-in-One Client Experience Hub: Integrated calendar booking, Stripe instant checkout, video class membership, and 1-tap mobile PWA.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "us_platform_rebuild",
+        "booking_hub",
+        "stripe_pwa",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Rebecca Heartfly & Team",
+      "email": "rebeccaheartfly@gmail.com",
+      "phone": "+919098750362",
+      "organization": "Rebecca Heartfly Platform"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1500,
+        "amountINR": 126000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1500,
+        "amountINR": 126000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "totalAmount": 3000,
+      "depositAmount": 1500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_heartfly_us",
+    "createdAt": "2026-09-08T12:08:38.699Z",
+    "updatedAt": "2026-09-08T12:08:38.699Z"
   }
 }
