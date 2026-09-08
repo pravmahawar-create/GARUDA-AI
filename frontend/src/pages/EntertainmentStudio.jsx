@@ -30,7 +30,7 @@ export default function EntertainmentStudio() {
           { phase: "Phase 3 (Days 8–11)", title: "Sponsor War Room & Table Sellout", focus: "Direct corporate sponsor closing, VIP lounge activations, table lockouts, and luxury gift hamper partnerships." },
           { phase: "Phase 4 (Days 12–13)", title: "Live Show Run-of-Show & Broadcast", focus: "Minute-by-minute stage timing, red carpet live-stream feed, dynamic stage lighting, and post-event recap reels." }
         ],
-        caseStudyLink: "/kudos",
+        caseStudyLink: "/demo",
         warRoomHash: "sha256_ent_" + Math.random().toString(16).slice(2, 10) + "771e"
       });
       setIsPlanning(false);
@@ -91,15 +91,15 @@ export default function EntertainmentStudio() {
         {/* Flagship Case Study Banner */}
         <div style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.1), rgba(15,23,42,0.8))", border: `1px solid ${BORDER}`, borderRadius: "10px", padding: "1rem 1.25rem", marginBottom: "1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
           <div>
-            <span style={{ color: "#38bdf8", fontSize: "0.75rem", fontWeight: "bold", textTransform: "uppercase" }}>FLAGSHIP CASE STUDY & EVENT IMPLEMENTATION</span>
-            <h4 style={{ margin: "0.2rem 0", color: "#fff", fontSize: "1rem" }}>Kudos Face of India 2026 — 360° Omnipresence War Room</h4>
-            <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.85rem" }}>Live case study featuring Celina Jaitly, Radisson Blu Grand Ballroom, and 7-slide strategic sponsor pitch.</p>
+            <span style={{ color: "#38bdf8", fontSize: "0.75rem", fontWeight: "bold", textTransform: "uppercase" }}>FLAGSHIP ARCHITECTURE & EVENT IMPLEMENTATION</span>
+            <h4 style={{ margin: "0.2rem 0", color: "#fff", fontSize: "1rem" }}>360° Omnipresence War Room & Live Gala Architecture</h4>
+            <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.85rem" }}>Multi-channel VIP marketing, automated sponsor acquisition, and sub-2-hour live post-event broadcast engine.</p>
           </div>
           <Link
-            to="/kudos"
+            to="/demo"
             style={{ background: GOLD, color: "#000", padding: "0.5rem 1rem", borderRadius: "6px", fontWeight: "bold", fontSize: "0.85rem", textDecoration: "none" }}
           >
-            Explore Kudos Case Study ➔
+            Explore Interactive Sandbox ➔
           </Link>
         </div>
 

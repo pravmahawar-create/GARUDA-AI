@@ -1,0 +1,102 @@
+[
+  {
+    "id": "STEP2_UK_THEDISTANCE",
+    "businessName": "The Distance App Developers",
+    "email": "hello@thedistance.co.uk",
+    "subject": "Forensic Follow-Up: 48-Hour Technical Prototype & Autonomous Sprint Node for The Distance App Developers",
+    "sha256": "a8bd98bf44f041eb4517db52060087e77a678f4689bcbf9eba7c0e01307610af",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:01:50.670Z"
+  },
+  {
+    "id": "STEP2_UAE_ZROPIXEL",
+    "businessName": "Zropixel UAE",
+    "email": "sales@zropixel.com",
+    "subject": "Forensic Follow-Up: 48-Hour Technical Prototype & Autonomous Sprint Node for Zropixel UAE",
+    "sha256": "db3b3671a807e4198b390af8be1f51e99e59281f2cfac5becf853f7ef7462379",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:01:57.104Z"
+  },
+  {
+    "id": "STEP2_UK_3SIDEDCUBE",
+    "businessName": "3SidedCube UK",
+    "email": "holla@3sidedcube.com",
+    "subject": "Forensic Follow-Up: 48-Hour Technical Prototype & Autonomous Sprint Node for 3SidedCube UK",
+    "sha256": "0824a4709bfaab9ddb4860af0cbab5cf79275c6d5c0736d8e877093da4195ef0",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:02:04.265Z"
+  },
+  {
+    "id": "STEP2_EU_BOLDARE",
+    "businessName": "Boldare Software",
+    "email": "business@boldare.com",
+    "subject": "Forensic Follow-Up: 48-Hour Technical Prototype & Autonomous Sprint Node for Boldare Software",
+    "sha256": "a6d87b5d519bb076f5c8b664b9ecb463fb782b1703c42bdeb4537bb167f25e87",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:02:10.838Z"
+  },
+  {
+    "id": "STEP3_CLINIC_MEDIDENT_INDORE",
+    "businessName": "Medident Clinic",
+    "email": "drpriyajoshi2010@gmail.com",
+    "subject": "Forensic Patient Intake Audit & 24/7 WhatsApp AI Receptionist for Medident Clinic",
+    "sha256": "61b571806d238950cf7c9788ef6e0cab356b56d46f5e9240a46722ef9a73cd31",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:02:16.872Z"
+  },
+  {
+    "id": "STEP3_CLINIC_SANGHVI_MUMBAI",
+    "businessName": "Sanghvi's Dental Clinic",
+    "email": "draashalsanghvi@gmail.com",
+    "subject": "Forensic Patient Intake Audit & 24/7 WhatsApp AI Receptionist for Sanghvi's Dental Clinic",
+    "sha256": "79d4f44d3ce241648ba34f3008fc7b8a8b3d7fda5208d8c8e4d9902052e93c3f",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:02:22.744Z"
+  },
+  {
+    "id": "STEP3_CLINIC_KANUPRIYA_KOLKATA",
+    "businessName": "Dr Kanupriya Advanced Dentistry",
+    "email": "care@drkanupriya.in",
+    "subject": "Forensic Patient Intake Audit & 24/7 WhatsApp AI Receptionist for Dr Kanupriya Advanced Dentistry",
+    "sha256": "00a39fd8621cade37142985a950b2981a17f55372b69ed0a607280d09460eae3",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:02:28.617Z"
+  },
+  {
+    "id": "STEP3_CLINIC_ONEDENTAL_MUMBAI",
+    "businessName": "One Dental Solutions",
+    "email": "aseem.dr@gmail.com",
+    "subject": "Forensic Patient Intake Audit & 24/7 WhatsApp AI Receptionist for One Dental Solutions",
+    "sha256": "211c238045f7ba625743b78020df26e44f06324d452c54c1098a7e3cb01f383d",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:02:34.511Z"
+  },
+  {
+    "id": "STEP3_CLINIC_INDORE_DENTAL",
+    "businessName": "Indore Dental Clinic",
+    "email": "contact@indoredentalclinic.com",
+    "subject": "Forensic Patient Intake Audit & 24/7 WhatsApp AI Receptionist for Indore Dental Clinic",
+    "sha256": "b174b55b7e489d7f4f75c963769c909f3c1834d0e41dbf44a42714926213df82",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:02:40.529Z"
+  },
+  {
+    "id": "STEP3_CLINIC_GIGGLES_MUMBAI",
+    "businessName": "Giggles & Grins Kids Dentistry",
+    "email": "gigglesgrinsmumbai@gmail.com",
+    "subject": "Forensic Patient Intake Audit & 24/7 WhatsApp AI Receptionist for Giggles & Grins Kids Dentistry",
+    "sha256": "9a65dd79d30c150e0861cb92e4ad6fb5be38cdf41afbda13d804efebf01f9d03",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T11:02:46.523Z"
+  }
+]

@@ -1021,27 +1021,10 @@ const ROUTES = [
     robots: "noindex, nofollow"
   },
   {
-    path: "/kudos",
-    filePaths: [
-      path.join(DIST_DIR, "kudos", "index.html"),
-      path.join(DIST_DIR, "kudos.html"),
-      path.join(DIST_DIR, "pitch", "kudos", "index.html"),
-      path.join(DIST_DIR, "pitch", "kudos.html"),
-      path.join(DIST_DIR, "kudos-entertainment", "index.html"),
-      path.join(DIST_DIR, "kudos-entertainment.html")
-    ],
-    title: "Kudos Face of India 2026 | 360° Digital Omnipresence Blueprint",
-    description: "13-day celebrity mega event digital marketing war room for Kudos Entertainment, Kajal Sharma, and Celina Jaitly at Radisson Blu Dwarka.",
-    canonical: "https://www.garudaos.in/kudos",
-    robots: "noindex, nofollow"
-  },
-  {
     path: "/proposal",
     filePaths: [
       path.join(DIST_DIR, "proposal", "index.html"),
-      path.join(DIST_DIR, "proposal.html"),
-      path.join(DIST_DIR, "proposal", "prop_kudos_2026", "index.html"),
-      path.join(DIST_DIR, "proposal", "prop_kudos_2026.html")
+      path.join(DIST_DIR, "proposal.html")
     ],
     title: "Commercial Proposal & Milestone Agreement | GARUDA OS",
     description: "Cryptographically locked commercial proposal, deliverable schedule, and milestone escrow checkout.",
@@ -1219,6 +1202,41 @@ const ROUTES = [
     }
   }
 ];
+
+// Dynamically register all active proposals from data/proposals.json and clinicProposalSeeds.json for deterministic pre-rendering
+try {
+  const proposalsJsonPath = path.resolve(__dirname, "../data/proposals.json");
+  const seedsJsonPath = path.resolve(__dirname, "../src/services/clinicProposalSeeds.json");
+  let proposalsData = {};
+  if (fs.existsSync(seedsJsonPath)) {
+    try {
+      proposalsData = { ...JSON.parse(fs.readFileSync(seedsJsonPath, "utf8")) };
+    } catch {}
+  }
+  if (fs.existsSync(proposalsJsonPath)) {
+    try {
+      proposalsData = { ...proposalsData, ...JSON.parse(fs.readFileSync(proposalsJsonPath, "utf8")) };
+    } catch {}
+  }
+  for (const [pId, pObj] of Object.entries(proposalsData)) {
+    if (!pId || !pObj) continue;
+    const clientName = pObj.client?.name || pObj.project?.title || "Commercial Partner";
+    const projectTitle = pObj.project?.title || "Custom AI & Software Engineering";
+    ROUTES.push({
+      path: `/proposal/${pId}`,
+      filePaths: [
+        path.join(DIST_DIR, "proposal", pId, "index.html"),
+        path.join(DIST_DIR, "proposal", `${pId}.html`)
+      ],
+      title: `${clientName} — Commercial Proposal | GARUDA OS`,
+      description: `Official Commercial Proposal & Milestone Agreement for ${clientName}: ${projectTitle}.`,
+      canonical: `https://www.garudaos.in/proposal/${pId}`,
+      robots: "noindex, nofollow"
+    });
+  }
+} catch (err) {
+  console.warn("Notice: Unable to dynamically prerender proposals:", err.message);
+}
 
 function injectSeoMetadata(html, route) {
   let output = html;

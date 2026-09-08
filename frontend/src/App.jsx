@@ -30,7 +30,6 @@ import BrandStudio from "./pages/BrandStudio";
 import DigitalPresenceStudio from "./pages/DigitalPresenceStudio";
 import EntertainmentStudio from "./pages/EntertainmentStudio";
 import FounderKingdomAccess from "./pages/FounderKingdomAccess";
-import KudosPitchDeck from "./pages/KudosPitchDeck";
 import InvestorExperience from "./pages/InvestorExperience";
 import BotVerseStudio from "./pages/BotVerseStudio";
 import MagicDelegationPortal from "./pages/MagicDelegationPortal";
@@ -201,11 +200,9 @@ function AppRoutes() {
       <Route path="/demo" element={<DemoLaunch />} />
       <Route path="/app" element={customerRoute} />
       <Route path="/pay/:ref" element={<PayLink />} />
+      <Route path="/proposal" element={<ProposalPortal />} />
       <Route path="/proposal/:proposalId" element={<ProposalPortal />} />
       <Route path="/services/:slug" element={<ServiceLanding />} />
-      <Route path="/kudos" element={<KudosPitchDeck />} />
-      <Route path="/pitch/kudos" element={<KudosPitchDeck />} />
-      <Route path="/kudos-entertainment" element={<KudosPitchDeck />} />
       <Route path="/guides" element={<GuidesIndex />} />
       <Route path="/guides/:slug" element={<GuideArticle />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />

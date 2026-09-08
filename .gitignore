@@ -16,7 +16,9 @@ test_orig.txt
 *.backup.js
 
 data/*
+!data/proposals.json
 !data/proposals/
+!data/revenue-wave2-dispatch-log.json
 !data/outreach-dispatch-log.json
 !data/web_services-prospects.json
 !data/performance-marketing-buyers.json

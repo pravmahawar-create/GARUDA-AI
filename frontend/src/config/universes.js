@@ -7,7 +7,7 @@
  * ├── FOUNDER COMMAND / KINGDOM ACCESS (/founder/access)
  * ├── 27 CANONICAL UNIVERSES (Rings 1-4)
  * ├── PROJECTS / CLIENT WORKSPACES (/app)
- * ├── DEMOS & CASE STUDIES (/kudos, /demo)
+ * ├── DEMOS & CLIENT SANDBOX (/demo, /chat)
  * └── SHARED CORE ENGINES
  */
 
@@ -288,9 +288,8 @@ export const UNIVERSES = [
     status: "STUDIO_EXECUTABLE",
     route: "/entertainment",
     flagship: "Entertainment & Event Experience War Room Engine",
-    connectedEngines: ["kudosEntertainmentService.js"],
-    scope: "public",
-    note: "KUDOS Face of India 2026 is an active project case study under this domain."
+    connectedEngines: ["creativeStudioService.js"],
+    scope: "public"
   }),
 
   /* ========================================================================= */

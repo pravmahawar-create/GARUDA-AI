@@ -497,11 +497,11 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     canMotherExecuteAutonomously: true,
     dependencies: ["creative.studio_orchestration", "digital_marketing.editorial_growth"],
     relatedCapabilities: ["brand.identity_lock_system", "seo.topic_clusters_and_landing"],
-    tags: ["celebrity", "event", "entertainment", "war room", "pageant", "concert", "festival", "ticketing", "vip", "sponsor", "rsvp", "aftermovie", "kudos"],
+    tags: ["celebrity", "event", "entertainment", "war room", "pageant", "concert", "festival", "ticketing", "vip", "sponsor", "rsvp", "aftermovie"],
     commercializable: true,
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
-    evidenceFiles: ["src/services/kudosEntertainmentService.js", "src/services/creativeStudioService.js"]
+    evidenceFiles: ["src/services/creativeStudioService.js"]
   }
 ]);
 

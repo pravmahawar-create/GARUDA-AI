@@ -41,15 +41,6 @@ const CLIENT_PROJECTS = [
 
 const DEMOS_AND_CASE_STUDIES = [
   {
-    id: "demo_kudos_2026",
-    title: "Kudos Face of India 2026 — 360° Omnipresence Strategy",
-    type: "Flagship Event Case Study",
-    domain: "Entertainment & Event Domain (U23)",
-    description: "7-slide interactive strategic pitch deck, Celina Jaitly brand ambassador alignment, Radisson Blu venue war room, and ticketing hotline integration.",
-    route: "/kudos",
-    badge: "INTERACTIVE CASE STUDY"
-  },
-  {
     id: "demo_sandbox_portal",
     title: "1-Click Client Sandbox & Deliverables Demo",
     type: "Interactive Customer Sandbox",
@@ -73,7 +64,7 @@ const DEMOS_AND_CASE_STUDIES = [
     type: "Commercial Agreement Portal",
     domain: "Revenue & Governance (U10 / U09)",
     description: "Milestone-based project agreement with client acceptance signature, Razorpay advance checkout, and automated execution plan triggering.",
-    route: "/proposal/prop_kudos_2026",
+    route: "/proposal",
     badge: "ESCROW CHECKOUT"
   }
 ];
@@ -347,7 +338,7 @@ export default function FounderKingdomAccess() {
                   Demonstrations & Case Studies
                 </h2>
                 <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.85rem" }}>
-                  Live case studies and proof-of-execution portals (e.g. KUDOS is a Case Study, NOT a Universe).
+                  Live customer sandboxes, interactive scoping chat, and verified proposal portals.
                 </p>
               </div>
             </div>

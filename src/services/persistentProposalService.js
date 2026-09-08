@@ -57,86 +57,12 @@ function getSupabaseClient() {
   return null;
 }
 
-const DEFAULT_PROPOSAL_SEEDS = {
-  prop_kudos_2026: {
-    proposalId: "prop_kudos_2026",
-    version: 1,
-    candidateId: "cand_kudos_2026",
-    scopeId: "scope_kudos_2026",
-    project: {
-      title: "KUDOS FACE OF INDIA 2026 — 360° Celebrity Event Digital War Room & Full-House Conversion Suite",
-      requirements: "Deploy end-to-end 13-day digital marketing, Meta & Google Ads, Celina Jaitly celebrity teasers, 6 kinetic reels, WhatsApp RSVP concierge, and on-ground D-Day live coverage for Radisson Blu Dwarka event on 12th Sept 2026.",
-      category: "Digital Marketing & Creative Agency",
-      tags: ["celebrity_event_marketing", "360_digital_omnipresence", "performance_meta_ads", "kudos_face_of_india"]
-    },
-    client: {
-      name: "Kajal Sharma",
-      email: "info@kudosentertainment.in",
-      phone: "+918448133592",
-      organization: "Kudos Entertainment"
-    },
-    capabilityMatch: {
-      name: "Celebrity Event 360° Digital Omnipresence",
-      category: "Creative & Digital Marketing OS",
-      matchScore: 98,
-      canMotherExecuteAutonomously: true
-    },
-    scope: {
-      inclusions: [
-        "13-Day War Room Meta & Instagram Ads setup, geo-targeting (South Delhi, Dwarka, Gurugram, Noida) & daily bid optimization",
-        "6 High-Energy Short-Form Video Reels / Shorts (Celebrity Judge Celina Jaitly announcement, Radisson Blu grandeur, VIP urgency)",
-        "4-Pillar Acquisition Engine: Business Excellence Nominees, Pageant Contestants, Brand Sponsors, and VIP Tables",
-        "Google Search Ads & YouTube 6s Non-Skippable Bumper Ads Suite",
-        "20-Creator Simultaneous Story Drop & Delhi Influencer Blueprint",
-        "Automated WhatsApp RSVP Concierge on hotline numbers with instant digital QR pass dispatch",
-        "D-Day On-Ground Live Broadcasting & 2-Hour Rapid 4K Cinematic Aftermovie Reel",
-        "Dedicated 24/7 War Room monitoring with daily telemetry reports to Kajal Sharma"
-      ],
-      exclusions: [
-        "Direct ad spend payable to Meta / Google (managed under client ad account)",
-        "Physical banquet staging / venue fabrication costs (managed by Kudos Entertainment)"
-      ]
-    },
-    milestones: [
-      {
-        milestoneId: "m1",
-        title: "Milestone 1 — Advance Kickoff Deposit (50%)",
-        amount: 32500,
-        amountINR: 32500,
-        percentage: 50,
-        status: "PENDING",
-        deliverableSummary: "Immediate 24-hour launch of Celina Jaitly Meta teaser ads, nomination capture forms, and 4-hotline WhatsApp concierge."
-      },
-      {
-        milestoneId: "m2",
-        title: "Milestone 2 — Final Delivery, D-Day Live Machine & 2-Hour Aftermovie (50%)",
-        amount: 32500,
-        amountINR: 32500,
-        percentage: 50,
-        status: "PENDING",
-        deliverableSummary: "Complete on-ground media coverage, final sponsor reports, and 4K cinematic aftermovie master file."
-      }
-    ],
-    pricing: {
-      currency: "INR",
-      totalINR: 65000,
-      totalUSD: 780,
-      totalAmount: 65000,
-      depositAmount: 32500,
-      depositAmountINR: 32500,
-      pricingModel: "milestone_based"
-    },
-    timeline: {
-      estimatedDeliveryDays: 13,
-      kickoffDate: "2026-08-31",
-      targetEventDate: "2026-09-12",
-      venue: "Radisson Blu Hotel, Dwarka, New Delhi"
-    },
-    status: "APPROVED",
-    publicUrl: "https://garudaos.in/proposal/prop_kudos_2026",
-    createdAt: "2026-08-30T17:00:00.000Z"
-  }
-};
+let DEFAULT_PROPOSAL_SEEDS = {};
+try {
+  DEFAULT_PROPOSAL_SEEDS = require("./clinicProposalSeeds.json");
+} catch {
+  DEFAULT_PROPOSAL_SEEDS = {};
+}
 
 function getPossibleProposalFilePaths() {
   return [

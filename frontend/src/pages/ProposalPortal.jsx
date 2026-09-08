@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import BrandAssetImage from "../components/BrandAssetImage";
 
 const GOLD = "#f5d76e";
@@ -21,6 +21,8 @@ function formatMoney(amount, currency = "INR") {
 
 export default function ProposalPortal() {
   const { proposalId } = useParams();
+  const [searchParams] = useSearchParams();
+  const activeProposalId = proposalId || searchParams.get("id") || searchParams.get("ref") || searchParams.get("proposalId") || "";
   const navigate = useNavigate();
   const [proposal, setProposal] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,10 @@ export default function ProposalPortal() {
   async function loadProposal() {
     try {
       setLoading(true);
-      const res = await fetch(`/api/proposals/${encodeURIComponent(proposalId || "")}?public=true`);
+      if (!activeProposalId) {
+        throw new Error("No proposal ID specified. Please use a valid proposal link.");
+      }
+      const res = await fetch(`/api/proposals/${encodeURIComponent(activeProposalId)}?public=true`);
       const data = await res.json();
       if (!res.ok || !data.success) {
         throw new Error(data.message || "Proposal not found or expired.");
@@ -58,7 +63,7 @@ export default function ProposalPortal() {
 
   useEffect(() => {
     loadProposal();
-  }, [proposalId]);
+  }, [activeProposalId]);
 
   async function handleAcceptTerms() {
     if (!signerName.trim()) {
@@ -68,7 +73,7 @@ export default function ProposalPortal() {
     try {
       setActionLoading(true);
       setActionMessage("");
-      const res = await fetch(`/api/proposals/${proposalId}/accept`, {
+      const res = await fetch(`/api/proposals/${encodeURIComponent(activeProposalId)}/accept`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: signerName, email: signerEmail })
@@ -90,7 +95,7 @@ export default function ProposalPortal() {
       setActionMessage("");
 
       // 1. Create payment order from backend
-      const orderRes = await fetch(`/api/proposals/${proposalId}/payment/order`, {
+      const orderRes = await fetch(`/api/proposals/${encodeURIComponent(activeProposalId)}/payment/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" }
       });
@@ -115,7 +120,7 @@ export default function ProposalPortal() {
           theme: { color: "#f5d76e" },
           handler: async function (response) {
             try {
-              const verifyRes = await fetch(`/api/proposals/${proposalId}/payment/verify`, {
+              const verifyRes = await fetch(`/api/proposals/${encodeURIComponent(activeProposalId)}/payment/verify`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -139,7 +144,7 @@ export default function ProposalPortal() {
         rzp.open();
       } else {
         // Direct checkout redirect or safe simulated deposit confirmation
-        const directVerifyRes = await fetch(`/api/proposals/${proposalId}/payment/verify`, {
+        const directVerifyRes = await fetch(`/api/proposals/${encodeURIComponent(activeProposalId)}/payment/verify`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-garuda-test": "true" },
           body: JSON.stringify({

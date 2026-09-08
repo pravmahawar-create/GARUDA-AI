@@ -287,7 +287,7 @@ ${generatedOutput.deckBlueprint.map(d => `
                 type="text"
                 value={brandName}
                 onChange={(e) => setBrandName(e.target.value)}
-                placeholder="e.g. Kudos Entertainment"
+                placeholder="e.g. Acme Media Global"
                 style={{ width: "100%", background: "#0a0f1d", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "0.6rem 0.8rem", color: "#fff", fontSize: "0.9rem", boxSizing: "border-box" }}
               />
             </div>

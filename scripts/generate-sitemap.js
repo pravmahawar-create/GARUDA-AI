@@ -29,7 +29,6 @@ const CANONICAL_URLS = [
   { url: "/demo", priority: "0.80", changefreq: "weekly" },
   { url: "/experience", priority: "0.85", changefreq: "weekly" },
   { url: "/investor", priority: "0.85", changefreq: "weekly" },
-  { url: "/kudos", priority: "0.80", changefreq: "weekly" },
 
   // Commercial Services
   { url: "/services/custom-ai-development", priority: "0.90", changefreq: "weekly" },

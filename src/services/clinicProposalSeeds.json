@@ -1,0 +1,467 @@
+{
+  "prop_medident_indore": {
+    "proposalId": "prop_medident_indore",
+    "version": 1,
+    "candidateId": "cand_medident_indore",
+    "scopeId": "scope_medident_indore",
+    "project": {
+      "title": "Medident Clinic — 24/7 WhatsApp AI Receptionist & Paperless Intake PWA",
+      "requirements": "Deploy 24/7 intelligent patient triage on clinic WhatsApp, automatic treatment FAQ answers (Implants, RCT, Consultation fees), Google Calendar appointment booking, and 1-tap paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist",
+        "paperless_pwa_intake"
+      ]
+    },
+    "client": {
+      "name": "Dr. Priya Joshi & Dr. Prakash Joshi",
+      "email": "drpriyajoshi2010@gmail.com",
+      "phone": "+917314969589",
+      "organization": "Medident Clinic (Indore)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication & Automation OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
+        "Automated Treatment FAQs & Pricing Bands (RCT, Implants, General Consultation)",
+        "Zero-Wait Appointment Booking synced to Google Calendar / Reception Diary",
+        "1-Tap QR Paperless Patient Intake PWA (No app download required)",
+        "Automated WhatsApp Post-Treatment Care Instructions (Day 1, 3, 7 Follow-ups)",
+        "Dedicated 48-hour turnkey deployment by Founder Praveen Mahawar's engineering workforce",
+        "14-Day Zero-Defect Performance Warranty & Reception Staff Handover"
+      ],
+      "exclusions": [
+        "Official Meta WhatsApp API conversation fees if any (billed at actuals by Meta)",
+        "Physical hardware devices (runs directly on existing clinic smartphones & tablets)"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Kickoff Advance (Core WhatsApp AI Build)",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot, treatment knowledge base, and booking calendar integration."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Acceptance & Paperless Intake PWA",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Live reception testing, QR intake form rollout, staff training walkthrough, and final handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 35000,
+      "depositAmount": 17500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_medident_indore",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:33.803Z"
+  },
+  "prop_sanghvi_mumbai": {
+    "proposalId": "prop_sanghvi_mumbai",
+    "version": 1,
+    "candidateId": "cand_sanghvi_mumbai",
+    "scopeId": "scope_sanghvi_mumbai",
+    "project": {
+      "title": "Sanghvi's Dental Clinic — 24/7 WhatsApp AI Receptionist & Cosmetic Triage PWA",
+      "requirements": "Deploy 24/7 VIP cosmetic consultation pre-screening, treatment catalog showcase, Google Calendar booking, and 1-tap paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist",
+        "paperless_pwa_intake"
+      ]
+    },
+    "client": {
+      "name": "Dr. Aashal Sanghvi",
+      "email": "draashalsanghvi@gmail.com",
+      "phone": "+919819801940",
+      "organization": "Sanghvi's Dental Clinic (Santacruz West, Mumbai)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication & Automation OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
+        "Cosmetic Patient Triage & Smile Consultation Pre-Screening",
+        "Zero-Wait Appointment Booking synced to Google Calendar / Reception Diary",
+        "1-Tap QR Paperless Patient Intake PWA (No app download required)",
+        "Automated WhatsApp Post-Treatment Care Instructions (Day 1, 3, 7 Follow-ups)",
+        "Dedicated 48-hour turnkey deployment by Founder Praveen Mahawar's engineering workforce",
+        "14-Day Zero-Defect Performance Warranty & Reception Staff Handover"
+      ],
+      "exclusions": [
+        "Official Meta WhatsApp API conversation fees if any (billed at actuals by Meta)",
+        "Physical hardware devices (runs directly on existing clinic smartphones & tablets)"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Kickoff Advance (Core WhatsApp AI Build)",
+        "amount": 20000,
+        "amountINR": 20000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot, cosmetic catalog, and booking calendar integration."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Acceptance & Paperless Intake PWA",
+        "amount": 20000,
+        "amountINR": 20000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Live reception testing, QR intake form rollout, staff training walkthrough, and final handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 40000,
+      "depositAmount": 20000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_sanghvi_mumbai",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:35.678Z"
+  },
+  "prop_kanupriya_kolkata": {
+    "proposalId": "prop_kanupriya_kolkata",
+    "version": 1,
+    "candidateId": "cand_kanupriya_kolkata",
+    "scopeId": "scope_kanupriya_kolkata",
+    "project": {
+      "title": "Dr Kanupriya Advanced Dentistry — 24/7 WhatsApp AI Receptionist & Paperless Intake PWA",
+      "requirements": "Deploy 24/7 intelligent patient triage on clinic WhatsApp, automatic treatment FAQ answers (Orthodontics, Braces, Implants), and 1-tap paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist",
+        "paperless_pwa_intake"
+      ]
+    },
+    "client": {
+      "name": "Dr. Kanupriya",
+      "email": "care@drkanupriya.in",
+      "phone": "+919831246464",
+      "organization": "Dr Kanupriya Advanced Dentistry (Kolkata)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication & Automation OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
+        "Automated Treatment FAQs & Pricing Bands (Orthodontics, Clear Aligners, Implants)",
+        "Zero-Wait Appointment Booking synced to Google Calendar / Reception Diary",
+        "1-Tap QR Paperless Patient Intake PWA (No app download required)",
+        "Automated WhatsApp Post-Treatment Care Instructions (Day 1, 3, 7 Follow-ups)",
+        "Dedicated 48-hour turnkey deployment by Founder Praveen Mahawar's engineering workforce",
+        "14-Day Zero-Defect Performance Warranty & Reception Staff Handover"
+      ],
+      "exclusions": [
+        "Official Meta WhatsApp API conversation fees if any (billed at actuals by Meta)",
+        "Physical hardware devices (runs directly on existing clinic smartphones & tablets)"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Kickoff Advance (Core WhatsApp AI Build)",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot, treatment knowledge base, and booking calendar integration."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Acceptance & Paperless Intake PWA",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Live reception testing, QR intake form rollout, staff training walkthrough, and final handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 35000,
+      "depositAmount": 17500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_kanupriya_kolkata",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:36.550Z"
+  },
+  "prop_onedental_mumbai": {
+    "proposalId": "prop_onedental_mumbai",
+    "version": 1,
+    "candidateId": "cand_onedental_mumbai",
+    "scopeId": "scope_onedental_mumbai",
+    "project": {
+      "title": "One Dental Solutions — 24/7 WhatsApp AI Receptionist & Intake PWA",
+      "requirements": "Deploy 24/7 intelligent patient triage on clinic WhatsApp, automatic treatment FAQ answers, and 1-tap paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist",
+        "paperless_pwa_intake"
+      ]
+    },
+    "client": {
+      "name": "Dr. Aseem Agrawal",
+      "email": "aseem.dr@gmail.com",
+      "phone": "+918779376034",
+      "organization": "One Dental Solutions (Malad West, Mumbai)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication & Automation OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist running directly on clinic WhatsApp number",
+        "Automated Treatment FAQs & Pricing Bands",
+        "Zero-Wait Appointment Booking synced to Google Calendar",
+        "1-Tap QR Paperless Patient Intake PWA",
+        "Automated WhatsApp Post-Treatment Care Instructions",
+        "Dedicated 48-hour turnkey deployment",
+        "14-Day Zero-Defect Performance Warranty"
+      ],
+      "exclusions": [
+        "Official Meta fees if any"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Kickoff Advance",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate 24-hour deployment of WhatsApp conversational bot and booking integration."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Acceptance",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Live reception testing and staff training walkthrough."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 35000,
+      "depositAmount": 17500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_onedental_mumbai",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:37.004Z"
+  },
+  "prop_indore_dental": {
+    "proposalId": "prop_indore_dental",
+    "version": 1,
+    "candidateId": "cand_indore_dental",
+    "scopeId": "scope_indore_dental",
+    "project": {
+      "title": "Indore Dental Clinic — 24/7 WhatsApp AI Receptionist & Booking Node",
+      "requirements": "Automate repetitive treatment inquiries (RCT cost, cleaning, extraction) and appointment booking on WhatsApp in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "dental_clinic_automation",
+        "whatsapp_ai_receptionist"
+      ]
+    },
+    "client": {
+      "name": "Chief Dental Surgeon",
+      "email": "contact@indoredentalclinic.com",
+      "phone": "+918461966613",
+      "organization": "Indore Dental Clinic (Indore)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 WhatsApp AI Receptionist on clinic WhatsApp number",
+        "Treatment FAQs & Pricing Bands",
+        "Appointment Booking Integration",
+        "48-hour turnkey deployment",
+        "14-Day Warranty"
+      ],
+      "exclusions": [
+        "Official Meta fees if any"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance",
+        "amount": 15000,
+        "amountINR": 15000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Core WhatsApp bot deployment."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Handover",
+        "amount": 15000,
+        "amountINR": 15000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Staff handover & testing."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 30000,
+      "depositAmount": 15000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_indore_dental",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:37.528Z"
+  },
+  "prop_giggles_mumbai": {
+    "proposalId": "prop_giggles_mumbai",
+    "version": 1,
+    "candidateId": "cand_giggles_mumbai",
+    "scopeId": "scope_giggles_mumbai",
+    "project": {
+      "title": "Giggles & Grins Kids Dentistry — 24/7 Pediatric WhatsApp Concierge & Intake PWA",
+      "requirements": "Deploy 24/7 parent emergency triage, appointment booking, and paperless intake PWA in 48 hours.",
+      "category": "Healthcare & Clinic Automation",
+      "tags": [
+        "pediatric_dental_automation",
+        "whatsapp_ai_receptionist"
+      ]
+    },
+    "client": {
+      "name": "Pediatric Dental Team",
+      "email": "gigglesgrinsmumbai@gmail.com",
+      "phone": "+918072710242",
+      "organization": "Giggles & Grins Kids Dentistry (Dadar, Mumbai)"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous Healthcare Growth Node",
+      "category": "Communication OS",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "24/7 Pediatric WhatsApp AI Concierge",
+        "Parent Emergency Dental Triage Guidance",
+        "Zero-Wait Appointment Booking",
+        "1-Tap QR Paperless Patient Intake PWA",
+        "48-hour turnkey deployment"
+      ],
+      "exclusions": [
+        "Official Meta fees if any"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Pediatric concierge deployment."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Handover",
+        "amount": 17500,
+        "amountINR": 17500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Reception QR rollout & testing."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 35000,
+      "depositAmount": 17500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 2,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-10"
+    },
+    "status": "APPROVED",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_giggles_mumbai",
+    "createdAt": "2026-09-08T11:06:52.789Z",
+    "updatedAt": "2026-09-08T11:23:38.001Z"
+  }
+}

@@ -29,7 +29,6 @@ const routes = [
   '/digital-presence',
   '/entertainment',
   '/scholar',
-  '/kudos',
   '/proposal'
 ];
 

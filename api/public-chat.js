@@ -567,8 +567,24 @@ module.exports = async function handler(req, res) {
 
   try {
     const isTest = req.headers["x-garuda-test"] === "true" || (req.body && req.body.isTest === true);
-    const advisor = await tryInsuranceAdvisor(finalMessage);
-    const commercial = advisor.handled ? { handled: false } : await tryCommercialAgent(finalMessage, Array.isArray(history) ? history : [], { isTest, conversationId: conversationId || null });
+    const clientRef = String((req.query && req.query.ref) || (req.body && req.body.ref) || "").trim();
+
+    let clinicAgentResult = null;
+    if (clientRef && (clientRef.startsWith("STEP3_CLINIC") || clientRef.includes("CLINIC"))) {
+      try {
+        const clinicCloserAgent = require("../src/services/clinicCloserAgentService");
+        clinicAgentResult = await clinicCloserAgent.handleMessage({
+          ref: clientRef,
+          message: finalMessage,
+          conversationHistory: Array.isArray(history) ? history : []
+        });
+      } catch (err) {
+        console.warn("[PublicChat] Clinic agent error:", err.message);
+      }
+    }
+
+    const advisor = clinicAgentResult ? { handled: false } : await tryInsuranceAdvisor(finalMessage);
+    const commercial = (advisor.handled || clinicAgentResult) ? { handled: false } : await tryCommercialAgent(finalMessage, Array.isArray(history) ? history : [], { isTest, conversationId: conversationId || null });
 
     let reply = "";
     let truthStatus = "VERIFIED";
@@ -578,7 +594,11 @@ module.exports = async function handler(req, res) {
     let topic = "general";
     let mode = undefined;
 
-    if (advisor.handled) {
+    if (clinicAgentResult) {
+      reply = clinicAgentResult.reply;
+      mode = "clinic_closer_agent";
+      intent = clinicAgentResult.intent;
+    } else if (advisor.handled) {
       reply = advisor.reply;
       mode = "insurance_advisor";
     } else if (commercial.handled) {

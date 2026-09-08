@@ -290,28 +290,12 @@
       "destination": "/entertainment/index.html"
     },
     {
-      "source": "/kudos",
-      "destination": "/kudos/index.html"
-    },
-    {
-      "source": "/pitch/kudos",
-      "destination": "/kudos/index.html"
-    },
-    {
-      "source": "/kudos-entertainment",
-      "destination": "/kudos/index.html"
-    },
-    {
-      "source": "/pitch/:path*",
-      "destination": "/kudos/index.html"
-    },
-    {
       "source": "/proposal/:path*",
-      "destination": "/proposal/index.html"
+      "destination": "/proposal"
     },
     {
       "source": "/proposal",
-      "destination": "/proposal/index.html"
+      "destination": "/proposal"
     },
     {
       "source": "/demo",
@@ -434,8 +418,8 @@
       "destination": "/praveen-mahawar/index.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/:match*",
+      "destination": "/"
     }
   ]
 }
