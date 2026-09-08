@@ -321,6 +321,36 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               🎓 Vidya Studio (Free) →
             </button>
           </div>
+
+          {/* 🌾 GARUDA DOST • Zero-Advance Rozgar Setu */}
+          <div style={{ marginTop: "1.2rem", display: "flex", justifyContent: "center" }}>
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent("dost_cta_click", { location: "hero_sub" });
+                navigate("/dost");
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.6rem",
+                background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(5, 150, 105, 0.22) 100%)",
+                border: "1.5px solid #10b981",
+                color: "#6ee7b7",
+                padding: "0.7rem 1.6rem",
+                borderRadius: 999,
+                fontWeight: 800,
+                fontSize: "0.92rem",
+                cursor: "pointer",
+                boxShadow: "0 0 24px rgba(16, 185, 129, 0.25)"
+              }}
+            >
+              <span style={{ fontSize: "1.1rem" }}>🌾</span>
+              <span>GARUDA DOST • Zero-Advance Rozgar Setu (Gaon &amp; Kasba Partner)</span>
+              <span style={{ background: "#10b981", color: "#04070a", padding: "2px 8px", borderRadius: 999, fontSize: "0.7rem", fontWeight: 900, letterSpacing: "0.05em" }}>₹0 ADVANCE</span>
+              <span style={{ fontSize: "0.85rem" }}>→</span>
+            </button>
+          </div>
           <p style={{ color: "#5b6472", fontSize: "0.85rem", marginTop: "2rem", letterSpacing: "0.04em" }}>
             Founders stay in control of every significant action. No shortcuts. No fabricated activity.
           </p>
@@ -646,6 +676,7 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               <li><a href="/services/business-automation" style={{ color: "#9ca3af", textDecoration: "none" }}>Business Workflow Automation</a></li>
               <li><a href="/services/whatsapp-telegram-ai-bots" style={{ color: "#9ca3af", textDecoration: "none" }}>WhatsApp & Telegram Bots</a></li>
               <li><a href="/pawan" style={{ color: palette.gold, textDecoration: "none", fontWeight: 700 }}>⚡ PAWAN Coding Studio</a></li>
+              <li><a href="/dost" style={{ color: "#34d399", textDecoration: "none", fontWeight: 700 }}>🌾 GARUDA DOST (Zero-Advance Rozgar)</a></li>
               <li><a href="/bot-verse" style={{ color: "#c084fc", textDecoration: "none", fontWeight: 700 }}>🌌 BOT-VERSE Omni-Channel</a></li>
               <li><a href="/guides" style={{ color: palette.gold, textDecoration: "none", fontWeight: 600 }}>Engineering & AI Guides →</a></li>
               <li><a href="/what-is-garuda-ai" style={{ color: "#9ca3af", textDecoration: "none" }}>What is GARUDA AI?</a></li>
