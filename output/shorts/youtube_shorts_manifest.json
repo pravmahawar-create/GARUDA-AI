@@ -19,7 +19,11 @@
     ],
     "resolution": "1080x1920 (9:16 Vertical Full HD)",
     "duration": "10s (High Retention Loop)",
-    "status": "ready_to_upload"
+    "status": "published",
+    "videoId": "WnembNxyIOE",
+    "youtubeUrl": "https://www.youtube.com/watch?v=WnembNxyIOE",
+    "shortsUrl": "https://www.youtube.com/shorts/WnembNxyIOE",
+    "uploadedAt": "2026-09-08T17:18:13.919Z"
   },
   {
     "fileName": "GARUDA_Workforce_Swarm_Short_2.mp4",
@@ -40,6 +44,10 @@
     ],
     "resolution": "1080x1920 (9:16 Vertical Full HD)",
     "duration": "10s (High Retention Loop)",
-    "status": "ready_to_upload"
+    "status": "published",
+    "videoId": "Z7FZqSR2VTc",
+    "youtubeUrl": "https://www.youtube.com/watch?v=Z7FZqSR2VTc",
+    "shortsUrl": "https://www.youtube.com/shorts/Z7FZqSR2VTc",
+    "uploadedAt": "2026-09-08T17:18:17.348Z"
   }
 ]

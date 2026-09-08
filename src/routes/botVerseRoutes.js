@@ -303,5 +303,22 @@ router.post("/youtube/push", async (req, res) => {
   }
 });
 
+router.post("/youtube/upload", async (req, res) => {
+  try {
+    const { videoFilePath, title, description, tags, privacyStatus, categoryId } = req.body || {};
+    const result = await youtubeDirectPush.uploadVideo({
+      videoFilePath,
+      title,
+      description,
+      tags,
+      privacyStatus,
+      categoryId
+    });
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;
 

@@ -280,6 +280,109 @@ class YouTubeDirectPushService {
       youtubeUrl: `https://www.youtube.com/watch?v=${videoId}`
     };
   }
+
+  /**
+   * AUTONOMOUS 100% AI VIDEO UPLOADER:
+   * Uploads an MP4 video file directly to YouTube via official Resumable Upload API
+   */
+  async uploadVideo({ videoFilePath, title, description, tags = [], privacyStatus = "public", categoryId = "28" }) {
+    if (!videoFilePath || !fs.existsSync(videoFilePath)) {
+      return { success: false, error: `Video file not found at: ${videoFilePath}` };
+    }
+
+    const status = this.getStatus();
+    if (!status.connected) {
+      return {
+        success: false,
+        requiresAuth: true,
+        authRequired: true,
+        message: "YouTube channel not yet connected via OAuth. Authorize once to enable 100% autonomous background video upload.",
+        authUrl: this.getAuthUrl().authUrl || null
+      };
+    }
+
+    const accessToken = await this.getFreshAccessToken();
+    if (!accessToken) {
+      return {
+        success: false,
+        requiresAuth: true,
+        error: "Failed to obtain active YouTube API access token. Please re-authorize."
+      };
+    }
+
+    const fileStats = fs.statSync(videoFilePath);
+    const fileSize = fileStats.size;
+
+    // Step 1: Initiate Resumable Upload Session
+    const metadata = {
+      snippet: {
+        title: title.slice(0, 100),
+        description: description,
+        tags: Array.isArray(tags) ? tags.slice(0, 30) : [],
+        categoryId: categoryId
+      },
+      status: {
+        privacyStatus: privacyStatus,
+        selfDeclaredMadeForKids: false
+      }
+    };
+
+    const initRes = await fetch("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json; charset=UTF-8",
+        "X-Upload-Content-Length": String(fileSize),
+        "X-Upload-Content-Type": "video/mp4"
+      },
+      body: JSON.stringify(metadata)
+    });
+
+    if (!initRes.ok) {
+      const errData = await initRes.json().catch(() => ({}));
+      return {
+        success: false,
+        error: errData.error?.message || "Failed to initiate YouTube resumable upload session",
+        details: errData.error
+      };
+    }
+
+    const uploadUrl = initRes.headers.get("location");
+    if (!uploadUrl) {
+      return { success: false, error: "Google API did not return resumable upload location header" };
+    }
+
+    // Step 2: Upload Video Binary Stream / Buffer
+    const videoBuffer = fs.readFileSync(videoFilePath);
+    const uploadRes = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "video/mp4",
+        "Content-Length": String(fileSize)
+      },
+      body: videoBuffer
+    });
+
+    const uploadData = await uploadRes.json();
+    if (!uploadRes.ok) {
+      return {
+        success: false,
+        error: uploadData.error?.message || "YouTube upload binary transfer failed",
+        details: uploadData.error
+      };
+    }
+
+    return {
+      success: true,
+      mode: "100%_AUTONOMOUS_API_EXECUTION",
+      videoId: uploadData.id,
+      title: uploadData.snippet?.title || title,
+      privacyStatus: uploadData.status?.privacyStatus || privacyStatus,
+      publishedAt: uploadData.snippet?.publishedAt || new Date().toISOString(),
+      youtubeUrl: `https://www.youtube.com/watch?v=${uploadData.id}`,
+      shortsUrl: `https://www.youtube.com/shorts/${uploadData.id}`
+    };
+  }
 }
 
 const instance = new YouTubeDirectPushService();

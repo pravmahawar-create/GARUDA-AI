@@ -23,12 +23,22 @@ const CANONICAL_URLS = [
   { url: "/what-is-garuda-ai", priority: "0.95", changefreq: "weekly" },
   { url: "/praveen-mahawar", priority: "0.95", changefreq: "weekly" },
   { url: "/pawan", priority: "0.95", changefreq: "daily" },
-  { url: "/dost", priority: "0.90", changefreq: "weekly" },
+  { url: "/dost", priority: "0.95", changefreq: "daily" },
+  { url: "/bot-verse", priority: "0.95", changefreq: "daily" },
   { url: "/cloth-gst.html", priority: "0.90", changefreq: "weekly" },
   { url: "/chat", priority: "0.90", changefreq: "weekly" },
-  { url: "/demo", priority: "0.80", changefreq: "weekly" },
+  { url: "/demo", priority: "0.85", changefreq: "weekly" },
   { url: "/experience", priority: "0.85", changefreq: "weekly" },
   { url: "/investor", priority: "0.85", changefreq: "weekly" },
+
+  // Specialized Universes & Studios
+  { url: "/scholar", priority: "0.90", changefreq: "weekly" },
+  { url: "/creative", priority: "0.90", changefreq: "weekly" },
+  { url: "/content", priority: "0.90", changefreq: "weekly" },
+  { url: "/brand", priority: "0.90", changefreq: "weekly" },
+  { url: "/digital-presence", priority: "0.90", changefreq: "weekly" },
+  { url: "/entertainment", priority: "0.90", changefreq: "weekly" },
+  { url: "/kids-play", priority: "0.85", changefreq: "weekly" },
 
   // Commercial Services
   { url: "/services/custom-ai-development", priority: "0.90", changefreq: "weekly" },
@@ -89,19 +99,30 @@ async function runAutonomousSeo() {
     console.log(`✔ Updated sitemap written to: ${SITEMAP_DIST}`);
   }
 
-  // Ping Search Engines
-  const sitemapUrl = encodeURIComponent(`${BASE_URL}/sitemap.xml`);
-  const pingEndpoints = [
-    { name: "Google Ping", url: `https://www.google.com/ping?sitemap=${sitemapUrl}` },
-    { name: "Bing Ping", url: `https://www.bing.com/ping?sitemap=${sitemapUrl}` }
+  // 1. IndexNow API Protocol (Supported by Bing, Yandex, Seznam, Naver)
+  const indexNowKey = "c37b8ef9d18e4726b2aa8d76e73f8361";
+  const indexNowPayload = {
+    host: "www.garudaos.in",
+    key: indexNowKey,
+    keyLocation: `https://www.garudaos.in/${indexNowKey}.txt`,
+    urlList: CANONICAL_URLS.map(item => `${BASE_URL}${item.url}`)
+  };
+
+  const indexNowEndpoints = [
+    "https://api.indexnow.org/indexnow",
+    "https://www.bing.com/indexnow"
   ];
 
-  for (const ping of pingEndpoints) {
+  for (const endpoint of indexNowEndpoints) {
     try {
-      const res = await fetch(ping.url, { method: "GET" });
-      console.log(`📡 Pinged ${ping.name}: Status ${res.status}`);
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify(indexNowPayload)
+      });
+      console.log(`📡 IndexNow [${endpoint}] -> Status ${res.status} (${res.statusText || 'Submitted'})`);
     } catch (err) {
-      console.log(`⚠️ Ping ${ping.name} skipped: ${err.message}`);
+      console.log(`⚠️ IndexNow [${endpoint}] skipped: ${err.message}`);
     }
   }
 
