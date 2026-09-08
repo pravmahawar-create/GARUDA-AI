@@ -22,7 +22,12 @@
     ],
     "sizeMb": 30.15,
     "durationSec": 30,
-    "aspectRatio": "9:16 (1080x1920 Vertical Full HD)"
+    "aspectRatio": "9:16 (1080x1920 Vertical Full HD)",
+    "status": "published",
+    "videoId": "rNb1UGfcK6g",
+    "youtubeUrl": "https://www.youtube.com/watch?v=rNb1UGfcK6g",
+    "shortsUrl": "https://www.youtube.com/shorts/rNb1UGfcK6g",
+    "uploadedAt": "2026-09-08T17:36:57.594Z"
   },
   {
     "fileName": "Short_2_Midnight_Acoustic.mp4",
@@ -45,7 +50,12 @@
     ],
     "sizeMb": 30.68,
     "durationSec": 30,
-    "aspectRatio": "9:16 (1080x1920 Vertical Full HD)"
+    "aspectRatio": "9:16 (1080x1920 Vertical Full HD)",
+    "status": "published",
+    "videoId": "eLLR6EchLY8",
+    "youtubeUrl": "https://www.youtube.com/watch?v=eLLR6EchLY8",
+    "shortsUrl": "https://www.youtube.com/shorts/eLLR6EchLY8",
+    "uploadedAt": "2026-09-08T17:37:06.863Z"
   },
   {
     "fileName": "Short_3_Energy_Climax_Drop.mp4",
@@ -68,6 +78,11 @@
     ],
     "sizeMb": 31.85,
     "durationSec": 30,
-    "aspectRatio": "9:16 (1080x1920 Vertical Full HD)"
+    "aspectRatio": "9:16 (1080x1920 Vertical Full HD)",
+    "status": "published",
+    "videoId": "0cZLxsiFJko",
+    "youtubeUrl": "https://www.youtube.com/watch?v=0cZLxsiFJko",
+    "shortsUrl": "https://www.youtube.com/shorts/0cZLxsiFJko",
+    "uploadedAt": "2026-09-08T17:37:15.428Z"
   }
 ]
