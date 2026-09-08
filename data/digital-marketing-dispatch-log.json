@@ -1,0 +1,112 @@
+[
+  {
+    "prospectId": "PL_MKT_AMBEYTECH_DELHI",
+    "businessName": "Ambeytech Digital",
+    "email": "info@ambeytech.com",
+    "dealSize": "₹25,000 / month flat retainer",
+    "subject": "White-Label 48-Hour Web & AI Funnel Execution Pod for Ambeytech Digital",
+    "sha256": "97df7d7226ee18d8c2a132cfc309c97ec8b4a6b1d96a97562c4e8beb62a37b2f",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:52:38.585Z"
+  },
+  {
+    "prospectId": "PL_MKT_TRAFFIC_TAIL_DELHI",
+    "businessName": "Traffic Tail",
+    "email": "info@traffictail.com",
+    "dealSize": "₹25,000 / month flat retainer",
+    "subject": "High-Velocity Web & AI Funnel Engineering Pod for Traffic Tail",
+    "sha256": "9d21d2c991db44d594fef00d31be920885512824fc08231e1d3454ff16a74b8e",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:52:46.380Z"
+  },
+  {
+    "prospectId": "PL_MKT_SOLITEK_DUBAI",
+    "businessName": "Solitek IT & Marketing",
+    "email": "hello@solitek.ae",
+    "dealSize": "AED 2,500 / month ($680 USD)",
+    "subject": "Autonomous 48-Hour Full-Stack Engineering & AI Node for Solitek Dubai",
+    "sha256": "d85ff9d5bd26c7313e00d03a3d79164f53fc7a84ecd50b6d8bedb0dd5c91e036",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:52:54.009Z"
+  },
+  {
+    "prospectId": "PL_MKT_WAYSPRO_DUBAI",
+    "businessName": "WaysPro Tech",
+    "email": "hello@waysprotech.com",
+    "dealSize": "AED 2,500 / month ($680 USD)",
+    "subject": "White-Label Web Architecture & AI Automation Node for WaysPro Tech Dubai",
+    "sha256": "a3cb2e1ff9f2a47a753223dbfe3773a7a72f9a470bb79e31c276595b003a1f7f",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:53:02.281Z"
+  },
+  {
+    "prospectId": "PL_MKT_LEAD_PRONTO_UK",
+    "businessName": "Lead Pronto UK",
+    "email": "hello@leadpronto.co.uk",
+    "dealSize": "£1,200 / month ($1,500 USD)",
+    "subject": "High-Velocity Conversion Funnel & AI Sprint Node for Lead Pronto UK",
+    "sha256": "95e45e470bd31c5354304960eeaf047cff4b2b37ac3fa52241c556c453a61ac8",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:53:09.801Z"
+  },
+  {
+    "prospectId": "PL_MKT_WOW_INFOTECH",
+    "businessName": "Wow Infotech",
+    "email": "sales@wowinfotech.com",
+    "dealSize": "₹25,000 / month flat retainer",
+    "subject": "White-Label 48-Hour Sprint Pod & AI Automation for Wow Infotech",
+    "sha256": "feb1000e54f5c8c0a24aac5e17a9526780ea6fde2a74a5df004797f3833c5abc",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:53:19.522Z"
+  },
+  {
+    "prospectId": "PL_MKT_MEOLA_INDIA_RFP",
+    "businessName": "Meola India",
+    "email": "info@meolaindia.com",
+    "dealSize": "₹35,000 Sprint + ₹25,000/mo Retainer",
+    "subject": "Algorithmic Performance Marketing & High-ROAS Acquisition Blueprint for Meola India",
+    "sha256": "70aaa82062b5012716299fadd3fe84e2b39a721d55e68db185fa5427989e74a2",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:53:27.279Z"
+  },
+  {
+    "prospectId": "PL_MKT_PRASHANTH_PATIL_RFP",
+    "businessName": "Prashanth Patil Ventures",
+    "email": "patilom61@gmail.com",
+    "dealSize": "₹25,000 / month flat retainer",
+    "subject": "Digital Marketing & Automated Client Acquisition Blueprint for Pune Businesses",
+    "sha256": "c00583a44a54fe181993cdce9c00cb02e79ad1e79af8ef0f8a0b12eb1cb6e3a1",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:53:36.782Z"
+  },
+  {
+    "prospectId": "PL_MKT_ORION_MARINE_RFP",
+    "businessName": "Orion Marine Concepts",
+    "email": "kanishka.garg@orionmarineconcepts.com",
+    "dealSize": "₹35,000 Sprint + ₹25,000/mo Retainer",
+    "subject": "Performance Marketing & Client Acquisition Blueprint for Orion Marine Concepts",
+    "sha256": "24ea49f2302194f8dfec597e8cd6f541b04242df735dd9bbfff20077b6bb675a",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:53:44.695Z"
+  },
+  {
+    "prospectId": "PL_MKT_STYLOX_BRAND_RFP",
+    "businessName": "Stylox Brand (Vishal Mehra)",
+    "email": "vishal@stylox.co.in",
+    "dealSize": "₹25,000 / month flat retainer",
+    "subject": "B2B Lead Generation & High-Conversion Funnel Blueprint for Stylox",
+    "sha256": "c6f5cf28fc1a1d53ba9339ab36cee033f2ec56527aefa9bfa7e5fe888f189bd9",
+    "status": "dispatched",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-08T13:53:54.080Z"
+  }
+]

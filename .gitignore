@@ -21,6 +21,10 @@ data/*
 !data/revenue-wave2-dispatch-log.json
 !data/outreach-dispatch-log.json
 !data/subcontracting-50lakh-dispatch-log.json
+!data/digital-marketing-dispatch-log.json
+!data/digital-marketing-agencies-hunt.json
+!data/live-rfp-opportunities.json
+!data/security-audit-report.json
 !data/web_services-prospects.json
 !data/performance-marketing-buyers.json
 !data/deep-marketing-leads.json

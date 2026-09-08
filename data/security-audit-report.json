@@ -1,0 +1,79 @@
+{
+  "target": "https://www.garudaos.in",
+  "timestamp": "2026-09-08T13:54:47.138Z",
+  "sha256": "2951bfd953f3a4f20b928f5e5c9bac4e397a7e1b090b8334795c7f9fefac370a",
+  "headersCheck": [
+    {
+      "name": "HSTS (Strict-Transport-Security)",
+      "status": "PRESENT",
+      "value": "max-age=63072000"
+    },
+    {
+      "name": "CSP (Content-Security-Policy)",
+      "status": "MISSING",
+      "severity": "Medium"
+    },
+    {
+      "name": "Clickjacking Protection (X-Frame-Options)",
+      "status": "MISSING",
+      "severity": "Medium"
+    },
+    {
+      "name": "MIME Sniffing (X-Content-Type-Options)",
+      "status": "MISSING",
+      "severity": "Low"
+    },
+    {
+      "name": "Referrer-Policy",
+      "status": "MISSING",
+      "severity": "Low"
+    },
+    {
+      "name": "Permissions-Policy",
+      "status": "MISSING",
+      "severity": "Low"
+    }
+  ],
+  "corsCheck": {
+    "status": "PUBLIC_API",
+    "detail": "Wildcard Access-Control-Allow-Origin (Standard for Public APIs)"
+  },
+  "sensitivePathsCheck": [
+    {
+      "path": "/.env",
+      "status": "SPA_FALLBACK (Safe)",
+      "code": 200
+    },
+    {
+      "path": "/.git/HEAD",
+      "status": "SPA_FALLBACK (Safe)",
+      "code": 200
+    },
+    {
+      "path": "/api/debug",
+      "status": "PROTECTED",
+      "code": 404
+    },
+    {
+      "path": "/config.json",
+      "status": "SPA_FALLBACK (Safe)",
+      "code": 200
+    },
+    {
+      "path": "/package.json",
+      "status": "SPA_FALLBACK (Safe)",
+      "code": 200
+    },
+    {
+      "path": "/server-status",
+      "status": "SPA_FALLBACK (Safe)",
+      "code": 200
+    }
+  ],
+  "summary": {
+    "high": 0,
+    "medium": 2,
+    "low": 3,
+    "passed": 7
+  }
+}
