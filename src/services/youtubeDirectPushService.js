@@ -383,6 +383,56 @@ class YouTubeDirectPushService {
       shortsUrl: `https://www.youtube.com/shorts/${uploadData.id}`
     };
   }
+
+  /**
+   * Post top-level comment on a video via YouTube Data API
+   */
+  async postComment({ videoId, commentText }) {
+    if (!videoId || !commentText) {
+      return { success: false, error: "Missing videoId or commentText" };
+    }
+
+    const accessToken = await this.getFreshAccessToken();
+    if (!accessToken) {
+      return { success: false, error: "Failed to obtain active YouTube access token" };
+    }
+
+    const payload = {
+      snippet: {
+        videoId: videoId,
+        topLevelComment: {
+          snippet: {
+            textOriginal: commentText
+          }
+        }
+      }
+    };
+
+    const res = await fetch("https://www.googleapis.com/youtube/v3/commentThreads?part=snippet", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      return {
+        success: false,
+        error: data.error?.message || "Failed to post comment",
+        details: data.error
+      };
+    }
+
+    return {
+      success: true,
+      commentId: data.id,
+      text: commentText,
+      publishedAt: data.snippet?.topLevelComment?.snippet?.publishedAt || new Date().toISOString()
+    };
+  }
 }
 
 const instance = new YouTubeDirectPushService();
