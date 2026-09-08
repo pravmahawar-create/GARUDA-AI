@@ -58,6 +58,8 @@ export default function PawanCodingStudio() {
   const [apkModalData, setApkModalData] = useState(null);
   const [counterOffers, setCounterOffers] = useState({});
   const [showComparisonFor, setShowComparisonFor] = useState(null);
+  const [showAppsFleet, setShowAppsFleet] = useState(false);
+  const [showAuditTrail, setShowAuditTrail] = useState(false);
   const fileInputRef = useRef(null);
 
   const chatBottomRef = useRef(null);
@@ -669,6 +671,28 @@ export default function PawanCodingStudio() {
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
               <button
                 type="button"
+                onClick={() => setShowAppsFleet(true)}
+                style={{
+                  background: "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(99,102,241,0.25) 100%)",
+                  border: "1px solid #d4af37",
+                  color: "#fef08a",
+                  padding: "6px 14px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "0.75rem",
+                  fontWeight: "800",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                  boxShadow: "0 0 12px rgba(212,175,55,0.2)"
+                }}
+              >
+                <span>📱</span> Apps Made by Pawan
+                <span style={{ background: "#d4af37", color: "#000", padding: "1px 6px", borderRadius: "999px", fontSize: "0.68rem", fontWeight: "900" }}>Fleet</span>
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setVoiceMuted(!voiceMuted)}
                 style={{ background: voiceMuted ? "#1c1917" : "rgba(212, 175, 55, 0.12)", border: `1px solid ${voiceMuted ? "#44403c" : "#d4af37"}`, color: voiceMuted ? "#a8a29e" : "#fbbf24", padding: "6px 12px", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "700" }}
               >
@@ -1262,35 +1286,19 @@ export default function PawanCodingStudio() {
               </div>
             </form>
 
-            {/* Quick Consultation Starters */}
-            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center", marginTop: "1rem", paddingTop: "0.8rem", borderTop: "1px solid #14120c" }}>
-              <span style={{ fontSize: "0.72rem", color: "#78716c", fontWeight: "600" }}>Quick Discussions:</span>
+            {/* Clean Distraction-Free Status Bar */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.8rem", paddingTop: "0.6rem", borderTop: "1px solid #14120c", fontSize: "0.72rem", color: "#78716c", flexWrap: "wrap", gap: "0.5rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                <span style={{ color: "#d4af37" }}>⚡ Pro-Tip:</span>
+                <span>Boliye ya type kijiye — Pawan architecture plan karega, syntax verify karega aur phone par live test dega.</span>
+              </div>
               <button
                 type="button"
-                onClick={() => {
-                  setStudioMode("discuss");
-                  handleConsult("Client ko accounts selling ke liye app chahiye jisme ladke account layenge aur per-day % commission milega. Iska best structure aur anti-fraud logic suggest karo.");
-                }}
-                style={{ background: "#14120c", border: "1px solid rgba(212,175,55,0.3)", color: "#fef08a", fontSize: "0.72rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer", fontWeight: "700" }}
+                onClick={() => setShowAppsFleet(true)}
+                style={{ background: "transparent", border: "none", color: "#38bdf8", cursor: "pointer", fontSize: "0.72rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "0.3rem" }}
               >
-                💼 Account Sourcing & Commission MIS
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setStudioMode("discuss");
-                  handleConsult("Cloth wholesale business ke liye 2-device lock wala MIS app banana hai. Slabs aur invoice breakdown ki recommendations do.");
-                }}
-                style={{ background: "#14120c", border: "1px solid #292524", color: "#cbd5e1", fontSize: "0.72rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer" }}
-              >
-                🧵 Cloth Business 2-Device Lock MIS
-              </button>
-              <button
-                type="button"
-                onClick={() => window.open("/cloth-gst.html", "_blank")}
-                style={{ background: "#14120c", border: "1px solid #10b981", color: "#6ee7b7", fontSize: "0.72rem", padding: "4px 8px", borderRadius: "4px", cursor: "pointer", fontWeight: "700" }}
-              >
-                📱 Live Cloth GST Demo ➔
+                <span>📱 Apps Built by Pawan</span>
+                <span style={{ textDecoration: "underline" }}>View Fleet ➔</span>
               </button>
             </div>
           </div>
@@ -1718,54 +1726,275 @@ export default function PawanCodingStudio() {
             </div>
           )}
 
-          {/* Audit History Log */}
-          <div style={{ background: "#080705", border: "1px solid rgba(212, 175, 55, 0.2)", borderRadius: "12px", padding: "1.4rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
-              <div style={{ fontSize: "0.8rem", color: "#d4af37", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                📜 Recent Execution Audit Trail
+          {/* Audit History Log (Collapsible for Clean Distraction-Free Console) */}
+          <div style={{ background: "#080705", border: "1px solid rgba(212, 175, 55, 0.2)", borderRadius: "12px", padding: "1rem 1.4rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                <span style={{ fontSize: "0.8rem", color: "#d4af37", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  📜 Execution Audit Trail
+                </span>
+                <span style={{ background: "#1c1917", color: "#a8a29e", padding: "2px 8px", borderRadius: "999px", fontSize: "0.68rem" }}>
+                  {history.length} runs recorded
+                </span>
               </div>
-              <button
-                type="button"
-                onClick={fetchHistory}
-                style={{ background: "#14120c", border: "1px solid rgba(212, 175, 55, 0.3)", color: "#fef08a", padding: "4px 10px", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer", fontWeight: "700" }}
-              >
-                Refresh
-              </button>
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                <button
+                  type="button"
+                  onClick={fetchHistory}
+                  style={{ background: "#14120c", border: "1px solid rgba(212, 175, 55, 0.3)", color: "#fef08a", padding: "4px 10px", borderRadius: "4px", fontSize: "0.7rem", cursor: "pointer", fontWeight: "700" }}
+                >
+                  Refresh
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAuditTrail(!showAuditTrail)}
+                  style={{ background: "#14120c", border: "1px solid #334155", color: "#cbd5e1", padding: "4px 10px", borderRadius: "4px", fontSize: "0.7rem", cursor: "pointer", fontWeight: "700" }}
+                >
+                  {showAuditTrail ? "Hide Log ▲" : "Inspect Log ▼"}
+                </button>
+              </div>
             </div>
 
-            {history.length === 0 ? (
-              <div style={{ color: "#78716c", fontSize: "0.8rem", textAlign: "center", padding: "1rem" }}>
-                No execution audit logs found. Run your first task above.
-              </div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {history.map((item, idx) => (
-                  <div key={idx} style={{ background: "#030201", border: "1px solid #1a1712", borderRadius: "6px", padding: "10px 12px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.4rem" }}>
-                    <div>
-                      <div style={{ fontSize: "0.82rem", fontWeight: "800", color: "#ffffff" }}>
-                        {item.file || item.instruction || item.taskId}
-                      </div>
-                      <div style={{ fontSize: "0.72rem", color: "#a8a29e", marginTop: "2px" }}>
-                        {item.timestamp ? new Date(item.timestamp).toLocaleString("en-IN") : "Recent"} • {item.summary || "Task executed"}
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                      <span style={{ fontSize: "0.72rem", fontWeight: "800", color: item.success ? "#34d399" : "#f87171", background: item.success ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)", padding: "2px 6px", borderRadius: "4px" }}>
-                        {item.success ? "✓ Passed" : "✕ Failed"}
-                      </span>
-                      {item.sha256 && (
-                        <span style={{ fontSize: "0.68rem", color: "#78716c", fontFamily: "monospace" }}>
-                          {item.sha256.substring(0, 10)}...
-                        </span>
-                      )}
-                    </div>
+            {showAuditTrail && (
+              <div style={{ marginTop: "1rem", borderTop: "1px solid #1c1917", paddingTop: "0.8rem" }}>
+                {history.length === 0 ? (
+                  <div style={{ color: "#78716c", fontSize: "0.8rem", textAlign: "center", padding: "1rem" }}>
+                    No execution audit logs found. Run your first task above.
                   </div>
-                ))}
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    {history.map((item, idx) => (
+                      <div key={idx} style={{ background: "#030201", border: "1px solid #1a1712", borderRadius: "6px", padding: "10px 12px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.4rem" }}>
+                        <div>
+                          <div style={{ fontSize: "0.82rem", fontWeight: "800", color: "#ffffff" }}>
+                            {item.file || item.instruction || item.taskId}
+                          </div>
+                          <div style={{ fontSize: "0.72rem", color: "#a8a29e", marginTop: "2px" }}>
+                            {item.timestamp ? new Date(item.timestamp).toLocaleString("en-IN") : "Recent"} • {item.summary || "Task executed"}
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                          <span style={{ fontSize: "0.72rem", fontWeight: "800", color: item.success ? "#34d399" : "#f87171", background: item.success ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)", padding: "2px 6px", borderRadius: "4px" }}>
+                            {item.success ? "✓ Passed" : "✕ Failed"}
+                          </span>
+                          {item.sha256 && (
+                            <span style={{ fontSize: "0.68rem", color: "#78716c", fontFamily: "monospace" }}>
+                              {item.sha256.substring(0, 10)}...
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
 
         </div>
+
+        {/* ================================================================= */}
+        {/* 📱 APPS MADE BY PAWAN • SOVEREIGN APPLICATION FLEET DRAWER        */}
+        {/* ================================================================= */}
+        {showAppsFleet && (
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", zIndex: 99999, display: "flex", justifyContent: "flex-end" }}>
+            <div style={{ width: "100%", maxWidth: "600px", height: "100%", background: "#080705", borderLeft: "2px solid #d4af37", boxShadow: "-20px 0 50px rgba(0,0,0,0.9)", display: "flex", flexDirection: "column", overflowY: "auto", padding: "1.8rem" }}>
+              
+              {/* Drawer Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "1px solid rgba(212,175,55,0.25)", paddingBottom: "1.2rem", marginBottom: "1.5rem" }}>
+                <div>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.4)", borderRadius: "999px", padding: "2px 10px", fontSize: "0.7rem", color: "#fef08a", fontWeight: "800", marginBottom: "0.4rem" }}>
+                    <span>🦅</span> GARUDA PAWAN FLEET
+                  </div>
+                  <h2 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "#ffffff", letterSpacing: "-0.01em" }}>
+                    Apps Built by PAWAN
+                  </h2>
+                  <p style={{ margin: "4px 0 0", fontSize: "0.78rem", color: "#a8a29e" }}>
+                    Autonomous ReAct synthesis • 1-Tap Android PWA/APK • Hot OTA Self-Healing
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAppsFleet(false)}
+                  style={{ background: "#1c1917", border: "1px solid #44403c", color: "#e7e5e4", width: "32px", height: "32px", borderRadius: "8px", fontSize: "1rem", cursor: "pointer", display: "grid", placeItems: "center" }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Active Session App (if any) */}
+              {activeProject && (
+                <div style={{ background: "linear-gradient(135deg, rgba(56,189,248,0.12) 0%, rgba(3,105,161,0.15) 100%)", border: "1px solid #38bdf8", borderRadius: "10px", padding: "1rem", marginBottom: "1.2rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
+                    <span style={{ fontSize: "0.7rem", fontWeight: "800", color: "#38bdf8", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                      ● Active Project in Studio
+                    </span>
+                    <span style={{ background: "#0284c7", color: "#fff", padding: "2px 6px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: "800" }}>
+                      v{activeProject.version}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "#ffffff", marginBottom: "0.4rem" }}>
+                    {activeProject.file}
+                  </div>
+                  <p style={{ margin: "0 0 0.8rem", fontSize: "0.75rem", color: "#cbd5e1", lineHeight: 1.4 }}>
+                    {activeProject.summary || "Synthesized application currently in local session memory."}
+                  </p>
+                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                    <button
+                      type="button"
+                      onClick={handleLaunchLiveApp}
+                      style={{ flex: 1, background: "#0284c7", color: "#fff", border: "none", padding: "8px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
+                    >
+                      🚀 Test Live on Mobile
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAppsFleet(false);
+                        handleBuildApk();
+                      }}
+                      style={{ flex: 1, background: "rgba(212,175,55,0.2)", border: "1px solid #d4af37", color: "#fef08a", padding: "8px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
+                    >
+                      📦 1-Tap APK Package
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Fleet List */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                
+                {/* App 1: Cloth Wholesale MIS */}
+                <div style={{ background: "#0d0b08", border: "1px solid rgba(212,175,55,0.25)", borderRadius: "10px", padding: "1.1rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                        <span style={{ fontSize: "1.2rem" }}>🧵</span>
+                        <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "#fef08a" }}>
+                          Cloth Wholesale 2-Device Lock GST MIS
+                        </h3>
+                      </div>
+                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "2px" }}>
+                        Wholesale Textile B2B • Security Hardened • PWA/APK Live
+                      </div>
+                    </div>
+                    <span style={{ background: "rgba(16,185,129,0.15)", border: "1px solid #10b981", color: "#6ee7b7", padding: "2px 8px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: "800" }}>
+                      Production Ready
+                    </span>
+                  </div>
+                  <p style={{ margin: "0 0 0.8rem", fontSize: "0.75rem", color: "#d6d3d1", lineHeight: 1.5 }}>
+                    Real-time saree/fabric invoice generation, wholesale slab calculations, multi-rate GST, printable thermal receipts, and 2-device cryptographic hardware binding.
+                  </p>
+                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                    <a
+                      href="/cloth-gst.html"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ flex: "1 1 140px", textAlign: "center", background: "#10b981", color: "#000", textDecoration: "none", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800" }}
+                    >
+                      🚀 Launch Web App
+                    </a>
+                    <a
+                      href="/apps/cloth-gst-calculator/"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ flex: "1 1 140px", textAlign: "center", background: "#14120c", border: "1px solid #d4af37", color: "#fef08a", textDecoration: "none", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800" }}
+                    >
+                      📲 1-Tap Mobile PWA/APK
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAppsFleet(false);
+                        setStudioMode("discuss");
+                        handleConsult("Cloth wholesale business ke liye 2-device lock wala MIS app banana hai. Slabs aur invoice breakdown ki recommendations do.");
+                      }}
+                      style={{ background: "#14120c", border: "1px solid #334155", color: "#cbd5e1", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "700", cursor: "pointer" }}
+                    >
+                      ✏️ Alter in Pawan
+                    </button>
+                  </div>
+                </div>
+
+                {/* App 2: Field Sourcing MIS */}
+                <div style={{ background: "#0d0b08", border: "1px solid rgba(212,175,55,0.25)", borderRadius: "10px", padding: "1.1rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                        <span style={{ fontSize: "1.2rem" }}>💼</span>
+                        <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "#fef08a" }}>
+                          Field Agent Account Sourcing MIS
+                        </h3>
+                      </div>
+                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "2px" }}>
+                        FinTech & Agent Workforce • Anti-Fraud Architecture
+                      </div>
+                    </div>
+                    <span style={{ background: "rgba(99,102,241,0.15)", border: "1px solid #6366f1", color: "#a5b4fc", padding: "2px 8px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: "800" }}>
+                      Architecture Spec
+                    </span>
+                  </div>
+                  <p style={{ margin: "0 0 0.8rem", fontSize: "0.75rem", color: "#d6d3d1", lineHeight: 1.5 }}>
+                    Field agent lead intake with anti-fraud IMEI lock, slab-based 10%-40% daily payout calculator, customer KYC verification, and encrypted daily audit ledger.
+                  </p>
+                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAppsFleet(false);
+                        setStudioMode("discuss");
+                        handleConsult("Client ko accounts selling ke liye app chahiye jisme ladke account layenge aur per-day % commission milega. Iska best structure aur anti-fraud logic suggest karo.");
+                      }}
+                      style={{ flex: 1, background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)", color: "#000", border: "none", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
+                    >
+                      💬 Discuss & Synthesize in Studio
+                    </button>
+                  </div>
+                </div>
+
+                {/* App 3: GARUDA DOST Rozgar Portal */}
+                <div style={{ background: "#0d0b08", border: "1px solid rgba(212,175,55,0.25)", borderRadius: "10px", padding: "1.1rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                        <span style={{ fontSize: "1.2rem" }}>🌱</span>
+                        <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "#fef08a" }}>
+                          GARUDA DOST • Zero-Travel Rozgar Gateway
+                        </h3>
+                      </div>
+                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "2px" }}>
+                        Village Youth & Community Livelihood • Direct UPI
+                      </div>
+                    </div>
+                    <span style={{ background: "rgba(16,185,129,0.15)", border: "1px solid #10b981", color: "#6ee7b7", padding: "2px 8px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: "800" }}>
+                      Live Gateway
+                    </span>
+                  </div>
+                  <p style={{ margin: "0 0 0.8rem", fontSize: "0.75rem", color: "#d6d3d1", lineHeight: 1.5 }}>
+                    Zero-advance public enrollment platform for rural youth, housewives, and zero-experience partners. Earn 10%-40% transparent commissions on software leads.
+                  </p>
+                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                    <a
+                      href="/dost"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ flex: 1, textAlign: "center", background: "#10b981", color: "#000", textDecoration: "none", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800" }}
+                    >
+                      🚀 Open Live Portal (/dost)
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Drawer Footer Notice */}
+              <div style={{ marginTop: "auto", paddingTop: "1.5rem", borderTop: "1px solid rgba(212,175,55,0.15)", fontSize: "0.72rem", color: "#78716c", textAlign: "center" }}>
+                🔒 100% Anti-Fabrication Law • Real Code • SHA-256 Verified
+              </div>
+
+            </div>
+          </div>
+        )}
 
         {/* Commercial Access Gate Modal */}
         {showGateModal && (

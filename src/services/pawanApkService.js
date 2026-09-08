@@ -46,7 +46,7 @@ function generateSvgIcon(appName, accentColor = "#D4AF37") {
 }
 
 function generateServiceWorker(appName, cacheVersion = "v1") {
-  return `// 🦅 GARUDA PAWAN Offline-First Service Worker
+  return `// 🦅 GARUDA PAWAN Offline-First & Over-The-Air (OTA) Self-Updating Service Worker
 const CACHE_NAME = "${appName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${cacheVersion}";
 const ASSETS_TO_CACHE = [
   "./",
@@ -68,17 +68,50 @@ self.addEventListener("activate", (e) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys.map((k) => {
-          if (k !== CACHE_NAME) return caches.delete(k);
+          if (k !== CACHE_NAME) {
+            console.log("[GARUDA-OTA] Purging outdated cache version:", k);
+            return caches.delete(k);
+          }
         })
       )
     ).then(() => self.clients.claim())
   );
 });
 
+// Network-First for Navigation / HTML (Instant OTA updates when Pawan alters the app)
+// Cache-First with Background Revalidation for static assets
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
+
+  const isNavigation = e.request.mode === "navigate" || (e.request.headers.get("accept") && e.request.headers.get("accept").includes("text/html"));
+
+  if (isNavigation) {
+    e.respondWith(
+      fetch(e.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(e.request).then((cached) => cached || caches.match("./index.html")))
+    );
+    return;
+  }
+
+  // Static Assets: Cache with Network Fallback
   e.respondWith(
-    caches.match(e.request).then((cached) => cached || fetch(e.request).catch(() => caches.match("./index.html")))
+    caches.match(e.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(e.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const copy = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+        }
+        return networkResponse;
+      });
+    }).catch(() => caches.match("./index.html"))
   );
 });
 `;
@@ -163,12 +196,23 @@ function injectPwaSuperpowers(htmlCode, appName, safeName) {
 
   <script>
     (function() {
-      // 1. Service Worker Registration
+      // 1. Service Worker Registration & OTA In-Place Self-Healing
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('./sw.js').catch(function(err) {
+          navigator.serviceWorker.register('./sw.js').then(function(reg) {
+            if (reg) {
+              reg.update();
+              window.addEventListener('focus', function() { reg.update(); });
+            }
+          }).catch(function(err) {
             console.log('[GARUDA-SW] Registration notice:', err);
           });
+        });
+
+        // Instant Hot-Reload when Pawan alters or repairs code
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+          console.log('[GARUDA-OTA] Live code altered by Pawan. Auto-refreshing container...');
+          window.location.reload();
         });
       }
 
@@ -252,8 +296,9 @@ async function containerizeApp({ code, targetFile, appName }) {
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), "utf8");
   fs.writeFileSync(path.join(frontendAppDir, "manifest.json"), JSON.stringify(manifest, null, 2), "utf8");
 
-  // 3. Write sw.js
-  const swCode = generateServiceWorker(safeName);
+  // 3. Write sw.js with dynamic codeHash for OTA hot-updates
+  const codeHash = crypto.createHash("md5").update(code || "").digest("hex").slice(0, 8);
+  const swCode = generateServiceWorker(safeName, codeHash);
   const swPath = path.join(appDir, "sw.js");
   fs.writeFileSync(swPath, swCode, "utf8");
   fs.writeFileSync(path.join(frontendAppDir, "sw.js"), swCode, "utf8");
@@ -327,6 +372,7 @@ Verified cryptographic delivery under sovereign GARUDA governance.
     appName: formattedAppName,
     safeName,
     previewUrl,
+    pwaUrl: previewUrl,
     downloadUrl,
     qrUrl,
     sha256,

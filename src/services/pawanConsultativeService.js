@@ -14,18 +14,18 @@
 const crypto = require("crypto");
 
 /**
- * Classify client budget tier
+ * Classify client budget tier for feasibility matching (NOT for pricing gaming)
  */
 function classifyBudget(budgetStr) {
-  if (!budgetStr) return { tier: "standard", min: 35000, max: 80000, currency: "INR" };
+  if (!budgetStr) return { tier: "standard", value: 65000, currency: "INR" };
 
   const clean = String(budgetStr).toLowerCase().replace(/,/g, "");
   
   // Extract numbers
   const nums = clean.match(/\d+/g);
-  let val = nums ? parseInt(nums[0], 10) : 35000;
+  let val = nums ? parseInt(nums[0], 10) : 65000;
 
-  // If in USD/GBP
+  // Currency normalizations to INR
   if (clean.includes("$") || clean.includes("usd")) {
     val = val * 85;
   } else if (clean.includes("£") || clean.includes("gbp")) {
@@ -34,14 +34,34 @@ function classifyBudget(budgetStr) {
     val = val * 23;
   }
 
-  if (val < 20000) {
-    return { tier: "micro", value: val, allowDiscount: false, reason: "Micro-Budget: Baseline infrastructure & compute cost only. Further discounts would compromise code security." };
-  } else if (val < 75000) {
-    return { tier: "standard", value: val, allowDiscount: true, reason: "Standard Commercial Scope: Eligible for 30% GARUDA efficiency discount + 5% upfront bonus." };
-  } else if (val < 200000) {
-    return { tier: "premium", value: val, allowDiscount: true, reason: "Premium Enterprise Tier: Full PWA/APK, 24/7 AI Concierge, and 30-35% negotiable discount structure." };
+  if (val < 25000) {
+    return {
+      tier: "micro",
+      value: val,
+      currency: "INR",
+      reason: "Micro-Budget: Baseline infrastructure allocation only. Subject to strict Core MVP scope gating."
+    };
+  } else if (val < 90000) {
+    return {
+      tier: "standard",
+      value: val,
+      currency: "INR",
+      reason: "Standard Commercial Scope: Eligible for 30% GARUDA efficiency discount + 5% upfront bonus."
+    };
+  } else if (val < 220000) {
+    return {
+      tier: "premium",
+      value: val,
+      currency: "INR",
+      reason: "Premium Enterprise Tier: Full PWA/APK, 24/7 AI Concierge, and governed 50/50 milestones."
+    };
   } else {
-    return { tier: "enterprise", value: val, allowDiscount: true, reason: "Titan Enterprise Tier: Custom SLA, high-concurrency architecture, and maximum executive flexibility." };
+    return {
+      tier: "enterprise",
+      value: val,
+      currency: "INR",
+      reason: "Titan Enterprise Tier: Custom SLA, multi-region failover, and sovereign dedicated architecture."
+    };
   }
 }
 
@@ -79,36 +99,61 @@ function generateTechnicalComparison(appType = "Web Application") {
 
 /**
  * Generate comprehensive market quote
+ * ANCHORED ON TECHNICAL SCOPE, IMMUNE TO ARBITRAGE / BUDGET-GAMING
  */
 function generateMarketQuote({ clientName, prompt, budget, appName }) {
   const formalGreeting = clientName ? `Mr./Ms. ${clientName}` : "Respected Client";
   const budgetInfo = classifyBudget(budget);
   const safeApp = (appName || "Sovereign Digital Application").replace(/[-_]/g, " ");
 
-  // Baseline estimates based on prompt complexity
+  // 1. Determine Scope Baseline based on Technical Requirements (NOT client claimed budget)
+  const lowerPrompt = (prompt || "").toLowerCase();
   const wordCount = (prompt || "").split(/\s+/).length;
-  let baseMarketPrice = 85000;
-  if (wordCount > 50 || prompt?.toLowerCase().includes("database") || prompt?.toLowerCase().includes("auth")) {
-    baseMarketPrice = 145000;
-  }
-  if (budgetInfo.tier === "enterprise") {
-    baseMarketPrice = Math.max(baseMarketPrice, budgetInfo.value || 250000);
+
+  let baseMarketPrice = 95000;
+  let scopeHardFloor = 48000;
+  let scopeTier = "Standard Commercial Application";
+
+  const isComplex = wordCount > 40 ||
+    lowerPrompt.includes("database") ||
+    lowerPrompt.includes("auth") ||
+    lowerPrompt.includes("multi-device") ||
+    lowerPrompt.includes("commission") ||
+    lowerPrompt.includes("payment") ||
+    lowerPrompt.includes("backend");
+
+  const isMicro = !isComplex && wordCount < 18 &&
+    (lowerPrompt.includes("calculator") || lowerPrompt.includes("landing") || lowerPrompt.includes("simple tool"));
+
+  if (isMicro) {
+    baseMarketPrice = 45000;
+    scopeHardFloor = 25000;
+    scopeTier = "Core Utility / Single-Purpose Tool";
+  } else if (isComplex) {
+    baseMarketPrice = 160000;
+    scopeHardFloor = 85000;
+    scopeTier = "Complex Multi-Module Platform";
+  } else if (budgetInfo.tier === "enterprise") {
+    baseMarketPrice = Math.max(280000, budgetInfo.value || 280000);
+    scopeHardFloor = Math.round(baseMarketPrice * 0.60);
+    scopeTier = "Titan Enterprise Sovereign Platform";
   }
 
-  let garudaPrice = baseMarketPrice;
-  let upfrontPrice = baseMarketPrice;
-  let discountPercentage = 0;
-  let upfrontBonusPercentage = 0;
+  // 2. Compute GARUDA Sovereign Calibrated Price (30% off Market Standard Benchmark)
+  const discountPercentage = 30;
+  const garudaPrice = Math.max(Math.round(baseMarketPrice * 0.70), scopeHardFloor);
 
-  if (budgetInfo.allowDiscount) {
-    discountPercentage = 30;
-    garudaPrice = Math.round(baseMarketPrice * 0.70);
-    upfrontBonusPercentage = 5;
-    upfrontPrice = Math.round(garudaPrice * 0.95);
-  } else {
-    // Micro budget: baseline price matching their budget or minimum sustainable
-    garudaPrice = Math.min(baseMarketPrice, Math.max(budgetInfo.value || 12000, 12000));
-    upfrontPrice = garudaPrice;
+  // 100% Upfront Sovereign VIP Plan gives an extra 5% off the principal
+  const upfrontBonusPercentage = 5;
+  const upfrontPrice = Math.round(garudaPrice * 0.95);
+
+  // 3. Evaluate Client Budget Feasibility (Anti-Arbitrage Protection)
+  const clientDeclaredBudget = budgetInfo.value;
+  const isBudgetSufficient = clientDeclaredBudget >= garudaPrice;
+  let budgetDiagnosis = "Client budget matches technical scope requirements.";
+
+  if (!isBudgetSufficient) {
+    budgetDiagnosis = `Declared budget (₹${clientDeclaredBudget.toLocaleString("en-IN")}) is below the baseline engineering floor (₹${garudaPrice.toLocaleString("en-IN")}) for this scope. GARUDA strictly upholds the 100% Anti-Fabrication Law — no artificial cuts that compromise code security or uptime. Recommended: Proceed via 50/50 Governed Milestone Plan (Kickoff: ₹${Math.round(garudaPrice * 0.5).toLocaleString("en-IN")}) or restrict scope to Core MVP.`;
   }
 
   const comparison = generateTechnicalComparison(safeApp);
@@ -118,13 +163,17 @@ function generateMarketQuote({ clientName, prompt, budget, appName }) {
     clientName: clientName || "Executive Partner",
     proposedApp: safeApp,
     scopeSummary: `Custom architecture and autonomous software synthesis for: "${prompt?.slice(0, 120)}..."`,
+    scopeTier,
+    scopeHardFloor,
     budgetTier: budgetInfo.tier,
-    allowDiscount: budgetInfo.allowDiscount,
-    budgetReason: budgetInfo.reason,
+    clientDeclaredBudget,
+    isBudgetSufficient,
+    budgetDiagnosis,
     pricing: {
       marketStandardPrice: baseMarketPrice,
       garudaStandardPrice: garudaPrice,
       discountPercentage,
+      hardFloorPrice: scopeHardFloor,
       milestonePlan: {
         title: "50/50 Governed Milestone Plan",
         kickoff50: Math.round(garudaPrice * 0.5),
@@ -137,12 +186,10 @@ function generateMarketQuote({ clientName, prompt, budget, appName }) {
         extraDiscountPercentage: upfrontBonusPercentage,
         totalSavingsPercentage: discountPercentage + upfrontBonusPercentage,
         totalSavingsAmount: baseMarketPrice - upfrontPrice,
-        description: budgetInfo.allowDiscount
-          ? "Additional 5% discount deducted directly from principal amount (Total 35% savings)."
-          : "Full upfront protection with priority queue allocation."
+        description: "Additional 5% discount deducted directly from principal amount (Total 35% savings from market standard)."
       },
       isNegotiable: true,
-      negotiationGuide: "If your budget requires customized milestones or scope adjustments, propose a counter-offer below."
+      negotiationGuide: `Counter-offers evaluated down to hard engineering floor of ₹${scopeHardFloor.toLocaleString("en-IN")}. Propose a counter-offer below.`
     },
     freeValueAdditions: [
       "1-Tap Android Mobile PWA & APK Packaging (Zero extra charge)",
@@ -163,11 +210,13 @@ function generateMarketQuote({ clientName, prompt, budget, appName }) {
 
 /**
  * Evaluate client's counter-offer during negotiation
+ * STRICT ANTI-ARBITRAGE: Cannot breach hard engineering floor
  */
 function negotiateQuote({ currentQuote, clientCounterOffer, clientNotes }) {
   const counterVal = parseInt(String(clientCounterOffer).replace(/[^0-9]/g, ""), 10);
-  const originalMarket = currentQuote?.pricing?.marketStandardPrice || 100000;
-  const currentGaruda = currentQuote?.pricing?.garudaStandardPrice || 70000;
+  const originalMarket = currentQuote?.pricing?.marketStandardPrice || 95000;
+  const currentGaruda = currentQuote?.pricing?.garudaStandardPrice || 66500;
+  const scopeHardFloor = currentQuote?.pricing?.hardFloorPrice || currentQuote?.scopeHardFloor || Math.round(originalMarket * 0.50);
 
   if (!counterVal || isNaN(counterVal)) {
     return {
@@ -178,8 +227,8 @@ function negotiateQuote({ currentQuote, clientCounterOffer, clientNotes }) {
     };
   }
 
-  // Minimum sustainable threshold is 50% of market standard or ₹12,000
-  const floorThreshold = Math.max(Math.round(originalMarket * 0.50), 12000);
+  // Hard Floor threshold is strictly protected: client cannot gamble or underprice baseline costs
+  const floorThreshold = Math.max(scopeHardFloor, Math.round(currentGaruda * 0.80), 22000);
 
   if (counterVal >= currentGaruda) {
     return {
@@ -208,11 +257,11 @@ function negotiateQuote({ currentQuote, clientCounterOffer, clientNotes }) {
       accepted: false,
       counterOffer: counterVal,
       status: "scope_adjusted",
-      message: `Counter-offer of ₹${counterVal.toLocaleString("en-IN")} is below baseline cloud compute & security costs (Floor: ₹${floorThreshold.toLocaleString("en-IN")}).`,
+      message: `Counter-offer of ₹${counterVal.toLocaleString("en-IN")} is below the absolute engineering floor (₹${floorThreshold.toLocaleString("en-IN")}) required for this scope. Code quality and infrastructure security cannot be compromised.`,
       counterProposal: {
         recommendedFloor: floorThreshold,
-        optionA: `Proceed with core foundation at ₹${floorThreshold.toLocaleString("en-IN")} (50% kickoff: ₹${Math.round(floorThreshold * 0.5).toLocaleString("en-IN")})`,
-        optionB: "Switch to GARUDA DOST Community Micro-Tier (Split into monthly installments)."
+        optionA: `Proceed with full scope at sovereign floor of ₹${floorThreshold.toLocaleString("en-IN")} (50% kickoff: ₹${Math.round(floorThreshold * 0.5).toLocaleString("en-IN")})`,
+        optionB: "Adopt Core MVP Tier matching your exact budget with targeted single-purpose feature set."
       }
     };
   }
