@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- 🦅 GARUDA PAWAN Mobile Superpower Container -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Cloth GST Calculator">
+  <meta name="theme-color" content="#060503">
+  <link rel="icon" type="image/svg+xml" href="./icon-192.svg">
+  <link rel="apple-touch-icon" href="./icon-192.svg">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>GARUDA Cloth GST Mobile App | कपड़ा व्यापार जीएसटी कैलकुलेटर</title>
+  <meta name="theme-color" content="#0f172a">
+  <style>
+    :root {
+      --primary: #f59e0b;
+      --primary-hover: #d97706;
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f293d;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --success: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+    }
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding-bottom: 24px;
+    }
+    .header {
+      text-align: center;
+      padding: 16px 0 20px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--primary);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 9999px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .input-group.full-width {
+      grid-column: span 2;
+    }
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    input, select {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 10px 12px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+    }
+    .fabric-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .fabric-chip {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .fabric-chip.active {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .tax-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+      background: #0b1120;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+    }
+    .tax-toggle button {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tax-toggle button.active {
+      background: #1e293b;
+      color: #ffffff;
+      border: 1px solid #334155;
+    }
+    .result-box {
+      background: linear-gradient(145deg, #0b1120 0%, #172554 100%);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+    }
+    .result-row:last-child {
+      border-bottom: none;
+    }
+    .result-row.grand-total {
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 2px solid rgba(245, 158, 11, 0.4);
+      border-bottom: none;
+    }
+    .grand-total-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .grand-total-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .action-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .btn {
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #25d366;
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: #1da851;
+    }
+    .btn-secondary {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+    }
+    .btn-secondary:hover {
+      background: #334155;
+    }
+    .hsn-pill {
+      font-size: 11px;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <div class="badge">⚡ Powered by PAWAN • GARUDA-AI</div>
+      <h1 class="title">Cloth GST Calculator</h1>
+      <p class="subtitle">कपड़ा व्यापार व होलसेल जीएसटी इनवॉइस टूल</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧵 1. Fabric Type / कपड़ा प्रकार</div>
+      <div class="fabric-chips" id="fabricChips">
+        <div class="fabric-chip active" data-type="cotton" data-rate="5" data-hsn="5208">Cotton / सूती (5%)</div>
+        <div class="fabric-chip" data-type="silk" data-rate="5" data-hsn="5007">Pure Silk / रेशम (5%)</div>
+        <div class="fabric-chip" data-type="polyester" data-rate="12" data-hsn="5407">Synthetic / Polyester (12%)</div>
+        <div class="fabric-chip" data-type="garment_under1k" data-rate="5" data-hsn="6203">Readymade &lt;₹1000 (5%)</div>
+        <div class="fabric-chip" data-type="garment_over1k" data-rate="12" data-hsn="6203">Readymade &gt;₹1000 (12%)</div>
+        <div class="fabric-chip" data-type="jobwork" data-rate="5" data-hsn="9988">Job Work / Tailoring (5%)</div>
+      </div>
+
+      <div class="card-title">📏 2. Quantity & Rate / मात्रा व भाव</div>
+      <div class="input-grid">
+        <div class="input-group">
+          <label for="quantity">Quantity (मात्रा)</label>
+          <input type="number" id="quantity" value="100" min="1" step="any" placeholder="100">
+        </div>
+        <div class="input-group">
+          <label for="unit">Unit (इकाई)</label>
+          <select id="unit">
+            <option value="Mtr">Meters (मीटर)</option>
+            <option value="Thaan">Thaan (थान)</option>
+            <option value="Pcs">Pieces (पीस)</option>
+            <option value="Kg">Kilograms (किलो)</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="ratePerUnit">Rate per Unit (भाव ₹)</label>
+          <input type="number" id="ratePerUnit" value="150" min="0" step="any" placeholder="₹ 150">
+        </div>
+        <div class="input-group">
+          <label for="discount">Discount / छूट (%)</label>
+          <input type="number" id="discount" value="0" min="0" max="100" step="any" placeholder="0%">
+        </div>
+      </div>
+
+      <div class="card-title">🏛️ 3. Tax Structure / जीएसटी प्रकार</div>
+      <div class="tax-toggle">
+        <button id="btnIntra" class="active" onclick="setTaxMode('intra')">Intra-State (CGST + SGST)</button>
+        <button id="btnInter" onclick="setTaxMode('inter')">Inter-State (IGST)</button>
+      </div>
+
+      <div class="input-grid">
+        <div class="input-group full-width">
+          <label for="gstSlab">GST Rate Slab (%)</label>
+          <select id="gstSlab">
+            <option value="5" selected>5% (Cotton / Fabrics / Apparel &lt;₹1000)</option>
+            <option value="12">12% (Synthetics / Apparel &gt;₹1000)</option>
+            <option value="18">18% (Specialized Textiles / Service)</option>
+            <option value="0">0% (Khadi / Handloom Exempt)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Bill Calculation Result -->
+    <div class="result-box">
+      <div class="result-row">
+        <span style="color: var(--text-muted);">Base Amount (मूल राशि)</span>
+        <strong id="resBase">₹ 15,000.00</strong>
+      </div>
+      <div class="result-row" id="rowDiscount" style="display: none;">
+        <span style="color: #f87171;">Trade Discount (<span id="resDiscPct">0</span>%)</span>
+        <strong id="resDiscAmt" style="color: #f87171;">- ₹ 0.00</strong>
+      </div>
+      <div class="result-row">
+        <span style="color: var(--text-muted);">Taxable Subtotal (कर योग्य राशि)</span>
+        <strong id="resTaxable">₹ 15,000.00</strong>
+      </div>
+      <div class="result-row" id="rowCgst">
+        <span style="color: var(--text-muted);">CGST (<span id="resCgstRate">2.5</span>%)</span>
+        <strong id="resCgstAmt">₹ 375.00</strong>
+      </div>
+      <div class="result-row" id="rowSgst">
+        <span style="color: var(--text-muted);">SGST (<span id="resSgstRate">2.5</span>%)</span>
+        <strong id="resSgstAmt">₹ 375.00</strong>
+      </div>
+      <div class="result-row" id="rowIgst" style="display: none;">
+        <span style="color: var(--text-muted);">IGST (<span id="resIgstRate">5</span>%)</span>
+        <strong id="resIgstAmt">₹ 750.00</strong>
+      </div>
+      <div class="result-row grand-total">
+        <span class="grand-total-label">Grand Total (कुल बिल)</span>
+        <span class="grand-total-val" id="resGrandTotal">₹ 15,750.00</span>
+      </div>
+      <div class="result-row" style="padding-top: 8px;">
+        <span style="color: #38bdf8; font-size: 12px;">Effective Landed Cost / प्रति इकाई</span>
+        <strong style="color: #38bdf8; font-size: 12px;" id="resEffectiveRate">₹ 157.50 / Mtr</strong>
+      </div>
+    </div>
+
+    <p class="hsn-pill">Suggested HSN Code: <strong id="resHsn" style="color: #f59e0b;">5208</strong> (Woven Cotton Fabrics)</p>
+
+    <div class="action-btns">
+      <button class="btn btn-primary" onclick="shareWhatsApp()">
+        <span>📲</span> Share on WhatsApp
+      </button>
+      <button class="btn btn-secondary" onclick="copyBreakdown()">
+        <span>📋</span> Copy Bill Summary
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let taxMode = 'intra'; // 'intra' or 'inter'
+    let currentHsn = '5208';
+    let currentFabricName = 'Cotton / सूती';
+
+    const qtyInput = document.getElementById('quantity');
+    const unitSelect = document.getElementById('unit');
+    const rateInput = document.getElementById('ratePerUnit');
+    const discInput = document.getElementById('discount');
+    const gstSlabSelect = document.getElementById('gstSlab');
+
+    // Fabric Chip selector
+    document.querySelectorAll('.fabric-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.fabric-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        const rate = chip.dataset.rate;
+        currentHsn = chip.dataset.hsn;
+        currentFabricName = chip.textContent.trim();
+        gstSlabSelect.value = rate;
+        document.getElementById('resHsn').textContent = currentHsn;
+        calculate();
+      });
+    });
+
+    function setTaxMode(mode) {
+      taxMode = mode;
+      document.getElementById('btnIntra').classList.toggle('active', mode === 'intra');
+      document.getElementById('btnInter').classList.toggle('active', mode === 'inter');
+      calculate();
+    }
+
+    function calculate() {
+      const qty = parseFloat(qtyInput.value) || 0;
+      const rate = parseFloat(rateInput.value) || 0;
+      const discPct = parseFloat(discInput.value) || 0;
+      const gstPct = parseFloat(gstSlabSelect.value) || 0;
+      const unit = unitSelect.value;
+
+      const baseAmount = qty * rate;
+      const discAmount = (baseAmount * discPct) / 100;
+      const taxableAmount = Math.max(0, baseAmount - discAmount);
+
+      let cgst = 0, sgst = 0, igst = 0;
+      if (taxMode === 'intra') {
+        const halfRate = gstPct / 2;
+        cgst = (taxableAmount * halfRate) / 100;
+        sgst = (taxableAmount * halfRate) / 100;
+      } else {
+        igst = (taxableAmount * gstPct) / 100;
+      }
+
+      const totalTax = (taxMode === 'intra') ? (cgst + sgst) : igst;
+      const grandTotal = Math.round((taxableAmount + totalTax) * 100) / 100;
+      const effectiveRate = qty > 0 ? (grandTotal / qty).toFixed(2) : '0.00';
+
+      // Update DOM
+      document.getElementById('resBase').textContent = '₹ ' + baseAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      
+      const rowDisc = document.getElementById('rowDiscount');
+      if (discPct > 0) {
+        rowDisc.style.display = 'flex';
+        document.getElementById('resDiscPct').textContent = discPct;
+        document.getElementById('resDiscAmt').textContent = '- ₹ ' + discAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      } else {
+        rowDisc.style.display = 'none';
+      }
+
+      document.getElementById('resTaxable').textContent = '₹ ' + taxableAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+      const rowCgst = document.getElementById('rowCgst');
+      const rowSgst = document.getElementById('rowSgst');
+      const rowIgst = document.getElementById('rowIgst');
+
+      if (taxMode === 'intra') {
+        rowCgst.style.display = 'flex';
+        rowSgst.style.display = 'flex';
+        rowIgst.style.display = 'none';
+        document.getElementById('resCgstRate').textContent = (gstPct / 2);
+        document.getElementById('resCgstAmt').textContent = '₹ ' + cgst.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        document.getElementById('resSgstRate').textContent = (gstPct / 2);
+        document.getElementById('resSgstAmt').textContent = '₹ ' + sgst.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      } else {
+        rowCgst.style.display = 'none';
+        rowSgst.style.display = 'none';
+        rowIgst.style.display = 'flex';
+        document.getElementById('resIgstRate').textContent = gstPct;
+        document.getElementById('resIgstAmt').textContent = '₹ ' + igst.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      }
+
+      document.getElementById('resGrandTotal').textContent = '₹ ' + grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('resEffectiveRate').textContent = '₹ ' + effectiveRate + ' / ' + unit;
+    }
+
+    [qtyInput, unitSelect, rateInput, discInput, gstSlabSelect].forEach(el => {
+      el.addEventListener('input', calculate);
+      el.addEventListener('change', calculate);
+    });
+
+    function getBillText() {
+      const qty = qtyInput.value;
+      const unit = unitSelect.value;
+      const rate = rateInput.value;
+      const gstPct = gstSlabSelect.value;
+      const grandTotal = document.getElementById('resGrandTotal').textContent;
+      const taxable = document.getElementById('resTaxable').textContent;
+      const effective = document.getElementById('resEffectiveRate').textContent;
+
+      return '🧾 *CLOTH GST INVOICE ESTIMATE*\n' +
+             '-----------------------------\n' +
+             '🧵 Fabric: ' + currentFabricName + '\n' +
+             '📦 Quantity: ' + qty + ' ' + unit + ' @ ₹' + rate + '/' + unit + '\n' +
+             '🏛️ Taxable Value: ' + taxable + '\n' +
+             '📊 GST Slab: ' + gstPct + '% (' + taxMode.toUpperCase() + ')\n' +
+             '🔖 HSN Code: ' + currentHsn + '\n' +
+             '-----------------------------\n' +
+             '💰 *NET PAYABLE: ' + grandTotal + '*\n' +
+             '📈 Effective Landed Rate: ' + effective + '\n' +
+             '-----------------------------\n' +
+             'Generated via GARUDA PAWAN Sovereign Engine';
+    }
+
+    function shareWhatsApp() {
+      const text = encodeURIComponent(getBillText());
+      window.open('https://api.whatsapp.com/send?text=' + text, '_blank');
+    }
+
+    function copyBreakdown() {
+      navigator.clipboard.writeText(getBillText()).then(() => {
+        alert('Bill estimate copied to clipboard!');
+      });
+    }
+
+    calculate();
+  </script>
+
+  <!-- 🦅 GARUDA 1-Tap Home Screen Android Installation Hook -->
+  <div id="garuda-pwa-install-banner" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); width:90%; max-width:380px; background:#0B0F19; border:1px solid #D4AF37; border-radius:12px; padding:12px 16px; box-shadow:0 10px 30px rgba(0,0,0,0.8); z-index:999999; font-family:system-ui, -apple-system, sans-serif; color:#fff; align-items:center; justify-content:space-between; gap:12px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="./icon-192.svg" style="width:36px; height:36px; border-radius:8px;" alt="app icon" />
+      <div>
+        <div style="font-weight:800; font-size:13px; color:#FEF08A;">Install App on Phone</div>
+        <div style="font-size:11px; color:#94A3B8;">1-Tap Home Screen Launcher</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:6px;">
+      <button id="garuda-install-btn" style="background:#D4AF37; color:#000; font-weight:800; border:none; padding:7px 14px; border-radius:6px; font-size:12px; cursor:pointer;">Install</button>
+      <button id="garuda-install-close" style="background:transparent; color:#64748B; border:none; padding:4px; font-size:14px; cursor:pointer;">✕</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // 1. Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('./sw.js').catch(function(err) {
+            console.log('[GARUDA-SW] Registration notice:', err);
+          });
+        });
+      }
+
+      // 2. Android Native Install Prompt Interception
+      var deferredPrompt = null;
+      var banner = document.getElementById('garuda-pwa-install-banner');
+      var installBtn = document.getElementById('garuda-install-btn');
+      var closeBtn = document.getElementById('garuda-install-close');
+
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (banner) banner.style.display = 'flex';
+      });
+
+      if (installBtn) {
+        installBtn.addEventListener('click', function() {
+          if (banner) banner.style.display = 'none';
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choice) {
+              deferredPrompt = null;
+            });
+          }
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          if (banner) banner.style.display = 'none';
+        });
+      }
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#1A1813" />
+      <stop offset="100%" stop-color="#050403" />
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#B8860B" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" stroke="#D4AF37" stroke-width="8" />
+  <circle cx="256" cy="256" r="170" fill="none" stroke="#D4AF37" stroke-width="2" stroke-opacity="0.3" stroke-dasharray="8 8" />
+  <path d="M256 120 L330 200 L300 340 L256 320 L212 340 L182 200 Z" fill="none" stroke="url(#goldGrad)" stroke-width="6" />
+  <text x="256" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="110" font-weight="900" fill="url(#goldGrad)" text-anchor="middle">C</text>
+  <text x="256" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="800" fill="#D4AF37" text-anchor="middle" letter-spacing="4">GARUDA PAWAN</text>
+</svg>

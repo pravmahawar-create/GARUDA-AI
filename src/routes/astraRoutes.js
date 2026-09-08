@@ -89,6 +89,8 @@ router.post("/consult", async (req, res) => {
   }
 });
 
+const { containerizeApp, APPS_DIR } = require("../services/pawanApkService");
+
 /**
  * POST /api/pawan/build-apk
  * Compile or package active application for mobile installation & testing
@@ -96,35 +98,82 @@ router.post("/consult", async (req, res) => {
 router.post("/build-apk", async (req, res) => {
   try {
     const { code, targetFile, appName } = req.body;
-    const safeName = (appName || "garuda-app").toLowerCase().replace(/[^a-z0-9]/g, "-");
-    const safeFile = targetFile || `public/${safeName}.html`;
-    
-    // Ensure file exists
-    const fullPath = path.join(engine.rootDir, safeFile);
-    const dir = path.dirname(fullPath);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    
-    if (code) {
-      fs.writeFileSync(fullPath, code, "utf8");
+    let actualCode = code;
+    if (!actualCode && targetFile) {
+      const fullPath = path.join(engine.rootDir, targetFile);
+      if (fs.existsSync(fullPath)) {
+        actualCode = fs.readFileSync(fullPath, "utf8");
+      }
     }
 
-    const baseUrl = process.env.PUBLIC_APP_URL || "https://www.garudaos.in";
-    const cleanPath = safeFile.replace(/^public\//, "").replace(/^frontend\/public\//, "");
-    const previewUrl = `${baseUrl}/${cleanPath}`;
+    if (!actualCode) {
+      return res.status(400).json({ success: false, error: "No code provided to package" });
+    }
 
-    // Return instant mobile testing links
-    res.json({
-      success: true,
-      appName: appName || "GARUDA Sovereign Mobile App",
-      previewUrl,
-      downloadUrl: previewUrl,
-      apkReady: true,
-      message: "Mobile application bundle ready! Open live preview on your phone or download standalone package."
+    const result = await containerizeApp({
+      code: actualCode,
+      targetFile,
+      appName: appName || (targetFile ? path.basename(targetFile, path.extname(targetFile)) : "garuda-app")
     });
+
+    res.json(result);
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
+/**
+ * GET /api/pawan/download-bundle
+ * Download standalone zipped mobile bundle (.zip / APK ready)
+ */
+router.get("/download-bundle", (req, res) => {
+  try {
+    const app = req.query.app;
+    if (!app) return res.status(400).send("App name required");
+    const safeName = app.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+    const zipPath = path.join(APPS_DIR, safeName, `${safeName}-mobile-package.zip`);
+    if (!fs.existsSync(zipPath)) {
+      return res.status(404).send("Package not found. Please build APK first.");
+    }
+    res.setHeader("Content-Type", "application/zip");
+    res.setHeader("Content-Disposition", `attachment; filename="${safeName}-mobile-package.zip"`);
+    fs.createReadStream(zipPath).pipe(res);
+  } catch (err) {
+    res.status(500).send("Error streaming bundle: " + err.message);
+  }
+});
+
+const { generateMarketQuote, negotiateQuote } = require("../services/pawanConsultativeService");
+
+/**
+ * POST /api/pawan/market-quote
+ * Generate consultative feasibility, Sasti vs Premium comparison, and psychological pricing
+ */
+router.post("/market-quote", (req, res) => {
+  try {
+    const { clientName, prompt, budget, appName } = req.body;
+    const quote = generateMarketQuote({ clientName, prompt, budget, appName });
+    res.json({ success: true, quote });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * POST /api/pawan/negotiate-quote
+ * Client counter-offer evaluation and dynamic milestone adjustment
+ */
+router.post("/negotiate-quote", (req, res) => {
+  try {
+    const { currentQuote, clientCounterOffer, clientNotes } = req.body;
+    const result = negotiateQuote({ currentQuote, clientCounterOffer, clientNotes });
+    res.json({ success: true, result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+
 
 /**
  * GET /api/astra/status

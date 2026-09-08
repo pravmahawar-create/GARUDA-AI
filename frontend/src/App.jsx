@@ -40,7 +40,9 @@ import KidsVoiceApp from "./pages/KidsVoiceApp";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import FounderProfile from "./pages/FounderProfile";
+import GarudaDostRozgar from "./pages/GarudaDostRozgar";
 import { initAttribution } from "./utils/attribution";
+
 
 import "./styles/garuda-ui.css";
 
@@ -216,8 +218,12 @@ function AppRoutes() {
       <Route path="/about-founder" element={<FounderProfile />} />
       <Route path="/experience" element={<InvestorExperience />} />
       <Route path="/investor" element={<InvestorExperience />} />
+      <Route path="/dost" element={<GarudaDostRozgar />} />
+      <Route path="/sahayak" element={<GarudaDostRozgar />} />
       <Route path="*" element={publicLanding} />
+
     </Routes>
+
   );
 }
 

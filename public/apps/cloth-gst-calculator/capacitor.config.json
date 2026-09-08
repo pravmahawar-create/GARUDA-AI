@@ -1,0 +1,9 @@
+{
+  "appId": "in.garudaos.pawan.clothgstcalculator",
+  "appName": "Cloth GST Calculator",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -55,7 +55,11 @@ export default function PawanCodingStudio() {
   const [isConsulting, setIsConsulting] = useState(false);
   const [apkBuilding, setApkBuilding] = useState(false);
   const [apkDownloadUrl, setApkDownloadUrl] = useState(null);
+  const [apkModalData, setApkModalData] = useState(null);
+  const [counterOffers, setCounterOffers] = useState({});
+  const [showComparisonFor, setShowComparisonFor] = useState(null);
   const fileInputRef = useRef(null);
+
   const chatBottomRef = useRef(null);
 
   useEffect(() => {
@@ -519,7 +523,7 @@ export default function PawanCodingStudio() {
 
   const handleBuildApk = async () => {
     setApkBuilding(true);
-    pawanSpeak("Packaging mobile application and compiling APK bundle.");
+    pawanSpeak("Packaging mobile application, generating PWA manifest and compiling bundle.");
     try {
       const res = await fetch("/api/pawan/build-apk", {
         method: "POST",
@@ -533,8 +537,10 @@ export default function PawanCodingStudio() {
       const data = await res.json();
       if (data.success) {
         setApkDownloadUrl(data.downloadUrl);
-        pawanSpeak("Mobile package is ready! Opening download link.");
-        window.open(data.downloadUrl, "_blank");
+        setApkModalData(data);
+        pawanSpeak("Mobile package and APK bundle are ready on screen!");
+      } else {
+        alert("APK build error: " + (data.error || "Unknown error"));
       }
     } catch (err) {
       alert("APK build error: " + err.message);
@@ -543,7 +549,63 @@ export default function PawanCodingStudio() {
     }
   };
 
+  const handleRequestMarketQuote = async (promptText, customBudget) => {
+    pawanSpeak("Calculating market benchmarks and generating feasibility report.");
+    try {
+      const res = await fetch("/api/pawan/market-quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientName: intakeName || "Executive Partner",
+          prompt: promptText || instruction || "Custom Web & Mobile Application",
+          budget: customBudget || intakeRepo || "standard",
+          appName: targetFile || "garuda-app"
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.quote) {
+        setMessages(prev => [...prev, {
+          id: "quote_" + Date.now(),
+          sender: "pawan",
+          marketQuote: data.quote,
+          text: `📊 Feasibility & Market Report generated for ${data.quote.proposedApp}`,
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        }]);
+        pawanSpeak("Market analysis and transparent pricing report is ready on screen.");
+      }
+    } catch (err) {
+      alert("Error fetching market quote: " + err.message);
+    }
+  };
+
+  const handleNegotiateQuote = async (quoteObj, counterOfferValue) => {
+    try {
+      const res = await fetch("/api/pawan/negotiate-quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentQuote: quoteObj,
+          clientCounterOffer: counterOfferValue
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.result) {
+        setMessages(prev => [...prev, {
+          id: "neg_" + Date.now(),
+          sender: "pawan",
+          negotiationResult: data.result,
+          text: data.result.message,
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        }]);
+        pawanSpeak(data.result.accepted ? "Counter-offer accepted! Partnership locked." : "Scope review required for this budget.");
+      }
+    } catch (err) {
+      alert("Negotiation error: " + err.message);
+    }
+  };
+
   const handleCopyCode = () => {
+
     if (!result?.code) return;
     navigator.clipboard.writeText(result.code);
     setCodeCopied(true);
@@ -848,6 +910,137 @@ export default function PawanCodingStudio() {
                                 >
                                   ✏️ Tweak / Alter Plan
                                 </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleRequestMarketQuote(m.consultation.suggestedInstruction || m.consultation.actionPlan, intakeRepo)}
+                                  style={{
+                                    background: "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(245,158,11,0.2) 100%)",
+                                    color: "#fef08a",
+                                    border: "1px solid #d4af37",
+                                    padding: "8px 12px",
+                                    borderRadius: "8px",
+                                    fontWeight: "800",
+                                    fontSize: "0.78rem",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "4px"
+                                  }}
+                                >
+                                  📊 Market Rate &amp; Feasibility Report
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : m.marketQuote ? (
+                          <div style={{ background: "#0B0F19", border: "1px solid #D4AF37", borderRadius: "12px", padding: "16px", color: "#F8FAFC", maxWidth: "600px" }}>
+                            <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(212, 175, 55, 0.15)", border: "1px solid rgba(212, 175, 55, 0.35)", padding: "3px 10px", borderRadius: "999px", fontSize: "0.72rem", color: "#FEF08A", fontWeight: "800", marginBottom: "8px" }}>
+                              <span>🏛️</span> {m.marketQuote.formalGreeting} • MARKET FEASIBILITY REPORT
+                            </div>
+                            <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "#FFFFFF", margin: "0 0 4px 0" }}>
+                              {m.marketQuote.proposedApp}
+                            </h3>
+                            <p style={{ color: "#94A3B8", fontSize: "0.8rem", margin: "0 0 12px 0", lineHeight: 1.4 }}>
+                              {m.marketQuote.scopeSummary}
+                            </p>
+
+                            {/* Price Comparison Block */}
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", background: "#050811", border: "1px solid #1E293B", borderRadius: "8px", padding: "12px", marginBottom: "12px" }}>
+                              <div>
+                                <div style={{ fontSize: "0.72rem", color: "#64748B", textTransform: "uppercase", fontWeight: "700" }}>Traditional Agencies:</div>
+                                <div style={{ fontSize: "1.1rem", fontWeight: "700", color: "#94A3B8", textDecoration: m.marketQuote.allowDiscount ? "line-through" : "none" }}>
+                                  ₹{m.marketQuote.pricing.marketStandardPrice.toLocaleString("en-IN")}
+                                </div>
+                                <div style={{ fontSize: "0.68rem", color: "#64748B" }}>6-8 Weeks Delivery</div>
+                              </div>
+                              <div>
+                                <div style={{ fontSize: "0.72rem", color: "#34D399", textTransform: "uppercase", fontWeight: "800" }}>GARUDA Sovereign Rate:</div>
+                                <div style={{ fontSize: "1.25rem", fontWeight: "900", color: "#FEF08A" }}>
+                                  ₹{m.marketQuote.pricing.garudaStandardPrice.toLocaleString("en-IN")}
+                                </div>
+                                <div style={{ fontSize: "0.68rem", color: m.marketQuote.allowDiscount ? "#34D399" : "#F59E0B", fontWeight: "700" }}>
+                                  {m.marketQuote.allowDiscount ? "🔥 30% Efficiency Discount Applied" : "🔒 Baseline Resource Tier (No Discount)"}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Governance & Upfront Options */}
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "12px" }}>
+                              <div style={{ background: "#070D18", border: "1px solid #1E293B", borderRadius: "6px", padding: "10px" }}>
+                                <div style={{ fontSize: "0.75rem", fontWeight: "800", color: "#38BDF8" }}>50/50 Milestone Plan</div>
+                                <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "#FFFFFF", marginTop: "2px" }}>
+                                  Kickoff: ₹{m.marketQuote.pricing.milestonePlan.kickoff50.toLocaleString("en-IN")}
+                                </div>
+                                <div style={{ fontSize: "0.68rem", color: "#94A3B8", marginTop: "2px" }}>50% strictly on verified delivery</div>
+                              </div>
+                              <div style={{ background: "#070D18", border: "1px solid #10B981", borderRadius: "6px", padding: "10px" }}>
+                                <div style={{ fontSize: "0.75rem", fontWeight: "800", color: "#34D399" }}>100% Upfront VIP Bonus</div>
+                                <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "#FEF08A", marginTop: "2px" }}>
+                                  ₹{m.marketQuote.pricing.upfrontPlan.price.toLocaleString("en-IN")}
+                                </div>
+                                <div style={{ fontSize: "0.68rem", color: "#34D399", marginTop: "2px" }}>
+                                  {m.marketQuote.allowDiscount ? "Extra 5% Principal OFF (Total 35% Savings)" : "Full priority allocation"}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Free Inclusions */}
+                            <div style={{ background: "#050811", borderRadius: "6px", padding: "8px 10px", marginBottom: "12px", border: "1px solid #1E293B" }}>
+                              <div style={{ fontSize: "0.7rem", color: "#D4AF37", fontWeight: "800", textTransform: "uppercase", marginBottom: "4px" }}>🎁 FREE BUILT-IN SOVEREIGN VALUE:</div>
+                              <div style={{ fontSize: "0.72rem", color: "#CBD5E1", display: "flex", flexDirection: "column", gap: "2px" }}>
+                                {m.marketQuote.freeValueAdditions.map((item, i) => (
+                                  <div key={i}>✓ {item}</div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Sasti vs Premium Audit Toggle */}
+                            <div style={{ marginBottom: "12px" }}>
+                              <button
+                                type="button"
+                                onClick={() => setShowComparisonFor(showComparisonFor === m.id ? null : m.id)}
+                                style={{ background: "transparent", border: "none", color: "#38BDF8", fontSize: "0.75rem", fontWeight: "700", cursor: "pointer", textDecoration: "underline", padding: 0 }}
+                              >
+                                {showComparisonFor === m.id ? "▲ Sasti vs Premium vs GARUDA Audit Chhupayein" : "▼ Sasti Website vs Premium vs GARUDA Audit Dekhein"}
+                              </button>
+                              {showComparisonFor === m.id && (
+                                <div style={{ marginTop: "8px", background: "#050811", border: "1px solid #1E293B", borderRadius: "6px", padding: "8px", fontSize: "0.72rem", overflowX: "auto" }}>
+                                  {m.marketQuote.technicalComparison.map((comp, idx) => (
+                                    <div key={idx} style={{ padding: "6px 0", borderBottom: "1px solid #141D2F" }}>
+                                      <div style={{ color: "#FEF08A", fontWeight: "700" }}>{comp.parameter}</div>
+                                      <div style={{ color: "#F87171" }}>❌ Sasti Site: {comp.sastiSite}</div>
+                                      <div style={{ color: "#94A3B8" }}>🏢 Agency Build: {comp.premiumAgency}</div>
+                                      <div style={{ color: "#34D399", fontWeight: "700" }}>🦅 GARUDA Sovereign: {comp.garudaSovereign}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Interactive Negotiation & Counter-Offer Box */}
+                            <div style={{ background: "#0E1526", border: "1px solid #3730A3", borderRadius: "8px", padding: "10px" }}>
+                              <div style={{ fontSize: "0.75rem", fontWeight: "800", color: "#A5B4FC", marginBottom: "4px" }}>
+                                🤝 Budget Negotiation &amp; Counter-Offer:
+                              </div>
+                              <div style={{ fontSize: "0.7rem", color: "#94A3B8", marginBottom: "8px" }}>
+                                GARUDA rate client-friendly aur negotiable hai. Apna budget propose karein:
+                              </div>
+                              <div style={{ display: "flex", gap: "6px" }}>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. 50000"
+                                  value={counterOffers[m.id] || ""}
+                                  onChange={(e) => setCounterOffers({ ...counterOffers, [m.id]: e.target.value })}
+                                  style={{ flex: 1, background: "#050811", border: "1px solid #334155", borderRadius: "4px", padding: "6px 10px", color: "#fff", fontSize: "0.8rem" }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleNegotiateQuote(m.marketQuote, counterOffers[m.id])}
+                                  style={{ background: "#6366F1", color: "#fff", border: "none", padding: "6px 14px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
+                                >
+                                  Negotiate
+                                </button>
                               </div>
                             </div>
                           </div>
@@ -860,6 +1053,7 @@ export default function PawanCodingStudio() {
                     )}
                   </div>
                 ))}
+
                 {isConsulting && (
                   <div style={{ alignSelf: "flex-start", padding: "10px 14px", background: "#181511", borderRadius: "10px", border: "1px solid #d4af37", color: "#fef08a", fontSize: "0.82rem", display: "flex", alignItems: "center", gap: "8px" }}>
                     <span style={{ animation: "spin 1s linear infinite" }}>⚙️</span> Pawan is analyzing requirements and structuring recommendations...
@@ -1673,7 +1867,83 @@ export default function PawanCodingStudio() {
           </div>
         )}
 
+        {/* 📱 PAWAN 1-TAP APK & PWA SUPERPOWER MODAL */}
+        {apkModalData && (
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 99999, padding: "1rem" }}>
+            <div style={{ background: "#0B0F19", border: "1px solid #D4AF37", borderRadius: "16px", maxWidth: "520px", width: "100%", padding: "1.8rem", color: "#F8FAFC", boxShadow: "0 25px 60px rgba(0,0,0,0.9)", position: "relative" }}>
+              <button
+                type="button"
+                onClick={() => setApkModalData(null)}
+                style={{ position: "absolute", top: "16px", right: "16px", background: "transparent", border: "none", color: "#94A3B8", fontSize: "1.2rem", cursor: "pointer" }}
+              >
+                ✕
+              </button>
+
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "3px 10px", borderRadius: "999px", background: "rgba(212, 175, 55, 0.15)", border: "1px solid rgba(212, 175, 55, 0.35)", fontSize: "0.72rem", color: "#FEF08A", fontWeight: "800", marginBottom: "0.8rem" }}>
+                <span>📱</span> PILLAR 1: PAWAN MOBILE SUPERPOWER
+              </div>
+
+              <h2 style={{ fontSize: "1.3rem", fontWeight: "800", margin: "0 0 0.4rem 0", color: "#FFFFFF" }}>
+                {apkModalData.appName}
+              </h2>
+              <p style={{ margin: "0 0 1.2rem 0", color: "#94A3B8", fontSize: "0.82rem", lineHeight: 1.5 }}>
+                {apkModalData.message}
+              </p>
+
+              {/* QR Code and Quick Install Section */}
+              <div style={{ display: "flex", gap: "1.2rem", alignItems: "center", background: "#050811", border: "1px solid #1E293B", borderRadius: "12px", padding: "1rem", marginBottom: "1.2rem", flexWrap: "wrap" }}>
+                <div style={{ background: "#FFFFFF", padding: "8px", borderRadius: "8px", display: "inline-block" }}>
+                  <img src={apkModalData.qrUrl} alt="Scan to Install" style={{ width: "120px", height: "120px", display: "block" }} />
+                </div>
+                <div style={{ flex: "1 1 200px" }}>
+                  <div style={{ fontSize: "0.85rem", fontWeight: "800", color: "#FEF08A", marginBottom: "4px" }}>
+                    📷 Scan with Mobile Camera
+                  </div>
+                  <div style={{ fontSize: "0.76rem", color: "#94A3B8", lineHeight: 1.4, marginBottom: "10px" }}>
+                    Scan QR code with your Android phone to instantly open and install to home screen with 1 tap.
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => window.open(apkModalData.previewUrl, "_blank")}
+                    style={{ background: "linear-gradient(135deg, #10B981 0%, #059669 100%)", color: "#FFFFFF", border: "none", padding: "8px 14px", borderRadius: "6px", fontSize: "0.78rem", fontWeight: "800", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+                  >
+                    <span>🚀</span> Open Mobile PWA
+                  </button>
+                </div>
+              </div>
+
+              {/* Direct Download Actions */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginBottom: "1.2rem" }}>
+                <a
+                  href={apkModalData.downloadUrl}
+                  download
+                  style={{ background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)", color: "#FFFFFF", padding: "10px 14px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "800", textDecoration: "none", textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem", boxShadow: "0 4px 14px rgba(99, 102, 241, 0.3)" }}
+                >
+                  <span>📦</span> Download Bundle (.zip)
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(apkModalData.previewUrl);
+                    alert("Mobile link copied: " + apkModalData.previewUrl);
+                  }}
+                  style={{ background: "#1E293B", color: "#E2E8F0", border: "1px solid #334155", padding: "10px 14px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}
+                >
+                  <span>📋</span> Copy Mobile URL
+                </button>
+              </div>
+
+              {/* Anti-Fabrication SHA-256 Proof */}
+              <div style={{ background: "#050811", border: "1px solid #1E293B", borderRadius: "8px", padding: "8px 12px", fontSize: "0.72rem", color: "#64748B", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <span style={{ color: "#D4AF37", fontWeight: "700" }}>SHA-256: </span>
+                {apkModalData.sha256}
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
 }
+

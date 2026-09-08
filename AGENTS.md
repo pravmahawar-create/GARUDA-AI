@@ -22,3 +22,23 @@ Whenever generating or dispatching outreach emails, executive briefs, proposals,
      - **Official Platform Portal**: `https://www.garudaos.in`
      - **Personalized Scoping Chat**: `https://www.garudaos.in/chat?ref={prospectId}`
    - If a personal phone number is not explicitly configured and verified, it must be completely omitted from outgoing collateral.
+
+## 3. Sovereign Operational Directives (Founder Mandate - Permanent)
+1. **Language Protocol**: Strictly communicate in Roman Hindi (Hinglish). Natural, clear Roman Hindi only.
+2. **Strict Gatekeeping on Commit, Push & Deploy**: Under NO circumstances execute `git commit`, `git push`, or any deployment command (Vercel, Cloudflare, production server, etc.) without explicit prior permission from Founder Praveen.
+3. **Autonomous Non-Stop Execution**: Once Founder gives a task or command, execute it end-to-end nonstop without asking repeated permissions for internal steps. Build, modify, verify, and complete work autonomously. Only report final progress or when founder decision is strictly mandatory.
+
+## 4. Problem-First Forensic Destruction & Elite Graphic Domination Doctrine (Permanent Law)
+1. **Target Exact Hemorrhages & Leaks**: Every client communication must pinpoint the prospect's exact operational/revenue fallbacks, dropped leads, latency bottlenecks, and conversion holes. Call out their bleeding points directly with surgical precision and provide an undeniable architectural solution that establishes GARUDA's supreme engineering superiority.
+2. **Elite High-Tech Computer Graphics & Architectural Visuals**: All outreach collateral, visual briefs, and proposals must feature cutting-edge, ultra-modern computer graphics, cybernetic dark schematics, and high-fidelity architectural visuals. The aesthetic must project the sheer power, velocity, and design perfection of a 1,000-engineer titan workforce.
+3. **GARUDA Flywheel — GARUDA is Client Zero**: GARUDA itself is our first and most demanding client. Our SEO domination, technical authority, BOT-VERSE omnipresence, and organic marketing flywheel must operate without compromise or hesitation.
+4. **Pre-Execution Strategic Briefing Protocol**: Before executing large automated pipelines, outreach campaigns, or new system architecture, present the complete execution blueprint to Founder Praveen Mahawar, then execute autonomously nonstop upon his explicit command (aadesh).
+
+## 5. Non-Revocable Pre-Commit Forensic Audit & Vulnerability Elimination Law (Permanent Founder Mandate)
+Under NO circumstances shall any agent execute `git commit`, `git push`, or deploy without first conducting a relentless, multi-layered forensic interrogation. The agent MUST explicitly verify and document:
+1. **Existing Defects & Vulnerabilities**: Exactly what defects, syntax flaws, or unhandled exceptions exist in the modified files.
+2. **Predictive Failure & Regression Analysis**: What hidden regressions, broken imports, missing routes, or downstream failures could happen across Vercel serverless, Render cloud, local dev, or client mobile browsers.
+3. **Root-Cause Investigation**: Why did previous failures or drops occur, and how does this patch eliminate the root cause once and for all.
+4. **Architectural Loopholes & Drawbacks**: Exactly what bottlenecks, latency drops, security exposures, or edge-case limitations could this design cause, and how are they actively mitigated.
+5. **Local Verification Proof**: Every affected build pipeline (`npx vite build`), backend syntax check (`node -c`), and endpoint test must be proven clean locally with exit code 0 before touching git or requesting deployment permission.
+*This directive is permanent, supreme, and non-revocable across all GARUDA workforce iterations.*

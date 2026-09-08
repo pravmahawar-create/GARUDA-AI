@@ -1,0 +1,25 @@
+{
+  "name": "Cloth GST Calculator • GARUDA Mobile",
+  "short_name": "Cloth GST Calcul",
+  "description": "Autonomous mobile application created by GARUDA PAWAN for Cloth GST Calculator",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#060503",
+  "theme_color": "#D4AF37",
+  "icons": [
+    {
+      "src": "./icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
