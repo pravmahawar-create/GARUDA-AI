@@ -503,7 +503,9 @@ const ROUTES = [
     path: "/privacy",
     filePaths: [
       path.join(DIST_DIR, "privacy", "index.html"),
-      path.join(DIST_DIR, "privacy.html")
+      path.join(DIST_DIR, "privacy.html"),
+      path.join(DIST_DIR, "privacy-policy", "index.html"),
+      path.join(DIST_DIR, "privacy-policy.html")
     ],
     title: "Privacy Policy | GARUDA AI Operating System",
     description: "Official Privacy Policy of GARUDA AI (garudaos.in). Comprehensive data governance, Google API Services User Data Policy disclosure, and user data rights.",
@@ -520,7 +522,9 @@ const ROUTES = [
     path: "/terms",
     filePaths: [
       path.join(DIST_DIR, "terms", "index.html"),
-      path.join(DIST_DIR, "terms.html")
+      path.join(DIST_DIR, "terms.html"),
+      path.join(DIST_DIR, "terms-of-service", "index.html"),
+      path.join(DIST_DIR, "terms-of-service.html")
     ],
     title: "Terms of Service | GARUDA AI Operating System",
     description: "Official Terms of Service for GARUDA AI (garudaos.in). Operational terms, commercial milestone agreements, intellectual property rights, and third-party API terms.",
@@ -796,7 +800,9 @@ const ROUTES = [
     path: "/growth",
     filePaths: [
       path.join(DIST_DIR, "growth", "index.html"),
-      path.join(DIST_DIR, "growth.html")
+      path.join(DIST_DIR, "growth.html"),
+      path.join(DIST_DIR, "growth-command", "index.html"),
+      path.join(DIST_DIR, "growth-command.html")
     ],
     title: "Growth Command Center — Cross-Universe Intelligence",
     description: "Command interface for GARUDA Growth Intelligence: cross-universe campaign orchestration with founder approval gates.",
@@ -832,6 +838,17 @@ const ROUTES = [
       <p>Live prospect: Niravi Jaipur — contact@niravijaipur.com — dispatched 03 Sep 2026, 18:16 IST via Brevo &lt;202609031246.78700348457@smtp-relay.mailin.fr&gt; — Status SENT / ACCEPTED_BY_RELAY — Attachment GARUDA_Niravi_Jaipur_Executive_Proposal.pdf — SHA 4d5c46a35c80d859738f3262dcd2b70e7eacccfedb23a09d5787382ae24a3ddd.</p>
       <p><a href="/founder/acquisition">Open Founder Acquisition Cockpit →</a></p>
     `
+  },
+  {
+    path: "/revenue",
+    filePaths: [
+      path.join(DIST_DIR, "revenue", "index.html"),
+      path.join(DIST_DIR, "revenue.html")
+    ],
+    title: "GARUDA Revenue Department | Sovereign Operations",
+    description: "Private management console for GARUDA revenue operations.",
+    canonical: "https://www.garudaos.in/revenue",
+    robots: "noindex, nofollow"
   },
   {
     path: "/login",
@@ -912,7 +929,9 @@ const ROUTES = [
       path.join(DIST_DIR, "agency", "index.html"),
       path.join(DIST_DIR, "agency.html"),
       path.join(DIST_DIR, "creator", "index.html"),
-      path.join(DIST_DIR, "creator.html")
+      path.join(DIST_DIR, "creator.html"),
+      path.join(DIST_DIR, "creative", "legacy", "index.html"),
+      path.join(DIST_DIR, "creative", "legacy.html")
     ],
     title: "GARUDA Creative Universe (U19) | Multimodal Creative OS & One-Tap Composer",
     description: "Multimodal creative operating system featuring One-Tap Music Composer, Cinematic Film Storyboard Engine, and character consistency architecture.",
@@ -1007,7 +1026,9 @@ const ROUTES = [
       path.join(DIST_DIR, "kudos", "index.html"),
       path.join(DIST_DIR, "kudos.html"),
       path.join(DIST_DIR, "pitch", "kudos", "index.html"),
-      path.join(DIST_DIR, "pitch", "kudos.html")
+      path.join(DIST_DIR, "pitch", "kudos.html"),
+      path.join(DIST_DIR, "kudos-entertainment", "index.html"),
+      path.join(DIST_DIR, "kudos-entertainment.html")
     ],
     title: "Kudos Face of India 2026 | 360° Digital Omnipresence Blueprint",
     description: "13-day celebrity mega event digital marketing war room for Kudos Entertainment, Kajal Sharma, and Celina Jaitly at Radisson Blu Dwarka.",
@@ -1064,7 +1085,9 @@ const ROUTES = [
       path.join(DIST_DIR, "founder", "pawan", "index.html"),
       path.join(DIST_DIR, "founder", "pawan.html"),
       path.join(DIST_DIR, "astra", "index.html"),
-      path.join(DIST_DIR, "astra.html")
+      path.join(DIST_DIR, "astra.html"),
+      path.join(DIST_DIR, "founder", "astra", "index.html"),
+      path.join(DIST_DIR, "founder", "astra.html")
     ],
     title: "GARUDA PAWAN Sovereign Coding Agent | As Fast as Wind • Smooth & Powerful",
     description: "GARUDA PAWAN Sovereign Autonomous Coding Agent with two-way voice command engine, multi-model LLM execution, self-healing repo repair, and SHA-256 audit trail.",
@@ -1095,12 +1118,34 @@ const ROUTES = [
     `
   },
   {
+    path: "/dost",
+    filePaths: [
+      path.join(DIST_DIR, "dost", "index.html"),
+      path.join(DIST_DIR, "dost.html"),
+      path.join(DIST_DIR, "sahayak", "index.html"),
+      path.join(DIST_DIR, "sahayak.html")
+    ],
+    title: "GARUDA DOST • Zero-Advance Rozgar Setu | Digital Partner Program",
+    description: "Aap gaon me ho ya shehar me — GARUDA Dost bina kisi advance fees ke micro-tools aur digital services se aamadani aur rozgar deta hai.",
+    canonical: "https://www.garudaos.in/dost",
+    h1: "GARUDA DOST • Zero-Advance Rozgar Setu",
+    eyebrow: "HAR GAON, HAR SHEHAR DIGITAL ROZGAR",
+    contentSnippet: `
+      <h2>Aap Gaon me ho ya Shehar me — GARUDA Aapka Digital Dost Hai</h2>
+      <p>Bina kisi advance fees ke, pay when you earn model par GARUDA ke micro-tools (Cloth GST, Vernacular Resume, Local Shop PWA) gaon aur kasbon ke vyapariyon tak pahunchakar aamadani kamayein.</p>
+    `
+  },
+  {
     path: "/praveen-mahawar",
     filePaths: [
       path.join(DIST_DIR, "praveen-mahawar", "index.html"),
       path.join(DIST_DIR, "praveen-mahawar.html"),
       path.join(DIST_DIR, "about", "index.html"),
-      path.join(DIST_DIR, "about.html")
+      path.join(DIST_DIR, "about.html"),
+      path.join(DIST_DIR, "founder-profile", "index.html"),
+      path.join(DIST_DIR, "founder-profile.html"),
+      path.join(DIST_DIR, "about-founder", "index.html"),
+      path.join(DIST_DIR, "about-founder.html")
     ],
     title: "Praveen Mahawar | Founder & Chief AI Architect of GARUDA-AI • Jabalpur, India",
     description: "Praveen Mahawar is the Founder and Chief AI Architect of GARUDA-AI, an advanced autonomous AI Operating System engineered in Jabalpur, Madhya Pradesh, India.",

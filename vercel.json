@@ -5,7 +5,7 @@
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(.*\\.html|/|/founder.*|/bot-verse.*|/pawan.*|/astra.*|/kids-play.*|/kids-app.*)",
+      "source": "/(.*\\.html|/|/founder.*|/bot-verse.*|/pawan.*|/astra.*|/kids-play.*|/kids-app.*|/dost.*|/sahayak.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -166,6 +166,30 @@
       "destination": "/pawan/index.html"
     },
     {
+      "source": "/kids-play",
+      "destination": "/kids-play/index.html"
+    },
+    {
+      "source": "/kids-app",
+      "destination": "/kids-play/index.html"
+    },
+    {
+      "source": "/dost",
+      "destination": "/dost/index.html"
+    },
+    {
+      "source": "/dost.html",
+      "destination": "/dost/index.html"
+    },
+    {
+      "source": "/sahayak",
+      "destination": "/dost/index.html"
+    },
+    {
+      "source": "/sahayak.html",
+      "destination": "/dost/index.html"
+    },
+    {
       "source": "/delegate",
       "destination": "/delegate/index.html"
     },
@@ -192,6 +216,10 @@
     {
       "source": "/app",
       "destination": "/app/index.html"
+    },
+    {
+      "source": "/revenue",
+      "destination": "/revenue/index.html"
     },
     {
       "source": "/what-is-garuda-ai",
@@ -242,6 +270,10 @@
       "destination": "/creative/index.html"
     },
     {
+      "source": "/creative/legacy",
+      "destination": "/creative/index.html"
+    },
+    {
       "source": "/content",
       "destination": "/content/index.html"
     },
@@ -259,6 +291,14 @@
     },
     {
       "source": "/kudos",
+      "destination": "/kudos/index.html"
+    },
+    {
+      "source": "/pitch/kudos",
+      "destination": "/kudos/index.html"
+    },
+    {
+      "source": "/kudos-entertainment",
       "destination": "/kudos/index.html"
     },
     {

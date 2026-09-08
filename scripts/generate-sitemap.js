@@ -23,6 +23,7 @@ const CANONICAL_URLS = [
   { url: "/what-is-garuda-ai", priority: "0.95", changefreq: "weekly" },
   { url: "/praveen-mahawar", priority: "0.95", changefreq: "weekly" },
   { url: "/pawan", priority: "0.95", changefreq: "daily" },
+  { url: "/dost", priority: "0.90", changefreq: "weekly" },
   { url: "/cloth-gst.html", priority: "0.90", changefreq: "weekly" },
   { url: "/chat", priority: "0.90", changefreq: "weekly" },
   { url: "/demo", priority: "0.80", changefreq: "weekly" },

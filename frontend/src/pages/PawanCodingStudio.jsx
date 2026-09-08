@@ -203,12 +203,22 @@ export default function PawanCodingStudio() {
   };
 
 
-  // 🔊 PAWAN Natural Speech (Streams Google Natural Voice)
+  // 🔊 PAWAN Natural Speech (Streams Google Natural Voice with Web Speech fallback)
   const pawanSpeak = (text) => {
-    if (voiceMuted || typeof window === "undefined") return;
+    if (voiceMuted || typeof window === "undefined" || !text) return;
     try {
-      const audio = new Audio(`/api/audio/tts?text=${encodeURIComponent(text)}&lang=hi`);
-      audio.play().catch(() => {});
+      const audio = new Audio(`/api/audio/tts?text=${encodeURIComponent(text.slice(0, 200))}&lang=hi`);
+      audio.play().catch(() => {
+        try {
+          if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text.slice(0, 160));
+            utterance.lang = "hi-IN";
+            utterance.rate = 1.0;
+            window.speechSynthesis.speak(utterance);
+          }
+        } catch {}
+      });
     } catch {}
   };
 
@@ -304,12 +314,17 @@ export default function PawanCodingStudio() {
       }
 
       setResult(data.data);
-      setActiveProject({
+      const newProj = {
         file: data.data.file,
         code: data.data.code,
         version: (activeProject?.version || 0) + 1,
-        summary: data.data.summary
-      });
+        summary: data.data.summary,
+        taskId: data.data.taskId
+      };
+      setActiveProject(newProj);
+      try {
+        localStorage.setItem("garuda_pawan_active_project", JSON.stringify(newProj));
+      } catch {}
       setActiveTab("code");
       fetchHistory();
       pawanSpeak("Praveen ji, task completed successfully! Verified code is ready on screen.");
@@ -524,6 +539,11 @@ export default function PawanCodingStudio() {
   };
 
   const handleBuildApk = async () => {
+    const codeToBuild = activeProject?.code || result?.code;
+    if (!codeToBuild) {
+      alert("Please generate or enter application code first before packaging for mobile / APK.");
+      return;
+    }
     setApkBuilding(true);
     pawanSpeak("Packaging mobile application, generating PWA manifest and compiling bundle.");
     try {
@@ -531,7 +551,7 @@ export default function PawanCodingStudio() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          code: activeProject?.code || result?.code,
+          code: codeToBuild,
           targetFile: activeProject?.file || result?.file,
           appName: (activeProject?.file || result?.file || "garuda-app").replace(/\.[^/.]+$/, "").replace(/^.*\//, "")
         })
@@ -560,7 +580,7 @@ export default function PawanCodingStudio() {
         body: JSON.stringify({
           clientName: intakeName || "Executive Partner",
           prompt: promptText || instruction || "Custom Web & Mobile Application",
-          budget: customBudget || intakeRepo || "standard",
+          budget: customBudget || "standard",
           appName: targetFile || "garuda-app"
         })
       });
@@ -937,7 +957,7 @@ export default function PawanCodingStudio() {
 
                                 <button
                                   type="button"
-                                  onClick={() => handleRequestMarketQuote(m.consultation.suggestedInstruction || m.consultation.actionPlan, intakeRepo)}
+                                  onClick={() => handleRequestMarketQuote(m.consultation.suggestedInstruction || m.consultation.actionPlan)}
                                   style={{
                                     background: "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(245,158,11,0.2) 100%)",
                                     color: "#fef08a",

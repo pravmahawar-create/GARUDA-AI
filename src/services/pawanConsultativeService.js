@@ -158,6 +158,8 @@ function generateMarketQuote({ clientName, prompt, budget, appName }) {
 
   const comparison = generateTechnicalComparison(safeApp);
 
+  const allowDiscount = budgetInfo.tier !== "micro" && garudaPrice < baseMarketPrice;
+
   const reportPayload = {
     formalGreeting,
     clientName: clientName || "Executive Partner",
@@ -169,6 +171,7 @@ function generateMarketQuote({ clientName, prompt, budget, appName }) {
     clientDeclaredBudget,
     isBudgetSufficient,
     budgetDiagnosis,
+    allowDiscount,
     pricing: {
       marketStandardPrice: baseMarketPrice,
       garudaStandardPrice: garudaPrice,
