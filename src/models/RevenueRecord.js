@@ -20,7 +20,8 @@ const revenueRecordSchema = new mongoose.Schema(
     status: { type: String, enum: REVENUE_STATUSES, default: "pending", index: true },
     capturedAt: { type: Date, default: null },
     recordedAt: { type: Date, default: () => new Date(), index: true },
-    notes: { type: String, default: "" }
+    notes: { type: String, default: "" },
+    tenantId: { type: String, default: "tenant_founder_core", index: true }
   },
   { timestamps: true }
 );

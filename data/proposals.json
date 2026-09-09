@@ -464,6 +464,954 @@
     "createdAt": "2026-09-08T11:06:52.789Z",
     "updatedAt": "2026-09-08T11:23:38.001Z"
   },
+  "prop_agency_thedistance_uk": {
+    "proposalId": "prop_agency_thedistance_uk",
+    "version": 1,
+    "candidateId": "cand_agency_thedistance_uk",
+    "scopeId": "scope_agency_thedistance_uk",
+    "project": {
+      "title": "The Distance App Developers — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "48-Hour Sovereign ReAct Sprint Node: Deploys complete React Native/PWA cross-platform modules, offline sync engine, and automated SHA-256 test manifests under white-label NDA.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "uk_mobile_agency",
+        "react_native",
+        "pwa_sprint",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Partnership & Technology Director",
+      "email": "hello@thedistance.co.uk",
+      "phone": "",
+      "organization": "The Distance App Developers"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1750,
+        "amountINR": 187250,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1750,
+        "amountINR": 187250,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "GBP",
+      "totalAmount": 3500,
+      "depositAmount": 1750,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_thedistance_uk",
+    "createdAt": "2026-09-08T12:08:32.146Z",
+    "updatedAt": "2026-09-08T12:08:32.146Z"
+  },
+  "prop_agency_3sidedcube_uk": {
+    "proposalId": "prop_agency_3sidedcube_uk",
+    "version": 1,
+    "candidateId": "cand_agency_3sidedcube_uk",
+    "scopeId": "scope_agency_3sidedcube_uk",
+    "project": {
+      "title": "3SidedCube Tech Agency — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Autonomous Cloud API & Webhook Node: Sub-100ms microservice pipelines, deterministic event bus, and cryptographic verification suite delivered in 72 hours.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "uk_tech_agency",
+        "cloud_api",
+        "event_bus",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Executive Leadership & Tech Team",
+      "email": "holla@3sidedcube.com",
+      "phone": "",
+      "organization": "3SidedCube Tech Agency"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1900,
+        "amountINR": 203300,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1900,
+        "amountINR": 203300,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "GBP",
+      "totalAmount": 3800,
+      "depositAmount": 1900,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_3sidedcube_uk",
+    "createdAt": "2026-09-08T12:08:33.805Z",
+    "updatedAt": "2026-09-08T12:08:33.805Z"
+  },
+  "prop_agency_pixelfield_uk": {
+    "proposalId": "prop_agency_pixelfield_uk",
+    "version": 1,
+    "candidateId": "cand_agency_pixelfield_uk",
+    "scopeId": "scope_agency_pixelfield_uk",
+    "project": {
+      "title": "Pixelfield Mobile & Web Studio — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Zero-Debt Next.js 14 Full-Stack Sprint Pod: Server Actions, Tailwind CSS, secure auth, and automated QA delivered in 48-72 hours under strict white-label.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "london_agency",
+        "nextjs14",
+        "mvp_sprint",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Partnerships & Engineering Lead",
+      "email": "hello@pixelfield.co.uk",
+      "phone": "",
+      "organization": "Pixelfield Mobile & Web Studio"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1800,
+        "amountINR": 192600,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1800,
+        "amountINR": 192600,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "GBP",
+      "totalAmount": 3600,
+      "depositAmount": 1800,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_pixelfield_uk",
+    "createdAt": "2026-09-08T12:08:34.328Z",
+    "updatedAt": "2026-09-08T12:08:34.328Z"
+  },
+  "prop_agency_stellified_uk": {
+    "proposalId": "prop_agency_stellified_uk",
+    "version": 1,
+    "candidateId": "cand_agency_stellified_uk",
+    "scopeId": "scope_agency_stellified_uk",
+    "project": {
+      "title": "Stellified Digital Studio — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Pixel-Perfect Headless Web Engine: 100/100 Lighthouse performance, instant PWA caching, and semantic SEO schema delivered with zero code debt.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "uk_web_studio",
+        "headless_web",
+        "core_web_vitals",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Client Services & Delivery Team",
+      "email": "hello@stellified.co.uk",
+      "phone": "",
+      "organization": "Stellified Digital Studio"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1600,
+        "amountINR": 171200,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1600,
+        "amountINR": 171200,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "GBP",
+      "totalAmount": 3200,
+      "depositAmount": 1600,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_stellified_uk",
+    "createdAt": "2026-09-08T12:08:34.793Z",
+    "updatedAt": "2026-09-08T12:08:34.793Z"
+  },
+  "prop_agency_zropixel_uae": {
+    "proposalId": "prop_agency_zropixel_uae",
+    "version": 1,
+    "candidateId": "cand_agency_zropixel_uae",
+    "scopeId": "scope_agency_zropixel_uae",
+    "project": {
+      "title": "Zropixel UAE — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Gulf Luxury Tech Sovereign Execution Sprint: Obsidian-dark luxury aesthetics, sub-500ms global edge caching, and interactive 3D/AI showcases deployed in 72 hours.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "dubai_luxury_tech",
+        "ultra_fast_pwa",
+        "gulf_agency",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Strategic Alliances & Delivery Team",
+      "email": "sales@zropixel.com",
+      "phone": "",
+      "organization": "Zropixel UAE"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 8250,
+        "amountINR": 188100,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 8250,
+        "amountINR": 188100,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "AED",
+      "totalAmount": 16500,
+      "depositAmount": 8250,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_zropixel_uae",
+    "createdAt": "2026-09-08T12:08:35.352Z",
+    "updatedAt": "2026-09-08T12:08:35.352Z"
+  },
+  "prop_agency_globalmedia_uae": {
+    "proposalId": "prop_agency_globalmedia_uae",
+    "version": 1,
+    "candidateId": "cand_agency_globalmedia_uae",
+    "scopeId": "scope_agency_globalmedia_uae",
+    "project": {
+      "title": "Global Media Insight UAE — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Omnichannel Enterprise Automation Suite: Meta Cloud API integration, zero-latency Arabic/English conversational routing, and enterprise CRM sync.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "dubai_media_city",
+        "omnichannel_ai",
+        "enterprise_crm",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Digital Transformation Leadership",
+      "email": "liz@globalmedia.ae",
+      "phone": "",
+      "organization": "Global Media Insight UAE"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 9000,
+        "amountINR": 205200,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 9000,
+        "amountINR": 205200,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "AED",
+      "totalAmount": 18000,
+      "depositAmount": 9000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_globalmedia_uae",
+    "createdAt": "2026-09-08T12:08:35.829Z",
+    "updatedAt": "2026-09-08T12:08:35.829Z"
+  },
+  "prop_agency_boldare_eu": {
+    "proposalId": "prop_agency_boldare_eu",
+    "version": 1,
+    "candidateId": "cand_agency_boldare_eu",
+    "scopeId": "scope_agency_boldare_eu",
+    "project": {
+      "title": "Boldare Custom Software — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Governed AI Engineering Sprint Pod: Multi-model AI agent pipelines, RAG vector architectures, and cryptographic SHA-256 release manifests.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "eu_software_agency",
+        "ai_agent_graphs",
+        "rag_systems",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Business Development & Tech Alliances",
+      "email": "business@boldare.com",
+      "phone": "",
+      "organization": "Boldare Custom Software"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 2100,
+        "amountINR": 189000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 2100,
+        "amountINR": 189000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "EUR",
+      "totalAmount": 4200,
+      "depositAmount": 2100,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_boldare_eu",
+    "createdAt": "2026-09-08T12:08:36.310Z",
+    "updatedAt": "2026-09-08T12:08:36.310Z"
+  },
+  "prop_agency_webchain_eu": {
+    "proposalId": "prop_agency_webchain_eu",
+    "version": 1,
+    "candidateId": "cand_agency_webchain_eu",
+    "scopeId": "scope_agency_webchain_eu",
+    "project": {
+      "title": "Webchain Systems — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Deterministic Backend Refactoring Pod: High-throughput Node.js/PostgreSQL architecture, automated database index optimization, and 100% test coverage.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "eu_cloud_systems",
+        "backend_architecture",
+        "saas_migration",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Technical Leadership Team",
+      "email": "office@webchain.ro",
+      "phone": "",
+      "organization": "Webchain Systems"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1900,
+        "amountINR": 171000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1900,
+        "amountINR": 171000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "EUR",
+      "totalAmount": 3800,
+      "depositAmount": 1900,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_webchain_eu",
+    "createdAt": "2026-09-08T12:08:36.811Z",
+    "updatedAt": "2026-09-08T12:08:36.811Z"
+  },
+  "prop_agency_disruptor_us": {
+    "proposalId": "prop_agency_disruptor_us",
+    "version": 1,
+    "candidateId": "cand_agency_disruptor_us",
+    "scopeId": "scope_agency_disruptor_us",
+    "project": {
+      "title": "Disruptor Creations — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "High-Concurrency Platform Architecture: Real-time socket event handling, Stripe Connect automated payouts, and sub-100ms ticketing checkout PWA.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "us_platform_agency",
+        "streaming_ticketing",
+        "stripe_connect",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Executive Architecture Team",
+      "email": "schlaut@gmail.com",
+      "phone": "",
+      "organization": "Disruptor Creations"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 2250,
+        "amountINR": 189000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 2250,
+        "amountINR": 189000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "totalAmount": 4500,
+      "depositAmount": 2250,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_disruptor_us",
+    "createdAt": "2026-09-08T12:08:37.270Z",
+    "updatedAt": "2026-09-08T12:08:37.270Z"
+  },
+  "prop_agency_mccall_us": {
+    "proposalId": "prop_agency_mccall_us",
+    "version": 1,
+    "candidateId": "cand_agency_mccall_us",
+    "scopeId": "scope_agency_mccall_us",
+    "project": {
+      "title": "McCall Chamber Portal RFP — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "Enterprise Civic & Tourism PWA: Instant directory search, interactive event calendar, zero-latency booking integrations, and 99+ Core Web Vitals.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "us_enterprise_rfp",
+        "civic_portal",
+        "tourism_engine",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Executive Director & Portal Committee",
+      "email": "director@mccallchamber.org",
+      "phone": "",
+      "organization": "McCall Chamber Portal RFP"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 3000,
+        "amountINR": 252000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 3000,
+        "amountINR": 252000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "totalAmount": 6000,
+      "depositAmount": 3000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_mccall_us",
+    "createdAt": "2026-09-08T12:08:37.756Z",
+    "updatedAt": "2026-09-08T12:08:37.756Z"
+  },
+  "prop_agency_smolicz_us": {
+    "proposalId": "prop_agency_smolicz_us",
+    "version": 1,
+    "candidateId": "cand_agency_smolicz_us",
+    "scopeId": "scope_agency_smolicz_us",
+    "project": {
+      "title": "Smolicz Solutions LLC — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "High-CTR Conversion Engine: Sub-second landing pages, dynamic UTM personalization, and automated CRM webhook lead routing.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "us_ad_agency",
+        "conversion_funnel",
+        "landing_pwa",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Hannah Smolicz",
+      "email": "hannah@smoliczsolutionsllc.com",
+      "phone": "",
+      "organization": "Smolicz Solutions LLC"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1750,
+        "amountINR": 147000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1750,
+        "amountINR": 147000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "totalAmount": 3500,
+      "depositAmount": 1750,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_smolicz_us",
+    "createdAt": "2026-09-08T12:08:38.227Z",
+    "updatedAt": "2026-09-08T12:08:38.227Z"
+  },
+  "prop_agency_heartfly_us": {
+    "proposalId": "prop_agency_heartfly_us",
+    "version": 1,
+    "candidateId": "cand_agency_heartfly_us",
+    "scopeId": "scope_agency_heartfly_us",
+    "project": {
+      "title": "Rebecca Heartfly Platform — 48-72h Sovereign Engineering Sprint Node",
+      "requirements": "All-in-One Client Experience Hub: Integrated calendar booking, Stripe instant checkout, video class membership, and 1-tap mobile PWA.",
+      "category": "Sovereign Engineering & Agency Subcontracting",
+      "tags": [
+        "us_platform_rebuild",
+        "booking_hub",
+        "stripe_pwa",
+        "sovereign_subcontract"
+      ]
+    },
+    "client": {
+      "name": "Rebecca Heartfly & Team",
+      "email": "rebeccaheartfly@gmail.com",
+      "phone": "",
+      "organization": "Rebecca Heartfly Platform"
+    },
+    "capabilityMatch": {
+      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
+        "White-label NDA implementation with complete IP transfer to agency",
+        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
+        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "14-Day zero-defect warranty and dedicated technical handover session"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
+        "Domain purchasing & cloud hosting provider fees"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
+        "amount": 1500,
+        "amountINR": 126000,
+        "percentage": 50,
+        "status": "PENDING",
+        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — 50% Final Delivery & Verification",
+        "amount": 1500,
+        "amountINR": 126000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "totalAmount": 3000,
+      "depositAmount": 1500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": 3,
+      "kickoffDate": "2026-09-08",
+      "targetDeliveryDate": "2026-09-11"
+    },
+    "status": "PENDING",
+    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_heartfly_us",
+    "createdAt": "2026-09-08T12:08:38.699Z",
+    "updatedAt": "2026-09-08T12:08:38.699Z"
+  },
   "prop_1787987601915_259c9e": {
     "proposalId": "prop_1787987601915_259c9e",
     "version": 1,
@@ -49514,952 +50462,1238 @@
       }
     ]
   },
-  "prop_agency_thedistance_uk": {
-    "proposalId": "prop_agency_thedistance_uk",
+  "prop_1788946194284_5c132c": {
+    "proposalId": "prop_1788946194284_5c132c",
     "version": 1,
-    "candidateId": "cand_agency_thedistance_uk",
-    "scopeId": "scope_agency_thedistance_uk",
+    "candidateId": null,
+    "scopeId": null,
     "project": {
-      "title": "The Distance App Developers — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "48-Hour Sovereign ReAct Sprint Node: Deploys complete React Native/PWA cross-platform modules, offline sync engine, and automated SHA-256 test manifests under white-label NDA.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
+      "title": "Build Next.js Landing Page with Stripe Payment Modal",
+      "requirements": "Responsive landing page with user checkout integration and automated receipt email",
+      "category": "Software Engineering",
       "tags": [
-        "uk_mobile_agency",
-        "react_native",
-        "pwa_sprint",
-        "sovereign_subcontract"
+        "custom_software",
+        "governed_execution"
       ]
     },
     "client": {
-      "name": "Partnership & Technology Director",
-      "email": "hello@thedistance.co.uk",
-      "phone": "",
-      "organization": "The Distance App Developers"
+      "name": "Sarah Connor (TEST / SIMULATION)",
+      "email": "sarah@cyberdyne.io",
+      "phone": null,
+      "organization": "Cyberdyne Tech",
+      "attribution": null
     },
     "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "name": "Governed software implementation",
       "category": "Software Engineering",
-      "matchScore": 99,
+      "matchScore": 80,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
         "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
+        "Deployment setup & 14-day warranty support"
       ],
       "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 1750,
-        "amountINR": 187250,
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 10000,
+        "amountINR": 10000,
         "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+        "status": "PAID",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 1750,
-        "amountINR": 187250,
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 10000,
+        "amountINR": 10000,
         "percentage": 50,
-        "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+        "status": "PAID",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
       }
     ],
     "pricing": {
-      "currency": "GBP",
-      "totalAmount": 3500,
-      "depositAmount": 1750,
+      "currency": "INR",
+      "totalAmount": 20000,
+      "totalINR": 20000,
+      "depositAmount": 10000,
+      "depositAmountINR": 10000,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-09-23T09:29:54.346Z"
     },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_thedistance_uk",
-    "createdAt": "2026-09-08T12:08:32.146Z",
-    "updatedAt": "2026-09-08T12:08:32.146Z"
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 10000,
+      "depositStatus": "PAID",
+      "paymentTruth": {
+        "verified": true,
+        "state": "PAYMENT_VERIFIED",
+        "paymentId": "pay_rzp_live_98124981",
+        "providerEvidence": "razorpay_hmac_signature_verified",
+        "amountPaid": 10000,
+        "currency": "INR",
+        "verifiedAt": "2026-09-09T09:30:03.037Z"
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "35c001be148961fef8026a15852bc1592297d410bcff067e80f1219f8567d8b9",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "CLOSED",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/prop_1788946194284_5c132c",
+    "createdAt": "2026-09-09T09:29:54.346Z",
+    "updatedAt": "2026-09-09T09:30:19.396Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-09T09:29:54.346Z",
+        "details": {
+          "totalINR": 20000,
+          "currency": "INR",
+          "totalInCurrency": 20000,
+          "depositAmount": 10000
+        }
+      },
+      {
+        "action": "CLIENT_VIEWED",
+        "actor": "client_portal",
+        "timestamp": "2026-09-09T09:30:00.087Z"
+      },
+      {
+        "action": "CLIENT_ACCEPTED",
+        "actor": "client",
+        "signer": "Sarah Connor",
+        "timestamp": "2026-09-09T09:30:00.916Z"
+      },
+      {
+        "action": "PAYMENT_CLAIM_RECORDED",
+        "actor": "system_truth_gate",
+        "verified": false,
+        "status": "PAYMENT_CLAIMED",
+        "timestamp": "2026-09-09T09:30:01.834Z"
+      },
+      {
+        "action": "PAYMENT_CLAIM_RECORDED",
+        "actor": "system_truth_gate",
+        "verified": false,
+        "status": "PAYMENT_EVIDENCE_UNVERIFIED",
+        "timestamp": "2026-09-09T09:30:02.551Z"
+      },
+      {
+        "action": "DEPOSIT_VERIFIED",
+        "actor": "razorpay_webhook_gate",
+        "verified": true,
+        "paymentId": "pay_rzp_live_98124981",
+        "amount": 10000,
+        "timestamp": "2026-09-09T09:30:03.037Z"
+      },
+      {
+        "action": "DELIVERY_COMPLETED",
+        "actor": "qa_validator_engine",
+        "manifestHash": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+        "timestamp": "2026-09-09T09:30:17.968Z"
+      },
+      {
+        "action": "FINAL_CLIENT_ACCEPTANCE",
+        "actor": "client",
+        "timestamp": "2026-09-09T09:30:18.547Z"
+      },
+      {
+        "action": "FINAL_PAYMENT_VERIFIED",
+        "actor": "razorpay_webhook_gate",
+        "paymentId": "pay_rzp_live_final_98124982",
+        "status": "REVENUE_REALIZED",
+        "timestamp": "2026-09-09T09:30:19.396Z"
+      }
+    ],
+    "clientAcceptance": {
+      "acceptedAt": "2026-09-09T09:30:00.916Z",
+      "signerName": "Sarah Connor",
+      "signerEmail": "sarah@cyberdyne.io",
+      "ipAddress": "203.0.113.42",
+      "agreementConfirmed": true
+    },
+    "missionId": "mission_1788946204231_9f32e5",
+    "delivery": {
+      "deliveredAt": "2026-09-09T09:30:17.968Z",
+      "manifestHash": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+      "sha256Manifest": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+      "qaReportUrl": null,
+      "testSuiteResults": "24/24 Automated Test Assertions Passed",
+      "releaseNotes": "Full responsive Next.js landing page with Stripe modal deployed"
+    },
+    "finalAcceptance": {
+      "acceptedAt": "2026-09-09T09:30:18.547Z",
+      "clientNotes": "Everything tested and works great on our domain.",
+      "acceptanceSignature": "Sarah Connor"
+    },
+    "finalPayment": {
+      "verified": true,
+      "paymentId": "pay_rzp_live_final_98124982",
+      "amount": 10000,
+      "currency": "INR",
+      "verifiedAt": "2026-09-09T09:30:19.396Z"
+    }
   },
-  "prop_agency_3sidedcube_uk": {
-    "proposalId": "prop_agency_3sidedcube_uk",
+  "prop_1788946198204_737708": {
+    "proposalId": "prop_1788946198204_737708",
     "version": 1,
-    "candidateId": "cand_agency_3sidedcube_uk",
-    "scopeId": "scope_agency_3sidedcube_uk",
+    "candidateId": null,
+    "scopeId": null,
     "project": {
-      "title": "3SidedCube Tech Agency — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "Autonomous Cloud API & Webhook Node: Sub-100ms microservice pipelines, deterministic event bus, and cryptographic verification suite delivered in 72 hours.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
+      "title": "Enterprise Multi-Tenant AI Agent RAG Pipeline",
+      "requirements": "Full-stack enterprise RAG engine with vector database, user authentication, and admin telemetry",
+      "category": "Software Engineering",
       "tags": [
-        "uk_tech_agency",
-        "cloud_api",
-        "event_bus",
-        "sovereign_subcontract"
+        "custom_software",
+        "governed_execution"
       ]
     },
     "client": {
-      "name": "Executive Leadership & Tech Team",
-      "email": "holla@3sidedcube.com",
-      "phone": "",
-      "organization": "3SidedCube Tech Agency"
+      "name": "Arthur Dent",
+      "email": "arthur@hitchhiker.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
     },
     "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "name": "Governed software implementation",
       "category": "Software Engineering",
       "matchScore": 99,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
         "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
+        "Deployment setup & 14-day warranty support"
       ],
       "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 1900,
-        "amountINR": 203300,
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 75000,
+        "amountINR": 75000,
         "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 1900,
-        "amountINR": 203300,
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 75000,
+        "amountINR": 75000,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
       }
     ],
     "pricing": {
-      "currency": "GBP",
-      "totalAmount": 3800,
-      "depositAmount": 1900,
+      "currency": "INR",
+      "totalAmount": 150000,
+      "totalINR": 150000,
+      "depositAmount": 75000,
+      "depositAmountINR": 75000,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-09-23T09:29:58.207Z"
     },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_3sidedcube_uk",
-    "createdAt": "2026-09-08T12:08:33.805Z",
-    "updatedAt": "2026-09-08T12:08:33.805Z"
-  },
-  "prop_agency_pixelfield_uk": {
-    "proposalId": "prop_agency_pixelfield_uk",
-    "version": 1,
-    "candidateId": "cand_agency_pixelfield_uk",
-    "scopeId": "scope_agency_pixelfield_uk",
-    "project": {
-      "title": "Pixelfield Mobile & Web Studio — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "Zero-Debt Next.js 14 Full-Stack Sprint Pod: Server Actions, Tailwind CSS, secure auth, and automated QA delivered in 48-72 hours under strict white-label.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
-      "tags": [
-        "london_agency",
-        "nextjs14",
-        "mvp_sprint",
-        "sovereign_subcontract"
-      ]
-    },
-    "client": {
-      "name": "Partnerships & Engineering Lead",
-      "email": "hello@pixelfield.co.uk",
-      "phone": "",
-      "organization": "Pixelfield Mobile & Web Studio"
-    },
-    "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
-      "category": "Software Engineering",
-      "matchScore": 99,
-      "canMotherExecuteAutonomously": true
-    },
-    "scope": {
-      "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
-        "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
-      ],
-      "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
-      ]
-    },
-    "milestones": [
-      {
-        "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 1800,
-        "amountINR": 192600,
-        "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
-      },
-      {
-        "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 1800,
-        "amountINR": 192600,
-        "percentage": 50,
-        "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 75000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
       }
-    ],
-    "pricing": {
-      "currency": "GBP",
-      "totalAmount": 3600,
-      "depositAmount": 1800,
-      "depositPercentage": 50,
-      "pricingModel": "milestone_based"
     },
-    "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": false,
+      "scopeHash": "4651b9b34a9fdc75db98958c443f5c4b31169dca7581ac4bf0bc7f94fb8ee5b0",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
     },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_pixelfield_uk",
-    "createdAt": "2026-09-08T12:08:34.328Z",
-    "updatedAt": "2026-09-08T12:08:34.328Z"
-  },
-  "prop_agency_stellified_uk": {
-    "proposalId": "prop_agency_stellified_uk",
-    "version": 1,
-    "candidateId": "cand_agency_stellified_uk",
-    "scopeId": "scope_agency_stellified_uk",
-    "project": {
-      "title": "Stellified Digital Studio — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "Pixel-Perfect Headless Web Engine: 100/100 Lighthouse performance, instant PWA caching, and semantic SEO schema delivered with zero code debt.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
-      "tags": [
-        "uk_web_studio",
-        "headless_web",
-        "core_web_vitals",
-        "sovereign_subcontract"
-      ]
-    },
-    "client": {
-      "name": "Client Services & Delivery Team",
-      "email": "hello@stellified.co.uk",
-      "phone": "",
-      "organization": "Stellified Digital Studio"
-    },
-    "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
-      "category": "Software Engineering",
-      "matchScore": 99,
-      "canMotherExecuteAutonomously": true
-    },
-    "scope": {
-      "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
-        "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
-      ],
-      "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
-      ]
-    },
-    "milestones": [
+    "status": "WAITING_APPROVAL",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1788946198204_737708",
+    "createdAt": "2026-09-09T09:29:58.207Z",
+    "updatedAt": "2026-09-09T09:29:58.207Z",
+    "auditTrail": [
       {
-        "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 1600,
-        "amountINR": 171200,
-        "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
-      },
-      {
-        "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 1600,
-        "amountINR": 171200,
-        "percentage": 50,
-        "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_proposal_engine",
+        "status": "WAITING_APPROVAL",
+        "timestamp": "2026-09-09T09:29:58.207Z",
+        "details": {
+          "totalINR": 150000,
+          "currency": "INR",
+          "totalInCurrency": 150000,
+          "depositAmount": 75000
+        }
       }
-    ],
-    "pricing": {
-      "currency": "GBP",
-      "totalAmount": 3200,
-      "depositAmount": 1600,
-      "depositPercentage": 50,
-      "pricingModel": "milestone_based"
-    },
-    "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
-    },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_stellified_uk",
-    "createdAt": "2026-09-08T12:08:34.793Z",
-    "updatedAt": "2026-09-08T12:08:34.793Z"
+    ]
   },
-  "prop_agency_zropixel_uae": {
-    "proposalId": "prop_agency_zropixel_uae",
+  "prop_1788946199143_a3055a": {
+    "proposalId": "prop_1788946199143_a3055a",
     "version": 1,
-    "candidateId": "cand_agency_zropixel_uae",
-    "scopeId": "scope_agency_zropixel_uae",
+    "candidateId": null,
+    "scopeId": null,
     "project": {
-      "title": "Zropixel UAE — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "Gulf Luxury Tech Sovereign Execution Sprint: Obsidian-dark luxury aesthetics, sub-500ms global edge caching, and interactive 3D/AI showcases deployed in 72 hours.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
+      "title": "Dubai Hotel WhatsApp Concierge & Booking Sync",
+      "requirements": "Automated WhatsApp bot integrating with hotel property management system",
+      "category": "Software Engineering",
       "tags": [
-        "dubai_luxury_tech",
-        "ultra_fast_pwa",
-        "gulf_agency",
-        "sovereign_subcontract"
+        "custom_software",
+        "governed_execution"
       ]
     },
     "client": {
-      "name": "Strategic Alliances & Delivery Team",
-      "email": "sales@zropixel.com",
-      "phone": "",
-      "organization": "Zropixel UAE"
+      "name": "Tariq Al-Mansoor",
+      "email": null,
+      "phone": null,
+      "organization": "Emirates Hospitality",
+      "attribution": null
     },
     "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "name": "Governed software implementation",
       "category": "Software Engineering",
-      "matchScore": 99,
+      "matchScore": 50,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
         "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
+        "Deployment setup & 14-day warranty support"
       ],
       "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 8250,
-        "amountINR": 188100,
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 3000,
+        "amountINR": 69600,
         "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 8250,
-        "amountINR": 188100,
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 3000,
+        "amountINR": 69600,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
       }
     ],
     "pricing": {
       "currency": "AED",
-      "totalAmount": 16500,
-      "depositAmount": 8250,
-      "depositPercentage": 50,
-      "pricingModel": "milestone_based"
-    },
-    "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
-    },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_zropixel_uae",
-    "createdAt": "2026-09-08T12:08:35.352Z",
-    "updatedAt": "2026-09-08T12:08:35.352Z"
-  },
-  "prop_agency_globalmedia_uae": {
-    "proposalId": "prop_agency_globalmedia_uae",
-    "version": 1,
-    "candidateId": "cand_agency_globalmedia_uae",
-    "scopeId": "scope_agency_globalmedia_uae",
-    "project": {
-      "title": "Global Media Insight UAE — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "Omnichannel Enterprise Automation Suite: Meta Cloud API integration, zero-latency Arabic/English conversational routing, and enterprise CRM sync.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
-      "tags": [
-        "dubai_media_city",
-        "omnichannel_ai",
-        "enterprise_crm",
-        "sovereign_subcontract"
-      ]
-    },
-    "client": {
-      "name": "Digital Transformation Leadership",
-      "email": "liz@globalmedia.ae",
-      "phone": "",
-      "organization": "Global Media Insight UAE"
-    },
-    "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
-      "category": "Software Engineering",
-      "matchScore": 99,
-      "canMotherExecuteAutonomously": true
-    },
-    "scope": {
-      "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
-        "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
-      ],
-      "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
-      ]
-    },
-    "milestones": [
-      {
-        "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 9000,
-        "amountINR": 205200,
-        "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
-      },
-      {
-        "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 9000,
-        "amountINR": 205200,
-        "percentage": 50,
-        "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
-      }
-    ],
-    "pricing": {
-      "currency": "AED",
-      "totalAmount": 18000,
-      "depositAmount": 9000,
-      "depositPercentage": 50,
-      "pricingModel": "milestone_based"
-    },
-    "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
-    },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_globalmedia_uae",
-    "createdAt": "2026-09-08T12:08:35.829Z",
-    "updatedAt": "2026-09-08T12:08:35.829Z"
-  },
-  "prop_agency_boldare_eu": {
-    "proposalId": "prop_agency_boldare_eu",
-    "version": 1,
-    "candidateId": "cand_agency_boldare_eu",
-    "scopeId": "scope_agency_boldare_eu",
-    "project": {
-      "title": "Boldare Custom Software — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "Governed AI Engineering Sprint Pod: Multi-model AI agent pipelines, RAG vector architectures, and cryptographic SHA-256 release manifests.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
-      "tags": [
-        "eu_software_agency",
-        "ai_agent_graphs",
-        "rag_systems",
-        "sovereign_subcontract"
-      ]
-    },
-    "client": {
-      "name": "Business Development & Tech Alliances",
-      "email": "business@boldare.com",
-      "phone": "",
-      "organization": "Boldare Custom Software"
-    },
-    "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
-      "category": "Software Engineering",
-      "matchScore": 99,
-      "canMotherExecuteAutonomously": true
-    },
-    "scope": {
-      "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
-        "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
-      ],
-      "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
-      ]
-    },
-    "milestones": [
-      {
-        "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 2100,
-        "amountINR": 189000,
-        "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
-      },
-      {
-        "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 2100,
-        "amountINR": 189000,
-        "percentage": 50,
-        "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
-      }
-    ],
-    "pricing": {
-      "currency": "EUR",
-      "totalAmount": 4200,
-      "depositAmount": 2100,
-      "depositPercentage": 50,
-      "pricingModel": "milestone_based"
-    },
-    "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
-    },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_boldare_eu",
-    "createdAt": "2026-09-08T12:08:36.310Z",
-    "updatedAt": "2026-09-08T12:08:36.310Z"
-  },
-  "prop_agency_webchain_eu": {
-    "proposalId": "prop_agency_webchain_eu",
-    "version": 1,
-    "candidateId": "cand_agency_webchain_eu",
-    "scopeId": "scope_agency_webchain_eu",
-    "project": {
-      "title": "Webchain Systems — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "Deterministic Backend Refactoring Pod: High-throughput Node.js/PostgreSQL architecture, automated database index optimization, and 100% test coverage.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
-      "tags": [
-        "eu_cloud_systems",
-        "backend_architecture",
-        "saas_migration",
-        "sovereign_subcontract"
-      ]
-    },
-    "client": {
-      "name": "Technical Leadership Team",
-      "email": "office@webchain.ro",
-      "phone": "",
-      "organization": "Webchain Systems"
-    },
-    "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
-      "category": "Software Engineering",
-      "matchScore": 99,
-      "canMotherExecuteAutonomously": true
-    },
-    "scope": {
-      "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
-        "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
-      ],
-      "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
-      ]
-    },
-    "milestones": [
-      {
-        "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 1900,
-        "amountINR": 171000,
-        "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
-      },
-      {
-        "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 1900,
-        "amountINR": 171000,
-        "percentage": 50,
-        "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
-      }
-    ],
-    "pricing": {
-      "currency": "EUR",
-      "totalAmount": 3800,
-      "depositAmount": 1900,
-      "depositPercentage": 50,
-      "pricingModel": "milestone_based"
-    },
-    "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
-    },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_webchain_eu",
-    "createdAt": "2026-09-08T12:08:36.811Z",
-    "updatedAt": "2026-09-08T12:08:36.811Z"
-  },
-  "prop_agency_disruptor_us": {
-    "proposalId": "prop_agency_disruptor_us",
-    "version": 1,
-    "candidateId": "cand_agency_disruptor_us",
-    "scopeId": "scope_agency_disruptor_us",
-    "project": {
-      "title": "Disruptor Creations — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "High-Concurrency Platform Architecture: Real-time socket event handling, Stripe Connect automated payouts, and sub-100ms ticketing checkout PWA.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
-      "tags": [
-        "us_platform_agency",
-        "streaming_ticketing",
-        "stripe_connect",
-        "sovereign_subcontract"
-      ]
-    },
-    "client": {
-      "name": "Executive Architecture Team",
-      "email": "schlaut@gmail.com",
-      "phone": "",
-      "organization": "Disruptor Creations"
-    },
-    "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
-      "category": "Software Engineering",
-      "matchScore": 99,
-      "canMotherExecuteAutonomously": true
-    },
-    "scope": {
-      "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
-        "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
-      ],
-      "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
-      ]
-    },
-    "milestones": [
-      {
-        "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 2250,
-        "amountINR": 189000,
-        "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
-      },
-      {
-        "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 2250,
-        "amountINR": 189000,
-        "percentage": 50,
-        "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
-      }
-    ],
-    "pricing": {
-      "currency": "USD",
-      "totalAmount": 4500,
-      "depositAmount": 2250,
-      "depositPercentage": 50,
-      "pricingModel": "milestone_based"
-    },
-    "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
-    },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_disruptor_us",
-    "createdAt": "2026-09-08T12:08:37.270Z",
-    "updatedAt": "2026-09-08T12:08:37.270Z"
-  },
-  "prop_agency_mccall_us": {
-    "proposalId": "prop_agency_mccall_us",
-    "version": 1,
-    "candidateId": "cand_agency_mccall_us",
-    "scopeId": "scope_agency_mccall_us",
-    "project": {
-      "title": "McCall Chamber Portal RFP — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "Enterprise Civic & Tourism PWA: Instant directory search, interactive event calendar, zero-latency booking integrations, and 99+ Core Web Vitals.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
-      "tags": [
-        "us_enterprise_rfp",
-        "civic_portal",
-        "tourism_engine",
-        "sovereign_subcontract"
-      ]
-    },
-    "client": {
-      "name": "Executive Director & Portal Committee",
-      "email": "director@mccallchamber.org",
-      "phone": "",
-      "organization": "McCall Chamber Portal RFP"
-    },
-    "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
-      "category": "Software Engineering",
-      "matchScore": 99,
-      "canMotherExecuteAutonomously": true
-    },
-    "scope": {
-      "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
-        "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
-      ],
-      "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
-      ]
-    },
-    "milestones": [
-      {
-        "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 3000,
-        "amountINR": 252000,
-        "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
-      },
-      {
-        "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 3000,
-        "amountINR": 252000,
-        "percentage": 50,
-        "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
-      }
-    ],
-    "pricing": {
-      "currency": "USD",
       "totalAmount": 6000,
+      "totalINR": 139200,
       "depositAmount": 3000,
+      "depositAmountINR": 69600,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-09-23T09:29:59.145Z"
     },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_mccall_us",
-    "createdAt": "2026-09-08T12:08:37.756Z",
-    "updatedAt": "2026-09-08T12:08:37.756Z"
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 3000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": true,
+      "scopeHash": "94d0eb56b5afa46824b7309faad7f5dfeb648b88b160f27651ed8528cc4a527d",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1788946199143_a3055a",
+    "createdAt": "2026-09-09T09:29:59.145Z",
+    "updatedAt": "2026-09-09T09:29:59.145Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "founder",
+        "status": "APPROVED",
+        "timestamp": "2026-09-09T09:29:59.145Z",
+        "details": {
+          "totalINR": 139200,
+          "currency": "AED",
+          "totalInCurrency": 6000,
+          "depositAmount": 3000
+        }
+      }
+    ]
   },
-  "prop_agency_smolicz_us": {
-    "proposalId": "prop_agency_smolicz_us",
+  "prop_1788947202632_123e32": {
+    "proposalId": "prop_1788947202632_123e32",
     "version": 1,
-    "candidateId": "cand_agency_smolicz_us",
-    "scopeId": "scope_agency_smolicz_us",
+    "candidateId": null,
+    "scopeId": null,
     "project": {
-      "title": "Smolicz Solutions LLC — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "High-CTR Conversion Engine: Sub-second landing pages, dynamic UTM personalization, and automated CRM webhook lead routing.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
+      "title": "Build Next.js Landing Page with Stripe Payment Modal",
+      "requirements": "Responsive landing page with user checkout integration and automated receipt email",
+      "category": "Software Engineering",
       "tags": [
-        "us_ad_agency",
-        "conversion_funnel",
-        "landing_pwa",
-        "sovereign_subcontract"
+        "custom_software",
+        "governed_execution"
       ]
     },
     "client": {
-      "name": "Hannah Smolicz",
-      "email": "hannah@smoliczsolutionsllc.com",
-      "phone": "",
-      "organization": "Smolicz Solutions LLC"
+      "name": "Sarah Connor (TEST / SIMULATION)",
+      "email": "sarah@cyberdyne.io",
+      "phone": null,
+      "organization": "Cyberdyne Tech",
+      "attribution": null
     },
     "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 10000,
+        "amountINR": 10000,
+        "percentage": 50,
+        "status": "PAID",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 10000,
+        "amountINR": 10000,
+        "percentage": 50,
+        "status": "PAID",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 20000,
+      "totalINR": 20000,
+      "depositAmount": 10000,
+      "depositAmountINR": 10000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-09-23T09:46:42.688Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 10000,
+      "depositStatus": "PAID",
+      "paymentTruth": {
+        "verified": true,
+        "state": "PAYMENT_VERIFIED",
+        "paymentId": "pay_rzp_live_98124981",
+        "providerEvidence": "razorpay_hmac_signature_verified",
+        "amountPaid": 10000,
+        "currency": "INR",
+        "verifiedAt": "2026-09-09T09:46:50.290Z"
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "35c001be148961fef8026a15852bc1592297d410bcff067e80f1219f8567d8b9",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "CLOSED",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/prop_1788947202632_123e32",
+    "createdAt": "2026-09-09T09:46:42.688Z",
+    "updatedAt": "2026-09-09T09:47:23.705Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-09T09:46:42.688Z",
+        "details": {
+          "totalINR": 20000,
+          "currency": "INR",
+          "totalInCurrency": 20000,
+          "depositAmount": 10000
+        }
+      },
+      {
+        "action": "CLIENT_VIEWED",
+        "actor": "client_portal",
+        "timestamp": "2026-09-09T09:46:47.718Z"
+      },
+      {
+        "action": "CLIENT_ACCEPTED",
+        "actor": "client",
+        "signer": "Sarah Connor",
+        "timestamp": "2026-09-09T09:46:48.397Z"
+      },
+      {
+        "action": "PAYMENT_CLAIM_RECORDED",
+        "actor": "system_truth_gate",
+        "verified": false,
+        "status": "PAYMENT_CLAIMED",
+        "timestamp": "2026-09-09T09:46:49.317Z"
+      },
+      {
+        "action": "PAYMENT_CLAIM_RECORDED",
+        "actor": "system_truth_gate",
+        "verified": false,
+        "status": "PAYMENT_EVIDENCE_UNVERIFIED",
+        "timestamp": "2026-09-09T09:46:49.792Z"
+      },
+      {
+        "action": "DEPOSIT_VERIFIED",
+        "actor": "razorpay_webhook_gate",
+        "verified": true,
+        "paymentId": "pay_rzp_live_98124981",
+        "amount": 10000,
+        "timestamp": "2026-09-09T09:46:50.290Z"
+      },
+      {
+        "action": "DELIVERY_COMPLETED",
+        "actor": "qa_validator_engine",
+        "manifestHash": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+        "timestamp": "2026-09-09T09:47:22.377Z"
+      },
+      {
+        "action": "FINAL_CLIENT_ACCEPTANCE",
+        "actor": "client",
+        "timestamp": "2026-09-09T09:47:22.971Z"
+      },
+      {
+        "action": "FINAL_PAYMENT_VERIFIED",
+        "actor": "razorpay_webhook_gate",
+        "paymentId": "pay_rzp_live_final_98124982",
+        "status": "REVENUE_REALIZED",
+        "timestamp": "2026-09-09T09:47:23.705Z"
+      }
+    ],
+    "clientAcceptance": {
+      "acceptedAt": "2026-09-09T09:46:48.397Z",
+      "signerName": "Sarah Connor",
+      "signerEmail": "sarah@cyberdyne.io",
+      "ipAddress": "203.0.113.42",
+      "agreementConfirmed": true
+    },
+    "missionId": "mission_1788947210769_0aac81",
+    "delivery": {
+      "deliveredAt": "2026-09-09T09:47:22.377Z",
+      "manifestHash": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+      "sha256Manifest": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+      "qaReportUrl": null,
+      "testSuiteResults": "24/24 Automated Test Assertions Passed",
+      "releaseNotes": "Full responsive Next.js landing page with Stripe modal deployed"
+    },
+    "finalAcceptance": {
+      "acceptedAt": "2026-09-09T09:47:22.971Z",
+      "clientNotes": "Everything tested and works great on our domain.",
+      "acceptanceSignature": "Sarah Connor"
+    },
+    "finalPayment": {
+      "verified": true,
+      "paymentId": "pay_rzp_live_final_98124982",
+      "amount": 10000,
+      "currency": "INR",
+      "verifiedAt": "2026-09-09T09:47:23.705Z"
+    }
+  },
+  "prop_1788947205867_04cfc1": {
+    "proposalId": "prop_1788947205867_04cfc1",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Enterprise Multi-Tenant AI Agent RAG Pipeline",
+      "requirements": "Full-stack enterprise RAG engine with vector database, user authentication, and admin telemetry",
+      "category": "Software Engineering",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Arthur Dent",
+      "email": "arthur@hitchhiker.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Governed software implementation",
       "category": "Software Engineering",
       "matchScore": 99,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
         "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
+        "Deployment setup & 14-day warranty support"
       ],
       "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 1750,
-        "amountINR": 147000,
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 75000,
+        "amountINR": 75000,
         "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 1750,
-        "amountINR": 147000,
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 75000,
+        "amountINR": 75000,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
       }
     ],
     "pricing": {
-      "currency": "USD",
-      "totalAmount": 3500,
-      "depositAmount": 1750,
+      "currency": "INR",
+      "totalAmount": 150000,
+      "totalINR": 150000,
+      "depositAmount": 75000,
+      "depositAmountINR": 75000,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-09-23T09:46:45.870Z"
     },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_smolicz_us",
-    "createdAt": "2026-09-08T12:08:38.227Z",
-    "updatedAt": "2026-09-08T12:08:38.227Z"
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 75000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": false,
+      "scopeHash": "4651b9b34a9fdc75db98958c443f5c4b31169dca7581ac4bf0bc7f94fb8ee5b0",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
+    },
+    "status": "WAITING_APPROVAL",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1788947205867_04cfc1",
+    "createdAt": "2026-09-09T09:46:45.870Z",
+    "updatedAt": "2026-09-09T09:46:45.870Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_proposal_engine",
+        "status": "WAITING_APPROVAL",
+        "timestamp": "2026-09-09T09:46:45.870Z",
+        "details": {
+          "totalINR": 150000,
+          "currency": "INR",
+          "totalInCurrency": 150000,
+          "depositAmount": 75000
+        }
+      }
+    ]
   },
-  "prop_agency_heartfly_us": {
-    "proposalId": "prop_agency_heartfly_us",
+  "prop_1788947206769_be7320": {
+    "proposalId": "prop_1788947206769_be7320",
     "version": 1,
-    "candidateId": "cand_agency_heartfly_us",
-    "scopeId": "scope_agency_heartfly_us",
+    "candidateId": null,
+    "scopeId": null,
     "project": {
-      "title": "Rebecca Heartfly Platform — 48-72h Sovereign Engineering Sprint Node",
-      "requirements": "All-in-One Client Experience Hub: Integrated calendar booking, Stripe instant checkout, video class membership, and 1-tap mobile PWA.",
-      "category": "Sovereign Engineering & Agency Subcontracting",
+      "title": "Dubai Hotel WhatsApp Concierge & Booking Sync",
+      "requirements": "Automated WhatsApp bot integrating with hotel property management system",
+      "category": "Software Engineering",
       "tags": [
-        "us_platform_rebuild",
-        "booking_hub",
-        "stripe_pwa",
-        "sovereign_subcontract"
+        "custom_software",
+        "governed_execution"
       ]
     },
     "client": {
-      "name": "Rebecca Heartfly & Team",
-      "email": "rebeccaheartfly@gmail.com",
-      "phone": "",
-      "organization": "Rebecca Heartfly Platform"
+      "name": "Tariq Al-Mansoor",
+      "email": null,
+      "phone": null,
+      "organization": "Emirates Hospitality",
+      "attribution": null
     },
     "capabilityMatch": {
-      "name": "Autonomous High-Velocity Agency Sprint Node",
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 50,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 3000,
+        "amountINR": 69600,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 3000,
+        "amountINR": 69600,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "AED",
+      "totalAmount": 6000,
+      "totalINR": 139200,
+      "depositAmount": 3000,
+      "depositAmountINR": 69600,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-09-23T09:46:46.772Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 3000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": true,
+      "scopeHash": "94d0eb56b5afa46824b7309faad7f5dfeb648b88b160f27651ed8528cc4a527d",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1788947206769_be7320",
+    "createdAt": "2026-09-09T09:46:46.772Z",
+    "updatedAt": "2026-09-09T09:46:46.772Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "founder",
+        "status": "APPROVED",
+        "timestamp": "2026-09-09T09:46:46.772Z",
+        "details": {
+          "totalINR": 139200,
+          "currency": "AED",
+          "totalInCurrency": 6000,
+          "depositAmount": 3000
+        }
+      }
+    ]
+  },
+  "prop_1788948301583_3c220e": {
+    "proposalId": "prop_1788948301583_3c220e",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Build Next.js Landing Page with Stripe Payment Modal",
+      "requirements": "Responsive landing page with user checkout integration and automated receipt email",
+      "category": "Software Engineering",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sarah Connor (TEST / SIMULATION)",
+      "email": "sarah@cyberdyne.io",
+      "phone": null,
+      "organization": "Cyberdyne Tech",
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 10000,
+        "amountINR": 10000,
+        "percentage": 50,
+        "status": "PAID",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 10000,
+        "amountINR": 10000,
+        "percentage": 50,
+        "status": "PAID",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 20000,
+      "totalINR": 20000,
+      "depositAmount": 10000,
+      "depositAmountINR": 10000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-09-23T10:05:01.637Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 10000,
+      "depositStatus": "PAID",
+      "paymentTruth": {
+        "verified": true,
+        "state": "PAYMENT_VERIFIED",
+        "paymentId": "pay_rzp_live_98124981",
+        "providerEvidence": "razorpay_hmac_signature_verified",
+        "amountPaid": 10000,
+        "currency": "INR",
+        "verifiedAt": "2026-09-09T10:05:09.205Z"
+      },
+      "invoiceId": "inv_1788948309205_006499",
+      "invoiceNumber": "GRD-INV-2026-006499"
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "35c001be148961fef8026a15852bc1592297d410bcff067e80f1219f8567d8b9",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "CLOSED",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/prop_1788948301583_3c220e",
+    "createdAt": "2026-09-09T10:05:01.637Z",
+    "updatedAt": "2026-09-09T10:05:49.050Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-09T10:05:01.637Z",
+        "details": {
+          "totalINR": 20000,
+          "currency": "INR",
+          "totalInCurrency": 20000,
+          "depositAmount": 10000
+        }
+      },
+      {
+        "action": "CLIENT_VIEWED",
+        "actor": "client_portal",
+        "timestamp": "2026-09-09T10:05:06.764Z"
+      },
+      {
+        "action": "CLIENT_ACCEPTED",
+        "actor": "client",
+        "signer": "Sarah Connor",
+        "timestamp": "2026-09-09T10:05:07.274Z"
+      },
+      {
+        "action": "PAYMENT_CLAIM_RECORDED",
+        "actor": "system_truth_gate",
+        "verified": false,
+        "status": "PAYMENT_CLAIMED",
+        "timestamp": "2026-09-09T10:05:08.214Z"
+      },
+      {
+        "action": "PAYMENT_CLAIM_RECORDED",
+        "actor": "system_truth_gate",
+        "verified": false,
+        "status": "PAYMENT_EVIDENCE_UNVERIFIED",
+        "timestamp": "2026-09-09T10:05:08.730Z"
+      },
+      {
+        "action": "DEPOSIT_VERIFIED",
+        "actor": "razorpay_webhook_gate",
+        "verified": true,
+        "paymentId": "pay_rzp_live_98124981",
+        "amount": 10000,
+        "timestamp": "2026-09-09T10:05:09.205Z"
+      },
+      {
+        "action": "DELIVERY_COMPLETED",
+        "actor": "qa_validator_engine",
+        "manifestHash": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+        "timestamp": "2026-09-09T10:05:47.916Z"
+      },
+      {
+        "action": "FINAL_CLIENT_ACCEPTANCE",
+        "actor": "client",
+        "timestamp": "2026-09-09T10:05:48.525Z"
+      },
+      {
+        "action": "FINAL_PAYMENT_VERIFIED",
+        "actor": "razorpay_webhook_gate",
+        "paymentId": "pay_rzp_live_final_98124982",
+        "status": "REVENUE_REALIZED",
+        "timestamp": "2026-09-09T10:05:49.050Z"
+      }
+    ],
+    "clientAcceptance": {
+      "acceptedAt": "2026-09-09T10:05:07.274Z",
+      "signerName": "Sarah Connor",
+      "signerEmail": "sarah@cyberdyne.io",
+      "ipAddress": "203.0.113.42",
+      "agreementConfirmed": true
+    },
+    "missionId": "mission_1788948309722_a459d9",
+    "delivery": {
+      "deliveredAt": "2026-09-09T10:05:47.916Z",
+      "manifestHash": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+      "sha256Manifest": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+      "qaReportUrl": null,
+      "testSuiteResults": "24/24 Automated Test Assertions Passed",
+      "releaseNotes": "Full responsive Next.js landing page with Stripe modal deployed"
+    },
+    "finalAcceptance": {
+      "acceptedAt": "2026-09-09T10:05:48.525Z",
+      "clientNotes": "Everything tested and works great on our domain.",
+      "acceptanceSignature": "Sarah Connor"
+    },
+    "finalPayment": {
+      "verified": true,
+      "paymentId": "pay_rzp_live_final_98124982",
+      "amount": 10000,
+      "currency": "INR",
+      "verifiedAt": "2026-09-09T10:05:49.050Z",
+      "invoiceId": "inv_1788948349050_43aee3",
+      "invoiceNumber": "GRD-INV-2026-43AEE3"
+    }
+  },
+  "prop_1788948304148_8e484a": {
+    "proposalId": "prop_1788948304148_8e484a",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Enterprise Multi-Tenant AI Agent RAG Pipeline",
+      "requirements": "Full-stack enterprise RAG engine with vector database, user authentication, and admin telemetry",
+      "category": "Software Engineering",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Arthur Dent",
+      "email": "arthur@hitchhiker.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Governed software implementation",
       "category": "Software Engineering",
       "matchScore": 99,
       "canMotherExecuteAutonomously": true
     },
     "scope": {
       "inclusions": [
-        "Dedicated 48 to 72-Hour autonomous engineering sprint execution",
-        "White-label NDA implementation with complete IP transfer to agency",
-        "Clean modular codebase matching agency's tech stack (React/Node/Next.js/PostgreSQL)",
-        "Automated unit & integration test runner suite with 100% passing assertions",
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
         "Cryptographic SHA-256 delivery manifest and verification report",
-        "14-Day zero-defect warranty and dedicated technical handover session"
+        "Deployment setup & 14-day warranty support"
       ],
       "exclusions": [
-        "Third-party paid API subscription costs (OpenAI, Twilio, AWS infrastructure)",
-        "Domain purchasing & cloud hosting provider fees"
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
       ]
     },
     "milestones": [
       {
         "milestoneId": "m1",
-        "title": "Milestone 1 — 50% Advance Kickoff (Core Architecture & Rapid Build)",
-        "amount": 1500,
-        "amountINR": 126000,
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 75000,
+        "amountINR": 75000,
         "percentage": 50,
-        "status": "PENDING",
-        "deliverableSummary": "Immediate workspace initialization, schema design, core API/UI implementation within 24-48 hours."
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
       },
       {
         "milestoneId": "m2",
-        "title": "Milestone 2 — 50% Final Delivery & Verification",
-        "amount": 1500,
-        "amountINR": 126000,
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 75000,
+        "amountINR": 75000,
         "percentage": 50,
         "status": "UPON_DELIVERY",
-        "deliverableSummary": "Full test suite verification, live staging deployment, SHA-256 cryptographic audit seal, and client handover."
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
       }
     ],
     "pricing": {
-      "currency": "USD",
-      "totalAmount": 3000,
-      "depositAmount": 1500,
+      "currency": "INR",
+      "totalAmount": 150000,
+      "totalINR": 150000,
+      "depositAmount": 75000,
+      "depositAmountINR": 75000,
       "depositPercentage": 50,
       "pricingModel": "milestone_based"
     },
     "timeline": {
-      "estimatedDeliveryDays": 3,
-      "kickoffDate": "2026-09-08",
-      "targetDeliveryDate": "2026-09-11"
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-09-23T10:05:04.151Z"
     },
-    "status": "PENDING",
-    "publicUrl": "https://www.garudaos.in/proposal/prop_agency_heartfly_us",
-    "createdAt": "2026-09-08T12:08:38.699Z",
-    "updatedAt": "2026-09-08T12:08:38.699Z"
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 75000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": false,
+      "scopeHash": "4651b9b34a9fdc75db98958c443f5c4b31169dca7581ac4bf0bc7f94fb8ee5b0",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
+    },
+    "status": "WAITING_APPROVAL",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1788948304148_8e484a",
+    "createdAt": "2026-09-09T10:05:04.151Z",
+    "updatedAt": "2026-09-09T10:05:04.151Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_proposal_engine",
+        "status": "WAITING_APPROVAL",
+        "timestamp": "2026-09-09T10:05:04.151Z",
+        "details": {
+          "totalINR": 150000,
+          "currency": "INR",
+          "totalInCurrency": 150000,
+          "depositAmount": 75000
+        }
+      }
+    ]
+  },
+  "prop_1788948305545_fbf98c": {
+    "proposalId": "prop_1788948305545_fbf98c",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Dubai Hotel WhatsApp Concierge & Booking Sync",
+      "requirements": "Automated WhatsApp bot integrating with hotel property management system",
+      "category": "Software Engineering",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Tariq Al-Mansoor",
+      "email": null,
+      "phone": null,
+      "organization": "Emirates Hospitality",
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 50,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 3000,
+        "amountINR": 69600,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 3000,
+        "amountINR": 69600,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "AED",
+      "totalAmount": 6000,
+      "totalINR": 139200,
+      "depositAmount": 3000,
+      "depositAmountINR": 69600,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-09-23T10:05:05.547Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 3000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": true,
+      "scopeHash": "94d0eb56b5afa46824b7309faad7f5dfeb648b88b160f27651ed8528cc4a527d",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1788948305545_fbf98c",
+    "createdAt": "2026-09-09T10:05:05.547Z",
+    "updatedAt": "2026-09-09T10:05:05.547Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "founder",
+        "status": "APPROVED",
+        "timestamp": "2026-09-09T10:05:05.547Z",
+        "details": {
+          "totalINR": 139200,
+          "currency": "AED",
+          "totalInCurrency": 6000,
+          "depositAmount": 3000
+        }
+      }
+    ]
   }
 }

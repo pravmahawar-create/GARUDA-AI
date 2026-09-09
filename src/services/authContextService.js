@@ -279,6 +279,39 @@ async function resolveRequestContext(req = {}) {
     };
   }
 
+  // 1b. Tenant API Key Authentication Check (Programmatic Developer Access)
+  const reqHeaders = req.headers || {};
+  const authHeader = String(reqHeaders["authorization"] || "").trim();
+  const rawApiKeyHeader = reqHeaders["x-api-key"] || reqHeaders["x-garuda-api-key"] || "";
+  const candidateApiKey = String(rawApiKeyHeader || (authHeader.startsWith("Bearer grd_live_") ? authHeader.slice(7).trim() : "")).trim();
+
+  if (candidateApiKey && candidateApiKey.startsWith("grd_live_")) {
+    try {
+      const apiKeyService = require("./tenantApiKeyService");
+      const keyResult = await apiKeyService.verifyApiKey(candidateApiKey);
+      if (keyResult.valid) {
+        const tenantDoc = await Tenant.findOne({ tenantId: keyResult.tenantId }).lean();
+        const plan = tenantDoc?.plan || "creator";
+        const role = "tenant_admin";
+        const capabilities = capabilityEntitlementService.resolveCapabilities(plan, role);
+        return {
+          requestId,
+          actorType: "api_client",
+          actorId: keyResult.keyId,
+          userId: null,
+          tenantId: keyResult.tenantId,
+          role,
+          plan,
+          deploymentProfile: tenantDoc?.deploymentProfile || deploymentProfile,
+          capabilities,
+          isFounderApproved: false,
+          apiKey: { keyId: keyResult.keyId, name: keyResult.name },
+          metadata: scopeMetadata
+        };
+      }
+    } catch {}
+  }
+
   // 2. Authenticated Customer / Tenant Member Check
   const customerCheck = verifyCustomerCredentials(req);
   if (customerCheck && customerCheck.userId) {

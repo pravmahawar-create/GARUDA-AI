@@ -64,7 +64,8 @@ const opportunitySchema = new mongoose.Schema(
       type: String,
       enum: ["discovery", "founder_assisted", "insurance_lead", "manual"],
       default: "manual"
-    }
+    },
+    tenantId: { type: String, default: "tenant_founder_core", index: true }
   },
   { timestamps: true }
 );

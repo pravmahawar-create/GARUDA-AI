@@ -76,9 +76,19 @@ app.use("/api/capabilities", require("./routes/capabilityRoutes"));
 app.use("/api/affiliate-pilot", require("./routes/affiliateRoutes"));
 app.use("/api/public-chat", require("./routes/publicChatRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoutes"));
-app.use("/api/scout", require("./routes/scoutRoutes"));
-app.use("/api/billing", require("./routes/billingRoutes"));
-app.use("/api/inbound", require("./routes/inboundRoutes"));
+// Retail Dukandaar Merchant Billing (Cement + Steel, GST verify, Voice, OCR, STT)
+app.use("/api/merchant-billing", require("./routes/billingRoutes"));
+// Backward-compatibility router dispatch for legacy merchant endpoints under /api/billing
+app.use("/api/billing", (req, res, next) => {
+  if (["/voice", "/stt", "/gst-verify", "/sync", "/ocr"].some((p) => req.path.startsWith(p))) {
+    return require("./routes/billingRoutes")(req, res, next);
+  }
+  next();
+});
+// GARUDA Core SaaS Subscription, Metering & API Keys
+app.use("/api/billing", require("./routes/saasBillingRoutes"));
+// GARUDA Multi-Tenant Workspaces, Seats & Team Invitations
+app.use("/api/tenants", require("./routes/tenantRoutes"));
 app.use("/api/proposals", require("./routes/proposalRoutes"));
 app.use("/api/acquisition", require("./routes/acquisitionRoutes"));
 // Cross-Universe Growth Command API (mounted BEFORE legacy /api router so explicit routes win)
@@ -132,10 +142,7 @@ app.get("/api/audio/tts", async (req, res) => {
 const telegramBotService = require("./services/telegramBotService");
 const abslKnowledgeService = require("./services/abslKnowledgeService");
 const abslKnowledgeSeedService = require("./services/abslKnowledgeSeedService");
-const { initRevenueOperatingCycle } = require("./services/revenueOperatingCycleInitializer");
-
-// Boot 24x7 Revenue Operating Loop Workers
-initRevenueOperatingCycle();
+// Note: Revenue Operating Cycle workers boot via server.js only when MongoDB connection is verified.
 
 // Overnight Serper Hunters — laptop band ke baad bhi subah tak (Render pe) — Founder YES tonight
 try{

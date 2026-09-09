@@ -22,6 +22,7 @@ const TaskItemSchema = new mongoose.Schema({
 
 const MissionRecordSchema = new mongoose.Schema({
   missionId: { type: String, required: true, unique: true, index: true },
+  tenantId: { type: String, default: "tenant_founder_core", index: true },
   goal: { type: String, required: true },
   status: {
     type: String,

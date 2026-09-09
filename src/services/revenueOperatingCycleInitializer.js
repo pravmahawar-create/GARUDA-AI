@@ -1,9 +1,11 @@
 const { startDiscoveryWorker } = require("../workers/discoveryWorker");
 const { startRevenueAcquisitionWorker } = require("../workers/revenueAcquisitionWorker");
+const { startRevenueTaskRunnerWorker } = require("../workers/revenueTaskRunnerWorker");
 
 let isInitialized = false;
 let discoveryWorkerInstance = null;
 let acquisitionWorkerInstance = null;
+let taskRunnerWorkerInstance = null;
 let heartbeatTimer = null;
 
 const operationalState = {
@@ -25,9 +27,11 @@ function initRevenueOperatingCycle(options = {}) {
   try {
     const discoveryInterval = Number(process.env.DISCOVERY_INTERVAL_MS || options.discoveryIntervalMs || 900000); // 15 mins
     const acquisitionInterval = Number(process.env.REVENUE_ACQUISITION_INTERVAL_MS || options.acquisitionIntervalMs || 1200000); // 20 mins
+    const taskRunnerInterval = Number(process.env.REVENUE_TASK_RUNNER_INTERVAL_MS || options.taskRunnerIntervalMs || 120000); // 2 mins
 
     discoveryWorkerInstance = startDiscoveryWorker({ intervalMs: discoveryInterval });
     acquisitionWorkerInstance = startRevenueAcquisitionWorker({ intervalMs: acquisitionInterval });
+    taskRunnerWorkerInstance = startRevenueTaskRunnerWorker({ intervalMs: taskRunnerInterval });
 
     isInitialized = true;
     operationalState.status = "active";
@@ -55,7 +59,8 @@ function getOperatingCycleTelemetry() {
     isInitialized,
     state: operationalState,
     discoveryWorkerActive: Boolean(discoveryWorkerInstance),
-    acquisitionWorkerActive: Boolean(acquisitionWorkerInstance)
+    acquisitionWorkerActive: Boolean(acquisitionWorkerInstance),
+    taskRunnerWorkerActive: Boolean(taskRunnerWorkerInstance)
   };
 }
 
@@ -65,6 +70,9 @@ function stopRevenueOperatingCycle() {
   }
   if (acquisitionWorkerInstance && typeof acquisitionWorkerInstance.stop === "function") {
     acquisitionWorkerInstance.stop();
+  }
+  if (taskRunnerWorkerInstance && typeof taskRunnerWorkerInstance.stop === "function") {
+    taskRunnerWorkerInstance.stop();
   }
   if (heartbeatTimer) clearInterval(heartbeatTimer);
   isInitialized = false;

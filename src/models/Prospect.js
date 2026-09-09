@@ -29,7 +29,8 @@ const prospectSchema = new mongoose.Schema(
     notes: { type: String, trim: true, default: "" },
     locale: { type: String, trim: true, default: "" },
     country: { type: String, trim: true, default: "" },
-    sourceId: { type: String, trim: true, default: "" }
+    sourceId: { type: String, trim: true, default: "" },
+    tenantId: { type: String, default: "tenant_founder_core", index: true }
   },
   { timestamps: true }
 );

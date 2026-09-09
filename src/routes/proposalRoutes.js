@@ -88,4 +88,15 @@ router.post("/:proposalId/final-payment", async (req, res) => {
   }
 });
 
+// 9. List Invoices for Proposal
+router.get("/:proposalId/invoices", async (req, res) => {
+  try {
+    const corporateInvoiceService = require("../services/corporateInvoiceService");
+    const invoices = await corporateInvoiceService.listInvoicesForProposal(req.params.proposalId);
+    return res.json({ success: true, data: invoices, invoices });
+  } catch (err) {
+    return res.status(err.statusCode || 500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

@@ -42,8 +42,27 @@ router.get("/connectors/:id/auth", revenueController.getConnectorAuthStatus);
 router.post("/connectors/:id/validate", revenueController.validateConnectorCredentials);
 
 // Empirical Deal Tracker Routes
-router.post("/deals/submit", revenueController.submitDeal);
-router.get("/deals/metrics", revenueController.getDealMetrics);
-router.post("/deals/response", revenueController.recordDealResponse);
+// Retainer & Post-Delivery Recurring Revenue Routes
+const revenueRetainerService = require("../services/revenueRetainerService");
+router.get("/retainers/tiers", (_req, res) => {
+  return res.json({ success: true, data: revenueRetainerService.RETAINER_TIERS });
+});
+router.post("/retainers/scan", async (_req, res) => {
+  try {
+    const results = await revenueRetainerService.scanForRetainerOpportunities();
+    return res.json({ success: true, data: results });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+router.post("/retainers/confirm", async (req, res) => {
+  try {
+    const { proposalId, tierKey } = req.body || {};
+    const agreement = await revenueRetainerService.confirmRetainerAgreement(proposalId, tierKey);
+    return res.json({ success: true, data: agreement });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
 
 module.exports = router;

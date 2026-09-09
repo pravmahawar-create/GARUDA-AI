@@ -31,6 +31,7 @@ const PROPOSAL_STATUSES = [
 ];
 
 const persistentProposalService = require("./persistentProposalService");
+const corporateInvoiceService = require("./corporateInvoiceService");
 
 const AUTONOMOUS_AUTHORIZATION_INR_LIMIT = 25000;
 const proposalStore = new Map();
@@ -431,6 +432,20 @@ class ClientProposalService {
       amount: paidAmount,
       timestamp: new Date().toISOString()
     });
+
+    // 2b. Generate Authoritative B2B Corporate Tax Invoice
+    try {
+      const invoice = await corporateInvoiceService.generateInvoiceForProposal(
+        proposal,
+        "DEPOSIT",
+        { amount: paidAmount, paymentId: paymentInput.paymentId, provider: paymentInput.providerEvidence || "razorpay" }
+      );
+      proposal.payment.invoiceId = invoice.invoiceId;
+      proposal.payment.invoiceNumber = invoice.invoiceNumber;
+    } catch (err) {
+      console.error(`[ClientProposalService] Failed to generate deposit corporate invoice:`, err.message);
+    }
+
     await persistProposalDoc(proposal);
 
     // 3. Automated Governed Mission Creation
@@ -562,6 +577,23 @@ class ClientProposalService {
       status: "REVENUE_REALIZED",
       timestamp: new Date().toISOString()
     });
+
+    // Generate Authoritative Final Corporate Tax Invoice
+    try {
+      const finalInvoice = await corporateInvoiceService.generateInvoiceForProposal(
+        proposal,
+        "FINAL",
+        {
+          amount: proposal.finalPayment.amount,
+          paymentId: paymentInput.paymentId,
+          provider: paymentInput.providerEvidence || "razorpay"
+        }
+      );
+      proposal.finalPayment.invoiceId = finalInvoice.invoiceId;
+      proposal.finalPayment.invoiceNumber = finalInvoice.invoiceNumber;
+    } catch (err) {
+      console.error(`[ClientProposalService] Failed to generate final corporate invoice:`, err.message);
+    }
 
     proposal.updatedAt = new Date().toISOString();
     await persistProposalDoc(proposal);

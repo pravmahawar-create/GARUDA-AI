@@ -195,7 +195,21 @@ class PersistentProposalService {
       console.warn("[PersistentProposalService] Supabase proposal save note:", err.message);
     }
 
-    // 4. Emit Immutable Event for new proposal
+    // 4. Persist to MongoDB Atlas if connected
+    try {
+      const mongoose = require("mongoose");
+      if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
+        await mongoose.connection.db.collection("clientproposals").updateOne(
+          { proposalId },
+          { $set: proposal },
+          { upsert: true }
+        );
+      }
+    } catch (err) {
+      console.warn("[PersistentProposalService] MongoDB proposal save note:", err.message);
+    }
+
+    // 5. Emit Immutable Event for new proposal
     if (garudaEventService && proposal.proposalId) {
       garudaEventService.emitGarudaEvent({
         eventType: "PROPOSAL_CREATED",
@@ -256,7 +270,20 @@ class PersistentProposalService {
       console.warn("[PersistentProposalService] Supabase proposal read note:", err.message);
     }
 
-    // 3. Check local file fallback
+    // 3. Query MongoDB Atlas if connected
+    try {
+      const mongoose = require("mongoose");
+      if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
+        const found = await mongoose.connection.db.collection("clientproposals").findOne({ proposalId: cleanId });
+        if (found) {
+          delete found._id;
+          memoryProposalCache.set(cleanId, found);
+          return found;
+        }
+      }
+    } catch {}
+
+    // 4. Check local file fallback
     try {
       const localData = loadLocalProposals();
       if (localData && localData[cleanId]) {
