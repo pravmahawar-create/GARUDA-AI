@@ -41,6 +41,7 @@ import TermsOfService from "./pages/TermsOfService";
 import FounderProfile from "./pages/FounderProfile";
 import GarudaDostRozgar from "./pages/GarudaDostRozgar";
 import BoilerplateStore from "./pages/BoilerplateStore";
+import PricingPage from "./pages/PricingPage";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -224,6 +225,9 @@ function AppRoutes() {
       <Route path="/boilerplate" element={<BoilerplateStore />} />
       <Route path="/store" element={<BoilerplateStore />} />
       <Route path="/sovereign-starter" element={<BoilerplateStore />} />
+      <Route path="/pricing" element={<PricingPage />} />
+      <Route path="/plans" element={<PricingPage />} />
+      <Route path="/billing" element={<PricingPage />} />
       <Route path="*" element={publicLanding} />
 
     </Routes>

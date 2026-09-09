@@ -22,17 +22,42 @@ export default function CustomerDashboard({ customer, onLogout }) {
   const [expandedProjectId, setExpandedProjectId] = useState(null);
   const [activeDeliverableModal, setActiveDeliverableModal] = useState(null);
 
+  // SaaS Foundation State
+  const [subscription, setSubscription] = useState(null);
+  const [usage, setUsage] = useState(null);
+  const [apiKeys, setApiKeys] = useState([]);
+  const [newKeyName, setNewKeyName] = useState("");
+  const [createdRawKey, setCreatedRawKey] = useState(null);
+  const [keyActionLoading, setKeyActionLoading] = useState(false);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [tenantInfo, setTenantInfo] = useState(null);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState("tenant_member");
+  const [teamActionLoading, setTeamActionLoading] = useState(false);
+  const [actionError, setActionError] = useState("");
+  const [actionSuccess, setActionSuccess] = useState("");
+
   useEffect(() => {
     let active = true;
     Promise.all([
       fetch("/api/customer?path=projects", { credentials: "same-origin" }).then(r => r.json()).catch(() => ({ projects: [] })),
       fetch("/api/customer?path=proposals", { credentials: "same-origin" }).then(r => r.json()).catch(() => ({ proposals: [] })),
-      fetch("/api/customer?path=conversations", { credentials: "same-origin" }).then(r => r.json()).catch(() => ({ conversations: [] }))
-    ]).then(([projData, propData, convData]) => {
+      fetch("/api/customer?path=conversations", { credentials: "same-origin" }).then(r => r.json()).catch(() => ({ conversations: [] })),
+      fetch("/api/billing/subscription").then(r => r.json()).catch(() => ({ data: null })),
+      fetch("/api/billing/usage").then(r => r.json()).catch(() => ({ data: null })),
+      fetch("/api/billing/api-keys").then(r => r.json()).catch(() => ({ data: [] })),
+      fetch("/api/tenants/current").then(r => r.json()).catch(() => ({ data: null })),
+      fetch("/api/tenants/members").then(r => r.json()).catch(() => ({ data: [] }))
+    ]).then(([projData, propData, convData, subData, usageData, keysData, tenantData, membersData]) => {
       if (!active) return;
       setProjects(projData.projects || []);
       setProposals(propData.proposals || []);
       setConversations(convData.conversations || []);
+      setSubscription(subData.data || null);
+      setUsage(usageData.data || null);
+      setApiKeys(keysData.data || []);
+      setTenantInfo(tenantData.data || null);
+      setTeamMembers(membersData.data || []);
       setLoading(false);
     }).catch(() => {
       if (active) setLoading(false);
@@ -40,6 +65,95 @@ export default function CustomerDashboard({ customer, onLogout }) {
 
     return () => { active = false; };
   }, []);
+
+  const handleCreateApiKey = async (e) => {
+    e.preventDefault();
+    if (!newKeyName.trim()) return;
+    try {
+      setKeyActionLoading(true);
+      setActionError("");
+      const res = await fetch("/api/billing/api-keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newKeyName.trim() })
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message || "Failed to create API key");
+      setCreatedRawKey(json.data.apiKey);
+      setApiKeys(prev => [json.data, ...prev]);
+      setNewKeyName("");
+      setActionSuccess("API Key generated successfully! Make sure to copy it now.");
+    } catch (err) {
+      setActionError(err.message);
+    } finally {
+      setKeyActionLoading(false);
+    }
+  };
+
+  const handleRevokeApiKey = async (keyId) => {
+    if (!window.confirm("Are you sure you want to revoke this API key? This cannot be undone.")) return;
+    try {
+      setKeyActionLoading(true);
+      setActionError("");
+      const res = await fetch(`/api/billing/api-keys/${encodeURIComponent(keyId)}`, { method: "DELETE" });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message || "Failed to revoke API key");
+      setApiKeys(prev => prev.filter(k => k.keyId !== keyId));
+      setActionSuccess("API Key revoked successfully.");
+    } catch (err) {
+      setActionError(err.message);
+    } finally {
+      setKeyActionLoading(false);
+    }
+  };
+
+  const handleInviteMember = async (e) => {
+    e.preventDefault();
+    if (!inviteEmail.trim()) return;
+    try {
+      setTeamActionLoading(true);
+      setActionError("");
+      setActionSuccess("");
+      const res = await fetch("/api/tenants/invites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: inviteEmail.trim(), role: inviteRole })
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Failed to invite team member");
+      }
+      setTeamMembers(prev => [...prev, json.data]);
+      setInviteEmail("");
+      setActionSuccess(`✓ Invitation sent to ${json.data.email}!`);
+      // Update tenant info count
+      if (tenantInfo) setTenantInfo({ ...tenantInfo, currentSeats: (tenantInfo.currentSeats || 0) + 1 });
+    } catch (err) {
+      setActionError(err.message);
+    } finally {
+      setTeamActionLoading(false);
+    }
+  };
+
+  const handleRevokeMember = async (membershipId) => {
+    if (!window.confirm("Remove this member from your workspace?")) return;
+    try {
+      setTeamActionLoading(true);
+      setActionError("");
+      const res = await fetch(`/api/tenants/members/${encodeURIComponent(membershipId)}`, { method: "DELETE" });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message || "Failed to remove member");
+      setTeamMembers(prev => prev.filter(m => m.membershipId !== membershipId));
+      setActionSuccess("Member removed from workspace.");
+      if (tenantInfo && tenantInfo.currentSeats > 1) {
+        setTenantInfo({ ...tenantInfo, currentSeats: tenantInfo.currentSeats - 1 });
+      }
+    } catch (err) {
+      setActionError(err.message);
+    } finally {
+      setTeamActionLoading(false);
+    }
+  };
 
   const handleExportProjectPdf = (proj) => {
     const universes = (proj.activatedUniverses || []).join(", ") || "Core Governed Systems";
@@ -124,6 +238,9 @@ export default function CustomerDashboard({ customer, onLogout }) {
           {[
             { id: "projects", label: `My Projects (${projects.length})`, icon: "📂" },
             { id: "proposals", label: `Proposals & Milestones (${proposals.length})`, icon: "📑" },
+            { id: "billing", label: `Subscription & Limits`, icon: "💳" },
+            { id: "apikeys", label: `Developer API Keys (${apiKeys.length})`, icon: "🔑" },
+            { id: "team", label: `Team & Seats (${teamMembers.length})`, icon: "👥" },
             { id: "assistant", label: "AI Assistant & Memory", icon: "🧠" },
             { id: "studios", label: "Studios & Tools", icon: "🎨" }
           ].map((tab) => (
@@ -395,6 +512,222 @@ export default function CustomerDashboard({ customer, onLogout }) {
                   Launch Vidya ➔
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "billing" && (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <div>
+                <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#fff", margin: 0 }}>Subscription & Resource Quotas</h2>
+                <div style={{ fontSize: "0.8rem", color: "#9ca3af", marginTop: "0.2rem" }}>
+                  Current Plan: <span style={{ color: GOLD, fontWeight: 700, textTransform: "uppercase" }}>{subscription?.plan || "Personal"}</span>
+                </div>
+              </div>
+              <button
+                onClick={() => navigate("/pricing")}
+                style={{ background: `linear-gradient(135deg, ${GOLD}, #b8860b)`, color: "#000", border: "none", padding: "0.55rem 1.4rem", borderRadius: 8, fontWeight: 800, fontSize: "0.85rem", cursor: "pointer" }}
+              >
+                Upgrade Plan ➔
+              </button>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem", marginBottom: "2rem" }}>
+              <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.5rem" }}>
+                <div style={{ fontSize: "0.75rem", color: "#9ca3af", textTransform: "uppercase", fontWeight: 800 }}>Monthly Tokens</div>
+                <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#fff", margin: "0.4rem 0" }}>
+                  {((usage?.tokenUsage?.totalTokens || 0) / 1000).toFixed(1)}k <span style={{ fontSize: "0.9rem", color: "#6b7280" }}>/ {((usage?.limits?.maxTokensPerMonth || 500000) / 1000).toFixed(0)}k</span>
+                </div>
+                <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
+                  <div style={{ background: GOLD, height: "100%", width: `${Math.min(100, Math.round(((usage?.tokenUsage?.totalTokens || 0) / (usage?.limits?.maxTokensPerMonth || 500000)) * 100))}%` }} />
+                </div>
+              </div>
+
+              <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.5rem" }}>
+                <div style={{ fontSize: "0.75rem", color: "#9ca3af", textTransform: "uppercase", fontWeight: 800 }}>Autonomous Media Gen</div>
+                <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#fff", margin: "0.4rem 0" }}>
+                  {(usage?.generationUsage?.images || 0) + (usage?.generationUsage?.videos || 0)} <span style={{ fontSize: "0.9rem", color: "#6b7280" }}>/ {usage?.limits?.maxGenerationsPerMonth || 50}</span>
+                </div>
+                <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
+                  <div style={{ background: "#75f4ab", height: "100%", width: `${Math.min(100, Math.round((((usage?.generationUsage?.images || 0) + (usage?.generationUsage?.videos || 0)) / (usage?.limits?.maxGenerationsPerMonth || 50)) * 100))}%` }} />
+                </div>
+              </div>
+
+              <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.5rem" }}>
+                <div style={{ fontSize: "0.75rem", color: "#9ca3af", textTransform: "uppercase", fontWeight: 800 }}>Active Projects Capacity</div>
+                <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#fff", margin: "0.4rem 0" }}>
+                  {projects.length} <span style={{ fontSize: "0.9rem", color: "#6b7280" }}>/ {usage?.limits?.maxProjects || 3}</span>
+                </div>
+                <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
+                  <div style={{ background: "#38bdf8", height: "100%", width: `${Math.min(100, Math.round((projects.length / (usage?.limits?.maxProjects || 3)) * 100))}%` }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "apikeys" && (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
+              <div>
+                <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#fff", margin: 0 }}>Developer API Keys</h2>
+                <div style={{ fontSize: "0.8rem", color: "#9ca3af", marginTop: "0.2rem" }}>
+                  Use these keys with <code style={{ color: GOLD }}>Authorization: Bearer grd_live_...</code> in your custom apps and workflows.
+                </div>
+              </div>
+            </div>
+
+            {actionError && <div style={{ marginBottom: "1rem", padding: "0.75rem 1rem", background: "rgba(239,68,68,0.15)", border: "1px solid #f87171", borderRadius: 8, color: "#f87171", fontSize: "0.85rem" }}>{actionError}</div>}
+            {actionSuccess && <div style={{ marginBottom: "1rem", padding: "0.75rem 1rem", background: "rgba(117,244,171,0.15)", border: "1px solid #75f4ab", borderRadius: 8, color: "#75f4ab", fontSize: "0.85rem" }}>{actionSuccess}</div>}
+
+            {createdRawKey && (
+              <div style={{ background: "rgba(212,175,55,0.08)", border: `1px solid ${GOLD}`, borderRadius: 12, padding: "1.25rem", marginBottom: "1.5rem" }}>
+                <div style={{ fontSize: "0.85rem", fontWeight: 800, color: GOLD_LIGHT, marginBottom: "0.4rem" }}>
+                  ⚠️ Copy your API Key now. You won't be able to see it again!
+                </div>
+                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                  <input
+                    type="text"
+                    readOnly
+                    value={createdRawKey}
+                    style={{ flex: 1, background: "#000", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, padding: "0.6rem 0.8rem", color: "#75f4ab", fontFamily: "monospace", fontSize: "0.9rem" }}
+                  />
+                  <button
+                    onClick={() => { navigator.clipboard.writeText(createdRawKey); setActionSuccess("Copied to clipboard!"); }}
+                    style={{ background: GOLD, color: "#000", border: "none", padding: "0.6rem 1.2rem", borderRadius: 8, fontWeight: 800, cursor: "pointer" }}
+                  >
+                    Copy
+                  </button>
+                  <button
+                    onClick={() => setCreatedRawKey(null)}
+                    style={{ background: "rgba(255,255,255,0.1)", color: "#fff", border: "none", padding: "0.6rem 0.8rem", borderRadius: 8, cursor: "pointer" }}
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={handleCreateApiKey} style={{ display: "flex", gap: "0.75rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+              <input
+                type="text"
+                placeholder="Key Name (e.g. Production Webhook Engine)"
+                value={newKeyName}
+                onChange={(e) => setNewKeyName(e.target.value)}
+                style={{ flex: "1 1 280px", background: PANEL, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "0.65rem 1rem", color: "#fff", fontSize: "0.88rem" }}
+              />
+              <button
+                type="submit"
+                disabled={keyActionLoading || !newKeyName.trim()}
+                style={{ background: `linear-gradient(135deg, ${GOLD}, #b8860b)`, color: "#000", border: "none", borderRadius: 8, padding: "0.65rem 1.4rem", fontWeight: 800, cursor: "pointer" }}
+              >
+                {keyActionLoading ? "Creating…" : "+ Generate Key"}
+              </button>
+            </form>
+
+            <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, overflow: "hidden" }}>
+              {apiKeys.length === 0 ? (
+                <div style={{ padding: "2.5rem 1rem", textAlign: "center", color: "#6b7280", fontSize: "0.9rem" }}>
+                  No active API keys found. Generate a key above to access the GARUDA API.
+                </div>
+              ) : (
+                apiKeys.map((k) => (
+                  <div key={k.keyId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <div>
+                      <div style={{ fontWeight: 700, color: "#fff", fontSize: "0.92rem" }}>{k.name}</div>
+                      <div style={{ fontFamily: "monospace", color: "#9ca3af", fontSize: "0.78rem", marginTop: "0.2rem" }}>
+                        Prefix: <code style={{ color: GOLD_LIGHT }}>{k.keyPrefix}</code> • Status: <span style={{ color: k.status === "active" ? "#75f4ab" : "#f87171" }}>{k.status}</span>
+                      </div>
+                    </div>
+                    {k.status === "active" && (
+                      <button
+                        onClick={() => handleRevokeApiKey(k.keyId)}
+                        style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", cursor: "pointer", fontWeight: 700 }}
+                      >
+                        Revoke
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === "team" && (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
+              <div>
+                <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#fff", margin: 0 }}>Team Workspace & Seats</h2>
+                <div style={{ fontSize: "0.8rem", color: "#9ca3af", marginTop: "0.2rem" }}>
+                  Seats Used: <span style={{ color: GOLD, fontWeight: 700 }}>{teamMembers.length}</span> / {tenantInfo?.maxSeats || 1} available in your plan.
+                </div>
+              </div>
+              {teamMembers.length >= (tenantInfo?.maxSeats || 1) && (
+                <button
+                  onClick={() => navigate("/pricing")}
+                  style={{ background: "rgba(212,175,55,0.15)", border: `1px solid ${GOLD}`, color: GOLD_LIGHT, padding: "0.45rem 1rem", borderRadius: 8, fontSize: "0.82rem", fontWeight: 700, cursor: "pointer" }}
+                >
+                  Upgrade for More Seats ➔
+                </button>
+              )}
+            </div>
+
+            {actionError && <div style={{ marginBottom: "1rem", padding: "0.75rem 1rem", background: "rgba(239,68,68,0.15)", border: "1px solid #f87171", borderRadius: 8, color: "#f87171", fontSize: "0.85rem" }}>{actionError}</div>}
+            {actionSuccess && <div style={{ marginBottom: "1rem", padding: "0.75rem 1rem", background: "rgba(117,244,171,0.15)", border: "1px solid #75f4ab", borderRadius: 8, color: "#75f4ab", fontSize: "0.85rem" }}>{actionSuccess}</div>}
+
+            <form onSubmit={handleInviteMember} style={{ display: "flex", gap: "0.75rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+              <input
+                type="email"
+                placeholder="colleague@company.com"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                style={{ flex: "1 1 240px", background: PANEL, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "0.65rem 1rem", color: "#fff", fontSize: "0.88rem" }}
+              />
+              <select
+                value={inviteRole}
+                onChange={(e) => setInviteRole(e.target.value)}
+                style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "0.65rem 1rem", color: "#fff", fontSize: "0.88rem" }}
+              >
+                <option value="tenant_member">Member (Standard)</option>
+                <option value="tenant_admin">Admin (Full Control)</option>
+                <option value="tenant_viewer">Viewer (Read-Only)</option>
+              </select>
+              <button
+                type="submit"
+                disabled={teamActionLoading || !inviteEmail.trim()}
+                style={{ background: `linear-gradient(135deg, ${GOLD}, #b8860b)`, color: "#000", border: "none", borderRadius: 8, padding: "0.65rem 1.4rem", fontWeight: 800, cursor: "pointer" }}
+              >
+                {teamActionLoading ? "Inviting…" : "+ Send Invite"}
+              </button>
+            </form>
+
+            <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, overflow: "hidden" }}>
+              {teamMembers.length === 0 ? (
+                <div style={{ padding: "2.5rem 1rem", textAlign: "center", color: "#6b7280", fontSize: "0.9rem" }}>
+                  No additional members invited yet. Add team members above.
+                </div>
+              ) : (
+                teamMembers.map((m) => (
+                  <div key={m.membershipId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <div>
+                      <div style={{ fontWeight: 700, color: "#fff", fontSize: "0.92rem" }}>{m.email || m.userId}</div>
+                      <div style={{ color: "#9ca3af", fontSize: "0.78rem", marginTop: "0.2rem" }}>
+                        Role: <span style={{ color: GOLD_LIGHT, textTransform: "capitalize" }}>{m.role?.replace("tenant_", "")}</span> • Status: <span style={{ color: m.status === "active" ? "#75f4ab" : "#fef08a" }}>{m.status}</span>
+                      </div>
+                    </div>
+                    {m.role !== "platform_founder" && (
+                      <button
+                        onClick={() => handleRevokeMember(m.membershipId)}
+                        style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", cursor: "pointer", fontWeight: 700 }}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         )}

@@ -27,7 +27,13 @@
     "videoId": "rNb1UGfcK6g",
     "youtubeUrl": "https://www.youtube.com/watch?v=rNb1UGfcK6g",
     "shortsUrl": "https://www.youtube.com/shorts/rNb1UGfcK6g",
-    "uploadedAt": "2026-09-08T17:36:57.594Z"
+    "uploadedAt": "2026-09-08T17:36:57.594Z",
+    "personalStatus": "published",
+    "personalVideoId": "PSlYx4H0ghY",
+    "personalYoutubeUrl": "https://www.youtube.com/watch?v=PSlYx4H0ghY",
+    "personalShortsUrl": "https://www.youtube.com/shorts/PSlYx4H0ghY",
+    "personalUploadedAt": "2026-09-09T09:22:29.957Z",
+    "personalChannel": "@Praveen-Mahawar-111"
   },
   {
     "fileName": "Short_2_Midnight_Acoustic.mp4",

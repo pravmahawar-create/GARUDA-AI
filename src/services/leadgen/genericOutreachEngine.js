@@ -79,27 +79,134 @@ function canMessageToday(lead, now = new Date()) {
 }
 
 function buildMail(config, lead, pitch, domain, locale = "hi") {
-  const user = String(config.user || "").trim();
+  const user = String(config.user || "").trim() || "praveen@garudaos.in";
   const isEn = locale === "en";
-  const subject = `GARUDA: ${String(pitch.topic || (isEn ? "A quick thought" : "Ek aasaan baat"))}`;
-  const body = [
+  const leadName = lead.firstName || "Partner";
+  const subject = `GARUDA Architecture Brief: Autonomous Systems & Engineering Infrastructure`;
+  const plainTextBody = [
     pitch.body || "",
     "",
     "-----",
     isEn
-      ? `This email was sent by GARUDA (${domain.website || "garudaos.in"}).`
-      : `Ye email GARUDA (${domain.website || "garudaos.in"}) ne bheji hai.`,
+      ? `This email was sent by GARUDA AI OS (${domain.website || "https://www.garudaos.in"}).`
+      : `Ye email GARUDA AI OS (${domain.website || "https://www.garudaos.in"}) ne bheji hai.`,
     isEn
-      ? "If you don't want GARUDA to message you again, just reply: UNSUBSCRIBE"
-      : "Agar aap ye nahi chahte ki GARUDA aapko dobara message kare, toh sirf reply kare: UNSUBSCRIBE",
+      ? "Direct Inquiries: praveen@garudaos.in | Portal: https://www.garudaos.in"
+      : "Official Email: praveen@garudaos.in | Portal: https://www.garudaos.in",
     isEn
-      ? "Your data is never shared with anyone."
-      : "Aapka data kisi ke saath share nahi hota."
+      ? "To unsubscribe, simply reply: UNSUBSCRIBE"
+      : "Agar aap ye message dobara nahi chahte, toh reply karein: UNSUBSCRIBE"
   ].join("\n");
+
+  const paragraphs = (pitch.body || "")
+    .split(/\n\n+/)
+    .map(p => p.trim())
+    .filter(Boolean);
+
+  const scopingUrl = `https://www.garudaos.in/chat?ref=${encodeURIComponent(lead.id || "outreach")}`;
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${subject}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #04070a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #e2e8f0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #04070a; padding: 30px 10px;">
+    <tr>
+      <td align="center">
+        <!-- 600px Executive Brief Container -->
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #0a0f16; border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 12px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+          <!-- Header Bar -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #0f172a 0%, #04070a 100%); padding: 24px 28px; border-bottom: 2px solid #d4af37;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td>
+                    <div style="font-size: 18px; font-weight: 900; letter-spacing: 0.1em; color: #ffffff; text-transform: uppercase;">
+                      GARUDA AI OS
+                    </div>
+                    <div style="font-size: 11px; color: #d4af37; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; margin-top: 3px;">
+                      Sovereign Autonomous Systems
+                    </div>
+                  </td>
+                  <td align="right">
+                    <span style="display: inline-block; background: rgba(212, 175, 55, 0.12); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 999px; padding: 4px 12px; font-size: 10px; color: #fef08a; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;">
+                      Executive Brief
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 28px 28px 20px 28px; font-size: 14px; line-height: 1.65; color: #cbd5e1;">
+              ${paragraphs.map(para => `<p style="margin: 0 0 16px 0; color: #cbd5e1;">${para.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`).join("")}
+
+              <!-- Architectural Highlights Block -->
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; margin: 24px 0 20px 0; padding: 14px 18px;">
+                <tr>
+                  <td>
+                    <div style="font-size: 11px; color: #d4af37; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">
+                      Deterministic Engineering Capabilities
+                    </div>
+                    <div style="font-size: 13px; color: #e2e8f0; line-height: 1.6;">
+                      ◈ <strong>Autonomous Agent Fleets:</strong> High-throughput multi-agent execution with zero human latency.<br/>
+                      ◈ <strong>Sovereign Data Security:</strong> Full on-premises air-gapped deployment option with 100% IP ownership.<br/>
+                      ◈ <strong>Cryptographic Verification:</strong> Every milestone verified by SHA-256 test manifests before signoff.
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Authoritative CTA Button -->
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 28px 0 16px 0;">
+                <tr>
+                  <td align="center">
+                    <a href="${scopingUrl}" style="display: inline-block; background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: #05070a; text-decoration: none; font-weight: 900; font-size: 14px; letter-spacing: 0.03em; padding: 14px 32px; border-radius: 8px; box-shadow: 0 8px 20px rgba(212,175,55,0.25);">
+                      Schedule Architectural Scoping Session ➔
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #05080e; padding: 20px 28px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 11px; color: #64748b; line-height: 1.5;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td>
+                    <strong>GARUDA AI OS</strong> • Founder: Praveen Mahawar<br/>
+                    Official Email: <a href="mailto:praveen@garudaos.in" style="color: #94a3b8; text-decoration: underline;">praveen@garudaos.in</a> | Portal: <a href="https://www.garudaos.in" style="color: #94a3b8; text-decoration: underline;">https://www.garudaos.in</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top: 10px; font-size: 10px; color: #475569;">
+                    To unsubscribe from future architectural updates, reply directly with "UNSUBSCRIBE". Your privacy is rigorously respected under Anti-Fabrication Law.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+
   return {
     to: lead.email,
     subject,
-    body,
+    body: plainTextBody,
+    html,
     from: user
   };
 }
