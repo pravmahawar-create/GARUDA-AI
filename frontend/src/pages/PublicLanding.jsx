@@ -198,6 +198,22 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           </button>
           <button
             type="button"
+            onClick={() => navigate("/starter")}
+            style={{
+              background: "rgba(117, 244, 171, 0.12)",
+              border: "1px solid rgba(117, 244, 171, 0.45)",
+              color: "#75f4ab",
+              borderRadius: 999,
+              padding: "0.45rem 1.1rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              fontSize: "0.85rem"
+            }}
+          >
+            📦 Starter Kit
+          </button>
+          <button
+            type="button"
             onClick={onGetStarted}
             style={{
               background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",

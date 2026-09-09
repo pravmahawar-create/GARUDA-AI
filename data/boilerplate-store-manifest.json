@@ -1,0 +1,53 @@
+{
+  "packageName": "@garudaos/sovereign-ai-starter",
+  "version": "1.0.0",
+  "title": "GARUDA Sovereign AI & WhatsApp Bot Starter Kit",
+  "framework": "Next.js 14 App Router + Tailwind CSS + Supabase + Razorpay/Stripe",
+  "sha256": "7dce781af64462d8cbb1a7cea7fd67e59b3cf4e28c431a433e369927b6e7dae8",
+  "sizeBytes": 19989,
+  "formattedSize": "19.5 KB",
+  "downloadPath": "/downloads/garuda-sovereign-ai-starter.zip",
+  "generatedAt": "2026-09-09T06:57:22.948Z",
+  "pricing": {
+    "standard": {
+      "usd": 49,
+      "inr": 3999,
+      "license": "Single Client Production Deployment",
+      "gumroadSlug": "garuda-sovereign-starter"
+    },
+    "extended": {
+      "usd": 99,
+      "inr": 7999,
+      "license": "Unlimited Agency White-Label Deployments",
+      "gumroadSlug": "garuda-sovereign-agency"
+    }
+  },
+  "paymentGatewayUrl": "https://razorpay.me/@garudaosincompany",
+  "founderContact": {
+    "name": "Praveen Mahawar",
+    "role": "Principal Architect & Founder",
+    "whatsapp": "+91 9098750362",
+    "email": "praveen@garudaos.in",
+    "portal": "https://www.garudaos.in"
+  },
+  "fileCount": 17,
+  "includedFiles": [
+    ".env.example",
+    "next.config.js",
+    "package.json",
+    "postcss.config.js",
+    "README.md",
+    "schema.sql",
+    "src/app/api/checkout/route.js",
+    "src/app/api/payments/route.js",
+    "src/app/api/triage/route.js",
+    "src/app/api/whatsapp/route.js",
+    "src/app/globals.css",
+    "src/app/layout.jsx",
+    "src/app/page.jsx",
+    "src/lib/aiTriage.js",
+    "src/lib/supabase.js",
+    "src/lib/whatsappClient.js",
+    "tailwind.config.js"
+  ]
+}

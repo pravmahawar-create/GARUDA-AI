@@ -98,6 +98,8 @@ app.use("/api/project-scope", (req, res) => require("../api/project-scope")(req,
 // GARUDA PAWAN Sovereign Autonomous Coding Agent
 app.use("/api/pawan", require("./routes/astraRoutes"));
 app.use("/api/astra", require("./routes/astraRoutes"));
+// GARUDA Sovereign AI Starter Kit & Boilerplate Store API
+app.use("/api/boilerplate", require("./routes/boilerplateRoutes"));
 
 // 🎙️ Natural Indian Voice Speech Engine (Google Natural TTS stream)
 app.get("/api/audio/tts", async (req, res) => {

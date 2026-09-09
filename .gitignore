@@ -28,6 +28,7 @@ data/*
 !data/web_services-prospects.json
 !data/performance-marketing-buyers.json
 !data/deep-marketing-leads.json
+!data/boilerplate-store-manifest.json
 src/data/
 .aider*
 scratch/

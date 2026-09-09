@@ -40,6 +40,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import FounderProfile from "./pages/FounderProfile";
 import GarudaDostRozgar from "./pages/GarudaDostRozgar";
+import BoilerplateStore from "./pages/BoilerplateStore";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -219,6 +220,10 @@ function AppRoutes() {
       <Route path="/rozgar" element={<GarudaDostRozgar />} />
       <Route path="/dost/dashboard" element={<GarudaDostRozgar />} />
       <Route path="/sahayak" element={<GarudaDostRozgar />} />
+      <Route path="/starter" element={<BoilerplateStore />} />
+      <Route path="/boilerplate" element={<BoilerplateStore />} />
+      <Route path="/store" element={<BoilerplateStore />} />
+      <Route path="/sovereign-starter" element={<BoilerplateStore />} />
       <Route path="*" element={publicLanding} />
 
     </Routes>
