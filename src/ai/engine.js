@@ -192,7 +192,7 @@ class GarudaAIEngine {
 
   async _callGemini(query, history = [], languageHint = "auto") {
     const startTime = Date.now();
-    const geminiModel = process.env.GEMINI_MODEL || process.env.GARUDA_GEMINI_MODEL || "gemini-1.5-flash";
+    const geminiModel = process.env.GEMINI_MODEL || process.env.GARUDA_GEMINI_MODEL || "gemini-2.5-flash";
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${this.geminiApiKey}`;
 
     const contents = [];

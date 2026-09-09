@@ -38,7 +38,7 @@ function getLocalIp() {
  */
 router.post("/execute", async (req, res) => {
   try {
-    const { instruction, targetFile, searchQuery, code, currentCode, summary } = req.body;
+    const { instruction, targetFile, searchQuery, code, currentCode, summary, attachment } = req.body;
     if (!instruction) {
       return res.status(400).json({ success: false, error: "instruction is required" });
     }
@@ -48,7 +48,8 @@ router.post("/execute", async (req, res) => {
       searchQuery,
       code,
       currentCode,
-      summary
+      summary,
+      attachment
     });
 
     res.json({

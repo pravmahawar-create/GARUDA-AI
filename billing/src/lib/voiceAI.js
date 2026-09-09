@@ -3,7 +3,7 @@
 // never expose API credentials. Fallback to local regex parser when offline.
 
 const GEMINI_KEY = ((typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GEMINI_KEY) || '').toString().trim()
-const MODEL = 'gemini-2.0-flash'
+const MODEL = 'gemini-2.5-flash'
 
 function isOnline() {
   return typeof navigator !== 'undefined' && navigator.onLine !== false

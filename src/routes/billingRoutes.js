@@ -236,7 +236,7 @@ router.post("/ocr", async (req, res) => {
       '{"confidence":0.0,"businesses":[{"name":"","gstin":"","address":"","mobile":""}],"invoice":{"invoiceNo":"","date":"","sellerGstin":"","customerName":"","customerGstin":""},"items":[{"name":"","qty":0,"unit":"","rate":0,"amount":0}],"tax":{"cgst":0,"sgst":0,"discount":0,"grandTotal":0},"transport":{"vehicleNo":"","driverName":"","driverMobile":"","site":"","lrNo":"","freight":0}}' + "\n" +
       "RULES: Never invent values not visible in the document. If a field is not visible or confidence is low, set it to 0/empty. confidence = 0.0..1.0 for overall extraction. All numbers as digits, INR amounts.";
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(key)}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(key)}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

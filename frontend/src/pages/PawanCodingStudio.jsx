@@ -296,7 +296,8 @@ export default function PawanCodingStudio() {
         body: JSON.stringify({
           instruction: instruction.trim(),
           targetFile: targetFile.trim() || activeProject?.file || undefined,
-          currentCode: activeProject?.code
+          currentCode: activeProject?.code,
+          attachment: activeAttachment ? { data: activeAttachment.data, mimeType: activeAttachment.mimeType } : undefined
         })
       });
 
@@ -329,8 +330,9 @@ export default function PawanCodingStudio() {
       fetchHistory();
       pawanSpeak("Praveen ji, task completed successfully! Verified code is ready on screen.");
     } catch (err) {
-      setError(err.message);
-      pawanSpeak("Execution error occurred. Check screen details.");
+      const errMsg = err.message || "Autonomous execution failed";
+      setError(errMsg);
+      pawanSpeak("Praveen ji, execution note: " + errMsg.replace(/https?:\/\/\S+/g, "").slice(0, 75));
     } finally {
       setLoading(false);
     }

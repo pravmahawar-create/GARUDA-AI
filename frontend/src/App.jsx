@@ -214,8 +214,10 @@ function AppRoutes() {
       <Route path="/about" element={<FounderProfile />} />
       <Route path="/about-founder" element={<FounderProfile />} />
       <Route path="/experience" element={<InvestorExperience />} />
-      <Route path="/investor" element={<InvestorExperience />} />
       <Route path="/dost" element={<GarudaDostRozgar />} />
+      <Route path="/garuda-dost" element={<GarudaDostRozgar />} />
+      <Route path="/rozgar" element={<GarudaDostRozgar />} />
+      <Route path="/dost/dashboard" element={<GarudaDostRozgar />} />
       <Route path="/sahayak" element={<GarudaDostRozgar />} />
       <Route path="*" element={publicLanding} />
 

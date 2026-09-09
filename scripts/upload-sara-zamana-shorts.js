@@ -9,8 +9,19 @@ const youtubeService = require("../src/services/youtubeDirectPushService");
 
 async function uploadSaraZamanaShorts() {
   console.log("===============================================================");
-  console.log("🦅 UPLOADING SARA ZAMANA VIRAL SHORTS TO YOUTUBE");
+  console.log("🦅 UPLOADING SARA ZAMANA VIRAL SHORTS (PERSONAL PERFORMANCE)");
   console.log("===============================================================\n");
+
+  // STRICT BRAND SEPARATION GUARD (Permanent Rule 2)
+  const tokens = youtubeService.getStoredTokens();
+  const channelTitle = (tokens.channelTitle || "").toLowerCase();
+  if (channelTitle.includes("garuda") && !process.env.ALLOW_PERSONAL_ON_GARUDA) {
+    console.error("🛑 BRAND SEPARATION PROTECTION TRIGGERED!");
+    console.error(`Target channel is: "${tokens.channelTitle || "GARUDA Official"}"`);
+    console.error("Personal performance videos (Sara Zamana) cannot be published to the official GARUDA corporate channel.");
+    console.error("Please authorize Founder Praveen Mahawar's personal channel in 'data/youtube-tokens.json' before running this dispatch.\n");
+    return;
+  }
 
   const metadataPath = path.resolve(__dirname, "../output/shorts/shorts_metadata.json");
   if (!fs.existsSync(metadataPath)) {
@@ -44,7 +55,7 @@ async function uploadSaraZamanaShorts() {
     if (res.success) {
       console.log(`✔ SUCCESS: Uploaded to YouTube!`);
       console.log(`Video ID: ${res.videoId}`);
-      console.log(`Shorts URL: ${res.shortsUrl}\n`);
+      console.log(`Clickable Shorts Link: [Watch Short](${res.shortsUrl}) -> ${res.shortsUrl}\n`);
       item.status = "published";
       item.videoId = res.videoId;
       item.youtubeUrl = res.youtubeUrl;
@@ -56,7 +67,7 @@ async function uploadSaraZamanaShorts() {
   }
 
   fs.writeFileSync(metadataPath, JSON.stringify(items, null, 2), "utf8");
-  console.log("🎉 Sara Zamana Shorts Upload Completed!");
+  console.log("🎉 Sara Zamana Shorts Processing Completed!");
 }
 
 uploadSaraZamanaShorts().catch(console.error);
