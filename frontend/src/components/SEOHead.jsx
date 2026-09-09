@@ -62,6 +62,10 @@ export default function SEOHead({
     setMetaProperty("og:url", canonical);
     setMetaProperty("og:type", ogType);
     setMetaProperty("og:site_name", "GARUDA AI");
+    setMetaProperty("og:image", "https://www.garudaos.in/images/garuda_sovereign_hero.png");
+    setMetaProperty("og:image:width", "1200");
+    setMetaProperty("og:image:height", "630");
+    setMetaProperty("og:image:alt", title);
 
     // 6. Twitter Tags
     const setMetaName = (name, content) => {
@@ -74,9 +78,11 @@ export default function SEOHead({
       el.content = content;
     };
 
+    setMetaName("twitter:card", "summary_large_image");
     setMetaName("twitter:title", title);
     setMetaName("twitter:description", description);
     setMetaName("twitter:url", canonical);
+    setMetaName("twitter:image", "https://www.garudaos.in/images/garuda_sovereign_hero.png");
 
     // 7. Route Specific JSON-LD Schema
     const scriptId = "garuda-route-schema";

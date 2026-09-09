@@ -433,6 +433,70 @@ class YouTubeDirectPushService {
       publishedAt: data.snippet?.topLevelComment?.snippet?.publishedAt || new Date().toISOString()
     };
   }
+
+  /**
+   * Delete a video permanently from YouTube via Data API v3
+   */
+  async deleteVideo(videoId) {
+    if (!videoId) return { success: false, error: "Missing videoId" };
+    const accessToken = await this.getFreshAccessToken();
+    if (!accessToken) return { success: false, error: "Failed to obtain active YouTube access token" };
+
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?id=${encodeURIComponent(videoId)}`, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${accessToken}` }
+    });
+
+    if (res.status === 204 || res.ok) {
+      return { success: true, videoId, status: "deleted" };
+    }
+    const errData = await res.json().catch(() => ({}));
+    return { success: false, error: errData.error?.message || "Delete failed", status: res.status };
+  }
+
+  /**
+   * Change video privacy status (public, unlisted, private)
+   */
+  async setVideoPrivacy(videoId, privacyStatus = "private") {
+    if (!videoId) return { success: false, error: "Missing videoId" };
+    const accessToken = await this.getFreshAccessToken();
+    if (!accessToken) return { success: false, error: "Failed to obtain active YouTube access token" };
+
+    const getRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,status&id=${encodeURIComponent(videoId)}`, {
+      headers: { "Authorization": `Bearer ${accessToken}` }
+    });
+    if (!getRes.ok) return { success: false, error: "Could not fetch existing video metadata" };
+    const getData = await getRes.json();
+    const existing = getData.items?.[0];
+    if (!existing) return { success: false, error: "Video not found on channel" };
+
+    const updatePayload = {
+      id: videoId,
+      snippet: {
+        title: existing.snippet.title,
+        description: existing.snippet.description,
+        categoryId: existing.snippet.categoryId
+      },
+      status: {
+        privacyStatus: privacyStatus
+      }
+    };
+
+    const putRes = await fetch("https://www.googleapis.com/youtube/v3/videos?part=snippet,status", {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(updatePayload)
+    });
+
+    const putData = await putRes.json();
+    if (!putRes.ok) {
+      return { success: false, error: putData.error?.message || "Privacy status update failed" };
+    }
+    return { success: true, videoId, privacyStatus: putData.status?.privacyStatus };
+  }
 }
 
 const instance = new YouTubeDirectPushService();

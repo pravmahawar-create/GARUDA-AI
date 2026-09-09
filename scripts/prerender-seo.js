@@ -125,6 +125,64 @@ const ROUTES = [
     `
   },
   {
+    path: "/dost",
+    filePaths: [
+      path.join(DIST_DIR, "dost", "index.html"),
+      path.join(DIST_DIR, "dost.html"),
+      path.join(DIST_DIR, "rozgar", "index.html"),
+      path.join(DIST_DIR, "rozgar.html"),
+      path.join(DIST_DIR, "garuda-dost", "index.html"),
+      path.join(DIST_DIR, "garuda-dost.html")
+    ],
+    title: "GARUDA Dost Rozgar | Bharat Ka Sovereign AI Rozgar & Earning Platform",
+    description: "GARUDA Dost se judein aur apne gaon, kasbe ya sheher me local dukano, clinics aur businesses ko AI tools dekar ghar baithe mahine ka ₹15,000 se ₹50,000 tak rozgar kamayein. 100% Truth Law & T+3 Escrow Payout.",
+    canonical: "https://www.garudaos.in/dost",
+    h1: "GARUDA Dost Rozgar — AI Se Har Yuva Ko Rozgar",
+    eyebrow: "BHARAT SOVEREIGN LIVELIHOOD & EMPLOYMENT ENGINE",
+    contentSnippet: `
+      <h2>GARUDA Dost Kya Hai?</h2>
+      <p>GARUDA Dost ek sovereign rozgar karyakram hai jo Bharat ke yuvaon, vidyarthiyon, aur freelancers ko artificial intelligence ki shakti se sashakt banata hai. Isme aapko koi coding sikhne ya advance degree ki zaroorat nahi hai.</p>
+      <h2>Rozgar Ke Avsar & Kamai:</h2>
+      <ul>
+        <li><strong>Local Dukano & Vyaparion Ka Digitization:</strong> Dukano ke liye AI WhatsApp Billing, GST invoices, aur Inventory setup karna.</li>
+        <li><strong>Clinics & Doctors Ke Liye AI Receptionist:</strong> 24/7 patient booking aur triage bot lagana.</li>
+        <li><strong>Har Client Referral Par ₹2,500 Se ₹15,000 Commission:</strong> Razorpay se sidha T+3 banking settlement aapke verified bank account ya UPI par.</li>
+        <li><strong>100% Anti-Fabrication Law:</strong> Koi fake scheme nahi, zero upfront investment, verified payouts.</li>
+      </ul>
+      <p><a href="/dost">GARUDA Dost me abhi register karein</a> | <a href="/chat">Sovereign Helpdesk se baat karein</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "GARUDA Dost kya hai aur isse rozgar kaise milta hai?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "GARUDA Dost ek AI-powered rozgar platform hai jahan koi bhi vyakti apne mobile se local vyapariyon, dukandaro aur clinics ko AI tools provide karke har mahine sammanjanak rozgar aur commission kama sakta hai."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kya GARUDA Dost banne ke liye paise lagte hain?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nahi. GARUDA Dost me registration 100% nishulk (free) hai. Koi registration fees ya hidden charge nahi hai."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kamai ka bhugtan (payment) kab aur kaise milta hai?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Payment verified Razorpay T+3 banking settlement ke tahat seedha aapke UPI ID ya Bank Account me transfer hota hai."
+          }
+        }
+      ]
+    }
+  },
+  {
     path: "/experience",
     filePaths: [
       path.join(DIST_DIR, "experience", "index.html"),
@@ -1271,14 +1329,20 @@ function injectSeoMetadata(html, route) {
   }
 
   // 5. OpenGraph and Twitter Meta Tags
+  const ogImage = route.ogImage || "https://www.garudaos.in/images/garuda_sovereign_hero.png";
   const ogTags = [
     `<meta property="og:title" content="${route.title.replace(/"/g, "&quot;")}" />`,
     `<meta property="og:description" content="${route.description.replace(/"/g, "&quot;")}" />`,
     `<meta property="og:url" content="${route.canonical}" />`,
     `<meta property="og:type" content="website" />`,
+    `<meta property="og:image" content="${ogImage}" />`,
+    `<meta property="og:image:width" content="1200" />`,
+    `<meta property="og:image:height" content="630" />`,
+    `<meta property="og:image:alt" content="${route.title.replace(/"/g, "&quot;")}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${route.title.replace(/"/g, "&quot;")}" />`,
-    `<meta name="twitter:description" content="${route.description.replace(/"/g, "&quot;")}" />`
+    `<meta name="twitter:description" content="${route.description.replace(/"/g, "&quot;")}" />`,
+    `<meta name="twitter:image" content="${ogImage}" />`
   ].join("\n  ");
 
   output = output.replace(/<\/head>/i, `  ${ogTags}\n</head>`);

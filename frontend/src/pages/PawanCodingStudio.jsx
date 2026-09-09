@@ -4,6 +4,44 @@ import { useNavigate } from "react-router-dom";
 const SpeechRec = typeof window !== "undefined" ? (window.SpeechRecognition || window.webkitSpeechRecognition) : null;
 const PAYMENT_URL = "https://razorpay.me/@garudaosincompany";
 
+const CODING_TEMPLATES = [
+  {
+    icon: "🩺",
+    title: "AI Clinic Receptionist",
+    category: "Healthcare Triage PWA",
+    targetFile: "public/clinic_receptionist.html",
+    instruction: "Build a complete, dark-theme Doctor & AI Clinic Receptionist PWA with 24/7 symptom triage, urgency flagging (Emergency/Urgent/Normal), automated appointment slot booking, and WhatsApp confirmation CTA."
+  },
+  {
+    icon: "🛍️",
+    title: "WhatsApp Dukan & Billing",
+    category: "Retail & GST Invoicing",
+    targetFile: "public/whatsapp_dukan.html",
+    instruction: "Build a high-speed WhatsApp Dukan & GST Invoicing mobile web app for Indian shopkeepers with instant product catalog, cart calculation, 1-tap WhatsApp order sharing, and UPI QR code generator."
+  },
+  {
+    icon: "💼",
+    title: "Agency CRM & Escrow",
+    category: "B2B Agency OS",
+    targetFile: "public/agency_crm.html",
+    instruction: "Build an executive Agency Client Portal with 50/50 milestone payment escrow tracking, project timeline deliverables, client approval gates, and automated status telemetry."
+  },
+  {
+    icon: "🚀",
+    title: "Sovereign Micro-SaaS",
+    category: "Next-Gen SaaS MVP",
+    targetFile: "public/saas_starter.html",
+    instruction: "Build a high-converting cybernetic SaaS landing page with interactive pricing tiers, live product feature sandbox, customer testimonials, and instant Razorpay/Stripe checkout modal."
+  },
+  {
+    icon: "🌾",
+    title: "GARUDA Dost Rozgar Hub",
+    category: "Sovereign Rozgar Engine",
+    targetFile: "public/dost_rozgar_portal.html",
+    instruction: "Build a Sovereign GARUDA Dost affiliate & rozgar command center with unique referral link generator, client onboarding tracker, T+3 escrow settlement ledger, and WhatsApp lead share button."
+  }
+];
+
 export default function PawanCodingStudio() {
   const navigate = useNavigate();
   const [instruction, setInstruction] = useState("");
@@ -819,6 +857,47 @@ export default function PawanCodingStudio() {
                     ✨ Mode: Fresh Architecture
                   </span>
                 )}
+              </div>
+            </div>
+
+            {/* ⚡ Beautiful Production Coding Templates Gallery */}
+            <div style={{ marginBottom: "1rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                <span style={{ fontSize: "0.75rem", fontWeight: "800", color: "#f59e0b", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                  ⚡ 1-Tap Production Coding Templates:
+                </span>
+                <span style={{ fontSize: "0.68rem", color: "#78716c" }}>Click to auto-load blueprint</span>
+              </div>
+              <div style={{ display: "flex", gap: "0.6rem", overflowX: "auto", paddingBottom: "4px" }}>
+                {CODING_TEMPLATES.map((tpl, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      setInstruction(tpl.instruction);
+                      setTargetFile(tpl.targetFile);
+                      setStudioMode("discuss");
+                    }}
+                    style={{
+                      flex: "0 0 auto",
+                      background: instruction === tpl.instruction ? "rgba(245, 158, 11, 0.2)" : "#090d16",
+                      border: instruction === tpl.instruction ? "1px solid #f59e0b" : "1px solid #1e293b",
+                      borderRadius: "8px",
+                      padding: "8px 12px",
+                      cursor: "pointer",
+                      textAlign: "left",
+                      minWidth: "160px",
+                      maxWidth: "200px",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "3px" }}>
+                      <span style={{ fontSize: "1rem" }}>{tpl.icon}</span>
+                      <span style={{ fontSize: "0.78rem", fontWeight: "800", color: "#f3f4f6", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tpl.title}</span>
+                    </div>
+                    <div style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{tpl.category}</div>
+                  </button>
+                ))}
               </div>
             </div>
 
