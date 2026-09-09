@@ -323,27 +323,61 @@ router.get("/youtube/token-transfer", async (req, res) => {
   try {
     const fs = require("fs");
     const path = require("path");
-    const tokensFile = path.join(__dirname, "..", "..", "data", "youtube-tokens.json");
-    if (!fs.existsSync(tokensFile)) {
-      return res.json({ success: false, message: "No tokens file on disk" });
+    const dataDir = path.join(__dirname, "..", "..", "data");
+    const praveenPath = path.join(dataDir, "youtube-tokens-praveen.json");
+    const garudaPath = path.join(dataDir, "youtube-tokens.json");
+
+    let targetPath = null;
+    let targetProfile = "praveen";
+    if (fs.existsSync(praveenPath)) {
+      targetPath = praveenPath;
+      targetProfile = "praveen";
+    } else if (fs.existsSync(garudaPath)) {
+      targetPath = garudaPath;
+      targetProfile = "garuda";
     }
-    const raw = JSON.parse(fs.readFileSync(tokensFile, "utf8"));
-    const mongoose = require("mongoose");
-    const connectDB = require("../database/db");
-    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
-      await connectDB();
+
+    if (!targetPath) {
+      return res.json({
+        success: false,
+        message: "No tokens file on disk",
+        dirExists: fs.existsSync(dataDir),
+        files: fs.existsSync(dataDir) ? fs.readdirSync(dataDir) : []
+      });
     }
-    if (mongoose.connection && mongoose.connection.readyState === 1) {
-      const coll = mongoose.connection.db.collection("garuda_youtube_tokens");
-      const profile = raw.channelId === "UC68_XAkGvyU95T1VrTnrw0Q" ? "praveen" : (raw.channelProfile || "garuda");
-      await coll.updateOne(
-        { _id: profile },
-        { $set: { ...raw, channelProfile: profile, updatedAt: new Date() } },
-        { upsert: true }
-      );
-      return res.json({ success: true, message: `Synced ${profile} token to MongoDB Atlas!`, profile, channelTitle: raw.channelTitle });
+
+    const raw = JSON.parse(fs.readFileSync(targetPath, "utf8"));
+    try {
+      const mongoose = require("mongoose");
+      const connectDB = require("../database/db");
+      if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+        await connectDB();
+      }
+      if (mongoose.connection && mongoose.connection.readyState === 1) {
+        const coll = mongoose.connection.db.collection("garuda_youtube_tokens");
+        await coll.updateOne(
+          { _id: targetProfile },
+          { $set: { ...raw, channelProfile: targetProfile, updatedAt: new Date() } },
+          { upsert: true }
+        );
+      }
+    } catch (mErr) {
+      console.warn("[token-transfer] Mongo sync warning:", mErr.message);
     }
-    return res.json({ success: false, message: "MongoDB unavailable" });
+
+    return res.json({
+      success: true,
+      profile: targetProfile,
+      channelTitle: raw.channelTitle,
+      channelId: raw.channelId,
+      tokens: {
+        refreshToken: raw.refreshToken,
+        accessToken: raw.accessToken,
+        channelTitle: raw.channelTitle,
+        channelId: raw.channelId,
+        expiresAt: raw.expiresAt
+      }
+    });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
