@@ -540,7 +540,7 @@ export default function BoilerplateStore() {
                 <li>✓ Everything in Standard License</li>
                 <li>✓ Unlimited Commercial Client Deployments</li>
                 <li>✓ 100% White-Label Rebranding Rights</li>
-                <li>✓ Direct WhatsApp Founder Support (+91 9098750362)</li>
+                <li>✓ Direct Priority Architect Support (praveen@garudaos.in)</li>
                 <li>✓ Free Lifetime Updates &amp; Feature Patches</li>
               </ul>
             </div>
@@ -574,7 +574,7 @@ export default function BoilerplateStore() {
           lineHeight: 1.6
         }}>
           <div>100% Anti-Fabrication Law · Engineered by <strong>Praveen Mahawar</strong></div>
-          <div>Verified Founder WhatsApp: <strong>+91 9098750362</strong> | Email: <strong>praveen@garudaos.in</strong></div>
+          <div>Official Inquiries: <strong>praveen@garudaos.in</strong> | 24/7 Portal: <strong>www.garudaos.in/chat</strong></div>
           <div style={{ marginTop: "0.5rem" }}>GARUDA OS · Sovereign Enterprise Platform</div>
         </footer>
       </main>

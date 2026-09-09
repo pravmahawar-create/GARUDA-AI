@@ -10,7 +10,7 @@
  * - Problem-First Forensic Destruction: Calls out agency capacity bottlenecks, expensive local dev burn-rate (£70-£120/hr), and sprint delays
  * - Dynamic Visual Excellence: Tailored obsidian dark layouts (Gulf Gold, Cyber-Indigo UK/EU, Electric Sapphire US)
  * - 50/50 Anti-Risk Milestone Escrow with 14-day zero-defect warranty
- * - Direct Founder Alert: Qualified responses trigger instant Telegram & WhatsApp alerts to Founder Praveen (+91 9098750362)
+ * - Direct Founder Alert: Qualified responses trigger instant Telegram & private WhatsApp alerts to Founder Praveen
  */
 
 require("dotenv").config();
@@ -404,7 +404,7 @@ function buildExecutiveBriefEmailHtml(item) {
                 Direct Founder Contact: <strong>Praveen Mahawar</strong> (Founder & Chief AI Architect)
               </p>
               <p style="margin: 0 0 6px 0; font-size: 11px; color: #64748B;">
-                Verified Email: <a href="mailto:praveen@garudaos.in" style="color: ${p.accent}; text-decoration: none;">praveen@garudaos.in</a> | Direct Line: <a href="https://wa.me/919098750362" style="color: #94A3B8; text-decoration: none;">+91 9098750362</a>
+                Verified Email: <a href="mailto:praveen@garudaos.in" style="color: ${p.accent}; text-decoration: none;">praveen@garudaos.in</a> | Scoping Portal: <a href="https://www.garudaos.in/chat?ref=${item.refId}" style="color: #94A3B8; text-decoration: none;">garudaos.in/chat</a>
               </p>
               <p style="margin: 0; font-size: 10px; color: #475569;">
                 GARUDA AI Operating System • 100% Anti-Fabrication Law • Sovereign Software Workforce
@@ -439,7 +439,7 @@ function createAgencyProposalObject(item) {
     client: {
       name: item.contactName,
       email: item.email,
-      phone: "+919098750362",
+      phone: item.phone || "",
       organization: item.businessName
     },
     capabilityMatch: {

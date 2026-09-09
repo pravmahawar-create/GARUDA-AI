@@ -106,9 +106,9 @@ function packageBoilerplate() {
     founderContact: {
       name: "Praveen Mahawar",
       role: "Principal Architect & Founder",
-      whatsapp: "+91 9098750362",
       email: "praveen@garudaos.in",
-      portal: "https://www.garudaos.in"
+      portal: "https://www.garudaos.in",
+      scopingChat: "https://www.garudaos.in/chat"
     },
     fileCount: files.length,
     includedFiles: files

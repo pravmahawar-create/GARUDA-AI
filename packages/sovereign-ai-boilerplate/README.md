@@ -52,4 +52,4 @@ Open [http://localhost:3000](http://localhost:3000) to access the live interacti
 Official Payment Portal: [https://razorpay.me/@garudaosincompany](https://razorpay.me/@garudaosincompany)
 
 Maintained by **Praveen Mahawar** | [GARUDA OS](https://www.garudaos.in)  
-Founder Direct Line: `+91 9098750362` | `praveen@garudaos.in`
+Official Support: `praveen@garudaos.in` | Scoping Portal: [https://www.garudaos.in/chat](https://www.garudaos.in/chat)

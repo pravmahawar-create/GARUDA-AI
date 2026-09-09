@@ -14,15 +14,17 @@ Whenever generating or dispatching outreach emails, executive briefs, proposals,
    - Never generate plain, monotone, or generic text blasts.
 2. **Zero Third-Party Brand Pollution**:
    - NEVER mention or carry over names, brand identifiers, case studies, or mockups from unrelated previous clients (e.g. absolutely zero mention of "Niravi" or other past entities in outreach meant for new prospects).
-3. **Strict Anti-Fabrication in Communications & Zero Fake Contact Data**:
-   - NEVER generate, display, or transmit fake, hallucinated, or placeholder phone numbers (e.g. no random `+91 91114...` numbers).
+3. **Strict Anti-Fabrication & Founder Personal Privacy Law**:
+   - NEVER generate, display, or transmit fake, hallucinated, or placeholder phone numbers.
    - NEVER use fictitious email addresses or unverified domains.
-   - Communications must strictly feature verified, authorized Founder channels:
-     - **Official Verified Email**: `praveen@garudaos.in` (and backup `garudaos.ai@gmail.com`)
-     - **Official Platform Portal**: `https://www.garudaos.in`
-     - **Personalized Scoping Chat**: `https://www.garudaos.in/chat?ref={prospectId}`
-     - **Official Verified Founder WhatsApp**: `+91 9098750362` (Founder Direct Line)
-   - If any other personal phone number is not explicitly configured and verified, it must be completely omitted from outgoing collateral.
+   - **Strict Privacy & Anti-Harassment Mandate (Founder Personal Number Protection)**:
+     - Founder Praveen's personal phone number (`+91 9098750362`) is strictly an **INTERNAL SYSTEM ESCALATION CHANNEL** for AI agents to alert Founder Praveen privately on high-priority deals and critical system events.
+     - NEVER flash, display, or publish Founder Praveen's personal phone number on public websites, footers, open code packages, public READMEs, or outgoing mass marketing collateral to prevent spam, extortion, harassment, and social engineering risks.
+     - Public communications must strictly feature verified enterprise channels:
+       - **Official Verified Email**: `praveen@garudaos.in` (and backup `garudaos.ai@gmail.com`)
+       - **Official Platform Portal**: `https://www.garudaos.in`
+       - **Personalized Scoping Chat**: `https://www.garudaos.in/chat?ref={prospectId}`
+   - If any phone number is not an officially configured corporate virtual IVR line, it must be completely omitted from outgoing collateral.
 
 ## 3. Sovereign Operational Directives (Founder Mandate - Permanent)
 1. **Language Protocol**: Strictly communicate in Roman Hindi (Hinglish). Natural, clear Roman Hindi only.

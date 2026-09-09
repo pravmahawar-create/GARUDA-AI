@@ -321,7 +321,7 @@ npm run dev
       {/* Footer */}
       <footer className="text-center text-slate-500 text-xs border-t border-slate-800 pt-8 mt-16">
         <p>Built with 100% Anti-Fabrication Law by <strong>Praveen Mahawar</strong> · Principal Architect, GARUDA OS</p>
-        <p className="mt-1">Verified Line: +91 9098750362 | Email: praveen@garudaos.in</p>
+        <p className="mt-1">Official Support: praveen@garudaos.in | Portal: https://www.garudaos.in/chat</p>
       </footer>
     </main>
   );

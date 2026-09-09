@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "title": "GARUDA Sovereign AI & WhatsApp Bot Starter Kit",
   "framework": "Next.js 14 App Router + Tailwind CSS + Supabase + Razorpay/Stripe",
-  "sha256": "7dce781af64462d8cbb1a7cea7fd67e59b3cf4e28c431a433e369927b6e7dae8",
+  "sha256": "cc199643d82a1993b75d994991d404b9da74a098d313dab607ec5919c2c4653c",
   "sizeBytes": 19989,
   "formattedSize": "19.5 KB",
   "downloadPath": "/downloads/garuda-sovereign-ai-starter.zip",
-  "generatedAt": "2026-09-09T06:57:22.948Z",
+  "generatedAt": "2026-09-09T07:10:52.756Z",
   "pricing": {
     "standard": {
       "usd": 49,
@@ -26,9 +26,9 @@
   "founderContact": {
     "name": "Praveen Mahawar",
     "role": "Principal Architect & Founder",
-    "whatsapp": "+91 9098750362",
     "email": "praveen@garudaos.in",
-    "portal": "https://www.garudaos.in"
+    "portal": "https://www.garudaos.in",
+    "scopingChat": "https://www.garudaos.in/chat"
   },
   "fileCount": 17,
   "includedFiles": [

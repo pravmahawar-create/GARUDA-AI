@@ -476,16 +476,14 @@ export default function GarudaDostRozgar() {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
               <div style={{ background: "#050811", border: "1px solid #1E293B", borderRadius: "10px", padding: "1.2rem" }}>
-                <div style={{ fontSize: "0.75rem", color: "#22C55E", fontWeight: "800", marginBottom: "4px" }}>OFFICIAL VERIFIED WHATSAPP</div>
-                <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#FFFFFF", marginBottom: "6px" }}>+91 9098750362</div>
-                <p style={{ fontSize: "0.78rem", color: "#94A3B8", margin: "0 0 12px 0" }}>Founder Praveen Mahawar Direct Line</p>
+                <div style={{ fontSize: "0.75rem", color: "#22C55E", fontWeight: "800", marginBottom: "4px" }}>OFFICIAL 24/7 HELPDESK &amp; CHAT</div>
+                <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#FFFFFF", marginBottom: "6px" }}>garudaos.in/chat</div>
+                <p style={{ fontSize: "0.78rem", color: "#94A3B8", margin: "0 0 12px 0" }}>Direct Automated Priority Helpdesk &amp; Escalation</p>
                 <a
-                  href={`https://wa.me/919098750362?text=${encodeURIComponent(`Namaste Praveen ji, main GARUDA Dost ${dostSession?.fullName || fullName || "Partner"} (Phone: ${dostSession?.whatsapp || whatsapp || "Not provided"}) bol raha hoon. Mujhe support chahiye:`)}`}
-                  target="_blank"
-                  rel="noreferrer"
+                  href="/chat?ref=dost-helpdesk"
                   style={{ display: "inline-block", background: "#16A34A", color: "#fff", padding: "8px 16px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "800", textDecoration: "none" }}
                 >
-                  WhatsApp Par Direct Message Karein &rarr;
+                  Priority Chat Par Baat Karein &rarr;
                 </a>
               </div>
 

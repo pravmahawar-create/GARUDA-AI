@@ -15,10 +15,10 @@
  *
  * Doctrine & Guarantees:
  * - 100% Anti-Fabrication Law: Real verified Zoho SMTP (praveen@garudaos.in)
- * - Zero Fake Numbers: Praveen Mahawar direct line +91 9098750362
+ * - Zero Fake Numbers: Official channel praveen@garudaos.in
  * - Zero Niravi Pollution
  * - Dynamic Visual Excellence: Tailored dark theme layouts (Emerald ROAS, Gulf Gold, UK Cyan)
- * - Direct Founder Alert: Qualified responses forward to WhatsApp (+91 9098750362) & Telegram
+ * - Direct Founder Alert: Qualified responses forward to Founder internal alert channel & Telegram
  */
 
 require("dotenv").config();
@@ -160,7 +160,7 @@ async function dispatchMarketingWave(options = {}) {
   console.log("==================================================================");
   console.log("Mode:", isDryRun ? "DRY-RUN (Verification Only)" : "LIVE DISPATCH (Zoho SMTP: " + smtpConfig.user + ")");
   console.log("Accounts:", TARGETS.length, "Verified Marketing Targets");
-  console.log("Founder Direct Line: +91 9098750362 | Email: praveen@garudaos.in\n");
+  console.log("Founder Channel: praveen@garudaos.in | Portal: https://www.garudaos.in/chat\n");
 
   let existingLogs = [];
   try {

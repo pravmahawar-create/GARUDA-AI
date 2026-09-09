@@ -68,7 +68,8 @@ router.post("/checkout", async (req, res) => {
       amountInr,
       amountUsd,
       paymentUrl,
-      whatsappFounderDirect: "+919098750362",
+      supportEmail: "praveen@garudaos.in",
+      supportPortal: "https://www.garudaos.in/chat",
       message: `Initiate ${license.toUpperCase()} License for GARUDA Sovereign AI Starter Kit (₹${amountInr} / $${amountUsd})`
     });
   } catch (err) {
