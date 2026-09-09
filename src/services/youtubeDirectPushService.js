@@ -29,66 +29,108 @@ class YouTubeDirectPushService {
   }
 
   /**
+   * Get token file path based on channel profile
+   */
+  getTokenFilePath(channelProfile = "garuda") {
+    if (channelProfile === "praveen") {
+      return path.join(DATA_DIR, "youtube-tokens-praveen.json");
+    }
+    return TOKENS_FILE;
+  }
+
+  /**
    * Read stored tokens from disk or process.env
    */
-  getStoredTokens() {
+  getStoredTokens(channelProfile = "garuda") {
     ensureDataDir();
+    const tokenFile = this.getTokenFilePath(channelProfile);
     let stored = {};
-    if (fs.existsSync(TOKENS_FILE)) {
+    if (fs.existsSync(tokenFile)) {
       try {
-        stored = JSON.parse(fs.readFileSync(TOKENS_FILE, "utf8"));
+        stored = JSON.parse(fs.readFileSync(tokenFile, "utf8"));
       } catch {}
     }
 
-    const refreshToken = stored.refreshToken || process.env.YOUTUBE_REFRESH_TOKEN || null;
-    const accessToken = stored.accessToken || process.env.YOUTUBE_ACCESS_TOKEN || null;
+    const refreshToken = stored.refreshToken || (channelProfile === "garuda" ? process.env.YOUTUBE_REFRESH_TOKEN : null) || null;
+    const accessToken = stored.accessToken || (channelProfile === "garuda" ? process.env.YOUTUBE_ACCESS_TOKEN : null) || null;
     const expiresAt = stored.expiresAt || 0;
 
     return {
       refreshToken,
       accessToken,
       expiresAt,
-      channelTitle: stored.channelTitle || null,
-      channelId: stored.channelId || null
+      channelTitle: stored.channelTitle || (channelProfile === "praveen" ? "Praveen Mahawar" : null),
+      channelId: stored.channelId || (channelProfile === "praveen" ? "UC68_XAkGvyU95T1VrTnrw0Q" : null),
+      channelProfile
     };
   }
 
   /**
    * Save tokens to persistent storage
    */
-  saveTokens(tokens) {
+  saveTokens(tokens, channelProfile = "garuda") {
     ensureDataDir();
-    const current = this.getStoredTokens();
-    const merged = { ...current, ...tokens, updatedAt: new Date().toISOString() };
-    fs.writeFileSync(TOKENS_FILE, JSON.stringify(merged, null, 2), "utf8");
-    if (tokens.refreshToken) {
+    const tokenFile = this.getTokenFilePath(channelProfile);
+    const current = this.getStoredTokens(channelProfile);
+    const merged = { ...current, ...tokens, channelProfile, updatedAt: new Date().toISOString() };
+    fs.writeFileSync(tokenFile, JSON.stringify(merged, null, 2), "utf8");
+    if (tokens.refreshToken && channelProfile === "garuda") {
       process.env.YOUTUBE_REFRESH_TOKEN = tokens.refreshToken;
     }
     return merged;
   }
 
   /**
+   * Synchronize stored tokens from MongoDB Atlas collection garuda_youtube_tokens
+   */
+  async syncTokensFromMongo(channelProfile = "praveen") {
+    try {
+      const mongoose = require("mongoose");
+      const connectDB = require("../database/db");
+      await connectDB();
+      if (mongoose.connection && mongoose.connection.readyState === 1) {
+        const coll = mongoose.connection.db.collection("garuda_youtube_tokens");
+        const doc = await coll.findOne({ _id: channelProfile });
+        if (doc && doc.refreshToken) {
+          this.saveTokens({
+            refreshToken: doc.refreshToken,
+            accessToken: doc.accessToken,
+            expiresAt: doc.expiresAt,
+            channelTitle: doc.channelTitle,
+            channelId: doc.channelId
+          }, channelProfile);
+          return { success: true, channelTitle: doc.channelTitle, channelId: doc.channelId };
+        }
+      }
+    } catch (e) {
+      console.warn("[YouTubeDirectPush] MongoDB token sync error:", e.message);
+    }
+    return { success: false };
+  }
+
+  /**
    * Get YouTube integration connection status
    */
-  getStatus() {
-    const tokens = this.getStoredTokens();
+  getStatus(channelProfile = "garuda") {
+    const tokens = this.getStoredTokens(channelProfile);
     const hasConfig = Boolean(this.clientId || process.env.YOUTUBE_CLIENT_ID);
     const isConnected = Boolean(tokens.refreshToken);
 
     return {
       connected: isConnected,
+      channelProfile,
       hasClientCredentials: hasConfig,
       clientIdConfigured: Boolean(this.clientId),
-      channelTitle: tokens.channelTitle || "Authorized YouTube Channel",
+      channelTitle: tokens.channelTitle || (channelProfile === "praveen" ? "Praveen Mahawar (@Praveen-Mahawar-111)" : "Authorized YouTube Channel"),
       channelId: tokens.channelId,
-      instructions: !isConnected ? "Connect your YouTube channel once via OAuth to enable 100% autonomous background video updates." : "100% Autonomous AI Push Active."
+      instructions: !isConnected ? `Connect YouTube channel '${channelProfile}' via OAuth to enable 100% autonomous background video updates.` : "100% Autonomous AI Push Active."
     };
   }
 
   /**
    * Generate 1-click Google OAuth Consent URL
    */
-  getAuthUrl(redirectUri = "https://www.garudaos.in/api/bot-verse/youtube/callback") {
+  getAuthUrl(redirectUri = "https://www.garudaos.in/api/bot-verse/youtube/callback", channelProfile = "praveen") {
     const clientId = this.clientId || process.env.YOUTUBE_CLIENT_ID;
     if (!clientId) {
       return {
@@ -99,8 +141,11 @@ class YouTubeDirectPushService {
 
     const scopes = [
       "https://www.googleapis.com/auth/youtube",
-      "https://www.googleapis.com/auth/youtube.force-ssl"
+      "https://www.googleapis.com/auth/youtube.force-ssl",
+      "https://www.googleapis.com/auth/youtube.upload"
     ].join(" ");
+
+    const state = JSON.stringify({ profile: channelProfile });
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
@@ -108,15 +153,16 @@ class YouTubeDirectPushService {
       `response_type=code&` +
       `scope=${encodeURIComponent(scopes)}&` +
       `access_type=offline&` +
-      `prompt=consent`;
+      `prompt=consent&` +
+      `state=${encodeURIComponent(state)}`;
 
-    return { success: true, authUrl };
+    return { success: true, authUrl, channelProfile };
   }
 
   /**
    * Handle OAuth redirect code and retrieve permanent refresh token
    */
-  async handleCallback(code, redirectUri = "https://www.garudaos.in/api/bot-verse/youtube/callback") {
+  async handleCallback(code, redirectUri = "https://www.garudaos.in/api/bot-verse/youtube/callback", channelProfile = "praveen") {
     const clientId = this.clientId || process.env.YOUTUBE_CLIENT_ID;
     const clientSecret = this.clientSecret || process.env.YOUTUBE_CLIENT_SECRET;
 
@@ -141,21 +187,55 @@ class YouTubeDirectPushService {
       throw new Error(data.error_description || data.error || "Failed to exchange OAuth code for tokens");
     }
 
+    // Fetch verified channel identity from YouTube API
+    let channelTitle = null;
+    let channelId = null;
+    try {
+      const chRes = await fetch("https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true", {
+        headers: { "Authorization": `Bearer ${data.access_token}` }
+      });
+      if (chRes.ok) {
+        const chData = await chRes.json();
+        if (chData.items && chData.items[0]) {
+          channelTitle = chData.items[0].snippet?.title || null;
+          channelId = chData.items[0].id || null;
+        }
+      }
+    } catch (e) {
+      console.warn("[YouTubeDirectPush] Failed to fetch channel info:", e.message);
+    }
+
+    // Auto-detect profile based on channel ID if possible
+    let detectedProfile = channelProfile;
+    if (channelId === "UC68_XAkGvyU95T1VrTnrw0Q") {
+      detectedProfile = "praveen";
+    } else if (channelId === "UCA3WxFFJS0wG-oUxdcpncaw") {
+      detectedProfile = "garuda";
+    }
+
     const expiresAt = Date.now() + (data.expires_in || 3600) * 1000;
     this.saveTokens({
       refreshToken: data.refresh_token,
       accessToken: data.access_token,
-      expiresAt
-    });
+      expiresAt,
+      channelTitle,
+      channelId
+    }, detectedProfile);
 
-    return { success: true, message: "YouTube OAuth tokens successfully connected for autonomous push." };
+    return {
+      success: true,
+      channelProfile: detectedProfile,
+      channelTitle,
+      channelId,
+      message: `YouTube OAuth tokens successfully connected for channel '${channelTitle || detectedProfile}' (${channelId || "verified"}).`
+    };
   }
 
   /**
    * Get a valid, fresh access token using the stored refresh token
    */
-  async getFreshAccessToken() {
-    const tokens = this.getStoredTokens();
+  async getFreshAccessToken(channelProfile = "garuda") {
+    const tokens = this.getStoredTokens(channelProfile);
     if (!tokens.refreshToken) {
       return null;
     }
@@ -194,7 +274,7 @@ class YouTubeDirectPushService {
     this.saveTokens({
       accessToken: data.access_token,
       expiresAt
-    });
+    }, channelProfile);
 
     return data.access_token;
   }
@@ -281,39 +361,84 @@ class YouTubeDirectPushService {
     };
   }
 
-  /**
-   * AUTONOMOUS 100% AI VIDEO UPLOADER:
-   * Uploads an MP4 video file directly to YouTube via official Resumable Upload API
-   */
-  async uploadVideo({ videoFilePath, title, description, tags = [], privacyStatus = "public", categoryId = "28" }) {
+  async uploadVideo({
+    videoFilePath,
+    title,
+    description,
+    tags = [],
+    privacyStatus = "public",
+    categoryId = "28",
+    publishAt = null,
+    channelProfile = "garuda",
+    expectedChannelId = null
+  }) {
     if (!videoFilePath || !fs.existsSync(videoFilePath)) {
       return { success: false, error: `Video file not found at: ${videoFilePath}` };
     }
 
-    const status = this.getStatus();
+    const status = this.getStatus(channelProfile);
     if (!status.connected) {
       return {
         success: false,
         requiresAuth: true,
         authRequired: true,
-        message: "YouTube channel not yet connected via OAuth. Authorize once to enable 100% autonomous background video upload.",
-        authUrl: this.getAuthUrl().authUrl || null
+        channelProfile,
+        message: `YouTube channel profile '${channelProfile}' not yet connected via OAuth. Authorize once to enable 100% autonomous background video upload.`,
+        authUrl: this.getAuthUrl("https://www.garudaos.in/api/bot-verse/youtube/callback", channelProfile).authUrl || null
       };
     }
 
-    const accessToken = await this.getFreshAccessToken();
+    const accessToken = await this.getFreshAccessToken(channelProfile);
     if (!accessToken) {
       return {
         success: false,
         requiresAuth: true,
-        error: "Failed to obtain active YouTube API access token. Please re-authorize."
+        error: `Failed to obtain active YouTube API access token for profile '${channelProfile}'. Please re-authorize.`
       };
+    }
+
+    // 🛡️ SUPREME BRAND SEPARATION GUARD (Permanent Founder Mandate)
+    let currentChannelId = status.channelId;
+    let currentChannelTitle = status.channelTitle;
+    try {
+      const chRes = await fetch("https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true", {
+        headers: { "Authorization": `Bearer ${accessToken}` }
+      });
+      if (chRes.ok) {
+        const chData = await chRes.json();
+        if (chData.items && chData.items[0]) {
+          currentChannelId = chData.items[0].id;
+          currentChannelTitle = chData.items[0].snippet?.title;
+        }
+      }
+    } catch (e) {}
+
+    // Strict assertions:
+    if (channelProfile === "praveen") {
+      if (currentChannelId === "UCA3WxFFJS0wG-oUxdcpncaw") {
+        throw new Error("🛑 FATAL SECURITY HALT: Target channel is GARUDA Official ('UCA3WxFFJS0wG-oUxdcpncaw')! Personal videos cannot be published to corporate channel! Aborting.");
+      }
+      if (expectedChannelId && currentChannelId !== expectedChannelId) {
+        throw new Error(`🛑 STRICT BRAND PROTECTION: Current channel '${currentChannelTitle}' (${currentChannelId}) does NOT match Praveen's required personal channel '${expectedChannelId}'! Aborting.`);
+      }
+    } else if (channelProfile === "garuda") {
+      if (currentChannelId === "UC68_XAkGvyU95T1VrTnrw0Q") {
+        throw new Error("🛑 FATAL SECURITY HALT: Target channel is Praveen's personal channel ('UC68_XAkGvyU95T1VrTnrw0Q')! Corporate videos cannot be published to personal channel! Aborting.");
+      }
     }
 
     const fileStats = fs.statSync(videoFilePath);
     const fileSize = fileStats.size;
 
     // Step 1: Initiate Resumable Upload Session
+    const videoStatus = {
+      privacyStatus: publishAt ? "private" : privacyStatus,
+      selfDeclaredMadeForKids: false
+    };
+    if (publishAt) {
+      videoStatus.publishAt = new Date(publishAt).toISOString();
+    }
+
     const metadata = {
       snippet: {
         title: title.slice(0, 100),
@@ -321,10 +446,7 @@ class YouTubeDirectPushService {
         tags: Array.isArray(tags) ? tags.slice(0, 30) : [],
         categoryId: categoryId
       },
-      status: {
-        privacyStatus: privacyStatus,
-        selfDeclaredMadeForKids: false
-      }
+      status: videoStatus
     };
 
     const initRes = await fetch("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status", {

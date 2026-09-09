@@ -270,20 +270,82 @@ router.get("/youtube/auth-url", (req, res) => {
 
 router.get("/youtube/callback", async (req, res) => {
   try {
-    const { code, error } = req.query;
+    const { code, error, state } = req.query;
     if (error) {
       return res.redirect(`/bot-verse?youtube_error=${encodeURIComponent(error)}`);
     }
     if (!code) {
       return res.redirect(`/bot-verse?youtube_error=No+authorization+code+received`);
     }
+
+    let channelProfile = "garuda";
+    if (state) {
+      try {
+        const parsed = JSON.parse(state);
+        if (parsed.profile) channelProfile = parsed.profile;
+      } catch {
+        if (String(state).includes("praveen")) channelProfile = "praveen";
+      }
+    }
+
     const host = req.headers["x-forwarded-host"] || req.headers.host || "www.garudaos.in";
     const proto = req.headers["x-forwarded-proto"] || "https";
     const redirectUri = `${proto}://${host}/api/bot-verse/youtube/callback`;
-    await youtubeDirectPush.handleCallback(code, redirectUri);
-    return res.redirect(`/bot-verse?youtube_connected=true`);
+    const authResult = await youtubeDirectPush.handleCallback(code, redirectUri, channelProfile);
+
+    // Persist to MongoDB Atlas so local machine uploader can sync automatically
+    try {
+      const mongoose = require("mongoose");
+      const connectDB = require("../database/db");
+      if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+        await connectDB();
+      }
+      if (mongoose.connection && mongoose.connection.readyState === 1) {
+        const coll = mongoose.connection.db.collection("garuda_youtube_tokens");
+        const tokens = youtubeDirectPush.getStoredTokens(channelProfile);
+        await coll.updateOne(
+          { _id: channelProfile },
+          { $set: { ...tokens, channelProfile, updatedAt: new Date() } },
+          { upsert: true }
+        );
+      }
+    } catch (mErr) {
+      console.warn("[botVerseRoutes] MongoDB token sync note:", mErr.message);
+    }
+
+    return res.redirect(`/bot-verse?youtube_connected=true&profile=${encodeURIComponent(channelProfile)}`);
   } catch (error) {
     return res.redirect(`/bot-verse?youtube_error=${encodeURIComponent(error.message)}`);
+  }
+});
+
+router.get("/youtube/token-transfer", async (req, res) => {
+  try {
+    const fs = require("fs");
+    const path = require("path");
+    const tokensFile = path.join(__dirname, "..", "..", "data", "youtube-tokens.json");
+    if (!fs.existsSync(tokensFile)) {
+      return res.json({ success: false, message: "No tokens file on disk" });
+    }
+    const raw = JSON.parse(fs.readFileSync(tokensFile, "utf8"));
+    const mongoose = require("mongoose");
+    const connectDB = require("../database/db");
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
+    if (mongoose.connection && mongoose.connection.readyState === 1) {
+      const coll = mongoose.connection.db.collection("garuda_youtube_tokens");
+      const profile = raw.channelId === "UC68_XAkGvyU95T1VrTnrw0Q" ? "praveen" : (raw.channelProfile || "garuda");
+      await coll.updateOne(
+        { _id: profile },
+        { $set: { ...raw, channelProfile: profile, updatedAt: new Date() } },
+        { upsert: true }
+      );
+      return res.json({ success: true, message: `Synced ${profile} token to MongoDB Atlas!`, profile, channelTitle: raw.channelTitle });
+    }
+    return res.json({ success: false, message: "MongoDB unavailable" });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
   }
 });
 
