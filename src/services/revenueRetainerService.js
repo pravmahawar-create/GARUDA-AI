@@ -101,7 +101,7 @@ async function scanForRetainerOpportunities() {
           candidates.push(p);
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[revenueRetainer] listProposals failed:", String(err.message).slice(0,120)); }
   }
 
   const generatedOpportunities = [];
@@ -154,7 +154,7 @@ async function scanForRetainerOpportunities() {
           },
           { upsert: true }
         );
-      } catch {}
+      } catch (err) { console.warn("[revenueRetainer] Opportunity upsert failed:", String(err.message).slice(0,120)); }
     }
 
     // Founder private Telegram notification
@@ -168,7 +168,7 @@ async function scanForRetainerOpportunities() {
           `Recurring MRR: ₹${recommendedTier.priceInr.toLocaleString("en-IN")}/mo\n` +
           `Status: Auto-Added to Opportunity Funnel`
         );
-      } catch {}
+      } catch (err) { console.warn("[revenueRetainer] telegram alert failed:", String(err.message).slice(0,120)); }
     }
   }
 
@@ -207,7 +207,7 @@ async function confirmRetainerAgreement(proposalId, tierKey = "growth_pod") {
         { "metadata.proposalId": proposalId },
         { $set: { stage: "won", probability: 100 } }
       );
-    } catch {}
+    } catch (err) { console.warn("[revenueRetainer] confirm update failed:", String(err.message).slice(0,120)); }
   }
 
   return agreement;

@@ -517,7 +517,7 @@ async function handleRevenue() {
       const ledgerCount = await SettlementLedger.countDocuments().catch(() => 0);
       lines.push(`• MongoDB Verified Records: ${recordCount} revenue docs | ${ledgerCount} settlements`);
     }
-  } catch {}
+  } catch (err) { console.warn("[garudaCommandRouter] handleRevenue DB check failed:", String(err.message).slice(0,120)); }
 
   return { success: true, command: "revenue", message: lines.join("\n") };
 }
@@ -637,7 +637,7 @@ async function handleOutreach(params = {}, context = {}) {
         const raw = require("fs").readFileSync(contactsPath, "utf8");
         contacts = parseCsv(raw);
       }
-    } catch {}
+    } catch (err) { console.warn("[garudaCommandRouter] leadGen generate failed:", String(err.message).slice(0,120)); }
     if (!contacts.length) {
       return {
         success: false,
@@ -728,7 +728,7 @@ async function handleCreative(params = {}, context = {}) {
   }
   try {
     const brief = await creativeStudioService.createCreativeBrief({ title: query });
-    try { await creativeStudioService.generateConcept(brief.briefId); } catch {}
+    try { await creativeStudioService.generateConcept(brief.briefId); } catch (err) { console.warn("[garudaCommandRouter] generateConcept failed:", String(err.message).slice(0,100)); }
     const asset = await creativeStudioService.generateAsset(brief.briefId, "IMAGE_SQUARE", {
       generationMode: "DRY_RUN",
       _testMock: true,
@@ -843,7 +843,7 @@ async function handleCreativeContinuation(params = {}, context = {}) {
     } else if (typeof livingArtifactService.getMostRecentCreativeArtifact === "function") {
       sourceArtifact = livingArtifactService.getMostRecentCreativeArtifact();
     }
-  } catch {}
+  } catch (err) { console.warn("[garudaCommandRouter] suppressed error:", String(err.message).slice(0,80)); }
   if (!sourceArtifact) {
     return {
       success: false,
@@ -870,7 +870,7 @@ async function handleCreativeContinuation(params = {}, context = {}) {
       projectId: sourceArtifact.projectId || null,
       brandId: sourceArtifact.sourceBrief?.brandId || null
     });
-    try { await creativeStudioService.generateConcept(brief.briefId); } catch {}
+    try { await creativeStudioService.generateConcept(brief.briefId); } catch (err) { console.warn("[garudaCommandRouter] generateConcept2 failed:", String(err.message).slice(0,80)); }
     const platform = wantsInstagram ? "instagram_story" : "instagram_post";
     const asset = await creativeStudioService.generateAsset(brief.briefId, wantsInstagram ? "IMAGE_STORY" : "IMAGE_SQUARE", {
       generationMode: "DRY_RUN",
@@ -1002,7 +1002,7 @@ async function handleStatus() {
       `webhook=${webhook && webhook.url ? webhook.url : "NOT set"} | ` +
       `pending updates=${webhook && webhook.pending_update_count !== undefined ? webhook.pending_update_count : "?"}`
     );
-  } catch {}
+  } catch (err) { console.warn("[garudaCommandRouter] suppressed error:", String(err.message).slice(0,80)); }
 
   const workers = [
     ["discovery", process.env.DISCOVERY_ENABLED, process.env.DISCOVERY_INTERVAL_MS || 900000],
@@ -1018,7 +1018,7 @@ async function handleStatus() {
   try {
     const smtp = outreachEngine.getSmtpConfig();
     lines.push(`- SMTP outreach: ${smtp.ready ? "configured" : "NOT configured"}`);
-  } catch {}
+  } catch (err) { console.warn("[garudaCommandRouter] suppressed error:", String(err.message).slice(0,80)); }
 
   return { success: true, command: "status", message: lines.join("\n") };
 }
@@ -1028,10 +1028,10 @@ function buildPipelineLine(domain) {
   let summary = null;
   try {
     pipeline = leadGenEngine.getPipeline({ domain: domain.id });
-  } catch {}
+  } catch (err) { console.warn("[garudaCommandRouter] suppressed error:", String(err.message).slice(0,80)); }
   try {
     summary = outreachEngine.getSummary({ domain: domain.id });
-  } catch {}
+  } catch (err) { console.warn("[garudaCommandRouter] suppressed error:", String(err.message).slice(0,80)); }
   if (!pipeline || (!pipeline.total && (!summary || !summary.sent))) return null;
   const byStatus = (summary && summary.byStatus) || {};
   let interested = 0;
@@ -1042,7 +1042,7 @@ function buildPipelineLine(domain) {
         const h = Array.isArray(lead.history) ? lead.history : [];
         if (h.some((e) => String(e.action || "").includes("interested"))) interested += 1;
       }
-    } catch {}
+    } catch (err) { console.warn("[garudaCommandRouter] suppressed error:", String(err.message).slice(0,80)); }
   }
   return (
     `- ${domain.label}: ${pipeline.total || 0} prospects | ` +
@@ -1077,7 +1077,7 @@ async function handlePipeline() {
     } else {
       lines.push("- Tutoring web-scan: abhi tak start nahi hua. Bhejo: tutoring leads usa / tutoring leads dubai");
     }
-  } catch {}
+  } catch (err) { console.warn("[garudaCommandRouter] suppressed error:", String(err.message).slice(0,80)); }
 
   return { success: true, command: "pipeline", message: lines.join("\n") };
 }
