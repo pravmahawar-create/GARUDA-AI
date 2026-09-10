@@ -43,8 +43,49 @@ const SYSTEM_KEYWORDS = [
   "backup", "restore", "migrate", "railway", "server",
 ];
 
+const SECURITY_KEYWORDS = [
+  "bounty", "vulnerability", "cwe-", "cwe", "cors", "sensitive path", "security scan", "bug hunter", "penetration test", "penetration", "exploit poc", "exploit", "hackerone", "bugcrowd", "actuator/env", "actuator", "heapdump", "security audit", "vuln", "xss", "sqli", "ssrf", "idor", "rce", "lfi", "open redirect", "clickjacking", "hsts", "csp bypass", "introspection", "graphql", "swagger", ".env", ".git", "leak", "secret exposure",
+];
+
+const SECURITY_PATTERNS = [
+  /\bcwe-\d+/i,
+  /\bactuator\/env\b/i,
+  /\bactuator\/heapdump\b/i,
+  /\b\.env\b/i,
+  /\b\.git\/head\b/i,
+  /\bpenetration\s*test\b/i,
+  /\bsecurity\s*scan\b/i,
+  /\bbug\s*hunter\b/i,
+  /\bbug\s*bounty\b/i,
+  /\bhackerone\b/i,
+  /\bbugcrowd\b/i,
+  /\bintigriti\b/i,
+  /\bexploit\s*poc\b/i,
+];
+
 function classifyTask(input) {
   const text = (typeof input === "string" ? input : input?.text || input?.problem || "").toLowerCase();
+
+  // High-priority security audit bypass — checked before any other scoring
+  const securityHits = SECURITY_KEYWORDS.filter(kw => text.includes(kw)).length;
+  const securityPatternHit = SECURITY_PATTERNS.some(re => re.test(text));
+  const isSecurityAudit = securityHits >= 1 || securityPatternHit;
+
+  if (isSecurityAudit) {
+    return {
+      category: "security_audit",
+      scores: { code: 0, reasoning: 0, general: 0, creative: 0, system: 0, security_audit: 10 },
+      confidence: 0.98,
+      needsCodeModel: false,
+      needsReasoningModel: false,
+      needsUncensoredSecurityEngine: true,
+      bypassGemini: true,
+      complexity: estimateComplexity(text),
+      estimatedTokens: Math.ceil(text.length / 4) + 800,
+      matchedSecurityKeywords: SECURITY_KEYWORDS.filter(kw => text.includes(kw)),
+      securityPatternHit,
+    };
+  }
 
   const scores = {
     code: 0,
@@ -88,6 +129,8 @@ function classifyTask(input) {
     confidence: Math.min(confidence, 1),
     needsCodeModel,
     needsReasoningModel,
+    needsUncensoredSecurityEngine: false,
+    bypassGemini: false,
     complexity: estimateComplexity(text),
     estimatedTokens: Math.ceil(text.length / 4) + 500,
   };

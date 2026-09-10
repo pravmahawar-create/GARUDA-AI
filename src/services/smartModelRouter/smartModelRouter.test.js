@@ -43,6 +43,25 @@ async function testClassifier() {
 
   const trivialTask = classifier.classifyTask("Hi");
   assert(trivialTask.complexity === "trivial", "Detects trivial task");
+
+  // --- Security audit / bug bounty bypass (dual routing) ---
+  const sec1 = classifier.classifyTask("Run security scan for CORS vulnerability on https://target.com and check CWE-942");
+  assert(sec1.category === "security_audit", "Classifies security scan as security_audit");
+  assert(sec1.bypassGemini === true, "Security scan bypassGemini=true");
+  assert(sec1.needsUncensoredSecurityEngine === true, "Security scan needsUncensoredSecurityEngine=true");
+
+  const sec2 = classifier.classifyTask("Hunt bug bounty: check sensitive path /.env and actuator/env for exposure on hackerone program");
+  assert(sec2.category === "security_audit", "Classifies bug bounty as security_audit");
+  assert(sec2.bypassGemini === true, "Bug bounty bypassGemini=true");
+
+  const sec3 = classifier.classifyTask("Generate exploit PoC for cwe-200 sensitive path disclosure on bugcrowd target");
+  assert(sec3.category === "security_audit", "Classifies exploit PoC as security_audit");
+
+  const sec4 = classifier.classifyTask("Test penetration test on api-docs and graphql introspection query");
+  assert(sec4.category === "security_audit", "Classifies penetration test as security_audit");
+
+  const normalStillCode = classifier.classifyTask("Write a React component for dashboard");
+  assert(normalStillCode.category === "code" && normalStillCode.bypassGemini !== true, "Normal code task does not bypass Gemini");
 }
 
 async function testDetector() {
@@ -83,6 +102,22 @@ async function testRouter() {
 
   console.log(`  INFO: Code route → ${codeRoute.selected.provider}/${codeRoute.selected.model} (${codeRoute.selected.tier})`);
   console.log(`  INFO: Reason route → ${reasonRoute.selected.provider}/${reasonRoute.selected.model}`);
+
+  // --- Security audit must bypass Gemini ---
+  const secRoute = await router.route("Run bug bounty hunter scan for vulnerability CWE-942 on https://target.com with sensitive path /.env");
+  assert(secRoute.classification === "security_audit", "Security prompt classified as security_audit");
+  assert(secRoute.selected.provider !== "gemini" && secRoute.selected.provider !== "google", "Security audit does NOT route to Gemini");
+  assert(secRoute.selected.reason.includes("Bypassing Gemini") || secRoute.selected.reason.includes("OpenCode"), "Security audit reason mentions bypass/OpenCode");
+  assert(secRoute.selected.bypassedGemini === true || secRoute.securityBypass === true, "Security audit marks bypassedGemini");
+
+  const secRoute2 = await router.route("Generate HackerOne PoC for actuator/env exposure");
+  assert(secRoute2.selected.provider !== "gemini", "Second security audit also bypasses Gemini");
+
+  // Normal coding still routes normally (not forced to opencode)
+  const normalRoute = await router.route("Write a Python function to parse JSON");
+  assert(normalRoute.classification === "code", "Normal coding still code classification");
+
+  console.log(`  INFO: Security route → ${secRoute.selected.provider}/${secRoute.selected.model} (${secRoute.selected.reason.slice(0, 60)}...)`);
 }
 
 async function testService() {

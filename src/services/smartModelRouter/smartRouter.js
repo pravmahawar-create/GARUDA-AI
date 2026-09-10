@@ -77,6 +77,31 @@ function selectCloudModel(classification, providers) {
 }
 
 function selectBestProvider(classification, providers) {
+  // 🛡️ SECURITY AUDIT BYPASS — never route to Gemini for bug bounty / security tasks
+  if (classification && (classification.needsUncensoredSecurityEngine === true || classification.bypassGemini === true || classification.category === "security_audit")) {
+    // Prefer uncensored local engines in order: opencode → ollama_code → deepseek
+    // 1) Check opencode availability synchronously via env hint (deep async check done in route())
+    const hasOpencodeEnv = !!process.env.OPENCODE_API_URL || !!process.env.OPENCODE_BASE_URL;
+    if (hasOpencodeEnv) {
+      return { provider: "opencode", model: "opencode-unblocked", reason: "[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine (env)", tier: "local", bypassedGemini: true };
+    }
+    // 2) Try local Ollama code model
+    if (providers.ollama?.available) {
+      const codeModel = providers.ollama.models.find(m => m.specialty === "code");
+      if (codeModel) return { provider: "ollama_code", model: codeModel.id, reason: "[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine (ollama_code)", tier: "local", bypassedGemini: true };
+      if (providers.ollama.bestModel) return { provider: "ollama_code", model: providers.ollama.bestModel, reason: "[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine (ollama)", tier: "local", bypassedGemini: true };
+    }
+    // 3) DeepSeek as uncensored cloud fallback (never Gemini)
+    const deepseek = providers.cloud.find(p => p.name === "deepseek");
+    if (deepseek) return { provider: "deepseek", model: deepseek.models[0], reason: "[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine (deepseek)", tier: "cloud", bypassedGemini: true };
+    // 4) Any non-Gemini cloud
+    const nonGemini = providers.cloud.find(p => p.name !== "gemini" && p.name !== "google");
+    if (nonGemini) return { provider: nonGemini.name, model: nonGemini.models[0], reason: "[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine (non-gemini)", tier: "cloud", bypassedGemini: true };
+    // 5) Local fallback even without models
+    if (providers.ollama?.available) return { provider: "ollama_code", model: "qwen2.5-coder:3b", reason: "[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine (fallback)", tier: "local", bypassedGemini: true };
+    return { provider: "opencode", model: "local-unblocked", reason: "[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine (heuristic)", tier: "local", bypassedGemini: true };
+  }
+
   const local = selectLocalModel(classification, providers);
   if (local) return { ...local, tier: "local" };
 
@@ -97,6 +122,33 @@ async function route(input, options = {}) {
 
   const classification = classifyTask(text);
   const providers = await getProviders();
+
+  // Enforce uncensored engine check with live probe for opencode (async)
+  if (classification.needsUncensoredSecurityEngine || classification.bypassGemini || classification.category === "security_audit") {
+    try {
+      const openCodeAdapter = require("./openCodeAdapter");
+      const avail = await openCodeAdapter.checkAvailable().catch(() => ({ available: false }));
+      if (avail.available && avail.engine) {
+        const decisionOverride = { provider: avail.engine.provider, model: "opencode-live", reason: `[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine (live probe ${avail.engine.baseUrl})`, tier: "local", bypassedGemini: true, liveEngine: avail.engine };
+        const resultOverride = {
+          input: text.substring(0, 200),
+          classification: classification.category,
+          confidence: classification.confidence,
+          complexity: classification.complexity,
+          selected: { provider: decisionOverride.provider, model: decisionOverride.model, tier: decisionOverride.tier, reason: decisionOverride.reason, bypassedGemini: true },
+          availableProviders: { local: providers.hasLocalLLM, cloud: providers.cloud.map(p => p.name) },
+          timeMs: Date.now() - startTime,
+          timestamp: new Date().toISOString(),
+          securityBypass: true,
+        };
+        routingLog.unshift(resultOverride);
+        if (routingLog.length > MAX_LOG_SIZE) routingLog.pop();
+        console.log(`[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine (${avail.engine.provider} @ ${avail.engine.baseUrl})`);
+        return resultOverride;
+      }
+    } catch {}
+    console.log(`[Router] Security audit detected → Bypassing Gemini → Routing to OpenCode/Local Engine`);
+  }
 
   let decision = selectBestProvider(classification, providers);
   // Adaptive learning influence: historical evidence can bias tier/model choice
