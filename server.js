@@ -28,5 +28,28 @@ const PORT = process.env.PORT || 3000;
               } else { clearInterval(hb); console.log("[GARUDA] Heartbeat: max retries reached"); }
             }, 30000);
         }
+
+        // ── 24/7 Bounty Autonomous Daemon (non-blocking) ──
+        // Enable with GARUDA_BOUNTY_DAEMON=true + TELEGRAM_BOT_TOKEN + bounty-targets.txt
+        // Runs: node scripts/bounty-autonomous-daemon.js --watch --interval 30 --discover
+        // Uses OpenCode/ollama_code via smartModelRouter bypass (never Gemini)
+        if (String(process.env.GARUDA_BOUNTY_DAEMON).toLowerCase() === "true") {
+            try {
+                const { spawn } = require("child_process");
+                const path = require("path");
+                const daemonPath = path.join(__dirname, "scripts", "bounty-autonomous-daemon.js");
+                const interval = process.env.GARUDA_BOUNTY_INTERVAL || "30";
+                const child = spawn("node", [daemonPath, "--watch", "--interval", interval, "--discover"], {
+                    stdio: "inherit",
+                    detached: false,
+                    env: process.env
+                });
+                child.on("error", e => console.error("[GARUDA] Bounty daemon spawn failed:", e.message));
+                child.on("exit", (code) => console.log(`[GARUDA] Bounty daemon exited code ${code} — will not auto-restart (use Render worker for HA)`));
+                console.log(`[GARUDA] 🦅 Bounty Autonomous Daemon spawned — interval ${interval}m --discover --watch (PID ${child.pid})`);
+            } catch (e) { console.error("[GARUDA] Bounty daemon boot failed:", e.message); }
+        } else {
+            console.log("[GARUDA] Bounty daemon idle — set GARUDA_BOUNTY_DAEMON=true to enable 24/7 hunting");
+        }
     });
 })();

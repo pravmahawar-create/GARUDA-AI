@@ -104,7 +104,13 @@
     "prospects:sync": "node scripts/sync-prospects-to-mongo.js",
     "tutoring:scan": "node scripts/garuda-tutoring-scan.js",
     "tutoring:import": "node scripts/garuda-tutoring-import.js",
-    "tutoring:test": "node src/services/tutoringLeadScoutService.test.js"
+    "tutoring:test": "node src/services/tutoringLeadScoutService.test.js",
+    "bounty:hunter": "node scripts/bug-bounty-hunter.js --target https://www.garudaos.in",
+    "bounty:daemon": "node scripts/bounty-autonomous-daemon.js --watch --interval 30 --discover",
+    "bounty:once": "node scripts/bounty-autonomous-daemon.js --once --discover",
+    "bounty:discover": "node scripts/bounty-autonomous-daemon.js --discover --once",
+    "boilerplate:package": "node scripts/package-boilerplate.js",
+    "boilerplate:publish": "node scripts/publish-boilerplate-marketplaces.js"
   },
   "repository": {
     "type": "git",
