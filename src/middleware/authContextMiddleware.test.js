@@ -39,10 +39,12 @@ async function runTests() {
   assert.strictEqual(spoofContext.isFounderApproved, false);
   console.log("✔ Test 2: Trust boundary enforced: x-tenant-id header is ignored without verified identity");
 
-  // 3. Platform Founder via x-founder-key Header
+  // 3. Platform Founder via x-founder-key Header (env-based, no hardcoded key)
+  const testFounderSecret = "test_founder_secret_2026_secure";
+  process.env.FOUNDER_ADMIN_KEY = testFounderSecret;
   const founderReq = {
     headers: {
-      "x-founder-key": "garuda_founder_secret_key_2026"
+      "x-founder-key": testFounderSecret
     },
     query: {},
     body: {}
@@ -53,12 +55,27 @@ async function runTests() {
   assert.strictEqual(founderContext.role, "platform_founder");
   assert.strictEqual(founderContext.isFounderApproved, true);
   assert.deepStrictEqual(founderContext.capabilities, ["*"]);
-  console.log("✔ Test 3: Valid founder key resolves platform_founder with [*] wildcard");
+  console.log("✔ Test 3: Valid founder key (env) resolves platform_founder with [*] wildcard");
+
+  // 3b. Hardcoded old key must NOT work (regression guard for P0-01)
+  const hardcodedReq = { headers: { "x-founder-key": "garuda_founder_secret_key_2026" }, query:{}, body:{} };
+  const savedKey2 = process.env.FOUNDER_ADMIN_KEY;
+  const savedSess = process.env.FOUNDER_SESSION_SECRET;
+  const savedPass = process.env.FOUNDER_ACCESS_PASSWORD;
+  process.env.FOUNDER_ADMIN_KEY = "__invalid__";
+  process.env.FOUNDER_SESSION_SECRET = "__invalid__";
+  process.env.FOUNDER_ACCESS_PASSWORD = "__invalid__";
+  const hardcodedCtx = await authContextService.resolveRequestContext(hardcodedReq);
+  assert.strictEqual(hardcodedCtx.actorType, "anonymous");
+  console.log("✔ Test 3b: Hardcoded legacy key correctly rejected (P0-01 guard)");
+  process.env.FOUNDER_ADMIN_KEY = savedKey2;
+  if (savedSess) process.env.FOUNDER_SESSION_SECRET = savedSess;
+  if (savedPass) process.env.FOUNDER_ACCESS_PASSWORD = savedPass;
 
   // 4. Platform Founder via Authorization Bearer Header
   const bearerReq = {
     headers: {
-      authorization: "Bearer garuda_founder_secret_key_2026"
+      authorization: `Bearer ${testFounderSecret}`
     },
     query: {},
     body: {}

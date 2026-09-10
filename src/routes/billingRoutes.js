@@ -10,7 +10,17 @@ const connectDB = require("../database/db");
 
 const router = express.Router();
 
-const sttUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 15 * 1024 * 1024 } });
+const STT_ALLOWED_MIME = new Set(["audio/webm","audio/wav","audio/mpeg","audio/mp3","audio/ogg","audio/x-wav","audio/mp4","video/webm"]);
+const sttUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 15 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (STT_ALLOWED_MIME.has(String(file.mimetype).toLowerCase())) return cb(null, true);
+    // Allow webm/wav/ogg variants
+    if (/^(audio|video)\//.test(String(file.mimetype))) return cb(null, true);
+    return cb(new Error(`Unsupported audio type: ${file.mimetype}`), false);
+  }
+});
 
 const VOICE_SYSTEM_PROMPT = `You are Garuda, the billing assistant for a cement + steel (loha-cement) business in India. The user speaks Hindi/Hinglish. Parse their spoken command into STRICT JSON only. No markdown, no extra text.
 
@@ -220,6 +230,9 @@ router.post("/ocr", async (req, res) => {
     if (!data || !mimeType) {
       return res.status(400).json({ success: false, message: "data + mimeType required" });
     }
+    const allowedOcrMime = new Set(["image/jpeg","image/png","image/webp","application/pdf","image/jpg"]);
+    if (!allowedOcrMime.has(String(mimeType).toLowerCase())) return res.status(400).json({ success:false, message:`Unsupported mimeType: ${mimeType}` });
+    if (String(data).length > 7 * 1024 * 1024) return res.status(413).json({ success:false, message:"Payload too large (max 5MB base64)" });
     const key = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     if (!key) {
       return res.status(503).json({ success: false, message: "Gemini key not configured on server" });

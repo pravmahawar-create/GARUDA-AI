@@ -1,0 +1,7 @@
+frontend/public/images/vid_local25d_*.mp4
+frontend/public/images/asset_garuda_*.mp4
+frontend/public/audio/temp_*
+frontend/public/audio_jarvis/*
+output/
+scratch/
+*.apk

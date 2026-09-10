@@ -45,9 +45,10 @@ function buildIdempotencyKey(input) {
 }
 
 function buildPaymentLinkPayload(input, config) {
+  const MAX_AMOUNT_PAISE = 100000 * 100; // 1 lakh INR upper bound to prevent overflow/fraud
   const amountPaise = Math.round(Number(input.amount) * 100);
-  if (!Number.isSafeInteger(amountPaise) || amountPaise < 100) {
-    fail("amount must be at least 1.00 in the payment currency");
+  if (!Number.isSafeInteger(amountPaise) || amountPaise < 100 || amountPaise > MAX_AMOUNT_PAISE) {
+    fail(`amount must be between 1.00 and 100000.00 (got ${input.amount})`);
   }
   const currency = String(input.currency || "INR").toUpperCase();
   if (!/^[A-Z]{3}$/.test(currency)) fail("currency must be a valid 3-letter ISO code");
@@ -159,14 +160,8 @@ async function generatePaymentLink(input = {}, options = {}) {
 
 function verifyWebhookSignature(rawBody, signature, env = process.env) {
   const config = getProviderConfig(env);
-  if (!config.webhookSecret || String(config.webhookSecret).length < 12) {
-    fail("Razorpay webhook secret is not configured", 503);
-  }
-  if (typeof rawBody !== "string" || !rawBody) fail("rawBody is required for signature verification", 400);
-  const expected = crypto.createHmac("sha256", config.webhookSecret).update(rawBody).digest("hex");
-  const provided = String(signature || "");
-  const valid = provided.length === expected.length && crypto.timingSafeEqual(Buffer.from(provided), Buffer.from(expected));
-  if (!valid) fail("Invalid Razorpay webhook signature", 401);
+  const { verifyRazorpayHmac } = require("../utils/verifyRazorpayHmac");
+  verifyRazorpayHmac(rawBody, signature, config.webhookSecret);
   return { verified: true, mode: config.mode };
 }
 

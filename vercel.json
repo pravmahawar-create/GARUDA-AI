@@ -78,7 +78,7 @@
     },
     {
       "source": "/api/webhook/razorpay",
-      "destination": "/api/proposals?action=webhook"
+      "destination": "https://garuda-ai-xfif.onrender.com/api/webhook/razorpay"
     },
     {
       "source": "/data/proposals/:path*",

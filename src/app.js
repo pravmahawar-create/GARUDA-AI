@@ -1,21 +1,55 @@
 try { require("dotenv").config(); } catch {}
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const path = require("path");
 
 const fs = require("fs");
 
 const app = express();
 
-app.use(cors());
-app.use("/api/webhook", require("./routes/webhookRoutes"));
+// Security headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: false
+}));
+
+// Locked CORS — only GARUDA origins, expose X-Request-Id
+const ALLOWED_ORIGINS = [
+  "https://www.garudaos.in",
+  "https://garudaos.in",
+  "https://garuda-ai-v1.vercel.app",
+  "https://garuda-ai-xfif.onrender.com",
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:5173"
+];
+app.use(cors({
+  origin: function(origin, cb) {
+    if (!origin) return cb(null, true);
+    if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    return cb(null, false);
+  },
+  credentials: true,
+  exposedHeaders: ["X-Request-Id"]
+}));
+
+// Rate limiters
+const globalLimiter = rateLimit({ windowMs: 60 * 1000, max: 600, standardHeaders: true, legacyHeaders: false });
+const ttsLimiter = rateLimit({ windowMs: 60 * 1000, max: 15, standardHeaders: true, legacyHeaders: false, message: { success:false, message:"TTS rate limit exceeded (15/min)" }});
+const webhookLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, standardHeaders: true, legacyHeaders: false });
+app.use("/api/", globalLimiter);
+
+app.use("/api/webhook", webhookLimiter, require("./routes/webhookRoutes"));
 app.use(express.json({
-  limit: "50mb",
+  limit: "1mb",
   verify: (req, _res, buffer) => {
     req.rawBody = buffer.toString("utf8");
   }
 }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(express.urlencoded({ limit: "1mb", extended: true }));
 
 
 const distPath = path.join(__dirname, "..", "frontend", "dist");
@@ -40,11 +74,13 @@ const healthResponse = (req, res) => {
   try {
     const connectDB = require("./database/db");
     database = connectDB.isMongoConnected() ? "mongodb-connected" : "degraded";
-  } catch {}
+  } catch (err) { console.warn("[health] DB check failed:", String(err.message).slice(0,120)); }
+  // Prevent caching degraded health as healthy
+  if (database === "degraded") res.setHeader("Cache-Control", "no-store, must-revalidate");
   res.json({
     success: true,
     service: "GARUDA AI Backend",
-    status: "healthy",
+    status: database === "degraded" ? "degraded" : "healthy",
     database,
     timestamp: new Date().toISOString()
   });
@@ -111,8 +147,8 @@ app.use("/api/astra", require("./routes/astraRoutes"));
 // GARUDA Sovereign AI Starter Kit & Boilerplate Store API
 app.use("/api/boilerplate", require("./routes/boilerplateRoutes"));
 
-// 🎙️ Natural Indian Voice Speech Engine (Google Natural TTS stream)
-app.get("/api/audio/tts", async (req, res) => {
+// 🎙️ Natural Indian Voice Speech Engine (Google Natural TTS stream) — rate-limited
+app.get("/api/audio/tts", ttsLimiter, async (req, res) => {
   try {
     const text = (req.query.text || "").trim();
     const lang = req.query.lang || "hi";
@@ -168,6 +204,9 @@ try{
 app.get("/api/telegram", async (req, res) => {
   try {
     if (req.query.url) {
+      // Founder-only: require founder key to prevent anon webhook hijack
+      const founderCheck = require("./services/authContextService").verifyFounderCredentials(req);
+      if (!founderCheck.isFounder) return res.status(403).json({ ok:false, error:"Founder approval required to set webhook" });
       const result = await telegramBotService.setWebhook(req.query.url);
       return res.json({ ok: true, result });
     }

@@ -29,16 +29,19 @@ function getRazorpayConfig() {
 }
 
 function verifyRazorpaySignature(orderId, paymentId, signature, secret) {
-  if (!secret) return false;
+  if (!secret || !orderId || !paymentId || !signature) return false;
   const body = `${orderId}|${paymentId}`;
-  const expected = crypto.createHmac("sha256", secret).update(body).digest("hex");
-  return expected === signature;
+  const expected = crypto.createHmac("sha256", String(secret)).update(body).digest("hex");
+  if (expected.length !== String(signature).length) return false;
+  try { return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(String(signature))); } catch { return false; }
 }
 
 function verifyWebhookSignature(rawBody, signature, secret) {
   if (!secret || !rawBody || !signature) return false;
-  const expected = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
-  return expected === signature;
+  const expected = crypto.createHmac("sha256", String(secret)).update(String(rawBody)).digest("hex");
+  const provided = String(signature);
+  if (expected.length !== provided.length) return false;
+  try { return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(provided)); } catch { return false; }
 }
 
 module.exports = async function handler(req, res) {

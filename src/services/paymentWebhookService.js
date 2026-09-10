@@ -58,12 +58,8 @@ function hasValidReference(referenceId) {
 }
 
 async function verifyRazorpaySignature(rawBody, signature, secret) {
-  if (!secret || String(secret).length < 12) fail("Razorpay webhook secret is not configured", 503);
-  if (typeof rawBody !== "string" || !rawBody) fail("rawBody is required for signature verification", 400);
-  const expected = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
-  const provided = String(signature || "");
-  const valid = provided.length === expected.length && crypto.timingSafeEqual(Buffer.from(provided), Buffer.from(expected));
-  if (!valid) fail("Invalid Razorpay webhook signature", 401);
+  const { verifyRazorpayHmac } = require("../utils/verifyRazorpayHmac");
+  verifyRazorpayHmac(rawBody, signature, secret);
   return true;
 }
 

@@ -21,8 +21,6 @@ try {
   customerAuth = null;
 }
 
-const TEST_FOUNDER_KEY = "garuda_founder_secret_key_2026";
-
 function safeEqual(left, right) {
   if (!left || !right) return false;
   const leftHash = crypto.createHash("sha256").update(String(left)).digest();
@@ -78,8 +76,7 @@ function verifyFounderCredentials(req = {}) {
     process.env.GARUDA_FOUNDER_KEY,
     process.env.FOUNDER_SECRET,
     process.env.FOUNDER_SESSION_SECRET,
-    process.env.FOUNDER_ACCESS_PASSWORD,
-    TEST_FOUNDER_KEY
+    process.env.FOUNDER_ACCESS_PASSWORD
   ].filter(Boolean);
 
   // 1. Direct Secret Token Verification
@@ -108,20 +105,20 @@ function verifyFounderCredentials(req = {}) {
     }
   }
 
-  // 3. Founder email identity inside valid token payload
-  if (candidateToken && candidateToken.includes(".")) {
+  // 3. Founder email identity inside verified Supabase JWT (signature verified via Supabase)
+  // NOTE: We do NOT trust unsigned base64 decode. If SUPABASE_SECRET_KEY is configured,
+  // verify via customerAuth; otherwise require explicit founder key. Substring checks removed
+  // to prevent attacker crafting {"email":"myfounder@evil.com"}.
+  if (candidateToken && candidateToken.includes(".") && customerAuth && typeof customerAuth.authUserId === "function") {
     try {
-      const payloadStr = candidateToken.split(".")[1];
-      if (payloadStr) {
-        const payload = JSON.parse(Buffer.from(payloadStr, "base64url").toString("utf8"));
-        const email = String(payload.email || "").toLowerCase();
-        const demoEmail = String(process.env.GARUDA_DEMO_EMAIL || "demo@garudaos.in").toLowerCase();
-
-        if (email === demoEmail || email.includes("founder") || email.includes("pravmahawar")) {
-          return { isFounder: true, actorId: email, method: "supabase_jwt_founder" };
-        }
+      const userId = customerAuth.authUserId(candidateToken);
+      if (userId) {
+        // Check if Supabase user email is explicitly allowlisted founder emails
+        // We avoid substring matching; only exact demoEmail or env allowlist passes via separate lookup
+        // For now, require SUPABASE verification + explicit check handled by caller — no auto-founder here.
+        // This block intentionally does NOT auto-promote; founder must use x-founder-key.
       }
-    } catch {}
+    } catch (err) { /* jwt decode guard — must not auto-promote */ }
   }
 
   return { isFounder: false };
@@ -144,9 +141,7 @@ function verifyCustomerCredentials(req = {}) {
       userId,
       accessToken: tokens.accessToken
     };
-  } catch {
-    return null;
-  }
+  } catch (err) { console.warn("[authContext] customerAuth failed:", String(err.message).slice(0,150)); return null; }
 }
 
 /**
@@ -232,7 +227,7 @@ async function resolveUserTenantAndRole(userId, requestedTenantId = null) {
         },
         { upsert: true }
       );
-    } catch {}
+    } catch (err) { console.warn("[authContext] provision personal tenant failed:", String(err.message).slice(0,200)); }
 
     return {
       tenantId: defaultTenantId,
@@ -241,6 +236,7 @@ async function resolveUserTenantAndRole(userId, requestedTenantId = null) {
       deploymentProfile: defaultProfile
     };
   } catch (err) {
+    console.warn("[authContext] resolveUserTenantAndRole failed:", String(err.message).slice(0,200));
     return {
       tenantId: defaultTenantId,
       plan: defaultPlan,
@@ -309,7 +305,7 @@ async function resolveRequestContext(req = {}) {
           metadata: scopeMetadata
         };
       }
-    } catch {}
+    } catch (err) { console.warn("[authContext] apiKey verify failed:", String(err.message).slice(0,200)); }
   }
 
   // 2. Authenticated Customer / Tenant Member Check
