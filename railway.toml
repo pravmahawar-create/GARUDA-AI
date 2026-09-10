@@ -11,7 +11,3 @@ restartPolicyMaxRetries = 5
 [env]
 NODE_ENV = "production"
 PORT = "3000"
-GARUDA_BOUNTY_DAEMON = "true"
-GARUDA_BOUNTY_INTERVAL = "30"
-GARUDA_EMAIL_HOST = "smtp.zoho.in"
-GARUDA_EMAIL_PORT = "465"
