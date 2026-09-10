@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GARUDA — 1-Click WhatsApp Clinic Outreach Launcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #04070a;
+      --card-bg: #0b111a;
+      --border: rgba(212, 175, 55, 0.35);
+      --gold: #d4af37;
+      --gold-light: #fef08a;
+      --wa-green: #25d366;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 24px; }
+    .badge {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-family: 'Cinzel', serif;
+    }
+    h1 { font-family: 'Cinzel', serif; font-size: 26px; margin: 0 0 8px 0; color: #fff; letter-spacing: 0.05em; }
+    .subtitle { color: var(--text-muted); font-size: 13px; max-width: 620px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+    }
+    .card:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .clinic-title { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .clinic-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+    .clinic-meta strong { color: var(--text); }
+    .deal-badge {
+      display: inline-block;
+      background: rgba(37, 211, 102, 0.12);
+      border: 1px solid rgba(37, 211, 102, 0.35);
+      color: var(--wa-green);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      margin-left: 8px;
+    }
+    .message-preview {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #cbd5e1;
+      font-style: italic;
+      margin-top: 8px;
+      line-height: 1.45;
+      max-width: 600px;
+    }
+    .btn-wa {
+      background: linear-gradient(135deg, #25d366, #128c7e);
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .btn-wa:hover {
+      box-shadow: 0 6px 22px rgba(37, 211, 102, 0.5);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">GARUDA Sovereign Revenue Engine</div>
+      <h1>1-Click WhatsApp Clinic Outreach Launcher</h1>
+      <div class="subtitle">
+        6 Verified High-Intent Medical / Dental Clinics. Click each button below to launch WhatsApp Web/Desktop with pre-filled bespoke AI Receptionist pitch.
+      </div>
+    </div>
+    <div class="grid">
+      
+        <div class="card">
+          <div>
+            <div class="clinic-title">1. Medident Clinic</div>
+            <div class="clinic-meta">Doctor: <strong>Dr. Priya Joshi & Dr. Prakash Joshi</strong> • Phone: <strong>+91 7314969589</strong> <span class="deal-badge">Turnaround: 48 Hrs</span></div>
+            <div class="message-preview">
+              "Namaste Dr. Priya Joshi & Dr. Prakash Joshi, 35% prospective patients shaam 7:30 PM ke baad ya Sunday ko enquiry karte hain... GARUDA 24/7 WhatsApp AI Receptionist..."
+            </div>
+          </div>
+          <a class="btn-wa" target="_blank" href="https://wa.me/917314969589?text=*Namaste%20Dr.%20Priya%20Joshi%20%26%20Dr.%20Prakash%20Joshi*%2C%0AMain%20Praveen%20Mahawar%20bol%20raha%20hoon%20(Founder%2C%20GARUDA%20AI%20Operating%20System%20-%20www.garudaos.in).%0A%0AHumne%20Indore%2FMumbai%20ke%20premium%20dental%20clinics%20ka%20patient%20conversion%20audit%20kiya%20hai%3A%0A*Problem%3A*%2035%25%20prospective%20patients%20shaam%207%3A30%20PM%20ke%20baad%20ya%20Sunday%20ko%20enquiry%20karte%20hain%20jab%20reception%20band%20hoti%20hai.%20Unhe%20turant%20response%20na%20milne%20par%20wo%20doosre%20clinic%20chale%20jaate%20hain.%0A%0A*GARUDA%2024%2F7%20Solution%3A*%0A1.%20Clinic%20ke%20official%20WhatsApp%20par%20*24%2F7%20AI%20Receptionist*%20jo%20treatment%20pricing%20(RCT%2C%20Implants%2C%20Braces)%20explain%20karke%20seedha%20calendar%20slot%20book%20kar%20deta%20hai.%0A2.%20Reception%20ke%20liye%20*1-Tap%20Paperless%20Intake%20PWA*%20(No%20app%20download%20needed).%0A3.%20Setup%20turnaround%3A%20Sirf%2048%20hours.%0A%0A*Commercials%3A*%20Setup%20fee%20%E2%82%B935%2C000%20(50%25%20advance%20%E2%82%B917%2C500%20to%20kick%20off).%0AAapka%20live%20interactive%20demo%20yahan%20ready%20hai%3A%0A%F0%9F%91%89%20https%3A%2F%2Fwww.garudaos.in%2Fchat%3Fref%3DSTEP3_CLINIC_MEDIDENT_INDORE%0A%0AKya%20aaj%205-minute%20ka%20quick%20demo%20call%20schedule%20karein%3F%0A-%20Praveen%20Mahawar%20(Founder%2C%20GARUDA%20OS)">
+            <span>💬</span>
+            <span>Send via WhatsApp →</span>
+          </a>
+        </div>
+      
+        <div class="card">
+          <div>
+            <div class="clinic-title">2. Sanghvi's Dental Clinic</div>
+            <div class="clinic-meta">Doctor: <strong>Dr. Aashal Sanghvi</strong> • Phone: <strong>+91 9819801940</strong> <span class="deal-badge">Turnaround: 48 Hrs</span></div>
+            <div class="message-preview">
+              "Namaste Dr. Aashal Sanghvi, 35% prospective patients shaam 7:30 PM ke baad ya Sunday ko enquiry karte hain... GARUDA 24/7 WhatsApp AI Receptionist..."
+            </div>
+          </div>
+          <a class="btn-wa" target="_blank" href="https://wa.me/919819801940?text=*Namaste%20Dr.%20Aashal%20Sanghvi*%2C%0AMain%20Praveen%20Mahawar%20bol%20raha%20hoon%20(Founder%2C%20GARUDA%20AI%20Operating%20System%20-%20www.garudaos.in).%0A%0AHumne%20Indore%2FMumbai%20ke%20premium%20dental%20clinics%20ka%20patient%20conversion%20audit%20kiya%20hai%3A%0A*Problem%3A*%2035%25%20prospective%20patients%20shaam%207%3A30%20PM%20ke%20baad%20ya%20Sunday%20ko%20enquiry%20karte%20hain%20jab%20reception%20band%20hoti%20hai.%20Unhe%20turant%20response%20na%20milne%20par%20wo%20doosre%20clinic%20chale%20jaate%20hain.%0A%0A*GARUDA%2024%2F7%20Solution%3A*%0A1.%20Clinic%20ke%20official%20WhatsApp%20par%20*24%2F7%20AI%20Receptionist*%20jo%20treatment%20pricing%20(RCT%2C%20Implants%2C%20Braces)%20explain%20karke%20seedha%20calendar%20slot%20book%20kar%20deta%20hai.%0A2.%20Reception%20ke%20liye%20*1-Tap%20Paperless%20Intake%20PWA*%20(No%20app%20download%20needed).%0A3.%20Setup%20turnaround%3A%20Sirf%2048%20hours.%0A%0A*Commercials%3A*%20Setup%20fee%20%E2%82%B935%2C000%20(50%25%20advance%20%E2%82%B917%2C500%20to%20kick%20off).%0AAapka%20live%20interactive%20demo%20yahan%20ready%20hai%3A%0A%F0%9F%91%89%20https%3A%2F%2Fwww.garudaos.in%2Fchat%3Fref%3DSTEP3_CLINIC_SANGHVI_MUMBAI%0A%0AKya%20aaj%205-minute%20ka%20quick%20demo%20call%20schedule%20karein%3F%0A-%20Praveen%20Mahawar%20(Founder%2C%20GARUDA%20OS)">
+            <span>💬</span>
+            <span>Send via WhatsApp →</span>
+          </a>
+        </div>
+      
+        <div class="card">
+          <div>
+            <div class="clinic-title">3. Dr Kanupriya Advanced Dentistry</div>
+            <div class="clinic-meta">Doctor: <strong>Dr. Kanupriya</strong> • Phone: <strong>+91 9831246464</strong> <span class="deal-badge">Turnaround: 48 Hrs</span></div>
+            <div class="message-preview">
+              "Namaste Dr. Kanupriya, 35% prospective patients shaam 7:30 PM ke baad ya Sunday ko enquiry karte hain... GARUDA 24/7 WhatsApp AI Receptionist..."
+            </div>
+          </div>
+          <a class="btn-wa" target="_blank" href="https://wa.me/919831246464?text=*Namaste%20Dr.%20Kanupriya*%2C%0AMain%20Praveen%20Mahawar%20bol%20raha%20hoon%20(Founder%2C%20GARUDA%20AI%20Operating%20System%20-%20www.garudaos.in).%0A%0AHumne%20Indore%2FMumbai%20ke%20premium%20dental%20clinics%20ka%20patient%20conversion%20audit%20kiya%20hai%3A%0A*Problem%3A*%2035%25%20prospective%20patients%20shaam%207%3A30%20PM%20ke%20baad%20ya%20Sunday%20ko%20enquiry%20karte%20hain%20jab%20reception%20band%20hoti%20hai.%20Unhe%20turant%20response%20na%20milne%20par%20wo%20doosre%20clinic%20chale%20jaate%20hain.%0A%0A*GARUDA%2024%2F7%20Solution%3A*%0A1.%20Clinic%20ke%20official%20WhatsApp%20par%20*24%2F7%20AI%20Receptionist*%20jo%20treatment%20pricing%20(RCT%2C%20Implants%2C%20Braces)%20explain%20karke%20seedha%20calendar%20slot%20book%20kar%20deta%20hai.%0A2.%20Reception%20ke%20liye%20*1-Tap%20Paperless%20Intake%20PWA*%20(No%20app%20download%20needed).%0A3.%20Setup%20turnaround%3A%20Sirf%2048%20hours.%0A%0A*Commercials%3A*%20Setup%20fee%20%E2%82%B935%2C000%20(50%25%20advance%20%E2%82%B917%2C500%20to%20kick%20off).%0AAapka%20live%20interactive%20demo%20yahan%20ready%20hai%3A%0A%F0%9F%91%89%20https%3A%2F%2Fwww.garudaos.in%2Fchat%3Fref%3DSTEP3_CLINIC_KANUPRIYA_KOLKATA%0A%0AKya%20aaj%205-minute%20ka%20quick%20demo%20call%20schedule%20karein%3F%0A-%20Praveen%20Mahawar%20(Founder%2C%20GARUDA%20OS)">
+            <span>💬</span>
+            <span>Send via WhatsApp →</span>
+          </a>
+        </div>
+      
+        <div class="card">
+          <div>
+            <div class="clinic-title">4. One Dental Solutions</div>
+            <div class="clinic-meta">Doctor: <strong>Dr. Aseem Agrawal</strong> • Phone: <strong>+91 8779376034</strong> <span class="deal-badge">Turnaround: 48 Hrs</span></div>
+            <div class="message-preview">
+              "Namaste Dr. Aseem Agrawal, 35% prospective patients shaam 7:30 PM ke baad ya Sunday ko enquiry karte hain... GARUDA 24/7 WhatsApp AI Receptionist..."
+            </div>
+          </div>
+          <a class="btn-wa" target="_blank" href="https://wa.me/918779376034?text=*Namaste%20Dr.%20Aseem%20Agrawal*%2C%0AMain%20Praveen%20Mahawar%20bol%20raha%20hoon%20(Founder%2C%20GARUDA%20AI%20Operating%20System%20-%20www.garudaos.in).%0A%0AHumne%20Indore%2FMumbai%20ke%20premium%20dental%20clinics%20ka%20patient%20conversion%20audit%20kiya%20hai%3A%0A*Problem%3A*%2035%25%20prospective%20patients%20shaam%207%3A30%20PM%20ke%20baad%20ya%20Sunday%20ko%20enquiry%20karte%20hain%20jab%20reception%20band%20hoti%20hai.%20Unhe%20turant%20response%20na%20milne%20par%20wo%20doosre%20clinic%20chale%20jaate%20hain.%0A%0A*GARUDA%2024%2F7%20Solution%3A*%0A1.%20Clinic%20ke%20official%20WhatsApp%20par%20*24%2F7%20AI%20Receptionist*%20jo%20treatment%20pricing%20(RCT%2C%20Implants%2C%20Braces)%20explain%20karke%20seedha%20calendar%20slot%20book%20kar%20deta%20hai.%0A2.%20Reception%20ke%20liye%20*1-Tap%20Paperless%20Intake%20PWA*%20(No%20app%20download%20needed).%0A3.%20Setup%20turnaround%3A%20Sirf%2048%20hours.%0A%0A*Commercials%3A*%20Setup%20fee%20%E2%82%B935%2C000%20(50%25%20advance%20%E2%82%B917%2C500%20to%20kick%20off).%0AAapka%20live%20interactive%20demo%20yahan%20ready%20hai%3A%0A%F0%9F%91%89%20https%3A%2F%2Fwww.garudaos.in%2Fchat%3Fref%3DSTEP3_CLINIC_ONEDENTAL_MUMBAI%0A%0AKya%20aaj%205-minute%20ka%20quick%20demo%20call%20schedule%20karein%3F%0A-%20Praveen%20Mahawar%20(Founder%2C%20GARUDA%20OS)">
+            <span>💬</span>
+            <span>Send via WhatsApp →</span>
+          </a>
+        </div>
+      
+        <div class="card">
+          <div>
+            <div class="clinic-title">5. Indore Dental Clinic</div>
+            <div class="clinic-meta">Doctor: <strong>Chief Dental Surgeon</strong> • Phone: <strong>+91 8461966613</strong> <span class="deal-badge">Turnaround: 48 Hrs</span></div>
+            <div class="message-preview">
+              "Namaste Chief Dental Surgeon, 35% prospective patients shaam 7:30 PM ke baad ya Sunday ko enquiry karte hain... GARUDA 24/7 WhatsApp AI Receptionist..."
+            </div>
+          </div>
+          <a class="btn-wa" target="_blank" href="https://wa.me/918461966613?text=*Namaste%20Chief%20Dental%20Surgeon*%2C%0AMain%20Praveen%20Mahawar%20bol%20raha%20hoon%20(Founder%2C%20GARUDA%20AI%20Operating%20System%20-%20www.garudaos.in).%0A%0AHumne%20Indore%2FMumbai%20ke%20premium%20dental%20clinics%20ka%20patient%20conversion%20audit%20kiya%20hai%3A%0A*Problem%3A*%2035%25%20prospective%20patients%20shaam%207%3A30%20PM%20ke%20baad%20ya%20Sunday%20ko%20enquiry%20karte%20hain%20jab%20reception%20band%20hoti%20hai.%20Unhe%20turant%20response%20na%20milne%20par%20wo%20doosre%20clinic%20chale%20jaate%20hain.%0A%0A*GARUDA%2024%2F7%20Solution%3A*%0A1.%20Clinic%20ke%20official%20WhatsApp%20par%20*24%2F7%20AI%20Receptionist*%20jo%20treatment%20pricing%20(RCT%2C%20Implants%2C%20Braces)%20explain%20karke%20seedha%20calendar%20slot%20book%20kar%20deta%20hai.%0A2.%20Reception%20ke%20liye%20*1-Tap%20Paperless%20Intake%20PWA*%20(No%20app%20download%20needed).%0A3.%20Setup%20turnaround%3A%20Sirf%2048%20hours.%0A%0A*Commercials%3A*%20Setup%20fee%20%E2%82%B935%2C000%20(50%25%20advance%20%E2%82%B917%2C500%20to%20kick%20off).%0AAapka%20live%20interactive%20demo%20yahan%20ready%20hai%3A%0A%F0%9F%91%89%20https%3A%2F%2Fwww.garudaos.in%2Fchat%3Fref%3DSTEP3_CLINIC_INDORE_DENTAL%0A%0AKya%20aaj%205-minute%20ka%20quick%20demo%20call%20schedule%20karein%3F%0A-%20Praveen%20Mahawar%20(Founder%2C%20GARUDA%20OS)">
+            <span>💬</span>
+            <span>Send via WhatsApp →</span>
+          </a>
+        </div>
+      
+        <div class="card">
+          <div>
+            <div class="clinic-title">6. Giggles & Grins Kids Dentistry</div>
+            <div class="clinic-meta">Doctor: <strong>Pediatric Dental Team</strong> • Phone: <strong>+91 8072710242</strong> <span class="deal-badge">Turnaround: 48 Hrs</span></div>
+            <div class="message-preview">
+              "Namaste Pediatric Dental Team, 35% prospective patients shaam 7:30 PM ke baad ya Sunday ko enquiry karte hain... GARUDA 24/7 WhatsApp AI Receptionist..."
+            </div>
+          </div>
+          <a class="btn-wa" target="_blank" href="https://wa.me/918072710242?text=*Namaste%20Pediatric%20Dental%20Team*%2C%0AMain%20Praveen%20Mahawar%20bol%20raha%20hoon%20(Founder%2C%20GARUDA%20AI%20Operating%20System%20-%20www.garudaos.in).%0A%0AHumne%20Indore%2FMumbai%20ke%20premium%20dental%20clinics%20ka%20patient%20conversion%20audit%20kiya%20hai%3A%0A*Problem%3A*%2035%25%20prospective%20patients%20shaam%207%3A30%20PM%20ke%20baad%20ya%20Sunday%20ko%20enquiry%20karte%20hain%20jab%20reception%20band%20hoti%20hai.%20Unhe%20turant%20response%20na%20milne%20par%20wo%20doosre%20clinic%20chale%20jaate%20hain.%0A%0A*GARUDA%2024%2F7%20Solution%3A*%0A1.%20Clinic%20ke%20official%20WhatsApp%20par%20*24%2F7%20AI%20Receptionist*%20jo%20treatment%20pricing%20(RCT%2C%20Implants%2C%20Braces)%20explain%20karke%20seedha%20calendar%20slot%20book%20kar%20deta%20hai.%0A2.%20Reception%20ke%20liye%20*1-Tap%20Paperless%20Intake%20PWA*%20(No%20app%20download%20needed).%0A3.%20Setup%20turnaround%3A%20Sirf%2048%20hours.%0A%0A*Commercials%3A*%20Setup%20fee%20%E2%82%B935%2C000%20(50%25%20advance%20%E2%82%B917%2C500%20to%20kick%20off).%0AAapka%20live%20interactive%20demo%20yahan%20ready%20hai%3A%0A%F0%9F%91%89%20https%3A%2F%2Fwww.garudaos.in%2Fchat%3Fref%3DSTEP3_CLINIC_GIGGLES_MUMBAI%0A%0AKya%20aaj%205-minute%20ka%20quick%20demo%20call%20schedule%20karein%3F%0A-%20Praveen%20Mahawar%20(Founder%2C%20GARUDA%20OS)">
+            <span>💬</span>
+            <span>Send via WhatsApp →</span>
+          </a>
+        </div>
+      
+    </div>
+  </div>
+</body>
+</html>

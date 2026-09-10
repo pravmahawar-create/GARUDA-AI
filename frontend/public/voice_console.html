@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GARUDA — Authentic Indian Neural Voice Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #03070d;
+      --card-bg: #07101c;
+      --card-border: rgba(212, 175, 55, 0.35);
+      --gold: #d4af37;
+      --gold-light: #fef08a;
+      --cyan: #00f0ff;
+      --pink: #f43f5e;
+      --pink-glow: rgba(244, 63, 94, 0.4);
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.4);
+      --red: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .hud-container {
+      width: 100%;
+      max-width: 860px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 16px 60px rgba(0, 0, 0, 0.8), 0 0 50px rgba(244, 63, 94, 0.1);
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(16px);
+    }
+
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-title h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.08em;
+    }
+
+    .founder-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--gold);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(212, 175, 55, 0.08);
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+
+    /* Voice Switcher Bar */
+    .voice-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #040913;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .voice-bar-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .voice-options {
+      display: flex;
+      gap: 8px;
+    }
+
+    .voice-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .voice-btn.active.swara {
+      background: rgba(244, 63, 94, 0.18);
+      border-color: var(--pink);
+      color: #fff;
+      box-shadow: 0 0 16px var(--pink-glow);
+    }
+
+    .voice-btn.active.madhur {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: var(--green);
+      color: #fff;
+      box-shadow: 0 0 16px var(--green-glow);
+    }
+
+    /* Waveform Visualizer */
+    .visualizer-wrapper {
+      background: #020509;
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100px;
+      display: block;
+    }
+
+    .comms-status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--pink);
+    }
+
+    /* Terminal Dialogue Box */
+    .dialogue-box {
+      background: rgba(4, 9, 16, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 18px;
+      min-height: 160px;
+      max-height: 220px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-sender {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .msg-caller .msg-sender { color: var(--gold); }
+    .msg-ai.swara .msg-sender { color: var(--pink); }
+    .msg-ai.madhur .msg-sender { color: var(--green); }
+
+    .msg-content {
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+
+    .msg-caller .msg-content {
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 3px solid var(--gold);
+      color: #fff;
+    }
+
+    .msg-ai.swara .msg-content {
+      background: rgba(244, 63, 94, 0.1);
+      border-left: 3px solid var(--pink);
+      color: #fff;
+    }
+
+    .msg-ai.madhur .msg-content {
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 3px solid var(--green);
+      color: #fff;
+    }
+
+    /* Controls Grid */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .text-input {
+      width: 100%;
+      background: #040911;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .text-input:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 16px var(--pink-glow);
+    }
+
+    .btn-mic {
+      background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 0 24px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 20px var(--pink-glow);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-mic.recording {
+      background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+      animation: pulse 1s infinite alternate;
+    }
+
+    /* Preset Scenarios */
+    .presets-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip:hover {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: var(--pink);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Telegram escalation toast */
+    .alert-banner {
+      display: none;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--red);
+      color: #fca5a5;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 16px;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hud-container">
+    <!-- Header -->
+    <div class="hud-header">
+      <div class="brand-title">
+        <span style="font-size: 26px;">🦅</span>
+        <div>
+          <h1>GARUDA-VOICE</h1>
+          <div style="font-size: 11px; color: var(--gold); font-family: 'JetBrains Mono', monospace;">
+            AUTHENTIC INDIAN NEURAL TELEPHONY // RAZORPAY & TELECOM STANDARD
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="founder-tag">FOUNDER: PRAVEEN MAHAWAR</span>
+      </div>
+    </div>
+
+    <!-- Voice Model Selector Bar -->
+    <div class="voice-bar">
+      <div class="voice-bar-title">🇮🇳 INDIAN NEURAL MODELS:</div>
+      <div class="voice-options">
+        <button id="btnSwara" class="voice-btn active swara" onclick="setVoice('swara')">
+          👩 SWARA (Indian Female - Razorpay / Idea Standard)
+        </button>
+        <button id="btnMadhur" class="voice-btn madhur" onclick="setVoice('madhur')">
+          👨 MADHUR (Indian Male - Warm Tech Executive)
+        </button>
+      </div>
+    </div>
+
+    <!-- Audio Waveform Visualizer -->
+    <div class="visualizer-wrapper">
+      <canvas id="waveform"></canvas>
+      <div class="comms-status-bar">
+        <div class="status-indicator">
+          <span>●</span>
+          <span id="comms-status">SWARA NEURAL READY // CLICK BELOW TO HEAR NATURAL VOICE</span>
+        </div>
+        <div>LATENCY: &lt;200ms // 24kHz NATIVE</div>
+      </div>
+    </div>
+
+    <!-- Dialogue Output -->
+    <div class="dialogue-box" id="dialogue">
+      <div class="msg msg-ai swara" id="firstGreeting">
+        <div class="msg-sender">GARUDA-VOICE // SWARA (INDIAN NEURAL AI)</div>
+        <div class="msg-content">
+          "नमस्ते! मैं गरुड़ बोल रही हूँ — फाउंडर प्रवीण महावर जी की पर्सनल AI असिस्टेंट। प्रवीण जी अभी एक ज़रूरी काम में व्यस्त हैं। बताइये, आप किस सिलसिले में बात करना चाहते हैं?"
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Controls -->
+    <div class="controls-grid">
+      <div class="input-wrapper">
+        <input type="text" id="callerInput" class="text-input" placeholder="Kuch bhi type kijiye ya neeche diye buttons par click karke natural aawaz suniye..." />
+      </div>
+      <button id="micBtn" class="btn-mic" onclick="toggleMic()">
+        <span id="micIcon">🎙️</span>
+        <span id="micText">Speak to AI</span>
+      </button>
+    </div>
+
+    <!-- Preset Test Prompts -->
+    <div>
+      <div class="presets-label">⚡ 1-Tap Field Test Scenarios (Click to Hear 100% Natural Indian Voice):</div>
+      <div class="preset-chips">
+        <div class="chip" onclick="triggerScenario('greeting')">▶️ 1. Play Opening Greeting (नमस्ते!)</div>
+        <div class="chip" onclick="triggerScenario('casual')">📞 2. "Praveen se baat karao" (Personal Call)</div>
+        <div class="chip" onclick="triggerScenario('commercial')">🏥 3. "Clinic ke liye AI bot chahiye" (Client Deal)</div>
+        <div class="chip" onclick="triggerScenario('skeptic')">🤖 4. "Tu sach me AI hai?" (Identity Proof)</div>
+        <div class="chip" onclick="triggerScenario('spam')">🚫 5. "Credit card offer" (Spam Rejection)</div>
+      </div>
+    </div>
+
+    <!-- Alert Banner -->
+    <div id="alertBanner" class="alert-banner">
+      <span>🚨</span>
+      <span id="alertText">PRIORITY PACKET TRANSMITTED TO FOUNDER PRAVEEN MAHAWAR'S PRIVATE TELEGRAM</span>
+    </div>
+  </div>
+
+  <audio id="neuralAudioPlayer" preload="auto"></audio>
+
+  <script>
+    let currentVoice = 'swara';
+    const audioPlayer = document.getElementById('neuralAudioPlayer');
+
+    const SCENARIOS = {
+      greeting: {
+        callerText: "Call connected...",
+        swaraText: "नमस्ते! मैं गरुड़ बोल रही हूँ — फाउंडर प्रवीण महावर जी की पर्सनल AI असिस्टेंट। प्रवीण जी अभी एक ज़रूरी काम में व्यस्त हैं। बताइये, आप किस सिलसिले में बात करना चाहते हैं?",
+        madhurText: "नमस्ते! मैं गरुड़ बोल रहा हूँ — फाउंडर प्रवीण महावर का पर्सनल AI असिस्टेंट। प्रवीण अभी एक ज़रूरी काम में व्यस्त हैं। बताइये, आप किस सिलसिले में बात करना चाहते हैं?",
+        alert: null
+      },
+      casual: {
+        callerText: "प्रवीण से बात कराओ, वो कहाँ है?",
+        swaraText: "प्रवीण जी अभी एक ज़रूरी काम में व्यस्त हैं। अगर आप उनके दोस्त या पर्सनल कॉन्टैक्ट हैं, तो बस अपना नाम और छोटा सा मैसेज बता दीजिए — मैं तुरंत उनके फोन पर मैसेज भेज दूँगी।",
+        madhurText: "प्रवीण अभी एक ज़रूरी काम में व्यस्त हैं। अगर आप उनके दोस्त या पर्सनल कॉन्टैक्ट हैं, तो बस अपना नाम और छोटा सा मैसेज बता दीजिए — मैं तुरंत उनके फोन पर मैसेज भेज दूँगा।",
+        alert: "PERSONAL CALLER DETECTED // AUDIONOTE QUEUED TO FOUNDER"
+      },
+      commercial: {
+        callerText: "नमस्ते, मुझे मेरे क्लिनिक के लिए 24 घंटे चलने वाला WhatsApp AI रिसेप्शनिस्ट चाहिए",
+        swaraText: "समझ गई! क्लिनिक के लिए 24 घंटे चलने वाला AI रिसेप्शनिस्ट। मैंने आपकी बात प्रवीण जी के डैशबोर्ड पर भेज दी है। प्रवीण जी इसे थोड़ी देर में खुद देखेंगे। मैंने आपके नंबर पर हमारा डेमो लिंक भी भेज दिया है।",
+        madhurText: "समझ गया! क्लिनिक के लिए 24 घंटे चलने वाला AI रिसेप्शनिस्ट। मैंने आपकी बात प्रवीण जी के डैशबोर्ड पर भेज दी है। प्रवीण इसे थोड़ी देर में खुद देखेंगे। मैंने आपके नंबर पर हमारा डेमो लिंक भी भेज दिया है।",
+        alert: "🚨 HOT COMMERCIAL CLIENT LEAD // TELEGRAM RED ALERT SENT TO PRAVEEN!"
+      },
+      skeptic: {
+        callerText: "अरे तू सच में AI है क्या? तू किस कंपनी की बॉट है?",
+        swaraText: "जी हाँ, बिल्कुल! मैं 100% AI असिस्टेंट हूँ, जिसे प्रवीण महावर जी ने खुद बनाया है। मैं कोई कॉल सेंटर नहीं हूँ, बल्कि प्रवीण जी के कॉल्स और प्रोजेक्ट्स संभालती हूँ।",
+        madhurText: "जी हाँ, बिल्कुल! मैं 100% AI असिस्टेंट हूँ, जिसे प्रवीण महावर ने खुद बनाया है। मैं कोई कॉल सेंटर नहीं हूँ, बल्कि प्रवीण के कॉल्स और प्रोजेक्ट्स संभालता हूँ।",
+        alert: null
+      },
+      spam: {
+        callerText: "सर मेरे पास आपके लिए प्री-अप्रूव्ड क्रेडिट कार्ड का ऑफर है",
+        swaraText: "माफ़ कीजिए, यह नंबर सिर्फ काम और ज़रूरी कॉल्स के लिए है। आपका बहुत-बहुत शुक्रिया।",
+        madhurText: "माफ़ कीजिए, यह नंबर सिर्फ काम और ज़रूरी कॉल्स के लिए है। आपका बहुत-बहुत शुक्रिया।",
+        alert: null
+      }
+    };
+
+    function setVoice(voice) {
+      currentVoice = voice;
+      document.getElementById('btnSwara').className = 'voice-btn ' + (voice === 'swara' ? 'active swara' : 'swara');
+      document.getElementById('btnMadhur').className = 'voice-btn ' + (voice === 'madhur' ? 'active madhur' : 'madhur');
+
+      const firstG = document.getElementById('firstGreeting');
+      if (firstG) {
+        firstG.className = 'msg msg-ai ' + voice;
+        firstG.querySelector('.msg-sender').innerText = voice === 'swara' ? 'GARUDA-VOICE // SWARA (INDIAN FEMALE AI)' : 'GARUDA-VOICE // MADHUR (INDIAN MALE AI)';
+        firstG.querySelector('.msg-content').innerText = `"${voice === 'swara' ? SCENARIOS.greeting.swaraText : SCENARIOS.greeting.madhurText}"`;
+      }
+
+      document.getElementById('comms-status').innerText = `ACTIVE MODEL: ${voice.toUpperCase()} // READY TO PLAY`;
+    }
+
+    // Canvas Visualizer
+    const canvas = document.getElementById('waveform');
+    const ctx = canvas.getContext('2d');
+    let isSpeaking = false;
+    let waveOffset = 0;
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = 100;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawWave() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const centerY = canvas.height / 2;
+      const points = 80;
+      const width = canvas.width;
+
+      ctx.beginPath();
+      const waveColor = currentVoice === 'swara' ? '#f43f5e' : '#10b981';
+      ctx.strokeStyle = isSpeaking ? waveColor : 'rgba(255, 255, 255, 0.2)';
+      ctx.lineWidth = isSpeaking ? 3 : 1.2;
+      ctx.shadowBlur = isSpeaking ? 20 : 4;
+      ctx.shadowColor = waveColor;
+
+      for (let i = 0; i <= points; i++) {
+        const x = (i / points) * width;
+        const freq = isSpeaking ? 0.05 : 0.02;
+        const amp = isSpeaking ? (Math.sin(i * 0.25 + waveOffset) * 26 + Math.cos(i * 0.15) * 12) : Math.sin(i * 0.1 + waveOffset) * 4;
+        const y = centerY + Math.sin(x * freq + waveOffset) * amp;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      waveOffset += isSpeaking ? 0.16 : 0.03;
+      requestAnimationFrame(drawWave);
+    }
+    drawWave();
+
+    function addMessage(sender, text, isAi = false) {
+      const d = document.getElementById('dialogue');
+      const div = document.createElement('div');
+      div.className = 'msg ' + (isAi ? ('msg-ai ' + currentVoice) : 'msg-caller');
+      div.innerHTML = `
+        <div class="msg-sender">${sender}</div>
+        <div class="msg-content">"${text}"</div>
+      `;
+      d.appendChild(div);
+      d.scrollTop = d.scrollHeight;
+    }
+
+    function playNeuralAudio(scenarioKey) {
+      const audioSrc = `audio/${currentVoice}_${scenarioKey}.mp3`;
+      audioPlayer.src = audioSrc;
+      
+      document.getElementById('comms-status').innerText = `TRANSMITTING NATURAL INDIAN SPEECH [${currentVoice.toUpperCase()}]...`;
+      document.getElementById('comms-status').style.color = currentVoice === 'swara' ? '#f43f5e' : '#10b981';
+
+      audioPlayer.play().catch(e => {
+        console.warn("Audio autoplay blocked by browser, user click needed:", e);
+      });
+    }
+
+    audioPlayer.onplay = () => { isSpeaking = true; };
+    audioPlayer.onended = () => {
+      isSpeaking = false;
+      document.getElementById('comms-status').innerText = `INDIAN NEURAL COMMS READY [${currentVoice.toUpperCase()}] // STANDING BY`;
+      document.getElementById('comms-status').style.color = '#94a3b8';
+    };
+
+    function triggerScenario(key) {
+      const sc = SCENARIOS[key];
+      if (!sc) return;
+
+      if (key !== 'greeting') {
+        addMessage("CALLER // INPUT", sc.callerText, false);
+      }
+
+      const replyText = currentVoice === 'swara' ? sc.swaraText : sc.madhurText;
+      const senderLabel = currentVoice === 'swara' ? 'GARUDA-VOICE // SWARA (INDIAN FEMALE)' : 'GARUDA-VOICE // MADHUR (INDIAN MALE)';
+      addMessage(senderLabel, replyText, true);
+
+      playNeuralAudio(key);
+
+      const banner = document.getElementById('alertBanner');
+      if (sc.alert) {
+        banner.style.display = 'flex';
+        document.getElementById('alertText').innerText = sc.alert;
+      } else {
+        banner.style.display = 'none';
+      }
+    }
+
+    function processCustomText(text) {
+      if (!text || !text.trim()) return;
+      const lower = text.toLowerCase();
+
+      if (/(praveen|kahan|friend|dost|bhai)/i.test(lower)) {
+        triggerScenario('casual');
+      } else if (/(clinic|doctor|software|bot|website|price|cost|deal)/i.test(lower)) {
+        triggerScenario('commercial');
+      } else if (/(ai|sach me|bot|kaun|company)/i.test(lower)) {
+        triggerScenario('skeptic');
+      } else if (/(credit|loan|offer|card)/i.test(lower)) {
+        triggerScenario('spam');
+      } else {
+        triggerScenario('casual');
+      }
+    }
+
+    document.getElementById('callerInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = e.target.value.trim();
+        if (val) {
+          processCustomText(val);
+          e.target.value = '';
+        }
+      }
+    });
+
+    let recognition = null;
+    let isRecording = false;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRec();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'hi-IN';
+
+      recognition.onstart = () => {
+        isRecording = true;
+        document.getElementById('micBtn').classList.add('recording');
+        document.getElementById('micText').innerText = 'Listening... Speak!';
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        processCustomText(transcript);
+      };
+
+      recognition.onerror = () => stopMic();
+      recognition.onend = () => stopMic();
+    }
+
+    function toggleMic() {
+      if (!recognition) {
+        alert("Microphone recognition not supported in this browser. Please click the preset buttons below!");
+        return;
+      }
+      if (isRecording) recognition.stop();
+      else recognition.start();
+    }
+
+    function stopMic() {
+      isRecording = false;
+      document.getElementById('micBtn').classList.remove('recording');
+      document.getElementById('micText').innerText = 'Speak to AI';
+    }
+  </script>
+</body>
+</html>
