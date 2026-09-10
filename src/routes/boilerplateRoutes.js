@@ -62,7 +62,8 @@ router.post("/checkout", async (req, res) => {
     const slug = isExtended ? "garuda-sovereign-agency" : "garuda-sovereign-starter";
 
     // Multi-gateway URLs — Razorpay always ready, others only if store exists
-    const razorpayUrl = `https://razorpay.me/@garudaosincompany?amount=${amountInr}`;
+    // NOTE: Razorpay Payment Pages (razorpay.me/@...) are fixed-amount pages — do NOT append ?amount=
+    const razorpayUrl = `https://razorpay.me/@garudaosincompany`;
     const hasLemonStore = !!process.env.LEMONSQUEEZY_STORE_URL;
     const lemonSqueezyUrl = hasLemonStore
       ? `${process.env.LEMONSQUEEZY_STORE_URL}/${slug}`

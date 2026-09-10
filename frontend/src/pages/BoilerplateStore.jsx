@@ -64,9 +64,30 @@ export default function BoilerplateStore() {
     window.open("/api/boilerplate/download", "_blank");
   };
 
-  const handleBuy = (license) => {
-    const amount = license === "extended" ? 7999 : 3999;
-    window.open(`https://razorpay.me/@garudaosincompany?amount=${amount}`, "_blank");
+  const [buyLoading, setBuyLoading] = useState(null);
+
+  const handleBuy = async (license) => {
+    setBuyLoading(license);
+    try {
+      const res = await fetch("/api/boilerplate/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ license, gateway: "razorpay" }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data && data.success && data.paymentUrl) {
+        window.open(data.paymentUrl, "_blank");
+      } else {
+        // Fallback to static Razorpay page — never show raw error to user
+        window.open("https://razorpay.me/@garudaosincompany", "_blank");
+        console.warn("Checkout fallback:", data?.error || res.statusText);
+      }
+    } catch (err) {
+      window.open("https://razorpay.me/@garudaosincompany", "_blank");
+      console.warn("Checkout network fallback:", err.message);
+    } finally {
+      setBuyLoading(null);
+    }
   };
 
   return (
@@ -485,19 +506,21 @@ export default function BoilerplateStore() {
             </div>
             <button
               onClick={() => handleBuy("standard")}
+              disabled={buyLoading === "standard"}
               style={{
                 marginTop: "2rem",
                 width: "100%",
                 padding: "0.75rem",
                 borderRadius: 8,
-                background: "rgba(255, 255, 255, 0.1)",
+                background: buyLoading === "standard" ? "rgba(255,255,255,0.05)" : "rgba(255, 255, 255, 0.1)",
                 border: "1px solid rgba(255, 255, 255, 0.2)",
                 color: "#fff",
                 fontWeight: 700,
-                cursor: "pointer"
+                cursor: buyLoading === "standard" ? "wait" : "pointer",
+                opacity: buyLoading === "standard" ? 0.7 : 1,
               }}
             >
-              Get Standard License (₹3,999)
+              {buyLoading === "standard" ? "Opening Razorpay..." : "Get Standard License (₹3,999)"}
             </button>
           </div>
 
@@ -546,20 +569,22 @@ export default function BoilerplateStore() {
             </div>
             <button
               onClick={() => handleBuy("extended")}
+              disabled={buyLoading === "extended"}
               style={{
                 marginTop: "2rem",
                 width: "100%",
                 padding: "0.75rem",
                 borderRadius: 8,
-                background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
+                background: buyLoading === "extended" ? "rgba(245,215,110,0.5)" : "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
                 border: "none",
                 color: "#05070b",
                 fontWeight: 900,
-                cursor: "pointer",
-                boxShadow: "0 4px 15px rgba(245, 215, 110, 0.3)"
+                cursor: buyLoading === "extended" ? "wait" : "pointer",
+                boxShadow: "0 4px 15px rgba(245, 215, 110, 0.3)",
+                opacity: buyLoading === "extended" ? 0.7 : 1,
               }}
             >
-              Get Extended Agency License (₹7,999)
+              {buyLoading === "extended" ? "Opening Razorpay..." : "Get Extended Agency License (₹7,999)"}
             </button>
           </div>
         </section>
