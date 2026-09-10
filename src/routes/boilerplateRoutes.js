@@ -64,9 +64,9 @@ router.post("/checkout", async (req, res) => {
     // Multi-gateway URLs — Razorpay always ready, others only if store exists
     // NOTE: Razorpay Payment Pages (razorpay.me/@...) are fixed-amount pages — do NOT append ?amount=
     const razorpayUrl = `https://razorpay.me/@garudaosincompany`;
-    // Live LemonSqueezy checkout IDs — verified via garudaos.lemonsqueezy.com (Standard = da424027...)
+    // Live LemonSqueezy checkout IDs — verified 200 OK (Standard + Extended)
     const lemonStandardId = process.env.LEMONSQUEEZY_STANDARD_ID || "da424027-ab54-4f5e-9716-e0b9782d4c46";
-    const lemonExtendedId = process.env.LEMONSQUEEZY_EXTENDED_ID || null;
+    const lemonExtendedId = process.env.LEMONSQUEEZY_EXTENDED_ID || "635ff403-a016-407e-897b-1499543abaf4";
     const hasLemonStore = !!process.env.LEMONSQUEEZY_STORE_URL || true; // garudaos.lemonsqueezy.com is live (verified 200 OK)
     const lemonSqueezyUrl = isExtended && lemonExtendedId
       ? `https://garudaos.lemonsqueezy.com/checkout/buy/${lemonExtendedId}`
