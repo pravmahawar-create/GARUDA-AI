@@ -27,7 +27,7 @@ function loadStatus(hunterId){
   try{
     const p=statusPathFor(hunterId);
     if(fs.existsSync(p)) return JSON.parse(fs.readFileSync(p,"utf8"));
-  }catch{}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in genericWebScoutService.js:", String(err.message).slice(0,80)); }
   return null;
 }
 function saveStatus(hunterId, status){
@@ -35,7 +35,7 @@ function saveStatus(hunterId, status){
     const p=statusPathFor(hunterId);
     fs.mkdirSync(path.dirname(p),{recursive:true});
     fs.writeFileSync(p, JSON.stringify(status,null,2),"utf8");
-  }catch{}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in genericWebScoutService.js:", String(err.message).slice(0,80)); }
 }
 
 function buildWebQueries({type, locKey}){
@@ -105,7 +105,7 @@ function findContactUrl(html, baseUrl){
   for(const raw of links){
     const href=raw.replace(/^href="/i,"").replace(/"$/,"").trim();
     if(/(contact|about|reach|enquiry|inquiry|connect)/i.test(href)){
-      try{ return new URL(href, base).href; }catch{}
+      try{ return new URL(href, base).href; } catch (err) { console.warn("[auto-recovery] suppressed error in genericWebScoutService.js:", String(err.message).slice(0,80)); }
     }
   }
   return null;
@@ -139,7 +139,7 @@ async function searchWeb(query){
       if(Array.isArray(data.organic)){
         return data.organic.map(o=>({title:o.title, url:o.link, snippet:o.snippet||""}));
       }
-    }catch{}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in genericWebScoutService.js:", String(err.message).slice(0,80)); }
   }
   // Fallback DuckDuckGo free
   try{
@@ -150,7 +150,7 @@ async function searchWeb(query){
     let m; const out=[];
     while((m=re.exec(html))!==null){
       let u=m[1].replace(/uddg=([^&]+)/,"$1");
-      try{ const d=decodeURIComponent(u); if(/^https?:\/\//.test(d)) u=d; }catch{}
+      try{ const d=decodeURIComponent(u); if(/^https?:\/\//.test(d)) u=d; } catch (err) { console.warn("[auto-recovery] suppressed error in genericWebScoutService.js:", String(err.message).slice(0,80)); }
       out.push({title:m[2].replace(/<[^>]+>/g,"").trim(), url:u, snippet:""});
       if(out.length>=10) break;
     }

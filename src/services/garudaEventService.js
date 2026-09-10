@@ -55,7 +55,7 @@ function appendToLocalFile(event) {
     const dir = path.dirname(EVENTS_LOG_FILE);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.appendFileSync(EVENTS_LOG_FILE, JSON.stringify(event) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in garudaEventService.js:", String(err.message).slice(0,80)); }
 }
 
 class GarudaEventService extends EventEmitter {
@@ -169,7 +169,7 @@ class GarudaEventService extends EventEmitter {
     try {
       this.emit(eventType, eventEnvelope);
       this.emit("*", eventEnvelope);
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in garudaEventService.js:", String(err.message).slice(0,80)); }
 
     return {
       success: true,
@@ -296,7 +296,7 @@ class GarudaEventService extends EventEmitter {
             }
           }
         }
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in garudaEventService.js:", String(err.message).slice(0,80)); }
     }
 
     // Sort chronologically descending or ascending

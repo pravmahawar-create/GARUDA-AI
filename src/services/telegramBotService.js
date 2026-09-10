@@ -255,7 +255,7 @@ async function handleUpdate(update) {
       });
       const raw = reply && typeof reply.answer === "string" ? reply.answer.trim() : "";
       if (raw) answer = trimConciseReply(raw);
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in telegramBotService.js:", String(err.message).slice(0,80)); }
     const reply =
       answer && answer.length
         ? answer

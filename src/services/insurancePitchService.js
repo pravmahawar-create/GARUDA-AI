@@ -38,7 +38,7 @@ function loadKnowledgeChunks() {
     const raw = fs.readFileSync(STATIC_KNOWLEDGE_PATH, "utf8");
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) combined = combined.concat(parsed);
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in insurancePitchService.js:", String(err.message).slice(0,80)); }
   return combined;
 }
 

@@ -36,7 +36,7 @@ function matchPatterns(code, filePath) {
       if (findings.length > 0) {
         matches.push({ patternId: pattern.id, patternName: pattern.name, category: pattern.category, severity: pattern.severity, suggestion: pattern.suggestion, findings });
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in patternMatcher.js:", String(err.message).slice(0,80)); }
   }
   return matches;
 }

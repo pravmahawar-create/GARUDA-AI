@@ -87,7 +87,7 @@ async function runOneRound(roundNum){
     const statusPath = path.join(__dirname, "..", "..", "data", "overnight-hunters-status.json");
     fs.mkdirSync(path.dirname(statusPath), {recursive:true});
     fs.writeFileSync(statusPath, JSON.stringify({round:roundNum, creditsUsed, total: SERPER_CREDITS_TOTAL, lastRun: new Date().toISOString(), founderApprovedTonight: founderApprovedTonight()},null,2));
-  }catch{}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in overnightSerperHuntersWorker.js:", String(err.message).slice(0,80)); }
 }
 
 function startOvernightLoop(){
@@ -127,7 +127,7 @@ function getOvernightStatus(){
   try{
     const p=path.join(__dirname, "..", "..", "data", "overnight-hunters-status.json");
     if(fs.existsSync(p)) return JSON.parse(fs.readFileSync(p,"utf8"));
-  }catch{}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in overnightSerperHuntersWorker.js:", String(err.message).slice(0,80)); }
   return {running, creditsUsed, total: SERPER_CREDITS_TOTAL, founderApprovedTonight: founderApprovedTonight()};
 }
 

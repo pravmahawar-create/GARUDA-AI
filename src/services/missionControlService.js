@@ -450,7 +450,7 @@ class MissionControlService {
         `Release SHA-256: ${manifestSha256.slice(0, 16)}...\n` +
         `Status: COMPLETED (Delivery Ready)`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in missionControlService.js:", String(err.message).slice(0,80)); }
 
     const updated = await this.findMissionById(missionId);
     return {

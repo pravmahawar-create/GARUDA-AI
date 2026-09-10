@@ -36,7 +36,7 @@ function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
     if (!fs.existsSync(VIDEO_ASSETS_DIR)) fs.mkdirSync(VIDEO_ASSETS_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in videoGenerationRouter.js:", String(err.message).slice(0,80)); }
 }
 
 function loadEnv() {
@@ -55,7 +55,7 @@ function loadEnv() {
         }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in videoGenerationRouter.js:", String(err.message).slice(0,80)); }
 }
 loadEnv();
 
@@ -76,7 +76,7 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.storyboardId) storyboardsStore.set(doc.storyboardId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in videoGenerationRouter.js:", String(err.message).slice(0,80)); }
       }
     }
     if (fs.existsSync(VIDEO_JOBS_FILE)) {
@@ -85,10 +85,10 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.jobId) videoJobsStore.set(doc.jobId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in videoGenerationRouter.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in videoGenerationRouter.js:", String(err.message).slice(0,80)); }
 }
 
 loadFromDisk();
@@ -97,7 +97,7 @@ function appendDocToFile(filePath, doc) {
   ensureDirs();
   try {
     fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in videoGenerationRouter.js:", String(err.message).slice(0,80)); }
 }
 
 const DEFAULT_FETCH_TIMEOUT_MS = 25000;

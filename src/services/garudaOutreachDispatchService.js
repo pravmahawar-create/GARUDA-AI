@@ -57,7 +57,7 @@ async function findOutreachDoc(prospectId) {
         return doc;
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in garudaOutreachDispatchService.js:", String(err.message).slice(0,80)); }
   return null;
 }
 
@@ -120,7 +120,7 @@ class GarudaOutreachDispatchService {
         `Status: APPROVAL_REQUIRED\n\n` +
         `Reply /approve_outreach ${prospectId} to authorize dispatch.`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in garudaOutreachDispatchService.js:", String(err.message).slice(0,80)); }
 
     return record;
   }
@@ -341,7 +341,7 @@ class GarudaOutreachDispatchService {
         `Status: SENT\n\n` +
         `Inbound replies will automatically route to Commercial Scoping.`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in garudaOutreachDispatchService.js:", String(err.message).slice(0,80)); }
 
     return {
       success: true,
@@ -393,7 +393,7 @@ class GarudaOutreachDispatchService {
         `Response: "${record.responseText.slice(0, 200)}"\n` +
         `Status: Ready for Commercial Scoping.`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in garudaOutreachDispatchService.js:", String(err.message).slice(0,80)); }
 
     return record;
   }

@@ -165,7 +165,7 @@ router.post("/outreach/:id/response", async (req, res) => {
           { $set: { lastReplyAt: new Date().toISOString(), lastReplyText: String(req.body.message || req.body.text || "").slice(0, 2000) } }
         );
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in acquisitionRoutes.js:", String(err.message).slice(0,80)); }
     return res.status(200).json({ success: true, prospect: record });
   } catch (err) {
     const status = err.statusCode || 500;

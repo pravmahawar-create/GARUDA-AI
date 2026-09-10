@@ -1,4 +1,4 @@
-try { require("dotenv").config(); } catch {}
+try { require("dotenv").config(); } catch (err) { console.warn("[auto-recovery] suppressed error in app.js:", String(err.message).slice(0,80)); }
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -64,7 +64,7 @@ if (fs.existsSync(proposalsDataPath)) {
 }
 // GARUDA Creative Studio — serve sovereign vector + local 2.5D MP4 artifacts (website-first delivery)
 const creativeAssetsPath = path.join(__dirname, "..", "data", "creative-assets");
-if (!fs.existsSync(creativeAssetsPath)) { try { fs.mkdirSync(creativeAssetsPath, { recursive: true }); } catch {} }
+if (!fs.existsSync(creativeAssetsPath)) { try { fs.mkdirSync(creativeAssetsPath, { recursive: true }); } catch (err) { console.warn("[auto-recovery] suppressed error in app.js:", String(err.message).slice(0,80)); } }
 app.use("/data/creative-assets", express.static(creativeAssetsPath, { maxAge: "1d", etag: true }));
 app.use("/assets/creative", express.static(creativeAssetsPath, { maxAge: "1d", etag: true }));
 app.use(require("./middleware/authContextMiddleware"));

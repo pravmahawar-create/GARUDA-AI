@@ -52,7 +52,7 @@ function loadStatus() {
     if (fs.existsSync(statusPath())) {
       return JSON.parse(fs.readFileSync(statusPath(), "utf8"));
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in tutoringLeadScoutService.js:", String(err.message).slice(0,80)); }
   return null;
 }
 
@@ -60,7 +60,7 @@ function saveStatus(status) {
   try {
     fs.mkdirSync(path.dirname(statusPath()), { recursive: true });
     fs.writeFileSync(statusPath(), JSON.stringify(status, null, 2), "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in tutoringLeadScoutService.js:", String(err.message).slice(0,80)); }
 }
 
 function buildQueries(locKey) {
@@ -117,7 +117,7 @@ function findContactUrl(html, baseUrl) {
     if (/(contact|about|reach|enquiry|inquiry|connect)/.test(lower)) {
       try {
         return new URL(href, base).href;
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in tutoringLeadScoutService.js:", String(err.message).slice(0,80)); }
     }
   }
   return null;
@@ -167,7 +167,7 @@ async function searchWeb(query) {
       if(Array.isArray(data.organic)){
         return data.organic.map(o=>({title:o.title, url:o.link, snippet:o.snippet||""}));
       }
-    }catch{}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in tutoringLeadScoutService.js:", String(err.message).slice(0,80)); }
   }
   const googleKey = process.env.GOOGLE_CSE_API_KEY;
   const googleCx = process.env.GOOGLE_CSE_ID;
@@ -179,7 +179,7 @@ async function searchWeb(query) {
       if (Array.isArray(data.items)) {
         return data.items.map((i) => ({ title: i.title, url: i.link, snippet: i.snippet || "" }));
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in tutoringLeadScoutService.js:", String(err.message).slice(0,80)); }
   }
 
   const serpKey = process.env.SERPAPI_KEY;
@@ -191,7 +191,7 @@ async function searchWeb(query) {
       if (Array.isArray(data.organic_results)) {
         return data.organic_results.map((i) => ({ title: i.title, url: i.link, snippet: i.snippet || "" }));
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in tutoringLeadScoutService.js:", String(err.message).slice(0,80)); }
   }
 
   try {
@@ -199,7 +199,7 @@ async function searchWeb(query) {
     const res = await fetch(url, { headers: { "User-Agent": UA } });
     const html = await res.text();
     return parseDuckDuckGoHtml(html);
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in tutoringLeadScoutService.js:", String(err.message).slice(0,80)); }
 
   return [];
 }
@@ -215,7 +215,7 @@ function parseDuckDuckGoHtml(html) {
     try {
       const decoded = decodeURIComponent(url);
       if (/^https?:\/\//.test(decoded)) finalUrl = decoded;
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in tutoringLeadScoutService.js:", String(err.message).slice(0,80)); }
     results.push({ title, url: finalUrl, snippet: "" });
     if (results.length >= 10) break;
   }
@@ -352,7 +352,7 @@ async function runTutoringScanOnce(options = {}) {
         "GARUDA — Tutoring Scan Results",
         `Job ${jobId} done. Scanned ${scanned} tutoring sites (${locations.join(" + ")}), found ${emailsFound} contact emails. /pipeline se dekho, phir outreach preview karke send karne ka approval do.`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in tutoringLeadScoutService.js:", String(err.message).slice(0,80)); }
   }
 
   return finalStatus;

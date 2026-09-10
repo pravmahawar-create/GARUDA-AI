@@ -49,7 +49,7 @@ const CAMPAIGN_STATUS_FLOW = Object.freeze({
 const DATA_DIR_GUARD = () => {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in campaignOrchestratorService.js:", String(err.message).slice(0,80)); }
 };
 
 function loadCampaignsFromDisk() {
@@ -62,10 +62,10 @@ function loadCampaignsFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.campaignId) store.set(doc.campaignId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in campaignOrchestratorService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in campaignOrchestratorService.js:", String(err.message).slice(0,80)); }
   return store;
 }
 
@@ -73,7 +73,7 @@ function appendCampaignToFile(doc) {
   DATA_DIR_GUARD();
   try {
     fs.appendFileSync(CAMPAIGNS_FILE, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in campaignOrchestratorService.js:", String(err.message).slice(0,80)); }
 }
 
 function sha256(data) {

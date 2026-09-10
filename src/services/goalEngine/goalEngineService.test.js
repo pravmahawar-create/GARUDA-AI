@@ -28,7 +28,7 @@ function cleanup() {
   if (fs.existsSync(goalsDir)) {
     const files = fs.readdirSync(goalsDir).filter((f) => f.startsWith("goal-"));
     for (const f of files) {
-      try { fs.unlinkSync(path.join(goalsDir, f)); } catch {}
+      try { fs.unlinkSync(path.join(goalsDir, f)); } catch (err) { console.warn("[auto-recovery] suppressed error in goalEngineService.test.js:", String(err.message).slice(0,80)); }
     }
   }
 }

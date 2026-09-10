@@ -153,7 +153,7 @@ async function acceptInvitation(membershipIdOrToken, acceptingUserId) {
         status: "invited"
       });
       if (doc) found = doc.toJSON ? doc.toJSON() : doc;
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in tenantMembershipService.js:", String(err.message).slice(0,80)); }
   }
 
   if (!found) {
@@ -173,7 +173,7 @@ async function acceptInvitation(membershipIdOrToken, acceptingUserId) {
         { membershipId: found.membershipId },
         { $set: { status: "active", userId: acceptingUserId } }
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in tenantMembershipService.js:", String(err.message).slice(0,80)); }
   }
 
   return {
@@ -199,7 +199,7 @@ async function revokeTenantMember(tenantId, membershipId, requestedByUserId) {
     try {
       const doc = await TenantMembership.findOne({ tenantId, membershipId });
       if (doc) found = doc.toJSON ? doc.toJSON() : doc;
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in tenantMembershipService.js:", String(err.message).slice(0,80)); }
   }
 
   if (!found || found.tenantId !== tenantId) {
@@ -224,7 +224,7 @@ async function revokeTenantMember(tenantId, membershipId, requestedByUserId) {
         { tenantId, membershipId },
         { $set: { status: "revoked" } }
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in tenantMembershipService.js:", String(err.message).slice(0,80)); }
   }
 
   return { success: true, membershipId, status: "revoked" };

@@ -34,7 +34,7 @@ function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
     if (!fs.existsSync(AUDIO_ASSETS_DIR)) fs.mkdirSync(AUDIO_ASSETS_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in audioGenerationRouter.js:", String(err.message).slice(0,80)); }
 }
 
 const audioJobsStore = new Map();
@@ -46,7 +46,7 @@ function sha256(data) {
 
 function appendDoc(filePath, doc) {
   ensureDirs();
-  try { fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8"); } catch {}
+  try { fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8"); } catch (err) { console.warn("[auto-recovery] suppressed error in audioGenerationRouter.js:", String(err.message).slice(0,80)); }
 }
 
 const DEFAULT_FETCH_TIMEOUT_MS = 15000;
@@ -509,13 +509,13 @@ class AudioGenerationRouter {
                 observability.errorClass = "QC_FAILED_TONE_DRONE";
                 observability.errorMessage = `HF output detected as continuous tone/drone (variationScore ${qc.toneCheck?.variationScore}, zcrVar ${qc.toneCheck?.zcrVariation}) — not real musical variation. Discarded.`;
                 observability.httpStatus = hfRes.status;
-                try{ fs.unlinkSync(filePath); }catch{}
+                try{ fs.unlinkSync(filePath); } catch (err) { console.warn("[auto-recovery] suppressed error in audioGenerationRouter.js:", String(err.message).slice(0,80)); }
                 // fall through to procedural fallback — do NOT return fake music
               } else if(!qc.passed || !qc.hasVariation){
                 observability.errorClass = "QC_FAILED_NO_VARIATION";
                 observability.errorMessage = `HF output QC failed — passed:${qc.passed} hasVariation:${qc.hasVariation} variationScore:${qc.toneCheck?.variationScore}`;
                 observability.httpStatus = hfRes.status;
-                try{ fs.unlinkSync(filePath); }catch{}
+                try{ fs.unlinkSync(filePath); } catch (err) { console.warn("[auto-recovery] suppressed error in audioGenerationRouter.js:", String(err.message).slice(0,80)); }
               } else {
                 const assetHash=sha256(buf);
                 const asset={ assetId, jobId:job.jobId, fileName, filePath, fileSize:buf.length, assetHash, assetUrl:`/assets/creative/${fileName}`, publicUrl:`/assets/creative/${fileName}`, provider:"huggingface_music", classification:"REAL_AI_MUSIC", mimeType:"audio/wav", durationSec, mood, qc };
@@ -580,7 +580,7 @@ class AudioGenerationRouter {
             observability.errorClass = "REPLICATE_QC_TONE_DRONE";
             observability.errorMessage = `Replicate output detected as tone (var ${qc.toneCheck?.variationScore})`;
             observability.httpStatus = 200;
-            try{ require("fs").unlinkSync(repResult.asset.filePath); }catch{}
+            try{ require("fs").unlinkSync(repResult.asset.filePath); } catch (err) { console.warn("[auto-recovery] suppressed error in audioGenerationRouter.js:", String(err.message).slice(0,80)); }
           } else if(repResult.isRealMusic){
             repResult.observability = { ...observability, hfChain, finalStatus:"REAL_AI_MUSIC_VERIFIED", qc };
             console.log(`[AUDIO][REAL_AI_MUSIC] Replicate meta/musicgen verified — ${repResult.asset.fileName} — QC var:${qc?.toneCheck?.variationScore}`);

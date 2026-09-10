@@ -39,7 +39,7 @@ function cleanupOldWorktrees(maxAgeMs = 86400000) {
         const removeResult = removeWorktree(require("path").basename(wt.path));
         results.push({ path: wt.path, status: removeResult.success ? "removed" : "failed", age });
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in worktreeCleaner.js:", String(err.message).slice(0,80)); }
   }
   return { cleaned: results.length, results };
 }

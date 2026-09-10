@@ -61,7 +61,7 @@ function loadProspects() {
       const parsed = JSON.parse(raw);
       return { prospects: Array.isArray(parsed.prospects) ? parsed.prospects : [] };
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in insuranceLeadGenService.js:", String(err.message).slice(0,80)); }
   return { prospects: [] };
 }
 
@@ -76,7 +76,7 @@ function loadLedger() {
       const parsed = JSON.parse(fs.readFileSync(LEDGER_PATH, "utf8"));
       return { leads: Array.isArray(parsed.leads) ? parsed.leads : [] };
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in insuranceLeadGenService.js:", String(err.message).slice(0,80)); }
   return { leads: [] };
 }
 

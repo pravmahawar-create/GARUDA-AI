@@ -191,7 +191,7 @@ async function generateInvoiceForProposal(proposal, paymentType = "DEPOSIT", pay
   if (isMongoConnected()) {
     try {
       await CorporateInvoice.create(invoiceDoc);
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in corporateInvoiceService.js:", String(err.message).slice(0,80)); }
   }
 
   return invoiceDoc;
@@ -209,7 +209,7 @@ async function getInvoice(identifier) {
         $or: [{ invoiceId: identifier }, { invoiceNumber: identifier }]
       });
       if (doc) return doc.toJSON ? doc.toJSON() : doc;
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in corporateInvoiceService.js:", String(err.message).slice(0,80)); }
   }
 
   for (const inv of memoryInvoices.values()) {
@@ -238,7 +238,7 @@ async function listInvoicesForProposal(proposalId) {
         seenIds.add(item.invoiceId);
         results.push(item);
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in corporateInvoiceService.js:", String(err.message).slice(0,80)); }
   }
 
   for (const inv of memoryInvoices.values()) {

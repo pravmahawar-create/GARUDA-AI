@@ -64,7 +64,7 @@ const CHANNELS = Object.freeze({
 const DATA_DIR_GUARD = () => {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in growthStrategyService.js:", String(err.message).slice(0,80)); }
 };
 
 function loadStrategiesFromDisk() {
@@ -77,10 +77,10 @@ function loadStrategiesFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.strategyId) store.set(doc.strategyId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in growthStrategyService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in growthStrategyService.js:", String(err.message).slice(0,80)); }
   return store;
 }
 
@@ -88,7 +88,7 @@ function appendStrategyToFile(doc) {
   DATA_DIR_GUARD();
   try {
     fs.appendFileSync(STRATEGIES_FILE, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in growthStrategyService.js:", String(err.message).slice(0,80)); }
 }
 
 function sha256(data) {

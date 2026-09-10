@@ -73,7 +73,7 @@ function buildFullGraph(root = process.cwd(), forceRefresh = false) {
   };
 
   cachedGraph = graph;
-  try { saveCache(graph); } catch {}
+  try { saveCache(graph); } catch (err) { console.warn("[auto-recovery] suppressed error in repositoryIntelligenceService.js:", String(err.message).slice(0,80)); }
   return graph;
 }
 

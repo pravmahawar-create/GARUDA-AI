@@ -21,7 +21,7 @@ async function postJson(url, body, headers = {}) {
   let json = null;
   try {
     json = JSON.parse(text);
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in liveProductionSmokeTest.js:", String(err.message).slice(0,80)); }
   return { status: res.status, headers: res.headers, text, json };
 }
 
@@ -37,7 +37,7 @@ async function getUrl(url, headers = {}) {
   let json = null;
   try {
     json = JSON.parse(text);
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in liveProductionSmokeTest.js:", String(err.message).slice(0,80)); }
   return { status: res.status, headers: res.headers, text, json };
 }
 

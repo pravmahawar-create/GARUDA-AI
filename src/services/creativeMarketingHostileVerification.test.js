@@ -226,7 +226,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       );
 
       // Cleanup
-      try { fs.unlinkSync(corruptFilePath); } catch {}
+      try { fs.unlinkSync(corruptFilePath); } catch (err) { console.warn("[auto-recovery] suppressed error in creativeMarketingHostileVerification.test.js:", String(err.message).slice(0,80)); }
     });
 
     it("Rejects invalid image MIME types during physical verification", () => {
@@ -252,7 +252,7 @@ describe("🦅 GARUDA Growth & Creative Hostile Forensic Reality Test Suite", ()
       );
 
       // Cleanup
-      try { fs.unlinkSync(textFilePath); } catch {}
+      try { fs.unlinkSync(textFilePath); } catch (err) { console.warn("[auto-recovery] suppressed error in creativeMarketingHostileVerification.test.js:", String(err.message).slice(0,80)); }
     });
 
     it("Supports platform presets (1:1 Square, 9:16 Story, 16:9 Hero Banner)", () => {

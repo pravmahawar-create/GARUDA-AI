@@ -17,21 +17,21 @@ function listServices() {
 }
 
 function initAll() {
-  try { registerService("repoIntel", require("../repositoryIntelligence/repositoryIntelligenceService")); } catch {}
-  try { registerService("safeMod", require("../safeModification/safeModificationService")); } catch {}
-  try { registerService("testDiscovery", require("../testDiscovery/testDiscoveryService")); } catch {}
-  try { registerService("gitIsolation", require("../gitIsolation/gitIsolationService")); } catch {}
-  try { registerService("codeReview", require("../codeReview/codeReviewService")); } catch {}
-  try { registerService("goalEngine", require("../goalEngine/goalEngineService")); } catch {}
-  try { registerService("memory", require("../persistentMemory/memoryService")); } catch {}
-  try { registerService("selfAwareness", require("../selfAwareness/selfAwarenessService")); } catch {}
-  try { registerService("independence", require("../independence/localDecisionEngine")); } catch {}
-  try { registerService("codeGen", require("../codeGeneration/codeGenerationService")); } catch {}
-  try { registerService("router", require("../adaptiveRouter/adaptiveRouterService")); } catch {}
-  try { registerService("smartEngine", require("../smartEngine/speedEngine")); } catch {}
-  try { registerService("smartRouter", require("../smartModelRouter/smartModelRouterService")); } catch {}
-  try { registerService("independenceRules", require("../independence/ruleEngine")); } catch {}
-  try { registerService("pipeline", require("../engineeringPipeline/engineeringPipeline")); } catch {}
+  try { registerService("repoIntel", require("../repositoryIntelligence/repositoryIntelligenceService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("safeMod", require("../safeModification/safeModificationService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("testDiscovery", require("../testDiscovery/testDiscoveryService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("gitIsolation", require("../gitIsolation/gitIsolationService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("codeReview", require("../codeReview/codeReviewService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("goalEngine", require("../goalEngine/goalEngineService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("memory", require("../persistentMemory/memoryService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("selfAwareness", require("../selfAwareness/selfAwarenessService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("independence", require("../independence/localDecisionEngine")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("codeGen", require("../codeGeneration/codeGenerationService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("router", require("../adaptiveRouter/adaptiveRouterService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("smartEngine", require("../smartEngine/speedEngine")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("smartRouter", require("../smartModelRouter/smartModelRouterService")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("independenceRules", require("../independence/ruleEngine")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
+  try { registerService("pipeline", require("../engineeringPipeline/engineeringPipeline")); } catch (err) { console.warn("[auto-recovery] suppressed error in serviceRegistry.js:", String(err.message).slice(0,80)); }
   return listServices();
 }
 

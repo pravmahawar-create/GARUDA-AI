@@ -78,7 +78,7 @@ async function executeSelfDevelopmentProposal(proposal, execOptions = {}) {
     if (recentFails.length >= 3) {
       return { status: 'BLOCKED_REPEATED_FAILURE', reason: `${capId} has ${recentFails.length} recent failures, cooldown required`, proposalId: proposal.id };
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in selfDevelopmentHandoffService.js:", String(err.message).slice(0,80)); }
 
   activeProposals.add(capId);
   let pipelineResult = null;
@@ -121,7 +121,7 @@ async function executeSelfDevelopmentProposal(proposal, execOptions = {}) {
           finalStatus,
         },
       });
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in selfDevelopmentHandoffService.js:", String(err.message).slice(0,80)); }
 
     lastProposalByCapability.set(capId, { timestamp: Date.now(), outcome: finalStatus === 'VERIFIED' ? 'success' : 'failure', pipelineStatus: pipelineResult.status });
 

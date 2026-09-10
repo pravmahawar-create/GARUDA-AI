@@ -28,7 +28,7 @@ const BOT_VERSE_FILE = path.join(DATA_DIR, "bot-verse-campaigns.jsonl");
 function ensureDataDir() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in botVerseEngineService.js:", String(err.message).slice(0,80)); }
 }
 
 function computeSha256(data) {
@@ -492,10 +492,10 @@ Return strictly valid JSON only.`;
         for (const line of lines) {
           try {
             list.push(JSON.parse(line));
-          } catch {}
+          } catch (err) { console.warn("[auto-recovery] suppressed error in botVerseEngineService.js:", String(err.message).slice(0,80)); }
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in botVerseEngineService.js:", String(err.message).slice(0,80)); }
     return list.reverse(); // Newest first
   }
 }

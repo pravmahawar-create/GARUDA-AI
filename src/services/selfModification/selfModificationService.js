@@ -122,7 +122,7 @@ function selfModify(root, dryRun = false) {
       const analysis = analyzeFile(file);
       const suggestions = suggestModification(analysis);
       allSuggestions.push(...suggestions);
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in selfModificationService.js:", String(err.message).slice(0,80)); }
   }
 
   for (const sug of allSuggestions.slice(0, 5)) {

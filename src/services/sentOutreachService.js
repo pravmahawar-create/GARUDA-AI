@@ -329,7 +329,7 @@ async function ensureNiraviGovernedCorrect() {
           }
         }
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in sentOutreachService.js:", String(err.message).slice(0,80)); }
   } catch (e) {
     console.error("[sentOutreachService] ensureNiravi error", e.message);
   }
@@ -409,7 +409,7 @@ async function listSentOutreach() {
   const seen = new Set();
 
   // Ensure Niravi canonical governed record is always correct (production drift guard)
-  try { await ensureNiraviGovernedCorrect(); } catch {}
+  try { await ensureNiraviGovernedCorrect(); } catch (err) { console.warn("[auto-recovery] suppressed error in sentOutreachService.js:", String(err.message).slice(0,80)); }
 
   // 1. Prospects with dispatched status (canonical for Niravi + hotel domain)
   try {

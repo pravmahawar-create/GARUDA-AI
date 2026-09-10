@@ -42,7 +42,7 @@ class MediaEditingService {
       status: "INGESTED"
     };
     const idx = path.join(process.cwd(), "data", "creative-assets.jsonl");
-    try { fs.appendFileSync(idx, JSON.stringify({ ...record, type: "INGESTED_MEDIA" })+"\n"); } catch {}
+    try { fs.appendFileSync(idx, JSON.stringify({ ...record, type: "INGESTED_MEDIA" })+"\n"); } catch (err) { console.warn("[auto-recovery] suppressed error in mediaEditingService.js:", String(err.message).slice(0,80)); }
     return record;
   }
 
@@ -90,7 +90,7 @@ class MediaEditingService {
         if(rot === 90 || rot === -270) vfParts.unshift("transpose=1");
         else if(rot === 270 || rot === -90) vfParts.unshift("transpose=2");
         else if(rot === 180 || rot === -180) vfParts.unshift("transpose=2,transpose=2");
-      }catch{}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in mediaEditingService.js:", String(err.message).slice(0,80)); }
     }
     const hasScale = vfParts.some(v=> v.includes("scale="));
     if(!hasScale) vfParts.push("scale=1280:720:force_original_aspect_ratio=increase:flags=lanczos,crop=1280:720");
@@ -117,7 +117,7 @@ class MediaEditingService {
         const concatArgs = ["-f","concat","-safe","0","-i", listFile, "-vf", vf, "-c:v","libx264","-preset","medium","-crf","18","-pix_fmt","yuv420p","-movflags","+faststart","-y", outFile];
         await new Promise((res,rej)=> execFile(this.ffmpegPath, concatArgs, { timeout: 180000, maxBuffer: 8*1024*1024 }, (e,so,se)=> e?rej(new Error(se||e.message)):res()));
       }
-      try { fs.unlinkSync(listFile); } catch {}
+      try { fs.unlinkSync(listFile); } catch (err) { console.warn("[auto-recovery] suppressed error in mediaEditingService.js:", String(err.message).slice(0,80)); }
     } else {
       await new Promise((res,rej)=> execFile(this.ffmpegPath, args, { timeout: 180000, maxBuffer: 8*1024*1024 }, (e,so,se)=> e?rej(new Error(`FFmpeg edit failed: ${se||e.message}`)):res()));
     }
@@ -137,12 +137,12 @@ class MediaEditingService {
       status: qc.passed ? "RENDERED_VERIFIED" : "RENDERED_QC_FAILED",
       createdAt: new Date().toISOString()
     };
-    try { fs.appendFileSync(path.join(process.cwd(),"data","creative-assets.jsonl"), JSON.stringify(record)+"\n"); } catch {}
+    try { fs.appendFileSync(path.join(process.cwd(),"data","creative-assets.jsonl"), JSON.stringify(record)+"\n"); } catch (err) { console.warn("[auto-recovery] suppressed error in mediaEditingService.js:", String(err.message).slice(0,80)); }
     try {
       const pub = path.join(process.cwd(),"frontend","public","images", path.basename(outFile));
       const dir = path.dirname(pub); if(!fs.existsSync(dir)) fs.mkdirSync(dir,{recursive:true});
       fs.writeFileSync(pub, buf);
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in mediaEditingService.js:", String(err.message).slice(0,80)); }
     return record;
   }
 
@@ -188,7 +188,7 @@ class MediaEditingService {
         });
         child.on("error", ()=>{ if(settled) return; clearTimeout(to); settled=true; res(null); });
       });
-    }catch{}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in mediaEditingService.js:", String(err.message).slice(0,80)); }
 
     let pcmBuffer = null;
     try{

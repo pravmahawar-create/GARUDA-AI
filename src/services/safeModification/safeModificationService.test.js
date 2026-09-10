@@ -50,8 +50,8 @@ function test(name, fn) {
 }
 
 function cleanup() {
-  try { fs.unlinkSync(TEST_FILE); } catch {}
-  try { fs.unlinkSync(TEST_FILE + ".bak"); } catch {}
+  try { fs.unlinkSync(TEST_FILE); } catch (err) { console.warn("[auto-recovery] suppressed error in safeModificationService.test.js:", String(err.message).slice(0,80)); }
+  try { fs.unlinkSync(TEST_FILE + ".bak"); } catch (err) { console.warn("[auto-recovery] suppressed error in safeModificationService.test.js:", String(err.message).slice(0,80)); }
 }
 
 async function main() {

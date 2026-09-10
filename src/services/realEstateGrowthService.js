@@ -32,7 +32,7 @@ const BOOKINGS_FILE = path.join(DATA_DIR, "real-estate-bookings.jsonl");
 function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
 }
 
 const realEstateProjects = new Map();
@@ -49,7 +49,7 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.projectId) realEstateProjects.set(doc.projectId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
       }
     }
     if (fs.existsSync(LEADS_FILE)) {
@@ -58,7 +58,7 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.leadId) realEstateLeads.set(doc.leadId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
       }
     }
     if (fs.existsSync(VISITS_FILE)) {
@@ -67,7 +67,7 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.visitId) siteVisits.set(doc.visitId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
       }
     }
     if (fs.existsSync(BOOKINGS_FILE)) {
@@ -76,10 +76,10 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.bookingId) realEstateBookings.set(doc.bookingId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
 }
 
 loadFromDisk();
@@ -88,7 +88,7 @@ function appendDocToFile(filePath, doc) {
   ensureDirs();
   try {
     fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
 }
 
 function sha256(data) {
@@ -320,7 +320,7 @@ class RealEstateGrowthService {
         attribution: newLead.attribution,
         valueINR: budgetINR
       });
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
 
     return {
       isDuplicate: false,
@@ -667,7 +667,7 @@ class RealEstateGrowthService {
         attribution: lead.attribution,
         valueINR: agreedAmountINR
       });
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
 
     // Emit Outcome Learning Signal
     try {
@@ -682,7 +682,7 @@ class RealEstateGrowthService {
         valueINR: agreedAmountINR,
         verified: true
       });
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateGrowthService.js:", String(err.message).slice(0,80)); }
 
     return booking;
   }

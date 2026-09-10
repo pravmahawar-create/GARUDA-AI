@@ -40,7 +40,7 @@ describe("GARUDA MediaEditingService — Real Beat/BPM Analysis (sovereign async
     // Could be ANALYSIS_FAILED or ANALYZED_SOVEREIGN with fallback; must not be fabricated success
     assert.ok(["ANALYSIS_FAILED","ANALYZED_SOVEREIGN"].includes(r.status));
     if(r.status==="ANALYSIS_FAILED") assert.ok(r.reason);
-    try{ fs.unlinkSync(bad);}catch{}
+    try{ fs.unlinkSync(bad);} catch (err) { console.warn("[auto-recovery] suppressed error in mediaEditingBeatAnalysis.test.js:", String(err.message).slice(0,80)); }
   });
   it("timeout handling — large file capped via maxAnalyzeSec", async () => {
     // Use valid wav but cap maxAnalyzeSec to 1s — should still succeed quickly (<2s)
@@ -57,7 +57,7 @@ describe("GARUDA MediaEditingService — Real Beat/BPM Analysis (sovereign async
     if(r.status==="ANALYSIS_FAILED"){
       assert.ok(r.fallback || r.beats.length===0);
     }
-    try{ fs.unlinkSync(bad);}catch{}
+    try{ fs.unlinkSync(bad);} catch (err) { console.warn("[auto-recovery] suppressed error in mediaEditingBeatAnalysis.test.js:", String(err.message).slice(0,80)); }
   });
   it("successful BPM extraction is observable in beats timestamps", async () => {
     const r = await mediaEditingService.analyzeBeatsAsync(wav);

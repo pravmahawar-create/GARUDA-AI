@@ -6,7 +6,7 @@ const { parseReviewResponse, mergeReviewResults } = require("./reviewAnalyzer");
 const { aggregateReviews } = require("./reviewVerdictAggregator");
 
 let llmAdapter = null;
-try { llmAdapter = require("../../rag/llmAdapter"); } catch {}
+try { llmAdapter = require("../../rag/llmAdapter"); } catch (err) { console.warn("[auto-recovery] suppressed error in codeReviewService.js:", String(err.message).slice(0,80)); }
 
 async function reviewCode(code, filePath, options = {}) {
   const { conventions = null, useLLM = true, root = process.cwd() } = options;

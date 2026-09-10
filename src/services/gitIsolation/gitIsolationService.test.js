@@ -26,7 +26,7 @@ function test(name, fn) {
 
 function cleanup() {
   for (const taskId of TEST_TASKS) {
-    try { removeWorktree(taskId); } catch {}
+    try { removeWorktree(taskId); } catch (err) { console.warn("[auto-recovery] suppressed error in gitIsolationService.test.js:", String(err.message).slice(0,80)); }
   }
 }
 

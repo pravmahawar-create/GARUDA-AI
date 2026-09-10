@@ -28,7 +28,7 @@ function loadLedger(ledgerPath) {
       const parsed = JSON.parse(fs.readFileSync(ledgerPath, "utf8"));
       return { leads: Array.isArray(parsed.leads) ? parsed.leads : [] };
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in genericOutreachEngine.js:", String(err.message).slice(0,80)); }
   return { leads: [] };
 }
 

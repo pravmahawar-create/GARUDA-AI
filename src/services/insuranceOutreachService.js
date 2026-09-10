@@ -21,7 +21,7 @@ function loadLedger() {
       const parsed = JSON.parse(raw);
       return { leads: Array.isArray(parsed.leads) ? parsed.leads : [] };
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in insuranceOutreachService.js:", String(err.message).slice(0,80)); }
   return { leads: [] };
 }
 

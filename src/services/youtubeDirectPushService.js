@@ -1,4 +1,4 @@
-try { require("dotenv").config(); } catch {}
+try { require("dotenv").config(); } catch (err) { console.warn("[auto-recovery] suppressed error in youtubeDirectPushService.js:", String(err.message).slice(0,80)); }
 /**
  * 🦅 GARUDA AUTONOMOUS YOUTUBE DIRECT PUSH SERVICE
  * Enables 100% autonomous background video updates via official YouTube Data API v3.
@@ -48,7 +48,7 @@ class YouTubeDirectPushService {
     if (fs.existsSync(tokenFile)) {
       try {
         stored = JSON.parse(fs.readFileSync(tokenFile, "utf8"));
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in youtubeDirectPushService.js:", String(err.message).slice(0,80)); }
     }
 
     const refreshToken = stored.refreshToken || (channelProfile === "garuda" ? process.env.YOUTUBE_REFRESH_TOKEN : null) || null;
@@ -320,7 +320,7 @@ class YouTubeDirectPushService {
           targetCategoryId = getData.items[0].snippet.categoryId || categoryId;
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in youtubeDirectPushService.js:", String(err.message).slice(0,80)); }
 
     // Execute the autonomous update
     const updatePayload = {

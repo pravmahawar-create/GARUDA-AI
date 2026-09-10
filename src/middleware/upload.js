@@ -18,7 +18,7 @@ const fileFilter = (req, file, cb) => {
 const creativeStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(process.cwd(), "uploads", "creative-ingest");
-    try { require("fs").mkdirSync(uploadDir, { recursive: true }); } catch {}
+    try { require("fs").mkdirSync(uploadDir, { recursive: true }); } catch (err) { console.warn("[auto-recovery] suppressed error in upload.js:", String(err.message).slice(0,80)); }
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {

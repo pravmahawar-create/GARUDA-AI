@@ -148,7 +148,7 @@ class PersistentProposalService {
       const localData = loadLocalProposals();
       localData[proposalId] = proposal;
       saveLocalProposals(localData);
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     // 3. Persist permanently to Supabase PostgreSQL
     try {
@@ -263,7 +263,7 @@ class PersistentProposalService {
               memoryProposalCache.set(cleanId, parsed);
               return parsed;
             }
-          } catch {}
+          } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
         }
       }
     } catch (err) {
@@ -281,7 +281,7 @@ class PersistentProposalService {
           return found;
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     // 4. Check local file fallback
     try {
@@ -290,7 +290,7 @@ class PersistentProposalService {
         memoryProposalCache.set(cleanId, localData[cleanId]);
         return localData[cleanId];
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     // 4. Guaranteed seed fallback
     if (DEFAULT_PROPOSAL_SEEDS && DEFAULT_PROPOSAL_SEEDS[cleanId]) {
@@ -369,7 +369,7 @@ class PersistentProposalService {
           `Deposit Required: ${proposal.pricing?.currency || "INR"} ${Number(proposal.pricing?.depositAmount || 0).toLocaleString("en-IN")}\n\n` +
           `Awaiting deposit settlement to initialize project workspace.`
         );
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
     }
 
     return { proposal, alreadyAccepted: false };
@@ -428,7 +428,7 @@ class PersistentProposalService {
         title: proposal.project?.title || proposal.title,
         description: proposal.project?.requirements || proposal.requirements
       });
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     const activatedUniverses = proposal.activatedUniverses || (matchResult && matchResult.activatedUniverses) || ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"];
     const selectedCapabilities = proposal.selectedCapabilities || (matchResult && matchResult.selectedCapabilities) || [];
@@ -542,7 +542,7 @@ class PersistentProposalService {
           `Scope Integrity: ${proposal.scopeIntegrity || proposal.governance?.scopeHash || "Verified"}\n` +
           `Status: ACTIVE_IN_DEVELOPMENT`
         );
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
     }
 
     return {
@@ -567,7 +567,7 @@ class PersistentProposalService {
       const localData = loadLocalProjects();
       localData[projectId] = project;
       saveLocalProjects(localData);
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     try {
       const supabase = getSupabaseClient();
@@ -639,7 +639,7 @@ class PersistentProposalService {
           }
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     try {
       const localData = loadLocalProjects();
@@ -647,7 +647,7 @@ class PersistentProposalService {
         memoryProjectCache.set(cleanId, localData[cleanId]);
         return localData[cleanId];
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     return null;
   }
@@ -678,7 +678,7 @@ class PersistentProposalService {
           return proj;
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     return null;
   }
@@ -719,7 +719,7 @@ class PersistentProposalService {
           proposal.status = "DELIVERY_READY";
           await this.saveProposal(proposal);
         }
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
     }
 
     return project;
@@ -776,7 +776,7 @@ class PersistentProposalService {
           proposal.deliveryPackage = deliveryPackage;
           await this.saveProposal(proposal);
         }
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
     }
 
     return project;
@@ -805,7 +805,7 @@ class PersistentProposalService {
           proposalMap.set(prop.proposalId, prop);
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     // 3. Supabase PostgreSQL
     try {
@@ -827,11 +827,11 @@ class PersistentProposalService {
                   proposalMap.set(parsed.proposalId, parsed);
                 }
               }
-            } catch {}
+            } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
           }
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     let results = Array.from(proposalMap.values());
     if (statusFilter) {
@@ -871,7 +871,7 @@ class PersistentProposalService {
           projectMap.set(proj.projectId, proj);
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     // 3. Supabase PostgreSQL
     try {
@@ -893,11 +893,11 @@ class PersistentProposalService {
                   projectMap.set(parsed.projectId, parsed);
                 }
               }
-            } catch {}
+            } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
           }
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     let results = Array.from(projectMap.values());
     if (statusFilter) {
@@ -954,7 +954,7 @@ class PersistentProposalService {
           }
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     // 2. Local file leads
     try {
@@ -971,7 +971,7 @@ class PersistentProposalService {
           }
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in persistentProposalService.js:", String(err.message).slice(0,80)); }
 
     // Sort newest first
     leadsList.sort((a, b) => {

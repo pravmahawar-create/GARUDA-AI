@@ -10,15 +10,15 @@ const crypto = require("crypto");
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const BIBLE_FILE = path.join(DATA_DIR, "creative-bibles.jsonl");
-function ensure(){ try{ if(!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR,{recursive:true}); }catch{} }
+function ensure(){ try{ if(!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR,{recursive:true}); } catch (err) { console.warn("[auto-recovery] suppressed error in creativeBibleService.js:", String(err.message).slice(0,80)); } }
 function sha(s){ return crypto.createHash("sha256").update(JSON.stringify(s)).digest("hex"); }
 const store = new Map(); // bibleId -> doc
-function load(){ ensure(); try{ if(fs.existsSync(BIBLE_FILE)){ for(const l of fs.readFileSync(BIBLE_FILE,"utf8").split("\n").filter(Boolean)){ try{ const d=JSON.parse(l); if(d.bibleId) store.set(d.bibleId, d);}catch{}}}}catch{} }
+function load(){ ensure(); try{ if(fs.existsSync(BIBLE_FILE)){ for(const l of fs.readFileSync(BIBLE_FILE,"utf8").split("\n").filter(Boolean)){ try{ const d=JSON.parse(l); if(d.bibleId) store.set(d.bibleId, d);} catch (err) { console.warn("[auto-recovery] suppressed error in creativeBibleService.js:", String(err.message).slice(0,80)); }}}} catch (err) { console.warn("[auto-recovery] suppressed error in creativeBibleService.js:", String(err.message).slice(0,80)); } }
 load();
-function append(d){ ensure(); try{ fs.appendFileSync(BIBLE_FILE, JSON.stringify(d)+"\n"); }catch{} }
+function append(d){ ensure(); try{ fs.appendFileSync(BIBLE_FILE, JSON.stringify(d)+"\n"); } catch (err) { console.warn("[auto-recovery] suppressed error in creativeBibleService.js:", String(err.message).slice(0,80)); } }
 
 class CreativeBibleService {
-  clearForTesting(){ store.clear(); try{ if(fs.existsSync(BIBLE_FILE)) fs.unlinkSync(BIBLE_FILE);}catch{} }
+  clearForTesting(){ store.clear(); try{ if(fs.existsSync(BIBLE_FILE)) fs.unlinkSync(BIBLE_FILE);} catch (err) { console.warn("[auto-recovery] suppressed error in creativeBibleService.js:", String(err.message).slice(0,80)); } }
   createCharacterBible(input={}){
     const bibleId = `char_${Date.now()}_${crypto.randomBytes(2).toString("hex")}`;
     const doc = {

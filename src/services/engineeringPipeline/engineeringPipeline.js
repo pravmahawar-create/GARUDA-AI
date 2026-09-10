@@ -35,7 +35,7 @@ function logEvent(event) {
       safe.output = JSON.stringify(safe.output).substring(0, 500);
     }
     fs.appendFileSync(PIPELINE_LOG, JSON.stringify({ ...safe, timestamp: new Date().toISOString() }) + "\n");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 }
 
 function getLearningContext(mission) {
@@ -145,7 +145,7 @@ async function executeMission(mission, options = {}) {
     try {
       const logOutput = output === undefined ? null : (typeof output === "string" ? output : JSON.stringify(output));
       logEvent({ mission, step: name, status, output: logOutput ? String(logOutput).substring(0, 500) : null });
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
     return step;
   }
 
@@ -357,7 +357,7 @@ async function executeMission(mission, options = {}) {
           const gate = isLowRiskAutonomousAllowed({ type: "file_write", amountINR: options.amountINR, dryRun: options.dryRun }, { isWorktreeAvailable: isWorktreeExperimentation, allowLowRiskAutonomous: true, dryRun: options.dryRun, workspace });
           lowRiskAutonomousAllowed = gate.allowed;
           if (lowRiskAutonomousAllowed) addEvidence("lowrisk_gate", { allowed: true, checks: gate.checks.length });
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
         if (!founderApprovalGiven && !isWorktreeExperimentation && !options['dryRun'] && !lowRiskAutonomousAllowed) {
           addStep("founder-approval", "blocked", {
@@ -408,7 +408,7 @@ async function executeMission(mission, options = {}) {
             try {
               const backupResult = safeMod.createBackup(absPath);
               if (backupResult.success) backupPath = backupResult.backupPath;
-            } catch {}
+            } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
             // Compute diff
             const diff = safeMod.computeLineDiff(originalContent, newContent);
@@ -425,7 +425,7 @@ async function executeMission(mission, options = {}) {
               try {
                 const importCheck = safeMod.validateImports(targetAbsPath);
                 importsValid = importCheck.valid;
-              } catch {}
+              } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
               modifications.push({
                 file,
@@ -450,7 +450,7 @@ async function executeMission(mission, options = {}) {
                   importsValid,
                   backupPath,
                 });
-              } catch {}
+              } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
             } else {
               modifications.push({ file, absPath, changed: false, error: patchResult.error });
             }
@@ -492,7 +492,7 @@ async function executeMission(mission, options = {}) {
           tags: [categorizeMission(mission), "engineering", "failure"],
           context: { mission, step: "execute", routing: routing?.selected || null },
         });
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
       result.status = "failed";
       result.timeMs = Date.now() - startTime;
@@ -584,7 +584,7 @@ async function executeMission(mission, options = {}) {
             diagnosis.priorLessons = retryLearning.lessons.map(l => l.lesson).slice(0,3);
             diagnosis.learningAvailable = true;
           }
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
         // If we have a worktree and target files, attempt corrective patch
         if (workspace?.worktreePath && executionResult?.applied?.length > 0 && !dryRun) {
@@ -616,7 +616,7 @@ async function executeMission(mission, options = {}) {
                     });
                   }
                 }
-              } catch {}
+              } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
             }
 
             if (corrected > 0 && testDiscovery) {
@@ -662,7 +662,7 @@ async function executeMission(mission, options = {}) {
             tags: [diagnosis.primaryType || "unknown", "retry", categorizeMission(mission)],
             context: { mission, attempt: result.retries, failures: failures.length, diagnosis: diagnosis.summary, testsPassed: result.testsPassed, testsFailed: result.testsFailed, routing: routing?.selected || null },
           });
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
         addStep(`retry_attempt_${result.retries}`, "done", {
           diagnosis: diagnosis.summary,
@@ -705,7 +705,7 @@ async function executeMission(mission, options = {}) {
               const review = codeReview.reviewFileSync(code, reviewTarget, { root: rootDir });
               structuralReviews.push({ file: mod.file, ...review });
             }
-          } catch {}
+          } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
         }
       }
 
@@ -794,7 +794,7 @@ async function executeMission(mission, options = {}) {
     if (workspace?.method === "tempdir" && workspace?.rootDir) {
       try {
         fs.rmSync(workspace.rootDir, { recursive: true, force: true });
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
     }
 
     logEvent({ mission, finalStatus: result.status, timeMs: result.timeMs, steps: result.steps.length });
@@ -1092,7 +1092,7 @@ async function generateModification(mission, file, originalContent, routingInfo,
       const generated = codeGen.generate({ mission, file, language: "javascript" });
       if (generated?.code && generated.code !== originalContent) return generated.code;
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
   // Priority 2: Use smart engine decision tree (fast, local)
   try {
@@ -1101,7 +1101,7 @@ async function generateModification(mission, file, originalContent, routingInfo,
       const decision = smartEngine.solve({ type: "code_modification", mission, file, content: originalContent });
       if (decision?.solution) return decision.solution;
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
   // Priority 3: Try Ollama directly (async, non-blocking)
   try {
@@ -1116,10 +1116,10 @@ async function generateModification(mission, file, originalContent, routingInfo,
           resolve(extractCodeFromResponse(stdout || "", originalContent));
         }
       );
-      setTimeout(() => { try { child.kill(); } catch {} resolve(null); }, 12000);
+      setTimeout(() => { try { child.kill(); } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); } resolve(null); }, 12000);
     });
     if (newContent && newContent !== originalContent) return newContent;
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
   // No modification generated — return null (pipeline will skip this file)
   return null;
@@ -1150,10 +1150,10 @@ Fix the issue. Return ONLY the complete corrected file content.`;
           resolve(extractCodeFromResponse(stdout || "", currentContent));
         }
       );
-      setTimeout(() => { try { child.kill(); } catch {} resolve(null); }, 12000);
+      setTimeout(() => { try { child.kill(); } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); } resolve(null); }, 12000);
     });
     if (newContent && newContent !== currentContent) return newContent;
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in engineeringPipeline.js:", String(err.message).slice(0,80)); }
 
   return null;
 }

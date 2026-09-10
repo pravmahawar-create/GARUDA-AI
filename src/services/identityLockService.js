@@ -27,7 +27,7 @@ const BRAND_PROFILES_FILE = path.join(DATA_DIR, "brand-profiles.jsonl");
 function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in identityLockService.js:", String(err.message).slice(0,80)); }
 }
 
 const brandProfilesStore = new Map();
@@ -46,10 +46,10 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.brandId) brandProfilesStore.set(doc.brandId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in identityLockService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in identityLockService.js:", String(err.message).slice(0,80)); }
 }
 
 loadFromDisk();
@@ -58,7 +58,7 @@ function appendDocToFile(filePath, doc) {
   ensureDirs();
   try {
     fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in identityLockService.js:", String(err.message).slice(0,80)); }
 }
 
 class IdentityLockService {

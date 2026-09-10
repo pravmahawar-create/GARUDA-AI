@@ -24,7 +24,7 @@ function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
     if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in pdfGenerationService.js:", String(err.message).slice(0,80)); }
 }
 
 function sha256(data) {
@@ -36,7 +36,7 @@ function appendDocToFile(filePath, doc) {
   ensureDirs();
   try {
     fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in pdfGenerationService.js:", String(err.message).slice(0,80)); }
 }
 
 class PdfGenerationService {
@@ -339,7 +339,7 @@ class PdfGenerationService {
       filePath = path.join(os.tmpdir(), fileName);
       try {
         fs.writeFileSync(filePath, Buffer.from(pdfBytes));
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in pdfGenerationService.js:", String(err.message).slice(0,80)); }
     }
 
     // Deep Validation (Step 3)

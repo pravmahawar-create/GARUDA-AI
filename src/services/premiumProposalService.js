@@ -774,7 +774,7 @@ class PremiumProposalService {
 
     try {
       fs.appendFileSync(ASSETS_INDEX_FILE, JSON.stringify(artifactRecord) + "\n", "utf8");
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in premiumProposalService.js:", String(err.message).slice(0,80)); }
 
     return artifactRecord;
   }

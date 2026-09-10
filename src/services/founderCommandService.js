@@ -196,7 +196,7 @@ class FounderCommandService {
           isDbConnected = true;
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in founderCommandService.js:", String(err.message).slice(0,80)); }
 
     if (!isDbConnected) {
       isDbConnected = Boolean(
@@ -418,7 +418,7 @@ class FounderCommandService {
             newState: latest.newState
           };
         }
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in founderCommandService.js:", String(err.message).slice(0,80)); }
 
       const isBlocked = ["VALIDATION_FAILED", "BLOCKED", "EXECUTION_PENDING_WORKER"].includes(p.status);
       const blockedReason = p.status === "VALIDATION_FAILED"
@@ -1046,7 +1046,7 @@ class FounderCommandService {
       const creativeService = require("./creativeStudioService");
       const base = await creativeService.getAssetLibrary();
       let mediaCaps = null;
-      try { mediaCaps = require("./mediaEditingService").getCapabilities(); } catch {}
+      try { mediaCaps = require("./mediaEditingService").getCapabilities(); } catch (err) { console.warn("[auto-recovery] suppressed error in founderCommandService.js:", String(err.message).slice(0,80)); }
       creativeSection = { ...base, mediaEditing: mediaCaps, video2_5D: base.creativeOperations?.videoCapability || null };
     } catch (err) {
       creativeSection = { available: false, truthClassification: "UNKNOWN", error: err.message };

@@ -51,7 +51,7 @@ const CLIENTS_FILE = path.join(DATA_DIR, "client-onboarding.jsonl");
 function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in clientProductionPipelineService.js:", String(err.message).slice(0,80)); }
 }
 
 const clientsStore = new Map();
@@ -65,10 +65,10 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.clientId) clientsStore.set(doc.clientId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in clientProductionPipelineService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in clientProductionPipelineService.js:", String(err.message).slice(0,80)); }
 }
 
 loadFromDisk();
@@ -77,7 +77,7 @@ function appendDocToFile(filePath, doc) {
   ensureDirs();
   try {
     fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in clientProductionPipelineService.js:", String(err.message).slice(0,80)); }
 }
 
 class ClientProductionPipelineService {

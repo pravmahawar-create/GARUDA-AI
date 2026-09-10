@@ -252,7 +252,7 @@ async function persistCycleStatus({ missionId, status, intervalMs, summary, erro
       { $set: doc },
       { upsert: true }
     );
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in opportunityDiscoveryService.js:", String(err.message).slice(0,80)); }
 }
 
 async function runDiscoveryCycle(options = {}) {

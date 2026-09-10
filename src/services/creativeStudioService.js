@@ -39,7 +39,7 @@ function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
     if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in creativeStudioService.js:", String(err.message).slice(0,80)); }
 }
 
 const creativeBriefsStore = new Map();
@@ -54,7 +54,7 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.briefId) creativeBriefsStore.set(doc.briefId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in creativeStudioService.js:", String(err.message).slice(0,80)); }
       }
     }
     if (fs.existsSync(ASSETS_INDEX_FILE)) {
@@ -63,10 +63,10 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.assetId) creativeAssetsStore.set(doc.assetId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in creativeStudioService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in creativeStudioService.js:", String(err.message).slice(0,80)); }
 }
 
 loadFromDisk();
@@ -75,14 +75,14 @@ function appendBriefToFile(brief) {
   ensureDirs();
   try {
     fs.appendFileSync(BRIEFS_FILE, JSON.stringify(brief) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in creativeStudioService.js:", String(err.message).slice(0,80)); }
 }
 
 function appendAssetToFile(asset) {
   ensureDirs();
   try {
     fs.appendFileSync(ASSETS_INDEX_FILE, JSON.stringify(asset) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in creativeStudioService.js:", String(err.message).slice(0,80)); }
 }
 
 class CreativeStudioService {
@@ -496,7 +496,7 @@ class CreativeStudioService {
         if (asset && asset.assetId) {
           generatedAssets.push(asset);
         }
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in creativeStudioService.js:", String(err.message).slice(0,80)); }
     }
 
     const storyboard = await this.generateVideoStoryboard(briefId);

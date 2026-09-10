@@ -620,7 +620,7 @@ async function sendSmtpWithFallback(config, mail, options = {}) {
       if (options.log) {
         try {
           console.log(`[SMTP] port ${port} failed: ${err && err.message ? err.message : err}`);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in motherPlatformAuthService.js:", String(err.message).slice(0,80)); }
       }
     }
   }

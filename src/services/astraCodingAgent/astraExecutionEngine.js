@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { spawnSync } = require("child_process");
-try { require("dotenv").config(); } catch {}
+try { require("dotenv").config(); } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
 
 const AUDIT_DIR = path.join(process.cwd(), "data", "astra");
 const AUDIT_FILE = path.join(AUDIT_DIR, "audit-trail.jsonl");
@@ -27,7 +27,7 @@ class AstraExecutionEngine {
 
   _ensureAuditDir() {
     if (!fs.existsSync(AUDIT_DIR)) {
-      try { fs.mkdirSync(AUDIT_DIR, { recursive: true }); } catch {}
+      try { fs.mkdirSync(AUDIT_DIR, { recursive: true }); } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
     }
   }
 
@@ -49,7 +49,7 @@ class AstraExecutionEngine {
     };
     try {
       fs.appendFileSync(AUDIT_FILE, JSON.stringify(payload) + "\n", "utf8");
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
     return payload;
   }
 
@@ -66,13 +66,13 @@ class AstraExecutionEngine {
     }
     try {
       return JSON.parse(cleaned);
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
 
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       try {
         return JSON.parse(jsonMatch[0]);
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
     }
 
     // Regex extraction fallback for code blocks with unescaped characters
@@ -93,7 +93,7 @@ class AstraExecutionEngine {
           summary: summaryMatch ? summaryMatch[1] : "Patch synthesized"
         };
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
 
     return null;
   }
@@ -378,7 +378,7 @@ Return ONLY a valid JSON object matching this schema:
             }
           }
         }
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
     };
 
     walk(this.rootDir);
@@ -440,7 +440,7 @@ Return ONLY a valid JSON object matching this schema:
           if (check.status === 0) {
             return { valid: true, exitCode: 0, sha256: this._computeSha256(fullPath), engine: "node" };
           }
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
 
         return {
           valid: false,
@@ -585,7 +585,7 @@ Output ONLY the JSON object.`;
           const d = await res.json();
           llmResponse = d.candidates?.[0]?.content?.parts?.[0]?.text || null;
         }
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
     }
 
     if (!llmResponse) {
@@ -681,7 +681,7 @@ Output ONLY the JSON object.`;
       if (fs.existsSync(fullPath)) {
         finalCode = fs.readFileSync(fullPath, "utf8");
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
 
     const finalResult = {
       taskId,

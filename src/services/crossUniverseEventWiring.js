@@ -41,7 +41,7 @@ class CrossUniverseEventWiring {
               qualification: { tier: "HOT", score: event.metadata?.score }
             }
           });
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in crossUniverseEventWiring.js:", String(err.message).slice(0,80)); }
       }
     });
 
@@ -60,7 +60,7 @@ class CrossUniverseEventWiring {
           attribution: { utmSource: event.metadata?.attributionSource || "direct" },
           verified: true
         });
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in crossUniverseEventWiring.js:", String(err.message).slice(0,80)); }
     });
 
     // 3. Real Estate Project Created -> Auto-index in Vertical Knowledge
@@ -72,7 +72,7 @@ class CrossUniverseEventWiring {
           title: event.metadata?.projectName || event.entityId,
           content: `Real estate project ${event.metadata?.projectName} in ${event.metadata?.city} with price range ${event.metadata?.priceRange}. Total units: ${event.metadata?.totalUnits}.`
         });
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in crossUniverseEventWiring.js:", String(err.message).slice(0,80)); }
     });
 
     // 4. Creative Asset Generated -> Verify Asset File Seal
@@ -100,7 +100,7 @@ class CrossUniverseEventWiring {
             valueINR: event.metadata?.valueINR
           }
         });
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in crossUniverseEventWiring.js:", String(err.message).slice(0,80)); }
     });
 
     // 7. Campaign Lifecycle Events

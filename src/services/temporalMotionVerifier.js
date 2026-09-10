@@ -112,7 +112,7 @@ class TemporalMotionVerifier {
         fs.unlinkSync(frame0Path);
         fs.unlinkSync(frameMidPath);
         fs.unlinkSync(frameEndPath);
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in temporalMotionVerifier.js:", String(err.message).slice(0,80)); }
 
       return {
         verified: true,

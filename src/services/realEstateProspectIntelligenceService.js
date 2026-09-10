@@ -33,7 +33,7 @@ const PROSPECTS_FILE = path.join(DATA_DIR, "real-estate-prospects.jsonl");
 function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateProspectIntelligenceService.js:", String(err.message).slice(0,80)); }
 }
 
 const prospectsStore = new Map();
@@ -49,10 +49,10 @@ function loadFromDisk() {
           if (doc && doc.prospectId && !doc.isTestFixture) {
             prospectsStore.set(doc.prospectId, doc);
           }
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateProspectIntelligenceService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateProspectIntelligenceService.js:", String(err.message).slice(0,80)); }
 }
 
 loadFromDisk();
@@ -63,7 +63,7 @@ function appendDocToFile(filePath, doc) {
   ensureDirs();
   try {
     fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in realEstateProspectIntelligenceService.js:", String(err.message).slice(0,80)); }
 }
 
 const PROSPECT_LIFECYCLE_STAGES = Object.freeze({

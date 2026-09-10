@@ -41,7 +41,7 @@ async function persistProposalDoc(proposal) {
   proposalStore.set(proposal.proposalId, proposal);
   try {
     await persistentProposalService.saveProposal(proposal);
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in clientProposalService.js:", String(err.message).slice(0,80)); }
   try {
     if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
       await mongoose.connection.db.collection("clientproposals").updateOne(
@@ -50,7 +50,7 @@ async function persistProposalDoc(proposal) {
         { upsert: true }
       );
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in clientProposalService.js:", String(err.message).slice(0,80)); }
 }
 
 async function findProposalDoc(proposalId) {
@@ -61,7 +61,7 @@ async function findProposalDoc(proposalId) {
       proposalStore.set(proposalId, persistent);
       return persistent;
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in clientProposalService.js:", String(err.message).slice(0,80)); }
   try {
     if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
       const doc = await mongoose.connection.db.collection("clientproposals").findOne({ proposalId });
@@ -70,7 +70,7 @@ async function findProposalDoc(proposalId) {
         return doc;
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in clientProposalService.js:", String(err.message).slice(0,80)); }
   return null;
 }
 
@@ -283,7 +283,7 @@ class ClientProposalService {
         `Governance: ${proposal.governance.policyTier} (${founderApproved ? "Approved" : "Needs Review"})\n\n` +
         `Portal URL: ${proposal.publicUrl}`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in clientProposalService.js:", String(err.message).slice(0,80)); }
 
     return proposal;
   }
@@ -362,7 +362,7 @@ class ClientProposalService {
         `Deposit Required: ${proposal.pricing.currency} ${proposal.pricing.depositAmount.toLocaleString("en-IN")}\n\n` +
         `Awaiting Deposit Payment to trigger automated mission build.`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in clientProposalService.js:", String(err.message).slice(0,80)); }
 
     return proposal;
   }
@@ -472,7 +472,7 @@ class ClientProposalService {
         `Mission ID: ${proposal.missionId || "queued"}\n` +
         `Status: IN_EXECUTION (Phase 1-8 Governed Workers Active)`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in clientProposalService.js:", String(err.message).slice(0,80)); }
 
     return {
       success: true,
@@ -607,7 +607,7 @@ class ClientProposalService {
         `Final Payment ID: ${paymentInput.paymentId}\n` +
         `Project State: CLOSED & FULLY DELIVERED.`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in clientProposalService.js:", String(err.message).slice(0,80)); }
 
     return proposal;
   }

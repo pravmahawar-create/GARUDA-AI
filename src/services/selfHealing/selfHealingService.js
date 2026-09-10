@@ -77,7 +77,7 @@ function cleanupTempFiles() {
   if (fs.existsSync(tmpDir)) {
     const files = fs.readdirSync(tmpDir);
     for (const f of files) {
-      try { fs.unlinkSync(path.join(tmpDir, f)); count++; } catch {}
+      try { fs.unlinkSync(path.join(tmpDir, f)); count++; } catch (err) { console.warn("[auto-recovery] suppressed error in selfHealingService.js:", String(err.message).slice(0,80)); }
     }
   }
   const backupDir = path.join(process.cwd(), "data", "backups");
@@ -85,7 +85,7 @@ function cleanupTempFiles() {
     const files = fs.readdirSync(backupDir).sort();
     const toRemove = files.slice(0, Math.floor(files.length / 2));
     for (const f of toRemove) {
-      try { fs.unlinkSync(path.join(backupDir, f)); count++; } catch {}
+      try { fs.unlinkSync(path.join(backupDir, f)); count++; } catch (err) { console.warn("[auto-recovery] suppressed error in selfHealingService.js:", String(err.message).slice(0,80)); }
     }
   }
   return count;

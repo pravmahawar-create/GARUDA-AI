@@ -24,7 +24,7 @@ function loadJson(file) {
       const parsed = JSON.parse(fs.readFileSync(file, "utf8"));
       return parsed;
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in genericLeadGenEngine.js:", String(err.message).slice(0,80)); }
   return null;
 }
 

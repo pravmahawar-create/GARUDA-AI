@@ -20,19 +20,19 @@ function buildContext(command, args) {
     ctx.lessons = status.performance.total || 0;
     ctx.healthStatus = status.health.overallStatus;
     ctx.capabilityList = selfAwareness.listCapabilities();
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in garudaCli.js:", String(err.message).slice(0,80)); }
 
   try {
     const memory = require("../services/persistentMemory/memoryService");
     const stats = memory.getStats();
     ctx.memoryStats = { experiences: stats.experiences.total, lessons: stats.lessons.total, total: stats.totalMemories };
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in garudaCli.js:", String(err.message).slice(0,80)); }
 
   try {
     const health = require("../services/selfAwareness/healthMonitor");
     const h = health.checkHealth();
     ctx.health = { disk: h.disk.status, diskUsage: h.disk.usagePercent, memory: h.memory.status, memoryUsage: h.memory.usagePercent, process: h.process.status, overall: h.overallStatus };
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in garudaCli.js:", String(err.message).slice(0,80)); }
 
   if (command === "review" && args[0]) {
     try {
@@ -74,7 +74,7 @@ function buildContext(command, args) {
         const content = fs.readFileSync(filePath, "utf8");
         ctx.fileInfo = { lines: content.split("\n").length, type: path.extname(args[0]), exports: (content.match(/module\.exports/g) || []).length };
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in garudaCli.js:", String(err.message).slice(0,80)); }
   }
 
   if (command === "generate" && args[0]) {

@@ -22,7 +22,7 @@ const CALENDARS_FILE = path.join(DATA_DIR, "marketing-calendars.jsonl");
 function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in digitalMarketingOsService.js:", String(err.message).slice(0,80)); }
 }
 
 const calendarsStore = new Map();
@@ -36,10 +36,10 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.calendarId) calendarsStore.set(doc.calendarId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in digitalMarketingOsService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in digitalMarketingOsService.js:", String(err.message).slice(0,80)); }
 }
 
 loadFromDisk();
@@ -48,7 +48,7 @@ function appendDocToFile(filePath, doc) {
   ensureDirs();
   try {
     fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in digitalMarketingOsService.js:", String(err.message).slice(0,80)); }
 }
 
 class DigitalMarketingOsService {

@@ -1,4 +1,4 @@
-try { require("dotenv").config(); } catch {}
+try { require("dotenv").config(); } catch (err) { console.warn("[auto-recovery] suppressed error in localInferenceGateway.js:", String(err.message).slice(0,80)); }
 const express = require("express");
 const http = require("http");
 

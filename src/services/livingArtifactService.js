@@ -16,7 +16,7 @@ function getArtifactsFile() {
 const LIVING_ARTIFACTS_FILE = getArtifactsFile();
 
 function ensureDir() {
-  try { if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true }); } catch {}
+  try { if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true }); } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
 }
 
 const stores = new Map();
@@ -31,7 +31,7 @@ const livingStore = getStore();
 let LivingArtifactModel = null;
 try {
   LivingArtifactModel = require("../models/LivingArtifact");
-} catch {}
+} catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
 function isDbAvailable() {
   try {
     const mongoose = require("mongoose");
@@ -46,16 +46,16 @@ function loadFromDisk() {
     if (fs.existsSync(LIVING_ARTIFACTS_FILE)) {
       const lines = fs.readFileSync(LIVING_ARTIFACTS_FILE, "utf8").split("\n").filter(Boolean);
       for (const l of lines) {
-        try { const doc = JSON.parse(l); if (doc && doc.artifactId) livingStore.set(doc.artifactId, doc); } catch {}
+        try { const doc = JSON.parse(l); if (doc && doc.artifactId) livingStore.set(doc.artifactId, doc); } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
 }
 loadFromDisk();
 
 function appendDoc(doc) {
   ensureDir();
-  try { fs.appendFileSync(LIVING_ARTIFACTS_FILE, JSON.stringify(doc) + "\n", "utf8"); } catch {}
+  try { fs.appendFileSync(LIVING_ARTIFACTS_FILE, JSON.stringify(doc) + "\n", "utf8"); } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
 }
 
 function anticipateQuestions({ artifactType, audience, purpose, keyClaims, risks }) {
@@ -167,7 +167,7 @@ function createLivingArtifactContext(input = {}) {
   if (isDbAvailable()) {
     try {
       LivingArtifactModel.create({ ...doc, createdAt: new Date(doc.createdAt), updatedAt: new Date(doc.updatedAt) }).catch(() => {});
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
   }
   // Also persist to persistentMemory for continuity
   try {
@@ -179,7 +179,7 @@ function createLivingArtifactContext(input = {}) {
       tags: ["living_artifact", artifactType, audience],
       context: { artifactId, artifactType, purpose, audience, projectId: doc.projectId, briefId: doc.briefId, sessionId: doc.sessionId, continuityScopeId: doc.continuityScopeId, sourceArtifactId: doc.sourceArtifactId, rootArtifactId: doc.rootArtifactId }
     });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
   return doc;
 }
 
@@ -239,7 +239,7 @@ function getLivingArtifactContext(artifactId) {
     const rec = memory.recall({ query: String(artifactId), limit: 5 }) || [];
     const found = rec.find(r => r.context && r.context.artifactId === String(artifactId));
     if (found) return found.context;
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
   return null;
 }
 
@@ -306,7 +306,7 @@ function getMostRecentCreativeArtifactScoped(filter = {}) {
           if (!fileMostRecent || new Date(doc.createdAt) > new Date(fileMostRecent.createdAt)) {
             fileMostRecent = doc;
           }
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
       }
       if (fileMostRecent) {
         // Hydrate into memory for future calls
@@ -314,7 +314,7 @@ function getMostRecentCreativeArtifactScoped(filter = {}) {
         return fileMostRecent;
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
   // DB fallback is async — for sync path, return null if not found in memory/file
   // Async DB check is available via getMostRecentCreativeArtifactScopedAsync
   return null;
@@ -342,7 +342,7 @@ async function getMostRecentCreativeArtifactScopedAsync(filter = {}) {
       livingStore.set(doc.artifactId, doc);
       return doc;
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
   return null;
 }
 
@@ -358,10 +358,10 @@ function getArtifactLineage(artifactId) {
           try {
             const doc = JSON.parse(line);
             if (doc.artifactId === artifactId) { current = doc; break; }
-          } catch {}
+          } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
   }
   const visited = new Set();
   while (current && !visited.has(current.artifactId)) {
@@ -378,10 +378,10 @@ function getArtifactLineage(artifactId) {
             try {
               const doc = JSON.parse(line);
               if (doc.artifactId === parentId) { parent = doc; break; }
-            } catch {}
+            } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
           }
         }
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
     }
     current = parent;
   }
@@ -474,10 +474,10 @@ function listLivingArtifacts(filter = {}) {
           else if (briefId && doc.briefId && doc.briefId === briefId) matches = true;
           if (!matches) continue;
           results.push(doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
   results.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const lim = Math.max(1, Math.min(Number(limit) || 20, 100));
   return results.slice(0, lim);
@@ -485,10 +485,10 @@ function listLivingArtifacts(filter = {}) {
 
 function clearForTesting() {
   livingStore.clear();
-  try { if (fs.existsSync(LIVING_ARTIFACTS_FILE)) fs.writeFileSync(LIVING_ARTIFACTS_FILE, "", "utf8"); } catch {}
+  try { if (fs.existsSync(LIVING_ARTIFACTS_FILE)) fs.writeFileSync(LIVING_ARTIFACTS_FILE, "", "utf8"); } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
   // Also clear DB if available
   if (isDbAvailable()) {
-    try { LivingArtifactModel.deleteMany({}).then(() => {}).catch(() => {}); } catch {}
+    try { LivingArtifactModel.deleteMany({}).then(() => {}).catch(() => {}); } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.js:", String(err.message).slice(0,80)); }
   }
 }
 

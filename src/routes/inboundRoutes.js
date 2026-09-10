@@ -110,7 +110,7 @@ router.post("/project-scope", async (req, res) => {
       if (mongoose.connection && mongoose.connection.readyState === 1 && mongoose.connection.db) {
         await mongoose.connection.db.collection("inboundleads").insertOne(leadRecord);
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in inboundRoutes.js:", String(err.message).slice(0,80)); }
 
     try {
       const fs = require("fs");
@@ -121,7 +121,7 @@ router.post("/project-scope", async (req, res) => {
       existing.leads.push(leadRecord);
       fs.mkdirSync(path.dirname(file), { recursive: true });
       fs.writeFileSync(file, JSON.stringify(existing, null, 2), "utf8");
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in inboundRoutes.js:", String(err.message).slice(0,80)); }
 
     // Notify Founder Telegram of incoming scoped lead with rich attribution
     try {
@@ -129,7 +129,7 @@ router.post("/project-scope", async (req, res) => {
         ...leadRecord,
         message: `Project Scope Form: ${cleanRequirements.slice(0, 140)} (Estimated: ₹${estimatedINR.toLocaleString("en-IN")})`
       });
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in inboundRoutes.js:", String(err.message).slice(0,80)); }
 
     return res.status(201).json({
       success: true,

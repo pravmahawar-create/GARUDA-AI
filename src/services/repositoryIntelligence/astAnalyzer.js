@@ -2,7 +2,7 @@ const fs = require("fs");
 let parser = null;
 try {
   parser = require("@babel/parser");
-} catch {}
+} catch (err) { console.warn("[auto-recovery] suppressed error in astAnalyzer.js:", String(err.message).slice(0,80)); }
 
 const PARSE_OPTIONS = {
   sourceType: "unambiguous",
@@ -168,7 +168,7 @@ function analyzeFile(filePath) {
   let ast;
   try {
     if (!parser) {
-      try { parser = require("@babel/parser"); } catch {}
+      try { parser = require("@babel/parser"); } catch (err) { console.warn("[auto-recovery] suppressed error in astAnalyzer.js:", String(err.message).slice(0,80)); }
     }
     if (!parser || typeof parser.parse !== "function") {
       return { path: filePath, error: "PARSER_UNAVAILABLE", requires: [], imports: [], exports: [], moduleExports: [], functions: [], classes: [] };

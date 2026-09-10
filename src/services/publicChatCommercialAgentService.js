@@ -248,7 +248,7 @@ class PublicChatCommercialAgentService {
     let estimate = { estimatedINR: 25000, estimatedUSD: 300 };
     try {
       estimate = revenueValueModel.estimateValueFromEvidence(req.combinedText, { valueType: "estimated_project_value" }) || estimate;
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in publicChatCommercialAgentService.js:", String(err.message).slice(0,80)); }
     const totalAmount = req.budget || (currency === "INR" ? (estimate.estimatedINR || 25000) : (estimate.estimatedUSD || 300));
     const totalINR = currency === "INR" ? totalAmount : convertToINR(totalAmount, currency);
     const depositAmount = Math.round(totalAmount * 0.5);
@@ -290,7 +290,7 @@ class PublicChatCommercialAgentService {
         `Qualification: ${qualification}\n` +
         (proposal ? `Proposal Link: ${proposal.publicUrl}` : "Status: Scoping in conversation")
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in publicChatCommercialAgentService.js:", String(err.message).slice(0,80)); }
 
     const replyLines = [
       `### ◈ GARUDA Architectural Scope: ${req.platform}`,

@@ -260,7 +260,7 @@ class ClinicCloserAgentService {
           profile
         };
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in clinicCloserAgentService.js:", String(err.message).slice(0,80)); }
 
     // Fallback if LLM unavailable
     return {

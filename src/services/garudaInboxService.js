@@ -14,7 +14,7 @@ const DOMAINS = ["hotel", "restaurant", "gym", "education", "clinic", "insurance
 function loadJson(file) {
   try {
     if (fs.existsSync(file)) return JSON.parse(fs.readFileSync(file, "utf8"));
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in garudaInboxService.js:", String(err.message).slice(0,80)); }
   return null;
 }
 
@@ -89,7 +89,7 @@ async function pollInbox(options = {}) {
     try {
       const status = await client.status("INBOX", { unseen: true });
       unseen = Number(status.unseen || 0);
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in garudaInboxService.js:", String(err.message).slice(0,80)); }
 
     const maxToFetch = Math.min(Number(options.maxEmails) || 25, Math.max(unseen, 25));
     if (unseen === 0) {
@@ -144,7 +144,7 @@ async function pollInbox(options = {}) {
         seenUids.push(message.uid);
         processed.push(record);
         if (options.onMessage) {
-          try { options.onMessage(record); } catch {}
+          try { options.onMessage(record); } catch (err) { console.warn("[auto-recovery] suppressed error in garudaInboxService.js:", String(err.message).slice(0,80)); }
         }
       }
 
@@ -152,7 +152,7 @@ async function pollInbox(options = {}) {
       for (const uid of seenUids) {
         try {
           await client.messageFlagsAdd(uid, ["\\Seen"], { uid: true });
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in garudaInboxService.js:", String(err.message).slice(0,80)); }
       }
     } finally {
       lock.release();
@@ -160,7 +160,7 @@ async function pollInbox(options = {}) {
     await client.logout();
     return { ok: true, processed };
   } catch (error) {
-    try { await client.logout(); } catch {}
+    try { await client.logout(); } catch (err) { console.warn("[auto-recovery] suppressed error in garudaInboxService.js:", String(err.message).slice(0,80)); }
     return { ok: false, error: error && error.message ? error.message : String(error), processed };
   }
 }
@@ -297,7 +297,7 @@ async function scanBounces(options = {}) {
       if (!(options.delete === false) && deleteUids.length) {
         try {
           await client.messageDelete(deleteUids, { uid: true });
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in garudaInboxService.js:", String(err.message).slice(0,80)); }
       }
     } finally {
       lock.release();
@@ -305,7 +305,7 @@ async function scanBounces(options = {}) {
     }
     return { ok: true, bounced, deleted: deleteUids.length };
   } catch (error) {
-    try { await client.logout(); } catch {}
+    try { await client.logout(); } catch (err) { console.warn("[auto-recovery] suppressed error in garudaInboxService.js:", String(err.message).slice(0,80)); }
     return { ok: false, error: error && error.message ? error.message : String(error), bounced };
   }
 }

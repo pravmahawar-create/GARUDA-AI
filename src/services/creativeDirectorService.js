@@ -17,7 +17,7 @@ class CreativeDirectorService {
       industry: input.industry||"Film",
       location: input.location||null,
     });
-    try{ await creativeStudioService.generateConcept(brief.briefId);}catch{}
+    try{ await creativeStudioService.generateConcept(brief.briefId);} catch (err) { console.warn("[auto-recovery] suppressed error in creativeDirectorService.js:", String(err.message).slice(0,80)); }
     // Build bibles if supplied
     let characterBible=null, worldBible=null, visualBible=null;
     if(input.character) characterBible = creativeBibleService.createCharacterBible({ projectId: brief.projectId||brief.briefId, ...input.character, name: input.character.name||input.character.characterName });

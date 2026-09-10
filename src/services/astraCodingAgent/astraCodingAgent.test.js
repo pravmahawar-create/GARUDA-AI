@@ -35,7 +35,7 @@ test("GARUDA Astra Engine - Unit Tests", async (t) => {
     assert.ok(invalid.stderr.includes("SyntaxError"));
 
     // Cleanup
-    try { fs.unlinkSync(path.join(process.cwd(), tempCorrupt)); } catch {}
+    try { fs.unlinkSync(path.join(process.cwd(), tempCorrupt)); } catch (err) { console.warn("[auto-recovery] suppressed error in astraCodingAgent.test.js:", String(err.message).slice(0,80)); }
   });
 
   await t.test("4. Applies safe code patch with SHA-256 before/after tracking", () => {
@@ -52,7 +52,7 @@ test("GARUDA Astra Engine - Unit Tests", async (t) => {
     assert.notStrictEqual(p2.afterSha, p1.afterSha);
 
     // Cleanup
-    try { fs.unlinkSync(path.join(process.cwd(), tempFile)); } catch {}
+    try { fs.unlinkSync(path.join(process.cwd(), tempFile)); } catch (err) { console.warn("[auto-recovery] suppressed error in astraCodingAgent.test.js:", String(err.message).slice(0,80)); }
   });
 
   await t.test("5. Executes task in direct mode, validates, and logs audit trail", async () => {
@@ -75,6 +75,6 @@ test("GARUDA Astra Engine - Unit Tests", async (t) => {
     assert.strictEqual(history[0].taskId, result.taskId);
 
     // Cleanup
-    try { fs.unlinkSync(path.join(process.cwd(), targetFile)); } catch {}
+    try { fs.unlinkSync(path.join(process.cwd(), targetFile)); } catch (err) { console.warn("[auto-recovery] suppressed error in astraCodingAgent.test.js:", String(err.message).slice(0,80)); }
   });
 });

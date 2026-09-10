@@ -61,7 +61,7 @@ router.post("/generate", async (req, res) => {
     });
 
     // Ensure concept exists for asset generation (needed by imageGenerationRouter via brief)
-    try { await creativeStudioService.generateConcept(brief.briefId); } catch {}
+    try { await creativeStudioService.generateConcept(brief.briefId); } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
 
     // Decide generation mode truthfully — default DRY_RUN safe
     const requestedLive = String(req.body.generationMode || "").toUpperCase() === "LIVE_GENERATION";
@@ -167,7 +167,7 @@ router.post("/generate", async (req, res) => {
         sourceArtifactId: null,
         rootArtifactId: null
       });
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
 
     return res.json({
       success: true,
@@ -226,11 +226,11 @@ router.get("/assets/:id", (req, res) => {
   if (!asset) asset = videoGenerationRouter.getStoryboard ? videoGenerationRouter.getStoryboard(id) : null;
   if (!asset) {
     // Try creativeStudioService assets
-    try { asset = creativeStudioService.assets?.get?.(id) || null; } catch {}
+    try { asset = creativeStudioService.assets?.get?.(id) || null; } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
   }
   if (!asset) {
     // Try audio jobs
-    try { asset = require("../services/audioGenerationRouter").getStatus(id) || null; } catch {}
+    try { asset = require("../services/audioGenerationRouter").getStatus(id) || null; } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
   }
   if (!asset) return res.status(404).json({ success: false, message: "Asset not found", assetId: id });
 
@@ -426,7 +426,7 @@ router.post("/continue", async (req, res) => {
       projectId: sourceArtifact.projectId || projectId || null,
       brandId: sourceArtifact.sourceBrief?.brandId || null
     });
-    try { await creativeStudioService.generateConcept(brief.briefId); } catch {}
+    try { await creativeStudioService.generateConcept(brief.briefId); } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
     const platform = wantsInstagram ? "instagram_story" : "instagram_post";
     const asset = await creativeStudioService.generateAsset(brief.briefId, wantsInstagram ? "IMAGE_STORY" : "IMAGE_SQUARE", {
       generationMode: "DRY_RUN",
@@ -713,7 +713,7 @@ router.post("/music-video", async (req,res)=>{
           generatedMusic.qc = gen.qc;
           generatedMusic.observability = gen.observability;
         }
-      }catch{}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
     }
     // --- Mobile quality helper: probe duration via ffmpeg ---
     const probeDurationSec = async (filePath) => {
@@ -772,7 +772,7 @@ router.post("/music-video", async (req,res)=>{
         if(audioQC && audioQC.durationSec && audioQC.durationSec > durationSec){
           durationSec = Math.ceil(audioQC.durationSec);
         }
-      }catch{}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
     }
     // --- Gap-fill: raw 67s vs song 211s -> 144s images from remaining words (any language) ---
     // Any-language: chunk remainingWords as-is (Punjabi/Hindi/English), no translation, 6s per image
@@ -816,7 +816,7 @@ router.post("/music-video", async (req,res)=>{
           try{
             // Direct sovereign generation via creativeStudioService (any language words as-is, no funded provider needed)
             const brief = await creativeStudioService.createCreativeBrief({ title: chunk.slice(0,40) || `Gap ${i+1}`, brandName:"GARUDA", qualityProfile:"cinematic" });
-            try{ await creativeStudioService.generateConcept(brief.briefId); }catch{}
+            try{ await creativeStudioService.generateConcept(brief.briefId); } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
             const asset = await creativeStudioService.generateAsset(brief.briefId, "IMAGE_STORY", { generationMode:"DRY_RUN", _testMock:true, mockFalSuccess:true, prompt: imagePrompt });
             imgPath = asset.filePath;
           }catch(e){ /* fallback will try next */ }
@@ -830,7 +830,7 @@ router.post("/music-video", async (req,res)=>{
                 require("child_process").execFile(ffmpegPath, ["-loop","1","-i", imgPath, "-t", gapSec, "-vf", useVf, "-c:v","libx264","-pix_fmt","yuv420p","-r","24","-y", tmpVid2], { timeout:20000, maxBuffer:4*1024*1024 }, (err,so,se)=> err? rej2(new Error(String(se||err.message).slice(0,400))): res2());
               });
               if(fs.existsSync(tmpVid2) && fs.statSync(tmpVid2).size>1000){ processedInputs.push(tmpVid2); gapGeneratedCount++; }
-            }catch{}
+            } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
           }
           if(gapGeneratedCount >= gapImagesNeeded) break;
         }
@@ -846,7 +846,7 @@ router.post("/music-video", async (req,res)=>{
       try{
         const audioRouter=require("../services/audioGenerationRouter");
         audioQC = await audioRouter.verifyAudioQC(audioPath);
-      }catch{}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
     }
     let beatAnalysis = { beats:[], bpm:120, status:"NO_AUDIO" };
     if(audioPath){
@@ -862,7 +862,7 @@ router.post("/music-video", async (req,res)=>{
     if(audioPath) renderOps.push({ audio_replace: audioPath });
     const render = await mediaEditingService.renderTimeline({ inputs: processedInputs, operations: renderOps, outputName: `musicvideo_${Date.now()}.mp4` });
     // cleanup temp image videos
-    for(const p of processedInputs){ if(p.includes("img2vid_") && fs.existsSync(p)){ try{ fs.unlinkSync(p);}catch{} } }
+    for(const p of processedInputs){ if(p.includes("img2vid_") && fs.existsSync(p)){ try{ fs.unlinkSync(p);} catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); } } }
     const qc = mediaEditingService.validateMedia(render.filePath);
     const artifact = {
       assetId: render.assetId, filePath: render.filePath, publicUrl: render.publicUrl, dataUrl: render.dataUrl, sha256: render.sha256, fileSize: render.fileSize, qc,
@@ -909,7 +909,7 @@ router.post("/admin/replicate-toggle", (req,res)=>{
       content += `\nFOUNDER_ALLOW_REPLICATE=${enable?"true":"false"}\n`;
     }
     fs.writeFileSync(envPath, content, "utf8");
-  }catch{}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in creativeRoutes.js:", String(err.message).slice(0,80)); }
   res.json({ success:true, enabled: enable, message: enable ? "Replicate PAID enabled — ~₹60/min will be charged" : "Replicate disabled — sovereign/HF only" });
 });
 

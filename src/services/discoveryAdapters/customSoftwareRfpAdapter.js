@@ -166,7 +166,7 @@ class CustomSoftwareRfpDiscoveryAdapter extends BaseDiscoveryAdapter {
           if (Array.isArray(data)) items.push(...data);
           else if (Array.isArray(data.rfps)) items.push(...data.rfps);
         }
-      } catch {}
+      } catch (err) { console.warn("[auto-recovery] suppressed error in customSoftwareRfpAdapter.js:", String(err.message).slice(0,80)); }
     }
     return items;
   }

@@ -40,7 +40,7 @@ function evaluateFirst(input, context = {}) {
       if (rule.condition(input, context)) {
         return { ruleId: rule.id, ruleName: rule.name, result: rule.action(input, context) };
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in ruleEngine.js:", String(err.message).slice(0,80)); }
   }
   return null;
 }

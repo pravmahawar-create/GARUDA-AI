@@ -45,7 +45,7 @@ describe("Living Artifact & Corrected Quality Philosophy", () => {
     const res = creativeQualityService.validateAsset(asset);
     assert.equal(res.technicalVerification.passed, true);
     assert.equal(res.technicalVerification.truthClassification, "TECHNICAL_VERIFICATION_PASSED");
-    try { fs.unlinkSync(tmp); } catch {}
+    try { fs.unlinkSync(tmp); } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.test.js:", String(err.message).slice(0,80)); }
   });
 
   it("D. Physical verification does not falsely equal visual quality verification", () => {
@@ -68,7 +68,7 @@ describe("Living Artifact & Corrected Quality Philosophy", () => {
     assert.equal(res.technicalVerification.passed, true);
     assert.equal(res.visualQualityVerification.status, "VISUAL_QUALITY_NOT_YET_VERIFIED");
     assert.equal(res.visualQualityVerification.verified, false);
-    try { fs.unlinkSync(tmp); } catch {}
+    try { fs.unlinkSync(tmp); } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.test.js:", String(err.message).slice(0,80)); }
   });
 
   it("E. Missing visual assessment returns truthful status", () => {
@@ -90,7 +90,7 @@ describe("Living Artifact & Corrected Quality Philosophy", () => {
     const res = creativeQualityService.validateAsset(asset);
     assert.equal(res.visualQualityVerification.status, "VISUAL_QUALITY_NOT_YET_VERIFIED");
     assert.ok(res.visualQualityVerification.reason.includes("No semantic aesthetic model"));
-    try { fs.unlinkSync(tmp); } catch {}
+    try { fs.unlinkSync(tmp); } catch (err) { console.warn("[auto-recovery] suppressed error in livingArtifactService.test.js:", String(err.message).slice(0,80)); }
   });
 
   it("F. A Living Artifact context can be created", () => {

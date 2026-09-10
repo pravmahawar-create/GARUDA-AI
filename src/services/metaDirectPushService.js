@@ -11,7 +11,7 @@
  * 100% Anti-Fabrication Law: Verified SHA-256 evidence, truthful execution.
  */
 
-try { require("dotenv").config(); } catch {}
+try { require("dotenv").config(); } catch (err) { console.warn("[auto-recovery] suppressed error in metaDirectPushService.js:", String(err.message).slice(0,80)); }
 const fs = require("fs");
 const path = require("path");
 

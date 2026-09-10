@@ -125,7 +125,7 @@ class PublicSearchDiscoverySource extends BaseDiscoverySource {
         try {
           const u = new URL(rawUrl.startsWith("http") ? rawUrl : `https://duckduckgo.com${rawUrl}`);
           rawUrl = decodeURIComponent(u.searchParams.get("uddg") || rawUrl);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in publicSearchDiscoverySource.js:", String(err.message).slice(0,80)); }
       }
 
       if (rawUrl.startsWith("http") && !rawUrl.includes("duckduckgo.com")) {
@@ -139,7 +139,7 @@ class PublicSearchDiscoverySource extends BaseDiscoverySource {
             snippet: "Public search result discovery",
             discoveredAt: new Date().toISOString()
           });
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in publicSearchDiscoverySource.js:", String(err.message).slice(0,80)); }
       }
     }
 

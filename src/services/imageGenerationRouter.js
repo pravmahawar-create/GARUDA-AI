@@ -41,7 +41,7 @@ function ensureDirs() {
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
     if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR, { recursive: true });
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in imageGenerationRouter.js:", String(err.message).slice(0,80)); }
 }
 
 const assetsStore = new Map();
@@ -61,7 +61,7 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.assetId) assetsStore.set(doc.assetId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in imageGenerationRouter.js:", String(err.message).slice(0,80)); }
       }
     }
     if (fs.existsSync(JOBS_INDEX_FILE)) {
@@ -70,10 +70,10 @@ function loadFromDisk() {
         try {
           const doc = JSON.parse(line);
           if (doc && doc.jobId) jobsStore.set(doc.jobId, doc);
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in imageGenerationRouter.js:", String(err.message).slice(0,80)); }
       }
     }
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in imageGenerationRouter.js:", String(err.message).slice(0,80)); }
 }
 
 loadFromDisk();
@@ -82,7 +82,7 @@ function appendDocToFile(filePath, doc) {
   ensureDirs();
   try {
     fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
-  } catch {}
+  } catch (err) { console.warn("[auto-recovery] suppressed error in imageGenerationRouter.js:", String(err.message).slice(0,80)); }
 }
 
 // Canonical Platform Presets
@@ -448,7 +448,7 @@ class ImageGenerationRouter {
             isReachable = true;
             engineType = "COMFYUI";
           }
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in imageGenerationRouter.js:", String(err.message).slice(0,80)); }
 
         // Probe 2: SD WebUI /sdapi/v1/options
         if (!isReachable) {
@@ -458,7 +458,7 @@ class ImageGenerationRouter {
               isReachable = true;
               engineType = "SD_WEBUI";
             }
-          } catch {}
+          } catch (err) { console.warn("[auto-recovery] suppressed error in imageGenerationRouter.js:", String(err.message).slice(0,80)); }
         }
 
         return {
@@ -727,7 +727,7 @@ class ImageGenerationRouter {
             truthClassification: "PROVIDER_EXECUTION_FAILURE_WITH_SOVEREIGN_FALLBACK",
             generatedAt: new Date().toISOString()
           };
-        } catch {}
+        } catch (err) { console.warn("[auto-recovery] suppressed error in imageGenerationRouter.js:", String(err.message).slice(0,80)); }
         return {
           success: false,
           jobId: job.jobId,

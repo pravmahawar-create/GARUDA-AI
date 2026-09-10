@@ -91,7 +91,7 @@ class GarudaAcquisitionEngineService {
       if (scoredItemsCount > 0) {
         discoverySummary.averageLeadScore = Math.round(totalScore / scoredItemsCount);
       }
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in garudaAcquisitionEngineService.js:", String(err.message).slice(0,80)); }
 
     // 3. Evaluate Top Demands & Global Market Distribution
     const topDemands = [
@@ -241,7 +241,7 @@ class GarudaAcquisitionEngineService {
         `Source: ${record.client.source}\n` +
         `Status: ${currentState}`
       );
-    } catch {}
+    } catch (err) { console.warn("[auto-recovery] suppressed error in garudaAcquisitionEngineService.js:", String(err.message).slice(0,80)); }
 
     return record;
   }

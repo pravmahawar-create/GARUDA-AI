@@ -225,7 +225,7 @@ describe("GARUDA Creative Golden Path — Premium Image (Fal)", () => {
     assert.equal(res.qualityPolicy.requiredLevel, "exceptional_completeness");
     assert.equal(res.isPreview, true, "DRY_RUN should be treated as preview for quality floor");
     assert.equal(res.visualQualityVerification.verified, false);
-    try { fs.unlinkSync(fakeSvgPath); } catch {}
+    try { fs.unlinkSync(fakeSvgPath); } catch (err) { console.warn("[auto-recovery] suppressed error in creativeGoldenPath.test.js:", String(err.message).slice(0,80)); }
   });
 });
 
