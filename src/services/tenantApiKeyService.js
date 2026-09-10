@@ -44,7 +44,7 @@ async function generateApiKey(tenantId, name, userId = null, options = {}) {
   if (isMongoConnected()) {
     try {
       await TenantApiKey.create(keyRecord);
-    } catch {}
+    } catch (err) { console.warn("[tenantApiKey] create failed:", String(err.message).slice(0,120)); }
   }
 
   return {
@@ -72,7 +72,7 @@ async function verifyApiKey(rawKey) {
     try {
       keyDoc = await TenantApiKey.findOne({ hashedKey }).lean();
       if (keyDoc) memoryKeyStore.set(hashedKey, keyDoc);
-    } catch {}
+    } catch (err) { console.warn("[tenantApiKey] find failed:", String(err.message).slice(0,120)); }
   }
 
   if (!keyDoc) {
@@ -89,7 +89,7 @@ async function verifyApiKey(rawKey) {
     if (isMongoConnected()) {
       try {
         await TenantApiKey.updateOne({ keyId: keyDoc.keyId }, { $set: { status: "expired" } });
-      } catch {}
+      } catch (err) { console.warn("[tenantApiKey] expire update failed:", String(err.message).slice(0,120)); }
     }
     return { valid: false, reason: "key_expired" };
   }
@@ -100,7 +100,7 @@ async function verifyApiKey(rawKey) {
   if (isMongoConnected()) {
     try {
       TenantApiKey.updateOne({ keyId: keyDoc.keyId }, { $set: { lastUsedAt: new Date() } }).exec();
-    } catch {}
+    } catch (err) { console.warn("[tenantApiKey] lastUsed update failed:", String(err.message).slice(0,120)); }
   }
 
   return {
@@ -133,7 +133,7 @@ async function revokeApiKey(keyId, tenantId) {
         { $set: { status: "revoked" } }
       );
       if (result.modifiedCount > 0) found = true;
-    } catch {}
+    } catch (err) { console.warn("[tenantApiKey] revoke failed:", String(err.message).slice(0,120)); }
   }
 
   return { success: found };
@@ -161,7 +161,7 @@ async function listTenantApiKeys(tenantId) {
           createdAt: k.createdAt
         });
       }
-    } catch {}
+    } catch (err) { console.warn("[tenantApiKey] list failed:", String(err.message).slice(0,120)); }
   }
 
   for (const record of memoryKeyStore.values()) {

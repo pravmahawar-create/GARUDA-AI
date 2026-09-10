@@ -91,7 +91,7 @@ function loadLocalProposals() {
           return { ...DEFAULT_PROPOSAL_SEEDS, ...data };
         }
       }
-    } catch {}
+    } catch (err) { console.warn("[persistentProposal] loadLocalProposals failed:", String(err.message).slice(0,120)); }
   }
   return { ...DEFAULT_PROPOSAL_SEEDS };
 }
@@ -102,7 +102,7 @@ function saveLocalProposals(proposals) {
       fs.mkdirSync(path.dirname(file), { recursive: true });
       fs.writeFileSync(file, JSON.stringify(proposals, null, 2), "utf8");
       return;
-    } catch {}
+    } catch (err) { console.warn("[persistentProposal] saveLocalProposals failed:", String(err.message).slice(0,120)); }
   }
 }
 
@@ -113,7 +113,7 @@ function loadLocalProjects() {
         const data = JSON.parse(fs.readFileSync(file, "utf8"));
         if (data && typeof data === "object") return data;
       }
-    } catch {}
+    } catch (err) { console.warn("[persistentProposal] loadLocalProjects failed:", String(err.message).slice(0,120)); }
   }
   return {};
 }
@@ -124,7 +124,7 @@ function saveLocalProjects(projects) {
       fs.mkdirSync(path.dirname(file), { recursive: true });
       fs.writeFileSync(file, JSON.stringify(projects, null, 2), "utf8");
       return;
-    } catch {}
+    } catch (err) { console.warn("[persistentProposal] saveLocalProjects failed:", String(err.message).slice(0,120)); }
   }
 }
 

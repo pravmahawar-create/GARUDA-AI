@@ -183,7 +183,7 @@ async function fetchPaymentLinkStatus(linkId, options = {}) {
       signal: controller.signal,
       headers: { authorization: `Basic ${auth}` }
     });
-    if (!response.ok) return null;
+    if (!response.ok) { console.warn("[razorpay] fetchPaymentLinkStatus HTTP", response.status); return { status: "unknown", error: `HTTP ${response.status}` }; }
     const body = await response.json();
     return {
       status: String(body.status || "created"),
@@ -191,8 +191,7 @@ async function fetchPaymentLinkStatus(linkId, options = {}) {
       amount: Number(body.amount || 0) / 100,
       currency: String(body.currency || "INR")
     };
-  } catch {
-    return null;
+  } catch (err) { console.warn("[razorpay] fetchPaymentLinkStatus failed:", String(err.message).slice(0,120)); return { status: "unknown", error: String(err.message).slice(0,120) };
   } finally {
     clearTimeout(timer);
   }
