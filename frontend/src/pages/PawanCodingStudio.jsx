@@ -703,11 +703,28 @@ export default function PawanCodingStudio() {
 
   return (
     <div style={{ minHeight: "100vh", background: "radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.08) 0%, #060503 60%, #030201 100%)", color: "#f8fafc", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", padding: "1.5rem 1rem" }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .pawan-header { flex-direction: column !important; align-items: flex-start !important; }
+          .pawan-controls { width: 100%; justify-content: flex-start !important; }
+          .pawan-controls button { flex: 1 1 auto; min-height: 44px; font-size: 0.8rem !important; }
+          .pawan-templates { gap: 0.5rem !important; }
+          .pawan-templates button { min-width: 140px !important; max-width: 160px !important; }
+          .pawan-chat { max-height: 50vh !important; min-height: 280px !important; }
+          .pawan-input-grid { grid-template-columns: 1fr !important; }
+          .pawan-action-buttons { flex-direction: column !important; }
+          .pawan-action-buttons button { width: 100% !important; min-height: 44px; justify-content: center; }
+        }
+        @media (max-width: 480px) {
+          h1 { font-size: 1.4rem !important; }
+          .pawan-container { padding: 1rem 0.75rem !important; }
+        }
+      `}</style>
+      <div className="pawan-container" style={{ maxWidth: "1200px", margin: "0 auto" }}>
         
         {/* Top Header & Brand Bar */}
         <div style={{ borderBottom: "1px solid rgba(212, 175, 55, 0.2)", paddingBottom: "1.2rem", marginBottom: "1.8rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+          <div className="pawan-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
             <div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(212, 175, 55, 0.1)", border: "1px solid rgba(212, 175, 55, 0.35)", borderRadius: "999px", padding: "3px 12px", marginBottom: "0.4rem" }}>
                 <span style={{ fontSize: "0.85rem" }}>🦅</span>
@@ -728,7 +745,7 @@ export default function PawanCodingStudio() {
             </div>
 
             {/* Controls */}
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
+            <div className="pawan-controls" style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
               <button
                 type="button"
                 onClick={() => setShowAppsFleet(true)}
@@ -868,7 +885,7 @@ export default function PawanCodingStudio() {
                 </span>
                 <span style={{ fontSize: "0.68rem", color: "#78716c" }}>Click to auto-load blueprint</span>
               </div>
-              <div style={{ display: "flex", gap: "0.6rem", overflowX: "auto", paddingBottom: "4px" }}>
+              <div className="pawan-templates" style={{ display: "flex", gap: "0.6rem", overflowX: "auto", paddingBottom: "4px", WebkitOverflowScrolling: "touch" }}>
                 {CODING_TEMPLATES.map((tpl, idx) => (
                   <button
                     key={idx}

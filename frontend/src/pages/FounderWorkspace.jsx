@@ -274,6 +274,21 @@ export default function FounderWorkspace({ onLogout }) {
 
   return (
     <div className="founder-fd">
+      <style>{`
+        @media (max-width: 768px) {
+          .founder-fd { flex-direction: column !important; }
+          .workspace { padding: 1rem 0.75rem 2rem !important; gap: 1rem !important; }
+          .fd-hero { grid-template-columns: 1fr !important; gap: 1rem !important; }
+          .fd-charts { grid-template-columns: 1fr !important; }
+          .metrics-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+          .hero-panel__button { width: 100%; min-height: 44px; justify-content: center; }
+          .fd-card { padding: 1rem !important; }
+        }
+        @media (max-width: 480px) {
+          .fd-heading { font-size: 1.3rem !important; }
+          .metrics-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+      `}</style>
       <Sidebar onSelectNav={handleSelectNav} onSignOut={handleSignOut} />
 
       <section className="workspace" style={{ flex: 1, minWidth: 0, padding: "1.5rem clamp(1rem, 3vw, 2.5rem) 3rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>

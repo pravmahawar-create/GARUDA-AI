@@ -213,6 +213,16 @@ export default function FounderAcquisitionCockpit({ onLogout }) {
 
   return (
     <div style={{ minHeight: "100vh", background: "#030712", color: "#f1f5f9", fontFamily: "system-ui, -apple-system, sans-serif", padding: "1.5rem 2rem" }}>
+      <style>{`
+        @media (max-width: 768px) {
+          header { flex-direction: column !important; align-items: flex-start !important; gap: 0.75rem !important; }
+          header > div:last-child { width: 100%; flex-wrap: wrap !important; }
+          header button { min-height: 44px; flex: 1 1 auto; }
+        }
+        @media (max-width: 480px) {
+          h1 { font-size: 1.1rem !important; }
+        }
+      `}</style>
       {/* Top Header */}
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b", paddingBottom: "1.2rem", marginBottom: "1.5rem" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>

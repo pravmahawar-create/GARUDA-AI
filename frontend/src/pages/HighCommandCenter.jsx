@@ -177,6 +177,23 @@ export default function HighCommandCenter({ onLogout }) {
 
   return (
     <div className="hcc-container">
+      <style>{`
+        @media (max-width: 768px) {
+          .hcc-header { flex-direction: column !important; align-items: flex-start !important; gap: 0.75rem !important; }
+          .hcc-header-actions { width: 100%; justify-content: flex-start !important; flex-wrap: wrap !important; }
+          .hcc-header-actions button { min-height: 44px; }
+          .hcc-module-nav { overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+          .hcc-nav-chip { flex: 0 0 auto; min-height: 36px; }
+          .hcc-kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .hcc-intel-grid { grid-template-columns: 1fr !important; }
+          .hcc-quick-grid { grid-template-columns: repeat(3, 1fr) !important; }
+          .hcc-wrapper { padding: 1rem 0.75rem !important; }
+        }
+        @media (max-width: 480px) {
+          .hcc-pulse-main-title { font-size: 1.4rem !important; }
+          .hcc-kpi-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+      `}</style>
       <SEOHead
         title="GARUDA High Command Center | Private Sovereign Intelligence"
         description="Private mobile-first command center for Boss to observe and govern the GARUDA Kingdom."
