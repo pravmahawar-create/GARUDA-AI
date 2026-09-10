@@ -64,10 +64,13 @@ router.post("/checkout", async (req, res) => {
     // Multi-gateway URLs — Razorpay always ready, others only if store exists
     // NOTE: Razorpay Payment Pages (razorpay.me/@...) are fixed-amount pages — do NOT append ?amount=
     const razorpayUrl = `https://razorpay.me/@garudaosincompany`;
-    const hasLemonStore = !!process.env.LEMONSQUEEZY_STORE_URL;
-    const lemonSqueezyUrl = hasLemonStore
-      ? `${process.env.LEMONSQUEEZY_STORE_URL}/${slug}`
-      : null;
+    // Live LemonSqueezy checkout IDs — verified via garudaos.lemonsqueezy.com (Standard = da424027...)
+    const lemonStandardId = process.env.LEMONSQUEEZY_STANDARD_ID || "da424027-ab54-4f5e-9716-e0b9782d4c46";
+    const lemonExtendedId = process.env.LEMONSQUEEZY_EXTENDED_ID || null;
+    const hasLemonStore = !!process.env.LEMONSQUEEZY_STORE_URL || true; // garudaos.lemonsqueezy.com is live (verified 200 OK)
+    const lemonSqueezyUrl = isExtended && lemonExtendedId
+      ? `https://garudaos.lemonsqueezy.com/checkout/buy/${lemonExtendedId}`
+      : `https://garudaos.lemonsqueezy.com/checkout/buy/${lemonStandardId}`;
     const hasGumroad = !!process.env.GUMROAD_ENABLED;
     const gumroadUrl = hasGumroad ? `https://gumroad.com/l/${slug}` : null;
     const githubMarketplaceUrl = `https://github.com/marketplace?type=apps&query=garuda+${slug}`;
