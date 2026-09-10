@@ -71,7 +71,7 @@ router.post("/checkout", async (req, res) => {
     const lemonSqueezyUrl = isExtended && lemonExtendedId
       ? `https://garudaos.lemonsqueezy.com/checkout/buy/${lemonExtendedId}`
       : `https://garudaos.lemonsqueezy.com/checkout/buy/${lemonStandardId}`;
-    const hasGumroad = !!process.env.GUMROAD_ENABLED;
+    const hasGumroad = process.env.GUMROAD_ENABLED !== "false"; // Gumroad public links — enabled by default (no store needed)
     const gumroadUrl = hasGumroad ? `https://gumroad.com/l/${slug}` : null;
     const githubMarketplaceUrl = `https://github.com/marketplace?type=apps&query=garuda+${slug}`;
 

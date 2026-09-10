@@ -27,3 +27,5 @@ services:
         sync: false
       - key: LEMONSQUEEZY_STORE_URL
         value: https://garudaos.lemonsqueezy.com
+      - key: GUMROAD_ENABLED
+        value: true
