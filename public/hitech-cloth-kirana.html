@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0f1e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>GARUDA Hi-Tech Billing — Cloth & Kirana • Eye-Care Dark</title>
+<link rel="manifest" href="./hitech-manifest.json">
+<style>
+:root{
+  --bg:#080a12;
+  --card:#0f1424;
+  --card-2:#121a30;
+  --border:#1e2a44;
+  --text:#e8eefc;
+  --muted:#9aa8c7;
+  --gold:#d4af37;
+  --gold-soft:rgba(212,175,55,.14);
+  --accent:#38bdf8;
+  --success:#10b981;
+  --danger:#f87171;
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:10px 10px 80px;}
+.app{width:100%;max-width:520px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 6px 12px;gap:10px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#d4af37,#8a6a14);display:grid;place-items:center;font-weight:900;color:#0a0f1e;}
+.brand h1{font-size:15px;font-weight:800;letter-spacing:.02em;}
+.brand p{font-size:10px;color:var(--muted);margin-top:1px;}
+.pill{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);background:var(--gold-soft);border:1px solid rgba(212,175,55,.25);padding:5px 9px;border-radius:999px;}
+.mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--card);border:1px solid var(--border);padding:6px;border-radius:14px;margin-bottom:12px;}
+.mode button{padding:10px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;transition:.15s;}
+.mode button.active{background:var(--card-2);border-color:var(--border);color:var(--text);box-shadow:0 6px 18px rgba(0,0,0,.35);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.45);}
+.card h3{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.field label{font-size:11px;color:var(--muted);font-weight:600;}
+.input, select{width:100%;background:#0b1226;border:1px solid var(--border);color:var(--text);padding:11px 12px;border-radius:11px;font-size:14px;font-weight:600;outline:none;transition:.15s;}
+.input:focus, select:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft);}
+.chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;}
+.chip{flex:0 0 auto;background:#0b1226;border:1px solid var(--border);color:#c7d2e8;padding:7px 10px;border-radius:999px;font-size:11px;white-space:nowrap;cursor:pointer;}
+.chip.active{background:var(--gold-soft);border-color:var(--gold);color:var(--gold);font-weight:700;}
+.searchbar{display:flex;gap:8px;align-items:center;background:#0b1226;border:1px solid var(--border);border-radius:12px;padding:8px 10px;}
+.searchbar input{flex:1;background:transparent;border:0;color:var(--text);font-size:14px;outline:none;}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--card-2);color:var(--text);display:grid;place-items:center;cursor:pointer;}
+.cart{max-height:220px;overflow:auto;border:1px dashed var(--border);border-radius:12px;padding:8px;background:rgba(10,15,30,.6);}
+.cart-empty{text-align:center;color:var(--muted);font-size:12px;padding:18px;}
+.cart-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 8px;border-bottom:1px dashed rgba(255,255,255,.06);}
+.cart-item:last-child{border-bottom:0;}
+.badge{font-size:10px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);color:#7dd3fc;padding:3px 6px;border-radius:6px;}
+.totals{background:linear-gradient(180deg,#0f1a33, #0c1530);border:1px solid rgba(56,189,248,.25);border-radius:16px;padding:14px;}
+.row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.07);font-size:12px;color:var(--muted);}
+.row strong{color:var(--text);font-size:13px;}
+.row.grand{border-top:2px solid rgba(212,175,55,.35);border-bottom:0;margin-top:6px;padding-top:10px;}
+.grand strong{font-size:18px;color:var(--gold);}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.btn{padding:12px;border-radius:12px;border:0;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;}
+.btn-primary{background:linear-gradient(135deg,#d4af37,#b8941f);color:#0a0f1e;}
+.btn-ghost{background:#0b1226;color:var(--text);border:1px solid var(--border);}
+.btn-wa{background:#25d366;color:#fff;}
+.small{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;}
+.eye-toggle{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);}
+.switch{width:38px;height:22px;background:#1e2a44;border-radius:999px;position:relative;cursor:pointer;}
+.switch i{position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.2s;}
+.switch.on{background:var(--gold);} .switch.on i{transform:translateX(16px);}
+@media (max-width:480px){ .grid2{grid-template-columns:1fr 1fr;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">G</div>
+      <div>
+        <h1>GARUDA Hi-Tech Billing</h1>
+        <p>Cloth • Kirana • Eye-Care Dark • PWA</p>
+      </div>
+    </div>
+    <div class="pill">🦅 GARUDA MADE</div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:0 4px 10px;">
+    <div class="eye-toggle"><div id="eyeSwitch" class="switch on" onclick="toggleEye()"><i></i></div> Eye-Care Warm (low blue light)</div>
+    <div style="font-size:10px;color:var(--muted);">Offline PWA • SHA 256</div>
+  </div>
+
+  <div class="mode">
+    <button id="modeCloth" class="active" onclick="setMode('cloth')">🧵 Cloth Billing</button>
+    <button id="modeKirana" onclick="setMode('kirana')">🛒 Kirana Billing</button>
+  </div>
+
+  <div class="card">
+    <h3>🔍 Quick Add — Search / Scan / Voice</h3>
+    <div class="searchbar">
+      <span>🔍</span>
+      <input id="search" placeholder="Search fabric / Kirana item... e.g. Cotton, Poha, Saree">
+      <button class="iconbtn" title="Barcode Scan" onclick="mockScan()">📷</button>
+      <button class="iconbtn" title="Voice" onclick="mockVoice()">🎙️</button>
+    </div>
+    <div class="chips" id="quickChips"></div>
+  </div>
+
+  <div class="card" id="clothPanel">
+    <h3>🧵 Fabric • GST • HSN</h3>
+    <div class="chips" id="fabricChips"></div>
+    <div class="grid2">
+      <div class="field"><label>Qty</label><input class="input" id="qty" type="number" value="1" min="1"></div>
+      <div class="field"><label>Unit</label><select id="unit"><option>Mtr</option><option>Thaan</option><option>Pcs</option><option>Kg</option></select></div>
+      <div class="field"><label>Rate ₹/unit</label><input class="input" id="rate" type="number" value="350" min="0"></div>
+      <div class="field"><label>Discount %</label><input class="input" id="disc" type="number" value="0" min="0" max="100"></div>
+      <div class="field" style="grid-column:span 2"><label>GST Slab</label><select id="gst"><option value="5">5% Cotton/Apparel &lt;1k</option><option value="12">12% Synthetic/Apparel &gt;1k</option><option value="18">18% Service</option><option value="0">0% Exempt</option></select></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:6px;">
+      <label style="font-size:11px;color:var(--muted);"><input type="radio" name="tax" value="intra" checked onchange="recalc()"> Intra CGST+SGST</label>
+      <label style="font-size:11px;color:var(--muted);"><input type="radio" name="tax" value="inter" onchange="recalc()"> Inter IGST</label>
+      <span style="margin-left:auto;font-size:10px;color:var(--muted);">HSN <b id="hsn">5208</b></span>
+    </div>
+    <button class="btn btn-ghost" style="width:100%;margin-top:10px;" onclick="addCloth()">+ Add Cloth Item to Bill</button>
+  </div>
+
+  <div class="card" id="kiranaPanel" style="display:none;">
+    <h3>🛒 Kirana — MRP • Qty • Offer</h3>
+    <div class="grid2">
+      <div class="field"><label>Item Name</label><input class="input" id="kName" placeholder="e.g. Aashirvaad Atta 5kg"></div>
+      <div class="field"><label>Qty</label><input class="input" id="kQty" type="number" value="1" min="1"></div>
+      <div class="field"><label>MRP ₹</label><input class="input" id="kMrp" type="number" value="320" min="0"></div>
+      <div class="field"><label>Sell ₹</label><input class="input" id="kSell" type="number" value="305" min="0"></div>
+    </div>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="addKirana()">+ Add Kirana Item to Bill</button>
+  </div>
+
+  <div class="card">
+    <h3>🧾 Bill Cart — <span id="cartCount">0 items</span> <span style="margin-left:auto;font-size:10px;color:var(--muted);" id="modeBadge">CLOTH MODE</span></h3>
+    <div class="cart" id="cart"><div class="cart-empty">No items yet — add from above. Eye-care dark, no strain for 8 hours.</div></div>
+  </div>
+
+  <div class="totals">
+    <div class="row"><span>Subtotal</span><strong id="tSub">₹ 0.00</strong></div>
+    <div class="row"><span>Discount</span><strong id="tDisc" style="color:var(--danger)">- ₹ 0.00</strong></div>
+    <div class="row"><span>Taxable</span><strong id="tTaxable">₹ 0.00</strong></div>
+    <div class="row" id="rCgst"><span>CGST</span><strong id="tCgst">₹ 0.00</strong></div>
+    <div class="row" id="rSgst"><span>SGST</span><strong id="tSgst">₹ 0.00</strong></div>
+    <div class="row" id="rIgst" style="display:none;"><span>IGST</span><strong id="tIgst">₹ 0.00</strong></div>
+    <div class="row grand"><span>Payable</span><strong id="tGrand">₹ 0.00</strong></div>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="clearBill()">Clear</button>
+      <button class="btn btn-wa" onclick="shareWA()">WhatsApp</button>
+      <button class="btn btn-primary" onclick="printBill()">Print</button>
+      <button class="btn btn-ghost" onclick="copyBill()">Copy</button>
+    </div>
+    <div class="small">UPI: <span style="color:var(--gold);">praveen@garudaos</span> • Offline PWA • Garuda Made • No eye strain</div>
+  </div>
+
+  <div class="small" style="margin-top:10px;">Tip: Long press + / - to change qty. Warm dark reduces blue light ~40%.</div>
+</div>
+
+<script>
+let mode='cloth';
+let cart=[];
+let hsn='5208';
+let taxMode='intra';
+
+const clothFabrics=[
+  {name:'Cotton 5% • 5208', rate:5, hsn:'5208'},
+  {name:'Silk 5% • 5007', rate:5, hsn:'5007'},
+  {name:'Synthetic 12% • 5407', rate:12, hsn:'5407'},
+  {name:'Garment <1k 5% • 6203', rate:5, hsn:'6203'},
+  {name:'Garment >1k 12% • 6203', rate:12, hsn:'6203'},
+  {name:'Job Work 5% • 9988', rate:5, hsn:'9988'},
+];
+const kiranaQuick=[
+  {name:'Aashirvaad Atta 5kg', mrp:320, sell:305},
+  {name:'Tata Salt 1kg', mrp:28, sell:26},
+  {name:'Fortune Oil 1L', mrp:155, sell:145},
+  {name:'Poha 1kg', mrp:90, sell:82},
+  {name:'Tea 500g', mrp:260, sell:245},
+  {name:'Detergent 1kg', mrp:120, sell:110},
+];
+const fabricChips=document.getElementById('fabricChips');
+const quickChips=document.getElementById('quickChips');
+function renderChips(){
+  const list = mode==='cloth' ? clothFabrics : kiranaQuick;
+  quickChips.innerHTML='';
+  list.forEach(it=>{
+    const d=document.createElement('div');
+    d.className='chip';
+    d.textContent=it.name;
+    d.onclick=()=>{
+      if(mode==='cloth'){ document.getElementById('gst').value=it.rate; hsn=it.hsn; document.getElementById('hsn').textContent=hsn; }
+      else { document.getElementById('kName').value=it.name; document.getElementById('kMrp').value=it.mrp; document.getElementById('kSell').value=it.sell; }
+    };
+    quickChips.appendChild(d);
+  });
+  // fabric chips
+  fabricChips.innerHTML='';
+  clothFabrics.forEach(f=>{
+    const c=document.createElement('div');
+    c.className='chip';
+    c.textContent=f.name;
+    c.onclick=()=>{ document.getElementById('gst').value=f.rate; hsn=f.hsn; document.getElementById('hsn').textContent=hsn; document.querySelectorAll('#fabricChips .chip').forEach(x=>x.classList.remove('active')); c.classList.add('active'); };
+    fabricChips.appendChild(c);
+  });
+  if(fabricChips.firstChild) fabricChips.firstChild.classList.add('active');
+}
+function setMode(m){
+  mode=m;
+  document.getElementById('modeCloth').classList.toggle('active', m==='cloth');
+  document.getElementById('modeKirana').classList.toggle('active', m==='kirana');
+  document.getElementById('clothPanel').style.display=m==='cloth'?'block':'none';
+  document.getElementById('kiranaPanel').style.display=m==='kirana'?'block':'none';
+  document.getElementById('modeBadge').textContent=m==='cloth'?'CLOTH MODE':'KIRANA MODE';
+  renderChips();
+}
+function toggleEye(){
+  const sw=document.getElementById('eyeSwitch');
+  sw.classList.toggle('on');
+  document.documentElement.style.filter = sw.classList.contains('on') ? 'sepia(0.08) saturate(1.05)' : 'none';
+}
+function mockScan(){ document.getElementById('search').value = mode==='cloth' ? 'Cotton' : 'Aashirvaad Atta'; document.getElementById('search').dispatchEvent(new Event('input')); }
+function mockVoice(){ const el=document.getElementById('search'); el.value='Add 2 pcs Saree at 550'; el.dispatchEvent(new Event('input')); setTimeout(()=>{ if(mode==='cloth'){ document.getElementById('qty').value=2; document.getElementById('rate').value=550; } else { document.getElementById('kQty').value=2; } },200); }
+
+document.getElementById('search').addEventListener('input', e=>{
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll('#quickChips .chip').forEach(c=>{ c.style.display = c.textContent.toLowerCase().includes(q) || q==='' ? 'block' : 'none'; });
+});
+
+function addCloth(){
+  const qty=parseFloat(document.getElementById('qty').value)||0;
+  const unit=document.getElementById('unit').value;
+  const rate=parseFloat(document.getElementById('rate').value)||0;
+  const disc=parseFloat(document.getElementById('disc').value)||0;
+  const gst=parseFloat(document.getElementById('gst').value)||0;
+  const name=document.querySelector('#fabricChips .chip.active')?.textContent || 'Cloth Item';
+  if(qty<=0||rate<=0) return alert('Qty & Rate bharo');
+  const base=qty*rate;
+  const discAmt=base*disc/100;
+  const taxable=Math.max(0, base-discAmt);
+  let cgst=0, sgst=0, igst=0;
+  if(taxMode==='intra'){ const h=gst/2; cgst=taxable*h/100; sgst=cgst; } else { igst=taxable*gst/100; }
+  const total=taxable+cgst+sgst+igst;
+  cart.push({type:'cloth', name, qty, unit, rate, disc, gst, hsn, base, discAmt, taxable, cgst, sgst, igst, total});
+  renderCart(); recalc();
+}
+function addKirana(){
+  const name=document.getElementById('kName').value.trim() || 'Kirana Item';
+  const qty=parseFloat(document.getElementById('kQty').value)||0;
+  const mrp=parseFloat(document.getElementById('kMrp').value)||0;
+  const sell=parseFloat(document.getElementById('kSell').value)||0;
+  if(qty<=0||sell<=0) return alert('Qty & Sell bharo');
+  const base=qty*sell;
+  const discPer=(mrp>0? ((mrp-sell)/mrp*100):0);
+  const discAmt=(mrp-sell)*qty;
+  cart.push({type:'kirana', name, qty, unit:'Pcs', rate:sell, disc:discPer.toFixed(1), gst:0, hsn:'-',
+    base:qty*mrp, discAmt, taxable:base, cgst:0, sgst:0, igst:0, total:base});
+  renderCart(); recalc();
+}
+function renderCart(){
+  const el=document.getElementById('cart');
+  const cnt=document.getElementById('cartCount');
+  cnt.textContent=cart.length+' items';
+  if(cart.length===0){ el.innerHTML='<div class="cart-empty">No items yet — add from above. Eye-care dark, no strain for 8 hours.</div>'; return; }
+  el.innerHTML='';
+  cart.forEach((it,idx)=>{
+    const row=document.createElement('div');
+    row.className='cart-item';
+    row.innerHTML=`<div><div style="font-size:13px;font-weight:700;">${it.name} <span class="badge">${it.hsn}</span></div><div style="font-size:11px;color:var(--muted);">${it.qty} ${it.unit} × ₹${it.rate} • GST ${it.gst}%</div></div>
+      <div style="text-align:right;"><div style="font-weight:800;">₹${it.total.toFixed(2)}</div><div style="font-size:10px;"><button onclick="chg(${idx},-1)" style="background:#0b1226;color:var(--text);border:1px solid var(--border);padding:2px 6px;border-radius:6px;cursor:pointer;">-</button> <button onclick="chg(${idx},1)" style="background:#0b1226;color:var(--text);border:1px solid var(--border);padding:2px 6px;border-radius:6px;cursor:pointer;">+</button> <button onclick="del(${idx})" style="background:transparent;color:var(--danger);border:0;cursor:pointer;">✕</button></div></div>`;
+    el.appendChild(row);
+  });
+}
+function chg(i,d){ cart[i].qty=Math.max(1, cart[i].qty+d); const it=cart[i]; const base=it.qty*it.rate; const discAmt=base*parseFloat(it.disc)/100; const taxable=Math.max(0, base-discAmt); let cgst=0,sgst=0,igst=0; const gst=parseFloat(it.gst); if(taxMode==='intra'){const h=gst/2;cgst=taxable*h/100;sgst=cgst;} else igst=taxable*gst/100; const total=taxable+cgst+sgst+igst; Object.assign(it,{base,discAmt,taxable,cgst,sgst,igst,total}); renderCart(); recalc(); }
+function del(i){ cart.splice(i,1); renderCart(); recalc(); }
+function clearBill(){ cart=[]; renderCart(); recalc(); }
+function recalc(){
+  let sub=0, disc=0, taxable=0, cgst=0, sgst=0, igst=0;
+  cart.forEach(it=>{ sub+=it.base; disc+=it.discAmt; taxable+=it.taxable; cgst+=it.cgst; sgst+=it.sgst; igst+=it.igst; });
+  const grand=taxable+cgst+sgst+igst;
+  document.getElementById('tSub').textContent='₹ '+sub.toFixed(2);
+  document.getElementById('tDisc').textContent='- ₹ '+disc.toFixed(2);
+  document.getElementById('tTaxable').textContent='₹ '+taxable.toFixed(2);
+  document.getElementById('tCgst').textContent='₹ '+cgst.toFixed(2);
+  document.getElementById('tSgst').textContent='₹ '+sgst.toFixed(2);
+  document.getElementById('tIgst').textContent='₹ '+igst.toFixed(2);
+  document.getElementById('tGrand').textContent='₹ '+grand.toFixed(2);
+  document.getElementById('rCgst').style.display=taxMode==='intra'?'flex':'none';
+  document.getElementById('rSgst').style.display=taxMode==='intra'?'flex':'none';
+  document.getElementById('rIgst').style.display=taxMode==='inter'?'flex':'none';
+  // update radio UI
+  document.querySelectorAll('input[name="tax"]').forEach(r=>{
+    if(r.value===taxMode) r.checked=true;
+  });
+}
+document.querySelectorAll('input[name="tax"]').forEach(r=>r.addEventListener('change', e=>{ taxMode=e.target.value; recalc(); }));
+renderChips(); recalc();
+
+function billText(){
+  let t='🧾 *GARUDA Hi-Tech Bill* — '+(mode==='cloth'?'Cloth':'Kirana')+'\n';
+  t+='-----------------------------\n';
+  cart.forEach((it,i)=>{ t+=(i+1)+'. '+it.name+' — '+it.qty+' '+it.unit+' × ₹'+it.rate+' = ₹'+it.total.toFixed(2)+'\n'; });
+  t+='-----------------------------\n';
+  t+='Payable: '+document.getElementById('tGrand').textContent+'\n';
+  t+='Generated via GARUDA Eye-Care Dark • Offline PWA';
+  return t;
+}
+function shareWA(){ if(cart.length===0) return alert('Pehle item add karo'); window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(billText()),'_blank'); }
+function copyBill(){ if(cart.length===0) return alert('Pehle item add karo'); navigator.clipboard.writeText(billText()).then(()=>alert('Copied!')); }
+function printBill(){ if(cart.length===0) return alert('Pehle item add karo'); const w=window.open('','_blank'); w.document.write('<pre style="font-family:monospace;padding:16px;">'+billText().replace(/\n/g,'<br>')+'</pre>'); w.print(); }
+</script>
+</body>
+</html>
