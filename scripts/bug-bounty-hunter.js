@@ -504,9 +504,16 @@ async function auditSingleTarget(target, opts = {}) {
   const fps = exposed.filter(f => f.verdict === "FALSE_POSITIVE_SPA");
   log(confirmed.length ? C.red : C.green, `    → Confirmed exposed: ${confirmed.length} | False positives (SPA): ${fps.length} | Protected: ${exposed.length - confirmed.length - fps.length}`);
   for (const f of confirmed) {
-    // Filter Info disclosures (sitemap/robots) — true 200 but not a bug bounty vuln
-    if (f.severity === "Info" || f.cvss === 0) {
-      log(C.gray, `      ○ [Info] ${f.name} → ${f.url} (HTTP ${f.status}) — informational disclosure, no PoC (hash=${f.bodyHash.slice(0,8)}...)`);
+    // Paisa filter: Only High/Critical bring bounty — Medium/Low/Info are drafts, not auto-submitted
+    // User said: sirf paisa laane wali karo, chhoti mat karo — slow & steady
+    if (f.severity === "Info" || f.cvss === 0 || f.severity === "Low" || f.severity === "Medium") {
+      if (f.severity === "Info" || f.cvss === 0) {
+        log(C.gray, `      ○ [Info] ${f.name} → ${f.url} (HTTP ${f.status}) — informational, no PoC (hash=${f.bodyHash.slice(0,8)}...)`);
+      } else {
+        log(C.yellow, `      ○ [${f.severity}] ${f.name} → ${f.url} (HTTP ${f.status}) — draft only, not auto-submitted for bounty (need High/Critical, hash=${f.bodyHash.slice(0,8)}...)`);
+        // Save as draft but not as bounty PoC — keep in findings but mark draft
+        allFindings.push({ ...f, draftOnly: true });
+      }
       continue;
     }
     log(C.red, `      ✗ [${f.severity}] ${f.name} → ${f.url} (HTTP ${f.status}) hash=${f.bodyHash.slice(0,8)}...`);
@@ -522,11 +529,14 @@ async function auditSingleTarget(target, opts = {}) {
   for (const c of corsFindings) {
     const col = c.verdict === "VULNERABLE" ? C.red : c.verdict === "WEAK" ? C.yellow : C.green;
     log(col, `    → [${c.verdict}] ${c.test} : ${c.detail} (ACAO='${c.acao}' ACAC='${c.acac}')`);
-    if (c.verdict === "VULNERABLE" || c.verdict === "WEAK") {
+    if (c.verdict === "VULNERABLE" && (c.severity === "High" || c.severity === "Critical")) {
       allFindings.push({ name: `Dangerous CORS — ${c.test}`, cwe: c.cwe, cvss: c.cvss, severity: c.severity, url: target, origin: c.origin, desc: c.detail, rawHeaders: c.rawHeaders, bodySnippet: c.rawHeaders });
       const r = buildMarkdownReport({ target, vuln: { name: `Dangerous CORS — ${c.test}`, cwe: c.cwe, cvss: c.cvss, severity: c.severity, url: target, origin: c.origin, desc: c.detail, rawHeaders: c.rawHeaders }, timestamp: ts });
       reports.push(r);
       log(C.magenta, `        ↳ PoC saved: ${path.relative(process.cwd(), r.filePath)}`);
+    } else if (c.verdict === "VULNERABLE" || c.verdict === "WEAK") {
+      log(C.yellow, `      ○ [${c.severity}] CORS ${c.test} — draft only, needs High/Critical with ACAC:true for bounty`);
+      allFindings.push({ name: `Dangerous CORS — ${c.test}`, cwe: c.cwe, cvss: c.cvss, severity: c.severity, url: target, origin: c.origin, desc: c.detail, rawHeaders: c.rawHeaders, bodySnippet: c.rawHeaders, draftOnly: true });
     }
   }
 
@@ -537,12 +547,15 @@ async function auditSingleTarget(target, opts = {}) {
   for (const h of missing) {
     const col = h.severity === "Medium" ? C.yellow : h.severity === "High" ? C.red : C.gray;
     log(col, `    → [${h.verdict}] ${h.name} (${h.cwe} CVSS ${h.cvss}) — ${h.desc}`);
-    // Only generate PoC for Medium+ or clickjacking/HSTS downgrade (not every Low)
-    if (h.severity === "Medium" || h.severity === "High" || h.header === "clickjacking" || h.header === "hsts-downgrade") {
+    // Paisa filter: Only High/Critical headers bring bounty — Medium/Low are drafts
+    if (h.severity === "High" || h.severity === "Critical" || h.header === "hsts-downgrade") {
       allFindings.push(h);
       const r = buildMarkdownReport({ target, vuln: { ...h, url: h.url || target }, timestamp: ts });
       reports.push(r);
       log(C.magenta, `        ↳ PoC saved: ${path.relative(process.cwd(), r.filePath)}`);
+    } else if (h.severity === "Medium") {
+      log(C.yellow, `      ○ [${h.severity}] ${h.name} — draft only, needs High/Critical for bounty`);
+      allFindings.push({ ...h, draftOnly: true });
     }
   }
   const present = hdrRes.findings.filter(f => f.verdict === "PRESENT").length;
