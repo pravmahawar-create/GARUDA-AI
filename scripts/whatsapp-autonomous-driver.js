@@ -26,13 +26,25 @@ function findBrowserExecutable() {
     "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
     "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-    "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe"
+    "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+    "/usr/bin/google-chrome",
+    "/usr/bin/google-chrome-stable",
+    "/usr/bin/chromium-browser",
+    "/usr/bin/chromium",
+    "/snap/bin/chromium",
+    "/opt/google/chrome/chrome",
   ];
 
   for (const p of chromePaths) {
     if (fs.existsSync(p)) return p;
   }
-  throw new Error("Neither Google Chrome nor Microsoft Edge found on this system.");
+  // Fallback to puppeteer bundled chromium if available (Render headless)
+  try {
+    const puppeteer = require("puppeteer");
+    const bundled = puppeteer.executablePath();
+    if (bundled && fs.existsSync(bundled)) return bundled;
+  } catch {}
+  throw new Error("Chrome/Chromium not found — install google-chrome-stable or set WHATSAPP_CLOUD_API_TOKEN for cloud mode.");
 }
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
