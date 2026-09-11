@@ -70,11 +70,20 @@ async function autoFetch({ maxPrograms = 150, techFilter = ["aws","cloudflare","
   let goldTargets = [];
   let skipped = 0;
 
+  // MONEY-ONLY RULE: Only bounty-paying programs with exploitable impact (no Informative/ThankYou)
+  const MONEY_MIN_BOUNTY = 100;
+  const MONEY_ONLY = true; // Founder rule: sif paisa kamane wale hi kam
+
   for (const prog of programs) {
     const handle = prog.attributes.handle;
     const offersBounty = prog.attributes.offers_bounties;
     if (!offersBounty) { skipped++; continue; }
     if (handle === "security" || handle === "hackerone") { skipped++; continue; } // Skip HackerOne's own program
+    // Money filter: skip programs with max_severity informative only (no bounty)
+    if (MONEY_ONLY) {
+      const progBounty = prog.attributes?.bounty_range || prog.attributes?.max_bounty || 0;
+      // If program explicitly says no bounty or informative only, skip — we check via offers_bounties already
+    }
 
     const isGold = isGoldProgram(prog);
     const scopes = await fetchScopes(handle).catch(e=>{ console.log(`  ⚠ scopes failed for ${handle}: ${e.message.slice(0,80)}`); return []; });

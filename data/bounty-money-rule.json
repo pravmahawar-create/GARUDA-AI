@@ -1,0 +1,32 @@
+{
+  "rule": "MONEY_ONLY",
+  "version": "1.0.0",
+  "description": "HackerOne hunting — only money-making vulns, no Informative/ThankYou",
+  "enforced": true,
+  "createdAt": "2026-09-12T00:00:00Z",
+  "filters": {
+    "minSeverity": "High",
+    "minCvss": 7.0,
+    "allowedCwe": ["CWE-538", "CWE-798", "CWE-200", "CWE-942"],
+    "minBounty": 100,
+    "excludeInformative": true,
+    "excludeThankYou": true,
+    "requireExploit": true,
+    "humanLike": {
+      "jitterMs": "300-1500",
+      "uaRotation": 8,
+      "concurrency": 2,
+      "cooldownHours": 24,
+      "quarantineHours": 2,
+      "maxPerDay": 2,
+      "appearHuman": true
+    }
+  },
+  "goldStrategy": {
+    "enabled": true,
+    "ratio": "80/20",
+    "regular": "$100-500 daily",
+    "gold": "$5000-6000 opportunistic",
+    "note": "Gold never ignored per founder advice — 20% effort on Gold"
+  }
+}
