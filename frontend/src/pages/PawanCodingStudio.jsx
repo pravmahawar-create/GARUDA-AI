@@ -102,9 +102,85 @@ export default function PawanCodingStudio() {
 
   const chatBottomRef = useRef(null);
 
+  const [pawanHistorySynced, setPawanHistorySynced] = useState(false);
+  const [pawanHistoryCount, setPawanHistoryCount] = useState(0);
+
+  const fetchPawanHistoryAndRehydrate = async () => {
+    try {
+      const res = await fetch("/api/pawan/history?limit=50");
+      const data = await res.json();
+      if (data.success && Array.isArray(data.history) && data.history.length > 0) {
+        setPawanHistorySynced(true);
+        setPawanHistoryCount(data.history.length);
+        // Rehydrate chat messages from persistent history (cross-device)
+        const rehydrated = [];
+        // History is desc sorted, reverse to chronological for chat
+        const chronological = [...data.history].reverse();
+        for (const h of chronological) {
+          if (h.type === "consultation" && h.instruction) {
+            rehydrated.push({
+              id: `hist_u_${h.id}`,
+              sender: "user",
+              text: h.instruction,
+              timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+              device: h.device,
+            });
+            if (h.consultation) {
+              const c = h.consultation;
+              rehydrated.push({
+                id: `hist_p_${h.id}`,
+                sender: "pawan",
+                text: c.reply || c.observation || "Restored consultation",
+                consultation: c,
+                timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                device: h.device,
+              });
+            }
+          } else if (h.type === "execution" && h.instruction) {
+            rehydrated.push({
+              id: `hist_u_${h.id}`,
+              sender: "user",
+              text: h.instruction,
+              timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+              device: h.device,
+            });
+            if (h.executionResult) {
+              rehydrated.push({
+                id: `hist_p_${h.id}`,
+                sender: "pawan",
+                text: `✓ Restored execution for ${h.executionResult.file || "task"} (SHA: ${(h.executionResult.sha256 || "").slice(0, 8)}...)`,
+                timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                device: h.device,
+              });
+            }
+          } else if (h.type === "apk_build") {
+            rehydrated.push({
+              id: `hist_p_${h.id}`,
+              sender: "pawan",
+              text: `📦 Restored APK build — ${h.executionResult?.file || "app"} (SHA: ${(h.executionResult?.sha256 || "").slice(0, 8)}...)`,
+              timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+              device: h.device,
+            });
+          }
+        }
+        if (rehydrated.length > 0) {
+          setMessages(prev => {
+            // Keep welcome if no other messages, otherwise append rehydrated after welcome
+            const welcome = prev.find(m => m.id === "welcome");
+            const others = prev.filter(m => m.id !== "welcome");
+            // Avoid duplicating if already rehydrated
+            if (others.length > 1) return prev;
+            return [...(welcome ? [welcome] : []), ...rehydrated, ...others];
+          });
+        }
+      }
+    } catch {}
+  };
+
   useEffect(() => {
     fetchStatus();
     fetchHistory();
+    fetchPawanHistoryAndRehydrate();
     fetchMobileStatus();
     checkAuthSession();
     if (SpeechRec) {
@@ -742,6 +818,11 @@ export default function PawanCodingStudio() {
               <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "0.3rem" }}>
                 Founder: <strong>Praveen Mahawar</strong> • Voice-Guided Closed Loop • Multi-Model Synthesis
               </div>
+              {pawanHistorySynced && (
+                <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.35)", color: "#6ee7b7", fontSize: "0.7rem", fontWeight: "700", padding: "3px 10px", borderRadius: "999px", marginTop: "6px" }}>
+                  <span>🔄</span> Synced with Cloud Database — {pawanHistoryCount} interactions restored (mobile + desktop)
+                </div>
+              )}
             </div>
 
             {/* Controls */}

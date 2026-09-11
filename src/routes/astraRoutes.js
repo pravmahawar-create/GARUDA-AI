@@ -52,6 +52,18 @@ router.post("/execute", async (req, res) => {
       attachment
     });
 
+    try {
+      const pawanHistoryService = require("../services/pawanHistoryService");
+      const device = pawanHistoryService.detectDevice(req.headers["user-agent"]);
+      pawanHistoryService.recordInteraction({
+        type: "execution",
+        device,
+        instruction: instruction || "",
+        attachmentMeta: { hasAttachment: !!attachment, mimeType: attachment?.mimeType || null },
+        executionResult: { file: result.file || targetFile || null, sha256: result.sha256 || null, success: !!result.success },
+      }).catch(() => {});
+    } catch {}
+
     res.json({
       success: result.success,
       error: result.error || null,
@@ -80,6 +92,19 @@ router.post("/consult", async (req, res) => {
       history
     });
 
+    // Persistent logging — fire-and-forget, never blocks response
+    try {
+      const pawanHistoryService = require("../services/pawanHistoryService");
+      const device = pawanHistoryService.detectDevice(req.headers["user-agent"]);
+      pawanHistoryService.recordInteraction({
+        type: "consultation",
+        device,
+        instruction: instruction || "",
+        attachmentMeta: { hasAttachment: !!attachment, mimeType: attachment?.mimeType || null },
+        consultation: result.success ? result.consultation : null,
+      }).catch(() => {});
+    } catch {}
+
     if (result.success) {
       res.json({ success: true, consultation: result.consultation });
     } else {
@@ -91,6 +116,59 @@ router.post("/consult", async (req, res) => {
 });
 
 const { containerizeApp, APPS_DIR } = require("../services/pawanApkService");
+const pawanHistoryService = require("../services/pawanHistoryService");
+
+/**
+ * POST /api/pawan/execute
+ * Pawan-scoped execution (alias to Astra engine) with persistent logging
+ */
+router.post("/pawan/execute", async (req, res) => {
+  try {
+    const { instruction, targetFile, searchQuery, code, currentCode, summary, attachment } = req.body;
+    if (!instruction) return res.status(400).json({ success: false, error: "instruction is required" });
+    const result = await engine.executeTask(instruction, { targetFile, searchQuery, code, currentCode, summary, attachment });
+    try {
+      const device = pawanHistoryService.detectDevice(req.headers["user-agent"]);
+      pawanHistoryService.recordInteraction({
+        type: "execution",
+        device,
+        instruction: instruction || "",
+        attachmentMeta: { hasAttachment: !!attachment, mimeType: attachment?.mimeType || null },
+        executionResult: { file: result.file || targetFile || null, sha256: result.sha256 || null, success: !!result.success },
+      }).catch(() => {});
+    } catch {}
+    res.json({ success: result.success, error: result.error || null, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * GET /api/pawan/history
+ * Returns last 50 interactions sorted by timestamp descending
+ */
+router.get("/pawan/history", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit, 10) || 50;
+    const history = await pawanHistoryService.getRecentHistory(limit);
+    res.json({ success: true, count: history.length, history });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * DELETE /api/pawan/history
+ * Clear history (Founder-only — caller must gate)
+ */
+router.delete("/pawan/history", async (req, res) => {
+  try {
+    await pawanHistoryService.clearHistory();
+    res.json({ success: true, cleared: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 /**
  * POST /api/pawan/build-apk
@@ -116,6 +194,16 @@ router.post("/build-apk", async (req, res) => {
       targetFile,
       appName: appName || (targetFile ? path.basename(targetFile, path.extname(targetFile)) : "garuda-app")
     });
+
+    try {
+      const device = pawanHistoryService.detectDevice(req.headers["user-agent"]);
+      pawanHistoryService.recordInteraction({
+        type: "apk_build",
+        device,
+        instruction: `APK build for ${targetFile || appName || "app"}`,
+        executionResult: { file: result.safeName || appName || targetFile || null, sha256: result.sha256 || null, success: !!result.success },
+      }).catch(() => {});
+    } catch {}
 
     res.json(result);
   } catch (err) {
