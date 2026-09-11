@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "title": "GARUDA Sovereign AI & WhatsApp Bot Starter Kit",
   "framework": "Next.js 14 App Router + Tailwind CSS + Supabase + Razorpay/Stripe",
-  "sha256": "cc199643d82a1993b75d994991d404b9da74a098d313dab607ec5919c2c4653c",
+  "sha256": "2433c7b35ac40be704b9b574e43ed121c6e9b4d54c3a0d7a1510c19349e015d8",
   "sizeBytes": 19989,
   "formattedSize": "19.5 KB",
   "downloadPath": "/downloads/garuda-sovereign-ai-starter.zip",
-  "generatedAt": "2026-09-09T07:10:52.756Z",
+  "generatedAt": "2026-09-11T13:47:13.224Z",
   "pricing": {
     "standard": {
       "usd": 49,
@@ -22,18 +22,8 @@
       "gumroadSlug": "garuda-sovereign-agency"
     }
   },
-    "paymentGatewayUrl": "https://razorpay.me/@garudaosincompany",
-    "marketplaces": {
-      "razorpay": "https://razorpay.me/@garudaosincompany",
-      "lemonsqueezy": "https://garudaos.lemonsqueezy.com/checkout/buy/da424027-ab54-4f5e-9716-e0b9782d4c46",
-      "lemonsqueezyStandard": "https://garudaos.lemonsqueezy.com/checkout/buy/da424027-ab54-4f5e-9716-e0b9782d4c46",
-      "lemonsqueezyExtended": "https://garudaos.lemonsqueezy.com/checkout/buy/635ff403-a016-407e-897b-1499543abaf4",
-      "gumroad": "https://gumroad.com/l/garuda-sovereign-starter",
-      "gumroadExtended": "https://gumroad.com/l/garuda-sovereign-agency",
-      "githubMarketplace": "https://github.com/marketplace/search?query=garuda",
-      "garudaDost": "https://www.garudaos.in/dost"
-    },
-    "founderContact": {
+  "paymentGatewayUrl": "https://razorpay.me/@garudaosincompany",
+  "founderContact": {
     "name": "Praveen Mahawar",
     "role": "Principal Architect & Founder",
     "email": "praveen@garudaos.in",
