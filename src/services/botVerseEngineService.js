@@ -393,7 +393,7 @@ Return strictly valid JSON only.`;
       }
     };
 
-    // 6. Unified Conversion Bridge
+    // 6. Unified Conversion Bridge — now with Lemon/Gumroad + Garuda traffic push
     const unifiedConversionBridge = {
       engine: "UNIFIED_CONVERSION_BRIDGE_V1",
       corePlatformPortal: "https://www.garudaos.in",
@@ -402,10 +402,27 @@ Return strictly valid JSON only.`;
         instagram: `https://www.garudaos.in/chat?ref=${campaignId}_ig`,
         facebook: `https://www.garudaos.in/chat?ref=${campaignId}_fb`,
         linkedin: `https://www.garudaos.in/chat?ref=${campaignId}_li`,
-        googleSearch: `https://www.garudaos.in/chat?ref=${campaignId}_seo`
+        googleSearch: `https://www.garudaos.in/chat?ref=${campaignId}_seo`,
+        boilerplate: `https://www.garudaos.in/boilerplate?ref=${campaignId}_store`,
+        lemonsqueezy: `https://garudaos.lemonsqueezy.com/checkout/buy/da424027-ab54-4f5e-9716-e0b9782d4c46?ref=${campaignId}`,
+        gumroad: `https://gumroad.com/l/garuda-sovereign-starter?ref=${campaignId}`,
+        garudaDost: `https://www.garudaos.in/dost?ref=${campaignId}`,
+      },
+      marketplacePush: {
+        lemonsqueezy: "https://garudaos.lemonsqueezy.com/checkout/buy/da424027-ab54-4f5e-9716-e0b9782d4c46",
+        gumroad: "https://gumroad.com/l/garuda-sovereign-starter",
+        razorpay: "https://razorpay.me/@garudaosincompany",
+        github: "https://github.com/pravmahawar-create/GARUDA-AI",
+      },
+      seoPush: {
+        sitemap: "https://www.garudaos.in/sitemap.xml",
+        robots: "https://www.garudaos.in/robots.txt",
+        jsonLd: "VideoObject + hasPart Clip for Google Search Video Highlights",
+        indexNow: "Bing + Yandex via garuda-autonomous-daily-publisher.js",
       },
       verifiedFounderContact: {
-        officialEmail: "garudaos.ai@gmail.com",
+        officialEmail: "praveen@garudaos.in",
+        backupEmail: "garudaos.ai@gmail.com",
         platformPortal: "https://www.garudaos.in"
       }
     };
