@@ -29,6 +29,8 @@ data/*
 !data/performance-marketing-buyers.json
 !data/deep-marketing-leads.json
 !data/boilerplate-store-manifest.json
+!data/bounty-targets.txt
+!data/bounty-scan-memory.json
 src/data/
 .aider*
 scratch/

@@ -1,0 +1,4 @@
+# GARUDA Bug Bounty — In-Scope Targets (one per line)
+# Supports: https://target.com | target.com | *.target.com | 1.1.1.0/30
+https://www.garudaos.in
+https://example.com
