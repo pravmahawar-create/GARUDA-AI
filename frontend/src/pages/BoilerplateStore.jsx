@@ -587,6 +587,70 @@ export default function BoilerplateStore() {
               {buyLoading === "extended" ? "Opening Razorpay..." : "Get Extended Agency License (₹7,999)"}
             </button>
           </div>
+
+          {/* Hosted SaaS — NEW, additive, preserves 3999/7999 */}
+          <div style={{
+            background: "rgba(11, 15, 23, 0.7)",
+            border: "1px solid rgba(56, 189, 248, 0.35)",
+            borderRadius: 20,
+            padding: "2rem",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            position: "relative"
+          }}>
+            <div style={{
+              position: "absolute",
+              top: -12,
+              right: 24,
+              background: "linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)",
+              color: "#fff",
+              fontSize: "0.7rem",
+              fontWeight: 900,
+              padding: "0.2rem 0.75rem",
+              borderRadius: 999,
+              letterSpacing: "0.05em"
+            }}>
+              NEW • HOSTED
+            </div>
+            <div>
+              <span style={{ fontSize: "0.75rem", fontFamily: "monospace", textTransform: "uppercase", padding: "0.2rem 0.5rem", background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", borderRadius: 4, fontWeight: 700 }}>
+                Hosted SaaS — Managed
+              </span>
+              <div style={{ fontSize: "2.5rem", fontWeight: 800, color: "#fff", margin: "1rem 0 0.5rem" }}>
+                ₹1,599 <span style={{ fontSize: "1rem", color: "#9ca3af", fontWeight: 400 }}>($19 / mo)</span>
+              </div>
+              <p style={{ color: "#9ca3af", fontSize: "0.85rem", marginBottom: "1.5rem" }}>
+                1-Click Vercel deploy + managed Supabase + auto updates. No DevOps.
+              </p>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, fontSize: "0.85rem", color: "#d1d5db", lineHeight: 2 }}>
+                <li>✓ Everything in Standard License</li>
+                <li>✓ Hosted on garudaos.in subdomain (1-Click)</li>
+                <li>✓ Managed Supabase DB + backups</li>
+                <li>✓ Auto updates &amp; 24/7 health checks</li>
+                <li>✓ Cancel anytime — export full code</li>
+              </ul>
+            </div>
+            <button
+              onClick={() => handleBuy("hosted")}
+              disabled={buyLoading === "hosted"}
+              style={{
+                marginTop: "2rem",
+                width: "100%",
+                padding: "0.75rem",
+                borderRadius: 8,
+                background: buyLoading === "hosted" ? "rgba(56,189,248,0.5)" : "linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)",
+                border: "none",
+                color: "#fff",
+                fontWeight: 900,
+                cursor: buyLoading === "hosted" ? "wait" : "pointer",
+                boxShadow: "0 4px 15px rgba(56, 189, 248, 0.3)",
+                opacity: buyLoading === "hosted" ? 0.7 : 1,
+              }}
+            >
+              {buyLoading === "hosted" ? "Opening Razorpay..." : "Get Hosted — ₹1,599/mo"}
+            </button>
+          </div>
         </section>
 
         {/* Footer */}

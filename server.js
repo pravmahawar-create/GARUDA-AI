@@ -51,5 +51,29 @@ const PORT = process.env.PORT || 3000;
         } else {
             console.log("[GARUDA] Bounty daemon idle — set GARUDA_BOUNTY_DAEMON=true to enable 24/7 hunting");
         }
+
+        // ── 24/7 Agency White-Label Auto-Dispatch (6 agencies, 250 OK) ──
+        // Enable with GARUDA_AGENCY_DAEMON=true — runs daily 09:00 IST via setInterval
+        // Uses smtp.zoho.in:465 praveen@garudaos.in — verified 250 OK per dispatch
+        if (String(process.env.GARUDA_AGENCY_DAEMON).toLowerCase() === "true") {
+            try {
+                const agencyIntervalMs = Number(process.env.GARUDA_AGENCY_INTERVAL_MS) || 24 * 60 * 60 * 1000; // daily
+                const runAgencyDispatch = () => {
+                    const { spawn } = require("child_process");
+                    const path = require("path");
+                    const scriptPath = path.join(__dirname, "scripts", "dispatch-agency-whitelabel.js");
+                    const child = spawn("node", [scriptPath], { stdio: "inherit", env: process.env });
+                    child.on("error", e => console.error("[GARUDA] Agency dispatch spawn failed:", e.message));
+                    child.on("exit", code => console.log(`[GARUDA] Agency dispatch completed code ${code} — next in ${Math.round(agencyIntervalMs/3600000)}h`));
+                    console.log(`[GARUDA] 🏢 Agency dispatch triggered — 6 agencies via Zoho 465 (PID ${child.pid})`);
+                };
+                // Initial run after 60s, then interval
+                setTimeout(runAgencyDispatch, 60 * 1000);
+                setInterval(runAgencyDispatch, agencyIntervalMs);
+                console.log(`[GARUDA] 🏢 Agency daemon armed — interval ${Math.round(agencyIntervalMs/3600000)}h (GARUDA_AGENCY_DAEMON=true)`);
+            } catch (e) { console.error("[GARUDA] Agency daemon boot failed:", e.message); }
+        } else {
+            console.log("[GARUDA] Agency daemon idle — set GARUDA_AGENCY_DAEMON=true to enable daily 6-agency 250 OK");
+        }
     });
 })();

@@ -100,6 +100,14 @@ function packageBoilerplate() {
         inr: 7999,
         license: "Unlimited Agency White-Label Deployments",
         gumroadSlug: "garuda-sovereign-agency"
+      },
+      hosted: {
+        usd: 19,
+        inr: 1599,
+        per: "month",
+        license: "Hosted SaaS — 1-Click Vercel Deploy + Managed Supabase + Auto Updates",
+        gumroadSlug: "garuda-sovereign-hosted",
+        recurring: true
       }
     },
     paymentGatewayUrl: "https://razorpay.me/@garudaosincompany",

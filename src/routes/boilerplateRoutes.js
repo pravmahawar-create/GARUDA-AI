@@ -57,9 +57,12 @@ router.post("/checkout", async (req, res) => {
   try {
     const { license = "standard", customerEmail, customerPhone, gateway, ref } = req.body || {};
     const isExtended = license === "extended";
-    const amountInr = isExtended ? 7999 : 3999;
-    const amountUsd = isExtended ? 99 : 49;
-    const slug = isExtended ? "garuda-sovereign-agency" : "garuda-sovereign-starter";
+    const isHosted = license === "hosted";
+    // Preserve 3999/7999 — never modify — hosted is additive
+    let amountInr, amountUsd, slug;
+    if (isHosted) { amountInr = 1599; amountUsd = 19; slug = "garuda-sovereign-hosted"; }
+    else if (isExtended) { amountInr = 7999; amountUsd = 99; slug = "garuda-sovereign-agency"; }
+    else { amountInr = 3999; amountUsd = 49; slug = "garuda-sovereign-starter"; }
 
     // Multi-gateway URLs — Razorpay always ready, others only if store exists
     // NOTE: Razorpay Payment Pages (razorpay.me/@...) are fixed-amount pages — do NOT append ?amount=

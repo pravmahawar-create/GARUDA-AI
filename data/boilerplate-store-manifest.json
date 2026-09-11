@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "title": "GARUDA Sovereign AI & WhatsApp Bot Starter Kit",
   "framework": "Next.js 14 App Router + Tailwind CSS + Supabase + Razorpay/Stripe",
-  "sha256": "2433c7b35ac40be704b9b574e43ed121c6e9b4d54c3a0d7a1510c19349e015d8",
+  "sha256": "3b55e0997eafd7fbfc4e88067fdfbc0bc5388ba941621fbf8fea9b3dbd4c732b",
   "sizeBytes": 19989,
   "formattedSize": "19.5 KB",
   "downloadPath": "/downloads/garuda-sovereign-ai-starter.zip",
-  "generatedAt": "2026-09-11T13:47:13.224Z",
+  "generatedAt": "2026-09-11T17:34:51.039Z",
   "pricing": {
     "standard": {
       "usd": 49,
@@ -20,6 +20,14 @@
       "inr": 7999,
       "license": "Unlimited Agency White-Label Deployments",
       "gumroadSlug": "garuda-sovereign-agency"
+    },
+    "hosted": {
+      "usd": 19,
+      "inr": 1599,
+      "per": "month",
+      "license": "Hosted SaaS — 1-Click Vercel Deploy + Managed Supabase + Auto Updates",
+      "gumroadSlug": "garuda-sovereign-hosted",
+      "recurring": true
     }
   },
   "paymentGatewayUrl": "https://razorpay.me/@garudaosincompany",

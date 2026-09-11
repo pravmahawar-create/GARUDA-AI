@@ -38,3 +38,7 @@ services:
         value: true
       - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
         value: false
+      - key: GARUDA_AGENCY_DAEMON
+        value: true
+      - key: GARUDA_AGENCY_INTERVAL_MS
+        value: 86400000
