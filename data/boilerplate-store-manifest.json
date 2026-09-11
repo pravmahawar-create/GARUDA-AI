@@ -30,8 +30,12 @@
       "recurring": true
     }
   },
-  "paymentGatewayUrl": "https://razorpay.me/@garudaosincompany",
-  "founderContact": {
+    "paymentGatewayUrl": "https://razorpay.me/@garudaosincompany",
+    "gumroadLive": {
+      "standard": "https://garudaos.gumroad.com/l/eagyjk",
+      "extended": "https://garudaos.gumroad.com/l/jnhjqf"
+    },
+    "founderContact": {
     "name": "Praveen Mahawar",
     "role": "Principal Architect & Founder",
     "email": "praveen@garudaos.in",
