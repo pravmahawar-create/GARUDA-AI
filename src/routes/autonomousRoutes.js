@@ -6,16 +6,17 @@ const path = require("path");
 // GET /api/autonomous/status — single pane for founder (no daily manual checks)
 router.get("/status", async (req, res) => {
   try {
+    const isProd = process.env.NODE_ENV === "production";
     const out = {
       timestamp: new Date().toISOString(),
-      autonomousActive: String(process.env.GARUDA_AUTONOMOUS_ACTIVE) === "true",
+      autonomousActive: String(process.env.GARUDA_AUTONOMOUS_ACTIVE ?? (isProd ? "true" : "false")) === "true",
       bounty: {
-        enabled: String(process.env.GARUDA_BOUNTY_DAEMON) === "true",
+        enabled: String(process.env.GARUDA_BOUNTY_DAEMON ?? (isProd ? "true" : "false")) === "true",
         intervalMinutes: Number(process.env.GARUDA_BOUNTY_INTERVAL || 30),
         supervisor: "auto-restart armed (30s backoff, Telegram alert)",
       },
       agency: {
-        enabled: String(process.env.GARUDA_AGENCY_DAEMON) === "true",
+        enabled: String(process.env.GARUDA_AGENCY_DAEMON ?? (isProd ? "true" : "false")) === "true",
         intervalMs: Number(process.env.GARUDA_AGENCY_INTERVAL_MS || 86400000),
         dedup: "24h guard",
       },

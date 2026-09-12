@@ -30,10 +30,11 @@ const PORT = process.env.PORT || 3000;
         }
 
         // ── 24/7 Bounty Autonomous Daemon (non-blocking) — AUTO-RECOVERY SUPERVISOR ──
-        // Enable with GARUDA_BOUNTY_DAEMON=true — supervisor restarts on crash (exponential backoff, Telegram alert)
+        // Enable with GARUDA_BOUNTY_DAEMON=true — default ON in production (Render). Set GARUDA_BOUNTY_DAEMON=false to disable.
         // Runs: node scripts/bounty-autonomous-daemon.js --watch --interval 30 --discover
         // Uses OpenCode/ollama_code via smartModelRouter bypass (never Gemini)
-        if (String(process.env.GARUDA_BOUNTY_DAEMON).toLowerCase() === "true") {
+        const bountyEnabled = String(process.env.GARUDA_BOUNTY_DAEMON ?? (process.env.NODE_ENV === "production" ? "true" : "false")).toLowerCase() === "true";
+        if (bountyEnabled) {
             try {
                 const { spawn } = require("child_process");
                 const path = require("path");
@@ -77,9 +78,10 @@ const PORT = process.env.PORT || 3000;
         }
 
         // ── 24/7 Agency White-Label Auto-Dispatch (6 agencies, 250 OK) — DEDUP GUARD + AUTO-RECOVERY ──
-        // Enable with GARUDA_AGENCY_DAEMON=true — runs daily, dedup 24h guard prevents spam
+        // Enable with GARUDA_AGENCY_DAEMON=true — default ON in production. Set false to disable.
         // Uses smtp.zoho.in:465 praveen@garudaos.in — verified 250 OK per dispatch
-        if (String(process.env.GARUDA_AGENCY_DAEMON).toLowerCase() === "true") {
+        const agencyEnabled = String(process.env.GARUDA_AGENCY_DAEMON ?? (process.env.NODE_ENV === "production" ? "true" : "false")).toLowerCase() === "true";
+        if (agencyEnabled) {
             try {
                 const agencyIntervalMs = Number(process.env.GARUDA_AGENCY_INTERVAL_MS) || 24 * 60 * 60 * 1000; // daily
                 const fs = require("fs");
