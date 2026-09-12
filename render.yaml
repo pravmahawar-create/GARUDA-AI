@@ -42,3 +42,7 @@ services:
         value: true
       - key: GARUDA_AGENCY_INTERVAL_MS
         value: 86400000
+      - key: GARUDA_OVERNIGHT_HUNTERS
+        value: true
+      - key: GARUDA_AUTONOMOUS_ACTIVE
+        value: true
