@@ -52,11 +52,17 @@ const PORT = process.env.PORT || 3000;
                     child.on("error", e => console.error("[GARUDA] Bounty daemon spawn failed:", e.message));
                     child.on("exit", (code, signal) => {
                         const uptimeSec = ((Date.now() - child._spawnAt)/1000).toFixed(0);
-                        console.error(`[GARUDA] 🚨 Bounty daemon exited code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 30s`);
-                        try {
-                            const tg = require("./src/services/telegramBotService");
-                            if (tg.isConfigured && tg.isConfigured()) tg.sendMessage(`🚨 GARUDA Bounty Daemon crashed (code ${code}, uptime ${uptimeSec}s) — auto-restarting in 30s (restart #${bountyRestartCount+1})`).catch(()=>{});
-                        } catch {}
+                        // Only noisy Telegram if quick crash (<5m) or non-zero exit — prevents spam on normal Render redeploy
+                        const isQuickCrash = Number(uptimeSec) < 300 || (code !== 0 && code !== null);
+                        if (isQuickCrash) {
+                            console.error(`[GARUDA] 🚨 Bounty daemon quick-crash code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 30s`);
+                            try {
+                                const tg = require("./src/services/telegramBotService");
+                                if (tg.isConfigured && tg.isConfigured()) tg.sendMessage(`🚨 GARUDA Bounty Daemon quick-crash (code ${code}, uptime ${uptimeSec}s) — auto-restarting in 30s (restart #${bountyRestartCount+1})`).catch(()=>{});
+                            } catch {}
+                        } else {
+                            console.log(`[GARUDA] Bounty daemon exited after ${uptimeSec}s (likely Render redeploy) — auto-restart in 30s (silent)`);
+                        }
                         bountyRestartCount++;
                         // Exponential backoff cap 5m
                         const delay = Math.min(300000, 30000 * Math.pow(1.5, Math.min(bountyRestartCount, 6)));

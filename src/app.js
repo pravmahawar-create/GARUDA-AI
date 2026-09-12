@@ -184,6 +184,13 @@ const abslKnowledgeService = require("./services/abslKnowledgeService");
 const abslKnowledgeSeedService = require("./services/abslKnowledgeSeedService");
 // Note: Revenue Operating Cycle workers boot via server.js only when MongoDB connection is verified.
 
+// HackerOne email auto-detect (Zoho) — no more manual batana
+try{
+  const watcher = require("./services/hackerOneEmailWatcher");
+  watcher.startWatcher(10*60*1000);
+  console.log("[GARUDA] HackerOne email watcher armed — 10m poll (Zoho)");
+} catch(e){ console.log("[HackerOneWatcher] init skip", String(e.message).slice(0,80)); }
+
 // Overnight Serper Hunters — laptop band ke baad bhi subah tak (Render pe) — Founder YES tonight
 try{
   const overnight = require("./workers/overnightSerperHuntersWorker");
