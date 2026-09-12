@@ -56,16 +56,17 @@ async function createAccount({ target, prefix="garuda", headless=true, timeoutMs
     // Heuristic: find signup / register / create account link
     const signupSelectors = [
       'a[href*="sign"]','a[href*="register"]','a[href*="join"]','a[href*="signup"]',
-      'button:has-text("Sign up")','button:has-text("Register")','[data-testid*="sign"]'
+      '[data-testid*="sign"]','a[href*="create"]'
     ];
     // Try to click signup
+    const sleep = (ms) => new Promise(r=>setTimeout(r, ms));
     for(const sel of signupSelectors){
       try {
         const el = await page.$(sel);
-        if(el){ await el.click().catch(()=>{}); await page.waitForTimeout(1500); evidence.steps.push(`clicked ${sel}`); break; }
+        if(el){ await el.click().catch(()=>{}); await sleep(1500); evidence.steps.push(`clicked ${sel}`); break; }
       } catch {}
     }
-    await page.waitForTimeout(1200);
+    await sleep(1200);
 
     // Auto-detect form fields
     const emailSel = 'input[type="email"], input[name*="email" i], input[id*="email" i], input[placeholder*="email" i]';
@@ -89,8 +90,9 @@ async function createAccount({ target, prefix="garuda", headless=true, timeoutMs
     }
 
     // Try submit
-    const submitSel = 'button[type="submit"], input[type="submit"], button:has-text("Create"), button:has-text("Sign up")';
-    const submit = await page.$(submitSel);
+    const submitSel = 'button[type="submit"], input[type="submit"]';
+    let submit = null;
+    try { submit = await page.$(submitSel); } catch { submit = null; }
     if(submit){
       evidence.steps.push("submit button found — NOT auto-clicked (founder gate: requires OTP/captcha human check)");
       // Do NOT auto-submit without founder OTP gate — save creds for manual step
