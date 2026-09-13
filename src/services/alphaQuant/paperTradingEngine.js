@@ -164,7 +164,8 @@ class PaperTradingEngine {
     const remainingPositions = [];
 
     const totalMinutesIST = (candle.time.getUTCHours() * 60 + candle.time.getUTCMinutes() + 330) % 1440;
-    const isEODSquareOff = totalMinutesIST >= 915; // 3:15 PM IST square-off
+    const isIndianEquity = symbol.endsWith('.NS') || symbol.endsWith('.BO') || symbol === '^NSEI';
+    const isEODSquareOff = isIndianEquity && totalMinutesIST >= 915; // 3:15 PM IST only for Indian equities
 
     for (const pos of this.openPositions) {
       if (pos.symbol !== symbol) {
