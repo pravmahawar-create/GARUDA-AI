@@ -42,11 +42,10 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
             }, 30000);
         }
 
-        // ── 24/7 Bounty Autonomous Daemon (non-blocking) — AUTO-RECOVERY SUPERVISOR ──
-        // Enable with GARUDA_BOUNTY_DAEMON=true — default ON in production (Render). Set GARUDA_BOUNTY_DAEMON=false to disable.
-        // Runs: node scripts/bounty-autonomous-daemon.js --watch --interval 30 --discover
-        // Uses OpenCode/ollama_code via smartModelRouter bypass (never Gemini)
-        const bountyEnabled = String(process.env.GARUDA_BOUNTY_DAEMON ?? (process.env.NODE_ENV === "production" ? "true" : "false")).toLowerCase() === "true";
+        // ── 24/7 Bounty Autonomous Daemon (non-blocking) — SILENCED BY DEFAULT ──
+        // Enable only with explicit GARUDA_BOUNTY_DAEMON=true. Default is strictly FALSE.
+        // Routine crash and scan alerts to Telegram are disabled to eliminate noise.
+        const bountyEnabled = String(process.env.GARUDA_BOUNTY_DAEMON || "false").toLowerCase() === "true";
         if (bountyEnabled) {
             try {
                 const { spawn } = require("child_process");
@@ -61,52 +60,26 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
                         env: process.env
                     });
                     child._spawnAt = Date.now();
-                    console.log(`[GARUDA] 🦅 Bounty Autonomous Daemon spawned — interval ${interval}m --discover --watch (PID ${child.pid}, restart #${bountyRestartCount})`);
+                    console.log(`[GARUDA] 🦅 Bounty Autonomous Daemon spawned — interval ${interval}m (PID ${child.pid}, restart #${bountyRestartCount})`);
                     child.on("error", e => console.error("[GARUDA] Bounty daemon spawn failed:", e.message));
                     child.on("exit", (code, signal) => {
                         const uptimeSec = ((Date.now() - child._spawnAt)/1000).toFixed(0);
-                        // Only noisy Telegram if quick crash (<5m) or non-zero exit — prevents spam on normal Render redeploy
-                        const isQuickCrash = Number(uptimeSec) < 300 || (code !== 0 && code !== null);
-                        if (isQuickCrash) {
-                            console.error(`[GARUDA] 🚨 Bounty daemon quick-crash code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 30s`);
-                            // Dedup: only send Telegram if last crash alert was >5 min ago
-                            if (!global._lastCrashAlert || (Date.now() - global._lastCrashAlert) > 300000) {
-                                global._lastCrashAlert = Date.now();
-                                try {
-                                    const tg = require("./src/services/telegramBotService");
-                                    if (tg.isConfigured && tg.isConfigured()) tg.sendMessage(`🚨 GARUDA Bounty Daemon quick-crash (code ${code}, uptime ${uptimeSec}s) — auto-restarting in 30s (restart #${bountyRestartCount+1})`).catch(()=>{});
-                                } catch {}
-                            }
-                        } else {
-                            console.log(`[GARUDA] Bounty daemon exited after ${uptimeSec}s (likely Render redeploy) — auto-restart in 30s (silent)`);
-                        }
+                        console.log(`[GARUDA] Bounty daemon exited code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 30s (silent)`);
                         bountyRestartCount++;
-                        // Exponential backoff cap 5m
-                        const delay = Math.min(300000, 30000 * Math.pow(1.5, Math.min(bountyRestartCount, 6)));
                         setTimeout(spawnBounty, 30000);
                     });
                     return child;
                 };
                 spawnBounty();
-                // Daily alive ping to founder (dedup: max once per 24h)
-                setInterval(() => {
-                    if (!global._lastAlivePing || (Date.now() - global._lastAlivePing) > 86400000) {
-                        global._lastAlivePing = Date.now();
-                        try {
-                            const tg = require("./src/services/telegramBotService");
-                            if (tg.isConfigured && tg.isConfigured()) tg.sendMessage(`✅ GARUDA Bounty Daemon alive — interval ${interval}m — ${new Date().toISOString()} — auto-recovery armed`).catch(()=>{});
-                        } catch {}
-                    }
-                }, 24*60*60*1000).unref();
             } catch (e) { console.error("[GARUDA] Bounty daemon boot failed:", e.message); }
         } else {
-            console.log("[GARUDA] Bounty daemon idle — set GARUDA_BOUNTY_DAEMON=true to enable 24/7 hunting");
+            console.log("[GARUDA] Bounty daemon idle — set GARUDA_BOUNTY_DAEMON=true to enable");
         }
 
-        // ── 24/7 Agency White-Label Auto-Dispatch (6 agencies, 250 OK) — DEDUP GUARD + AUTO-RECOVERY ──
-        // Enable with GARUDA_AGENCY_DAEMON=true — default ON in production. Set false to disable.
-        // Uses smtp.zoho.in:465 praveen@garudaos.in — verified 250 OK per dispatch
-        const agencyEnabled = String(process.env.GARUDA_AGENCY_DAEMON ?? (process.env.NODE_ENV === "production" ? "true" : "false")).toLowerCase() === "true";
+        // ── 24/7 Agency White-Label Auto-Dispatch — SILENCED BY DEFAULT ──
+        // Enable only with explicit GARUDA_AGENCY_DAEMON=true. Default is strictly FALSE.
+        // Telegram notifications removed to prevent repetitive routine alerts.
+        const agencyEnabled = String(process.env.GARUDA_AGENCY_DAEMON || "false").toLowerCase() === "true";
         if (agencyEnabled) {
             try {
                 const agencyIntervalMs = Number(process.env.GARUDA_AGENCY_INTERVAL_MS) || 24 * 60 * 60 * 1000; // daily
@@ -133,21 +106,16 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
                     const child = spawn("node", [scriptPath], { stdio: "inherit", env: process.env });
                     child.on("error", e => console.error("[GARUDA] Agency dispatch spawn failed:", e.message));
                     child.on("exit", code => {
-                        console.log(`[GARUDA] Agency dispatch completed code ${code} — next check in ${Math.round(agencyIntervalMs/3600000)}h`);
-                        try {
-                            const tg = require("./src/services/telegramBotService");
-                            if (tg.isConfigured && tg.isConfigured()) tg.sendMessage(`🏢 Agency dispatch done (code ${code}) — 6 agencies via Zoho 465 — next in ${Math.round(agencyIntervalMs/3600000)}h`).catch(()=>{});
-                        } catch {}
+                        console.log(`[GARUDA] Agency dispatch completed code ${code} (silent)`);
                     });
-                    console.log(`[GARUDA] 🏢 Agency dispatch triggered — 6 agencies via Zoho 465 (PID ${child.pid})`);
+                    console.log(`[GARUDA] 🏢 Agency dispatch triggered (PID ${child.pid})`);
                 };
-                // Initial check after 90s (allow DB boot), then interval with dedup
                 setTimeout(runAgencyDispatch, 90 * 1000);
                 setInterval(runAgencyDispatch, agencyIntervalMs);
-                console.log(`[GARUDA] 🏢 Agency daemon armed — interval ${Math.round(agencyIntervalMs/3600000)}h dedup 24h guard (GARUDA_AGENCY_DAEMON=true)`);
+                console.log(`[GARUDA] 🏢 Agency daemon armed (silent, GARUDA_AGENCY_DAEMON=true)`);
             } catch (e) { console.error("[GARUDA] Agency daemon boot failed:", e.message); }
         } else {
-            console.log("[GARUDA] Agency daemon idle — set GARUDA_AGENCY_DAEMON=true to enable daily 6-agency 250 OK");
+            console.log("[GARUDA] Agency daemon idle — set GARUDA_AGENCY_DAEMON=true to enable");
         }
     });
 })();

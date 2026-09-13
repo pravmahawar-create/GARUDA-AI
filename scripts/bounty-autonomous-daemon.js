@@ -159,6 +159,10 @@ let telegram = null;
 try { telegram = require("../src/services/telegramBotService"); } catch { telegram = null; }
 
 async function dispatchTelegramAlert({ target, vuln, reportPath, evidenceHash, curl }) {
+  if (process.env.GARUDA_BOUNTY_TELEGRAM_ALERTS !== "true") {
+    log(C.gray, `  🔇 Telegram bounty alerts silenced to prevent noise (set GARUDA_BOUNTY_TELEGRAM_ALERTS=true to enable)`);
+    return null;
+  }
   if (!telegram || typeof telegram.sendMessage !== "function") {
     log(C.yellow, `  ⚠ Telegram not configured — skipping alert for ${vuln.name}`);
     return null;
@@ -348,16 +352,16 @@ async function loadTargetsForDaemon(opts) {
   // Parse enhanced format: url | handle | max_bounty | notes
   const parsed = raw.map(parseTargetLine).filter(Boolean);
 
-  // Apply min-bounty filter
+  // Apply min-bounty filter (only when reading from file, not --target)
   const minBounty = opts.minBounty || 0;
   let filtered = parsed;
-  if (minBounty > 0) {
+  if (minBounty > 0 && !opts.target) {
     filtered = parsed.filter(p => p.maxBountyMin >= minBounty);
     log(C.magenta, `  💰 Min-bounty filter: $${minBounty} → ${filtered.length}/${parsed.length} programs qualify`);
   }
 
   // Extract URLs for hunter
-  const urls = filtered.map(p => p.url);
+  const urls = opts.target ? raw : filtered.map(p => p.url);
   let targets = hunter.loadTargets(urls);
 
   // Store parsed metadata for later use

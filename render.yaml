@@ -10,9 +10,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: GARUDA_BOUNTY_DAEMON
-        value: true
-      - key: GARUDA_BOUNTY_INTERVAL
-        value: 30
+        value: false
       - key: GARUDA_EMAIL_HOST
         value: smtp.zoho.in
       - key: GARUDA_EMAIL_PORT
