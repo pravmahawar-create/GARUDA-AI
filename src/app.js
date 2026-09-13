@@ -149,7 +149,8 @@ app.use("/api/boilerplate", require("./routes/boilerplateRoutes"));
 // GARUDA API Marketplace — RapidAPI triage/whatsapp bundle ($9/$19)
 app.use("/api/marketplace", require("./routes/marketplaceRoutes"));
 // GARUDA Autonomous — single pane status + trigger (no daily manual)
-app.use("/api/autonomous", require("./routes/autonomousRoutes"));
+  app.use("/api/autonomous", require("./routes/autonomousRoutes"));
+  app.use("/api/feedback", (req, res) => require("../api/feedback-dashboard")(req, res));
 
 // 🎙️ Natural Indian Voice Speech Engine (Google Natural TTS stream) — rate-limited
 app.get("/api/audio/tts", ttsLimiter, async (req, res) => {
