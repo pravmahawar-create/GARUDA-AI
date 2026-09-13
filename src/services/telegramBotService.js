@@ -39,9 +39,40 @@ async function telegramFetch(method, payload) {
   }
 }
 
+// ── Duplicate Message Protection ──
+const recentMessages = new Map(); // key -> { count, lastSent }
+const DEDUP_WINDOW_MS = 300000; // 5 minutes
+
+function isDuplicate(text, chatId) {
+  const key = `${chatId}:${text.slice(0, 200)}`;
+  const now = Date.now();
+  const existing = recentMessages.get(key);
+
+  if (existing && (now - existing.lastSent) < DEDUP_WINDOW_MS) {
+    existing.count++;
+    // Allow 1st send, throttle after that
+    if (existing.count > 1) {
+      console.log(`[TelegramBot] Deduped message (${existing.count}x): ${text.slice(0, 50)}...`);
+      return true;
+    }
+  } else {
+    recentMessages.set(key, { count: 1, lastSent: now });
+  }
+
+  // Cleanup old entries every 100 messages
+  if (recentMessages.size > 100) {
+    for (const [k, v] of recentMessages.entries()) {
+      if (now - v.lastSent > DEDUP_WINDOW_MS) recentMessages.delete(k);
+    }
+  }
+
+  return false;
+}
+
 async function sendMessage(text, chatId) {
   const target = chatId || founderChatId();
   if (!target || !botToken()) return null;
+  if (isDuplicate(text, target)) return { ok: true, deduped: true };
   return telegramFetch("sendMessage", {
     chat_id: target,
     text: String(text || "").slice(0, 4096),

@@ -69,10 +69,14 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
                         const isQuickCrash = Number(uptimeSec) < 300 || (code !== 0 && code !== null);
                         if (isQuickCrash) {
                             console.error(`[GARUDA] 🚨 Bounty daemon quick-crash code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 30s`);
-                            try {
-                                const tg = require("./src/services/telegramBotService");
-                                if (tg.isConfigured && tg.isConfigured()) tg.sendMessage(`🚨 GARUDA Bounty Daemon quick-crash (code ${code}, uptime ${uptimeSec}s) — auto-restarting in 30s (restart #${bountyRestartCount+1})`).catch(()=>{});
-                            } catch {}
+                            // Dedup: only send Telegram if last crash alert was >5 min ago
+                            if (!global._lastCrashAlert || (Date.now() - global._lastCrashAlert) > 300000) {
+                                global._lastCrashAlert = Date.now();
+                                try {
+                                    const tg = require("./src/services/telegramBotService");
+                                    if (tg.isConfigured && tg.isConfigured()) tg.sendMessage(`🚨 GARUDA Bounty Daemon quick-crash (code ${code}, uptime ${uptimeSec}s) — auto-restarting in 30s (restart #${bountyRestartCount+1})`).catch(()=>{});
+                                } catch {}
+                            }
                         } else {
                             console.log(`[GARUDA] Bounty daemon exited after ${uptimeSec}s (likely Render redeploy) — auto-restart in 30s (silent)`);
                         }
@@ -84,12 +88,15 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
                     return child;
                 };
                 spawnBounty();
-                // Daily alive ping to founder
+                // Daily alive ping to founder (dedup: max once per 24h)
                 setInterval(() => {
-                    try {
-                        const tg = require("./src/services/telegramBotService");
-                        if (tg.isConfigured && tg.isConfigured()) tg.sendMessage(`✅ GARUDA Bounty Daemon alive — interval ${interval}m — ${new Date().toISOString()} — auto-recovery armed`).catch(()=>{});
-                    } catch {}
+                    if (!global._lastAlivePing || (Date.now() - global._lastAlivePing) > 86400000) {
+                        global._lastAlivePing = Date.now();
+                        try {
+                            const tg = require("./src/services/telegramBotService");
+                            if (tg.isConfigured && tg.isConfigured()) tg.sendMessage(`✅ GARUDA Bounty Daemon alive — interval ${interval}m — ${new Date().toISOString()} — auto-recovery armed`).catch(()=>{});
+                        } catch {}
+                    }
                 }, 24*60*60*1000).unref();
             } catch (e) { console.error("[GARUDA] Bounty daemon boot failed:", e.message); }
         } else {
