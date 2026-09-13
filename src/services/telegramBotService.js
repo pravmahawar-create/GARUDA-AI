@@ -4,6 +4,8 @@ const garudaCommandRouter = require("./garudaCommandRouter");
 const insuranceAdvisorService = require("./insuranceAdvisorService");
 const telegramInsuranceWorker = require("./telegramInsuranceWorkerService");
 const conversationService = require("./conversationService");
+const brain = require("./garudaBrain");
+const garudaConversation = require("./garudaConversation");
 
 const TELEGRAM_API = "https://api.telegram.org";
 
@@ -266,11 +268,12 @@ async function handleUpdate(update) {
   const conversationHistory = await loadChatHistory(chatId, 8);
 
   // 3) Multi-Domain AI Operating System Intelligence (ABSLI + Growth + Engineering)
+  // UPGRADED: Uses new GARUDA Brain (Gemini/Nvidia/Groq) instead of old llmProvider
   if (!isFounder) {
     let answer = null;
     try {
-      const reply = await llmProvider.ask({
-        systemContext:
+      const result = await brain.think(text, {
+        systemPrompt:
           "You are GARUDA, the autonomous AI Operating System founded by Praveen Mahawar (garudaos.in). " +
           "You represent sovereign digital workforces across multiple vital industries: " +
           "1. Insurance Sector: Official ABSLI Life Insurance advisor and policy intelligence. " +
@@ -279,14 +282,11 @@ async function handleUpdate(update) {
           "Be warm, honest, respectful, and concise in the user's language (Hinglish/English). " +
           "If the user asks about life insurance, provide verified ABSLI advice. " +
           "If the user asks about business, leads, or YouTube, guide them with real capabilities.",
-        userMessage: text,
-        conversationHistory,
-        skipKnowledge: true,
-        skipRuntimeContext: true
+        temperature: 0.7,
+        maxTokens: 1024
       });
-      const raw = reply && typeof reply.answer === "string" ? reply.answer.trim() : "";
-      if (raw) answer = trimConciseReply(raw);
-    } catch (err) { console.warn("[auto-recovery] suppressed error in telegramBotService.js:", String(err.message).slice(0,80)); }
+      if (result.content) answer = trimConciseReply(result.content);
+    } catch (err) { console.warn("[Brain] public chat error:", String(err.message).slice(0,80)); }
     const reply =
       answer && answer.length
         ? answer
@@ -299,21 +299,27 @@ async function handleUpdate(update) {
           "Aapko kis mission par kaam karna hai?";
     await persistChatExchange(chatId, text, reply);
     await sendMessage(reply, chatId);
-    return { ok: true, chatId, userId, received: text, reply, mode: "public_llm" };
+    return { ok: true, chatId, userId, received: text, reply, mode: "public_brain" };
   }
 
-  const reply = await llmProvider.ask({
-    systemContext: "This message came through the founder's Telegram superman bot.",
-    userMessage: text,
-    conversationHistory,
-    skipKnowledge: true,
-    skipRuntimeContext: true,
-    fastLane: true
-  });
+  // FOUNDER CHAT: Uses GARUDA Brain with conversation memory
+  let founderReply = null;
+  try {
+    const result = await garudaConversation.chat(`telegram:${chatId}`, text);
+    if (result.response) founderReply = trimConciseReply(result.response);
+  } catch (err) { console.warn("[Brain] founder chat error:", String(err.message).slice(0,80)); }
 
-  const answer = reply && typeof reply.answer === "string" && reply.answer.trim() && !reply.error
-    ? trimConciseReply(reply.answer)
-    : buildEngineUnavailableReply(reply);
+  // Founder reply from brain (string) or fallback to llmProvider
+  let answer;
+  if (typeof founderReply === "string" && founderReply.trim()) {
+    answer = founderReply;
+  } else {
+    // Fallback: old llmProvider
+    const fallback = reply && typeof reply === "object" ? reply : { answer: founderReply || "" };
+    answer = fallback.answer && typeof fallback.answer === "string" && fallback.answer.trim() && !fallback.error
+      ? trimConciseReply(fallback.answer)
+      : buildEngineUnavailableReply(fallback);
+  }
 
   await persistChatExchange(chatId, text, answer);
   const truthSuffix =
@@ -327,8 +333,8 @@ async function handleUpdate(update) {
     userId,
     received: text,
     reply: answer,
-    provider: reply ? reply.provider : null,
-    model: reply ? reply.model : null
+    provider: "garuda-brain",
+    mode: "founder_brain"
   };
 }
 
