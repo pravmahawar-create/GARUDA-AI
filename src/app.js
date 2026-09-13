@@ -105,6 +105,7 @@ app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/opportunities", require("./routes/opportunityRoutes"));
 app.use("/api/insurance-leads", require("./routes/insuranceLeadRoutes"));
 app.use("/api/revenue", require("./routes/revenueRoutes"));
+app.use("/api/finance/quant", require("./routes/financeQuantRoutes"));
 app.use("/api/income-goals", require("./routes/incomeGoalRoutes"));
 app.use("/api/discovery", require("./routes/discoveryRoutes"));
 app.use("/api/review-queue", require("./routes/permissionReviewRoutes"));

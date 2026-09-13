@@ -169,13 +169,13 @@ export const UNIVERSES = [
     scope: "founder"
   }),
 
-  U(12, "Finance Universe", "Automated settlements, escrow verification, and financial reconciliation.", "▤", [
-    "Settlement Fee Engine", "Payment Webhooks", "Reconciliation Ledger", "P&L Integrity"
+  U(12, "Finance Universe", "Automated settlements, escrow verification, and 24/7 quantitative market execution.", "▤", [
+    "Settlement Fee Engine", "Payment Webhooks", "Reconciliation Ledger", "P&L Integrity", "24/7 Global Alpha Quant Swarm"
   ], {
     status: "PRODUCTION_VERIFIED",
     route: "/revenue",
-    flagship: "Settlement Fee Config & Signed Webhook Reconciliation",
-    connectedEngines: ["settlementService.js", "paymentWebhookService.js", "paymentReconciliationService.js"],
+    flagship: "Settlement & 24/7 Global Alpha Quant Swarm (India, Forex, Crypto)",
+    connectedEngines: ["settlementService.js", "paymentWebhookService.js", "paymentReconciliationService.js", "globalQuantSwarm.js", "alphaQuantDaemon.js"],
     scope: "founder"
   }),
 

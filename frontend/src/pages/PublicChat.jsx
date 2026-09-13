@@ -76,8 +76,8 @@ export default function PublicChat() {
       }}
     >
       <SEOHead
-        title="Talk to GARUDA AI | AI Solution Architect & Project Scoping"
-        description="Interact directly with GARUDA AI's Solution Architect to scope custom AI pipelines, SaaS MVPs, automation workflows, and receive milestone quotes."
+        title="GARUDA AI | Sovereign Super-Intelligence (Free & Open Access)"
+        description="Interact directly with GARUDA AI, India's Sovereign AI Operating System. Ask anything across code, reasoning, technology, strategy, and life."
         canonical="https://www.garudaos.in/chat"
       />
       {/* Header */}
@@ -272,15 +272,15 @@ export default function PublicChat() {
           </aside>
         )}
 
-        {/* Solution Architect quick chips — business-intent lead magnet */}
+        {/* Open Super-Intelligence Quick Prompts */}
         {!activeConversationId && (
           <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(11,15,22,0.5)", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
             {[
-              "Scope my AI agent for lead qualification →",
-              "Automate my WhatsApp customer support →",
-              "Build my SaaS MVP — what's needed? →",
-              "RAG for my private documents →",
-              "How much will automation save? →"
+              "Ask me anything about AI & code →",
+              "How does GARUDA AI OS work? →",
+              "Brainstorm an innovative business model →",
+              "Explain deep tech & quantum computing →",
+              "Help me architect a scalable system →"
             ].map((chip) => (
               <button key={chip} onClick={() => { const evt=new CustomEvent("garuda:insertPrompt",{detail:chip.replace(" →","")}); window.dispatchEvent(evt); }} style={{ background: "rgba(245,215,110,0.08)", border: "1px solid rgba(245,215,110,0.2)", color: "#f5d76e", padding: "0.35rem 0.75rem", borderRadius: 999, fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}>{chip}</button>
             ))}
@@ -289,16 +289,13 @@ export default function PublicChat() {
         {/* Main Chat */}
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "1.25rem 1rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
           <div style={{ width: "100%", maxWidth: "800px", display: "flex", flexDirection: "column", gap: "0.75rem", flex: 1 }}>
-            <div style={{ background: "rgba(245,215,110,0.06)", border: "1px solid rgba(245,215,110,0.14)", borderRadius: 10, padding: "0.75rem 1rem", fontSize: "0.82rem", color: "#94a3b8", lineHeight: 1.5 }}>
-              <strong style={{ color: "#f5d76e" }}>GARUDA Solution Architect</strong> — describe your business problem in plain language. GARUDA understands → maps automation opportunities → drafts scope & milestones → qualifies → routes to <a href="/#project-scope" style={{ color: "#f5d76e" }}>Project Scoping</a>. No Obligation. <span style={{ color: "#64748b" }}>Evidence over promises.</span>
-            </div>
             <ChatConsole
               conversationId={activeConversationId}
               onConversationId={(id) => {
                 setActiveConversationId(id);
                 refreshConversations();
               }}
-              placeholder="Describe your business problem and what you want automated…"
+              placeholder="Ask GARUDA anything... (Free & Open Super-Intelligence)"
               minHeight={0}
             />
           </div>
