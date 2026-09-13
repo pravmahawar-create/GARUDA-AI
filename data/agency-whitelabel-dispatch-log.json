@@ -1,0 +1,134 @@
+[
+  {
+    "id": "AGENCY_MUMBAI_SCHBANG",
+    "agencyName": "Schbang Digital",
+    "city": "Mumbai",
+    "email": "info@schbang.com",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for Schbang Digital",
+    "sha256": "f1d02cd9c6f76707d463d681ec4fabd7cc84f4b31ef6f167cc719fcb38c3e231",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-12T09:50:25.543Z"
+  },
+  {
+    "id": "AGENCY_BLR_WATCONSULT",
+    "agencyName": "WATConsult Bangalore",
+    "city": "Bangalore",
+    "email": "contact@watconsult.com",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for WATConsult Bangalore",
+    "sha256": "ad8399cee6eebc59e2d29b44be4e8c5fdc3a52a50ddaae441c22a363316fda51",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-12T09:50:29.590Z"
+  },
+  {
+    "id": "AGENCY_DELHI_WEBMOBI",
+    "agencyName": "WebMobril Technologies",
+    "city": "Noida / Delhi NCR",
+    "email": "sales@webmobril.com",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for WebMobril Technologies",
+    "sha256": "b8302e05f0bc94c8d9259e64dda66de8cc8c5c388d8560d8f42842767f7b4bc3",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-12T09:50:33.722Z"
+  },
+  {
+    "id": "AGENCY_PUNE_BRAINCRAFT",
+    "agencyName": "Braincraft Media",
+    "city": "Pune",
+    "email": "hello@braincraft.in",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for Braincraft Media",
+    "sha256": "9949b272f9124c08af6ace2cb83fbc14edc16eba58e96a9fefee9595f4ebddfa",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-12T09:50:37.640Z"
+  },
+  {
+    "id": "AGENCY_AHMEDABAD_TECSOL",
+    "agencyName": "Tecsol Software",
+    "city": "Ahmedabad",
+    "email": "contact@tecsolsoftware.com",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for Tecsol Software",
+    "sha256": "1322105f04d89e2cfc5ea1164bafc7ca97759a5b82c074ee53790eb35a44b977",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-12T09:50:41.952Z"
+  },
+  {
+    "id": "AGENCY_MUMBAI_CREATIVE_LAND",
+    "agencyName": "Creativeland Asia",
+    "city": "Mumbai",
+    "email": "info@creativelandasia.com",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for Creativeland Asia",
+    "sha256": "df714468cb6a8fd879e3a05ad7ecdd5ee8adf6fa0fe7848b1c4308392f48a0fa",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-12T09:50:45.810Z"
+  },
+  {
+    "id": "AGENCY_CHN_SOCIALBEAT",
+    "agencyName": "Social Beat",
+    "city": "Chennai & Bangalore",
+    "email": "enquiry@socialbeat.in",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for Social Beat",
+    "sha256": "ef8acf1f95000eb8aa366ceaeae183a2e6d6df2c40d9472d450c1353f85f4472",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:02:27.095Z"
+  },
+  {
+    "id": "AGENCY_CCU_INDUSNET",
+    "agencyName": "Indus Net Technologies (INT.)",
+    "city": "Kolkata",
+    "email": "info@indusnet.co.in",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for Indus Net Technologies (INT.)",
+    "sha256": "7f58493bd145d8e7ba5e2bc35d7a36cf700235adf56896ee7f5849bb50b3c6b4",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:02:31.084Z"
+  },
+  {
+    "id": "AGENCY_DELHI_TECHAHEAD",
+    "agencyName": "TechAhead Software",
+    "city": "Noida / Delhi NCR",
+    "email": "sales@techaheadcorp.com",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for TechAhead Software",
+    "sha256": "495b7b1674a1764ce84213ce62b3cf8a06f3307db089cfef6ee993c5924f47ff",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:02:34.992Z"
+  },
+  {
+    "id": "AGENCY_GURGAON_PULPSTRAT",
+    "agencyName": "Pulp Strategy Communications",
+    "city": "New Delhi / Gurgaon",
+    "email": "contact@pulpstrategy.com",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for Pulp Strategy Communications",
+    "sha256": "0ad996e580d608282fa7482f0f14200cf4a61e70d7e3ed01d36560bf68d1b1ef",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:02:39.010Z"
+  },
+  {
+    "id": "AGENCY_GURGAON_ADGLOBAL",
+    "agencyName": "AdGlobal360",
+    "city": "Gurgaon",
+    "email": "info@adglobal360.com",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for AdGlobal360",
+    "sha256": "e4faccac368d3e7c89d93dbe11b96d27b8798458472190063cac88d5f9d6c303",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:02:42.962Z"
+  },
+  {
+    "id": "AGENCY_NOIDA_EZRANK",
+    "agencyName": "EZ Rankings",
+    "city": "Noida / Delhi NCR",
+    "email": "contactus@ezrankings.com",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for EZ Rankings",
+    "sha256": "0f7a12a1785e4e928ebaf4bbe094ce2b7aee16dd70bf9d5f0856fa9681827cd0",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:02:46.908Z"
+  }
+]

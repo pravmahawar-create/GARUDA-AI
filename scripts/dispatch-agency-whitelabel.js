@@ -168,17 +168,29 @@ async function dispatchAll() {
   }
 
   const targets = JSON.parse(fs.readFileSync(TARGETS_FILE, "utf8"));
-  console.log(`Loaded ${targets.length} Verified Digital & Web Agencies.\n`);
+  let existingLogs = [];
+  if (fs.existsSync(LOGS_FILE)) {
+    try { existingLogs = JSON.parse(fs.readFileSync(LOGS_FILE, "utf8")); } catch {}
+  }
+  const dispatchedIds = new Set(existingLogs.map(l => l.id));
+  const pendingTargets = targets.filter(t => !dispatchedIds.has(t.id));
 
-  const results = [];
+  console.log(`Loaded ${targets.length} Total Targets (${existingLogs.length} already dispatched, ${pendingTargets.length} pending new dispatches).\n`);
 
-  for (let i = 0; i < targets.length; i++) {
-    const ag = targets[i];
+  if (pendingTargets.length === 0) {
+    console.log("✔ All agencies in targets file already dispatched. Nothing pending.");
+    return existingLogs;
+  }
+
+  const results = [...existingLogs];
+
+  for (let i = 0; i < pendingTargets.length; i++) {
+    const ag = pendingTargets[i];
     const htmlBody = generateAgencyHtml(ag);
     const subject = `Confidential Agency Brief: White-Label AI Engineering Backbone for ${ag.agencyName}`;
     const hash = crypto.createHash("sha256").update(htmlBody).digest("hex");
 
-    console.log(`[#${i + 1}/${targets.length}] Dispatching to: ${ag.agencyName} (${ag.city})`);
+    console.log(`[#${i + 1}/${pendingTargets.length}] Dispatching to: ${ag.agencyName} (${ag.city})`);
     console.log(`  Contact: ${ag.contactPerson} <${ag.email}>`);
     console.log(`  SHA-256: ${hash.slice(0, 16)}...`);
 
@@ -224,7 +236,7 @@ async function dispatchAll() {
       timestamp: new Date().toISOString()
     });
 
-    if (i < targets.length - 1) {
+    if (i < pendingTargets.length - 1) {
       console.log("  ...pacing 3000ms rate-limit protection...");
       await sleep(3000);
     }
@@ -232,9 +244,10 @@ async function dispatchAll() {
 
   fs.writeFileSync(LOGS_FILE, JSON.stringify(results, null, 2), "utf8");
   console.log(`\n==================================================================`);
-  console.log(`✔ Stream 1 Complete! All ${results.length} Agency Briefs Dispatched.`);
+  console.log(`✔ Batch Complete! Total Dispatched in Log: ${results.length}`);
   console.log(`✔ Audit Log Saved: ${LOGS_FILE}`);
   console.log(`==================================================================\n`);
+  return results;
 }
 
 if (require.main === module) {

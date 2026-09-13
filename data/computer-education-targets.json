@@ -1,0 +1,90 @@
+[
+  {
+    "id": "INST_CHD_TECEDO",
+    "name": "Techedo Technologies",
+    "city": "Chandigarh (Sector 34)",
+    "domain": "techedo.com",
+    "email": "info@techedo.com",
+    "courseFocus": "Full-Stack Software Development, Python AI & Cloud Computing",
+    "averageCourseFee": "₹25,000 - ₹45,000",
+    "targetAudience": "Engineering graduates, BCA/MCA students, and IT job-seekers across Punjab & Haryana",
+    "admissionHemorrhage": "Prospective students researching after 7 PM drop off before counselors can call back the next morning."
+  },
+  {
+    "id": "INST_CHD_CBITSS",
+    "name": "CBitss Technologies",
+    "city": "Chandigarh (Sector 34)",
+    "domain": "cbitss.in",
+    "email": "info@cbitss.in",
+    "courseFocus": "Advanced Computer Courses, Data Science, Web Design & Digital Marketing",
+    "averageCourseFee": "₹20,000 - ₹40,000",
+    "targetAudience": "College students and vocational learners in Chandigarh IT park corridor",
+    "admissionHemorrhage": "High volume of general WhatsApp inquiries requesting fee discounts and batch timings going unanswered on weekends."
+  },
+  {
+    "id": "INST_CHD_EXCELLENCE",
+    "name": "Excellence Technology",
+    "city": "Chandigarh (Sector 34)",
+    "domain": "excellencetechnology.in",
+    "email": "info@excellencetechnology.in",
+    "courseFocus": "Industrial IT Training, Python, Java & Web Technologies",
+    "averageCourseFee": "₹22,000 - ₹38,000",
+    "targetAudience": "B.Tech final-year students needing mandatory 6-month industrial internship credits",
+    "admissionHemorrhage": "Semester internship applicants contacting via website contact form but switching to competitors due to delayed brochure dispatch."
+  },
+  {
+    "id": "INST_JAI_GRRAS",
+    "name": "Grras Solutions",
+    "city": "Jaipur (Gopalpura)",
+    "domain": "grras.com",
+    "email": "info@grras.com",
+    "courseFocus": "Cloud Computing, DevOps, RedHat Linux, Python & Data Science",
+    "averageCourseFee": "₹30,000 - ₹60,000",
+    "targetAudience": "Engineering students and working professionals along Jaipur's Gopalpura education hub",
+    "admissionHemorrhage": "Working professionals researching evening & weekend batches late at night abandon static inquiry forms."
+  },
+  {
+    "id": "INST_JAI_DAAC",
+    "name": "DAAC (Delhi Academy of Advanced Computing)",
+    "city": "Jaipur (Tonk Road)",
+    "domain": "daac.in",
+    "email": "info@daac.in",
+    "courseFocus": "Advanced Computer Programming, Web Development & BCA/MCA Academic Projects",
+    "averageCourseFee": "₹18,000 - ₹35,000",
+    "targetAudience": "University IT undergraduates across Jaipur needing practical coding and project certifications",
+    "admissionHemorrhage": "Student walk-ins dropping because website does not offer interactive instant course counseling or immediate syllabus previews."
+  },
+  {
+    "id": "INST_MUM_QUICKXPERT",
+    "name": "QuickXpert Infotech",
+    "city": "Mumbai (Thane / Dadar)",
+    "domain": "quickxpertinfotech.com",
+    "email": "inquiry@quickxpertinfotech.com",
+    "courseFocus": "Software Testing, Full-Stack Java/Python, Data Analytics & Web Development",
+    "averageCourseFee": "₹28,000 - ₹55,000",
+    "targetAudience": "Career switchers and commerce/science graduates seeking guaranteed placement courses in Mumbai",
+    "admissionHemorrhage": "Mumbai commuters browsing on mobile trains between 8 AM - 10 AM and 6 PM - 9 PM demand instant 30-second counseling answers on WhatsApp."
+  },
+  {
+    "id": "INST_MUM_LAQSHYA",
+    "name": "Laqshya Institute of Skills Training",
+    "city": "Mumbai (Andheri / Borivali / Thane)",
+    "domain": "laqshya.in",
+    "email": "info@laqshya.in",
+    "courseFocus": "IT Software, Web Development, Advanced Excel, Tally & Digital Accounting",
+    "averageCourseFee": "₹15,000 - ₹35,000",
+    "targetAudience": "Suburban Mumbai job seekers wanting fast 3-to-6 month career certification programs",
+    "admissionHemorrhage": "Inquiry volume across multiple Mumbai branches creates follow-up latency where counselors miss hot candidates."
+  },
+  {
+    "id": "INST_MUM_SEED",
+    "name": "SEED Infotech",
+    "city": "Mumbai",
+    "domain": "seedinfotech.com",
+    "email": "contact@seedinfotech.com",
+    "courseFocus": "Enterprise Java, .NET, Full-Stack Software Engineering & QA Automation",
+    "averageCourseFee": "₹35,000 - ₹65,000",
+    "targetAudience": "Corporate upskilling and fresh engineering graduates in Mumbai/Pune tech corridor",
+    "admissionHemorrhage": "Enterprise and college leads expect instant customized course syllabi and batch schedules without waiting 24 hours."
+  }
+]

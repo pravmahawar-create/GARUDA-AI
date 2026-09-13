@@ -1,0 +1,68 @@
+[
+  {
+    "id": "AGENCY_MUMBAI_SCHBANG",
+    "agencyName": "Schbang Digital",
+    "city": "Mumbai",
+    "email": "info@schbang.com",
+    "subject": "Executive Follow-up: 48-Hour White-Label Prototype Sprint for Schbang Digital",
+    "sha256": "7c0ccbab5b0a8d13d4680908f99c23b172e888ca184501c1817091f9ebae90df",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:00:00.726Z"
+  },
+  {
+    "id": "AGENCY_BLR_WATCONSULT",
+    "agencyName": "WATConsult Bangalore",
+    "city": "Bangalore",
+    "email": "contact@watconsult.com",
+    "subject": "Executive Follow-up: 48-Hour White-Label Prototype Sprint for WATConsult Bangalore",
+    "sha256": "39b562cc301e82c0fcac6dcf50d1843173cca66582e037f361677b062e41a7a6",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:00:04.651Z"
+  },
+  {
+    "id": "AGENCY_DELHI_WEBMOBI",
+    "agencyName": "WebMobril Technologies",
+    "city": "Noida / Delhi NCR",
+    "email": "sales@webmobril.com",
+    "subject": "Executive Follow-up: 48-Hour White-Label Prototype Sprint for WebMobril Technologies",
+    "sha256": "d093e3d0c90e33a9af782c602c5e876073bb2d47ce0f37fcaa21c6ace38af81f",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:00:08.494Z"
+  },
+  {
+    "id": "AGENCY_PUNE_BRAINCRAFT",
+    "agencyName": "Braincraft Media",
+    "city": "Pune",
+    "email": "hello@braincraft.in",
+    "subject": "Executive Follow-up: 48-Hour White-Label Prototype Sprint for Braincraft Media",
+    "sha256": "380cb060abf557eeae97913647ed5cd6ae18009b8f7ea2a3f3f8b8990b4b864d",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:00:12.267Z"
+  },
+  {
+    "id": "AGENCY_AHMEDABAD_TECSOL",
+    "agencyName": "Tecsol Software",
+    "city": "Ahmedabad",
+    "email": "contact@tecsolsoftware.com",
+    "subject": "Executive Follow-up: 48-Hour White-Label Prototype Sprint for Tecsol Software",
+    "sha256": "8aca5d6820c467766cb11e1521c41891fbd7cbbb392f3a948d8f41330b1b5486",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:00:16.043Z"
+  },
+  {
+    "id": "AGENCY_MUMBAI_CREATIVE_LAND",
+    "agencyName": "Creativeland Asia",
+    "city": "Mumbai",
+    "email": "info@creativelandasia.com",
+    "subject": "Executive Follow-up: 48-Hour White-Label Prototype Sprint for Creativeland Asia",
+    "sha256": "27307dfb24919f044d3dbf8b8a3cb36d2d867f625366a0bab264144a9148233c",
+    "status": "dispatched_fallback",
+    "providerResponseId": "250 OK",
+    "timestamp": "2026-09-13T20:00:19.804Z"
+  }
+]

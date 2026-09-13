@@ -31,6 +31,11 @@ data/*
 !data/boilerplate-store-manifest.json
 !data/bounty-targets.txt
 !data/bounty-scan-memory.json
+!data/agency-whitelabel-targets.json
+!data/agency-whitelabel-dispatch-log.json
+!data/agency-whitelabel-followup-log.json
+!data/computer-education-targets.json
+!data/computer-education-dispatch-log.json
 src/data/
 .aider*
 scratch/

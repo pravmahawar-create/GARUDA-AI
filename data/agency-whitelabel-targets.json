@@ -1,0 +1,122 @@
+[
+  {
+    "id": "AGENCY_MUMBAI_SCHBANG",
+    "agencyName": "Schbang Digital",
+    "city": "Mumbai",
+    "contactPerson": "Technology & Delivery Leadership",
+    "email": "info@schbang.com",
+    "retainerClients": "50+",
+    "currentBottleneck": "Client demand for custom WhatsApp AI conversational bots and automated lead triage backends outstripping internal dev team bandwidth.",
+    "whiteLabelOffer": "Flat ₹25,000 per production bot delivery in 48 hours (Agency bills client ₹50,000 - ₹75,000). 100% white-label under your NDA."
+  },
+  {
+    "id": "AGENCY_BLR_WATCONSULT",
+    "agencyName": "WATConsult Bangalore",
+    "city": "Bangalore",
+    "contactPerson": "Digital Strategy & Creative Tech Lead",
+    "email": "contact@watconsult.com",
+    "retainerClients": "40+",
+    "currentBottleneck": "Enterprise clients requesting interactive conversational booking widgets with sub-200ms latency without ballooning monthly dev sprint costs.",
+    "whiteLabelOffer": "Autonomous Edge Worktree delivery with zero agency overhead. Production React/Node bots delivered in 48-72 hours."
+  },
+  {
+    "id": "AGENCY_DELHI_WEBMOBI",
+    "agencyName": "WebMobril Technologies",
+    "city": "Noida / Delhi NCR",
+    "contactPerson": "Operations & Client Success Head",
+    "email": "sales@webmobril.com",
+    "retainerClients": "30+",
+    "currentBottleneck": "Slow turnaround on custom client web portals and PWA wrappers for tier-2 SME clients.",
+    "whiteLabelOffer": "1-Tap PWA wrappers + WhatsApp AI integration node. Turnaround: 48 hours flat."
+  },
+  {
+    "id": "AGENCY_PUNE_BRAINCRAFT",
+    "agencyName": "Braincraft Media",
+    "city": "Pune",
+    "contactPerson": "Founder & Business Growth Team",
+    "email": "hello@braincraft.in",
+    "retainerClients": "25+",
+    "currentBottleneck": "Lost client upsell revenue due to lacking in-house AI engineering talent for conversational CRM integrations.",
+    "whiteLabelOffer": "Plug-and-play GARUDA White-Label AI Node. You keep 50% margin, we handle 100% code & infrastructure maintenance."
+  },
+  {
+    "id": "AGENCY_AHMEDABAD_TECSOL",
+    "agencyName": "Tecsol Software",
+    "city": "Ahmedabad",
+    "contactPerson": "Technical Director",
+    "email": "contact@tecsolsoftware.com",
+    "retainerClients": "35+",
+    "currentBottleneck": "Clients demanding 24/7 lead rescue systems on WhatsApp; standard WordPress plugins failing under load.",
+    "whiteLabelOffer": "Enterprise Node.js/Vite micro-bots with 99.9% uptime and SHA-256 integrity proofs."
+  },
+  {
+    "id": "AGENCY_MUMBAI_CREATIVE_LAND",
+    "agencyName": "Creativeland Asia",
+    "city": "Mumbai",
+    "contactPerson": "Digital Product Leadership",
+    "email": "info@creativelandasia.com",
+    "retainerClients": "60+",
+    "currentBottleneck": "Premium brand clients demanding bespoke conversational experiences with native Indian voice/chat intelligence.",
+    "whiteLabelOffer": "Custom Indian Neural Voice & WhatsApp triage architecture delivered under strict agency white-label agreement."
+  },
+  {
+    "id": "AGENCY_CHN_SOCIALBEAT",
+    "agencyName": "Social Beat",
+    "city": "Chennai & Bangalore",
+    "contactPerson": "Digital Tech & Partnerships Team",
+    "email": "enquiry@socialbeat.in",
+    "retainerClients": "60+",
+    "currentBottleneck": "High volume of enterprise retail & FMCG clients asking for real-time WhatsApp conversational lead funnels and localized conversational commerce.",
+    "whiteLabelOffer": "Custom WhatsApp AI lead funnels and conversational commerce micro-apps delivered in 48 hours flat under strict white-label NDA."
+  },
+  {
+    "id": "AGENCY_CCU_INDUSNET",
+    "agencyName": "Indus Net Technologies (INT.)",
+    "city": "Kolkata",
+    "contactPerson": "Enterprise Solutions & Partner Alliance Lead",
+    "email": "info@indusnet.co.in",
+    "retainerClients": "100+",
+    "currentBottleneck": "Mid-market BFSI and healthcare clients requiring rapid conversational AI integrations without locking up core sprint resources.",
+    "whiteLabelOffer": "Zero-overhead sovereign AI engineering node. Enterprise-grade micro-services delivered in 48-72 hours under your label."
+  },
+  {
+    "id": "AGENCY_DELHI_TECHAHEAD",
+    "agencyName": "TechAhead Software",
+    "city": "Noida / Delhi NCR",
+    "contactPerson": "VP of Engineering & Client Delivery",
+    "email": "sales@techaheadcorp.com",
+    "retainerClients": "50+",
+    "currentBottleneck": "US & Indian SME clients demanding automated ReAct-style agentic workflow backends alongside their mobile apps.",
+    "whiteLabelOffer": "Turnkey multi-agent automation backends and PWA wrappers. 100% silent delivery under your client contracts."
+  },
+  {
+    "id": "AGENCY_GURGAON_PULPSTRAT",
+    "agencyName": "Pulp Strategy Communications",
+    "city": "New Delhi / Gurgaon",
+    "contactPerson": "Strategy & Tech Operations Head",
+    "email": "contact@pulpstrategy.com",
+    "retainerClients": "40+",
+    "currentBottleneck": "B2B brands seeking 24/7 autonomous lead qualification agents to eliminate dropped website inquiry leaks.",
+    "whiteLabelOffer": "Autonomous lead qualification web widgets and WhatsApp routing delivered in 48 hours. Keep 55% net project margin."
+  },
+  {
+    "id": "AGENCY_GURGAON_ADGLOBAL",
+    "agencyName": "AdGlobal360",
+    "city": "Gurgaon",
+    "contactPerson": "Marketing Technology & Solutions Director",
+    "email": "info@adglobal360.com",
+    "retainerClients": "75+",
+    "currentBottleneck": "Automotive & real estate clients demanding sub-second response conversational portals across multi-channel campaigns.",
+    "whiteLabelOffer": "Instant AI conversational triage and webhook dispatch engine. Full white-label delivery with SHA-256 integrity verification."
+  },
+  {
+    "id": "AGENCY_NOIDA_EZRANK",
+    "agencyName": "EZ Rankings",
+    "city": "Noida / Delhi NCR",
+    "contactPerson": "Business Growth & Alliances Lead",
+    "email": "contactus@ezrankings.com",
+    "retainerClients": "80+",
+    "currentBottleneck": "Global SEO & SME clients wanting interactive conversion chatbots and AI landing page nodes at scale.",
+    "whiteLabelOffer": "High-speed conversion bot backends and interactive widgets delivered in 48 hours under your brand."
+  }
+]
