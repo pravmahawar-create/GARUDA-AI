@@ -283,23 +283,23 @@ class YouTubeDirectPushService {
    * AUTONOMOUS 100% AI PUSH:
    * Update video Title, Description, Tags, and Category directly on YouTube via official API
    */
-  async pushVideoUpdate({ videoId, title, description, tags = [], categoryId = "10" }) {
+  async pushVideoUpdate({ videoId, title, description, tags = [], categoryId = "10", channelProfile = "garuda" }) {
     if (!videoId) {
       return { success: false, error: "Missing videoId parameter" };
     }
 
-    const status = this.getStatus();
+    const status = this.getStatus(channelProfile);
     if (!status.connected) {
       return {
         success: false,
         requiresAuth: true,
         authRequired: true,
-        message: "YouTube channel not yet connected via OAuth. Authorize once to enable 100% autonomous background push.",
-        authUrl: this.getAuthUrl().authUrl || null
+        message: `YouTube channel '${channelProfile}' not yet connected via OAuth. Authorize once to enable 100% autonomous background push.`,
+        authUrl: this.getAuthUrl(undefined, channelProfile).authUrl || null
       };
     }
 
-    const accessToken = await this.getFreshAccessToken();
+    const accessToken = await this.getFreshAccessToken(channelProfile);
     if (!accessToken) {
       return {
         success: false,

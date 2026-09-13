@@ -1,56 +1,20 @@
-const https = require('https');
-
-function fetchUrl(url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      let data = '';
-      res.on('data', chunk => { data += chunk; });
-      res.on('end', () => resolve({ status: res.statusCode, headers: res.headers, body: data }));
-    }).on('error', reject);
-  });
-}
-
-async function inspectProduction() {
-  console.log("=== INSPECTING LIVE PRODUCTION DEPLOYMENT (https://www.garudaos.in) ===");
-  const routes = [
-    '/',
-    '/app',
-    '/founder',
-    '/high-command',
-    '/login',
-    '/signup'
-  ];
-
-  for (const r of routes) {
-    const url = 'https://www.garudaos.in' + r;
-    const res = await fetchUrl(url);
-    console.log(`Route [${r}] -> HTTP ${res.status} (Length: ${res.body.length})`);
-    if (res.body.includes("GARUDA Founder Console UI Notice")) {
-      console.log(`  ❌ ERROR BOUNDARY FOUND ON ${r}!`);
+(async () => {
+  try {
+    const res = await fetch("https://www.garudaos.in/dost?_v=" + Date.now());
+    const html = await res.text();
+    const scriptMatch = html.match(/src="\/assets\/(index-[^"]+\.js)"/);
+    if (scriptMatch) {
+      const scriptUrl = "https://www.garudaos.in/assets/" + scriptMatch[1];
+      console.log("Live Bundle URL:", scriptUrl);
+      const bundleRes = await fetch(scriptUrl);
+      const bundleText = await bundleRes.text();
+      console.log("Bundle has garuda_dost_leads:", bundleText.includes("garuda_dost_leads"));
+      console.log("Bundle has garuda_pawan_chat_messages:", bundleText.includes("garuda_pawan_chat_messages"));
+      console.log("Bundle has showFounderPasskeyModal:", bundleText.includes("showFounderPasskeyModal") || bundleText.includes("praveen_garuda_core"));
     } else {
-      console.log(`  ✔ No error boundary found in HTML.`);
+      console.log("No bundle match found in HTML");
     }
-
-    // Check script tag
-    const match = res.body.match(/\/assets\/index-[a-zA-Z0-9_-]+\.js/);
-    if (match) {
-      console.log(`  Script tag points to: ${match[0]}`);
-    }
+  } catch (e) {
+    console.error(e.message);
   }
-
-  // Fetch the actual index JS bundle served on production
-  const indexRes = await fetchUrl('https://www.garudaos.in/');
-  const jsMatch = indexRes.body.match(/\/assets\/index-[a-zA-Z0-9_-]+\.js/);
-  if (jsMatch) {
-    const jsUrl = 'https://www.garudaos.in' + jsMatch[0];
-    console.log('\nFetching Live JS Bundle:', jsUrl);
-    const jsRes = await fetchUrl(jsUrl);
-    console.log('JS HTTP Status:', jsRes.status, 'Size:', jsRes.body.length);
-    console.log('Does JS include literal "CustomerAuthForm is not defined"?:', jsRes.body.includes('CustomerAuthForm is not defined'));
-    console.log('Does JS include raw undefined CustomerAuthForm identifier?:', jsRes.body.includes('CustomerAuthForm,'));
-    console.log('Does JS include customer-email input?:', jsRes.body.includes('customer-email'));
-    console.log('Does JS include GARUDA Founder Console UI Notice?:', jsRes.body.includes('GARUDA Founder Console UI Notice'));
-  }
-}
-
-inspectProduction().catch(console.error);
+})();

@@ -45,6 +45,25 @@ class Global24x7QuantDaemon {
     this.currentDateStr = new Date().toDateString();
     this.isProfitLockedToday = false;
     this.isLossLockedToday = false;
+    this.isEmergencyPaused = false;
+    this.eventLog = [];
+
+    this.addLog('SYSTEM_BOOT', 'GLOBAL', 'GARUDA 24/7 Global Quant Swarm initialized with ₹1,00,000 virtual capital.');
+  }
+
+  addLog(action, market, message, details = {}) {
+    const entry = {
+      id: `EVT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      timestamp: new Date().toISOString(),
+      timeFormatted: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }),
+      action,
+      market,
+      message,
+      details
+    };
+    this.eventLog.unshift(entry);
+    if (this.eventLog.length > 60) this.eventLog.pop();
+    return entry;
   }
 
   /**
@@ -99,6 +118,15 @@ class Global24x7QuantDaemon {
   async runCycle() {
     this.checkDailyRollover();
     const active = this.getActiveMarkets();
+
+    // Sovereign Kill Switch check (Supreme Founder Control)
+    if (this.isEmergencyPaused) {
+      return {
+        status: 'EMERGENCY_PAUSED',
+        message: '🛑 Sovereign Kill Switch ENGAGED by Founder Praveen. All trading agents halted.',
+        timestamp: new Date().toISOString()
+      };
+    }
 
     // Circuit breaker checks
     if (this.isProfitLockedToday) {
@@ -227,6 +255,14 @@ class Global24x7QuantDaemon {
         : `₹${signal.price}`;
 
       console.log(`⚡ [24x7 SNIPER] [${assetClass}] ${name} @ ${priceInr} | Score: ${signal.score}% | Target: ₹${signal.target2} | SL: ₹${signal.stopLoss}`);
+      this.addLog('SNIPER_ORDER_EXECUTED', assetClass, `⚡ Sniper Entry: ${name} (${signal.direction}) @ ${priceInr} [Confluence: ${signal.score}%]. SL: ₹${signal.stopLoss} | T2: ₹${signal.target2}`, {
+        symbol,
+        score: signal.score,
+        priceInr,
+        target2: signal.target2,
+        stopLoss: signal.stopLoss,
+        quantity: exec.position?.quantity
+      });
       
       if (this.sendTelegramAlerts) {
         await this.notifier.notifySignalTriggered(signal, symbol, name, exec.position.quantity);
@@ -236,6 +272,8 @@ class Global24x7QuantDaemon {
 
   async handleTradeClosure(closedTrade) {
     console.log(`🎯 [TRADE CLOSED] ${closedTrade.symbolName}: ${closedTrade.exitReason} | Net P&L: ₹${closedTrade.netPnl}`);
+    const isWin = closedTrade.netPnl >= 0;
+    this.addLog(isWin ? 'TRADE_EXIT_PROFIT' : 'TRADE_EXIT_LOSS', 'PORTFOLIO', `${isWin ? '🎯 Profit Booked' : '🛑 Stop Protected'}: ${closedTrade.symbolName} exited via ${closedTrade.exitReason}. Net P&L: ₹${Number(closedTrade.netPnl.toFixed(2)).toLocaleString('en-IN')}`, closedTrade);
     if (this.sendTelegramAlerts) {
       await this.notifier.notifyTradeClosed(closedTrade);
     }
@@ -249,6 +287,7 @@ class Global24x7QuantDaemon {
     if (todayPnl >= this.dailyProfitTargetInr && !this.isProfitLockedToday) {
       this.isProfitLockedToday = true;
       console.log(`🏆 [PROFIT LOCK TRIGGERED] Today's P&L: +₹${todayPnl.toLocaleString('en-IN')} reached target! Trading paused for the day.`);
+      this.addLog('PROFIT_CIRCUIT_LOCKED', 'SOVEREIGN_RISK', `🏆 Daily Growth Target Reached (+₹${todayPnl.toLocaleString('en-IN')}). Desk auto-locked for the day to preserve capital.`);
       if (this.sendTelegramAlerts) {
         this.notifier.sendMessage(`🦅 *GARUDA Alpha-Quant: Daily Target Achieved!* 🏆\nToday's Net Gain: *+₹${todayPnl.toLocaleString('en-IN')}*\n_Trading auto-paused to lock in profits._`);
       }
@@ -258,10 +297,28 @@ class Global24x7QuantDaemon {
     if (todayPnl <= -this.dailyMaxLossInr && !this.isLossLockedToday) {
       this.isLossLockedToday = true;
       console.log(`🛑 [LOSS CIRCUIT BREAKER] Today's loss reached -₹${Math.abs(todayPnl)}. Capital defense activated. Trading paused.`);
+      this.addLog('CAPITAL_DEFENSE_LOCKED', 'SOVEREIGN_RISK', `🛑 Capital Defense Triggered: Daily loss reached -₹${Math.abs(todayPnl)}. Swarm paused to protect capital.`);
       if (this.sendTelegramAlerts) {
         this.notifier.sendMessage(`🦅 *GARUDA Alpha-Quant: Circuit Breaker Activated* 🛑\nDaily Loss Limit reached (-₹${Math.abs(todayPnl)}).\n_Capital defense mode on. Trading paused._`);
       }
     }
+  }
+
+  /**
+   * Founder Sovereign Kill Switch: Pause or Resume trading immediately
+   */
+  setEmergencyPause(pause) {
+    this.isEmergencyPaused = !!pause;
+    const msg = this.isEmergencyPaused
+      ? '🛑 Sovereign Kill Switch ENGAGED by Founder Praveen. All 4 trading agents halted immediately.'
+      : '✅ Sovereign Kill Switch DISENGAGED by Founder Praveen. 24/7 Swarm resumed autonomous operation.';
+    this.addLog(
+      this.isEmergencyPaused ? 'SOVEREIGN_KILL_SWITCH_ENGAGED' : 'SOVEREIGN_KILL_SWITCH_DISENGAGED',
+      'SOVEREIGN_COMMAND',
+      msg
+    );
+    console.log(`[SOVEREIGN COMMAND] ${msg}`);
+    return this.isEmergencyPaused;
   }
 
   /**
@@ -271,6 +328,7 @@ class Global24x7QuantDaemon {
     if (this.isRunning) return;
     this.isRunning = true;
     console.log(`🦅 GARUDA 24/7 Global Quant Daemon started. Polling every ${this.pollIntervalSeconds}s non-stop.`);
+    this.addLog('SWARM_STARTED', 'SYSTEM', `24/7 Global Quant Swarm started with ${this.pollIntervalSeconds}s tick polling.`);
 
     const loop = async () => {
       if (!this.isRunning) return;
@@ -297,17 +355,25 @@ class Global24x7QuantDaemon {
       this.timer = null;
     }
     console.log('🦅 GARUDA 24/7 Global Quant Daemon stopped.');
+    this.addLog('SWARM_STOPPED', 'SYSTEM', '24/7 Global Quant Swarm stopped.');
   }
 
   getStatus() {
     return {
       isRunning: this.isRunning,
+      isEmergencyPaused: this.isEmergencyPaused,
       activeMarkets: this.getActiveMarkets(),
       dailyTradesCount: this.dailyTradesCount,
+      maxDailyTrades: this.maxDailyTrades,
+      dailyProfitTargetInr: this.dailyProfitTargetInr,
+      dailyMaxLossInr: this.dailyMaxLossInr,
       isProfitLockedToday: this.isProfitLockedToday,
       isLossLockedToday: this.isLossLockedToday,
       wallet: this.paperEngine.wallet,
-      stats: this.paperEngine.calculateStatistics()
+      stats: this.paperEngine.calculateStatistics(),
+      openPositions: this.paperEngine.openPositions,
+      closedTrades: this.paperEngine.closedTrades.slice(-15).reverse(),
+      eventLog: this.eventLog.slice(0, 40)
     };
   }
 }

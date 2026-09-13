@@ -45,6 +45,7 @@ import PricingPage from "./pages/PricingPage";
 import GarudaVsLinux from "./pages/GarudaVsLinux";
 import CaseStudies from "./pages/CaseStudies";
 import GarudaCyberTycoon from "./pages/GarudaCyberTycoon";
+import FounderQuantCommand from "./pages/FounderQuantCommand";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -196,6 +197,9 @@ function AppRoutes() {
 
       {/* Founder Sovereign Access */}
       <Route path="/founder/access" element={<FounderKingdomAccess />} />
+      <Route path="/founder/quant" element={<FounderQuantCommand onLogout={handleLogout} />} />
+      <Route path="/quant" element={<FounderQuantCommand onLogout={handleLogout} />} />
+      <Route path="/finance/quant" element={<FounderQuantCommand onLogout={handleLogout} />} />
       <Route path="/kingdom" element={<Navigate to="/founder/access" replace />} />
       <Route path="/command" element={<Navigate to="/command-center" replace />} />
       <Route path="/command-center" element={commandCenterRoute} />
