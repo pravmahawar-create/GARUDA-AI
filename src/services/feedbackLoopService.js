@@ -199,8 +199,9 @@ function analyzePerformance() {
     ? ((oldCampaigns.filter(c => c.replied).length / oldCampaigns.length) * 100).toFixed(1)
     : 0;
 
-  // Generate insights
+  // Generate insights and recommendations
   const insights = [];
+  const recommendations = [];
 
   if (parseFloat(replyRate) < 2) {
     insights.push({

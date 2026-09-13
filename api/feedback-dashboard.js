@@ -10,6 +10,10 @@
 
 const feedbackLoop = require("../src/services/feedbackLoopService");
 const analytics = require("../src/services/outreachAnalyticsService");
+const decisions = require("../src/services/autonomousDecisionEngine");
+const memory = require("../src/services/semanticMemoryService");
+const selfAnalytics = require("../src/services/selfAnalyticsService");
+const strategyEngine = require("../src/services/strategyEngineService");
 
 module.exports = async function handler(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -77,6 +81,55 @@ module.exports = async function handler(req, res) {
     if (path === "/api/feedback/auto-adapt" && req.method === "POST") {
       const adaptation = analytics.autoAdaptStrategy();
       return res.status(200).json({ ok: true, adaptation });
+    }
+
+    // ─── GET /api/feedback/strategy — Master strategy ───
+    if (path === "/api/feedback/strategy" && req.method === "GET") {
+      const strategy = strategyEngine.generateStrategy();
+      return res.status(200).json({ ok: true, strategy });
+    }
+
+    // ─── GET /api/feedback/master — Full dashboard ───
+    if (path === "/api/feedback/master" && req.method === "GET") {
+      const master = strategyEngine.getMasterDashboard();
+      return res.status(200).json({ ok: true, master });
+    }
+
+    // ─── GET /api/feedback/decisions — Decision summary ───
+    if (path === "/api/feedback/decisions" && req.method === "GET") {
+      const summary = decisions.getDecisionSummary();
+      return res.status(200).json({ ok: true, summary });
+    }
+
+    // ─── POST /api/feedback/decisions/auto-run — Run auto decisions ───
+    if (path === "/api/feedback/decisions/auto-run" && req.method === "POST") {
+      const autoDecisions = decisions.runAutoDecisions();
+      return res.status(200).json({ ok: true, autoDecisions });
+    }
+
+    // ─── GET /api/feedback/memory — Memory stats ───
+    if (path === "/api/feedback/memory" && req.method === "GET") {
+      const stats = memory.getMemoryStats();
+      return res.status(200).json({ ok: true, stats });
+    }
+
+    // ─── POST /api/feedback/memory/store — Store a memory ───
+    if (path === "/api/feedback/memory/store" && req.method === "POST") {
+      const body = await readBody(req);
+      const id = memory.storeMemory(body);
+      return res.status(200).json({ ok: true, id });
+    }
+
+    // ─── GET /api/feedback/health — System health ───
+    if (path === "/api/feedback/health" && req.method === "GET") {
+      const health = selfAnalytics.healthCheck();
+      return res.status(200).json({ ok: true, health });
+    }
+
+    // ─── GET /api/feedback/self — Self analytics ───
+    if (path === "/api/feedback/self" && req.method === "GET") {
+      const dashboard = selfAnalytics.getDashboard();
+      return res.status(200).json({ ok: true, dashboard });
     }
 
     // ─── 404 ───
