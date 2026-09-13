@@ -50,6 +50,10 @@ const CANONICAL_URLS = [
   { url: "/services/rag-development", priority: "0.90", changefreq: "weekly" },
   { url: "/services/whatsapp-telegram-ai-bots", priority: "0.90", changefreq: "weekly" },
 
+  // Commercial SaaS/Pricing
+  { url: "/pricing", priority: "0.85", changefreq: "weekly" },
+  { url: "/starter", priority: "0.80", changefreq: "weekly" },
+
   // Guides & Knowledge Base
   { url: "/guides", priority: "0.85", changefreq: "weekly" },
   { url: "/guides/ai-agent-vs-chatbot", priority: "0.80", changefreq: "monthly" },
@@ -60,6 +64,12 @@ const CANONICAL_URLS = [
   { url: "/guides/automate-whatsapp-business-operations-ai", priority: "0.80", changefreq: "monthly" },
   { url: "/guides/what-custom-ai-development-actually-involves", priority: "0.80", changefreq: "monthly" },
   { url: "/guides/how-to-plan-ai-automation-project", priority: "0.80", changefreq: "monthly" },
+
+  // Defensive Brand Entity
+  { url: "/garuda-ai-vs-garuda-linux", priority: "0.85", changefreq: "monthly" },
+
+  // Proof / Case Studies
+  { url: "/case-studies", priority: "0.85", changefreq: "weekly" },
 
   // Legal
   { url: "/privacy", priority: "0.50", changefreq: "yearly" },

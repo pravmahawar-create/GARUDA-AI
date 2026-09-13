@@ -418,6 +418,26 @@
       "destination": "/praveen-mahawar/index.html"
     },
     {
+      "source": "/garuda-ai-vs-garuda-linux",
+      "destination": "/garuda-ai-vs-garuda-linux/index.html"
+    },
+    {
+      "source": "/case-studies",
+      "destination": "/case-studies/index.html"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/pricing/index.html"
+    },
+    {
+      "source": "/plans",
+      "destination": "/pricing/index.html"
+    },
+    {
+      "source": "/billing",
+      "destination": "/pricing/index.html"
+    },
+    {
       "source": "/:match*",
       "destination": "/"
     }

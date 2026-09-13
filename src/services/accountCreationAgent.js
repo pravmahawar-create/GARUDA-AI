@@ -20,10 +20,12 @@ function sha256(s){ return crypto.createHash("sha256").update(s).digest("hex"); 
 
 function genCreds(prefix="garuda"){
   const rnd = crypto.randomBytes(3).toString("hex");
-  const email = `${prefix}+${rnd}+${Date.now().toString().slice(-6)}@garudaos.in`; // Zoho alias
-  const altEmail = `${prefix}+${rnd}@garudaos.ai@gmail.com`; // fallback Gmail alias (garudaos.ai@gmail.com)
+  // Clean email without + (some sites reject plus alias like Studypool)
+  const email = `${prefix}${rnd}@garudaos.in`;
+  const altEmail = `${prefix}${rnd}@gmail.com`; // fallback clean gmail (use garudaos.ai@gmail.com alias if needed)
+  const altEmail2 = `garudaos.ai+${rnd}@gmail.com`;
   const password = `Grda@${crypto.randomBytes(4).toString("hex")}#${Date.now().toString().slice(-4)}!A1`;
-  return { email, altEmail, password, username: `${prefix}_${rnd}`, rnd };
+  return { email, altEmail, altEmail2, password, username: `${prefix}_${rnd}`, rnd };
 }
 
 async function createAccount({ target, prefix="garuda", headless=true, timeoutMs=45000 } = {}){

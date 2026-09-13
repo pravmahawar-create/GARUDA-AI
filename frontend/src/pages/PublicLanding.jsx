@@ -691,6 +691,9 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
               <li><a href="/services/business-automation" style={{ color: "#9ca3af", textDecoration: "none" }}>Business Workflow Automation</a></li>
               <li><a href="/services/whatsapp-telegram-ai-bots" style={{ color: "#9ca3af", textDecoration: "none" }}>WhatsApp & Telegram Bots</a></li>
+              <li><a href="/case-studies" style={{ color: palette.gold, textDecoration: "none", fontWeight: 700 }}>📋 Verified Case Studies →</a></li>
+              <li><a href="/garuda-ai-vs-garuda-linux" style={{ color: "#9ca3af", textDecoration: "none" }}>GARUDA AI vs Garuda Linux</a></li>
+              <li><a href="/pricing" style={{ color: "#9ca3af", textDecoration: "none" }}>Transparent Pricing</a></li>
               <li><a href="/pawan" style={{ color: palette.gold, textDecoration: "none", fontWeight: 700 }}>⚡ PAWAN Coding Studio</a></li>
               <li><a href="/dost" style={{ color: "#34d399", textDecoration: "none", fontWeight: 700 }}>🌾 GARUDA DOST (Zero-Advance Rozgar)</a></li>
               <li><a href="/bot-verse" style={{ color: "#c084fc", textDecoration: "none", fontWeight: 700 }}>🌌 BOT-VERSE Omni-Channel</a></li>

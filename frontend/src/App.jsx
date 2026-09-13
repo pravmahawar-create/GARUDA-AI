@@ -42,6 +42,9 @@ import FounderProfile from "./pages/FounderProfile";
 import GarudaDostRozgar from "./pages/GarudaDostRozgar";
 import BoilerplateStore from "./pages/BoilerplateStore";
 import PricingPage from "./pages/PricingPage";
+import GarudaVsLinux from "./pages/GarudaVsLinux";
+import CaseStudies from "./pages/CaseStudies";
+import GarudaCyberTycoon from "./pages/GarudaCyberTycoon";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -54,6 +57,18 @@ function AppRoutes() {
 
   useEffect(() => {
     initAttribution();
+    // GA4 auto-inject if VITE_GA4_ID is configured
+    const gaId = import.meta.env.VITE_GA4_ID;
+    if (gaId && !window.gtag) {
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function(){ window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", gaId);
+    }
   }, []);
 
   useEffect(() => {
@@ -175,6 +190,9 @@ function AppRoutes() {
       <Route path="/brand" element={<BrandStudio />} />
       <Route path="/digital-presence" element={<DigitalPresenceStudio />} />
       <Route path="/entertainment" element={<EntertainmentStudio />} />
+      <Route path="/entertainment/tycoon" element={<GarudaCyberTycoon />} />
+      <Route path="/play" element={<GarudaCyberTycoon />} />
+      <Route path="/game" element={<Navigate to="/play" replace />} />
 
       {/* Founder Sovereign Access */}
       <Route path="/founder/access" element={<FounderKingdomAccess />} />
@@ -228,6 +246,8 @@ function AppRoutes() {
       <Route path="/pricing" element={<PricingPage />} />
       <Route path="/plans" element={<PricingPage />} />
       <Route path="/billing" element={<PricingPage />} />
+      <Route path="/garuda-ai-vs-garuda-linux" element={<GarudaVsLinux />} />
+      <Route path="/case-studies" element={<CaseStudies />} />
       <Route path="*" element={publicLanding} />
 
     </Routes>

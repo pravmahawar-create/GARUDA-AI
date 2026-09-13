@@ -5,6 +5,19 @@ require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
 
+// ── KEEP-ALIVE: Prevent Render free-tier cold start ──
+// Pings own /health endpoint every 10 min so Render never spins down the process.
+const KEEPALIVE_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
+if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
+    setInterval(() => {
+        const base = `http://localhost:${PORT}`;
+        fetch(`${base}/health`).then(r => r.json()).then(d => {
+            console.log(`[GARUDA] Keep-alive ping OK — mongo: ${d.database}`);
+        }).catch(e => console.warn(`[GARUDA] Keep-alive ping failed: ${e.message}`));
+    }, KEEPALIVE_INTERVAL_MS).unref();
+    console.log(`[GARUDA] Keep-alive armed — pinging /health every ${KEEPALIVE_INTERVAL_MS / 60000}min`);
+}
+
 (async () => {
     const mongoConnected = await connectDB();
 

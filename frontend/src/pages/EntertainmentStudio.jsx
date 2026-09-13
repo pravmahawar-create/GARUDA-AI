@@ -88,6 +88,29 @@ export default function EntertainmentStudio() {
           </div>
         </div>
 
+        {/* Flagship Sovereign Defense Arcade Showcase */}
+        <div style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.15), rgba(56,189,248,0.15), rgba(15,23,42,0.95))", border: `1px solid ${GREEN}`, borderRadius: "12px", padding: "1.25rem 1.5rem", marginBottom: "1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}>
+          <div style={{ maxWidth: "720px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.3rem" }}>
+              <span style={{ fontSize: "1.2rem" }}>🦅</span>
+              <span style={{ color: GREEN, fontSize: "0.75rem", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em" }}>SOVEREIGN ARCADE STRATEGY · 60 FPS CANVAS</span>
+              <span style={{ background: "rgba(16,185,129,0.2)", color: "#10b981", fontSize: "0.65rem", padding: "2px 8px", borderRadius: "999px", fontWeight: "bold" }}>TOWER DEFENSE</span>
+            </div>
+            <h3 style={{ margin: "0 0 0.4rem", color: "#fff", fontSize: "1.3rem" }}>
+              GARUDA: Sovereign Defense (Tower Defense Game)
+            </h3>
+            <p style={{ margin: 0, color: "#cbd5e1", fontSize: "0.85rem", lineHeight: "1.5" }}>
+              Classic, addictive tower defense. Build Pawan laser turrets, Agni explosive cannons, and Vajra frost shockwaves along the cyber highway. Annihilate invading enemy waves and defend the Sovereign Core across 15 intense rounds!
+            </p>
+          </div>
+          <Link
+            to="/play"
+            style={{ background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", padding: "0.75rem 1.5rem", borderRadius: "8px", fontWeight: "bold", fontSize: "0.95rem", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem", boxShadow: "0 4px 15px rgba(16,185,129,0.4)" }}
+          >
+            <span>🎮 Play Sovereign Defense</span> ➔
+          </Link>
+        </div>
+
         {/* Flagship Case Study Banner */}
         <div style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.1), rgba(15,23,42,0.8))", border: `1px solid ${BORDER}`, borderRadius: "10px", padding: "1rem 1.25rem", marginBottom: "1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
           <div>

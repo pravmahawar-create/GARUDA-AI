@@ -188,8 +188,9 @@ export default function PricingPage() {
   return (
     <div style={{ background: BG, color: "#fff", minHeight: "100vh", fontFamily: "system-ui, -apple-system, sans-serif" }}>
       <SEOHead
-        title="GARUDA SaaS Pricing — Sovereign AI & Autonomous Engineering"
-        description="Predictable subscription pricing for GARUDA AI Operating System. From solo developers to 50-seat enterprise fleets."
+        title="GARUDA AI Pricing | SaaS Subscriptions & Custom Project Rates | GARUDA"
+        description="Transparent pricing for GARUDA AI: SaaS subscriptions from ₹0 to ₹19,999/mo and fixed-price custom AI, software & automation projects with 50% milestone governance."
+        canonical="https://www.garudaos.in/pricing"
       />
 
       {/* Header */}

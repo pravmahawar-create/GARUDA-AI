@@ -1177,6 +1177,133 @@ const ROUTES = [
     `
   },
   {
+    path: "/pricing",
+    filePaths: [
+      path.join(DIST_DIR, "pricing", "index.html"),
+      path.join(DIST_DIR, "pricing.html"),
+      path.join(DIST_DIR, "plans", "index.html"),
+      path.join(DIST_DIR, "plans.html"),
+      path.join(DIST_DIR, "billing", "index.html"),
+      path.join(DIST_DIR, "billing.html")
+    ],
+    title: "GARUDA AI Pricing | SaaS Subscriptions & Custom Project Rates | GARUDA",
+    description: "Transparent pricing for GARUDA AI: SaaS subscriptions from ₹0 to ₹19,999/mo and fixed-price custom AI, software & automation projects with 50% milestone governance.",
+    canonical: "https://www.garudaos.in/pricing",
+    h1: "Predictable Power. Sovereign Autonomy.",
+    eyebrow: "TRANSPARENT SOVEREIGN PRICING",
+    contentSnippet: `
+      <h2>SaaS Subscriptions & Fixed-Price Custom Engineering</h2>
+      <p>From Sovereign Personal (₹0) to Enterprise Titan (₹19,999/mo). Plus fixed-price milestone projects: Custom AI from ₹45,000, SaaS MVP from ₹50,000, Business Automation from ₹25,000.</p>
+      <ul>
+        <li><a href="/services/custom-ai-development">Custom AI Development — from ₹45,000</a></li>
+        <li><a href="/services/saas-mvp-development">SaaS MVP Development — from ₹50,000</a></li>
+        <li><a href="/services/business-automation">Business Automation — from ₹25,000</a></li>
+        <li><a href="/chat">Talk to Solution Architect →</a></li>
+      </ul>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "GARUDA AI Operating System",
+      "description": "AI Operating System for Autonomous Business Execution with SaaS subscriptions and fixed-price custom engineering",
+      "brand": { "@type": "Brand", "name": "GARUDA AI" },
+      "offers": [
+        { "@type": "Offer", "name": "Sovereign Personal", "price": "0", "priceCurrency": "INR" },
+        { "@type": "Offer", "name": "Creator Pro", "price": "1499", "priceCurrency": "INR" },
+        { "@type": "Offer", "name": "SME Commercial", "price": "4999", "priceCurrency": "INR" },
+        { "@type": "Offer", "name": "Enterprise Titan", "price": "19999", "priceCurrency": "INR" }
+      ]
+    }
+  },
+  {
+    path: "/starter",
+    filePaths: [
+      path.join(DIST_DIR, "starter", "index.html"),
+      path.join(DIST_DIR, "starter.html"),
+      path.join(DIST_DIR, "boilerplate", "index.html"),
+      path.join(DIST_DIR, "boilerplate.html"),
+      path.join(DIST_DIR, "store", "index.html"),
+      path.join(DIST_DIR, "store.html"),
+      path.join(DIST_DIR, "sovereign-starter", "index.html"),
+      path.join(DIST_DIR, "sovereign-starter.html")
+    ],
+    title: "GARUDA Sovereign Starter Kit | Production Boilerplate | GARUDA",
+    description: "Production-grade sovereign starter kit with auth, billing, and deployment — launch your SaaS in days, not months.",
+    canonical: "https://www.garudaos.in/starter",
+    h1: "Sovereign Starter Kit",
+    eyebrow: "PRODUCTION BOILERPLATE",
+    contentSnippet: `
+      <h2>Launch Faster with Sovereign Foundations</h2>
+      <p>Authentication, billing, multi-tenant architecture, and deployment pipelines — pre-engineered.</p>
+      <p><a href="/starter">Explore Starter Kit →</a> | <a href="/pricing">View Pricing →</a></p>
+    `
+  },
+  {
+    path: "/garuda-ai-vs-garuda-linux",
+    filePaths: [
+      path.join(DIST_DIR, "garuda-ai-vs-garuda-linux", "index.html"),
+      path.join(DIST_DIR, "garuda-ai-vs-garuda-linux.html")
+    ],
+    title: "GARUDA AI vs Garuda Linux: Understanding the Difference | GARUDA",
+    description: "GARUDA AI (garudaos.in) is an AI Operating System for business automation. Garuda Linux is an Arch Linux desktop OS. Learn the clear distinction.",
+    canonical: "https://www.garudaos.in/garuda-ai-vs-garuda-linux",
+    h1: "GARUDA AI vs Garuda Linux — Understanding the Difference",
+    eyebrow: "BRAND ENTITY CLARIFICATION",
+    contentSnippet: `
+      <h2>Two Completely Different Products Sharing a Name</h2>
+      <p><strong>GARUDA AI</strong> (https://www.garudaos.in) is an autonomous AI Operating System for business execution — custom AI, SaaS development, workflow automation. Founded by Praveen Mahawar in Jabalpur, India.</p>
+      <p><strong>Garuda Linux</strong> is an Arch Linux-based desktop operating system for personal computers — beautiful, performant, open-source.</p>
+      <p>We respect Garuda Linux. If you searched for the Linux distribution, visit <a href="https://garudalinux.org" rel="noopener noreferrer">garudalinux.org</a>. If you need AI business automation, you are in the right place at GARUDA AI.</p>
+      <p><a href="/what-is-garuda-ai">What is GARUDA AI? →</a> | <a href="/chat">Talk to Solution Architect →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is GARUDA AI the same as Garuda Linux?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. GARUDA AI (garudaos.in) is an AI Operating System for business automation founded by Praveen Mahawar. Garuda Linux (garudalinux.org) is an Arch Linux desktop OS. They are completely separate products." }
+        },
+        {
+          "@type": "Question",
+          "name": "What does GARUDA AI do?",
+          "acceptedAnswer": { "@type": "Answer", "text": "GARUDA AI builds custom AI systems, SaaS MVPs, business workflow automations, and WhatsApp/Telegram bots under milestone governance with SHA-256 verified delivery." }
+        }
+      ]
+    }
+  },
+  {
+    path: "/case-studies",
+    filePaths: [
+      path.join(DIST_DIR, "case-studies", "index.html"),
+      path.join(DIST_DIR, "case-studies.html")
+    ],
+    title: "GARUDA AI Case Studies | Real Deployments & Engineering Proof | GARUDA",
+    description: "Verified case studies, architecture diagrams, and deployment evidence from GARUDA AI projects. Real workflows, real code, no fabrication.",
+    canonical: "https://www.garudaos.in/case-studies",
+    h1: "Proof Over Promises — GARUDA Case Studies",
+    eyebrow: "VERIFIED DEPLOYMENT EVIDENCE",
+    contentSnippet: `
+      <h2>Real Builds. Real Evidence. Zero Fabrication.</h2>
+      <p>GARUDA operates under 100% Truth Law. Case studies below show only verified deployments with architecture evidence. Upcoming and partial engagements are clearly labelled PLANNED/PARTIAL.</p>
+      <ul>
+        <li><strong>PAWAN — Sovereign Coding Agent:</strong> Multi-model ReAct loop, live repo synthesis — <a href="/pawan">View PAWAN Studio →</a></li>
+        <li><strong>BOT-VERSE — Omnichannel Engine:</strong> YouTube Data API v3 autonomous publishing — <a href="/bot-verse">View BOT-VERSE →</a></li>
+        <li><strong>GARUDA DOST — Rozgar Setu:</strong> Zero-advance livelihood platform — <a href="/dost">View GARUDA DOST →</a></li>
+      </ul>
+      <p><em>Individual client case studies are published only with explicit client consent. No logos or testimonials are ever fabricated.</em></p>
+      <p><a href="/chat">Scope Your Project →</a> | <a href="/what-is-garuda-ai">Platform Architecture →</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "GARUDA AI Case Studies",
+      "description": "Verified deployment evidence and architecture proof from GARUDA AI",
+      "url": "https://www.garudaos.in/case-studies"
+    }
+  },
+  {
     path: "/praveen-mahawar",
     filePaths: [
       path.join(DIST_DIR, "praveen-mahawar", "index.html"),

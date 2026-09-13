@@ -46,3 +46,5 @@ services:
         value: true
       - key: GARUDA_AUTONOMOUS_ACTIVE
         value: true
+      - key: REVENUE_OPERATING_CYCLE_DRYRUN
+        value: false

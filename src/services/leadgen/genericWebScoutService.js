@@ -43,43 +43,46 @@ function buildWebQueries({type, locKey}){
   const suffix=suffixMap[locKey]||"";
   if(type==="web"){
     return [
-      `outdated website 2019 contact email ${suffix}`,
-      `legacy website slow mobile contact ${suffix}`,
-      `website redesign needed contact ${suffix}`,
-      `copyright 2019 site contact email ${suffix}`,
-      `incomplete website contact ${suffix}`,
-      `website not mobile friendly contact ${suffix}`,
-      // New work — not just incomplete, also fresh need (user said incomplete was just example)
-      `need website development contact ${suffix}`,
-      `looking for website developer contact ${suffix}`,
-      `need digital marketing services contact ${suffix}`,
-      `looking for digital marketing agency contact ${suffix}`,
+      // Business directories + listings — actual businesses with contact info
+      `site:yelp.com restaurants ${suffix} contact`,
+      `site:tripadvisor.com hotels ${suffix} email`,
+      `site:google.com/maps "opening hours" ${suffix} contact`,
+      // Job boards — businesses actively hiring for web dev = need websites
+      `site:indeed.com "web developer" ${suffix}`,
+      `site:linkedin.com/jobs "website" ${suffix}`,
+      // Local business directories
+      `site:yellowpages.com ${suffix} contact email`,
+      `site:thomasnet.com ${suffix} manufacturer contact`,
+      // Direct business queries — businesses that explicitly need web work
+      `"we need a new website" OR "looking for web designer" ${suffix}`,
+      `"our website needs updating" OR "website redesign" ${suffix} contact`,
+      `"hire" "web developer" OR "web agency" ${suffix} email`,
+      `"small business" "website" "contact us" ${suffix}`,
     ];
   }
   if(type==="mobile"){
     return [
-      `looking for mobile app developer contact ${suffix}`,
-      `need iOS Android app development contact ${suffix}`,
-      `React Native Flutter app developer hiring ${suffix}`,
-      `mobile app development company contact ${suffix}`,
+      `"looking for" "mobile app developer" OR "app development" ${suffix} email`,
+      `"need" "iOS" OR "Android" "app" "developer" ${suffix} contact`,
+      `"hire" "React Native" OR "Flutter" developer ${suffix}`,
+      `"startup" "mobile app" "need developer" ${suffix}`,
     ];
   }
   if(type==="software"){
     return [
-      `looking for custom software developer contact ${suffix}`,
-      `need SaaS development contact ${suffix}`,
-      `custom software RFP contact ${suffix}`,
+      `"looking for" "custom software" OR "SaaS" developer ${suffix} contact`,
+      `"need" "software development" company ${suffix} email`,
+      `"hire" "software developer" OR "development team" ${suffix}`,
     ];
   }
   if(type==="automation"){
     return [
-      `factory automation need contact ${suffix}`,
-      `business process automation contact ${suffix}`,
-      `ERP automation contact ${suffix}`,
-      `looking to automate work contact ${suffix}`,
+      `"need" "business automation" OR "process automation" ${suffix} contact`,
+      `"looking for" "ERP" OR "CRM" implementation ${suffix} email`,
+      `"hire" "automation" developer OR company ${suffix} contact`,
     ];
   }
-  return [`website update need contact ${suffix}`];
+  return [`"need website" OR "website development" ${suffix} contact email`];
 }
 
 function extractEmails(html){
@@ -89,12 +92,15 @@ function extractEmails(html){
   const text=String(html||"").replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ");
   const re=/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/g;
   const raw=text.match(re)||[];
-  const placeholder=new Set(["example.com","example.org","example.net","domain.com","yourdomain.com","test.com","sample.com","email.com","sentry.io","schema.org","wixpress.com"]);
+  const placeholder=new Set(["example.com","example.org","example.net","domain.com","yourdomain.com","test.com","sample.com","email.com","sentry.io","schema.org","wixpress.com","placeholder.com","yoursite.com","mysite.com","company.com","business.com","website.com","change.me","noemail.com","noreply.com","donotreply.com","spam.com","throwaway.com","tempmail.com","guerrillamail.com","mailinator.com","fakeinbox.com"]);
   for(const e of raw){
     const clean=e.toLowerCase().trim();
     if(/\.(png|jpe?g|gif|webp|svg|css|js|ico)$/.test(clean)) continue;
     const d=clean.split("@")[1]||"";
     if(placeholder.has(d.replace(/^www\./,""))) continue;
+    // Skip generic/placeholder local parts
+    const local=clean.split("@")[0]||"";
+    if(/^(info|contact|admin|support|hello|mail|webmaster|postmaster|abuse|noreply|no-reply|donotreply|test|user|example|name|sample|your|my)$/i.test(local)) continue;
     found.add(clean);
   }
   return Array.from(found);
@@ -212,14 +218,16 @@ async function runWebScoutOnce({hunterId="generic_web_hunter", domain="web_servi
         }
       } else errors.push(host+": "+(home.status||home.error));
       emails=[...new Set(emails.map(e=>e.toLowerCase().trim()))];
-      // Filter genuine: must have email and (isIncomplete or mobile/software or new work query) — new website/digital marketing is new work, not just incomplete
+      // Filter: must have at least one real email. Keep if ANY condition met:
+      // - site needs update (incomplete/old/mobile-broken)
+      // - mobile/software/automation type (always relevant)
+      // - new work query (business actively seeking services)
+      // - email found from a business page (not a blog/article)
       const isMobileOrSoftware = type==="mobile"||type==="software"||type==="automation";
-      const isNewWorkQuery = /need website|looking for website|need digital marketing|looking for digital|need mobile app|looking for mobile/i.test(query);
-      const shouldKeep = emails.length>0 && (isIncomplete || isMobileOrSoftware || isNewWorkQuery);
-      if(!shouldKeep && emails.length>0 && !isIncomplete && !isNewWorkQuery){
-        // For web hunters, skip complete sites unless new work query
-        continue;
-      }
+      const isNewWorkQuery = /need website|looking for website|need digital marketing|looking for digital|need mobile app|looking for mobile|hire|looking for|need/.test(query);
+      const isBusinessPage = /contact|about|team|business|company|agency|services/i.test(r.url) || /contact|about|team|business|company/i.test(r.title || "");
+      const shouldKeep = emails.length>0 && (isIncomplete || isMobileOrSoftware || isNewWorkQuery || isBusinessPage);
+      //shouldKeep already handles filtering — no additional skip needed
       const prospects=emails.map(email=>({
         businessName: String(r.title||host).slice(0,200),
         website: r.url,

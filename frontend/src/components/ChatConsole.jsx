@@ -217,6 +217,12 @@ export default function ChatConsole({
     scrollToBottom();
   }, [messages, loading, error, scrollToBottom]);
 
+  useEffect(() => {
+    const handler = (e) => { if (e.detail) setInput(e.detail); };
+    window.addEventListener("garuda:insertPrompt", handler);
+    return () => window.removeEventListener("garuda:insertPrompt", handler);
+  }, []);
+
   const handleSend = async (overrideText) => {
     const textToSend = String(overrideText || input).trim();
     if (!textToSend || loading) return;

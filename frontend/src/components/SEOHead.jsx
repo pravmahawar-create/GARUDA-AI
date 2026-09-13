@@ -11,8 +11,11 @@ export default function SEOHead({
   canonical = "https://www.garudaos.in/",
   noindex = false,
   ogType = "website",
-  schema = null
+  schema = null,
+  structuredData = null
 }) {
+  // Backwards compat: ServiceLanding passes structuredData, WhatIsGarudaAI passes schema
+  const resolvedSchema = schema || structuredData || null;
   useEffect(() => {
     // 1. Document Title
     document.title = title;
@@ -87,14 +90,14 @@ export default function SEOHead({
     // 7. Route Specific JSON-LD Schema
     const scriptId = "garuda-route-schema";
     let schemaScript = document.getElementById(scriptId);
-    if (schema) {
+    if (resolvedSchema) {
       if (!schemaScript) {
         schemaScript = document.createElement("script");
         schemaScript.id = scriptId;
         schemaScript.type = "application/ld+json";
         document.head.appendChild(schemaScript);
       }
-      schemaScript.textContent = JSON.stringify(schema);
+      schemaScript.textContent = JSON.stringify(resolvedSchema);
     } else if (schemaScript) {
       schemaScript.remove();
     }
@@ -104,7 +107,7 @@ export default function SEOHead({
       const existing = document.getElementById(scriptId);
       if (existing) existing.remove();
     };
-  }, [title, description, canonical, noindex, ogType, schema]);
+  }, [title, description, canonical, noindex, ogType, resolvedSchema]);
 
   return null;
 }
