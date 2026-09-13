@@ -1,21 +1,33 @@
 /**
- * GARUDA Brain API
+ * GARUDA Brain API — All 6 Phases
  *
- * Endpoints:
  * POST /api/brain/chat — Talk to GARUDA
- * GET /api/brain/context — Current context
- * GET /api/brain/history/:sessionId — Conversation history
- * POST /api/brain/think — Ask GARUDA to think about something
- * POST /api/brain/decide — Ask GARUDA to make a decision
- * POST /api/brain/debug — Ask GARUDA to debug code
+ * POST /api/brain/think — Ask GARUDA to think
+ * POST /api/brain/decide — Make a decision
+ * POST /api/brain/chain-of-thought — Step-by-step reasoning
+ * POST /api/brain/solve — Solve a problem
+ * POST /api/brain/prioritize — Prioritize tasks
+ * POST /api/brain/predict — Predict outcomes
+ * POST /api/brain/explain-code — Explain code
+ * POST /api/brain/generate-code — Generate code
+ * POST /api/brain/review-code — Review code
+ * POST /api/brain/debug-code — Debug code
+ * POST /api/brain/generate-email — Generate cold email
+ * POST /api/brain/generate-proposal — Generate proposal
+ * POST /api/brain/generate-blog — Generate blog post
+ * POST /api/brain/generate-report — Generate report
+ * GET  /api/brain/context — Current context
+ * GET  /api/brain/health — Brain health
  */
 
 const brain = require("../src/services/garudaBrain");
 const conversation = require("../src/services/garudaConversation");
 const contextTracker = require("../src/services/contextTrackerService");
+const codeIntel = require("../src/services/codeIntelligenceService");
+const reasoning = require("../src/services/reasoningEngineService");
+const creative = require("../src/services/creativeEngineService");
 
 module.exports = async function handler(req, res) {
-  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -26,80 +38,184 @@ module.exports = async function handler(req, res) {
   const sessionId = req.headers["x-session-id"] || "default";
 
   try {
-    // ─── POST /api/brain/chat — Talk to GARUDA ───
+    // ═══════════════════════════════════════════════════════════════════════
+    // CORE — Phase 1-3
+    // ═══════════════════════════════════════════════════════════════════════
+
     if (path === "/api/brain/chat" && req.method === "POST") {
       const body = await readBody(req);
-      const { message } = body;
-      if (!message) return res.status(400).json({ ok: false, error: "Message required" });
-
-      const result = await conversation.chat(sessionId, message);
-
-      // Track context
-      const understanding = await brain.understand(message);
-      contextTracker.trackFromMessage(message, result.response, understanding);
-
-      return res.status(200).json({
-        ok: true,
-        response: result.response,
-        provider: result.provider,
-        latencyMs: result.latencyMs,
-        understanding
-      });
+      if (!body.message) return res.status(400).json({ ok: false, error: "Message required" });
+      const result = await conversation.chat(sessionId, body.message);
+      const understanding = await brain.understand(body.message);
+      contextTracker.trackFromMessage(body.message, result.response, understanding);
+      return res.status(200).json({ ok: true, response: result.response, provider: result.provider, latencyMs: result.latencyMs, understanding });
     }
 
-    // ─── GET /api/brain/context — Current context ───
-    if (path === "/api/brain/context" && req.method === "GET") {
-      const context = contextTracker.getCurrentContext();
-      return res.status(200).json({ ok: true, context });
-    }
-
-    // ─── GET /api/brain/history/:sessionId ───
-    if (path.startsWith("/api/brain/history/") && req.method === "GET") {
-      const sid = path.split("/api/brain/history/")[1];
-      const history = conversation.getHistory(sid);
-      return res.status(200).json({ ok: true, history });
-    }
-
-    // ─── POST /api/brain/think — Ask GARUDA to think ───
     if (path === "/api/brain/think" && req.method === "POST") {
       const body = await readBody(req);
-      const { prompt, systemPrompt } = body;
-      if (!prompt) return res.status(400).json({ ok: false, error: "Prompt required" });
-
-      const result = await brain.think(prompt, { systemPrompt });
+      if (!body.prompt) return res.status(400).json({ ok: false, error: "Prompt required" });
+      const result = await brain.think(body.prompt, { systemPrompt: body.systemPrompt });
       return res.status(200).json({ ok: true, ...result });
     }
 
-    // ─── POST /api/brain/decide — Ask GARUDA to decide ───
     if (path === "/api/brain/decide" && req.method === "POST") {
       const body = await readBody(req);
-      const { situation, options, constraints, context } = body;
-      if (!situation || !options) return res.status(400).json({ ok: false, error: "Situation and options required" });
-
-      const decision = await brain.decide({ situation, options, constraints, context });
+      if (!body.situation || !body.options) return res.status(400).json({ ok: false, error: "Situation and options required" });
+      const decision = await brain.decide(body);
       return res.status(200).json({ ok: true, decision });
     }
 
-    // ─── POST /api/brain/debug — Ask GARUDA to debug ───
-    if (path === "/api/brain/debug" && req.method === "POST") {
-      const body = await readBody(req);
-      const { code, error } = body;
-      if (!code || !error) return res.status(400).json({ ok: false, error: "Code and error required" });
-
-      const result = await brain.debug(code, error);
-      return res.status(200).json({ ok: true, result });
+    if (path === "/api/brain/context" && req.method === "GET") {
+      return res.status(200).json({ ok: true, context: contextTracker.getCurrentContext() });
     }
 
-    // ─── GET /api/brain/health — Brain health check ───
     if (path === "/api/brain/health" && req.method === "GET") {
-      const provider = brain.getProvider();
-      return res.status(200).json({
-        ok: true,
-        provider: provider || "none configured",
-        gemini: !!process.env.GEMINI_API_KEY,
-        nvidia: !!process.env.NVIDIA_API_KEY,
-        groq: !!process.env.GROQ_API_KEY
-      });
+      return res.status(200).json({ ok: true, provider: brain.getProvider() || "none", gemini: !!process.env.GEMINI_API_KEY, nvidia: !!process.env.NVIDIA_API_KEY, groq: !!process.env.GROQ_API_KEY });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // REASONING — Phase 5
+    // ═══════════════════════════════════════════════════════════════════════
+
+    if (path === "/api/brain/chain-of-thought" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.problem) return res.status(400).json({ ok: false, error: "Problem required" });
+      const result = await reasoning.chainOfThought(body.problem, body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/solve" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.problem) return res.status(400).json({ ok: false, error: "Problem required" });
+      const result = await reasoning.solveProblem(body.problem, body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/prioritize" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.tasks) return res.status(400).json({ ok: false, error: "Tasks required" });
+      const result = await reasoning.prioritize(body.tasks);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/predict" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.action) return res.status(400).json({ ok: false, error: "Action required" });
+      const result = await reasoning.predictOutcome(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/tradeoffs" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.optionA || !body.optionB) return res.status(400).json({ ok: false, error: "Two options required" });
+      const result = await reasoning.analyzeTradeoffs(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CODE INTELLIGENCE — Phase 4
+    // ═══════════════════════════════════════════════════════════════════════
+
+    if (path === "/api/brain/explain-code" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.code) return res.status(400).json({ ok: false, error: "Code required" });
+      const result = await codeIntel.explainCode(body.code, body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/generate-code" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.description) return res.status(400).json({ ok: false, error: "Description required" });
+      const result = await codeIntel.generateCode(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/review-code" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.code) return res.status(400).json({ ok: false, error: "Code required" });
+      const result = await codeIntel.reviewCode(body.code, body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/debug-code" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.code || !body.error) return res.status(400).json({ ok: false, error: "Code and error required" });
+      const result = await codeIntel.debugCode(body.code, body.error, body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/refactor-code" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.code) return res.status(400).json({ ok: false, error: "Code required" });
+      const result = await codeIntel.refactorCode(body.code, body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/generate-tests" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.code) return res.status(400).json({ ok: false, error: "Code required" });
+      const result = await codeIntel.generateTests(body.code, body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CREATIVE — Phase 6
+    // ═══════════════════════════════════════════════════════════════════════
+
+    if (path === "/api/brain/generate-email" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.recipient || !body.company) return res.status(400).json({ ok: false, error: "Recipient and company required" });
+      const result = await creative.generateEmail(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/generate-proposal" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.client || !body.project) return res.status(400).json({ ok: false, error: "Client and project required" });
+      const result = await creative.generateProposal(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/generate-blog" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.topic) return res.status(400).json({ ok: false, error: "Topic required" });
+      const result = await creative.generateBlogPost(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/generate-social" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.topic) return res.status(400).json({ ok: false, error: "Topic required" });
+      const result = await creative.generateSocialContent(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/generate-report" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.data) return res.status(400).json({ ok: false, error: "Data required" });
+      const result = await creative.generateReport(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/generate-pitch" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.company || !body.product) return res.status(400).json({ ok: false, error: "Company and product required" });
+      const result = await creative.generatePitchDeck(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/generate-copy" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.product || !body.audience) return res.status(400).json({ ok: false, error: "Product and audience required" });
+      const result = await creative.generateMarketingCopy(body);
+      return res.status(200).json({ ok: true, ...result });
+    }
+
+    if (path === "/api/brain/generate-followup" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!body.originalEmail) return res.status(400).json({ ok: false, error: "Original email required" });
+      const result = await creative.generateFollowup(body);
+      return res.status(200).json({ ok: true, ...result });
     }
 
     return res.status(404).json({ ok: false, error: "Not found" });
@@ -114,9 +230,6 @@ async function readBody(req) {
   return new Promise((resolve) => {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
-    req.on("end", () => {
-      try { resolve(JSON.parse(body)); }
-      catch { resolve({}); }
-    });
+    req.on("end", () => { try { resolve(JSON.parse(body)); } catch { resolve({}); } });
   });
 }
