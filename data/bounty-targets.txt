@@ -1,4 +1,54 @@
-# GARUDA Bug Bounty � In-Scope Targets (one per line)
-# Supports: https://target.com | target.com | *.target.com | 1.1.1.0/30
-https://www.garudaos.in
-https://example.com
+# GARUDA Bug Bounty — High-Paying Targets (>$500 min payout)
+# Format: https://target.com | handle | max_bounty_range | notes
+# Only programs with confirmed monetary bounties
+#
+# TIER 1 — CRITICAL ($10,000-$100,000)
+https://github.com | github | $250-$100,000 | Critical avg $100K, High avg $12K
+https://shopify.com | shopify | $500-$50,000 | Critical $50K, High $10K
+https://gitlab.com | gitlab | $200-$20,000 | Critical $20K, High $10K
+https://slack.com | slack | $100-$17,250 | Critical $17.25K, High $5K
+https://paypal.com | paypal | $100-$10,000 | Critical $10K, High $5K
+https://coinbase.com | coinbase | $200-$10,000 | Critical $10K, High $5K
+https://uber.com | uber | $500-$10,000 | Critical $10K, High $5K
+https://spotify.com | spotify | $150-$10,000 | Critical $10K, High $5K
+https://airbnb.com | airbnb | $500-$10,000 | Critical $10K, High $5K
+https://cloudflare.com | cloudflare | $100-$10,000 | Critical $10K, High $2.5K
+https://goldmansachs.com | goldmansachs | $500-$10,000 | Critical $10K, High $5K
+https://wealthsimple.com | wealthsimple | $100-$10,000 | Critical $10K, High $5K
+#
+# TIER 2 — HIGH ($1,000-$10,000)
+https://dyson.com | dyson | $100-$10,000 | Critical $10K, High $5K
+https://starbucks.com | starbucks | $100-$10,000 | Critical $10K, High $5K
+https://hyatt.com | hyatt | $100-$10,000 | Critical $10K, High $5K
+https://linkedin.com | linkedin | $200-$10,000 | Critical $10K, High $5K
+https://x.com | x | $100-$10,000 | Critical $10K, High $5K
+https://booking.com | bookingcom | $200-$10,000 | Critical $10K, High $5K
+https://flipkart.com | flipkart | $200-$10,000 | Critical $10K, High $5K
+https://yelp.com | yelp | $100-$5,000 | Critical $5K, High $2.5K
+https://snapchat.com | snapchat | $100-$10,000 | Critical $10K, High $5K
+https://tinder.com | tinder | $100-$10,000 | Critical $10K, High $5K
+https://grab.com | grab | $100-$10,000 | Critical $10K, High $5K
+https://deriv.com | deriv | $100-$10,000 | Critical $10K, High $5K
+https://goodrx.com | goodrx | $100-$10,000 | Critical $10K, High $5K
+https://kayak.com | kayak | $100-$10,000 | Critical $10K, High $5K
+https://udemy.com | udemy | $100-$10,000 | Critical $10K, High $5K
+https://quora.com | quora | $100-$10,000 | Critical $10K, High $5K
+https://clearme.com | clear | $100-$10,000 | Critical $10K, High $5K
+https://mapbox.com | mapbox | $100-$10,000 | Critical $10K, High $5K
+https://algolia.com | algolia | $100-$10,000 | Critical $10K, High $5K
+https://rockstargames.com | rockstargames | $100-$10,000 | Critical $10K, High $5K
+#
+# TIER 3 — MEDIUM ($250-$5,000)
+https://vimeo.com | vimeo | $100-$5,000 | Critical $5K, High $2.5K
+https://wordpress.org | wordpress | $100-$5,000 | Critical $5K, High $2.5K
+https://airtable.com | airtable | $100-$5,000 | Critical $5K, High $2.5K
+https://basecamp.com | basecamp | $100-$5,000 | Critical $5K, High $2.5K
+https://att.com | att | $100-$5,000 | Critical $5K, High $2.5K
+https://priceline.com | priceline | $100-$5,000 | Critical $5K, High $2.5K
+https://ui.com | ui | $100-$5,000 | Critical $5K, High $2.5K
+https://fetlife.com | fetlife | $100-$5,000 | Critical $5K, High $2.5K
+https://eternal.com | eternal | $100-$5,000 | Critical $5K, High $2.5K
+https://scopely.com | scopely | $100-$5,000 | Critical $5K, High $2.5K
+https://badoo.com | badoo | $100-$5,000 | Critical $5K, High $2.5K
+https://homebargains.co.uk | homebargains | $100-$5,000 | Critical $5K, High $2.5K
+https://playtika.com | playtika | $100-$5,000 | Critical $5K, High $1.5K

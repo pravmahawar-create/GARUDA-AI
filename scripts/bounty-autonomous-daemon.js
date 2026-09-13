@@ -277,11 +277,31 @@ async function processTarget(target, memory, now) {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// 7. DAEMON LOOP & CLI
+// 7. ENHANCED TARGET PARSING — supports: https://target.com | handle | max_bounty | notes
+// ──────────────────────────────────────────────────────────────────────────────
+function parseTargetLine(line) {
+  const parts = line.split("|").map(s => s.trim());
+  const url = parts[0];
+  if (!url || url.startsWith("#")) return null;
+  const handle = parts[1] || null;
+  const maxBountyStr = parts[2] || null;
+  let maxBountyMin = 0;
+  if (maxBountyStr) {
+    // Parse "$100-$10,000" or "$10,000" → extract lowest value as minimum payout
+    const nums = maxBountyStr.replace(/[^0-9\-.,]/g, "").split(/[-–]/).map(s => parseInt(s.replace(/,/g, ""), 10)).filter(n => !isNaN(n));
+    if (nums.length > 0) maxBountyMin = nums[0]; // first number = minimum
+    else if (nums.length === 1) maxBountyMin = nums[0];
+  }
+  const notes = parts[3] || "";
+  return { url, handle, maxBountyMin, notes, raw: line };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 8. DAEMON LOOP & CLI
 // ──────────────────────────────────────────────────────────────────────────────
 function parseArgs() {
   const args = process.argv.slice(2);
-  const opts = { watch: false, once: false, discover: false, interval: 30, target: null, file: null };
+  const opts = { watch: false, once: false, discover: false, interval: 30, target: null, file: null, minBounty: 0 };
   // Default is --watch if no mode given
   let modeGiven = false;
   for (let i = 0; i < args.length; i++) {
@@ -291,6 +311,7 @@ function parseArgs() {
     else if (args[i] === "--interval" && args[i+1]) { opts.interval = parseInt(args[++i], 10) || 30; }
     else if (args[i] === "--target" && args[i+1]) { opts.target = args[++i]; }
     else if (args[i] === "--file" && args[i+1]) { opts.file = args[++i]; }
+    else if (args[i] === "--min-bounty" && args[i+1]) { opts.minBounty = parseInt(args[++i], 10) || 0; }
     else if (args[i] === "--help" || args[i] === "-h") {
       console.log(`
 🦅 GARUDA Bounty Autonomous Daemon v1.0.0
@@ -300,7 +321,8 @@ Usage:
   node scripts/bounty-autonomous-daemon.js --once --target https://www.garudaos.in
   node scripts/bounty-autonomous-daemon.js --discover           # Subdomain expansion via crt.sh then scan
   node scripts/bounty-autonomous-daemon.js --interval 30        # Sleep interval in minutes (default 30)
-  node scripts/bounty-autonomous-daemon.js --watch --interval 15 --file data/bounty-targets.txt
+  node scripts/bounty-autonomous-daemon.js --min-bounty 500     # Only scan programs with min payout >= $500
+  node scripts/bounty-autonomous-daemon.js --watch --interval 15 --file data/bounty-targets.txt --min-bounty 500
 `);
       process.exit(0);
     }
@@ -322,7 +344,31 @@ async function loadTargetsForDaemon(opts) {
     if (fs.existsSync(p)) raw = fs.readFileSync(p, "utf8").split(/\r?\n/).map(s => s.trim()).filter(Boolean).filter(l => !l.startsWith("#"));
     else raw = ["https://www.garudaos.in"];
   }
-  let targets = hunter.loadTargets(raw);
+
+  // Parse enhanced format: url | handle | max_bounty | notes
+  const parsed = raw.map(parseTargetLine).filter(Boolean);
+
+  // Apply min-bounty filter
+  const minBounty = opts.minBounty || 0;
+  let filtered = parsed;
+  if (minBounty > 0) {
+    filtered = parsed.filter(p => p.maxBountyMin >= minBounty);
+    log(C.magenta, `  💰 Min-bounty filter: $${minBounty} → ${filtered.length}/${parsed.length} programs qualify`);
+  }
+
+  // Extract URLs for hunter
+  const urls = filtered.map(p => p.url);
+  let targets = hunter.loadTargets(urls);
+
+  // Store parsed metadata for later use
+  targets._meta = {};
+  for (const p of parsed) {
+    try {
+      const hostname = new URL(p.url).hostname;
+      targets._meta[hostname] = p;
+    } catch {}
+  }
+
   if (opts.discover) {
     log(C.cyan, `🔍 Discover mode — expanding ${targets.length} roots via crt.sh...`);
     const expanded = new Set(targets);
@@ -343,11 +389,16 @@ async function runOnce(opts) {
   const now = Date.now();
   const targets = await loadTargetsForDaemon(opts);
   log(C.bold + C.cyan, `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  log(C.bold, `🦅 GARUDA Daemon — Single Pass | Targets: ${targets.length} | Jitter: ${jitterDelay}ms`);
+  log(C.bold, `🦅 GARUDA Daemon — Single Pass | Targets: ${targets.length} | Jitter: ${jitterDelay}ms | Min-Bounty: $${opts.minBounty || 0}`);
   log(C.dim, `Memory entries: ${Object.keys(memory).length} | Quarantined roots: ${quarantineMap.size}`);
   let scanned = 0, skipped = 0, reports = 0, high = 0;
   for (const t of targets) {
     if (shuttingDown) { log(C.yellow, `  ⏹ Shutdown requested — finishing current target ${t} then saving...`); break; }
+    // Log program metadata if available
+    const meta = targets._meta?.[new URL(t).hostname];
+    if (meta) {
+      log(C.cyan, `\n🎯 Target: ${meta.url} | Handle: ${meta.handle || "?"} | Min-Payout: $${meta.maxBountyMin} | ${meta.notes}`);
+    }
     const res = await processTarget(t, memory, now);
     if (res.skipped) skipped++; else { scanned++; reports += res.result.reports.length; high += res.result.summary.high; }
   }
