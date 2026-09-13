@@ -144,6 +144,7 @@
     "mongoose": "^9.7.3",
     "msedge-tts": "^2.0.7",
     "multer": "^2.2.0",
+    "nodemailer": "^10.0.9",
     "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
     "puppeteer": "^25.10.0",

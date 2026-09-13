@@ -898,6 +898,87 @@
       "notes": "Found via agent.personal_global_software_hunter (looking for custom software developer contact Europe) — Audit: viewport:ok, copyright:unknown, load:1.6s, needsUpdate:false — garudaos.ai@gmail.com",
       "status": "scored",
       "createdAt": "2026-09-05T19:07:09.966Z"
+    },
+    {
+      "id": "PL_1789190294116_640bea",
+      "firstName": "",
+      "lastName": "",
+      "email": "team@bamsh.co.uk",
+      "phone": "",
+      "businessName": "7 Signs Your Website Is Outdated (And What To Do About It)",
+      "city": "Glasgow",
+      "segments": [],
+      "score": 33,
+      "grade": "LOW",
+      "action": "review_first",
+      "query": "awareness",
+      "signals": [
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_web_hunter (outdated website 2019 contact email UK) — Audit: viewport:ok, copyright:2012, load:1.4s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-12T05:18:14.116Z"
+    },
+    {
+      "id": "PL_1789324485842_6ffd94",
+      "firstName": "",
+      "lastName": "",
+      "email": "restaurants@yelp.com",
+      "phone": "",
+      "businessName": "How businesses can contact Yelp",
+      "city": "London",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 61,
+      "grade": "STRONG",
+      "action": "generate_now",
+      "query": "growth",
+      "signals": [
+        "business_owner(2)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_web_hunter (site:yelp.com restaurants UK contact) — Audit: viewport:ok, copyright:unknown, load:1.1s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-13T18:34:45.842Z"
+    },
+    {
+      "id": "PL_1789324485842_308be3",
+      "firstName": "",
+      "lastName": "",
+      "email": "restaurantsupport@yelp.com",
+      "phone": "",
+      "businessName": "How businesses can contact Yelp",
+      "city": "Leeds",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 61,
+      "grade": "STRONG",
+      "action": "generate_now",
+      "query": "growth",
+      "signals": [
+        "business_owner(2)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_web_hunter (site:yelp.com restaurants UK contact) — Audit: viewport:ok, copyright:unknown, load:1.1s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-13T18:34:45.843Z"
     }
   ]
 }

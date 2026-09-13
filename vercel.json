@@ -5,7 +5,7 @@
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(.*\\.html|/|/founder.*|/bot-verse.*|/pawan.*|/astra.*|/kids-play.*|/kids-app.*|/dost.*|/sahayak.*)",
+      "source": "/(.*\\.html|/|/founder.*|/quant.*|/finance.*|/bot-verse.*|/pawan.*|/astra.*|/kids-play.*|/kids-app.*|/dost.*|/sahayak.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -124,6 +124,18 @@
     {
       "source": "/founder/access",
       "destination": "/founder/access/index.html"
+    },
+    {
+      "source": "/founder/quant",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/quant",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/finance/quant",
+      "destination": "/index.html"
     },
     {
       "source": "/kingdom",
