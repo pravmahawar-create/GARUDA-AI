@@ -33,6 +33,7 @@ export default function FounderQuantCommand({ onLogout }) {
   const [executingCycle, setExecutingCycle] = useState(false);
   const [moonshotsFilter, setMoonshotsFilter] = useState("ALL"); // 'ALL' | 'SUB_RUPEE' | 'PENNY'
   const [searchMoonshot, setSearchMoonshot] = useState("");
+  const [investAmount, setInvestAmount] = useState(1000); // Dynamic simulator: ₹1,000, ₹2,000, ₹5,000, ₹10,000, ₹1,00,000
 
   // Fetch complete Sovereign Quant Dashboard
   const fetchDashboard = useCallback(async (isManual = false) => {
@@ -1365,6 +1366,89 @@ export default function FounderQuantCommand({ onLogout }) {
               </div>
             </div>
 
+            {/* DYNAMIC INVESTMENT SIZING SIMULATOR */}
+            <div
+              style={{
+                background: "rgba(15, 23, 42, 0.95)",
+                border: "1px solid rgba(245, 158, 11, 0.35)",
+                borderRadius: "10px",
+                padding: "12px 18px",
+                marginBottom: "16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: "12px"
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "0.85rem", color: GOLD_LIGHT, fontWeight: 800 }}>
+                  💰 Active Investment Allocation:
+                </span>
+                <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>
+                  Selected: <strong style={{ color: "#ffffff" }}>₹{investAmount.toLocaleString("en-IN")} per coin</strong>
+                </span>
+              </div>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {[
+                  { amt: 1000, label: "₹1,000 (Safe Starter)" },
+                  { amt: 2000, label: "₹2,000 (Sweet Spot)" },
+                  { amt: 5000, label: "₹5,000" },
+                  { amt: 10000, label: "₹10,000" },
+                  { amt: 100000, label: "₹1,00,000 (Cousin Size)" }
+                ].map((item) => (
+                  <button
+                    key={item.amt}
+                    onClick={() => setInvestAmount(item.amt)}
+                    style={{
+                      background:
+                        investAmount === item.amt
+                          ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                          : "rgba(255,255,255,0.06)",
+                      border: `1px solid ${investAmount === item.amt ? "#fbbf24" : "rgba(255,255,255,0.15)"}`,
+                      color: investAmount === item.amt ? "#000000" : "#e5e7eb",
+                      fontWeight: 800,
+                      fontSize: "0.76rem",
+                      padding: "6px 12px",
+                      borderRadius: "6px",
+                      cursor: "pointer"
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* HOLDING HORIZON BLUEPRINT */}
+            <div
+              style={{
+                background: "rgba(10, 15, 29, 0.75)",
+                border: "1px solid rgba(59, 130, 246, 0.25)",
+                borderRadius: "10px",
+                padding: "14px 18px",
+                marginBottom: "20px"
+              }}
+            >
+              <div style={{ fontSize: "0.78rem", color: "#93c5fd", fontWeight: 800, textTransform: "uppercase", marginBottom: "6px" }}>
+                ⏳ Kitna Time Hold Karna Padega? (Real Market Cycle Blueprint)
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px", fontSize: "0.78rem" }}>
+                <div style={{ background: "rgba(0,0,0,0.3)", padding: "10px", borderRadius: "6px" }}>
+                  <div style={{ color: GOLD_LIGHT, fontWeight: 700 }}>Phase 1: Accumulation (1 - 3 Months)</div>
+                  <div style={{ color: "#9ca3af", marginTop: "2px" }}>Coin paise me sideways chalta hai. Whales chup-chap volume build karte hain. Bilkul panic nahi karna.</div>
+                </div>
+                <div style={{ background: "rgba(0,0,0,0.3)", padding: "10px", borderRadius: "6px" }}>
+                  <div style={{ color: "#34d399", fontWeight: 700 }}>Phase 2: Breakout 5x - 10x (3 - 6 Months)</div>
+                  <div style={{ color: "#9ca3af", marginTop: "2px" }}>First listing spike! Apna lagaya hua ₹{investAmount.toLocaleString("en-IN")} nikaal lo. Ab baaki coins 100% muft (free) hain!</div>
+                </div>
+                <div style={{ background: "rgba(0,0,0,0.3)", padding: "10px", borderRadius: "6px" }}>
+                  <div style={{ color: "#f97316", fontWeight: 700 }}>Phase 3: Mania Peak 50x - 80x (6 - 12 Months)</div>
+                  <div style={{ color: "#9ca3af", marginTop: "2px" }}>Massive euphoria run jisme 22 paise ₹18 banta hai. Wahan par baaki bacha hua portfolio exit karo!</div>
+                </div>
+              </div>
+            </div>
+
             {/* Moonshots Cards Grid */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {filteredMoonshots.length === 0 ? (
@@ -1372,162 +1456,171 @@ export default function FounderQuantCommand({ onLogout }) {
                   No moonshot coins match current search criteria.
                 </div>
               ) : (
-                filteredMoonshots.map((ms) => (
-                  <div
-                    key={ms.symbol}
-                    style={{
-                      background: PANEL,
-                      border: `1px solid ${ms.isSubRupee ? "rgba(249, 115, 22, 0.35)" : PANEL_BORDER}`,
-                      borderRadius: "14px",
-                      padding: "20px"
-                    }}
-                  >
-                    {/* Header */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "12px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div
-                          style={{
-                            width: "36px",
-                            height: "36px",
-                            borderRadius: "8px",
-                            background: ms.isSubRupee ? "rgba(249, 115, 22, 0.2)" : "rgba(245, 158, 11, 0.15)",
-                            color: ms.isSubRupee ? "#fb923c" : GOLD_LIGHT,
-                            display: "grid",
-                            placeItems: "center",
-                            fontWeight: 800,
-                            fontSize: "0.9rem"
-                          }}
-                        >
-                          #{ms.rank}
-                        </div>
-                        <div>
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "#ffffff" }}>
-                              {ms.cleanSymbol}
-                            </span>
-                            <span
-                              style={{
-                                background: ms.isSubRupee ? "rgba(249, 115, 22, 0.15)" : "rgba(59, 130, 246, 0.15)",
-                                color: ms.isSubRupee ? "#fdba74" : "#93c5fd",
-                                padding: "2px 8px",
-                                borderRadius: "4px",
-                                fontSize: "0.7rem",
-                                fontWeight: 700
-                              }}
-                            >
-                              {ms.category}
-                            </span>
-                          </div>
-                          <div style={{ fontSize: "0.78rem", color: "#9ca3af" }}>
-                            Live Orderbook Price: <strong style={{ color: "#ffffff", fontSize: "0.9rem" }}>{ms.formattedPrice}</strong> ({ms.priceUsd})
-                          </div>
-                        </div>
-                      </div>
+                filteredMoonshots.map((ms) => {
+                  const numPrice = parseFloat(ms.priceInr.replace("₹", "")) || 0.0001;
+                  const dynamicCoins = Math.floor(investAmount / numPrice);
+                  const dynamic5xVal = investAmount * 5;
+                  const dynamic10xVal = investAmount * 10;
+                  const dynamic50xVal = investAmount * 50;
+                  const dynamic80xVal = investAmount * 80;
 
-                      {/* Liquidity & Accumulation Score */}
-                      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-                        <div style={{ textAlign: "right" }}>
-                          <div style={{ fontSize: "0.7rem", color: "#9ca3af" }}>24h Traded Volume</div>
-                          <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#34d399", fontFamily: "monospace" }}>
-                            {ms.volume24hCrores}
-                          </div>
-                          <div style={{ fontSize: "0.68rem", color: "#6b7280" }}>Institutional Liquidity</div>
-                        </div>
-                        <div style={{ textAlign: "right" }}>
-                          <div style={{ fontSize: "0.7rem", color: "#9ca3af" }}>Whale Score</div>
-                          <div style={{ fontSize: "1.1rem", fontWeight: 800, color: GOLD_LIGHT }}>
-                            {ms.accumulationScore}%
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Quantity Purchase & Target Projections */}
+                  return (
                     <div
+                      key={ms.symbol}
                       style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                        gap: "12px",
-                        marginTop: "14px"
+                        background: PANEL,
+                        border: `1px solid ${ms.isSubRupee ? "rgba(249, 115, 22, 0.35)" : PANEL_BORDER}`,
+                        borderRadius: "14px",
+                        padding: "20px"
                       }}
                     >
-                      {/* Quantity on ₹1 Lakh */}
-                      <div style={{ background: "rgba(0,0,0,0.35)", padding: "12px", borderRadius: "8px" }}>
-                        <div style={{ fontSize: "0.7rem", color: "#9ca3af", textTransform: "uppercase" }}>
-                          Quantity for ₹1,00,000
+                      {/* Header */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "12px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <div
+                            style={{
+                              width: "36px",
+                              height: "36px",
+                              borderRadius: "8px",
+                              background: ms.isSubRupee ? "rgba(249, 115, 22, 0.2)" : "rgba(245, 158, 11, 0.15)",
+                              color: ms.isSubRupee ? "#fb923c" : GOLD_LIGHT,
+                              display: "grid",
+                              placeItems: "center",
+                              fontWeight: 800,
+                              fontSize: "0.9rem"
+                            }}
+                          >
+                            #{ms.rank}
+                          </div>
+                          <div>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                              <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "#ffffff" }}>
+                                {ms.cleanSymbol}
+                              </span>
+                              <span
+                                style={{
+                                  background: ms.isSubRupee ? "rgba(249, 115, 22, 0.15)" : "rgba(59, 130, 246, 0.15)",
+                                  color: ms.isSubRupee ? "#fdba74" : "#93c5fd",
+                                  padding: "2px 8px",
+                                  borderRadius: "4px",
+                                  fontSize: "0.7rem",
+                                  fontWeight: 700
+                                }}
+                              >
+                                {ms.category}
+                              </span>
+                            </div>
+                            <div style={{ fontSize: "0.78rem", color: "#9ca3af" }}>
+                              Live Orderbook Price: <strong style={{ color: "#ffffff", fontSize: "0.9rem" }}>{ms.formattedPrice}</strong> ({ms.priceUsd})
+                            </div>
+                          </div>
                         </div>
-                        <div style={{ fontSize: "1.05rem", fontWeight: 800, color: "#ffffff", marginTop: "4px", fontFamily: "monospace" }}>
-                          {ms.coinsFor1Lakh}
-                        </div>
-                        <div style={{ fontSize: "0.68rem", color: "#9ca3af", marginTop: "2px" }}>
-                          Tokens received @ current rate
+
+                        {/* Liquidity & Accumulation Score */}
+                        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                          <div style={{ textAlign: "right" }}>
+                            <div style={{ fontSize: "0.7rem", color: "#9ca3af" }}>24h Traded Volume</div>
+                            <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#34d399", fontFamily: "monospace" }}>
+                              {ms.volume24hCrores}
+                            </div>
+                            <div style={{ fontSize: "0.68rem", color: "#6b7280" }}>Institutional Liquidity</div>
+                          </div>
+                          <div style={{ textAlign: "right" }}>
+                            <div style={{ fontSize: "0.7rem", color: "#9ca3af" }}>Whale Score</div>
+                            <div style={{ fontSize: "1.1rem", fontWeight: 800, color: GOLD_LIGHT }}>
+                              {ms.accumulationScore}%
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Quantity on ₹10,000 */}
-                      <div style={{ background: "rgba(0,0,0,0.35)", padding: "12px", borderRadius: "8px" }}>
-                        <div style={{ fontSize: "0.7rem", color: "#9ca3af", textTransform: "uppercase" }}>
-                          Quantity for ₹10,000
+                      {/* Quantity Purchase & Target Projections Based on investAmount */}
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+                          gap: "12px",
+                          marginTop: "14px"
+                        }}
+                      >
+                        {/* Quantity on Current Selection */}
+                        <div style={{ background: "rgba(0,0,0,0.35)", padding: "12px", borderRadius: "8px" }}>
+                          <div style={{ fontSize: "0.7rem", color: "#9ca3af", textTransform: "uppercase" }}>
+                            Tokens for ₹{investAmount.toLocaleString("en-IN")}
+                          </div>
+                          <div style={{ fontSize: "1.15rem", fontWeight: 800, color: "#ffffff", marginTop: "4px", fontFamily: "monospace" }}>
+                            {dynamicCoins.toLocaleString("en-IN")}
+                          </div>
+                          <div style={{ fontSize: "0.68rem", color: GOLD_LIGHT, marginTop: "2px" }}>
+                            Exact coins received now
+                          </div>
                         </div>
-                        <div style={{ fontSize: "1.05rem", fontWeight: 800, color: "#ffffff", marginTop: "4px", fontFamily: "monospace" }}>
-                          {ms.coinsFor10k}
+
+                        {/* 5x Target */}
+                        <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.2)", padding: "12px", borderRadius: "8px" }}>
+                          <div style={{ fontSize: "0.7rem", color: "#6ee7b7", fontWeight: 700, textTransform: "uppercase" }}>
+                            5x Target ({ms.targets.t5x.priceInr})
+                          </div>
+                          <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "#ffffff", marginTop: "4px" }}>
+                            ₹{dynamic5xVal.toLocaleString("en-IN")}
+                          </div>
+                          <div style={{ fontSize: "0.68rem", color: EMERALD }}>
+                            Net: +₹{(dynamic5xVal - investAmount).toLocaleString("en-IN")}
+                          </div>
                         </div>
-                        <div style={{ fontSize: "0.68rem", color: "#9ca3af", marginTop: "2px" }}>
-                          Micro-starter allocation
+
+                        {/* 10x Target */}
+                        <div style={{ background: "rgba(59, 130, 246, 0.08)", border: "1px solid rgba(59, 130, 246, 0.2)", padding: "12px", borderRadius: "8px" }}>
+                          <div style={{ fontSize: "0.7rem", color: "#93c5fd", fontWeight: 700, textTransform: "uppercase" }}>
+                            10x Target ({ms.targets.t10x.priceInr})
+                          </div>
+                          <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "#ffffff", marginTop: "4px" }}>
+                            ₹{dynamic10xVal.toLocaleString("en-IN")}
+                          </div>
+                          <div style={{ fontSize: "0.68rem", color: "#93c5fd" }}>
+                            Net: +₹{(dynamic10xVal - investAmount).toLocaleString("en-IN")}
+                          </div>
+                        </div>
+
+                        {/* 50x Target */}
+                        <div style={{ background: "rgba(245, 158, 11, 0.08)", border: "1px solid rgba(245, 158, 11, 0.2)", padding: "12px", borderRadius: "8px" }}>
+                          <div style={{ fontSize: "0.7rem", color: GOLD_LIGHT, fontWeight: 700, textTransform: "uppercase" }}>
+                            50x Target ({ms.targets.t50x.priceInr})
+                          </div>
+                          <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "#ffffff", marginTop: "4px" }}>
+                            ₹{dynamic50xVal.toLocaleString("en-IN")}
+                          </div>
+                          <div style={{ fontSize: "0.68rem", color: GOLD_LIGHT }}>
+                            Net: +₹{(dynamic50xVal - investAmount).toLocaleString("en-IN")}
+                          </div>
+                        </div>
+
+                        {/* 80x Cousin Moonshot */}
+                        <div style={{ background: "linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(249, 115, 22, 0.15))", border: "1px solid rgba(249, 115, 22, 0.45)", padding: "12px", borderRadius: "8px" }}>
+                          <div style={{ fontSize: "0.7rem", color: "#fdba74", fontWeight: 800, textTransform: "uppercase" }}>
+                            80x Cousin Moonshot ({ms.targets.t80xMoonshot.priceInr})
+                          </div>
+                          <div style={{ fontSize: "1.15rem", fontWeight: 800, color: "#f97316", marginTop: "4px", fontFamily: "monospace" }}>
+                            ₹{dynamic80xVal.toLocaleString("en-IN")}
+                          </div>
+                          <div style={{ fontSize: "0.68rem", color: "#fdba74", fontWeight: 700 }}>
+                            Corpus on ₹{investAmount.toLocaleString("en-IN")}
+                          </div>
                         </div>
                       </div>
 
-                      {/* 10x Target */}
-                      <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.2)", padding: "12px", borderRadius: "8px" }}>
-                        <div style={{ fontSize: "0.7rem", color: "#6ee7b7", fontWeight: 700, textTransform: "uppercase" }}>
-                          10x Target ({ms.targets.t10x.priceInr})
+                      {/* Hindi Strategy Verdict */}
+                      <div style={{ marginTop: "14px", background: "rgba(10, 15, 29, 0.8)", border: "1px solid rgba(255,255,255,0.08)", padding: "10px 14px", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.72rem", color: "#fdba74", fontWeight: 700, marginBottom: "2px" }}>
+                          🚀 GARUDA Moonshot Strategy Verdict (Roman Hindi):
                         </div>
-                        <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#ffffff", marginTop: "4px" }}>
-                          {ms.targets.t10x.return1Lakh}
-                        </div>
-                        <div style={{ fontSize: "0.68rem", color: EMERALD }}>
-                          Value on ₹1 Lakh invested
-                        </div>
-                      </div>
-
-                      {/* 50x Target */}
-                      <div style={{ background: "rgba(245, 158, 11, 0.08)", border: "1px solid rgba(245, 158, 11, 0.2)", padding: "12px", borderRadius: "8px" }}>
-                        <div style={{ fontSize: "0.7rem", color: GOLD_LIGHT, fontWeight: 700, textTransform: "uppercase" }}>
-                          50x Target ({ms.targets.t50x.priceInr})
-                        </div>
-                        <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#ffffff", marginTop: "4px" }}>
-                          {ms.targets.t50x.return1Lakh}
-                        </div>
-                        <div style={{ fontSize: "0.68rem", color: GOLD_LIGHT }}>
-                          Value on ₹1 Lakh invested
-                        </div>
-                      </div>
-
-                      {/* 80x Cousin Moonshot */}
-                      <div style={{ background: "linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(249, 115, 22, 0.12))", border: "1px solid rgba(249, 115, 22, 0.4)", padding: "12px", borderRadius: "8px" }}>
-                        <div style={{ fontSize: "0.7rem", color: "#fdba74", fontWeight: 800, textTransform: "uppercase" }}>
-                          80x Cousin Moonshot ({ms.targets.t80xMoonshot.priceInr})
-                        </div>
-                        <div style={{ fontSize: "1.05rem", fontWeight: 800, color: "#f97316", marginTop: "4px", fontFamily: "monospace" }}>
-                          {ms.targets.t80xMoonshot.return1Lakh}
-                        </div>
-                        <div style={{ fontSize: "0.68rem", color: "#fdba74", fontWeight: 700 }}>
-                          Corpus on ₹1 Lakh invested
+                        <div style={{ fontSize: "0.82rem", color: "#e5e7eb", lineHeight: "1.4" }}>
+                          Abhi {ms.formattedPrice} par ₹{investAmount.toLocaleString("en-IN")} lagane se {dynamicCoins.toLocaleString("en-IN")} coins milte hain. Agar yeh 10x hua toh ₹{dynamic10xVal.toLocaleString("en-IN")}, aur agar 80x cousin peak chhoo gaya toh ₹{investAmount.toLocaleString("en-IN")} seedha <strong>₹{dynamic80xVal.toLocaleString("en-IN")}</strong> ban jaata hai! Holding horizon: 3 se 6 mahine.
                         </div>
                       </div>
                     </div>
-
-                    {/* Hindi Rationale */}
-                    <div style={{ marginTop: "14px", background: "rgba(10, 15, 29, 0.8)", border: "1px solid rgba(255,255,255,0.08)", padding: "10px 14px", borderRadius: "8px" }}>
-                      <div style={{ fontSize: "0.72rem", color: "#fdba74", fontWeight: 700, marginBottom: "2px" }}>
-                        🚀 GARUDA Moonshot Strategy Verdict (Roman Hindi):
-                      </div>
-                      <div style={{ fontSize: "0.82rem", color: "#e5e7eb", lineHeight: "1.4" }}>
-                        {ms.romanHindiSummary}
-                      </div>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
