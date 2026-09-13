@@ -65,4 +65,31 @@ router.post('/simulate', async (req, res) => {
   }
 });
 
+const { Global24x7QuantDaemon } = require('../services/alphaQuant/global24x7QuantDaemon');
+const daemon24x7 = new Global24x7QuantDaemon({ minConfidenceThreshold: 82 });
+
+/**
+ * GET /api/finance/quant/daemon-status
+ */
+router.get('/daemon-status', (req, res) => {
+  try {
+    const status = daemon24x7.getStatus();
+    res.json({ success: true, ...status });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * POST /api/finance/quant/daemon/cycle
+ */
+router.post('/daemon/cycle', async (req, res) => {
+  try {
+    const result = await daemon24x7.runCycle();
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;
