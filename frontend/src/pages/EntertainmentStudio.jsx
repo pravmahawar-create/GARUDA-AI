@@ -5,6 +5,7 @@ import { openPristineWhitePdf } from "../utils/printPdf";
 
 const GOLD = "#d4af37";
 const GOLD_LIGHT = "#fef08a";
+const GREEN = "#10b981";
 const BG = "#030712";
 const PANEL = "rgba(15, 23, 42, 0.75)";
 const BORDER = "rgba(212, 175, 55, 0.25)";
