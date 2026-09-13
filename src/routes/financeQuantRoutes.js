@@ -17,6 +17,8 @@ const potentialAgent = new AlphaPotentialAgent();
 
 let cachedOpportunities = null;
 let lastOpportunitiesScan = 0;
+let cachedMoonshots = null;
+let lastMoonshotsScan = 0;
 
 /**
  * GET /api/finance/quant/pulse
@@ -49,6 +51,18 @@ router.get('/dashboard', async (req, res) => {
         lastOpportunitiesScan = Date.now();
       } catch (e) {
         opportunities = cachedOpportunities || [];
+      }
+    }
+
+    // Cache Sub-Rupee & Penny Moonshots
+    let moonshots = cachedMoonshots;
+    if (!moonshots || Date.now() - lastMoonshotsScan > 60000) {
+      try {
+        moonshots = await potentialAgent.scanSubRupeeMoonshots();
+        cachedMoonshots = moonshots;
+        lastMoonshotsScan = Date.now();
+      } catch (e) {
+        moonshots = cachedMoonshots || [];
       }
     }
 
@@ -114,6 +128,7 @@ router.get('/dashboard', async (req, res) => {
       daemon: status,
       agents,
       opportunities: opportunities || [],
+      subRupeeMoonshots: moonshots || [],
       wallet: status.wallet,
       stats: status.stats,
       openPositions: status.openPositions,
@@ -158,6 +173,28 @@ router.get('/potential', async (req, res) => {
       lastOpportunitiesScan = Date.now();
     }
     res.json({ success: true, count: cachedOpportunities.length, opportunities: cachedOpportunities });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * GET /api/finance/quant/moonshots
+ * 🚀 Sub-Rupee & Penny 100x Moonshot Radar (Cousin 22 Paise -> ₹18 model)
+ */
+router.get('/moonshots', async (req, res) => {
+  try {
+    const force = req.query.fresh === 'true';
+    if (force || !cachedMoonshots || Date.now() - lastMoonshotsScan > 60000) {
+      cachedMoonshots = await potentialAgent.scanSubRupeeMoonshots();
+      lastMoonshotsScan = Date.now();
+    }
+    res.json({
+      success: true,
+      count: cachedMoonshots.length,
+      benchmarkModel: 'Cousin Brother Model: 22 Paise (₹0.22) -> ₹18.00 (81.8x Gain)',
+      moonshots: cachedMoonshots
+    });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

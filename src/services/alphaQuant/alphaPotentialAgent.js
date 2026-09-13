@@ -215,6 +215,99 @@ class AlphaPotentialAgent {
     opportunities.sort((a, b) => b.convictionScore - a.convictionScore);
     return opportunities;
   }
+
+  /**
+   * 🚀 Scan Sub-Rupee & Penny Explosive Moonshots (Under ₹1 to ₹10)
+   * Designed for 10x, 50x, 80x-100x asymmetric wealth generation (Cousin 22 paise -> ₹18 benchmark model).
+   */
+  async scanSubRupeeMoonshots() {
+    try {
+      const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
+      if (!res.ok) return [];
+      const list = await res.json();
+
+      const pennyList = list
+        .filter(p => p.symbol.endsWith('USDT'))
+        .map(p => {
+          const priceUsd = parseFloat(p.lastPrice);
+          const priceInr = priceUsd * USD_INR_RATE;
+          const volUsd = parseFloat(p.quoteVolume);
+          const chg = parseFloat(p.priceChangePercent);
+          return {
+            symbol: p.symbol,
+            cleanSymbol: p.symbol.replace('USDT', ''),
+            priceUsd,
+            priceInr,
+            volUsd,
+            volInrCrores: Number(((volUsd * USD_INR_RATE) / 10000000).toFixed(2)),
+            priceChange24hPct: chg
+          };
+        })
+        .filter(p => p.priceInr >= 0.01 && p.priceInr <= 10.0 && p.volUsd >= 2000000) // Min $2M volume
+        .sort((a, b) => b.volUsd - a.volUsd)
+        .slice(0, 15);
+
+      return pennyList.map((coin, idx) => {
+        const { cleanSymbol, priceInr, priceUsd, volInrCrores, priceChange24hPct } = coin;
+
+        // Price formatting: Paise if < ₹1, Rupees if >= ₹1
+        const isSubRupee = priceInr < 1.0;
+        const pricePaise = (priceInr * 100).toFixed(2);
+        const formattedPrice = isSubRupee
+          ? `${pricePaise} Paise (₹${priceInr.toFixed(4)})`
+          : `₹${priceInr.toFixed(2)}`;
+
+        // Quantities purchased for ₹10,000 and ₹1,00,000
+        const coinsFor10k = Math.floor(10000 / priceInr);
+        const coinsFor1Lakh = Math.floor(100000 / priceInr);
+
+        // Targets: 5x, 10x, 50x, 80x (Cousin Benchmark)
+        const target5xPriceInr = Number((priceInr * 5).toFixed(4));
+        const target10xPriceInr = Number((priceInr * 10).toFixed(4));
+        const target50xPriceInr = Number((priceInr * 50).toFixed(4));
+        const target80xPriceInr = Number((priceInr * 80).toFixed(4));
+
+        const value5xOn1Lakh = '₹5,00,000 (+₹4,00,000)';
+        const value10xOn1Lakh = '₹10,00,000 (+₹9,00,000)';
+        const value50xOn1Lakh = '₹50,00,000 (+₹49,00,000)';
+        const value80xOn1Lakh = '₹80,00,000 (+₹79,00,000)';
+
+        let accumulationScore = 70;
+        if (volInrCrores >= 100) accumulationScore += 18;
+        else if (volInrCrores >= 50) accumulationScore += 12;
+        if (Math.abs(priceChange24hPct) <= 10) accumulationScore += 10;
+
+        return {
+          rank: idx + 1,
+          symbol: coin.symbol,
+          cleanSymbol,
+          category: isSubRupee ? 'Sub-Rupee Micro Gem' : 'Penny Altcoin Gem',
+          priceUsd: `$${priceUsd.toFixed(6)}`,
+          priceInr: `₹${priceInr.toFixed(4)}`,
+          formattedPrice,
+          isSubRupee,
+          pricePaise,
+          volume24hCrores: `₹${volInrCrores.toLocaleString('en-IN')} Cr`,
+          priceChange24hPct: `${priceChange24hPct >= 0 ? '+' : ''}${priceChange24hPct.toFixed(1)}%`,
+          coinsFor10k: coinsFor10k.toLocaleString('en-IN'),
+          coinsFor1Lakh: coinsFor1Lakh.toLocaleString('en-IN'),
+          targets: {
+            t5x: { priceInr: `₹${target5xPriceInr}`, return1Lakh: value5xOn1Lakh },
+            t10x: { priceInr: `₹${target10xPriceInr}`, return1Lakh: value10xOn1Lakh },
+            t50x: { priceInr: `₹${target50xPriceInr}`, return1Lakh: value50xOn1Lakh },
+            t80xMoonshot: { priceInr: `₹${target80xPriceInr}`, return1Lakh: value80xOn1Lakh }
+          },
+          holdingHorizon: '3 to 6 Months (Altcoin Cycle Expansion)',
+          accumulationScore: Math.min(accumulationScore, 98),
+          riskRating: 'EXTREME_ASYMMETRIC_MOONSHOT',
+          romanHindiSummary: `Abhi ${formattedPrice} par ₹1,00,000 lagane se ${coinsFor1Lakh.toLocaleString('en-IN')} coins milenge. Agar yeh 10x hua toh ₹10 Lakh, aur 80x cousin benchmark gaya toh seedha ₹80 Lakh ka corpus ban sakta hai. 24h volume ₹${volInrCrores} Crore hai jo high institutional liquidity confirm karta hai.`
+        };
+      });
+    } catch (e) {
+      console.error('[AlphaPotentialAgent] Error scanning moonshots:', e.message);
+      return [];
+    }
+  }
 }
 
 module.exports = {

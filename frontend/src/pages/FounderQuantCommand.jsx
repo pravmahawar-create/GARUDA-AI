@@ -31,6 +31,8 @@ export default function FounderQuantCommand({ onLogout }) {
   const [searchGem, setSearchGem] = useState("");
   const [logFilter, setLogFilter] = useState("ALL");
   const [executingCycle, setExecutingCycle] = useState(false);
+  const [moonshotsFilter, setMoonshotsFilter] = useState("ALL"); // 'ALL' | 'SUB_RUPEE' | 'PENNY'
+  const [searchMoonshot, setSearchMoonshot] = useState("");
 
   // Fetch complete Sovereign Quant Dashboard
   const fetchDashboard = useCallback(async (isManual = false) => {
@@ -162,12 +164,28 @@ export default function FounderQuantCommand({ onLogout }) {
     }
   };
 
+  // Refresh Sub-Rupee Moonshots
+  const handleRefreshMoonshots = async () => {
+    setActionNotice({ type: "info", text: "Scanning live sub-rupee and penny cryptos on global orderbooks..." });
+    try {
+      const res = await fetch("/api/finance/quant/moonshots?fresh=true");
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setActionNotice({ type: "success", text: `Found ${data.count} active sub-rupee & penny moonshots!` });
+        await fetchDashboard(true);
+      }
+    } catch (e) {
+      setActionNotice({ type: "error", text: e.message });
+    }
+  };
+
   // Derived Metrics
   const daemon = dashboardData?.daemon || {};
   const wallet = dashboardData?.wallet || { initialCapital: 100000, cash: 100000, realizedPnl: 0 };
   const stats = dashboardData?.stats || { winRatePercent: 0, totalTrades: 0, netPnl: 0, profitFactor: 0 };
   const agents = dashboardData?.agents || [];
   const opportunities = dashboardData?.opportunities || [];
+  const subRupeeMoonshots = dashboardData?.subRupeeMoonshots || [];
   const eventLog = dashboardData?.eventLog || [];
   const isPaused = dashboardData?.isEmergencyPaused;
 
@@ -183,6 +201,20 @@ export default function FounderQuantCommand({ onLogout }) {
       op.symbol.toLowerCase().includes(q) ||
       op.category.toLowerCase().includes(q)
     );
+  });
+
+  const filteredMoonshots = subRupeeMoonshots.filter((ms) => {
+    if (moonshotsFilter === "SUB_RUPEE" && !ms.isSubRupee) return false;
+    if (moonshotsFilter === "PENNY" && ms.isSubRupee) return false;
+    if (searchMoonshot) {
+      const q = searchMoonshot.toLowerCase();
+      return (
+        ms.cleanSymbol.toLowerCase().includes(q) ||
+        ms.symbol.toLowerCase().includes(q) ||
+        ms.category.toLowerCase().includes(q)
+      );
+    }
+    return true;
   });
 
   const filteredLogs = eventLog.filter((log) => {
@@ -785,7 +817,29 @@ export default function FounderQuantCommand({ onLogout }) {
               gap: "8px"
             }}
           >
-            <span>💎</span> Alpha-Potential Gem Radar ({opportunities.length})
+            <span>💎</span> Large-Cap Swings ({opportunities.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab("moonshots")}
+            style={{
+              background:
+                activeTab === "moonshots"
+                  ? "linear-gradient(135deg, rgba(249, 115, 22, 0.25), rgba(239, 68, 68, 0.25))"
+                  : "transparent",
+              border: `1px solid ${activeTab === "moonshots" ? "#f97316" : "rgba(255,255,255,0.1)"}`,
+              color: activeTab === "moonshots" ? "#fdba74" : "#9ca3af",
+              padding: "8px 18px",
+              borderRadius: "8px",
+              fontWeight: 800,
+              fontSize: "0.86rem",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
+            }}
+          >
+            <span>🚀</span> 100x Penny Moonshots ({subRupeeMoonshots.length})
           </button>
 
           <button
@@ -1187,6 +1241,294 @@ export default function FounderQuantCommand({ onLogout }) {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB: 100x SUB-RUPEE & PENNY MOONSHOT RADAR (COUSIN MODEL) */}
+        {activeTab === "moonshots" && (
+          <div>
+            {/* HERO COUSIN BENCHMARK BANNER */}
+            <div
+              style={{
+                background: "linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%)",
+                border: "1px solid rgba(249, 115, 22, 0.4)",
+                borderRadius: "14px",
+                padding: "20px",
+                marginBottom: "20px"
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
+                <div>
+                  <div style={{ fontSize: "0.78rem", color: "#fdba74", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                    🔥 Asymmetric Wealth Model • Real Cousin Benchmark
+                  </div>
+                  <h3 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#ffffff", margin: "4px 0" }}>
+                    The 81.8x Asymmetric Moonshot (22 Paise ➔ ₹18.00)
+                  </h3>
+                  <p style={{ fontSize: "0.82rem", color: "#e5e7eb", margin: 0, maxWidth: "750px", lineHeight: "1.4" }}>
+                    Aapke cousin ne 22 paise (₹0.22) par ₹1,00,000 lagaye = 4,54,545 coins mile. Aur ₹18 par becha = <strong>₹81,81,818 (Almost 82 Lakhs)</strong>! GARUDA Moonshot Radar continuously aise hi sub-rupee coins filter karta hai jinka 24h institutional volume high ho.
+                  </p>
+                </div>
+                <div style={{ background: "rgba(0,0,0,0.4)", padding: "10px 16px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.1)", textAlign: "right" }}>
+                  <div style={{ fontSize: "0.7rem", color: "#9ca3af" }}>Multiplier Return</div>
+                  <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#34d399", fontFamily: "monospace" }}>+8,081% (81.8x)</div>
+                  <div style={{ fontSize: "0.7rem", color: GOLD_LIGHT }}>₹1 Lakh ➔ ₹81.8 Lakhs</div>
+                </div>
+              </div>
+
+              {/* Sovereign Wealth Allocation Rule */}
+              <div
+                style={{
+                  marginTop: "14px",
+                  background: "rgba(0,0,0,0.3)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  padding: "10px 14px",
+                  borderRadius: "8px",
+                  fontSize: "0.76rem",
+                  color: "#cbd5e1"
+                }}
+              >
+                <strong style={{ color: "#facc15" }}>💡 Sovereign Capital Allocation Rule: </strong>
+                Kabhi bhi saara ₹1 Lakh ek hi penny coin me mat daalo. Is ₹1,00,000 ko 5 se 10 sub-rupee coins me ₹10,000–₹20,000 karke divide karo. Agar 7 coins flat bhi rahe aur sirf 1 coin 80x nikal gaya, toh aapka ₹10,000 seedha ₹8,00,000 ban jaayega!
+              </div>
+            </div>
+
+            {/* Controls Bar */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: "12px",
+                marginBottom: "16px"
+              }}
+            >
+              {/* Category Filter Chips */}
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {[
+                  { id: "ALL", label: `All Active Moonshots (${subRupeeMoonshots.length})` },
+                  { id: "SUB_RUPEE", label: `Sub-Rupee (< ₹1 Paise)` },
+                  { id: "PENNY", label: `Penny Altcoins (₹1 - ₹10)` }
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => setMoonshotsFilter(f.id)}
+                    style={{
+                      background: moonshotsFilter === f.id ? "rgba(249, 115, 22, 0.25)" : "rgba(255,255,255,0.05)",
+                      border: `1px solid ${moonshotsFilter === f.id ? "#f97316" : "rgba(255,255,255,0.1)"}`,
+                      color: moonshotsFilter === f.id ? "#fed7aa" : "#9ca3af",
+                      padding: "6px 12px",
+                      borderRadius: "6px",
+                      fontSize: "0.78rem",
+                      fontWeight: 700,
+                      cursor: "pointer"
+                    }}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search & Refresh */}
+              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                <input
+                  type="text"
+                  placeholder="Search penny coin (REZ, VTHO, PUMP)..."
+                  value={searchMoonshot}
+                  onChange={(e) => setSearchMoonshot(e.target.value)}
+                  style={{
+                    background: "rgba(15, 23, 42, 0.8)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    color: "#ffffff",
+                    padding: "6px 12px",
+                    borderRadius: "6px",
+                    fontSize: "0.82rem"
+                  }}
+                />
+                <button
+                  onClick={handleRefreshMoonshots}
+                  style={{
+                    background: "rgba(249, 115, 22, 0.15)",
+                    border: "1px solid #f97316",
+                    color: "#fdba74",
+                    padding: "6px 14px",
+                    borderRadius: "6px",
+                    fontSize: "0.8rem",
+                    fontWeight: 700,
+                    cursor: "pointer"
+                  }}
+                >
+                  ↻ Scan Fresh Moonshots
+                </button>
+              </div>
+            </div>
+
+            {/* Moonshots Cards Grid */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {filteredMoonshots.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
+                  No moonshot coins match current search criteria.
+                </div>
+              ) : (
+                filteredMoonshots.map((ms) => (
+                  <div
+                    key={ms.symbol}
+                    style={{
+                      background: PANEL,
+                      border: `1px solid ${ms.isSubRupee ? "rgba(249, 115, 22, 0.35)" : PANEL_BORDER}`,
+                      borderRadius: "14px",
+                      padding: "20px"
+                    }}
+                  >
+                    {/* Header */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "12px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div
+                          style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "8px",
+                            background: ms.isSubRupee ? "rgba(249, 115, 22, 0.2)" : "rgba(245, 158, 11, 0.15)",
+                            color: ms.isSubRupee ? "#fb923c" : GOLD_LIGHT,
+                            display: "grid",
+                            placeItems: "center",
+                            fontWeight: 800,
+                            fontSize: "0.9rem"
+                          }}
+                        >
+                          #{ms.rank}
+                        </div>
+                        <div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "#ffffff" }}>
+                              {ms.cleanSymbol}
+                            </span>
+                            <span
+                              style={{
+                                background: ms.isSubRupee ? "rgba(249, 115, 22, 0.15)" : "rgba(59, 130, 246, 0.15)",
+                                color: ms.isSubRupee ? "#fdba74" : "#93c5fd",
+                                padding: "2px 8px",
+                                borderRadius: "4px",
+                                fontSize: "0.7rem",
+                                fontWeight: 700
+                              }}
+                            >
+                              {ms.category}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: "0.78rem", color: "#9ca3af" }}>
+                            Live Orderbook Price: <strong style={{ color: "#ffffff", fontSize: "0.9rem" }}>{ms.formattedPrice}</strong> ({ms.priceUsd})
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Liquidity & Accumulation Score */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontSize: "0.7rem", color: "#9ca3af" }}>24h Traded Volume</div>
+                          <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#34d399", fontFamily: "monospace" }}>
+                            {ms.volume24hCrores}
+                          </div>
+                          <div style={{ fontSize: "0.68rem", color: "#6b7280" }}>Institutional Liquidity</div>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontSize: "0.7rem", color: "#9ca3af" }}>Whale Score</div>
+                          <div style={{ fontSize: "1.1rem", fontWeight: 800, color: GOLD_LIGHT }}>
+                            {ms.accumulationScore}%
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quantity Purchase & Target Projections */}
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                        gap: "12px",
+                        marginTop: "14px"
+                      }}
+                    >
+                      {/* Quantity on ₹1 Lakh */}
+                      <div style={{ background: "rgba(0,0,0,0.35)", padding: "12px", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.7rem", color: "#9ca3af", textTransform: "uppercase" }}>
+                          Quantity for ₹1,00,000
+                        </div>
+                        <div style={{ fontSize: "1.05rem", fontWeight: 800, color: "#ffffff", marginTop: "4px", fontFamily: "monospace" }}>
+                          {ms.coinsFor1Lakh}
+                        </div>
+                        <div style={{ fontSize: "0.68rem", color: "#9ca3af", marginTop: "2px" }}>
+                          Tokens received @ current rate
+                        </div>
+                      </div>
+
+                      {/* Quantity on ₹10,000 */}
+                      <div style={{ background: "rgba(0,0,0,0.35)", padding: "12px", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.7rem", color: "#9ca3af", textTransform: "uppercase" }}>
+                          Quantity for ₹10,000
+                        </div>
+                        <div style={{ fontSize: "1.05rem", fontWeight: 800, color: "#ffffff", marginTop: "4px", fontFamily: "monospace" }}>
+                          {ms.coinsFor10k}
+                        </div>
+                        <div style={{ fontSize: "0.68rem", color: "#9ca3af", marginTop: "2px" }}>
+                          Micro-starter allocation
+                        </div>
+                      </div>
+
+                      {/* 10x Target */}
+                      <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.2)", padding: "12px", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.7rem", color: "#6ee7b7", fontWeight: 700, textTransform: "uppercase" }}>
+                          10x Target ({ms.targets.t10x.priceInr})
+                        </div>
+                        <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#ffffff", marginTop: "4px" }}>
+                          {ms.targets.t10x.return1Lakh}
+                        </div>
+                        <div style={{ fontSize: "0.68rem", color: EMERALD }}>
+                          Value on ₹1 Lakh invested
+                        </div>
+                      </div>
+
+                      {/* 50x Target */}
+                      <div style={{ background: "rgba(245, 158, 11, 0.08)", border: "1px solid rgba(245, 158, 11, 0.2)", padding: "12px", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.7rem", color: GOLD_LIGHT, fontWeight: 700, textTransform: "uppercase" }}>
+                          50x Target ({ms.targets.t50x.priceInr})
+                        </div>
+                        <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#ffffff", marginTop: "4px" }}>
+                          {ms.targets.t50x.return1Lakh}
+                        </div>
+                        <div style={{ fontSize: "0.68rem", color: GOLD_LIGHT }}>
+                          Value on ₹1 Lakh invested
+                        </div>
+                      </div>
+
+                      {/* 80x Cousin Moonshot */}
+                      <div style={{ background: "linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(249, 115, 22, 0.12))", border: "1px solid rgba(249, 115, 22, 0.4)", padding: "12px", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.7rem", color: "#fdba74", fontWeight: 800, textTransform: "uppercase" }}>
+                          80x Cousin Moonshot ({ms.targets.t80xMoonshot.priceInr})
+                        </div>
+                        <div style={{ fontSize: "1.05rem", fontWeight: 800, color: "#f97316", marginTop: "4px", fontFamily: "monospace" }}>
+                          {ms.targets.t80xMoonshot.return1Lakh}
+                        </div>
+                        <div style={{ fontSize: "0.68rem", color: "#fdba74", fontWeight: 700 }}>
+                          Corpus on ₹1 Lakh invested
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Hindi Rationale */}
+                    <div style={{ marginTop: "14px", background: "rgba(10, 15, 29, 0.8)", border: "1px solid rgba(255,255,255,0.08)", padding: "10px 14px", borderRadius: "8px" }}>
+                      <div style={{ fontSize: "0.72rem", color: "#fdba74", fontWeight: 700, marginBottom: "2px" }}>
+                        🚀 GARUDA Moonshot Strategy Verdict (Roman Hindi):
+                      </div>
+                      <div style={{ fontSize: "0.82rem", color: "#e5e7eb", lineHeight: "1.4" }}>
+                        {ms.romanHindiSummary}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         )}
