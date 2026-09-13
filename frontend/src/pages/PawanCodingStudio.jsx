@@ -51,8 +51,14 @@ export default function PawanCodingStudio() {
   const [error, setError] = useState(null);
   const [history, setHistory] = useState([]);
   const [statusInfo, setStatusInfo] = useState(null);
-  const [isFounder, setIsFounder] = useState(true); // Default to Founder mode
+  const [isFounder, setIsFounder] = useState(false); // Secure: visitor mode by default, requires localhost or passkey
   const [showGateModal, setShowGateModal] = useState(false);
+  const [commercialTier, setCommercialTier] = useState("starter"); // 'starter' (999) | 'business' (2499) | 'enterprise' (4999)
+  const [turnCount, setTurnCount] = useState(0);
+  const [pendingPlan, setPendingPlan] = useState(null);
+  const [showFounderPasskeyModal, setShowFounderPasskeyModal] = useState(false);
+  const [founderPasskeyInput, setFounderPasskeyInput] = useState("");
+  const [passkeyError, setPasskeyError] = useState("");
   const [activeTab, setActiveTab] = useState("code"); // 'code' | 'preview' | 'mobile' | 'trajectory' | 'proof'
   const [codeCopied, setCodeCopied] = useState(false);
   const [previewViewport, setPreviewViewport] = useState("desktop"); // 'desktop' | 'mobile'
@@ -78,16 +84,25 @@ export default function PawanCodingStudio() {
   const [voiceStatus, setVoiceStatus] = useState("");
   const recognitionRef = useRef(null);
 
-  // 💬 Consultative Brain, Attachments & Chat States
+  // 💬 Consultative Brain, Attachments & Chat States (Persistent Memory)
   const [studioMode, setStudioMode] = useState("discuss"); // 'discuss' | 'execute'
-  const [messages, setMessages] = useState([
-    {
-      id: "welcome",
-      sender: "pawan",
-      text: "नमस्ते प्रवीण जी! मैं गरुड़ पवन हूँ — आपका Autonomous Software Architect। आप जो भी नया ऐप बनाना चाहते हैं या बदलाव करना चाहते हैं, मुझे बताइए या डॉक्यूमेंट/फोटो अटैच कीजिए। मैं पहले आपको Pro Recommendations और Action Plan दूँगा, और फिर आपके आदेश पर कोड करूँगा!",
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    }
-  ]);
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem("garuda_pawan_chat_messages");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return [
+      {
+        id: "welcome",
+        sender: "pawan",
+        text: "नमस्ते! मैं गरुड़ पवन हूँ — आपका Autonomous Software Architect। आप जो भी नया ऐप या फीचर बनाना चाहते हैं, मुझे बताइए या फोटो/डॉक्यूमेंट अटैच कीजिए। मैं पहले आपको Pro Architecture Plan दूँगा, और फिर पुष्टि होने पर कोड करूँगा!",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      }
+    ];
+  });
   const [activeAttachment, setActiveAttachment] = useState(null);
   const [activeProject, setActiveProject] = useState(null); // { file, code, version, summary }
   const [isConsulting, setIsConsulting] = useState(false);
@@ -204,15 +219,81 @@ export default function PawanCodingStudio() {
   }, []);
 
 
+  useEffect(() => {
+    try {
+      if (messages && messages.length > 0) {
+        localStorage.setItem("garuda_pawan_chat_messages", JSON.stringify(messages));
+      }
+    } catch {}
+  }, [messages]);
+
   const checkAuthSession = async () => {
     try {
+      // 1. Check if running on localhost / internal dev
+      const isLocalHost = typeof window !== "undefined" && (
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1" ||
+        window.location.hostname.endsWith(".local")
+      );
+      if (isLocalHost) {
+        setIsFounder(true);
+        return;
+      }
+
+      // 2. Check if founder token is saved in localStorage
+      const savedToken = localStorage.getItem("garuda_founder_token");
+      if (savedToken && (savedToken === "praveen_garuda_core" || savedToken === "founder_sovereign_auth")) {
+        setIsFounder(true);
+        return;
+      }
+
+      // 3. Server session verification
       const res = await fetch("/api/auth/session", { credentials: "same-origin" });
       const data = await res.json();
       if (data.authenticated === true) {
         setIsFounder(true);
+      } else {
+        setIsFounder(false);
       }
     } catch {
+      setIsFounder(false); // DEFAULT TO FALSE! Never grant founder mode on error!
+    }
+  };
+
+  const handleVerifyFounderPasskey = (e) => {
+    e?.preventDefault();
+    setPasskeyError("");
+    const clean = founderPasskeyInput.trim();
+    if (clean === "praveen_garuda_core" || clean === "founder9098" || clean === "garuda2026") {
+      localStorage.setItem("garuda_founder_token", "praveen_garuda_core");
       setIsFounder(true);
+      setShowFounderPasskeyModal(false);
+      setFounderPasskeyInput("");
+      pawanSpeak("Founder Praveen authenticated. Internal sovereign controls active.");
+    } else {
+      setPasskeyError("Galat Passkey! Founder access restricted.");
+    }
+  };
+
+  const handleFounderLock = () => {
+    localStorage.removeItem("garuda_founder_token");
+    setIsFounder(false);
+    pawanSpeak("Founder mode locked. Standard client scoping active.");
+  };
+
+  const handleClearChatMemory = () => {
+    if (window.confirm("Kya aap conversation memory reset karke naya project shuru karna chahte hain?")) {
+      localStorage.removeItem("garuda_pawan_chat_messages");
+      setMessages([
+        {
+          id: "welcome",
+          sender: "pawan",
+          text: "नमस्ते! मेमोरी रीसेट हो गई है। आप जो भी नया ऐप या फीचर बनाना चाहते हैं, बताइए।",
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        }
+      ]);
+      setTurnCount(0);
+      pawanSpeak("Memory cleared. Ready for a new project.");
     }
   };
 
@@ -393,8 +474,9 @@ export default function PawanCodingStudio() {
     if (!instruction.trim()) return;
 
     if (!isFounder) {
+      setPendingPlan({ instruction: instruction.trim(), targetFile: targetFile.trim() || activeProject?.file });
       setShowGateModal(true);
-      pawanSpeak("This is GARUDA PAWAN sovereign execution engine. Please verify project scope.");
+      pawanSpeak("Application code synthesize karne se pehle commercial token confirm karein.");
       return;
     }
 
@@ -540,11 +622,14 @@ export default function PawanCodingStudio() {
     setInstruction("");
     setActiveAttachment(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
+    setTurnCount(prev => prev + 1);
     setIsConsulting(true);
     setError(null);
     pawanSpeak("Analyzing requirements and formulating architectural recommendations.");
 
     try {
+      const historyPayload = messages.slice(-10).map(m => ({ sender: m.sender, text: m.text }));
+
       const res = await fetch("/api/pawan/consult", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -552,7 +637,8 @@ export default function PawanCodingStudio() {
           instruction: textToSend,
           attachment: attachmentToSend ? { data: attachmentToSend.data, mimeType: attachmentToSend.mimeType } : undefined,
           currentCode: activeProject?.code,
-          targetFile: activeProject?.file || targetFile.trim() || undefined
+          targetFile: activeProject?.file || targetFile.trim() || undefined,
+          history: historyPayload
         })
       });
 
@@ -563,7 +649,13 @@ export default function PawanCodingStudio() {
 
       const c = data.consultation;
       const isConversational = c.isConversational || (!c.actionPlan && (!c.recommendations || c.recommendations.length === 0));
-      const messageText = c.reply || c.observation || "Ji Praveen bhai, boliye.";
+      let messageText = c.reply || c.observation || "Ji boliye, kya develop karna hai?";
+
+      // Commercial Scoping Notice after 3 questions for external visitors
+      if (!isFounder && turnCount >= 2 && !isConversational) {
+        messageText += "\n\n💳 **Commercial Scoping Update:** Requirements scoped. Application code synthesis unlock karne ke liye amount confirmation token confirm karein.";
+      }
+
       const pawanMsg = {
         id: "p_" + Date.now(),
         sender: "pawan",
@@ -576,7 +668,7 @@ export default function PawanCodingStudio() {
       if (isConversational) {
         pawanSpeak(messageText);
       } else {
-        pawanSpeak("Plan taiyar hai, screen par dekh sakte hain.");
+        pawanSpeak("Architecture plan ready. Review specifications on screen.");
       }
     } catch (err) {
       setError(err.message);
@@ -595,6 +687,14 @@ export default function PawanCodingStudio() {
   const handleExecuteFromPlan = async (suggestedInstruction, suggestedFile) => {
     const fileToUse = suggestedFile || activeProject?.file || targetFile || "public/app.html";
     const instrToUse = suggestedInstruction || instruction;
+
+    // Commercial Paywall Gate for Public Visitors
+    if (!isFounder) {
+      setPendingPlan({ instruction: instrToUse, targetFile: fileToUse });
+      setShowGateModal(true);
+      pawanSpeak("Application code generate karne se pehle commercial confirmation zaruri hai.");
+      return;
+    }
     
     setLoading(true);
     setError(null);
@@ -859,20 +959,53 @@ export default function PawanCodingStudio() {
 
               <button
                 type="button"
-                onClick={() => setIsFounder(!isFounder)}
-                style={{
-                  background: isFounder ? "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(245,158,11,0.2) 100%)" : "#1c1917",
-                  border: `1px solid ${isFounder ? "#d4af37" : "#44403c"}`,
-                  color: isFounder ? "#fef08a" : "#94a3b8",
-                  padding: "6px 12px",
-                  borderRadius: "6px",
-                  fontSize: "0.75rem",
-                  fontWeight: "800",
-                  cursor: "pointer"
-                }}
+                onClick={handleClearChatMemory}
+                title="Conversation memory reset karke naya project shuru karein"
+                style={{ background: "#1c1917", border: "1px solid #44403c", color: "#cbd5e1", padding: "6px 12px", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "700" }}
               >
-                {isFounder ? "👑 Founder Mode: Unlocked" : "🔒 Visitor Gate"}
+                🧹 Reset Memory
               </button>
+
+              {isFounder ? (
+                <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{
+                    background: "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(245,158,11,0.2) 100%)",
+                    border: "1px solid #d4af37",
+                    color: "#fef08a",
+                    padding: "6px 12px",
+                    borderRadius: "6px",
+                    fontSize: "0.75rem",
+                    fontWeight: "800"
+                  }}>
+                    👑 Founder Workspace (Internal)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleFounderLock}
+                    title="Lock Founder Access"
+                    style={{ background: "#1c1917", border: "1px solid #44403c", color: "#a8a29e", padding: "6px 8px", borderRadius: "6px", cursor: "pointer", fontSize: "0.72rem" }}
+                  >
+                    🔒 Lock
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowFounderPasskeyModal(true)}
+                  style={{
+                    background: "#1c1917",
+                    border: "1px solid #44403c",
+                    color: "#94a3b8",
+                    padding: "6px 12px",
+                    borderRadius: "6px",
+                    fontSize: "0.75rem",
+                    fontWeight: "800",
+                    cursor: "pointer"
+                  }}
+                >
+                  🛡️ Sovereign Scoping Mode
+                </button>
+              )}
 
               <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "4px 10px", borderRadius: "6px", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.35)", fontSize: "0.72rem", color: "#34d399", fontWeight: "800" }}>
                 <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#10b981", display: "inline-block" }}></span>
@@ -1110,8 +1243,8 @@ export default function PawanCodingStudio() {
                                     boxShadow: "0 0 15px rgba(16, 185, 129, 0.3)"
                                   }}
                                 >
-                                  <span>{loading ? "⚡" : "🚀"}</span>
-                                  {loading ? "Building Code..." : "Execute This Plan (कोड निष्पादित करें)"}
+                                  <span>{loading ? "⚡" : (isFounder ? "🚀" : "💳")}</span>
+                                  {loading ? "Building Code..." : (isFounder ? "Execute This Plan (कोड निष्पादित करें)" : "Confirm & Unlock App Code (₹999 / ₹2,499)")}
                                 </button>
 
                                 <button
@@ -2195,10 +2328,10 @@ export default function PawanCodingStudio() {
           </div>
         )}
 
-        {/* Commercial Access Gate Modal */}
+        {/* Commercial Access & Amount Confirmation Gate Modal */}
         {showGateModal && (
-          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", zIndex: 1000, padding: "1.5rem" }}>
-            <div style={{ background: "#0b0a07", border: "2px solid #d4af37", borderRadius: "16px", maxWidth: "560px", width: "100%", padding: "2rem", boxShadow: "0 20px 50px rgba(0,0,0,0.9)", position: "relative" }}>
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", zIndex: 10000, padding: "1.5rem" }}>
+            <div style={{ background: "#0b0a07", border: "2px solid #d4af37", borderRadius: "16px", maxWidth: "600px", width: "100%", padding: "2rem", boxShadow: "0 20px 50px rgba(0,0,0,0.9)", position: "relative" }}>
               <button
                 onClick={() => setShowGateModal(false)}
                 style={{ position: "absolute", top: "1rem", right: "1rem", background: "none", border: "none", color: "#a8a29e", fontSize: "1.2rem", cursor: "pointer" }}
@@ -2206,91 +2339,186 @@ export default function PawanCodingStudio() {
                 ✕
               </button>
 
-              <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-                <div style={{ fontSize: "2.4rem", marginBottom: "0.4rem" }}>🦅🔒</div>
-                <h2 style={{ fontSize: "1.4rem", fontWeight: "900", color: "#ffffff", margin: "0 0 0.4rem" }}>
-                  Unlock GARUDA PAWAN Execution Engine
+              <div style={{ textAlign: "center", marginBottom: "1.2rem" }}>
+                <div style={{ fontSize: "2.2rem", marginBottom: "0.4rem" }}>🦅💳</div>
+                <h2 style={{ fontSize: "1.35rem", fontWeight: "900", color: "#ffffff", margin: "0 0 0.4rem" }}>
+                  Confirm Amount to Synthesize Application
                 </h2>
-                <p style={{ fontSize: "0.85rem", color: "#d6d3d1", margin: 0, lineHeight: 1.5 }}>
-                  PAWAN executes autonomously on real codebases with closed-loop syntax verification, multi-model synthesis, and cryptographic SHA-256 evidence.
+                <p style={{ fontSize: "0.82rem", color: "#d6d3d1", margin: 0, lineHeight: 1.5 }}>
+                  PAWAN consultative scoping complete. Code generation & APK/PWA packaging require commercial token confirmation. Free seva band — Choose your plan to unlock instant code synthesis.
                 </p>
               </div>
 
-              {!intakeSubmitted ? (
-                <div>
-                  <div style={{ background: "rgba(212, 175, 55, 0.1)", border: "1px solid rgba(212, 175, 55, 0.3)", borderRadius: "10px", padding: "1.2rem", marginBottom: "1.5rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                      <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "#fef08a" }}>Option 1: Instant Pilot Execution Token</span>
-                      <span style={{ fontSize: "1.1rem", fontWeight: "900", color: "#34d399" }}>₹5,000</span>
-                    </div>
-                    <p style={{ fontSize: "0.78rem", color: "#cbd5e1", margin: "0 0 1rem 0" }}>
-                      Instant activation token for autonomous repo diagnosis, bug fix, and feature synthesis.
-                    </p>
-                    <a
-                      href={PAYMENT_URL}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ display: "block", textAlign: "center", background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)", color: "#000", fontWeight: "900", fontSize: "0.85rem", padding: "10px", borderRadius: "8px", textDecoration: "none" }}
-                    >
-                      Pay ₹5,000 Advance Token via Razorpay
-                    </a>
-                  </div>
-
-                  <form onSubmit={handleIntakeSubmit}>
-                    <div style={{ fontSize: "0.85rem", fontWeight: "800", color: "#d4af37", marginBottom: "0.8rem" }}>
-                      Option 2: Submit Scoping Request to Founder
-                    </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginBottom: "0.8rem" }}>
-                      <input
-                        type="text"
-                        placeholder="Your Name"
-                        value={intakeName}
-                        onChange={(e) => setIntakeName(e.target.value)}
-                        style={{ background: "#050402", border: "1px solid #333", borderRadius: "6px", padding: "8px 12px", color: "#fff", fontSize: "0.85rem" }}
-                      />
-                      <input
-                        type="text"
-                        placeholder="Phone / WhatsApp"
-                        value={intakePhone}
-                        onChange={(e) => setIntakePhone(e.target.value)}
-                        style={{ background: "#050402", border: "1px solid #333", borderRadius: "6px", padding: "8px 12px", color: "#fff", fontSize: "0.85rem" }}
-                      />
-                    </div>
-                    <div style={{ marginBottom: "0.8rem" }}>
-                      <input
-                        type="email"
-                        placeholder="Work Email Address"
-                        value={intakeEmail}
-                        onChange={(e) => setIntakeEmail(e.target.value)}
-                        style={{ width: "100%", boxSizing: "border-box", background: "#050402", border: "1px solid #333", borderRadius: "6px", padding: "8px 12px", color: "#fff", fontSize: "0.85rem" }}
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      style={{ width: "100%", background: "#1c1917", border: "1px solid #44403c", color: "#ffffff", padding: "10px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "700", cursor: "pointer" }}
-                    >
-                      Submit Scope for Review
-                    </button>
-                  </form>
-                </div>
-              ) : (
-                <div style={{ textAlign: "center", padding: "1.5rem" }}>
-                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>✓</div>
-                  <h3 style={{ color: "#34d399", margin: "0 0 0.5rem" }}>Request Transmitted</h3>
-                  <p style={{ fontSize: "0.85rem", color: "#cbd5e1", margin: "0 0 1.2rem" }}>
-                    Founder Praveen Mahawar's desk has received your request.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setShowGateModal(false);
-                      setIntakeSubmitted(false);
-                    }}
-                    style={{ background: "#d4af37", color: "#000", border: "none", padding: "8px 20px", borderRadius: "6px", fontWeight: "800", cursor: "pointer" }}
-                  >
-                    Done
-                  </button>
+              {pendingPlan && (
+                <div style={{ background: "rgba(212, 175, 55, 0.08)", border: "1px dashed rgba(212, 175, 55, 0.4)", borderRadius: "8px", padding: "10px 14px", marginBottom: "1.2rem", fontSize: "0.78rem", color: "#fef08a" }}>
+                  <strong>Scoped Task:</strong> {pendingPlan.instruction?.slice(0, 140)}...
                 </div>
               )}
+
+              {/* 3 Commercial Tiers */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.6rem", marginBottom: "1.2rem" }}>
+                <div
+                  onClick={() => setCommercialTier("starter")}
+                  style={{
+                    background: commercialTier === "starter" ? "rgba(212, 175, 55, 0.18)" : "#14120c",
+                    border: `1px solid ${commercialTier === "starter" ? "#d4af37" : "#333"}`,
+                    borderRadius: "8px",
+                    padding: "10px 8px",
+                    cursor: "pointer",
+                    textAlign: "center"
+                  }}
+                >
+                  <div style={{ fontSize: "0.7rem", color: "#a8a29e", fontWeight: "700" }}>MICRO-APP</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: "900", color: "#34d399", margin: "3px 0" }}>₹999</div>
+                  <div style={{ fontSize: "0.68rem", color: "#cbd5e1" }}>Billing / Single Screen Tool</div>
+                </div>
+
+                <div
+                  onClick={() => setCommercialTier("business")}
+                  style={{
+                    background: commercialTier === "business" ? "rgba(212, 175, 55, 0.18)" : "#14120c",
+                    border: `1px solid ${commercialTier === "business" ? "#d4af37" : "#333"}`,
+                    borderRadius: "8px",
+                    padding: "10px 8px",
+                    cursor: "pointer",
+                    textAlign: "center"
+                  }}
+                >
+                  <div style={{ fontSize: "0.7rem", color: "#fef08a", fontWeight: "800" }}>POPULAR</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: "900", color: "#fbbf24", margin: "3px 0" }}>₹2,499</div>
+                  <div style={{ fontSize: "0.68rem", color: "#cbd5e1" }}>Full Business Dashboard</div>
+                </div>
+
+                <div
+                  onClick={() => setCommercialTier("enterprise")}
+                  style={{
+                    background: commercialTier === "enterprise" ? "rgba(212, 175, 55, 0.18)" : "#14120c",
+                    border: `1px solid ${commercialTier === "enterprise" ? "#d4af37" : "#333"}`,
+                    borderRadius: "8px",
+                    padding: "10px 8px",
+                    cursor: "pointer",
+                    textAlign: "center"
+                  }}
+                >
+                  <div style={{ fontSize: "0.7rem", color: "#a8a29e", fontWeight: "700" }}>ENTERPRISE</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: "900", color: "#38bdf8", margin: "3px 0" }}>₹4,999</div>
+                  <div style={{ fontSize: "0.68rem", color: "#cbd5e1" }}>Custom AI Architecture</div>
+                </div>
+              </div>
+
+              {/* Instant Payment Confirmation Button */}
+              <div style={{ marginBottom: "1.2rem" }}>
+                <a
+                  href={`https://www.garudaos.in/chat?ref=pawan-order&amount=${commercialTier === "starter" ? "999" : (commercialTier === "business" ? "2499" : "4999")}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: "block",
+                    textAlign: "center",
+                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    color: "#ffffff",
+                    fontWeight: "900",
+                    fontSize: "0.9rem",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    textDecoration: "none",
+                    boxShadow: "0 4px 15px rgba(16, 185, 129, 0.4)"
+                  }}
+                >
+                  💳 Confirm & Pay {commercialTier === "starter" ? "₹999" : (commercialTier === "business" ? "₹2,499" : "₹4,999")} via UPI / Card &rarr;
+                </a>
+              </div>
+
+              {/* Direct Scoping Form */}
+              {!intakeSubmitted ? (
+                <form onSubmit={handleIntakeSubmit} style={{ borderTop: "1px dashed #333", paddingTop: "1rem" }}>
+                  <div style={{ fontSize: "0.8rem", fontWeight: "800", color: "#d4af37", marginBottom: "0.6rem" }}>
+                    Ya apna Scoping Details Founder Praveen ke desk ko bhejein:
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: "0.6rem" }}>
+                    <input
+                      type="text"
+                      placeholder="Your Name"
+                      value={intakeName}
+                      onChange={(e) => setIntakeName(e.target.value)}
+                      style={{ background: "#050402", border: "1px solid #333", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.8rem" }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="WhatsApp Mobile Number"
+                      value={intakePhone}
+                      onChange={(e) => setIntakePhone(e.target.value)}
+                      style={{ background: "#050402", border: "1px solid #333", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.8rem" }}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    style={{ width: "100%", background: "#1c1917", border: "1px solid #44403c", color: "#ffffff", padding: "9px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer" }}
+                  >
+                    Transmit Scoping Request &rarr;
+                  </button>
+                </form>
+              ) : (
+                <div style={{ textAlign: "center", padding: "1rem", background: "rgba(16, 185, 129, 0.1)", borderRadius: "8px" }}>
+                  <div style={{ color: "#34d399", fontWeight: "800", fontSize: "0.9rem" }}>✓ Scoping Request Transmitted!</div>
+                  <div style={{ color: "#cbd5e1", fontSize: "0.78rem", marginTop: "4px" }}>Praveen Mahawar's desk will connect with you on WhatsApp shortly.</div>
+                </div>
+              )}
+
+              {/* Founder Passkey Shortcut */}
+              <div style={{ marginTop: "1rem", textAlign: "center" }}>
+                <button
+                  type="button"
+                  onClick={() => { setShowGateModal(false); setShowFounderPasskeyModal(true); }}
+                  style={{ background: "none", border: "none", color: "#78716c", fontSize: "0.72rem", cursor: "pointer", textDecoration: "underline" }}
+                >
+                  Founder Praveen? Unlock via Internal Passkey
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Founder Passkey Verification Modal */}
+        {showFounderPasskeyModal && (
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", zIndex: 10001, padding: "1.5rem" }}>
+            <div style={{ background: "#0b0a07", border: "2px solid #d4af37", borderRadius: "16px", maxWidth: "420px", width: "100%", padding: "2rem", boxShadow: "0 20px 50px rgba(0,0,0,0.9)", position: "relative" }}>
+              <button
+                onClick={() => { setShowFounderPasskeyModal(false); setPasskeyError(""); }}
+                style={{ position: "absolute", top: "1rem", right: "1rem", background: "none", border: "none", color: "#a8a29e", fontSize: "1.2rem", cursor: "pointer" }}
+              >
+                ✕
+              </button>
+              <div style={{ textAlign: "center", marginBottom: "1.2rem" }}>
+                <div style={{ fontSize: "2.2rem", marginBottom: "0.4rem" }}>👑🔑</div>
+                <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "#fef08a", margin: "0 0 0.3rem" }}>
+                  Founder Praveen Workspace Access
+                </h2>
+                <p style={{ fontSize: "0.8rem", color: "#a8a29e", margin: 0 }}>
+                  Internal sovereign authentication for Founder Praveen Mahawar.
+                </p>
+              </div>
+              <form onSubmit={handleVerifyFounderPasskey}>
+                <input
+                  type="password"
+                  required
+                  placeholder="Enter Founder Passkey"
+                  value={founderPasskeyInput}
+                  onChange={(e) => setFounderPasskeyInput(e.target.value)}
+                  style={{ width: "100%", boxSizing: "border-box", background: "#050402", border: "1px solid #d4af37", borderRadius: "8px", padding: "10px 14px", color: "#fff", fontSize: "0.9rem", marginBottom: "0.8rem" }}
+                />
+                {passkeyError && (
+                  <div style={{ color: "#ef4444", fontSize: "0.75rem", marginBottom: "0.8rem", fontWeight: "700" }}>
+                    {passkeyError}
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  style={{ width: "100%", background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)", border: "none", color: "#000", padding: "10px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "900", cursor: "pointer" }}
+                >
+                  Verify & Unlock Founder Mode
+                </button>
+              </form>
             </div>
           </div>
         )}

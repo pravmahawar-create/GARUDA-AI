@@ -10,8 +10,24 @@ export default function GarudaDostRozgar() {
   const [dostSession, setDostSession] = useState(null);
   const [isEditingUpi, setIsEditingUpi] = useState(false);
   const [newUpi, setNewUpi] = useState("");
-  const [activeTab, setActiveTab] = useState("channels"); // 'channels' | 'commission' | 'settlement'
+  const [activeTab, setActiveTab] = useState("leads"); // 'leads' | 'channels' | 'pitch' | 'commission' | 'settlement'
   const [copiedTool, setCopiedTool] = useState(null);
+
+  // Leads & Client Management ("Kisko De Rahe Ho — Name & Information")
+  const [leads, setLeads] = useState([]);
+  const [showAddLeadModal, setShowAddLeadModal] = useState(false);
+  const [clientBusinessName, setClientBusinessName] = useState("");
+  const [clientContactName, setClientContactName] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+  const [clientCity, setClientCity] = useState("");
+  const [clientService, setClientService] = useState("Cloth GST & Billing App");
+  const [clientBudget, setClientBudget] = useState("₹1,500");
+  const [clientCommission, setClientCommission] = useState("₹500");
+  const [clientNotes, setClientNotes] = useState("");
+  const [existingLoginPhone, setExistingLoginPhone] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [pitchClient, setPitchClient] = useState(null);
+  const [generatedPitch, setGeneratedPitch] = useState("");
 
   useEffect(() => {
     try {
@@ -28,6 +44,20 @@ export default function GarudaDostRozgar() {
       }
     } catch {}
   }, []);
+
+  useEffect(() => {
+    if (dostSession?.partnerId) {
+      try {
+        const savedLeads = localStorage.getItem(`garuda_dost_leads_${dostSession.partnerId}`);
+        if (savedLeads) {
+          const parsed = JSON.parse(savedLeads);
+          if (Array.isArray(parsed)) {
+            setLeads(parsed);
+          }
+        }
+      } catch {}
+    }
+  }, [dostSession]);
 
   const microTools = [
     {
@@ -123,6 +153,102 @@ export default function GarudaDostRozgar() {
       setUpiId("");
       setLocation("");
     }
+  };
+
+  const handleSaveLead = async (e) => {
+    e?.preventDefault();
+    if (!clientBusinessName.trim() || !clientPhone.trim()) {
+      alert("Kripya Client / Business ka naam aur Phone number bharein.");
+      return;
+    }
+
+    const cleanLeadPhone = clientPhone.replace(/\D/g, "");
+    const newLead = {
+      id: "lead_" + Date.now(),
+      businessName: clientBusinessName.trim(),
+      contactName: clientContactName.trim() || clientBusinessName.trim(),
+      phone: cleanLeadPhone,
+      city: clientCity.trim() || dostSession?.location || "Bharat",
+      service: clientService,
+      budget: clientBudget,
+      commission: clientCommission,
+      status: "lead_logged", // 'lead_logged' | 'demo_shown' | 'scoped' | 'converted'
+      notes: clientNotes.trim(),
+      createdAt: new Date().toISOString()
+    };
+
+    const updatedLeads = [newLead, ...leads];
+    setLeads(updatedLeads);
+    if (dostSession?.partnerId) {
+      localStorage.setItem(`garuda_dost_leads_${dostSession.partnerId}`, JSON.stringify(updatedLeads));
+    }
+
+    // Sync to backend core
+    try {
+      fetch("/api/project-scope", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientName: `${newLead.businessName} (${newLead.contactName})`,
+          clientPhone: cleanLeadPhone,
+          serviceNeeded: `[DOST LEAD - ${dostSession?.partnerId}] ${newLead.service}`,
+          requirements: `Dost Partner: ${dostSession?.fullName} (${dostSession?.partnerId}) | UPI: ${dostSession?.upiId}\nBudget: ${newLead.budget} | Commission: ${newLead.commission}\nCity: ${newLead.city}\nNotes: ${newLead.notes}`,
+          budgetRange: newLead.budget
+        })
+      }).catch(() => {});
+    } catch {}
+
+    setClientBusinessName("");
+    setClientContactName("");
+    setClientPhone("");
+    setClientCity("");
+    setClientNotes("");
+    setShowAddLeadModal(false);
+  };
+
+  const handleUpdateLeadStatus = (leadId, newStatus) => {
+    const updated = leads.map(l => l.id === leadId ? { ...l, status: newStatus } : l);
+    setLeads(updated);
+    if (dostSession?.partnerId) {
+      localStorage.setItem(`garuda_dost_leads_${dostSession.partnerId}`, JSON.stringify(updated));
+    }
+  };
+
+  const handleDeleteLead = (leadId) => {
+    if (window.confirm("Kya aap is client record ko hatana chahte hain?")) {
+      const updated = leads.filter(l => l.id !== leadId);
+      setLeads(updated);
+      if (dostSession?.partnerId) {
+        localStorage.setItem(`garuda_dost_leads_${dostSession.partnerId}`, JSON.stringify(updated));
+      }
+    }
+  };
+
+  const handleWhatsAppLead = (lead) => {
+    const refLink = `https://www.garudaos.in?ref=${dostSession?.partnerId || "dost"}`;
+    const pitch = encodeURIComponent(`Namaste ${lead.contactName} ji! Main ${dostSession?.fullName || "GARUDA Digital Dost"} baat kar raha hoon. Aapke vyapar "${lead.businessName}" ke liye ${lead.service} ka setup ready hai. Aap direct mobile par trial dekh sakte hain: ${refLink}`);
+    window.open(`https://wa.me/91${lead.phone}?text=${pitch}`, "_blank");
+  };
+
+  const handleExistingPartnerLogin = (e) => {
+    e?.preventDefault();
+    setLoginError("");
+    const clean = existingLoginPhone.trim().replace(/\D/g, "");
+    if (!clean || clean.length < 10) {
+      setLoginError("Kripya 10-digit ka valid mobile number daalein.");
+      return;
+    }
+    const partnerId = `DOST-${clean.slice(-4)}`;
+    const sessionData = {
+      fullName: "Verified Sovereign Dost",
+      whatsapp: clean,
+      upiId: `${clean}@upi`,
+      location: "Bharat",
+      partnerId,
+      registeredAt: new Date().toISOString()
+    };
+    localStorage.setItem("garuda_dost_session", JSON.stringify(sessionData));
+    setDostSession(sessionData);
   };
 
   return (
@@ -506,6 +632,7 @@ export default function GarudaDostRozgar() {
         {dostSession ? (
           /* ACTIVE SOVEREIGN DOST DASHBOARD */
           <div style={{ background: "#080D1A", border: "1px solid #10B981", borderRadius: "14px", padding: "1.8rem", boxShadow: "0 20px 50px rgba(0,0,0,0.8)" }}>
+            {/* Header & Identity */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", borderBottom: "1px solid #1E293B", paddingBottom: "1.2rem", marginBottom: "1.4rem" }}>
               <div>
                 <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(16, 185, 129, 0.15)", border: "1px solid rgba(16, 185, 129, 0.4)", padding: "4px 12px", borderRadius: "999px", fontSize: "0.72rem", color: "#34D399", fontWeight: "800", marginBottom: "0.6rem" }}>
@@ -515,11 +642,18 @@ export default function GarudaDostRozgar() {
                   Swagat Hai, {dostSession.fullName}!
                 </h2>
                 <div style={{ fontSize: "0.82rem", color: "#94A3B8" }}>
-                  Partner Ref ID: <strong style={{ color: "#34D399" }}>{dostSession.partnerId}</strong> • Registered: {dostSession.registeredAt ? new Date(dostSession.registeredAt).toLocaleDateString() : "Active"}
+                  Partner Ref ID: <strong style={{ color: "#34D399" }}>{dostSession.partnerId}</strong> • Location: <strong>{dostSession.location || "Bharat"}</strong> • Registered: {dostSession.registeredAt ? new Date(dostSession.registeredAt).toLocaleDateString() : "Active"}
                 </div>
               </div>
 
-              <div style={{ display: "flex", gap: "0.6rem" }}>
+              <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowAddLeadModal(true)}
+                  style={{ background: "linear-gradient(135deg, #10B981 0%, #059669 100%)", color: "#000", border: "none", padding: "8px 14px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "900", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}
+                >
+                  <span>➕</span> Naya Client Add Karein
+                </button>
                 <button
                   type="button"
                   onClick={handleLogoutDost}
@@ -530,8 +664,39 @@ export default function GarudaDostRozgar() {
               </div>
             </div>
 
+            {/* Top Stat Cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.8rem", marginBottom: "1.6rem" }}>
+              <div style={{ background: "#040711", border: "1px solid #1E293B", borderRadius: "10px", padding: "1rem" }}>
+                <div style={{ fontSize: "0.72rem", color: "#64748B", fontWeight: "800" }}>TOTAL CLIENTS LOGGED</div>
+                <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "#38BDF8", marginTop: "4px" }}>{leads.length}</div>
+                <div style={{ fontSize: "0.7rem", color: "#94A3B8", marginTop: "2px" }}>Aapke dwaara add kiye gaye vyapari</div>
+              </div>
+              <div style={{ background: "#040711", border: "1px solid #1E293B", borderRadius: "10px", padding: "1rem" }}>
+                <div style={{ fontSize: "0.72rem", color: "#64748B", fontWeight: "800" }}>SCOPING IN PROGRESS</div>
+                <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "#FBBF24", marginTop: "4px" }}>
+                  {leads.filter(l => l.status !== "converted").length}
+                </div>
+                <div style={{ fontSize: "0.7rem", color: "#94A3B8", marginTop: "2px" }}>Deals under demo / negotiation</div>
+              </div>
+              <div style={{ background: "#040711", border: "1px solid #1E293B", borderRadius: "10px", padding: "1rem" }}>
+                <div style={{ fontSize: "0.72rem", color: "#64748B", fontWeight: "800" }}>DEALS CLOSED &amp; PAID</div>
+                <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "#34D399", marginTop: "4px" }}>
+                  {leads.filter(l => l.status === "converted").length}
+                </div>
+                <div style={{ fontSize: "0.7rem", color: "#94A3B8", marginTop: "2px" }}>Successful client activations</div>
+              </div>
+              <div style={{ background: "#040711", border: "1px solid #1E293B", borderRadius: "10px", padding: "1rem" }}>
+                <div style={{ fontSize: "0.72rem", color: "#64748B", fontWeight: "800" }}>TRACKED DOST COMMISSION</div>
+                <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "#10B981", marginTop: "4px" }}>
+                  ₹{leads.reduce((acc, l) => acc + (parseInt(String(l.commission).replace(/\D/g, "") || "0", 10)), 0).toLocaleString()}
+                </div>
+                <div style={{ fontSize: "0.7rem", color: "#94A3B8", marginTop: "2px" }}>Direct UPI payout track</div>
+              </div>
+            </div>
+
+            {/* Payout UPI & Master Link Row */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1rem", marginBottom: "1.6rem" }}>
-              {/* Card 1: Registered UPI */}
+              {/* Registered UPI */}
               <div style={{ background: "#040711", border: "1px solid #1E293B", borderRadius: "10px", padding: "1.2rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                   <span style={{ fontSize: "0.75rem", color: "#64748B", fontWeight: "800" }}>REGISTERED PAYOUT UPI ID</span>
@@ -568,7 +733,7 @@ export default function GarudaDostRozgar() {
                 )}
               </div>
 
-              {/* Card 2: Master Referral Link */}
+              {/* Master Referral Link */}
               <div style={{ background: "#040711", border: "1px solid #1E293B", borderRadius: "10px", padding: "1.2rem" }}>
                 <span style={{ fontSize: "0.75rem", color: "#64748B", fontWeight: "800", display: "block", marginBottom: "8px" }}>
                   AAPKA MASTER REFERRAL LINK
@@ -602,25 +767,250 @@ export default function GarudaDostRozgar() {
               </div>
             </div>
 
-            {/* Quick Action Bar */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.8rem", background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: "8px", padding: "12px 16px" }}>
-              <div style={{ fontSize: "0.82rem", color: "#CBD5E1" }}>
-                🌾 <strong>Ab kya karein?</strong> Upar diye gaye <strong>3 Earning Channels</strong> me se kisi bhi tool ka link apne WhatsApp status ya groups me share karein!
-              </div>
+            {/* Portal Navigation Tabs */}
+            <div style={{ display: "flex", gap: "0.5rem", borderBottom: "1px solid #1E293B", paddingBottom: "0.8rem", marginBottom: "1.4rem", flexWrap: "wrap" }}>
               <button
                 type="button"
-                onClick={() => {
-                  setActiveTab("channels");
-                  window.scrollTo({ top: 400, behavior: "smooth" });
+                onClick={() => setActiveTab("leads")}
+                style={{
+                  background: activeTab === "leads" ? "#10B981" : "#0B1120",
+                  color: activeTab === "leads" ? "#000" : "#CBD5E1",
+                  border: `1px solid ${activeTab === "leads" ? "#10B981" : "#334155"}`,
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  fontSize: "0.82rem",
+                  fontWeight: "800",
+                  cursor: "pointer"
                 }}
-                style={{ background: "#10B981", border: "none", color: "#000", padding: "6px 14px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
               >
-                Tools Dekhein &rarr;
+                📋 Kisko Diya — Client Ledger &amp; Info ({leads.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("channels")}
+                style={{
+                  background: activeTab === "channels" ? "#10B981" : "#0B1120",
+                  color: activeTab === "channels" ? "#000" : "#CBD5E1",
+                  border: `1px solid ${activeTab === "channels" ? "#10B981" : "#334155"}`,
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  fontSize: "0.82rem",
+                  fontWeight: "800",
+                  cursor: "pointer"
+                }}
+              >
+                🛠️ Power Tools &amp; Demos
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("pitch")}
+                style={{
+                  background: activeTab === "pitch" ? "#10B981" : "#0B1120",
+                  color: activeTab === "pitch" ? "#000" : "#CBD5E1",
+                  border: `1px solid ${activeTab === "pitch" ? "#10B981" : "#334155"}`,
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  fontSize: "0.82rem",
+                  fontWeight: "800",
+                  cursor: "pointer"
+                }}
+              >
+                💬 1-Click WhatsApp Pitch Generator
               </button>
             </div>
+
+            {/* TAB 1: KISKO DIYA — CLIENT LEDGER */}
+            {activeTab === "leads" && (
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.8rem" }}>
+                  <div>
+                    <h3 style={{ margin: "0 0 4px 0", fontSize: "1.1rem", fontWeight: "800", color: "#FFFFFF" }}>
+                      Client Intake &amp; Referral Tracking
+                    </h3>
+                    <p style={{ margin: 0, fontSize: "0.78rem", color: "#94A3B8" }}>
+                      Aapne jin vyapariyon, dukandaron ya doston ko demo dikhaya ya software diya hai, unka record yahan manage karein.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddLeadModal(true)}
+                    style={{ background: "#10B981", color: "#000", border: "none", padding: "8px 16px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "800", cursor: "pointer" }}
+                  >
+                    ➕ Naya Client Record Karein
+                  </button>
+                </div>
+
+                {leads.length === 0 ? (
+                  <div style={{ background: "#050811", border: "1px dashed #334155", borderRadius: "10px", padding: "2rem", textAlign: "center" }}>
+                    <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>👥</div>
+                    <h4 style={{ color: "#FEF08A", margin: "0 0 0.4rem 0" }}>Abhi Koi Client Add Nahi Kiya Gaya Hai</h4>
+                    <p style={{ color: "#94A3B8", fontSize: "0.8rem", maxWidth: "460px", margin: "0 auto 1rem auto" }}>
+                      Aapne apne aas-paas jis kapda vyapari, doctor, tailor ya dukan ko tool ka link share kiya hai, unka naam aur phone yahan add karein taaki unki lead track ho sake.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddLeadModal(true)}
+                      style={{ background: "#10B981", color: "#000", border: "none", padding: "8px 16px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "800", cursor: "pointer" }}
+                    >
+                      Pehla Client Record Karein &rarr;
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", textAlign: "left" }}>
+                      <thead>
+                        <tr style={{ background: "#050811", borderBottom: "2px solid #1E293B" }}>
+                          <th style={{ padding: "10px", color: "#94A3B8" }}>Vyapar &amp; Client Name</th>
+                          <th style={{ padding: "10px", color: "#94A3B8" }}>Contact &amp; Location</th>
+                          <th style={{ padding: "10px", color: "#94A3B8" }}>Service &amp; Deal</th>
+                          <th style={{ padding: "10px", color: "#94A3B8" }}>Status</th>
+                          <th style={{ padding: "10px", color: "#94A3B8" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {leads.map((l) => (
+                          <tr key={l.id} style={{ borderBottom: "1px solid #1E293B" }}>
+                            <td style={{ padding: "12px 10px" }}>
+                              <strong style={{ color: "#FFFFFF", display: "block" }}>{l.businessName}</strong>
+                              <span style={{ fontSize: "0.72rem", color: "#94A3B8" }}>Person: {l.contactName}</span>
+                              {l.notes && <div style={{ fontSize: "0.68rem", color: "#64748B", marginTop: "2px" }}>{l.notes}</div>}
+                            </td>
+                            <td style={{ padding: "12px 10px" }}>
+                              <a href={`tel:${l.phone}`} style={{ color: "#38BDF8", textDecoration: "none", fontWeight: "700" }}>{l.phone}</a>
+                              <div style={{ fontSize: "0.72rem", color: "#94A3B8" }}>📍 {l.city}</div>
+                            </td>
+                            <td style={{ padding: "12px 10px" }}>
+                              <div style={{ color: "#FEF08A", fontWeight: "700" }}>{l.service}</div>
+                              <div style={{ fontSize: "0.72rem", color: "#34D399" }}>Commission: {l.commission} (Deal: {l.budget})</div>
+                            </td>
+                            <td style={{ padding: "12px 10px" }}>
+                              <select
+                                value={l.status}
+                                onChange={(e) => handleUpdateLeadStatus(l.id, e.target.value)}
+                                style={{
+                                  background: l.status === "converted" ? "rgba(16, 185, 129, 0.2)" : (l.status === "demo_shown" ? "rgba(56, 189, 248, 0.2)" : "#0B1120"),
+                                  border: `1px solid ${l.status === "converted" ? "#10B981" : "#334155"}`,
+                                  color: l.status === "converted" ? "#34D399" : (l.status === "demo_shown" ? "#38BDF8" : "#FEF08A"),
+                                  padding: "4px 8px",
+                                  borderRadius: "4px",
+                                  fontSize: "0.72rem",
+                                  fontWeight: "700"
+                                }}
+                              >
+                                <option value="lead_logged">Lead Logged</option>
+                                <option value="demo_shown">Demo Shown</option>
+                                <option value="scoped">In Negotiation</option>
+                                <option value="converted">Closed &amp; Paid (UPI)</option>
+                              </select>
+                            </td>
+                            <td style={{ padding: "12px 10px" }}>
+                              <div style={{ display: "flex", gap: "6px" }}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleWhatsAppLead(l)}
+                                  title="WhatsApp Follow-up"
+                                  style={{ background: "#16A34A", border: "none", color: "#fff", padding: "4px 8px", borderRadius: "4px", fontSize: "0.7rem", fontWeight: "700", cursor: "pointer" }}
+                                >
+                                  📲 Follow-up
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteLead(l.id)}
+                                  title="Delete record"
+                                  style={{ background: "transparent", border: "1px solid #475569", color: "#EF4444", padding: "4px 6px", borderRadius: "4px", fontSize: "0.7rem", cursor: "pointer" }}
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 2: POWER TOOLS & DEMOS */}
+            {activeTab === "channels" && (
+              <div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1rem" }}>
+                  {microTools.map((tool) => (
+                    <div key={tool.id} style={{ background: "#050811", border: "1px solid #1E293B", borderRadius: "10px", padding: "1.2rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                      <div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.4rem" }}>
+                          <h4 style={{ margin: 0, color: "#FFFFFF", fontSize: "0.95rem", fontWeight: "800" }}>{tool.name}</h4>
+                          <span style={{ background: "rgba(16, 185, 129, 0.15)", border: "1px solid rgba(16, 185, 129, 0.4)", color: "#34D399", padding: "2px 8px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: "800" }}>
+                            {tool.payout}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: "0.78rem", color: "#94A3B8", margin: "0 0 1rem 0", lineHeight: 1.4 }}>
+                          {tool.description}
+                        </p>
+                      </div>
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyLink(tool)}
+                          style={{ flex: 1, background: copiedTool === tool.id ? "#10B981" : "#1E293B", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", cursor: "pointer" }}
+                        >
+                          {copiedTool === tool.id ? "✔ Copied!" : "Copy Link"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleShareWhatsApp(tool)}
+                          style={{ background: "#16A34A", border: "none", color: "#fff", padding: "7px 12px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "700", cursor: "pointer" }}
+                        >
+                          WhatsApp 📲
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: 1-CLICK WHATSAPP PITCH GENERATOR */}
+            {activeTab === "pitch" && (
+              <div style={{ background: "#050811", border: "1px solid #1E293B", borderRadius: "10px", padding: "1.4rem" }}>
+                <h3 style={{ margin: "0 0 8px 0", fontSize: "1.1rem", fontWeight: "800", color: "#FFFFFF" }}>
+                  Instant WhatsApp Pitch Generator
+                </h3>
+                <p style={{ margin: "0 0 1rem 0", fontSize: "0.8rem", color: "#94A3B8" }}>
+                  Niche vyapari chunein aur 1-tap me ready message copy karke WhatsApp status ya message bhejein:
+                </p>
+
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.8rem", marginBottom: "1.2rem" }}>
+                  {[
+                    { id: "cloth", label: "Kapda & Saree Vyapari", msg: `Namaste bhaiji! Agar aapko apni kapde ki dukaan ke liye mobile GST billing aur WhatsApp invoice software chahiye to ye dekhein. Direct mobile se chalta hai: https://www.garudaos.in/cloth-gst.html?ref=${dostSession.partnerId}` },
+                    { id: "kirana", label: "Kirana / General Store", msg: `Namaste! Ab aapki kirana dukan ka bhi online ordering app hoga jisme grahak direct WhatsApp par order de sakein. Free trial yahan dekhein: https://www.garudaos.in/pawan?ref=${dostSession.partnerId}` },
+                    { id: "clinic", label: "Doctor / Clinic / Pathology", msg: `Namaste doctor saab! Clinic appointment booking aur patient prescription management ke liye GARUDA OS ka lightweight app dekhein: https://www.garudaos.in?ref=${dostSession.partnerId}` },
+                    { id: "custom", label: "Any Business / Custom App", msg: `Namaste! Kya aapko apne business ke liye custom billing app, inventory ya website banwani hai? GARUDA AI se 1 din me live ho jata hai: https://www.garudaos.in?ref=${dostSession.partnerId}` }
+                  ].map((p) => (
+                    <div key={p.id} style={{ background: "#0B1120", border: "1px solid #334155", borderRadius: "8px", padding: "1rem" }}>
+                      <div style={{ fontWeight: "800", color: "#FEF08A", fontSize: "0.82rem", marginBottom: "6px" }}>{p.label}</div>
+                      <div style={{ fontSize: "0.72rem", color: "#94A3B8", background: "#050811", padding: "6px 8px", borderRadius: "4px", marginBottom: "8px", maxHeight: "60px", overflow: "hidden" }}>
+                        {p.msg}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(p.msg);
+                          alert("Pitch message copied!");
+                        }}
+                        style={{ width: "100%", background: "#10B981", border: "none", color: "#000", padding: "6px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
+                      >
+                        Copy Pitch 📋
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
-          /* ZERO-ADVANCE REGISTRATION CARD */
+          /* ZERO-ADVANCE REGISTRATION & LOGIN CARD */
           <div style={{ background: "#0B0F19", border: "1px solid #10B981", borderRadius: "14px", padding: "1.8rem", boxShadow: "0 20px 50px rgba(0,0,0,0.8)" }}>
             <div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(16, 185, 129, 0.15)", border: "1px solid rgba(16, 185, 129, 0.4)", padding: "4px 12px", borderRadius: "999px", fontSize: "0.72rem", color: "#34D399", fontWeight: "800", marginBottom: "0.8rem" }}>
@@ -688,6 +1078,156 @@ export default function GarudaDostRozgar() {
                   style={{ width: "100%", background: "linear-gradient(135deg, #10B981 0%, #059669 100%)", color: "#FFFFFF", border: "none", padding: "12px", borderRadius: "8px", fontSize: "0.95rem", fontWeight: "800", cursor: "pointer", boxShadow: "0 4px 15px rgba(16, 185, 129, 0.4)" }}
                 >
                   🚀 Register as GARUDA DOST Partner (₹0 Advance) &rarr;
+                </button>
+              </form>
+
+              {/* Instant Login for Existing Dost Partners */}
+              <div style={{ marginTop: "1.5rem", borderTop: "1px dashed #334155", paddingTop: "1.2rem" }}>
+                <div style={{ fontSize: "0.85rem", color: "#FEF08A", fontWeight: "800", marginBottom: "0.4rem" }}>
+                  Pehle se Registered Dost hain?
+                </div>
+                <p style={{ fontSize: "0.78rem", color: "#94A3B8", margin: "0 0 0.8rem 0" }}>
+                  Apna registered WhatsApp mobile number daal kar apna Portal aur Lead Dashboard kholein:
+                </p>
+                <form onSubmit={handleExistingPartnerLogin} style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <input
+                    type="tel"
+                    placeholder="Registered Mobile (e.g. 9876543210)"
+                    value={existingLoginPhone}
+                    onChange={(e) => setExistingLoginPhone(e.target.value)}
+                    style={{ flex: 1, minWidth: "200px", background: "#050811", border: "1px solid #334155", borderRadius: "6px", padding: "8px 12px", color: "#fff", fontSize: "0.85rem" }}
+                  />
+                  <button
+                    type="submit"
+                    style={{ background: "#10B981", color: "#000", border: "none", padding: "8px 16px", borderRadius: "6px", fontSize: "0.82rem", fontWeight: "800", cursor: "pointer" }}
+                  >
+                    Dashboard Kholein &rarr;
+                  </button>
+                </form>
+                {loginError && <div style={{ color: "#EF4444", fontSize: "0.75rem", marginTop: "6px" }}>{loginError}</div>}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal: Add Client / Lead Console */}
+        {showAddLeadModal && (
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", zIndex: 10000, padding: "1.5rem" }}>
+            <div style={{ background: "#0B0F19", border: "2px solid #10B981", borderRadius: "14px", maxWidth: "540px", width: "100%", padding: "1.8rem", boxShadow: "0 20px 50px rgba(0,0,0,0.9)", position: "relative" }}>
+              <button
+                type="button"
+                onClick={() => setShowAddLeadModal(false)}
+                style={{ position: "absolute", top: "1rem", right: "1rem", background: "none", border: "none", color: "#94A3B8", fontSize: "1.2rem", cursor: "pointer" }}
+              >
+                ✕
+              </button>
+
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(16, 185, 129, 0.15)", border: "1px solid rgba(16, 185, 129, 0.4)", padding: "4px 10px", borderRadius: "999px", fontSize: "0.72rem", color: "#34D399", fontWeight: "800", marginBottom: "0.6rem" }}>
+                <span>👥</span> KISKO DIYA — CLIENT INTAKE
+              </div>
+              <h3 style={{ margin: "0 0 0.3rem 0", color: "#FFFFFF", fontSize: "1.2rem", fontWeight: "900" }}>
+                Naya Client Record Karein
+              </h3>
+              <p style={{ color: "#94A3B8", fontSize: "0.78rem", margin: "0 0 1.2rem 0" }}>
+                Aap jis dukandar ya vyapari ko demo de rahe hain, unka naam aur details yahan note karein:
+              </p>
+
+              <form onSubmit={handleSaveLead}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginBottom: "0.8rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", marginBottom: "4px", fontWeight: "700" }}>Dukaan / Vyapar Ka Naam *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Gupta Cloth Saree"
+                      value={clientBusinessName}
+                      onChange={(e) => setClientBusinessName(e.target.value)}
+                      style={{ width: "100%", boxSizing: "border-box", background: "#050811", border: "1px solid #334155", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.82rem" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", marginBottom: "4px", fontWeight: "700" }}>Vyapari Ka Naam</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Ramesh Gupta"
+                      value={clientContactName}
+                      onChange={(e) => setClientContactName(e.target.value)}
+                      style={{ width: "100%", boxSizing: "border-box", background: "#050811", border: "1px solid #334155", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.82rem" }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginBottom: "0.8rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", marginBottom: "4px", fontWeight: "700" }}>WhatsApp Mobile *</label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="e.g. 9826012345"
+                      value={clientPhone}
+                      onChange={(e) => setClientPhone(e.target.value)}
+                      style={{ width: "100%", boxSizing: "border-box", background: "#050811", border: "1px solid #334155", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.82rem" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", marginBottom: "4px", fontWeight: "700" }}>Shehar / Kasba</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Jabalpur / Indore"
+                      value={clientCity}
+                      onChange={(e) => setClientCity(e.target.value)}
+                      style={{ width: "100%", boxSizing: "border-box", background: "#050811", border: "1px solid #334155", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.82rem" }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginBottom: "0.8rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", marginBottom: "4px", fontWeight: "700" }}>Service / Tool</label>
+                    <select
+                      value={clientService}
+                      onChange={(e) => {
+                        setClientService(e.target.value);
+                        if (e.target.value.includes("Cloth")) { setClientBudget("₹1,500"); setClientCommission("₹500"); }
+                        else if (e.target.value.includes("PWA")) { setClientBudget("₹3,000"); setClientCommission("₹1,000"); }
+                        else if (e.target.value.includes("Custom")) { setClientBudget("₹5,000"); setClientCommission("₹1,500"); }
+                        else { setClientBudget("₹500"); setClientCommission("₹150"); }
+                      }}
+                      style={{ width: "100%", boxSizing: "border-box", background: "#050811", border: "1px solid #334155", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.82rem" }}
+                    >
+                      <option value="Cloth GST & Billing App">Cloth GST &amp; Billing App</option>
+                      <option value="Local Shop 1-Tap Mobile PWA">Local Shop 1-Tap Mobile PWA</option>
+                      <option value="Custom Business App / Website">Custom Business App / Website</option>
+                      <option value="Vernacular Resume Maker">Vernacular Resume Maker</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", marginBottom: "4px", fontWeight: "700" }}>Aapka Expected Commission (₹)</label>
+                    <input
+                      type="text"
+                      value={clientCommission}
+                      onChange={(e) => setClientCommission(e.target.value)}
+                      style={{ width: "100%", boxSizing: "border-box", background: "#050811", border: "1px solid #10B981", borderRadius: "6px", padding: "8px 10px", color: "#34D399", fontWeight: "800", fontSize: "0.82rem" }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: "1rem" }}>
+                  <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", marginBottom: "4px", fontWeight: "700" }}>Zaruri Notes / Requirements</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Hindi me bill print hona chahiye, barcode scanner"
+                    value={clientNotes}
+                    onChange={(e) => setClientNotes(e.target.value)}
+                    style={{ width: "100%", boxSizing: "border-box", background: "#050811", border: "1px solid #334155", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.82rem" }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  style={{ width: "100%", background: "linear-gradient(135deg, #10B981 0%, #059669 100%)", color: "#000", border: "none", padding: "10px", borderRadius: "8px", fontSize: "0.88rem", fontWeight: "900", cursor: "pointer" }}
+                >
+                  Save Client &amp; Track Deal &rarr;
                 </button>
               </form>
             </div>
