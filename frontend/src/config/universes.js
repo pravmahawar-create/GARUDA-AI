@@ -173,7 +173,7 @@ export const UNIVERSES = [
     "Settlement Fee Engine", "Payment Webhooks", "Reconciliation Ledger", "P&L Integrity", "24/7 Global Alpha Quant Swarm"
   ], {
     status: "PRODUCTION_VERIFIED",
-    route: "/revenue",
+    route: "/founder/quant",
     flagship: "Settlement & 24/7 Global Alpha Quant Swarm (India, Forex, Crypto)",
     connectedEngines: ["settlementService.js", "paymentWebhookService.js", "paymentReconciliationService.js", "globalQuantSwarm.js", "alphaQuantDaemon.js"],
     scope: "founder"

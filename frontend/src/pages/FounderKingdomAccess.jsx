@@ -70,7 +70,7 @@ const DEMOS_AND_CASE_STUDIES = [
 ];
 
 const FOUNDER_SYSTEM_TOOLS = [
-  { name: "Sovereign Quant Cockpit", route: "/founder/quant", icon: "🦅", description: "24/7 Global Multi-Market Trading Swarm (India, Forex, Crypto, Potential Gems) with Master Kill Switch." },
+  { name: "Universe 12: Shares & 24/7 Trading Fleet", route: "/founder/quant", icon: "📈", description: "24/7 Multi-Market Trading Swarm: Alpha-India (NSE Bluechips), Forex, Crypto & Moonshot Gems with Sovereign Master Kill Switch." },
   { name: "High Command Center", route: "/command-center", icon: "⚡", description: "Sovereign aggregate telemetry, active project execution triggers, and workforce controls." },
   { name: "PAWAN Coding Studio", route: "/pawan", icon: "💨", description: "Sovereign autonomous coding agent (As fast as wind, smooth & powerful) with two-way voice and self-healing." },
   { name: "BOT-VERSE Engine", route: "/bot-verse", icon: "🌌", description: "Omni-channel video SEO and algorithmic growth distribution engine across 6 major platforms." },

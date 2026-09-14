@@ -54,6 +54,14 @@ export default function PublicChat() {
       .catch(() => {
         if (!cancelled) setCustomer(false);
       });
+
+    const urlPrompt = searchParams.get("prompt");
+    if (urlPrompt) {
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("garuda:insertPrompt", { detail: urlPrompt }));
+      }, 350);
+    }
+
     return () => {
       cancelled = true;
     };

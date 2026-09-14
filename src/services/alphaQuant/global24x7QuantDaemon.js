@@ -240,7 +240,21 @@ class Global24x7QuantDaemon {
       dailyTradesCount: this.dailyTradesCount,
       openPositions: this.paperEngine.openPositions.length,
       walletBalance: this.paperEngine.wallet.cash,
-      findingsScanned: findings.length
+      findingsScanned: findings.length,
+      evaluatedSetups: findings.map(f => ({
+        assetClass: f.assetClass,
+        symbol: f.symbol,
+        name: f.name,
+        score: f.signal?.score || 0,
+        direction: f.signal?.direction || 'NEUTRAL',
+        price: f.signal?.price || 0,
+        target: f.signal?.target2 || f.signal?.target1 || 0,
+        stopLoss: f.signal?.stopLoss || 0,
+        isQualified: f.signal?.isQualified || false,
+        summary: (f.signal?.score || 0) >= this.minConfidenceThreshold
+          ? `Qualified Sniper Signal (${f.signal.score}% >= ${this.minConfidenceThreshold}%)`
+          : `Monitored (${f.signal?.score || 0}% confluence — below ${this.minConfidenceThreshold}% threshold)`
+      }))
     };
   }
 

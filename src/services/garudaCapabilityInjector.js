@@ -23,7 +23,7 @@ function buildCapabilityBlock(options = {}) {
 
     if (ready.length) {
       lines.push("DELIVERY CAPABILITIES (I build these for clients):");
-      for (const cap of ready.slice(0, 14)) {
+      for (const cap of ready.slice(0, 25)) {
         const fee = cap.minimumFeeUSD ? ` (from $${cap.minimumFeeUSD})` : "";
         lines.push(`- ${cap.name}${fee}`);
       }

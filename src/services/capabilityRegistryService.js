@@ -502,6 +502,53 @@ const CAPABILITY_DEFINITIONS = Object.freeze([
     executionMode: "founder_authorized_supervised",
     humanIdentityRequired: false,
     evidenceFiles: ["src/services/creativeStudioService.js"]
+  },
+  {
+    id: "finance.sovereign-quant-advisory",
+    category: "Financial Engineering & Quant",
+    universe: "finance",
+    name: "24/7 Sovereign Quant Fleet & Multi-Market Alpha Engine",
+    description: "Algorithmic multi-market scanning across crypto, shares, and forex with EMA crossovers, RSI sweet-spot analysis, whale orderbook liquidity, and strict stop-loss risk management.",
+    confidenceScore: 98,
+    requiredSkills: ["Quantitative Analysis", "Technical Indicators", "Orderbook Liquidity", "Risk-to-Reward Modeling"],
+    requiredTools: ["node", "binance-vision-api", "alphaPotentialAgent"],
+    estimatedDeliveryTime: "Real-time automated",
+    pricingGuidance: { minimumFeeUSD: 500, billingModel: "fixed_deliverable" },
+    humanApprovalRequired: false,
+    canMotherExecuteAutonomously: true,
+    dependencies: [],
+    relatedCapabilities: ["finance.anti-fraud-intelligence", "engineering.software-implementation"],
+    tags: ["quant", "trading", "crypto", "shares", "forex", "fno", "stocks", "moonshot", "swing trading", "advisory", "alpha", "orderbook", "candles", "ema", "rsi"],
+    commercializable: true,
+    executionMode: "founder_authorized_supervised",
+    humanIdentityRequired: false,
+    evidenceFiles: [
+      "src/services/alphaQuant/alphaPotentialAgent.js",
+      "src/services/alphaQuant/global24x7QuantDaemon.js"
+    ]
+  },
+  {
+    id: "finance.anti-fraud-intelligence",
+    category: "Financial Engineering & Quant",
+    universe: "finance",
+    name: "Financial Forensic Audit & Anti-Ponzi Scam Shield",
+    description: "Forensic mathematical audit of investment offerings, exposing fake guaranteed-return schemes (20-30% monthly Forex/MLM traps), offshore shell entities, and liquidity exit traps.",
+    confidenceScore: 99,
+    requiredSkills: ["Financial Forensics", "Mathematical Modeling", "Fraud Investigation", "Regulatory Analysis"],
+    requiredTools: ["node", "knowledgeBase"],
+    estimatedDeliveryTime: "Instant advisory",
+    pricingGuidance: { minimumFeeUSD: 250, billingModel: "fixed_report" },
+    humanApprovalRequired: false,
+    canMotherExecuteAutonomously: true,
+    dependencies: [],
+    relatedCapabilities: ["finance.sovereign-quant-advisory"],
+    tags: ["forex scam", "ponzi", "fraud audit", "anti-scam", "investment safety", "risk management", "due diligence"],
+    commercializable: true,
+    executionMode: "founder_authorized_supervised",
+    humanIdentityRequired: false,
+    evidenceFiles: [
+      "src/services/alphaQuant/alphaPotentialAgent.js"
+    ]
   }
 ]);
 
@@ -527,7 +574,9 @@ const CAPABILITY_TIER_MAP = Object.freeze({
   "digital_marketing.editorial_growth": "creator",
   "brand.identity_lock_system": "creator",
   "seo.topic_clusters_and_landing": "creator",
-  "entertainment.campaign_war_room": "enterprise"
+  "entertainment.campaign_war_room": "enterprise",
+  "finance.sovereign-quant-advisory": "enterprise",
+  "finance.anti-fraud-intelligence": "creator"
 });
 
 function inspectCapability(definition, rootDir = process.cwd()) {

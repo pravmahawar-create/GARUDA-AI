@@ -42,6 +42,35 @@ router.get("/connectors/:id/auth", revenueController.getConnectorAuthStatus);
 router.post("/connectors/:id/validate", revenueController.validateConnectorCredentials);
 
 // Empirical Deal Tracker Routes
+const dealTrackerService = require("../services/dealTrackerService");
+
+router.get("/deals/metrics", (_req, res) => {
+  try {
+    const data = dealTrackerService.getRealityMetrics();
+    return res.json({ success: true, data });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/deals/submit", (req, res) => {
+  try {
+    const data = dealTrackerService.recordDealSubmission(req.body);
+    return res.status(201).json({ success: true, data });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/deals/response", (req, res) => {
+  try {
+    const data = dealTrackerService.recordClientResponse(req.body);
+    return res.json({ success: true, data });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Retainer & Post-Delivery Recurring Revenue Routes
 const revenueRetainerService = require("../services/revenueRetainerService");
 router.get("/retainers/tiers", (_req, res) => {

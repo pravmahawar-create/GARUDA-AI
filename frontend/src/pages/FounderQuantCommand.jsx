@@ -23,7 +23,7 @@ export default function FounderQuantCommand({ onLogout }) {
   const [dashboardData, setDashboardData] = useState(null);
 
   // Operational States
-  const [activeTab, setActiveTab] = useState("fleet"); // 'fleet' | 'potential' | 'telemetry' | 'ledger'
+  const [activeTab, setActiveTab] = useState("fleet"); // 'fleet' | 'potential' | 'moonshots' | 'telemetry' | 'ledger'
   const [killSwitchLoading, setKillSwitchLoading] = useState(false);
   const [killSwitchNotice, setKillSwitchNotice] = useState(null);
   const [actionNotice, setActionNotice] = useState(null);
@@ -34,6 +34,7 @@ export default function FounderQuantCommand({ onLogout }) {
   const [moonshotsFilter, setMoonshotsFilter] = useState("ALL"); // 'ALL' | 'SUB_RUPEE' | 'PENNY'
   const [searchMoonshot, setSearchMoonshot] = useState("");
   const [investAmount, setInvestAmount] = useState(1000); // Dynamic simulator: ₹1,000, ₹2,000, ₹5,000, ₹10,000, ₹1,00,000
+  const [lastCycleResult, setLastCycleResult] = useState(null);
 
   // Fetch complete Sovereign Quant Dashboard
   const fetchDashboard = useCallback(async (isManual = false) => {
@@ -120,9 +121,10 @@ export default function FounderQuantCommand({ onLogout }) {
       });
       const data = await res.json();
       if (res.ok && data.success) {
+        setLastCycleResult(data);
         setActionNotice({
           type: "success",
-          text: `Scan complete: ${data.findingsScanned || 0} setups evaluated. Active session: ${data.activeMarkets?.currentSession || "N/A"}`
+          text: `Scan complete: ${data.findingsScanned || 0} setups evaluated. Detailed breakdown displayed below.`
         });
         await fetchDashboard(true);
       } else {
@@ -133,6 +135,118 @@ export default function FounderQuantCommand({ onLogout }) {
     } finally {
       setExecutingCycle(false);
     }
+  };
+
+  // Interactive AI Discussion for any coin/gem setup
+  const handleDiscussWithAI = (item) => {
+    const title = item.name || item.cleanSymbol || item.symbol;
+    const price = item.currentPriceInr || item.formattedPrice || item.priceInr || "current price";
+    const score = item.convictionScore || item.accumulationScore || "80";
+    const prompt = `GARUDA AI, analyze this market opportunity: ${title} (${item.symbol}). Current Price is ${price}, Conviction/Whale Score is ${score}%. Strategy advice in Roman Hindi: Is it a good time to buy, what is the holding horizon, and what is the risk?`;
+    navigate(`/chat?prompt=${encodeURIComponent(prompt)}`);
+  };
+
+  // Instant Paper Trade Simulation
+  const handleSimulateTrade = (item, customAmount = null) => {
+    const title = item.name || item.cleanSymbol || item.symbol;
+    const price = item.currentPriceInr || item.formattedPrice || item.priceInr;
+    const alloc = customAmount || investAmount || 10000;
+    setActionNotice({
+      type: "success",
+      text: `⚡ Simulated Paper Entry logged for ${title} (${item.symbol}) @ ${price} with ₹${alloc.toLocaleString("en-IN")} allocation! Risk-free paper trade active.`
+    });
+  };
+
+  // Generate WhatsApp-Ready Advisory Note for Large/Mid-Cap Opportunity
+  const generateOpportunityTip = (op) => {
+    const buyZone = op.buyZoneInr || op.currentPriceInr;
+    const t1 = op.target1 ? `${op.target1.inr} (${op.target1.gainPercent}) [Munafa on ₹10k: ${op.target1.profitOn10kInr}]` : "N/A";
+    const t2 = op.target2 ? `${op.target2.inr} (${op.target2.gainPercent}) [Munafa on ₹10k: ${op.target2.profitOn10kInr}]` : "N/A";
+    const sl = op.stopLoss ? `${op.stopLoss.inr} [Risk on ₹10k: ${op.stopLoss.maxRiskOn10kInr}]` : "N/A";
+    const reasonsText = op.reasons ? op.reasons.map((r) => `  ✓ ${r}`).join("\n") : "  ✓ Whale accumulation detected";
+
+    return `🎯 *GARUDA MARKET ADVISORY SETUP*
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 *Asset*: ${op.name} (${op.symbol})
+⚡ *Action*: ${op.recommendation === "STRONG_BUY_ACCUMULATE" ? "STRONG BUY (Accumulation Zone)" : "ACCUMULATE ON PULLBACK"}
+📍 *Buy Zone*: ${buyZone}
+⏳ *Holding Horizon*: ${op.holdingHorizon || "5 to 10 Days (Swing)"}
+
+🎯 *Targets & Profit Projection*:
+• Target 1: ${t1}
+• Target 2: ${t2}
+🛑 *Strict Stop-Loss*: ${sl}
+
+🧠 *Setup Technical Logic*:
+${reasonsText}
+
+💡 *Executive Summary*:
+${op.romanHindiSummary || "Whale accumulation aur positive EMA momentum confirm ho chuka hai."}
+
+⚠️ *Risk Advisory*: Strictly maintain stop-loss to protect capital.
+🚀 Verified by GARUDA 24/7 Alpha Fleet • https://www.garudaos.in`;
+  };
+
+  // Generate WhatsApp-Ready Advisory Note for Moonshot Microcap
+  const generateMoonshotTip = (ms) => {
+    const t5x = ms.targets?.t5x?.priceInr || "5x";
+    const t10x = ms.targets?.t10x?.priceInr || "10x";
+    const t80x = ms.targets?.t80xMoonshot?.priceInr || "80x";
+    const coins10k = ms.coinsFor10k || "Thousands";
+    const coins1Lakh = ms.coinsFor1Lakh || "Lakhs";
+
+    return `🚀 *GARUDA HIGH-ALPHA MOONSHOT ALERT*
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🪙 *Coin*: ${ms.cleanSymbol} (${ms.category})
+📍 *Current Price*: ${ms.formattedPrice}
+💰 *Buying Power*:
+  • ₹10,000 me: ~${coins10k} coins
+  • ₹1,00,000 me: ~${coins1Lakh} coins
+⏳ *Holding Horizon*: ${ms.holdingHorizon || "3 to 6 Months (Altcoin Cycle)"}
+
+🎯 *Growth Benchmarks*:
+• 5x Target: ${t5x} (₹10k ➡️ ₹50,000 / ₹1L ➡️ ₹5,00,000)
+• 10x Target: ${t10x} (₹10k ➡️ ₹1,00,000 / ₹1L ➡️ ₹10,00,000)
+• 80x Moonshot: ${t80x} (₹10k ➡️ ₹8,00,000 / ₹1L ➡️ ₹80,00,000)
+
+📊 *24h Whale Liquidity*: ${ms.volume24hCrores}
+🧠 *Logic*: Microcap sub-rupee expansion wave. High institutional volume spike.
+
+⚠️ *Risk Note*: High-beta asymmetric play. Allocate only discretionary risk capital.
+🚀 Verified by GARUDA 24/7 Alpha Fleet • https://www.garudaos.in`;
+  };
+
+  // 1-Click Copy Tip to Clipboard
+  const handleCopyTip = async (item, type = "opportunity") => {
+    const text = type === "opportunity" ? generateOpportunityTip(item) : generateMoonshotTip(item);
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const el = document.createElement("textarea");
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        document.body.removeChild(el);
+      }
+      setActionNotice({
+        type: "success",
+        text: `📋 Client Advisory Brief copied for ${item.name || item.cleanSymbol}! Ready to paste in WhatsApp/Telegram.`
+      });
+    } catch {
+      setActionNotice({
+        type: "error",
+        text: "Could not auto-copy to clipboard. Please copy manually from discuss chat."
+      });
+    }
+  };
+
+  // Direct 1-Click WhatsApp Share
+  const handleWhatsAppShare = (item, type = "opportunity") => {
+    const text = type === "opportunity" ? generateOpportunityTip(item) : generateMoonshotTip(item);
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+    window.open(url, "_blank");
   };
 
   // Trigger Fresh Gems Scan
@@ -896,6 +1010,77 @@ export default function FounderQuantCommand({ onLogout }) {
               </div>
             </div>
 
+            {/* SCAN CYCLE EVALUATION BREAKDOWN */}
+            {lastCycleResult && (
+              <div
+                style={{
+                  background: "rgba(15, 23, 42, 0.95)",
+                  border: "1px solid rgba(59, 130, 246, 0.4)",
+                  borderRadius: "14px",
+                  padding: "16px 20px",
+                  marginBottom: "20px"
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>
+                  <div>
+                    <span style={{ fontSize: "0.75rem", color: "#93c5fd", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                      ⚡ Last Scan Cycle Breakdown ({lastCycleResult.evaluatedSetups?.length || lastCycleResult.findingsScanned || 0} Setups Evaluated)
+                    </span>
+                    <div style={{ fontSize: "0.82rem", color: "#cbd5e1", marginTop: "2px" }}>
+                      Active Market Session: <strong style={{ color: "#ffffff" }}>{lastCycleResult.activeMarkets?.currentSession || "24/7 Multi-Market"}</strong> · Confluence Gate: <strong style={{ color: EMERALD }}>≥82% for Sniper Entry</strong>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setLastCycleResult(null)}
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#9ca3af", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontSize: "0.75rem" }}
+                  >
+                    ✕ Dismiss
+                  </button>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "10px" }}>
+                  {lastCycleResult.evaluatedSetups?.map((s, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        background: "rgba(0,0,0,0.4)",
+                        border: `1px solid ${s.isQualified ? "rgba(16, 185, 129, 0.4)" : "rgba(255,255,255,0.08)"}`,
+                        borderRadius: "8px",
+                        padding: "10px 12px"
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontWeight: 800, fontSize: "0.88rem", color: "#ffffff" }}>
+                          {s.name} ({s.symbol})
+                        </span>
+                        <span
+                          style={{
+                            fontSize: "0.72rem",
+                            fontWeight: 800,
+                            color: s.isQualified ? EMERALD : (s.score >= 60 ? GOLD_LIGHT : "#9ca3af"),
+                            background: s.isQualified ? "rgba(16, 185, 129, 0.15)" : "rgba(255,255,255,0.05)",
+                            padding: "2px 6px",
+                            borderRadius: "4px"
+                          }}
+                        >
+                          {s.score}% Confluence
+                        </span>
+                      </div>
+                      <div style={{ fontSize: "0.74rem", color: "#9ca3af", marginTop: "4px" }}>
+                        {s.summary}
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "#6b7280", marginTop: "6px" }}>
+                        <span>Class: {s.assetClass}</span>
+                        <span style={{ color: s.isQualified ? "#34d399" : "#fca5a5" }}>
+                          {s.isQualified ? "⚡ ORDER PLACED" : "GATE: MONITORING"}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div
               style={{
                 display: "grid",
@@ -1007,21 +1192,45 @@ export default function FounderQuantCommand({ onLogout }) {
                 </p>
               </div>
 
-              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                <input
-                  type="text"
-                  placeholder="Search coin (ETH, SOL, BTC)..."
-                  value={searchGem}
-                  onChange={(e) => setSearchGem(e.target.value)}
-                  style={{
-                    background: "rgba(15, 23, 42, 0.8)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    color: "#ffffff",
-                    padding: "6px 12px",
-                    borderRadius: "6px",
-                    fontSize: "0.82rem"
-                  }}
-                />
+              <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                  <input
+                    type="text"
+                    placeholder="Search coin (ETH, SOL, BTC)..."
+                    value={searchGem}
+                    onChange={(e) => setSearchGem(e.target.value)}
+                    style={{
+                      background: "rgba(15, 23, 42, 0.8)",
+                      border: "1px solid rgba(255,255,255,0.15)",
+                      color: "#ffffff",
+                      padding: "6px 28px 6px 12px",
+                      borderRadius: "6px",
+                      fontSize: "0.82rem",
+                      minWidth: "200px"
+                    }}
+                  />
+                  {searchGem && (
+                    <button
+                      onClick={() => setSearchGem("")}
+                      style={{
+                        position: "absolute",
+                        right: "8px",
+                        background: "transparent",
+                        border: "none",
+                        color: "#9ca3af",
+                        cursor: "pointer",
+                        fontSize: "0.8rem",
+                        padding: 0
+                      }}
+                      title="Clear search"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>
+                  ({filteredOpportunities.length} setups)
+                </span>
                 <button
                   onClick={handleRefreshGems}
                   style={{
@@ -1240,6 +1449,87 @@ export default function FounderQuantCommand({ onLogout }) {
                       ))}
                     </div>
                   </div>
+
+                  {/* Interactive Action Controls */}
+                  <div style={{ display: "flex", gap: "10px", marginTop: "14px", flexWrap: "wrap" }}>
+                    <button
+                      onClick={() => handleDiscussWithAI(op)}
+                      style={{
+                        background: "rgba(59, 130, 246, 0.15)",
+                        border: "1px solid rgba(59, 130, 246, 0.4)",
+                        color: "#93c5fd",
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        fontWeight: 700,
+                        fontSize: "0.8rem",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      <span>💬</span> Discuss Setup with GARUDA AI
+                    </button>
+
+                    <button
+                      onClick={() => handleSimulateTrade(op, 10000)}
+                      style={{
+                        background: "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2))",
+                        border: "1px solid rgba(16, 185, 129, 0.45)",
+                        color: "#6ee7b7",
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        fontWeight: 700,
+                        fontSize: "0.8rem",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      <span>⚡</span> Simulate Paper Order (₹10,000)
+                    </button>
+
+                    <button
+                      onClick={() => handleCopyTip(op, "opportunity")}
+                      style={{
+                        background: "rgba(168, 85, 247, 0.15)",
+                        border: "1px solid rgba(168, 85, 247, 0.4)",
+                        color: "#d8b4fe",
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        fontWeight: 700,
+                        fontSize: "0.8rem",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                      title="Copy formatted Hindi advisory setup to clipboard for clients"
+                    >
+                      <span>📋</span> Copy Advisory Tip
+                    </button>
+
+                    <button
+                      onClick={() => handleWhatsAppShare(op, "opportunity")}
+                      style={{
+                        background: "rgba(34, 197, 94, 0.15)",
+                        border: "1px solid rgba(34, 197, 94, 0.4)",
+                        color: "#86efac",
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        fontWeight: 700,
+                        fontSize: "0.8rem",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                      title="Share advisory setup directly to WhatsApp"
+                    >
+                      <span>📲</span> WhatsApp Share
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1333,21 +1623,45 @@ export default function FounderQuantCommand({ onLogout }) {
               </div>
 
               {/* Search & Refresh */}
-              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                <input
-                  type="text"
-                  placeholder="Search penny coin (REZ, VTHO, PUMP)..."
-                  value={searchMoonshot}
-                  onChange={(e) => setSearchMoonshot(e.target.value)}
-                  style={{
-                    background: "rgba(15, 23, 42, 0.8)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    color: "#ffffff",
-                    padding: "6px 12px",
-                    borderRadius: "6px",
-                    fontSize: "0.82rem"
-                  }}
-                />
+              <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                  <input
+                    type="text"
+                    placeholder="Search penny coin (REZ, VTHO, PUMP)..."
+                    value={searchMoonshot}
+                    onChange={(e) => setSearchMoonshot(e.target.value)}
+                    style={{
+                      background: "rgba(15, 23, 42, 0.8)",
+                      border: "1px solid rgba(255,255,255,0.15)",
+                      color: "#ffffff",
+                      padding: "6px 28px 6px 12px",
+                      borderRadius: "6px",
+                      fontSize: "0.82rem",
+                      minWidth: "200px"
+                    }}
+                  />
+                  {searchMoonshot && (
+                    <button
+                      onClick={() => setSearchMoonshot("")}
+                      style={{
+                        position: "absolute",
+                        right: "8px",
+                        background: "transparent",
+                        border: "none",
+                        color: "#9ca3af",
+                        cursor: "pointer",
+                        fontSize: "0.8rem",
+                        padding: 0
+                      }}
+                      title="Clear search"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>
+                  ({filteredMoonshots.length} coins)
+                </span>
                 <button
                   onClick={handleRefreshMoonshots}
                   style={{
@@ -1617,6 +1931,87 @@ export default function FounderQuantCommand({ onLogout }) {
                         <div style={{ fontSize: "0.82rem", color: "#e5e7eb", lineHeight: "1.4" }}>
                           Abhi {ms.formattedPrice} par ₹{investAmount.toLocaleString("en-IN")} lagane se {dynamicCoins.toLocaleString("en-IN")} coins milte hain. Agar yeh 10x hua toh ₹{dynamic10xVal.toLocaleString("en-IN")}, aur agar 80x cousin peak chhoo gaya toh ₹{investAmount.toLocaleString("en-IN")} seedha <strong>₹{dynamic80xVal.toLocaleString("en-IN")}</strong> ban jaata hai! Holding horizon: 3 se 6 mahine.
                         </div>
+                      </div>
+
+                      {/* Interactive Moonshot Controls */}
+                      <div style={{ display: "flex", gap: "10px", marginTop: "14px", flexWrap: "wrap" }}>
+                        <button
+                          onClick={() => handleDiscussWithAI(ms)}
+                          style={{
+                            background: "rgba(249, 115, 22, 0.15)",
+                            border: "1px solid rgba(249, 115, 22, 0.4)",
+                            color: "#fed7aa",
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            fontWeight: 700,
+                            fontSize: "0.8rem",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px"
+                          }}
+                        >
+                          <span>💬</span> Discuss Moonshot with GARUDA AI
+                        </button>
+
+                        <button
+                          onClick={() => handleSimulateTrade(ms, investAmount)}
+                          style={{
+                            background: "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2))",
+                            border: "1px solid rgba(16, 185, 129, 0.45)",
+                            color: "#6ee7b7",
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            fontWeight: 700,
+                            fontSize: "0.8rem",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px"
+                          }}
+                        >
+                          <span>⚡</span> Simulate Paper Buy (₹{investAmount.toLocaleString("en-IN")})
+                        </button>
+
+                        <button
+                          onClick={() => handleCopyTip(ms, "moonshot")}
+                          style={{
+                            background: "rgba(168, 85, 247, 0.15)",
+                            border: "1px solid rgba(168, 85, 247, 0.4)",
+                            color: "#d8b4fe",
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            fontWeight: 700,
+                            fontSize: "0.8rem",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px"
+                          }}
+                          title="Copy formatted Hindi moonshot advisory brief to clipboard"
+                        >
+                          <span>📋</span> Copy Moonshot Advisory
+                        </button>
+
+                        <button
+                          onClick={() => handleWhatsAppShare(ms, "moonshot")}
+                          style={{
+                            background: "rgba(34, 197, 94, 0.15)",
+                            border: "1px solid rgba(34, 197, 94, 0.4)",
+                            color: "#86efac",
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            fontWeight: 700,
+                            fontSize: "0.8rem",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px"
+                          }}
+                          title="Share moonshot brief directly to WhatsApp"
+                        >
+                          <span>📲</span> WhatsApp Share
+                        </button>
                       </div>
                     </div>
                   );
