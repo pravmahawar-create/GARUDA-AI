@@ -93,7 +93,40 @@ function AppRoutes() {
     return () => clearTimeout(timeoutId);
   }, []);
 
-  useEffect(() => { fetch("/api/customer/session", { credentials: "same-origin" }).then((response) => response.json()).then((data) => setCustomer(data.authenticated ? data.customer : false)).catch(() => setCustomer(false)); }, []);
+  useEffect(() => {
+    let mounted = true;
+    async function initCustomerAuth() {
+      try {
+        const response = await fetch("/api/customer/session", { credentials: "same-origin" });
+        const data = await response.json();
+        if (mounted && data.authenticated && data.customer) {
+          setCustomer(data.customer);
+          return;
+        }
+      } catch (_) {}
+
+      try {
+        const url = (typeof import.meta !== "undefined" && import.meta.env?.VITE_SUPABASE_URL) || "https://gcifzzuyswrcwvkcfqbr.supabase.co";
+        const key = (typeof import.meta !== "undefined" && (import.meta.env?.VITE_SUPABASE_ANON_KEY || import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY)) || "sb_publishable_uYLXTH4M1PFyem5pQSMJtQ_7YqZ2rFp";
+        const { createClient } = await import("@supabase/supabase-js");
+        const supabase = createClient(url, key);
+        const { data: sbData } = await supabase.auth.getSession();
+        if (mounted && sbData?.session?.user) {
+          const u = sbData.session.user;
+          setCustomer({
+            email: u.email,
+            id: u.id,
+            name: u.user_metadata?.full_name || u.user_metadata?.name || u.email
+          });
+          return;
+        }
+      } catch (_) {}
+
+      if (mounted) setCustomer(false);
+    }
+    initCustomerAuth();
+    return () => { mounted = false; };
+  }, []);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
@@ -118,6 +151,13 @@ function AppRoutes() {
     <CustomerDashboard
       customer={customer}
       onLogout={async () => {
+        try {
+          const url = (typeof import.meta !== "undefined" && import.meta.env?.VITE_SUPABASE_URL) || "https://gcifzzuyswrcwvkcfqbr.supabase.co";
+          const key = (typeof import.meta !== "undefined" && (import.meta.env?.VITE_SUPABASE_ANON_KEY || import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY)) || "sb_publishable_uYLXTH4M1PFyem5pQSMJtQ_7YqZ2rFp";
+          const { createClient } = await import("@supabase/supabase-js");
+          const supabase = createClient(url, key);
+          await supabase.auth.signOut();
+        } catch (_) {}
         await fetch("/api/customer/logout", { method: "POST", credentials: "same-origin" });
         setCustomer(false);
         navigate("/");

@@ -153,9 +153,14 @@ function founderHeaders(extra = {}) {
 }
 
 async function asData(res, fallback = []) {
+  if (res.status === 404) return fallback;
   if (!res.ok) throw new Error(`Request failed (${res.status})`);
-  const json = await res.json();
-  return json && json.success ? json.data : fallback;
+  try {
+    const json = await res.json();
+    return json && json.success ? (json.data !== undefined ? json.data : json) : fallback;
+  } catch (_) {
+    return fallback;
+  }
 }
 
 /* Opportunities */

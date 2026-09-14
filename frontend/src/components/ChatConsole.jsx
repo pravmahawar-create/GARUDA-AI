@@ -217,8 +217,32 @@ export default function ChatConsole({
     scrollToBottom();
   }, [messages, loading, error, scrollToBottom]);
 
+  const handleSendRef = useRef();
+
   useEffect(() => {
-    const handler = (e) => { if (e.detail) setInput(e.detail); };
+    // 1. Direct URL query param execution
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const urlPrompt = params.get("prompt");
+      if (urlPrompt) {
+        handleSendRef.current?.(urlPrompt);
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    } catch (_) {}
+
+    // 2. Custom event listener
+    const handler = (e) => {
+      if (!e.detail) return;
+      if (typeof e.detail === "string") {
+        setInput(e.detail);
+      } else if (e.detail && e.detail.text) {
+        if (e.detail.autoSend) {
+          handleSendRef.current?.(e.detail.text);
+        } else {
+          setInput(e.detail.text);
+        }
+      }
+    };
     window.addEventListener("garuda:insertPrompt", handler);
     return () => window.removeEventListener("garuda:insertPrompt", handler);
   }, []);
@@ -278,6 +302,7 @@ export default function ChatConsole({
       setLoading(false);
     }
   };
+  handleSendRef.current = handleSend;
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

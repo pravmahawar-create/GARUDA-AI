@@ -292,7 +292,12 @@ ${op.romanHindiSummary || "Whale accumulation aur positive EMA momentum confirm 
       const data = await res.json();
       if (res.ok && data.success) {
         setActionNotice({ type: "success", text: `Scanned ${data.count} high-growth coin opportunities.` });
+        if (data.opportunities) {
+          setDashboardData((prev) => prev ? { ...prev, opportunities: data.opportunities } : prev);
+        }
         await fetchDashboard(true);
+      } else {
+        setActionNotice({ type: "error", text: data.error || data.message || "Failed to scan opportunities" });
       }
     } catch (e) {
       setActionNotice({ type: "error", text: e.message });
@@ -309,10 +314,16 @@ ${op.romanHindiSummary || "Whale accumulation aur positive EMA momentum confirm 
         if (pin) {
           res = await fetch("/api/finance/quant/reset-ledger", {
             method: "POST",
-            headers: { "x-founder-pin": pin }
+            headers: {
+              "Content-Type": "application/json",
+              "x-founder-pin": pin
+            }
           });
         } else {
-          setActionNotice({ type: "error", text: "🔒 Action aborted: Reserved for Founder Praveen Mahawar." });
+          setActionNotice({
+            type: "error",
+            text: "🔒 Action aborted: Reserved for Founder Praveen Mahawar."
+          });
           return;
         }
       }
@@ -336,7 +347,12 @@ ${op.romanHindiSummary || "Whale accumulation aur positive EMA momentum confirm 
       const data = await res.json();
       if (res.ok && data.success) {
         setActionNotice({ type: "success", text: `Found ${data.count} active sub-rupee & penny moonshots!` });
+        if (data.moonshots) {
+          setDashboardData((prev) => prev ? { ...prev, subRupeeMoonshots: data.moonshots } : prev);
+        }
         await fetchDashboard(true);
+      } else {
+        setActionNotice({ type: "error", text: data.error || data.message || "Failed to scan moonshots" });
       }
     } catch (e) {
       setActionNotice({ type: "error", text: e.message });

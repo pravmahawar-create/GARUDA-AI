@@ -177,6 +177,15 @@ export default function CustomerDashboard({ customer, onLogout }) {
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
   };
 
+  const handleDiscussWithAI = (item, type = "opportunity") => {
+    const title = item.name || item.cleanSymbol || item.symbol;
+    const price = item.currentPriceInr || item.formattedPrice || item.priceInr || "current price";
+    const prompt = type === "opportunity"
+      ? `GARUDA AI, analyze this market opportunity: ${title} (${item.symbol}). Current Price is ${price}, Conviction is ${item.convictionScore || 80}%. Strategy advice in Roman Hindi: Is it a good time to buy, what is the holding horizon, and what is the risk?`
+      : `GARUDA AI, analyze this 100x Moonshot: ${item.cleanSymbol}. Current Price is ${item.formattedPrice}, 10x Target is ${item.targets?.t10x?.priceInr || '10x'}, 80x Benchmark is ${item.targets?.t80xMoonshot?.priceInr || '80x'}. Strategy advice in Roman Hindi: What is the risk/reward, what is the best entry zone, and how much allocation is safe?`;
+    window.location.assign(`/chat?prompt=${encodeURIComponent(prompt)}`);
+  };
+
   const handleCreateApiKey = async (e) => {
     e.preventDefault();
     if (!newKeyName.trim()) return;
@@ -744,6 +753,13 @@ export default function CustomerDashboard({ customer, onLogout }) {
                           >
                             📲 WhatsApp
                           </button>
+                          <button
+                            onClick={() => handleDiscussWithAI(op, "opportunity")}
+                            style={{ background: "rgba(59, 130, 246, 0.15)", border: "1px solid rgba(59, 130, 246, 0.4)", color: "#93c5fd", padding: "6px 10px", borderRadius: 6, fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
+                            title="Discuss with GARUDA AI"
+                          >
+                            💬 AI Chat
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -796,6 +812,13 @@ export default function CustomerDashboard({ customer, onLogout }) {
                         style={{ background: "rgba(34, 197, 94, 0.15)", border: "1px solid rgba(34, 197, 94, 0.35)", color: "#86efac", padding: "6px 8px", borderRadius: 6, fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}
                       >
                         📲 Share
+                      </button>
+                      <button
+                        onClick={() => handleDiscussWithAI(ms, "moonshot")}
+                        style={{ background: "rgba(59, 130, 246, 0.15)", border: "1px solid rgba(59, 130, 246, 0.35)", color: "#93c5fd", padding: "6px 8px", borderRadius: 6, fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}
+                        title="Discuss with GARUDA AI"
+                      >
+                        💬 Chat
                       </button>
                     </div>
                   </div>
