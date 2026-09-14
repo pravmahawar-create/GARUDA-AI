@@ -97,6 +97,13 @@ export default function SovereignEnterpriseMatrix() {
   const [speechStyle, setSpeechStyle] = useState("rally");
   const [copiedNotice, setCopiedNotice] = useState(null);
 
+  // ECI Statutory Paid Media & Micro-Targeting Simulator State
+  const [targetVoters, setTargetVoters] = useState(240000); // 50k to 500k voters in assembly
+  const [adFrequency, setAdFrequency] = useState(12); // 4x to 24x impressions per voter
+  const [metaSplit, setMetaSplit] = useState(55); // Meta Reels & Feed %
+  const [ytSplit, setYtSplit] = useState(35); // YouTube Ads %
+  const [waSplit, setWaSplit] = useState(10); // WhatsApp Verified Push %
+
   const toggleModule = (key) => {
     setModules((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -148,6 +155,27 @@ export default function SovereignEnterpriseMatrix() {
       stage3Victory
     };
   }, [boothCount, reelsCount, campaignMonths, modules]);
+
+  // ECI STATUTORY PAID MEDIA SPEND ESTIMATION ENGINE (Meta, YouTube, WhatsApp API)
+  const mediaCalculation = useMemo(() => {
+    const totalImpressions = targetVoters * adFrequency;
+    // Regional Assembly Constituency blended CPM (~₹85 per 1,000 impressions on Meta Reels + YouTube)
+    const digitalAdSpend = Math.round(((totalImpressions * (metaSplit + ytSplit)) / 100 / 1000) * 85);
+    // WhatsApp official API broadcast (~₹0.48 per verified template session)
+    const waPushes = Math.round((targetVoters * (adFrequency / 4) * waSplit) / 100);
+    const waSpend = Math.round(waPushes * 0.48);
+    const totalMediaSpend = Math.round((digitalAdSpend + waSpend) / 10000) * 10000;
+
+    return {
+      totalImpressions,
+      digitalAdSpend,
+      waSpend,
+      totalMediaSpend,
+      formattedMediaSpend: `₹${(totalMediaSpend / 100000).toFixed(2)} Lakhs`,
+      exactMediaInr: `₹${totalMediaSpend.toLocaleString("en-IN")}`,
+      costPerVoter: (totalMediaSpend / targetVoters).toFixed(2)
+    };
+  }, [targetVoters, adFrequency, metaSplit, ytSplit, waSplit]);
 
   const activeSectorData = SECTORS.find((s) => s.id === selectedSector) || SECTORS[0];
 
@@ -201,7 +229,13 @@ Domain: ${activeSectorData.title}
 • 24/7 Opposition Counter-Strike Sentinel: ${modules.oppositionSentinel ? "ENABLED" : "DISABLED"}
 • Corporate Firms / Business Lead Engine: ${modules.firmMarketing ? "ENABLED" : "DISABLED"}
 ─────────────────────────────
-💰 *SOVEREIGN ENTERPRISE VALUATION*:
+🎯 *ECI STATUTORY MEDIA FUEL (META & YOUTUBE)*:
+• Constituency Eligible Voters: ${targetVoters.toLocaleString("en-IN")}
+• Campaign Impressions: ${(mediaCalculation.totalImpressions / 1000000).toFixed(2)} Million (${adFrequency}x saturation)
+• Direct Official Media Spend: ${mediaCalculation.exactMediaInr} (${mediaCalculation.formattedMediaSpend})
+• Disbursal: 100% Direct from Candidate / Party to Meta & Google (Zero agency markup)
+─────────────────────────────
+💰 *SOVEREIGN ENTERPRISE VALUATION (GARUDA AI OS RETAINER)*:
 Total Live Contract: ${liveCalculation.exactInr} (${liveCalculation.formattedTotal})
 *Zero Discount Policy — Defense-Grade Milestone Escrow*
 • Advance Initiation (40%): ₹${liveCalculation.stage1Advance.toLocaleString("en-IN")}
@@ -710,6 +744,193 @@ Official Portal: https://www.garudaos.in/enterprise`;
             </div>
           </div>
 
+          {/* 2.5 ECI STATUTORY PAID MEDIA FUEL & MICRO-TARGETING SIMULATOR */}
+          <div
+            style={{
+              background: PANEL,
+              border: "1px solid rgba(56, 189, 248, 0.35)",
+              borderRadius: "14px",
+              padding: "20px",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                  <span style={{ fontSize: "0.72rem", color: SAPPHIRE, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                    🎯 ECI STATUTORY PAID MEDIA FUEL SIMULATOR (META & GOOGLE YOUTUBE)
+                  </span>
+                  <span
+                    style={{
+                      background: "rgba(56, 189, 248, 0.15)",
+                      border: `1px solid ${SAPPHIRE}`,
+                      color: "#7dd3fc",
+                      padding: "2px 8px",
+                      borderRadius: "999px",
+                      fontSize: "0.65rem",
+                      fontWeight: 800
+                    }}
+                  >
+                    100% DIRECT CANDIDATE BILLING (ZERO AGENCY MARKUP)
+                  </span>
+                </div>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 900, color: "#ffffff", margin: "4px 0 0 0" }}>
+                  Hyper-Local Voter Saturation Engine ({constituency})
+                </h3>
+                <div style={{ fontSize: "0.78rem", color: "#9ca3af", marginTop: "2px" }}>
+                  Meta Ads (Instagram Reels/FB) + Google YouTube Ads + Official WhatsApp API · Direct ECI Form 7A Expense Tracking
+                </div>
+              </div>
+
+              {/* ESTIMATED DIRECT MEDIA BURN */}
+              <div
+                style={{
+                  background: "radial-gradient(circle at top, rgba(56,189,248,0.15), rgba(0,0,0,0.8))",
+                  border: `2px solid ${SAPPHIRE}`,
+                  borderRadius: "12px",
+                  padding: "12px 18px",
+                  textAlign: "right",
+                  minWidth: "220px",
+                  boxShadow: "0 0 20px rgba(56,189,248,0.2)"
+                }}
+              >
+                <div style={{ fontSize: "0.68rem", color: SAPPHIRE, fontWeight: 800, textTransform: "uppercase" }}>
+                  DIRECT PAID MEDIA BUDGET (EST.)
+                </div>
+                <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#ffffff", marginTop: "2px" }}>
+                  {mediaCalculation.exactMediaInr}
+                </div>
+                <div style={{ fontSize: "0.7rem", color: "#7dd3fc", fontWeight: 700 }}>
+                  {mediaCalculation.formattedMediaSpend} · ₹{mediaCalculation.costPerVoter} / voter
+                </div>
+              </div>
+            </div>
+
+            {/* SLIDERS FOR VOTERS & IMPRESSIONS */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px", marginBottom: "16px" }}>
+              <div style={{ background: "rgba(0,0,0,0.3)", padding: "12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#cbd5e1", fontWeight: 700 }}>Constituency Target Voters:</span>
+                  <strong style={{ color: SAPPHIRE, fontSize: "0.95rem" }}>{targetVoters.toLocaleString("en-IN")} Voters</strong>
+                </div>
+                <input
+                  type="range"
+                  min="50000"
+                  max="500000"
+                  step="10000"
+                  value={targetVoters}
+                  onChange={(e) => setTargetVoters(Number(e.target.value))}
+                  style={{ width: "100%", marginTop: "8px", accentColor: SAPPHIRE }}
+                />
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "#6b7280" }}>
+                  <span>50k (Small Ward)</span>
+                  <span>2.4 Lakhs (Standard Vidhansabha)</span>
+                  <span>5 Lakhs (Mega Seat)</span>
+                </div>
+              </div>
+
+              <div style={{ background: "rgba(0,0,0,0.3)", padding: "12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#cbd5e1", fontWeight: 700 }}>Voter Saturation Frequency:</span>
+                  <strong style={{ color: GOLD_LIGHT, fontSize: "0.95rem" }}>{adFrequency}x Impressions</strong>
+                </div>
+                <input
+                  type="range"
+                  min="4"
+                  max="24"
+                  step="2"
+                  value={adFrequency}
+                  onChange={(e) => setAdFrequency(Number(e.target.value))}
+                  style={{ width: "100%", marginTop: "8px", accentColor: GOLD }}
+                />
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: "#6b7280" }}>
+                  <span>4x (Baseline)</span>
+                  <span>12x (High Impact)</span>
+                  <span>24x (Absolute Saturation)</span>
+                </div>
+              </div>
+
+              <div style={{ background: "rgba(0,0,0,0.3)", padding: "12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
+                <span style={{ fontSize: "0.75rem", color: "#cbd5e1", fontWeight: 700 }}>Channel Multi-Channel Split:</span>
+                <div style={{ display: "flex", gap: "6px", marginTop: "8px" }}>
+                  <div style={{ flex: 1, textAlign: "center", background: "rgba(56,189,248,0.1)", padding: "6px 2px", borderRadius: 6, border: "1px solid rgba(56,189,248,0.3)" }}>
+                    <div style={{ fontSize: "0.65rem", color: "#9ca3af" }}>📱 META (REELS)</div>
+                    <div style={{ fontSize: "0.85rem", fontWeight: 800, color: "#38bdf8" }}>55%</div>
+                  </div>
+                  <div style={{ flex: 1, textAlign: "center", background: "rgba(239,68,68,0.1)", padding: "6px 2px", borderRadius: 6, border: "1px solid rgba(239,68,68,0.3)" }}>
+                    <div style={{ fontSize: "0.65rem", color: "#9ca3af" }}>📺 YOUTUBE</div>
+                    <div style={{ fontSize: "0.85rem", fontWeight: 800, color: "#f87171" }}>35%</div>
+                  </div>
+                  <div style={{ flex: 1, textAlign: "center", background: "rgba(34,197,94,0.1)", padding: "6px 2px", borderRadius: 6, border: "1px solid rgba(34,197,94,0.3)" }}>
+                    <div style={{ fontSize: "0.65rem", color: "#9ca3af" }}>📲 WHATSAPP API</div>
+                    <div style={{ fontSize: "0.85rem", fontWeight: 800, color: "#4ade80" }}>10%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* DEMOGRAPHIC TARGETING CLUSTERS (THE "MANTRI JI IMPRESS" FACTOR) */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "10px", marginBottom: "14px" }}>
+              <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <strong style={{ fontSize: "0.78rem", color: SAPPHIRE }}>⚡ Cluster A: Yuva & First-Time (18-28)</strong>
+                  <span style={{ fontSize: "0.65rem", color: "#9ca3af" }}>~{Math.round(targetVoters * 0.28).toLocaleString("en-IN")} Voters</span>
+                </div>
+                <div style={{ fontSize: "0.7rem", color: "#9ca3af", marginTop: "4px" }}>
+                  <strong>Targeting:</strong> Tech hubs, colleges & coaching centers.
+                  <br />
+                  <strong>Content:</strong> High-energy Instagram Reels & YouTube Shorts on sports grounds, tech jobs & merit exams.
+                </div>
+              </div>
+
+              <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <strong style={{ fontSize: "0.78rem", color: GOLD_LIGHT }}>🌾 Cluster B: Kisan & Gramin (30-65)</strong>
+                  <span style={{ fontSize: "0.65rem", color: "#9ca3af" }}>~{Math.round(targetVoters * 0.38).toLocaleString("en-IN")} Voters</span>
+                </div>
+                <div style={{ fontSize: "0.7rem", color: "#9ca3af", marginTop: "4px" }}>
+                  <strong>Targeting:</strong> Mandi corridors, canal zones & rural panchayats.
+                  <br />
+                  <strong>Content:</strong> Chhattisgarhi audio/video on MSP bonus, canal irrigation, solar pumps & loan relief.
+                </div>
+              </div>
+
+              <div style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <strong style={{ fontSize: "0.78rem", color: "#f472b6" }}>🌸 Cluster C: Mahila Shakti & Parivar</strong>
+                  <span style={{ fontSize: "0.65rem", color: "#9ca3af" }}>~{Math.round(targetVoters * 0.34).toLocaleString("en-IN")} Voters</span>
+                </div>
+                <div style={{ fontSize: "0.7rem", color: "#9ca3af", marginTop: "4px" }}>
+                  <strong>Targeting:</strong> Residential colonies, self-help groups & ward clusters.
+                  <br />
+                  <strong>Content:</strong> Direct welfare credit (Mahtari Vandan), maternal healthcare sub-centers & LPG security.
+                </div>
+              </div>
+            </div>
+
+            {/* CRITICAL STATUTORY FINANCIAL SEPARATION DISCLAIMER */}
+            <div
+              style={{
+                background: "rgba(234, 179, 8, 0.08)",
+                border: "1px solid rgba(234, 179, 8, 0.25)",
+                borderRadius: "8px",
+                padding: "10px 14px",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "10px"
+              }}
+            >
+              <span style={{ fontSize: "1.2rem" }}>⚖️</span>
+              <div style={{ fontSize: "0.72rem", color: "#fef08a", lineHeight: "1.45" }}>
+                <strong>Statutory Financial Demarcation (Supreme Governance Standard):</strong>
+                <br />
+                1. <strong>GARUDA Retainer ({liveCalculation.exactInr}):</strong> Paid to GARUDA AI OS for the 1,000 Autonomous Agent Workforce, 24/7 War Room Intelligence, {reelsCount} Viral Dialect Productions & On-ground booth mapping.
+                <br />
+                2. <strong>Direct Media Fuel ({mediaCalculation.exactMediaInr}):</strong> Disbursed directly from Candidate / Party PAN card to Meta (Facebook/Instagram) and Google Ads with statutory ECI Form 7A reporting. <strong>GARUDA charges 0% commission on ad spend.</strong>
+              </div>
+            </div>
+          </div>
+
           {/* 3. DYNAMIC MILESTONE ESCROW (CHANGES WITH SLIDERS & OPTIONS) */}
           <div
             style={{
@@ -835,9 +1056,15 @@ Official Portal: https://www.garudaos.in/enterprise`;
               <td style={{ padding: "8px", fontWeight: 700, color: "#111827" }}>{constituency}</td>
             </tr>
             <tr style={{ borderBottom: "1px solid #e5e7eb" }}>
-              <td style={{ padding: "8px", fontWeight: 700, color: "#4b5563" }}>Total Live Contract Valuation:</td>
+              <td style={{ padding: "8px", fontWeight: 700, color: "#4b5563" }}>GARUDA OS Retainer Valuation:</td>
               <td style={{ padding: "8px", fontWeight: 900, fontSize: "1.2rem", color: "#1e3a8a" }}>
                 {liveCalculation.exactInr} ({liveCalculation.formattedTotal})
+              </td>
+            </tr>
+            <tr style={{ borderBottom: "1px solid #e5e7eb" }}>
+              <td style={{ padding: "8px", fontWeight: 700, color: "#4b5563" }}>Estimated ECI Paid Media Fuel:</td>
+              <td style={{ padding: "8px", fontWeight: 800, color: "#047857" }}>
+                {mediaCalculation.exactMediaInr} ({mediaCalculation.formattedMediaSpend}) · Direct Candidate Disbursal to Meta & Google (0% Agency Cut)
               </td>
             </tr>
             <tr style={{ borderBottom: "1px solid #e5e7eb" }}>
@@ -857,6 +1084,7 @@ Official Portal: https://www.garudaos.in/enterprise`;
         <ul style={{ fontSize: "0.85rem", lineHeight: "1.6", color: "#374151", marginBottom: "1.5rem" }}>
           <li><strong>Booth Mobilization Infrastructure:</strong> {boothCount} Polling Booths mapped with localized voter sentiment and booth pramukh communication nodes.</li>
           <li><strong>High-Velocity Viral Media:</strong> {reelsCount} Regional Dialect Shorts/Reels scripted, rendered, and distributed across platforms.</li>
+          <li><strong>ECI Statutory Paid Media Micro-Targeting:</strong> Saturation of {targetVoters.toLocaleString("en-IN")} voters at {adFrequency}x frequency across Meta Reels ({metaSplit}%), YouTube ({ytSplit}%) and WhatsApp API ({waSplit}%) with zero intermediary markups.</li>
           <li><strong>Battle Horizon:</strong> {campaignMonths} Months of uninterrupted 24/7 autonomous intelligence operations.</li>
           {modules.gisSentiment && <li><strong>360° GIS Sentiment Heatmap:</strong> Real-time pro-incumbency vs grievance voter tracking.</li>}
           {modules.bhashanEngine && <li><strong>Multilingual Speech AI:</strong> 1-Click Ground Rally, Press Briefing, and Jan-Sampark speech drafter in regional dialect + Hindi.</li>}
