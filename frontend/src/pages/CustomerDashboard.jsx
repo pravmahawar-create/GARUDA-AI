@@ -37,6 +37,24 @@ export default function CustomerDashboard({ customer, onLogout }) {
   const [actionError, setActionError] = useState("");
   const [actionSuccess, setActionSuccess] = useState("");
 
+  // Personal Trading Journal & Memory States (Isolated per Customer)
+  const journalStorageKey = `garuda_user_journal_${customer?.id || customer?.email || "personal"}`;
+  const [personalJournal, setPersonalJournal] = useState(() => {
+    try {
+      const saved = localStorage.getItem(journalStorageKey);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [quantOpportunities, setQuantOpportunities] = useState([]);
+  const [quantMoonshots, setQuantMoonshots] = useState([]);
+  const [quantLoading, setQuantLoading] = useState(false);
+  const [quantNotice, setQuantNotice] = useState(null);
+  const [searchQuant, setSearchQuant] = useState("");
+  const [dailyQuotaUsed, setDailyQuotaUsed] = useState(0);
+  const dailyQuotaMax = 20;
+
   useEffect(() => {
     let active = true;
     Promise.all([
@@ -65,6 +83,99 @@ export default function CustomerDashboard({ customer, onLogout }) {
 
     return () => { active = false; };
   }, []);
+
+  // Fetch live quant setups & moonshots when customer opens quant tab
+  useEffect(() => {
+    if (activeTab === "quant" && quantOpportunities.length === 0) {
+      setQuantLoading(true);
+      Promise.all([
+        fetch("/api/finance/quant/potential").then(r => r.json()).catch(() => ({ opportunities: [] })),
+        fetch("/api/finance/quant/moonshots").then(r => r.json()).catch(() => ({ moonshots: [] }))
+      ]).then(([potData, moonData]) => {
+        setQuantOpportunities(potData.opportunities || []);
+        setQuantMoonshots(moonData.moonshots || []);
+        setQuantLoading(false);
+      }).catch(() => setQuantLoading(false));
+    }
+  }, [activeTab, quantOpportunities.length]);
+
+  // Personal Trading Journal Handlers
+  const handleSimulatePersonalTrade = (item, amount = 10000) => {
+    if (dailyQuotaUsed >= dailyQuotaMax) {
+      setQuantNotice({
+        type: "error",
+        text: `Daily paper trading limit reached (${dailyQuotaMax}/${dailyQuotaMax}). Upgrade plan in Subscription & Limits tab for unlimited executions.`
+      });
+      return;
+    }
+
+    const title = item.name || item.cleanSymbol || item.symbol;
+    const price = item.currentPriceInr || item.formattedPrice || "N/A";
+    const newEntry = {
+      id: `pt_${Date.now()}`,
+      symbol: item.symbol,
+      title,
+      price,
+      amount,
+      target: item.target1?.inr || item.targets?.t5x?.priceInr || "Target 1",
+      stopLoss: item.stopLoss?.inr || "Strict SL",
+      horizon: item.holdingHorizon || "Swing",
+      timestamp: new Date().toLocaleDateString("en-IN", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }),
+      status: "OPEN"
+    };
+
+    const updated = [newEntry, ...personalJournal];
+    setPersonalJournal(updated);
+    setDailyQuotaUsed(prev => prev + 1);
+    try {
+      localStorage.setItem(journalStorageKey, JSON.stringify(updated));
+    } catch {}
+
+    setQuantNotice({
+      type: "success",
+      text: `⚡ Simulated Paper Entry logged for ${title} with ₹${amount.toLocaleString("en-IN")}! Saved in your personal memory below.`
+    });
+  };
+
+  const handleClosePersonalTrade = (tradeId) => {
+    const updated = personalJournal.filter(t => t.id !== tradeId);
+    setPersonalJournal(updated);
+    try {
+      localStorage.setItem(journalStorageKey, JSON.stringify(updated));
+    } catch {}
+    setQuantNotice({ type: "info", text: "Position closed and archived from active paper portfolio." });
+  };
+
+  const handleClearJournal = () => {
+    if (!window.confirm("Clear your personal paper trading journal?")) return;
+    setPersonalJournal([]);
+    try {
+      localStorage.removeItem(journalStorageKey);
+    } catch {}
+    setQuantNotice({ type: "info", text: "Personal paper trading journal cleared." });
+  };
+
+  const handleCopyClientTip = async (item, type = "opportunity") => {
+    let text = "";
+    if (type === "opportunity") {
+      text = `🎯 *GARUDA MARKET ADVISORY SETUP*\nAsset: ${item.name} (${item.symbol})\nAction: ${item.recommendation || 'STRONG BUY'}\nBuy Zone: ${item.buyZoneInr || item.currentPriceInr}\nTarget 1: ${item.target1?.inr || 'T1'} (${item.target1?.gainPercent || ''})\nTarget 2: ${item.target2?.inr || 'T2'} (${item.target2?.gainPercent || ''})\nStrict Stop-Loss: ${item.stopLoss?.inr || 'SL'}\nHorizon: ${item.holdingHorizon || 'Swing'}\nLogic: ${item.romanHindiSummary || 'High probability setup'}\nVerified by GARUDA 24/7 Swarm • https://www.garudaos.in`;
+    } else {
+      text = `🚀 *GARUDA HIGH-ALPHA MOONSHOT ALERT*\nCoin: ${item.cleanSymbol} (${item.category})\nPrice: ${item.formattedPrice}\n5x Target: ${item.targets?.t5x?.priceInr || '5x'}\n10x Target: ${item.targets?.t10x?.priceInr || '10x'}\n80x Moonshot: ${item.targets?.t80xMoonshot?.priceInr || '80x'}\nWhale Volume: ${item.volume24hCrores}\nHorizon: ${item.holdingHorizon || '3-6 Months'}\nVerified by GARUDA 24/7 Swarm • https://www.garudaos.in`;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      setQuantNotice({ type: "success", text: `📋 Advisory brief copied for ${item.name || item.cleanSymbol}! Ready to paste in WhatsApp/Telegram.` });
+    } catch {
+      setQuantNotice({ type: "info", text: "Could not auto-copy. Please discuss with AI." });
+    }
+  };
+
+  const handleWhatsAppShare = (item, type = "opportunity") => {
+    const text = type === "opportunity"
+      ? `🎯 *GARUDA MARKET ADVISORY SETUP*\nAsset: ${item.name} (${item.symbol})\nBuy Zone: ${item.buyZoneInr || item.currentPriceInr}\nTarget 1: ${item.target1?.inr || 'T1'} (${item.target1?.gainPercent || ''})\nStop-Loss: ${item.stopLoss?.inr || 'SL'}\nhttps://www.garudaos.in`
+      : `🚀 *GARUDA MOONSHOT ALERT*\nCoin: ${item.cleanSymbol} (${item.formattedPrice})\n10x Target: ${item.targets?.t10x?.priceInr || '10x'}\n80x Benchmark: ${item.targets?.t80xMoonshot?.priceInr || '80x'}\nhttps://www.garudaos.in`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+  };
 
   const handleCreateApiKey = async (e) => {
     e.preventDefault();
@@ -237,6 +348,7 @@ export default function CustomerDashboard({ customer, onLogout }) {
         <div style={{ display: "flex", gap: "0.5rem", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "0.75rem", marginBottom: "2rem", overflowX: "auto" }}>
           {[
             { id: "projects", label: `My Projects (${projects.length})`, icon: "📂" },
+            { id: "quant", label: "24/7 Quant & Shares Fleet", icon: "📈" },
             { id: "proposals", label: `Proposals & Milestones (${proposals.length})`, icon: "📑" },
             { id: "billing", label: `Subscription & Limits`, icon: "💳" },
             { id: "apikeys", label: `Developer API Keys (${apiKeys.length})`, icon: "🔑" },
@@ -421,6 +533,275 @@ export default function CustomerDashboard({ customer, onLogout }) {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === "quant" && (
+          <div>
+            {/* Header & Governance Banner */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <h2 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#fff", margin: 0 }}>Universe 12: 24/7 Quant & Shares Swarm</h2>
+                  <span style={{ fontSize: "0.72rem", background: "rgba(16, 185, 129, 0.15)", border: "1px solid rgba(16, 185, 129, 0.35)", color: "#6ee7b7", padding: "2px 8px", borderRadius: "6px", fontWeight: 700 }}>
+                    LIVE PULSE
+                  </span>
+                </div>
+                <div style={{ fontSize: "0.82rem", color: "#9ca3af", marginTop: "0.3rem" }}>
+                  Simulated trades and watchlists are strictly persisted in your personal desktop memory. Full institutional power of GARUDA's Alpha Fleet unlocked for your account.
+                </div>
+              </div>
+
+              {/* Quota & Founder Lock Badge */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px" }}>
+                <span style={{ fontSize: "0.75rem", background: "rgba(212, 175, 55, 0.12)", border: `1px solid ${BORDER}`, color: GOLD_LIGHT, padding: "4px 10px", borderRadius: 8, fontWeight: 700 }}>
+                  🛡️ Master Engine: Governed by Founder Praveen Mahawar
+                </span>
+                <span style={{ fontSize: "0.72rem", color: "#9ca3af" }}>
+                  Daily Personal Quota: <strong style={{ color: "#fff" }}>{dailyQuotaUsed} / {dailyQuotaMax}</strong> Paper Orders Used
+                </span>
+              </div>
+            </div>
+
+            {/* Notification Banner */}
+            {quantNotice && (
+              <div style={{
+                padding: "0.85rem 1.25rem",
+                borderRadius: "10px",
+                marginBottom: "1.5rem",
+                background: quantNotice.type === "error" ? "rgba(239, 68, 68, 0.15)" : quantNotice.type === "success" ? "rgba(16, 185, 129, 0.15)" : "rgba(59, 130, 246, 0.15)",
+                border: `1px solid ${quantNotice.type === "error" ? "rgba(239, 68, 68, 0.4)" : quantNotice.type === "success" ? "rgba(16, 185, 129, 0.4)" : "rgba(59, 130, 246, 0.4)"}`,
+                color: quantNotice.type === "error" ? "#fca5a5" : quantNotice.type === "success" ? "#86efac" : "#93c5fd",
+                fontSize: "0.88rem",
+                fontWeight: 600,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}>
+                <span>{quantNotice.text}</span>
+                <button onClick={() => setQuantNotice(null)} style={{ background: "transparent", border: "none", color: "inherit", cursor: "pointer", fontSize: "0.9rem" }}>✕</button>
+              </div>
+            )}
+
+            {/* 1. PERSONAL TRADING JOURNAL (ISOLATED MEMORY) */}
+            <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.5rem", marginBottom: "2rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "10px" }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 800, color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span>📝</span> My Personal Paper Trading Journal
+                    <span style={{ fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "#93c5fd", padding: "2px 8px", borderRadius: 4, fontWeight: 700 }}>
+                      Memory Synced
+                    </span>
+                  </h3>
+                  <div style={{ fontSize: "0.78rem", color: "#9ca3af", marginTop: "2px" }}>
+                    Only you can view and track your simulated trades. Data is isolated to your customer profile.
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.78rem", color: "#9ca3af" }}>
+                    Active Holdings: <strong style={{ color: GOLD_LIGHT }}>{personalJournal.length}</strong> | Total Virtual Capital: <strong style={{ color: "#6ee7b7" }}>₹{(personalJournal.reduce((acc, t) => acc + (t.amount || 0), 0)).toLocaleString("en-IN")}</strong>
+                  </span>
+                  {personalJournal.length > 0 && (
+                    <button
+                      onClick={handleClearJournal}
+                      style={{ background: "rgba(239, 68, 68, 0.12)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#fca5a5", fontSize: "0.72rem", padding: "4px 8px", borderRadius: 6, cursor: "pointer", fontWeight: 700 }}
+                    >
+                      Clear History
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {personalJournal.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "2rem 1rem", color: "#6b7280", fontSize: "0.85rem" }}>
+                  <span>📈</span> No active paper trades in your personal memory yet. Browse the live setups below and click <strong>"Simulate Paper Buy"</strong> to begin self-tracking.
+                </div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", textAlign: "left" }}>
+                        <th style={{ padding: "8px 12px" }}>Date & Time</th>
+                        <th style={{ padding: "8px 12px" }}>Asset / Symbol</th>
+                        <th style={{ padding: "8px 12px" }}>Entry Price</th>
+                        <th style={{ padding: "8px 12px" }}>Virtual Capital</th>
+                        <th style={{ padding: "8px 12px" }}>Target</th>
+                        <th style={{ padding: "8px 12px" }}>Stop Loss</th>
+                        <th style={{ padding: "8px 12px" }}>Horizon</th>
+                        <th style={{ padding: "8px 12px", textAlign: "right" }}>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {personalJournal.map((trade) => (
+                        <tr key={trade.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                          <td style={{ padding: "10px 12px", color: "#9ca3af" }}>{trade.timestamp}</td>
+                          <td style={{ padding: "10px 12px", fontWeight: 700, color: "#fff" }}>
+                            {trade.title} <span style={{ color: "#9ca3af", fontSize: "0.72rem" }}>({trade.symbol})</span>
+                          </td>
+                          <td style={{ padding: "10px 12px", color: GOLD_LIGHT, fontWeight: 600 }}>{trade.price}</td>
+                          <td style={{ padding: "10px 12px", color: "#6ee7b7", fontWeight: 700 }}>₹{trade.amount.toLocaleString("en-IN")}</td>
+                          <td style={{ padding: "10px 12px", color: "#93c5fd" }}>{trade.target}</td>
+                          <td style={{ padding: "10px 12px", color: "#f87171" }}>{trade.stopLoss}</td>
+                          <td style={{ padding: "10px 12px", color: "#9ca3af" }}>{trade.horizon}</td>
+                          <td style={{ padding: "10px 12px", textAlign: "right" }}>
+                            <button
+                              onClick={() => handleClosePersonalTrade(trade.id)}
+                              style={{ background: "rgba(239, 68, 68, 0.15)", border: "1px solid rgba(239, 68, 68, 0.35)", color: "#fca5a5", fontSize: "0.72rem", padding: "4px 10px", borderRadius: 6, cursor: "pointer", fontWeight: 700 }}
+                            >
+                              Close Position
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* 2. LIVE HIGH-PROBABILITY SETUPS */}
+            <div style={{ marginBottom: "2rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "10px" }}>
+                <div>
+                  <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#fff", margin: 0 }}>
+                    ⚡ High-Probability Swarm Setups ({quantOpportunities.length})
+                  </h3>
+                  <div style={{ fontSize: "0.78rem", color: "#9ca3af" }}>4-Hour EMA crossovers, RSI sweet-spot analysis, and whale volume spikes.</div>
+                </div>
+
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <input
+                    type="text"
+                    placeholder="Search coin (BTC, SOL, XRP)..."
+                    value={searchQuant}
+                    onChange={(e) => setSearchQuant(e.target.value)}
+                    style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.12)", color: "#fff", padding: "6px 12px", borderRadius: 6, fontSize: "0.82rem" }}
+                  />
+                  <button
+                    onClick={() => navigate("/quant")}
+                    style={{ background: "rgba(212,175,55,0.15)", border: `1px solid ${GOLD}`, color: GOLD_LIGHT, fontSize: "0.78rem", padding: "6px 12px", borderRadius: 6, cursor: "pointer", fontWeight: 700 }}
+                  >
+                    Open Master Cockpit ➔
+                  </button>
+                </div>
+              </div>
+
+              {quantLoading ? (
+                <p style={{ color: "#9ca3af", fontSize: "0.9rem" }}>Scanning live institutional orderbooks...</p>
+              ) : (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "1.25rem" }}>
+                  {quantOpportunities
+                    .filter((op) => !searchQuant || op.name?.toLowerCase().includes(searchQuant.toLowerCase()) || op.symbol?.toLowerCase().includes(searchQuant.toLowerCase()))
+                    .slice(0, 6)
+                    .map((op) => (
+                      <div key={op.symbol} style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "1.25rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                        <div>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
+                            <div>
+                              <h4 style={{ margin: 0, color: "#fff", fontSize: "1.05rem", fontWeight: 800 }}>{op.name}</h4>
+                              <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{op.symbol} • {op.category}</span>
+                            </div>
+                            <div style={{ textAlign: "right" }}>
+                              <div style={{ fontSize: "1.1rem", fontWeight: 900, color: GOLD_LIGHT }}>{op.currentPriceInr}</div>
+                              <span style={{ fontSize: "0.68rem", color: "#6ee7b7", background: "rgba(16,185,129,0.12)", padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>
+                                Score: {op.convictionScore}%
+                              </span>
+                            </div>
+                          </div>
+
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", background: "rgba(0,0,0,0.3)", padding: "10px", borderRadius: 8, fontSize: "0.75rem", marginBottom: "10px" }}>
+                            <div><span style={{ color: "#9ca3af" }}>Buy Zone:</span> <strong style={{ color: "#fff" }}>{op.buyZoneInr}</strong></div>
+                            <div><span style={{ color: "#9ca3af" }}>Horizon:</span> <strong style={{ color: "#93c5fd" }}>{op.holdingHorizon || "Swing"}</strong></div>
+                            <div><span style={{ color: "#9ca3af" }}>Target 1:</span> <strong style={{ color: "#6ee7b7" }}>{op.target1?.inr} ({op.target1?.gainPercent})</strong></div>
+                            <div><span style={{ color: "#9ca3af" }}>Stop Loss:</span> <strong style={{ color: "#f87171" }}>{op.stopLoss?.inr}</strong></div>
+                          </div>
+
+                          <div style={{ fontSize: "0.74rem", color: "#9ca3af", lineHeight: 1.4, marginBottom: "12px", background: "rgba(255,255,255,0.03)", padding: "8px", borderRadius: 6 }}>
+                            {op.romanHindiSummary || "Whale accumulation and positive momentum confirmed."}
+                          </div>
+                        </div>
+
+                        {/* Customer Actions */}
+                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "10px" }}>
+                          <button
+                            onClick={() => handleSimulatePersonalTrade(op, 10000)}
+                            style={{ flex: 1, background: "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2))", border: "1px solid rgba(16, 185, 129, 0.4)", color: "#6ee7b7", padding: "6px 10px", borderRadius: 6, fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
+                          >
+                            ⚡ Paper Buy (₹10k)
+                          </button>
+                          <button
+                            onClick={() => handleCopyClientTip(op, "opportunity")}
+                            style={{ background: "rgba(168, 85, 247, 0.15)", border: "1px solid rgba(168, 85, 247, 0.4)", color: "#d8b4fe", padding: "6px 10px", borderRadius: 6, fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
+                            title="Copy formatted WhatsApp tip"
+                          >
+                            📋 Copy Tip
+                          </button>
+                          <button
+                            onClick={() => handleWhatsAppShare(op, "opportunity")}
+                            style={{ background: "rgba(34, 197, 94, 0.15)", border: "1px solid rgba(34, 197, 94, 0.4)", color: "#86efac", padding: "6px 10px", borderRadius: 6, fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
+                            title="Share to WhatsApp"
+                          >
+                            📲 WhatsApp
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+
+            {/* 3. SUB-RUPEE MOONSHOTS RADAR */}
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                <div>
+                  <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#fff", margin: 0 }}>
+                    🚀 100x Sub-Rupee & Penny Moonshots ({quantMoonshots.length})
+                  </h3>
+                  <div style={{ fontSize: "0.78rem", color: "#9ca3af" }}>Microcap asymmetry: ₹1,000 to ₹10,000 allocation model.</div>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1rem" }}>
+                {quantMoonshots.slice(0, 6).map((ms) => (
+                  <div key={ms.symbol} style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "1.1rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                    <div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                        <strong style={{ color: "#fff", fontSize: "1rem" }}>{ms.cleanSymbol}</strong>
+                        <span style={{ fontSize: "0.7rem", color: GOLD_LIGHT, fontWeight: 700 }}>{ms.formattedPrice}</span>
+                      </div>
+                      <div style={{ fontSize: "0.72rem", color: "#9ca3af", marginBottom: "8px" }}>
+                        24h Vol: <strong style={{ color: "#fff" }}>{ms.volume24hCrores}</strong> | Buying Power: <strong style={{ color: "#6ee7b7" }}>~{ms.coinsFor10k} coins/₹10k</strong>
+                      </div>
+                      <div style={{ fontSize: "0.72rem", background: "rgba(0,0,0,0.4)", padding: "6px 8px", borderRadius: 6, color: "#9ca3af", marginBottom: "10px" }}>
+                        10x: <strong style={{ color: "#93c5fd" }}>{ms.targets?.t10x?.priceInr || "10x"}</strong> | 80x: <strong style={{ color: "#f59e0b" }}>{ms.targets?.t80xMoonshot?.priceInr || "80x"}</strong>
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", gap: "6px" }}>
+                      <button
+                        onClick={() => handleSimulatePersonalTrade(ms, 1000)}
+                        style={{ flex: 1, background: "rgba(16, 185, 129, 0.15)", border: "1px solid rgba(16, 185, 129, 0.35)", color: "#6ee7b7", padding: "6px 8px", borderRadius: 6, fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}
+                      >
+                        ⚡ Paper Buy (₹1k)
+                      </button>
+                      <button
+                        onClick={() => handleCopyClientTip(ms, "moonshot")}
+                        style={{ background: "rgba(168, 85, 247, 0.15)", border: "1px solid rgba(168, 85, 247, 0.35)", color: "#d8b4fe", padding: "6px 8px", borderRadius: 6, fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}
+                      >
+                        📋 Copy
+                      </button>
+                      <button
+                        onClick={() => handleWhatsAppShare(ms, "moonshot")}
+                        style={{ background: "rgba(34, 197, 94, 0.15)", border: "1px solid rgba(34, 197, 94, 0.35)", color: "#86efac", padding: "6px 8px", borderRadius: 6, fontSize: "0.72rem", fontWeight: 700, cursor: "pointer" }}
+                      >
+                        📲 Share
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

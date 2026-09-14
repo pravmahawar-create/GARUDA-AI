@@ -171,10 +171,16 @@ const HANDLERS = {
   "manage-password": managePasswordHandler
 };
 
-module.exports = async function authRouter(req, res) {
+async function authRouter(req, res) {
   const pathFromQuery = String(req.query && req.query.path ? req.query.path : "");
   const pathFromUrl = String(req.path || req.url || "").replace(/^\/api\/auth\/?/, "").replace(/^\//, "").split(/[/?]/)[0];
   const path = (pathFromQuery || pathFromUrl || "session").toLowerCase();
   const handler = HANDLERS[path] || HANDLERS.session;
   return handler(req, res);
-};
+}
+
+authRouter.hasValidSession = hasValidSession;
+authRouter.passwordMatches = passwordMatches;
+authRouter.safeEqual = safeEqual;
+
+module.exports = authRouter;

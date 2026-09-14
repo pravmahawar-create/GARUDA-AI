@@ -85,11 +85,32 @@ export default function FounderQuantCommand({ onLogout }) {
     setKillSwitchNotice(null);
 
     try {
-      const res = await fetch("/api/finance/quant/kill-switch", {
+      let res = await fetch("/api/finance/quant/kill-switch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pause: targetState })
       });
+
+      if (res.status === 403) {
+        const pin = window.prompt("🔒 Sovereign Founder Authentication Required.\n\nThis delicate control is strictly reserved for Founder Praveen Mahawar.\nPlease enter your Founder Master PIN / Password to execute:");
+        if (pin) {
+          res = await fetch("/api/finance/quant/kill-switch", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-founder-pin": pin
+            },
+            body: JSON.stringify({ pause: targetState })
+          });
+        } else {
+          setKillSwitchNotice({
+            type: "error",
+            text: "🔒 Action aborted: Delicate master control strictly reserved for Founder Praveen Mahawar."
+          });
+          return;
+        }
+      }
+
       const json = await res.json();
       if (res.ok && json.success) {
         setKillSwitchNotice({
@@ -100,7 +121,7 @@ export default function FounderQuantCommand({ onLogout }) {
       } else {
         setKillSwitchNotice({
           type: "error",
-          text: json.error || "Failed to update Sovereign Kill Switch"
+          text: json.message || json.error || "Failed to update Sovereign Kill Switch"
         });
       }
     } catch (e) {
@@ -115,10 +136,24 @@ export default function FounderQuantCommand({ onLogout }) {
     setExecutingCycle(true);
     setActionNotice({ type: "info", text: "Executing autonomous scan cycle across active markets..." });
     try {
-      const res = await fetch("/api/finance/quant/daemon/cycle", {
+      let res = await fetch("/api/finance/quant/daemon/cycle", {
         method: "POST",
         headers: { "Content-Type": "application/json" }
       });
+
+      if (res.status === 403) {
+        const pin = window.prompt("🔒 Sovereign Founder Authentication Required.\n\nEnter Founder Master PIN / Password to trigger master scan cycle:");
+        if (pin) {
+          res = await fetch("/api/finance/quant/daemon/cycle", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-founder-pin": pin }
+          });
+        } else {
+          setActionNotice({ type: "error", text: "🔒 Action aborted: Reserved for Founder Praveen Mahawar." });
+          return;
+        }
+      }
+
       const data = await res.json();
       if (res.ok && data.success) {
         setLastCycleResult(data);
@@ -128,7 +163,7 @@ export default function FounderQuantCommand({ onLogout }) {
         });
         await fetchDashboard(true);
       } else {
-        setActionNotice({ type: "error", text: data.message || "Cycle execution issue" });
+        setActionNotice({ type: "error", text: data.message || "Failed to execute scan cycle" });
       }
     } catch (e) {
       setActionNotice({ type: "error", text: e.message });
@@ -266,13 +301,27 @@ ${op.romanHindiSummary || "Whale accumulation aur positive EMA momentum confirm 
 
   // Reset virtual paper trading ledger
   const handleResetLedger = async () => {
-    if (!window.confirm("Are you sure you want to reset the paper trading portfolio to ₹1,00,000?")) return;
+    if (!window.confirm("Are you sure you want to reset the master paper trading portfolio to ₹1,00,000?")) return;
     try {
-      const res = await fetch("/api/finance/quant/reset-ledger", { method: "POST" });
+      let res = await fetch("/api/finance/quant/reset-ledger", { method: "POST" });
+      if (res.status === 403) {
+        const pin = window.prompt("🔒 Sovereign Founder Authentication Required.\n\nThis delicate control is strictly reserved for Founder Praveen Mahawar.\nPlease enter Founder Master PIN / Password to reset ledger:");
+        if (pin) {
+          res = await fetch("/api/finance/quant/reset-ledger", {
+            method: "POST",
+            headers: { "x-founder-pin": pin }
+          });
+        } else {
+          setActionNotice({ type: "error", text: "🔒 Action aborted: Reserved for Founder Praveen Mahawar." });
+          return;
+        }
+      }
       const data = await res.json();
       if (res.ok && data.success) {
         setActionNotice({ type: "success", text: "Portfolio ledger reset to ₹1,00,000 initial virtual capital." });
         await fetchDashboard(true);
+      } else {
+        setActionNotice({ type: "error", text: data.message || "Failed to reset ledger" });
       }
     } catch (e) {
       setActionNotice({ type: "error", text: e.message });

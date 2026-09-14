@@ -10,10 +10,41 @@ const { GlobalQuantSwarm } = require('../services/alphaQuant/globalQuantSwarm');
 const { AlphaQuantDaemon } = require('../services/alphaQuant/alphaQuantDaemon');
 const { Global24x7QuantDaemon } = require('../services/alphaQuant/global24x7QuantDaemon');
 const { AlphaPotentialAgent } = require('../services/alphaQuant/alphaPotentialAgent');
+const authRouter = require('../../api/auth');
 
 const globalSwarm = new GlobalQuantSwarm();
 const daemon24x7 = new Global24x7QuantDaemon({ minConfidenceThreshold: 82 });
 const potentialAgent = new AlphaPotentialAgent();
+
+/**
+ * Middleware: Delicate & Critical Controls strictly reserved for Founder Praveen
+ * Accepts:
+ * 1. Valid Founder session cookie (garuda_founder_session)
+ * 2. x-founder-pin header or founderPin body matching Founder password
+ */
+async function requireFounderAccess(req, res, next) {
+  // Check active founder session cookie
+  if (authRouter.hasValidSession && authRouter.hasValidSession(req)) {
+    return next();
+  }
+
+  // Check PIN/password in header or body
+  const pin = req.headers['x-founder-pin'] || req.body?.founderPin;
+  if (pin) {
+    try {
+      const matches = authRouter.passwordMatches ? await authRouter.passwordMatches(pin) : false;
+      if (matches || (process.env.FOUNDER_ACCESS_PASSWORD && pin === process.env.FOUNDER_ACCESS_PASSWORD)) {
+        return next();
+      }
+    } catch (e) {}
+  }
+
+  return res.status(403).json({
+    success: false,
+    error: 'SOVEREIGN_FOUNDER_REQUIRED',
+    message: '🔒 Sovereign Founder Authentication Required. This delicate control is strictly reserved for Founder Praveen Mahawar.'
+  });
+}
 
 let cachedOpportunities = null;
 let lastOpportunitiesScan = 0;
@@ -144,8 +175,9 @@ router.get('/dashboard', async (req, res) => {
 /**
  * POST /api/finance/quant/kill-switch
  * Founder Sovereign Kill Switch: Pause or Resume trading immediately
+ * Delicate Control: Strictly guarded under Founder Praveen authorization
  */
-router.post('/kill-switch', (req, res) => {
+router.post('/kill-switch', requireFounderAccess, (req, res) => {
   try {
     const { pause } = req.body;
     const isPaused = daemon24x7.setEmergencyPause(pause !== undefined ? pause : !daemon24x7.isEmergencyPaused);
@@ -226,8 +258,9 @@ router.get('/ledger', (req, res) => {
 
 /**
  * POST /api/finance/quant/reset-ledger
+ * Delicate Control: Strictly guarded under Founder Praveen authorization
  */
-router.post('/reset-ledger', (req, res) => {
+router.post('/reset-ledger', requireFounderAccess, (req, res) => {
   try {
     daemon24x7.paperEngine.resetLedger();
     daemon24x7.dailyTradesCount = 0;
@@ -271,8 +304,9 @@ router.get('/daemon-status', (req, res) => {
 
 /**
  * POST /api/finance/quant/daemon/cycle
+ * Delicate Control: Strictly guarded under Founder Praveen authorization
  */
-router.post('/daemon/cycle', async (req, res) => {
+router.post('/daemon/cycle', requireFounderAccess, async (req, res) => {
   try {
     const result = await daemon24x7.runCycle();
     res.json({ success: true, ...result });
