@@ -2,7 +2,14 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { getAttributionPayload } from "../utils/attribution";
 import { trackEvent } from "../utils/telemetry";
 
-const GREETING = { role: "model", text: "Hello! I am GARUDA. How can I help you today?" };
+const GREETING = {
+  role: "model",
+  text: `Welcome to GARUDA AI OS. I am your Senior AI Solution Architect, operating directly under Founder Praveen Mahawar.
+
+Whether you are looking to deploy an Electoral Campaign War Room, a Heavy Industry B2B System, a Luxury Real Estate HNI Funnel, or a Custom SaaS MVP:
+
+Tell me about your project, target market, or operational bottlenecks, and I will architect the complete technical roadmap, scope, and milestone plan for you.`
+};
 
 const REQUEST_TIMEOUT_MS = 45000;
 

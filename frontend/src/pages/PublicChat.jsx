@@ -117,13 +117,18 @@ export default function PublicChat() {
           >
             ← Home
           </button>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "0.08em", color: "#ffffff" }}>
-              GARUDA
-            </h1>
-            <span style={{ fontSize: "0.72rem", background: "rgba(212,175,55,0.15)", color: "#d4af37", padding: "0.2rem 0.5rem", borderRadius: "4px", fontWeight: 600 }}>
-              AI OS
-            </span>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+              <h1 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 900, letterSpacing: "0.04em", color: "#ffffff" }}>
+                GARUDA AI SOLUTION ARCHITECT
+              </h1>
+              <span style={{ fontSize: "0.68rem", background: "rgba(212,175,55,0.2)", border: "1px solid rgba(212,175,55,0.4)", color: "#fef08a", padding: "0.15rem 0.5rem", borderRadius: "4px", fontWeight: 700 }}>
+                EXECUTIVE SCOPING
+              </span>
+            </div>
+            <div style={{ fontSize: "0.72rem", color: "#9ca3af", marginTop: "1px" }}>
+              Enterprise Project Scoping & System Architecture · Governed by <strong style={{ color: "#d4af37" }}>Founder Praveen Mahawar</strong>
+            </div>
           </div>
         </div>
 
@@ -280,17 +285,17 @@ export default function PublicChat() {
           </aside>
         )}
 
-        {/* Open Super-Intelligence Quick Prompts */}
+        {/* Executive Project Scoping Quick Actions */}
         {!activeConversationId && (
-          <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(11,15,22,0.5)", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
+          <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(11,15,22,0.6)", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
             {[
-              "Ask me anything about AI & code →",
-              "How does GARUDA AI OS work? →",
-              "Brainstorm an innovative business model →",
-              "Explain deep tech & quantum computing →",
-              "Help me architect a scalable system →"
+              "🏛️ Plan an Electoral Campaign & Political War Room →",
+              "🏢 Architect Heavy Industry B2B System & Leads →",
+              "🏗️ Deploy Luxury Real Estate HNI Funnel →",
+              "🚀 Build Custom SaaS MVP & 1,000-Agent Fleet →",
+              "📞 Schedule Consultation with Founder Praveen Mahawar →"
             ].map((chip) => (
-              <button key={chip} onClick={() => { const evt=new CustomEvent("garuda:insertPrompt",{detail:chip.replace(" →","")}); window.dispatchEvent(evt); }} style={{ background: "rgba(245,215,110,0.08)", border: "1px solid rgba(245,215,110,0.2)", color: "#f5d76e", padding: "0.35rem 0.75rem", borderRadius: 999, fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}>{chip}</button>
+              <button key={chip} onClick={() => { const evt=new CustomEvent("garuda:insertPrompt",{detail:chip.replace(" →","")}); window.dispatchEvent(evt); }} style={{ background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.25)", color: "#fef08a", padding: "0.35rem 0.75rem", borderRadius: 999, fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}>{chip}</button>
             ))}
           </div>
         )}
@@ -303,7 +308,7 @@ export default function PublicChat() {
                 setActiveConversationId(id);
                 refreshConversations();
               }}
-              placeholder="Ask GARUDA anything... (Free & Open Super-Intelligence)"
+              placeholder="Describe your project, target market, or operational vision to the AI Architect..."
               minHeight={0}
             />
           </div>

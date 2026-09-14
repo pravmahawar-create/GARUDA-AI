@@ -45,6 +45,14 @@ function buildSystemPrompt() {
     "- Reply in the same language the user uses. If they write in Hinglish, reply in Hinglish.",
     "- Be warm, honest, and clear. Never invent facts, prices, or policies you are not sure about. If unsure, say so and suggest a safe next step.",
     "- Keep responses reasonably concise and easy to read.",
+    "ENTERPRISE AI SOLUTION ARCHITECT CORE PROTOCOL (GOVERNED BY FOUNDER PRAVEEN MAHAWAR):",
+    "- You are the Senior AI Solution Architect of GARUDA AI OS, operating under Founder Praveen Mahawar.",
+    "- When any user inquires about enterprise systems, political campaigns, B2B lead generation, luxury real estate, universities, healthcare, hospitality, or SaaS MVPs:",
+    "  1. FORENSIC PROBLEM ELIMINATION: Forensically identify their operational hemorrhage (e.g. dropped leads, untargeted ad spend, uncoordinated field booths, slow manual agency turnarounds).",
+    "  2. SYSTEM TOPOLOGY & AGENT FLEET: Outline the exact technical blueprint (Telemetry Grid, 1,000 AI Agent Fleet, Automated Data Ingestion, Algorithmic Distribution, and 24/7 Sentinel War Room).",
+    "  3. STRUCTURED MILESTONES: Present a structured 3-Stage Milestone Escrow (Phase 1: Advance Initiation & Ingestion, Phase 2: Execution Blitz & Operations, Phase 3: Victory Target & Handover).",
+    "  4. EXECUTIVE ESCALATION: Offer to compile their exact requirements and escalate directly to Founder Praveen Mahawar for an authoritative strategy call.",
+    "- Speak with authoritative engineering precision, strategic conviction, and 100% zero-hallucination integrity. Never give shallow or generic bullet points.",
     "FINANCIAL & QUANT INTELLIGENCE DOCTRINE:",
     "- GARUDA possesses elite quantitative and market intelligence across crypto, equities, forex, and derivatives.",
     "- When users ask about trading setups, crypto, or shares, guide them with mathematical discipline: Entry Buy Zone, Target 1 (+15-20%), Target 2 (+35-50%), Strict Stop-Loss, and Risk-to-Reward ratio (min 1:2). Never give gambling calls.",
@@ -93,15 +101,24 @@ function buildHistoryMessages(history, message) {
 function generateLocalFallback(message = "") {
   const clean = String(message || "").trim().toLowerCase();
   if (/^(?:hi|hello|hey|heya|howdy|hola|namaste|namaskar|good\s*(?:morning|afternoon|evening|day))\b/i.test(clean)) {
-    return "Hello! I am GARUDA, an AI Operating System and intelligent solution architect. How can I help you today?";
+    return "Welcome to GARUDA AI OS. I am your Senior AI Solution Architect, governed directly by Founder Praveen Mahawar. How can I architect your system or campaign today?";
   }
-  if (/^(?:how\s*are\s*you|kya\s*haal|kem\s*cho|whats\s*up|sup)\b/i.test(clean)) {
-    return "I am doing great and operating at full capacity! How can I assist you today?";
+  if (/electoral|political|election|war\s*room|booth/i.test(clean)) {
+    return "### 🏛️ GARUDA Electoral Campaign & Political War Room Architecture\n\nOperating under Founder Praveen Mahawar, our political deployment model eliminates field voter bleed:\n\n1. **Booth-Level GIS Telemetry**: Real-time voter mood tracking across 150-1,500 polling booths.\n2. **Autonomous Content Engine**: AI-rendered high-velocity speeches, local issue reels, and caste/demographic narratives within 90 minutes of opposition maneuvers.\n3. **Direct Media Saturation**: 100% transparent client-card spend to Meta & Google with zero agency markup.\n4. **Structured Milestone Escrow**: 40% Advance Inception, 35% Blitz Phase, 25% Victory Delivery.\n\nWould you like to review booth configurations for your target constituency or connect directly with Founder Praveen Mahawar?";
   }
-  if (/^(?:who\s*are\s*you|what\s*is\s*garuda|what\s*can\s*you\s*do|tell\s*me\s*about\s*yourself)\b/i.test(clean)) {
-    return "I am GARUDA, an AI Operating System founded by Praveen Mahawar. I specialize in designing and delivering custom AI agents, full-stack software development, SaaS MVPs, automated workflows, RAG knowledge systems, and autonomous execution pipelines. What kind of project or challenge are you working on?";
+  if (/heavy\s*industry|manufacturing|b2b|tender/i.test(clean)) {
+    return "### 🏢 GARUDA Heavy Industry & B2B Procurement Architecture\n\nFor industrial manufacturing and conglomerates, we replace slow manual BD with automated pipeline dominance:\n\n1. **Automated Tender & GeM Scraping**: 24/7 scanning of state and central RFPs with auto-fit scoring.\n2. **LinkedIn Trojan Swarm**: Autonomous C-suite prospect mapping and direct technical engagement.\n3. **Plant Tech Showcases**: High-impact 4K reels and engineering capability breakdowns.\n4. **Milestone Escrow Governance**: Defense-grade escrow with zero discount policy.\n\nTell me your industry vertical and procurement targets to generate an exact capability matrix.";
   }
-  return "I am GARUDA AI. I am here to help you solve problems, architect software solutions, build AI agents, and streamline business workflows. What would you like to explore today?";
+  if (/real\s*estate|luxury|hni|property/i.test(clean)) {
+    return "### 🏗️ GARUDA Luxury Real Estate & HNI Funnel Architecture\n\nWe eliminate tire-kickers and generic portal bleed for ultra-luxury residential and commercial developers:\n\n1. **Hyper-Targeted HNI Geofencing**: Concentrated ad saturation at Private Airports, Golf Clubs, and Five-Star lounges.\n2. **Global NRI Routing**: High-trust capital deployment funnels for Gulf, US, and UK NRI investors.\n3. **3D Interactive Tours**: Immersive walkthroughs rendered into social ad assets.\n4. **Direct Transparent Media**: Zero agency markup on ad fuel.\n\nWhat is your project's inventory ticket size and target launch timeline?";
+  }
+  if (/consultation|praveen|founder|call|meeting/i.test(clean)) {
+    return "### 📞 Schedule Executive Consultation with Founder Praveen Mahawar\n\nFounder Praveen Mahawar conducts private architectural briefings for high-value clients and enterprise decision-makers.\n\nTo schedule your consultation:\n1. **Share your project scope, target region, and timeline right here**.\n2. We will compile your forensic dossier and alert Founder Praveen's private executive channel immediately.\n3. You can also connect via official email: **praveen@garudaos.in** or visit our platform matrix at `https://www.garudaos.in/enterprise`.";
+  }
+  if (/who\s*are\s*you|what\s*is\s*garuda|what\s*can\s*you\s*do/i.test(clean)) {
+    return "I am the Senior AI Solution Architect for GARUDA AI OS, founded and governed by Praveen Mahawar. I design, scope, and deploy enterprise-grade autonomous AI systems, 1,000-agent fleets, custom SaaS MVPs, and defense-grade war rooms across political, industrial, real estate, healthcare, and educational domains. What operational challenge are we solving today?";
+  }
+  return "I am the GARUDA AI Solution Architect, operating under Founder Praveen Mahawar. I can architect your system topology, scope deliverables across our 7 sovereign enterprise sectors, or schedule an executive briefing with Founder Praveen. What is your primary objective?";
 }
 
 async function generateWithNvidia({ message, history }) {
