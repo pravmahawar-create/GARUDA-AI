@@ -43,6 +43,7 @@ import GarudaDostRozgar from "./pages/GarudaDostRozgar";
 import BoilerplateStore from "./pages/BoilerplateStore";
 import PricingPage from "./pages/PricingPage";
 import GarudaVsLinux from "./pages/GarudaVsLinux";
+import SovereignEnterpriseMatrix from "./pages/SovereignEnterpriseMatrix";
 import CaseStudies from "./pages/CaseStudies";
 import GarudaCyberTycoon from "./pages/GarudaCyberTycoon";
 import FounderQuantCommand from "./pages/FounderQuantCommand";
@@ -237,6 +238,9 @@ function AppRoutes() {
 
       {/* Founder Sovereign Access */}
       <Route path="/founder/access" element={<FounderKingdomAccess />} />
+      <Route path="/enterprise" element={<SovereignEnterpriseMatrix />} />
+      <Route path="/founder/enterprise" element={<SovereignEnterpriseMatrix />} />
+      <Route path="/sovereign-matrix" element={<SovereignEnterpriseMatrix />} />
       <Route path="/founder/quant" element={<FounderQuantCommand onLogout={handleLogout} />} />
       <Route path="/quant" element={<FounderQuantCommand onLogout={handleLogout} />} />
       <Route path="/finance/quant" element={<FounderQuantCommand onLogout={handleLogout} />} />
