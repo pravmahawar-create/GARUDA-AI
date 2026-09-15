@@ -285,34 +285,59 @@ export default function PublicChat() {
           </aside>
         )}
 
-        {/* Executive Project Scoping Quick Actions */}
-        {!activeConversationId && (
-          <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(11,15,22,0.6)", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
-            {[
-              "🏛️ Plan an Electoral Campaign & Political War Room →",
-              "🏢 Architect Heavy Industry B2B System & Leads →",
-              "🏗️ Deploy Luxury Real Estate HNI Funnel →",
-              "🚀 Build Custom SaaS MVP & 1,000-Agent Fleet →",
-              "📞 Schedule Consultation with Founder Praveen Mahawar →"
-            ].map((chip) => (
-              <button key={chip} onClick={() => { const evt=new CustomEvent("garuda:insertPrompt",{detail:chip.replace(" →","")}); window.dispatchEvent(evt); }} style={{ background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.25)", color: "#fef08a", padding: "0.35rem 0.75rem", borderRadius: 999, fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}>{chip}</button>
-            ))}
-          </div>
-        )}
-        {/* Main Chat */}
-        <main style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "1.25rem 1rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div style={{ width: "100%", maxWidth: "800px", display: "flex", flexDirection: "column", gap: "0.75rem", flex: 1 }}>
-            <ChatConsole
-              conversationId={activeConversationId}
-              onConversationId={(id) => {
-                setActiveConversationId(id);
-                refreshConversations();
-              }}
-              placeholder="Describe your project, target market, or operational vision to the AI Architect..."
-              minHeight={0}
-            />
-          </div>
-        </main>
+        {/* Chat Content Column */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, minHeight: 0 }}>
+          {/* Executive Project Scoping Quick Actions */}
+          {!activeConversationId && (
+            <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(11,15,22,0.6)", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center", flexShrink: 0 }}>
+              {[
+                "🏛️ Plan an Electoral Campaign & Political War Room →",
+                "🏢 Architect Heavy Industry B2B System & Leads →",
+                "🏗️ Deploy Luxury Real Estate HNI Funnel →",
+                "🚀 Build Custom SaaS MVP & 1,000-Agent Fleet →",
+                "📞 Schedule Consultation with Founder Praveen Mahawar →"
+              ].map((chip) => (
+                <button
+                  key={chip}
+                  onClick={() => {
+                    const evt = new CustomEvent("garuda:insertPrompt", { detail: chip.replace(" →", "") });
+                    window.dispatchEvent(evt);
+                  }}
+                  style={{
+                    background: "rgba(212,175,55,0.1)",
+                    border: "1px solid rgba(212,175,55,0.25)",
+                    color: "#fef08a",
+                    padding: "0.35rem 0.75rem",
+                    borderRadius: "999px",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    display: "inline-flex",
+                    alignItems: "center"
+                  }}
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Main Chat */}
+          <main style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "1.25rem 1rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div style={{ width: "100%", maxWidth: "800px", display: "flex", flexDirection: "column", gap: "0.75rem", flex: 1 }}>
+              <ChatConsole
+                conversationId={activeConversationId}
+                onConversationId={(id) => {
+                  setActiveConversationId(id);
+                  refreshConversations();
+                }}
+                placeholder="Describe your project, target market, or operational vision to the AI Architect..."
+                minHeight={0}
+              />
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );

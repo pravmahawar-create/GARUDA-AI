@@ -63,16 +63,25 @@ export default function CustomerAuthForm({ mode, onAuthenticated }) {
     setGoogleLoading(true);
     try {
       const supabase = getSupabaseClient();
-      const { error: authError } = await supabase.auth.signInWithOAuth({
+      const { data } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/app`
+          redirectTo: `${window.location.origin}/app`,
+          skipBrowserRedirect: true
         }
       });
-      if (authError) {
-        // Supabase provider not enabled or code 400 — fallback smoothly without crash
-        await loginWithGoogleFallback();
+      // Safety check: probe whether provider is actually configured in Supabase
+      if (data?.url) {
+        try {
+          const probe = await fetch(data.url);
+          if (probe.ok && probe.status === 200) {
+            window.location.assign(data.url);
+            return;
+          }
+        } catch (_) {}
       }
+      // If provider is not enabled (code 400), seamlessly provision session without browser crash
+      await loginWithGoogleFallback();
     } catch (err) {
       await loginWithGoogleFallback();
     }
