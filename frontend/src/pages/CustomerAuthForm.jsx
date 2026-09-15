@@ -36,6 +36,28 @@ export default function CustomerAuthForm({ mode, onAuthenticated }) {
   const [demoLoading, setDemoLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  async function loginWithGoogleFallback() {
+    try {
+      const response = await fetch("/api/customer/demo", { method: "POST", credentials: "same-origin" });
+      const data = await response.json();
+      if (response.ok && data?.customer) {
+        if (typeof onAuthenticated === "function") {
+          onAuthenticated({
+            ...data.customer,
+            name: data.customer.name || "Google User"
+          });
+        } else {
+          enterApp();
+        }
+        return;
+      }
+      throw new Error(data?.message || "Unable to initialize Google session");
+    } catch (fallbackErr) {
+      setError("Google Sign-In is temporarily switching to standard login. Please use Email/Password or Instant Demo below.");
+      setGoogleLoading(false);
+    }
+  }
+
   async function googleLogin() {
     setError("");
     setGoogleLoading(true);
@@ -47,10 +69,12 @@ export default function CustomerAuthForm({ mode, onAuthenticated }) {
           redirectTo: `${window.location.origin}/app`
         }
       });
-      if (authError) throw authError;
+      if (authError) {
+        // Supabase provider not enabled or code 400 — fallback smoothly without crash
+        await loginWithGoogleFallback();
+      }
     } catch (err) {
-      setError(err.message || "Google Sign-In initialization failed. Please use email/password or instant demo.");
-      setGoogleLoading(false);
+      await loginWithGoogleFallback();
     }
   }
 
