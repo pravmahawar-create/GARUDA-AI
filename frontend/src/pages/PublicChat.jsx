@@ -324,8 +324,8 @@ export default function PublicChat() {
           )}
 
           {/* Main Chat */}
-          <main style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "1.25rem 1rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <div style={{ width: "100%", maxWidth: "800px", display: "flex", flexDirection: "column", gap: "0.75rem", flex: 1 }}>
+          <main style={{ flex: 1, minWidth: 0, minHeight: 0, overflow: "hidden", padding: "1rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div style={{ width: "100%", maxWidth: "800px", display: "flex", flexDirection: "column", gap: "0.75rem", flex: 1, minHeight: 0 }}>
               <ChatConsole
                 conversationId={activeConversationId}
                 onConversationId={(id) => {

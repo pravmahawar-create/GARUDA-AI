@@ -136,7 +136,7 @@ async function sendMessage(message, history, conversationId, signal) {
 
   try {
     const primaryCtrl = new AbortController();
-    const timer = setTimeout(() => primaryCtrl.abort(), 8000);
+    const timer = setTimeout(() => primaryCtrl.abort(), 25000);
     const combinedSignal = signal ? anySignal([signal, primaryCtrl.signal]) : primaryCtrl.signal;
 
     const res = await fetch("/api/public-chat", {
@@ -213,15 +213,22 @@ export default function ChatConsole({
   const [timedOut, setTimedOut] = useState(false);
 
   const endRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
-  const scrollToBottom = useCallback(() => {
+  const scrollToBottom = useCallback((smooth = true) => {
     requestAnimationFrame(() => {
-      endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTo({
+          top: messagesContainerRef.current.scrollHeight,
+          behavior: smooth ? "smooth" : "auto"
+        });
+      }
+      endRef.current?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "end" });
     });
   }, []);
 
   useEffect(() => {
-    scrollToBottom();
+    scrollToBottom(true);
   }, [messages, loading, error, scrollToBottom]);
 
   const handleSendRef = useRef();
@@ -352,7 +359,7 @@ export default function ChatConsole({
         overflow: "hidden"
       }}
     >
-      <div style={{ flex: 1, overflowY: "auto", padding: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <div ref={messagesContainerRef} style={{ flex: 1, overflowY: "auto", padding: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         {messages.map((msg, idx) => {
           const isUser = msg.role === "user";
           const isModel = msg.role === "model" && idx > 0 && !msg.isError;

@@ -134,7 +134,7 @@ async function generateWithNvidia({ message, history }) {
     body: JSON.stringify({
       model,
       messages: buildHistoryMessages(history, message),
-      max_tokens: 512,
+      max_tokens: 3072,
       temperature: 0.6
     })
   });
@@ -235,7 +235,8 @@ async function generateWithGemini({ message, history, attachments = [] }) {
         model,
         contents,
         config: {
-          systemInstruction: SYSTEM_PROMPT
+          systemInstruction: SYSTEM_PROMPT,
+          maxOutputTokens: 3072
         }
       });
 
