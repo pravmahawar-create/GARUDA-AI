@@ -29,6 +29,7 @@ Defines GARUDA Bible authority order and canonical chapter list.
 - `09_ROADMAP.md` — delivery roadmap
 - `10_DECISION_REGISTRY.md` — architecture decision handling
 - `11_FOUNDER_DECISION_REGISTRY.md` — recovered founder locks and unresolved aliases
+- `13_POST_MISSION_LESSONS.md` — autonomous post-mission learning and zero-repeat registry
 
 ## Canonical product maps
 

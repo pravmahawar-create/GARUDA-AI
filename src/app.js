@@ -271,6 +271,23 @@ app.post("/api/telegram", async (req, res) => {
   }
 });
 
+// 24/7 Radar Monitoring Status Endpoint
+app.get("/api/radar/status", (req, res) => {
+  const logFile = path.join(__dirname, "..", "data", "reply_audit_log.json");
+  let auditCount = 0;
+  if (fs.existsSync(logFile)) {
+    try { auditCount = JSON.parse(fs.readFileSync(logFile, "utf8")).length; } catch {}
+  }
+  return res.json({
+    status: "active",
+    channel: "@garudaos.ai",
+    target: "Instagram Direct + Telegram Escalation",
+    cloud: "Render 24/7",
+    auditedCount: auditCount,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Ensure /api 404 always returns JSON (never HTML <!DOCTYPE) — prevents frontend Unexpected token '<'
 app.use("/api", (req, res) => res.status(404).json({ success:false, message:`API not found: ${req.method} ${req.path}`, status:404, hint:"Check vercel.json rewrite and ensure Render backend is awake (cold start ~30s)" }));
 // Global error handler — for /api always JSON, never HTML

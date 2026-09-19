@@ -117,5 +117,37 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
         } else {
             console.log("[GARUDA] Agency daemon idle — set GARUDA_AGENCY_DAEMON=true to enable");
         }
+
+        // ── 24/7 Cloud Radar Reply Monitor Daemon (Render Cloud 24/7) ──
+        const radarMonitorEnabled = String(process.env.GARUDA_RADAR_MONITOR ?? "true").toLowerCase() === "true";
+        if (radarMonitorEnabled) {
+            try {
+                const { spawn } = require("child_process");
+                const path = require("path");
+                const monitorPath = path.join(__dirname, "scripts", "radar", "instant-reply-monitor.js");
+                let monitorRestartCount = 0;
+                const spawnMonitor = () => {
+                    const child = spawn("node", [monitorPath, "--watch"], {
+                        stdio: "inherit",
+                        detached: false,
+                        env: process.env
+                    });
+                    child._spawnAt = Date.now();
+                    console.log(`[GARUDA] 🦅 24/7 Cloud Radar Reply Monitor spawned (PID ${child.pid}, restart #${monitorRestartCount})`);
+                    child.on("error", e => console.error("[GARUDA] Cloud reply monitor spawn failed:", e.message));
+                    child.on("exit", (code, signal) => {
+                        const uptimeSec = ((Date.now() - child._spawnAt)/1000).toFixed(0);
+                        console.log(`[GARUDA] Cloud reply monitor exited code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 60s`);
+                        monitorRestartCount++;
+                        setTimeout(spawnMonitor, 60000);
+                    });
+                    return child;
+                };
+                // Initial warm up delay (25s) after server boot
+                setTimeout(spawnMonitor, 25000);
+            } catch (e) { console.error("[GARUDA] Cloud reply monitor boot failed:", e.message); }
+        } else {
+            console.log("[GARUDA] Cloud reply monitor idle — set GARUDA_RADAR_MONITOR=true to enable");
+        }
     });
 })();

@@ -10,6 +10,7 @@ const puppeteer = require("puppeteer");
 require("dotenv").config();
 
 const telegram = require("../../src/services/telegramBotService");
+const { verifyDemoUrlLive } = require("../governance/pre-outreach-verifier");
 const QUEUE_FILE = path.join(__dirname, "..", "..", "data", "outreach_dispatch_queue.json");
 const DISPATCH_LOG = path.join(__dirname, "..", "..", "data", "dispatched_dms_log.json");
 
@@ -166,6 +167,26 @@ async function dispatchAllDms() {
 
     for (const target of targets) {
       console.log(`\n🎯 Preparing dispatch for: ${target.businessName} (@${target.instagramHandle})`);
+
+      // 🛡️ CONSTITUTIONAL PRE-FLIGHT CHECK: Enforce Live Demo Verification
+      if (target.pitches?.demoUrl) {
+        console.log(`🔍 [PRE-FLIGHT] Verifying demo URL live: ${target.pitches.demoUrl}`);
+        const check = await verifyDemoUrlLive(target.pitches.demoUrl, target.businessName);
+        if (!check.valid) {
+          console.error(`🚨 [CONSTITUTIONAL ABORT] Cannot send DM to @${target.instagramHandle}: ${check.reason}`);
+          dispatchedLog.push({
+            businessName: target.businessName,
+            handle: target.instagramHandle,
+            status: "ABORTED_PREFLIGHT_FAIL",
+            error: check.reason,
+            dispatchedAt: new Date().toISOString()
+          });
+          saveDispatchedLog(dispatchedLog);
+          continue;
+        }
+        console.log(`✔ [PRE-FLIGHT PASSED] Verified 200 OK: "${check.title}"`);
+      }
+
       const result = await sendInstagramDm(page, target.instagramHandle, target.pitches.instaDm);
 
       dispatchedLog.push({

@@ -51,3 +51,125 @@ Under NO circumstances shall any agent execute `git commit`, `git push`, or depl
 4. **Architectural Loopholes & Drawbacks**: Exactly what bottlenecks, latency drops, security exposures, or edge-case limitations could this design cause, and how are they actively mitigated.
 5. **Local Verification Proof**: Every affected build pipeline (`npx vite build`), backend syntax check (`node -c`), and endpoint test must be proven clean locally with exit code 0 before touching git or requesting deployment permission.
 *This directive is permanent, supreme, and non-revocable across all GARUDA workforce iterations.*
+
+## 6. Sovereign Primary Workspace Law: D:\GARUDA-AI (Permanent Founder Mandate)
+- **Authoritative Operational Location**: `D:\GARUDA-AI`
+- All future development, builds, dependency installations, tests, and file modifications must strictly execute inside `D:\GARUDA-AI`.
+- OneDrive (`C:\Users\hp\OneDrive\GARUDA\GARUDA-AI`) is strictly a legacy cold archive and shall NOT be used for active builds, node_modules, or executions, preventing OneDrive cloud quota consumption and file locking issues.
+
+## 7. Sovereign Mobile & Web Engineering Work Ethics Standard (The "Praveen 1-Shot Perfection" Law)
+Whenever building, architecting, debugging, or shipping any mobile app (Capacitor/React/Flutter/Android) or web application across the GARUDA ecosystem, the following rules are non-negotiable and must be built-in from Step 1 without waiting for Founder Praveen to point them out:
+
+1. **Rigid Viewport & Anti-Flicker Architecture ("Upar-Neeche Lock")**:
+   - The root container MUST be rigidly locked (`height: 100dvh`, `overflow: hidden`, `position: relative`, `max-width: 500px` for mobile app shells).
+   - Top Header MUST be anchored (`flexShrink: 0`, `position: relative` or `fixed`, `backdropFilter: blur`, `zIndex: 40`). It must NEVER scroll out of view or clip into the notch.
+   - Bottom Navigation Bar MUST be fixed (`position: fixed`, `bottom: 0`, `zIndex: 50`, frosted glass backdrop blur). It must NEVER float mid-screen or get covered.
+   - Middle Content Body MUST be the ONLY scrollable element (`flex: 1`, `overflowY: auto`, `WebkitOverflowScrolling: touch`, `overscrollBehaviorY: contain`, `paddingBottom: 95px`), guaranteeing zero header slip, zero footer float, and zero cutoff of the last list item.
+
+2. **Thumb Flick & Touch Physics ("Soft, Calm & Premium Motion Standard")**:
+   - **Zero Tap Flash**: `-webkit-tap-highlight-color: transparent` applied globally.
+   - **Zero Accidental Text Callouts**: `-webkit-touch-callout: none` and `user-select: none` across all UI (except inputs/textareas where `user-select: auto` is strictly preserved).
+   - **Zero Rubber-Band Tearing**: `overscroll-behavior: none` on `html, body, #root` to eliminate ugly browser pull-to-refresh bounces and white gap exposure.
+   - **Hardware Acceleration**: `transform: translateZ(0)` and `backface-visibility: hidden` on active scrolling layers to prevent repaint flicker, dropped frames, or stutter during aggressive thumb flicking.
+   - **Calm Micro-Interactions**: All interactive cards and buttons must feature soft, non-jarring transitions (`transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.16s ease`), scaling gently (`scale(0.975)`) on tap without sudden layout jumps.
+
+3. **Horizontal Scroll Isolation (Zero Accidental Page Hops)**:
+   - Any horizontal scrollable row (date pills, carousels, category chips, tags) MUST be isolated with:
+     - `overscroll-behavior-x: contain` & `overscroll-behavior-y: none`
+     - `touch-action: pan-x`
+     - `-webkit-overflow-scrolling: touch`
+     - `scrollbar-width: none` (hidden scrollbar)
+   - Horizontal swiping gestures MUST NEVER leak into parent vertical scrolling, trigger browser history swipes, or cause accidental page hopping.
+
+4. **Android Hardware & Gesture Back-Button Lifecycle**:
+   - NEVER let a single back gesture kill the app immediately.
+   - Strictly implement the 3-Tier Back Cascade:
+     1. Tier 1 (Active Modal/Drawer/Sheet): Close the modal first.
+     2. Tier 2 (Sub-Tab/Deep Route): Return to the primary Home tab/dashboard.
+     3. Tier 3 (Home Root): Intercept the event, trigger a calm toast ("App se bahar nikalne ke liye dubara Back dabayein"), and only exit if a second back press occurs within 2.5 seconds.
+
+5. **Zero-Assumption Dynamic Onboarding**:
+   - NEVER hardcode the Founder's name ("Praveen ji") or any generic placeholder into user greetings or core logic.
+   - On first boot, always launch a smooth, non-intrusive onboarding profile capture modal (Name, Primary Goal, Health Conditions/Bimari, Preferences), persist it to local storage, and dynamically tailor the interface.
+
+6. **Commercial Distribution Scope Discipline**:
+   - Always align functionality with the prospect's actual business monetization model. If an app is commissioned to be sold to fitness/lifestyle end consumers (e.g. ₹2,000 retail licenses), strictly eliminate all internal B2B hotel/restaurant costing tools. Never confuse the client's identity with their end customer's product.
+
+7. **Zero Desktop Clutter & Single APK Destination**:
+   - NEVER leave loose APKs, debug logs, or temporary zip files on the user's root Desktop.
+   - All release APKs MUST strictly reside in `C:\Users\hp\OneDrive\Desktop\GARUDA\APK\`.
+   - Previous versions MUST be cleanly moved to `C:\Users\hp\OneDrive\Desktop\GARUDA\APK\Archive\`.
+
+8. **1-Shot Forensic Build & Verification Protocol**:
+   - Every build must pass local bundling (`npm run build`), native sync (`npx cap sync`), clean compilation (`assembleDebug` with exit code 0), and APK signing before presenting to Founder Praveen. Show real file size, location, and verified SHA-256.
+
+9. **Strict Monotonic `versionCode` Increment & Seamless 1-Tap Update Law ("Bina Uninstall 1-Tap Update")**:
+   - Every subsequent build, bug fix, or feature update of an Android APK MUST strictly increment the integer `versionCode` by at least +1 (e.g. `versionCode: N -> N+1`) and advance `versionName` (e.g. `v2.1 -> v2.2`) in `android/app/build.gradle`.
+   - The `applicationId` and signing keystore MUST remain 100% consistent across iterations.
+   - This guarantees Android OS Package Manager always identifies the APK as a genuine in-place update, seamlessly prompting the user: *"Do you want to update this app? Your existing data will not be lost"*, completely eliminating the friction of manual uninstalls, data wipes, or "App not installed" signature conflicts.
+
+## 8. Sovereign Clinical Intelligence, Multi-Diet & Vernacular Parity Doctrine (Permanent Law)
+Whenever building, architecting, or extending health, nutrition, multi-dietary, vernacular (regional languages), or AI-assisted interactive applications across the GARUDA ecosystem:
+
+10. **Strict Dietary Data-Quarantine & Zero Cultural/Religious Contamination Law**:
+    - In any food, recipe, health, or lifestyle application, dietary safety is a sacred covenant (`Dharmik aur Swasthya Maryada`).
+    - **Zero Contamination**: Filter at the root data layer BEFORE applying visual or category filters. Strict vegetarians (`veg`, `sattvic`, `jain`, `vegan`) MUST NEVER see chicken, meat, fish, or eggs, even when "All" category is active or search queries run.
+    - **Dynamic Filter Suppression**: Prohibited category filter pills (e.g. `🍗 Non-Veg & Eggs` or `🥚 Egg Specials`) MUST be completely hidden from vegetarian views.
+    - **Preserve Dietary Identities**: All 6 dietary paradigms (Pure Veg, Sattvic without onion/garlic, Jain zero-kandmool, 100% Plant-Based Vegan, Eggetarian, and Non-Veg) must have isolated, verified dish and timetable datasets.
+
+11. **100% Full-Page Vernacular Parity & Deep Multi-Language Architecture**:
+    - **Zero Half-Baked Translations**: Multi-language support (Devanagari Hindi, Gurmukhi Punjabi, English, Hinglish, etc.) must NEVER be cosmetic. Every user-visible surface must be 100% localized:
+      - Complete 7-Day timetables: All days x all meals (time, dish name, portion size, detailed description, clinical therapeutic benefit, and chef's secret).
+      - Recipe collections, ingredient lists, step-by-step cooking timelines, and culinary tags.
+      - Profile and onboarding modals: Headers, subheaders, input placeholders, goals, disease checkboxes, diet dropdowns, and button CTAs.
+    - **Speech Locale Synchronization**: Web Speech API (`SpeechRecognition` & `SpeechSynthesis`) locale MUST dynamically switch to match active language (`pa-IN` for Punjabi, `hi-IN` for Hindi, `en-IN` for English). Never allow speech recognition to default to English when speaking Hindi or Punjabi to prevent phonetic mangling.
+    - **Dynamic Chat Synchronization**: Switching languages must immediately update the chat assistant's welcome greeting, quick prompt pills, and follow-up suggestions without requiring a page reload.
+
+12. **Sovereign AI Engine & Zero Vendor Marketing Law (The "Mai GARUDA Hoon" Standard)**:
+    - **Supreme Sovereign Identity**: All AI coaches, chatbots, and diagnostic agents must strictly declare GARUDA sovereign identity ("ਮੈਂ ਗਰੁੜ ਹਾਂ", "मैं गरुड़ हूँ", "Mai GARUDA hoon", "I am GARUDA"). Never mention third-party AI product names (e.g. Swara, ChatGPT) unless explicitly mandated.
+    - **Zero Third-Party Vendor Promotion**: NEVER display, flash, or market vendor models or names (e.g. "Google Gemini 2.5 Live", "OpenAI GPT", "Groq") in user-facing status headers, banners, or prompts. System status must strictly read `🟢 GARUDA IS LIVE`.
+    - **Sub-Second Native Latency & CORS Proof**: Use direct streaming endpoints tested for CORS (`access-control-allow-origin: *`) and sub-second response times.
+    - **Polite Offline Apology Standard**: If the device loses internet or network connectivity, NEVER throw raw crash logs, red banners, or technical exceptions. Render a polite, respectful apology notice acknowledging offline mode, reassuring the user, and providing clinical fallback recommendations with full GARUDA identity.
+
+13. **Multi-Condition Composite Health Formulation Law (Clinical Integrity Standard)**:
+    - **Composite Medical Co-morbidities**: Users frequently suffer from multiple simultaneous health challenges (e.g. Diabetes + High BP + Fatty Liver + High Uric Acid). Never design single-condition `switch-case` logic that ignores concurrent checkboxes.
+    - **Composite Shield Badging**: Generate unified multi-disease badges joined by ` • ` (e.g. `🍌 Low-Purine Anti-Gout • 🩸 Glycemic Stabilizer • 🫀 Low-Sodium BP Guard`).
+    - **Cross-Condition Contraindication Safety**: Formulate detox elixirs and meal recommendations that strictly obey all concurrent clinical contraindications (e.g., if High Uric Acid + Severe Acidity, prescribe soothing alkaline coriander/ACV water instead of spicy or acidic boosters).
+
+14. **Android Native Stability & Memory Governance (Anti-Crash / Anti-Rejection)**:
+    - In Capacitor/Cordova Android applications, always configure `android:largeHeap="true"`, `android:hardwareAccelerated="true"`, and `android:usesCleartextTraffic="true"` in `AndroidManifest.xml` to prevent background memory kills by aggressive OEM battery managers (Motorola, Xiaomi, OnePlus).
+    - Enforce hardware acceleration (`transform: translateZ(0)`, `backface-visibility: hidden`) on all scrollable cards.
+    - Isolate horizontal scroll rows (`overscroll-behavior-x: contain`, `touch-action: pan-x`) to eliminate WebView gesture conflicts with Android OS back-swipe navigation.
+
+15. **Clean Native Build & Forensic ADB Stream Pipeline Standard**:
+    - Always bundle web assets (`npm run build`), verify exit code 0, sync to Android assets (`android/app/src/main/assets/public/`), execute clean native Gradle build (`assembleDebug`), and sign before presentation.
+    - Always stream install directly via ADB (`adb install -r <apk>`), wake device, and capture visual proof via `adb shell screencap -p /sdcard/screen.png` followed by `adb pull`.
+    - Never capture screenshots using PowerShell stream redirection (`>` operator) as it corrupts binary PNG streams with UTF-16LE headers.
+
+## 9. Pre-Execution Constitutional Grounding & Rule Interrogation Law ("Kaam Se Pehle Niyam Dharan Law")
+Before executing ANY instruction, writing any code, or modifying existing systems, every agent, subagent, and autonomous worker MUST ground itself in GARUDA's foundational rules:
+1. **Supreme 100% Anti-Fabrication Law**: Show > Tell. Verified code, real SHA-256 evidence, truthful reporting. Never make false claims about clients, revenue, or system capabilities.
+2. **Official Channel Sovereignty & Founder Privacy Shield**:
+   - Founder Praveen's personal phone number (`+91 9098750362`) is strictly an **INTERNAL HIGH-PRIORITY ESCALATION CHANNEL**.
+   - NEVER flash or use Founder's personal number for public outreach, open code packages, or client communications.
+   - Strictly use verified enterprise channels: `@garudaos.ai` Instagram, official WhatsApp Web authenticated session, `praveen@garudaos.in`.
+3. **Pre-Outreach Live Link Verification Mandate ("Live Verification Se Pehle Zero Dispatch")**:
+   - Under NO circumstances dispatch any outreach message (WhatsApp, Instagram, Email, LinkedIn) containing an external URL without an automated pre-flight HTTP verification (`scripts/governance/pre-outreach-verifier.js`).
+   - The destination URL must return HTTP 200 OK, must NOT collapse to the root homepage (`/`), and must contain the prospect's verified business name in `<title>` or `<h1>`.
+   - If verification fails, outreach MUST immediately abort with `ABORTED_PREFLIGHT_FAIL`.
+4. **Strict Hinglish Communication Standard**: Natural, clear Roman Hindi only.
+5. **Strict Gatekeeping on Commit, Push & Deploy**: Commit and deploy require explicit prior permission from Founder Praveen.
+6. **Local Verification Proof**: Always verify clean builds (`npm run build`), clean syntax (`node -c`), and clean tests before touching git or presenting work.
+
+## 10. Post-Mission Autonomous Self-Evolution & Memory Synapse Law ("Har Kaam Ke Baad Self-Learning & Zero-Repeat Law")
+Immediately following the completion of any task, bug fix, deployment, or operational mission, GARUDA must autonomously execute a Post-Mission Learning protocol:
+1. **Forensic Post-Mortem Extraction**:
+   - Identify the exact defects, failure modes, or bottlenecks encountered during the mission.
+   - Perform root-cause analysis: why did the failure happen, and what hidden architectural loophole permitted it.
+2. **Persistent Synapse Synching**:
+   - Inscribe the experience into `data/memory/experiences.jsonl` and specific anti-repetition lessons into `data/memory/lessons.jsonl` using `memoryService`.
+   - Log the mission post-mortem into `GARUDA_BIBLE/13_POST_MISSION_LESSONS.md`.
+3. **Automated Guardrail Codification**:
+   - If a failure was caused by a missing check (e.g. unverified link, missing SPA rewrite, missing flat HTML), code an automated guardrail directly into the pipeline so future runs physically reject the flawed state.
+4. **Zero Repetition Covenant**:
+   - A known failure mode recorded in memory must NEVER be repeated. Any agent repeating a previously documented error is in direct violation of GARUDA's Constitution.

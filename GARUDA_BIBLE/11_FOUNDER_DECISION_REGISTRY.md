@@ -30,6 +30,9 @@ This registry summarizes recovered founder locks without copying raw private con
 | FD-020 | Raw chats, secrets and private personal/business details must not be committed | Active |
 | FD-021 | Every GARUDA outreach is a mini product experience: premium copy AND premium, recipient-specific visual presentation are both mandatory for appropriate external outreach | Active |
 | FD-022 | Personalized visual pages may be used as teaser/depth medium for outreach, but any external send still requires verified recipient/opportunity/claims, full preview, and Founder approval through the governed outreach system | Active |
+| FD-023 | Sovereign Clinical Intelligence, Multi-Diet & Vernacular Parity Standard: Strict dietary data quarantine (zero non-veg bleed into veg/sattvic/jain), 100% full-page vernacular translation (timetable, recipes, profile, STT/TTS locale sync), zero third-party vendor marketing ("🟢 GARUDA IS LIVE" + "Mai GARUDA hoon"), composite multi-disease matrix formulation, and Android large-heap/1-tap update standard | Active |
+| FD-024 | Post-Mission Autonomous Self-Evolution & Zero-Repeat Law: Immediately following the completion of any development sprint, bug fix, deployment, or mission, agent must autonomously synthesize root cause, failure modes, and countermeasures, inscribing them into memoryService and governance doctrine so that the same error can NEVER repeat | Active |
+| FD-025 | Pre-Execution Constitutional Grounding & Mandatory Live-Link Pre-Outreach Verification Standard: Agents must anchor to core laws before executing tasks. No outreach message containing an external URL may be sent without an automated HTTP GET 200 OK verification proving the destination renders the customized prospect portal and NOT the homepage fallback or 404 | Active |
 
 ## Scope decisions, not deletions
 

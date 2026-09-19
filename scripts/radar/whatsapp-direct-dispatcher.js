@@ -10,6 +10,7 @@ const puppeteer = require("puppeteer-core");
 require("dotenv").config();
 
 const telegram = require("../../src/services/telegramBotService");
+const { verifyDemoUrlLive } = require("../governance/pre-outreach-verifier");
 const QUEUE_FILE = path.join(__dirname, "..", "..", "data", "outreach_dispatch_queue.json");
 const WA_LOG_FILE = path.join(__dirname, "..", "..", "data", "dispatched_wa_log.json");
 const SESSION_DIR = path.join(__dirname, "..", "..", "data", "whatsapp-session");
@@ -168,11 +169,31 @@ async function dispatchWhatsAppBatch(limit = 3) {
 
     for (const item of batch) {
       console.log(`\n🎯 Direct Outreach to: ${item.businessName} (${item.city})`);
-      const result = await sendDirectWhatsAppMessage(page, item.phone, item.pitches.waPitch);
 
       let clean = String(item.phone || "").replace(/[^0-9]/g, "");
       if (clean.startsWith("0")) clean = clean.slice(1);
       const formattedPhone = clean.length === 10 ? `91${clean}` : clean;
+
+      // 🛡️ CONSTITUTIONAL PRE-FLIGHT CHECK: Enforce Live Demo Verification
+      if (item.pitches?.demoUrl) {
+        console.log(`🔍 [PRE-FLIGHT] Verifying demo URL live: ${item.pitches.demoUrl}`);
+        const check = await verifyDemoUrlLive(item.pitches.demoUrl, item.businessName);
+        if (!check.valid) {
+          console.error(`🚨 [CONSTITUTIONAL ABORT] Cannot send pitch to ${item.businessName}: ${check.reason}`);
+          waLog.push({
+            businessName: item.businessName,
+            phone: formattedPhone,
+            status: "ABORTED_PREFLIGHT_FAIL",
+            error: check.reason,
+            dispatchedAt: new Date().toISOString()
+          });
+          saveWaLog(waLog);
+          continue;
+        }
+        console.log(`✔ [PRE-FLIGHT PASSED] Verified 200 OK: "${check.title}"`);
+      }
+
+      const result = await sendDirectWhatsAppMessage(page, item.phone, item.pitches.waPitch);
 
       waLog.push({
         businessName: item.businessName,
