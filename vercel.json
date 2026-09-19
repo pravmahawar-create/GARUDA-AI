@@ -450,6 +450,10 @@
       "destination": "/pricing/index.html"
     },
     {
+      "source": "/demos/:path*",
+      "destination": "/demos/:path*"
+    },
+    {
       "source": "/:match*",
       "destination": "/"
     }
