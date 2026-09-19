@@ -450,6 +450,22 @@
       "destination": "/pricing/index.html"
     },
     {
+      "source": "/demos/:slug/index.html",
+      "destination": "/demos/:slug/index.html"
+    },
+    {
+      "source": "/demos/:slug.html",
+      "destination": "/demos/:slug/index.html"
+    },
+    {
+      "source": "/demos/:slug",
+      "destination": "/demos/:slug/index.html"
+    },
+    {
+      "source": "/demos/:slug/",
+      "destination": "/demos/:slug/index.html"
+    },
+    {
       "source": "/demos/:path*",
       "destination": "/demos/:path*"
     },

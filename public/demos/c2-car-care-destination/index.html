@@ -1,104 +1,16 @@
-/**
- * 🦅 GARUDA SOVEREIGN DEMO FORGE: INSTANT CLIENT DEMO GENERATOR
- * Generates ultra-sleek, mobile-first, high-converting preview landing pages
- * for every qualified local business lead in data/local_hunter_leads.json.
- * 
- * Each demo contains:
- * - Dynamic branding & local contact info
- * - 24/7 AI Concierge widget (GARUDA powered)
- * - 1-Click WhatsApp appointment booking
- * - Verified Google Maps rating badge
- * - "Upar-Neeche Lock" zero-flicker mobile responsive standard
- */
-
-const fs = require("fs");
-const path = require("path");
-
-const LEADS_FILE = path.join(__dirname, "..", "..", "data", "local_hunter_leads.json");
-const DEMOS_DIR = path.join(__dirname, "..", "..", "public", "demos");
-const FRONTEND_DEMOS_DIR = path.join(__dirname, "..", "..", "frontend", "public", "demos");
-
-[DEMOS_DIR, FRONTEND_DEMOS_DIR].forEach((dir) => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-});
-
-function getNicheConfig(niche) {
-  const n = String(niche || "").toLowerCase();
-  if (n.includes("car detailing") || n.includes("ceramic")) {
-    return {
-      heroTag: "AUTOMOTIVE AESTHETIC STUDIO",
-      tagline: "Ultra-Premium Paint Protection Film (PPF), Ceramic Coating & Forensic Detailing",
-      accentColor: "#f59e0b", // Amber gold
-      badge: "Indore's Top Rated Auto Studio",
-      services: [
-        { title: "Self-Healing PPF (TPU)", desc: "5-10 Year warranty, ultra-gloss scratch resistant shield.", price: "From ₹35,000" },
-        { title: "9H Graphene Ceramic Coating", desc: "Permanent hydrophobic gloss and deep mirror reflection.", price: "From ₹14,999" },
-        { title: "Forensic Interior Spa", desc: "Anti-bacterial steam sterilization & leather conditioning.", price: "From ₹3,499" },
-        { title: "Paint Correction & Swirl Removal", desc: "3-Stage rotary cut & polish restoring showroom clarity.", price: "From ₹5,999" }
-      ]
-    };
-  } else if (n.includes("dental")) {
-    return {
-      heroTag: "ADVANCED DENTAL & IMPLANT CLINIC",
-      tagline: "Painless Digital Dentistry, Smile Designing & Lifetime Dental Implants",
-      accentColor: "#06b6d4", // Cyan medical
-      badge: "Painless Laser Dentistry",
-      services: [
-        { title: "Digital Smile Designing (Veneers)", desc: "Celebrity smile makeover with 3D digital precision.", price: "Custom Plan" },
-        { title: "Immediate Dental Implants", desc: "Same-day fixed teeth with Swiss implant technology.", price: "From ₹18,000" },
-        { title: "Invisible Clear Aligners", desc: "Zero-wire invisible teeth straightening in 6 months.", price: "EMI Available" },
-        { title: "Root Canal Treatment (Single Sitting)", desc: "100% painless rotary laser endodontics.", price: "From ₹3,500" }
-      ]
-    };
-  } else if (n.includes("salon") || n.includes("spa")) {
-    return {
-      heroTag: "LUXURY HAIR & BEAUTY LOUNGE",
-      tagline: "Bespoke Styling, Organic Skin Rituals & VIP Bridal Makeovers",
-      accentColor: "#ec4899", // Rose pink
-      badge: "Celebrity Stylists & Therapists",
-      services: [
-        { title: "Bespoke Hair Keratin & Botoplex", desc: "Formaldehyde-free mirror shine and intense hydration.", price: "From ₹4,999" },
-        { title: "HydraFacial Glow MD", desc: "Deep pore suction, lymphatic drainage and peptide infusion.", price: "From ₹2,999" },
-        { title: "VIP Bridal & Groom Lounge", desc: "Complete head-to-toe couture styling packages.", price: "From ₹14,999" },
-        { title: "Aroma Hot Stone Spa Therapy", desc: "60-minute stress-release deep muscle therapy.", price: "From ₹2,499" }
-      ]
-    };
-  } else {
-    return {
-      heroTag: "PREMIUM LIFESTYLE STUDIO",
-      tagline: "Transformative Quality, Exceptional Service & Guaranteed Results",
-      accentColor: "#6366f1", // Indigo
-      badge: "Verified Local Excellence",
-      services: [
-        { title: "VIP Consultation", desc: "In-depth personalized analysis and custom roadmap.", price: "Free Initial Call" },
-        { title: "Signature Experience", desc: "Our highest rated flagship service package.", price: "Best Value" },
-        { title: "Rapid Express Service", desc: "Zero-wait priority scheduling for busy professionals.", price: "On Demand" }
-      ]
-    };
-  }
-}
-
-function generateHtml(lead) {
-  const cfg = getNicheConfig(lead.niche);
-  let cleanPhone = String(lead.phone || "").replace(/[^0-9]/g, "");
-  if (cleanPhone.startsWith("0")) cleanPhone = cleanPhone.slice(1);
-  const waPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
-  const waMsg = encodeURIComponent(`Hi ${lead.businessName}, I saw your website and want to book a VIP appointment.`);
-  const waLink = `https://wa.me/${waPhone}?text=${waMsg}`;
-
-  return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>${lead.businessName} — Official Direct Booking Portal</title>
-  <meta name="description" content="${lead.businessName} in ${lead.city}. ${cfg.tagline}. Book direct online.">
+  <title>C2 Car Care Destination — Official Direct Booking Portal</title>
+  <meta name="description" content="C2 Car Care Destination in Indore. Ultra-Premium Paint Protection Film (PPF), Ceramic Coating & Forensic Detailing. Book direct online.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --accent: ${cfg.accentColor};
+      --accent: #f59e0b;
       --bg: #090d16;
       --card: rgba(18, 24, 38, 0.7);
       --border: rgba(255, 255, 255, 0.08);
@@ -410,7 +322,7 @@ function generateHtml(lead) {
 <div class="app-container">
   <!-- Top Header -->
   <header class="top-header">
-    <div class="brand-title">${lead.businessName}</div>
+    <div class="brand-title">C2 Car Care Destination</div>
     <div class="live-status">
       <div class="status-dot"></div>
       <span>OPEN TODAY</span>
@@ -421,17 +333,17 @@ function generateHtml(lead) {
   <main class="content-body">
     <!-- Hero Box -->
     <div class="hero-box">
-      <div class="hero-badge">⚡ ${cfg.badge}</div>
-      <h1 class="hero-heading">${lead.businessName}</h1>
-      <p class="hero-sub">${cfg.tagline} in ${lead.city}. Instant VIP online slot confirmation.</p>
+      <div class="hero-badge">⚡ Indore's Top Rated Auto Studio</div>
+      <h1 class="hero-heading">C2 Car Care Destination</h1>
+      <p class="hero-sub">Ultra-Premium Paint Protection Film (PPF), Ceramic Coating & Forensic Detailing in Indore. Instant VIP online slot confirmation.</p>
 
       <div class="metrics-row">
         <div class="metric-pill">
-          <div class="metric-val">⭐ ${lead.rating}</div>
+          <div class="metric-val">⭐ 4.5</div>
           <div class="metric-lbl">Google Maps</div>
         </div>
         <div class="metric-pill">
-          <div class="metric-val">${lead.reviews}+</div>
+          <div class="metric-val">10+</div>
           <div class="metric-lbl">Verified Reviews</div>
         </div>
         <div class="metric-pill">
@@ -447,18 +359,38 @@ function generateHtml(lead) {
       <span style="font-size: 11px; color: var(--accent); font-weight: 600;">Transparent Pricing</span>
     </div>
 
-    ${cfg.services
-      .map(
-        (s) => `
+    
     <div class="service-card">
       <div class="service-header">
-        <span class="service-name">${s.title}</span>
-        <span class="service-price">${s.price}</span>
+        <span class="service-name">Self-Healing PPF (TPU)</span>
+        <span class="service-price">From ₹35,000</span>
       </div>
-      <p class="service-desc">${s.desc}</p>
-    </div>`
-      )
-      .join("\n")}
+      <p class="service-desc">5-10 Year warranty, ultra-gloss scratch resistant shield.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-header">
+        <span class="service-name">9H Graphene Ceramic Coating</span>
+        <span class="service-price">From ₹14,999</span>
+      </div>
+      <p class="service-desc">Permanent hydrophobic gloss and deep mirror reflection.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-header">
+        <span class="service-name">Forensic Interior Spa</span>
+        <span class="service-price">From ₹3,499</span>
+      </div>
+      <p class="service-desc">Anti-bacterial steam sterilization & leather conditioning.</p>
+    </div>
+
+    <div class="service-card">
+      <div class="service-header">
+        <span class="service-name">Paint Correction & Swirl Removal</span>
+        <span class="service-price">From ₹5,999</span>
+      </div>
+      <p class="service-desc">3-Stage rotary cut & polish restoring showroom clarity.</p>
+    </div>
 
     <!-- AI Concierge Widget -->
     <div class="ai-card">
@@ -470,7 +402,7 @@ function generateHtml(lead) {
         </div>
       </div>
       <div class="ai-bubble" id="ai-reply">
-        Namaste! Main <strong>${lead.businessName}</strong> ka 24/7 AI Assistant hoon. Kisi bhi service ki booking, rate card ya timings ke baare me puchiye!
+        Namaste! Main <strong>C2 Car Care Destination</strong> ka 24/7 AI Assistant hoon. Kisi bhi service ki booking, rate card ya timings ke baare me puchiye!
       </div>
       <div class="ai-input-row">
         <input type="text" id="ai-query" class="ai-input" placeholder="e.g. Aaj appointment kab mil sakti hai?">
@@ -481,8 +413,8 @@ function generateHtml(lead) {
     <!-- Location & Contact -->
     <div class="service-card" style="margin-top: 10px;">
       <div style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px;">📍 Studio Location</div>
-      <p class="service-desc">${lead.address}</p>
-      <div style="margin-top: 6px; font-size: 12px; color: var(--accent); font-weight: 600;">📞 Direct Line: ${lead.phone || "Available on request"}</div>
+      <p class="service-desc">new cloth market, Babu Lalchand Chajlani Rd, Indore, Madhya Pradesh 452012</p>
+      <div style="margin-top: 6px; font-size: 12px; color: var(--accent); font-weight: 600;">📞 Direct Line: 0788 027 9902</div>
     </div>
 
     <div class="watermark-badge">
@@ -492,8 +424,8 @@ function generateHtml(lead) {
 
   <!-- Bottom Navigation Action Bar -->
   <div class="bottom-bar">
-    <a href="tel:${lead.phone}" class="phone-btn" title="Direct Phone Call">📞</a>
-    <a href="${waLink}" target="_blank" class="cta-btn">
+    <a href="tel:0788 027 9902" class="phone-btn" title="Direct Phone Call">📞</a>
+    <a href="https://wa.me/917880279902?text=Hi%20C2%20Car%20Care%20Destination%2C%20I%20saw%20your%20website%20and%20want%20to%20book%20a%20VIP%20appointment." target="_blank" class="cta-btn">
       <span>💬 Book on WhatsApp</span>
     </a>
   </div>
@@ -514,51 +446,4 @@ function generateHtml(lead) {
 </script>
 
 </body>
-</html>`;
-}
-
-function buildAllDemos() {
-  if (!fs.existsSync(LEADS_FILE)) {
-    console.error("❌ Leads file not found. Run local-radar-hunter.js first.");
-    return [];
-  }
-
-  const leads = JSON.parse(fs.readFileSync(LEADS_FILE, "utf8"));
-  console.log(`🦅 [GARUDA DEMO FORGE] Generating preview sites for ${leads.length} leads...`);
-
-  const generated = [];
-
-  for (const lead of leads) {
-    const html = generateHtml(lead);
-
-    [DEMOS_DIR, FRONTEND_DEMOS_DIR].forEach((baseDir) => {
-      // 1. Directory based index.html
-      const clientDir = path.join(baseDir, lead.slug);
-      if (!fs.existsSync(clientDir)) fs.mkdirSync(clientDir, { recursive: true });
-      fs.writeFileSync(path.join(clientDir, "index.html"), html, "utf8");
-
-      // 2. Direct flat .html for cleanUrls compatibility
-      fs.writeFileSync(path.join(baseDir, `${lead.slug}.html`), html, "utf8");
-    });
-
-    const previewUrl = `/demos/${lead.slug}/index.html`;
-    generated.push({
-      businessName: lead.businessName,
-      slug: lead.slug,
-      previewUrl,
-      phone: lead.phone,
-      instagramHandle: lead.instagramHandle,
-      defectType: lead.defectType
-    });
-    console.log(`   ✔ Built Demo: [${lead.slug}] -> ${previewUrl}`);
-  }
-
-  console.log(`\n🎉 Successfully forged ${generated.length} live client demo portals!`);
-  return generated;
-}
-
-if (require.main === module) {
-  buildAllDemos();
-}
-
-module.exports = { buildAllDemos, generateHtml };
+</html>
