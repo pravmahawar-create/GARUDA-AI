@@ -125,14 +125,14 @@ export const UNIVERSES = [
     scope: "public"
   }),
 
-  U(8, "Security Universe", "Tenancy isolation, threat list defense, and cryptographic seals.", "🛡", [
-    "Attack List Blocker", "Permission Reviewer", "Cryptographic Hashing", "Credential Enclave"
+  U(8, "Security Universe", "Autonomous social defense, anti-troll shielding, cryptographic vault & Section 63 BSA evidence.", "🛡️", [
+    "GARUDA CyberShield™", "Anti-Troll Defense Cockpit", "Multi-Tier Threat Classifier", "Section 63 BSA Evidence Vault", "Cryptographic SHA-256 Digest", "Autonomous Polling Daemon"
   ], {
     status: "PRODUCTION_VERIFIED",
-    route: "/command-center",
-    flagship: "Sovereign Tenancy Isolation & Attack List Sentinel",
-    connectedEngines: ["attackListService.js", "revenuePermissionReviewService.js"],
-    scope: "founder"
+    route: "/cybershield",
+    flagship: "GARUDA CyberShield™ — Autonomous Anti-Troll Defense & Sovereign Forensic Evidence Vault",
+    connectedEngines: ["cybershieldService.js", "cybershieldWorker.js", "toxicity-classifier.js", "evidence-vault.js", "attackListService.js"],
+    scope: "public"
   }),
 
   U(9, "Governance Universe", "Founder sovereignty gates, constitutional locks, and approval audits.", "⛔", [

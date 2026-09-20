@@ -103,6 +103,34 @@ export default function UniverseDetail({ universe, onClose }) {
           ))}
         </div>
 
+        {universe.route && (
+          <div style={{ marginTop: "1rem", marginBottom: "1rem", paddingTop: "0.85rem", borderTop: "1px solid rgba(245,215,110,0.16)" }}>
+            <a
+              href={universe.route}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.6rem",
+                width: "100%",
+                padding: "0.85rem 1.4rem",
+                borderRadius: 12,
+                background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
+                color: "#05070a",
+                fontWeight: 800,
+                fontSize: "0.95rem",
+                textDecoration: "none",
+                letterSpacing: "0.02em",
+                cursor: "pointer",
+                boxShadow: "0 4px 18px rgba(245, 215, 110, 0.22)",
+                boxSizing: "border-box"
+              }}
+            >
+              🛡️ Enter {universe.name} ({universe.flagship ? universe.flagship.split("—")[0].trim() : "Cockpit"}) →
+            </a>
+          </div>
+        )}
+
         {universe.note && <p style={{ margin: 0, color: palette.muted, fontSize: "0.9rem", lineHeight: 1.6 }}>📌 {universe.note}</p>}
       </div>
     </div>
