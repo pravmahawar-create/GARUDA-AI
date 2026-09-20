@@ -5,7 +5,7 @@
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(.*\\.html|/|/chat.*|/login.*|/app.*|/founder.*|/quant.*|/finance.*|/bot-verse.*|/pawan.*|/astra.*|/kids-play.*|/kids-app.*|/dost.*|/sahayak.*)",
+      "source": "/(.*\\.html|/|/chat.*|/login.*|/app.*|/cybershield.*|/founder.*|/quant.*|/finance.*|/bot-verse.*|/pawan.*|/astra.*|/kids-play.*|/kids-app.*|/dost.*|/sahayak.*)",
       "headers": [
         {
           "key": "Cache-Control",

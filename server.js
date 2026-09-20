@@ -26,6 +26,13 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
 
         // Workers are Mongo-backed; only start when the DB is available.
         // File/Supabase/NVIDIA features (lead-gen, outreach, affiliate, public chat) work regardless.
+        try {
+            const { startCyberShieldWorker } = require("./src/workers/cybershieldWorker");
+            startCyberShieldWorker();
+        } catch (e) {
+            console.error("[GARUDA] CyberShield worker boot failed:", e.message);
+        }
+
         if (mongoConnected) {
             try { initRevenueOperatingCycle(); console.log("[GARUDA] Revenue operating cycle booted ✓"); } catch (e) { console.error("[GARUDA] revenue operating cycle start failed:", String(e.message).slice(0,300)); }
         } else {

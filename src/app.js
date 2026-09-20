@@ -139,6 +139,8 @@ app.use("/api", require("./routes/growthCreativeRoutes"));
 app.use("/api/bot-verse", require("./routes/botVerseRoutes"));
 app.use("/api/auth", (req, res) => require("../api/auth")(req, res));
 app.use("/api/customer", (req, res) => require("../api/customer")(req, res));
+// GARUDA CyberShield™ Sovereign Anti-Troll Defense & Forensic Evidence API
+app.use("/api/cybershield", require("./routes/cybershieldRoutes"));
 app.use("/api/founder", (req, res) => require("../api/founder")(req, res));
 app.use("/api/founder-command", (req, res) => require("../api/founder")(req, res));
 app.use("/api/project-scope", (req, res) => require("../api/project-scope")(req, res));

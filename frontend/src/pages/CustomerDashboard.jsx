@@ -340,6 +340,7 @@ export default function CustomerDashboard({ customer, onLogout }) {
         <div style={{ display: "flex", gap: "0.5rem", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "0.75rem", marginBottom: "1.75rem", overflowX: "auto" }}>
           {[
             { id: "universes", label: "🪐 Sovereign Universes", icon: "🌌" },
+            { id: "cybershield", label: "🛡️ CyberShield™ Defense", icon: "🛡️", route: "/cybershield" },
             { id: "architect", label: "⚡ Talk to Architect", icon: "💬" },
             { id: "projects", label: `My Projects (${projects.length})`, icon: "📂" },
             { id: "proposals", label: `Proposals & Milestones (${proposals.length})`, icon: "📑" },
@@ -348,7 +349,13 @@ export default function CustomerDashboard({ customer, onLogout }) {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                if (tab.route) {
+                  navigate(tab.route);
+                } else {
+                  setActiveTab(tab.id);
+                }
+              }}
               style={{
                 background: activeTab === tab.id ? "rgba(212, 175, 55, 0.15)" : "transparent",
                 border: activeTab === tab.id ? `1px solid ${GOLD}` : "1px solid transparent",

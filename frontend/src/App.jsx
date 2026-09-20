@@ -47,6 +47,8 @@ import SovereignEnterpriseMatrix from "./pages/SovereignEnterpriseMatrix";
 import CaseStudies from "./pages/CaseStudies";
 import GarudaCyberTycoon from "./pages/GarudaCyberTycoon";
 import FounderQuantCommand from "./pages/FounderQuantCommand";
+import GarudaHealthApp from "./pages/GarudaHealthApp";
+import CyberShieldDashboard from "./pages/CyberShieldDashboard";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -296,6 +298,13 @@ function AppRoutes() {
       <Route path="/billing" element={<PricingPage />} />
       <Route path="/garuda-ai-vs-garuda-linux" element={<GarudaVsLinux />} />
       <Route path="/case-studies" element={<CaseStudies />} />
+      {/* GARUDA AAHAR — Human Nutrition & Wellness Platform */}
+      <Route path="/health" element={<GarudaHealthApp />} />
+      <Route path="/aahar" element={<GarudaHealthApp />} />
+      <Route path="/wellness" element={<GarudaHealthApp />} />
+      <Route path="/garuda-aahar" element={<GarudaHealthApp />} />
+      {/* GARUDA CyberShield™ — Sovereign Anti-Troll Defense Cockpit */}
+      <Route path="/cybershield" element={<CyberShieldDashboard customer={customer} onLogout={handleLogout} />} />
       <Route path="*" element={publicLanding} />
 
     </Routes>
