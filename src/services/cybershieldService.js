@@ -199,7 +199,7 @@ class CyberShieldService {
   async processEvent(eventData, options = {}) {
     const correlationId = options.correlationId || `corr_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
     const tenantId = eventData.tenantId || options.tenantId || "tenant_founder_core";
-    const monitorId = eventData.monitorId || options.monitorId || null;
+    const monitorId = eventData.monitorId || options.monitorId || "mon_default_direct";
 
     const rawText = sanitizeInput(eventData.rawText);
     if (!rawText) throw new Error("EVENT_TEXT_REQUIRED");
@@ -286,7 +286,7 @@ class CyberShieldService {
       intelligence: {
         severityLevel: classification.severityLevel,
         tierName: classification.tierName,
-        primaryCategory: classification.primaryCategory,
+        primaryCategory: classification.primaryCategory || classification.tierName || "GENERAL_TOXICITY",
         confidence: classification.severityLevel === 1 ? 0.99 : 0.96,
         isActionable,
         coordinationScore: eventData.isBurst ? 0.85 : 0.1,

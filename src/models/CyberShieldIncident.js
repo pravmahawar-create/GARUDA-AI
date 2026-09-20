@@ -32,7 +32,7 @@ const CyberShieldIncidentSchema = new mongoose.Schema(
     },
     monitorId: {
       type: String,
-      required: true,
+      default: "mon_default_direct",
       index: true
     },
     idempotencyKey: {
@@ -58,7 +58,7 @@ const CyberShieldIncidentSchema = new mongoose.Schema(
     intelligence: {
       severityLevel: { type: Number, required: true, min: 1, max: 5 },
       tierName: { type: String, required: true },
-      primaryCategory: { type: String, required: true },
+      primaryCategory: { type: String, default: "GENERAL_TOXICITY" },
       confidence: { type: Number, default: 0.95 },
       isActionable: { type: Boolean, default: false },
       coordinationScore: { type: Number, default: 0.0 },
