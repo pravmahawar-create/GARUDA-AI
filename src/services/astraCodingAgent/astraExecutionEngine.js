@@ -14,14 +14,68 @@ const crypto = require("crypto");
 const { spawnSync } = require("child_process");
 try { require("dotenv").config(); } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
 
+const { LayeredValidator } = require("./layeredValidator");
+const { PatchEngine } = require("./patchEngine");
+const { ProjectWorkspace } = require("./workspaceEngine");
+const { RepoIndexEngine } = require("./repoIndexEngine");
+const { TaskGraph, PatchTransactionCoordinator, planEngineeringTaskGraph } = require("./taskGraphEngine");
+const { HeadlessBrowserRunner } = require("./headlessBrowserRunner");
+const { RuntimeSelfHealer } = require("./runtimeSelfHealer");
+const { terminalToolEngine } = require("./terminalToolEngine");
+const { commandIntelligence } = require("./commandIntelligence");
+const { BuildSelfHealer } = require("./buildSelfHealer");
+const { RealProjectOrchestrator } = require("./realProjectOrchestrator");
+
 const AUDIT_DIR = path.join(process.cwd(), "data", "astra");
 const AUDIT_FILE = path.join(AUDIT_DIR, "audit-trail.jsonl");
 
 class AstraExecutionEngine {
   constructor(options = {}) {
     this.rootDir = options.rootDir || process.cwd();
-    this.maxHealCycles = options.maxHealCycles || 3;
+    this.maxHealCycles = options.maxHealCycles !== undefined ? options.maxHealCycles : 3;
     this.timeoutMs = options.timeoutMs || 30000;
+    this.validator = new LayeredValidator({ rootDir: this.rootDir });
+    this.patchEngine = new PatchEngine();
+    this.repoIndexer = new RepoIndexEngine({ rootDir: this.rootDir });
+    this.taskCoordinator = new PatchTransactionCoordinator({ validator: this.validator, patchEngine: this.patchEngine });
+    this.browserRunner = new HeadlessBrowserRunner();
+    this.runtimeHealer = new RuntimeSelfHealer({
+      rootDir: this.rootDir,
+      validator: this.validator,
+      patchEngine: this.patchEngine,
+      browserRunner: this.browserRunner,
+      callLLM: this.callLLM.bind(this)
+    });
+    this.terminal = options.terminal || terminalToolEngine;
+    this.classifier = options.classifier || commandIntelligence;
+    this.buildHealer = options.buildHealer || new BuildSelfHealer({
+      rootDir: this.rootDir,
+      terminal: this.terminal,
+      classifier: this.classifier,
+      patchEngine: this.patchEngine,
+      validator: this.validator
+    });
+    this.orchestrator = options.orchestrator || new RealProjectOrchestrator({
+      rootDir: this.rootDir,
+      repoIndex: this.repoIndexer,
+      terminal: this.terminal,
+      classifier: this.classifier,
+      buildHealer: this.buildHealer,
+      browserRunner: this.browserRunner,
+      runtimeHealer: this.runtimeHealer,
+      validator: this.validator,
+      patchEngine: this.patchEngine
+    });
+    this.intelligence = options.intelligence !== undefined ? options.intelligence : null;
+    if (!this.intelligence) {
+      try {
+        const { getGarudaIntelligence } = require("../garudaIntelligence");
+        this.intelligence = getGarudaIntelligence();
+      } catch {
+        this.intelligence = null;
+      }
+    }
+    this.workspaces = new Map();
     this._ensureAuditDir();
   }
 
@@ -439,75 +493,139 @@ Output ONLY the JSON object.`;
   /**
    * Syntax and execution validation (Multi-paradigm: Node.js, Babel JSX/TS, JSON, HTML)
    */
+  /**
+   * Layered Syntax and execution validation (JS/TS/JSX, JSON, deep HTML inline scripts & CSS)
+   */
   validateFile(relPath) {
-    const fullPath = path.join(this.rootDir, relPath);
-    if (!fs.existsSync(fullPath)) return { valid: false, error: "File does not exist" };
+    const fullPath = path.isAbsolute(relPath) ? relPath : path.join(this.rootDir, relPath);
+    if (!fs.existsSync(fullPath)) return { valid: false, error: "File does not exist", stderr: "File does not exist" };
 
-    const ext = path.extname(relPath).toLowerCase();
-    if ([".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"].includes(ext)) {
-      const content = fs.readFileSync(fullPath, "utf8");
-
-      // 1. Try Babel Parser (handles modern ES Modules, React JSX, React Native, TypeScript)
-      try {
-        const babel = require("@babel/parser");
-        babel.parse(content, {
-          sourceType: "unambiguous",
-          plugins: [
-            "jsx",
-            "typescript",
-            "classProperties",
-            "dynamicImport",
-            "exportDefaultFrom",
-            "asyncGenerators"
-          ]
-        });
-        return { valid: true, exitCode: 0, sha256: this._computeSha256(fullPath), engine: "babel" };
-      } catch (babelErr) {
-        // 2. Fallback to node --check in case it's CommonJS or script
-        try {
-          const check = spawnSync(process.execPath, ["--check", fullPath], { encoding: "utf8" });
-          if (check.status === 0) {
-            return { valid: true, exitCode: 0, sha256: this._computeSha256(fullPath), engine: "node" };
-          }
-        } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
-
-        return {
-          valid: false,
-          exitCode: 1,
-          stderr: babelErr.message || "Syntax check failed"
-        };
-      }
-    } else if (ext === ".json") {
-      try {
-        JSON.parse(fs.readFileSync(fullPath, "utf8"));
-      } catch (err) {
-        return { valid: false, error: `Invalid JSON: ${err.message}` };
-      }
-    } else if ([".html", ".htm", ".css", ".md", ".txt", ".svg", ".py"].includes(ext)) {
-      return { valid: true, exitCode: 0, sha256: this._computeSha256(fullPath) };
-    }
-
-    return { valid: true, exitCode: 0, sha256: this._computeSha256(fullPath) };
+    const valResult = this.validator.validateFile(fullPath);
+    return {
+      valid: valResult.valid,
+      exitCode: valResult.exitCode,
+      sha256: valResult.sha256 || this._computeSha256(fullPath),
+      stderr: valResult.error || (valResult.errors ? valResult.errors.join(" | ") : ""),
+      error: valResult.error || null,
+      engine: valResult.engine || "layered-validator"
+    };
   }
 
   /**
-   * Apply code modifications safely with automatic backup
+   * Apply code modifications safely: supports surgical Search/Replace blocks or full rewrite
    */
-  applyPatch(relPath, newContent) {
-    const fullPath = path.join(this.rootDir, relPath);
+  applyPatch(relPath, newContent, options = {}) {
+    const fullPath = path.isAbsolute(relPath) ? relPath : path.join(this.rootDir, relPath);
     const dir = path.dirname(fullPath);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
     const beforeSha = this._computeSha256(fullPath);
+
+    // 1. Surgical Search/Replace Patch Mode
+    if (options.searchBlock) {
+      if (!fs.existsSync(fullPath)) {
+        return { success: false, error: `Cannot apply search/replace patch: ${relPath} does not exist.` };
+      }
+      const existingContent = fs.readFileSync(fullPath, "utf8");
+      const patchResult = this.patchEngine.applySearchReplace(
+        existingContent,
+        options.searchBlock,
+        options.replaceBlock || "",
+        options
+      );
+
+      if (!patchResult.success) {
+        return {
+          success: false,
+          error: patchResult.error,
+          beforeSha
+        };
+      }
+
+      fs.writeFileSync(fullPath, patchResult.newContent, "utf8");
+      const afterSha = this._computeSha256(fullPath);
+
+      return {
+        success: true,
+        path: relPath,
+        beforeSha,
+        afterSha,
+        bytesWritten: Buffer.byteLength(patchResult.newContent, "utf8"),
+        method: patchResult.method,
+        patchSuccess: true
+      };
+    }
+
+    // 2. Full Content Application Mode
     fs.writeFileSync(fullPath, newContent, "utf8");
     const afterSha = this._computeSha256(fullPath);
 
     return {
+      success: true,
       path: relPath,
       beforeSha,
       afterSha,
-      bytesWritten: Buffer.byteLength(newContent, "utf8")
+      bytesWritten: Buffer.byteLength(newContent, "utf8"),
+      method: "full_content"
     };
+  }
+
+  /**
+   * Multi-file Workspace Factory
+   */
+  createWorkspace(name = "Sovereign Workspace", initialFiles = null) {
+    const ws = new ProjectWorkspace({ name, rootDir: this.rootDir, initialFiles });
+    this.workspaces.set(ws.id, ws);
+    return ws;
+  }
+
+  /**
+   * Retrieve active workspace
+   */
+  getWorkspace(workspaceId) {
+    return this.workspaces.get(workspaceId) || null;
+  }
+
+  /**
+   * Execute atomic multi-file patch transaction on workspace
+   */
+  async executeTransaction(workspace, patchOperations, description) {
+    return this.taskCoordinator.executeTransaction(workspace, patchOperations, description);
+  }
+
+  /**
+   * Plan structured multi-file Task Graph for requirement
+   */
+  planTaskGraph(requirement, existingFiles = []) {
+    return planEngineeringTaskGraph(requirement, existingFiles);
+  }
+
+  /**
+   * Execute headless browser runtime verification and closed-loop self-healing
+   */
+  async verifyRuntime(htmlContent, options = {}) {
+    return this.runtimeHealer.verifyAndHeal(htmlContent, options);
+  }
+
+  /**
+   * Execute terminal command with policy checks, timeout, and secret redaction
+   */
+  async executeCommand(commandLine, options = {}) {
+    return this.terminal.execute(commandLine, options);
+  }
+
+  /**
+   * Execute build pipeline with closed-loop self-healing
+   */
+  async executeBuildAndHeal(options = {}) {
+    return this.buildHealer.executeBuildAndHeal(options);
+  }
+
+  /**
+   * Execute real project mission (multi-file surgical patch, validation, build, browser verification)
+   */
+  async executeMission(missionConfig = {}) {
+    return this.orchestrator.executeMission(missionConfig);
   }
 
   /**
@@ -545,6 +663,24 @@ Existing code is provided above. You MUST preserve all existing working features
       }
     }
 
+    // 1.5. Pre-execution Intelligence Retrieval (Phase 5.4-A & B)
+    let activeRules = [];
+    try {
+      if (this.intelligence && this.intelligence.retrieve) {
+        const relevant = this.intelligence.retrieve({ query: instruction, minConfidence: 0.5, limit: 3 });
+        if (relevant && relevant.length > 0) {
+          activeRules = relevant.map((r) => r.content);
+          trajectory.push({
+            step: "INTELLIGENCE_RETRIEVAL",
+            rulesRetrieved: activeRules.length,
+            sample: activeRules[0]?.substring(0, 80)
+          });
+        }
+      }
+    } catch (intelErr) {
+      // Non-blocking
+    }
+
     // 2. Call LLM to formulate plan and code
     const prompt = `Task: ${instruction}
 Target File: ${targetFile || "public/app.html"}
@@ -560,67 +696,98 @@ You must return a JSON object formatted strictly as:
 }
 Output ONLY the JSON object.`;
 
+    let parsedPlan = null;
     let llmResponse = null;
 
-    // Multimodal image-guided execution if attachment is present
-    const geminiKey = process.env.GEMINI_API_KEY;
-    if (context.attachment && context.attachment.data && geminiKey) {
-      let rawBase64 = context.attachment.data;
-      if (rawBase64.includes(",")) rawBase64 = rawBase64.split(",")[1];
-      const parts = [
-        { inlineData: { mimeType: context.attachment.mimeType || "image/jpeg", data: rawBase64 } },
-        { text: prompt }
-      ];
-      try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ role: "user", parts }],
-            generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
-          })
-        });
-        if (res.ok) {
-          const d = await res.json();
-          llmResponse = d.candidates?.[0]?.content?.parts?.[0]?.text || null;
-        }
-      } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
+    // Direct mode if code was explicitly supplied
+    if (context.code && targetFile) {
+      parsedPlan = {
+        thought: "Direct execution mode",
+        targetFile,
+        newContent: context.code,
+        summary: context.summary || "Direct patch application"
+      };
+    } else {
+      // Multimodal image-guided execution if attachment is present
+      const geminiKey = process.env.GEMINI_API_KEY;
+      if (context.attachment && context.attachment.data && geminiKey) {
+        let rawBase64 = context.attachment.data;
+        if (rawBase64.includes(",")) rawBase64 = rawBase64.split(",")[1];
+        const parts = [
+          { inlineData: { mimeType: context.attachment.mimeType || "image/jpeg", data: rawBase64 } },
+          { text: prompt }
+        ];
+        try {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ role: "user", parts }],
+              generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
+            })
+          });
+          if (res.ok) {
+            const d = await res.json();
+            llmResponse = d.candidates?.[0]?.content?.parts?.[0]?.text || null;
+          }
+        } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
+      }
+
+      if (!llmResponse) {
+        llmResponse = await this.callLLM(prompt);
+      }
+
+      parsedPlan = this.parseLlmJson(llmResponse);
     }
 
-    if (!llmResponse) {
-      llmResponse = await this.callLLM(prompt);
-    }
-
-    let parsedPlan = this.parseLlmJson(llmResponse);
-
-    // Direct mode fallback if code was explicitly supplied
     if (!parsedPlan || !parsedPlan.newContent) {
-      if (context.code && targetFile) {
-        parsedPlan = {
-          thought: "Direct execution mode",
-          targetFile,
-          newContent: context.code,
-          summary: context.summary || "Direct patch application"
-        };
-      } else {
+      const errResult = {
+        taskId,
+        success: false,
+        error: "Could not synthesize executable code patch from LLM (Inference timeout or invalid format). Please retry.",
+        trajectory
+      };
+      this._logAudit(errResult);
+      return errResult;
+    }
+
+    const appliedFile = parsedPlan.targetFile || targetFile || "src/astra_output.js";
+    const fullAppliedPath = path.isAbsolute(appliedFile) ? appliedFile : path.join(this.rootDir, appliedFile);
+
+    // Pre-patch snapshot for rollback protection
+    const preSnapshot = {
+      file: appliedFile,
+      exists: fs.existsSync(fullAppliedPath),
+      content: fs.existsSync(fullAppliedPath) ? fs.readFileSync(fullAppliedPath, "utf8") : null,
+      sha256: this._computeSha256(fullAppliedPath)
+    };
+
+    let patchMeta;
+    if (context.searchBlock) {
+      patchMeta = this.applyPatch(appliedFile, null, {
+        searchBlock: context.searchBlock,
+        replaceBlock: context.replaceBlock || parsedPlan.newContent,
+        allowMultiple: context.allowMultiple
+      });
+      if (!patchMeta.success) {
         const errResult = {
           taskId,
           success: false,
-          error: "Could not synthesize executable code patch from LLM (Inference timeout or invalid format). Please retry.",
+          error: `Surgical patch failed: ${patchMeta.error}`,
           trajectory
         };
         this._logAudit(errResult);
         return errResult;
       }
+    } else {
+      patchMeta = this.applyPatch(appliedFile, parsedPlan.newContent);
     }
-
-    const appliedFile = parsedPlan.targetFile || targetFile || "src/astra_output.js";
-    let patchMeta = this.applyPatch(appliedFile, parsedPlan.newContent);
 
     trajectory.push({
       step: "PATCH_APPLIED",
       file: appliedFile,
       summary: parsedPlan.summary,
+      method: patchMeta.method || "full_content",
       sha256: patchMeta.afterSha
     });
 
@@ -673,14 +840,74 @@ Output ONLY the JSON object.`;
       validation = this.validateFile(appliedFile);
     }
 
+    let rollbackExecuted = false;
+    // Automated Rollback if all healing cycles exhausted and file is still invalid
+    if (!validation.valid && preSnapshot.exists && preSnapshot.content !== null) {
+      fs.writeFileSync(fullAppliedPath, preSnapshot.content, "utf8");
+      rollbackExecuted = true;
+      trajectory.push({
+        step: "AUTOMATED_ROLLBACK",
+        file: appliedFile,
+        reason: `Validation failed after ${healCycle} self-healing cycles. Restored original state to prevent repository corruption.`,
+        restoredSha256: preSnapshot.sha256
+      });
+    }
+
     const isSuccess = validation.valid;
     let finalCode = parsedPlan.newContent;
     try {
-      const fullPath = path.join(this.rootDir, appliedFile);
-      if (fs.existsSync(fullPath)) {
-        finalCode = fs.readFileSync(fullPath, "utf8");
+      if (fs.existsSync(fullAppliedPath)) {
+        finalCode = fs.readFileSync(fullAppliedPath, "utf8");
       }
     } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
+
+    // 4. Reviewer System & Learning Promotion (Phase 5.4-A, B, D, E, F, G)
+    let reviewerResult = null;
+    let reviewVerdict = "ALL_APPROVED";
+    if (isSuccess && this.intelligence && this.intelligence.runSelectiveReview) {
+      try {
+        const reviewTarget = {
+          id: appliedFile,
+          type: "source_code",
+          taskId,
+          instruction
+        };
+        reviewerResult = this.intelligence.runSelectiveReview(
+          reviewTarget,
+          { instruction, appliedFile, validation, code: finalCode },
+          "LOW"
+        );
+        if (reviewerResult && reviewerResult.overallVerdict) {
+          reviewVerdict = reviewerResult.overallVerdict;
+          trajectory.push({
+            step: "REVIEWER_SYSTEM",
+            verdict: reviewVerdict,
+            reviewerCount: reviewerResult.reviewerCount
+          });
+        }
+      } catch (revErr) {
+        reviewerResult = { error: revErr.message };
+      }
+    }
+
+    let memoryPromotion = null;
+    if (isSuccess && this.intelligence && this.intelligence.submitAndEvaluate) {
+      try {
+        memoryPromotion = this.intelligence.submitAndEvaluate({
+          type: "lesson",
+          content: `Astra Task Verified: ${instruction.substring(0, 150)} | File: ${appliedFile}`,
+          sourceAgent: "astra_coding_agent",
+          evidence: [
+            { type: "runtime_verified", details: `Validation SHA: ${validation.sha256 || patchMeta.afterSha}` },
+            { type: "code_review", details: `Reviewer verdict: ${reviewVerdict}` }
+          ],
+          tags: ["astra", "coding", "verified-task"],
+          relatedFiles: [appliedFile]
+        });
+      } catch (promoErr) {
+        // Graceful suppression
+      }
+    }
 
     const finalResult = {
       taskId,
@@ -693,6 +920,16 @@ Output ONLY the JSON object.`;
       summary: parsedPlan.summary,
       bytesWritten: patchMeta.bytesWritten,
       validation,
+      reviewerResult: reviewerResult ? {
+        verdict: reviewVerdict,
+        reviewerCount: reviewerResult.reviewerCount || 0
+      } : null,
+      memoryPromotion: memoryPromotion ? {
+        itemId: memoryPromotion.itemId,
+        evaluationStatus: memoryPromotion.evaluationStatus,
+        confidence: memoryPromotion.confidence?.confidence
+      } : null,
+      rollbackExecuted,
       trajectory
     };
 
@@ -711,4 +948,9 @@ Output ONLY the JSON object.`;
   }
 }
 
-module.exports = { AstraExecutionEngine };
+const astraExecutionEngine = new AstraExecutionEngine();
+
+module.exports = {
+  AstraExecutionEngine,
+  astraExecutionEngine
+};

@@ -265,8 +265,96 @@ router.post("/negotiate-quote", (req, res) => {
 
 
 /**
+ * POST /api/pawan/workspace/create
+ * Create a new multi-file project workspace
+ */
+router.post("/workspace/create", (req, res) => {
+  try {
+    const { name, files } = req.body;
+    const ws = engine.createWorkspace(name || "Sovereign Application", files || null);
+    res.json({
+      success: true,
+      workspace: ws.getManifest()
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * GET /api/pawan/workspace/:id
+ * Retrieve workspace manifest and file structure
+ */
+router.get("/workspace/:id", (req, res) => {
+  const ws = engine.getWorkspace(req.params.id);
+  if (!ws) return res.status(404).json({ success: false, error: "Workspace not found" });
+  res.json({
+    success: true,
+    workspace: ws.getManifest()
+  });
+});
+
+/**
+ * POST /api/pawan/workspace/:id/patch
+ * Apply surgical Search/Replace block patch to a workspace file
+ */
+router.post("/workspace/:id/patch", (req, res) => {
+  try {
+    const ws = engine.getWorkspace(req.params.id);
+    if (!ws) return res.status(404).json({ success: false, error: "Workspace not found" });
+
+    const { filePath, searchBlock, replaceBlock } = req.body;
+    if (!filePath || !searchBlock) {
+      return res.status(400).json({ success: false, error: "filePath and searchBlock are required" });
+    }
+
+    const fileDoc = ws.getFile(filePath);
+    if (!fileDoc) {
+      return res.status(404).json({ success: false, error: `File ${filePath} does not exist in workspace` });
+    }
+
+    const patchRes = engine.patchEngine.applySearchReplace(fileDoc.content, searchBlock, replaceBlock || "");
+    if (!patchRes.success) {
+      return res.status(400).json({ success: false, error: patchRes.error });
+    }
+
+    // Validate new content before accepting
+    const valRes = engine.validator.validateContent(patchRes.newContent, filePath);
+    if (!valRes.valid) {
+      return res.status(422).json({
+        success: false,
+        error: `Patch introduced validation error: ${valRes.error}`,
+        validation: valRes
+      });
+    }
+
+    const updatedDoc = ws.setFile(filePath, patchRes.newContent);
+    res.json({
+      success: true,
+      file: updatedDoc,
+      patchMeta: patchRes,
+      manifest: ws.getManifest()
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * GET /api/pawan/workspace/:id/preview
+ * Stream standalone preview bundle for iframe sandboxes
+ */
+router.get("/workspace/:id/preview", (req, res) => {
+  const ws = engine.getWorkspace(req.params.id);
+  if (!ws) return res.status(404).send("Workspace not found");
+  const html = ws.generateStandalonePreview();
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  res.send(html);
+});
+
+/**
  * GET /api/astra/status
- * Check engine status and provider configuration
+ * Check engine status, providers, and capabilities
  */
 router.get("/status", (req, res) => {
   res.json({
@@ -275,12 +363,18 @@ router.get("/status", (req, res) => {
     slogan: "As fast as wind. Smooth and powerful.",
     founder: "Praveen Mahawar",
     status: "online",
+    phase: "phase_1_foundation_verified",
     capabilities: [
       "autonomous_react_loop",
-      "closed_loop_syntax_verification",
-      "self_healing_recovery",
+      "layered_syntax_and_script_validation",
+      "html_inline_script_verification",
+      "surgical_search_replace_patcher",
+      "multi_file_virtual_workspace",
+      "immutable_snapshot_and_rollback",
+      "closed_loop_self_healing",
       "sha256_audit_trail",
-      "multimodal_repo_reconnaissance"
+      "multimodal_repo_reconnaissance",
+      "truthful_pwa_apk_classification"
     ],
     timestamp: new Date().toISOString()
   });

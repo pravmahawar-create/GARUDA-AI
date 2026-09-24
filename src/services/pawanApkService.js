@@ -261,7 +261,17 @@ function injectPwaSuperpowers(htmlCode, appName, safeName) {
 /**
  * Containerize and build a sovereign mobile application package
  */
-async function containerizeApp({ code, targetFile, appName }) {
+async function containerizeApp(arg1, arg2) {
+  let code, targetFile, appName;
+  if (typeof arg1 === "object" && arg1 !== null) {
+    code = arg1.code;
+    targetFile = arg1.targetFile;
+    appName = arg1.appName;
+  } else {
+    appName = arg1;
+    code = arg2 || "<h1>GARUDA Application</h1>";
+  }
+
   const safeName = (appName || "garuda-mobile-app")
     .toLowerCase()
     .replace(/[^a-z0-9]/g, "-")
@@ -377,14 +387,26 @@ Verified cryptographic delivery under sovereign GARUDA governance.
     qrUrl,
     sha256,
     offlineReady: true,
-    apkReady: true,
+    pwaReady: true,
+    apkReady: false, // Truthful: real binary compilation requires native Gradle run
+    realApkCompiled: false,
+    artifactType: "pwa_bundle_with_capacitor_scaffold",
     packageFileName: zipFileName,
-    message: `Mobile PWA & APK container generated for ${formattedAppName} with offline caching & 1-tap installation!`
+    message: `Mobile PWA container generated for ${formattedAppName} with offline caching, 1-tap web install & Capacitor Android scaffold.`
   };
+}
+
+/**
+ * Real Native Android Compilation & Artifact Delivery
+ */
+async function compileAndDeliverApk(projectAndroidDir, options = {}) {
+  const { androidBuildEngine } = require("./astraCodingAgent/androidBuildEngine");
+  return androidBuildEngine.compileAndroidApk(projectAndroidDir, options);
 }
 
 module.exports = {
   containerizeApp,
+  compileAndDeliverApk,
   injectPwaSuperpowers,
   generateManifestJson,
   generateServiceWorker,
