@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { X, ArrowLeft, Bookmark, Type, Sparkles, BookOpen, Clock } from 'lucide-react';
 import { ARTICLES_DATA } from '../data/mockData';
-import type { Article } from '../types';
+import type { Article, Language } from '../types';
 import { triggerHaptic } from '../services/audioService';
 import { pushBackHandler } from '../services/modalBackHandler';
+import { getLabels } from '../data/languages';
 
 interface ArticleReaderModalProps {
   article: Article | null;
   isOpen: boolean;
   onClose: () => void;
-  lang: string;
+  lang: Language;
 }
 
 export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
   article,
   isOpen,
   onClose,
-  lang: _lang
+  lang
 }) => {
+  const labels = getLabels(lang);
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('large');
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [activeArticle, setActiveArticle] = useState<Article>(article || ARTICLES_DATA[0]);
@@ -49,7 +51,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
           </button>
           <div>
             <span className="text-[9px] font-mono text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-500/30 uppercase font-bold">
-              आध्यात्मिक लेख • Article
+              {lang === 'en' ? 'Article' : 'आध्यात्मिक लेख • Article'}
             </span>
             <h3 className="font-display text-base md:text-lg font-bold text-white leading-tight truncate max-w-[200px]">
               {current.title}
@@ -61,7 +63,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
           {/* Font Resizer */}
           <button
             onClick={toggleFontSize}
-            title="Adjust Font Size"
+            title={labels.adjustFontTitle}
             className="w-8 h-8 rounded-full bg-black/40 border border-amber-500/30 text-amber-300 flex items-center justify-center hover:border-amber-400"
           >
             <Type className="w-3.5 h-3.5" />
@@ -144,7 +146,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
         <div className="pt-6 border-t border-amber-500/20 space-y-3">
           <h4 className="font-display text-sm font-bold text-white tracking-wide flex items-center gap-1.5">
             <BookOpen className="w-4 h-4 text-amber-400" />
-            <span>अन्य पावन लेख (Related Wisdom)</span>
+            <span>{labels.relatedArticles}</span>
           </h4>
 
           <div className="grid grid-cols-1 gap-2.5">
@@ -169,7 +171,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                     {art.readTime} • {art.summary.slice(0, 50)}...
                   </span>
                 </div>
-                <span className="text-amber-400 text-xs font-mono">पढ़ें →</span>
+                <span className="text-amber-400 text-xs font-mono">{labels.readFull}</span>
               </div>
             ))}
           </div>

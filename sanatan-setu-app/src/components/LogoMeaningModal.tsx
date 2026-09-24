@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, ShieldCheck, Sparkles, Phone, Mail, MapPin } from 'lucide-react';
 import { LOGO_PILLARS, CLIENT_FOUNDATION_INFO } from '../data/mockData';
+import { getLabels } from '../data/languages';
 
 
 import type { Language } from '../types';
@@ -12,6 +13,8 @@ interface LogoMeaningModalProps {
 }
 
 export const LogoMeaningModal: React.FC<LogoMeaningModalProps> = ({ isOpen, onClose, lang }) => {
+  const labels = getLabels(lang);
+
   if (!isOpen) return null;
 
   return (
@@ -29,7 +32,7 @@ export const LogoMeaningModal: React.FC<LogoMeaningModalProps> = ({ isOpen, onCl
             </div>
             <div>
               <span className="text-[10px] font-mono text-gold-400 uppercase tracking-widest font-bold">
-                Brand Philosophy & Origin
+                {labels.brandPhilosophy}
               </span>
               <h3 className="font-cinzel text-lg font-bold text-white leading-tight">
                 {lang === 'hi' ? 'सनातन सेतु — लोगो का अर्थ एवं प्रतीक' : 'Sanatan Setu Emblem Symbology'}
@@ -60,7 +63,7 @@ export const LogoMeaningModal: React.FC<LogoMeaningModalProps> = ({ isOpen, onCl
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-amber-400" />
             <h4 className="font-cinzel text-sm font-bold text-white tracking-wide">
-              {lang === 'hi' ? '९ पावन तत्त्व (The 9 Sacred Pillars)' : 'The 9 Sacred Architectural Pillars'}
+              {labels.trustNinePillars}
             </h4>
           </div>
 
@@ -120,7 +123,7 @@ export const LogoMeaningModal: React.FC<LogoMeaningModalProps> = ({ isOpen, onCl
           onClick={onClose}
           className="w-full py-3 rounded-xl bg-gradient-to-r from-gold-600 to-amber-500 text-black font-semibold text-xs tracking-wider uppercase shadow-gold-sm"
         >
-          Close & Return to Sanctuary
+          {labels.closeReturn}
         </button>
       </div>
     </div>

@@ -7,6 +7,7 @@ import {
 import type { Language, DarshanItem, RishiItem, ItihasItem } from '../types';
 import { playTempleBell, triggerHaptic } from '../services/audioService';
 import { pushBackHandler } from '../services/modalBackHandler';
+import { getLabels } from '../data/languages';
 
 export type KnowledgeCategoryKey = 'darshan' | 'rishis' | 'samskaras' | 'festivals' | 'itihas';
 
@@ -21,8 +22,9 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
   categoryKey,
   isOpen,
   onClose,
-  lang: _lang
+  lang
 }) => {
+  const labels = getLabels(lang);
   const [activeDarshan, setActiveDarshan] = useState<DarshanItem | null>(null);
   const [activeRishi, setActiveRishi] = useState<RishiItem | null>(null);
   const [activeItihas, setActiveItihas] = useState<ItihasItem | null>(null);
@@ -98,10 +100,10 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
           </button>
           <div>
             <span className="text-[9px] font-mono text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-500/30 uppercase font-bold">
-              सनातन ज्ञान सागर • Knowledge Hub
+              {lang === 'en' ? 'Sacred Knowledge Ocean • Knowledge Hub' : 'सनातन ज्ञान सागर • Knowledge Hub'}
             </span>
             <h3 className="font-display text-base md:text-lg font-bold text-white leading-tight">
-              {title.hi}
+              {lang === 'en' ? title.en : title.hi}
             </h3>
           </div>
         </div>
@@ -160,7 +162,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
                         </h4>
                       </div>
                       <p className="text-xs text-amber-400 font-mono mt-1">
-                        प्रवर्तक: {darshan.founder} • मूल ग्रंथ: {darshan.centralText}
+                        {labels.founderLabel} {darshan.founder} • {labels.centralTextLabel} {darshan.centralText}
                       </p>
                     </div>
                     <span className="text-xs font-mono text-amber-300 px-2 py-0.5 rounded-full bg-black/50 border border-amber-500/20">
@@ -176,7 +178,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
                   {activeDarshan?.id === darshan.id && (
                     <div className="mt-3 p-3 rounded-xl bg-black/60 border border-amber-500/30 animate-in fade-in duration-200">
                       <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider block font-bold">
-                        मूल सूत्र / महासिद्धांत:
+                        {labels.corePrincipleLabel}
                       </span>
                       <p className="font-shloka text-amber-200 text-sm font-bold mt-1 leading-relaxed">
                         {darshan.keyPrinciple}
@@ -185,7 +187,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
                   )}
 
                   <div className="mt-2.5 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[11px] font-mono text-amber-400">
-                    <span>{activeDarshan?.id === darshan.id ? 'संक्षेप करें ▲' : 'मूल सूत्र देखें ▼'}</span>
+                    <span>{activeDarshan?.id === darshan.id ? `${labels.collapseBtn} ▲` : `${labels.showPrinciple} ▼`}</span>
                     <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
@@ -227,7 +229,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
 
                   <div className="mt-2 p-3 rounded-xl bg-black/50 border border-amber-500/15">
                     <span className="text-[10px] font-mono text-amber-300 font-bold block">
-                      वैदिक योगदान:
+                      {labels.vedicContributionLabel}
                     </span>
                     <p className="text-xs text-zinc-300 font-devanagari mt-0.5 leading-relaxed">
                       {rishi.vedicContribution}
@@ -237,7 +239,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
                   {activeRishi?.id === rishi.id && (
                     <div className="mt-2.5 p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 animate-in fade-in duration-200">
                       <span className="text-[10px] font-mono text-amber-400 uppercase font-bold block">
-                        जीवन प्रेरणा व संदेश:
+                        {labels.lifeLessonLabel}
                       </span>
                       <p className="text-xs text-amber-100 font-devanagari mt-0.5 leading-relaxed">
                         {rishi.lifeLesson}
@@ -246,7 +248,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
                   )}
 
                   <div className="mt-2.5 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[11px] font-mono text-amber-400">
-                    <span>{activeRishi?.id === rishi.id ? 'संक्षेप करें ▲' : 'जीवन संदेश खोलें ▼'}</span>
+                    <span>{activeRishi?.id === rishi.id ? `${labels.collapseBtn} ▲` : `${labels.showLifeMessage} ▼`}</span>
                     <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
@@ -265,10 +267,10 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
             {/* Filter Pills */}
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
               {[
-                { id: 'all', label: 'सभी १६ संस्कार' },
-                { id: 'early', label: 'शैशव व बाल्यकाल' },
-                { id: 'study', label: 'शिक्षा व गुरुकुल' },
-                { id: 'life', label: 'गृहस्थ व अंतिम' }
+                { id: 'all', label: labels.allSamskaras },
+                { id: 'early', label: labels.stageEarly },
+                { id: 'study', label: labels.stageStudy },
+                { id: 'life', label: labels.stageLife }
               ].map(f => (
                 <button
                   key={f.id}
@@ -309,7 +311,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
                       {samskara.purpose}
                     </p>
                     <div className="mt-2 text-[10.5px] font-devanagari text-amber-200/90 bg-black/40 p-2 rounded-lg border border-amber-500/10">
-                      <span className="font-bold text-amber-400">महत्व: </span>
+                      <span className="font-bold text-amber-400">{labels.significanceLabel} </span>
                       {samskara.mantraOrSignificance}
                     </div>
                   </div>
@@ -350,7 +352,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
 
                   <div className="p-2.5 rounded-xl bg-black/50 border border-amber-500/15">
                     <span className="text-[10px] font-mono text-amber-400 uppercase font-bold block mb-1">
-                      प्रमुख अनुष्ठान एवं परंपरा:
+                      {labels.ritualsLabel}
                     </span>
                     <div className="grid grid-cols-2 gap-1.5">
                       {fest.rituals.map((r, i) => (
@@ -390,7 +392,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
                         {item.titleHindi}
                       </h4>
                       <p className="text-xs text-amber-400 font-mono mt-0.5">
-                        रचयिता: {item.author} • {item.scope}
+                        {labels.authorLabel} {item.author} • {item.scope}
                       </p>
                     </div>
                     <BookOpen className="w-5 h-5 text-amber-400 group-hover:rotate-12 transition-transform" />
@@ -398,7 +400,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
 
                   <div className="mt-2.5 p-3 rounded-xl bg-black/50 border border-amber-500/15">
                     <span className="text-[10px] font-mono text-amber-400 font-bold block">
-                      मूल संदेश (Core Teaching):
+                      {labels.coreTeachingLabel}
                     </span>
                     <p className="text-xs text-amber-100 font-devanagari mt-0.5 leading-relaxed font-semibold">
                       {item.coreMessage}
@@ -408,7 +410,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
                   {activeItihas?.id === item.id && (
                     <div className="mt-3 space-y-2 animate-in fade-in duration-200">
                       <span className="text-[10px] font-mono text-amber-400 uppercase font-bold block">
-                        काण्ड / पर्व विवरण:
+                        {labels.sectionsLabel}
                       </span>
                       {item.keySections.map((sec, idx) => (
                         <div key={idx} className="p-2.5 rounded-xl bg-black/60 border border-amber-500/20 text-xs">
@@ -424,7 +426,7 @@ export const KnowledgeDetailModal: React.FC<KnowledgeDetailModalProps> = ({
                   )}
 
                   <div className="mt-2.5 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[11px] font-mono text-amber-400">
-                    <span>{activeItihas?.id === item.id ? 'संक्षेप करें ▲' : 'समस्त काण्ड/पर्व देखें ▼'}</span>
+                    <span>{activeItihas?.id === item.id ? `${labels.collapseBtn} ▲` : `${labels.showSections} ▼`}</span>
                     <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>

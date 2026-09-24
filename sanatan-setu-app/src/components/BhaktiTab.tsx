@@ -3,6 +3,7 @@ import { Play, Pause, Flame } from 'lucide-react';
 import { MANTRAS_PLAYLIST } from '../data/mockData';
 import type { MantraTrack } from '../types';
 import type { Language } from '../types';
+import { getLabels } from '../data/languages';
 import { devotionalPlayer, triggerHaptic, playTempleBell } from '../services/audioService';
 import { pushBackHandler } from '../services/modalBackHandler';
 
@@ -11,6 +12,7 @@ interface BhaktiTabProps {
 }
 
 export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
+  const labels = getLabels(lang);
   const [filterDeity, setFilterDeity] = useState<string>('all');
   const [selectedTrack, setSelectedTrack] = useState<MantraTrack | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(devotionalPlayer.isPlaying);
@@ -55,13 +57,13 @@ export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/40 text-amber-300 font-shloka text-xs mb-2 shadow-gold-sm">
             <span>दर्शनं देवदर्शनम्</span>
-            <span className="text-[10px] text-zinc-400 font-sans">• Path 2: Live Spiritual Experience</span>
+            <span className="text-[10px] text-zinc-400 font-sans">• {labels.path2}</span>
           </div>
           <h2 className="font-display text-2xl font-bold text-white tracking-wide">
-            {lang === 'hi' || lang === 'sa' ? 'मंत्र एवं पावन भजन' : lang === 'en' ? 'Mantras & Devotional Chants' : 'मंत्र एवं पावन भजन'}
+            {labels.bhaktiHeading}
           </h2>
           <p className="text-xs text-amber-200/90 font-devanagari mt-1.5 leading-relaxed">
-            पवित्र मन्त्रों का उच्चारण मन को शांत, तेजस्वी और रूपांतरित करता है
+            {labels.bhaktiSub}
           </p>
         </div>
       </div>
@@ -69,11 +71,11 @@ export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
       {/* Deity Filter Pills */}
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
         {[
-          { id: 'all', label: 'All Deities' },
-          { id: 'shiva', label: '🔱 महादेव' },
-          { id: 'shakti', label: '🪔 माँ शक्ति' },
-          { id: 'universal', label: '☀️ गायत्री' },
-          { id: 'ganesha', label: '🐘 गणपति' },
+          { id: 'all', label: labels.allDeities },
+          { id: 'shiva', label: `🔱 ${labels.mahadev}` },
+          { id: 'shakti', label: `🪔 ${labels.maShakti}` },
+          { id: 'universal', label: `☀️ ${labels.gayatri}` },
+          { id: 'ganesha', label: `🐘 ${labels.ganpati}` },
         ].map((f) => (
           <button
             key={f.id}
@@ -96,9 +98,9 @@ export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
       <div className="space-y-3">
         <div className="flex justify-between items-center px-1">
           <span className="text-xs font-cinzel text-gold-400 font-bold">
-            Featured Sacred Chants ({filteredTracks.length})
+            {labels.featuredChantsList} ({filteredTracks.length})
           </span>
-          <span className="text-[11px] font-mono text-zinc-400">108 Chanting Audio</span>
+          <span className="text-[11px] font-mono text-zinc-400">{labels.audio108}</span>
         </div>
 
         {filteredTracks.map((track) => {
@@ -164,7 +166,7 @@ export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
                   }}
                   className="px-2.5 py-1 rounded-lg bg-black/40 border border-gold-500/20 text-[11px] text-gold-300 font-cinzel hover:border-gold-400"
                 >
-                  Lyrics
+                  {labels.lyricsBtn}
                 </button>
               </div>
             </div>
@@ -177,24 +179,23 @@ export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
         <div className="flex items-center gap-2 border-b border-gold-500/20 pb-2.5">
           <Flame className="w-4 h-4 text-amber-500" />
           <h3 className="font-cinzel text-sm font-bold text-white">
-            {lang === 'hi' ? 'मंत्र जप की ५ सरल विधियाँ' : 'How to Chant: 5 Divine Steps'}
+            {labels.howToChant}
           </h3>
         </div>
 
         <div className="grid grid-cols-5 gap-2 text-center text-[10px]">
           {[
-            { num: 1, label: 'Prepare', hindi: 'आसन', desc: 'Clean posture' },
-            { num: 2, label: 'Focus', hindi: 'ध्यान', desc: 'Breathe deep' },
-            { num: 3, label: 'Chant', hindi: 'उच्चारण', desc: 'Clear sound' },
-            { num: 4, label: 'Feel', hindi: 'अनुभूति', desc: 'Feel energy' },
-            { num: 5, label: 'Transform', hindi: 'रूपांतरण', desc: 'Inner peace' },
+            { num: 1, label: labels.stepPrepare },
+            { num: 2, label: labels.stepFocus },
+            { num: 3, label: labels.stepChant },
+            { num: 4, label: labels.stepFeel },
+            { num: 5, label: labels.stepTransform },
           ].map((st) => (
             <div key={st.num} className="bg-black/40 p-2 rounded-xl border border-gold-500/10">
               <span className="w-4 h-4 rounded-full bg-gold-500/20 text-gold-400 font-bold mx-auto flex items-center justify-center mb-1 text-[9px]">
                 {st.num}
               </span>
-              <p className="font-devanagari text-gold-300 font-semibold">{st.hindi}</p>
-              <p className="text-[9px] text-zinc-400 mt-0.5">{st.label}</p>
+              <p className="font-devanagari text-gold-300 font-semibold">{st.label}</p>
             </div>
           ))}
         </div>
@@ -207,7 +208,7 @@ export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
             <div className="flex justify-between items-start border-b border-gold-500/20 pb-3">
               <div>
                 <span className="text-[10px] font-mono text-gold-400 uppercase tracking-widest font-bold">
-                  Sacred Lyrics & Meaning
+                  {labels.sacredLyrics}
                 </span>
                 <h3 className="font-cinzel text-lg font-bold text-white">
                   {selectedTrack.title}
@@ -234,7 +235,7 @@ export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
             {/* Meaning Block */}
             <div className="p-3.5 rounded-xl bg-gold-950/40 border border-gold-500/20">
               <h5 className="text-xs font-mono text-gold-400 uppercase font-semibold">
-                {lang === 'en' ? 'Sacred Meaning & Significance:' : 'पावन अर्थ व भाव:'}
+                {labels.sacredMeaning}
               </h5>
               <p className="font-devanagari text-sm text-zinc-200 mt-1 leading-relaxed">
                 {lang === 'en' ? selectedTrack.meaningEnglish : selectedTrack.meaningHindi}
@@ -244,7 +245,7 @@ export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
             {/* Benefits */}
             <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800">
               <h5 className="text-xs font-mono text-amber-400 uppercase font-semibold">
-                {lang === 'en' ? 'Spiritual Benefits:' : 'आध्यात्मिक लाभ व प्रभाव:'}
+                {labels.spiritualBenefits}
               </h5>
               <p className="text-xs text-zinc-300 font-sans mt-1 leading-relaxed">
                 {selectedTrack.benefits}
@@ -260,7 +261,7 @@ export const BhaktiTab: React.FC<BhaktiTabProps> = ({ lang }) => {
               className="w-full py-3 rounded-xl bg-gradient-to-r from-gold-600 to-amber-500 text-black font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-gold-sm"
             >
               <Play className="w-4 h-4 fill-black stroke-black" />
-              <span>{lang === 'en' ? 'Play Sacred Chant' : 'मंत्र श्रवण करें'}</span>
+              <span>{labels.playSacred}</span>
             </button>
           </div>
         </div>

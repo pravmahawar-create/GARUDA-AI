@@ -12,7 +12,7 @@ import {
 } from '../data/mockData';
 import { CONTENT_CATEGORIES } from '../data/contentCategories';
 import { KNOWLEDGE_HUB_CATEGORIES } from '../data/knowledgeHubData';
-import { getLabels } from '../data/languages';
+import { getLabels, getCategoryTitle } from '../data/languages';
 import type { TabType } from './BottomNav';
 import type { DeepScripture, Purana, Language, Article } from '../types';
 import { devotionalPlayer, playTempleBell, triggerHaptic } from '../services/audioService';
@@ -101,19 +101,13 @@ export const HomeTab: React.FC<HomeTabProps> = ({
   const showVedas = hasPreference('vedas_upanishads', 'puranas_itihas');
   const showArticles = hasPreference('sanatan_knowledge', 'darshan_adhyatma', 'rishi_parampara', 'sanskriti_parampara', 'parv_utsav', 'dhyan_sadhana');
 
-  // Time-aware spiritual greeting — language-aware
+  // Time-aware spiritual greeting — fully language-aware via labels
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (lang === 'en') {
-      if (hour >= 4 && hour < 12) return { text: 'Good Morning, Sadhak', sub: 'Brahma Muhurta & Surya Vandana' };
-      if (hour >= 12 && hour < 17) return { text: 'Blessed Afternoon', sub: 'Wisdom & Peaceful Reflection' };
-      if (hour >= 17 && hour < 21) return { text: 'Sacred Evening', sub: 'Sandhya Aarti & Meditation' };
-      return { text: 'Har Har Mahadev', sub: 'Night Sadhana & Silence' };
-    }
-    if (hour >= 4 && hour < 12) return { text: 'शुभ प्रभात', sub: 'ब्रह्म मुहूर्त व सूर्य वंदना' };
-    if (hour >= 12 && hour < 17) return { text: 'शुभ अपराह्न', sub: 'ज्ञान एवं शांत मनन' };
-    if (hour >= 17 && hour < 21) return { text: 'शुभ संध्या', sub: 'संध्या आरती एवं ध्यान' };
-    return { text: 'हर हर महादेव', sub: 'रात्रि साधना व मौन' };
+    if (hour >= 4 && hour < 12) return { text: labels.greetingMorning, sub: labels.greetingMorningSub };
+    if (hour >= 12 && hour < 17) return { text: labels.greetingAfternoon, sub: labels.greetingAfternoonSub };
+    if (hour >= 17 && hour < 21) return { text: labels.greetingEvening, sub: labels.greetingEveningSub };
+    return { text: labels.greetingNight, sub: labels.greetingNightSub };
   };
 
   const greeting = getGreeting();
@@ -131,7 +125,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             <span>{greeting.sub}</span>
           </div>
           <h2 className="font-display text-xl md:text-2xl font-bold text-white tracking-wide leading-tight">
-            {greeting.text}, {lang === 'en' ? 'Sadhak' : 'साधक'}
+            {greeting.text}, {labels.sadhak}
           </h2>
         </div>
 
@@ -171,7 +165,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           <div className="flex items-center justify-between">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-950/90 border border-amber-500/50 text-amber-300 text-xs font-mono tracking-wider shadow-gold-sm uppercase font-bold">
               <Flame className="w-3.5 h-3.5 text-amber-400" />
-              <span>आज का विशेष पावन दर्शन • Featured</span>
+              <span>{labels.featuredBadge}</span>
             </span>
             <span className="text-xs font-mono text-amber-300 font-semibold">
               Kashi Vishwanath
@@ -181,7 +175,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           {/* Title & Motto */}
           <div>
             <h1 className="font-display text-2xl md:text-3xl font-bold text-white tracking-wide leading-tight">
-              {lang === 'en' ? 'Sanatan Setu — Eternal Bridge' : 'सनातन सेतु — दिव्य ज्ञान सेतु'}
+              {labels.heroTitle}
             </h1>
             <p className="text-sm text-amber-100 font-devanagari mt-1.5 leading-relaxed">
               {CLIENT_FOUNDATION_INFO.motto}
@@ -193,21 +187,21 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             <div className="flex justify-between items-center text-xs">
               <span className="text-xs font-mono text-amber-400 uppercase tracking-wider font-bold flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>{labels.todayShloka || 'आज का दिव्य श्लोक'}</span>
+                <span>{labels.todayShloka}</span>
               </span>
               <button
                 onClick={() => playTempleBell()}
                 className="text-xs font-mono text-amber-300 flex items-center gap-1 hover:underline active:scale-95"
               >
                 <Volume2 className="w-4 h-4 text-amber-400" />
-                <span>श्रवण करें</span>
+                <span>{labels.listen}</span>
               </button>
             </div>
             <p className="font-shloka text-amber-100 text-base md:text-lg font-bold leading-relaxed whitespace-pre-line">
               {panchang.shlokaOfDay.sanskrit}
             </p>
             <p className="text-sm font-devanagari text-zinc-200 leading-relaxed pt-1">
-              अर्थ: {panchang.shlokaOfDay.meaning}
+              {labels.meaningLabel} {panchang.shlokaOfDay.meaning}
             </p>
           </div>
 
@@ -218,14 +212,14 @@ export const HomeTab: React.FC<HomeTabProps> = ({
               className="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-black font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-gold-md hover:brightness-110 active:scale-98 transition-all"
             >
               <Play className="w-4 h-4 fill-black stroke-black" />
-              <span>{labels.listenNow || 'मंत्र श्रवण करें'}</span>
+              <span>{labels.listenNow}</span>
             </button>
             <button
               onClick={() => onNavigateTab('temples')}
               className="px-6 py-3.5 rounded-2xl bg-black/70 border border-amber-500/40 text-amber-300 font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-1.5 hover:bg-amber-500/10 active:scale-98 transition-all"
             >
               <Radio className="w-4 h-4 text-amber-400" />
-              <span>{labels.liveDarshan || 'लाइव दर्शन'}</span>
+              <span>{labels.liveDarshan}</span>
             </button>
           </div>
         </div>
@@ -256,13 +250,13 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           </div>
           <div>
             <span className="text-xs font-mono text-amber-400 uppercase tracking-wider font-bold block">
-              नित्य साधना • Daily Japa Track
+              {labels.dailyJapa}
             </span>
             <h4 className="font-display text-sm md:text-base font-bold text-white leading-tight">
               {featuredMantra.sanskritTitle}
             </h4>
             <span className="text-xs font-mono text-zinc-300 block mt-0.5">
-              १०८ आवृत्ति • {featuredMantra.durationFormatted} • {featuredMantra.artist}
+              {labels.repeats108} • {featuredMantra.durationFormatted} • {featuredMantra.artist}
             </span>
           </div>
         </div>
@@ -272,7 +266,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           className="px-3.5 py-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-sm font-mono font-bold hover:bg-amber-500/30 flex items-center gap-1 active:scale-95 transition-all"
         >
           <Disc3 className="w-4 h-4" />
-          <span>१०८ माला</span>
+          <span>{labels.mala108}</span>
         </button>
       </div>
       )}
@@ -295,26 +289,26 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             <div className="flex items-center gap-2 mb-1.5">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
               <span className="text-xs font-mono text-amber-300 font-bold uppercase tracking-wider">
-                सनातन ज्ञान का महासागर • Major Hub
+                {labels.knowledgeHubTitle}
               </span>
             </div>
 
             <h3 className="font-display text-xl md:text-2xl font-bold text-white group-hover:text-amber-200 transition-colors">
-              सनातन का विशाल ज्ञान भंडार
+              {labels.knowledgeHubDesc}
             </h3>
             <p className="text-sm text-amber-100 font-devanagari mt-1.5 leading-relaxed max-w-sm">
-              वेद, उपनिषद्, गीता, षड् दर्शन, १८ पुराण, ऋषि परंपरा एवं १६ संस्कार
+              {labels.knowledgeSub}
             </p>
 
             <div className="flex flex-wrap gap-2 mt-3.5">
               <span className="text-xs font-mono text-amber-300 px-3 py-1 rounded-full bg-black/60 border border-amber-500/30 font-semibold">
-                ११ ज्ञान स्तम्भ
+                {labels.pillars11}
               </span>
               <span className="text-xs font-mono text-amber-300 px-3 py-1 rounded-full bg-black/60 border border-amber-500/30 font-semibold">
-                २०,०००+ मन्त्र
+                {labels.mantras20k}
               </span>
               <span className="text-xs font-mono text-amber-300 px-3 py-1 rounded-full bg-black/60 border border-amber-500/30 font-semibold">
-                १८ महापुराण
+                {labels.puranas18}
               </span>
             </div>
           </div>
@@ -325,9 +319,9 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         </div>
 
         <div className="mt-4 pt-3 border-t border-amber-500/20 flex items-center justify-between text-sm font-mono text-amber-300 font-bold">
-          <span>सम्पूर्ण ज्ञान महासागर खोलें</span>
+          <span>{labels.openOcean}</span>
           <div className="flex items-center gap-1.5">
-            <span>प्रवेश करें</span>
+            <span>{labels.enter}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
           </div>
         </div>
@@ -341,14 +335,14 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           <div className="flex items-center gap-1.5">
             <Compass className="w-3.5 h-3.5 text-amber-400" />
             <h3 className="font-display text-sm font-bold text-white tracking-wide">
-              ज्ञान श्रेणियां (Knowledge Categories)
+              {labels.knowledgeCategories}
             </h3>
           </div>
           <button
             onClick={() => onNavigateTab('knowledge')}
             className="text-[11px] font-mono text-amber-400 flex items-center gap-0.5 hover:underline"
           >
-            <span>सभी ११ देखें</span>
+            <span>{labels.viewAll11}</span>
             <ChevronRight className="w-3 h-3" />
           </button>
         </div>
@@ -369,7 +363,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
               </div>
               <div>
                 <span className="text-xs font-display font-bold text-white group-hover:text-amber-300 block whitespace-nowrap">
-                  {cat.titleHindi}
+                  {getCategoryTitle(cat.id, lang, cat.titleHindi, cat.titleEnglish)}
                 </span>
                 <span className="text-[9px] font-mono text-zinc-400 block whitespace-nowrap">
                   {cat.countBadge}
@@ -393,7 +387,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
               : 'bg-black/50 border border-amber-500/20 text-zinc-300 hover:border-amber-400'
           }`}
         >
-          {labels.home || 'होम'}
+          {labels.home}
         </button>
 
         {userSelectedCategories.map(cat => (
@@ -409,7 +403,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                 : 'bg-black/50 border border-amber-500/25 text-amber-200 hover:border-amber-400'
             }`}
           >
-            <span>{cat.titleHindi}</span>
+            <span>{getCategoryTitle(cat.id, lang, cat.titleHindi, cat.titleEnglish)}</span>
           </button>
         ))}
 
@@ -418,7 +412,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           className="px-2.5 py-1.5 rounded-full text-xs font-mono text-zinc-400 border border-zinc-700 hover:border-amber-400 whitespace-nowrap flex items-center gap-1"
         >
           <SlidersHorizontal className="w-3 h-3" />
-          <span>विषय चुनें</span>
+          <span>{labels.chooseTopics}</span>
         </button>
       </div>
 
@@ -431,10 +425,10 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           <div>
             <div className="flex items-center gap-1.5 text-xs text-amber-400 font-mono">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span>सद्गुरु वाणी • Live Satsang</span>
+              <span>{labels.satsangLive}</span>
             </div>
             <h3 className="font-display text-base font-bold text-white tracking-wide">
-              {lang === 'hi' || lang === 'sa' ? 'पावन कथा एवं धर्म प्रवचन' : 'Live Religious Discourses & Katha'}
+              {labels.discoursesTitle}
             </h3>
           </div>
           <button
@@ -444,7 +438,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             }}
             className="text-xs text-amber-400 font-mono hover:underline flex items-center gap-0.5"
           >
-            <span>कथा कार्यक्रम</span>
+            <span>{labels.kathaPrograms}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -494,7 +488,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                 <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-red-950/80 border border-red-500/40 text-red-400 text-[9px] font-mono font-bold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                  प्रसारण
+                  {labels.broadcast}
                 </span>
               </div>
               <div className="p-3">
@@ -506,7 +500,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                 </p>
                 <div className="mt-2 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-400">
                   <span>{katha.time}</span>
-                  <span className="text-amber-400 underline font-bold">जुड़ें →</span>
+                  <span className="text-amber-400 underline font-bold">{labels.join}</span>
                 </div>
               </div>
             </div>
@@ -523,7 +517,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="flex justify-between items-center px-1">
           <div>
             <h3 className="font-display text-base font-bold text-white tracking-wide">
-              {labels.trendingMantras || (lang === 'hi' || lang === 'sa' ? 'पावन मंत्र एवं स्तुति' : 'Trending Sacred Chants & Mantras')}
+              {labels.trendingMantras}
             </h3>
             <p className="text-[10px] font-mono text-zinc-400">108 Chants • Divine Vibrations</p>
           </div>
@@ -531,7 +525,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             onClick={() => onNavigateTab('bhakti')}
             className="text-xs text-amber-400 font-mono hover:underline flex items-center gap-0.5"
           >
-            <span>सभी देखें</span>
+            <span>{labels.viewAll}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -593,7 +587,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="flex justify-between items-center px-1">
           <div>
             <h3 className="font-display text-base font-bold text-white tracking-wide">
-              {labels.liveTemples || (lang === 'hi' || lang === 'sa' ? 'लाइव दर्शन एवं पावन आरती' : 'Live Aarti & Darshan Streams')}
+              {labels.liveTemples}
             </h3>
             <p className="text-[10px] font-mono text-zinc-400">Direct From Holy Sanctuaries • २४x७</p>
           </div>
@@ -601,7 +595,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             onClick={() => onNavigateTab('temples')}
             className="text-xs text-amber-400 font-mono hover:underline flex items-center gap-0.5"
           >
-            <span>सभी तीर्थ</span>
+            <span>{labels.allTemples}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -644,10 +638,10 @@ export const HomeTab: React.FC<HomeTabProps> = ({
 
               <div className="p-3 flex items-center justify-between border-t border-amber-500/15 text-xs">
                 <span className="text-[10px] font-mono text-zinc-400">
-                  {temple.circuitTag || 'पवित्र तीर्थ'}
+                  {temple.circuitTag || labels.holySanctuaries}
                 </span>
                 <span className="text-amber-400 font-bold font-mono text-[11px] underline">
-                  दीप अर्पण →
+                  {labels.deepOffer}
                 </span>
               </div>
             </div>
@@ -663,17 +657,17 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="flex justify-between items-center px-1">
           <div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-950/80 border border-amber-500/40 text-amber-300 font-shloka text-[11px] mb-1">
-              <span>ज्योतिषां सूर्य आदिः • प्रामाणिक काल गणना</span>
+              <span>{labels.vedicBadge}</span>
             </div>
             <h3 className="font-display text-base font-bold text-white tracking-wide">
-              {lang === 'hi' || lang === 'sa' ? 'वैदिक ज्योतिष, लग्न कुण्डली व पंचांग' : 'Vedic Astrology, Kundli & Panchang'}
+              {labels.astrologyHeading}
             </h3>
           </div>
           <button
             onClick={onOpenAstroModal}
             className="text-xs text-amber-400 font-mono hover:underline flex items-center gap-0.5"
           >
-            <span>प्रवेश करें</span>
+            <span>{labels.enter}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -689,13 +683,13 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           <div className="flex items-start justify-between">
             <div className="space-y-1 max-w-[260px]">
               <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-wider block">
-                Vedic Astrology Sanctuary
+                {labels.vedicBadge}
               </span>
               <h4 className="font-display text-sm md:text-base font-bold text-white group-hover:text-amber-200">
-                लग्न कुण्डली चक्र एवं अष्टकूट ३६ गुण मिलान
+                {labels.astrologyCardTitle}
               </h4>
               <p className="text-[11px] font-devanagari text-zinc-300 leading-relaxed pt-0.5">
-                सटीक जन्म समय व स्थान विवरण के आधार पर लग्न चक्र, ग्रह स्थिति व विवाह अनुकूलता।
+                {labels.astrologyCardDesc}
               </p>
             </div>
 
@@ -705,9 +699,9 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           </div>
 
           <div className="mt-3 pt-2.5 border-t border-amber-500/15 flex items-center justify-between text-xs font-mono text-amber-300">
-            <span className="text-[10px] text-zinc-400">सटीक गणना हेतु जन्म विवरण अनिवार्य</span>
+            <span className="text-[10px] text-zinc-400">{labels.birthRequired}</span>
             <span className="font-bold underline flex items-center gap-1">
-              <span>कुण्डली खोलें</span>
+              <span>{labels.openKundli}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </div>
@@ -724,10 +718,10 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           >
             <span className="text-lg mb-0.5">📅</span>
             <span className="text-xs font-display font-bold text-white group-hover:text-amber-200">
-              शुभ मुहूर्त
+              {labels.shubhMuhurat}
             </span>
             <span className="text-[8.5px] font-mono text-zinc-400 mt-0.5">
-              चौघड़िया
+              {labels.choghadiya}
             </span>
           </button>
 
@@ -740,7 +734,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           >
             <span className="text-lg mb-0.5">🧭</span>
             <span className="text-xs font-display font-bold text-white group-hover:text-amber-200">
-              लग्न चक्र
+              {labels.lagnaChakra}
             </span>
             <span className="text-[8.5px] font-mono text-zinc-400 mt-0.5">
               Diamond Chart
@@ -756,7 +750,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           >
             <span className="text-lg mb-0.5">🤝</span>
             <span className="text-xs font-display font-bold text-white group-hover:text-amber-200">
-              ३६ गुण मिलान
+              {labels.ashtakoot}
             </span>
             <span className="text-[8.5px] font-mono text-zinc-400 mt-0.5">
               Ashtakoot
@@ -800,7 +794,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="flex justify-between items-center px-1">
           <div>
             <h3 className="font-display text-base font-bold text-white tracking-wide">
-              {labels.sacredVedas || (lang === 'hi' || lang === 'sa' ? 'पवित्र वेद एवं १८ महापुराण' : 'Sacred Scripture Explorer')}
+              {labels.sacredVedas}
             </h3>
             <p className="text-[10px] font-mono text-zinc-400">Canonical 4-Tier Grantha Hierarchy</p>
           </div>
@@ -808,7 +802,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
             onClick={() => onNavigateTab('knowledge')}
             className="text-xs text-amber-400 font-mono hover:underline flex items-center gap-0.5"
           >
-            <span>ग्रंथालय</span>
+            <span>{labels.grantha}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -838,7 +832,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                 </span>
               </div>
               <span className="mt-2 text-[9px] font-mono text-amber-300/80 underline text-center block">
-                मण्डल वाचन →
+                {labels.mandala} →
               </span>
             </div>
           ))}
@@ -854,7 +848,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                 <span className="text-[10px] font-mono text-amber-300 font-bold">
                   {purana.shlokasCount}
                 </span>
-                <span className="text-[8px] font-mono text-zinc-400 uppercase">श्लोक</span>
+                <span className="text-[8px] font-mono text-zinc-400 uppercase">{labels.shlokaCountLabel}</span>
               </div>
               <div>
                 <span className="text-[9px] font-mono text-amber-400 block uppercase font-bold">{purana.category || 'पुराण'}</span>
@@ -862,11 +856,11 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                   {purana.sanskritName}
                 </h4>
                 <span className="text-[9px] font-devanagari text-zinc-400 block truncate mt-0.5">
-                  आराध्य: {purana.deity}
+                  {labels.deityLabel} {purana.deity}
                 </span>
               </div>
               <span className="mt-2 text-[9px] font-mono text-amber-300/80 underline text-center block">
-                आख्यान देखें →
+                {labels.puranaDetails} →
               </span>
             </div>
           ))}
@@ -882,9 +876,9 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="flex justify-between items-center px-1">
           <div>
             <h3 className="font-display text-base font-bold text-white tracking-wide">
-              {lang === 'en' ? 'Spiritual Articles & Blogs' : 'आध्यात्मिक लेख एवं शोध'}
+              {labels.articlesHeading}
             </h3>
-            <p className="text-[10px] font-mono text-zinc-400">Timeless Wisdom for Modern Living</p>
+            <p className="text-[10px] font-mono text-zinc-400">{labels.articlesSub}</p>
           </div>
           <span className="text-xs text-amber-400 font-mono">
             {ARTICLES_DATA.length} Articles
@@ -919,7 +913,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                 <span className="italic truncate max-w-[240px] text-zinc-400">
                   {art.quote}
                 </span>
-                <span className="underline font-bold whitespace-nowrap ml-2">पूरा पढ़ें →</span>
+                <span className="underline font-bold whitespace-nowrap ml-2">{labels.readFull}</span>
               </div>
             </div>
           ))}
@@ -950,7 +944,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
               </span>
             </div>
             <h4 className="font-display text-xs md:text-sm font-bold text-white group-hover:text-amber-200">
-              सनातन सेतु — ९ पावन तत्त्व एवं दर्शन
+              {labels.trustNinePillars}
             </h4>
           </div>
         </div>

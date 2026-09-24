@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bell, Info, Settings } from 'lucide-react';
 import { playTempleBell, triggerHaptic } from '../services/audioService';
+import { getLabels } from '../data/languages';
 import type { Language } from '../types';
 
 interface NavbarProps {
@@ -10,6 +11,8 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ currentLang, onOpenSettings, onOpenLogoInfo }) => {
+  const labels = getLabels(currentLang);
+
   const handleBellClick = () => {
     playTempleBell();
   };
@@ -50,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentLang, onOpenSettings, onO
           {/* Temple Bell Chime */}
           <button
             onClick={handleBellClick}
-            title="Ring Sacred Temple Bell"
+            title={labels.ringBellBtn}
             className="w-8 h-8 rounded-full bg-amber-950/50 border border-amber-500/30 text-amber-400 flex items-center justify-center hover:border-amber-400 hover:text-amber-200 transition-colors shadow-gold-sm active:scale-90"
           >
             <Bell className="w-4 h-4" />
@@ -62,7 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentLang, onOpenSettings, onO
               triggerHaptic('light');
               onOpenSettings();
             }}
-            title={`Language & Preferences (${currentLang.toUpperCase()})`}
+            title={`${labels.settings} (${currentLang.toUpperCase()})`}
             className="w-8 h-8 rounded-full bg-black/50 border border-amber-500/30 text-amber-300 flex items-center justify-center hover:border-amber-400 hover:text-white transition-colors shadow-gold-sm active:scale-90"
           >
             <Settings className="w-4 h-4" />
@@ -71,7 +74,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentLang, onOpenSettings, onO
           {/* Logo & Foundation Info */}
           <button
             onClick={onOpenLogoInfo}
-            title="About Sanatan Setu Logo & Foundation"
+            title={labels.brandPhilosophy}
             className="w-8 h-8 rounded-full bg-amber-950/50 border border-amber-500/30 text-amber-400 flex items-center justify-center hover:border-amber-400 hover:text-amber-200 transition-colors active:scale-90"
           >
             <Info className="w-4 h-4" />

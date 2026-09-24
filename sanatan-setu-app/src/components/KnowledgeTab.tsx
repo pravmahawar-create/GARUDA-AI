@@ -8,6 +8,7 @@ import {
   DEEP_SCRIPTURES_DATA, ARTICLES_DATA
 } from '../data/mockData';
 import { KNOWLEDGE_HUB_CATEGORIES } from '../data/knowledgeHubData';
+import { getLabels, getCategoryTitle } from '../data/languages';
 import type { Veda, Upanishad, GitaShloka, Purana, DeepScripture, Language, Article } from '../types';
 import type { TabType } from './BottomNav';
 import { playTempleBell, triggerHaptic } from '../services/audioService';
@@ -24,6 +25,7 @@ interface KnowledgeTabProps {
 type SubSection = 'hub' | 'vedas' | 'upanishads' | 'gita' | 'puranas';
 
 export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab }) => {
+  const labels = getLabels(lang);
   const [subSection, setSubSection] = useState<SubSection>('hub');
   const [puranaFilter, setPuranaFilter] = useState<string>('all');
 
@@ -145,13 +147,13 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
         <div className="relative z-10 space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/40 text-amber-300 font-shloka text-xs shadow-gold-sm">
             <span>विद्या ददाति विनयम्</span>
-            <span className="text-[10px] text-zinc-400 font-sans">• Knowledge Ocean</span>
+            <span className="text-[10px] text-zinc-400 font-sans">• {labels.knowledgeOcean}</span>
           </div>
           <h2 className="font-display text-2xl md:text-3xl font-bold text-white tracking-wide">
-            {lang === 'hi' || lang === 'sa' ? 'सनातन ज्ञान का महासागर' : 'Sanatan Wisdom Universe'}
+            {labels.knowledgeHubTitle}
           </h2>
           <p className="text-xs text-amber-200/90 font-devanagari leading-relaxed max-w-md">
-            वेद, उपनिषद्, गीता, दर्शन, ऋषि परंपरा, इतिहास एवं सनातन संस्कृति का सम्पूर्ण प्रामाणिक संग्रह
+            {labels.knowledgeSub}
           </p>
         </div>
       </div>
@@ -159,11 +161,11 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
       {/* 2. Sub-section Navigation Pill Tabs */}
       <div className="flex rounded-2xl glass-gold p-1 border border-amber-500/25 overflow-x-auto scrollbar-none gap-1">
         {[
-          { id: 'hub' as SubSection, labelEn: '11 Hubs', labelHi: 'ज्ञान महासागर (11)' },
-          { id: 'vedas' as SubSection, labelEn: '4 Vedas', labelHi: '४ वेद' },
-          { id: 'upanishads' as SubSection, labelEn: 'Upanishads', labelHi: '१० उपनिषद्' },
-          { id: 'gita' as SubSection, labelEn: 'Bhagavad Gita', labelHi: 'गीता' },
-          { id: 'puranas' as SubSection, labelEn: '18 Puranas', labelHi: '१८ महापुराण' },
+          { id: 'hub' as SubSection, label: labels.knowledgeOcean },
+          { id: 'vedas' as SubSection, label: lang === 'hi' || lang === 'sa' ? '४ वेद' : '4 Vedas' },
+          { id: 'upanishads' as SubSection, label: lang === 'hi' || lang === 'sa' ? '१० उपनिषद्' : 'Upanishads' },
+          { id: 'gita' as SubSection, label: lang === 'hi' || lang === 'sa' ? 'गीता' : 'Bhagavad Gita' },
+          { id: 'puranas' as SubSection, label: labels.puranas18 },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -174,7 +176,7 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
                 : 'text-zinc-400 hover:text-amber-200'
             }`}
           >
-            {lang === 'hi' || lang === 'sa' ? tab.labelHi : tab.labelEn}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -183,8 +185,8 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
       {subSection === 'hub' && (
         <div className="space-y-4">
           <div className="flex justify-between items-center px-1">
-            <span className="text-xs font-mono text-zinc-400">११ पावन ज्ञान स्तम्भ • 11 Sacred Pillars</span>
-            <span className="text-[11px] text-amber-400 font-mono font-bold">Tap Card to Open</span>
+            <span className="text-xs font-mono text-zinc-400">{labels.pillars11}</span>
+            <span className="text-[11px] text-amber-400 font-mono font-bold">{labels.tapToOpen}</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -212,12 +214,14 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
                       #{idx + 1}
                     </span>
                     <h3 className="font-display text-lg font-bold text-white group-hover:text-amber-200 transition-colors">
-                      {cat.titleHindi}
+                      {getCategoryTitle(cat.id, lang, cat.titleHindi, cat.titleEnglish)}
                     </h3>
                   </div>
-                  <span className="text-xs font-mono text-amber-300/80 block mt-0.5">
-                    {cat.titleEnglish}
-                  </span>
+                  {getCategoryTitle(cat.id, lang, cat.titleHindi, cat.titleEnglish) !== cat.titleEnglish && (
+                    <span className="text-xs font-mono text-amber-300/80 block mt-0.5">
+                      {cat.titleEnglish}
+                    </span>
+                  )}
 
                   <p className="text-sm text-zinc-200 font-devanagari mt-2.5 leading-relaxed">
                     {cat.tagline}
@@ -225,9 +229,9 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-zinc-800/90 flex items-center justify-between text-xs font-mono text-amber-400 font-bold">
-                  <span className="group-hover:underline">विस्तृत अध्ययन खोलें</span>
+                  <span className="group-hover:underline">{labels.openStudy}</span>
                   <div className="flex items-center gap-1.5">
-                    <span>प्रवेश</span>
+                    <span>{labels.enter}</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                   </div>
                 </div>
@@ -241,8 +245,8 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
       {subSection === 'vedas' && (
         <div className="space-y-4">
           <div className="flex justify-between items-center px-1">
-            <span className="text-xs font-mono text-zinc-400">श्रुति परंपरा • ४ मूल महावेद</span>
-            <span className="text-[11px] text-amber-400 font-mono font-bold">Tap Card to Open Reader</span>
+            <span className="text-xs font-mono text-zinc-400">{labels.shruti}</span>
+            <span className="text-[11px] text-amber-400 font-mono font-bold">{labels.openReader}</span>
           </div>
 
           <div className="grid grid-cols-1 gap-4">
@@ -276,8 +280,8 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
                 </div>
 
                 <div className="mt-3 flex justify-between items-center text-[11px] font-mono text-amber-400 pt-2 border-t border-zinc-800">
-                  <span>मुख्य सूक्त: {veda.keySukta.split(',')[0]}</span>
-                  <span className="underline font-bold">गहन अध्ययन खोलें →</span>
+                  <span>{labels.keySuktaLabel} {veda.keySukta.split(',')[0]}</span>
+                  <span className="underline font-bold">{labels.deepStudy}</span>
                 </div>
               </div>
             ))}
@@ -289,7 +293,7 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
       {subSection === 'upanishads' && (
         <div className="space-y-4">
           <div className="flex justify-between items-center px-1">
-            <span className="text-xs font-mono text-zinc-400">मुख्य १० उपनिषद् • वेदान्त तत्वज्ञान</span>
+            <span className="text-xs font-mono text-zinc-400">{labels.upanishadHeader}</span>
             <span className="text-[11px] text-amber-400 font-mono">Tat Tvam Asi</span>
           </div>
 
@@ -314,7 +318,7 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
 
                 <div className="mt-3 p-3 rounded-xl bg-black/40 border border-amber-500/15">
                   <p className="text-[10px] font-mono text-amber-400 uppercase tracking-widest font-bold">
-                    महावाक्य:
+                    {labels.mahavakyaLabel}
                   </p>
                   <p className="font-shloka text-amber-200 text-base font-bold mt-0.5">
                     {up.mahavakya}
@@ -326,7 +330,7 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
 
                 <div className="mt-2.5 text-right">
                   <span className="text-[10px] font-mono text-amber-400 underline">
-                    उपनिषद् श्लोक वाचनालय खोलें →
+                    {labels.openUpanishad}
                   </span>
                 </div>
               </div>
@@ -352,9 +356,9 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
               >
                 <div className="flex justify-between items-center mb-2 border-b border-amber-500/15 pb-2">
                   <span className="text-xs font-mono text-amber-400 font-bold">
-                    अध्याय {gita.chapter} • श्लोक {gita.verse}
+                    {labels.chapterLabel} {gita.chapter} • {labels.verseLabel} {gita.verse}
                   </span>
-                  <span className="text-[10px] font-mono text-zinc-400">भगवद्वाणी</span>
+                  <span className="text-[10px] font-mono text-zinc-400">{labels.bhagavadVaani}</span>
                 </div>
 
                 <div className="p-3.5 rounded-xl bg-black/50 border border-amber-500/15 text-center my-2">
@@ -369,7 +373,7 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
 
                 <div className="mt-3 text-right">
                   <span className="text-[10px] font-mono text-amber-400 underline">
-                    अध्याय २ व ११ का पूर्ण पाठ खोलें →
+                    {labels.openFullGita}
                   </span>
                 </div>
               </div>
@@ -384,9 +388,9 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
           <div className="flex justify-between items-center px-1">
             <div>
               <span className="font-display text-sm font-bold text-white block">
-                व्यास प्रणीत १८ महापुराण (All 18 Mahapuranas)
+                {labels.allPuranas}
               </span>
-              <span className="text-[10px] font-mono text-zinc-400">कुल ४,००,००० श्लोक संख्या</span>
+              <span className="text-[10px] font-mono text-zinc-400">कुल ४,००,००० {labels.shlokaCountLabel}</span>
             </div>
             <span className="text-xs text-amber-400 font-mono font-bold">18/18 Available</span>
           </div>
@@ -394,10 +398,10 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
           {/* Category Filter Pills */}
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
             {[
-              { id: 'all', label: 'सभी १८ पुराण' },
-              { id: 'Sattvika', label: 'सात्विक (विष्णु)' },
-              { id: 'Rajasa', label: 'राजसिक (ब्रह्मा/सूर्य)' },
-              { id: 'Tamasa', label: 'तामसिक (शिव/अग्नि)' },
+              { id: 'all', label: labels.allPuranas },
+              { id: 'Sattvika', label: labels.sattvika },
+              { id: 'Rajasa', label: labels.rajasa },
+              { id: 'Tamasa', label: labels.tamasa },
             ].map((f) => (
               <button
                 key={f.id}
@@ -430,7 +434,7 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
                       {purana.category}
                     </span>
                     <span className="text-[10px] font-mono text-zinc-400">
-                      {purana.shlokasCount} श्लोक
+                      {purana.shlokasCount} {labels.shlokaCountLabel}
                     </span>
                   </div>
 
@@ -438,7 +442,7 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
                     {purana.sanskritName}
                   </h4>
                   <p className="text-[11px] font-mono text-amber-400/90 mt-0.5">
-                    आराध्य: {purana.deity}
+                    {labels.deityLabel} {purana.deity}
                   </p>
                   <p className="text-xs text-zinc-300 font-devanagari mt-1.5 line-clamp-2 leading-relaxed">
                     {purana.summary}
@@ -446,7 +450,7 @@ export const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ lang, onNavigateTab 
                 </div>
 
                 <div className="mt-3 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-amber-400">
-                  <span>विस्तृत विवरण एवं आख्यान</span>
+                  <span>{labels.puranaDetails}</span>
                   <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>

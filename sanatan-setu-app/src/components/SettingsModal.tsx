@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Globe, Check, ShieldCheck, RefreshCw } from 'lucide-react';
-import { LANGUAGES } from '../data/languages';
+import { X, Globe, Check, ShieldCheck, RefreshCw, Compass } from 'lucide-react';
+import { LANGUAGES, getLabels, getCategoryTitle } from '../data/languages';
 import { CONTENT_CATEGORIES } from '../data/contentCategories';
+import { GENRES, getGenreTitle } from '../data/genres';
 import { CLIENT_FOUNDATION_INFO } from '../data/mockData';
 import type { Language } from '../types';
 import { triggerHaptic, playTempleBell } from '../services/audioService';
@@ -13,6 +14,8 @@ interface SettingsModalProps {
   onSelectLang: (lang: Language) => void;
   userPreferences: string[];
   onUpdatePreferences: (prefs: string[]) => void;
+  userGenre: string;
+  onChangeGenre: (genre: string) => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -22,9 +25,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onSelectLang,
   userPreferences,
   onUpdatePreferences,
+  userGenre,
+  onChangeGenre,
 }) => {
   const [activeTab, setActiveTab] = useState<'language' | 'preferences' | 'about'>('language');
   const [tempPrefs, setTempPrefs] = useState<string[]>(userPreferences);
+  const labels = getLabels(currentLang);
 
   if (!isOpen) return null;
 
@@ -33,6 +39,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     playTempleBell();
     onSelectLang(langCode);
     localStorage.setItem('sanatan_language', langCode);
+  };
+
+  const handleGenreSelect = (genreId: string) => {
+    triggerHaptic('medium');
+    playTempleBell();
+    onChangeGenre(genreId);
+    localStorage.setItem('sanatan_genre', genreId);
   };
 
   const handleTogglePref = (catId: string) => {
@@ -68,9 +81,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
             <div>
               <h3 className="font-display text-base font-bold text-white">
-                सेटिंग्स एवं प्राथमिकताएं
+                {labels.settingsTitle}
               </h3>
-              <p className="text-[10px] font-mono text-amber-400/80">Settings & Preferences</p>
+              <p className="text-[10px] font-mono text-amber-400/80">{labels.settingsSub}</p>
             </div>
           </div>
           <button
@@ -94,7 +107,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            भाषा (Language)
+            {labels.tabLanguage}
           </button>
           <button
             onClick={() => setActiveTab('preferences')}
@@ -104,7 +117,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            विषय (Topics)
+            {labels.tabTopics}
           </button>
           <button
             onClick={() => setActiveTab('about')}
@@ -114,7 +127,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            संस्थान (Trust)
+            {labels.tabTrust}
           </button>
         </div>
 
@@ -122,7 +135,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         {activeTab === 'language' && (
           <div className="flex-1 overflow-y-auto pr-1 space-y-2.5">
             <p className="text-xs text-zinc-300 font-devanagari">
-              सनातन ज्ञान और मन्त्रों का अपनी पवित्र मातृभाषा में अनुभव करें:
+              {labels.langIntro}
             </p>
             <div className="grid grid-cols-2 gap-2">
               {LANGUAGES.map((lang) => {
@@ -155,17 +168,57 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* Tab 2: Content Preferences (Netflix-style topic toggles) */}
         {activeTab === 'preferences' && (
-          <div className="flex-1 overflow-y-auto pr-1 space-y-2.5">
+          <div className="flex-1 overflow-y-auto pr-1 space-y-3">
+            {/* Change Genre section */}
+            <div className="p-3 rounded-2xl bg-black/50 border border-amber-500/25 space-y-2">
+              <div className="flex items-center gap-1.5 text-amber-300 font-display font-semibold text-xs">
+                <Compass className="w-3.5 h-3.5 text-amber-400" />
+                <span>{labels.changeGenre}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                {GENRES.map((genre) => {
+                  const isSelected = userGenre === genre.id;
+                  return (
+                    <button
+                      key={genre.id}
+                      onClick={() => handleGenreSelect(genre.id)}
+                      className={`p-2 rounded-xl text-left border transition-all flex items-center justify-between gap-1.5 ${
+                        isSelected
+                          ? 'bg-amber-500/25 border-amber-400 text-amber-200 shadow-gold-sm'
+                          : 'bg-black/40 border-amber-500/15 text-zinc-300 hover:border-amber-500/40'
+                      }`}
+                    >
+                      <div className="truncate">
+                        <p className="font-devanagari text-xs font-bold truncate leading-tight">
+                          {getGenreTitle(genre.id, currentLang, genre.titleHindi, genre.titleEnglish)}
+                        </p>
+                        <p className="text-[9px] font-mono text-zinc-500 truncate">{genre.titleEnglish}</p>
+                      </div>
+                      <div
+                        className={`w-4 h-4 rounded-md border flex items-center justify-center flex-shrink-0 ${
+                          isSelected
+                            ? 'bg-amber-500 border-amber-400 text-black'
+                            : 'border-zinc-600 bg-black/40'
+                        }`}
+                      >
+                        {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="flex justify-between items-center">
               <p className="text-xs text-zinc-300 font-devanagari">
-                होम स्क्रीन पर अपनी रुचि के विषय चुनें:
+                {labels.topicsIntro}
               </p>
               <button
                 onClick={handleResetPreferences}
                 className="text-[11px] font-mono text-amber-400 flex items-center gap-1 hover:underline"
               >
                 <RefreshCw className="w-3 h-3" />
-                <span>रीसेट</span>
+                <span>{labels.reset}</span>
               </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -182,7 +235,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     }`}
                   >
                     <div className="truncate">
-                      <p className="font-devanagari text-xs font-bold truncate leading-tight">{cat.titleHindi}</p>
+                      <p className="font-devanagari text-xs font-bold truncate leading-tight">{getCategoryTitle(cat.id, currentLang, cat.titleHindi, cat.titleEnglish)}</p>
                       <p className="text-[9px] font-mono text-zinc-500 truncate">{cat.titleEnglish}</p>
                     </div>
                     <div
@@ -237,7 +290,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           }}
           className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-black font-semibold text-xs tracking-wider uppercase shadow-gold-sm hover:brightness-110 transition-all"
         >
-          पूर्ण (Done)
+          {labels.done}
         </button>
       </div>
     </div>

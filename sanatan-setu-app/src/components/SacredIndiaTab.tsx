@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Radio, MapPin, Clock, Eye, Sparkles, Flame, X } from 'lucide-react';
 import { TEMPLES_DATA } from '../data/mockData';
 import type { Temple, Language } from '../types';
+import { getLabels } from '../data/languages';
 import { playTempleBell, triggerHaptic } from '../services/audioService';
 
 interface SacredIndiaTabProps {
@@ -9,6 +10,7 @@ interface SacredIndiaTabProps {
 }
 
 export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
+  const labels = getLabels(lang);
   const [selectedCircuit, setSelectedCircuit] = useState<string>('all');
   const [activeDarshanTemple, setActiveDarshanTemple] = useState<Temple | null>(null);
   const [diyaOffered, setDiyaOffered] = useState<boolean>(false);
@@ -46,13 +48,13 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/40 text-amber-300 font-shloka text-xs mb-2 shadow-gold-sm">
             <span>तीर्थं तीर्थकरं विदुः</span>
-            <span className="text-[10px] text-zinc-400 font-sans">• Path 4: Pilgrimage & Tourism</span>
+            <span className="text-[10px] text-zinc-400 font-sans">• {labels.path4}</span>
           </div>
           <h2 className="font-display text-2xl font-bold text-white tracking-wide">
-            {lang === 'hi' ? 'पवित्र तीर्थ व मन्दिर' : 'Sacred India & Temples'}
+            {labels.templesHeading}
           </h2>
           <p className="text-xs text-amber-200/90 font-devanagari mt-1.5 leading-relaxed">
-            हिमालय के शिखरों से लेकर पावन गंगा तट और दक्षिण के भव्य देवालयों तक
+            {labels.templesSub}
           </p>
         </div>
       </div>
@@ -60,11 +62,11 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
       {/* Circuit Filter Pills */}
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
         {[
-          { id: 'all', label: 'All Tirthas' },
-          { id: 'chardham', label: '🏔️ चार धाम' },
-          { id: 'jyotirlinga', label: '🔱 द्वादश ज्योतिर्लिंग' },
-          { id: 'shaktipeeth', label: '🪔 ५१ शक्तिपीठ' },
-          { id: 'major', label: '🏛️ प्रमुख देवालय' },
+          { id: 'all', label: labels.allTirthas },
+          { id: 'chardham', label: `🏔️ ${labels.chardham}` },
+          { id: 'jyotirlinga', label: `🔱 ${labels.jyotirlinga}` },
+          { id: 'shaktipeeth', label: `🪔 ${labels.shaktipeeth}` },
+          { id: 'major', label: `🏛️ ${labels.majorMandir}` },
         ].map((c) => (
           <button
             key={c.id}
@@ -87,9 +89,9 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
       <div className="space-y-4">
         <div className="flex justify-between items-center px-1">
           <span className="text-xs font-cinzel text-gold-400 font-bold">
-            Holy Sanctuaries ({filteredTemples.length})
+            {labels.holySanctuaries} ({filteredTemples.length})
           </span>
-          <span className="text-[11px] font-mono text-zinc-400">Live Aarti Streams</span>
+          <span className="text-[11px] font-mono text-zinc-400">{labels.liveAartiStreams}</span>
         </div>
 
         {filteredTemples.map((temple) => (
@@ -109,13 +111,13 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
               {/* Live Badge */}
               <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-950/80 border border-red-500/40 text-red-400 text-[10px] font-mono tracking-wider font-bold">
                 <span className="w-2 h-2 rounded-full bg-red-500 live-indicator" />
-                <span>LIVE DARSHAN</span>
+                <span>{labels.liveDarshan}</span>
               </div>
 
               {/* Viewers Count */}
               <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 border border-zinc-700 text-zinc-300 text-[10px] font-mono">
                 <Eye className="w-3 h-3 text-gold-400" />
-                <span>{temple.viewersCount} watching</span>
+                <span>{temple.viewersCount} {labels.watching}</span>
               </div>
 
               <div className="absolute bottom-3 left-4 right-4">
@@ -144,7 +146,7 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
                 )}
                 {temple.altitude && (
                   <span className="px-2 py-0.5 rounded-md bg-black/50 border border-zinc-700 text-zinc-300 text-[10px] font-mono">
-                    ऊंचाई: {temple.altitude}
+                    {labels.altitudeLabel} {temple.altitude}
                   </span>
                 )}
               </div>
@@ -158,7 +160,7 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-zinc-400">
                     <Clock className="w-3.5 h-3.5 text-amber-400" />
-                    <span>आरती समय:</span>
+                    <span>{labels.aartiTimeLabel}</span>
                   </div>
                   <span className="font-mono text-amber-300 font-semibold">
                     {temple.aartiTimings[0]}
@@ -167,7 +169,7 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
                 {temple.bestTimeToVisit && (
                   <div className="flex items-center gap-1.5 text-[10px] text-zinc-400 font-devanagari pt-1 border-t border-zinc-800">
                     <Sparkles className="w-3 h-3 text-amber-400 flex-shrink-0" />
-                    <span>दर्शन काल: {temple.bestTimeToVisit}</span>
+                    <span>{labels.bestDarshanTime} {temple.bestTimeToVisit}</span>
                   </div>
                 )}
               </div>
@@ -177,7 +179,7 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
                 className="w-full py-2.5 rounded-xl bg-gradient-to-r from-gold-600 to-amber-500 text-black font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-gold-sm hover:scale-[1.01] active:scale-98 transition-transform"
               >
                 <Radio className="w-4 h-4 animate-pulse" />
-                <span>Watch Live Darshan</span>
+                <span>{labels.watchLiveDarshan}</span>
               </button>
             </div>
           </div>
@@ -197,7 +199,7 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
                     {activeDarshanTemple.name}
                   </h4>
                   <p className="text-[10px] font-mono text-zinc-400">
-                    Live Temple Sanctum Feed • {activeDarshanTemple.viewersCount} Devotees
+                    {labels.liveFeed} • {activeDarshanTemple.viewersCount} {labels.devotees}
                   </p>
                 </div>
               </div>
@@ -220,7 +222,7 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
 
               {/* Watermark & Live Overlays */}
               <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-red-600/90 text-white text-[10px] font-mono font-bold tracking-widest">
-                LIVE FEED
+                {labels.liveFeed}
               </div>
               <div className="absolute bottom-3 left-3 text-xs font-devanagari text-gold-300 font-bold drop-shadow">
                 {activeDarshanTemple.sanskritName}
@@ -231,7 +233,7 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
                 <div className="absolute bottom-4 right-4 flex flex-col items-center animate-bounce">
                   <div className="w-8 h-8 rounded-full bg-amber-500/30 blur-md" />
                   <Flame className="w-8 h-8 text-amber-400 drop-shadow-[0_0_15px_#FF8C00]" />
-                  <span className="text-[9px] font-devanagari text-gold-200 mt-0.5">दीप अर्पित</span>
+                  <span className="text-[9px] font-devanagari text-gold-200 mt-0.5">{labels.diyaOffered}</span>
                 </div>
               )}
             </div>
@@ -247,7 +249,7 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
                 }`}
               >
                 <Flame className="w-4 h-4 text-amber-400" />
-                <span>{diyaOffered ? 'दीप प्रज्वलित ✓' : 'दीप प्रज्वलन करें'}</span>
+                <span>{diyaOffered ? labels.diyaLit : labels.lightDiya}</span>
               </button>
 
               <button
@@ -255,7 +257,7 @@ export const SacredIndiaTab: React.FC<SacredIndiaTabProps> = ({ lang }) => {
                 className="py-3 rounded-xl glass-gold border border-gold-500/30 text-gold-300 text-xs font-cinzel font-semibold flex items-center justify-center gap-2 hover:border-gold-400 active:scale-95 transition-all"
               >
                 <Sparkles className="w-4 h-4 text-gold-400" />
-                <span>घंटी बजाएं (Ring Bell)</span>
+                <span>{labels.ringBellBtn}</span>
               </button>
             </div>
           </div>

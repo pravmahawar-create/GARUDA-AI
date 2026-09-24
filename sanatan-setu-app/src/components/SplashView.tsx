@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Volume2 } from 'lucide-react';
 import { playOmAudio, stopOmAudio, triggerHaptic } from '../services/audioService';
+import { getLabels } from '../data/languages';
+import type { Language } from '../types';
 
 interface SplashViewProps {
   onComplete: () => void;
+  lang: Language;
 }
 
-export const SplashView: React.FC<SplashViewProps> = ({ onComplete }) => {
+export const SplashView: React.FC<SplashViewProps> = ({ onComplete, lang }) => {
+  const labels = getLabels(lang);
   // Stages:
   // 1: Absolute Darkness & Primordial Resonance (0-2.2s)
   // 2: Sacred Golden Emblem & Wordmark Awakening (2.2-4.5s)
@@ -63,7 +67,7 @@ export const SplashView: React.FC<SplashViewProps> = ({ onComplete }) => {
             onClick={handleProceed}
             className="px-3.5 py-1 rounded-full border border-amber-500/20 bg-black/40 text-amber-200/80 text-[11px] tracking-wider flex items-center gap-1 hover:border-amber-400 transition-colors animate-fade-in"
           >
-            <span>छोड़ें (Skip)</span>
+            <span>{labels.splashSkip}</span>
             <ArrowRight className="w-3 h-3" />
           </button>
         )}
@@ -133,15 +137,15 @@ export const SplashView: React.FC<SplashViewProps> = ({ onComplete }) => {
             <div className="space-y-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/40 text-amber-300 text-xs font-mono uppercase tracking-wider shadow-gold-sm">
                 <Volume2 className="w-3.5 h-3.5 text-amber-400" />
-                <span>शुभ आगमन</span>
+                <span>{labels.splashWelcome}</span>
               </span>
 
               <h2 className="font-display text-3xl font-bold text-white tracking-wide">
-                स्वागतम्
+                {labels.heroTitle}
               </h2>
 
               <p className="text-sm font-devanagari text-amber-100/90 leading-relaxed max-w-xs mx-auto">
-                सनातन ज्ञान, साधना और संस्कृति के सेतु पर आपका स्वागत है।
+                {labels.splashWelcomeSub}
               </p>
             </div>
 
@@ -151,7 +155,7 @@ export const SplashView: React.FC<SplashViewProps> = ({ onComplete }) => {
                 onClick={handleProceed}
                 className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-black font-bold text-sm tracking-wider uppercase shadow-gold-md hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 group"
               >
-                <span>आगे बढ़ें (Proceed)</span>
+                <span>{labels.splashProceed}</span>
                 <ArrowRight className="w-4 h-4 text-black group-hover:translate-x-1 transition-transform" />
               </button>
               <p className="text-[10px] font-mono text-zinc-500 tracking-wider">

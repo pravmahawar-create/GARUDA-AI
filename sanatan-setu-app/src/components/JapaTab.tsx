@@ -3,6 +3,7 @@ import { RotateCcw, Volume2, VolumeX, Award } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 import { playBeadClick, playTempleBell, triggerHaptic } from '../services/audioService';
+import { getLabels } from '../data/languages';
 
 import type { Language } from '../types';
 
@@ -18,6 +19,7 @@ const MANTRAS_JAPA = [
 ];
 
 export const JapaTab: React.FC<JapaTabProps> = ({ lang }) => {
+  const labels = getLabels(lang);
   const [count, setCount] = useState<number>(() => {
     return parseInt(localStorage.getItem('sanatan_japa_count') || '0', 10);
   });
@@ -67,7 +69,7 @@ export const JapaTab: React.FC<JapaTabProps> = ({ lang }) => {
   };
 
   const handleReset = () => {
-    if (window.confirm('क्या आप वर्तमान जप गणना रीसेट करना चाहते हैं?')) {
+    if (window.confirm(labels.resetConfirm)) {
       triggerHaptic('medium');
       setCount(0);
     }
@@ -81,13 +83,13 @@ export const JapaTab: React.FC<JapaTabProps> = ({ lang }) => {
       {/* Header */}
       <div className="text-center space-y-1">
         <span className="text-[10px] font-mono tracking-widest text-amber-400 uppercase font-bold">
-          Digital Rudraksha Sadhana
+          {labels.digitalRudraksha}
         </span>
         <h2 className="font-display text-2xl font-bold text-white tracking-wide">
-          {lang === 'hi' ? '१०८ दिव्य जप माला' : '108 Sacred Japa Mala'}
+          {labels.japaHeading}
         </h2>
         <p className="text-xs text-zinc-400 font-devanagari">
-          हर मनके के साथ अपने मन को एकाग्र व शांत करें
+          {labels.japaSub}
         </p>
       </div>
 
@@ -146,7 +148,7 @@ export const JapaTab: React.FC<JapaTabProps> = ({ lang }) => {
           {/* Central Touch Surface / Rudraksha Disc */}
           <div className="absolute inset-5 rounded-full glass-gold border-2 border-gold-500/50 flex flex-col items-center justify-center shadow-[0_0_40px_rgba(212,175,55,0.25)] group-hover:border-gold-400 group-hover:shadow-[0_0_50px_rgba(212,175,55,0.4)] transition-all">
             <span className="text-[10px] font-mono text-gold-400 uppercase tracking-widest font-bold">
-              TAP TO CHANT
+              {labels.tapToChant}
             </span>
 
             {/* Current Bead Count */}
@@ -164,13 +166,13 @@ export const JapaTab: React.FC<JapaTabProps> = ({ lang }) => {
             </p>
 
             <span className="mt-2 text-[10px] font-mono text-amber-400 bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-500/30">
-              Round {rounds + 1}
+              {labels.roundN} {rounds + 1}
             </span>
           </div>
         </div>
 
         <p className="mt-4 text-xs font-mono text-zinc-500 tracking-wider uppercase">
-          Touch Anywhere Inside Ring • Vibrates on Each Bead
+          {labels.touchRingHint}
         </p>
       </div>
 
@@ -181,7 +183,7 @@ export const JapaTab: React.FC<JapaTabProps> = ({ lang }) => {
           className="px-4 py-2 rounded-xl glass-gold border border-gold-500/30 text-xs text-zinc-300 flex items-center gap-1.5 hover:text-gold-300 hover:border-gold-400 transition-colors"
         >
           <RotateCcw className="w-3.5 h-3.5 text-gold-400" />
-          <span>Reset Count</span>
+          <span>{labels.resetCountBtn}</span>
         </button>
 
         <button
@@ -194,12 +196,12 @@ export const JapaTab: React.FC<JapaTabProps> = ({ lang }) => {
           {soundEnabled ? (
             <>
               <Volume2 className="w-3.5 h-3.5 text-gold-400" />
-              <span>Chime: ON</span>
+              <span>{labels.chimeOn}</span>
             </>
           ) : (
             <>
               <VolumeX className="w-3.5 h-3.5 text-zinc-500" />
-              <span>Chime: OFF</span>
+              <span>{labels.chimeOff}</span>
             </>
           )}
         </button>
@@ -208,15 +210,15 @@ export const JapaTab: React.FC<JapaTabProps> = ({ lang }) => {
       {/* Sadhana Statistics Card */}
       <div className="glass-gold p-5 rounded-2xl border border-gold-500/25 grid grid-cols-3 gap-3 text-center">
         <div>
-          <span className="text-[10px] font-mono text-zinc-400 uppercase block">Current Mala</span>
+          <span className="text-[10px] font-mono text-zinc-400 uppercase block">{labels.currentMala}</span>
           <span className="font-cinzel text-xl font-bold text-gold-300">{count}/108</span>
         </div>
         <div className="border-x border-zinc-800">
-          <span className="text-[10px] font-mono text-zinc-400 uppercase block">Total Malas</span>
+          <span className="text-[10px] font-mono text-zinc-400 uppercase block">{labels.totalMalas}</span>
           <span className="font-cinzel text-xl font-bold text-amber-400">{rounds}</span>
         </div>
         <div>
-          <span className="text-[10px] font-mono text-zinc-400 uppercase block">Total Chants</span>
+          <span className="text-[10px] font-mono text-zinc-400 uppercase block">{labels.totalChants}</span>
           <span className="font-cinzel text-xl font-bold text-white">{totalLifetime}</span>
         </div>
       </div>
@@ -230,20 +232,20 @@ export const JapaTab: React.FC<JapaTabProps> = ({ lang }) => {
             </div>
 
             <h3 className="font-cinzel text-2xl font-black text-white">
-              १०८ जप पूर्ण !
+              {labels.malaComplete}
             </h3>
             <p className="font-devanagari text-sm text-gold-200">
-              शुभम् भवतु ! आपकी १ सम्पूर्ण माला पूर्ण हुई।
+              {labels.malaCompleteMsg}
             </p>
             <p className="text-xs text-zinc-400 font-sans">
-              "Divine grace descends upon the sincere seeker. May this sacred vibration bring peace to your mind and home."
+              {labels.malaCompleteSub}
             </p>
 
             <button
               onClick={() => setShowCelebration(false)}
               className="w-full py-3.5 rounded-xl bg-gradient-to-r from-gold-600 via-gold-500 to-amber-600 text-black font-semibold text-xs tracking-wider uppercase shadow-gold-md"
             >
-              अगली माला आरम्भ करें
+              {labels.nextMala}
             </button>
           </div>
         </div>

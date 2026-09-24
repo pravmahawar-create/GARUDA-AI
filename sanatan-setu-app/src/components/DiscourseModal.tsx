@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { X, ArrowLeft, Radio, Calendar, Play, Pause, Bell, MapPin, Eye } from 'lucide-react';
 import { triggerHaptic, playTempleBell } from '../services/audioService';
 import { pushBackHandler } from '../services/modalBackHandler';
+import { getLabels } from '../data/languages';
+import type { Language } from '../types';
 
 interface DiscourseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  lang: string;
+  lang: Language;
 }
 
 interface DiscourseProgram {
@@ -76,7 +78,8 @@ const DISCOURSE_PROGRAMS: DiscourseProgram[] = [
   }
 ];
 
-export const DiscourseModal: React.FC<DiscourseModalProps> = ({ isOpen, onClose }) => {
+export const DiscourseModal: React.FC<DiscourseModalProps> = ({ isOpen, onClose, lang }) => {
+  const labels = getLabels(lang);
   const [activeTab, setActiveTab] = useState<'live' | 'upcoming'>('live');
   const [playingId, setPlayingId] = useState<string | null>('prog-1');
   const [reminders, setReminders] = useState<string[]>([]);
@@ -120,11 +123,11 @@ export const DiscourseModal: React.FC<DiscourseModalProps> = ({ isOpen, onClose 
             <div className="flex items-center gap-1.5">
               <span className="text-[9px] font-mono text-red-400 bg-red-950/80 px-2 py-0.5 rounded-full border border-red-500/30 uppercase font-bold flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 live-indicator" />
-                <span>लाइव सत्संग व कथा</span>
+                <span>{labels.liveKathaBadge}</span>
               </span>
             </div>
             <h3 className="font-display text-base md:text-lg font-bold text-white leading-tight">
-              धार्मिक प्रवचन एवं भजन कार्यक्रम
+              {labels.discoursesTitle}
             </h3>
           </div>
         </div>
@@ -151,7 +154,7 @@ export const DiscourseModal: React.FC<DiscourseModalProps> = ({ isOpen, onClose 
           }`}
         >
           <Radio className="w-3.5 h-3.5" />
-          <span>लाइव प्रसारण (Live Now)</span>
+          <span>{labels.tabLive}</span>
         </button>
 
         <button
@@ -166,7 +169,7 @@ export const DiscourseModal: React.FC<DiscourseModalProps> = ({ isOpen, onClose 
           }`}
         >
           <Calendar className="w-3.5 h-3.5" />
-          <span>आगामी कथा व प्रवचन</span>
+          <span>{labels.tabUpcoming}</span>
         </button>
       </div>
 
@@ -195,18 +198,18 @@ export const DiscourseModal: React.FC<DiscourseModalProps> = ({ isOpen, onClose 
                 {prog.isLive ? (
                   <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-950/90 border border-red-500/50 text-red-400 text-[10px] font-mono font-bold">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 live-indicator" />
-                    <span>प्रत्यक्ष प्रसारण • LIVE</span>
+                    <span>{labels.liveBadge} • LIVE</span>
                   </div>
                 ) : (
                   <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-950/90 border border-amber-500/50 text-amber-300 text-[10px] font-mono font-bold">
-                    <span>आगामी कार्यक्रम</span>
+                    <span>{labels.upcomingBadge}</span>
                   </div>
                 )}
 
                 {prog.viewers && (
                   <div className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/70 text-zinc-200 text-[10px] font-mono">
                     <Eye className="w-3 h-3 text-amber-400" />
-                    <span>{prog.viewers} श्रोता</span>
+                    <span>{prog.viewers} {labels.listenersLabel}</span>
                   </div>
                 )}
 
@@ -245,12 +248,12 @@ export const DiscourseModal: React.FC<DiscourseModalProps> = ({ isOpen, onClose 
                     {isPlaying ? (
                       <>
                         <Pause className="w-4 h-4 fill-black" />
-                        <span>प्रसारण रोकें</span>
+                        <span>{labels.pauseBroadcast}</span>
                       </>
                     ) : (
                       <>
                         <Play className="w-4 h-4 fill-black" />
-                        <span>लाइव कथा श्रवण करें</span>
+                        <span>{labels.listenLive}</span>
                       </>
                     )}
                   </button>
@@ -264,7 +267,7 @@ export const DiscourseModal: React.FC<DiscourseModalProps> = ({ isOpen, onClose 
                     }`}
                   >
                     <Bell className="w-3.5 h-3.5" />
-                    <span>{hasReminder ? 'स्मरण निर्धारित (Reminder Set)' : 'स्मरण सेट करें'}</span>
+                    <span>{hasReminder ? labels.reminderSet : labels.setReminder}</span>
                   </button>
                 )}
               </div>

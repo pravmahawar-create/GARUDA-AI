@@ -19,15 +19,18 @@ import { popAndExecuteBackHandler } from './services/modalBackHandler';
 
 const TABS: TabType[] = ['home', 'knowledge', 'bhakti', 'japa', 'temples'];
 
+// FUTURE FINAL MODEL: set to true to respect sanatan_onboarded flag (show onboarding only once).
+// Currently OFF — har open pe Language → Topics dikhega (testing / pre-final builds).
+const RESPECT_ONBOARDING_FLAG = false;
+
 export const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState<boolean>(true);
-  // First open (fresh install / cleared data): always show Language → Topics onboarding.
-  // Only skip if user already completed it in a previous session.
   const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
+    if (!RESPECT_ONBOARDING_FLAG) return true;
     try {
       return localStorage.getItem('sanatan_onboarded') !== 'true';
     } catch {
-      return true; // localStorage blocked → safe default: show onboarding
+      return true;
     }
   });
   const [activeTab, setActiveTab] = useState<TabType>('home');
@@ -41,6 +44,13 @@ export const App: React.FC = () => {
       return saved ? JSON.parse(saved) : ['shiva_shakti', 'mantras_stotras', 'vedas_upanishads', 'teerth_mandir'];
     } catch {
       return ['shiva_shakti', 'mantras_stotras', 'vedas_upanishads', 'teerth_mandir'];
+    }
+  });
+  const [userGenre, setUserGenre] = useState<string>(() => {
+    try {
+      return localStorage.getItem('sanatan_genre') || 'dharm_gyan';
+    } catch {
+      return 'dharm_gyan';
     }
   });
 
@@ -114,8 +124,10 @@ export const App: React.FC = () => {
 
   const handleSplashComplete = () => {
     setShowSplash(false);
-    // Re-check onboarding flag at Proceed time — ensures Language → Topics → Main
-    // on every fresh open. Only skips if user already completed onboarding.
+    if (!RESPECT_ONBOARDING_FLAG) {
+      setShowOnboarding(true);
+      return;
+    }
     try {
       const onboarded = localStorage.getItem('sanatan_onboarded');
       setShowOnboarding(onboarded !== 'true');
@@ -127,6 +139,10 @@ export const App: React.FC = () => {
   const handleOnboardingComplete = (selectedLang: Language, selectedPrefs: string[]) => {
     setLang(selectedLang);
     setUserPreferences(selectedPrefs);
+    try {
+      const g = localStorage.getItem('sanatan_genre');
+      if (g) setUserGenre(g);
+    } catch { /* ignore */ }
     localStorage.setItem('sanatan_language', selectedLang);
     localStorage.setItem('sanatan_user_preferences', JSON.stringify(selectedPrefs));
     localStorage.setItem('sanatan_onboarded', 'true');
@@ -179,7 +195,7 @@ export const App: React.FC = () => {
       className="min-h-screen bg-[#07090E] text-[#F5F5F0] flex flex-col font-sans selection:bg-gold-500/30 selection:text-gold-200"
     >
       {/* 1. Cinematic Splash View */}
-      {showSplash && <SplashView onComplete={handleSplashComplete} />}
+      {showSplash && <SplashView onComplete={handleSplashComplete} lang={lang} />}
 
       {/* 2. Onboarding Flow (Language + Netflix-style Preferences) */}
       {!showSplash && showOnboarding && (
@@ -251,6 +267,11 @@ export const App: React.FC = () => {
             onSelectLang={(newLang) => setLang(newLang)}
             userPreferences={userPreferences}
             onUpdatePreferences={(newPrefs) => setUserPreferences(newPrefs)}
+            userGenre={userGenre}
+            onChangeGenre={(newGenre) => {
+              setUserGenre(newGenre);
+              try { localStorage.setItem('sanatan_genre', newGenre); } catch { /* ignore */ }
+            }}
           />
 
           {/* Double-tap Back Exit Toast */}
