@@ -1,0 +1,37 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Debug / forensic test artifacts (not source)
+ui_*.xml
+ui_*.png
+v33_*.xml
+v33_*.png
+seq_*.xml
+seq_*.png
+_screen_*.png
+_test_*.png
+flow_step*.png
+*.apk
+_ia_listing.html
