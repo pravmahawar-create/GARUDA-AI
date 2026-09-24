@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "garuda": {
+      "command": "node",
+      "args": [
+        "D:/GARUDA-AI/scripts/mcp/garudaMcpServer.js"
+      ],
+      "cwd": "D:/GARUDA-AI"
+    }
+  }
+}

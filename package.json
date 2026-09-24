@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "AI Operating System for ABSLI Life Insurance",
   "main": "index.js",
+  "bin": {
+    "garuda": "bin/garuda.js"
+  },
   "scripts": {
+    "garuda": "node bin/garuda.js",
     "build": "vite build && node scripts/generate-sitemap.js && node scripts/generate-favicons.js && node scripts/prerender-seo.js || exit 1",
     "seo": "node scripts/generate-sitemap.js && node scripts/prerender-seo.js",
     "preview": "vite preview",
