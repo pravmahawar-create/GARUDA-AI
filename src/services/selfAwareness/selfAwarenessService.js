@@ -19,7 +19,11 @@ function initDefaults() {
 }
 
 function getStatus() {
-  const caps = capMapper.getCapabilitySummary();
+  let caps = capMapper.getCapabilitySummary();
+  if (!caps.total || caps.total === 0) {
+    initDefaults();
+    caps = capMapper.getCapabilitySummary();
+  }
   const perf = perfTracker.getPerformanceSummary();
   const health = healthMonitor.checkHealth();
   return { capabilities: caps, performance: perf, health, timestamp: new Date().toISOString() };

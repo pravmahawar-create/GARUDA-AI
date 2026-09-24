@@ -1,0 +1,44 @@
+name: GARUDA Dental Outreach Cloud Autopilot
+
+on:
+  schedule:
+    # 14:00 UTC = 9:00 AM Dallas / Austin (CST) • Monday through Friday
+    - cron: '0 14 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  outreach-dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Execute Safe Outreach Batch in Cloud
+        env:
+          GARUDA_EMAIL_HOST: ${{ secrets.GARUDA_EMAIL_HOST || 'smtp.zoho.in' }}
+          GARUDA_EMAIL_PORT: ${{ secrets.GARUDA_EMAIL_PORT || '465' }}
+          GARUDA_EMAIL_USER: ${{ secrets.GARUDA_EMAIL_USER || 'praveen@garudaos.in' }}
+          GARUDA_EMAIL_PASS: ${{ secrets.GARUDA_EMAIL_PASS }}
+        run: |
+          node scripts/zoho-safe-dental-outreach.js --dispatch --limit=15
+
+      - name: Sync Audit Logs
+        run: |
+          git config --global user.name "GARUDA Autonomous Worker"
+          git config --global user.email "bot@garudaos.in"
+          git add data/leads/outreach_dispatch_log.jsonl
+          git commit -m "chore(outreach): autonomous cloud dispatch log sync [skip ci]" || echo "No log changes to commit"
+          git push || echo "Push skipped or not permitted"
