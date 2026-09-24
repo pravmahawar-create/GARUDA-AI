@@ -36,6 +36,7 @@ data/*
 !data/agency-whitelabel-followup-log.json
 !data/computer-education-targets.json
 !data/computer-education-dispatch-log.json
+!data/leads/
 src/data/
 .aider*
 scratch/
