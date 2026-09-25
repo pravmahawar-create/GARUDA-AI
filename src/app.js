@@ -98,6 +98,7 @@ app.get("/health", healthResponse);
 app.get("/api/health", healthResponse);
 
 app.use("/api/mother", require("./routes/motherAgentRoutes"));
+app.use("/api/intelligence", require("./routes/intelligenceRoutes"));
 app.use("/api/missions", require("./routes/missionRoutes"));
 app.use("/api/knowledge", require("./routes/knowledgeRoutes"));
 app.use("/api/rag", require("./routes/ragRoutes"));
@@ -143,6 +144,7 @@ app.use("/api/customer", (req, res) => require("../api/customer")(req, res));
 app.use("/api/cybershield", require("./routes/cybershieldRoutes"));
 app.use("/api/founder", (req, res) => require("../api/founder")(req, res));
 app.use("/api/founder-command", (req, res) => require("../api/founder")(req, res));
+app.use("/api/inbound", require("./routes/inboundRoutes"));
 app.use("/api/project-scope", (req, res) => require("../api/project-scope")(req, res));
 // GARUDA PAWAN Sovereign Autonomous Coding Agent
 app.use("/api/pawan", require("./routes/astraRoutes"));

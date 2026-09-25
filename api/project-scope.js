@@ -1,50 +1,4 @@
-const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
-
-let attributionService;
-try {
-  attributionService = require("../src/services/acquisitionAttributionService");
-} catch {
-  attributionService = null;
-}
-
-let authHelpers;
-try {
-  authHelpers = require("./customer/_auth");
-} catch {
-  authHelpers = null;
-}
-
-let telegramBotService;
-try {
-  telegramBotService = require("../src/services/telegramBotService");
-} catch {
-  telegramBotService = null;
-}
-
-let capabilityRegistryService;
-try {
-  capabilityRegistryService = require("../src/services/capabilityRegistryService");
-} catch {
-  capabilityRegistryService = null;
-}
-
-let revenueValueModelService;
-try {
-  revenueValueModelService = require("../src/services/revenueValueModelService");
-} catch {
-  revenueValueModelService = null;
-}
-
-let persistentProposalService;
-try {
-  persistentProposalService = require("../src/services/persistentProposalService");
-} catch {
-  persistentProposalService = null;
-}
-
-const inMemoryScopes = new Map();
+const { revenueFunnelSecurityService } = require("../src/services/revenueFunnelSecurityService");
 
 module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -52,7 +6,7 @@ module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,POST");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Garuda-Founder-Approved, X-Garuda-Test-Mode"
   );
 
   if (req.method === "OPTIONS") {
@@ -60,8 +14,8 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === "GET") {
-    const scopeId = req.query.id || (req.url && req.url.split("/").pop());
-    const scope = inMemoryScopes.get(scopeId);
+    const scopeId = (req.query && req.query.id) || (req.url && req.url.split("?")[0].split("/").pop());
+    const scope = await revenueFunnelSecurityService.getScopeById(scopeId);
     if (!scope) {
       return res.status(404).json({ success: false, message: "Project scope not found." });
     }
@@ -73,199 +27,13 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { requirements, email, name, phone, contact, budget, timeline, service, attribution: clientAttr } = req.body || {};
-    const cleanRequirements = String(requirements || "").trim();
-
-    if (!cleanRequirements || cleanRequirements.length < 5) {
-      return res.status(400).json({
-        success: false,
-        message: "Project requirements are required for scoping (minimum 5 characters)."
-      });
-    }
-
-    const scopeId = `scope_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
-    const assessment = capabilityRegistryService ? capabilityRegistryService.matchDemandUniversal({
-      title: cleanRequirements.slice(0, 100),
-      description: cleanRequirements
-    }) : { capabilityMatchScore: 85 };
-
-    const valueEstimate = revenueValueModelService ? revenueValueModelService.estimateValueFromEvidence(cleanRequirements, {
-      valueType: "estimated_project_value"
-    }) : { estimatedINR: 25000 };
-
-    const bestCap = (assessment && assessment.bestCapability) || {
-      name: "Custom Governed Software Engineering",
-      category: "Software Engineering",
-      estimatedDeliveryTime: "3-7 business days",
-      confidenceScore: 85
-    };
-
-    const statedBudget = Number(budget) || null;
-    const estimatedINR = statedBudget || valueEstimate.estimatedINR || (bestCap.confidenceScore ? Math.round(bestCap.confidenceScore * 250) : 25000);
-    const estimatedUSD = Math.round(estimatedINR / 85);
-
-    const milestones = estimatedINR >= 30000
-      ? [
-          { milestone: "Milestone 1 — Advance / Architecture & Core Build", amountINR: Math.round(estimatedINR / 2), percentage: 50 },
-          { milestone: "Milestone 2 — Final Delivery, Automated QA & Deployment", amountINR: estimatedINR - Math.round(estimatedINR / 2), percentage: 50 }
-        ]
-      : [
-          { milestone: "Milestone 1 — Complete Governed Delivery & Acceptance", amountINR: estimatedINR, percentage: 100 }
-        ];
-
-    let attribution = null;
-    if (attributionService) {
-      attribution = attributionService.resolveAttribution({ req, body: req.body, attribution: clientAttr });
-    } else {
-      attribution = clientAttr || null;
-    }
-
-    const proposal = {
-      proposalId: scopeId,
-      scopeId,
-      project: {
-        title: `${bestCap.name}: Custom Architecture`,
-        requirements: cleanRequirements
-      },
-      client: {
-        name: String(name || "Prospective Client").trim(),
-        email: String(email || (contact && contact.includes("@") ? contact : "")).trim() || null,
-        phone: String(phone || (contact && !contact.includes("@") ? contact : "")).trim() || null,
-        organization: "Web Lead"
-      },
-      customer: {
-        name: String(name || "Prospective Client").trim(),
-        email: String(email || (contact && contact.includes("@") ? contact : "")).trim() || null,
-        phone: String(phone || (contact && !contact.includes("@") ? contact : "")).trim() || null,
-        contact: String(contact || email || phone || "anon").trim(),
-        service: service || "custom-ai-development",
-        attribution: attribution || null
-      },
-      requirements: cleanRequirements,
-      capabilityMatch: {
-        name: bestCap.name,
-        category: bestCap.category,
-        matchScore: assessment ? assessment.capabilityMatchScore : 85,
-        canExecuteAutonomously: bestCap.canMotherExecuteAutonomously || false
-      },
-      primaryUniverse: assessment ? assessment.primaryUniverse : "U06 Automation",
-      activatedUniverses: assessment && assessment.activatedUniverses ? assessment.activatedUniverses : ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"],
-      selectedCapabilities: assessment && assessment.selectedCapabilities ? assessment.selectedCapabilities : [],
-      deliverables: [
-        "Complete source code repository with clean architecture & tests",
-        "Deterministic QA & Automated Validation report with evidence logs",
-        "Verified SHA-256 artifact manifest & production delivery package",
-        "Deployment guide & post-launch warranty support"
-      ],
-      pricing: {
-        currency: "INR",
-        totalINR: estimatedINR,
-        totalUSD: estimatedUSD,
-        totalAmount: estimatedINR,
-        depositAmount: milestones[0] ? (milestones[0].amountINR || milestones[0].amount) : estimatedINR,
-        depositAmountINR: milestones[0] ? (milestones[0].amountINR || milestones[0].amount) : estimatedINR,
-        pricingModel: estimatedINR >= 30000 ? "milestone_based" : "fixed_price",
-        milestones
-      },
-      estimatedTimeline: timeline || bestCap.estimatedDeliveryTime || "3-7 business days",
-      status: "APPROVED",
-      publicUrl: `https://garudaos.in/proposal/${scopeId}`,
-      createdAt: new Date().toISOString()
-    };
-
-    inMemoryScopes.set(scopeId, proposal);
-    if (persistentProposalService) {
-      try {
-        await persistentProposalService.saveProposal(proposal);
-      } catch (err) {
-        console.warn("[ProjectScope] Error persisting proposal:", err.message);
-      }
-    }
-
-    const leadRecord = {
-      id: `lead_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`,
-      name: proposal.customer.name,
-      email: proposal.customer.email,
-      phone: proposal.customer.phone,
-      contact: proposal.customer.contact,
-      source: (attribution && attribution.summary) || "project_scope_form",
-      attribution: attribution || null,
-      scopeId,
-      proposalId: scopeId,
-      proposalUrl: proposal.publicUrl,
-      service: proposal.customer.service,
-      requirements: cleanRequirements,
-      estimatedINR,
-      status: "new",
-      capturedAt: new Date().toISOString()
-    };
-
-    // 1. Supabase database persistence (primary serverless cloud database)
-    try {
-      if (authHelpers && authHelpers.isSupabaseConfigured()) {
-        const admin = authHelpers.supabaseAdminClient() || authHelpers.supabaseClient();
-        await admin.from("leads").insert({
-          email: leadRecord.email,
-          phone: leadRecord.phone,
-          first_name: leadRecord.name,
-          source: leadRecord.source,
-          message: String(leadRecord.requirements).slice(0, 2000),
-          status: "new"
-        });
-      }
-    } catch {}
-
-    // 2. Save lead record in local file fallback
-    try {
-      const file = path.join(__dirname, "..", "data", "leads.json");
-      const existing = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : { leads: [] };
-      if (!Array.isArray(existing.leads)) existing.leads = [];
-      existing.leads.push(leadRecord);
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      fs.writeFileSync(file, JSON.stringify(existing, null, 2), "utf8");
-    } catch {}
-
-    // 3. Emit Immutable LEAD_CREATED Event
-    try {
-      const garudaEventService = require("../src/services/garudaEventService");
-      garudaEventService.emitGarudaEvent({
-        eventType: "LEAD_CREATED",
-        entityType: "lead",
-        entityId: leadRecord.id,
-        leadId: leadRecord.id,
-        proposalId: scopeId,
-        source: "projectScopeForm",
-        actor: { type: "visitor", name: leadRecord.name, email: leadRecord.email, phone: leadRecord.phone },
-        newState: "new",
-        idempotencyKey: `lead_created_${leadRecord.id}`,
-        metadata: {
-          service: leadRecord.service,
-          estimatedINR,
-          channel: leadRecord.attribution?.channel
-        }
-      }).catch(() => {});
-    } catch {}
-
-    // Notify Founder Telegram
-    if (telegramBotService) {
-      try {
-        await telegramBotService.notifyLeadCaptured({
-          ...leadRecord,
-          message: `Project Scope Form: ${cleanRequirements.slice(0, 140)} (Estimated: ₹${estimatedINR.toLocaleString("en-IN")})\nProposal: ${proposal.publicUrl}`
-        });
-      } catch {}
-    }
-
-    return res.status(201).json({
-      success: true,
-      leadId: leadRecord.id,
-      proposalId: scopeId,
-      proposalUrl: proposal.publicUrl,
-      proposal
+    const result = await revenueFunnelSecurityService.handleInboundSubmission(req.body, {
+      req,
+      headers: req.headers
     });
+    return res.status(result.statusCode || 201).json(result.body);
   } catch (err) {
-    console.error("Project Scope Inbound Error:", err);
-    return res.status(500).json({
+    return res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || "Failed to generate project scope."
     });

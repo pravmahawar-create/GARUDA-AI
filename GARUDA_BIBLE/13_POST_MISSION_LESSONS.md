@@ -311,3 +311,23 @@ Wired LearningPromoter and ValidationPipeline into saveLesson and post-mission-l
 #### 4. Inscribed Permanent Law / Guardrail
 > **LAW: High-ticket international healthcare outreach must strictly enforce the Human Delivery Standard (max 15-20/day, 4-7 min randomized gaps) and target private owner-operated practices with interactive live simulations.**
 
+
+---
+
+### Mission: GARUDA Free GPU Studio - Zero-Cost Video/Image/Audio Render Pipeline Build
+- **Timestamp**: 2026-09-25T20:25:43.953Z
+- **Commit SHA**: `working-tree`
+- **Category**: `architecture`
+- **Verification Evidence**: python validate_pipeline.py -> RESULT: ALL LOCAL CHECKS CLEAN (exit 0); dry-run: 3 jobs parsed, exit 0; py_compile on engine.py/render_queue.py/validate_pipeline.py exit 0.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. **render_queue.py me f-string ke andar closing bracket ka typo (job.get('type'] instead of job.get('type')) se SyntaxError - pipeline pehli local validation me hi fail hua, warna Kaggle/Colab par jaakar broken notebook chalti.**
+
+#### 2. Root Cause Forensic Analysis
+Manual code generation me parenthesis/bracket mismatch ek recurring handwriting error hai. Bina py_compile ke file present karna Anti-Fabrication Law ka risk tha - dava (ready pipeline) aur reality (syntax error) me gap hota.
+
+#### 3. Permanent Architectural Countermeasure
+validate_pipeline.py permanent guardrail banaya jo py_compile + queue schema + notebook nbformat structure + har notebook code-cell ka compile (magic lines chhod kar) check karta hai aur exit 0 ke bina hand-off allow nahi karta. Notebook cells bhi isme include kiye taaki Colab/Kaggle par runtime SyntaxError kabhi na aaye.
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **LAW: free-gpu-pipeline (ya koi bhi notebook-driven pipeline) ke kisi bhi file ko founder ko present karne se PEHLE `python validate_pipeline.py` ko exit 0 (ALL LOCAL CHECKS CLEAN) dena mandatory hai - syntax, queue schema aur notebook cell compilation sab clean hone chahiye.**
