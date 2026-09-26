@@ -453,3 +453,108 @@ export async function actionMissionApi(missionId, action = "approve", payload = 
 }
 
 
+
+/* ---------- GARUDA Founder Intelligence API client (founder-gated) ---------- */
+
+function fiHeaders(extra = {}) {
+  return {
+    ...founderHeaders({
+      "x-founder-key": localStorage.getItem("garuda_founder_key") || "",
+    }),
+    ...extra,
+  };
+}
+
+async function fiPost(path, body = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    headers: fiHeaders(),
+    body: JSON.stringify(body),
+  });
+  if (res.status === 401 || res.status === 403) {
+    throw new Error("Founder authentication required for Founder Intelligence");
+  }
+  const json = await res.json().catch(() => null);
+  if (!json || json.success === false) {
+    throw new Error(json?.error?.message || `Request failed (${res.status})`);
+  }
+  return json;
+}
+
+async function fiGet(path) {
+  const res = await fetch(`${API_BASE}${path}`, { headers: fiHeaders() });
+  if (res.status === 401 || res.status === 403) {
+    throw new Error("Founder authentication required for Founder Intelligence");
+  }
+  const json = await res.json().catch(() => null);
+  if (!json || json.success === false) throw new Error(json?.error?.message || `Request failed (${res.status})`);
+  return json;
+}
+
+export async function founderIntelligenceChat(payload) {
+  return fiPost(`/api/founder-intelligence/chat`, payload);
+}
+
+export async function founderPricingQuote(payload) {
+  return fiPost(`/api/founder-intelligence/pricing`, payload);
+}
+
+export async function founderPricingSnapshot() {
+  return fiGet(`/api/founder-intelligence/pricing/snapshot`);
+}
+
+export async function founderNegotiationAnalyze(payload) {
+  return fiPost(`/api/founder-intelligence/negotiation`, payload);
+}
+
+export async function founderCalculator(calcType, payload) {
+  return fiPost(`/api/founder-intelligence/calculator/${encodeURIComponent(calcType)}`, payload);
+}
+
+export async function founderListClients() {
+  return fiGet(`/api/founder-intelligence/memory/clients`);
+}
+
+export async function founderCreateClient(payload) {
+  return fiPost(`/api/founder-intelligence/memory/clients`, payload);
+}
+
+export async function founderMeetingStart(payload = {}) {
+  return fiPost(`/api/founder-intelligence/meeting/start`, payload);
+}
+
+export async function founderMeetingSplit(sessionId, payload = {}) {
+  return fiPost(`/api/founder-intelligence/meeting/${encodeURIComponent(sessionId)}/split`, payload);
+}
+
+export async function founderMeetingCustomerView(sessionId) {
+  return fiGet(`/api/founder-intelligence/meeting/${encodeURIComponent(sessionId)}/customer-view`);
+}
+
+export async function founderProposalDraft(payload) {
+  return fiPost(`/api/founder-intelligence/proposal/draft`, payload);
+}
+
+export async function founderProposalPdf(proposalId) {
+  return fiPost(`/api/founder-intelligence/proposal/${encodeURIComponent(proposalId)}/pdf`, {});
+}
+
+export async function founderAnalysis(payload) {
+  return fiPost(`/api/founder-intelligence/analysis`, payload);
+}
+
+export async function founderMemoryRecord(clientId, type, data) {
+  return fiPost(`/api/founder-intelligence/memory/clients/${encodeURIComponent(clientId)}/records`, { type, data });
+}
+
+export async function founderMemoryClient(clientId) {
+  return fiGet(`/api/founder-intelligence/memory/clients/${encodeURIComponent(clientId)}`);
+}
+
+export async function founderLearningEvent(payload) {
+  return fiPost(`/api/founder-intelligence/learning/events`, payload);
+}
+
+export async function founderLearningSummary() {
+  return fiGet(`/api/founder-intelligence/learning/summary`);
+}

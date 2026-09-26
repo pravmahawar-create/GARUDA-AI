@@ -47,6 +47,7 @@ import SovereignEnterpriseMatrix from "./pages/SovereignEnterpriseMatrix";
 import CaseStudies from "./pages/CaseStudies";
 import GarudaCyberTycoon from "./pages/GarudaCyberTycoon";
 import FounderQuantCommand from "./pages/FounderQuantCommand";
+import FounderIntelligence from "./pages/FounderIntelligence";
 import GarudaHealthApp from "./pages/GarudaHealthApp";
 import CyberShieldDashboard from "./pages/CyberShieldDashboard";
 import { initAttribution } from "./utils/attribution";
@@ -143,6 +144,15 @@ function AppRoutes() {
     </div>
   ) : authenticated ? (
     <FounderWorkspace onLogout={handleLogout} />
+  ) : (
+    <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
+  );
+  const founderIntelRoute = authenticated === null ? (
+    <div style={{ minHeight: "100vh", background: "#030712", display: "grid", placeItems: "center", color: "#38bdf8", fontFamily: "sans-serif", fontSize: "0.9rem", letterSpacing: "0.1em" }}>
+      GARUDA FOUNDER INTELLIGENCE...
+    </div>
+  ) : authenticated ? (
+    <FounderIntelligence />
   ) : (
     <FounderLogin onAuthenticated={() => setAuthenticated(true)} />
   );
@@ -244,6 +254,9 @@ function AppRoutes() {
       <Route path="/founder/enterprise" element={<SovereignEnterpriseMatrix />} />
       <Route path="/sovereign-matrix" element={<SovereignEnterpriseMatrix />} />
       <Route path="/founder/quant" element={<FounderQuantCommand onLogout={handleLogout} />} />
+<Route path="/founder/intelligence" element={founderIntelRoute} />
+<Route path="/founder-intelligence" element={<Navigate to="/founder/intelligence" replace />} />
+<Route path="/intelligence" element={<Navigate to="/founder/intelligence" replace />} />
       <Route path="/quant" element={<FounderQuantCommand onLogout={handleLogout} />} />
       <Route path="/finance/quant" element={<FounderQuantCommand onLogout={handleLogout} />} />
       <Route path="/kingdom" element={<Navigate to="/founder/access" replace />} />

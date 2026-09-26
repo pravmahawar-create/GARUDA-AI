@@ -1,0 +1,55 @@
+{
+  "missionId": "mission-mube79rl-mube",
+  "goal": "Execute safe failing disposable verification script",
+  "plan": null,
+  "currentStage": "FAILED",
+  "completedStages": [
+    {
+      "stage": "INITIALIZED",
+      "completedAt": "2026-09-21T15:21:02.004Z",
+      "evidence": null
+    }
+  ],
+  "pendingStages": [
+    "UNDERSTANDING",
+    "INTELLIGENCE_SEARCH",
+    "REPOSITORY_SEARCH",
+    "PLANNING",
+    "NAZAR_INVESTIGATION",
+    "TESTING",
+    "POST_BUILD_AUDIT",
+    "EVIDENCE_COLLECTION",
+    "LEARNING",
+    "COMPLETE",
+    "FAILED",
+    "PAUSED"
+  ],
+  "decisions": [],
+  "evidence": [],
+  "artifacts": [],
+  "failures": [
+    {
+      "command": "node -e \"process.stderr.write('Intentional reality test error: syntax fault'); process.exit(42);\"",
+      "exitCode": 42,
+      "error": "Intentional reality test error: syntax fault",
+      "timestamp": "2026-09-21T15:21:02.195Z"
+    }
+  ],
+  "retries": [],
+  "learningCandidates": [],
+  "finalResult": {
+    "success": false,
+    "reason": "Command exited with code 42",
+    "failedAt": "2026-09-21T15:21:02.199Z"
+  },
+  "createdAt": "2026-09-21T15:21:02.001Z",
+  "updatedAt": "2026-09-21T15:21:02.199Z",
+  "checkpointHistory": [],
+  "context": {
+    "currentGoal": "Execute safe failing disposable verification script",
+    "currentPlan": null,
+    "currentFacts": [],
+    "constraints": [],
+    "nextAction": null
+  }
+}

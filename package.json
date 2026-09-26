@@ -7,7 +7,7 @@
     "garuda": "bin/garuda.js"
   },
   "scripts": {
-    "garuda": "node bin/garuda.js",
+    "garuda": "node scripts/garuda-dev.js",
     "build": "vite build && node scripts/generate-sitemap.js && node scripts/generate-favicons.js && node scripts/prerender-seo.js || exit 1",
     "seo": "node scripts/generate-sitemap.js && node scripts/prerender-seo.js",
     "preview": "vite preview",
@@ -50,7 +50,7 @@
     "test:router": "node --test-concurrency=1 src/services/adaptiveRouter/adaptiveRouterService.test.js",
     "test:self:awareness": "node --test-concurrency=1 src/services/selfAwareness/selfAwarenessService.test.js",
     "test:independence": "node --test-concurrency=1 src/services/independence/independenceService.test.js",
-    "test:cli": "node --test-concurrency=1 src/cli/garudaCli.test.js",
+    "test:cli": "node --test-concurrency=1 src/cli/garudaCli.test.js && node src/cli/garudaAgent.test.js",
     "test:code:gen": "node --test-concurrency=1 src/services/codeGeneration/codeGenerationService.test.js",
     "test:orchestrator": "node --test-concurrency=1 src/services/orchestrator/orchestratorService.test.js",
     "test:smart": "node --test-concurrency=1 src/services/smartEngine/smartEngine.test.js",
@@ -70,7 +70,6 @@
     "dev:bible:validate": "node scripts/dev-agent/run-bible.js validate",
     "dev:bible:summary": "node scripts/dev-agent/run-bible.js summary",
     "test:rag": "node scripts/test-rag.js",
-    "garuda": "node scripts/garuda-dev.js",
     "build:garuda": "node scripts/build-garuda.js",
     "build:mother": "node scripts/garuda-mother-build.js",
     "mother": "node scripts/mother/mother.js",
@@ -114,7 +113,8 @@
     "bounty:once": "node scripts/bounty-autonomous-daemon.js --once --discover",
     "bounty:discover": "node scripts/bounty-autonomous-daemon.js --discover --once",
     "boilerplate:package": "node scripts/package-boilerplate.js",
-    "boilerplate:publish": "node scripts/publish-boilerplate-marketplaces.js"
+    "boilerplate:publish": "node scripts/publish-boilerplate-marketplaces.js",
+    "test:founder-intelligence": "node src/services/founderIntelligence/founderIntelligenceUnit.test.js && node src/services/founderIntelligence/founderIntelligenceGoldenEval.test.js && node src/services/founderIntelligence/founderIntelligenceSecurity.test.js"
   },
   "repository": {
     "type": "git",
