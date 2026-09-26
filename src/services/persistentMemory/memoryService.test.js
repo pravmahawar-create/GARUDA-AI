@@ -1,6 +1,7 @@
 const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
+process.env.GARUDA_MEMORY_DIR = path.join(__dirname, "..", "..", "..", "data", "test-memory");
 const { createExperience, createLesson, generateMemoryId } = require("./memorySchema");
 const { logExperience, logExperiences, readExperiences, readExperiencesByGoal, getExperienceStats, clearExperiences } = require("./experienceLogger");
 const { searchExperiences, getRecentExperiences, getFailedExperiences, getSuccessfulExperiences } = require("./memorySearch");

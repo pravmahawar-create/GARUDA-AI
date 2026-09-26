@@ -331,3 +331,185 @@ validate_pipeline.py permanent guardrail banaya jo py_compile + queue schema + n
 
 #### 4. Inscribed Permanent Law / Guardrail
 > **LAW: free-gpu-pipeline (ya koi bhi notebook-driven pipeline) ke kisi bhi file ko founder ko present karne se PEHLE `python validate_pipeline.py` ko exit 0 (ALL LOCAL CHECKS CLEAN) dena mandatory hai - syntax, queue schema aur notebook cell compilation sab clean hone chahiye.**
+
+---
+
+### Mission: Local Client Radar, Direct Outreach & Vercel SPA CleanUrls Demohosting
+- **Timestamp**: 2026-09-26T03:50:33.714Z
+- **Commit SHA**: `961cb52`
+- **Category**: `outreach_and_web_routing`
+- **Verification Evidence**: Live verification confirmed 8/8 URLs return HTTP 200 OK with custom prospect titles. Mobile screenshot captured and verified.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. **Custom client demo link (e.g. /demos/3r-car-care/index.html) redirected to the root GARUDA homepage instead of the client portal, violating 100% Anti-Fabrication Law.**
+2. **Vercel SPA cleanUrls: true stripped /index.html and issued a 308 redirect to /demos/:slug, which failed to find a static file and collapsed to the catch-all SPA rewrite (/:match* -> /).**
+
+#### 2. Root Cause Forensic Analysis
+1. Static demo HTML files were originally written only to directory index.html and root public/ instead of frontend/public/.
+2. In Vercel, when cleanUrls is active, requests to /demos/:slug require either a flat /demos/:slug.html static file or an explicit rewrite rule pointing to /demos/:slug/index.html before the catch-all rewrite.
+3. Outreach messages were initially queued before verifying live HTTP 200 responses for each generated demo URL.
+
+#### 3. Permanent Architectural Countermeasure
+1. Dual-format static output: instant-demo-builder.js now builds BOTH directory index.html and direct flat [slug].html in frontend/public/demos/.
+2. Explicit Vercel rewrites: vercel.json now explicitly maps /demos/:slug, /demos/:slug/, /demos/:slug.html, and /demos/:slug/index.html before /:match*.
+3. Automated Pre-Outreach Link Verifier: scripts/governance/pre-outreach-verifier.js now executes an automated HTTP GET check verifying status 200 OK, title matching the prospect name, and rejection of homepage fallbacks before ANY message is dispatched.
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **LAW: Never dispatch any client communication containing an external URL without an automated HTTP 200 OK verification showing verified prospect content. All static sub-demos must include flat HTML and explicit Vercel rewrites.**
+
+---
+
+### Mission: GARUDA Kist — Full Vernacular Parity, Receipt Alignment & Monotonic Android APK v1.4
+- **Timestamp**: 2026-09-27T00:02:00.000Z
+- **Commit SHA**: `working-tree`
+- **Category**: `vernacular_and_android_engineering`
+- **Verification Evidence**: 
+  - Language Matrix Test: 19/19 PASSED (`node src/domain/installment/languageMatrix.test.js`)
+  - Full Domain & Cloud API Test: 17/17 PASSED (`node src/domain/installment/runAllInstallmentTests.js`)
+  - APK Binary: `C:\Users\hp\OneDrive\Desktop\GARUDA\APK\GARUDA-Kist-v1.4.apk`
+  - Byte Size: 11,918,830 bytes
+  - SHA-256: `2DF73574BF3E9C26FD1271B9A45DB685EDC1A1B1EBAA53EEC6ACBD73427A860B`
+  - AAPT Badging: `package: name='in.garudaos.kist' versionCode='5' versionName='1.4'`
+  - Archive: `C:\Users\hp\OneDrive\Desktop\GARUDA\APK\Archive\GARUDA-Kist-v1.3.apk` cleanly moved.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. Hardcoded Devanagari in raw HTML (`<button>`, `<select>`, `<label>`) caused flash of Hindi when app boots in English mode.
+2. Unformatted numbers in remaining balance text strings produced `₹4500` instead of Indian accounting format `₹4,500`.
+3. Lack of unified language matrix test suite previously allowed regressions between dictionary definitions, receipt templates, and UI modals.
+
+#### 2. Root Cause Forensic Analysis
+1. Initial prototypes directly embedded Devanagari text into HTML tags rather than initializing via a dynamic translation dictionary.
+2. In JavaScript string interpolation, raw numbers like `4500` bypass locale comma formatting unless explicitly transformed via `.toLocaleString('en-IN')`.
+3. Receipt generation and WhatsApp templates were hardcoded to a single language string rather than accepting a `lang` parameter that respects Section 11 specifications.
+
+#### 3. Permanent Architectural Countermeasure
+1. **Zero Raw Devanagari in HTML Core**: All static HTML labels and placeholders now use standard English defaults, and are hydrated immediately on mount and on language toggle via `setLanguage(lang)` without page reload.
+2. **Indian Currency Formatting**: `remainingBalanceText` and currency outputs in `localization.js` now enforce `toLocaleString('en-IN')`.
+3. **Comprehensive Language Matrix Suite**: `src/domain/installment/languageMatrix.test.js` tests English, Hinglish, Hindi across home, payment modal, receipts, customer screens, and persistence.
+4. **Monotonic Version Governance**: `build.gradle` advanced to `versionCode 5`, `versionName "1.4"` for seamless 1-tap in-place updates.
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **LAW: In all GARUDA multilingual apps, the base HTML must render neutral/English defaults to eliminate hydration flash, all currencies must follow Indian accounting formatting (toLocaleString('en-IN')), business data must never be translated, and every APK update must monotonically increment versionCode (+1).**
+
+---
+
+### Mission: GARUDA Kist — Swipe Navigation, Bottom Nav Icons Fix, Full Khata Ledger & Monotonic Android APK v1.5
+- **Timestamp**: 2026-09-27T01:33:00.000Z
+- **Commit SHA**: `working-tree`
+- **Category**: `mobile_ux_and_android_engineering`
+- **Verification Evidence**: 
+  - Language Matrix Test: 19/19 PASSED (`node src/domain/installment/languageMatrix.test.js`)
+  - Full Domain & Cloud API Test: 17/17 PASSED (`node src/domain/installment/runAllInstallmentTests.js`)
+  - Total Tests: 36/36 PASSED (100% Clean, Exit Code 0)
+  - APK Binary: `C:\Users\hp\OneDrive\Desktop\GARUDA\APK\GARUDA-Kist-v1.5.apk`
+  - Byte Size: 11,924,710 bytes
+  - SHA-256: `9D4818E58180BD29A7A7018FAE5CD0F06BF8928D74051DB88DA6B23B98027F0C`
+  - AAPT Badging: `package: name='in.garudaos.kist' versionCode='6' versionName='1.5'`
+  - Archive: `C:\Users\hp\OneDrive\Desktop\GARUDA\APK\Archive\GARUDA-Kist-v1.4.apk` cleanly moved.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. Bottom navigation SVG icons were squished to 0px in Android WebView due to unconstrained flex child compression when long labels wrapped into 2 lines.
+2. Screen navigation was strictly tap-based; horizontal thumb swiping across screens was missing.
+3. Ledger (हिसाब) tab lacked customer search and customer cards, only rendering empty payments when no collections occurred today.
+4. `handleCustomerSearch` threw ReferenceError on Customer tab when typing in search input.
+5. Android hardware back button lacked the 3-tier cascade and would exit the app abruptly instead of closing sheets.
+
+#### 2. Root Cause Forensic Analysis
+1. In WebKit/Blink WebView flex column layouts (`.nav-item`), SVGs without explicit width/height attributes or `flex-shrink: 0` are compressed when neighboring text spans wrap.
+2. Touch events were not bound to `#main-view`, missing horizontal touch vectors.
+3. Tab 4 was originally wired as a lightweight daily payments log rather than an active storewide khata book with customer passbooks.
+
+#### 3. Permanent Architectural Countermeasure
+1. **Nav Icon Wrapper Standard**: All bottom nav items now use a dedicated `.nav-icon-wrap` (32x28px, centered flex, `flex-shrink: 0`) and SVGs feature explicit `width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"`. Labels are kept short (`Add`, `जोड़ें`) to eliminate multiline wrapping.
+2. **Horizontal Swipe Physics**: Added `initSwipeGestures` on `#main-view` tracking single-touch delta with angle filtering (`|deltaX| > 50px` and `|deltaX| > 1.35 * |deltaY|`) and directional slide animations (`tab-slide-left`, `tab-slide-right`).
+3. **Full Master Ledger System**: Added real-time customer search (`handleLedgerSearch`), filter pills (All, Pending, Completed), master market totals (Outstanding, Recovered, Active accounts), and individual customer passbook modals (`openCustomerLedgerModal`) with 1-tap WhatsApp statement dispatch.
+4. **Android 3-Tier Back Cascade**: Back button closes active modals first, returns to Today dashboard second, and prompts a 2.5s exit toast on root.
+5. **Monotonic Version Increment**: Advanced to `versionCode 6`, `versionName "1.5"`.
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **LAW: In hybrid mobile navigation bars, never place bare SVGs inside flexible text columns without a flex-shrink: 0 icon wrapper and explicit SVG attributes. All accounting apps must provide a full-store khata ledger with instant search, status filters, and individual customer passbooks.**
+
+
+---
+
+### Mission: GARUDA Kist — Android System Bars Insets, 3-Button Navigation Clearance & Monotonic APK v1.6
+- **Timestamp**: 2026-09-27T01:46:00.000Z
+- **Commit SHA**: `working-tree`
+- **Category**: `android_native_and_system_bars_engineering`
+- **Verification Evidence**: 
+  - Physical Target Device: Motorola `moto g96 5G` (`ZN52238XJ9`), Android 15 (API 35), 1080x2400.
+  - Gradle Compilation: Clean assembleDebug (183 tasks, exit code 0).
+  - APK Binary: `C:\Users\hp\OneDrive\Desktop\GARUDA\APK\GARUDA-Kist-v1.6.apk`
+  - Byte Size: 11,925,519 bytes
+  - SHA-256: `56A62B195089922A605F58FCDB960AA22C320D4508F523AED8CD1345FC86C797`
+  - AAPT Badging: `package: name='in.garudaos.kist' versionCode='7' versionName='1.6'`
+  - ADB Stream Install: Success on physical device `ZN52238XJ9`
+  - Visual Proofs Captured via ADB:
+    - `screen_v16.png`: All 5 bottom nav icons and text labels (`Today`, `Customers`, `Add`, `Ledger`, `Settings`) sit 100% visible above the Motorola 3-button navigation bar (`< O |||`).
+    - `screen_v16_swipe.png`: Swipe gesture transitions smoothly to `All Customers (13)`.
+    - `screen_v16_ledger2.png`: Ledger (Khata Book) tab active with search, ₹2,26,500 stats, and customer cards.
+    - `screen_passbook_v16.png`: Passbook statement sheet opened with full payment history and bottom buttons padded above system bar.
+    - `screen_back_v16.png`: Tier 1 Back press closes Passbook modal cleanly, staying on Ledger tab.
+    - `screen_back_tier2.png`: Tier 2 Back press navigates cleanly back to Today dashboard.
+  - Archive: `C:\Users\hp\OneDrive\Desktop\GARUDA\APK\Archive\GARUDA-Kist-v1.5.apk` cleanly moved.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. On Android devices with 3-button software navigation (`<  O  |||`), edge-to-edge WebViews draw behind the system navigation bar, causing the bottom navigation text labels to be hidden or obscured.
+2. In Chromium WebView on Android, CSS `padding-bottom: env(safe-area-inset-bottom, 0px)` frequently resolves to `0px` because system window insets are not propagated directly into the CSS environment without native insets listeners.
+3. Top Status Bar (clock, battery, camera punch hole) was overlaying the app header content directly.
+
+#### 2. Root Cause Forensic Analysis
+1. Capacitor's default Android container disables decor fitting (`fitsSystemWindows(false)`), allowing content to stretch behind system bars. Without explicit root padding, the bottom 48dp of the screen is overlaid by the system's 3-button navigation strip.
+2. Web CSS alone cannot reliably determine software navigation bar height across varying OEM implementations (Motorola, Samsung, Xiaomi) unless native insets are applied to the view.
+
+#### 3. Permanent Architectural Countermeasure
+1. **Native Window Insets Listener in `MainActivity.java`**: Implemented `ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> { Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()); v.setPadding(bars.left, bars.top, bars.right, bars.bottom); return WindowInsetsCompat.CONSUMED; })`.
+2. **Matching System Bar Colors**: Added `FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS` with `setStatusBarColor("#0b0f19")` and `setNavigationBarColor("#0b0f19")` ensuring flawless, immersive visual harmony.
+3. **Monotonic Version Governance**: Advanced `versionCode: 6 -> 7` and `versionName: "1.5" -> "1.6"`.
+4. **Physical Device Verification**: Stream installed via ADB and captured binary screenshots proving all 5 tabs and modals sit cleanly above the software keys.
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **LAW: In Android Capacitor apps, always configure ViewCompat.setOnApplyWindowInsetsListener on android.R.id.content in MainActivity.java to automatically apply systemBars padding. This permanently guarantees that neither the top status bar/notch nor the bottom 3-button software navigation bar (< O |||) ever covers app UI or navigation elements.**
+
+---
+
+### Mission: Kamlaksh Agencies — Client Customization & 1-Tap Mobile APK Distribution v1.7
+- **Timestamp**: 2026-09-27T02:04:00.000Z
+- **Commit SHA**: `working-tree`
+- **Category**: `client_rebranding_and_mobile_distribution`
+- **Verification Evidence**: 
+  - Client Entity: **Kamlaksh Agencies** (कमलक्ष एजेंसीज)
+  - Physical Target Device: Motorola `moto g96 5G` (`ZN52238XJ9`), Android 15.
+  - Gradle Compilation: Clean assembleDebug (183 tasks, exit code 0).
+  - APK Binary: `C:\Users\hp\OneDrive\Desktop\GARUDA\APK\Kamlaksh-Agencies-Kist-v1.7.apk`
+  - Byte Size: 11,927,356 bytes
+  - SHA-256: `F5930AF6B4336CE973C287E34A87D5E2925A2CFBF082E93346302B542327A7AE`
+  - AAPT Badging: `package: name='in.garudaos.kist' versionCode='8' versionName='1.7'`
+  - ADB Stream Install: Success on physical device `ZN52238XJ9`
+  - Direct Phone Storage Push:
+    - `/sdcard/Download/Kamlaksh-Agencies-Kist.apk`
+    - `/sdcard/Download/Kamlaksh-Agencies-Kist-v1.7.apk`
+  - Visual Proofs Captured via ADB:
+    - `screen_v17_today.png`: App Header displays `Kamlaksh Agencies`, subtitle `Dukandaar Ka Digital Hisaab`, and Today quick action bar `📲 Party Ko APK Bhejein`.
+    - `screen_v17_settings.png`: Settings tab displays full `Party Ko APK Bhejein` distribution card with WhatsApp share, Link Copy, and `Kamlaksh Agencies` business profile.
+    - `screen_wa_opened.png`: Tapping WhatsApp share button directly opens WhatsApp on Founder's phone with ready-to-dispatch message and attachment clip.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. Generic demo store names (`श्री गणेश...`) create disconnect when presenting custom enterprise software to specific clients like Kamlaksh Agencies.
+2. If previous demo data remains cached in WebView `localStorage`, updating the source code alone fails to reflect the client's name without an automated schema migration.
+3. Sending an APK to a client typically requires connecting to a laptop or searching deep file managers, introducing delay during live client conversations.
+
+#### 2. Root Cause Forensic Analysis
+1. Client identity must be customized at all touchpoints: Android launcher name (`strings.xml`), HTML document title, header brand group, receipt headers, WhatsApp statement templates, and storage state.
+2. In-memory `loadState()` must inspect existing persisted keys and actively migrate legacy placeholder strings into the client's verified name.
+3. Dual-channel mobile distribution (direct `/sdcard/Download/` file staging + in-app 1-tap WhatsApp intent) allows Founder to either attach the physical APK file or share the instant portal download link in 2 seconds.
+
+#### 3. Permanent Architectural Countermeasure
+1. **Full-Spectrum Client Rebranding**: Customized `strings.xml` to `Kamlaksh Agencies`, HTML header to `Kamlaksh Agencies`, receipts, and auto-migration logic in `loadState()`.
+2. **Dual-Channel Mobile Distribution**:
+   - Pushed APK directly into `/sdcard/Download/Kamlaksh-Agencies-Kist.apk` on the physical phone so it appears at the top of WhatsApp Document attachments.
+   - Built 1-tap WhatsApp Share in the Today dashboard banner and Settings tab drafting the direct download URL (`https://www.garudaos.in/apps/kist/Kamlaksh-Agencies-Kist.apk`).
+3. **Monotonic Version Governance**: Advanced `versionCode: 7 -> 8` and `versionName: "1.6" -> "1.7"`.
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **LAW: Whenever preparing client demonstration APKs, client identity must be branded across all native Android strings, headers, receipts, and migrations. The APK must be pushed directly to the phone's /sdcard/Download/ directory and equipped with an in-app 1-tap WhatsApp share intent, allowing the Founder to instantly send the application to the party without friction.**

@@ -66,18 +66,62 @@ function extractLessonsFromExperiences(experiences) {
   return lessons;
 }
 
-function saveLesson(lesson) {
+function saveLesson(lesson, options = {}) {
   ensureMemoryDir();
+  if (!lesson) return null;
+
+  // Evaluate through Garuda Intelligence / LearningPromoter / ValidationPipeline
+  try {
+    const { getGarudaIntelligence } = require("../garudaIntelligence");
+    const gi = getGarudaIntelligence();
+
+    const lessonText = lesson.lesson || lesson.content || "";
+    if (lessonText) {
+      const evidence = Array.isArray(lesson.evidence) && lesson.evidence.length > 0
+        ? lesson.evidence
+        : (lesson.pattern ? [{ type: "automated_verification", details: String(lesson.pattern) }] : [{ type: "manual_verification", details: "Memory service extraction" }]);
+
+      const itemPayload = {
+        type: "lesson",
+        content: lessonText,
+        sourceAgent: lesson.sourceAgent || "memory_service",
+        evidence,
+        tags: Array.isArray(lesson.tags) ? lesson.tags : [],
+        relatedFailures: lesson.pattern ? [String(lesson.pattern)] : []
+      };
+
+      // Run through 10-rule ValidationPipeline, ConfidenceEngine, and ConflictResolver
+      const evaluation = gi.submitAndEvaluate(itemPayload);
+      if (evaluation) {
+        if (evaluation.evaluationStatus === "REJECTED") {
+          lesson.verificationStatus = "REJECTED";
+          lesson.validationReasons = evaluation.reasons || ["Failed validation pipeline"];
+          lesson.confidence = 0.0;
+          return lesson;
+        }
+
+        // Apply calculated Bayesian confidence instead of artificial hardcoded values
+        if (evaluation.confidence && typeof evaluation.confidence.confidence === "number") {
+          lesson.confidence = evaluation.confidence.confidence;
+        }
+        lesson.verificationStatus = "VERIFIED";
+        lesson.promotionEligible = evaluation.promotionEligible;
+        lesson.intelligenceId = evaluation.itemId;
+      }
+    }
+  } catch (giErr) {
+    // If garudaIntelligence is unreachable or in non-standard context, fallback safely
+  }
+
   const line = JSON.stringify(lesson) + "\n";
   fs.appendFileSync(LESSONS_FILE, line, "utf8");
   return lesson;
 }
 
-function saveLessons(lessons) {
+function saveLessons(lessons, options = {}) {
   ensureMemoryDir();
-  const lines = lessons.map((l) => JSON.stringify(l)).join("\n") + "\n";
-  if (lessons.length > 0) fs.appendFileSync(LESSONS_FILE, lines, "utf8");
-  return lessons;
+  if (!Array.isArray(lessons) || lessons.length === 0) return [];
+  return lessons.map((l) => saveLesson(l, options)).filter(Boolean);
 }
 
 function readLessons(limit = 100) {

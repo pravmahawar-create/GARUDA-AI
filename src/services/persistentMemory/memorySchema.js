@@ -2,7 +2,10 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
-const MEMORY_DIR = path.join(process.cwd(), "data", "memory");
+const REPO_ROOT = path.resolve(__dirname, "..", "..", "..");
+const MEMORY_DIR = process.env.GARUDA_MEMORY_DIR || (fs.existsSync(path.join(REPO_ROOT, "data", "memory"))
+  ? path.join(REPO_ROOT, "data", "memory")
+  : path.join(process.cwd(), "data", "memory"));
 const EXPERIENCES_FILE = path.join(MEMORY_DIR, "experiences.jsonl");
 const LESSONS_FILE = path.join(MEMORY_DIR, "lessons.jsonl");
 

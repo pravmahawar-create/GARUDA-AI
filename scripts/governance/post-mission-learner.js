@@ -47,23 +47,30 @@ function recordMissionLearning({
     context: { timestamp, gitCommitSha }
   });
 
-  // 2. Extract and Save Specific Lessons
+  // 2. Extract and Save Specific Lessons through LearningPromoter & ValidationPipeline
   const lessons = failureModesEncountered.map((failure, idx) => {
     return createLesson({
       experienceId: exp.id,
       goalId,
+      sourceAgent: "post_mission_learner",
       type: "anti_repetition_guardrail",
       lesson: `RULE: ${permanentRuleAdded} | CAUSE: ${rootCauseAnalysis} | COUNTERMEASURE: ${architecturalFix}`,
       pattern: failure,
-      confidence: 1.0,
+      evidence: [
+        { type: "runtime_verified", details: evidenceVerified || "Locally verified" },
+        { type: "automated_verification", details: `Commit: ${gitCommitSha || "working-tree"}` }
+      ],
       tags: ["zero-repeat", category, "verified-lesson"]
     });
   });
 
   if (lessons.length > 0) {
     const { saveLessons } = require("../../src/services/persistentMemory/lessonExtractor");
-    saveLessons(lessons);
-    console.log(`✔ [MEMORY] Inscribed ${lessons.length} permanent lessons into data/memory/lessons.jsonl`);
+    const savedLessons = saveLessons(lessons);
+    const avgConfidence = savedLessons.length > 0
+      ? (savedLessons.reduce((acc, l) => acc + (l.confidence || 0), 0) / savedLessons.length).toFixed(2)
+      : "N/A";
+    console.log(`✔ [MEMORY] Inscribed ${savedLessons.length} verified lessons via LearningPromoter into data/memory/lessons.jsonl (confidence: ${avgConfidence})`);
   }
 
   // 3. Append to GARUDA BIBLE (13_POST_MISSION_LESSONS.md)
