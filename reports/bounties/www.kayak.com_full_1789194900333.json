@@ -1,0 +1,62 @@
+{
+  "target": "https://www.kayak.com",
+  "timestamp": "2026-09-12T06:33:43.939Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://www.kayak.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"accept-ranges\": \"bytes\",\n  \"cache-control\": \"private, no-store\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-language\": \"en-IN\",\n  \"content-security-policy\": \"upgrade-insecure-requests; frame-ancestors 'self'\",\n  \"content-security-policy-report-only\": \"default-src https: blob:; connect-src https: https://signalling.trueengage.com https://fileupload.mypurecloud.com https://api.mypurecloud.com wss://webmessaging.mypurecloud.com https://api-downloads.mypurecloud.com https://asset.trueengage.com blob: wss://visitorjourneyapi.trueengage.com https://visitorjourneyapi.trueengage.com https://geoip.trueengage.com https://statistics.trueengage.com https://api.trueengage.com https://billingapi.trueengage.com https://headsupai.trueengage.com; font-src https: data:; frame-src https:; img-src https: data: blob:; media-src https: data: blob:; object-src https: data: blob:; script-src 'unsafe-inline' 'unsafe-eval' https:; style-src 'unsafe-inline' https: data:; worker-src 'self' blob:; report-uri /s/run/cspreport/reportHttp; report-to csp-log\",\n  \"content-type\": \"text/html;charset=UTF-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:34:54 GMT\",\n  \"permissions-policy\": \"camera=(), m",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en-in\" dir=\"ltr\"><head><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/Db4y7Pt5_c.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/DhUXe1_nYU.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/x1X",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://www.kayak.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"accept-ranges\": \"bytes\",\n  \"cache-control\": \"private, no-store\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-language\": \"en-IN\",\n  \"content-security-policy\": \"upgrade-insecure-requests; frame-ancestors 'self'\",\n  \"content-security-policy-report-only\": \"default-src https: blob:; connect-src https: https://signalling.trueengage.com https://fileupload.mypurecloud.com https://api.mypurecloud.com wss://webmessaging.mypurecloud.com https://api-downloads.mypurecloud.com https://asset.trueengage.com blob: wss://visitorjourneyapi.trueengage.com https://visitorjourneyapi.trueengage.com https://geoip.trueengage.com https://statistics.trueengage.com https://api.trueengage.com https://billingapi.trueengage.com https://headsupai.trueengage.com; font-src https: data:; frame-src https:; img-src https: data: blob:; media-src https: data: blob:; object-src https: data: blob:; script-src 'unsafe-inline' 'unsafe-eval' https:; style-src 'unsafe-inline' https: data:; worker-src 'self' blob:; report-uri /s/run/cspreport/reportHttp; report-to csp-log\",\n  \"content-type\": \"text/html;charset=UTF-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:34:54 GMT\",\n  \"permissions-policy\": \"camera=(), m",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en-in\" dir=\"ltr\"><head><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/Db4y7Pt5_c.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/DhUXe1_nYU.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/x1X",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.kayak.com",
+      "desc": "Server leaks `server: KAYAK/1.0` — aids fingerprinting.",
+      "value": "KAYAK/1.0",
+      "rawHeaders": "KAYAK/1.0",
+      "bodySnippet": "KAYAK/1.0"
+    },
+    {
+      "name": "Information Leakage — Stack Trace Leakage (body)",
+      "cwe": "CWE-209",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://www.kayak.com/__garuda_probe_1789194899500",
+      "desc": "Server leaks `body: stack trace, exception` — aids fingerprinting.",
+      "value": "stack trace, exception",
+      "rawHeaders": "stack trace, exception",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en-us\" dir=\"ltr\"><head><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/Db4y7Pt5_c.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/DhUXe1_nYU.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/x1XGuNl0YN.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/C6zD-rdnAw.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/Dq6S5Om3V1.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/CqM2zvnahn.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/B9luXbS-rj.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/2exy3TGeti.css\"/><link rel=\"stylesheet\" href=\"https://content.r"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "718a5458cf4b3ae13744a0cdfd5c33ed835344c5421483c86caed1bb438ec1e0",
+    "body": "<!DOCTYPE html><html lang=\"en-us\" dir=\"ltr\"><head><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/Db4y7Pt5_c.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/DhUXe1_nYU.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/x1XGuNl0YN.css\"/><link rel=\"stylesheet\" href=\"https://content.r9cdn.net/frontier/assets/C6zD-rdnAw.css\"",
+    "isSPA": true
+  }
+}

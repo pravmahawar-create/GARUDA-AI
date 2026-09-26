@@ -1,0 +1,80 @@
+{
+  "target": "https://pay.payzippy.com",
+  "timestamp": "2026-09-12T05:53:34.860Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://pay.payzippy.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"accept-ch\": \"Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version\",\n  \"cache-control\": \"must-revalidate,no-cache,no-store\",\n  \"content-length\": \"232\",\n  \"content-type\": \"text/html;charset=iso-8859-1\",\n  \"date\": \"Sat, 12 Sep 2026 05:54:12 GMT\"\n}",
+      "bodySnippet": "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n<title>Error 404 Not Found</title>\n</head>\n<body><h2>HTTP ERROR 404</h2>\n<p>Problem accessing /. Reason:\n<pre>    Not Found</pre></p>\n</body>\n</html>\n",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://pay.payzippy.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"accept-ch\": \"Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version\",\n  \"cache-control\": \"must-revalidate,no-cache,no-store\",\n  \"content-length\": \"232\",\n  \"content-type\": \"text/html;charset=iso-8859-1\",\n  \"date\": \"Sat, 12 Sep 2026 05:54:12 GMT\"\n}",
+      "bodySnippet": "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n<title>Error 404 Not Found</title>\n</head>\n<body><h2>HTTP ERROR 404</h2>\n<p>Problem accessing /. Reason:\n<pre>    Not Found</pre></p>\n</body>\n</html>\n",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://pay.payzippy.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"accept-ch\": \"Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version\",\n  \"cache-control\": \"must-revalidate,no-cache,no-store\",\n  \"content-length\": \"232\",\n  \"content-type\": \"text/html;charset=iso-8859-1\",\n  \"date\": \"Sat, 12 Sep 2026 05:54:12 GMT\"\n}",
+      "bodySnippet": "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n<title>Error 404 Not Found</title>\n</head>\n<body><h2>HTTP ERROR 404</h2>\n<p>Problem accessing /. Reason:\n<pre>    Not Found</pre></p>\n</body>\n</html>\n",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://pay.payzippy.com/login",
+      "status": 404,
+      "rawHeaders": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version\",\"cache-control\":\"must-revalidate,no-cache,no-store\",\"content-length\":\"237\",\"content-type\":\"text/html;charset=iso-8859-1\",\"date\":\"Sat, 12 Sep 2026 05:54:13 GMT\"}",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://pay.payzippy.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version\",\"cache-control\":\"must-revalidate,no-cache,no-store\",\"content-length\":\"241\",\"content-type\":\"text/html;charset=iso-8859-1\",\"date\":\"Sat, 12 Sep 2026 05:54:14 GMT\"}",
+      "draftOnly": true
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "bd91dc58b541ab0834a22970d4e1cd575c6c014c19ec6073dbf61531a3f826db",
+    "body": "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n<title>Error 404 Not Found</title>\n</head>\n<body><h2>HTTP ERROR 404</h2>\n<p>Problem accessing /__garuda_404_probe_1789192414861_cddf23. Reason:\n<pre>    Not Found</pre></p>\n</body>\n</html>\n",
+    "isSPA": true
+  }
+}

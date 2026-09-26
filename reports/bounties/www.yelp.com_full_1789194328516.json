@@ -1,0 +1,125 @@
+{
+  "target": "https://www.yelp.com",
+  "timestamp": "2026-09-12T06:24:43.093Z",
+  "findings": [
+    {
+      "name": "Dangerous CORS — Arbitrary Origin Reflection",
+      "cwe": "CWE-942",
+      "cvss": 7.5,
+      "severity": "High",
+      "url": "https://www.yelp.com",
+      "origin": "https://attacker-origin.com",
+      "desc": "Reflected 'https://attacker-origin.com' with ACAC=true → credentialed data exfiltration",
+      "rawHeaders": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\"accept-ranges\":\"bytes\",\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"https://attacker-origin.com\",\"access-control-expose-headers\":\"x-dd-b, x-set-cookie\",\"alt-svc\":\"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\"cache-control\":\"max-age=0, private, no-cache, no-store, must-revalidate\",\"charset\":\"utf-8\",\"connection\":\"keep-alive\",\"content-length\":\"779\",\"content-type\":\"text/html;charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:25:23 GMT\",\"pragma\":\"no-cache\",\"server\":\"DataDome\",\"set-cookie\":\"datadome=idiVr8uuL9etyMHEHDAFEHirRRs~xto3zOlBd3USJFyjbOAOkGJ7wCRvQhfRyJAnlXuvl95OLMMNBN7aBkO8y3aBVw0yn6jjg5C_5c_wu_kKGDQWz",
+      "bodySnippet": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\"accept-ranges\":\"bytes\",\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"https://attacker-origin.com\",\"access-control-expose-headers\":\"x-dd-b, x-set-cookie\",\"alt-svc\":\"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\"cache-control\":\"max-age=0, private, no-cache, no-store, must-revalidate\",\"charset\":\"utf-8\",\"connection\":\"keep-alive\",\"content-length\":\"779\",\"content-type\":\"text/html;charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:25:23 GMT\",\"pragma\":\"no-cache\",\"server\":\"DataDome\",\"set-cookie\":\"datadome=idiVr8uuL9etyMHEHDAFEHirRRs~xto3zOlBd3USJFyjbOAOkGJ7wCRvQhfRyJAnlXuvl95OLMMNBN7aBkO8y3aBVw0yn6jjg5C_5c_wu_kKGDQWz"
+    },
+    {
+      "name": "Dangerous CORS — Null Origin Bypass",
+      "cwe": "CWE-942",
+      "cvss": 6.5,
+      "severity": "Medium",
+      "url": "https://www.yelp.com",
+      "origin": "null",
+      "desc": "Reflected 'null' with ACAC=true → credentialed data exfiltration",
+      "rawHeaders": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\"accept-ranges\":\"bytes\",\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"null\",\"access-control-expose-headers\":\"x-dd-b, x-set-cookie\",\"alt-svc\":\"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\"cache-control\":\"max-age=0, private, no-cache, no-store, must-revalidate\",\"charset\":\"utf-8\",\"connection\":\"keep-alive\",\"content-length\":\"779\",\"content-type\":\"text/html;charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:25:24 GMT\",\"pragma\":\"no-cache\",\"server\":\"DataDome\",\"set-cookie\":\"datadome=IWX1mQ4CcnaHSZuf804rmblekhmzr~bjjEY5mU9HFHFIhIDGFYr7vu~rsLPifmBjo75MnaZyZyFSj1EktY08c5ft7Xs84PTY~OLXjlGR81ogBV~lcrpUdtCAMARlEQel; Max-Ag",
+      "bodySnippet": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\"accept-ranges\":\"bytes\",\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"null\",\"access-control-expose-headers\":\"x-dd-b, x-set-cookie\",\"alt-svc\":\"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\"cache-control\":\"max-age=0, private, no-cache, no-store, must-revalidate\",\"charset\":\"utf-8\",\"connection\":\"keep-alive\",\"content-length\":\"779\",\"content-type\":\"text/html;charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:25:24 GMT\",\"pragma\":\"no-cache\",\"server\":\"DataDome\",\"set-cookie\":\"datadome=IWX1mQ4CcnaHSZuf804rmblekhmzr~bjjEY5mU9HFHFIhIDGFYr7vu~rsLPifmBjo75MnaZyZyFSj1EktY08c5ft7Xs84PTY~OLXjlGR81ogBV~lcrpUdtCAMARlEQel; Max-Ag",
+      "draftOnly": true
+    },
+    {
+      "name": "Dangerous CORS — Subdomain Trust Bypass (target.com.attacker.com)",
+      "cwe": "CWE-942",
+      "cvss": 7.1,
+      "severity": "High",
+      "url": "https://www.yelp.com",
+      "origin": "https://www.yelp.com.attacker.com",
+      "desc": "Reflected 'https://www.yelp.com.attacker.com' with ACAC=true → credentialed data exfiltration",
+      "rawHeaders": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\"accept-ranges\":\"bytes\",\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"https://www.yelp.com.attacker.com\",\"access-control-expose-headers\":\"x-dd-b, x-set-cookie\",\"alt-svc\":\"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\"cache-control\":\"max-age=0, private, no-cache, no-store, must-revalidate\",\"charset\":\"utf-8\",\"connection\":\"keep-alive\",\"content-length\":\"779\",\"content-type\":\"text/html;charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:25:24 GMT\",\"pragma\":\"no-cache\",\"server\":\"DataDome\",\"set-cookie\":\"datadome=DPuZL6uWHktw6weSqgpydVZ2xt3MMQNsa1V_W7kDoiWi7pRSLDQFphn8N25JIXU~g0qQaWOQNKURIjLHWo35Rop0Wqjoy4S4n04jlnKEO4b",
+      "bodySnippet": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\"accept-ranges\":\"bytes\",\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"https://www.yelp.com.attacker.com\",\"access-control-expose-headers\":\"x-dd-b, x-set-cookie\",\"alt-svc\":\"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\"cache-control\":\"max-age=0, private, no-cache, no-store, must-revalidate\",\"charset\":\"utf-8\",\"connection\":\"keep-alive\",\"content-length\":\"779\",\"content-type\":\"text/html;charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:25:24 GMT\",\"pragma\":\"no-cache\",\"server\":\"DataDome\",\"set-cookie\":\"datadome=DPuZL6uWHktw6weSqgpydVZ2xt3MMQNsa1V_W7kDoiWi7pRSLDQFphn8N25JIXU~g0qQaWOQNKURIjLHWo35Rop0Wqjoy4S4n04jlnKEO4b"
+    },
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://www.yelp.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"accept-ch\": \"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\n  \"accept-ranges\": \"bytes\",\n  \"access-control-allow-credentials\": \"true\",\n  \"access-control-allow-origin\": \"*\",\n  \"access-control-expose-headers\": \"x-dd-b, x-set-cookie\",\n  \"alt-svc\": \"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\n  \"cache-control\": \"max-age=0, private, no-cache, no-store, must-revalidate\",\n  \"charset\": \"utf-8\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"779\",\n  \"content-type\": \"text/html;charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:25:25 GMT\",\n  \"pragma\": \"no-cache\",\n  \"server\": \"DataDome\",\n  \"set-cookie\": \"datadome=j4Eg2zLaiW~YHnKdCbGZmv9EeN0rc~wXUlZKjjz9rXT8AaYbyNfmusCWuIqW5LRAmVwA9E4_rAF1GZqiih3ap1oB1CIW5KVTagEJB9QTLajJvKyWQrTK2Wyj4hKjzM5N; Max-Age=31536000; Domain=.yelp.com; Path=/; Secure; SameSite=Lax\",\n  \"via\": \"1.1 varnish\",\n  \"x-cache\": \"MISS\",\n  \"x-cache-hits\": \"0\",\n  \"x-datadome\": \"protected\",\n  \"x-datadome-cid\": \"AHrlqAAAAAMATBHogsmT-usAAbvaOg==\",\n  \"x-dd-b\": \"3\",\n  \"x-served-by\": \"cache-bom-vanm7210020-BOM\",\n  \"x-timer\": \"S1789194325.068164,VS0,VE6\"\n}",
+      "bodySnippet": "<html lang=\"en\"><head><title>yelp.com</title><style>#cmsg{animation: A 1.5s;}@keyframes A{0%{opacity:0;}99%{opacity:0;}100%{opacity:1;}}</style></head><body style=\"margin:0\"><p id=\"cmsg\">Please enable JS and disable any ad blocker</p><script data-cfasync=\"false\">var dd={'rt':'i','cid':'AHrlqAAAAAMAT",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://www.yelp.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"accept-ch\": \"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\n  \"accept-ranges\": \"bytes\",\n  \"access-control-allow-credentials\": \"true\",\n  \"access-control-allow-origin\": \"*\",\n  \"access-control-expose-headers\": \"x-dd-b, x-set-cookie\",\n  \"alt-svc\": \"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\n  \"cache-control\": \"max-age=0, private, no-cache, no-store, must-revalidate\",\n  \"charset\": \"utf-8\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"779\",\n  \"content-type\": \"text/html;charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:25:25 GMT\",\n  \"pragma\": \"no-cache\",\n  \"server\": \"DataDome\",\n  \"set-cookie\": \"datadome=j4Eg2zLaiW~YHnKdCbGZmv9EeN0rc~wXUlZKjjz9rXT8AaYbyNfmusCWuIqW5LRAmVwA9E4_rAF1GZqiih3ap1oB1CIW5KVTagEJB9QTLajJvKyWQrTK2Wyj4hKjzM5N; Max-Age=31536000; Domain=.yelp.com; Path=/; Secure; SameSite=Lax\",\n  \"via\": \"1.1 varnish\",\n  \"x-cache\": \"MISS\",\n  \"x-cache-hits\": \"0\",\n  \"x-datadome\": \"protected\",\n  \"x-datadome-cid\": \"AHrlqAAAAAMATBHogsmT-usAAbvaOg==\",\n  \"x-dd-b\": \"3\",\n  \"x-served-by\": \"cache-bom-vanm7210020-BOM\",\n  \"x-timer\": \"S1789194325.068164,VS0,VE6\"\n}",
+      "bodySnippet": "<html lang=\"en\"><head><title>yelp.com</title><style>#cmsg{animation: A 1.5s;}@keyframes A{0%{opacity:0;}99%{opacity:0;}100%{opacity:1;}}</style></head><body style=\"margin:0\"><p id=\"cmsg\">Please enable JS and disable any ad blocker</p><script data-cfasync=\"false\">var dd={'rt':'i','cid':'AHrlqAAAAAMAT",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://www.yelp.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"accept-ch\": \"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\n  \"accept-ranges\": \"bytes\",\n  \"access-control-allow-credentials\": \"true\",\n  \"access-control-allow-origin\": \"*\",\n  \"access-control-expose-headers\": \"x-dd-b, x-set-cookie\",\n  \"alt-svc\": \"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\n  \"cache-control\": \"max-age=0, private, no-cache, no-store, must-revalidate\",\n  \"charset\": \"utf-8\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"779\",\n  \"content-type\": \"text/html;charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:25:25 GMT\",\n  \"pragma\": \"no-cache\",\n  \"server\": \"DataDome\",\n  \"set-cookie\": \"datadome=j4Eg2zLaiW~YHnKdCbGZmv9EeN0rc~wXUlZKjjz9rXT8AaYbyNfmusCWuIqW5LRAmVwA9E4_rAF1GZqiih3ap1oB1CIW5KVTagEJB9QTLajJvKyWQrTK2Wyj4hKjzM5N; Max-Age=31536000; Domain=.yelp.com; Path=/; Secure; SameSite=Lax\",\n  \"via\": \"1.1 varnish\",\n  \"x-cache\": \"MISS\",\n  \"x-cache-hits\": \"0\",\n  \"x-datadome\": \"protected\",\n  \"x-datadome-cid\": \"AHrlqAAAAAMATBHogsmT-usAAbvaOg==\",\n  \"x-dd-b\": \"3\",\n  \"x-served-by\": \"cache-bom-vanm7210020-BOM\",\n  \"x-timer\": \"S1789194325.068164,VS0,VE6\"\n}",
+      "bodySnippet": "<html lang=\"en\"><head><title>yelp.com</title><style>#cmsg{animation: A 1.5s;}@keyframes A{0%{opacity:0;}99%{opacity:0;}100%{opacity:1;}}</style></head><body style=\"margin:0\"><p id=\"cmsg\">Please enable JS and disable any ad blocker</p><script data-cfasync=\"false\">var dd={'rt':'i','cid':'AHrlqAAAAAMAT",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://www.yelp.com/login",
+      "status": 403,
+      "rawHeaders": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Mobile,Sec-CH-UA-Platform,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-Device-Memory\",\"accept-ranges\":\"bytes\",\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"*\",\"access-control-expose-headers\":\"x-dd-b, x-set-cookie\",\"alt-svc\":\"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\"cache-control\":\"max-age=0, private, no-cache, no-store, must-revalidate\",\"charset\":\"utf-8\",\"connection\":\"keep-alive\",\"content-length\":\"779\",\"content-type\":\"text/html;charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:25:25 GMT\",\"p",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://www.yelp.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"accept-ranges\":\"bytes\",\"alt-svc\":\"h3=\\\":443\\\";ma=86400,h3-29=\\\":443\\\";ma=86400,h3-27=\\\":443\\\";ma=86400\",\"connection\":\"keep-alive\",\"content-length\":\"5348\",\"content-type\":\"text/html; charset=UTF-8\",\"date\":\"Sat, 12 Sep 2026 06:25:26 GMT\",\"via\":\"1.1 varnish\",\"x-cache\":\"MISS\",\"x-cache-hits\":\"0\",\"x-extlb\":\"10-69-86-66-uswest2aprod\",\"x-served-by\":\"cache-bom-vanm7210020-BOM\",\"x-timer\":\"S1789194326.133114,VS0,VE289\"}",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.yelp.com",
+      "desc": "Server leaks `server: DataDome` — aids fingerprinting.",
+      "value": "DataDome",
+      "rawHeaders": "DataDome",
+      "bodySnippet": "DataDome"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "b5197c5a9dc0f4cf0cc5a14091cfe31ff560bdfdaeaf6b71d83cba0677f05359",
+    "body": "<!doctype html>\n    <!--[if lt IE 7 ]> <html class=\"ie6 ie ltie9 ltie8 no-js\" lang=\"en-US\"> <![endif]-->\n    <!--[if IE 7 ]>    <html class=\"ie7 ie ltie9 ltie8 no-js\" lang=\"en-US\"> <![endif]-->\n    <!--[if IE 8 ]>    <html class=\"ie8 ie ltie9 no-js\" lang=\"en-US\"> <![endif]-->\n    <!--[if IE 9 ]>    <html class=\"ie9 ie no-js\" lang=\"en-US\"> <![endif]-->\n    <!--[if (gt IE 9)|!(IE)]><!--> <html class",
+    "isSPA": true
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "target": "https://app.greenhouse.io",
+  "timestamp": "2026-09-12T07:01:06.286Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://app.greenhouse.io",
+      "status": 403,
+      "rawHeaders": "{\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"919\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 07:01:59 GMT\",\n  \"server\": \"CloudFront\",\n  \"via\": \"1.1 9de9245ad27107160de04191e492334c.cloudfront.net (CloudFront)\",\n  \"x-amz-cf-id\": \"u6qJaEnW07aJGoQrwGnGrR_nkD-sde4URW2KJygMiCQ6YGYUmHkr5Q==\",\n  \"x-amz-cf-pop\": \"BOM78-P11\",\n  \"x-cache\": \"Error from cloudfront\"\n}",
+      "bodySnippet": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">\n<TITLE>ERROR: The request could not be satisfied</TITLE>\n</HEAD><BODY>\n<H1>403 ERROR</H1>\n<H2>The request could ",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://app.greenhouse.io",
+      "status": 403,
+      "rawHeaders": "{\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"919\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 07:01:59 GMT\",\n  \"server\": \"CloudFront\",\n  \"via\": \"1.1 9de9245ad27107160de04191e492334c.cloudfront.net (CloudFront)\",\n  \"x-amz-cf-id\": \"u6qJaEnW07aJGoQrwGnGrR_nkD-sde4URW2KJygMiCQ6YGYUmHkr5Q==\",\n  \"x-amz-cf-pop\": \"BOM78-P11\",\n  \"x-cache\": \"Error from cloudfront\"\n}",
+      "bodySnippet": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">\n<TITLE>ERROR: The request could not be satisfied</TITLE>\n</HEAD><BODY>\n<H1>403 ERROR</H1>\n<H2>The request could ",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://app.greenhouse.io",
+      "status": 403,
+      "rawHeaders": "{\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"919\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 07:01:59 GMT\",\n  \"server\": \"CloudFront\",\n  \"via\": \"1.1 9de9245ad27107160de04191e492334c.cloudfront.net (CloudFront)\",\n  \"x-amz-cf-id\": \"u6qJaEnW07aJGoQrwGnGrR_nkD-sde4URW2KJygMiCQ6YGYUmHkr5Q==\",\n  \"x-amz-cf-pop\": \"BOM78-P11\",\n  \"x-cache\": \"Error from cloudfront\"\n}",
+      "bodySnippet": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">\n<TITLE>ERROR: The request could not be satisfied</TITLE>\n</HEAD><BODY>\n<H1>403 ERROR</H1>\n<H2>The request could ",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://app.greenhouse.io/login",
+      "status": 403,
+      "rawHeaders": "{\"connection\":\"keep-alive\",\"content-length\":\"919\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 07:02:00 GMT\",\"server\":\"CloudFront\",\"via\":\"1.1 9de9245ad27107160de04191e492334c.cloudfront.net (CloudFront)\",\"x-amz-cf-id\":\"ouDKzf4IKubd5JVqBSsJzQcUn6HzsQjDhMWwGVX7NYoDfpuBYjmj5g==\",\"x-amz-cf-pop\":\"BOM78-P11\",\"x-cache\":\"Error from cloudfront\"}",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://app.greenhouse.io/dashboard",
+      "status": 403,
+      "rawHeaders": "{\"connection\":\"keep-alive\",\"content-length\":\"919\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 07:02:00 GMT\",\"server\":\"CloudFront\",\"via\":\"1.1 9de9245ad27107160de04191e492334c.cloudfront.net (CloudFront)\",\"x-amz-cf-id\":\"ncw4mA3iNue60h5iRU_bZUxWhYLLChPXwB3oUHTbjzyq99AFVRUDZQ==\",\"x-amz-cf-pop\":\"BOM78-P11\",\"x-cache\":\"Error from cloudfront\"}",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://app.greenhouse.io",
+      "desc": "Server leaks `server: CloudFront` — aids fingerprinting.",
+      "value": "CloudFront",
+      "rawHeaders": "CloudFront",
+      "bodySnippet": "CloudFront"
+    }
+  ],
+  "baseline": {
+    "status": 200,
+    "hash": "eea781fb087cf02a08b7e52179c7cd63025805ffc910969ae6bb50293b00eebe",
+    "body": "<!DOCTYPE html>\n<html>\n  <head>\n    <script class=\"js-metadata\" nonce=\"Rl4dmzqEGBUAGqVeSbf0mTMMb0vcgf0x6PZaWym0jPQ=\" data-key=\"Config.Recurly.public_key\" data-type=\"string\" data-value=\"ewr1-1Jgb7fceABJns66r4gLlw6\" type=\"text/configuration\"></script>\n<script class=\"js-metadata\" nonce=\"Rl4dmzqEGBUAGqVeSbf0mTMMb0vcgf0x6PZaWym0jPQ=\" data-key=\"Routes.Config.custom_options_sources_configuration_path\" da",
+    "isSPA": true
+  }
+}

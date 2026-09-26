@@ -1,0 +1,37 @@
+{
+  "target": "https://slack.com",
+  "timestamp": "2026-09-12T06:36:04.821Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://slack.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"alt-svc\": \"h3=\\\":443\\\"; ma=2592000, h3-29=\\\":443\\\"; ma=2592000, quic=\\\":443\\\"; ma=2592000\",\n  \"content-encoding\": \"br\",\n  \"content-length\": \"27017\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"cross-origin-opener-policy\": \"same-origin-allow-popups\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:45 GMT\",\n  \"referrer-policy\": \"no-referrer\",\n  \"server\": \"Apache\",\n  \"set-cookie\": \"ui=%7B%22v%22%3A1%2C%22sid%22%3A%2209181bdaa9dc6501f462256782f3f6de.1789195005%22%2C%22st%22%3A1789195005%2C%22pc%22%3A1%2C%22qs%22%3A%22%22%2C%22ref%22%3A%22%22%2C%22ii%22%3Anull%2C%22ci%22%3Anull%2C%22fs%22%3A0%2C%22tags%22%3A%5B%5D%2C%22tc%22%3A%7B%7D%2C%22vp%22%3A%5B%7B%22u%22%3A%22%5C%2Fintl%5C%2Fen-in%5C%2F%22%2C%22t%22%3A1789195005%2C%22g%22%3A%5B%5D%7D%5D%2C%22sn%22%3A%5B%7B%22u%22%3A%22%5C%2Ffeatures%22%2C%22r%22%3Anull%2C%22p%22%3A1%2C%22v%22%3A0%7D%2C%7B%22u%22%3A%22%5C%2Fwhat-is-slack%22%2C%22r%22%3Anull%2C%22p%22%3A2%2C%22v%22%3A0%7D%2C%7B%22u%22%3A%22%5C%2Fcustomer-stories%22%2C%22r%22%3Anull%2C%22p%22%3A3%2C%22v%22%3A0%7D%5D%2C%22f1%22%3Anull%2C%22prev%22%3Anull%2C%22fsa%22%3A1789195005%2C%22ts%22%3A1%2C%22tpv%22%3A1%7D; expires=Sun, 12-Sep-2027 06:36:45 GMT; Max-Age=31536000; path=/; domain=.sla",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en-IN\" class=\"\" data-cdn=\"https://a.slack-edge.com/\"><head><link rel=\"preconnect\" href=\"https://d34u8crftukxnk.cloudfront.net\"><script type=\"text/human\">\n/*\n\n          ++++      :::::                                   LLLLL                                          KKKKK\n  ",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://slack.com",
+      "desc": "Server leaks `server: Apache` — aids fingerprinting.",
+      "value": "Apache",
+      "rawHeaders": "Apache",
+      "bodySnippet": "Apache"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "b8bf04ab346f045045460066dc077ec4f93296324a913d228521d2def54efe05",
+    "body": "<!DOCTYPE html><html lang=\"en-US\" class=\"\" data-cdn=\"https://a.slack-edge.com/\"><head><script type=\"text/javascript\" crossorigin=\"anonymous\" src=\"https://a.slack-edge.com/bv1-13-br/webpack.manifest.e0f7493de34029e6.min.js\" onload=\"window._cdn ? _cdn.ok(this, arguments) : null\" onerror=\"window._cdn ? _cdn.failed(this, arguments) : null\"></script><script>window.ts_endpoint_url = \"https:\\/\\/slack.com",
+    "isSPA": true
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "target": "https://www.moneybird.com",
+  "timestamp": "2026-09-12T06:24:42.910Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://www.moneybird.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"access-control-allow-headers\": \"DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type\",\n  \"access-control-allow-origin\": \"*\",\n  \"access-control-request-methods\": \"GET\",\n  \"cache-control\": \"no-cache\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-security-policy-report-only\": \"default-src 'self' https://*.wistia.com https://*.wistia.net https://cdn.growthbook.io; script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://gtm.moneybird.nl https://gtm.moneybird.de https://gtm.moneybird.com https://gtm.moneybird.be https://www.google-analytics.com https://www.youtube.com https://maps.googleapis.com https://bat.bing.com https://*.demio.com https://d3s4clg74dg0wr.cloudfront.net https://zapier.com https://www.clarity.ms https://static.homerun.co https://unpkg.com/@googlemaps/ https://euc-widget.freshworks.com https://moneybird.freshdesk.com https://*.wistia.com https://*.wistia.net https://*.intercom.io wss://*.intercom.io https://intercom-sheets.com/ https://*.intercomcdn.eu https://*.intercomcdn.com https://*.intercomassets.eu;",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en\"><head>\n\n    <title>Accounting software for entrepreneurs | Moneybird</title>\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n<meta name=\"viewport\" content=\"width=device-width\">\n<link rel=\"shortcu",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.moneybird.com",
+      "desc": "Server leaks `server: nginx` — aids fingerprinting.",
+      "value": "nginx",
+      "rawHeaders": "nginx",
+      "bodySnippet": "nginx"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "2abce354dcd7fed2084a722bdd676872bdb0ac044c640fc79f9ff1b8e6c58ab5",
+    "body": "<!DOCTYPE html><html lang=\"en\"><head>\n\n    <title>Page not found | Moneybird</title>\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n<meta name=\"viewport\" content=\"width=device-width\">\n<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"/favicon.ico\">\n<meta name=\"theme-color\" content=\"#0073E6\">\n<meta name=\"msapplication-Tile",
+    "isSPA": true
+  }
+}

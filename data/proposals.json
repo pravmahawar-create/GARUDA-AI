@@ -51695,5 +51695,5725 @@
         }
       }
     ]
+  },
+  "prop_1790000873907_5bd34e": {
+    "proposalId": "prop_1790000873907_5bd34e",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T14:27:53.991Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790000873907_5bd34e",
+    "createdAt": "2026-09-21T14:27:53.991Z",
+    "updatedAt": "2026-09-21T14:27:53.991Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:27:53.991Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790000879839_bb8f88": {
+    "proposalId": "prop_1790000879839_bb8f88",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T14:27:59.841Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790000879839_bb8f88",
+    "createdAt": "2026-09-21T14:27:59.841Z",
+    "updatedAt": "2026-09-21T14:27:59.841Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:27:59.841Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "prop_1790000921619_07ae1e": {
+    "proposalId": "prop_1790000921619_07ae1e",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T14:28:41.640Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790000921619_07ae1e",
+    "createdAt": "2026-09-21T14:28:41.640Z",
+    "updatedAt": "2026-09-21T14:28:41.641Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:28:41.640Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "prop_1790000972875_f07a17": {
+    "proposalId": "prop_1790000972875_f07a17",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T14:29:32.941Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790000972875_f07a17",
+    "createdAt": "2026-09-21T14:29:32.941Z",
+    "updatedAt": "2026-09-21T14:29:32.941Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:29:32.941Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790000977621_3ecd0f": {
+    "proposalId": "prop_1790000977621_3ecd0f",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T14:29:37.624Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790000977621_3ecd0f",
+    "createdAt": "2026-09-21T14:29:37.624Z",
+    "updatedAt": "2026-09-21T14:29:37.624Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:29:37.624Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "prop_1790001009835_acfd2f": {
+    "proposalId": "prop_1790001009835_acfd2f",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Analyze the current GARUDA business/project infrastructure, identify one concret",
+      "requirements": "Analyze the current GARUDA business/project infrastructure, identify one concrete executable revenue opportunity supported by existing evidence, generate the required execution plan and business artifact, validate it, review it, and record the resulting next action.",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Enterprise Operational Infrastructure Lead",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T14:30:09.867Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "4988c49ce41cfe30333fab70a594539e91e4ab2db59f8e884dd09fed271b0749",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790001009835_acfd2f",
+    "createdAt": "2026-09-21T14:30:09.867Z",
+    "updatedAt": "2026-09-21T14:30:09.867Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:30:09.867Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790001077173_ee3999": {
+    "proposalId": "prop_1790001077173_ee3999",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Analyze the current GARUDA business/project infrastructure, identify one concret",
+      "requirements": "Analyze the current GARUDA business/project infrastructure, identify one concrete executable revenue opportunity supported by existing evidence, generate the required execution plan and business artifact, validate it, review it, and record the resulting next action.",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Enterprise Operational Infrastructure Lead",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T14:31:17.224Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "4988c49ce41cfe30333fab70a594539e91e4ab2db59f8e884dd09fed271b0749",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790001077173_ee3999",
+    "createdAt": "2026-09-21T14:31:17.224Z",
+    "updatedAt": "2026-09-21T14:31:17.225Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:31:17.224Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790002457414_b71091": {
+    "proposalId": "prop_1790002457414_b71091",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T14:54:17.466Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790002457414_b71091",
+    "createdAt": "2026-09-21T14:54:17.466Z",
+    "updatedAt": "2026-09-21T14:54:17.466Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:54:17.466Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790002464403_4ed7a2": {
+    "proposalId": "prop_1790002464403_4ed7a2",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T14:54:24.404Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790002464403_4ed7a2",
+    "createdAt": "2026-09-21T14:54:24.404Z",
+    "updatedAt": "2026-09-21T14:54:24.404Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:54:24.404Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "prop_1790002584667_b3261e": {
+    "proposalId": "prop_1790002584667_b3261e",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T14:56:24.687Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790002584667_b3261e",
+    "createdAt": "2026-09-21T14:56:24.687Z",
+    "updatedAt": "2026-09-21T14:56:24.688Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:56:24.687Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790002588266_caee3f": {
+    "proposalId": "prop_1790002588266_caee3f",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T14:56:28.267Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790002588266_caee3f",
+    "createdAt": "2026-09-21T14:56:28.267Z",
+    "updatedAt": "2026-09-21T14:56:28.267Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:56:28.267Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "prop_1790002677536_dab43e": {
+    "proposalId": "prop_1790002677536_dab43e",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T14:57:57.602Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790002677536_dab43e",
+    "createdAt": "2026-09-21T14:57:57.602Z",
+    "updatedAt": "2026-09-21T14:57:57.603Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:57:57.602Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790002681077_6ef6f4": {
+    "proposalId": "prop_1790002681077_6ef6f4",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T14:58:01.079Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790002681077_6ef6f4",
+    "createdAt": "2026-09-21T14:58:01.079Z",
+    "updatedAt": "2026-09-21T14:58:01.079Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T14:58:01.079Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "prop_1790002850440_cfe78a": {
+    "proposalId": "prop_1790002850440_cfe78a",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T15:00:50.455Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790002850440_cfe78a",
+    "createdAt": "2026-09-21T15:00:50.455Z",
+    "updatedAt": "2026-09-21T15:00:50.455Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T15:00:50.455Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790002855781_ea286d": {
+    "proposalId": "prop_1790002855781_ea286d",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T15:00:55.782Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790002855781_ea286d",
+    "createdAt": "2026-09-21T15:00:55.782Z",
+    "updatedAt": "2026-09-21T15:00:55.782Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T15:00:55.782Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "prop_1790003080846_1ed9a1": {
+    "proposalId": "prop_1790003080846_1ed9a1",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T15:04:40.867Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790003080846_1ed9a1",
+    "createdAt": "2026-09-21T15:04:40.867Z",
+    "updatedAt": "2026-09-21T15:04:40.868Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T15:04:40.867Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790003085234_786c6d": {
+    "proposalId": "prop_1790003085234_786c6d",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T15:04:45.236Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790003085234_786c6d",
+    "createdAt": "2026-09-21T15:04:45.236Z",
+    "updatedAt": "2026-09-21T15:04:45.236Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T15:04:45.236Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "prop_1790003475794_52ea07": {
+    "proposalId": "prop_1790003475794_52ea07",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T15:11:15.810Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790003475794_52ea07",
+    "createdAt": "2026-09-21T15:11:15.810Z",
+    "updatedAt": "2026-09-21T15:11:15.810Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T15:11:15.810Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790003479841_d55769": {
+    "proposalId": "prop_1790003479841_d55769",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T15:11:19.842Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790003479841_d55769",
+    "createdAt": "2026-09-21T15:11:19.842Z",
+    "updatedAt": "2026-09-21T15:11:19.842Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T15:11:19.842Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "scope_1790003916549_3ac8bb": {
+    "proposalId": "scope_1790003916549_3ac8bb",
+    "scopeId": "scope_1790003916549_3ac8bb",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Build automated WhatsApp CRM bot with lead qualification and database storage"
+    },
+    "client": {
+      "name": "Enterprise Client",
+      "email": "client@example.com",
+      "phone": null,
+      "organization": "Sandbox Test Organization"
+    },
+    "customer": {
+      "name": "Enterprise Client",
+      "email": "client@example.com",
+      "phone": null,
+      "contact": "client@example.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:18:36.529Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Build automated WhatsApp CRM bot with lead qualification and database storage",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 50,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation",
+      "U05 Decision",
+      "U07 Communication",
+      "U11 Business"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "engineering.repository-audit",
+        "category": "Software Engineering",
+        "name": "Repository architecture and quality audit",
+        "universe": "engineering",
+        "confidenceScore": 90,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-6 hours"
+      },
+      {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "automation.spreadsheet-automation",
+        "category": "Spreadsheet Automation",
+        "name": "Excel & Google Sheets Data Automation",
+        "universe": "automation",
+        "confidenceScore": 90,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-4 hours"
+      },
+      {
+        "capabilityId": "ai.agent-engineering",
+        "category": "AI Agents",
+        "name": "Custom AI Agents & RAG Pipeline Engineering",
+        "universe": "engineering",
+        "confidenceScore": 90,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-16 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 45000,
+      "totalUSD": 529,
+      "totalAmount": 45000,
+      "depositAmount": 22500,
+      "depositAmountINR": 22500,
+      "pricingModel": "milestone_based",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Advance / Architecture & Core Build",
+          "amountINR": 22500,
+          "percentage": 50
+        },
+        {
+          "milestone": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+          "amountINR": 22500,
+          "percentage": 50
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "test",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790003916549_3ac8bb",
+    "createdAt": "2026-09-21T15:18:36.549Z",
+    "updatedAt": "2026-09-21T15:18:36.567Z"
+  },
+  "scope_1790003956585_dcf867": {
+    "proposalId": "scope_1790003956585_dcf867",
+    "scopeId": "scope_1790003956585_dcf867",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Build custom high-frequency trading bot with low latency"
+    },
+    "client": {
+      "name": "Attacker",
+      "email": "attacker@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Attacker",
+      "email": "attacker@untrusted.com",
+      "phone": null,
+      "contact": "attacker@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:19:16.568Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Build custom high-frequency trading bot with low latency",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U12 Finance"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "finance.sovereign-quant-advisory",
+        "category": "Financial Engineering & Quant",
+        "name": "24/7 Sovereign Quant Fleet & Multi-Market Alpha Engine",
+        "universe": "finance",
+        "confidenceScore": 98,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "Real-time automated"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23750,
+      "totalUSD": 279,
+      "totalAmount": 23750,
+      "depositAmount": 23750,
+      "depositAmountINR": 23750,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23750,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790003956585_dcf867",
+    "createdAt": "2026-09-21T15:19:16.585Z",
+    "updatedAt": "2026-09-21T15:19:16.607Z"
+  },
+  "scope_1790003959226_7a593b": {
+    "proposalId": "scope_1790003959226_7a593b",
+    "scopeId": "scope_1790003959226_7a593b",
+    "project": {
+      "title": "Custom Governed Software Engineering: Custom Architecture",
+      "requirements": "Deliver distributed enterprise ledger infrastructure"
+    },
+    "client": {
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "contact": "forger@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:19:19.226Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Deliver distributed enterprise ledger infrastructure",
+    "capabilityMatch": {
+      "name": "Custom Governed Software Engineering",
+      "category": "Software Engineering",
+      "matchScore": 0,
+      "canExecuteAutonomously": false
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U11 Business"
+    ],
+    "selectedCapabilities": [],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 21250,
+      "totalUSD": 250,
+      "totalAmount": 21250,
+      "depositAmount": 21250,
+      "depositAmountINR": 21250,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 21250,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790003959226_7a593b",
+    "createdAt": "2026-09-21T15:19:19.227Z",
+    "updatedAt": "2026-09-21T15:19:19.239Z"
+  },
+  "scope_1790003960068_3e11a1": {
+    "proposalId": "scope_1790003960068_3e11a1",
+    "scopeId": "scope_1790003960068_3e11a1",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Build multi-tenant SaaS application with automated billing"
+    },
+    "client": {
+      "name": "Revenue Fabricator",
+      "email": "fabricator@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Revenue Fabricator",
+      "email": "fabricator@untrusted.com",
+      "phone": null,
+      "contact": "fabricator@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:19:20.067Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Build multi-tenant SaaS application with automated billing",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U11 Business",
+      "U12 Finance"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23750,
+      "totalUSD": 279,
+      "totalAmount": 23750,
+      "depositAmount": 23750,
+      "depositAmountINR": 23750,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23750,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790003960068_3e11a1",
+    "createdAt": "2026-09-21T15:19:20.068Z",
+    "updatedAt": "2026-09-21T15:19:20.078Z"
+  },
+  "scope_1790003960922_3a686c": {
+    "proposalId": "scope_1790003960922_3a686c",
+    "scopeId": "scope_1790003960922_3a686c",
+    "project": {
+      "title": "Research and knowledge synthesis: Custom Architecture",
+      "requirements": "Develop autonomous marketing intelligence engine"
+    },
+    "client": {
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "contact": "hijacker@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:19:20.922Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Develop autonomous marketing intelligence engine",
+    "capabilityMatch": {
+      "name": "Research and knowledge synthesis",
+      "category": "Research",
+      "matchScore": 50,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U01 Knowledge",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U20 Content",
+      "U24 Wealth & Real Estate",
+      "U19 Creative"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "knowledge.research-synthesis",
+        "category": "Research",
+        "name": "Research and knowledge synthesis",
+        "universe": "knowledge",
+        "confidenceScore": 94,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-6 hours"
+      },
+      {
+        "capabilityId": "digital_marketing.editorial_growth",
+        "category": "Digital Marketing",
+        "name": "Editorial Calendars & Multi-Channel Content Factory",
+        "universe": "content",
+        "confidenceScore": 94,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-3 days"
+      },
+      {
+        "capabilityId": "real_estate.growth_os",
+        "category": "Real Estate Intelligence",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "universe": "wealth",
+        "confidenceScore": 94,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "creative.studio_orchestration",
+        "category": "Creative Services",
+        "name": "Creative Studio Orchestration & IdentityLock™",
+        "universe": "creative",
+        "confidenceScore": 92,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-4 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23500,
+      "totalUSD": 276,
+      "totalAmount": 23500,
+      "depositAmount": 23500,
+      "depositAmountINR": 23500,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23500,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790003960922_3a686c",
+    "createdAt": "2026-09-21T15:19:20.922Z",
+    "updatedAt": "2026-09-21T15:19:20.933Z"
+  },
+  "scope_1790003961782_d54db1": {
+    "proposalId": "scope_1790003961782_d54db1",
+    "scopeId": "scope_1790003961782_d54db1",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM"
+    },
+    "client": {
+      "name": "Repeat Visitor",
+      "email": "repeat.visitor@enterprise.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Repeat Visitor",
+      "email": "repeat.visitor@enterprise.com",
+      "phone": null,
+      "contact": "repeat.visitor@enterprise.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:19:21.781Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation",
+      "U24 Wealth & Real Estate",
+      "U07 Communication",
+      "U11 Business"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "real_estate.growth_os",
+        "category": "Real Estate Intelligence",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "universe": "wealth",
+        "confidenceScore": 94,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 60000,
+      "totalUSD": 706,
+      "totalAmount": 60000,
+      "depositAmount": 30000,
+      "depositAmountINR": 30000,
+      "pricingModel": "milestone_based",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Advance / Architecture & Core Build",
+          "amountINR": 30000,
+          "percentage": 50
+        },
+        {
+          "milestone": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+          "amountINR": 30000,
+          "percentage": 50
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790003961782_d54db1",
+    "createdAt": "2026-09-21T15:19:21.782Z",
+    "updatedAt": "2026-09-21T15:19:21.792Z"
+  },
+  "scope_1790003962987_4a852a": {
+    "proposalId": "scope_1790003962987_4a852a",
+    "scopeId": "scope_1790003962987_4a852a",
+    "project": {
+      "title": "Business Workflow & Process Automation: Custom Architecture",
+      "requirements": "Verify end-to-end sandbox pipeline execution for regression test"
+    },
+    "client": {
+      "name": "QA Automated Tester",
+      "email": "engineer@sandbox.test",
+      "phone": null,
+      "organization": "Sandbox Test Organization"
+    },
+    "customer": {
+      "name": "QA Automated Tester",
+      "email": "engineer@sandbox.test",
+      "phone": null,
+      "contact": "engineer@sandbox.test",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:19:22.986Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Verify end-to-end sandbox pipeline execution for regression test",
+    "capabilityMatch": {
+      "name": "Business Workflow & Process Automation",
+      "category": "Workflow Automation",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 22000,
+      "totalUSD": 259,
+      "totalAmount": 22000,
+      "depositAmount": 22000,
+      "depositAmountINR": 22000,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 22000,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "test",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790003962987_4a852a",
+    "createdAt": "2026-09-21T15:19:22.987Z",
+    "updatedAt": "2026-09-21T15:19:22.997Z"
+  },
+  "scope_1790003993943_63241c": {
+    "proposalId": "scope_1790003993943_63241c",
+    "scopeId": "scope_1790003993943_63241c",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and continuous compliance logging"
+    },
+    "client": {
+      "name": "Devendra Varma",
+      "email": "devendra.varma@fintech-security.test",
+      "phone": "+91-98200-11223",
+      "organization": "Sandbox Test Organization"
+    },
+    "customer": {
+      "name": "Devendra Varma",
+      "email": "devendra.varma@fintech-security.test",
+      "phone": "+91-98200-11223",
+      "contact": "devendra.varma@fintech-security.test",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Organic Search",
+        "source": "google",
+        "campaign": "enterprise_ai_architecture",
+        "referrer": "UNKNOWN",
+        "landingPath": "/platform#project-scope"
+      }
+    },
+    "requirements": "Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and continuous compliance logging",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U21 Brand"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "knowledge.research-synthesis",
+        "category": "Research",
+        "name": "Research and knowledge synthesis",
+        "universe": "knowledge",
+        "confidenceScore": 94,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-6 hours"
+      },
+      {
+        "capabilityId": "documentation.technical-documentation",
+        "category": "Technical Documentation",
+        "name": "Technical Documentation & API Specs",
+        "universe": "knowledge",
+        "confidenceScore": 92,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "ai.agent-engineering",
+        "category": "AI Agents",
+        "name": "Custom AI Agents & RAG Pipeline Engineering",
+        "universe": "engineering",
+        "confidenceScore": 90,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-16 hours"
+      },
+      {
+        "capabilityId": "brand.identity_lock_system",
+        "category": "Brand Identity",
+        "name": "IdentityLock™ Brand Governance & Executive Styling",
+        "universe": "brand",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-2 days"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 50000,
+      "totalUSD": 588,
+      "totalAmount": 50000,
+      "depositAmount": 25000,
+      "depositAmountINR": 25000,
+      "pricingModel": "milestone_based",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Advance / Architecture & Core Build",
+          "amountINR": 25000,
+          "percentage": 50
+        },
+        {
+          "milestone": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+          "amountINR": 25000,
+          "percentage": 50
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "test",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790003993943_63241c",
+    "createdAt": "2026-09-21T15:19:53.943Z",
+    "updatedAt": "2026-09-21T15:19:53.971Z"
+  },
+  "prop_1790004085793_451a1c": {
+    "proposalId": "prop_1790004085793_451a1c",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-05T15:21:25.883Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790004085793_451a1c",
+    "createdAt": "2026-09-21T15:21:25.883Z",
+    "updatedAt": "2026-09-21T15:21:25.883Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T15:21:25.883Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790004094519_fc0f5b": {
+    "proposalId": "prop_1790004094519_fc0f5b",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-05T15:21:34.521Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790004094519_fc0f5b",
+    "createdAt": "2026-09-21T15:21:34.521Z",
+    "updatedAt": "2026-09-21T15:21:34.521Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-21T15:21:34.521Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "scope_1790004105491_5a5381": {
+    "proposalId": "scope_1790004105491_5a5381",
+    "scopeId": "scope_1790004105491_5a5381",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Build custom high-frequency trading bot with low latency"
+    },
+    "client": {
+      "name": "Attacker",
+      "email": "attacker@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Attacker",
+      "email": "attacker@untrusted.com",
+      "phone": null,
+      "contact": "attacker@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:45.458Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Build custom high-frequency trading bot with low latency",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U12 Finance"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "finance.sovereign-quant-advisory",
+        "category": "Financial Engineering & Quant",
+        "name": "24/7 Sovereign Quant Fleet & Multi-Market Alpha Engine",
+        "universe": "finance",
+        "confidenceScore": 98,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "Real-time automated"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23750,
+      "totalUSD": 279,
+      "totalAmount": 23750,
+      "depositAmount": 23750,
+      "depositAmountINR": 23750,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23750,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790004105491_5a5381",
+    "createdAt": "2026-09-21T15:21:45.492Z",
+    "updatedAt": "2026-09-21T15:21:45.535Z"
+  },
+  "scope_1790004108042_cb5cc5": {
+    "proposalId": "scope_1790004108042_cb5cc5",
+    "scopeId": "scope_1790004108042_cb5cc5",
+    "project": {
+      "title": "Custom Governed Software Engineering: Custom Architecture",
+      "requirements": "Deliver distributed enterprise ledger infrastructure"
+    },
+    "client": {
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "contact": "forger@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:48.040Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Deliver distributed enterprise ledger infrastructure",
+    "capabilityMatch": {
+      "name": "Custom Governed Software Engineering",
+      "category": "Software Engineering",
+      "matchScore": 0,
+      "canExecuteAutonomously": false
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U11 Business"
+    ],
+    "selectedCapabilities": [],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 21250,
+      "totalUSD": 250,
+      "totalAmount": 21250,
+      "depositAmount": 21250,
+      "depositAmountINR": 21250,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 21250,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790004108042_cb5cc5",
+    "createdAt": "2026-09-21T15:21:48.042Z",
+    "updatedAt": "2026-09-21T15:21:48.068Z"
+  },
+  "scope_1790004108973_2488e5": {
+    "proposalId": "scope_1790004108973_2488e5",
+    "scopeId": "scope_1790004108973_2488e5",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Build multi-tenant SaaS application with automated billing"
+    },
+    "client": {
+      "name": "Revenue Fabricator",
+      "email": "fabricator@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Revenue Fabricator",
+      "email": "fabricator@untrusted.com",
+      "phone": null,
+      "contact": "fabricator@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:48.967Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Build multi-tenant SaaS application with automated billing",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U11 Business",
+      "U12 Finance"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23750,
+      "totalUSD": 279,
+      "totalAmount": 23750,
+      "depositAmount": 23750,
+      "depositAmountINR": 23750,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23750,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790004108973_2488e5",
+    "createdAt": "2026-09-21T15:21:48.973Z",
+    "updatedAt": "2026-09-21T15:21:49.044Z"
+  },
+  "scope_1790004110055_fdda99": {
+    "proposalId": "scope_1790004110055_fdda99",
+    "scopeId": "scope_1790004110055_fdda99",
+    "project": {
+      "title": "Research and knowledge synthesis: Custom Architecture",
+      "requirements": "Develop autonomous marketing intelligence engine"
+    },
+    "client": {
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "contact": "hijacker@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:50.051Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Develop autonomous marketing intelligence engine",
+    "capabilityMatch": {
+      "name": "Research and knowledge synthesis",
+      "category": "Research",
+      "matchScore": 50,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U01 Knowledge",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U20 Content",
+      "U24 Wealth & Real Estate",
+      "U19 Creative"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "knowledge.research-synthesis",
+        "category": "Research",
+        "name": "Research and knowledge synthesis",
+        "universe": "knowledge",
+        "confidenceScore": 94,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-6 hours"
+      },
+      {
+        "capabilityId": "digital_marketing.editorial_growth",
+        "category": "Digital Marketing",
+        "name": "Editorial Calendars & Multi-Channel Content Factory",
+        "universe": "content",
+        "confidenceScore": 94,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-3 days"
+      },
+      {
+        "capabilityId": "real_estate.growth_os",
+        "category": "Real Estate Intelligence",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "universe": "wealth",
+        "confidenceScore": 94,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "creative.studio_orchestration",
+        "category": "Creative Services",
+        "name": "Creative Studio Orchestration & IdentityLock™",
+        "universe": "creative",
+        "confidenceScore": 92,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-4 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23500,
+      "totalUSD": 276,
+      "totalAmount": 23500,
+      "depositAmount": 23500,
+      "depositAmountINR": 23500,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23500,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790004110055_fdda99",
+    "createdAt": "2026-09-21T15:21:50.055Z",
+    "updatedAt": "2026-09-21T15:21:50.094Z"
+  },
+  "scope_1790004111672_cabc3d": {
+    "proposalId": "scope_1790004111672_cabc3d",
+    "scopeId": "scope_1790004111672_cabc3d",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM"
+    },
+    "client": {
+      "name": "Repeat Visitor",
+      "email": "repeat.visitor@enterprise.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Repeat Visitor",
+      "email": "repeat.visitor@enterprise.com",
+      "phone": null,
+      "contact": "repeat.visitor@enterprise.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:51.670Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation",
+      "U24 Wealth & Real Estate",
+      "U07 Communication",
+      "U11 Business"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "real_estate.growth_os",
+        "category": "Real Estate Intelligence",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "universe": "wealth",
+        "confidenceScore": 94,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 60000,
+      "totalUSD": 706,
+      "totalAmount": 60000,
+      "depositAmount": 30000,
+      "depositAmountINR": 30000,
+      "pricingModel": "milestone_based",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Advance / Architecture & Core Build",
+          "amountINR": 30000,
+          "percentage": 50
+        },
+        {
+          "milestone": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+          "amountINR": 30000,
+          "percentage": 50
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790004111672_cabc3d",
+    "createdAt": "2026-09-21T15:21:51.672Z",
+    "updatedAt": "2026-09-21T15:21:51.729Z"
+  },
+  "scope_1790004112849_9a9264": {
+    "proposalId": "scope_1790004112849_9a9264",
+    "scopeId": "scope_1790004112849_9a9264",
+    "project": {
+      "title": "Business Workflow & Process Automation: Custom Architecture",
+      "requirements": "Verify end-to-end sandbox pipeline execution for regression test"
+    },
+    "client": {
+      "name": "QA Automated Tester",
+      "email": "engineer@sandbox.test",
+      "phone": null,
+      "organization": "Sandbox Test Organization"
+    },
+    "customer": {
+      "name": "QA Automated Tester",
+      "email": "engineer@sandbox.test",
+      "phone": null,
+      "contact": "engineer@sandbox.test",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:52.847Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Verify end-to-end sandbox pipeline execution for regression test",
+    "capabilityMatch": {
+      "name": "Business Workflow & Process Automation",
+      "category": "Workflow Automation",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 22000,
+      "totalUSD": 259,
+      "totalAmount": 22000,
+      "depositAmount": 22000,
+      "depositAmountINR": 22000,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 22000,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "test",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790004112849_9a9264",
+    "createdAt": "2026-09-21T15:21:52.849Z",
+    "updatedAt": "2026-09-21T15:21:52.897Z"
+  },
+  "scope_1790368598542_42b3f0": {
+    "proposalId": "scope_1790368598542_42b3f0",
+    "scopeId": "scope_1790368598542_42b3f0",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Build custom high-frequency trading bot with low latency"
+    },
+    "client": {
+      "name": "Attacker",
+      "email": "attacker@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Attacker",
+      "email": "attacker@untrusted.com",
+      "phone": null,
+      "contact": "attacker@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-25T20:36:38.462Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Build custom high-frequency trading bot with low latency",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U12 Finance"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "finance.sovereign-quant-advisory",
+        "category": "Financial Engineering & Quant",
+        "name": "24/7 Sovereign Quant Fleet & Multi-Market Alpha Engine",
+        "universe": "finance",
+        "confidenceScore": 98,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "Real-time automated"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23750,
+      "totalUSD": 279,
+      "totalAmount": 23750,
+      "depositAmount": 23750,
+      "depositAmountINR": 23750,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23750,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790368598542_42b3f0",
+    "createdAt": "2026-09-25T20:36:38.542Z",
+    "updatedAt": "2026-09-25T20:36:38.580Z"
+  },
+  "scope_1790368602633_8b6f20": {
+    "proposalId": "scope_1790368602633_8b6f20",
+    "scopeId": "scope_1790368602633_8b6f20",
+    "project": {
+      "title": "Custom Governed Software Engineering: Custom Architecture",
+      "requirements": "Deliver distributed enterprise ledger infrastructure"
+    },
+    "client": {
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "contact": "forger@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-25T20:36:42.631Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Deliver distributed enterprise ledger infrastructure",
+    "capabilityMatch": {
+      "name": "Custom Governed Software Engineering",
+      "category": "Software Engineering",
+      "matchScore": 0,
+      "canExecuteAutonomously": false
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U11 Business"
+    ],
+    "selectedCapabilities": [],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 21250,
+      "totalUSD": 250,
+      "totalAmount": 21250,
+      "depositAmount": 21250,
+      "depositAmountINR": 21250,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 21250,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790368602633_8b6f20",
+    "createdAt": "2026-09-25T20:36:42.633Z",
+    "updatedAt": "2026-09-25T20:36:42.672Z"
+  },
+  "scope_1790368603579_f8594b": {
+    "proposalId": "scope_1790368603579_f8594b",
+    "scopeId": "scope_1790368603579_f8594b",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Build multi-tenant SaaS application with automated billing"
+    },
+    "client": {
+      "name": "Revenue Fabricator",
+      "email": "fabricator@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Revenue Fabricator",
+      "email": "fabricator@untrusted.com",
+      "phone": null,
+      "contact": "fabricator@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-25T20:36:43.577Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Build multi-tenant SaaS application with automated billing",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U11 Business",
+      "U12 Finance"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23750,
+      "totalUSD": 279,
+      "totalAmount": 23750,
+      "depositAmount": 23750,
+      "depositAmountINR": 23750,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23750,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790368603579_f8594b",
+    "createdAt": "2026-09-25T20:36:43.579Z",
+    "updatedAt": "2026-09-25T20:36:43.620Z"
+  },
+  "scope_1790368604527_a64fca": {
+    "proposalId": "scope_1790368604527_a64fca",
+    "scopeId": "scope_1790368604527_a64fca",
+    "project": {
+      "title": "Research and knowledge synthesis: Custom Architecture",
+      "requirements": "Develop autonomous marketing intelligence engine"
+    },
+    "client": {
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "contact": "hijacker@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-25T20:36:44.526Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Develop autonomous marketing intelligence engine",
+    "capabilityMatch": {
+      "name": "Research and knowledge synthesis",
+      "category": "Research",
+      "matchScore": 50,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U01 Knowledge",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U20 Content",
+      "U24 Wealth & Real Estate",
+      "U19 Creative"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "knowledge.research-synthesis",
+        "category": "Research",
+        "name": "Research and knowledge synthesis",
+        "universe": "knowledge",
+        "confidenceScore": 94,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-6 hours"
+      },
+      {
+        "capabilityId": "digital_marketing.editorial_growth",
+        "category": "Digital Marketing",
+        "name": "Editorial Calendars & Multi-Channel Content Factory",
+        "universe": "content",
+        "confidenceScore": 94,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-3 days"
+      },
+      {
+        "capabilityId": "real_estate.growth_os",
+        "category": "Real Estate Intelligence",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "universe": "wealth",
+        "confidenceScore": 94,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "creative.studio_orchestration",
+        "category": "Creative Services",
+        "name": "Creative Studio Orchestration & IdentityLock™",
+        "universe": "creative",
+        "confidenceScore": 92,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-4 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23500,
+      "totalUSD": 276,
+      "totalAmount": 23500,
+      "depositAmount": 23500,
+      "depositAmountINR": 23500,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23500,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790368604527_a64fca",
+    "createdAt": "2026-09-25T20:36:44.527Z",
+    "updatedAt": "2026-09-25T20:36:44.551Z"
+  },
+  "scope_1790368605933_d5fad4": {
+    "proposalId": "scope_1790368605933_d5fad4",
+    "scopeId": "scope_1790368605933_d5fad4",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM"
+    },
+    "client": {
+      "name": "Repeat Visitor",
+      "email": "repeat.visitor@enterprise.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Repeat Visitor",
+      "email": "repeat.visitor@enterprise.com",
+      "phone": null,
+      "contact": "repeat.visitor@enterprise.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-25T20:36:45.932Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation",
+      "U24 Wealth & Real Estate",
+      "U07 Communication",
+      "U11 Business"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "real_estate.growth_os",
+        "category": "Real Estate Intelligence",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "universe": "wealth",
+        "confidenceScore": 94,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 60000,
+      "totalUSD": 706,
+      "totalAmount": 60000,
+      "depositAmount": 30000,
+      "depositAmountINR": 30000,
+      "pricingModel": "milestone_based",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Advance / Architecture & Core Build",
+          "amountINR": 30000,
+          "percentage": 50
+        },
+        {
+          "milestone": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+          "amountINR": 30000,
+          "percentage": 50
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790368605933_d5fad4",
+    "createdAt": "2026-09-25T20:36:45.934Z",
+    "updatedAt": "2026-09-25T20:36:45.975Z"
+  },
+  "scope_1790368606904_de06f3": {
+    "proposalId": "scope_1790368606904_de06f3",
+    "scopeId": "scope_1790368606904_de06f3",
+    "project": {
+      "title": "Business Workflow & Process Automation: Custom Architecture",
+      "requirements": "Verify end-to-end sandbox pipeline execution for regression test"
+    },
+    "client": {
+      "name": "QA Automated Tester",
+      "email": "engineer@sandbox.test",
+      "phone": null,
+      "organization": "Sandbox Test Organization"
+    },
+    "customer": {
+      "name": "QA Automated Tester",
+      "email": "engineer@sandbox.test",
+      "phone": null,
+      "contact": "engineer@sandbox.test",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-25T20:36:46.903Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Verify end-to-end sandbox pipeline execution for regression test",
+    "capabilityMatch": {
+      "name": "Business Workflow & Process Automation",
+      "category": "Workflow Automation",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 22000,
+      "totalUSD": 259,
+      "totalAmount": 22000,
+      "depositAmount": 22000,
+      "depositAmountINR": 22000,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 22000,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "test",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790368606904_de06f3",
+    "createdAt": "2026-09-25T20:36:46.904Z",
+    "updatedAt": "2026-09-25T20:36:46.930Z"
+  },
+  "prop_1790368650659_25081c": {
+    "proposalId": "prop_1790368650659_25081c",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Prepare commercial proposal and send proposal email to client",
+      "requirements": "Prepare commercial proposal and send proposal email to client",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Acme Enterprise Corp",
+      "email": "procurement@acme.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 12000,
+        "amountINR": 12000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 24000,
+      "totalINR": 24000,
+      "depositAmount": 12000,
+      "depositAmountINR": 12000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-09T20:37:30.729Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 12000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "52706d0499e57e8b6057adf6eb4e97886209c0982f5d9c38268c6da09b9ed14f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790368650659_25081c",
+    "createdAt": "2026-09-25T20:37:30.729Z",
+    "updatedAt": "2026-09-25T20:37:30.729Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-25T20:37:30.729Z",
+        "details": {
+          "totalINR": 24000,
+          "currency": "INR",
+          "totalInCurrency": 24000,
+          "depositAmount": 12000
+        }
+      }
+    ]
+  },
+  "prop_1790368655146_fe6c50": {
+    "proposalId": "prop_1790368655146_fe6c50",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Executive Commercial Proposal: Generate comprehensive technical specification and scope artifact for GARUDA cli",
+      "requirements": "Generate comprehensive technical specification and scope artifact for GARUDA client onboarding",
+      "category": "Technical Documentation",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sovereign Tech Solutions",
+      "email": "procurement@client-verified.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Documentation & API Specs",
+      "category": "Technical Documentation",
+      "matchScore": 65,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 11500,
+        "amountINR": 11500,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 23000,
+      "totalINR": 23000,
+      "depositAmount": 11500,
+      "depositAmountINR": 11500,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "2-8 hours",
+      "expiryDate": "2026-10-09T20:37:35.149Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 11500,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "a6a9d7b4c60d16e161d7138ebf0c33b76204857f963e4c5e80aad0344527b65f",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790368655146_fe6c50",
+    "createdAt": "2026-09-25T20:37:35.149Z",
+    "updatedAt": "2026-09-25T20:37:35.149Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-09-25T20:37:35.149Z",
+        "details": {
+          "totalINR": 23000,
+          "currency": "INR",
+          "totalInCurrency": 23000,
+          "depositAmount": 11500
+        }
+      }
+    ]
+  },
+  "prop_1790418300153_0b0ee7": {
+    "proposalId": "prop_1790418300153_0b0ee7",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "proposal banao ek PWA app ke liye",
+      "requirements": "proposal banao ek PWA app ke liye",
+      "category": "Proposal Writing",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Commercial Client",
+      "email": null,
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Technical Proposal & Quotation Package Writing",
+      "category": "Proposal Writing",
+      "matchScore": 50,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Delivery covering 8 page(s)/screen(s)",
+        "Production deployment + handover documentation",
+        "50% milestone governance (deposit → delivery → final)"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 18300,
+        "amountINR": 18300,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 18300,
+        "amountINR": 18300,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 36600,
+      "totalINR": 36600,
+      "depositAmount": 18300,
+      "depositAmountINR": 18300,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "1-2 hours",
+      "expiryDate": "2026-10-10T10:25:00.178Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 18300,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": true,
+      "scopeHash": "b61c136342b7cd52496205d3d8e53ea53cc4d8eaa9f8ddb1ab836742fda4e9d6",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790418300153_0b0ee7",
+    "createdAt": "2026-09-26T10:25:00.178Z",
+    "updatedAt": "2026-09-26T10:25:00.178Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "founder",
+        "status": "APPROVED",
+        "timestamp": "2026-09-26T10:25:00.178Z",
+        "details": {
+          "totalINR": 36600,
+          "currency": "INR",
+          "totalInCurrency": 36600,
+          "depositAmount": 18300
+        }
+      }
+    ]
+  },
+  "prop_1790455960696_4c43f2": {
+    "proposalId": "prop_1790455960696_4c43f2",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "SaaS MVP for RetailOps",
+      "requirements": "MVP with 6 pages auth billing dashboard",
+      "category": "Software Engineering",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Commercial Client",
+      "email": null,
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Delivery covering 6 page(s)/screen(s)",
+        "Production deployment + handover documentation",
+        "50% milestone governance (deposit → delivery → final)"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 25000,
+        "amountINR": 25000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 25000,
+        "amountINR": 25000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 50000,
+      "totalINR": 50000,
+      "depositAmount": 25000,
+      "depositAmountINR": 25000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-10-10T20:52:40.699Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 25000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": true,
+      "scopeHash": "bac1f290f76036d1679d509174b3b2b0eaa9346eee55e535cee6accedb7eb01d",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1790455960696_4c43f2",
+    "createdAt": "2026-09-26T20:52:40.699Z",
+    "updatedAt": "2026-09-26T20:52:44.880Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "founder",
+        "status": "APPROVED",
+        "timestamp": "2026-09-26T20:52:40.699Z",
+        "details": {
+          "totalINR": 50000,
+          "currency": "INR",
+          "totalInCurrency": 50000,
+          "depositAmount": 25000
+        }
+      }
+    ]
+  },
+  "scope_1790456128503_320b83": {
+    "proposalId": "scope_1790456128503_320b83",
+    "scopeId": "scope_1790456128503_320b83",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Build custom high-frequency trading bot with low latency"
+    },
+    "client": {
+      "name": "Attacker",
+      "email": "attacker@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Attacker",
+      "email": "attacker@untrusted.com",
+      "phone": null,
+      "contact": "attacker@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-26T20:55:28.418Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Build custom high-frequency trading bot with low latency",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U12 Finance"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "finance.sovereign-quant-advisory",
+        "category": "Financial Engineering & Quant",
+        "name": "24/7 Sovereign Quant Fleet & Multi-Market Alpha Engine",
+        "universe": "finance",
+        "confidenceScore": 98,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "Real-time automated"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23750,
+      "totalUSD": 279,
+      "totalAmount": 23750,
+      "depositAmount": 23750,
+      "depositAmountINR": 23750,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23750,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790456128503_320b83",
+    "createdAt": "2026-09-26T20:55:28.504Z",
+    "updatedAt": "2026-09-26T20:55:28.543Z"
+  },
+  "scope_1790456129980_a721ba": {
+    "proposalId": "scope_1790456129980_a721ba",
+    "scopeId": "scope_1790456129980_a721ba",
+    "project": {
+      "title": "Custom Governed Software Engineering: Custom Architecture",
+      "requirements": "Deliver distributed enterprise ledger infrastructure"
+    },
+    "client": {
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "contact": "forger@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-26T20:55:29.978Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Deliver distributed enterprise ledger infrastructure",
+    "capabilityMatch": {
+      "name": "Custom Governed Software Engineering",
+      "category": "Software Engineering",
+      "matchScore": 0,
+      "canExecuteAutonomously": false
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U11 Business"
+    ],
+    "selectedCapabilities": [],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 21250,
+      "totalUSD": 250,
+      "totalAmount": 21250,
+      "depositAmount": 21250,
+      "depositAmountINR": 21250,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 21250,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790456129980_a721ba",
+    "createdAt": "2026-09-26T20:55:29.981Z",
+    "updatedAt": "2026-09-26T20:55:30.026Z"
+  },
+  "scope_1790456130653_4675d1": {
+    "proposalId": "scope_1790456130653_4675d1",
+    "scopeId": "scope_1790456130653_4675d1",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Build multi-tenant SaaS application with automated billing"
+    },
+    "client": {
+      "name": "Revenue Fabricator",
+      "email": "fabricator@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Revenue Fabricator",
+      "email": "fabricator@untrusted.com",
+      "phone": null,
+      "contact": "fabricator@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-26T20:55:30.652Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Build multi-tenant SaaS application with automated billing",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U11 Business",
+      "U12 Finance"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23750,
+      "totalUSD": 279,
+      "totalAmount": 23750,
+      "depositAmount": 23750,
+      "depositAmountINR": 23750,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23750,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790456130653_4675d1",
+    "createdAt": "2026-09-26T20:55:30.653Z",
+    "updatedAt": "2026-09-26T20:55:30.686Z"
+  },
+  "scope_1790456131723_2342d2": {
+    "proposalId": "scope_1790456131723_2342d2",
+    "scopeId": "scope_1790456131723_2342d2",
+    "project": {
+      "title": "Research and knowledge synthesis: Custom Architecture",
+      "requirements": "Develop autonomous marketing intelligence engine"
+    },
+    "client": {
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "contact": "hijacker@untrusted.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-26T20:55:31.721Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Develop autonomous marketing intelligence engine",
+    "capabilityMatch": {
+      "name": "Research and knowledge synthesis",
+      "category": "Research",
+      "matchScore": 50,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U01 Knowledge",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U20 Content",
+      "U24 Wealth & Real Estate",
+      "U19 Creative"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "knowledge.research-synthesis",
+        "category": "Research",
+        "name": "Research and knowledge synthesis",
+        "universe": "knowledge",
+        "confidenceScore": 94,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-6 hours"
+      },
+      {
+        "capabilityId": "digital_marketing.editorial_growth",
+        "category": "Digital Marketing",
+        "name": "Editorial Calendars & Multi-Channel Content Factory",
+        "universe": "content",
+        "confidenceScore": 94,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-3 days"
+      },
+      {
+        "capabilityId": "real_estate.growth_os",
+        "category": "Real Estate Intelligence",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "universe": "wealth",
+        "confidenceScore": 94,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "creative.studio_orchestration",
+        "category": "Creative Services",
+        "name": "Creative Studio Orchestration & IdentityLock™",
+        "universe": "creative",
+        "confidenceScore": 92,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "1-4 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 23500,
+      "totalUSD": 276,
+      "totalAmount": 23500,
+      "depositAmount": 23500,
+      "depositAmountINR": 23500,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 23500,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790456131723_2342d2",
+    "createdAt": "2026-09-26T20:55:31.723Z",
+    "updatedAt": "2026-09-26T20:55:31.755Z"
+  },
+  "scope_1790456132143_55740a": {
+    "proposalId": "scope_1790456132143_55740a",
+    "scopeId": "scope_1790456132143_55740a",
+    "project": {
+      "title": "Governed software implementation: Custom Architecture",
+      "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM"
+    },
+    "client": {
+      "name": "Repeat Visitor",
+      "email": "repeat.visitor@enterprise.com",
+      "phone": null,
+      "organization": "Web Lead"
+    },
+    "customer": {
+      "name": "Repeat Visitor",
+      "email": "repeat.visitor@enterprise.com",
+      "phone": null,
+      "contact": "repeat.visitor@enterprise.com",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-26T20:55:32.142Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM",
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation",
+      "U24 Wealth & Real Estate",
+      "U07 Communication",
+      "U11 Business"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      {
+        "capabilityId": "real_estate.growth_os",
+        "category": "Real Estate Intelligence",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "universe": "wealth",
+        "confidenceScore": 94,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 60000,
+      "totalUSD": 706,
+      "totalAmount": 60000,
+      "depositAmount": 30000,
+      "depositAmountINR": 30000,
+      "pricingModel": "milestone_based",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Advance / Architecture & Core Build",
+          "amountINR": 30000,
+          "percentage": 50
+        },
+        {
+          "milestone": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+          "amountINR": 30000,
+          "percentage": 50
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "production",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790456132143_55740a",
+    "createdAt": "2026-09-26T20:55:32.143Z",
+    "updatedAt": "2026-09-26T20:55:32.169Z"
+  },
+  "scope_1790456133527_23d5fb": {
+    "proposalId": "scope_1790456133527_23d5fb",
+    "scopeId": "scope_1790456133527_23d5fb",
+    "project": {
+      "title": "Business Workflow & Process Automation: Custom Architecture",
+      "requirements": "Verify end-to-end sandbox pipeline execution for regression test"
+    },
+    "client": {
+      "name": "QA Automated Tester",
+      "email": "engineer@sandbox.test",
+      "phone": null,
+      "organization": "Sandbox Test Organization"
+    },
+    "customer": {
+      "name": "QA Automated Tester",
+      "email": "engineer@sandbox.test",
+      "phone": null,
+      "contact": "engineer@sandbox.test",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-26T20:55:33.526Z",
+        "summary": "Direct (direct / none)"
+      }
+    },
+    "requirements": "Verify end-to-end sandbox pipeline execution for regression test",
+    "capabilityMatch": {
+      "name": "Business Workflow & Process Automation",
+      "category": "Workflow Automation",
+      "matchScore": 35,
+      "canExecuteAutonomously": true
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation"
+    ],
+    "selectedCapabilities": [
+      {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      }
+    ],
+    "deliverables": [
+      "Complete source code repository with clean architecture & tests",
+      "Deterministic QA & Automated Validation report with evidence logs",
+      "Verified SHA-256 artifact manifest & production delivery package",
+      "Deployment guide & post-launch warranty support"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 22000,
+      "totalUSD": 259,
+      "totalAmount": 22000,
+      "depositAmount": 22000,
+      "depositAmountINR": 22000,
+      "pricingModel": "fixed_price",
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+          "amountINR": 22000,
+          "percentage": 100
+        }
+      ]
+    },
+    "estimatedTimeline": "3-7 business days",
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "environment": "test",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/scope_1790456133527_23d5fb",
+    "createdAt": "2026-09-26T20:55:33.527Z",
+    "updatedAt": "2026-09-26T20:55:33.555Z"
   }
 }

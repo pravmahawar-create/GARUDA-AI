@@ -1,0 +1,125 @@
+{
+  "target": "https://www.priceline.com",
+  "timestamp": "2026-09-12T06:36:04.645Z",
+  "findings": [
+    {
+      "name": "Dangerous CORS — Arbitrary Origin Reflection",
+      "cwe": "CWE-942",
+      "cvss": 7.5,
+      "severity": "High",
+      "url": "https://www.priceline.com",
+      "origin": "https://attacker-origin.com",
+      "desc": "Reflected 'https://attacker-origin.com' with ACAC=true → credentialed data exfiltration",
+      "rawHeaders": "{\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"https://attacker-origin.com\",\"cache-control\":\"private, no-store\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce6422a1dffa3-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"gzip\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:36:43 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"__cf_bm=vZnzo.tH_du.AM9GPas00PHbskcSVPZsjjeX3RzCtmU-1789195003.2248545-1.0.1.1-QDfuutNxthja8O3RLyAcjhrSUvu4qBMSh4VHH8JsQnaxgQUdlAbJ7r.bNWei2Z4NZbwyS.7OQQaW5XSguHfjNGVFnrpGsOxMRjz896fhdJ9VzlOhbragrLE03x8lQFA01OFICS_40tXtLcxpfqa_0g; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:43 GMT\",\"transfer-encoding\":\"chunked\",\"x-pipeline-duration\":\"151\",\"x-pipeline-request-id\":\"5222e251-ebf3-4a2f-a582-94e1764",
+      "bodySnippet": "{\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"https://attacker-origin.com\",\"cache-control\":\"private, no-store\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce6422a1dffa3-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"gzip\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:36:43 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"__cf_bm=vZnzo.tH_du.AM9GPas00PHbskcSVPZsjjeX3RzCtmU-1789195003.2248545-1.0.1.1-QDfuutNxthja8O3RLyAcjhrSUvu4qBMSh4VHH8JsQnaxgQUdlAbJ7r.bNWei2Z4NZbwyS.7OQQaW5XSguHfjNGVFnrpGsOxMRjz896fhdJ9VzlOhbragrLE03x8lQFA01OFICS_40tXtLcxpfqa_0g; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:43 GMT\",\"transfer-encoding\":\"chunked\",\"x-pipeline-duration\":\"151\",\"x-pipeline-request-id\":\"5222e251-ebf3-4a2f-a582-94e1764"
+    },
+    {
+      "name": "Dangerous CORS — Null Origin Bypass",
+      "cwe": "CWE-942",
+      "cvss": 6.5,
+      "severity": "Medium",
+      "url": "https://www.priceline.com",
+      "origin": "null",
+      "desc": "Reflected 'null' with ACAC=true → credentialed data exfiltration",
+      "rawHeaders": "{\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"null\",\"cache-control\":\"private, no-store\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce646692effa3-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"gzip\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:36:44 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"__cf_bm=VMeEiPTkG3h2meFoS7MqlkCXLTGXgQ1dSxePsaCNOAE-1789195003.9094982-1.0.1.1-82cZ.KU3Rba5duqyp6PGjCAPcztmW6mH_xmJCTOvtEOUlkzWx4JyFzd6UvauxyYU8d5rtnxnXQvi3R7IPT.urBHb70EKa9KHEuGPJPMkRwZh_d6hWunEHpNoZjNQYPhUN6I5cuGcvsXgEbCPTu8quw; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:44 GMT\",\"transfer-encoding\":\"chunked\",\"x-pipeline-duration\":\"150\",\"x-pipeline-request-id\":\"966bdf5b-196d-45f6-9569-5a98ebb0cae0\",\"x-pipeline-serv",
+      "bodySnippet": "{\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"null\",\"cache-control\":\"private, no-store\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce646692effa3-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"gzip\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:36:44 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"__cf_bm=VMeEiPTkG3h2meFoS7MqlkCXLTGXgQ1dSxePsaCNOAE-1789195003.9094982-1.0.1.1-82cZ.KU3Rba5duqyp6PGjCAPcztmW6mH_xmJCTOvtEOUlkzWx4JyFzd6UvauxyYU8d5rtnxnXQvi3R7IPT.urBHb70EKa9KHEuGPJPMkRwZh_d6hWunEHpNoZjNQYPhUN6I5cuGcvsXgEbCPTu8quw; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:44 GMT\",\"transfer-encoding\":\"chunked\",\"x-pipeline-duration\":\"150\",\"x-pipeline-request-id\":\"966bdf5b-196d-45f6-9569-5a98ebb0cae0\",\"x-pipeline-serv",
+      "draftOnly": true
+    },
+    {
+      "name": "Dangerous CORS — Subdomain Trust Bypass (target.com.attacker.com)",
+      "cwe": "CWE-942",
+      "cvss": 7.1,
+      "severity": "High",
+      "url": "https://www.priceline.com",
+      "origin": "https://www.priceline.com.attacker.com",
+      "desc": "Reflected 'https://www.priceline.com.attacker.com' with ACAC=true → credentialed data exfiltration",
+      "rawHeaders": "{\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"https://www.priceline.com.attacker.com\",\"cache-control\":\"private, no-store\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce64aae87ffa3-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"gzip\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:36:44 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"__cf_bm=eaFwH9KXi_8tegTSqcNqiAAU8cEvV7MjVLX3pHBALGs-1789195004.584692-1.0.1.1-LESL54T81WK2FplhzPjvYyy4iuHa_zZL8KSTL_wMfB7ytLOLd.TEbnRAoiqzIfpR4q6tkn6dDOKD60fbsLAu.ib1tjLCpxUh5q7E2PQLPUcsG2yo292zKSXD8AzW7GjoVmHfIWV8f0mdQHcijPOF1A; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:44 GMT\",\"transfer-encoding\":\"chunked\",\"x-pipeline-duration\":\"88\",\"x-pipeline-request-id\":\"883b80a0-b101-4aac-bb8",
+      "bodySnippet": "{\"access-control-allow-credentials\":\"true\",\"access-control-allow-origin\":\"https://www.priceline.com.attacker.com\",\"cache-control\":\"private, no-store\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce64aae87ffa3-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"gzip\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:36:44 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"__cf_bm=eaFwH9KXi_8tegTSqcNqiAAU8cEvV7MjVLX3pHBALGs-1789195004.584692-1.0.1.1-LESL54T81WK2FplhzPjvYyy4iuHa_zZL8KSTL_wMfB7ytLOLd.TEbnRAoiqzIfpR4q6tkn6dDOKD60fbsLAu.ib1tjLCpxUh5q7E2PQLPUcsG2yo292zKSXD8AzW7GjoVmHfIWV8f0mdQHcijPOF1A; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:44 GMT\",\"transfer-encoding\":\"chunked\",\"x-pipeline-duration\":\"88\",\"x-pipeline-request-id\":\"883b80a0-b101-4aac-bb8"
+    },
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://www.priceline.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"cache-control\": \"private, no-store\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a39ce64e0a0fffa3-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:45 GMT\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"__cf_bm=psCCb9DUcjDw6cyWkuzKmsfc37TxtZSEtG_sy633NVc-1789195005.1243563-1.0.1.1-fjQL.bwRvtT.nM7UdyIP2vzQ_E9Jyi1SZgL2tZVmo5POLgknIbqPecKLY3QZAVBI7SP9t.0mbIlUsXk2CTyG2OBWvpHMMAyFNB3q72d3qMxbUR85FPaw0jszpJ7Re_MtpwsB20LoBCwzsOfsMWC8mA; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:45 GMT\",\n  \"transfer-encoding\": \"chunked\",\n  \"x-pipeline-duration\": \"148\",\n  \"x-pipeline-request-id\": \"cafcad86-b9e3-4f29-a937-32a01108587e\",\n  \"x-pipeline-services\": \"pre-origin:1,post-origin:1\",\n  \"x-served-by\": \"cache-bom-vanm7210040-BOM\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta name=\"description\" content=\"px-captcha\">\n    <title>Access to this page has been denied</title>\n    \n</head>\n<body>\n    <script>\n        /* PerimeterX",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://www.priceline.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"cache-control\": \"private, no-store\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a39ce64e0a0fffa3-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:45 GMT\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"__cf_bm=psCCb9DUcjDw6cyWkuzKmsfc37TxtZSEtG_sy633NVc-1789195005.1243563-1.0.1.1-fjQL.bwRvtT.nM7UdyIP2vzQ_E9Jyi1SZgL2tZVmo5POLgknIbqPecKLY3QZAVBI7SP9t.0mbIlUsXk2CTyG2OBWvpHMMAyFNB3q72d3qMxbUR85FPaw0jszpJ7Re_MtpwsB20LoBCwzsOfsMWC8mA; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:45 GMT\",\n  \"transfer-encoding\": \"chunked\",\n  \"x-pipeline-duration\": \"148\",\n  \"x-pipeline-request-id\": \"cafcad86-b9e3-4f29-a937-32a01108587e\",\n  \"x-pipeline-services\": \"pre-origin:1,post-origin:1\",\n  \"x-served-by\": \"cache-bom-vanm7210040-BOM\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta name=\"description\" content=\"px-captcha\">\n    <title>Access to this page has been denied</title>\n    \n</head>\n<body>\n    <script>\n        /* PerimeterX",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://www.priceline.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"cache-control\": \"private, no-store\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a39ce64e0a0fffa3-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:45 GMT\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"__cf_bm=psCCb9DUcjDw6cyWkuzKmsfc37TxtZSEtG_sy633NVc-1789195005.1243563-1.0.1.1-fjQL.bwRvtT.nM7UdyIP2vzQ_E9Jyi1SZgL2tZVmo5POLgknIbqPecKLY3QZAVBI7SP9t.0mbIlUsXk2CTyG2OBWvpHMMAyFNB3q72d3qMxbUR85FPaw0jszpJ7Re_MtpwsB20LoBCwzsOfsMWC8mA; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:45 GMT\",\n  \"transfer-encoding\": \"chunked\",\n  \"x-pipeline-duration\": \"148\",\n  \"x-pipeline-request-id\": \"cafcad86-b9e3-4f29-a937-32a01108587e\",\n  \"x-pipeline-services\": \"pre-origin:1,post-origin:1\",\n  \"x-served-by\": \"cache-bom-vanm7210040-BOM\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta name=\"description\" content=\"px-captcha\">\n    <title>Access to this page has been denied</title>\n    \n</head>\n<body>\n    <script>\n        /* PerimeterX",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://www.priceline.com/login",
+      "status": 404,
+      "rawHeaders": "{\"cache-control\":\"no-store, max-age=0, stale-if-error=0, stale-while-revalidate=0\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce6512c70ffa3-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"gzip\",\"content-type\":\"text/html; charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:36:46 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"__cf_bm=7UlS205Ne8SSKSmZ7Q0lPCiLP_IWrdRik_0B.0u3rKE-1789195005.6242368-1.0.1.1-bW3o9zPX_a7jS1zgaRj0599r_BLosr0q2682LBnydJ2ByUOPWCQVuXj0yUhqTjHd2kph26i1AWDwAjWkkWADXH8O5f_jFwTuBKVt7UTr9Fx1UuG9i6sHIGOPz4srUYnhWcj_3Ml8BhSxtx5DOO4pYQ; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://www.priceline.com/dashboard",
+      "status": 403,
+      "rawHeaders": "{\"cache-control\":\"private, no-store\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce65d3a3771b6-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"gzip\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:36:47 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"__cf_bm=hy_hoXZBrUHL0gtxMRARMLQKNpdbeFL2idDJ1bOQvNY-1789195007.5569177-1.0.1.1-UmQ8MYeX74ey6oYuIcq1xoux93e84T4ST56GNw6KIvMwbYAS8U99PD.LBRg.o2LBZsRfpvY8gprLopszMS8ADeCsuX9EYkLI4wa7zZeGMKAG93Vs.3AKRR4oTgn7swmoJfbhHVXIkqb.7HZIYApUuA; HttpOnly; SameSite=None; Secure; Path=/; Domain=priceline.com; Expires=Sat, 12 Sep 2026 07:06:47 GMT\",\"transfer-encodi",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.priceline.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    }
+  ],
+  "baseline": {
+    "status": 403,
+    "hash": "27f62a3336fc77c4a788ff947b13f76d2465195dfba5b8957fdb6e3b04a0c8c2",
+    "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta name=\"description\" content=\"px-captcha\">\n    <title>Access to this page has been denied</title>\n    \n</head>\n<body>\n    <script>\n        /* PerimeterX assignments */\n        window._pxVid = '';\n        window._pxUuid = '3b029e2c-ae74-11f1-af68-0868ab",
+    "isSPA": true
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "target": "https://api.myntra.com",
+  "timestamp": "2026-09-12T05:41:33.656Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://api.myntra.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"akamai-grn\": \"0.cc014017.1789191792.d652fdb\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"19\",\n  \"content-type\": \"text/plain; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 05:43:12 GMT\",\n  \"set-cookie\": \"bm_sz=6BB7E92D283FFA9E005249DD99048DC5~YAAQzAFAF4xwwZOgAQAA4CcklAGNCfs/WICZLXlWnG6g89aEaIYo8QGyxv9tA7vb6R7b/YEgZCZ+jANMEdCw+G+9sIW/571iesrFc3UyPQZ8kpM+BGdSWTzr598bKx/Opnl/k0gK8FSGyW/d8irrYhDpshRGRPg0Puy/UZKJ4Qrl7KIyAv8CqPnqKH5n8ZoJU1JfD2WXCA9dWk2zPAZa10B0/oLQkSUUNw4d0I2qxmbiVlQ+/D1zOMno/nzEiN6GzNw1rWo034YpUnm9m59SkoDJDps7N51QXrD2cresd8nRTU89yYL9zgm9vzllj4Rt9juWJExNXO3BdicDJfHUluWW4vSdNVIERhu6yoc=~3290672~3294002; Domain=.myntra.com; Path=/; Expires=Sat, 12 Sep 2026 09:43:12 GMT; Max-Age=14400\",\n  \"strict-transport-security\": \"max-age=15768000 ; includeSubDomains\",\n  \"x-content-type-options\": \"nosniff\",\n  \"x-k8s-route-id\": \"sfknuth\"\n}",
+      "bodySnippet": "404 page not found\n",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://api.myntra.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"akamai-grn\": \"0.cc014017.1789191792.d652fdb\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"19\",\n  \"content-type\": \"text/plain; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 05:43:12 GMT\",\n  \"set-cookie\": \"bm_sz=6BB7E92D283FFA9E005249DD99048DC5~YAAQzAFAF4xwwZOgAQAA4CcklAGNCfs/WICZLXlWnG6g89aEaIYo8QGyxv9tA7vb6R7b/YEgZCZ+jANMEdCw+G+9sIW/571iesrFc3UyPQZ8kpM+BGdSWTzr598bKx/Opnl/k0gK8FSGyW/d8irrYhDpshRGRPg0Puy/UZKJ4Qrl7KIyAv8CqPnqKH5n8ZoJU1JfD2WXCA9dWk2zPAZa10B0/oLQkSUUNw4d0I2qxmbiVlQ+/D1zOMno/nzEiN6GzNw1rWo034YpUnm9m59SkoDJDps7N51QXrD2cresd8nRTU89yYL9zgm9vzllj4Rt9juWJExNXO3BdicDJfHUluWW4vSdNVIERhu6yoc=~3290672~3294002; Domain=.myntra.com; Path=/; Expires=Sat, 12 Sep 2026 09:43:12 GMT; Max-Age=14400\",\n  \"strict-transport-security\": \"max-age=15768000 ; includeSubDomains\",\n  \"x-content-type-options\": \"nosniff\",\n  \"x-k8s-route-id\": \"sfknuth\"\n}",
+      "bodySnippet": "404 page not found\n",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://api.myntra.com/login",
+      "status": 404,
+      "rawHeaders": "{\"akamai-grn\":\"0.cc014017.1789191793.d6538f9\",\"connection\":\"keep-alive\",\"content-length\":\"19\",\"content-type\":\"text/plain; charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 05:43:13 GMT\",\"set-cookie\":\"bm_sz=9E94E42A78B123AB2FD3C3CAE67A6A60~YAAQzAFAF85zwZOgAQAAfyoklAEUGar5G2JkSDKOfp7IQz8064KSV2jGITQMcFPiipa7jk+migqI8iZ4O3lyZ+kzIf1r14gp55JW+nz0ExJ/fd3nydheoNloWGj0uaXPF5OwAabZALTIM0SKK+bABSPyX4pJWYX80qn4WUseK6TuaWEXNTdtfuvFW/zDbUuqSfwdduEmzMEdlXA02DXvbkI55QCT9I+e83WNFdj/BnRQ52u1txo6k3XoleLFKarqsz5Gh2LdBzQ/lum7tQSJhotpvy9n0nZM+zUpOnb33Wz9J3mZhKy4FVPFJRnD2JCFITwHuJV8xcaNZ+1M/wYyLCVUmfiqy0toIVCzI6M=~3356980~31",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://api.myntra.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"akamai-grn\":\"0.cc014017.1789191794.d65447a\",\"connection\":\"keep-alive\",\"content-length\":\"19\",\"content-type\":\"text/plain; charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 05:43:14 GMT\",\"set-cookie\":\"bm_sz=4385EE75C46284FCFAEBC1FEF69B1D94~YAAQzAFAF7B3wZOgAQAAvC0klAFChWNrwnJ46e64M0FidI8r+XspffFLM07nKYFhK6kEvJj2sNMIVdg9xAwTG1sxDGTli0s0ftUZfmqWlhC8Wa1no6iB3MMFNrIDORWFY38jIV8I6tYupBXT4uRe786Hk733CqQeT0Q9ZFA25GIF3HJFIPOv0Qtavz+RdJdK56Dq3neEYFAAPM/oYMcR4uwrruPWPOfrnMWZNVuQv0nsG3YCy20c7ufNbgvxUPyO0Ee4jRuKMVD+d/rF2bX/iNlUPqJC+pKvS90iP6V9okJoNky9cw1BV4a2asJ9GJqGo/Zk+SLg3kX1dKbD+Y0Ot3Rc3dRkeyL8KRB4sk4=~3290437~44",
+      "draftOnly": true
+    }
+  ],
+  "baseline": {
+    "status": 0,
+    "hash": null,
+    "body": "",
+    "isSPA": false,
+    "error": "This operation was aborted"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "target": "https://vault.myntra.com",
+  "timestamp": "2026-09-12T05:55:13.988Z",
+  "findings": [],
+  "baseline": {
+    "status": 0,
+    "hash": null,
+    "body": "",
+    "isSPA": false,
+    "error": "fetch failed"
+  }
+}

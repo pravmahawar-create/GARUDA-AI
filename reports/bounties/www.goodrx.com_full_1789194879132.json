@@ -1,0 +1,37 @@
+{
+  "target": "https://www.goodrx.com",
+  "timestamp": "2026-09-12T06:33:44.389Z",
+  "findings": [
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://www.goodrx.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"accept-ranges\": \"bytes\",\n  \"access-control-allow-headers\": \"x-px-cookies\",\n  \"connection\": \"close\",\n  \"content-length\": \"5533\",\n  \"content-security-policy\": \"default-src 'self' 'unsafe-eval' 'unsafe-inline' data: blob: mediastream: android-webview-video-poster: goodrx.com *.goodrx.com *.goodrx.com. *.grxstatic.com *.grxweb.com *.heydoctor.com descopecdn.com; block-all-mixed-content; script-src 'self' 'unsafe-eval' 'unsafe-inline' data: blob: mediastream: *.goodrx.com *.goodrx.com. *.grxstatic.com *.grxweb.com healthination.com *.heydoctor.com d2bnxibecyz4h5.cloudfront.net *.scorecardresearch.com unpkg.com s3.amazonaws.com descopecdn.com static.descope.com *.px-cdn.net *.videoamp.com gx9e.app.link app.link *.px-cloud.net rampjs-cdn.system1.com *.trustpilot.com *.riddle.com *.sentry-cdn.com *.affirm.com static.legitscript.com *.osano.com *.doubleverify.com *.googletagservices.com *.2mdn.net *.adsafeprotected.com *.parsely.com www.datadoghq-browser-agent.com trc.lhmos.com *.adnxs.com *.adnxs-simple.com *.segment.io *.segment.com cd.goodrx.com js.stripe.com *.branch.io *.adtrafficquality.google *.googleadservices.com *.googletagmanager.com sync.graph.bluecava.com *.hcn.health *.do",
+      "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <meta name=\"description\" content=\"px-captcha\">\n  <title>Access to this page has been denied</title>\n  \n</head>\n<body>\n  <script>\n      /* PerimeterX assignments *",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.goodrx.com",
+      "desc": "Server leaks `server: Varnish` — aids fingerprinting.",
+      "value": "Varnish",
+      "rawHeaders": "Varnish",
+      "bodySnippet": "Varnish"
+    }
+  ],
+  "baseline": {
+    "status": 403,
+    "hash": "0f1f7adcfadfccc43875f8e1aef6c2b23399432adc9b0836bcee0955d390d670",
+    "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <meta name=\"description\" content=\"px-captcha\">\n  <title>Access to this page has been denied</title>\n  \n</head>\n<body>\n  <script>\n      /* PerimeterX assignments */\n      window._pxVid = '';\n      window._pxUuid = 'e7432a5e-ae73-11f1-b69d-b21f79f85c6d';\n      win",
+    "isSPA": true
+  }
+}

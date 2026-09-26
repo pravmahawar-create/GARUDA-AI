@@ -1,0 +1,66 @@
+{
+  "target": "https://www.flipkart.com",
+  "timestamp": "2026-09-12T05:38:46.356Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://www.flipkart.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"accept-ch\": \"Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version\",\n  \"cache-control\": \"private, no-cache, no-store, must-revalidate, max-age=0\",\n  \"content-encoding\": \"br\",\n  \"content-security-policy\": \"default-src 'self' https://*.flipkart.com https://*.flixcart.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.flixcart.com https://js-agent.newrelic.com https://bam.nr-data.net https://dpm.demdex.net https://flipkart.d1.sc.omtrdc.net https://www.youtube.com https://s.ytimg.com http://dpm.demdex.net https://smartplugin.youbora.com https://a-fds.youborafds01.com https://www.googletagmanager.com https://maps.googleapis.com blob: 'nonce-8393368112470105892'; style-src 'self' 'unsafe-inline' https://*.flixcart.com; img-src 'self' * data: blob:; media-src 'self' https://*.flixcart.com data: blob: *; font-src 'self' https://*.flixcart.com data:; frame-src 'self' https://*.flipkart.com http://*.flipkart.com https://www.youtube.com https://cdemux.appspot.com blob: fknative://* https://*.flixcart.com https://*.surepass.io; worker-src 'self' https://*.flipkart.com blob:; connect-src 'self' ",
+      "bodySnippet": "<!DOCTYPE html>  <html lang=\"en-IN\" class=\"useInterFont\"> <head><link rel=\"dns-prefetch\" href=\"https://1.rome.api.flipkart.com\"><link rel=\"dns-prefetch\" href=\"https://2.rome.api.flipkart.com\"><link rel=\"preconnect\" href=\"https://static-assets-web.flixcart.com\" crossorigin> <link rel=\"preconnect\" hre",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://www.flipkart.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"accept-ch\": \"Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version\",\n  \"cache-control\": \"private, no-cache, no-store, must-revalidate, max-age=0\",\n  \"content-encoding\": \"br\",\n  \"content-security-policy\": \"default-src 'self' https://*.flipkart.com https://*.flixcart.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.flixcart.com https://js-agent.newrelic.com https://bam.nr-data.net https://dpm.demdex.net https://flipkart.d1.sc.omtrdc.net https://www.youtube.com https://s.ytimg.com http://dpm.demdex.net https://smartplugin.youbora.com https://a-fds.youborafds01.com https://www.googletagmanager.com https://maps.googleapis.com blob: 'nonce-8393368112470105892'; style-src 'self' 'unsafe-inline' https://*.flixcart.com; img-src 'self' * data: blob:; media-src 'self' https://*.flixcart.com data: blob: *; font-src 'self' https://*.flixcart.com data:; frame-src 'self' https://*.flipkart.com http://*.flipkart.com https://www.youtube.com https://cdemux.appspot.com blob: fknative://* https://*.flixcart.com https://*.surepass.io; worker-src 'self' https://*.flipkart.com blob:; connect-src 'self' ",
+      "bodySnippet": "<!DOCTYPE html>  <html lang=\"en-IN\" class=\"useInterFont\"> <head><link rel=\"dns-prefetch\" href=\"https://1.rome.api.flipkart.com\"><link rel=\"dns-prefetch\" href=\"https://2.rome.api.flipkart.com\"><link rel=\"preconnect\" href=\"https://static-assets-web.flixcart.com\" crossorigin> <link rel=\"preconnect\" hre",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://www.flipkart.com/login",
+      "status": 200,
+      "rawHeaders": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version\",\"cache-control\":\"private, must-revalidate, max-age=0, no-store\",\"content-encoding\":\"br\",\"content-security-policy\":\"default-src 'self' https://*.flipkart.com https://*.flixcart.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.flixcart.com https://js-agent.newrelic.com https://bam.nr-data.net https://dpm.demdex.net https://flipkart.d1.sc.omtrdc.net https://www.youtube.com https://s.ytimg.com http://dpm.demdex.net https://smartplugi",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://www.flipkart.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"accept-ch\":\"Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Full-Version,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version\",\"content-length\":\"1780\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 05:39:19 GMT\",\"etag\":\"\\\"6a9ef341-6f4\\\"\",\"server\":\"nginx\",\"vary\":\"Accept-Encoding\"}",
+      "draftOnly": true
+    }
+  ],
+  "baseline": {
+    "status": 403,
+    "hash": "27ae4522b09c54fbc8a85d378ed2f226f4c6b6f63f68643314c605d62f82ea9b",
+    "body": "<!DOCTYPE html><html lang=en><meta charset=UTF-8><meta content=\"width=device-width,initial-scale=1\"name=viewport><title>Flipkart reCAPTCHA</title><link href=https://static-assets-web.flixcart.com/batman-returns/batman-returns/s/recaptcha.css rel=stylesheet><script src=\"https://www.google.com/recaptcha/enterprise.js?render=6Lc49B0pAAAAAIVgOhfwW8i7t7SRO0KSnlSVZRAq\"></script><script src=https://stati",
+    "isSPA": true
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "target": "https://twitter.com",
+  "timestamp": "2026-09-12T06:36:04.631Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://twitter.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"cache-control\": \"private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0\",\n  \"cf-ray\": \"a39ce66d98c0ff7b-BOM\",\n  \"connection\": \"close\",\n  \"content-type\": \"text/html; charset=UTF-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:50 GMT\",\n  \"expires\": \"Thu, 01 Jan 1970 00:00:01 GMT\",\n  \"referrer-policy\": \"same-origin\",\n  \"server\": \"cloudflare\",\n  \"transfer-encoding\": \"chunked\",\n  \"x-frame-options\": \"SAMEORIGIN\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://twitter.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"cache-control\": \"private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0\",\n  \"cf-ray\": \"a39ce66d98c0ff7b-BOM\",\n  \"connection\": \"close\",\n  \"content-type\": \"text/html; charset=UTF-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:50 GMT\",\n  \"expires\": \"Thu, 01 Jan 1970 00:00:01 GMT\",\n  \"referrer-policy\": \"same-origin\",\n  \"server\": \"cloudflare\",\n  \"transfer-encoding\": \"chunked\",\n  \"x-frame-options\": \"SAMEORIGIN\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://twitter.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    }
+  ],
+  "baseline": {
+    "status": 403,
+    "hash": "253e2bed9cafb7e67c6d89e8151745968bd7936b1bd9e7fe2e70be2b06b993ff",
+    "body": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Attention Required! | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta",
+    "isSPA": true
+  }
+}

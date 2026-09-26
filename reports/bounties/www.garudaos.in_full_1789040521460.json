@@ -1,0 +1,73 @@
+{
+  "target": "https://www.garudaos.in",
+  "timestamp": "2026-09-10T11:41:30.188Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://www.garudaos.in",
+      "status": 200,
+      "rawHeaders": "{\n  \"access-control-allow-origin\": \"*\",\n  \"age\": \"103\",\n  \"alt-svc\": \"h3=\\\":443\\\"; ma=86400\",\n  \"cache-control\": \"public, max-age=0, must-revalidate\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a38e2aa38a355f52-SIN\",\n  \"connection\": \"keep-alive\",\n  \"content-disposition\": \"inline\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Thu, 10 Sep 2026 11:41:57 GMT\",\n  \"last-modified\": \"Thu, 10 Sep 2026 11:40:04 GMT\",\n  \"nel\": \"{\\\"report_to\\\":\\\"cf-nel\\\",\\\"success_fraction\\\":0.0,\\\"max_age\\\":604800}\",\n  \"report-to\": \"{\\\"group\\\":\\\"cf-nel\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://a.nel.cloudflare.com/report/v4?s=2G58KFq%2FuEn7Pn7Ds7wuMqTrOi%2FrwK6CnUd3Y4DsCO56w%2BnJOEk43C7GqXSHDJP%2FUIoChjoSsxvWUZeIbsK30eRFjUm6sP7hudZjlzNZFf4DYRoJR6VzV%2FbK4KbzDtzyJrY%3D\\\"}]}\",\n  \"server\": \"cloudflare\",\n  \"strict-transport-security\": \"max-age=63072000\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"accept-encoding\",\n  \"x-vercel-cache\": \"HIT\",\n  \"x-vercel-id\": \"sin1::7blwp-1789040517701-7ce4a2eb5967\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>GARUDA AI Operating System | Custom AI & Software Engineering</title>\n  <meta name=\"description\" content=\"GARUDA is an autonomous AI Operating System"
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://www.garudaos.in",
+      "status": 200,
+      "rawHeaders": "{\n  \"access-control-allow-origin\": \"*\",\n  \"age\": \"103\",\n  \"alt-svc\": \"h3=\\\":443\\\"; ma=86400\",\n  \"cache-control\": \"public, max-age=0, must-revalidate\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a38e2aa38a355f52-SIN\",\n  \"connection\": \"keep-alive\",\n  \"content-disposition\": \"inline\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Thu, 10 Sep 2026 11:41:57 GMT\",\n  \"last-modified\": \"Thu, 10 Sep 2026 11:40:04 GMT\",\n  \"nel\": \"{\\\"report_to\\\":\\\"cf-nel\\\",\\\"success_fraction\\\":0.0,\\\"max_age\\\":604800}\",\n  \"report-to\": \"{\\\"group\\\":\\\"cf-nel\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://a.nel.cloudflare.com/report/v4?s=2G58KFq%2FuEn7Pn7Ds7wuMqTrOi%2FrwK6CnUd3Y4DsCO56w%2BnJOEk43C7GqXSHDJP%2FUIoChjoSsxvWUZeIbsK30eRFjUm6sP7hudZjlzNZFf4DYRoJR6VzV%2FbK4KbzDtzyJrY%3D\\\"}]}\",\n  \"server\": \"cloudflare\",\n  \"strict-transport-security\": \"max-age=63072000\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"accept-encoding\",\n  \"x-vercel-cache\": \"HIT\",\n  \"x-vercel-id\": \"sin1::7blwp-1789040517701-7ce4a2eb5967\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>GARUDA AI Operating System | Custom AI & Software Engineering</title>\n  <meta name=\"description\" content=\"GARUDA is an autonomous AI Operating System"
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://www.garudaos.in/login",
+      "status": 200,
+      "rawHeaders": "{\"access-control-allow-origin\":\"*\",\"age\":\"83\",\"alt-svc\":\"h3=\\\":443\\\"; ma=86400\",\"cache-control\":\"public, max-age=0, must-revalidate\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a38e2aa74d155f52-SIN\",\"connection\":\"keep-alive\",\"content-disposition\":\"inline; filename=\\\"login\\\"\",\"content-encoding\":\"br\",\"content-type\":\"text/html; charset=utf-8\",\"date\":\"Thu, 10 Sep 2026 11:41:58 GMT\",\"last-modified\":\"Thu, 10 Sep 2026 11:40:35 GMT\",\"nel\":\"{\\\"report_to\\\":\\\"cf-nel\\\",\\\"success_fraction\\\":0.0,\\\"max_age\\\":604800}\",\"report-to\":\"{\\\"group\\\":\\\"cf-nel\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://a.nel.clou"
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://www.garudaos.in/dashboard",
+      "status": 200,
+      "rawHeaders": "{\"access-control-allow-origin\":\"*\",\"age\":\"114\",\"alt-svc\":\"h3=\\\":443\\\"; ma=86400\",\"cache-control\":\"public, max-age=0, must-revalidate\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a38e2aaae8345f52-SIN\",\"connection\":\"keep-alive\",\"content-disposition\":\"inline\",\"content-encoding\":\"br\",\"content-type\":\"text/html; charset=utf-8\",\"date\":\"Thu, 10 Sep 2026 11:41:58 GMT\",\"last-modified\":\"Thu, 10 Sep 2026 11:40:04 GMT\",\"nel\":\"{\\\"report_to\\\":\\\"cf-nel\\\",\\\"success_fraction\\\":0.0,\\\"max_age\\\":604800}\",\"report-to\":\"{\\\"group\\\":\\\"cf-nel\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://a.nel.cloudflare.com/report/v"
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.garudaos.in",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    }
+  ],
+  "baseline": {
+    "status": 200,
+    "hash": "73b51d8a731876087805f03df8cc3ddf5eda6f2153f5bf1be22c1e69535e83af",
+    "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>GARUDA AI Operating System | Custom AI & Software Engineering</title>\n  <meta name=\"description\" content=\"GARUDA is an autonomous AI Operating System delivering custom AI systems, web applications, SaaS MVPs, automated workflows, and enterprise soft",
+    "isSPA": true
+  }
+}

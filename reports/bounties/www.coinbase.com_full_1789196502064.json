@@ -1,0 +1,23 @@
+{
+  "target": "https://www.coinbase.com",
+  "timestamp": "2026-09-12T07:01:06.288Z",
+  "findings": [
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.coinbase.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    }
+  ],
+  "baseline": {
+    "status": 403,
+    "hash": "0ae71be5d5aa9d9a028c8c3a4b307da01313e74789fa280d626d7e9678cfc2c8",
+    "body": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"content-security-policy\" content=\"default-src &#39;none&#39;; script-src &#39",
+    "isSPA": true
+  }
+}

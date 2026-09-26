@@ -1,0 +1,23 @@
+{
+  "target": "https://customers.gitlab.com",
+  "timestamp": "2026-09-12T06:36:04.647Z",
+  "findings": [
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://customers.gitlab.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "a685d6248c524d6162b2d650a2ceec9881e35d52096749d7b7ba4e8816d29b54",
+    "body": "<!DOCTYPE html>\n<html>\n<head>\n  <meta content=\"width=device-width, initial-scale=1, maximum-scale=1\" name=\"viewport\">\n  <title>The page you're looking for could not be found (404)</title>\n  <link rel=\"stylesheet\" href=\"/public.css\">\n</head>\n\n<body>\n  <a href=\"/\">\n    <img src=\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE5MiIgIGNsYXNzPSJ0YW51a2ktbG9nbyIgdmlld0Jv\neD0iMCAwIDUwIDQ4IiB",
+    "isSPA": true
+  }
+}

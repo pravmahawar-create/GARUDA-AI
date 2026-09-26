@@ -1,0 +1,37 @@
+{
+  "target": "https://www.bitmoji.com",
+  "timestamp": "2026-09-12T06:35:24.285Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://www.bitmoji.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"28\",\n  \"cache-control\": \"max-age=60, public\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:35:40 GMT\",\n  \"etag\": \"W/\\\"0898575762daf11185fbf29aa4a5ce36\\\"\",\n  \"last-modified\": \"Tue, 17 Jun 2025 18:34:14 GMT\",\n  \"server\": \"AmazonS3\",\n  \"strict-transport-security\": \"max-age=31536000; includeSubdomains; preload\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept-Encoding\",\n  \"via\": \"1.1 d5ebc09eb317f3a918e1a073829b38c2.cloudfront.net (CloudFront)\",\n  \"x-amz-cf-id\": \"4s88U-A3rt2d36HO5MtWJ0B7FbTFCQrCgCQs2zHJsKvd6dNmv9x53A==\",\n  \"x-amz-cf-pop\": \"BOM78-P8\",\n  \"x-amz-version-id\": \"K8IER5VrowKf0qlyxBxuG2Rv4GxA_LwV\",\n  \"x-cache\": \"Hit from cloudfront\",\n  \"x-frame-options\": \"DENY\",\n  \"x-xss-protection\": \"1; mode=block\"\n}",
+      "bodySnippet": "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Bitmoji</title><meta property=\"og:title\" content=\"Bitmoji - your own personal emoji\"><meta property=\"og:image\" content=\"http://bitmoji.com/images/bf3e82d9.bitmoji-logo-lrg.cache",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.bitmoji.com",
+      "desc": "Server leaks `server: AmazonS3` — aids fingerprinting.",
+      "value": "AmazonS3",
+      "rawHeaders": "AmazonS3",
+      "bodySnippet": "AmazonS3"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "d09c2b6f081fa29c025183b83df1c9a5f091f75ea2a839da7dbcca6eba3ac7bc",
+    "body": "<!DOCTYPE html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>404: Page Not Found</title><meta property=\"og:title\" content=\"Bitmoji - your personal emoji\"><meta property=\"og:image\" content=\"http://bitmoji.com/images/bf3e82d9.bitmoji-logo-lrg.cache.jpg\"><meta property=\"og:description\" content=\"Bitmoji is your own personal emoji. Create an expre",
+    "isSPA": true
+  }
+}

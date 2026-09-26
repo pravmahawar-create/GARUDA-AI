@@ -1,0 +1,34 @@
+{
+  "target": "https://www.snapchat.com",
+  "timestamp": "2026-09-12T06:35:24.149Z",
+  "findings": [
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.snapchat.com",
+      "desc": "Server leaks `server: API Gateway` — aids fingerprinting.",
+      "value": "API Gateway",
+      "rawHeaders": "API Gateway",
+      "bodySnippet": "API Gateway"
+    },
+    {
+      "name": "Information Leakage — Header Leakage (x-powered-by)",
+      "cwe": "CWE-200",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://www.snapchat.com",
+      "desc": "Server leaks `x-powered-by: Next.js` — aids fingerprinting.",
+      "value": "Next.js",
+      "rawHeaders": "Next.js",
+      "bodySnippet": "Next.js"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "6f573c212b680ada61faf9435c511f27e637502aaa768d882969710636e549f8",
+    "body": "<!DOCTYPE html><html prefix=\"og: https://ogp.me/ns#\" lang=\"en-US\" dir=\"ltr\" data-theme=\"light\"><head><meta name=\"next-head-count\" content=\"0\"/><script>(function(){try{var u=null;try{var h=window.location.host;if(h.indexOf('localhost')>=0||h.indexOf('sc-corp')>=0||h.indexOf('bs-local.com')>=0||h.slice(-5)==='.snap'){var v=new URLSearchParams(window.location.search).get('theme');if(v==='light'||v===",
+    "isSPA": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "target": "https://account.ui.com",
+  "timestamp": "2026-09-12T06:36:04.666Z",
+  "findings": [
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://account.ui.com",
+      "desc": "Server leaks `server: AmazonS3` — aids fingerprinting.",
+      "value": "AmazonS3",
+      "rawHeaders": "AmazonS3",
+      "bodySnippet": "AmazonS3"
+    }
+  ],
+  "baseline": {
+    "status": 200,
+    "hash": "82f3b41444937528c8af7890482e947d79535cad5e2c6d52b86afa5ba9bfe19e",
+    "body": "<!doctype html><html lang=\"en\"><head><meta name=\"robots\" content=\"noindex\"/><meta name=\"referrer\" content=\"same-origin\"/><meta charset=\"utf-8\"/><meta name=\"msapplication-TileColor\" content=\"#0193d7\"/><meta name=\"description\" content=\"Ubiquiti Account\"/><meta name=\"theme-color\" content=\"#ffffff\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1\"/><meta name=\"theme-c",
+    "isSPA": true
+  }
+}

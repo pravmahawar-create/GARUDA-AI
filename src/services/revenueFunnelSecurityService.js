@@ -492,7 +492,7 @@ class RevenueFunnelSecurityService {
     });
 
     // 11. Escalate to Founder Telegram privately (Internal Alert Only, Zero Public Phone Flash)
-    if (telegramBotService && !sanitized.isTest) {
+    if (telegramBotService && !sanitized.isTest && process.env.NODE_ENV !== "test") {
       try {
         await telegramBotService.notifyLeadCaptured({
           ...leadRecord,

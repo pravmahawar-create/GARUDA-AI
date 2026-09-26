@@ -61,7 +61,15 @@
     "videoId": "eLLR6EchLY8",
     "youtubeUrl": "https://www.youtube.com/watch?v=eLLR6EchLY8",
     "shortsUrl": "https://www.youtube.com/shorts/eLLR6EchLY8",
-    "uploadedAt": "2026-09-08T17:37:06.863Z"
+    "uploadedAt": "2026-09-08T17:37:06.863Z",
+    "personalVideoId": "z0n0AtMTNco",
+    "personalYoutubeUrl": "https://www.youtube.com/watch?v=z0n0AtMTNco",
+    "personalShortsUrl": "https://www.youtube.com/shorts/z0n0AtMTNco",
+    "personalUploadedAt": "2026-09-19T13:19:09.135Z",
+    "personalChannel": "@Praveen-Mahawar-111",
+    "personalStatus": "published",
+    "personalViralCampaignId": "bv_1789823947111_74ed77ce",
+    "personalViralSha": "5836365a926819ca8bc50bedae35992f0b5133cf9fe85dabb76f5f6d78fe78a5"
   },
   {
     "fileName": "Short_3_Energy_Climax_Drop.mp4",
@@ -89,6 +97,14 @@
     "videoId": "0cZLxsiFJko",
     "youtubeUrl": "https://www.youtube.com/watch?v=0cZLxsiFJko",
     "shortsUrl": "https://www.youtube.com/shorts/0cZLxsiFJko",
-    "uploadedAt": "2026-09-08T17:37:15.428Z"
+    "uploadedAt": "2026-09-08T17:37:15.428Z",
+    "personalVideoId": "c43bv4wImNU",
+    "personalYoutubeUrl": "https://www.youtube.com/watch?v=c43bv4wImNU",
+    "personalShortsUrl": "https://www.youtube.com/shorts/c43bv4wImNU",
+    "personalUploadedAt": "2026-09-19T13:42:31.297Z",
+    "personalChannel": "@Praveen-Mahawar-111",
+    "personalStatus": "published",
+    "personalViralCampaignId": "bv_1789825349114_9f2c159e",
+    "personalViralSha": "ebc967f29680ae1f73241ca0fe13a8870e0c1e58b322ff88dbb1d21a672d0041"
   }
 ]

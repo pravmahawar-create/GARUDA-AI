@@ -1,0 +1,91 @@
+{
+  "target": "https://safe.tumblr.com",
+  "timestamp": "2026-09-12T06:21:31.759Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://safe.tumblr.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:22:14 GMT\",\n  \"etag\": \"W/\\\"698f395d-10d2\\\"\",\n  \"server\": \"nginx\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept-Encoding\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<!--\n       .o                                8888       8888\n      .88                                8888       8888\n    o8888oo  ooo  oooo  ooo. .oo.  .oo.   888oooo.   888  oooo d8b\n    \"\"888\"\"  888  \"888  \"888P\"Y88bP\"Y88b  d88' `88b  888  \"888\"\"8P\n      888    888   888   888   ",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://safe.tumblr.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:22:14 GMT\",\n  \"etag\": \"W/\\\"698f395d-10d2\\\"\",\n  \"server\": \"nginx\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept-Encoding\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<!--\n       .o                                8888       8888\n      .88                                8888       8888\n    o8888oo  ooo  oooo  ooo. .oo.  .oo.   888oooo.   888  oooo d8b\n    \"\"888\"\"  888  \"888  \"888P\"Y88bP\"Y88b  d88' `88b  888  \"888\"\"8P\n      888    888   888   888   ",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://safe.tumblr.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:22:14 GMT\",\n  \"etag\": \"W/\\\"698f395d-10d2\\\"\",\n  \"server\": \"nginx\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept-Encoding\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<!--\n       .o                                8888       8888\n      .88                                8888       8888\n    o8888oo  ooo  oooo  ooo. .oo.  .oo.   888oooo.   888  oooo d8b\n    \"\"888\"\"  888  \"888  \"888P\"Y88bP\"Y88b  d88' `88b  888  \"888\"\"8P\n      888    888   888   888   ",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://safe.tumblr.com/login",
+      "status": 404,
+      "rawHeaders": "{\"connection\":\"keep-alive\",\"content-encoding\":\"br\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:22:15 GMT\",\"etag\":\"W/\\\"698f395d-10d2\\\"\",\"server\":\"nginx\",\"transfer-encoding\":\"chunked\",\"vary\":\"Accept-Encoding\"}",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://safe.tumblr.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"connection\":\"keep-alive\",\"content-encoding\":\"br\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:22:15 GMT\",\"etag\":\"W/\\\"698f395d-10d2\\\"\",\"server\":\"nginx\",\"transfer-encoding\":\"chunked\",\"vary\":\"Accept-Encoding\"}",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://safe.tumblr.com",
+      "desc": "Server leaks `server: nginx` — aids fingerprinting.",
+      "value": "nginx",
+      "rawHeaders": "nginx",
+      "bodySnippet": "nginx"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "19803356b525450b8529fcd7b10254e8315ca28865665e0c933b89630408ddf4",
+    "body": "<!DOCTYPE html>\n<!--\n       .o                                8888       8888\n      .88                                8888       8888\n    o8888oo  ooo  oooo  ooo. .oo.  .oo.   888oooo.   888  oooo d8b\n    \"\"888\"\"  888  \"888  \"888P\"Y88bP\"Y88b  d88' `88b  888  \"888\"\"8P\n      888    888   888   888   888   888  888   888  888   888\n      888 .  888   888   888   888   888  888.  888  888   888\n     ",
+    "isSPA": true
+  }
+}

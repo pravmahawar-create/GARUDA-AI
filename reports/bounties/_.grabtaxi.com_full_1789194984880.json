@@ -1,0 +1,12 @@
+{
+  "target": "https://*.grabtaxi.com",
+  "timestamp": "2026-09-12T06:36:04.641Z",
+  "findings": [],
+  "baseline": {
+    "status": 0,
+    "hash": null,
+    "body": "",
+    "isSPA": false,
+    "error": "fetch failed"
+  }
+}

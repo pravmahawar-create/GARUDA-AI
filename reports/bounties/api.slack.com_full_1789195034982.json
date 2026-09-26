@@ -1,0 +1,102 @@
+{
+  "target": "https://api.slack.com",
+  "timestamp": "2026-09-12T06:36:04.661Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://api.slack.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"accept-ranges\": \"bytes\",\n  \"cache-control\": \"public, max-age=0\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:37:08 GMT\",\n  \"etag\": \"W/\\\"a980-1a0919c9810\\\"\",\n  \"last-modified\": \"Fri, 11 Sep 2026 17:55:54 GMT\",\n  \"link\": \"</index.md>; rel=\\\"alternate\\\"; type=\\\"text/markdown\\\"\",\n  \"nel\": \"{\\\"report_to\\\":\\\"heroku-nel\\\",\\\"response_headers\\\":[\\\"Via\\\"],\\\"max_age\\\":3600,\\\"success_fraction\\\":0.01,\\\"failure_fraction\\\":0.1}\",\n  \"report-to\": \"{\\\"group\\\":\\\"heroku-nel\\\",\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nel.heroku.com/reports?s=4VZod7oktgMevsdIxILqCUcWASJb6T8Pg9SNRoBlKTk%3D\\\\u0026sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6\\\\u0026ts=1789195028\\\"}],\\\"max_age\\\":3600}\",\n  \"reporting-endpoints\": \"heroku-nel=\\\"https://nel.heroku.com/reports?s=4VZod7oktgMevsdIxILqCUcWASJb6T8Pg9SNRoBlKTk%3D&sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6&ts=1789195028\\\"\",\n  \"server\": \"Heroku\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept, Accept-Encoding\",\n  \"via\": \"1.1 heroku-router\",\n  \"x-powered-by\": \"Express\"\n}",
+      "bodySnippet": "<!doctype html><html lang=en dir=ltr class=\"docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-index\" data-has-hydrated=false><head><meta charset=UTF-8><meta name=generator content=\"Docusaurus v3.10.2\"><title data-rh=true>Slack developer docs | Slack Developer ",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://api.slack.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"accept-ranges\": \"bytes\",\n  \"cache-control\": \"public, max-age=0\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:37:08 GMT\",\n  \"etag\": \"W/\\\"a980-1a0919c9810\\\"\",\n  \"last-modified\": \"Fri, 11 Sep 2026 17:55:54 GMT\",\n  \"link\": \"</index.md>; rel=\\\"alternate\\\"; type=\\\"text/markdown\\\"\",\n  \"nel\": \"{\\\"report_to\\\":\\\"heroku-nel\\\",\\\"response_headers\\\":[\\\"Via\\\"],\\\"max_age\\\":3600,\\\"success_fraction\\\":0.01,\\\"failure_fraction\\\":0.1}\",\n  \"report-to\": \"{\\\"group\\\":\\\"heroku-nel\\\",\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nel.heroku.com/reports?s=4VZod7oktgMevsdIxILqCUcWASJb6T8Pg9SNRoBlKTk%3D\\\\u0026sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6\\\\u0026ts=1789195028\\\"}],\\\"max_age\\\":3600}\",\n  \"reporting-endpoints\": \"heroku-nel=\\\"https://nel.heroku.com/reports?s=4VZod7oktgMevsdIxILqCUcWASJb6T8Pg9SNRoBlKTk%3D&sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6&ts=1789195028\\\"\",\n  \"server\": \"Heroku\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept, Accept-Encoding\",\n  \"via\": \"1.1 heroku-router\",\n  \"x-powered-by\": \"Express\"\n}",
+      "bodySnippet": "<!doctype html><html lang=en dir=ltr class=\"docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-index\" data-has-hydrated=false><head><meta charset=UTF-8><meta name=generator content=\"Docusaurus v3.10.2\"><title data-rh=true>Slack developer docs | Slack Developer ",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://api.slack.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"accept-ranges\": \"bytes\",\n  \"cache-control\": \"public, max-age=0\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:37:08 GMT\",\n  \"etag\": \"W/\\\"a980-1a0919c9810\\\"\",\n  \"last-modified\": \"Fri, 11 Sep 2026 17:55:54 GMT\",\n  \"link\": \"</index.md>; rel=\\\"alternate\\\"; type=\\\"text/markdown\\\"\",\n  \"nel\": \"{\\\"report_to\\\":\\\"heroku-nel\\\",\\\"response_headers\\\":[\\\"Via\\\"],\\\"max_age\\\":3600,\\\"success_fraction\\\":0.01,\\\"failure_fraction\\\":0.1}\",\n  \"report-to\": \"{\\\"group\\\":\\\"heroku-nel\\\",\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nel.heroku.com/reports?s=4VZod7oktgMevsdIxILqCUcWASJb6T8Pg9SNRoBlKTk%3D\\\\u0026sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6\\\\u0026ts=1789195028\\\"}],\\\"max_age\\\":3600}\",\n  \"reporting-endpoints\": \"heroku-nel=\\\"https://nel.heroku.com/reports?s=4VZod7oktgMevsdIxILqCUcWASJb6T8Pg9SNRoBlKTk%3D&sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6&ts=1789195028\\\"\",\n  \"server\": \"Heroku\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept, Accept-Encoding\",\n  \"via\": \"1.1 heroku-router\",\n  \"x-powered-by\": \"Express\"\n}",
+      "bodySnippet": "<!doctype html><html lang=en dir=ltr class=\"docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-index\" data-has-hydrated=false><head><meta charset=UTF-8><meta name=generator content=\"Docusaurus v3.10.2\"><title data-rh=true>Slack developer docs | Slack Developer ",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://api.slack.com/login",
+      "status": 200,
+      "rawHeaders": "{\"accept-ranges\":\"bytes\",\"cache-control\":\"public, max-age=0\",\"content-encoding\":\"br\",\"content-type\":\"text/html; charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:37:09 GMT\",\"etag\":\"W/\\\"a980-1a0919c9810\\\"\",\"last-modified\":\"Fri, 11 Sep 2026 17:55:54 GMT\",\"nel\":\"{\\\"report_to\\\":\\\"heroku-nel\\\",\\\"response_headers\\\":[\\\"Via\\\"],\\\"max_age\\\":3600,\\\"success_fraction\\\":0.01,\\\"failure_fraction\\\":0.1}\",\"report-to\":\"{\\\"group\\\":\\\"heroku-nel\\\",\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nel.heroku.com/reports?s=GFtt5SvX0ymnjgyehYjLMstE%2FdHvc7iojfpY8ToV8oI%3D\\\\u0026sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6\\\\u0026ts=1789195029\\\"}",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://api.slack.com/dashboard",
+      "status": 200,
+      "rawHeaders": "{\"accept-ranges\":\"bytes\",\"cache-control\":\"public, max-age=0\",\"content-encoding\":\"br\",\"content-type\":\"text/html; charset=utf-8\",\"date\":\"Sat, 12 Sep 2026 06:37:10 GMT\",\"etag\":\"W/\\\"a980-1a0919c9810\\\"\",\"last-modified\":\"Fri, 11 Sep 2026 17:55:54 GMT\",\"nel\":\"{\\\"report_to\\\":\\\"heroku-nel\\\",\\\"response_headers\\\":[\\\"Via\\\"],\\\"max_age\\\":3600,\\\"success_fraction\\\":0.01,\\\"failure_fraction\\\":0.1}\",\"report-to\":\"{\\\"group\\\":\\\"heroku-nel\\\",\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nel.heroku.com/reports?s=XzuecSkGrG2XbnDuwxdeFzxkyOdTvZHlCh%2BBzz6PPS8%3D\\\\u0026sid=929419e7-33ea-4e2f-85f0-7d8b7cd5cbd6\\\\u0026ts=1789195030\\\"}",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://api.slack.com",
+      "desc": "Server leaks `server: Heroku` — aids fingerprinting.",
+      "value": "Heroku",
+      "rawHeaders": "Heroku",
+      "bodySnippet": "Heroku"
+    },
+    {
+      "name": "Information Leakage — Header Leakage (x-powered-by)",
+      "cwe": "CWE-200",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://api.slack.com",
+      "desc": "Server leaks `x-powered-by: Express` — aids fingerprinting.",
+      "value": "Express",
+      "rawHeaders": "Express",
+      "bodySnippet": "Express"
+    }
+  ],
+  "baseline": {
+    "status": 200,
+    "hash": "bee3c46a21324582e638378c899d9efebb79654d15cbe7c196c62ad490a77904",
+    "body": "<!doctype html><html lang=en dir=ltr class=\"docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-index\" data-has-hydrated=false><head><meta charset=UTF-8><meta name=generator content=\"Docusaurus v3.10.2\"><title data-rh=true>Slack developer docs | Slack Developer Docs</title><meta data-rh=true name=viewport content=\"width=device-width, initial-scale=1.0\"/><meta ",
+    "isSPA": true
+  }
+}

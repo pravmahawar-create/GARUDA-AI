@@ -1,0 +1,88 @@
+{
+  "target": "https://secure.booking.com",
+  "timestamp": "2026-09-12T07:01:00.157Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://secure.booking.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"accept-ch\": \"ECT\",\n  \"cache-control\": \"no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-length\": \"123185\",\n  \"content-type\": \"text/html; charset=UTF-8\",\n  \"date\": \"Sat, 12 Sep 2026 07:02:05 GMT\",\n  \"link\": \"<https://cf.bstatic.com/mobile/css/book_cloudfront_sd.iq_ltr/faa13404af92a4ec751856d76b960df6cf68478b.css>; rel=preload; as=style, <https://cf.bstatic.com/mobile/css/core_cloudfront_sd.iq_ltr/f870110eb8a677f2393a2478ae5120347196adea.css>; rel=preload; as=style, <https://cf.bstatic.com/mobile/css/sign_in_form_cloudfront_sd.iq_ltr/907e064d962099ef42afb8da8d1aeed83e7e8c1a.css>; rel=preload; as=style\",\n  \"nel\": \"{\\\"failure_fraction\\\":0.1,\\\"report_to\\\":\\\"default\\\",\\\"max_age\\\":604800}\",\n  \"report-to\": \"{\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nellie.booking.com/report\\\"}],\\\"max_age\\\":604800,\\\"group\\\":\\\"default\\\"}\",\n  \"server\": \"nginx\",\n  \"set-cookie\": \"pcm_consent=analytical%3Dtrue%26countryCode%3DIN%26consentId%3D8560a0ba-a8c0-459e-ae9c-45e640d16c81%26consentedAt%3D2026-09-12T07%3A02%3A04.886Z%26expiresAt%3D2027-03-11T07%3A02%3A04.886Z%26implicit%3Dtrue%26marketing%3Dtrue%26regio",
+      "bodySnippet": "<!DOCTYPE html>\n<!--\nYou know you could be getting paid to poke around in our code?\nWe're hiring designers and developers to work in Amsterdam:\nhttps://careers.booking.com/\n-->\n<!-- mdot-548 -->\n<html lang=\"hi\"\nclass=\"no-js\"\n>\n<head>\n<link href=\"https://cf.bstatic.com\" rel=\"dns-prefetch\" crossorigin",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://secure.booking.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"accept-ch\": \"ECT\",\n  \"cache-control\": \"no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-length\": \"123185\",\n  \"content-type\": \"text/html; charset=UTF-8\",\n  \"date\": \"Sat, 12 Sep 2026 07:02:05 GMT\",\n  \"link\": \"<https://cf.bstatic.com/mobile/css/book_cloudfront_sd.iq_ltr/faa13404af92a4ec751856d76b960df6cf68478b.css>; rel=preload; as=style, <https://cf.bstatic.com/mobile/css/core_cloudfront_sd.iq_ltr/f870110eb8a677f2393a2478ae5120347196adea.css>; rel=preload; as=style, <https://cf.bstatic.com/mobile/css/sign_in_form_cloudfront_sd.iq_ltr/907e064d962099ef42afb8da8d1aeed83e7e8c1a.css>; rel=preload; as=style\",\n  \"nel\": \"{\\\"failure_fraction\\\":0.1,\\\"report_to\\\":\\\"default\\\",\\\"max_age\\\":604800}\",\n  \"report-to\": \"{\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nellie.booking.com/report\\\"}],\\\"max_age\\\":604800,\\\"group\\\":\\\"default\\\"}\",\n  \"server\": \"nginx\",\n  \"set-cookie\": \"pcm_consent=analytical%3Dtrue%26countryCode%3DIN%26consentId%3D8560a0ba-a8c0-459e-ae9c-45e640d16c81%26consentedAt%3D2026-09-12T07%3A02%3A04.886Z%26expiresAt%3D2027-03-11T07%3A02%3A04.886Z%26implicit%3Dtrue%26marketing%3Dtrue%26regio",
+      "bodySnippet": "<!DOCTYPE html>\n<!--\nYou know you could be getting paid to poke around in our code?\nWe're hiring designers and developers to work in Amsterdam:\nhttps://careers.booking.com/\n-->\n<!-- mdot-548 -->\n<html lang=\"hi\"\nclass=\"no-js\"\n>\n<head>\n<link href=\"https://cf.bstatic.com\" rel=\"dns-prefetch\" crossorigin",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://secure.booking.com/login",
+      "status": 200,
+      "rawHeaders": "{\"accept-ch\":\"ECT\",\"cache-control\":\"max-stale=0,  no-store, no-cache,  post-check=0,  pre-check=0,  must-revalidate, private\",\"connection\":\"keep-alive\",\"content-encoding\":\"br\",\"content-length\":\"132083\",\"content-type\":\"text/html; charset=UTF-8\",\"cross-origin-opener-policy\":\"same-origin-allow-popups\",\"date\":\"Sat, 12 Sep 2026 07:02:06 GMT\",\"nel\":\"{\\\"report_to\\\":\\\"default\\\",\\\"failure_fraction\\\":0.1,\\\"max_age\\\":604800}\",\"report-to\":\"{\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nellie.booking.com/report\\\"}],\\\"max_age\\\":604800,\\\"group\\\":\\\"default\\\"}\",\"server\":\"nginx\",\"set-cookie\":\"pcm_consent=analytical%3Dtrue",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://secure.booking.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"accept-ch\":\"ECT\",\"cache-control\":\"no-cache,  max-stale=0,  no-store,  post-check=0,  must-revalidate, private,  pre-check=0\",\"connection\":\"keep-alive\",\"content-encoding\":\"br\",\"content-length\":\"136240\",\"content-type\":\"text/html; charset=UTF-8\",\"cross-origin-opener-policy\":\"same-origin-allow-popups\",\"date\":\"Sat, 12 Sep 2026 07:02:07 GMT\",\"nel\":\"{\\\"failure_fraction\\\":0.1,\\\"report_to\\\":\\\"default\\\",\\\"max_age\\\":604800}\",\"report-to\":\"{\\\"group\\\":\\\"default\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nellie.booking.com/report\\\"}]}\",\"server\":\"nginx\",\"set-cookie\":\"pcm_consent=analytical%3Dtru",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://secure.booking.com",
+      "desc": "Server leaks `server: nginx` — aids fingerprinting.",
+      "value": "nginx",
+      "rawHeaders": "nginx",
+      "bodySnippet": "nginx"
+    },
+    {
+      "name": "Information Leakage — Stack Trace Leakage (body)",
+      "cwe": "CWE-209",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://secure.booking.com/__garuda_probe_1789196530169",
+      "desc": "Server leaks `body: exception` — aids fingerprinting.",
+      "value": "exception",
+      "rawHeaders": "exception",
+      "bodySnippet": "<!DOCTYPE html>\n<!--\nYou know you could be getting paid to poke around in our code?\nWe're hiring designers and developers to work in Amsterdam:\nhttps://careers.booking.com/\n-->\n<!-- wdot-802 -->\n<html lang=\"hi\" prefix=\"og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# booking_com: http://ogp.me/ns/fb/booking_com#\" class=\"noJS b_chrome b_chrome_122 supports_inline-block supports_flexbox_unprefixed supports_fontface supports_hyphens \" >\n<head profile=\"http://a9.com/-/spec/opensearch/1.1/\">\n<script type=\"text/javascript\" nonce=\"hKEmPCSYN2DWHOY\" src=\"https://cdn.cookielaw.org/consent/04f32d9e-1729-4d42-82b5-91c2350ff323/OtAutoBlock.js\"></script>\n<script type=\"text/javascript\" nonce=\"hKEmPCSYN2DWHOY\">\n(function () {\ndocument.addEventListener('click', function(e) {\nif (e.target && e.target.classLis"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "fc7535d12371c611e1cb4d5d6c8e980a36b91e33e8247d2c02f94cfa3acfa2cb",
+    "body": "<!DOCTYPE html>\n<!--\nYou know you could be getting paid to poke around in our code?\nWe're hiring designers and developers to work in Amsterdam:\nhttps://careers.booking.com/\n-->\n<!-- wdot-802 -->\n<html lang=\"en-us\" prefix=\"og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# booking_com: http://ogp.me/ns/fb/booking_com#\" class=\"noJS b_bot b_bot supports_fontface supports_hyphens \" >\n<head profile=\"http:/",
+    "isSPA": true
+  }
+}

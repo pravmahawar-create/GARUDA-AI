@@ -1,0 +1,62 @@
+{
+  "target": "https://staging.airtable.com",
+  "timestamp": "2026-09-12T06:21:31.839Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://staging.airtable.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"0\",\n  \"cache-control\": \"private, no-cache, no-store, max-age=0, must-revalidate\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:22:39 GMT\",\n  \"link\": \"</_next/static/chunks/33rddxgt7qgaf.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/0rhj9gdgus336.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/1458xlov3ngux.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/3r0zqlcume-yo.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/3rolzi91qwpec.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/24_q7f62u8yqf.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/1-xz-4itr5es5.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/2m1envv02xnkh.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/1fa4i8ma-9eu1.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"sty",
+      "bodySnippet": "<!DOCTYPE html><html data-dpl-id=\"dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr\" lang=\"en\" data-scroll-behavior=\"smooth\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" href=\"https://static.airtable.com/font/NeueHaasGrotTextRound-55Roman-Web.w",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://staging.airtable.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"0\",\n  \"cache-control\": \"private, no-cache, no-store, max-age=0, must-revalidate\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:22:39 GMT\",\n  \"link\": \"</_next/static/chunks/33rddxgt7qgaf.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/0rhj9gdgus336.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/1458xlov3ngux.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/3r0zqlcume-yo.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/3rolzi91qwpec.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/24_q7f62u8yqf.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/1-xz-4itr5es5.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/2m1envv02xnkh.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"style\\\", </_next/static/chunks/1fa4i8ma-9eu1.css?dpl=dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr>; rel=preload; as=\\\"sty",
+      "bodySnippet": "<!DOCTYPE html><html data-dpl-id=\"dpl_4C2U6xZ5TAToRfrSukV2rRs5qMfr\" lang=\"en\" data-scroll-behavior=\"smooth\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" href=\"https://static.airtable.com/font/NeueHaasGrotTextRound-55Roman-Web.w",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://staging.airtable.com",
+      "desc": "Server leaks `server: Vercel` — aids fingerprinting.",
+      "value": "Vercel",
+      "rawHeaders": "Vercel",
+      "bodySnippet": "Vercel"
+    },
+    {
+      "name": "Information Leakage — Header Leakage (x-powered-by)",
+      "cwe": "CWE-200",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://staging.airtable.com",
+      "desc": "Server leaks `x-powered-by: Next.js` — aids fingerprinting.",
+      "value": "Next.js",
+      "rawHeaders": "Next.js",
+      "bodySnippet": "Next.js"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "b6d5b7118042efa0a7dc0bf1c9c3152d74be390b4afbf4b6ee82a066f264dfb3",
+    "body": "<!DOCTYPE html>\n<html style=\"overflow:auto\" lang=\"en\"><head><meta name=\"referrer\" content=\"no-referrer\"/><meta name=\"robots\" content=\"noindex\"/><meta charSet=\"utf-8\"/><meta name=\"theme-color\" content=\"#ffffff\"/><meta name=\"robots\" content=\"noindex\"/><meta name=\"description\" content=\"Airtable is a low-code platform for building collaborative apps. Customize your workflow, collaborate, and achieve a",
+    "isSPA": true
+  }
+}

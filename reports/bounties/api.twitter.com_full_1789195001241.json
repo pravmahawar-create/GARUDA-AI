@@ -1,0 +1,77 @@
+{
+  "target": "https://api.twitter.com",
+  "timestamp": "2026-09-12T06:36:04.670Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://api.twitter.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"cache-control\": \"no-cache, no-store, max-age=0\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a39ce61e096f4154-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"0\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:37 GMT\",\n  \"origin-cf-ray\": \"a39ce61e096f4154-SEA\",\n  \"perf\": \"7402827104\",\n  \"server\": \"cloudflare envoy\",\n  \"set-cookie\": \"__cf_bm=KJI4qJkrtvS9l0o6PI8DiwRK8_KVlXMO6TJ2_TylPnY-1789194997.4500024-1.0.1.1-Z2OzAJUJvqrzimDms9uFHiNQusfuJdgmYmHAE4MIHJHE8ymVdWZvJLy.JW1xOiYhVZRPDxzbivNBr2Yn2_Etb3bEskFHSN_QBj.0B9A2Nt7.YrsvIVIFk71KmxOr8klZ; HttpOnly; SameSite=None; Secure; Path=/; Domain=twitter.com; Expires=Sat, 12 Sep 2026 07:06:37 GMT\",\n  \"strict-transport-security\": \"max-age=631138519; includeSubdomains\",\n  \"x-response-time\": \"1\",\n  \"x-served-by\": \"t4_p\",\n  \"x-transaction-id\": \"2e55eb9d5bd220a9\"\n}",
+      "bodySnippet": "",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://api.twitter.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"cache-control\": \"no-cache, no-store, max-age=0\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a39ce61e096f4154-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"0\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:37 GMT\",\n  \"origin-cf-ray\": \"a39ce61e096f4154-SEA\",\n  \"perf\": \"7402827104\",\n  \"server\": \"cloudflare envoy\",\n  \"set-cookie\": \"__cf_bm=KJI4qJkrtvS9l0o6PI8DiwRK8_KVlXMO6TJ2_TylPnY-1789194997.4500024-1.0.1.1-Z2OzAJUJvqrzimDms9uFHiNQusfuJdgmYmHAE4MIHJHE8ymVdWZvJLy.JW1xOiYhVZRPDxzbivNBr2Yn2_Etb3bEskFHSN_QBj.0B9A2Nt7.YrsvIVIFk71KmxOr8klZ; HttpOnly; SameSite=None; Secure; Path=/; Domain=twitter.com; Expires=Sat, 12 Sep 2026 07:06:37 GMT\",\n  \"strict-transport-security\": \"max-age=631138519; includeSubdomains\",\n  \"x-response-time\": \"1\",\n  \"x-served-by\": \"t4_p\",\n  \"x-transaction-id\": \"2e55eb9d5bd220a9\"\n}",
+      "bodySnippet": "",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://api.twitter.com/login",
+      "status": 404,
+      "rawHeaders": "{\"cache-control\":\"no-cache, no-store, max-age=0\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce6230e584154-BOM\",\"connection\":\"keep-alive\",\"content-length\":\"0\",\"date\":\"Sat, 12 Sep 2026 06:36:38 GMT\",\"origin-cf-ray\":\"a39ce6230e584154-SEA\",\"perf\":\"7402827104\",\"server\":\"cloudflare envoy\",\"set-cookie\":\"__cf_bm=2mupg53Y72Y0uBFdAVzfwPnc3Wv.B1wbOozuJ0BclSo-1789194998.245307-1.0.1.1-nWtxdW2rVEBFe5Lp3iPMFmyiM9HDDP32GH8S4S5.Nhmbwe6kjiURL8zILWcT44H74oXxa7bYDDHdX4TY_nn0QK8wehN80fbsI7fn1tkyes8eXfgHBUyEbu47u09Kssye; HttpOnly; SameSite=None; Secure; Path=/; Domain=twitter.com; Expires=Sat, 12 Sep 2026 07:06:38 G",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://api.twitter.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"cache-control\":\"no-cache, no-store, max-age=0\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39ce626ea424154-BOM\",\"connection\":\"keep-alive\",\"content-length\":\"0\",\"date\":\"Sat, 12 Sep 2026 06:36:39 GMT\",\"origin-cf-ray\":\"a39ce626ea424154-SEA\",\"perf\":\"7402827104\",\"server\":\"cloudflare envoy\",\"set-cookie\":\"__cf_bm=A.vBGIgJ_yHzOL4nHynysr9lZn0I8v9X4J7yqXpDTlM-1789194998.8700356-1.0.1.1-BAlC2lR.rG1j808tSh9P__iRB1UxTtvgkOMbz0Wf8LquCDxsl1Q7hS_KiXwGxX.QlSUIUFCxqK6A_hDPPqQl_1.KXpuI6kX7ShittnfE2Sco9LYkyNz4RuNvGjDiTbIY; HttpOnly; SameSite=None; Secure; Path=/; Domain=twitter.com; Expires=Sat, 12 Sep 2026 07:06:39 ",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://api.twitter.com",
+      "desc": "Server leaks `server: cloudflare envoy` — aids fingerprinting.",
+      "value": "cloudflare envoy",
+      "rawHeaders": "cloudflare envoy",
+      "bodySnippet": "cloudflare envoy"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "body": "",
+    "isSPA": false
+  }
+}

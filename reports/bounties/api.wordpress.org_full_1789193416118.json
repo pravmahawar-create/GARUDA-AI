@@ -1,0 +1,51 @@
+{
+  "target": "https://api.wordpress.org",
+  "timestamp": "2026-09-12T06:09:28.133Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://api.wordpress.org",
+      "status": 200,
+      "rawHeaders": "{\n  \"alt-svc\": \"clear\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=UTF-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:10:12 GMT\",\n  \"link\": \"<https://developer.wordpress.org/wp-json/>; rel=\\\"https://api.w.org/\\\", <https://developer.wordpress.org/wp-json/wp/v2/rest-api-handbook/22832>; rel=\\\"alternate\\\"; title=\\\"JSON\\\"; type=\\\"application/json\\\", <https://developer.wordpress.org/?p=22832>; rel=shortlink\",\n  \"server\": \"nginx\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept-Encoding, accept, content-type\",\n  \"x-frame-options\": \"SAMEORIGIN\",\n  \"x-nc\": \"HIT dca 2\",\n  \"x-olaf\": \"â\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\" />\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<link rel='preload' href='https://developer.wordpress.org/wp-content/mu-plugins/pub-sync/global-fonts/Inter/Inter-latin.woff2' as='font' crossorigin='crossorig",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://api.wordpress.org",
+      "status": 200,
+      "rawHeaders": "{\n  \"alt-svc\": \"clear\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=UTF-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:10:12 GMT\",\n  \"link\": \"<https://developer.wordpress.org/wp-json/>; rel=\\\"https://api.w.org/\\\", <https://developer.wordpress.org/wp-json/wp/v2/rest-api-handbook/22832>; rel=\\\"alternate\\\"; title=\\\"JSON\\\"; type=\\\"application/json\\\", <https://developer.wordpress.org/?p=22832>; rel=shortlink\",\n  \"server\": \"nginx\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept-Encoding, accept, content-type\",\n  \"x-frame-options\": \"SAMEORIGIN\",\n  \"x-nc\": \"HIT dca 2\",\n  \"x-olaf\": \"â\"\n}",
+      "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\" />\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<link rel='preload' href='https://developer.wordpress.org/wp-content/mu-plugins/pub-sync/global-fonts/Inter/Inter-latin.woff2' as='font' crossorigin='crossorig",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://api.wordpress.org",
+      "desc": "Server leaks `server: nginx` — aids fingerprinting.",
+      "value": "nginx",
+      "rawHeaders": "nginx",
+      "bodySnippet": "nginx"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "d465172175d35d493fb1633e237700022bd849fa123164790b168b8318acb090",
+    "body": "<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<center><h1>404 Not Found</h1></center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly er",
+    "isSPA": true
+  }
+}

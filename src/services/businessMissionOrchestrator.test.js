@@ -12,6 +12,8 @@
  * 8. Successful evidence-backed work → VERIFIED
  */
 
+process.env.NODE_ENV = "test";
+
 const test = require("node:test");
 const assert = require("node:assert");
 const fs = require("fs");

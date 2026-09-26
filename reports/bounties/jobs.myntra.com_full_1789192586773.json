@@ -1,0 +1,11 @@
+{
+  "target": "https://jobs.myntra.com",
+  "timestamp": "2026-09-12T05:55:39.753Z",
+  "findings": [],
+  "baseline": {
+    "status": 200,
+    "hash": "e35067c1e7e645f83246ff315dcad8994f3b13b919beef8fa075e88dcf8241f9",
+    "body": "<!DOCTYPE html>\n<html>\n\n<head>\n  <!--\n    If you are serving your web app in a path other than the root, change the\n    href value below to reflect the base path you are serving from.\n\n    The path provided below has to start and end with a slash \"/\" in order for\n    it to work correctly.\n\n    For more details:\n    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base\n\n    This is a pla",
+    "isSPA": true
+  }
+}

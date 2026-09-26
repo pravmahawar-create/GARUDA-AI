@@ -359,7 +359,7 @@ class PersistentProposalService {
     }
 
     // Telegram Alert to Founder
-    if (telegramBotService) {
+    if (telegramBotService && process.env.NODE_ENV !== "test") {
       try {
         await telegramBotService.sendFounderAlert(
           "🎉 CLIENT ACCEPTED PROPOSAL TERMS!",
@@ -529,7 +529,7 @@ class PersistentProposalService {
     }
 
     // 4. Dispatch High-Priority Telegram Alert to Founder
-    if (telegramBotService) {
+    if (telegramBotService && process.env.NODE_ENV !== "test") {
       try {
         await telegramBotService.sendFounderAlert(
           "💰 DEPOSIT PAYMENT VERIFIED & PROJECT ACTIVATED!",

@@ -1,0 +1,9 @@
+[
+  {
+    "to": "security@yelp.com",
+    "subject": "[Security] Dangerous CORS Misconfiguration on yelp.com — Arbitrary Origin Reflection with Credentials",
+    "sentAt": "2026-09-13T13:48:12.405Z",
+    "messageId": "<6c11b215-1323-5d0b-bb8d-f61411c7bc71@garudaos.in>",
+    "response": "250 Message received"
+  }
+]

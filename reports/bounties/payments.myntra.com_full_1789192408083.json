@@ -1,0 +1,12 @@
+{
+  "target": "https://payments.myntra.com",
+  "timestamp": "2026-09-12T05:53:08.383Z",
+  "findings": [],
+  "baseline": {
+    "status": 0,
+    "hash": null,
+    "body": "",
+    "isSPA": false,
+    "error": "fetch failed"
+  }
+}

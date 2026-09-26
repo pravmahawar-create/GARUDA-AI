@@ -1,0 +1,45 @@
+{
+  "target": "https://tinder.com",
+  "timestamp": "2026-09-12T06:55:23.573Z",
+  "findings": [
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://tinder.com",
+      "desc": "Server leaks `server: nginx` — aids fingerprinting.",
+      "value": "nginx",
+      "rawHeaders": "nginx",
+      "bodySnippet": "nginx"
+    },
+    {
+      "name": "Information Leakage — Header Leakage (x-powered-by)",
+      "cwe": "CWE-200",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://tinder.com",
+      "desc": "Server leaks `x-powered-by: Express` — aids fingerprinting.",
+      "value": "Express",
+      "rawHeaders": "Express",
+      "bodySnippet": "Express"
+    },
+    {
+      "name": "Information Leakage — Stack Trace Leakage (body)",
+      "cwe": "CWE-209",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://tinder.com/__garuda_probe_1789196208488",
+      "desc": "Server leaks `body: exception` — aids fingerprinting.",
+      "value": "exception",
+      "rawHeaders": "exception",
+      "bodySnippet": "<!doctype html><html id=\"Tinder\" lang=\"en\" class=\"W(100%) Us(n)\" ><head><title data-rh=\"true\">Tinder | Dating, Make Friends &amp; Meet New People</title><meta data-rh=\"true\" name=\"charset\" content=\"utf-8\"/><meta data-rh=\"true\" name=\"description\" content=\"With 55 billion matches to date, Tinder® is the world’s most popular dating app, making it the place to meet new people.\"/><meta data-rh=\"true\" name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\"/><meta data-rh=\"true\" name=\"referrer\" content=\"origin\"/><meta data-rh=\"true\" name=\"copyright\" content=\"© 2016 - 2026 Tinder, Inc., ALL RIGHTS RESERVED\"/><meta data-rh=\"true\" name=\"mobile-web-app-capable\" content=\"yes\"/><meta data-rh=\"true\" name=\"apple-mobile-web-app-capable\" content=\"yes\"/><meta data-rh=\"true\" name="
+    }
+  ],
+  "baseline": {
+    "status": 200,
+    "hash": "4f735bd28b346c1eb9baf9e6dfff10d028c4c8a3358123d2ede83ed441241e27",
+    "body": "<!doctype html><html id=\"Tinder\" lang=\"en\" class=\"W(100%) Us(n)\" ><head><title data-rh=\"true\">Tinder | Dating, Make Friends &amp; Meet New People</title><meta data-rh=\"true\" name=\"charset\" content=\"utf-8\"/><meta data-rh=\"true\" name=\"description\" content=\"With 55 billion matches to date, Tinder® is the world’s most popular dating app, making it the place to meet new people.\"/><meta data-rh=\"true\" n",
+    "isSPA": true
+  }
+}

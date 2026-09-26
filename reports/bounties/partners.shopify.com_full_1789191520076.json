@@ -1,0 +1,51 @@
+{
+  "target": "https://partners.shopify.com",
+  "timestamp": "2026-09-12T05:37:47.339Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://partners.shopify.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"2086\",\n  \"alt-svc\": \"h3=\\\":443\\\"; ma=86400\",\n  \"cache-control\": \"max-age=900, stale-while-revalidate=86400\",\n  \"cf-cache-status\": \"BYPASS\",\n  \"cf-ray\": \"a39c9113fc0c85cf-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 05:38:34 GMT\",\n  \"last-modified\": \"Sat, 12 Sep 2026 05:03:47 GMT\",\n  \"nel\": \"{\\\"report_to\\\":\\\"cf-nel\\\",\\\"success_fraction\\\":0.01,\\\"max_age\\\":604800}\",\n  \"report-to\": \"{\\\"group\\\":\\\"cf-nel\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://a.nel.cloudflare.com/report/v4?s=sQ8iWBUV2veeti3Xu%2FwPbf6ogrL5Si3Dxi1rbbMlTmWcv78VjhSAPWyYUvcNOCZ0EdLQ8fc2F4QoG7OWWqGqmRyzYVG1ExCEMQhCeJzCtEKli%2B2QiI1C7AKaxLbU%2BeYNcw%3D%3D\\\"}]}\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"_shopify_essential_=9b5c8938-8a22-40c9-b5c7-dc02939c10d1; Domain=shopify.com; Path=/; Expires=Sun, 12 Sep 2027 05:38:34 GMT; Secure; SameSite=Lax\",\n  \"strict-transport-security\": \"max-age=15552000; includeSubDomains; preload\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"accept-encoding\",\n  \"x-content-type-options\": \"nosniff\"\n}",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en\" dir=\"ltr\"><head><script data-pre-hydration-monitor=\"true\">(()=>{try{if(typeof MutationObserver>\"u\")return;const r=20,f=120,s={injectedElements:[],removedElements:[],attributesChanged:[]},c=t=>t?t.length>f?`${t.slice(0,f)}...`:t:\"\",N=[\"cdn.shopify.com\",\"shopify.com\",\"sh",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://partners.shopify.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"2086\",\n  \"alt-svc\": \"h3=\\\":443\\\"; ma=86400\",\n  \"cache-control\": \"max-age=900, stale-while-revalidate=86400\",\n  \"cf-cache-status\": \"BYPASS\",\n  \"cf-ray\": \"a39c9113fc0c85cf-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 05:38:34 GMT\",\n  \"last-modified\": \"Sat, 12 Sep 2026 05:03:47 GMT\",\n  \"nel\": \"{\\\"report_to\\\":\\\"cf-nel\\\",\\\"success_fraction\\\":0.01,\\\"max_age\\\":604800}\",\n  \"report-to\": \"{\\\"group\\\":\\\"cf-nel\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://a.nel.cloudflare.com/report/v4?s=sQ8iWBUV2veeti3Xu%2FwPbf6ogrL5Si3Dxi1rbbMlTmWcv78VjhSAPWyYUvcNOCZ0EdLQ8fc2F4QoG7OWWqGqmRyzYVG1ExCEMQhCeJzCtEKli%2B2QiI1C7AKaxLbU%2BeYNcw%3D%3D\\\"}]}\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"_shopify_essential_=9b5c8938-8a22-40c9-b5c7-dc02939c10d1; Domain=shopify.com; Path=/; Expires=Sun, 12 Sep 2027 05:38:34 GMT; Secure; SameSite=Lax\",\n  \"strict-transport-security\": \"max-age=15552000; includeSubDomains; preload\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"accept-encoding\",\n  \"x-content-type-options\": \"nosniff\"\n}",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en\" dir=\"ltr\"><head><script data-pre-hydration-monitor=\"true\">(()=>{try{if(typeof MutationObserver>\"u\")return;const r=20,f=120,s={injectedElements:[],removedElements:[],attributesChanged:[]},c=t=>t?t.length>f?`${t.slice(0,f)}...`:t:\"\",N=[\"cdn.shopify.com\",\"shopify.com\",\"sh",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://partners.shopify.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "1bf492cb90fad31c7424fa017d05ef38522dc516e6dba6becb7029904fdf2c6a",
+    "body": "<!DOCTYPE html>\n<html class=\"partners-ui\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <title>Shopify Partners</title>\n    <meta name=\"csrf-param\" content=\"authenticity_token\" />\n<meta name=\"csrf-token\" content=\"vPEOqvoOXgwg6Xy0DmSvW1Ml6ZSr7hDWVU2qu5qrPZ5jhTEvcvUh5hS9VvSrS",
+    "isSPA": true
+  }
+}

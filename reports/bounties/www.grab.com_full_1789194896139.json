@@ -1,0 +1,52 @@
+{
+  "target": "https://www.grab.com",
+  "timestamp": "2026-09-12T06:33:44.267Z",
+  "findings": [
+    {
+      "path": "/graphql",
+      "name": "Exposed GraphQL Endpoint",
+      "cwe": "CWE-200",
+      "cvss": 6.5,
+      "severity": "Medium",
+      "url": "https://www.grab.com/graphql",
+      "status": 200,
+      "verdict": "CONFIRMED_EXPOSED",
+      "bodySnippet": "{\"errors\":[{\"message\":\"GraphQL Request must include at least one of those two parameters: \\\"query\\\" or \\\"queryId\\\"\",\"extensions\":{\"category\":\"request\"}}],\"extensions\":{\"debug\":[{\"type\":\"DEBUG_LOGS_INACTIVE\",\"message\":\"GraphQL Debug logging is not active. To see debug logs, GRAPHQL_DEBUG must be enabled.\"}]}}",
+      "bodyHash": "2c6fe98a43baa15c1ac05d7cdb2db7f70362e90537b29207e27f41a310bbef6d",
+      "isSPA": false,
+      "isWildcard": false,
+      "draftOnly": true
+    },
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://www.grab.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"access-control-allow-origin\": \"https://www.grab.com\",\n  \"age\": \"487\",\n  \"cloudfront-viewer-country\": \"IN\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-security-policy\": \"frame-ancestors 'self' https://splytech.io https://*.splytech.io\",\n  \"content-type\": \"text/html; charset=UTF-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:26:45 GMT\",\n  \"link\": \"<https://www.grab.com/sg/wp-json/>; rel=\\\"https://api.w.org/\\\", <https://www.grab.com/sg/wp-json/wp/v2/pages/285>; rel=\\\"alternate\\\"; type=\\\"application/json\\\", <https://www.grab.com/sg/>; rel=shortlink\",\n  \"server\": \"nginx\",\n  \"set-cookie\": \"AWSALBCORS=ZKidQvUgnOMhCf3o5SvvTzGYuhil+W3etW6/sPypRT5YjXMEwo7TogcsmyJf1FQmZhWOWXtge3iXZulsCHfYDhaxVlRt4ZHD6y055jq6LELo05RCAoR4U5ZOGLCk; Expires=Sat, 19 Sep 2026 06:26:45 GMT; Path=/; SameSite=None; Secure\",\n  \"transfer-encoding\": \"chunked\",\n  \"via\": \"1.1 da3f8c37568207e13b98d509b4d06638.cloudfront.net (CloudFront)\",\n  \"x-amz-cf-id\": \"108CvbIrN8XH7XNiNAbiq6V9pUDAwVmzrXE2fbAfK0aNOJEXgnzbIA==\",\n  \"x-amz-cf-pop\": \"BOM78-P9\",\n  \"x-cache\": \"Hit from cloudfront\",\n  \"x-content-type-options\": \"nosniff\",\n  \"x-fastcgi-cache\": \"HIT\",\n  \"x-frame-options\": \"allow-from splytech.io\",\n  \"x-xss-pro",
+      "bodySnippet": "\n<!DOCTYPE html>\n<html lang=\"en-US\" class=\"no-js\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <title>\n        Grab. The Everyday Everything App    </title>\n            <link href=\"//www.google-analytics.com\" rel=\"dns-prefetch\">\n        <link href=\"https://www.grab.com/favicon.ico\" rel=\"icon\" type=\"image",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.grab.com",
+      "desc": "Server leaks `server: nginx` — aids fingerprinting.",
+      "value": "nginx",
+      "rawHeaders": "nginx",
+      "bodySnippet": "nginx"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "fec357dd08ec01f57c6fbb9c65a851a4c17670763e3b20188566020467a97406",
+    "body": "<!DOCTYPE html>\n<html lang=\"en-US\" class=\"no-js\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <title>\n        404 | Grab SG    </title>\n            <link href=\"//www.google-analytics.com\" rel=\"dns-prefetch\">\n    \n    <link href=\"https://www.grab.com/favicon.ico\" rel=\"icon\" type=\"image/x-icon\">\n    <meta name=\"msvalidate.01\" content=\"62D708192352CDCE3B73BA9B4A94A95C\" />\n    <meta name=\"facebook-domain-v",
+    "isSPA": true
+  }
+}

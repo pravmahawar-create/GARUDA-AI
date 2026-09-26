@@ -1,0 +1,12 @@
+{
+  "target": "https://paymentpci.myntra.com",
+  "timestamp": "2026-09-12T05:54:48.712Z",
+  "findings": [],
+  "baseline": {
+    "status": 0,
+    "hash": null,
+    "body": "",
+    "isSPA": false,
+    "error": "fetch failed"
+  }
+}

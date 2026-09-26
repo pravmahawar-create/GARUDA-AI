@@ -551,7 +551,7 @@ class Mother {
     }
 
     const tasks = prioritize(decompose(goal));
-    const scanResult = scan();
+    const scanResult = scan({ mission: goal, goal, isProduction: true });
 
     const revenueBridge = {
       engaged: false,

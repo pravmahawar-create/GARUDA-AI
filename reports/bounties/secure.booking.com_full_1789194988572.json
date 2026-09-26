@@ -1,0 +1,88 @@
+{
+  "target": "https://secure.booking.com",
+  "timestamp": "2026-09-12T06:35:24.010Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://secure.booking.com",
+      "status": 202,
+      "rawHeaders": "{\n  \"accept-ch\": \"ECT\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"3962\",\n  \"content-security-policy-report-only\": \"frame-ancestors 'none'; report-uri https://nellie.booking.com/csp-report-uri?type=report&tag=112&pid=bc192e73f683004b&e=UmFuZG9tSVYkc2RlIyh9YXZqW3zWGZ0-83NRqMN73UJGmSD2zqo6PIFt1XURa-mzmQ-Vlcb9Sr0\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:22 GMT\",\n  \"server\": \"istio-envoy\",\n  \"server-timing\": \"cdn-upstream-layer;desc=\\\"REC\\\",cdn-upstream-dns;dur=0,cdn-upstream-connect;dur=0,cdn-upstream-fbl;dur=175,cdn-cache-miss,cdn-pop;desc=\\\"BOM78-P8\\\",cdn-rid;desc=\\\"uqgCilJdmoVNRNB1JATI6AwT8PReYbwmjdgF_QqI_XvFeeDLAwVVZg==\\\",cdn-downstream-fbl;dur=203\",\n  \"set-cookie\": \"pcm_consent=analytical%3Dtrue%26countryCode%3DIN%26consentId%3Dad6612f2-3a9e-4ad9-8b56-86f031e9f167%26consentedAt%3D2026-09-12T06%3A36%3A22.105Z%26expiresAt%3D2027-03-11T06%3A36%3A22.105Z%26implicit%3Dtrue%26marketing%3Dtrue%26regionCode%3DMP%26regulation%3Dnone%26legacyRegulation%3Dnone; Domain=.booking.com; Path=/; Expires=Sun, 12 Sep 2027 06:36:22 GMT; HttpOnly; Secure; SameSite=Lax\",\n  \"strict-transport-security\": \"max-age=63072000; includeSubDomains; preload\",\n  \"via\": \"1.1 552ef",
+      "bodySnippet": "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <title></title>\r\n    <style>\r\n        body {\r\n            font-family: \"Arial\";\r\n        }\r\n    </style>\r\n    <script type=\"text/javascript\" nonce=\"LDa",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://secure.booking.com",
+      "status": 202,
+      "rawHeaders": "{\n  \"accept-ch\": \"ECT\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"3962\",\n  \"content-security-policy-report-only\": \"frame-ancestors 'none'; report-uri https://nellie.booking.com/csp-report-uri?type=report&tag=112&pid=bc192e73f683004b&e=UmFuZG9tSVYkc2RlIyh9YXZqW3zWGZ0-83NRqMN73UJGmSD2zqo6PIFt1XURa-mzmQ-Vlcb9Sr0\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:22 GMT\",\n  \"server\": \"istio-envoy\",\n  \"server-timing\": \"cdn-upstream-layer;desc=\\\"REC\\\",cdn-upstream-dns;dur=0,cdn-upstream-connect;dur=0,cdn-upstream-fbl;dur=175,cdn-cache-miss,cdn-pop;desc=\\\"BOM78-P8\\\",cdn-rid;desc=\\\"uqgCilJdmoVNRNB1JATI6AwT8PReYbwmjdgF_QqI_XvFeeDLAwVVZg==\\\",cdn-downstream-fbl;dur=203\",\n  \"set-cookie\": \"pcm_consent=analytical%3Dtrue%26countryCode%3DIN%26consentId%3Dad6612f2-3a9e-4ad9-8b56-86f031e9f167%26consentedAt%3D2026-09-12T06%3A36%3A22.105Z%26expiresAt%3D2027-03-11T06%3A36%3A22.105Z%26implicit%3Dtrue%26marketing%3Dtrue%26regionCode%3DMP%26regulation%3Dnone%26legacyRegulation%3Dnone; Domain=.booking.com; Path=/; Expires=Sun, 12 Sep 2027 06:36:22 GMT; HttpOnly; Secure; SameSite=Lax\",\n  \"strict-transport-security\": \"max-age=63072000; includeSubDomains; preload\",\n  \"via\": \"1.1 552ef",
+      "bodySnippet": "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <title></title>\r\n    <style>\r\n        body {\r\n            font-family: \"Arial\";\r\n        }\r\n    </style>\r\n    <script type=\"text/javascript\" nonce=\"LDa",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://secure.booking.com/login",
+      "status": 200,
+      "rawHeaders": "{\"accept-ch\":\"ECT\",\"cache-control\":\"no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0\",\"connection\":\"keep-alive\",\"content-encoding\":\"br\",\"content-length\":\"126201\",\"content-type\":\"text/html; charset=UTF-8\",\"date\":\"Sat, 12 Sep 2026 06:36:23 GMT\",\"link\":\"<https://cf.bstatic.com/mobile/css/book_cloudfront_sd.iq_ltr/faa13404af92a4ec751856d76b960df6cf68478b.css>; rel=preload; as=style, <https://cf.bstatic.com/mobile/css/core_cloudfront_sd.iq_ltr/f870110eb8a677f2393a2478ae5120347196adea.css>; rel=preload; as=style, <https://cf.bstatic.com/mobile/css/profile_cloudfro",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://secure.booking.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"accept-ch\":\"ECT\",\"cache-control\":\"pre-check=0,  no-store,  must-revalidate,  post-check=0, no-cache,  max-stale=0, private\",\"connection\":\"keep-alive\",\"content-encoding\":\"br\",\"content-length\":\"136252\",\"content-type\":\"text/html; charset=UTF-8\",\"cross-origin-opener-policy\":\"same-origin-allow-popups\",\"date\":\"Sat, 12 Sep 2026 06:36:24 GMT\",\"nel\":\"{\\\"max_age\\\":604800,\\\"failure_fraction\\\":0.1,\\\"report_to\\\":\\\"default\\\"}\",\"report-to\":\"{\\\"endpoints\\\":[{\\\"url\\\":\\\"https://nellie.booking.com/report\\\"}],\\\"max_age\\\":604800,\\\"group\\\":\\\"default\\\"}\",\"server\":\"nginx\",\"set-cookie\":\"pcm_consent=analytical%3Dtrue",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://secure.booking.com",
+      "desc": "Server leaks `server: istio-envoy` — aids fingerprinting.",
+      "value": "istio-envoy",
+      "rawHeaders": "istio-envoy",
+      "bodySnippet": "istio-envoy"
+    },
+    {
+      "name": "Information Leakage — Stack Trace Leakage (body)",
+      "cwe": "CWE-209",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://secure.booking.com/__garuda_probe_1789194987510",
+      "desc": "Server leaks `body: exception` — aids fingerprinting.",
+      "value": "exception",
+      "rawHeaders": "exception",
+      "bodySnippet": "<!DOCTYPE html>\n<!--\nYou know you could be getting paid to poke around in our code?\nWe're hiring designers and developers to work in Amsterdam:\nhttps://careers.booking.com/\n-->\n<!-- wdot-802 -->\n<html lang=\"hi\" prefix=\"og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# booking_com: http://ogp.me/ns/fb/booking_com#\" class=\"noJS b_firefox b_firefox_123 supports_inline-block supports_flexbox_unprefixed supports_fontface supports_hyphens \" >\n<head profile=\"http://a9.com/-/spec/opensearch/1.1/\">\n<script type=\"text/javascript\" nonce=\"ZSFYlmR75WOC2ZR\" src=\"https://cdn.cookielaw.org/consent/04f32d9e-1729-4d42-82b5-91c2350ff323/OtAutoBlock.js\"></script>\n<script type=\"text/javascript\" nonce=\"ZSFYlmR75WOC2ZR\">\n(function () {\ndocument.addEventListener('click', function(e) {\nif (e.target && e.target.classL"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "5ea7aa22a5333058edd49490b1c48005aebac0ea38728905a598ccb51a0ece0d",
+    "body": "<!DOCTYPE html>\n<!--\nYou know you could be getting paid to poke around in our code?\nWe're hiring designers and developers to work in Amsterdam:\nhttps://careers.booking.com/\n-->\n<!-- mdot-548 -->\n<html lang=\"hi\"\nclass=\"no-js\"\n>\n<head>\n<link href=\"https://cf.bstatic.com\" rel=\"dns-prefetch\" crossorigin>\n<link href=\"https://cf.bstatic.com\" rel=\"dns-prefetch\" crossorigin>\n<script type=\"text/javascript\"",
+    "isSPA": true
+  }
+}

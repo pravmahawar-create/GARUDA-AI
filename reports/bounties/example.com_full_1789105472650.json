@@ -1,0 +1,86 @@
+{
+  "target": "https://example.com",
+  "timestamp": "2026-09-11T05:43:57.444Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://example.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"1889\",\n  \"allow\": \"GET, HEAD\",\n  \"cf-cache-status\": \"HIT\",\n  \"cf-ray\": \"a3945c5dbdda6ed7-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Fri, 11 Sep 2026 05:44:29 GMT\",\n  \"last-modified\": \"Thu, 10 Sep 2026 21:00:47 GMT\",\n  \"server\": \"cloudflare\",\n  \"transfer-encoding\": \"chunked\"\n}",
+      "bodySnippet": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:vi"
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://example.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"1889\",\n  \"allow\": \"GET, HEAD\",\n  \"cf-cache-status\": \"HIT\",\n  \"cf-ray\": \"a3945c5dbdda6ed7-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Fri, 11 Sep 2026 05:44:29 GMT\",\n  \"last-modified\": \"Thu, 10 Sep 2026 21:00:47 GMT\",\n  \"server\": \"cloudflare\",\n  \"transfer-encoding\": \"chunked\"\n}",
+      "bodySnippet": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:vi"
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://example.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"1889\",\n  \"allow\": \"GET, HEAD\",\n  \"cf-cache-status\": \"HIT\",\n  \"cf-ray\": \"a3945c5dbdda6ed7-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"br\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Fri, 11 Sep 2026 05:44:29 GMT\",\n  \"last-modified\": \"Thu, 10 Sep 2026 21:00:47 GMT\",\n  \"server\": \"cloudflare\",\n  \"transfer-encoding\": \"chunked\"\n}",
+      "bodySnippet": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:vi"
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://example.com/login",
+      "status": 404,
+      "rawHeaders": "{\"age\":\"3847\",\"cf-cache-status\":\"HIT\",\"cf-ray\":\"a3945c61b9966ed7-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"br\",\"content-type\":\"text/html\",\"date\":\"Fri, 11 Sep 2026 05:44:29 GMT\",\"server\":\"cloudflare\",\"transfer-encoding\":\"chunked\"}"
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://example.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"age\":\"3847\",\"cf-cache-status\":\"HIT\",\"cf-ray\":\"a3945c653bc56ed7-BOM\",\"connection\":\"keep-alive\",\"content-encoding\":\"br\",\"content-type\":\"text/html\",\"date\":\"Fri, 11 Sep 2026 05:44:30 GMT\",\"server\":\"cloudflare\",\"transfer-encoding\":\"chunked\"}"
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://example.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "ff67a9d764d6a2367a187734e697f6a53217db9a21c101d410a113ca871a299d",
+    "body": "<!doctype html><html lang=\"en\"><head><title>Example Domain</title><link rel=\"icon\" href=\"data:,\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in docum",
+    "isSPA": true
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "target": "https://store.ui.com",
+  "timestamp": "2026-09-12T06:36:04.715Z",
+  "findings": [],
+  "baseline": {
+    "status": 0,
+    "hash": null,
+    "body": "",
+    "isSPA": false,
+    "error": "This operation was aborted"
+  }
+}

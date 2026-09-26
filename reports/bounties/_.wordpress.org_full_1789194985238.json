@@ -1,0 +1,12 @@
+{
+  "target": "https://*.wordpress.org",
+  "timestamp": "2026-09-12T06:36:04.683Z",
+  "findings": [],
+  "baseline": {
+    "status": 0,
+    "hash": null,
+    "body": "",
+    "isSPA": false,
+    "error": "fetch failed"
+  }
+}

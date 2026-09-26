@@ -1,0 +1,48 @@
+{
+  "target": "https://player.vimeo.com",
+  "timestamp": "2026-09-12T06:07:23.439Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://player.vimeo.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"63\",\n  \"alt-svc\": \"h3=\\\":443\\\"; ma=86400\",\n  \"cache-control\": \"no-store, no-cache, must-revalidate, post-check=0, pre-check=0\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a39cbc56e9908135-MAA\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:08:06 GMT\",\n  \"reporting-endpoints\": \"csp-endpoint=\\\"https://browser-intake-datadoghq.com/api/v2/logs?dd-api-key=puba92ed04ee7cceea44335c3d8c1ccc173&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Acspreport%2Cenv%3Aproduction\\\"\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"__cf_bm=hime5k4f5fwR.46_saBsl4_gnRlXr4AcMYatwjbgEC4-1789193286.2284987-1.0.1.1-Jho44.nhQ.SevKf2bQfssm543cpNUggv92ZcOzeucxZFDt11a6sPnRKlP9614yCOuKkP7avZi2lP_84ZehpbUNJNfmoxBz6WsGzt1.ZDAHVmOMNMlxTWEI3YzK44Ov3q; HttpOnly; SameSite=None; Secure; Path=/; Domain=vimeo.com; Expires=Sat, 12 Sep 2026 06:38:06 GMT\",\n  \"strict-transport-security\": \"max-age=31536000; includeSubDomains; preload\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept-Encoding, X-Geo-Vary-Group, Crossroads-Backend,x-http-method-override\",\n  \"via\": \"1.1 varnish (Varnish/6.0), 1.1 var",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en\" class=\"\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" href=\"https://f.vimeocdn.com/cms/_next/static/media/61d83b278d771394-s.p.woff2\" as=\"font\" crossorigin=\"\" type=\"font/woff2\"/><link rel=\"preload",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://player.vimeo.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    },
+    {
+      "name": "Information Leakage — Header Leakage (x-powered-by)",
+      "cwe": "CWE-200",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://player.vimeo.com",
+      "desc": "Server leaks `x-powered-by: Next.js` — aids fingerprinting.",
+      "value": "Next.js",
+      "rawHeaders": "Next.js",
+      "bodySnippet": "Next.js"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "bc415b68f262a1d0c9cac86a123668981dc8bd829b4ee391d265d6bcb844a8b4",
+    "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Sorry</title>\n<style>\n    body, html {\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        background-color: #151515;\n        overflow: hidden;\n    }\n\n    body {\n        text-align: center;\n        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;\n        color: white;\n    }\n\n",
+    "isSPA": true
+  }
+}

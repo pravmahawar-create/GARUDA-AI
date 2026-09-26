@@ -1,0 +1,113 @@
+{
+  "target": "https://api.tumblr.com",
+  "timestamp": "2026-09-12T07:01:00.305Z",
+  "findings": [
+    {
+      "name": "Dangerous CORS — Arbitrary Origin Reflection",
+      "cwe": "CWE-942",
+      "cvss": 4.3,
+      "severity": "Medium",
+      "url": "https://api.tumblr.com",
+      "origin": "https://attacker-origin.com",
+      "desc": "Reflected 'https://attacker-origin.com' without credentials — still weak CORS",
+      "rawHeaders": "{\"access-control-allow-origin\":\"https://attacker-origin.com\",\"alt-svc\":\"clear\",\"connection\":\"keep-alive\",\"content-length\":\"136\",\"content-type\":\"application/json\",\"date\":\"Sat, 12 Sep 2026 07:01:41 GMT\",\"server\":\"nginx\",\"server-timing\":\"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=302.0\",\"strict-transport-security\":\"max-age=31536000; preload\",\"x-rid\":\"e0a600ff05a609d5254d1331bc3a9bd6\"}",
+      "bodySnippet": "{\"access-control-allow-origin\":\"https://attacker-origin.com\",\"alt-svc\":\"clear\",\"connection\":\"keep-alive\",\"content-length\":\"136\",\"content-type\":\"application/json\",\"date\":\"Sat, 12 Sep 2026 07:01:41 GMT\",\"server\":\"nginx\",\"server-timing\":\"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=302.0\",\"strict-transport-security\":\"max-age=31536000; preload\",\"x-rid\":\"e0a600ff05a609d5254d1331bc3a9bd6\"}",
+      "draftOnly": true
+    },
+    {
+      "name": "Dangerous CORS — Null Origin Bypass",
+      "cwe": "CWE-942",
+      "cvss": 4.3,
+      "severity": "Medium",
+      "url": "https://api.tumblr.com",
+      "origin": "null",
+      "desc": "Reflected 'null' without credentials — still weak CORS",
+      "rawHeaders": "{\"access-control-allow-origin\":\"null\",\"alt-svc\":\"clear\",\"connection\":\"keep-alive\",\"content-length\":\"138\",\"content-type\":\"application/json\",\"date\":\"Sat, 12 Sep 2026 07:01:42 GMT\",\"server\":\"nginx\",\"server-timing\":\"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=298.0\",\"strict-transport-security\":\"max-age=31536000; preload\",\"x-rid\":\"24a4cec2d072277203cd10723248de49\"}",
+      "bodySnippet": "{\"access-control-allow-origin\":\"null\",\"alt-svc\":\"clear\",\"connection\":\"keep-alive\",\"content-length\":\"138\",\"content-type\":\"application/json\",\"date\":\"Sat, 12 Sep 2026 07:01:42 GMT\",\"server\":\"nginx\",\"server-timing\":\"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=298.0\",\"strict-transport-security\":\"max-age=31536000; preload\",\"x-rid\":\"24a4cec2d072277203cd10723248de49\"}",
+      "draftOnly": true
+    },
+    {
+      "name": "Dangerous CORS — Subdomain Trust Bypass (target.com.attacker.com)",
+      "cwe": "CWE-942",
+      "cvss": 4.3,
+      "severity": "Medium",
+      "url": "https://api.tumblr.com",
+      "origin": "https://api.tumblr.com.attacker.com",
+      "desc": "Reflected 'https://api.tumblr.com.attacker.com' without credentials — still weak CORS",
+      "rawHeaders": "{\"access-control-allow-origin\":\"https://api.tumblr.com.attacker.com\",\"alt-svc\":\"clear\",\"connection\":\"keep-alive\",\"content-length\":\"133\",\"content-type\":\"application/json\",\"date\":\"Sat, 12 Sep 2026 07:01:43 GMT\",\"server\":\"nginx\",\"server-timing\":\"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=306.0\",\"strict-transport-security\":\"max-age=31536000; preload\",\"x-rid\":\"6578dfb7e9a6d9d371bfd3d077c54f20\"}",
+      "bodySnippet": "{\"access-control-allow-origin\":\"https://api.tumblr.com.attacker.com\",\"alt-svc\":\"clear\",\"connection\":\"keep-alive\",\"content-length\":\"133\",\"content-type\":\"application/json\",\"date\":\"Sat, 12 Sep 2026 07:01:43 GMT\",\"server\":\"nginx\",\"server-timing\":\"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=306.0\",\"strict-transport-security\":\"max-age=31536000; preload\",\"x-rid\":\"6578dfb7e9a6d9d371bfd3d077c54f20\"}",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://api.tumblr.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"alt-svc\": \"clear\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"140\",\n  \"content-type\": \"application/json\",\n  \"date\": \"Sat, 12 Sep 2026 07:01:43 GMT\",\n  \"server\": \"nginx\",\n  \"server-timing\": \"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=293.0\",\n  \"strict-transport-security\": \"max-age=31536000; preload\",\n  \"x-rid\": \"d5aff9981e99162bc21ea6dca30be854\"\n}",
+      "bodySnippet": "{\"meta\":{\"status\":404,\"msg\":\"Not Found\"},\"errors\":[{\"title\":\"Not Found\",\"code\":0,\"detail\":\"Measly little error. Try again.\"}],\"response\":[]}",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://api.tumblr.com",
+      "status": 404,
+      "rawHeaders": "{\n  \"alt-svc\": \"clear\",\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"140\",\n  \"content-type\": \"application/json\",\n  \"date\": \"Sat, 12 Sep 2026 07:01:43 GMT\",\n  \"server\": \"nginx\",\n  \"server-timing\": \"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=293.0\",\n  \"strict-transport-security\": \"max-age=31536000; preload\",\n  \"x-rid\": \"d5aff9981e99162bc21ea6dca30be854\"\n}",
+      "bodySnippet": "{\"meta\":{\"status\":404,\"msg\":\"Not Found\"},\"errors\":[{\"title\":\"Not Found\",\"code\":0,\"detail\":\"Measly little error. Try again.\"}],\"response\":[]}",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://api.tumblr.com/login",
+      "status": 404,
+      "rawHeaders": "{\"alt-svc\":\"clear\",\"connection\":\"keep-alive\",\"content-length\":\"134\",\"content-type\":\"application/json\",\"date\":\"Sat, 12 Sep 2026 07:01:44 GMT\",\"server\":\"nginx\",\"server-timing\":\"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=303.0\",\"strict-transport-security\":\"max-age=31536000; preload\",\"x-rid\":\"ce7c45a23838a248968ec6d05dfcec87\"}",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://api.tumblr.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"alt-svc\":\"clear\",\"connection\":\"keep-alive\",\"content-length\":\"133\",\"content-type\":\"application/json\",\"date\":\"Sat, 12 Sep 2026 07:01:45 GMT\",\"server\":\"nginx\",\"server-timing\":\"a8c-cdn, dc;desc=bom, cache;desc=BYPASS;dur=290.0\",\"strict-transport-security\":\"max-age=31536000; preload\",\"x-rid\":\"c7ca7886a93c16394993e672925d2845\"}",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://api.tumblr.com",
+      "desc": "Server leaks `server: nginx` — aids fingerprinting.",
+      "value": "nginx",
+      "rawHeaders": "nginx",
+      "bodySnippet": "nginx"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "b083cde61c46c1b7cb32b3765f99be8a3943e9239a335e7dc569ca805d8692aa",
+    "body": "{\"meta\":{\"status\":404,\"msg\":\"Not Found\"},\"errors\":[{\"title\":\"Not Found\",\"code\":0,\"detail\":\"Tumblr went thud. Try again.\"}],\"response\":[]}",
+    "isSPA": false
+  }
+}

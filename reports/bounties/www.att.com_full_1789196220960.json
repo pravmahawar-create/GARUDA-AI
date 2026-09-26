@@ -1,0 +1,37 @@
+{
+  "target": "https://www.att.com",
+  "timestamp": "2026-09-12T06:55:23.352Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://www.att.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"aka-global-request-id-uxtime\": \"0.4e6c3f17.1789196214.216b206\",\n  \"att-application-group\": \"uf-marketing\",\n  \"att-appshell-path\": \"/marketing/\",\n  \"cache-control\": \"no-cache\",\n  \"connection\": \"keep-alive, Transfer-Encoding\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:56:54 GMT\",\n  \"idp-trace-id\": \"90c61be412fb7d42:90c61be412fb7d42:0:1\",\n  \"p3p\": \"www.att.com\",\n  \"page-personalization-off\": \"false\",\n  \"referrer-policy\": \"same-origin\",\n  \"server-timing\": \"cdn-cache; desc=MISS, edge; dur=438, origin; dur=326, dtRpid;desc=\\\"-882722784\\\", dtTrId;desc=\\\"dd3f6fd5e4f4b42a10fea53d0cd31f2f\\\", dtSInfo;desc=\\\"0\\\", ak_p; desc=\\\"1789196213892_390032462_35041798_76212_53686_150_210_-\\\";dur=1\",\n  \"service-worker-allowed\": \"/\",\n  \"set-cookie\": \"bm_sz=155DCF10D6CEF987E0BA826CD3A98383~YAAQTmw/F7So8pCgAQAAqaJnlAGwhXFY9WWjlqllqXfWK6M4ixjwEIZWPaWR7Sx6WcjSECe2doawbg9tGhBLPUnqMg4AO9f9/NHRAws6OlNVGxfBeu1DIGKx/HKlENYzG+yL2hWdQzNkjaQKjEi7j4Szg4Fweu5nqwcn9IERqQr5UvF6ZmB7DW3PkoNaLuw3yMiP2hgiAlbdpWp6GomP4OVwf9Qd42lTtEQoxN53HK9k1ODcSNr3C691fJF8k1MgPcuXK/6EVoouvdtYYsQ8TQeeJemrsYNaJyPIQ5opstbwY9jepGP9jQqk3z5KLwz2+rzC/SoZWDZxA2i6ROmeSxkNK4gJFpvo4v",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en\" class=\"theme-att-2022\"><meta charSet=\"utf-8\" class=\"NX-UI\" content=\"2410\"/><link rel=\"preload\" href=\"/ui/frameworks/css/v2.1.0/core-global-styles-fonts.min.css\" as=\"style\"/><link type=\"font/woff2\" crossorigin=\"anonymous\" href=\"/ui/frameworks/fonts/ATTAleckSans_W_Rg.wof",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Stack Trace Leakage (body)",
+      "cwe": "CWE-209",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://www.att.com/__garuda_probe_1789196219620",
+      "desc": "Server leaks `body: exception` — aids fingerprinting.",
+      "value": "exception",
+      "rawHeaders": "exception",
+      "bodySnippet": "<!DOCTYPE html>\r\n<html lang=\"en\" class=\"is-tabbing theme-att-2022\">\r\n\r\n<head>\r\n  <meta charset=\"UTF-8\">\r\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n  <title>Page Not Found</title>\r\n   <link rel=\"stylesheet\" href=\"https://www.att.com/ui/frameworks/css/v2.1.0/core-global-styles-fonts.min.css\">\r\n  <link rel=\"stylesheet\" href=\"//www.att.com/maintenance/assets/css/maint-styles.css\">\r\n\r\n  <!-- nav script -->\r\n  <script type=\"text/javascript\">var detmScriptLoadType=\"async\"</script>\r\n    <script src=\"/scripts/adobe/virtual/detm-container-hdr.js\" data-trigger=\"loadData\" class=\"next-head\"></script>\r\n  <script>        setTimeout(function(){\r\n                document.addEventListener(\"DOMContentLoaded\", window.andiEventListener('invokeANDI', 'enableMEG', { 'type': 'error"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "da1fb9498d3f3fb96b62075b0adbfa63d39bff38b0c88a48f134bb3c976e261d",
+    "body": "<!DOCTYPE html>\r\n<html lang=\"en\" class=\"is-tabbing theme-att-2022\">\r\n\r\n<head>\r\n  <meta charset=\"UTF-8\">\r\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n  <title>Page Not Found</title>\r\n   <link rel=\"stylesheet\" href=\"https://www.att.com/ui/frameworks/css/v2.1.0/core-global-styles-fonts.min.css\">\r\n  <link rel=\"stylesheet\" href=\"//www.att.com/maintenance/assets/css/maint-s",
+    "isSPA": true
+  }
+}

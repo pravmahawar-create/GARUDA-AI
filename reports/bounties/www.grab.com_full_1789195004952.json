@@ -1,0 +1,91 @@
+{
+  "target": "https://www.grab.com",
+  "timestamp": "2026-09-12T06:36:04.678Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://www.grab.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"919\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:42 GMT\",\n  \"server\": \"CloudFront\",\n  \"via\": \"1.1 3aaaff332058d4d14de10d30ca08781e.cloudfront.net (CloudFront)\",\n  \"x-amz-cf-id\": \"ttBEyr6a6HasrDJblVhjxszDZ38Y--Ei2tygyJZ6ZK0iCfUrB4nJ-w==\",\n  \"x-amz-cf-pop\": \"BOM78-P9\",\n  \"x-cache\": \"Error from cloudfront\"\n}",
+      "bodySnippet": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">\n<TITLE>ERROR: The request could not be satisfied</TITLE>\n</HEAD><BODY>\n<H1>403 ERROR</H1>\n<H2>The request could ",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://www.grab.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"919\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:42 GMT\",\n  \"server\": \"CloudFront\",\n  \"via\": \"1.1 3aaaff332058d4d14de10d30ca08781e.cloudfront.net (CloudFront)\",\n  \"x-amz-cf-id\": \"ttBEyr6a6HasrDJblVhjxszDZ38Y--Ei2tygyJZ6ZK0iCfUrB4nJ-w==\",\n  \"x-amz-cf-pop\": \"BOM78-P9\",\n  \"x-cache\": \"Error from cloudfront\"\n}",
+      "bodySnippet": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">\n<TITLE>ERROR: The request could not be satisfied</TITLE>\n</HEAD><BODY>\n<H1>403 ERROR</H1>\n<H2>The request could ",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://www.grab.com",
+      "status": 403,
+      "rawHeaders": "{\n  \"connection\": \"keep-alive\",\n  \"content-length\": \"919\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 06:36:42 GMT\",\n  \"server\": \"CloudFront\",\n  \"via\": \"1.1 3aaaff332058d4d14de10d30ca08781e.cloudfront.net (CloudFront)\",\n  \"x-amz-cf-id\": \"ttBEyr6a6HasrDJblVhjxszDZ38Y--Ei2tygyJZ6ZK0iCfUrB4nJ-w==\",\n  \"x-amz-cf-pop\": \"BOM78-P9\",\n  \"x-cache\": \"Error from cloudfront\"\n}",
+      "bodySnippet": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">\n<TITLE>ERROR: The request could not be satisfied</TITLE>\n</HEAD><BODY>\n<H1>403 ERROR</H1>\n<H2>The request could ",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://www.grab.com/login",
+      "status": 403,
+      "rawHeaders": "{\"connection\":\"keep-alive\",\"content-length\":\"919\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:36:43 GMT\",\"server\":\"CloudFront\",\"via\":\"1.1 3aaaff332058d4d14de10d30ca08781e.cloudfront.net (CloudFront)\",\"x-amz-cf-id\":\"VCksCOZiRW7I55r5fAJs7h4C-Vlj8xKYUlybJVgXfslJDwBeQB-XHg==\",\"x-amz-cf-pop\":\"BOM78-P9\",\"x-cache\":\"Error from cloudfront\"}",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://www.grab.com/dashboard",
+      "status": 403,
+      "rawHeaders": "{\"connection\":\"keep-alive\",\"content-length\":\"919\",\"content-type\":\"text/html\",\"date\":\"Sat, 12 Sep 2026 06:36:43 GMT\",\"server\":\"CloudFront\",\"via\":\"1.1 3aaaff332058d4d14de10d30ca08781e.cloudfront.net (CloudFront)\",\"x-amz-cf-id\":\"tfCy1IJOpgO5evwd3O75LuQZOpNuw2UajUJYEmY9jC_RVau9bya2zw==\",\"x-amz-cf-pop\":\"BOM78-P9\",\"x-cache\":\"Error from cloudfront\"}",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.grab.com",
+      "desc": "Server leaks `server: CloudFront` — aids fingerprinting.",
+      "value": "CloudFront",
+      "rawHeaders": "CloudFront",
+      "bodySnippet": "CloudFront"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "2d16fc2865069edef1ddf65da43c73033307c3c3f3ce3c1ea9bf04f9d1be9eb0",
+    "body": "<!DOCTYPE html>\n<html lang=\"en-US\" class=\"no-js\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <title>\n        404 | Grab SG    </title>\n            <link href=\"//www.google-analytics.com\" rel=\"dns-prefetch\">\n    \n    <link href=\"https://www.grab.com/favicon.ico\" rel=\"icon\" type=\"image/x-icon\">\n    <meta name=\"msvalidate.01\" content=\"62D708192352CDCE3B73BA9B4A94A95C\" />\n    <meta name=\"facebook-domain-v",
+    "isSPA": true
+  }
+}

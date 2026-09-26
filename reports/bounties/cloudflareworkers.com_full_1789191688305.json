@@ -1,0 +1,91 @@
+{
+  "target": "https://cloudflareworkers.com",
+  "timestamp": "2026-09-12T05:40:39.468Z",
+  "findings": [
+    {
+      "header": "strict-transport-security",
+      "name": "HSTS",
+      "cwe": "CWE-319",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "desc": "Missing HSTS allows SSL-stripping/downgrade attacks",
+      "verdict": "MISSING",
+      "url": "https://cloudflareworkers.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"access-control-allow-origin\": \"*\",\n  \"cache-control\": \"public, max-age=0, must-revalidate\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a39c953bbc0895ae-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 05:41:24 GMT\",\n  \"nel\": \"{\\\"report_to\\\":\\\"cf-nel\\\",\\\"success_fraction\\\":0.0,\\\"max_age\\\":604800}\",\n  \"referrer-policy\": \"strict-origin-when-cross-origin\",\n  \"report-to\": \"{\\\"group\\\":\\\"cf-nel\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://a.nel.cloudflare.com/report/v4?s=WxRj8dhq3g65oEN4de0j5qUBkU%2FIEpiG8OoVmQwq%2FpaMMWTpDxEHbHSzl7Sw4UrzUYVmnS0sEpDFYpiv7KiJ3NrJ2bYf0Nvv6fCWOOYs2pOVz4NWglzYuHoi9bFmqiygPIUbxyTTLcCLAPSfh4we8aiAIFylXc7ODz5f1UbY%2Fio%3D\\\"}]}\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"__cf_bm=akSNnhGXtszqTd4A0XGaRFn16CX6DnBMBCV7E2wDM0U-1789191684.4349325-1.0.1.1-CuiyYPGYVNktgFTrlNqBV.011.h__vJJLCrkySAwUkV8mXg1ID3DQeJYXlaTK5wIQ3Dip0ST8jd91FUlEfv_3U6jTwdDIO7ZrgR3c.tc1ao0mcRSEhNh9MPlsCjaFTXl; HttpOnly; SameSite=None; Secure; Path=/; Domain=workers.cloudflare.com; Expires=Sat, 12 Sep 2026 06:11:24 GMT\",\n  \"transfer-encoding\": \"chunked\",\n  \"x-content-type-options\": \"nosniff\"",
+      "bodySnippet": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"UTF-8\" />\n\t\t<link rel=\"icon\" type=\"image/icon\" href=\"/playground/favicon.ico\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n\t\t<title>Cloudflare Workers Playground</title>\n\t\t<script type=\"module\" crossorigin src",
+      "draftOnly": true
+    },
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://cloudflareworkers.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"access-control-allow-origin\": \"*\",\n  \"cache-control\": \"public, max-age=0, must-revalidate\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a39c953bbc0895ae-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 05:41:24 GMT\",\n  \"nel\": \"{\\\"report_to\\\":\\\"cf-nel\\\",\\\"success_fraction\\\":0.0,\\\"max_age\\\":604800}\",\n  \"referrer-policy\": \"strict-origin-when-cross-origin\",\n  \"report-to\": \"{\\\"group\\\":\\\"cf-nel\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://a.nel.cloudflare.com/report/v4?s=WxRj8dhq3g65oEN4de0j5qUBkU%2FIEpiG8OoVmQwq%2FpaMMWTpDxEHbHSzl7Sw4UrzUYVmnS0sEpDFYpiv7KiJ3NrJ2bYf0Nvv6fCWOOYs2pOVz4NWglzYuHoi9bFmqiygPIUbxyTTLcCLAPSfh4we8aiAIFylXc7ODz5f1UbY%2Fio%3D\\\"}]}\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"__cf_bm=akSNnhGXtszqTd4A0XGaRFn16CX6DnBMBCV7E2wDM0U-1789191684.4349325-1.0.1.1-CuiyYPGYVNktgFTrlNqBV.011.h__vJJLCrkySAwUkV8mXg1ID3DQeJYXlaTK5wIQ3Dip0ST8jd91FUlEfv_3U6jTwdDIO7ZrgR3c.tc1ao0mcRSEhNh9MPlsCjaFTXl; HttpOnly; SameSite=None; Secure; Path=/; Domain=workers.cloudflare.com; Expires=Sat, 12 Sep 2026 06:11:24 GMT\",\n  \"transfer-encoding\": \"chunked\",\n  \"x-content-type-options\": \"nosniff\"",
+      "bodySnippet": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"UTF-8\" />\n\t\t<link rel=\"icon\" type=\"image/icon\" href=\"/playground/favicon.ico\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n\t\t<title>Cloudflare Workers Playground</title>\n\t\t<script type=\"module\" crossorigin src",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://cloudflareworkers.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"access-control-allow-origin\": \"*\",\n  \"cache-control\": \"public, max-age=0, must-revalidate\",\n  \"cf-cache-status\": \"DYNAMIC\",\n  \"cf-ray\": \"a39c953bbc0895ae-BOM\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 05:41:24 GMT\",\n  \"nel\": \"{\\\"report_to\\\":\\\"cf-nel\\\",\\\"success_fraction\\\":0.0,\\\"max_age\\\":604800}\",\n  \"referrer-policy\": \"strict-origin-when-cross-origin\",\n  \"report-to\": \"{\\\"group\\\":\\\"cf-nel\\\",\\\"max_age\\\":604800,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://a.nel.cloudflare.com/report/v4?s=WxRj8dhq3g65oEN4de0j5qUBkU%2FIEpiG8OoVmQwq%2FpaMMWTpDxEHbHSzl7Sw4UrzUYVmnS0sEpDFYpiv7KiJ3NrJ2bYf0Nvv6fCWOOYs2pOVz4NWglzYuHoi9bFmqiygPIUbxyTTLcCLAPSfh4we8aiAIFylXc7ODz5f1UbY%2Fio%3D\\\"}]}\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"__cf_bm=akSNnhGXtszqTd4A0XGaRFn16CX6DnBMBCV7E2wDM0U-1789191684.4349325-1.0.1.1-CuiyYPGYVNktgFTrlNqBV.011.h__vJJLCrkySAwUkV8mXg1ID3DQeJYXlaTK5wIQ3Dip0ST8jd91FUlEfv_3U6jTwdDIO7ZrgR3c.tc1ao0mcRSEhNh9MPlsCjaFTXl; HttpOnly; SameSite=None; Secure; Path=/; Domain=workers.cloudflare.com; Expires=Sat, 12 Sep 2026 06:11:24 GMT\",\n  \"transfer-encoding\": \"chunked\",\n  \"x-content-type-options\": \"nosniff\"",
+      "bodySnippet": "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"UTF-8\" />\n\t\t<link rel=\"icon\" type=\"image/icon\" href=\"/playground/favicon.ico\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n\t\t<title>Cloudflare Workers Playground</title>\n\t\t<script type=\"module\" crossorigin src",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /login",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /login — UI redressing risk",
+      "url": "https://cloudflareworkers.com/login",
+      "status": 404,
+      "rawHeaders": "{\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39c953f4a06492c-BOM\",\"connection\":\"keep-alive\",\"content-length\":\"9\",\"content-type\":\"text/plain; charset=UTF-8\",\"date\":\"Sat, 12 Sep 2026 05:41:25 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"GCLB=CKff1NvTl9-UJBAD; path=/; HttpOnly; domain=.cloudflareworkers.com\",\"strict-transport-security\":\"max-age=15552000; includeSubDomains; preload\",\"via\":\"1.1 google\",\"x-content-type-options\":\"nosniff\"}",
+      "draftOnly": true
+    },
+    {
+      "header": "clickjacking",
+      "name": "Clickjacking on /dashboard",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "verdict": "VULNERABLE",
+      "desc": "Missing X-Frame-Options + CSP frame-ancestors on sensitive route /dashboard — UI redressing risk",
+      "url": "https://cloudflareworkers.com/dashboard",
+      "status": 404,
+      "rawHeaders": "{\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"a39c9542ed74492c-BOM\",\"connection\":\"keep-alive\",\"content-length\":\"9\",\"content-type\":\"text/plain; charset=UTF-8\",\"date\":\"Sat, 12 Sep 2026 05:41:25 GMT\",\"server\":\"cloudflare\",\"set-cookie\":\"GCLB=CIuPzKHpvYSOehAD; path=/; HttpOnly; domain=.cloudflareworkers.com\",\"strict-transport-security\":\"max-age=15552000; includeSubDomains; preload\",\"via\":\"1.1 google\",\"x-content-type-options\":\"nosniff\"}",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://cloudflareworkers.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5",
+    "body": "Not Found",
+    "isSPA": false
+  }
+}

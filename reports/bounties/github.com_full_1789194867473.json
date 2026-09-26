@@ -1,0 +1,23 @@
+{
+  "target": "https://github.com",
+  "timestamp": "2026-09-12T06:33:45.374Z",
+  "findings": [
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://github.com",
+      "desc": "Server leaks `server: github.com` — aids fingerprinting.",
+      "value": "github.com",
+      "rawHeaders": "github.com",
+      "bodySnippet": "github.com"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5",
+    "body": "Not Found",
+    "isSPA": false
+  }
+}

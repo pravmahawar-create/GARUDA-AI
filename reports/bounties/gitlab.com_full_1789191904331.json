@@ -1,0 +1,51 @@
+{
+  "target": "https://gitlab.com",
+  "timestamp": "2026-09-12T05:43:36.604Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://gitlab.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"alt-svc\": \"h3=\\\":443\\\"; ma=86400\",\n  \"cache-control\": \"public, max-age=0, must-revalidate\",\n  \"cf-cache-status\": \"HIT\",\n  \"cf-ray\": \"a39c9a565dcfc8d9-DEL\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 05:44:53 GMT\",\n  \"etag\": \"W/\\\"48e2b81655ce9287ca95da4d3f257e3b\\\"\",\n  \"server\": \"cloudflare\",\n  \"strict-transport-security\": \"max-age=31536000\",\n  \"transfer-encoding\": \"chunked\"\n}",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en-US\" data-country-code=\"in\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>GitLab - Speed with control for agentic software engineering</title><link rel=\"preconnect\" href=\"https://cdn.cookielaw.org\"><link rel=\"preco",
+      "draftOnly": true
+    },
+    {
+      "header": "x-frame-options",
+      "name": "X-Frame-Options",
+      "cwe": "CWE-1021",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing X-Frame-Options allows clickjacking",
+      "verdict": "MISSING",
+      "url": "https://gitlab.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"alt-svc\": \"h3=\\\":443\\\"; ma=86400\",\n  \"cache-control\": \"public, max-age=0, must-revalidate\",\n  \"cf-cache-status\": \"HIT\",\n  \"cf-ray\": \"a39c9a565dcfc8d9-DEL\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html\",\n  \"date\": \"Sat, 12 Sep 2026 05:44:53 GMT\",\n  \"etag\": \"W/\\\"48e2b81655ce9287ca95da4d3f257e3b\\\"\",\n  \"server\": \"cloudflare\",\n  \"strict-transport-security\": \"max-age=31536000\",\n  \"transfer-encoding\": \"chunked\"\n}",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en-US\" data-country-code=\"in\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>GitLab - Speed with control for agentic software engineering</title><link rel=\"preconnect\" href=\"https://cdn.cookielaw.org\"><link rel=\"preco",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://gitlab.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    }
+  ],
+  "baseline": {
+    "status": 403,
+    "hash": "1c276472513e2430f608da86313892c422c3e922d79200a2ea7cfba0169c43c2",
+    "body": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"content-security-policy\" content=\"default-src &#39;none&#39;; script-src &#39",
+    "isSPA": true
+  }
+}

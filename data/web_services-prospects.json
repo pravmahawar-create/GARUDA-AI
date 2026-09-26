@@ -979,6 +979,1326 @@
       "notes": "Found via agent.personal_uk_web_hunter (site:yelp.com restaurants UK contact) — Audit: viewport:ok, copyright:unknown, load:1.1s, needsUpdate:false — garudaos.ai@gmail.com",
       "status": "scored",
       "createdAt": "2026-09-13T18:34:45.843Z"
+    },
+    {
+      "id": "PL_1789661851592_840f2a",
+      "firstName": "",
+      "lastName": "",
+      "email": "hello@codevate.com",
+      "phone": "",
+      "businessName": "Bespoke mobile app developers Birmingham, West Midlands, UK",
+      "city": "Bristol",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" UK email) — Audit: viewport:ok, copyright:unknown, load:0.7s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T16:17:31.592Z"
+    },
+    {
+      "id": "PL_1789661855249_c7b12c",
+      "firstName": "",
+      "lastName": "",
+      "email": "hello@wearetenet.com",
+      "phone": "",
+      "businessName": "10 Best Mobile App Development Companies in the UK - Tenet",
+      "city": "Liverpool",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" UK email) — Audit: viewport:ok, copyright:unknown, load:0.5s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T16:17:35.249Z"
+    },
+    {
+      "id": "PL_1789661855249_7b2e86",
+      "firstName": "",
+      "lastName": "",
+      "email": "sales@5stardesigners.com",
+      "phone": "",
+      "businessName": "10 Best Mobile App Development Companies in the UK - Tenet",
+      "city": "Manchester",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" UK email) — Audit: viewport:ok, copyright:unknown, load:0.5s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T16:17:35.249Z"
+    },
+    {
+      "id": "PL_1789661855249_c64c0d",
+      "firstName": "",
+      "lastName": "",
+      "email": "sales@intelivita.co.uk",
+      "phone": "",
+      "businessName": "10 Best Mobile App Development Companies in the UK - Tenet",
+      "city": "Manchester",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" UK email) — Audit: viewport:ok, copyright:unknown, load:0.5s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T16:17:35.250Z"
+    },
+    {
+      "id": "PL_1789661855250_a069cb",
+      "firstName": "",
+      "lastName": "",
+      "email": "enquiries@thisisglance.com",
+      "phone": "",
+      "businessName": "10 Best Mobile App Development Companies in the UK - Tenet",
+      "city": "Edinburgh",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" UK email) — Audit: viewport:ok, copyright:unknown, load:0.5s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T16:17:35.250Z"
+    },
+    {
+      "id": "PL_1789661855250_a33b2c",
+      "firstName": "",
+      "lastName": "",
+      "email": "sales@techugo.com",
+      "phone": "",
+      "businessName": "10 Best Mobile App Development Companies in the UK - Tenet",
+      "city": "Birmingham",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" UK email) — Audit: viewport:ok, copyright:unknown, load:0.5s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T16:17:35.250Z"
+    },
+    {
+      "id": "PL_1789661879426_a786f9",
+      "firstName": "",
+      "lastName": "",
+      "email": "hello@classicinformatics.com",
+      "phone": "",
+      "businessName": "Top 12 Mobile App Development Companies in USA 2026",
+      "city": "Chicago",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "US",
+      "source": "web_research",
+      "notes": "Found via agent.personal_usa_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" USA email) — Audit: viewport:ok, copyright:2026, load:0.8s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T16:17:59.426Z"
+    },
+    {
+      "id": "PL_1789663598766_fe39b8",
+      "firstName": "",
+      "lastName": "",
+      "email": "healthscores-support@yelp.com",
+      "phone": "",
+      "businessName": "BANGKOK SNAP - Updated September 2026 - Yelp",
+      "city": "Brisbane",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "AU",
+      "source": "web_research",
+      "notes": "Found via agent.personal_australia_web_hunter (site:yelp.com restaurants Australia contact) — Audit: viewport:ok, copyright:2004, load:2.1s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T16:46:38.766Z"
+    },
+    {
+      "id": "PL_1789663681436_ff4b1b",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@codiant.com",
+      "phone": "",
+      "businessName": "Top Mobile App Development Companies in USA (2026) - Codiant",
+      "city": "Palo Alto",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "US",
+      "source": "web_research",
+      "notes": "Found via agent.personal_usa_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" USA email) — Audit: viewport:ok, copyright:unknown, load:2.0s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T16:48:01.436Z"
+    },
+    {
+      "id": "PL_1789665488133_7e3a8f",
+      "firstName": "",
+      "lastName": "",
+      "email": "support@commissioncrowd.com",
+      "phone": "",
+      "businessName": "Custom software development for Europe and North America clients ...",
+      "city": "Paris",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:unknown, load:9.0s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T17:18:08.133Z"
+    },
+    {
+      "id": "PL_1789669098245_2c36bb",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@servicenow.com",
+      "phone": "",
+      "businessName": "What is Business Process Automation? - ServiceNow",
+      "city": "Prague",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_automation_hunter (\"need\" \"business automation\" OR \"process automation\" Europe contact) — Audit: viewport:ok, copyright:2026, load:1.3s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T18:18:18.246Z"
+    },
+    {
+      "id": "PL_1789669098246_3fb71d",
+      "firstName": "",
+      "lastName": "",
+      "email": "legalnotices@servicenow.com",
+      "phone": "",
+      "businessName": "What is Business Process Automation? - ServiceNow",
+      "city": "Barcelona",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_automation_hunter (\"need\" \"business automation\" OR \"process automation\" Europe contact) — Audit: viewport:ok, copyright:2026, load:1.3s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T18:18:18.246Z"
+    },
+    {
+      "id": "PL_1789671785453_7a09f5",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@yoursoftwaresupplier.com",
+      "phone": "",
+      "businessName": "Your Software Supplier - LinkedIn",
+      "city": "Dublin",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:missing, copyright:unknown, load:1.2s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T19:03:05.453Z"
+    },
+    {
+      "id": "PL_1789671788697_f0c24c",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@incredo.co",
+      "phone": "",
+      "businessName": "2024 Best SaaS Development Companies in Eastern Europe - Incredo",
+      "city": "Barcelona",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2024, load:1.0s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T19:03:08.697Z"
+    },
+    {
+      "id": "PL_1789673573443_960b46",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@hyperlinkinfosystem.com",
+      "phone": "",
+      "businessName": "Hire Mobile App Developers - Hyperlink InfoSystem",
+      "city": "Boston",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "US",
+      "source": "web_research",
+      "notes": "Found via agent.personal_usa_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" USA email) — Audit: viewport:ok, copyright:2026, load:1.0s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T19:32:53.443Z"
+    },
+    {
+      "id": "PL_1789676289249_f32821",
+      "firstName": "",
+      "lastName": "",
+      "email": "info@workato.com",
+      "phone": "",
+      "businessName": "Business Process Automation: A Complete Introduction - Workato",
+      "city": "Munich",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_automation_hunter (\"need\" \"business automation\" OR \"process automation\" Europe contact) — Audit: viewport:ok, copyright:unknown, load:1.1s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-17T20:18:09.249Z"
+    },
+    {
+      "id": "PL_1789704250616_16dcac",
+      "firstName": "",
+      "lastName": "",
+      "email": "%20sales@kissflow.com",
+      "phone": "",
+      "businessName": "Business Process Automation Solutions: Complete 2026 Guide",
+      "city": "Lyon",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_automation_hunter (\"need\" \"business automation\" OR \"process automation\" Europe contact) — Audit: viewport:ok, copyright:2026, load:1.2s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-18T04:04:10.616Z"
+    },
+    {
+      "id": "PL_1789704250616_224778",
+      "firstName": "",
+      "lastName": "",
+      "email": "sales@kissflow.com",
+      "phone": "",
+      "businessName": "Business Process Automation Solutions: Complete 2026 Guide",
+      "city": "Paris",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_automation_hunter (\"need\" \"business automation\" OR \"process automation\" Europe contact) — Audit: viewport:ok, copyright:2026, load:1.2s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-18T04:04:10.616Z"
+    },
+    {
+      "id": "PL_1789704253932_8ac10f",
+      "firstName": "",
+      "lastName": "",
+      "email": "support@msquare.pro",
+      "phone": "",
+      "businessName": "What Is Business Process Automation? (BPA) - Msquare",
+      "city": "Barcelona",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_automation_hunter (\"need\" \"business automation\" OR \"process automation\" Europe contact) — Audit: viewport:ok, copyright:unknown, load:0.7s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-18T04:04:13.932Z"
+    },
+    {
+      "id": "PL_1789718494270_50dd03",
+      "firstName": "",
+      "lastName": "",
+      "email": "sales@encryptedinfoweb.com",
+      "phone": "",
+      "businessName": "Mobile App Development Company UK - Encrypted Infoweb",
+      "city": "Leeds",
+      "segments": [
+        "business_owner",
+        "urgent"
+      ],
+      "score": 61,
+      "grade": "STRONG",
+      "action": "generate_now",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "GB",
+      "source": "web_research",
+      "notes": "Found via agent.personal_uk_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" UK email) — Audit: viewport:ok, copyright:2026, load:0.6s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-18T08:01:34.270Z"
+    },
+    {
+      "id": "PL_1790434385324_9d5c2d",
+      "firstName": "",
+      "lastName": "",
+      "email": "contacts@gilzor.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Dublin",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_b89c8d",
+      "firstName": "",
+      "lastName": "",
+      "email": "site@itechcraft.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Munich",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_0fb5fa",
+      "firstName": "",
+      "lastName": "",
+      "email": "hey@dunetech.co.uk",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Munich",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_ff182e",
+      "firstName": "",
+      "lastName": "",
+      "email": "ezz@pharos-solutions.de",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Amsterdam",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_7923d3",
+      "firstName": "",
+      "lastName": "",
+      "email": "sales@cleveroad.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Munich",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_f8a1f1",
+      "firstName": "",
+      "lastName": "",
+      "email": "business@stxnext.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "London",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_d806d4",
+      "firstName": "",
+      "lastName": "",
+      "email": "yuri.rudenya@aurora-tl.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Barcelona",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_557783",
+      "firstName": "",
+      "lastName": "",
+      "email": "dasha.ruto@aurora-techlab.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Lyon",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_962c74",
+      "firstName": "",
+      "lastName": "",
+      "email": "yuri.korneev@aurora-techlab.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Berlin",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_c68820",
+      "firstName": "",
+      "lastName": "",
+      "email": "eugene.martul@aurora-tl.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Paris",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_f9d906",
+      "firstName": "",
+      "lastName": "",
+      "email": "mikhail.bobrikovich@aurora-tl.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Barcelona",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_863208",
+      "firstName": "",
+      "lastName": "",
+      "email": "aliaksei.latypau@aurora-techlab.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Munich",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_9720ec",
+      "firstName": "",
+      "lastName": "",
+      "email": "andre.lami@aurora-tl.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Milan",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_667910",
+      "firstName": "",
+      "lastName": "",
+      "email": "rina.levanchuk@aurora-tl.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Dublin",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_6b9c59",
+      "firstName": "",
+      "lastName": "",
+      "email": "timofeyeva.h@aurora-tl.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Warsaw",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_a33987",
+      "firstName": "",
+      "lastName": "",
+      "email": "lina.t@aurora-tl.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Munich",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_8337a8",
+      "firstName": "",
+      "lastName": "",
+      "email": "aleksandr.kosmatkov@aurora-techlab.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "London",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385324_3fb609",
+      "firstName": "",
+      "lastName": "",
+      "email": "contact@aurora-tl.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Stockholm",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.324Z"
+    },
+    {
+      "id": "PL_1790434385325_b21d86",
+      "firstName": "",
+      "lastName": "",
+      "email": "yuri.rudenya@gilzor.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Stockholm",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.325Z"
+    },
+    {
+      "id": "PL_1790434385325_61e65a",
+      "firstName": "",
+      "lastName": "",
+      "email": "andrew.laminski@gilzor.com",
+      "phone": "",
+      "businessName": "20 Best Custom Software Development Companies for ...",
+      "city": "Prague",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T14:53:05.325Z"
+    },
+    {
+      "id": "PL_1790436709589_f63fac",
+      "firstName": "",
+      "lastName": "",
+      "email": "sales@milesit.com",
+      "phone": "",
+      "businessName": "Home - Miles IT",
+      "city": "Stockholm",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:unknown, load:0.5s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T15:31:49.589Z"
+    },
+    {
+      "id": "PL_1790439499757_e10f99",
+      "firstName": "",
+      "lastName": "",
+      "email": "business@qarea.com",
+      "phone": "",
+      "businessName": "14 Best SaaS Application Development Companies in ...",
+      "city": "London",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:2.9s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T16:18:19.757Z"
+    },
+    {
+      "id": "PL_1790439499757_ba1413",
+      "firstName": "",
+      "lastName": "",
+      "email": "eu@scnsoft.com",
+      "phone": "",
+      "businessName": "14 Best SaaS Application Development Companies in ...",
+      "city": "Warsaw",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:2.9s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T16:18:19.757Z"
+    },
+    {
+      "id": "PL_1790439499757_8003af",
+      "firstName": "",
+      "lastName": "",
+      "email": "sales@future-processing.com",
+      "phone": "",
+      "businessName": "14 Best SaaS Application Development Companies in ...",
+      "city": "Warsaw",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2026, load:2.9s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T16:18:19.757Z"
+    },
+    {
+      "id": "PL_1790439946426_5e52e7",
+      "firstName": "",
+      "lastName": "",
+      "email": "contact@beyondkey.com",
+      "phone": "",
+      "businessName": "Mobile App Development Services",
+      "city": "Chicago",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "US",
+      "source": "web_research",
+      "notes": "Found via agent.personal_usa_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" USA email) — Audit: viewport:ok, copyright:unknown, load:0.5s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T16:25:46.426Z"
+    },
+    {
+      "id": "PL_1790439946426_be193a",
+      "firstName": "",
+      "lastName": "",
+      "email": "career@beyondkey.com",
+      "phone": "",
+      "businessName": "Mobile App Development Services",
+      "city": "Miami",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "US",
+      "source": "web_research",
+      "notes": "Found via agent.personal_usa_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" USA email) — Audit: viewport:ok, copyright:unknown, load:0.5s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T16:25:46.426Z"
+    },
+    {
+      "id": "PL_1790439953131_78c6ce",
+      "firstName": "",
+      "lastName": "",
+      "email": "accounts@reinteractive.com",
+      "phone": "",
+      "businessName": "Leading Mobile App Development Company New York",
+      "city": "San Francisco",
+      "segments": [
+        "business_owner",
+        "urgent"
+      ],
+      "score": 61,
+      "grade": "STRONG",
+      "action": "generate_now",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "US",
+      "source": "web_research",
+      "notes": "Found via agent.personal_usa_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" USA email) — Audit: viewport:ok, copyright:unknown, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-09-26T16:25:53.132Z"
     }
   ]
 }

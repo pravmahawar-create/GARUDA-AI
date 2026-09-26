@@ -16,6 +16,8 @@
  * 12. Attribution parameters sanitized without client overwrite of server authority / timestamps
  */
 
+process.env.NODE_ENV = "test";
+
 const { test, describe } = require("node:test");
 const assert = require("node:assert");
 const crypto = require("crypto");

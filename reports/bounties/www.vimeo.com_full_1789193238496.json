@@ -1,0 +1,59 @@
+{
+  "target": "https://www.vimeo.com",
+  "timestamp": "2026-09-12T06:06:22.901Z",
+  "findings": [
+    {
+      "header": "content-security-policy",
+      "name": "CSP",
+      "cwe": "CWE-693",
+      "cvss": 6.1,
+      "severity": "Medium",
+      "desc": "Missing CSP allows XSS and clickjacking via script injection",
+      "verdict": "MISSING",
+      "url": "https://www.vimeo.com",
+      "status": 200,
+      "rawHeaders": "{\n  \"age\": \"167\",\n  \"alt-svc\": \"h3=\\\":443\\\"; ma=86400\",\n  \"cache-control\": \"no-store, no-cache, must-revalidate, post-check=0, pre-check=0\",\n  \"cf-cache-status\": \"HIT\",\n  \"cf-ray\": \"a39cbb1e5df67eeb-MAA\",\n  \"connection\": \"keep-alive\",\n  \"content-encoding\": \"gzip\",\n  \"content-type\": \"text/html; charset=utf-8\",\n  \"date\": \"Sat, 12 Sep 2026 06:07:16 GMT\",\n  \"reporting-endpoints\": \"csp-endpoint=\\\"https://browser-intake-datadoghq.com/api/v2/logs?dd-api-key=puba92ed04ee7cceea44335c3d8c1ccc173&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=service%3Acspreport%2Cenv%3Aproduction\\\"\",\n  \"server\": \"cloudflare\",\n  \"set-cookie\": \"__cf_bm=utUIpuwJ96M_SXjEhgkMmB8jJKAobhZae8JGgGvKMTk-1789193236.21331-1.0.1.1-O2nHZnZ8qy7LeOZmHOhsEqwtXXncL.YU7u_mH6GAZDf7rfFV8djLL99k6FXu57HFY9NjHVzei3RwcCLtcGUznTathCJnoCc52yJUoSZ71zwn3l9p0SfJYbwL6dIeD0eg; HttpOnly; SameSite=None; Secure; Path=/; Domain=vimeo.com; Expires=Sat, 12 Sep 2026 06:37:16 GMT\",\n  \"strict-transport-security\": \"max-age=31536000; includeSubDomains; preload\",\n  \"transfer-encoding\": \"chunked\",\n  \"vary\": \"Accept-Encoding, X-Geo-Vary-Group, Crossroads-Backend,x-http-method-override\",\n  \"via\": \"1.1 varnish (Varnish/6.0), 1.1 varnish,",
+      "bodySnippet": "<!DOCTYPE html><html lang=\"en\" class=\"\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" href=\"https://f.vimeocdn.com/cms/_next/static/media/61d83b278d771394-s.p.woff2\" as=\"font\" crossorigin=\"\" type=\"font/woff2\"/><link rel=\"preload",
+      "draftOnly": true
+    },
+    {
+      "name": "Information Leakage — Header Leakage (server)",
+      "cwe": "CWE-200",
+      "cvss": 2.5,
+      "severity": "Low",
+      "url": "https://www.vimeo.com",
+      "desc": "Server leaks `server: cloudflare` — aids fingerprinting.",
+      "value": "cloudflare",
+      "rawHeaders": "cloudflare",
+      "bodySnippet": "cloudflare"
+    },
+    {
+      "name": "Information Leakage — Header Leakage (x-powered-by)",
+      "cwe": "CWE-200",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://www.vimeo.com",
+      "desc": "Server leaks `x-powered-by: Next.js` — aids fingerprinting.",
+      "value": "Next.js",
+      "rawHeaders": "Next.js",
+      "bodySnippet": "Next.js"
+    },
+    {
+      "name": "Information Leakage — Stack Trace Leakage (body)",
+      "cwe": "CWE-209",
+      "cvss": 5.3,
+      "severity": "Medium",
+      "url": "https://www.vimeo.com/__garuda_probe_1789193237980",
+      "desc": "Server leaks `body: exception` — aids fingerprinting.",
+      "value": "exception",
+      "rawHeaders": "exception",
+      "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        \n<meta charset=\"utf-8\">\n<meta property=\"fb:app_id\" content=\"19884028963\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<link rel=\"preconnect\" href=\"//player.vimeo.com\">\n<link rel=\"preconnect\" href=\"//i.vimeocdn.com\">\n<link rel=\"preconnect\" href=\"//f.vimeocdn.com\">\n<link rel=\"search\" type=\"application/opensearchdescription+xml\" href=\"/search/opensearch.xml\" title=\"Vimeo\">\n<link rel=\"logo\" type=\"image/svg\" href=\"https://f.vimeocdn.com/logo.svg\">\n\n\n            <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,maximum-scale=5.0,user-scalable=yes\">\n    \n\n                <meta name=\"description\" content=\"Sorry, we couldn&rsquo;t find that page\">\n                    <meta name=\"robots\" content=\"noindex"
+    }
+  ],
+  "baseline": {
+    "status": 404,
+    "hash": "94b1dbef6e3715cae8b188903d32662c31fcc53d4d84d9ff69e739c92ea7ccf5",
+    "body": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        \n<meta charset=\"utf-8\">\n<meta property=\"fb:app_id\" content=\"19884028963\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<link rel=\"preconnect\" href=\"//player.vimeo.com\">\n<link rel=\"preconnect\" href=\"//i.vimeocdn.com\">\n<link rel=\"preconnect\" href=\"//f.vimeocdn.com\">\n<link rel=\"search\" type=\"application/opensearchdescriptio",
+    "isSPA": true
+  }
+}
