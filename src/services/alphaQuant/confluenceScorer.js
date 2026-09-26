@@ -12,7 +12,7 @@ class ConfluenceScorer {
   /**
    * Evaluate a single candle setup with surrounding context
    */
-  evaluateSetup(currentCandle, history, benchmarkCandle = null) {
+  evaluateSetup(currentCandle, history, benchmarkCandle = null, options = {}) {
     if (!currentCandle || !history || history.length < 20) {
       return { isQualified: false, score: 0, reason: 'Insufficient historical data' };
     }
@@ -29,20 +29,23 @@ class ConfluenceScorer {
     // ==========================================
     // 0. TIME-OF-DAY INSTITUTIONAL FILTER (IST)
     // ==========================================
-    const totalMinutesIST = (time.getUTCHours() * 60 + time.getUTCMinutes() + 330) % 1440;
-    // Morning Window: 9:45 AM (585m) to 11:30 AM (690m)
-    // Afternoon Window: 1:15 PM (795m) to 2:45 PM (885m)
-    const inHighProbabilityWindow = (totalMinutesIST >= 585 && totalMinutesIST <= 690) ||
-                                    (totalMinutesIST >= 795 && totalMinutesIST <= 885);
+    const is24x7 = Boolean(options.is24x7 || options.assetClass === 'Crypto' || options.assetClass === 'Forex');
+    if (!is24x7 && time instanceof Date) {
+      const totalMinutesIST = (time.getUTCHours() * 60 + time.getUTCMinutes() + 330) % 1440;
+      // Morning Window: 9:45 AM (585m) to 11:30 AM (690m)
+      // Afternoon Window: 1:15 PM (795m) to 2:45 PM (885m)
+      const inHighProbabilityWindow = (totalMinutesIST >= 585 && totalMinutesIST <= 690) ||
+                                      (totalMinutesIST >= 795 && totalMinutesIST <= 885);
 
-    if (!inHighProbabilityWindow) {
-      return {
-        isQualified: false,
-        score: 0,
-        direction: 'NEUTRAL',
-        action: 'HOLD',
-        reason: 'Outside high-conviction institutional window (Avoiding opening chop & lunch lull)'
-      };
+      if (!inHighProbabilityWindow) {
+        return {
+          isQualified: false,
+          score: 0,
+          direction: 'NEUTRAL',
+          action: 'HOLD',
+          reason: 'Outside high-conviction institutional window (Avoiding opening chop & lunch lull)'
+        };
+      }
     }
 
     // Benchmark trend classification: BULLISH, BEARISH, or SIDEWAYS
@@ -234,6 +237,22 @@ class ConfluenceScorer {
       bearScore += 8;
     }
 
+    // Factor 6: ADX Trend Strength & Anti-Chop Guard (Max 15 pts)
+    const adx = currentCandle.adx;
+    if (adx != null) {
+      if (adx >= 25) {
+        bullScore += 15;
+        bearScore += 15;
+        bullFactors.push(`Strong Directional Trend (ADX: ${adx} ≥ 25)`);
+        bearFactors.push(`Strong Directional Trend (ADX: ${adx} ≥ 25)`);
+      } else if (adx < 20) {
+        bullScore -= 25;
+        bearScore -= 25;
+        bullFactors.push(`Low Trend Strength (ADX: ${adx} < 20) — Sideways Chop Risk`);
+        bearFactors.push(`Low Trend Strength (ADX: ${adx} < 20) — Sideways Chop Risk`);
+      }
+    }
+
     // Deduct penalty if overextended, weak wick, or opposing Nifty tide
     if (isOverExtended) {
       bearScore -= 20;
@@ -241,11 +260,12 @@ class ConfluenceScorer {
     if (!isStrongBearCandle && bearScore > 0) {
       bearScore -= 10;
     }
+    // Hard Institutional Tape Defense: Never fight the primary benchmark tide
     if (niftyTrend === 'BEARISH') {
-      bullScore -= 30; // Never buy against falling Nifty
+      bullScore = 0; // Strictly zero buy signals in a falling tide
     }
     if (niftyTrend === 'BULLISH') {
-      bearScore -= 30; // Never short against rising Nifty
+      bearScore = 0; // Strictly zero short signals in a rising tide
     }
 
     // Determine winning side
@@ -257,7 +277,7 @@ class ConfluenceScorer {
 
     const isQualified = finalScore >= this.minConfidenceThreshold;
 
-    // Dynamic Risk & Targets based on Price Structure (Swing High/Low)
+    // Dynamic Risk & Targets with Volatility Breathing Room & Quick Breakeven Lock
     const effectiveAtr = atr || (close * 0.006);
     const recentLows = history.slice(-4).map(c => c.low);
     const recentHighs = history.slice(-4).map(c => c.high);
@@ -266,22 +286,22 @@ class ConfluenceScorer {
 
     let stopLoss, target1, target2, riskAmount;
     if (isBull) {
-      stopLoss = Number((swingLow - (effectiveAtr * 0.15)).toFixed(2));
+      stopLoss = Number((swingLow - (effectiveAtr * 0.35)).toFixed(2));
       riskAmount = Number((close - stopLoss).toFixed(2));
       // Guard against abnormal risk
-      if (riskAmount < close * 0.003 || riskAmount > close * 0.025) {
+      if (riskAmount < close * 0.003 || riskAmount > close * 0.035) {
         return { isQualified: false, score: 0, reason: 'Risk amount outside safe parameters' };
       }
-      target1 = Number((close + riskAmount * 1.3).toFixed(2)); // 1:1.3 R:R (Partial profit & breakeven lock)
-      target2 = Number((close + riskAmount * 2.2).toFixed(2)); // 1:2.2 R:R (Jackpot)
+      target1 = Number((close + riskAmount * 0.9).toFixed(2)); // Quick 1:1 Partial Profit & Breakeven Lock
+      target2 = Number((close + riskAmount * 1.8).toFixed(2)); // 1:1.8 R:R Jackpot
     } else {
-      stopLoss = Number((swingHigh + (effectiveAtr * 0.15)).toFixed(2));
+      stopLoss = Number((swingHigh + (effectiveAtr * 0.35)).toFixed(2));
       riskAmount = Number((stopLoss - close).toFixed(2));
-      if (riskAmount < close * 0.003 || riskAmount > close * 0.025) {
+      if (riskAmount < close * 0.003 || riskAmount > close * 0.035) {
         return { isQualified: false, score: 0, reason: 'Risk amount outside safe parameters' };
       }
-      target1 = Number((close - riskAmount * 1.3).toFixed(2));
-      target2 = Number((close - riskAmount * 2.2).toFixed(2));
+      target1 = Number((close - riskAmount * 0.9).toFixed(2));
+      target2 = Number((close - riskAmount * 1.8).toFixed(2));
     }
 
     return {

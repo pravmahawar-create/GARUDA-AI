@@ -14,9 +14,11 @@ async function main() {
   const args = process.argv.slice(2);
   const isLive = args.includes('--live');
   const enableAlerts = args.includes('--alerts');
+  const threshIdx = args.indexOf('--threshold');
+  const threshold = threshIdx !== -1 && args[threshIdx + 1] ? parseInt(args[threshIdx + 1], 10) : 88;
 
   const daemon = new AlphaQuantDaemon({
-    minConfidenceThreshold: 78,
+    minConfidenceThreshold: threshold,
     initialCapital: 100000,
     sendTelegramAlerts: enableAlerts
   });

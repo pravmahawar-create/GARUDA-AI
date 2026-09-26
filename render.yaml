@@ -52,3 +52,11 @@ services:
         sync: false
       - key: INSTAGRAM_USER_ID
         sync: false
+      - key: GARUDA_SOCIAL_SCOUTS
+        value: true
+      - key: FB_C_USER
+        sync: false
+      - key: FB_XS
+        sync: false
+      - key: LINKEDIN_LI_AT
+        sync: false

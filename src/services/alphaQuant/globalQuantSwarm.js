@@ -83,7 +83,7 @@ class GlobalQuantSwarm {
         if (enriched && enriched.length >= 25) {
           const last = enriched[enriched.length - 1];
           const hist = enriched.slice(-25, -1);
-          const signal = this.scorer.evaluateSetup(last, hist);
+          const signal = this.scorer.evaluateSetup(last, hist, null, { assetClass: 'Crypto', is24x7: true });
           pulse.liveQuotes.push({
             assetClass: 'Crypto (24/7)',
             symbol: cp.symbol,
@@ -106,13 +106,18 @@ class GlobalQuantSwarm {
         const enriched = this.forexFeed.enrichIndicators(candles || []);
         if (enriched && enriched.length >= 25) {
           const last = enriched[enriched.length - 1];
+          const hist = enriched.slice(-25, -1);
+          const signal = this.scorer.evaluateSetup(last, hist, null, { assetClass: 'Forex', is24x7: true });
           pulse.liveQuotes.push({
             assetClass: 'Forex (24/5)',
             symbol: fp.symbol,
             name: fp.name,
             priceUsd: `$${last.close}`,
             priceInr: `₹${Number((last.close * USD_INR_RATE).toFixed(2)).toLocaleString('en-IN')}`,
-            trend: last.ema9 > last.ema21 ? 'BULLISH' : 'BEARISH'
+            trend: last.ema9 > last.ema21 ? 'BULLISH' : 'BEARISH',
+            score: signal.score,
+            isQualified: signal.isQualified,
+            direction: signal.direction
           });
         }
       } catch (e) {}

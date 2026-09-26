@@ -261,6 +261,76 @@ class MarketDataFeed {
   }
 
   /**
+   * Calculate Average Directional Index (ADX 14) for trend strength & chop filter
+   */
+  calculateADX(candles, period = 14) {
+    if (candles.length < period * 2) return new Array(candles.length).fill(null);
+
+    const tr = [];
+    const plusDM = [];
+    const minusDM = [];
+
+    for (let i = 0; i < candles.length; i++) {
+      if (i === 0) {
+        tr.push(candles[i].high - candles[i].low);
+        plusDM.push(0);
+        minusDM.push(0);
+        continue;
+      }
+
+      const highDiff = candles[i].high - candles[i - 1].high;
+      const lowDiff = candles[i - 1].low - candles[i].low;
+
+      plusDM.push(highDiff > lowDiff && highDiff > 0 ? highDiff : 0);
+      minusDM.push(lowDiff > highDiff && lowDiff > 0 ? lowDiff : 0);
+
+      const trueRange = Math.max(
+        candles[i].high - candles[i].low,
+        Math.abs(candles[i].high - candles[i - 1].close),
+        Math.abs(candles[i].low - candles[i - 1].close)
+      );
+      tr.push(trueRange);
+    }
+
+    const adx = new Array(candles.length).fill(null);
+    let smoothedTR = 0;
+    let smoothedPlusDM = 0;
+    let smoothedMinusDM = 0;
+
+    for (let i = 1; i <= period; i++) {
+      smoothedTR += tr[i];
+      smoothedPlusDM += plusDM[i];
+      smoothedMinusDM += minusDM[i];
+    }
+
+    const dx = new Array(candles.length).fill(null);
+
+    for (let i = period; i < candles.length; i++) {
+      if (i > period) {
+        smoothedTR = smoothedTR - (smoothedTR / period) + tr[i];
+        smoothedPlusDM = smoothedPlusDM - (smoothedPlusDM / period) + plusDM[i];
+        smoothedMinusDM = smoothedMinusDM - (smoothedMinusDM / period) + minusDM[i];
+      }
+
+      const plusDI = smoothedTR > 0 ? (smoothedPlusDM / smoothedTR) * 100 : 0;
+      const minusDI = smoothedTR > 0 ? (smoothedMinusDM / smoothedTR) * 100 : 0;
+      const diSum = plusDI + minusDI;
+      const currentDX = diSum > 0 ? (Math.abs(plusDI - minusDI) / diSum) * 100 : 0;
+      dx[i] = currentDX;
+
+      if (i === period * 2 - 1) {
+        const sumDX = dx.slice(period, period * 2).reduce((a, b) => a + b, 0);
+        adx[i] = Number((sumDX / period).toFixed(2));
+      } else if (i >= period * 2) {
+        const prevADX = adx[i - 1];
+        adx[i] = Number(((prevADX * (period - 1) + currentDX) / period).toFixed(2));
+      }
+    }
+
+    return adx;
+  }
+
+  /**
    * Enrich raw candles with full technical indicators
    */
   enrichIndicators(candles) {
@@ -278,6 +348,7 @@ class MarketDataFeed {
     const volumeSMA = this.calculateSMA(volumes, 20);
     const vwap = this.calculateVWAP(candles);
     const atr = this.calculateATR(candles, 14);
+    const adx = this.calculateADX(candles, 14);
 
     return candles.map((c, i) => ({
       ...c,
@@ -292,7 +363,8 @@ class MarketDataFeed {
       volumeSMA: volumeSMA[i],
       volumeRatio: volumeSMA[i] && volumeSMA[i] > 0 ? Number((c.volume / volumeSMA[i]).toFixed(2)) : 1.0,
       vwap: vwap[i],
-      atr: atr[i]
+      atr: atr[i],
+      adx: adx[i]
     }));
   }
 }

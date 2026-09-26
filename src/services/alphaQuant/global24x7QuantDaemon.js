@@ -160,7 +160,7 @@ class Global24x7QuantDaemon {
             }
 
             // Evaluate new setup
-            const signal = this.scorer.evaluateSetup(current, history);
+            const signal = this.scorer.evaluateSetup(current, history, null, { assetClass: 'Crypto', is24x7: true });
             findings.push({ assetClass: 'Crypto', symbol: cp.symbol, name: cp.name, signal });
 
             if (signal.isQualified && signal.score >= this.minConfidenceThreshold) {
@@ -188,7 +188,7 @@ class Global24x7QuantDaemon {
               await this.handleTradeClosure(c);
             }
 
-            const signal = this.scorer.evaluateSetup(current, history);
+            const signal = this.scorer.evaluateSetup(current, history, null, { assetClass: 'Forex', is24x7: true });
             findings.push({ assetClass: 'Forex', symbol: fp.symbol, name: fp.name, signal });
 
             if (signal.isQualified && signal.score >= this.minConfidenceThreshold) {
@@ -220,7 +220,7 @@ class Global24x7QuantDaemon {
               await this.handleTradeClosure(c);
             }
 
-            const signal = this.scorer.evaluateSetup(current, history, benchCandle);
+            const signal = this.scorer.evaluateSetup(current, history, benchCandle, { assetClass: 'India', is24x7: false });
             findings.push({ assetClass: 'India', symbol: sec.symbol, name: sec.name, signal });
 
             if (signal.isQualified && signal.score >= this.minConfidenceThreshold) {

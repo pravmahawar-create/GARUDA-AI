@@ -156,5 +156,37 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
         } else {
             console.log("[GARUDA] Cloud reply monitor idle — set GARUDA_RADAR_MONITOR=true to enable");
         }
+
+        // ── 24/7 Autonomous Social Scouts Fleet (Render Cloud 24x7) ──
+        const socialScoutsEnabled = String(process.env.GARUDA_SOCIAL_SCOUTS ?? "true").toLowerCase() === "true";
+        if (socialScoutsEnabled) {
+            try {
+                const { spawn } = require("child_process");
+                const path = require("path");
+                const scoutPath = path.join(__dirname, "scripts", "daemons", "master-scout-orchestrator.js");
+                let scoutRestartCount = 0;
+                const spawnScouts = () => {
+                    const child = spawn("node", [scoutPath], {
+                        stdio: "inherit",
+                        detached: false,
+                        env: process.env
+                    });
+                    child._spawnAt = Date.now();
+                    console.log(`[GARUDA] 🦅 24/7 Master Social Scouts spawned on Cloud (PID ${child.pid}, restart #${scoutRestartCount})`);
+                    child.on("error", e => console.error("[GARUDA] Master social scouts spawn failed:", e.message));
+                    child.on("exit", (code, signal) => {
+                        const uptimeSec = ((Date.now() - child._spawnAt)/1000).toFixed(0);
+                        console.log(`[GARUDA] Master social scouts exited code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 30s`);
+                        scoutRestartCount++;
+                        setTimeout(spawnScouts, 30000);
+                    });
+                    return child;
+                };
+                // Initial warm up delay (30s) after server boot
+                setTimeout(spawnScouts, 30000);
+            } catch (e) { console.error("[GARUDA] Master social scouts boot failed:", e.message); }
+        } else {
+            console.log("[GARUDA] Social scouts daemon idle — set GARUDA_SOCIAL_SCOUTS=true to enable");
+        }
     });
 })();
