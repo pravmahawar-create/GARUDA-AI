@@ -99,6 +99,7 @@ app.get("/api/health", healthResponse);
 
 app.use("/api/mother", require("./routes/motherAgentRoutes"));
 app.use("/api/intelligence", require("./routes/intelligenceRoutes"));
+app.use("/api/founder-intelligence", require("./routes/founderIntelligenceRoutes"));
 app.use("/api/missions", require("./routes/missionRoutes"));
 app.use("/api/knowledge", require("./routes/knowledgeRoutes"));
 app.use("/api/rag", require("./routes/ragRoutes"));
@@ -127,6 +128,11 @@ app.use("/api/billing", (req, res, next) => {
 app.use("/api/billing", require("./routes/saasBillingRoutes"));
 // GARUDA Multi-Tenant Workspaces, Seats & Team Invitations
 app.use("/api/tenants", require("./routes/tenantRoutes"));
+// GARUDA Offline-First Installment Automation Engine (Kist OS)
+app.use("/api/installment", require("./routes/installmentRoutes"));
+app.get("/kist", (req, res) => res.redirect("/apps/kist/"));
+
+
 app.use("/api/proposals", require("./routes/proposalRoutes"));
 app.use("/api/acquisition", require("./routes/acquisitionRoutes"));
 // Cross-Universe Growth Command API (mounted BEFORE legacy /api router so explicit routes win)
