@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kamlaksh Agencies</string>
+    <string name="title_activity_main">Kamlaksh Agencies</string>
+    <string name="package_name">in.garudaos.kist</string>
+    <string name="custom_url_scheme">in.garudaos.kist</string>
+</resources>

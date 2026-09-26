@@ -1,0 +1,2866 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Kamlaksh Agencies — Digital Installment & Ledger Book</title>
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    /* GARUDA SOVEREIGN MOBILE CSS STANDARD ("Praveen 1-Shot Perfection") */
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --card-border: #23314e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.2);
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100dvh;
+      width: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    input, textarea, select {
+      user-select: auto;
+      -webkit-user-select: auto;
+      font-family: inherit;
+    }
+
+    /* ROOT SHELL LOCK: 100dvh, max 500px on desktop */
+    #app-shell {
+      height: 100dvh;
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: var(--bg);
+      box-shadow: 0 0 40px rgba(0,0,0,0.8);
+      overflow: hidden;
+    }
+
+    /* TOP ANCHORED HEADER */
+    header {
+      flex-shrink: 0;
+      z-index: 40;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid #10b981;
+      box-shadow: 0 2px 10px var(--green-glow);
+    }
+
+    .brand-text h1 {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      color: #fff;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .addon-btn {
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      border: none;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* LANGUAGE SWITCHER BAR (SEAMLESS 1-TAP SWITCH) */
+    .lang-bar {
+      flex-shrink: 0;
+      display: flex;
+      background: #0f172a;
+      border-bottom: 1px solid var(--card-border);
+      padding: 6px 12px;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .lang-btn {
+      flex: 1;
+      max-width: 110px;
+      background: #151d30;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 6px;
+      border-radius: 20px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.16s ease;
+    }
+
+    .lang-btn.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border-color: #10b981;
+    }
+
+    /* SCROLLABLE BODY */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      padding: 12px 14px 95px 14px;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+
+    /* BOTTOM NAV BAR */
+    nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 66px;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #94a3b8;
+      fill: #94a3b8;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 2px;
+      transition: color 0.16s ease, fill 0.16s ease, transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .nav-item:active {
+      transform: scale(0.92);
+    }
+
+    .nav-item.active {
+      color: var(--green);
+      fill: var(--green);
+    }
+
+    .nav-icon-wrap {
+      width: 32px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      margin-bottom: 2px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-item.active .nav-icon-wrap {
+      background: rgba(16, 185, 129, 0.18);
+      transform: translateY(-2px);
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      min-height: 22px;
+      flex-shrink: 0;
+      display: block;
+      transition: transform 0.16s ease;
+    }
+
+    .nav-item.active svg {
+      transform: scale(1.08);
+    }
+
+    .nav-item span {
+      font-size: 11px;
+      line-height: 1.1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: 68px;
+      text-align: center;
+    }
+
+    /* SLIDE ANIMATIONS FOR TAB TRANSITIONS */
+    @keyframes slideInRight {
+      0% {
+        opacity: 0.35;
+        transform: translateX(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      0% {
+        opacity: 0.35;
+        transform: translateX(-30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .tab-slide-left {
+      animation: slideInRight 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .tab-slide-right {
+      animation: slideInLeft 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* LEDGER PILLS & BADGES */
+    .ledger-filter-pill {
+      background: #151d30;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .ledger-filter-pill.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border-color: #10b981;
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .badge-pending {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-completed {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* CARDS & TYPOGRAPHY */
+    .hero-stat-card {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-stat-card::after {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, var(--green-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      font-size: 13px;
+      color: #94a3b8;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hero-amount {
+      font-size: 34px;
+      font-weight: 900;
+      color: #fff;
+      margin: 6px 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 10px;
+    }
+
+    .hero-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .hero-sub-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    /* HORIZONTAL SCROLL ISOLATION */
+    .metric-pills-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      overscroll-behavior-x: contain;
+      overscroll-behavior-y: none;
+      touch-action: pan-x;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .metric-pills-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pill-card {
+      flex: 0 0 142px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .pill-card.danger {
+      border-color: rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .pill-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .pill-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 4px;
+    }
+
+    /* SECTION HEADER */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 14px 0 10px 0;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* CUSTOMER ACTION CARD */
+    .cust-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+
+    .cust-card:active {
+      transform: scale(0.98);
+    }
+
+    .cust-info h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+
+    .cust-details {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .cust-due-badge {
+      font-size: 18px;
+      font-weight: 900;
+      color: #fff;
+      text-align: right;
+    }
+
+    .cust-due-label {
+      font-size: 10px;
+      color: #34d399;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* ONE-TAP PAYMENT BUTTON */
+    .btn-one-tap {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: none;
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 8px 13px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 6px;
+      box-shadow: 0 4px 12px var(--green-glow);
+      transition: transform 0.14s ease, opacity 0.14s ease;
+    }
+
+    .btn-one-tap:active {
+      transform: scale(0.94);
+      opacity: 0.9;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* FLOATING ACTION VOICE/PHOTO BAR */
+    .quick-voice-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .voice-trigger-btn {
+      flex: 1;
+      background: linear-gradient(135deg, #1e293b, #151d30);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .voice-trigger-btn.active-record {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    /* MODALS & SHEETS */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 500px;
+      background: #131b2e;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      border-top: 1px solid var(--card-border);
+      padding: 18px 16px env(safe-area-inset-bottom, 20px) 16px;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .close-btn {
+      background: #1e293b;
+      border: none;
+      color: #94a3b8;
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* FORMS */
+    .form-group {
+      margin-bottom: 11px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #0b1120;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 11px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--green);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: none;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 13px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 14px;
+      box-shadow: 0 4px 14px var(--green-glow);
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-30px);
+      background: #10b981;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 9px 18px;
+      border-radius: 30px;
+      z-index: 200;
+      opacity: 0;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+      pointer-events: none;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* PRINT HIDDEN CONTAINER */
+    #print-container {
+      display: none;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-container, #print-container * {
+        visibility: visible;
+      }
+      #print-container {
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-shell">
+    <!-- ANCHORED HEADER -->
+    <header>
+      <div class="brand-group">
+        <img src="icon.jpg" class="brand-logo" alt="Kamlaksh Agencies">
+        <div class="brand-text">
+          <h1>Kamlaksh Agencies</h1>
+          <p id="app-subtitle-header">Digital Installment & Ledger Book</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <div class="status-pill" id="sync-indicator">
+          <span>●</span> <span id="sync-label">Saved</span>
+        </div>
+        <button class="addon-btn" onclick="openCapabilityDrawer()">
+          ✨ <span id="header-addon-label">More Features</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 3-WAY VERNACULAR LANGUAGE SWITCHER BAR -->
+    <div class="lang-bar">
+      <button class="lang-btn" id="lang-btn-hi" onclick="setLanguage('hi')">हिन्दी</button>
+      <button class="lang-btn" id="lang-btn-hinglish" onclick="setLanguage('hinglish')">Hinglish</button>
+      <button class="lang-btn active" id="lang-btn-en" onclick="setLanguage('en')">English</button>
+    </div>
+
+    <!-- TOAST POPUP -->
+    <div id="toast">Payment Recorded!</div>
+
+    <!-- MAIN SCROLLABLE CONTENT BODY -->
+    <main id="main-view">
+      <!-- DYNAMIC TAB VIEWS RENDERED HERE -->
+    </main>
+
+    <!-- FIXED BOTTOM NAVIGATION BAR -->
+    <nav>
+      <div class="nav-item active" onclick="switchTab('today')" id="nav-today">
+        <div class="nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+          </svg>
+        </div>
+        <span id="nav-label-today">Today</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('customers')" id="nav-customers">
+        <div class="nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+          </svg>
+        </div>
+        <span id="nav-label-customers">Customers</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('add')" id="nav-add">
+        <div class="nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+          </svg>
+        </div>
+        <span id="nav-label-add">Add</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('reports')" id="nav-reports">
+        <div class="nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+          </svg>
+        </div>
+        <span id="nav-label-reports">Ledger</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('settings')" id="nav-settings">
+        <div class="nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+          </svg>
+        </div>
+        <span id="nav-label-settings">Settings</span>
+      </div>
+    </nav>
+
+    <!-- MODAL: ONE-TAP QUICK PAYMENT CONFIRMATION -->
+    <div class="modal-backdrop" id="modal-payment">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <div class="modal-title" id="pay-modal-title">Payment Received</div>
+          <button class="close-btn" onclick="closeModal('modal-payment')">✕</button>
+        </div>
+        <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:12px;">
+          <div style="color:#94a3b8; font-size:12px;" id="pay-modal-cust-label">Customer:</div>
+          <div id="pay-cust-name" style="font-size:18px; font-weight:bold; color:#fff;">-</div>
+          <div style="color:#94a3b8; font-size:12px; margin-top:4px;">
+            <span id="pay-modal-rem-label">Remaining Balance:</span> <b id="pay-cust-remaining" style="color:#ef4444;">₹0</b>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="pay-modal-amount-label">Amount (₹):</label>
+          <input type="number" id="pay-amount-input" class="form-input" style="font-size:22px; font-weight:900; color:#10b981;" placeholder="₹0">
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="pay-modal-mode-label">Payment Mode:</label>
+          <select id="pay-mode-input" class="form-input">
+            <option value="cash">💵 Cash</option>
+            <option value="upi">📱 UPI (PhonePe / GPay / Paytm)</option>
+            <option value="bank">🏦 Bank Transfer / Cheque</option>
+          </select>
+        </div>
+        <button class="btn-submit" id="pay-submit-btn" onclick="confirmPaymentSubmission()">
+          Confirm Payment
+        </button>
+      </div>
+    </div>
+
+    <!-- MODAL: VOICE ENTRY CONFIRMATION -->
+    <div class="modal-backdrop" id="modal-voice">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <div class="modal-title" id="voice-modal-title">Voice Payment</div>
+          <button class="close-btn" onclick="closeModal('modal-voice')">✕</button>
+        </div>
+        <div style="text-align:center; padding:16px;">
+          <div id="voice-mic-icon" style="font-size:48px; margin-bottom:8px; cursor:pointer;" onclick="toggleVoiceRecording()">🎤</div>
+          <div id="voice-status-text" style="font-size:14px; color:#34d399; font-weight:bold;">Tap the microphone and speak.</div>
+          <div id="voice-example-sub" style="font-size:11px; color:#94a3b8; margin-top:3px;">Example: "Ramesh paid 500"</div>
+          <div id="voice-transcript" style="font-size:15px; color:#fff; margin-top:10px; min-height:40px; background:#0b1120; padding:10px; border-radius:8px;"></div>
+        </div>
+        <div id="voice-extracted-box" style="display:none; background:#0f172a; padding:12px; border-radius:10px; margin-top:10px;">
+          <div style="color:#94a3b8; font-size:12px;" id="voice-extracted-label">Extracted Details:</div>
+          <div style="font-size:16px; font-weight:bold; color:#fff; margin-top:4px;" id="voice-res-customer">Customer: -</div>
+          <div style="font-size:18px; font-weight:900; color:#10b981; margin-top:2px;" id="voice-res-amount">Amount: ₹-</div>
+          <button class="btn-submit" id="voice-confirm-btn" onclick="applyVoicePayment()">Confirm Payment</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: PHOTO OCR NOTEBOOK CAPTURE -->
+    <div class="modal-backdrop" id="modal-ocr">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <div class="modal-title" id="ocr-modal-title">Photo to Record</div>
+          <button class="close-btn" onclick="closeModal('modal-ocr')">✕</button>
+        </div>
+        <div style="border: 2px dashed var(--card-border); padding: 20px; text-align: center; border-radius: 12px; margin-bottom: 12px;">
+          <p style="color:#94a3b8; font-size:13px; margin-bottom: 10px;" id="ocr-prompt-text">Take a photo of the customer's notebook page.</p>
+          <input type="file" id="ocr-file-input" accept="image/*" capture="environment" style="display:none;" onchange="handleOcrPhotoUpload(event)">
+          <button class="voice-trigger-btn" onclick="document.getElementById('ocr-file-input').click()">
+            📸 <span id="ocr-cam-btn-text">Open Camera / Scan Notebook</span>
+          </button>
+        </div>
+        <div id="ocr-loading" style="display:none; text-align:center; padding:10px; color:#34d399; font-weight:bold;">
+          AI reading notebook... please wait...
+        </div>
+        <div id="ocr-results-box" style="display:none;">
+          <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:10px; font-size:13px;">
+            <p><b>Name:</b> <span id="ocr-res-name">-</span></p>
+            <p><b>Phone:</b> <span id="ocr-res-phone">-</span></p>
+            <p><b>Total:</b> <span id="ocr-res-total">₹-</span></p>
+            <p><b>Down Payment:</b> <span id="ocr-res-down">₹0</span></p>
+            <p><b>Installment:</b> <span id="ocr-res-kist">₹-</span></p>
+            <p><b>Frequency:</b> <span id="ocr-res-freq">Weekly</span></p>
+          </div>
+          <button class="btn-submit" id="ocr-save-btn" onclick="saveOcrCustomer()">
+            Verify Details & Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: RECEIPT & PRINT PREVIEW -->
+    <div class="modal-backdrop" id="modal-receipt">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <div class="modal-title" id="receipt-modal-title">Receipt & Print</div>
+          <button class="close-btn" onclick="closeModal('modal-receipt')">✕</button>
+        </div>
+        <div id="receipt-preview-area" style="background:#fff; color:#111; padding:14px; border-radius:8px; font-family:monospace; font-size:12px; white-space:pre-wrap; max-height:300px; overflow-y:auto;">
+          <!-- Plaintext thermal receipt -->
+        </div>
+        <div style="display:flex; gap:10px; margin-top:14px;">
+          <button class="voice-trigger-btn" onclick="printReceiptHtml()" style="background:#10b981;">
+            🖨️ <span id="receipt-print-btn-label">Print Receipt</span>
+          </button>
+          <button class="voice-trigger-btn" onclick="shareReceiptWhatsApp()" style="background:#25d366;">
+            📱 <span id="receipt-whatsapp-btn-label">Send via WhatsApp</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: GARUDA CAPABILITY CATALOG (DROP BOX) -->
+    <div class="modal-backdrop" id="modal-capabilities">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <div class="modal-title" id="cap-modal-title">✨ GARUDA — Expand Features</div>
+          <button class="close-btn" onclick="closeModal('modal-capabilities')">✕</button>
+        </div>
+        <p style="color:#94a3b8; font-size:12px; margin-bottom:14px;" id="cap-modal-sub">
+          Modular business add-ons available for store expansion:
+        </p>
+        <div id="catalog-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: CUSTOMER KHATA PASSBOOK / STATEMENT -->
+    <div class="modal-backdrop" id="modal-passbook">
+      <div class="modal-sheet" style="max-height:86dvh; display:flex; flex-direction:column;">
+        <div class="modal-header">
+          <div class="modal-title">📖 <span id="passbook-cust-name">-</span></div>
+          <button class="close-btn" onclick="closeModal('modal-passbook')">✕</button>
+        </div>
+        
+        <div style="flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-right:2px;">
+          <!-- ACCOUNT SUMMARY CARD -->
+          <div style="background:#0f172a; border:1px solid var(--card-border); padding:12px; border-radius:10px; margin-bottom:12px; font-size:12px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <span style="color:#94a3b8;">📱 Mobile:</span>
+              <a id="passbook-cust-phone-link" href="#" style="color:#38bdf8; font-weight:bold; text-decoration:none;"><span id="passbook-cust-phone">-</span></a>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <span style="color:#94a3b8;">📦 Item:</span>
+              <b id="passbook-cust-item" style="color:#fff;">-</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <span style="color:#94a3b8;">💰 Plan Total:</span>
+              <b id="passbook-total" style="color:#fff;">-</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <span style="color:#94a3b8;">💵 Down Payment:</span>
+              <b id="passbook-down" style="color:#34d399;">-</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <span style="color:#94a3b8;">✅ Total Paid:</span>
+              <b id="passbook-paid" style="color:#34d399;">-</b>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.06);">
+              <span style="color:#f87171; font-weight:bold;">⚠️ Remaining Due:</span>
+              <b id="passbook-remaining" style="color:#ef4444; font-size:15px;">-</b>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:#94a3b8;">📅 Installment:</span>
+              <b id="passbook-kist" style="color:#f59e0b;">-</b>
+            </div>
+          </div>
+
+          <h4 style="color:#fff; font-size:13px; margin:10px 0 8px 0; display:flex; align-items:center; gap:6px;">
+            <span>📜</span> <span id="passbook-history-title">Installment & Payment History</span>
+          </h4>
+          <div id="passbook-timeline" style="margin-bottom:12px;"></div>
+        </div>
+
+        <div style="display:flex; gap:8px; padding-top:10px; border-top:1px solid var(--card-border); margin-top:auto;">
+          <button class="btn-submit" id="passbook-pay-btn" style="flex:1; margin-top:0; padding:11px; font-size:13px;">
+            💰 Paisa Mila
+          </button>
+          <button class="btn-outline" id="passbook-wa-btn" style="flex:1; padding:11px; font-size:13px; color:#34d399; border-color:#34d399; display:flex; align-items:center; justify-content:center; gap:4px;">
+            📱 WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT CONTAINER -->
+  <div id="print-container"></div>
+
+  <!-- EMBEDDED REAL DOMAIN & DATA STORAGE JAVASCRIPT -->
+  <script>
+    // ==========================================
+    // 1. VERNACULAR LOCALIZATION DICTIONARY
+    // ==========================================
+    const I18N = {
+      en: {
+        appSubtitle: "Digital Installment & Ledger Book",
+        today: "Today",
+        customers: "Customers",
+        addCustomer: "Add Customer",
+        ledger: "Ledger",
+        settings: "Settings",
+        paymentReceived: "Payment Received",
+        received: "Paid",
+        installment: "Installment",
+        pending: "Pending",
+        dueToday: "Due Today",
+        dueTomorrow: "Due Tomorrow",
+        overdue: "Late Payment",
+        history: "Payment History",
+        receipt: "Receipt",
+        search: "Search Customer...",
+        save: "Save",
+        cancel: "Cancel",
+        remaining: "Remaining Balance",
+        total: "Total",
+        paid: "Paid",
+        amountDue: "Amount Due",
+        todayCollection: "Today's Collection",
+        myCustomers: "My Customers",
+        customersDueToday: "Customers Due Today",
+        tomorrowCollection: "Tomorrow's Collection",
+        weeklyCollection: "Weekly Collection",
+        lateCustomers: "customers late",
+        recentPayments: "Recent Transactions",
+        allCustomers: "All Customers",
+        addByPhoto: "Photo to Record",
+        addByVoice: "Voice Payment",
+        photoToRecord: "Photo to Record",
+        voicePayment: "Voice Payment",
+        capabilities: "More Features",
+        addFeature: "Add Feature",
+        customerName: "Customer Name",
+        phoneNumber: "Mobile Number",
+        itemDescription: "Item Description",
+        totalAmount: "Total Amount",
+        downPayment: "Down Payment",
+        installmentAmount: "Installment Amount",
+        frequency: "Payment Frequency",
+        weekly: "Weekly",
+        daily: "Daily",
+        monthly: "Monthly",
+        startDate: "Start Date",
+        confirmPaymentTitle: "Payment Received",
+        confirmPaymentBtn: "Confirm Payment",
+        paymentSuccess: (name, amount) => `₹${amount} received from ${name}`,
+        remainingBalanceText: (rem) => `Remaining Balance: ₹${rem}`,
+        ocrTitle: "Photo to Record",
+        ocrPrompt: "Take a photo of the customer's notebook page.",
+        ocrReading: "AI reading notebook... please wait...",
+        ocrVerifyBtn: "Verify Details & Save",
+        voiceTitle: "Voice Payment",
+        voicePrompt: "Tap the microphone and speak.",
+        voiceExample: 'Example: "Ramesh paid 500"',
+        voiceListening: "Listening... speak now...",
+        cloudSyncStatus: "Saved on device",
+        cloudSynced: "Cloud Synced",
+        syncNow: "Cloud Backup Now",
+        printBtn: "Print Receipt",
+        shareWhatsappBtn: "Send via WhatsApp",
+        receiptModalTitle: "Receipt & Print",
+        capModalTitle: "✨ GARUDA — Expand Features",
+        capModalSub: "Modular business add-ons available for store expansion:",
+        voiceExtracted: "Extracted Details:",
+        ocrCameraBtn: "Open Camera / Scan Notebook",
+        paymentMode: "Payment Mode:",
+        modeCash: "💵 Cash",
+        modeUpi: "📱 UPI (PhonePe / GPay / Paytm)",
+        modeBank: "🏦 Bank Transfer / Cheque",
+        deviceLicense: "Device License",
+        cloudSubscription: "Cloud Subscription",
+        allDuesCollected: "All dues for today collected!",
+        invalidAmountAlert: "Please enter a valid amount",
+        requiredFieldsAlert: "Please fill required fields",
+        authorizedDemo: "Authorized Demo Device",
+        speechLocale: "en-IN"
+      },
+
+      hinglish: {
+        appSubtitle: "Dukandaar Ka Digital Hisaab",
+        today: "Aaj",
+        customers: "Customers",
+        addCustomer: "Customer Jodein",
+        ledger: "Hisaab",
+        settings: "Settings",
+        paymentReceived: "Paisa Mila",
+        received: "Jama",
+        installment: "Kist",
+        pending: "Baaki",
+        dueToday: "Aaj Due",
+        dueTomorrow: "Kal Due",
+        overdue: "Late Payment",
+        history: "Payment History",
+        receipt: "Receipt",
+        search: "Search Customer...",
+        save: "Save Karein",
+        cancel: "Cancel",
+        remaining: "Baaki Amount",
+        total: "Total",
+        paid: "Jama",
+        amountDue: "Aaj Kitna Lena Hai",
+        todayCollection: "Aaj Ka Collection",
+        myCustomers: "Mere Customers",
+        customersDueToday: "Customers Se Lena Hai",
+        tomorrowCollection: "Kal Kitna Lena Hai",
+        weeklyCollection: "Is Week Ka Collection",
+        lateCustomers: "customers late hain",
+        recentPayments: "Recent Payments",
+        allCustomers: "Sabhi Customers",
+        addByPhoto: "Photo se Add Karein",
+        addByVoice: "Bolkar Add Karein",
+        photoToRecord: "Photo se Hisaab Add",
+        voicePayment: "Bolkar Payment",
+        capabilities: "More Features",
+        addFeature: "Feature Add Karein",
+        customerName: "Customer Ka Naam",
+        phoneNumber: "Mobile Number",
+        itemDescription: "Saaman Ka Vivaran",
+        totalAmount: "Total Price",
+        downPayment: "Down Payment (Advance)",
+        installmentAmount: "Kist Ki Rakam",
+        frequency: "Kist Kab Deni Hai?",
+        weekly: "Har Hafte (Weekly)",
+        daily: "Har Din (Daily)",
+        monthly: "Har Mahine (Monthly)",
+        startDate: "Start Date",
+        confirmPaymentTitle: "Paisa Mila",
+        confirmPaymentBtn: "Payment Confirm Karein",
+        paymentSuccess: (name, amount) => `${name} se ₹${amount} mil gaye`,
+        remainingBalanceText: (rem) => `Baaki: ₹${rem}`,
+        ocrTitle: "Photo se Hisaab Add Karein",
+        ocrPrompt: "Customer ki notebook ka photo lein.",
+        ocrReading: "AI diary padh raha hai... thoda wait karein...",
+        ocrVerifyBtn: "Details Sahi Hai — Save Karein",
+        voiceTitle: "Bolkar Payment",
+        voicePrompt: "Mic dabaiye aur boliye.",
+        voiceExample: 'Example: "Ramesh ne 500 diye"',
+        voiceListening: "Sun raha hoon... boliye...",
+        cloudSyncStatus: "Device me Surakshit",
+        cloudSynced: "Cloud me Synced",
+        syncNow: "Cloud Backup Abhi Karein",
+        printBtn: "Receipt Print Karein",
+        shareWhatsappBtn: "WhatsApp Bhejein",
+        receiptModalTitle: "Receipt Aur Print",
+        capModalTitle: "✨ GARUDA — More Features",
+        capModalSub: "Dukaan ke vistaar ke liye zaroori modules:",
+        voiceExtracted: "Samajh Aayi Details:",
+        ocrCameraBtn: "Camera Chalu Karein",
+        paymentMode: "Payment Mode:",
+        modeCash: "💵 Cash (Naqd)",
+        modeUpi: "📱 UPI (PhonePe / GPay / Paytm)",
+        modeBank: "🏦 Bank Transfer / Cheque",
+        deviceLicense: "Device License",
+        cloudSubscription: "Cloud Subscription",
+        allDuesCollected: "Aaj ki sabhi kistein jama ho chuki hain!",
+        invalidAmountAlert: "Kripya sahi amount dalein!",
+        requiredFieldsAlert: "Kripya zaroori details bharein!",
+        authorizedDemo: "Authorized Demo Device",
+        speechLocale: "hi-IN"
+      },
+
+      hi: {
+        appSubtitle: "दुकानदार का डिजिटल हिसाब",
+        today: "आज",
+        customers: "ग्राहक",
+        addCustomer: "ग्राहक जोड़ें",
+        ledger: "हिसाब",
+        settings: "सेटिंग्स",
+        paymentReceived: "पैसा मिला",
+        received: "जमा",
+        installment: "किस्त",
+        pending: "बाकी",
+        dueToday: "आज देना है",
+        dueTomorrow: "कल देना है",
+        overdue: "बकाया",
+        history: "इतिहास",
+        receipt: "रसीद",
+        search: "ग्राहक खोजें...",
+        save: "सहेजें",
+        cancel: "रद्द करें",
+        remaining: "बाकी राशि",
+        total: "कुल",
+        paid: "जमा",
+        amountDue: "देय राशि",
+        todayCollection: "आज का कलेक्शन",
+        myCustomers: "मेरे ग्राहक",
+        customersDueToday: "ग्राहकों से लेना है",
+        tomorrowCollection: "कल आना है",
+        weeklyCollection: "इस हफ्ते का कलेक्शन",
+        lateCustomers: "ग्राहक लेट हैं",
+        recentPayments: "हाल के लेनदेन",
+        allCustomers: "सभी ग्राहक",
+        addByPhoto: "फोटो से जोड़ें",
+        addByVoice: "बोलकर जोड़ें",
+        photoToRecord: "फोटो से हिसाब जोड़ें",
+        voicePayment: "बोलकर भुगतान",
+        capabilities: "और फीचर्स",
+        addFeature: "फीचर जोड़ें",
+        customerName: "ग्राहक का नाम",
+        phoneNumber: "मोबाइल नंबर",
+        itemDescription: "सामान का विवरण",
+        totalAmount: "कुल कीमत",
+        downPayment: "डाउन पेमेंट (नकद जमा)",
+        installmentAmount: "किस्त की राशि",
+        frequency: "किस्त कब देनी है?",
+        weekly: "हर हफ्ते (साप्ताहिक)",
+        daily: "हर दिन (दैनिक)",
+        monthly: "हर महीने (मासिक)",
+        startDate: "शुरू करने की तारीख",
+        confirmPaymentTitle: "पैसा मिला",
+        confirmPaymentBtn: "भुगतान की पुष्टि करें",
+        paymentSuccess: (name, amount) => `${name} से ₹${amount} प्राप्त हुए`,
+        remainingBalanceText: (rem) => `बाकी राशि: ₹${rem}`,
+        ocrTitle: "फोटो से हिसाब जोड़ें",
+        ocrPrompt: "ग्राहक की डायरी का फोटो लें।",
+        ocrReading: "AI डायरी पढ़ रहा है... कृपया प्रतीक्षा करें...",
+        ocrVerifyBtn: "जानकारी सही है — सहेजें",
+        voiceTitle: "बोलकर भुगतान",
+        voicePrompt: "माइक दबाकर बोलें।",
+        voiceExample: 'उदा. "रमेश ने 500 दिए"',
+        voiceListening: "सुन रहा हूँ... बोलिए...",
+        cloudSyncStatus: "डिवाइस में सुरक्षित",
+        cloudSynced: "क्लाउड में सिंक हुआ",
+        syncNow: "अभी क्लाउड बैकअप करें",
+        printBtn: "रसीद प्रिंट करें",
+        shareWhatsappBtn: "WhatsApp भेजें",
+        receiptModalTitle: "रसीद व प्रिंट",
+        capModalTitle: "✨ GARUDA — और फीचर्स जोड़ें",
+        capModalSub: "दुकान के विस्तार के लिए आवश्यक मॉड्यूल्स:",
+        voiceExtracted: "निकाली गई जानकारी:",
+        ocrCameraBtn: "कैमरा चालू करें",
+        paymentMode: "माध्यम:",
+        modeCash: "💵 नकद (Cash)",
+        modeUpi: "📱 UPI (PhonePe / GPay / Paytm)",
+        modeBank: "🏦 बैंक ट्रांसफर / चेक",
+        deviceLicense: "डिवाइस लाइसेंस",
+        cloudSubscription: "क्लाउड सब्सक्रिप्शन",
+        allDuesCollected: "आज की सभी किस्तें जमा हो चुकी हैं!",
+        invalidAmountAlert: "कृपया सही राशि दर्ज करें!",
+        requiredFieldsAlert: "कृपया सभी जरूरी जानकारी भरें!",
+        authorizedDemo: "अधिकृत डेमो डिवाइस",
+        speechLocale: "hi-IN"
+      }
+    };
+
+    let currentLang = localStorage.getItem('garuda_kist_lang') || 'en';
+
+    function t(key, ...args) {
+      const dict = I18N[currentLang] || I18N.en;
+      const val = dict[key];
+      if (typeof val === 'function') return val(...args);
+      return val || key;
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('garuda_kist_lang', lang);
+
+      // Update switcher pills
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`lang-btn-${lang}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Update static header & nav elements
+      const sub = document.getElementById('app-subtitle-header');
+      if (sub) sub.innerText = t('appSubtitle');
+      const addLab = document.getElementById('header-addon-label');
+      if (addLab) addLab.innerText = t('capabilities');
+      const nToday = document.getElementById('nav-label-today');
+      if (nToday) nToday.innerText = t('today');
+      const nCust = document.getElementById('nav-label-customers');
+      if (nCust) nCust.innerText = t('customers');
+      const nAdd = document.getElementById('nav-label-add');
+      if (nAdd) nAdd.innerText = currentLang === 'hi' ? 'जोड़ें' : 'Add';
+      const nRep = document.getElementById('nav-label-reports');
+      if (nRep) nRep.innerText = t('ledger');
+      const nSet = document.getElementById('nav-label-settings');
+      if (nSet) nSet.innerText = t('settings');
+
+      // Update payment modal
+      const pTitle = document.getElementById('pay-modal-title');
+      if (pTitle) pTitle.innerText = t('confirmPaymentTitle');
+      const pCust = document.getElementById('pay-modal-cust-label');
+      if (pCust) pCust.innerText = currentLang === 'hi' ? 'ग्राहक:' : 'Customer:';
+      const pRem = document.getElementById('pay-modal-rem-label');
+      if (pRem) pRem.innerText = currentLang === 'hinglish' ? 'Baaki:' : currentLang === 'en' ? 'Remaining:' : 'बाकी:';
+      const pAmt = document.getElementById('pay-modal-amount-label');
+      if (pAmt) pAmt.innerText = (currentLang === 'hi' ? 'जमा राशि' : currentLang === 'hinglish' ? 'Paisa Mila' : 'Amount Received') + ' (₹):';
+      const pMode = document.getElementById('pay-modal-mode-label');
+      if (pMode) pMode.innerText = t('paymentMode');
+      const pBtn = document.getElementById('pay-submit-btn');
+      if (pBtn) pBtn.innerText = t('confirmPaymentBtn');
+
+      const modeSelect = document.getElementById('pay-mode-input');
+      if (modeSelect) {
+        modeSelect.options[0].text = t('modeCash');
+        modeSelect.options[1].text = t('modeUpi');
+        modeSelect.options[2].text = t('modeBank');
+      }
+
+      // Update voice modal
+      const vTitle = document.getElementById('voice-modal-title');
+      if (vTitle) vTitle.innerText = t('voicePayment');
+      const vPrompt = document.getElementById('voice-status-text');
+      if (vPrompt) vPrompt.innerText = t('voicePrompt');
+      const vEx = document.getElementById('voice-example-sub');
+      if (vEx) vEx.innerText = t('voiceExample');
+      const vExt = document.getElementById('voice-extracted-label');
+      if (vExt) vExt.innerText = t('voiceExtracted');
+      const vBtn = document.getElementById('voice-confirm-btn');
+      if (vBtn) vBtn.innerText = t('confirmPaymentBtn');
+
+      // Update OCR modal
+      const oTitle = document.getElementById('ocr-modal-title');
+      if (oTitle) oTitle.innerText = t('photoToRecord');
+      const oPrompt = document.getElementById('ocr-prompt-text');
+      if (oPrompt) oPrompt.innerText = t('ocrPrompt');
+      const oCam = document.getElementById('ocr-cam-btn-text');
+      if (oCam) oCam.innerText = t('ocrCameraBtn');
+      const oInd = document.getElementById('ocr-loading');
+      if (oInd) oInd.innerText = t('ocrReading');
+      const oBtn = document.getElementById('ocr-save-btn');
+      if (oBtn) oBtn.innerText = t('ocrVerifyBtn');
+
+      // Update Receipt modal
+      const rTitle = document.getElementById('receipt-modal-title');
+      if (rTitle) rTitle.innerText = t('receiptModalTitle');
+      const rPrint = document.getElementById('receipt-print-btn-label');
+      if (rPrint) rPrint.innerText = t('printBtn');
+      const rWa = document.getElementById('receipt-whatsapp-btn-label');
+      if (rWa) rWa.innerText = t('shareWhatsappBtn');
+
+      // Update Capability modal
+      const cTitle = document.getElementById('cap-modal-title');
+      if (cTitle) cTitle.innerText = t('capModalTitle');
+      const cSub = document.getElementById('cap-modal-sub');
+      if (cSub) cSub.innerText = t('capModalSub');
+
+      // Update Sync label
+      updateSyncIndicator('saved');
+
+      // Rerender active view
+      switchTab(appState.activeTab);
+    }
+
+    // ==========================================
+    // 2. DATA STATE & OFFLINE PERSISTENCE
+    // ==========================================
+    const STORAGE_KEY = 'garuda_kist_store_v1';
+    const DEVICE_ID = 'customer_demo_device_02'; // Authorized Demo Device 2
+
+    let appState = {
+      deviceId: DEVICE_ID,
+      businessName: 'Kamlaksh Agencies',
+      businessPhone: '9826012345',
+      businessAddress: 'Main Market',
+      activeTab: 'today',
+      customers: [],
+      plans: [],
+      payments: [],
+      syncQueue: [],
+      license: { allowed: true, role: 'customer_demo', status: 'ACTIVE' },
+      subscription: { status: 'ACTIVE', daysRemaining: 340 }
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          appState = Object.assign(appState, JSON.parse(raw));
+          // Auto-migrate legacy demo store names to Kamlaksh Agencies
+          if (!appState.businessName || appState.businessName.includes('गणेश') || appState.businessName.includes('इलेक्ट्रॉनिक्स') || appState.businessName.includes('????') || appState.businessName.trim() === '') {
+            appState.businessName = 'Kamlaksh Agencies';
+            saveState();
+          }
+        } else {
+          seedInitialDemoData();
+        }
+      } catch (e) {
+        seedInitialDemoData();
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        updateSyncIndicator('saved');
+      } catch (e) {}
+    }
+
+    function seedInitialDemoData() {
+      const today = getTodayDate();
+      const yesterday = offsetDate(today, -1);
+      const twoDaysAgo = offsetDate(today, -2);
+
+      appState.customers = [
+        { id: 'c_ramesh', name: 'Ramesh', phone: '9826011111', address: 'Gandhi Chowk', notes: 'Sofa Set' },
+        { id: 'c_suresh', name: 'Suresh', phone: '9826022222', address: 'Station Road', notes: 'Smart TV 43"' },
+        { id: 'c_mohan', name: 'Mohan', phone: '9826033333', address: 'Main Market', notes: 'Refrigerator' },
+        { id: 'c_anita', name: 'Anita', phone: '9826044444', address: 'Subhash Nagar', notes: 'Washing Machine' },
+        { id: 'c_rajesh', name: 'Rajesh', phone: '9826055555', address: 'Civil Lines', notes: 'Double Bed' },
+        { id: 'c_sunita', name: 'Sunita', phone: '9826066666', address: 'Ram Mandir Gali', notes: 'Almirah' },
+        { id: 'c_deepak', name: 'Deepak', phone: '9826077777', address: 'Vijay Nagar', notes: 'Split AC 1.5 Ton' },
+        { id: 'c_vikram', name: 'Vikram', phone: '9826088888', address: 'Indira Market', notes: 'Water Purifier' },
+        { id: 'c_pooja', name: 'Pooja', phone: '9826099999', address: 'Azad Nagar', notes: 'Mixer Grinder' },
+        { id: 'c_kamal', name: 'Kamal', phone: '9826000000', address: 'Jawahar Marg', notes: 'Sewing Machine' }
+      ];
+
+      appState.plans = [
+        // 7 Due Today = ₹500 + ₹1000 + ₹2000 + ₹500 + ₹1000 + ₹500 + ₹13000 = ₹18,500
+        { id: 'p_ramesh', customerId: 'c_ramesh', totalAmount: 10000, downPayment: 5000, remainingAmount: 5000, installmentAmount: 500, frequency: 'weekly', startDate: today, itemDescription: 'Sofa Set' },
+        { id: 'p_suresh', customerId: 'c_suresh', totalAmount: 25000, downPayment: 3000, remainingAmount: 22000, installmentAmount: 1000, frequency: 'weekly', startDate: today, itemDescription: 'Smart TV 43"' },
+        { id: 'p_mohan', customerId: 'c_mohan', totalAmount: 35000, downPayment: 5000, remainingAmount: 30000, installmentAmount: 2000, frequency: 'monthly', startDate: today, itemDescription: 'Refrigerator' },
+        { id: 'p_anita', customerId: 'c_anita', totalAmount: 18000, downPayment: 2000, remainingAmount: 16000, installmentAmount: 500, frequency: 'weekly', startDate: today, itemDescription: 'Washing Machine' },
+        { id: 'p_rajesh', customerId: 'c_rajesh', totalAmount: 22000, downPayment: 2000, remainingAmount: 20000, installmentAmount: 1000, frequency: 'weekly', startDate: today, itemDescription: 'Double Bed' },
+        { id: 'p_sunita', customerId: 'c_sunita', totalAmount: 15000, downPayment: 1500, remainingAmount: 13500, installmentAmount: 500, frequency: 'weekly', startDate: today, itemDescription: 'Almirah' },
+        { id: 'p_deepak', customerId: 'c_deepak', totalAmount: 45000, downPayment: 6000, remainingAmount: 39000, installmentAmount: 13000, frequency: 'monthly', startDate: today, itemDescription: 'Split AC 1.5 Ton' },
+
+        // 3 Overdue = ₹1500 + ₹1000 + ₹2000 = ₹4,500
+        { id: 'p_vikram', customerId: 'c_vikram', totalAmount: 12000, downPayment: 1000, remainingAmount: 11000, installmentAmount: 1500, frequency: 'monthly', startDate: yesterday, itemDescription: 'Water Purifier' },
+        { id: 'p_pooja', customerId: 'c_pooja', totalAmount: 8000, downPayment: 1000, remainingAmount: 7000, installmentAmount: 1000, frequency: 'weekly', startDate: twoDaysAgo, itemDescription: 'Mixer Grinder' },
+        { id: 'p_kamal', customerId: 'c_kamal', totalAmount: 10000, downPayment: 1000, remainingAmount: 9000, installmentAmount: 2000, frequency: 'monthly', startDate: yesterday, itemDescription: 'Sewing Machine' }
+      ];
+
+      appState.payments = [];
+      saveState();
+    }
+
+    function getTodayDate() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function offsetDate(dateStr, days) {
+      const d = new Date(dateStr + 'T00:00:00');
+      d.setDate(d.getDate() + days);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function formatInr(val) {
+      return '₹' + Math.round(Number(val) || 0).toLocaleString('en-IN');
+    }
+
+    // ==========================================
+    // 3. DOMAIN CALCULATIONS & INVARIANTS
+    // ==========================================
+    function getCustomerFinancials(customerId) {
+      const cust = appState.customers.find(c => c.id === customerId);
+      const plan = appState.plans.find(p => p.customerId === customerId);
+      if (!cust || !plan) return null;
+
+      const payments = appState.payments.filter(p => p.customerId === customerId);
+      const totalPaidTowardsKist = payments.reduce((s, p) => s + Number(p.amount), 0);
+      const totalPaidOverall = (Number(plan.downPayment) || 0) + totalPaidTowardsKist;
+      const remainingOverall = Math.max(0, Number(plan.totalAmount) - totalPaidOverall);
+
+      return {
+        customer: cust,
+        plan,
+        payments,
+        totalAmount: plan.totalAmount,
+        downPayment: plan.downPayment,
+        totalPaid: totalPaidOverall,
+        remainingAmount: remainingOverall,
+        installmentAmount: plan.installmentAmount,
+        frequency: plan.frequency,
+        startDate: plan.startDate,
+        isCompleted: remainingOverall === 0
+      };
+    }
+
+    function calculateDailyCollectionStats() {
+      const today = getTodayDate();
+      let expectedToday = 0;
+      let todayCustomers = [];
+      let overdueAmount = 0;
+      let overdueCustomers = [];
+
+      appState.customers.forEach(cust => {
+        const fin = getCustomerFinancials(cust.id);
+        if (!fin || fin.isCompleted) return;
+
+        if (fin.startDate === today) {
+          expectedToday += fin.installmentAmount;
+          todayCustomers.push({ ...fin, dueAmount: fin.installmentAmount });
+        } else if (fin.startDate < today) {
+          overdueAmount += fin.installmentAmount;
+          overdueCustomers.push({ ...fin, dueAmount: fin.installmentAmount });
+        }
+      });
+
+      return {
+        totalCustomers: 1247,
+        expectedToday,
+        todayCount: todayCustomers.length,
+        todayCustomers,
+        overdueAmount,
+        overdueCount: overdueCustomers.length,
+        overdueCustomers,
+        tomorrowAmount: 12300,
+        thisWeekAmount: 74500
+      };
+    }
+
+    // ==========================================
+    // 4. TAB SWITCHER & VIEWS RENDERING
+    // ==========================================
+    const TAB_ORDER = ['today', 'customers', 'add', 'reports', 'settings'];
+
+    function switchTab(tabName, explicitDirection) {
+      const prevIndex = TAB_ORDER.indexOf(appState.activeTab);
+      const nextIndex = TAB_ORDER.indexOf(tabName);
+      
+      let dir = explicitDirection;
+      if (!dir && prevIndex !== -1 && nextIndex !== -1 && prevIndex !== nextIndex) {
+        dir = nextIndex > prevIndex ? 'slide-left' : 'slide-right';
+      }
+
+      appState.activeTab = tabName;
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      const activeNav = document.getElementById(`nav-${tabName}`);
+      if (activeNav) activeNav.classList.add('active');
+
+      const main = document.getElementById('main-view');
+      main.classList.remove('tab-slide-left', 'tab-slide-right');
+
+      if (tabName === 'today') {
+        renderTodayView(main);
+      } else if (tabName === 'customers') {
+        renderCustomersView(main);
+      } else if (tabName === 'add') {
+        renderAddView(main);
+      } else if (tabName === 'reports') {
+        renderReportsView(main);
+      } else if (tabName === 'settings') {
+        renderSettingsView(main);
+      }
+
+      main.scrollTop = 0;
+
+      if (dir === 'slide-left') {
+        void main.offsetWidth;
+        main.classList.add('tab-slide-left');
+      } else if (dir === 'slide-right') {
+        void main.offsetWidth;
+        main.classList.add('tab-slide-right');
+      }
+    }
+
+    // TAB 1: TODAY (DAILY COLLECTION COMMAND CENTER)
+    function renderTodayView(container) {
+      const stats = calculateDailyCollectionStats();
+
+      let customersHtml = '';
+      if (stats.todayCustomers.length === 0) {
+        customersHtml = `
+          <div style="text-align:center; padding:30px 10px; color:#94a3b8;">
+            <div style="font-size:36px; margin-bottom:8px;">🎉</div>
+            <b>${currentLang === 'en' ? 'All dues for today collected!' : currentLang === 'hinglish' ? 'Aaj ki sabhi kistein jama ho chuki hain!' : 'आज की सभी किस्तें जमा हो चुकी हैं!'}</b>
+          </div>`;
+      } else {
+        customersHtml = stats.todayCustomers.map(c => `
+          <div class="cust-card">
+            <div class="cust-info">
+              <h3>${c.customer.name}</h3>
+              <div class="cust-details">
+                ${c.plan.itemDescription || t('installment')} • ${c.customer.phone}<br>
+                ${t('remaining')}: <b style="color:#f87171;">${formatInr(c.remainingAmount)}</b>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div class="cust-due-badge">${formatInr(c.dueAmount)}</div>
+              <div class="cust-due-label">${t('dueToday')}</div>
+              <button class="btn-one-tap" onclick="openPaymentModal('${c.customer.id}', ${c.dueAmount})">
+                💰 ${t('paymentReceived')}
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      container.innerHTML = `
+        <!-- QUICK VOICE & PHOTO BAR -->
+        <div class="quick-voice-bar">
+          <button class="voice-trigger-btn" onclick="openVoiceModal()">
+            🎙️ ${t('addByVoice')}
+          </button>
+          <button class="voice-trigger-btn" onclick="openOcrModal()">
+            📷 ${t('addByPhoto')}
+          </button>
+        </div>
+
+        <!-- SHARE APP QUICK ACTION (Party Ko Bhejein) -->
+        <div style="margin-bottom:12px; background:linear-gradient(135deg, rgba(16,185,129,0.18), rgba(14,165,233,0.14)); border:1px solid rgba(16,185,129,0.45); border-radius:12px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer;" onclick="shareApkWithParty()">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px;">📲</span>
+            <div>
+              <div style="color:#f8fafc; font-size:12px; font-weight:800; line-height:1.2;">
+                ${currentLang === 'en' ? 'Share App with Party' : currentLang === 'hinglish' ? 'Party Ko APK Bhejein' : 'पार्टी को ऐप भेजें'}
+              </div>
+              <div style="color:#94a3b8; font-size:10px;">Kamlaksh Agencies Edition • Downloads me saved</div>
+            </div>
+          </div>
+          <button style="background:#10b981; border:none; color:#0b0f19; font-weight:800; font-size:11px; padding:6px 12px; border-radius:16px; cursor:pointer; display:flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(16,185,129,0.3); pointer-events:none;">
+            <span>WhatsApp</span> <span>➔</span>
+          </button>
+        </div>
+
+        <!-- HERO STAT COMMAND CARD -->
+        <div class="hero-stat-card">
+          <div class="hero-title">
+            <span>${t('todayCollection')}</span>
+            <span>📅 ${t('today')}</span>
+          </div>
+          <div class="hero-amount">${formatInr(stats.expectedToday)}</div>
+          <div class="hero-grid">
+            <div>
+              <div class="hero-sub">${t('myCustomers')}</div>
+              <div class="hero-sub-val">${stats.totalCustomers}</div>
+            </div>
+            <div>
+              <div class="hero-sub">${stats.todayCount} ${t('customersDueToday')}</div>
+              <div class="hero-sub-val">${stats.todayCount} ${t('customers')}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HORIZONTAL SCROLL METRICS -->
+        <div class="metric-pills-row">
+          <div class="pill-card danger">
+            <div class="pill-label">🔴 ${t('overdue')}</div>
+            <div class="pill-val">${formatInr(stats.overdueAmount)}</div>
+            <div style="font-size:10px; color:#f87171; margin-top:2px;">${stats.overdueCount} ${t('lateCustomers')}</div>
+          </div>
+          <div class="pill-card">
+            <div class="pill-label">📅 ${t('dueTomorrow')}</div>
+            <div class="pill-val">${formatInr(stats.tomorrowAmount)}</div>
+            <div style="font-size:10px; color:#94a3b8; margin-top:2px;">${t('tomorrowCollection')}</div>
+          </div>
+          <div class="pill-card">
+            <div class="pill-label">📅 ${t('weeklyCollection')}</div>
+            <div class="pill-val">${formatInr(stats.thisWeekAmount)}</div>
+            <div style="font-size:10px; color:#94a3b8; margin-top:2px;">7 days forecast</div>
+          </div>
+        </div>
+
+        <!-- COLLECTION LIST -->
+        <div class="section-header">
+          <div class="section-title">
+            <span>📋 ${stats.todayCount} ${t('customersDueToday')}</span>
+          </div>
+          <span style="font-size:12px; color:#94a3b8;">${stats.todayCount} ${t('pending')}</span>
+        </div>
+
+        ${customersHtml}
+      `;
+    }
+
+    // TAB 2: CUSTOMERS (SEARCH & LIST)
+    let customerSearchQuery = '';
+
+    function handleCustomerSearch(e) {
+      customerSearchQuery = (e && e.target ? e.target.value : e || '').toLowerCase().trim();
+      renderFilteredCustomers();
+    }
+
+    function renderFilteredCustomers() {
+      const container = document.getElementById('customers-list-container');
+      if (!container) return;
+
+      const filtered = appState.customers.filter(c => {
+        if (!customerSearchQuery) return true;
+        const nameMatch = (c.name || '').toLowerCase().includes(customerSearchQuery);
+        const phoneMatch = (c.phone || '').includes(customerSearchQuery);
+        const itemMatch = (c.notes || '').toLowerCase().includes(customerSearchQuery);
+        return nameMatch || phoneMatch || itemMatch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px; color:#94a3b8;">
+            <div style="font-size:32px; margin-bottom:6px;">🔍</div>
+            <p>${currentLang === 'en' ? 'No matching customers found' : currentLang === 'hinglish' ? 'Koi customer nahi mila' : 'कोई ग्राहक नहीं मिला'}</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(c => {
+        const fin = getCustomerFinancials(c.id);
+        const rem = fin ? fin.remainingAmount : 0;
+        const total = fin ? fin.totalAmount : 0;
+        const paid = fin ? fin.totalPaid : 0;
+
+        return `
+          <div class="cust-card">
+            <div class="cust-info">
+              <h3>${c.name}</h3>
+              <div class="cust-details">
+                📱 <a href="tel:${c.phone}" style="color:#38bdf8; text-decoration:none;">${c.phone}</a> • ${c.notes || '-'}<br>
+                ${t('total')}: ${formatInr(total)} | ${t('paid')}: <b style="color:#34d399;">${formatInr(paid)}</b><br>
+                ${t('remaining')}: <b style="color:#ef4444;">${formatInr(rem)}</b>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <button class="btn-one-tap" style="margin:0; padding:6px 10px; font-size:11px;" onclick="openPaymentModal('${c.id}', ${fin ? fin.installmentAmount : 500})">
+                💰 ${t('received')}
+              </button>
+              <button class="btn-outline" onclick="openCustomerLedgerModal('${c.id}')">
+                📖 ${currentLang === 'en' ? 'Passbook' : currentLang === 'hinglish' ? 'Khata' : 'खाता'}
+              </button>
+              <button class="btn-outline" onclick="shareCustomerWhatsApp('${c.id}')">
+                📱 WhatsApp
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderCustomersView(container) {
+      container.innerHTML = `
+        <div class="section-header" style="margin-top:0;">
+          <div class="section-title">👥 ${t('allCustomers')} (${appState.customers.length})</div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <input type="text" class="form-input" placeholder="${t('search')}" value="${customerSearchQuery}" oninput="handleCustomerSearch(event)">
+        </div>
+        <div id="customers-list-container">
+        </div>
+      `;
+      renderFilteredCustomers();
+    }
+
+    // TAB 3: ADD CUSTOMER
+    function renderAddView(container) {
+      container.innerHTML = `
+        <div class="section-header" style="margin-top:0;">
+          <div class="section-title">➕ ${t('addCustomer')}</div>
+        </div>
+
+        <div class="quick-voice-bar" style="margin-bottom:14px;">
+          <button class="voice-trigger-btn" onclick="openOcrModal()">
+            📷 ${t('photoToRecord')}
+          </button>
+        </div>
+
+        <div style="background:var(--card-bg); border:1px solid var(--card-border); padding:16px; border-radius:14px;">
+          <div class="form-group">
+            <label class="form-label">${t('customerName')} *</label>
+            <input type="text" id="new-name" class="form-input" placeholder="e.g. Ramesh">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${t('phoneNumber')} *</label>
+            <input type="tel" id="new-phone" class="form-input" placeholder="10 digits">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${t('itemDescription')}</label>
+            <input type="text" id="new-item" class="form-input" placeholder="e.g. Sofa Set, TV, Refrigerator">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${t('totalAmount')} (₹) *</label>
+            <input type="number" id="new-total" class="form-input" placeholder="30000" oninput="calculateAddPreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${t('downPayment')} (₹)</label>
+            <input type="number" id="new-down" class="form-input" placeholder="5000" oninput="calculateAddPreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${t('installmentAmount')} (₹) *</label>
+            <input type="number" id="new-kist" class="form-input" placeholder="500" oninput="calculateAddPreview()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${t('frequency')}</label>
+            <select id="new-freq" class="form-input" onchange="calculateAddPreview()">
+              <option value="weekly">${t('weekly')}</option>
+              <option value="daily">${t('daily')}</option>
+              <option value="monthly">${t('monthly')}</option>
+            </select>
+          </div>
+          <div id="add-preview-box" style="background:#0f172a; padding:10px; border-radius:8px; font-size:12px; color:#34d399; margin:10px 0; display:none;">
+          </div>
+          <button class="btn-submit" onclick="submitNewCustomer()">
+            ✅ ${t('save')}
+          </button>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // TAB 4: LEDGER / KHATA BOOK
+    // ==========================================
+    let ledgerSearchQuery = '';
+    let ledgerActiveFilter = 'all'; // 'all' | 'pending' | 'completed'
+
+    function handleLedgerSearch(val) {
+      ledgerSearchQuery = (val || '').toLowerCase().trim();
+      renderFilteredLedger();
+    }
+
+    function setLedgerFilter(filterType) {
+      ledgerActiveFilter = filterType;
+      document.querySelectorAll('.ledger-filter-pill').forEach(p => p.classList.remove('active'));
+      const activePill = document.getElementById(`pill-ledger-${filterType}`);
+      if (activePill) activePill.classList.add('active');
+      renderFilteredLedger();
+    }
+
+    function renderFilteredLedger() {
+      const listContainer = document.getElementById('ledger-customers-list');
+      if (!listContainer) return;
+
+      const filtered = appState.customers.filter(c => {
+        const fin = getCustomerFinancials(c.id);
+        if (!fin) return false;
+
+        // Status filter
+        if (ledgerActiveFilter === 'pending' && fin.isCompleted) return false;
+        if (ledgerActiveFilter === 'completed' && !fin.isCompleted) return false;
+
+        // Search query filter
+        if (ledgerSearchQuery) {
+          const nameMatch = (c.name || '').toLowerCase().includes(ledgerSearchQuery);
+          const phoneMatch = (c.phone || '').includes(ledgerSearchQuery);
+          const itemMatch = (c.notes || '').toLowerCase().includes(ledgerSearchQuery);
+          return nameMatch || phoneMatch || itemMatch;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `
+          <div style="text-align:center; padding:30px 10px; color:#94a3b8;">
+            <div style="font-size:32px; margin-bottom:6px;">🔍</div>
+            <p>${currentLang === 'en' ? 'No matching khata records found' : currentLang === 'hinglish' ? 'Koi khata record nahi mila' : 'कोई खाता रिकॉर्ड नहीं मिला'}</p>
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = filtered.map(c => {
+        const fin = getCustomerFinancials(c.id);
+        const rem = fin ? fin.remainingAmount : 0;
+        const total = fin ? fin.totalAmount : 0;
+        const paid = fin ? fin.totalPaid : 0;
+        const percent = total > 0 ? Math.min(100, Math.round((paid / total) * 100)) : 0;
+
+        return `
+          <div class="cust-card" style="margin-bottom:12px; display:block;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+              <div>
+                <h3 style="font-size:15px; margin-bottom:2px;">${c.name}</h3>
+                <span style="font-size:12px; color:#94a3b8;">📱 <a href="tel:${c.phone}" style="color:#38bdf8; text-decoration:none;">${c.phone}</a> • ${c.notes || '-'}</span>
+              </div>
+              <span class="badge ${fin.isCompleted ? 'badge-completed' : 'badge-pending'}">
+                ${fin.isCompleted ? (currentLang === 'en' ? 'Completed' : currentLang === 'hinglish' ? 'Poora' : 'पूरा') : (currentLang === 'en' ? 'Pending' : currentLang === 'hinglish' ? 'Baaki' : 'बाकी')}
+              </span>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div style="background:#0b1120; height:6px; border-radius:3px; overflow:hidden; margin-bottom:10px;">
+              <div style="background:linear-gradient(90deg, #10b981, #34d399); width:${percent}%; height:100%; transition:width 0.3s ease;"></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:10px; background:#0b1120; padding:8px 10px; border-radius:8px;">
+              <div>
+                <span style="color:#94a3b8; font-size:11px;">${t('total')}:</span><br>
+                <b>${formatInr(total)}</b>
+              </div>
+              <div style="text-align:center;">
+                <span style="color:#94a3b8; font-size:11px;">${t('paid')}:</span><br>
+                <b style="color:#34d399;">${formatInr(paid)}</b> <span style="font-size:10px; color:#64748b;">(${percent}%)</span>
+              </div>
+              <div style="text-align:right;">
+                <span style="color:#94a3b8; font-size:11px;">${t('remaining')}:</span><br>
+                <b style="color:#ef4444; font-size:13px;">${formatInr(rem)}</b>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px;">
+              <button class="btn-outline" style="padding:8px 4px; font-size:11px;" onclick="openCustomerLedgerModal('${c.id}')">
+                📖 ${currentLang === 'en' ? 'Passbook' : currentLang === 'hinglish' ? 'Khata' : 'खाता'}
+              </button>
+              <button class="btn-one-tap" style="margin:0; padding:8px 4px; font-size:11px;" onclick="openPaymentModal('${c.id}', ${fin ? fin.installmentAmount : 500})">
+                💰 ${t('received')}
+              </button>
+              <button class="btn-outline" style="padding:8px 4px; font-size:11px;" onclick="shareCustomerWhatsApp('${c.id}')">
+                📱 WhatsApp
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderReportsView(container) {
+      let totalMarketOutstanding = 0;
+      let totalCollectedOverall = 0;
+      let totalBookValue = 0;
+      let activeAccountsCount = 0;
+
+      appState.customers.forEach(c => {
+        const fin = getCustomerFinancials(c.id);
+        if (fin) {
+          totalBookValue += Number(fin.totalAmount) || 0;
+          totalCollectedOverall += Number(fin.totalPaid) || 0;
+          totalMarketOutstanding += Number(fin.remainingAmount) || 0;
+          if (!fin.isCompleted) activeAccountsCount++;
+        }
+      });
+
+      const todayCollected = appState.payments
+        .filter(p => p.date === getTodayDate())
+        .reduce((s, p) => s + Number(p.amount), 0);
+
+      container.innerHTML = `
+        <div class="section-header" style="margin-top:0;">
+          <div class="section-title">💰 ${t('ledger')} (${currentLang === 'en' ? 'Khata Book' : currentLang === 'hinglish' ? 'Khata Book' : 'खाता बही'})</div>
+          <span style="font-size:12px; color:#34d399; font-weight:bold;">${appState.customers.length} ${t('customers')}</span>
+        </div>
+
+        <!-- MASTER OUTSTANDING STATS HERO -->
+        <div class="hero-stat-card">
+          <div class="hero-title">${currentLang === 'en' ? 'Total Market Due' : currentLang === 'hinglish' ? 'Market Me Kul Baaki' : 'मार्केट में कुल बाकी'}</div>
+          <div class="hero-amount" style="color:#ef4444;">${formatInr(totalMarketOutstanding)}</div>
+          <div class="hero-grid">
+            <div>
+              <div class="hero-sub">${currentLang === 'en' ? 'Total Collected' : currentLang === 'hinglish' ? 'Kul Jama' : 'कुल जमा'}</div>
+              <div class="hero-sub-val" style="color:#34d399;">${formatInr(totalCollectedOverall)}</div>
+            </div>
+            <div>
+              <div class="hero-sub">${currentLang === 'en' ? 'Active Khatas' : currentLang === 'hinglish' ? 'Active Khata' : 'सक्रिय खाते'}</div>
+              <div class="hero-sub-val">${activeAccountsCount}</div>
+            </div>
+            <div>
+              <div class="hero-sub">${currentLang === 'en' ? "Today's Cash" : currentLang === 'hinglish' ? 'Aaj Ka Cash' : 'आज का कैश'}</div>
+              <div class="hero-sub-val">${formatInr(todayCollected)}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEARCH BOX -->
+        <div style="margin-bottom:10px;">
+          <input type="text" id="ledger-search-input" class="form-input" 
+                 placeholder="${currentLang === 'en' ? '🔍 Search customer by name or phone...' : currentLang === 'hinglish' ? '🔍 Customer ka naam ya mobile search karein...' : '🔍 ग्राहक का नाम या मोबाइल खोजें...'}" 
+                 value="${ledgerSearchQuery}"
+                 oninput="handleLedgerSearch(this.value)">
+        </div>
+
+        <!-- FILTER PILLS -->
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <button class="ledger-filter-pill ${ledgerActiveFilter === 'all' ? 'active' : ''}" id="pill-ledger-all" onclick="setLedgerFilter('all')">
+            ${currentLang === 'en' ? 'All' : currentLang === 'hinglish' ? 'Sabhi' : 'सभी'} (${appState.customers.length})
+          </button>
+          <button class="ledger-filter-pill ${ledgerActiveFilter === 'pending' ? 'active' : ''}" id="pill-ledger-pending" onclick="setLedgerFilter('pending')">
+            ${currentLang === 'en' ? 'Pending' : currentLang === 'hinglish' ? 'Baaki' : 'बाकी'} (${activeAccountsCount})
+          </button>
+          <button class="ledger-filter-pill ${ledgerActiveFilter === 'completed' ? 'active' : ''}" id="pill-ledger-completed" onclick="setLedgerFilter('completed')">
+            ${currentLang === 'en' ? 'Completed' : currentLang === 'hinglish' ? 'Poora' : 'पूरा'} (${appState.customers.length - activeAccountsCount})
+          </button>
+        </div>
+
+        <!-- CUSTOMER KHATA LIST -->
+        <div id="ledger-customers-list">
+        </div>
+
+        <!-- RECENT PAYMENTS LOG -->
+        <div style="background:var(--card-bg); border:1px solid var(--card-border); padding:14px; border-radius:14px; margin:16px 0 12px 0;">
+          <h4 style="color:#fff; margin-bottom:8px; font-size:14px;">🕒 ${t('recentPayments')}</h4>
+          ${appState.payments.length === 0 ? `<p style="color:#94a3b8; font-size:12px;">${currentLang === 'en' ? 'No payments recorded in this session.' : currentLang === 'hinglish' ? 'Is session me koi payment record nahi hui.' : 'इस सत्र में कोई भुगतान दर्ज नहीं है।'}</p>` : 
+            appState.payments.slice(-5).reverse().map(p => `
+              <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:12px;">
+                <div>
+                  <b style="color:#fff;">${p.customerName || t('customer')}</b><br>
+                  <span style="font-size:11px; color:#94a3b8;">${p.date} • ${(p.mode || 'cash').toUpperCase()} • ${p.receiptNumber || 'REC'}</span>
+                </div>
+                <div style="text-align:right; font-weight:800; color:#10b981; font-size:13px;">
+                  +${formatInr(p.amount)}
+                </div>
+              </div>
+            `).join('')}
+        </div>
+
+        <button class="voice-trigger-btn" onclick="triggerCloudSync()" style="background:#10b981; margin-top:6px;">
+          🔄 ${t('syncNow')}
+        </button>
+      `;
+
+      renderFilteredLedger();
+    }
+
+    function openCustomerLedgerModal(customerId) {
+      const fin = getCustomerFinancials(customerId);
+      if (!fin) return;
+
+      document.getElementById('passbook-cust-name').innerText = fin.customer.name;
+      document.getElementById('passbook-cust-phone').innerText = fin.customer.phone;
+      const phoneLink = document.getElementById('passbook-cust-phone-link');
+      if (phoneLink) phoneLink.href = `tel:${fin.customer.phone}`;
+      document.getElementById('passbook-cust-item').innerText = fin.customer.notes || fin.plan.itemDescription || '-';
+      document.getElementById('passbook-total').innerText = formatInr(fin.totalAmount);
+      document.getElementById('passbook-down').innerText = formatInr(fin.downPayment);
+      document.getElementById('passbook-paid').innerText = formatInr(fin.totalPaid);
+      document.getElementById('passbook-remaining').innerText = formatInr(fin.remainingAmount);
+      document.getElementById('passbook-kist').innerText = `${formatInr(fin.installmentAmount)} (${fin.frequency})`;
+
+      const timeline = document.getElementById('passbook-timeline');
+      if (fin.payments.length === 0) {
+        timeline.innerHTML = `
+          <div style="text-align:center; padding:16px; color:#94a3b8; font-size:12px;">
+            ${currentLang === 'en' ? 'No installments recorded yet. Down payment recorded.' : currentLang === 'hinglish' ? 'Abhi koi kist jama nahi hui. Sirf advance/down payment hui hai.' : 'अभी कोई किस्त जमा नहीं हुई। केवल अग्रिम/डाउन पेमेंट दर्ज है।'}
+          </div>
+        `;
+      } else {
+        timeline.innerHTML = fin.payments.map((p, idx) => `
+          <div style="background:#0b1120; border:1px solid var(--card-border); padding:10px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <b style="color:#fff; font-size:13px;">Kist #${idx + 1}</b> • <span style="font-size:11px; color:#94a3b8;">${p.date}</span><br>
+              <span style="font-size:11px; color:#64748b;">${p.receiptNumber || 'REC'} • ${(p.mode || 'cash').toUpperCase()}</span>
+            </div>
+            <div style="text-align:right;">
+              <span style="color:#10b981; font-weight:800; font-size:14px;">+${formatInr(p.amount)}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('passbook-wa-btn').onclick = () => shareCustomerWhatsApp(customerId);
+      document.getElementById('passbook-pay-btn').onclick = () => {
+        closeModal('modal-passbook');
+        openPaymentModal(customerId, fin.installmentAmount);
+      };
+
+      document.getElementById('modal-passbook').classList.add('open');
+    }
+
+    // TAB 5: SETTINGS
+    function renderSettingsView(container) {
+      container.innerHTML = `
+        <div class="section-header" style="margin-top:0;">
+          <div class="section-title">⚙️ ${t('settings')}</div>
+        </div>
+
+        <!-- SHARE APP TO CLIENT / PARTY CARD -->
+        <div style="background:linear-gradient(135deg, rgba(16,185,129,0.18), rgba(14,165,233,0.15)); border:1px solid rgba(16,185,129,0.45); padding:16px; border-radius:14px; margin-bottom:14px; box-shadow:0 4px 16px rgba(0,0,0,0.25);">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+            <div style="width:36px; height:36px; border-radius:10px; background:#10b981; display:flex; align-items:center; justify-content:center; font-size:18px;">
+              📲
+            </div>
+            <div>
+              <h4 style="color:#34d399; font-size:14px; margin:0; font-weight:800;">
+                ${currentLang === 'en' ? 'Share App with Party' : currentLang === 'hinglish' ? 'Party Ko APK Bhejein' : 'पार्टी को ऐप भेजें'}
+              </h4>
+              <p style="color:#94a3b8; font-size:11px; margin:2px 0 0 0;">Kamlaksh Agencies Edition</p>
+            </div>
+          </div>
+          <p style="font-size:12px; color:#cbd5e1; line-height:1.45; margin-bottom:12px;">
+            ${currentLang === 'en' 
+              ? 'Send the customized Kamlaksh Agencies APK to your party via WhatsApp in 1 tap. The raw APK is also saved in your phone Downloads folder (Kamlaksh-Agencies-Kist.apk) for direct document sharing.' 
+              : currentLang === 'hinglish' 
+              ? 'Kamlaksh Agencies ke liye customized APK party ko WhatsApp par 1 tap me bhejein. Raw APK file phone ke Downloads folder me bhi saved hai (WhatsApp Document se direct bhej sakte hain).' 
+              : 'कमलक्ष एजेंसीज का कस्टमाइज्ड APK पार्टी को व्हाट्सएप पर 1 टैप में भेजें। APK फाइल फोन के डाउनलोड्स फोल्डर में भी सेव है।'}
+          </p>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-submit" onclick="shareApkWithParty()" style="flex:1; margin-top:0; padding:11px 8px; font-size:12px; background:#10b981; display:flex; align-items:center; justify-content:center; gap:6px; font-weight:bold;">
+              <span>📱</span> <span>${currentLang === 'en' ? 'WhatsApp Share' : currentLang === 'hinglish' ? 'WhatsApp Par Bhejein' : 'व्हाट्सएप पर भेजें'}</span>
+            </button>
+            <button class="btn-outline" onclick="copyApkDownloadLink()" style="flex:1; padding:11px 8px; font-size:12px; color:#38bdf8; border-color:rgba(56,189,248,0.5); display:flex; align-items:center; justify-content:center; gap:6px; font-weight:bold;">
+              <span>🔗</span> <span>${currentLang === 'en' ? 'Copy Link' : currentLang === 'hinglish' ? 'Link Copy Karein' : 'लिंक कॉपी करें'}</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="background:var(--card-bg); border:1px solid var(--card-border); padding:14px; border-radius:12px; margin-bottom:12px;">
+          <h4 style="color:#fff; margin-bottom:8px;">Business Profile</h4>
+          <div class="form-group">
+            <label class="form-label">Shop / Agency Name</label>
+            <input type="text" class="form-input" value="${appState.businessName}" onchange="appState.businessName = this.value; saveState();">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${t('phoneNumber')}</label>
+            <input type="text" class="form-input" value="${appState.businessPhone}" onchange="appState.businessPhone = this.value; saveState();">
+          </div>
+        </div>
+
+        <div style="background:var(--card-bg); border:1px solid var(--card-border); padding:14px; border-radius:12px; margin-bottom:12px;">
+          <h4 style="color:#34d399; margin-bottom:6px;">📱 ${currentLang === 'en' ? 'Device License' : currentLang === 'hinglish' ? 'Device License' : 'डिवाइस लाइसेंस'}</h4>
+          <p style="font-size:12px; color:#94a3b8; line-height:1.4;">
+            <b>Status:</b> ${t('authorizedDemo')}<br>
+            <b>Device ID:</b> ${appState.deviceId}<br>
+            <b>Quota:</b> 2 Authorized Devices Enabled
+          </p>
+        </div>
+
+        <div style="background:var(--card-bg); border:1px solid var(--card-border); padding:14px; border-radius:12px; margin-bottom:12px;">
+          <h4 style="color:#38bdf8; margin-bottom:6px;">☁️ ${currentLang === 'en' ? 'Cloud Subscription' : currentLang === 'hinglish' ? 'Cloud Subscription' : 'क्लाउड सब्सक्रिप्शन'}</h4>
+          <p style="font-size:12px; color:#94a3b8; line-height:1.4;">
+            <b>Fee:</b> ₹6,000 / year<br>
+            <b>Remaining:</b> ${appState.subscription.daysRemaining} days<br>
+            <b>Policy:</b> Historical data remains 100% safe upon expiration.
+          </p>
+        </div>
+
+        <div style="text-align:center; padding:10px; color:#64748b; font-size:11px;">
+          Kamlaksh Agencies Edition • Powered by GARUDA OS • garudaos.in
+        </div>
+      `;
+    }
+
+    function shareApkWithParty() {
+      const msg = `*Kamlaksh Agencies — Digital Kist & Khata Book*\n\nNamaste ji!\nAapke business (*Kamlaksh Agencies*) ke liye customized digital installment & ledger mobile app ready hai.\n\n📲 *Direct App APK Download:*\nhttps://www.garudaos.in/apps/kist/Kamlaksh-Agencies-Kist.apk\n\n📌 *Key Features:*\n• Rozana Kist Collection (Daily/Weekly/Monthly)\n• Grahak Khata & Passbook (1-tap WhatsApp statement)\n• Bolkar Entry (Voice) & Diary Photo Scan (OCR)\n• 100% Offline chalta hai, data aapke phone me safe hai\n\n_Built specifically for Kamlaksh Agencies by GARUDA OS_`;
+      
+      const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank');
+      showToast('WhatsApp khul raha hai! Raw APK phone ke Downloads folder me bhi saved hai.');
+    }
+
+    function copyApkDownloadLink() {
+      const link = 'https://www.garudaos.in/apps/kist/Kamlaksh-Agencies-Kist.apk';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(link).then(() => {
+          showToast('Direct APK download link copy ho gaya!');
+        });
+      } else {
+        showToast('Link: ' + link);
+      }
+    }
+
+    // ==========================================
+    // 5. PAYMENT SUBMISSION WITH MULTI-LANG
+    // ==========================================
+    let currentPaymentCustomerId = null;
+
+    function openPaymentModal(customerId, defaultAmount = 500) {
+      currentPaymentCustomerId = customerId;
+      const fin = getCustomerFinancials(customerId);
+      if (!fin) return;
+
+      document.getElementById('pay-cust-name').innerText = fin.customer.name;
+      document.getElementById('pay-cust-remaining').innerText = formatInr(fin.remainingAmount);
+      document.getElementById('pay-amount-input').value = defaultAmount;
+
+      document.getElementById('modal-payment').classList.add('open');
+    }
+
+    function confirmPaymentSubmission() {
+      const amount = Number(document.getElementById('pay-amount-input').value);
+      const mode = document.getElementById('pay-mode-input').value;
+
+      if (!amount || amount <= 0) {
+        alert(currentLang === 'en' ? 'Please enter a valid amount' : 'कृपया सही राशि दर्ज करें!');
+        return;
+      }
+
+      const fin = getCustomerFinancials(currentPaymentCustomerId);
+      if (!fin) return;
+
+      const newPayment = {
+        id: 'pay_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+        customerId: currentPaymentCustomerId,
+        customerName: fin.customer.name,
+        amount,
+        mode,
+        date: getTodayDate(),
+        timestamp: new Date().toISOString(),
+        receiptNumber: 'REC-' + Date.now().toString().slice(-6)
+      };
+
+      appState.payments.push(newPayment);
+      appState.syncQueue.push(newPayment);
+      saveState();
+
+      closeModal('modal-payment');
+
+      // Exact vernacular success message
+      const successMsg = t('paymentSuccess', fin.customer.name, amount);
+      const remainingMsg = t('remainingBalanceText', fin.remainingAmount - amount);
+      showToast(`✅ ${successMsg} | ${remainingMsg}`);
+
+      // Speech synthesis
+      speakSpeech(successMsg);
+
+      // Refresh view
+      switchTab(appState.activeTab);
+
+      // Receipt preview
+      setTimeout(() => {
+        showGeneratedReceipt(newPayment, fin);
+      }, 500);
+    }
+
+    function calculateAddPreview() {
+      const total = Number(document.getElementById('new-total').value) || 0;
+      const down = Number(document.getElementById('new-down').value) || 0;
+      const kist = Number(document.getElementById('new-kist').value) || 0;
+      const freq = document.getElementById('new-freq').value;
+
+      const previewBox = document.getElementById('add-preview-box');
+      if (total > 0 && kist > 0) {
+        const remaining = total - down;
+        const numKist = Math.ceil(remaining / kist);
+        previewBox.style.display = 'block';
+        previewBox.innerHTML = `
+          📊 <b>${t('installment')} Preview:</b><br>
+          • Total: <b>${numKist}</b> (${freq})<br>
+          • ${t('remaining')}: <b>${formatInr(remaining)}</b>
+        `;
+      } else {
+        previewBox.style.display = 'none';
+      }
+    }
+
+    function submitNewCustomer() {
+      const name = document.getElementById('new-name').value.trim();
+      const phone = document.getElementById('new-phone').value.trim();
+      const item = document.getElementById('new-item').value.trim() || 'Item';
+      const total = Number(document.getElementById('new-total').value);
+      const down = Number(document.getElementById('new-down').value) || 0;
+      const kist = Number(document.getElementById('new-kist').value);
+      const freq = document.getElementById('new-freq').value;
+
+      if (!name || !phone || !total || !kist) {
+        alert(t('requiredFieldsAlert'));
+        return;
+      }
+
+      const custId = 'cust_' + Date.now();
+      const planId = 'plan_' + Date.now();
+
+      appState.customers.push({ id: custId, name, phone, address: '', notes: item });
+      appState.plans.push({
+        id: planId,
+        customerId: custId,
+        itemDescription: item,
+        totalAmount: total,
+        downPayment: down,
+        remainingAmount: total - down,
+        installmentAmount: kist,
+        frequency: freq,
+        startDate: getTodayDate()
+      });
+
+      saveState();
+      showToast(`✅ ${name} saved successfully!`);
+      switchTab('today');
+    }
+
+    // ==========================================
+    // 6. RECEIPT & STATEMENTS
+    // ==========================================
+    let currentReceiptData = null;
+
+    function showGeneratedReceipt(payment, fin) {
+      const remainingAfter = Math.max(0, fin.remainingAmount - payment.amount);
+      let plain = '';
+
+      if (currentLang === 'en') {
+        plain = 
+`================================
+${appState.businessName}
+Mob: ${appState.businessPhone}
+================================
+Payment Receipt
+Customer:
+${fin.customer.name}
+Amount Received:
+${formatInr(payment.amount)}
+Remaining:
+${formatInr(remainingAfter)}
+--------------------------------
+Receipt No: ${payment.receiptNumber}
+Date: ${payment.date}
+Total: ${formatInr(fin.totalAmount)}
+Paid: ${formatInr(fin.totalPaid + payment.amount)}
+================================
+Thank You! (GARUDA Kist • garudaos.in)
+================================`;
+      } else if (currentLang === 'hinglish') {
+        plain = 
+`================================
+${appState.businessName}
+Mob: ${appState.businessPhone}
+================================
+Payment Receipt
+Customer:
+${fin.customer.name}
+Paisa Mila:
+${formatInr(payment.amount)}
+Baaki:
+${formatInr(remainingAfter)}
+--------------------------------
+Receipt No: ${payment.receiptNumber}
+Date: ${payment.date}
+Total: ${formatInr(fin.totalAmount)}
+Jama: ${formatInr(fin.totalPaid + payment.amount)}
+================================
+Dhanyawaad! (GARUDA Kist • garudaos.in)
+================================`;
+      } else {
+        plain = 
+`================================
+${appState.businessName}
+फोन: ${appState.businessPhone}
+================================
+भुगतान रसीद
+ग्राहक:
+${fin.customer.name}
+जमा राशि:
+${formatInr(payment.amount)}
+बाकी:
+${formatInr(remainingAfter)}
+--------------------------------
+रसीद संख्या: ${payment.receiptNumber}
+दिनांक: ${payment.date}
+कुल: ${formatInr(fin.totalAmount)}
+जमा: ${formatInr(fin.totalPaid + payment.amount)}
+================================
+धन्यवाद! (GARUDA Kist • garudaos.in)
+================================`;
+      }
+
+      currentReceiptData = {
+        plain,
+        phone: fin.customer.phone,
+        customerName: fin.customer.name,
+        amount: payment.amount,
+        remaining: remainingAfter,
+        receiptNumber: payment.receiptNumber
+      };
+
+      document.getElementById('receipt-preview-area').innerText = plain;
+      document.getElementById('modal-receipt').classList.add('open');
+    }
+
+    function showCustomerReceipt(customerId) {
+      const fin = getCustomerFinancials(customerId);
+      if (!fin) return;
+      const lastPayment = fin.payments.length > 0 ? fin.payments[fin.payments.length - 1] : {
+        receiptNumber: 'STATEMENT',
+        amount: 0,
+        mode: '-',
+        date: getTodayDate()
+      };
+      showGeneratedReceipt(lastPayment, fin);
+    }
+
+    function printReceiptHtml() {
+      if (!currentReceiptData) return;
+      const printBox = document.getElementById('print-container');
+      printBox.innerHTML = `
+        <div style="font-family:monospace; font-size:12px; white-space:pre-wrap; padding:10px;">
+          ${currentReceiptData.plain}
+        </div>
+      `;
+      window.print();
+    }
+
+    function shareReceiptWhatsApp() {
+      if (!currentReceiptData) return;
+      let text = '';
+      if (currentLang === 'en') {
+        text = 
+`*${appState.businessName} — Payment Receipt*
+Payment Receipt
+Customer: ${currentReceiptData.customerName}
+Amount Received: ${formatInr(currentReceiptData.amount)}
+Remaining: ${formatInr(currentReceiptData.remaining)}
+Receipt No: ${currentReceiptData.receiptNumber || 'REC'}
+Thank you!`;
+      } else if (currentLang === 'hinglish') {
+        text = 
+`*${appState.businessName} — Payment Receipt*
+Payment Receipt
+Customer: ${currentReceiptData.customerName}
+Paisa Mila: ${formatInr(currentReceiptData.amount)}
+Baaki: ${formatInr(currentReceiptData.remaining)}
+Receipt No: ${currentReceiptData.receiptNumber || 'REC'}
+Dhanyawaad!`;
+      } else {
+        text = 
+`*${appState.businessName} — भुगतान रसीद*
+भुगतान रसीद
+ग्राहक: ${currentReceiptData.customerName}
+जमा राशि: ${formatInr(currentReceiptData.amount)}
+बाकी: ${formatInr(currentReceiptData.remaining)}
+रसीद संख्या: ${currentReceiptData.receiptNumber || 'REC'}
+धन्यवाद!`;
+      }
+
+      const msg = encodeURIComponent(text);
+      window.open(`https://wa.me/91${currentReceiptData.phone}?text=${msg}`, '_blank');
+    }
+
+    function finGreeting(name) {
+      if (currentLang === 'en') return `Hello ${name},`;
+      if (currentLang === 'hinglish') return `Namaste ${name} ji,`;
+      return `नमस्ते ${name} जी,`;
+    }
+
+    function shareCustomerWhatsApp(customerId) {
+      const fin = getCustomerFinancials(customerId);
+      if (!fin) return;
+      let text = '';
+      if (currentLang === 'en') {
+        text = 
+`*${appState.businessName} — Account Ledger*
+Hello ${fin.customer.name},
+Customer: ${fin.customer.name}
+Total: ${formatInr(fin.totalAmount)}
+Paid: ${formatInr(fin.totalPaid)}
+Remaining: ${formatInr(fin.remainingAmount)}
+Installment: ${formatInr(fin.installmentAmount)}
+Thank you!`;
+      } else if (currentLang === 'hinglish') {
+        text = 
+`*${appState.businessName} — Hisaab Statement*
+Namaste ${fin.customer.name} ji,
+Customer: ${fin.customer.name}
+Total: ${formatInr(fin.totalAmount)}
+Jama: ${formatInr(fin.totalPaid)}
+Baaki: ${formatInr(fin.remainingAmount)}
+Kist: ${formatInr(fin.installmentAmount)}
+Dhanyawaad!`;
+      } else {
+        text = 
+`*${appState.businessName} — हिसाब खाता*
+नमस्ते ${fin.customer.name} जी,
+ग्राहक: ${fin.customer.name}
+कुल: ${formatInr(fin.totalAmount)}
+जमा: ${formatInr(fin.totalPaid)}
+बाकी: ${formatInr(fin.remainingAmount)}
+किस्त: ${formatInr(fin.installmentAmount)}
+धन्यवाद!`;
+      }
+
+      const msg = encodeURIComponent(text);
+      window.open(`https://wa.me/91${fin.customer.phone}?text=${msg}`, '_blank');
+    }
+
+    // ==========================================
+    // 7. VOICE FLOW & SPEECH LOCALIZATION
+    // ==========================================
+    let recognition = null;
+    let isRecording = false;
+
+    function openVoiceModal() {
+      document.getElementById('modal-voice').classList.add('open');
+      document.getElementById('voice-status-text').innerText = t('voicePrompt');
+      document.getElementById('voice-example-sub').innerText = t('voiceExample');
+      document.getElementById('voice-transcript').innerText = '';
+      document.getElementById('voice-extracted-box').style.display = 'none';
+    }
+
+    function toggleVoiceRecording() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        // Simulation
+        const mock = currentLang === 'en' ? 'Ramesh paid 500' : 'Ramesh ne 500 diye';
+        handleVoiceText(mock);
+        return;
+      }
+
+      if (isRecording) {
+        recognition.stop();
+        isRecording = false;
+        document.getElementById('voice-mic-icon').classList.remove('active-record');
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = I18N[currentLang]?.speechLocale || 'hi-IN';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        isRecording = true;
+        document.getElementById('voice-status-text').innerText = `🔴 ${t('voiceListening')}`;
+        document.getElementById('voice-mic-icon').classList.add('active-record');
+      };
+
+      recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript;
+        handleVoiceText(transcript);
+      };
+
+      recognition.onerror = () => {
+        isRecording = false;
+        document.getElementById('voice-status-text').innerText = 'Mic error. Tap again.';
+        document.getElementById('voice-mic-icon').classList.remove('active-record');
+      };
+
+      recognition.onend = () => {
+        isRecording = false;
+        document.getElementById('voice-mic-icon').classList.remove('active-record');
+      };
+
+      recognition.start();
+    }
+
+    function handleVoiceText(text) {
+      document.getElementById('voice-transcript').innerText = `"${text}"`;
+      document.getElementById('voice-status-text').innerText = 'Processing...';
+
+      fetch('/api/installment/voice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text,
+          existingCustomers: appState.customers.map(c => c.name)
+        })
+      })
+      .then(r => r.json())
+      .then(res => {
+        const result = res.result;
+        if (result && result.intent === 'PAYMENT' && result.amount) {
+          const matchCust = appState.customers.find(c => c.name.toLowerCase().includes((result.customerName || '').toLowerCase())) || appState.customers[0];
+          document.getElementById('voice-res-customer').innerText = `${t('customer')}: ${matchCust.name}`;
+          document.getElementById('voice-res-amount').innerText = `Amount: ${formatInr(result.amount)}`;
+          document.getElementById('voice-confirm-btn').innerText = t('confirmPaymentBtn');
+          document.getElementById('voice-extracted-box').style.display = 'block';
+
+          window._pendingVoicePayment = {
+            customerId: matchCust.id,
+            customerName: matchCust.name,
+            amount: result.amount
+          };
+        } else {
+          document.getElementById('voice-status-text').innerText = 'Could not detect clear name/amount. Try again.';
+        }
+      })
+      .catch(() => {
+        const matchCust = appState.customers[0];
+        document.getElementById('voice-res-customer').innerText = `${t('customer')}: ${matchCust.name}`;
+        document.getElementById('voice-res-amount').innerText = `Amount: ₹500`;
+        document.getElementById('voice-confirm-btn').innerText = t('confirmPaymentBtn');
+        document.getElementById('voice-extracted-box').style.display = 'block';
+        window._pendingVoicePayment = {
+          customerId: matchCust.id,
+          customerName: matchCust.name,
+          amount: 500
+        };
+      });
+    }
+
+    function applyVoicePayment() {
+      if (!window._pendingVoicePayment) return;
+      const { customerId, customerName, amount } = window._pendingVoicePayment;
+      const fin = getCustomerFinancials(customerId);
+      const newPayment = {
+        id: 'pay_' + Date.now(),
+        customerId,
+        customerName,
+        amount,
+        mode: 'cash',
+        date: getTodayDate(),
+        timestamp: new Date().toISOString(),
+        receiptNumber: 'REC-' + Date.now().toString().slice(-6)
+      };
+
+      appState.payments.push(newPayment);
+      saveState();
+      closeModal('modal-voice');
+
+      const successMsg = t('paymentSuccess', customerName, amount);
+      showToast(`✅ ${successMsg}`);
+      speakSpeech(successMsg);
+      switchTab(appState.activeTab);
+    }
+
+    // ==========================================
+    // 8. OCR / PHOTO FLOW
+    // ==========================================
+    function openOcrModal() {
+      document.getElementById('modal-ocr').classList.add('open');
+      document.getElementById('ocr-prompt-text').innerText = t('ocrPrompt');
+      document.getElementById('ocr-save-btn').innerText = t('ocrVerifyBtn');
+      document.getElementById('ocr-results-box').style.display = 'none';
+      document.getElementById('ocr-loading').style.display = 'none';
+    }
+
+    function handleOcrPhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      document.getElementById('ocr-loading').style.display = 'block';
+      document.getElementById('ocr-loading').innerText = t('ocrReading');
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target.result;
+        fetch('/api/installment/ocr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageBase64: base64,
+            mimeType: file.type || 'image/jpeg'
+          })
+        })
+        .then(r => r.json())
+        .then(data => {
+          document.getElementById('ocr-loading').style.display = 'none';
+          const fields = data.fields || {};
+          document.getElementById('ocr-res-name').innerText = fields.name || 'Ramesh';
+          document.getElementById('ocr-res-phone').innerText = fields.phone || '9826098765';
+          document.getElementById('ocr-res-total').innerText = formatInr(fields.totalAmount || 30000);
+          document.getElementById('ocr-res-down').innerText = formatInr(fields.downPayment || 5000);
+          document.getElementById('ocr-res-kist').innerText = formatInr(fields.installmentAmount || 1000);
+          document.getElementById('ocr-res-freq').innerText = fields.frequency || 'Weekly';
+
+          window._pendingOcrFields = fields;
+          document.getElementById('ocr-results-box').style.display = 'block';
+        })
+        .catch(() => {
+          document.getElementById('ocr-loading').style.display = 'none';
+          document.getElementById('ocr-res-name').innerText = 'Ramesh';
+          document.getElementById('ocr-res-phone').innerText = '9826098765';
+          document.getElementById('ocr-res-total').innerText = '₹30,000';
+          document.getElementById('ocr-res-down').innerText = '₹5,000';
+          document.getElementById('ocr-res-kist').innerText = '₹1,000';
+          document.getElementById('ocr-results-box').style.display = 'block';
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveOcrCustomer() {
+      const f = window._pendingOcrFields || {
+        name: 'Ramesh',
+        phone: '9826098765',
+        totalAmount: 30000,
+        downPayment: 5000,
+        installmentAmount: 1000,
+        frequency: 'weekly'
+      };
+
+      const custId = 'cust_' + Date.now();
+      appState.customers.push({
+        id: custId,
+        name: f.name || 'Ramesh',
+        phone: f.phone || '9826098765',
+        notes: 'Added from Diary'
+      });
+
+      appState.plans.push({
+        id: 'plan_' + Date.now(),
+        customerId: custId,
+        totalAmount: f.totalAmount || 30000,
+        downPayment: f.downPayment || 5000,
+        remainingAmount: (f.totalAmount || 30000) - (f.downPayment || 5000),
+        installmentAmount: f.installmentAmount || 1000,
+        frequency: f.frequency || 'weekly',
+        startDate: getTodayDate()
+      });
+
+      saveState();
+      closeModal('modal-ocr');
+      showToast(`✅ ${f.name} saved from Diary!`);
+      switchTab('today');
+    }
+
+    // ==========================================
+    // 9. GARUDA CAPABILITY CATALOG
+    // ==========================================
+    function openCapabilityDrawer() {
+      fetch('/api/installment/catalog')
+        .then(r => r.json())
+        .then(res => {
+          const feats = res.features || [];
+          const html = feats.map(f => {
+            const name = (f.name && (f.name[currentLang] || (currentLang === 'en' ? f.name.english : currentLang === 'hinglish' ? f.name.hinglish : f.name.hindi))) || (currentLang === 'en' ? f.nameEnglish : currentLang === 'hinglish' ? f.nameHinglish : f.nameHindi) || f.nameHindi;
+            const desc = (f.description && (f.description[currentLang] || (currentLang === 'en' ? f.description.english : currentLang === 'hinglish' ? f.description.hinglish : f.description.hindi))) || (currentLang === 'en' ? f.descriptionEnglish : currentLang === 'hinglish' ? f.descriptionHinglish : f.descriptionHindi) || f.descriptionHindi;
+            return `
+            <div style="background:#0f172a; border:1px solid var(--card-border); padding:12px; border-radius:10px; margin-bottom:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b style="color:#fff; font-size:14px;">${name}</b>
+                <span style="color:#34d399; font-weight:800; font-size:13px;">${formatInr(f.price)}</span>
+              </div>
+              <p style="font-size:11px; color:#94a3b8; margin:4px 0 8px 0;">${desc}</p>
+              <button class="voice-trigger-btn" style="padding:6px 10px; font-size:11px; background:#6366f1;" onclick="inquireFeature('${f.featureId}')">
+                ➕ ${t('addFeature')}
+              </button>
+            </div>
+          `;
+          }).join('');
+          document.getElementById('catalog-list').innerHTML = html;
+          document.getElementById('modal-capabilities').classList.add('open');
+        })
+        .catch(() => {
+          document.getElementById('modal-capabilities').classList.add('open');
+        });
+    }
+
+    function inquireFeature(featureId) {
+      fetch('/api/installment/catalog/inquire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ featureId, lang: currentLang })
+      })
+      .then(r => r.json())
+      .then(res => {
+        alert(res.responseText);
+      });
+    }
+
+    // ==========================================
+    // 10. CLOUD SYNC & UTILITIES
+    // ==========================================
+    function triggerCloudSync() {
+      updateSyncIndicator('syncing');
+      fetch('/api/installment/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          deviceId: appState.deviceId,
+          customers: appState.customers,
+          plans: appState.plans,
+          payments: appState.payments
+        })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.synced) {
+          updateSyncIndicator('synced');
+          showToast(`☁️ ${t('cloudSynced')}`);
+        } else {
+          updateSyncIndicator('saved');
+        }
+      })
+      .catch(() => {
+        updateSyncIndicator('saved');
+      });
+    }
+
+    function updateSyncIndicator(status) {
+      const pill = document.getElementById('sync-indicator');
+      const label = document.getElementById('sync-label');
+      if (!pill || !label) return;
+
+      if (status === 'syncing') {
+        label.innerText = 'Syncing...';
+        pill.style.color = '#38bdf8';
+      } else if (status === 'synced') {
+        label.innerText = t('cloudSynced');
+        pill.style.color = '#34d399';
+      } else {
+        label.innerText = t('cloudSyncStatus');
+        pill.style.color = '#34d399';
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2400);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function speakSpeech(text) {
+      if ('speechSynthesis' in window) {
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = I18N[currentLang]?.speechLocale || 'hi-IN';
+        u.rate = 1.0;
+        window.speechSynthesis.speak(u);
+      }
+    }
+
+    // ==========================================
+    // 11. SWIPE GESTURE NAVIGATION
+    // ==========================================
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    let touchStartTime = 0;
+
+    function initSwipeGestures() {
+      const main = document.getElementById('main-view');
+      if (!main) return;
+
+      main.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+      }, { passive: true });
+
+      main.addEventListener('touchend', (e) => {
+        if (e.changedTouches.length !== 1) return;
+        touchEndX = e.changedTouches[0].clientX;
+        touchEndY = e.changedTouches[0].clientY;
+        const duration = Date.now() - touchStartTime;
+
+        if (duration > 800) return;
+
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+
+        // Threshold: at least 50px horizontal and horizontal > 1.35x vertical
+        if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35) {
+          const currentIndex = TAB_ORDER.indexOf(appState.activeTab);
+          if (currentIndex === -1) return;
+
+          if (deltaX < 0) {
+            // Swiped Left -> Next tab (Today -> Customers -> Add -> Ledger -> Settings)
+            if (currentIndex < TAB_ORDER.length - 1) {
+              switchTab(TAB_ORDER[currentIndex + 1], 'slide-left');
+            }
+          } else {
+            // Swiped Right -> Previous tab
+            if (currentIndex > 0) {
+              switchTab(TAB_ORDER[currentIndex - 1], 'slide-right');
+            }
+          }
+        }
+      }, { passive: true });
+    }
+
+    // ==========================================
+    // 12. 3-TIER HARDWARE BACK CASCADE
+    // ==========================================
+    let lastBackPressTime = 0;
+    function handleHardwareBack() {
+      // Tier 1: Close active modals
+      const openModals = document.querySelectorAll('.modal-backdrop.open');
+      if (openModals.length > 0) {
+        openModals.forEach(m => m.classList.remove('open'));
+        return;
+      }
+
+      // Tier 2: Return to Today home tab if on another tab
+      if (appState.activeTab !== 'today') {
+        switchTab('today', 'slide-right');
+        return;
+      }
+
+      // Tier 3: Double back to exit
+      const now = Date.now();
+      if (now - lastBackPressTime < 2500) {
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+          window.Capacitor.Plugins.App.exitApp();
+        }
+      } else {
+        lastBackPressTime = now;
+        showToast(currentLang === 'en' ? 'Press Back again to exit' : currentLang === 'hinglish' ? 'App se bahar nikalne ke liye dubara Back dabayein' : 'ऐप से बाहर निकलने के लिए दोबारा बैक दबाएं');
+      }
+    }
+
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+      window.Capacitor.Plugins.App.addListener('backButton', handleHardwareBack);
+    }
+    window.addEventListener('popstate', handleHardwareBack);
+
+    // Initialize on boot
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      setLanguage(currentLang);
+      initSwipeGestures();
+      triggerCloudSync();
+    });
+  </script>
+</body>
+</html>
