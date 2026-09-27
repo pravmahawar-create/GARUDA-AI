@@ -513,3 +513,24 @@ validate_pipeline.py permanent guardrail banaya jo py_compile + queue schema + n
 
 #### 4. Inscribed Permanent Law / Guardrail
 > **LAW: Whenever preparing client demonstration APKs, client identity must be branded across all native Android strings, headers, receipts, and migrations. The APK must be pushed directly to the phone's /sdcard/Download/ directory and equipped with an in-app 1-tap WhatsApp share intent, allowing the Founder to instantly send the application to the party without friction.**
+
+
+---
+
+### Mission: Render Deploy Failure Forensics - 9d791ff MODULE_NOT_FOUND (Founder Dashboard Audit)
+- **Timestamp**: 2026-09-27T05:30:00.000Z
+- **Commit SHA**: `9d791ff` (failed) -> `44ffdfa` (healthy live)
+- **Category**: `deployment`
+- **Verification Evidence**: Render deploy log: `Cannot find module '../services/garudaIntelligence'` at `src/routes/intelligenceRoutes.js:9`, requireStack intelligenceRoutes.js -> app.js -> server.js, `Exited with status 1`. Root cause proven via git: intelligenceRoutes.js added in 9d791ff, but src/services/garudaIntelligence/ folder added only in 07c5153 (LS_COUNT=0 at 9d791ff). Current live 44ffdfa = /api/health 200 (mongodb-connected), 13 files in folder.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. **Route commit apni service dependency ke pehle push ho gaya -> Render Auto-Deploy per-push build crash (MODULE_NOT_FOUND), failed deploy entry dashboard me.**
+
+#### 2. Root Cause Forensic Analysis
+Commit non-atomic tha: `require("../services/garudaIntelligence")` us commit me dangling tha. Render free instance ka auto-deploy har push par server.js start karta hai - crash = Exited status 1. Render ka safety: failed deploy par purana working deploy hi serve hota hai (isliye production down nahi hui).
+
+#### 3. Permanent Architectural Countermeasure
+Pre-push dependency resolver guardrail: changed route files ke require() targets HEAD pe resolve check; route + service ek hi push batch me ship karo. Memory: mem-les-009.
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **LAW: Koi bhi route file tab tak push mat karo jab tak uski saari require() dependencies usi commit/push batch me na ho - `node --check` + require.resolve walk mandatory hai, warna Render/Vercel auto-deploy crash hoga aur dashboard me failed deploy lega.**
