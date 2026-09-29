@@ -150,6 +150,8 @@ app.use("/api/customer", (req, res) => require("../api/customer")(req, res));
 app.use("/api/cybershield", require("./routes/cybershieldRoutes"));
 // GARUDA Autonomous Revenue Hunter — Cloud Continuous Software Hunting & Outreach
 app.use("/api/revenue-hunter", require("./routes/revenueHunterRoutes"));
+// GARUDA Autonomous Social Content Operations & Peak-Time Intelligence Engine
+app.use("/api/content", require("./routes/contentOperationsRoutes"));
 
 app.use("/api/founder", (req, res) => require("../api/founder")(req, res));
 app.use("/api/founder-command", (req, res) => require("../api/founder")(req, res));

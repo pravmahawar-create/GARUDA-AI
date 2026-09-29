@@ -64,17 +64,36 @@ async function startCloudHunter() {
       log('Executing initial warm-up hunter cycle...');
       const summary = await hunter.runCycle({ dryRun: false });
       log(`Initial cycle finished: ${summary.leadsDiscovered} discovered, ${summary.leadsQualified} qualified, ${summary.queuedForApproval} queued.`);
+
+      log('Checking scheduled social content items on Render startup...');
+      const ContentScheduler = require('../../social-engine/content/contentScheduler');
+      const contentRes = await ContentScheduler.runSchedulerCycle({ dryRun: false });
+      log(`Initial content cycle finished: ${contentRes.evaluated} evaluated, ${contentRes.published} published.`);
     } catch (e) {
       log(`Initial cycle error: ${e.message}`);
     }
   }, 10000);
 
-  // Arm recurring schedule
+  // Arm recurring schedule for Revenue Hunter
   hunter.startScheduler(INTERVAL_MINUTES * 60 * 1000);
+
+  // Arm recurring schedule for Content Scheduler (every 15 minutes)
+  const contentInterval = setInterval(async () => {
+    try {
+      const ContentScheduler = require('../../social-engine/content/contentScheduler');
+      const contentRes = await ContentScheduler.runSchedulerCycle({ dryRun: false });
+      if (contentRes.evaluated > 0) {
+        log(`[CONTENT_SCHEDULER] Evaluated ${contentRes.evaluated} posts: ${contentRes.published} published, ${contentRes.failed} failed.`);
+      }
+    } catch (err) {
+      log(`[CONTENT_SCHEDULER] Recurring cycle error: ${err.message}`);
+    }
+  }, 15 * 60 * 1000);
 
   // Graceful shutdown handlers
   const shutdown = () => {
-    log('🛑 Graceful shutdown signal received. Stopping cloud hunter scheduler...');
+    log('🛑 Graceful shutdown signal received. Stopping cloud hunter & content schedulers...');
+    clearInterval(contentInterval);
     hunter.stopScheduler();
     setTimeout(() => process.exit(0), 500);
   };
