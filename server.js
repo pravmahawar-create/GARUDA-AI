@@ -188,5 +188,37 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
         } else {
             console.log("[GARUDA] Social scouts daemon idle — set GARUDA_SOCIAL_SCOUTS=true to enable");
         }
+
+        // ── 24/7 Autonomous Revenue Hunter Subsystem (Render Cloud 24x7) ──
+        const revenueHunterEnabled = String(process.env.GARUDA_REVENUE_HUNTER ?? "true").toLowerCase() === "true";
+        if (revenueHunterEnabled) {
+            try {
+                const { spawn } = require("child_process");
+                const path = require("path");
+                const hunterDaemonPath = path.join(__dirname, "scripts", "daemons", "revenue-hunter-cloud-daemon.js");
+                let hunterRestartCount = 0;
+                const spawnHunter = () => {
+                    const child = spawn("node", [hunterDaemonPath], {
+                        stdio: "inherit",
+                        detached: false,
+                        env: process.env
+                    });
+                    child._spawnAt = Date.now();
+                    console.log(`[GARUDA] 🦅 24/7 Autonomous Revenue Hunter spawned on Render Cloud (PID ${child.pid}, restart #${hunterRestartCount})`);
+                    child.on("error", e => console.error("[GARUDA] Revenue Hunter spawn failed:", e.message));
+                    child.on("exit", (code, signal) => {
+                        const uptimeSec = ((Date.now() - child._spawnAt)/1000).toFixed(0);
+                        console.log(`[GARUDA] Revenue Hunter exited code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 45s`);
+                        hunterRestartCount++;
+                        setTimeout(spawnHunter, 45000);
+                    });
+                    return child;
+                };
+                // Initial warm up delay (20s) after server boot
+                setTimeout(spawnHunter, 20000);
+            } catch (e) { console.error("[GARUDA] Revenue Hunter boot failed:", e.message); }
+        } else {
+            console.log("[GARUDA] Revenue Hunter daemon idle — set GARUDA_REVENUE_HUNTER=true to enable");
+        }
     });
 })();

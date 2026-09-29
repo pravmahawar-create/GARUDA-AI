@@ -60,3 +60,5 @@ services:
         sync: false
       - key: LINKEDIN_LI_AT
         sync: false
+      - key: GARUDA_REVENUE_HUNTER
+        value: true

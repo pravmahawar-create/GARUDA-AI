@@ -148,6 +148,9 @@ app.use("/api/auth", (req, res) => require("../api/auth")(req, res));
 app.use("/api/customer", (req, res) => require("../api/customer")(req, res));
 // GARUDA CyberShield™ Sovereign Anti-Troll Defense & Forensic Evidence API
 app.use("/api/cybershield", require("./routes/cybershieldRoutes"));
+// GARUDA Autonomous Revenue Hunter — Cloud Continuous Software Hunting & Outreach
+app.use("/api/revenue-hunter", require("./routes/revenueHunterRoutes"));
+
 app.use("/api/founder", (req, res) => require("../api/founder")(req, res));
 app.use("/api/founder-command", (req, res) => require("../api/founder")(req, res));
 app.use("/api/inbound", require("./routes/inboundRoutes"));
