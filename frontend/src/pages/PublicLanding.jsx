@@ -696,7 +696,7 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             },
             {
               q: "Is WhatsApp Cloud API compliance guaranteed?",
-              a: "Yes. All integrations use the official Meta WhatsApp Business Platform (Cloud API), ensuring full opt-in compliance without risking account suspension."
+              a: "GARUDA's architecture strictly follows the documented Meta WhatsApp Cloud API integration flow, including official webhook verification and secure dispatch. However, Meta account approval, messaging templates, opt-in adherence, and ongoing account standing remain subject to Meta's business policies and the customer's messaging practices."
             }
           ].map((item, idx) => (
             <div
