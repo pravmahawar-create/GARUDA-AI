@@ -69,14 +69,14 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
       role="region"
       aria-label="Live GARUDA AI Playground"
       style={{
-        background: "rgba(11, 15, 22, 0.78)",
-        border: "1px solid rgba(245, 215, 110, 0.22)",
+        background: "linear-gradient(180deg, #10141D 0%, #0B0E14 100%)",
+        border: "1px solid rgba(201, 154, 50, 0.28)",
         borderRadius: 20,
-        boxShadow: "0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(245, 215, 110, 0.06)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        padding: "clamp(1.2rem, 3vw, 1.8rem)",
-        maxWidth: 720,
+        boxShadow: "0 24px 60px -12px rgba(23, 24, 27, 0.32), 0 2px 10px rgba(0, 0, 0, 0.2)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        padding: "clamp(1.3rem, 3.2vw, 2rem)",
+        maxWidth: 740,
         margin: "0 auto",
         textAlign: "left",
         color: "#f3f4f6"
@@ -94,8 +94,8 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
         borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-          <span style={{ fontSize: "1.1rem" }}>⚡</span>
-          <span style={{ fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.05em", color: "#ffffff" }}>
+          <span style={{ fontSize: "1.1rem", color: "#D6A84F" }}>⚡</span>
+          <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.06em", color: "#ffffff" }}>
             LIVE GARUDA PLAYGROUND
           </span>
         </div>
@@ -103,16 +103,16 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
           display: "inline-flex",
           alignItems: "center",
           gap: "0.45rem",
-          background: "rgba(117, 244, 171, 0.08)",
-          border: "1px solid rgba(117, 244, 171, 0.3)",
-          color: "#75f4ab",
-          padding: "0.25rem 0.65rem",
+          background: "rgba(5, 150, 105, 0.12)",
+          border: "1px solid rgba(5, 150, 105, 0.35)",
+          color: "#34D399",
+          padding: "0.28rem 0.75rem",
           borderRadius: 999,
           fontSize: "0.72rem",
           fontWeight: 700,
           fontFamily: "ui-monospace, monospace"
         }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#75f4ab", boxShadow: "0 0 8px #75f4ab" }} />
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#34D399", boxShadow: "0 0 8px #34D399" }} />
           SANDBOX ACTIVE · 0ms
         </div>
       </div>
@@ -125,7 +125,7 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: "0.5rem",
-          background: "rgba(4, 7, 10, 0.7)",
+          background: "#06090E",
           padding: "0.35rem",
           borderRadius: 12,
           marginBottom: "1.2rem",
@@ -138,10 +138,10 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
           aria-selected={activeMode === SIMULATION_MODES.CLINIC}
           onClick={() => handleModeChange(SIMULATION_MODES.CLINIC)}
           style={{
-            background: activeMode === SIMULATION_MODES.CLINIC ? "rgba(245, 215, 110, 0.15)" : "transparent",
-            border: activeMode === SIMULATION_MODES.CLINIC ? "1px solid rgba(245, 215, 110, 0.4)" : "1px solid transparent",
-            color: activeMode === SIMULATION_MODES.CLINIC ? "#f5d76e" : "#9ca3af",
-            padding: "0.6rem 0.5rem",
+            background: activeMode === SIMULATION_MODES.CLINIC ? "rgba(201, 154, 50, 0.16)" : "transparent",
+            border: activeMode === SIMULATION_MODES.CLINIC ? "1px solid rgba(201, 154, 50, 0.45)" : "1px solid transparent",
+            color: activeMode === SIMULATION_MODES.CLINIC ? "#F5D76E" : "#8B94A6",
+            padding: "0.65rem 0.5rem",
             borderRadius: 8,
             fontWeight: 700,
             fontSize: "clamp(0.78rem, 1.8vw, 0.88rem)",
@@ -163,10 +163,10 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
           aria-selected={activeMode === SIMULATION_MODES.SALES}
           onClick={() => handleModeChange(SIMULATION_MODES.SALES)}
           style={{
-            background: activeMode === SIMULATION_MODES.SALES ? "rgba(245, 215, 110, 0.15)" : "transparent",
-            border: activeMode === SIMULATION_MODES.SALES ? "1px solid rgba(245, 215, 110, 0.4)" : "1px solid transparent",
-            color: activeMode === SIMULATION_MODES.SALES ? "#f5d76e" : "#9ca3af",
-            padding: "0.6rem 0.5rem",
+            background: activeMode === SIMULATION_MODES.SALES ? "rgba(201, 154, 50, 0.16)" : "transparent",
+            border: activeMode === SIMULATION_MODES.SALES ? "1px solid rgba(201, 154, 50, 0.45)" : "1px solid transparent",
+            color: activeMode === SIMULATION_MODES.SALES ? "#F5D76E" : "#8B94A6",
+            padding: "0.65rem 0.5rem",
             borderRadius: 8,
             fontWeight: 700,
             fontSize: "clamp(0.78rem, 1.8vw, 0.88rem)",
@@ -188,10 +188,10 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
           aria-selected={activeMode === SIMULATION_MODES.CODE}
           onClick={() => handleModeChange(SIMULATION_MODES.CODE)}
           style={{
-            background: activeMode === SIMULATION_MODES.CODE ? "rgba(245, 215, 110, 0.15)" : "transparent",
-            border: activeMode === SIMULATION_MODES.CODE ? "1px solid rgba(245, 215, 110, 0.4)" : "1px solid transparent",
-            color: activeMode === SIMULATION_MODES.CODE ? "#f5d76e" : "#9ca3af",
-            padding: "0.6rem 0.5rem",
+            background: activeMode === SIMULATION_MODES.CODE ? "rgba(201, 154, 50, 0.16)" : "transparent",
+            border: activeMode === SIMULATION_MODES.CODE ? "1px solid rgba(201, 154, 50, 0.45)" : "1px solid transparent",
+            color: activeMode === SIMULATION_MODES.CODE ? "#F5D76E" : "#8B94A6",
+            padding: "0.65rem 0.5rem",
             borderRadius: 8,
             fontWeight: 700,
             fontSize: "clamp(0.78rem, 1.8vw, 0.88rem)",
@@ -210,7 +210,7 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
 
       {/* Preset Prompt Chips */}
       <div style={{ marginBottom: "1rem" }}>
-        <span style={{ fontSize: "0.72rem", color: "#8d95a7", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.08em", display: "block", marginBottom: "0.45rem" }}>
+        <span style={{ fontSize: "0.72rem", color: "#8B94A6", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.08em", display: "block", marginBottom: "0.45rem" }}>
           Suggested Scenarios (1-Tap Test):
         </span>
         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
@@ -220,10 +220,10 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
               type="button"
               onClick={() => handleSelectPrompt(p.text)}
               style={{
-                background: inputMessage === p.text ? "rgba(245, 215, 110, 0.12)" : "rgba(255, 255, 255, 0.04)",
-                border: inputMessage === p.text ? "1px solid rgba(245, 215, 110, 0.35)" : "1px solid rgba(255, 255, 255, 0.08)",
-                color: inputMessage === p.text ? "#f5d76e" : "#d1d5db",
-                padding: "0.35rem 0.75rem",
+                background: inputMessage === p.text ? "rgba(201, 154, 50, 0.16)" : "rgba(255, 255, 255, 0.04)",
+                border: inputMessage === p.text ? "1px solid rgba(201, 154, 50, 0.45)" : "1px solid rgba(255, 255, 255, 0.08)",
+                color: inputMessage === p.text ? "#F5D76E" : "#D1D5DB",
+                padding: "0.38rem 0.8rem",
                 borderRadius: 999,
                 fontSize: "0.76rem",
                 fontWeight: 600,
@@ -247,12 +247,12 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
           aria-label="Simulation message input"
           style={{
             flex: 1,
-            background: "#04070a",
+            background: "#06090E",
             border: "1px solid rgba(255, 255, 255, 0.12)",
             borderRadius: 10,
-            padding: "0.65rem 0.9rem",
+            padding: "0.75rem 1rem",
             color: "#ffffff",
-            fontSize: "0.88rem",
+            fontSize: "0.9rem",
             outline: "none"
           }}
         />
@@ -260,16 +260,17 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
           type="submit"
           disabled={isProcessing}
           style={{
-            background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
-            color: "#05070b",
+            background: "linear-gradient(135deg, #C99A32 0%, #B88924 100%)",
+            color: "#080A0E",
             border: "none",
             borderRadius: 10,
-            padding: "0 1.25rem",
+            padding: "0 1.35rem",
             fontWeight: 800,
             fontSize: "0.85rem",
             cursor: "pointer",
             opacity: isProcessing ? 0.7 : 1,
-            whiteSpace: "nowrap"
+            whiteSpace: "nowrap",
+            boxShadow: "0 4px 14px rgba(201, 154, 50, 0.25)"
           }}
         >
           {isProcessing ? "Triage..." : "Simulate →"}
@@ -279,10 +280,10 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
       {/* Structured Output Card */}
       {result && (
         <div style={{
-          background: "#05080f",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
+          background: "#080B10",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
           borderRadius: 14,
-          padding: "1.1rem",
+          padding: "1.25rem",
           position: "relative",
           overflow: "hidden"
         }}>
@@ -310,7 +311,7 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
               }}>
                 {result.priority}
               </span>
-              <span style={{ color: "#8d95a7" }}>{result.category}</span>
+              <span style={{ color: "#8D95A7" }}>{result.category}</span>
             </div>
 
             {result.humanEscalationRequired && (
@@ -346,8 +347,8 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
 
           {/* AI Structured Reply */}
           <div style={{
-            fontSize: "0.92rem",
-            lineHeight: 1.6,
+            fontSize: "0.94rem",
+            lineHeight: 1.65,
             color: "#f3f4f6",
             marginBottom: "0.9rem"
           }}>
@@ -357,9 +358,9 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
           {/* Safety Disclaimer Banner */}
           <div style={{
             background: "rgba(255, 255, 255, 0.03)",
-            borderLeft: "3px solid rgba(245, 215, 110, 0.4)",
-            padding: "0.45rem 0.75rem",
-            fontSize: "0.7rem",
+            borderLeft: "3px solid rgba(201, 154, 50, 0.5)",
+            padding: "0.5rem 0.8rem",
+            fontSize: "0.72rem",
             color: "#9ca3af",
             marginBottom: "1rem"
           }}>
@@ -372,15 +373,15 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
               type="button"
               onClick={handleCTAClick}
               style={{
-                background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
-                color: "#05070b",
+                background: "linear-gradient(135deg, #C99A32 0%, #B88924 100%)",
+                color: "#080A0E",
                 border: "none",
                 borderRadius: 8,
-                padding: "0.6rem 1.4rem",
+                padding: "0.65rem 1.4rem",
                 fontWeight: 800,
                 fontSize: "0.84rem",
                 cursor: "pointer",
-                boxShadow: "0 4px 15px rgba(245, 215, 110, 0.25)",
+                boxShadow: "0 4px 15px rgba(201, 154, 50, 0.25)",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "0.4rem"

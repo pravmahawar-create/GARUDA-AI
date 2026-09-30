@@ -21,7 +21,8 @@ export default function ProjectScopeForm({
   defaultService = "custom-ai-development",
   title = "Request a Fixed-Price Project Scope",
   subtitle = "Tell us what problem you want solved. Receive an architectural scope blueprint, milestone breakdown, and verified quote within 24 hours.",
-  onSuccess
+  onSuccess,
+  theme = "default"
 }) {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
@@ -95,46 +96,49 @@ export default function ProjectScopeForm({
     }
   };
 
+  const isLight = theme === "light";
+
   if (result) {
     const scopeId = result.proposal?.scopeId || result.leadId || "GARUDA-SCOPE";
     return (
       <div
         id="project-scope"
         style={{
-          background: "linear-gradient(160deg, rgba(212,175,55,0.08) 0%, rgba(11,15,22,0.95) 100%)",
-          border: "1px solid rgba(212,175,55,0.4)",
+          background: isLight ? "#FFFFFF" : "linear-gradient(160deg, rgba(212,175,55,0.08) 0%, rgba(11,15,22,0.95) 100%)",
+          border: isLight ? "1px solid rgba(201, 154, 50, 0.35)" : "1px solid rgba(212,175,55,0.4)",
           borderRadius: "20px",
           padding: "3rem 2rem",
           maxWidth: 720,
           margin: "0 auto",
           textAlign: "center",
-          boxShadow: "0 16px 48px rgba(0,0,0,0.5)"
+          boxShadow: isLight ? "0 16px 48px rgba(23, 24, 27, 0.06)" : "0 16px 48px rgba(0,0,0,0.5)"
         }}
       >
         <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(16,185,129,0.15)", border: "2px solid #10b981", color: "#10b981", display: "grid", placeItems: "center", fontSize: "2rem", margin: "0 auto 1.5rem" }}>
           ✓
         </div>
-        <h3 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#ffffff", margin: "0 0 0.5rem" }}>
+        <h3 style={{ fontSize: "1.8rem", fontWeight: 800, color: isLight ? "#17181B" : "#ffffff", margin: "0 0 0.5rem", fontFamily: "'Manrope', sans-serif" }}>
           Project Scope Request Received
         </h3>
-        <p style={{ color: "#d4af37", fontWeight: 700, fontSize: "0.95rem", margin: "0 0 1.25rem", letterSpacing: "0.08em" }}>
+        <p style={{ color: "#b88924", fontWeight: 700, fontSize: "0.95rem", margin: "0 0 1.25rem", letterSpacing: "0.08em" }}>
           SCOPE REFERENCE: #{scopeId}
         </p>
-        <p style={{ color: "#9ca3af", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: 540, margin: "0 auto 2rem" }}>
+        <p style={{ color: isLight ? "#686A70" : "#9ca3af", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: 540, margin: "0 auto 2rem" }}>
           Thank you, <strong>{name}</strong>. GARUDA's Principal Architect has received your project brief. We will formulate your fixed-price milestone quote and reach out within 24 hours.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
           <a
             href={`/proposal/${scopeId}`}
             style={{
-              background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
-              color: "#05070a",
+              background: isLight ? "#17181B" : "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
+              color: isLight ? "#FAF9F6" : "#05070a",
+              border: isLight ? "1px solid rgba(201, 154, 50, 0.4)" : "none",
               padding: "0.85rem 1.8rem",
               borderRadius: "999px",
               fontWeight: 800,
               textDecoration: "none",
               fontSize: "0.92rem",
-              boxShadow: "0 6px 20px rgba(245,215,110,0.25)"
+              boxShadow: isLight ? "0 6px 20px rgba(23, 24, 27, 0.15)" : "0 6px 20px rgba(245,215,110,0.25)"
             }}
           >
             View Formal Digital Scope & Proposal →
@@ -142,9 +146,9 @@ export default function ProjectScopeForm({
           <a
             href={`/chat?topic=${encodeURIComponent(service)}`}
             style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(245,215,110,0.3)",
-              color: "#f5d76e",
+              background: isLight ? "#FAF9F6" : "rgba(255,255,255,0.06)",
+              border: isLight ? "1px solid rgba(23, 24, 27, 0.14)" : "1px solid rgba(245,215,110,0.3)",
+              color: isLight ? "#17181B" : "#f5d76e",
               padding: "0.85rem 1.8rem",
               borderRadius: "999px",
               fontWeight: 700,
@@ -162,7 +166,7 @@ export default function ProjectScopeForm({
               style={{
                 background: "rgba(16,185,129,0.12)",
                 border: "1px solid rgba(16,185,129,0.5)",
-                color: "#34d399",
+                color: "#059669",
                 padding: "0.85rem 1.8rem",
                 borderRadius: "999px",
                 fontWeight: 700,
@@ -180,11 +184,11 @@ export default function ProjectScopeForm({
 
   const fieldStyle = {
     width: "100%",
-    background: "rgba(255,255,255,0.04)",
-    border: "1px solid rgba(255,255,255,0.12)",
+    background: isLight ? "#FAF9F6" : "rgba(255,255,255,0.04)",
+    border: isLight ? "1px solid rgba(23, 24, 27, 0.12)" : "1px solid rgba(255,255,255,0.12)",
     borderRadius: "10px",
     padding: "0.85rem 1rem",
-    color: "#ffffff",
+    color: isLight ? "#17181B" : "#ffffff",
     fontSize: "0.95rem",
     fontFamily: "inherit",
     outline: "none",
@@ -194,7 +198,7 @@ export default function ProjectScopeForm({
 
   const labelStyle = {
     display: "block",
-    color: "#d1d5db",
+    color: isLight ? "#202126" : "#d1d5db",
     fontSize: "0.85rem",
     fontWeight: 600,
     marginBottom: "0.4rem",
@@ -205,23 +209,23 @@ export default function ProjectScopeForm({
     <div
       id="project-scope"
       style={{
-        background: "linear-gradient(160deg, rgba(212,175,55,0.06) 0%, rgba(11,15,22,0.9) 100%)",
-        border: "1px solid rgba(212,175,55,0.25)",
+        background: isLight ? "#FFFFFF" : "linear-gradient(160deg, rgba(212,175,55,0.06) 0%, rgba(11,15,22,0.9) 100%)",
+        border: isLight ? "1px solid rgba(201, 154, 50, 0.3)" : "1px solid rgba(212,175,55,0.25)",
         borderRadius: "20px",
         padding: "clamp(2rem, 5vw, 3rem)",
         maxWidth: 720,
         margin: "0 auto",
-        boxShadow: "0 12px 40px rgba(0,0,0,0.4)"
+        boxShadow: isLight ? "0 16px 48px rgba(23, 24, 27, 0.06), 0 2px 8px rgba(0, 0, 0, 0.02)" : "0 12px 40px rgba(0,0,0,0.4)"
       }}
     >
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-        <span style={{ display: "inline-block", background: "rgba(212,175,55,0.12)", color: "#d4af37", padding: "0.25rem 0.8rem", borderRadius: "999px", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+        <span style={{ display: "inline-block", background: "rgba(201, 154, 50, 0.12)", color: "#9E741D", padding: "0.25rem 0.8rem", borderRadius: "999px", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
           Deterministic Scoping
         </span>
-        <h2 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "#ffffff", margin: "0 0 0.6rem" }}>
+        <h2 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: isLight ? "#17181B" : "#ffffff", margin: "0 0 0.6rem", fontFamily: "'Manrope', sans-serif" }}>
           {title}
         </h2>
-        <p style={{ color: "#9ca3af", fontSize: "0.98rem", lineHeight: 1.6, maxWidth: 580, margin: "0 auto" }}>
+        <p style={{ color: isLight ? "#686A70" : "#9ca3af", fontSize: "0.98rem", lineHeight: 1.6, maxWidth: 580, margin: "0 auto" }}>
           {subtitle}
         </p>
       </div>
@@ -261,7 +265,7 @@ export default function ProjectScopeForm({
               style={{ ...fieldStyle, cursor: "pointer" }}
             >
               {SERVICES_OPTIONS.map((s) => (
-                <option key={s.id} value={s.id} style={{ background: "#111827", color: "#fff" }}>
+                <option key={s.id} value={s.id} style={{ background: isLight ? "#FFFFFF" : "#111827", color: isLight ? "#17181B" : "#fff" }}>
                   {s.label}
                 </option>
               ))}
@@ -275,7 +279,7 @@ export default function ProjectScopeForm({
               style={{ ...fieldStyle, cursor: "pointer" }}
             >
               {BUDGET_OPTIONS.map((b) => (
-                <option key={b} value={b} style={{ background: "#111827", color: "#fff" }}>
+                <option key={b} value={b} style={{ background: isLight ? "#FFFFFF" : "#111827", color: isLight ? "#17181B" : "#fff" }}>
                   {b}
                 </option>
               ))}
@@ -296,7 +300,7 @@ export default function ProjectScopeForm({
         </div>
 
         {error && (
-          <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", padding: "0.75rem 1rem", borderRadius: "8px", fontSize: "0.88rem", textAlign: "left" }}>
+          <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#DC2626", padding: "0.75rem 1rem", borderRadius: "8px", fontSize: "0.88rem", textAlign: "left" }}>
             ✕ {error}
           </div>
         )}
@@ -305,22 +309,22 @@ export default function ProjectScopeForm({
           type="submit"
           disabled={loading}
           style={{
-            background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
-            color: "#05070a",
-            border: "none",
+            background: isLight ? "linear-gradient(135deg, #17181B 0%, #292B30 100%)" : "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
+            color: isLight ? "#FAF9F6" : "#05070a",
+            border: isLight ? "1px solid rgba(201, 154, 50, 0.45)" : "none",
             padding: "1rem 2rem",
             borderRadius: "10px",
             fontWeight: 800,
             fontSize: "1rem",
             cursor: loading ? "not-allowed" : "pointer",
-            boxShadow: "0 8px 24px rgba(245,215,110,0.25)",
+            boxShadow: isLight ? "0 8px 24px rgba(23, 24, 27, 0.18)" : "0 8px 24px rgba(245,215,110,0.25)",
             marginTop: "0.5rem"
           }}
         >
           {loading ? "Processing Architecture Scope…" : "◈ Submit for Fixed-Price Project Scope →"}
         </button>
 
-        <p style={{ color: "#6b7280", fontSize: "0.8rem", textAlign: "center", margin: 0 }}>
+        <p style={{ color: isLight ? "#8A8D95" : "#6b7280", fontSize: "0.8rem", textAlign: "center", margin: 0 }}>
           🔒 Governed by GARUDA 100% Truth Law. No spam, no obligation. 50% advance kickoff milestone terms.
         </p>
       </form>

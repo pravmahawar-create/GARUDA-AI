@@ -26,6 +26,42 @@
   --fd-pad: 24px;
   --fd-font-heading: "Manrope", Inter, ui-sans-serif, system-ui, sans-serif;
   --fd-font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* GARUDA OS Premium Light Visual System Tokens (Phase 1 Visual Polish) */
+  --canvas-warm: #F7F5F0;
+  --canvas-ivory: #FAF9F6;
+  --canvas-subtle: #F3F1EB;
+  --canvas-card: #FFFFFF;
+  --text-rich: #17181B;
+  --text-body: #292B30;
+  --text-muted: #686A70;
+  --text-subtle: #8A8D95;
+  --gold-primary: #C99A32;
+  --gold-deep: #B88924;
+  --gold-light: #D6A84F;
+  --gold-halo: rgba(201, 154, 50, 0.12);
+  --tech-indigo: #343A67;
+  --border-light: rgba(23, 24, 27, 0.08);
+  --border-light-hover: rgba(23, 24, 27, 0.16);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 20px 48px -8px rgba(23, 24, 27, 0.06), 0 4px 12px rgba(0, 0, 0, 0.02);
+  --shadow-gold: 0 14px 40px rgba(201, 154, 50, 0.12), 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+/* Accessibility & Focus Standards */
+:focus-visible {
+  outline: 2px solid var(--gold-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .founder-fd {
