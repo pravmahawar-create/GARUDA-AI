@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="100%" height="100%" preserveAspectRatio="none" fill="none">
+  <defs>
+    <linearGradient id="lineGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b38235" stop-opacity="0.02" />
+      <stop offset="35%" stop-color="#b38235" stop-opacity="0.12" />
+      <stop offset="70%" stop-color="#b38235" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#b38235" stop-opacity="0.03" />
+    </linearGradient>
+  </defs>
+  <!-- Flowing aerodynamic elevation curves -->
+  <path d="M -100,280 C 300,180 650,420 1100,260 C 1350,160 1500,290 1700,240" stroke="url(#lineGold)" stroke-width="1.4" />
+  <path d="M -100,320 C 350,230 700,460 1150,300 C 1380,210 1520,330 1700,280" stroke="url(#lineGold)" stroke-width="1.2" />
+  <path d="M -100,360 C 400,280 750,500 1200,340 C 1410,260 1550,370 1700,320" stroke="url(#lineGold)" stroke-width="1.0" />
+  <path d="M -100,640 C 400,520 800,750 1250,580 C 1450,500 1580,620 1700,560" stroke="url(#lineGold)" stroke-width="1.2" />
+  <path d="M -100,680 C 450,570 850,790 1300,620 C 1480,540 1600,660 1700,600" stroke="url(#lineGold)" stroke-width="1.0" />
+</svg>

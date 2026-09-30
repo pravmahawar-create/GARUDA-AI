@@ -9,23 +9,25 @@ import LiveGarudaPlayground from "../components/LiveGarudaPlayground";
 import { trackEvent } from "../utils/telemetry";
 
 const palette = {
-  // Foundation Canvas (Warm premium ivory / very soft off-white)
-  canvas: "#F7F5F0",
+  // Foundation Canvas (Warm premium ivory / atmospheric off-white)
+  canvas: "#F6F4EE",
   canvasIvory: "#FAF9F6",
-  canvasSubtle: "#F3F1EB",
+  canvasSubtle: "#F2EFE8",
   card: "#FFFFFF",
 
-  // Text Hierarchy (Rich graphite, not pure black)
+  // Text Hierarchy (Rich graphite, not flat black)
   text: "#17181B",
   textBody: "#292B30",
-  muted: "#686A70",
+  muted: "#525866",
   subtle: "#8A8D95",
 
-  // Signature GARUDA Gold (Subtle, prestigious accents)
-  gold: "#C99A32",
-  goldDeep: "#B88924",
+  // Signature GARUDA Gold (Metalic, warm, expensive)
+  gold: "#B38235",
+  goldPrimary: "#C48B28",
+  goldDeep: "#9E6D1C",
   goldLight: "#D6A84F",
-  goldHalo: "rgba(201, 154, 50, 0.12)",
+  goldGradient: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)",
+  goldHalo: "rgba(179, 130, 53, 0.12)",
 
   // Functional Status Accents
   green: "#059669",
@@ -35,15 +37,15 @@ const palette = {
   indigo: "#343A67",
   indigoBg: "rgba(52, 58, 103, 0.08)",
 
-  // Hairline Borders
+  // Borders
   border: "rgba(23, 24, 27, 0.08)",
   borderSubtle: "rgba(23, 24, 27, 0.05)",
-  borderGold: "rgba(201, 154, 50, 0.35)",
+  borderGold: "rgba(179, 130, 53, 0.35)",
 
-  // Deep Obsidian Dark Workspace (For Command Playground & Grounded Ecosystem Directory)
-  obsidian: "#12151B",
-  obsidianDeep: "#0D1017",
-  obsidianCard: "#181C24",
+  // Deep Obsidian Dark Workspace (Command Console & Grounded Footer)
+  obsidian: "#10141D",
+  obsidianDeep: "#0B0E14",
+  obsidianCard: "#151B26",
   obsidianBorder: "rgba(255, 255, 255, 0.08)"
 };
 
@@ -54,16 +56,44 @@ const fadeUp = {
   transition: { duration: 0.45, ease: "easeOut" }
 };
 
-const SectionHeading = ({ kicker, title, sub }) => (
-  <motion.div {...fadeUp} style={{ textAlign: "center", maxWidth: 740, margin: "0 auto 3rem" }}>
-    <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.78rem", fontWeight: 700, margin: "0 0 0.8rem", textTransform: "uppercase", fontFamily: "'Inter', sans-serif" }}>
-      {kicker}
+const SectionHeading = ({ kicker, title, highlight, sub }) => (
+  <motion.div {...fadeUp} style={{ textAlign: "center", maxWidth: 780, margin: "0 auto 3rem" }}>
+    <p style={{
+      color: palette.goldDeep,
+      letterSpacing: "0.14em",
+      fontSize: "0.76rem",
+      fontWeight: 700,
+      margin: "0 0 0.75rem",
+      textTransform: "uppercase",
+      fontFamily: "'Inter', sans-serif"
+    }}>
+      ✦ {kicker}
     </p>
-    <h2 style={{ fontSize: "clamp(1.9rem, 3.2vw, 2.6rem)", fontWeight: 800, lineHeight: 1.2, margin: 0, color: palette.text, fontFamily: "'Manrope', sans-serif", letterSpacing: "-0.015em" }}>
-      {title}
+    <h2 style={{
+      fontSize: "clamp(1.95rem, 3.2vw, 2.75rem)",
+      fontWeight: 700,
+      lineHeight: 1.18,
+      margin: 0,
+      color: palette.text,
+      fontFamily: "'Playfair Display', Georgia, serif",
+      letterSpacing: "-0.015em"
+    }}>
+      {title}{" "}
+      {highlight && (
+        <span style={{ color: palette.gold, fontStyle: "italic", fontFamily: "'Playfair Display', Georgia, serif" }}>
+          {highlight}
+        </span>
+      )}
     </h2>
     {sub && (
-      <p style={{ color: palette.muted, fontSize: "1.05rem", lineHeight: 1.65, margin: "0.9rem auto 0", maxWidth: 640, fontFamily: "'Inter', sans-serif" }}>
+      <p style={{
+        color: palette.muted,
+        fontSize: "1.02rem",
+        lineHeight: 1.65,
+        margin: "0.9rem auto 0",
+        maxWidth: 640,
+        fontFamily: "'Inter', sans-serif"
+      }}>
         {sub}
       </p>
     )}
@@ -120,6 +150,7 @@ const structuredSchema = {
 export default function PublicLanding({ onGetStarted, onFounderLogin }) {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
+  const [universeCategory, setUniverseCategory] = useState("all");
 
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? null : index);
@@ -142,7 +173,15 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: palette.canvas, color: palette.text, fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", WebkitFontSmoothing: "antialiased" }}>
+    <div style={{
+      minHeight: "100vh",
+      background: palette.canvas,
+      color: palette.text,
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+      WebkitFontSmoothing: "antialiased",
+      position: "relative",
+      overflowX: "hidden"
+    }}>
       <SEOHead
         title="GARUDA OS — Autonomous AI Systems & WhatsApp AI Receptionists"
         description="Deploy autonomous AI systems, 24/7 WhatsApp AI receptionists, and production software workflows engineered around your business rules. Next.js 14 Starter Kit available ($49 / ₹3,999)."
@@ -150,85 +189,142 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         structuredData={structuredSchema}
       />
 
-      {/* 01 — Minimal High-Value Navigation */}
+      {/* 01 — Reference Luxury Navigation Bar */}
       <header style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "1rem clamp(1.25rem, 4vw, 3.5rem)",
+        padding: "0.85rem clamp(1.25rem, 4vw, 3.5rem)",
         borderBottom: `1px solid ${palette.border}`,
-        background: "rgba(247, 245, 240, 0.88)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
+        background: "rgba(246, 244, 238, 0.92)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
         position: "sticky",
         top: 0,
-        zIndex: 50
+        zIndex: 60
       }}>
-        {/* Brand Sigil */}
+        {/* Brand Sigil & Editorial Logo */}
         <button
           type="button"
           onClick={() => navigate("/")}
-          style={{ display: "flex", alignItems: "center", gap: "0.75rem", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.8rem",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0
+          }}
         >
-          <span style={{ width: 40, height: 40, display: "grid", placeItems: "center", overflow: "hidden" }}>
-            <BrandAssetImage kind="branding" alt="GARUDA sigil" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-          </span>
-          <span style={{ display: "flex", alignItems: "center", gap: "0.55rem" }}>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: "1.25rem", fontWeight: 800, letterSpacing: "0.08em", color: palette.text }}>GARUDA</span>
-            <span style={{ fontSize: "0.68rem", background: "rgba(201, 154, 50, 0.12)", color: "#9E741D", border: "1px solid rgba(201, 154, 50, 0.28)", padding: "0.18rem 0.5rem", borderRadius: 4, fontWeight: 700, letterSpacing: "0.08em" }}>AI OS</span>
+          <img
+            src="/images/garuda_eagle_sigil.png"
+            alt="GARUDA Sigil"
+            style={{ width: 34, height: 28, objectFit: "contain" }}
+          />
+          <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1 }}>
+            <span style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "1.35rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              color: palette.text
+            }}>
+              GARUDA
+            </span>
+            <span style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "0.6rem",
+              fontWeight: 700,
+              letterSpacing: "0.14em",
+              color: "#686A70",
+              textTransform: "uppercase",
+              marginTop: "2px"
+            }}>
+              AI OPERATING SYSTEM
+            </span>
           </span>
         </button>
 
         {/* Minimal Nav Links */}
-        <nav style={{ display: "flex", alignItems: "center", gap: "clamp(0.8rem, 2vw, 1.8rem)" }}>
-          <a href="#products" style={{ color: "#4B4E55", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}>Products</a>
-          <a href="#how-it-works" style={{ color: "#4B4E55", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}>How It Works</a>
-          <a href="#proof" style={{ color: "#4B4E55", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}>Proof</a>
-          <a href="#faq" style={{ color: "#4B4E55", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}>FAQ</a>
+        <nav className="garuda-desktop-nav">
+          <a
+            href="/"
+            style={{
+              color: palette.text,
+              textDecoration: "none",
+              fontSize: "0.88rem",
+              fontWeight: 600,
+              borderBottom: `2px solid ${palette.gold}`,
+              paddingBottom: "4px"
+            }}
+          >
+            Home
+          </a>
+          <a href="#products" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
+            Solutions
+          </a>
+          <a href="#how-it-works" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
+            Use Cases
+          </a>
+          <a href="#products" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
+            Pricing
+          </a>
+          <a href="#ecosystem" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
+            27 Universes
+          </a>
+          <a href="#faq" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
+            Resources
+          </a>
+        </nav>
 
-          {/* Persistent High-Value CTA */}
+        {/* Right CTA Actions */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          {/* Persistent High-Value CTA Button */}
           <button
             type="button"
             onClick={() => {
-              trackEvent("nav_starter_kit_click");
-              navigate("/starter");
+              trackEvent("nav_cta_deploy_click");
+              document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
             }}
             style={{
-              background: "#FFFFFF",
-              border: "1px solid rgba(201, 154, 50, 0.38)",
-              color: palette.text,
+              background: palette.goldGradient,
+              border: "none",
+              color: "#FFFFFF",
               borderRadius: 999,
-              padding: "0.45rem 1.15rem",
+              padding: "0.55rem 1.35rem",
               fontWeight: 700,
               cursor: "pointer",
-              fontSize: "0.85rem",
+              fontSize: "0.86rem",
               display: "inline-flex",
               alignItems: "center",
-              gap: "0.4rem",
-              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.04)",
+              gap: "0.45rem",
+              boxShadow: "0 6px 18px rgba(179, 130, 53, 0.32)",
               transition: "all 0.16s ease"
             }}
           >
-            <span>📦</span>
-            <span>Starter Kit — $49</span>
+            <span>Deploy Your AI System</span>
+            <span>→</span>
           </button>
 
           {/* Founder Cockpit VIP Access */}
           <button
             type="button"
+            className="founder-nav-btn"
             onClick={onFounderLogin}
+            title="Founder Console Access"
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "0.4rem",
+              gap: "0.35rem",
               background: "#17181B",
-              border: "1px solid rgba(201, 154, 50, 0.4)",
+              border: "1px solid rgba(179, 130, 53, 0.4)",
               color: "#FAF9F6",
               borderRadius: 999,
-              padding: "0.45rem 1.1rem",
+              padding: "0.45rem 0.95rem",
               fontWeight: 700,
               cursor: "pointer",
-              fontSize: "0.82rem",
+              fontSize: "0.78rem",
               boxShadow: "0 2px 8px rgba(23, 24, 27, 0.15)",
               transition: "all 0.16s ease"
             }}
@@ -236,126 +332,195 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             <span>👑</span>
             <span>Founder</span>
           </button>
-        </nav>
+        </div>
       </header>
 
-      {/* 02 — Outcome-First Hero Section with Embedded Live Playground */}
+      {/* 02 — Asymmetric Cinematic Hero Section (Pixel-Aligned with Approved Reference) */}
       <section style={{
         position: "relative",
-        overflow: "hidden",
-        padding: "clamp(4.5rem, 8vw, 7.5rem) clamp(1.25rem, 4vw, 4rem)",
-        textAlign: "center",
-        background: palette.canvas
+        padding: "clamp(3.5rem, 6vw, 5.5rem) clamp(1.25rem, 4vw, 3.5rem) clamp(2.5rem, 4vw, 4rem)",
+        background: palette.canvas,
+        overflow: "hidden"
       }}>
-        {/* Subtle Ambient Backing Illumination */}
+        {/* Aerodynamic Background Flowing Contour SVG */}
         <div style={{
           position: "absolute",
           inset: 0,
+          backgroundImage: "url(/images/garuda_contour_lines.svg)",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center top",
+          backgroundSize: "cover",
           pointerEvents: "none",
-          background:
-            "radial-gradient(circle at 50% -10%, rgba(201, 154, 50, 0.07), transparent 60%)," +
-            "radial-gradient(circle at 85% 15%, rgba(52, 58, 103, 0.035), transparent 45%)"
+          opacity: 0.85,
+          zIndex: 1
         }} />
 
-        <div style={{ position: "relative", maxWidth: 1040, margin: "0 auto" }}>
-          {/* Eyebrow Tag */}
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            padding: "0.42rem 1.1rem",
-            borderRadius: 999,
-            border: "1px solid rgba(201, 154, 50, 0.3)",
-            background: "#FFFFFF",
-            color: "#9E741D",
-            fontSize: "0.78rem",
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            marginBottom: "1.5rem",
-            boxShadow: "0 2px 8px rgba(201, 154, 50, 0.08)"
-          }}>
-            AUTONOMOUS BUSINESS EXECUTION ENGINE
-          </div>
+        {/* Ambient Warm Golden Luminous Radial Glow */}
+        <div style={{
+          position: "absolute",
+          top: "10%",
+          left: "25%",
+          width: "50vw",
+          height: "40vw",
+          background: "radial-gradient(circle, rgba(201, 154, 50, 0.08) 0%, transparent 65%)",
+          pointerEvents: "none",
+          zIndex: 1
+        }} />
 
-          {/* Outcome Headline */}
-          <h1 style={{
-            fontFamily: "'Manrope', -apple-system, BlinkMacSystemFont, sans-serif",
-            fontSize: "clamp(2.4rem, 5.2vw, 4rem)",
-            fontWeight: 800,
-            lineHeight: 1.14,
-            margin: "0 0 1.35rem",
-            letterSpacing: "-0.025em",
-            color: palette.text
-          }}>
-            Autonomous AI Systems That <br />
-            <span style={{
-              background: "linear-gradient(120deg, #17181B 0%, #B88924 60%, #C99A32 100%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent"
+        {/* Cinematic Himalayan Mountain Silhouette & Soaring Eagle Atmosphere */}
+        <div className="hero-art-atmospheric">
+          <img
+            src="/images/garuda_himalayan_eagle.webp"
+            alt="GARUDA Himalayan Eagle Flight"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "top right"
+            }}
+          />
+        </div>
+
+        {/* Main 2-Column Responsive Hero Container */}
+        <div className="hero-layout-grid">
+          {/* Left Column: Eyebrow + Editorial Headline + CTAs + Trust Points */}
+          <div style={{ maxWidth: 600, textAlign: "left" }}>
+            {/* Eyebrow Tag */}
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.55rem",
+              padding: "0.38rem 1rem",
+              borderRadius: 999,
+              border: "1px solid rgba(179, 130, 53, 0.35)",
+              background: "rgba(255, 255, 255, 0.8)",
+              color: palette.text,
+              fontSize: "0.74rem",
+              fontWeight: 700,
+              letterSpacing: "0.1em",
+              marginBottom: "1.4rem",
+              boxShadow: "0 2px 8px rgba(179, 130, 53, 0.08)"
             }}>
-              Run Your Business While You Sleep.
-            </span>
-          </h1>
+              <span style={{ color: palette.gold }}>✦</span>
+              <span>AUTONOMOUS BUSINESS EXECUTION ENGINE</span>
+            </div>
 
-          {/* Human-First Subhead */}
-          <p style={{
-            color: "#5A5D66",
-            fontSize: "clamp(1.05rem, 1.8vw, 1.22rem)",
-            lineHeight: 1.65,
-            maxWidth: 720,
-            margin: "0 auto 2.2rem"
-          }}>
-            From 24/7 WhatsApp customer receptionists to bespoke operations workflows — deploy intelligent software engineered around your exact business rules.
-          </p>
-
-          {/* Direct Hero Action CTAs */}
-          <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap", marginBottom: "3.5rem" }}>
-            <button
-              onClick={() => {
-                trackEvent("primary_cta_click", { location: "hero" });
-                document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
-              }}
+            {/* Editorial Luxury Headline */}
+            <h1
+              className="hero-headline-editorial"
+              aria-label="Autonomous AI Systems That Run Your Business While You Sleep."
               style={{
-                background: "#17181B",
-                color: "#FAF9F6",
-                border: "1px solid rgba(201, 154, 50, 0.35)",
-                padding: "0.95rem 2.2rem",
-                borderRadius: 999,
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontSize: "clamp(2.3rem, 3.8vw, 3.8rem)",
                 fontWeight: 700,
-                fontSize: "1rem",
-                cursor: "pointer",
-                boxShadow: "0 8px 24px rgba(23, 24, 27, 0.16), 0 2px 6px rgba(201, 154, 50, 0.12)",
-                transition: "all 0.16s ease"
-              }}
-            >
-              Deploy Your AI System →
-            </button>
+                lineHeight: 1.14,
+                margin: "0 0 1.35rem",
+                letterSpacing: "-0.015em",
+                color: palette.text
+              }}>
+              <span style={{ display: "block" }}>Autonomous AI Systems</span>
+              <span style={{ display: "block" }}>That Run Your Business</span>
+              <span style={{
+                display: "block",
+                color: palette.gold,
+                fontStyle: "italic",
+                fontFamily: "'Playfair Display', Georgia, serif"
+              }}>
+                While You Sleep.
+              </span>
+            </h1>
 
-            <button
-              onClick={() => {
-                trackEvent("secondary_cta_click", { location: "hero" });
-                navigate("/starter");
-              }}
-              style={{
-                background: "#FFFFFF",
-                border: "1px solid rgba(23, 24, 27, 0.14)",
-                color: "#202126",
-                padding: "0.95rem 2rem",
-                borderRadius: 999,
-                fontWeight: 600,
-                fontSize: "0.98rem",
-                cursor: "pointer",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
-                transition: "all 0.16s ease"
-              }}
-            >
-              Explore Starter Kit ($49) →
-            </button>
+            {/* Human-First Supporting Copy */}
+            <p style={{
+              color: palette.muted,
+              fontSize: "clamp(1rem, 1.4vw, 1.1rem)",
+              lineHeight: 1.68,
+              margin: "0 0 2rem",
+              fontFamily: "'Inter', sans-serif",
+              maxWidth: 520
+            }}>
+              From 24/7 WhatsApp customer receptionists to AI-powered operations, GARUDA builds, deploys and runs custom AI systems for your business — so you can focus on what truly matters.
+            </p>
+
+            {/* Primary & Secondary Action Buttons */}
+            <div className="hero-cta-group" style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center", marginBottom: "2.5rem" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  trackEvent("primary_cta_click", { location: "hero" });
+                  document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                style={{
+                  background: palette.goldGradient,
+                  color: "#FFFFFF",
+                  border: "none",
+                  padding: "0.95rem 2rem",
+                  borderRadius: 999,
+                  fontWeight: 700,
+                  fontSize: "0.96rem",
+                  cursor: "pointer",
+                  boxShadow: "0 8px 24px rgba(179, 130, 53, 0.32)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.55rem",
+                  transition: "all 0.16s ease"
+                }}
+              >
+                <span>Deploy Your AI System</span>
+                <span>→</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  trackEvent("secondary_cta_click", { location: "hero" });
+                  navigate("/starter");
+                }}
+                style={{
+                  background: "rgba(255, 255, 255, 0.85)",
+                  border: "1px solid rgba(179, 130, 53, 0.4)",
+                  color: palette.text,
+                  padding: "0.95rem 1.8rem",
+                  borderRadius: 999,
+                  fontWeight: 600,
+                  fontSize: "0.94rem",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
+                  transition: "all 0.16s ease"
+                }}
+              >
+                Explore Starter Kit ($49)
+              </button>
+            </div>
+
+            {/* 4 Micro Capability Indicators */}
+            <div className="hero-indicators-grid" style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(115px, 1fr))",
+              gap: "1.1rem",
+              paddingTop: "1.4rem",
+              borderTop: "1px solid rgba(23, 24, 27, 0.08)",
+              maxWidth: 540
+            }}>
+              {[
+                { icon: "⚡", bold: "Deploy in days", sub: "not months" },
+                { icon: "🛡️", bold: "Human", sub: "when it matters" },
+                { icon: "📈", bold: "Custom for", sub: "your business" },
+                { icon: "🌐", bold: "Built for", sub: "real-world use" }
+              ].map(item => (
+                <div key={item.bold} style={{ display: "flex", alignItems: "flex-start", gap: "0.55rem" }}>
+                  <span style={{ fontSize: "1.15rem", lineHeight: 1.2 }}>{item.icon}</span>
+                  <div style={{ fontSize: "0.78rem", lineHeight: 1.35 }}>
+                    <div style={{ fontWeight: 700, color: palette.text }}>{item.bold}</div>
+                    <div style={{ color: palette.muted }}>{item.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* 03 — Live GARUDA Playground Mounted Directly in the First Fold */}
-          <div style={{ margin: "1.5rem auto 0" }}>
+          {/* Right Column: Floating Obsidian AI Command Console */}
+          <div style={{ position: "relative", zIndex: 3, width: "100%" }}>
             <LiveGarudaPlayground
               onDeployClinic={handleDeployClinic}
               onDeploySales={handleDeploySales}
@@ -365,18 +530,21 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         </div>
       </section>
 
-      {/* 04 — Proof & Trust Strip */}
+      {/* 03 — Governed Proof & Trust Strip */}
       <section style={{
-        padding: "2rem clamp(1.25rem, 4vw, 4rem)",
-        borderTop: `1px solid ${palette.borderSubtle}`,
-        borderBottom: `1px solid ${palette.borderSubtle}`,
-        background: palette.card
+        padding: "1.8rem clamp(1.25rem, 4vw, 4rem)",
+        borderTop: `1px solid ${palette.border}`,
+        borderBottom: `1px solid ${palette.border}`,
+        background: "rgba(255, 255, 255, 0.6)",
+        backdropFilter: "blur(8px)",
+        position: "relative",
+        zIndex: 10
       }}>
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
           gap: "1.5rem",
-          maxWidth: 1100,
+          maxWidth: 1200,
           margin: "0 auto",
           textAlign: "center"
         }}>
@@ -386,232 +554,436 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             { icon: "💬", title: "WhatsApp Cloud API", subtitle: "Official Meta-compliant business messaging" },
             { icon: "⚠️", title: "Human Safeguard", subtitle: "Automated escalation when judgment is needed" }
           ].map((item) => (
-            <div key={item.title} style={{ padding: "0.8rem 1rem" }}>
-              <div style={{ fontSize: "1.4rem", marginBottom: "0.35rem" }}>{item.icon}</div>
-              <div style={{ color: palette.text, fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: "0.94rem" }}>{item.title}</div>
-              <div style={{ color: palette.muted, fontSize: "0.8rem" }}>{item.subtitle}</div>
+            <div key={item.title} style={{ padding: "0.6rem 1rem" }}>
+              <div style={{ fontSize: "1.35rem", marginBottom: "0.3rem" }}>{item.icon}</div>
+              <div style={{ color: palette.text, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: "0.92rem" }}>
+                {item.title}
+              </div>
+              <div style={{ color: palette.muted, fontSize: "0.8rem", marginTop: "2px" }}>{item.subtitle}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 05 — The Three Clear Commercial Paths */}
-      <section id="products" style={{ padding: "clamp(4.5rem, 8vw, 7rem) clamp(1.25rem, 4vw, 4rem)", background: palette.canvas }}>
+      {/* 04 — Three Clear Commercial Paths (Matching Reference Layout) */}
+      <section id="products" style={{
+        padding: "clamp(4.5rem, 7vw, 6.5rem) clamp(1.25rem, 4vw, 4rem)",
+        background: palette.canvas,
+        position: "relative"
+      }}>
         <SectionHeading
           kicker="Three Clear Commercial Paths"
-          title="Choose the Way You Want to Work with GARUDA"
+          title="Choose the Way You Want to Work with"
+          highlight="GARUDA."
           sub="Whether you want to build on our verified source code or have us engineer a custom autonomous system."
         />
 
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           gap: "1.8rem",
-          maxWidth: 1120,
+          maxWidth: 1240,
           margin: "0 auto"
         }}>
-          {/* Card 1: Developers / Agencies */}
+          {/* Card 1: Turnkey AI Systems (Featured / Most Popular in Reference) */}
           <div style={{
-            background: palette.card,
-            border: `1px solid ${palette.border}`,
-            borderRadius: 20,
-            padding: "2.2rem 2rem",
+            background: "rgba(255, 255, 255, 0.95)",
+            border: "1.5px solid rgba(179, 130, 53, 0.45)",
+            borderRadius: 22,
+            padding: "2.4rem 2.1rem",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
             position: "relative",
-            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02)",
+            boxShadow: "0 18px 48px rgba(179, 130, 53, 0.12), 0 2px 8px rgba(0, 0, 0, 0.03)",
             transition: "all 0.16s ease"
           }}>
-            <div>
-              <div style={{
-                display: "inline-block",
-                background: "rgba(5, 150, 105, 0.08)",
-                color: palette.green,
-                padding: "0.25rem 0.75rem",
-                borderRadius: 999,
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                marginBottom: "1.2rem",
-                letterSpacing: "0.04em"
-              }}>
-                FOR DEVELOPERS &amp; AGENCIES
-              </div>
-              <h3 style={{ fontFamily: "'Manrope', sans-serif", fontSize: "1.45rem", fontWeight: 800, margin: "0 0 0.6rem", color: palette.text }}>
-                Next.js 14 AI Starter Kit
-              </h3>
-              <p style={{ color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6, margin: "0 0 1.35rem" }}>
-                Launch your own production WhatsApp AI receptionist in 60 minutes. Complete source code with Supabase schema, Gemini 2.5 triage, and Razorpay/Stripe billing.
-              </p>
-              <div style={{ fontSize: "1.75rem", fontWeight: 900, color: palette.text, marginBottom: "1.2rem" }}>
-                $49 <span style={{ fontSize: "1rem", color: palette.muted, fontWeight: 500 }}>USD · ₹3,999 INR</span>
-              </div>
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.88rem", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
-                <li>✔ 17 Production-ready files (Next.js 14 App Router)</li>
-                <li>✔ WhatsApp Cloud API webhook handler</li>
-                <li>✔ SHA-256 Verified cryptographic release</li>
-                <li>✔ Full commercial single-client deployment license</li>
-              </ul>
+            {/* Top Right Floating Badge */}
+            <div style={{
+              position: "absolute",
+              top: 18,
+              right: 18,
+              background: palette.goldGradient,
+              color: "#FFFFFF",
+              padding: "0.28rem 0.8rem",
+              borderRadius: 999,
+              fontSize: "0.72rem",
+              fontWeight: 800,
+              letterSpacing: "0.06em",
+              boxShadow: "0 4px 12px rgba(179, 130, 53, 0.3)"
+            }}>
+              MOST POPULAR
             </div>
-            <button
-              onClick={() => {
-                trackEvent("pricing_starter_click");
-                navigate("/starter");
-              }}
-              style={{
-                background: "#17181B",
-                color: "#FFFFFF",
-                border: "1px solid rgba(5, 150, 105, 0.3)",
-                borderRadius: 10,
-                padding: "0.9rem",
-                fontWeight: 700,
-                fontSize: "0.95rem",
-                cursor: "pointer",
-                boxShadow: "0 4px 14px rgba(23, 24, 27, 0.12)",
-                transition: "all 0.16s ease"
-              }}
-            >
-              Get the Starter Kit →
-            </button>
-          </div>
 
-          {/* Card 2: Local Businesses (Featured) */}
-          <div style={{
-            background: palette.card,
-            border: "1.5px solid rgba(201, 154, 50, 0.45)",
-            borderRadius: 20,
-            padding: "2.2rem 2rem",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            position: "relative",
-            boxShadow: "0 16px 44px rgba(201, 154, 50, 0.1), 0 2px 8px rgba(0, 0, 0, 0.03)",
-            transition: "all 0.16s ease"
-          }}>
             <div>
               <div style={{
-                display: "inline-block",
-                background: "rgba(201, 154, 50, 0.12)",
-                color: "#9E741D",
-                padding: "0.25rem 0.75rem",
-                borderRadius: 999,
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                marginBottom: "1.2rem",
-                letterSpacing: "0.04em"
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                background: "rgba(179, 130, 53, 0.12)",
+                border: "1px solid rgba(179, 130, 53, 0.3)",
+                display: "grid",
+                placeItems: "center",
+                fontSize: "1.4rem",
+                marginBottom: "1.2rem"
               }}>
-                FOR CLINICS &amp; BUSINESSES
+                🚀
               </div>
-              <h3 style={{ fontFamily: "'Manrope', sans-serif", fontSize: "1.45rem", fontWeight: 800, margin: "0 0 0.6rem", color: palette.text }}>
-                Turnkey WhatsApp AI Receptionist
+              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, margin: "0 0 0.4rem", color: palette.text }}>
+                Turnkey AI Systems
               </h3>
-              <p style={{ color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6, margin: "0 0 1.35rem" }}>
-                Turn WhatsApp into your 24/7 autonomous receptionist. We handle complete setup, catalog integration, appointment booking rules, and staff handover.
+              <p style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
+                Fully deployed, done-for-you solutions. We handle setup, appointment booking rules, and staff handover.
               </p>
-              <div style={{ fontSize: "1.75rem", fontWeight: 900, color: palette.goldDeep, marginBottom: "1.2rem" }}>
-                $199 <span style={{ fontSize: "1rem", color: palette.muted, fontWeight: 500 }}>USD · ₹9,999 INR</span>
+              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.goldDeep, marginBottom: "1.3rem", display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
+                <span>$199</span>
+                <span style={{ fontSize: "1.1rem", color: palette.text, fontWeight: 700 }}>/ ₹9,999 INR</span>
               </div>
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.88rem", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
-                <li>✔ Custom prompt &amp; knowledge base formulation</li>
-                <li>✔ Appointment booking &amp; emergency triage rules</li>
-                <li>✔ Staff notification via WhatsApp / Telegram</li>
-                <li>✔ Done-for-you configuration in 3-5 days</li>
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Custom AI system for your business
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Setup, deployment and training
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Ongoing support and optimization
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Done-for-you configuration in 3-5 days
+                </li>
               </ul>
             </div>
             <button
+              type="button"
               onClick={() => {
                 trackEvent("pricing_clinic_click");
                 document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
               }}
               style={{
-                background: "linear-gradient(135deg, #C99A32 0%, #B88924 100%)",
-                color: "#080A0E",
+                background: palette.goldGradient,
+                color: "#FFFFFF",
                 border: "none",
-                borderRadius: 10,
-                padding: "0.9rem",
-                fontWeight: 800,
+                borderRadius: 12,
+                padding: "0.95rem",
+                fontWeight: 700,
                 fontSize: "0.95rem",
                 cursor: "pointer",
-                boxShadow: "0 6px 20px rgba(201, 154, 50, 0.28)",
+                boxShadow: "0 6px 20px rgba(179, 130, 53, 0.32)",
                 transition: "all 0.16s ease"
               }}
             >
-              Deploy My AI Receptionist →
+              Discuss Your Project →
             </button>
           </div>
 
-          {/* Card 3: Enterprise */}
+          {/* Card 2: Starter Kits */}
           <div style={{
             background: palette.card,
-            border: `1px solid rgba(52, 58, 103, 0.18)`,
-            borderRadius: 20,
-            padding: "2.2rem 2rem",
+            border: `1px solid ${palette.border}`,
+            borderRadius: 22,
+            padding: "2.4rem 2.1rem",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
             position: "relative",
-            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02)",
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.03)",
             transition: "all 0.16s ease"
           }}>
             <div>
               <div style={{
-                display: "inline-block",
-                background: "rgba(52, 58, 103, 0.08)",
-                color: palette.indigo,
-                padding: "0.25rem 0.75rem",
-                borderRadius: 999,
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                marginBottom: "1.2rem",
-                letterSpacing: "0.04em"
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                background: "rgba(23, 24, 27, 0.04)",
+                border: `1px solid ${palette.border}`,
+                display: "grid",
+                placeItems: "center",
+                fontSize: "1.4rem",
+                marginBottom: "1.2rem"
               }}>
-                FOR ENTERPRISE &amp; SAAS
+                📦
               </div>
-              <h3 style={{ fontFamily: "'Manrope', sans-serif", fontSize: "1.45rem", fontWeight: 800, margin: "0 0 0.6rem", color: palette.text }}>
-                Custom Autonomous AI Systems
+              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, margin: "0 0 0.4rem", color: palette.text }}>
+                Starter Kits
               </h3>
-              <p style={{ color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6, margin: "0 0 1.35rem" }}>
-                Deploy an end-to-end autonomous AI system designed around your specific business operations. Built on milestone-based delivery with founder governance.
+              <p style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
+                Source code + setup guides. Complete Next.js 14 App Router codebase with WhatsApp webhook handler and billing.
               </p>
-              <div style={{ fontSize: "1.75rem", fontWeight: 900, color: palette.text, marginBottom: "1.2rem" }}>
-                $999+ <span style={{ fontSize: "1rem", color: palette.muted, fontWeight: 500 }}>USD · Custom Scope</span>
+              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.text, marginBottom: "1.3rem", display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
+                <span>$49</span>
+                <span style={{ fontSize: "1.1rem", color: palette.muted, fontWeight: 600 }}>/ ₹3,999 INR</span>
               </div>
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.88rem", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
-                <li>✔ Multi-agent workflow automation</li>
-                <li>✔ Private enterprise document intelligence (RAG)</li>
-                <li>✔ 50/50 Milestone payment structure</li>
-                <li>✔ Direct architecture review with Praveen Mahawar</li>
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Complete source code (Next.js 14)
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> WhatsApp Cloud API webhook handler
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Step-by-step setup instructions
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Start building immediately
+                </li>
               </ul>
             </div>
             <button
+              type="button"
+              onClick={() => {
+                trackEvent("pricing_starter_click");
+                navigate("/starter");
+              }}
+              style={{
+                background: "#FFFFFF",
+                border: "1px solid rgba(179, 130, 53, 0.45)",
+                color: palette.text,
+                borderRadius: 12,
+                padding: "0.95rem",
+                fontWeight: 700,
+                fontSize: "0.95rem",
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
+                transition: "all 0.16s ease"
+              }}
+            >
+              Explore Starter Kit →
+            </button>
+          </div>
+
+          {/* Card 3: Custom Architecture (Enterprise) */}
+          <div style={{
+            background: palette.card,
+            border: `1px solid ${palette.border}`,
+            borderRadius: 22,
+            padding: "2.4rem 2.1rem",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            position: "relative",
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.03)",
+            transition: "all 0.16s ease"
+          }}>
+            <div>
+              <div style={{
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                background: "rgba(23, 24, 27, 0.04)",
+                border: `1px solid ${palette.border}`,
+                display: "grid",
+                placeItems: "center",
+                fontSize: "1.4rem",
+                marginBottom: "1.2rem"
+              }}>
+                🏢
+              </div>
+              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, margin: "0 0 0.4rem", color: palette.text }}>
+                Custom Architecture
+              </h3>
+              <p style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
+                For complex and enterprise needs. End-to-end multi-agent systems designed around your operational rules.
+              </p>
+              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.text, marginBottom: "1.3rem", display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
+                <span>$999+</span>
+                <span style={{ fontSize: "1.05rem", color: palette.muted, fontWeight: 600 }}>Custom Scope</span>
+              </div>
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Tailored to your exact requirements
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Multi-agent workflow automation
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> 50/50 Milestone payment structure
+                </li>
+                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Direct review with Praveen Mahawar
+                </li>
+              </ul>
+            </div>
+            <button
+              type="button"
               onClick={() => {
                 trackEvent("pricing_enterprise_click");
                 document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
               }}
               style={{
-                background: "#17181B",
-                color: "#FFFFFF",
-                border: "1px solid rgba(52, 58, 103, 0.35)",
-                borderRadius: 10,
-                padding: "0.9rem",
+                background: "#FFFFFF",
+                border: "1px solid rgba(179, 130, 53, 0.45)",
+                color: palette.text,
+                borderRadius: 12,
+                padding: "0.95rem",
                 fontWeight: 700,
                 fontSize: "0.95rem",
                 cursor: "pointer",
-                boxShadow: "0 4px 14px rgba(23, 24, 27, 0.12)",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
                 transition: "all 0.16s ease"
               }}
             >
-              Discuss My System →
+              Get a Custom Quote →
             </button>
           </div>
         </div>
       </section>
 
+      {/* 05 — The GARUDA Ecosystem (27 Intelligent Universes - Matching Reference) */}
+      <section id="ecosystem" style={{
+        padding: "clamp(4.5rem, 7vw, 6.5rem) clamp(1.25rem, 4vw, 4rem)",
+        background: palette.canvasSubtle,
+        borderTop: `1px solid ${palette.border}`,
+        borderBottom: `1px solid ${palette.border}`,
+        position: "relative"
+      }}>
+        <div style={{
+          maxWidth: 1240,
+          margin: "0 auto",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+          flexWrap: "wrap",
+          gap: "1.5rem",
+          marginBottom: "2.5rem"
+        }}>
+          <div>
+            <p style={{
+              color: palette.goldDeep,
+              letterSpacing: "0.14em",
+              fontSize: "0.76rem",
+              fontWeight: 700,
+              margin: "0 0 0.6rem",
+              textTransform: "uppercase"
+            }}>
+              ✦ THE GARUDA ECOSYSTEM
+            </p>
+            <h2 style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "clamp(2rem, 3.4vw, 2.8rem)",
+              fontWeight: 700,
+              lineHeight: 1.15,
+              margin: "0 0 0.8rem",
+              color: palette.text
+            }}>
+              27 Intelligent Universes.{" "}
+              <span style={{ color: palette.gold, fontStyle: "italic", fontFamily: "'Playfair Display', Georgia, serif" }}>
+                Endless Possibilities.
+              </span>
+            </h2>
+            <p style={{ color: palette.muted, fontSize: "1.02rem", maxWidth: 660, margin: 0, lineHeight: 1.6 }}>
+              From healthcare to finance, education to manufacturing — GARUDA's 27 universes bring autonomous AI to every industry.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => navigate("/case-studies")}
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid rgba(179, 130, 53, 0.4)",
+              color: palette.text,
+              borderRadius: 999,
+              padding: "0.65rem 1.4rem",
+              fontWeight: 600,
+              fontSize: "0.9rem",
+              cursor: "pointer",
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.03)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.4rem"
+            }}
+          >
+            <span>Explore All Universes</span>
+            <span>→</span>
+          </button>
+        </div>
+
+        {/* 27 Universes Specialized Studio Grid */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "1.4rem",
+          maxWidth: 1240,
+          margin: "0 auto"
+        }}>
+          {[
+            {
+              title: "PAWAN Coding Studio",
+              tag: "ENGINEERING",
+              route: "/pawan",
+              icon: "⚡",
+              desc: "Autonomous software engineering daemon with automated git governance and test validation."
+            },
+            {
+              title: "Vidya Education Studio",
+              tag: "ACADEMICS",
+              route: "/scholar",
+              icon: "🎓",
+              desc: "Multi-language knowledge engine, syllabus alignment, and automated academic assessment."
+            },
+            {
+              title: "GARUDA DOST",
+              tag: "AGRITECH & RURAL",
+              route: "/dost",
+              icon: "🌾",
+              desc: "Vernacular agricultural intelligence, market price analysis, and rural enterprise support."
+            },
+            {
+              title: "Enterprise Solutions",
+              tag: "CASE STUDIES",
+              route: "/case-studies",
+              icon: "📋",
+              desc: "Verified production deployments across clinic reception, billing, and retail operations."
+            }
+          ].map(uni => (
+            <div
+              key={uni.title}
+              onClick={() => navigate(uni.route)}
+              style={{
+                background: "#FFFFFF",
+                border: `1px solid ${palette.border}`,
+                borderRadius: 16,
+                padding: "1.6rem",
+                cursor: "pointer",
+                boxShadow: "0 4px 16px rgba(0, 0, 0, 0.02)",
+                transition: "all 0.16s ease"
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
+                <span style={{ fontSize: "1.5rem" }}>{uni.icon}</span>
+                <span style={{
+                  fontSize: "0.68rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  color: palette.goldDeep,
+                  background: "rgba(179, 130, 53, 0.1)",
+                  padding: "0.2rem 0.55rem",
+                  borderRadius: 6
+                }}>
+                  {uni.tag}
+                </span>
+              </div>
+              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.2rem", fontWeight: 700, margin: "0 0 0.45rem", color: palette.text }}>
+                {uni.title}
+              </h3>
+              <p style={{ margin: "0 0 1rem", fontSize: "0.86rem", color: palette.muted, lineHeight: 1.55 }}>
+                {uni.desc}
+              </p>
+              <span style={{ fontSize: "0.82rem", fontWeight: 700, color: palette.goldDeep, display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+                Launch Studio →
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* 06 — How It Works (3 Clear Steps) */}
-      <section id="how-it-works" style={{ padding: "clamp(4.5rem, 8vw, 7rem) clamp(1.25rem, 4vw, 4rem)", background: palette.canvasSubtle }}>
+      <section id="how-it-works" style={{ padding: "clamp(4.5rem, 7vw, 6.5rem) clamp(1.25rem, 4vw, 4rem)", background: palette.canvas }}>
         <SectionHeading
           kicker="Clear Engagement Process"
-          title="How Autonomous Systems Are Delivered"
+          title="How Autonomous Systems Are"
+          highlight="Delivered."
           sub="No theoretical debates or endless consulting. A disciplined 3-step execution model."
         />
 
@@ -619,7 +991,7 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
           gap: "1.8rem",
-          maxWidth: 1080,
+          maxWidth: 1100,
           margin: "0 auto"
         }}>
           {[
@@ -642,17 +1014,19 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             <div
               key={s.step}
               style={{
-                padding: "2rem",
+                padding: "2.2rem 2rem",
                 borderRadius: 18,
                 border: `1px solid ${palette.border}`,
                 background: palette.card,
                 boxShadow: "0 4px 16px rgba(0, 0, 0, 0.02)"
               }}
             >
-              <div style={{ fontFamily: "ui-monospace, monospace", color: palette.goldDeep, fontSize: "1.25rem", fontWeight: 800, marginBottom: "0.75rem" }}>
+              <div style={{ fontFamily: "ui-monospace, monospace", color: palette.goldDeep, fontSize: "1.3rem", fontWeight: 800, marginBottom: "0.75rem" }}>
                 {s.step}
               </div>
-              <h3 style={{ fontFamily: "'Manrope', sans-serif", fontSize: "1.18rem", fontWeight: 700, margin: "0 0 0.55rem", color: palette.text }}>{s.title}</h3>
+              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.25rem", fontWeight: 700, margin: "0 0 0.55rem", color: palette.text }}>
+                {s.title}
+              </h3>
               <p style={{ margin: 0, color: palette.muted, fontSize: "0.92rem", lineHeight: 1.65 }}>{s.desc}</p>
             </div>
           ))}
@@ -660,7 +1034,7 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
       </section>
 
       {/* 07 & 08 — Proof & Governed Execution with Human Oversight */}
-      <section id="proof" style={{ padding: "clamp(4.5rem, 8vw, 7rem) clamp(1.25rem, 4vw, 4rem)", background: palette.canvas }}>
+      <section id="proof" style={{ padding: "clamp(4.5rem, 7vw, 6.5rem) clamp(1.25rem, 4vw, 4rem)", background: palette.canvasSubtle }}>
         <SectionHeading
           kicker="Governed Execution Standard"
           title="Automated When Predictable. Human When It Matters."
@@ -668,24 +1042,24 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         />
 
         <div style={{
-          maxWidth: 980,
+          maxWidth: 1040,
           margin: "0 auto",
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           gap: "1.8rem"
         }}>
           {/* Automated Column */}
           <div style={{
-            padding: "2rem",
-            borderRadius: 18,
+            padding: "2.2rem 2rem",
+            borderRadius: 20,
             border: "1px solid rgba(5, 150, 105, 0.22)",
             background: palette.card,
             boxShadow: "0 4px 18px rgba(5, 150, 105, 0.04)"
           }}>
-            <h3 style={{ color: palette.green, fontSize: "1.12rem", fontWeight: 800, margin: "0 0 1.2rem", fontFamily: "'Manrope', sans-serif" }}>
+            <h3 style={{ color: palette.green, fontSize: "1.18rem", fontWeight: 700, margin: "0 0 1.2rem", fontFamily: "'Playfair Display', Georgia, serif" }}>
               ✔ What GARUDA Autonomously Handles:
             </h3>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.65rem", color: palette.textBody, fontSize: "0.9rem" }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.75rem", color: palette.textBody, fontSize: "0.92rem" }}>
               <li>• Instant 24/7 reply to repetitive inquiries in under 45 seconds</li>
               <li>• Patient symptom &amp; urgency triage based on clinical keywords</li>
               <li>• Lead qualification (budget, scope, timeline verification)</li>
@@ -696,16 +1070,16 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
 
           {/* Escalation Column */}
           <div style={{
-            padding: "2rem",
-            borderRadius: 18,
+            padding: "2.2rem 2rem",
+            borderRadius: 20,
             border: "1px solid rgba(220, 38, 38, 0.22)",
             background: palette.card,
             boxShadow: "0 4px 18px rgba(220, 38, 38, 0.04)"
           }}>
-            <h3 style={{ color: palette.red, fontSize: "1.12rem", fontWeight: 800, margin: "0 0 1.2rem", fontFamily: "'Manrope', sans-serif" }}>
+            <h3 style={{ color: palette.red, fontSize: "1.18rem", fontWeight: 700, margin: "0 0 1.2rem", fontFamily: "'Playfair Display', Georgia, serif" }}>
               ⚠️ What Triggers Human Escalation:
             </h3>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.65rem", color: palette.textBody, fontSize: "0.9rem" }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.75rem", color: palette.textBody, fontSize: "0.92rem" }}>
               <li>• Medical emergencies, acute clinical distress, or trauma</li>
               <li>• Angry or emotionally distressed customer communications</li>
               <li>• Custom enterprise requests outside established rule boundaries</li>
@@ -717,14 +1091,15 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
       </section>
 
       {/* 09 — High-Intent FAQ (SEO Schema Ready) */}
-      <section id="faq" style={{ padding: "clamp(4.5rem, 8vw, 7rem) clamp(1.25rem, 4vw, 4rem)", background: palette.canvasSubtle }}>
+      <section id="faq" style={{ padding: "clamp(4.5rem, 7vw, 6.5rem) clamp(1.25rem, 4vw, 4rem)", background: palette.canvas }}>
         <SectionHeading
           kicker="Frequently Asked Questions"
-          title="Clear Answers on Setup, Pricing &amp; Compliance"
+          title="Clear Answers on Setup, Pricing &amp;"
+          highlight="Compliance."
           sub="Everything you need to know before putting an autonomous system into production."
         />
 
-        <div style={{ maxWidth: 840, margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.95rem" }}>
+        <div style={{ maxWidth: 880, margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.95rem" }}>
           {[
             {
               q: "How much does a WhatsApp AI receptionist cost?",
@@ -750,7 +1125,7 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             <div
               key={item.q}
               style={{
-                borderRadius: 14,
+                borderRadius: 16,
                 border: `1px solid ${palette.border}`,
                 background: palette.card,
                 boxShadow: "0 2px 8px rgba(0, 0, 0, 0.02)",
@@ -763,12 +1138,12 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
                 style={{
                   width: "100%",
                   textAlign: "left",
-                  padding: "1.25rem 1.5rem",
+                  padding: "1.35rem 1.6rem",
                   background: "none",
                   border: "none",
                   color: palette.text,
-                  fontFamily: "'Manrope', sans-serif",
-                  fontSize: "1.02rem",
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontSize: "1.08rem",
                   fontWeight: 700,
                   cursor: "pointer",
                   display: "flex",
@@ -777,12 +1152,12 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
                 }}
               >
                 <span>{item.q}</span>
-                <span style={{ color: palette.goldDeep, fontSize: "1.3rem", transform: openFaq === idx ? "rotate(45deg)" : "none", transition: "transform 0.16s ease" }}>
+                <span style={{ color: palette.goldDeep, fontSize: "1.35rem", transform: openFaq === idx ? "rotate(45deg)" : "none", transition: "transform 0.16s ease" }}>
                   +
                 </span>
               </button>
               {openFaq === idx && (
-                <div style={{ padding: "0 1.5rem 1.35rem", color: "#5A5D66", fontSize: "0.94rem", lineHeight: 1.65, borderTop: `1px solid ${palette.borderSubtle}`, paddingTop: "0.9rem" }}>
+                <div style={{ padding: "0 1.6rem 1.45rem", color: "#525866", fontSize: "0.94rem", lineHeight: 1.65, borderTop: `1px solid ${palette.borderSubtle}`, paddingTop: "0.9rem" }}>
                   {item.a}
                 </div>
               )}
@@ -792,7 +1167,7 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
       </section>
 
       {/* 10 — Project Scope Request Intake */}
-      <section id="project-scope" style={{ padding: "clamp(4.5rem, 8vw, 7rem) clamp(1.25rem, 4vw, 4rem)", position: "relative", background: palette.canvas }}>
+      <section id="project-scope" style={{ padding: "clamp(4.5rem, 7vw, 6.5rem) clamp(1.25rem, 4vw, 4rem)", position: "relative", background: palette.canvasSubtle }}>
         <SectionHeading
           kicker="Start Your Deployment"
           title="Direct Founder Scoping &amp; System Briefing"
@@ -802,18 +1177,18 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
       </section>
 
       {/* 11 — Progressive Disclosure: Deep Ecosystem Directory */}
-      <section id="ecosystem" style={{ padding: "2.8rem clamp(1.25rem, 4vw, 4rem)", borderTop: "1px solid rgba(201, 154, 50, 0.2)", background: palette.obsidian }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1.2rem" }}>
+      <section style={{ padding: "2.8rem clamp(1.25rem, 4vw, 4rem)", borderTop: "1px solid rgba(179, 130, 53, 0.25)", background: palette.obsidian }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1.2rem" }}>
           <div>
-            <h4 style={{ color: "#ffffff", fontFamily: "'Manrope', sans-serif", margin: "0 0 0.35rem", fontSize: "1.05rem", fontWeight: 700 }}>
+            <h4 style={{ color: "#ffffff", fontFamily: "'Playfair Display', Georgia, serif", margin: "0 0 0.35rem", fontSize: "1.15rem", fontWeight: 700 }}>
               Technical Depth &amp; Autonomous Workspaces
             </h4>
             <p style={{ margin: 0, color: "#8D95A7", fontSize: "0.85rem" }}>
-              Explore GARUDA's specialized studios and developer environments.
+              Explore GARUDA's specialized studios, sovereign engines, and developer environments.
             </p>
           </div>
           <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap" }}>
-            <button type="button" onClick={() => navigate("/pawan")} style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(201, 154, 50, 0.3)", color: palette.gold, padding: "0.45rem 1rem", borderRadius: 8, fontSize: "0.82rem", cursor: "pointer", fontWeight: 700 }}>
+            <button type="button" onClick={() => navigate("/pawan")} style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(179, 130, 53, 0.35)", color: palette.goldLight, padding: "0.45rem 1rem", borderRadius: 8, fontSize: "0.82rem", cursor: "pointer", fontWeight: 700 }}>
               ⚡ PAWAN Coding Studio
             </button>
             <button type="button" onClick={() => navigate("/scholar")} style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(56, 189, 248, 0.3)", color: "#38bdf8", padding: "0.45rem 1rem", borderRadius: 8, fontSize: "0.82rem", cursor: "pointer", fontWeight: 700 }}>
@@ -829,26 +1204,31 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
         </div>
       </section>
 
-      {/* Crawlable Footer */}
+      {/* Crawlable Grounded Dark Obsidian Footer */}
       <footer style={{ padding: "3.5rem clamp(1.25rem, 4vw, 4rem) 2.5rem", borderTop: "1px solid rgba(255, 255, 255, 0.06)", background: palette.obsidianDeep, color: "#9ca3af", fontSize: "0.85rem", lineHeight: 1.7 }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "2.2rem", marginBottom: "2.5rem", textAlign: "left" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "2.2rem", marginBottom: "2.5rem", textAlign: "left" }}>
           <div>
-            <h4 style={{ color: palette.gold, fontFamily: "'Manrope', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.98rem", fontWeight: 800 }}>GARUDA OS</h4>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.8rem" }}>
+              <img src="/images/garuda_eagle_sigil.png" alt="GARUDA" style={{ width: 24, height: 20, objectFit: "contain" }} />
+              <span style={{ color: palette.goldLight, fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 700 }}>
+                GARUDA OS
+              </span>
+            </div>
             <p style={{ margin: 0, lineHeight: 1.6, color: "#8D95A7" }}>
               Autonomous AI Operating System and commercial software engineering practice. Founded and architected by Praveen Mahawar. Official Portal: https://www.garudaos.in.
             </p>
           </div>
           <div>
-            <h4 style={{ color: "#ffffff", fontFamily: "'Manrope', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Commercial Products</h4>
+            <h4 style={{ color: "#ffffff", fontFamily: "'Inter', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Commercial Products</h4>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.45rem" }}>
-              <li><a href="/starter" style={{ color: palette.gold, textDecoration: "none", fontWeight: 700 }}>Next.js 14 AI Starter Kit ($49)</a></li>
+              <li><a href="/starter" style={{ color: palette.goldLight, textDecoration: "none", fontWeight: 700 }}>Next.js 14 AI Starter Kit ($49)</a></li>
               <li><a href="/whatsapp-bot" style={{ color: "#9ca3af", textDecoration: "none" }}>WhatsApp AI Receptionist</a></li>
               <li><a href="/pricing" style={{ color: "#9ca3af", textDecoration: "none" }}>Transparent Pricing</a></li>
               <li><a href="/billing" style={{ color: "#9ca3af", textDecoration: "none" }}>GARUDA Billing Engine</a></li>
             </ul>
           </div>
           <div>
-            <h4 style={{ color: "#ffffff", fontFamily: "'Manrope', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Engineering Services</h4>
+            <h4 style={{ color: "#ffffff", fontFamily: "'Inter', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Engineering Services</h4>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.45rem" }}>
               <li><a href="/services/whatsapp-telegram-ai-bots" style={{ color: "#9ca3af", textDecoration: "none" }}>WhatsApp Automation Bots</a></li>
               <li><a href="/services/ai-agent-development" style={{ color: "#9ca3af", textDecoration: "none" }}>Autonomous AI Agents</a></li>
@@ -857,15 +1237,15 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             </ul>
           </div>
           <div>
-            <h4 style={{ color: "#ffffff", fontFamily: "'Manrope', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Platform &amp; Governance</h4>
+            <h4 style={{ color: "#ffffff", fontFamily: "'Inter', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Platform &amp; Governance</h4>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.45rem" }}>
               <li><a href="/what-is-garuda-ai" style={{ color: "#9ca3af", textDecoration: "none" }}>What is GARUDA AI?</a></li>
               <li><a href="/case-studies" style={{ color: "#9ca3af", textDecoration: "none" }}>Verified Case Studies</a></li>
               <li><a href="/garuda-ai-vs-garuda-linux" style={{ color: "#9ca3af", textDecoration: "none" }}>GARUDA AI vs Garuda Linux</a></li>
-              <li><a href="/guides" style={{ color: palette.gold, textDecoration: "none", fontWeight: 600 }}>Engineering &amp; AI Guides →</a></li>
+              <li><a href="/guides" style={{ color: palette.goldLight, textDecoration: "none", fontWeight: 600 }}>Engineering &amp; AI Guides →</a></li>
               <li><a href="/chat" style={{ color: "#9ca3af", textDecoration: "none" }}>Talk to AI Architect</a></li>
               <li>
-                <button type="button" onClick={onFounderLogin} style={{ background: "none", border: "none", color: palette.gold, cursor: "pointer", fontSize: "inherit", padding: 0, textDecoration: "underline" }}>
+                <button type="button" onClick={onFounderLogin} style={{ background: "none", border: "none", color: palette.goldLight, cursor: "pointer", fontSize: "inherit", padding: 0, textDecoration: "underline" }}>
                   Founder Console →
                 </button>
               </li>
@@ -877,11 +1257,11 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             © {new Date().getFullYear()} GARUDA AI Operating System. Built for deterministic, governed custom software and AI operations.
           </div>
           <div style={{ display: "flex", gap: "1.2rem", fontSize: "0.85rem", flexWrap: "wrap", justifyContent: "center" }}>
-            <a href="/praveen-mahawar" style={{ color: palette.gold, textDecoration: "none", fontWeight: 700 }}>Praveen Mahawar (Founder)</a>
+            <a href="/praveen-mahawar" style={{ color: palette.goldLight, textDecoration: "none", fontWeight: 700 }}>Praveen Mahawar (Founder)</a>
             <span style={{ color: "rgba(255,255,255,0.2)" }}>•</span>
-            <a href="/privacy" style={{ color: palette.gold, textDecoration: "none" }}>Privacy Policy</a>
+            <a href="/privacy" style={{ color: palette.goldLight, textDecoration: "none" }}>Privacy Policy</a>
             <span style={{ color: "rgba(255,255,255,0.2)" }}>•</span>
-            <a href="/terms" style={{ color: palette.gold, textDecoration: "none" }}>Terms of Service</a>
+            <a href="/terms" style={{ color: palette.goldLight, textDecoration: "none" }}>Terms of Service</a>
           </div>
         </div>
       </footer>

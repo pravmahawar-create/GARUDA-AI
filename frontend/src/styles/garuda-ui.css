@@ -46,7 +46,80 @@
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
   --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
   --shadow-lg: 0 20px 48px -8px rgba(23, 24, 27, 0.06), 0 4px 12px rgba(0, 0, 0, 0.02);
-  --shadow-gold: 0 14px 40px rgba(201, 154, 50, 0.12), 0 2px 8px rgba(0, 0, 0, 0.03);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --gold-metallic: #B38235;
+  --gold-gradient: linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%);
+  --gold-shadow: 0 8px 24px rgba(179, 130, 53, 0.28);
+}
+
+/* Responsive Nav & Hero Signature Pass */
+.garuda-desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 1.8rem);
+}
+
+.hero-art-atmospheric {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: clamp(240px, 26vw, 400px);
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+  opacity: 0.95;
+  transition: opacity 0.2s ease;
+}
+
+.hero-layout-grid {
+  max-width: 1260px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: clamp(1.8rem, 3.2vw, 3.5rem);
+  align-items: center;
+}
+
+@media (max-width: 960px) {
+  .hero-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .garuda-desktop-nav {
+    display: none !important;
+  }
+  .hero-art-atmospheric {
+    opacity: 0.1 !important;
+    width: 75vw !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-headline-editorial {
+    font-size: clamp(1.8rem, 7.5vw, 2.4rem) !important;
+    line-height: 1.18 !important;
+  }
+  .hero-cta-group {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .hero-cta-group button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .founder-nav-btn {
+    display: none !important;
+  }
+  .hero-indicators-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.85rem !important;
+  }
 }
 
 /* Accessibility & Focus Standards */
