@@ -50,6 +50,7 @@ import FounderQuantCommand from "./pages/FounderQuantCommand";
 import FounderIntelligence from "./pages/FounderIntelligence";
 import GarudaHealthApp from "./pages/GarudaHealthApp";
 import CyberShieldDashboard from "./pages/CyberShieldDashboard";
+import GarudaBilling from "./pages/GarudaBilling";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -230,6 +231,8 @@ function AppRoutes() {
       <Route path="/what-is-garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/chat" element={<PublicChat />} />
+      <Route path="/billing" element={<GarudaBilling />} />
+      <Route path="/billing-software" element={<GarudaBilling />} />
       <Route path="/scholar" element={<ScholarStudio />} />
       <Route path="/vidya" element={<ScholarStudio />} />
       <Route path="/research" element={<ScholarStudio />} />
@@ -304,6 +307,8 @@ function AppRoutes() {
       <Route path="/sahayak" element={<GarudaDostRozgar />} />
       <Route path="/starter" element={<BoilerplateStore />} />
       <Route path="/boilerplate" element={<BoilerplateStore />} />
+      <Route path="/whatsapp-bot" element={<BoilerplateStore />} />
+      <Route path="/whatsapp-ai-bot" element={<BoilerplateStore />} />
       <Route path="/store" element={<BoilerplateStore />} />
       <Route path="/sovereign-starter" element={<BoilerplateStore />} />
       <Route path="/pricing" element={<PricingPage />} />

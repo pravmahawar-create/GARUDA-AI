@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BrandAssetImage from "../components/BrandAssetImage";
 import SEOHead from "../components/SEOHead";
+import { simulateResponse, SIMULATION_MODES } from "../services/simulatorService";
 
 export default function BoilerplateStore() {
   const navigate = useNavigate();
@@ -33,31 +34,19 @@ export default function BoilerplateStore() {
 
   const handleSimulateTriage = () => {
     setTriageLoading(true);
-    // Realtime deterministic simulation
     setTimeout(() => {
-      const text = testMessage.toLowerCase();
-      let urgency = "normal";
-      let category = "general_consult";
-      let reply = `Namaste ${clientName}. Thank you for reaching out. We have captured your request and our specialist is ready to assist you. When is the best time for your consultation?`;
-
-      if (text.match(/pain|bleeding|breath|accident|emergency|tooth|acute|severe/i)) {
-        urgency = "urgent";
-        category = "clinical_urgent";
-        reply = `Namaste ${clientName}. We have flagged your acute pain as high priority. Dr. Sharma has an emergency opening at 11:30 AM today. Please tap below to confirm your visit.`;
-      } else if (text.match(/crm|agency|quote|price|custom|development|app/i)) {
-        urgency = "urgent";
-        category = "technical_inquiry";
-        reply = `Namaste ${clientName}. Thank you for contacting GARUDA OS. We build autonomous production engines on a 50/50 escrow milestone. We can reserve a 20-minute scope briefing today.`;
-      }
-
+      const mode = testMessage.match(/crm|agency|quote|price|custom|development|app/i)
+        ? SIMULATION_MODES.SALES
+        : SIMULATION_MODES.CLINIC;
+      const sim = simulateResponse(mode, testMessage, clientName);
       setTriageResult({
-        urgency,
-        category,
-        recommendedAction: urgency === "urgent" ? "Immediate Emergency Slot Booking" : "General 30-min Consultation",
-        draftReply: reply
+        urgency: sim.priority.includes("HIGH") ? "urgent" : "normal",
+        category: sim.category,
+        recommendedAction: sim.recommendedAction,
+        draftReply: sim.reply
       });
       setTriageLoading(false);
-    }, 600);
+    }, 400);
   };
 
   const handleDownload = () => {
@@ -93,8 +82,9 @@ export default function BoilerplateStore() {
   return (
     <div style={{ minHeight: "100vh", background: "#030712", color: "#f3f4f6", fontFamily: "sans-serif" }}>
       <SEOHead
-        title="GARUDA Sovereign AI Starter Kit | WhatsApp Bot & 50/50 Milestone PWA"
-        description="Production Next.js 14 + WhatsApp AI Receptionist & Razorpay 50/50 Milestone PWA Starter Kit. Self-serve software kit for developers and agencies."
+        title="WhatsApp AI Bot & Autonomous Receptionist Starter Kit | Next.js 14 Code ($49)"
+        description="Launch an autonomous WhatsApp AI receptionist and appointment booking system in 60 minutes. Complete Next.js 14, Supabase, and Razorpay/Stripe source code for businesses, clinics, and agencies."
+        canonical="https://www.garudaos.in/whatsapp-bot"
       />
 
       {/* Top Navbar */}
