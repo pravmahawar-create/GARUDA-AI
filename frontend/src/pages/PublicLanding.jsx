@@ -374,8 +374,9 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             alt="GARUDA Himalayan Eagle Flight"
             style={{
               width: "100%",
-              height: "100%",
-              objectFit: "cover",
+              height: "auto",
+              display: "block",
+              objectFit: "contain",
               objectPosition: "top right"
             }}
           />
@@ -528,303 +529,242 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             />
           </div>
         </div>
-      </section>
 
-      {/* 03 — Governed Proof & Trust Strip */}
-      <section style={{
-        padding: "1.8rem clamp(1.25rem, 4vw, 4rem)",
-        borderTop: `1px solid ${palette.border}`,
-        borderBottom: `1px solid ${palette.border}`,
-        background: "rgba(255, 255, 255, 0.6)",
-        backdropFilter: "blur(8px)",
-        position: "relative",
-        zIndex: 10
-      }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "1.5rem",
-          maxWidth: 1200,
-          margin: "0 auto",
-          textAlign: "center"
-        }}>
-          {[
-            { icon: "⚡", title: "Sub-Second Triage", subtitle: "Instant classification & priority routing" },
-            { icon: "🛡️", title: "100% Code Ownership", subtitle: "Full source code, no vendor lock-in" },
-            { icon: "💬", title: "WhatsApp Cloud API", subtitle: "Official Meta-compliant business messaging" },
-            { icon: "⚠️", title: "Human Safeguard", subtitle: "Automated escalation when judgment is needed" }
-          ].map((item) => (
-            <div key={item.title} style={{ padding: "0.6rem 1rem" }}>
-              <div style={{ fontSize: "1.35rem", marginBottom: "0.3rem" }}>{item.icon}</div>
-              <div style={{ color: palette.text, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: "0.92rem" }}>
-                {item.title}
-              </div>
-              <div style={{ color: palette.muted, fontSize: "0.8rem", marginTop: "2px" }}>{item.subtitle}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 04 — Three Clear Commercial Paths (Matching Reference Layout) */}
-      <section id="products" style={{
-        padding: "clamp(4.5rem, 7vw, 6.5rem) clamp(1.25rem, 4vw, 4rem)",
-        background: palette.canvas,
-        position: "relative"
-      }}>
-        <SectionHeading
-          kicker="Three Clear Commercial Paths"
-          title="Choose the Way You Want to Work with"
-          highlight="GARUDA."
-          sub="Whether you want to build on our verified source code or have us engineer a custom autonomous system."
-        />
-
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          gap: "1.8rem",
-          maxWidth: 1240,
-          margin: "0 auto"
-        }}>
-          {/* Card 1: Turnkey AI Systems (Featured / Most Popular in Reference) */}
-          <div style={{
-            background: "rgba(255, 255, 255, 0.95)",
-            border: "1.5px solid rgba(179, 130, 53, 0.45)",
-            borderRadius: 22,
-            padding: "2.4rem 2.1rem",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            position: "relative",
-            boxShadow: "0 18px 48px rgba(179, 130, 53, 0.12), 0 2px 8px rgba(0, 0, 0, 0.03)",
-            transition: "all 0.16s ease"
-          }}>
-            {/* Top Right Floating Badge */}
+        {/* 03 — Three Clear Commercial Paths (Matching Exact Reference Layout) */}
+        <div className="hero-pricing-strip" id="products">
+          <div className="hero-pricing-grid">
+            {/* Card 1: Turnkey AI Systems (Featured / Most Popular in Reference) */}
             <div style={{
-              position: "absolute",
-              top: 18,
-              right: 18,
-              background: palette.goldGradient,
-              color: "#FFFFFF",
-              padding: "0.28rem 0.8rem",
-              borderRadius: 999,
-              fontSize: "0.72rem",
-              fontWeight: 800,
-              letterSpacing: "0.06em",
-              boxShadow: "0 4px 12px rgba(179, 130, 53, 0.3)"
+              background: "rgba(255, 255, 255, 0.95)",
+              border: "1.5px solid rgba(179, 130, 53, 0.45)",
+              borderRadius: 22,
+              padding: "2.4rem 2.1rem",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              position: "relative",
+              boxShadow: "0 18px 48px rgba(179, 130, 53, 0.12), 0 2px 8px rgba(0, 0, 0, 0.03)",
+              transition: "all 0.16s ease"
             }}>
-              MOST POPULAR
-            </div>
-
-            <div>
+              {/* Top Right Floating Badge */}
               <div style={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "rgba(179, 130, 53, 0.12)",
-                border: "1px solid rgba(179, 130, 53, 0.3)",
-                display: "grid",
-                placeItems: "center",
-                fontSize: "1.4rem",
-                marginBottom: "1.2rem"
-              }}>
-                🚀
-              </div>
-              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, margin: "0 0 0.4rem", color: palette.text }}>
-                Turnkey AI Systems
-              </h3>
-              <p style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
-                Fully deployed, done-for-you solutions. We handle setup, appointment booking rules, and staff handover.
-              </p>
-              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.goldDeep, marginBottom: "1.3rem", display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
-                <span>$199</span>
-                <span style={{ fontSize: "1.1rem", color: palette.text, fontWeight: 700 }}>/ ₹9,999 INR</span>
-              </div>
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Custom AI system for your business
-                </li>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Setup, deployment and training
-                </li>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Ongoing support and optimization
-                </li>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Done-for-you configuration in 3-5 days
-                </li>
-              </ul>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                trackEvent("pricing_clinic_click");
-                document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              style={{
+                position: "absolute",
+                top: 18,
+                right: 18,
                 background: palette.goldGradient,
                 color: "#FFFFFF",
-                border: "none",
-                borderRadius: 12,
-                padding: "0.95rem",
-                fontWeight: 700,
-                fontSize: "0.95rem",
-                cursor: "pointer",
-                boxShadow: "0 6px 20px rgba(179, 130, 53, 0.32)",
-                transition: "all 0.16s ease"
-              }}
-            >
-              Discuss Your Project →
-            </button>
-          </div>
-
-          {/* Card 2: Starter Kits */}
-          <div style={{
-            background: palette.card,
-            border: `1px solid ${palette.border}`,
-            borderRadius: 22,
-            padding: "2.4rem 2.1rem",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            position: "relative",
-            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.03)",
-            transition: "all 0.16s ease"
-          }}>
-            <div>
-              <div style={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "rgba(23, 24, 27, 0.04)",
-                border: `1px solid ${palette.border}`,
-                display: "grid",
-                placeItems: "center",
-                fontSize: "1.4rem",
-                marginBottom: "1.2rem"
+                padding: "0.28rem 0.8rem",
+                borderRadius: 999,
+                fontSize: "0.72rem",
+                fontWeight: 800,
+                letterSpacing: "0.06em",
+                boxShadow: "0 4px 12px rgba(179, 130, 53, 0.3)"
               }}>
-                📦
+                MOST POPULAR
               </div>
-              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, margin: "0 0 0.4rem", color: palette.text }}>
-                Starter Kits
-              </h3>
-              <p style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
-                Source code + setup guides. Complete Next.js 14 App Router codebase with WhatsApp webhook handler and billing.
-              </p>
-              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.text, marginBottom: "1.3rem", display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
-                <span>$49</span>
-                <span style={{ fontSize: "1.1rem", color: palette.muted, fontWeight: 600 }}>/ ₹3,999 INR</span>
-              </div>
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Complete source code (Next.js 14)
-                </li>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> WhatsApp Cloud API webhook handler
-                </li>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Step-by-step setup instructions
-                </li>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Start building immediately
-                </li>
-              </ul>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                trackEvent("pricing_starter_click");
-                navigate("/starter");
-              }}
-              style={{
-                background: "#FFFFFF",
-                border: "1px solid rgba(179, 130, 53, 0.45)",
-                color: palette.text,
-                borderRadius: 12,
-                padding: "0.95rem",
-                fontWeight: 700,
-                fontSize: "0.95rem",
-                cursor: "pointer",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
-                transition: "all 0.16s ease"
-              }}
-            >
-              Explore Starter Kit →
-            </button>
-          </div>
 
-          {/* Card 3: Custom Architecture (Enterprise) */}
-          <div style={{
-            background: palette.card,
-            border: `1px solid ${palette.border}`,
-            borderRadius: 22,
-            padding: "2.4rem 2.1rem",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            position: "relative",
-            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.03)",
-            transition: "all 0.16s ease"
-          }}>
-            <div>
-              <div style={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "rgba(23, 24, 27, 0.04)",
-                border: `1px solid ${palette.border}`,
-                display: "grid",
-                placeItems: "center",
-                fontSize: "1.4rem",
-                marginBottom: "1.2rem"
-              }}>
-                🏢
+              <div>
+                <div style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: "rgba(179, 130, 53, 0.12)",
+                  border: "1px solid rgba(179, 130, 53, 0.3)",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: "1.4rem",
+                  marginBottom: "1.2rem"
+                }}>
+                  🚀
+                </div>
+                <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, margin: "0 0 0.4rem", color: palette.text }}>
+                  Turnkey AI Systems
+                </h3>
+                <p style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
+                  Fully deployed, done-for-you solutions.
+                </p>
+                <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.goldDeep, marginBottom: "1.3rem", display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
+                  <span>$199</span>
+                  <span style={{ fontSize: "1.1rem", color: palette.text, fontWeight: 700 }}>/ ₹9,999</span>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                  <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Custom AI system for your business
+                  </li>
+                  <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Setup, deployment and training
+                  </li>
+                  <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Ongoing support and optimization
+                  </li>
+                </ul>
               </div>
-              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, margin: "0 0 0.4rem", color: palette.text }}>
-                Custom Architecture
-              </h3>
-              <p style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
-                For complex and enterprise needs. End-to-end multi-agent systems designed around your operational rules.
-              </p>
-              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.text, marginBottom: "1.3rem", display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
-                <span>$999+</span>
-                <span style={{ fontSize: "1.05rem", color: palette.muted, fontWeight: 600 }}>Custom Scope</span>
-              </div>
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Tailored to your exact requirements
-                </li>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Multi-agent workflow automation
-                </li>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> 50/50 Milestone payment structure
-                </li>
-                <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Direct review with Praveen Mahawar
-                </li>
-              </ul>
+              <button
+                type="button"
+                onClick={() => {
+                  trackEvent("pricing_clinic_click");
+                  document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                style={{
+                  background: palette.goldGradient,
+                  color: "#FFFFFF",
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "0.95rem",
+                  fontWeight: 700,
+                  fontSize: "0.95rem",
+                  cursor: "pointer",
+                  boxShadow: "0 6px 20px rgba(179, 130, 53, 0.32)",
+                  transition: "all 0.16s ease"
+                }}
+              >
+                Discuss Your Project →
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                trackEvent("pricing_enterprise_click");
-                document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              style={{
-                background: "#FFFFFF",
-                border: "1px solid rgba(179, 130, 53, 0.45)",
-                color: palette.text,
-                borderRadius: 12,
-                padding: "0.95rem",
-                fontWeight: 700,
-                fontSize: "0.95rem",
-                cursor: "pointer",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
-                transition: "all 0.16s ease"
-              }}
-            >
-              Get a Custom Quote →
-            </button>
+
+            {/* Card 2: Starter Kits */}
+            <div style={{
+              background: palette.card,
+              border: `1px solid ${palette.border}`,
+              borderRadius: 22,
+              padding: "2.4rem 2.1rem",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              position: "relative",
+              boxShadow: "0 8px 30px rgba(0, 0, 0, 0.03)",
+              transition: "all 0.16s ease"
+            }}>
+              <div>
+                <div style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: "rgba(23, 24, 27, 0.04)",
+                  border: `1px solid ${palette.border}`,
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: "1.4rem",
+                  marginBottom: "1.2rem"
+                }}>
+                  📦
+                </div>
+                <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, margin: "0 0 0.4rem", color: palette.text }}>
+                  Starter Kits
+                </h3>
+                <p style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
+                  Source code + setup guides
+                </p>
+                <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.goldDeep, marginBottom: "1.3rem", display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
+                  <span>$49</span>
+                  <span style={{ fontSize: "1.1rem", color: palette.text, fontWeight: 700 }}>/ ₹3,999</span>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                  <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Complete source code
+                  </li>
+                  <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Step-by-step setup instructions
+                  </li>
+                  <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Start building immediately
+                  </li>
+                </ul>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  trackEvent("pricing_starter_click");
+                  navigate("/starter");
+                }}
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(179, 130, 53, 0.45)",
+                  color: palette.text,
+                  borderRadius: 12,
+                  padding: "0.95rem",
+                  fontWeight: 700,
+                  fontSize: "0.95rem",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
+                  transition: "all 0.16s ease"
+                }}
+              >
+                Explore Starter Kit →
+              </button>
+            </div>
+
+            {/* Card 3: Custom Architecture (Enterprise) */}
+            <div style={{
+              background: palette.card,
+              border: `1px solid ${palette.border}`,
+              borderRadius: 22,
+              padding: "2.4rem 2.1rem",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              position: "relative",
+              boxShadow: "0 8px 30px rgba(0, 0, 0, 0.03)",
+              transition: "all 0.16s ease"
+            }}>
+              <div>
+                <div style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: "rgba(23, 24, 27, 0.04)",
+                  border: `1px solid ${palette.border}`,
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: "1.4rem",
+                  marginBottom: "1.2rem"
+                }}>
+                  🏢
+                </div>
+                <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, margin: "0 0 0.4rem", color: palette.text }}>
+                  Custom Architecture
+                </h3>
+                <p style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
+                  For complex and enterprise needs
+                </p>
+                <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.goldDeep, marginBottom: "1.3rem", display: "flex", alignItems: "baseline", gap: "0.45rem" }}>
+                  <span>$999+</span>
+                  <span style={{ fontSize: "1.05rem", color: palette.muted, fontWeight: 600 }}>Custom Scope</span>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.85rem", color: palette.textBody, fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                  <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Tailored to your exact requirements
+                  </li>
+                  <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Advanced integrations
+                  </li>
+                  <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ color: palette.gold, fontWeight: 800 }}>✓</span> Dedicated support and development
+                  </li>
+                </ul>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  trackEvent("pricing_enterprise_click");
+                  document.getElementById("project-scope")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(179, 130, 53, 0.45)",
+                  color: palette.text,
+                  borderRadius: 12,
+                  padding: "0.95rem",
+                  fontWeight: 700,
+                  fontSize: "0.95rem",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
+                  transition: "all 0.16s ease"
+                }}
+              >
+                Get a Custom Quote →
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -973,6 +913,41 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
               <span style={{ fontSize: "0.82rem", fontWeight: 700, color: palette.goldDeep, display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
                 Launch Studio →
               </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Governed Proof & Trust Strip */}
+      <section style={{
+        padding: "1.8rem clamp(1.25rem, 4vw, 4rem)",
+        borderTop: `1px solid ${palette.border}`,
+        borderBottom: `1px solid ${palette.border}`,
+        background: "rgba(255, 255, 255, 0.6)",
+        backdropFilter: "blur(8px)",
+        position: "relative",
+        zIndex: 10
+      }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: "1.5rem",
+          maxWidth: 1200,
+          margin: "0 auto",
+          textAlign: "center"
+        }}>
+          {[
+            { icon: "⚡", title: "Sub-Second Triage", subtitle: "Instant classification & priority routing" },
+            { icon: "🛡️", title: "100% Code Ownership", subtitle: "Full source code, no vendor lock-in" },
+            { icon: "💬", title: "WhatsApp Cloud API", subtitle: "Official Meta-compliant business messaging" },
+            { icon: "⚠️", title: "Human Safeguard", subtitle: "Automated escalation when judgment is needed" }
+          ].map((item) => (
+            <div key={item.title} style={{ padding: "0.6rem 1rem" }}>
+              <div style={{ fontSize: "1.35rem", marginBottom: "0.3rem" }}>{item.icon}</div>
+              <div style={{ color: palette.text, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: "0.92rem" }}>
+                {item.title}
+              </div>
+              <div style={{ color: palette.muted, fontSize: "0.8rem", marginTop: "2px" }}>{item.subtitle}</div>
             </div>
           ))}
         </div>

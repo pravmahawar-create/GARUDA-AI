@@ -18,8 +18,8 @@ export const SIMULATION_MODES = {
 
 export const PRESET_PROMPTS = {
   [SIMULATION_MODES.CLINIC]: [
-    { id: "c1", label: "🦷 Severe Tooth Pain", text: "I have severe acute tooth pain on my lower jaw since last night and need to see the dentist ASAP today." },
-    { id: "c2", label: "📅 Clinic Timings", text: "What are your clinic consultation hours and address?" },
+    { id: "c1", label: "📅 Book Appointment", text: "Hi! I'd like to book an appointment with Dr. Sharma for next week. Do you have any slots available?" },
+    { id: "c2", label: "🦷 Severe Tooth Pain", text: "I have severe acute tooth pain on my lower jaw since last night and need to see the dentist ASAP today." },
     { id: "c3", label: "💰 Treatment Cost", text: "How much does a consultation and basic dental cleaning cost?" }
   ],
   [SIMULATION_MODES.SALES]: [
@@ -39,6 +39,20 @@ export function simulateResponse(mode, inputMessage, clientName = "Guest") {
 
   // Mode 1: Clinic WhatsApp Receptionist
   if (mode === SIMULATION_MODES.CLINIC) {
+    if (text.match(/appointment|book|slot|dr\. sharma|dr sharma|available|schedule|visit|next week/i)) {
+      return {
+        priority: "STANDARD",
+        priorityColor: "#f5d76e",
+        category: "Appointment Intake · Calendar Sync",
+        recommendedAction: "Automated slot reservation",
+        humanEscalationRequired: false,
+        reply: `Hello! 👋\nDr. Sharma has the following slots available next week:\n\n📅 Mon, 12 May – 10:00 AM\n📅 Tue, 13 May – 11:30 AM\n📅 Wed, 14 May – 9:00 AM\n\nWould you like me to book any of these for you?`,
+        disclaimer: "SIMULATION: Demo environment — no real patient data is used.",
+        ctaLabel: "Deploy This Bot For My Business →",
+        ctaType: "clinic"
+      };
+    }
+
     if (text.match(/pain|bleed|emergency|acute|severe|swelling|broken|trauma|tooth/i)) {
       return {
         priority: "HIGH PRIORITY",

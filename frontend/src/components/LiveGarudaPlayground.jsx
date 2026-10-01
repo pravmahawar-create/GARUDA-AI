@@ -4,21 +4,23 @@ import { trackEvent } from "../utils/telemetry";
 
 export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, onGetStarterKit }) {
   const [activeMode, setActiveMode] = useState(SIMULATION_MODES.CLINIC);
-  const [inputMessage, setInputMessage] = useState(PRESET_PROMPTS[SIMULATION_MODES.CLINIC][0].text);
+  const [currentPrompt, setCurrentPrompt] = useState(PRESET_PROMPTS[SIMULATION_MODES.CLINIC][0].text);
+  const [inputMessage, setInputMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState(null);
 
   // Trigger initial simulation on load so visitor immediately sees a working bot
   useEffect(() => {
     const initialPrompt = PRESET_PROMPTS[SIMULATION_MODES.CLINIC][0].text;
-    setInputMessage(initialPrompt);
+    setCurrentPrompt(initialPrompt);
     setResult(simulateResponse(SIMULATION_MODES.CLINIC, initialPrompt));
   }, []);
 
   const handleModeChange = (mode) => {
     setActiveMode(mode);
     const defaultPrompt = PRESET_PROMPTS[mode][0].text;
-    setInputMessage(defaultPrompt);
+    setCurrentPrompt(defaultPrompt);
+    setInputMessage("");
     setIsProcessing(true);
     trackEvent("playground_tab_selected", { mode });
 
@@ -29,7 +31,8 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
   };
 
   const handleSelectPrompt = (promptText) => {
-    setInputMessage(promptText);
+    setCurrentPrompt(promptText);
+    setInputMessage("");
     setIsProcessing(true);
     trackEvent("playground_preset_clicked", { mode: activeMode, prompt: promptText.slice(0, 30) });
 
@@ -43,11 +46,14 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
   const handleExecute = (e) => {
     if (e) e.preventDefault();
     if (!inputMessage.trim()) return;
+    const submittedText = inputMessage.trim();
+    setCurrentPrompt(submittedText);
+    setInputMessage("");
     setIsProcessing(true);
     trackEvent("playground_custom_submit", { mode: activeMode });
 
     setTimeout(() => {
-      setResult(simulateResponse(activeMode, inputMessage));
+      setResult(simulateResponse(activeMode, submittedText));
       setIsProcessing(false);
       trackEvent("playground_interaction_completed", { mode: activeMode });
     }, 220);
@@ -184,30 +190,6 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
         </button>
       </div>
 
-      {/* Suggested Prompt Pills (Quick Test) */}
-      <div style={{ display: "flex", gap: "0.45rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-        {PRESET_PROMPTS[activeMode].map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => handleSelectPrompt(p.text)}
-            style={{
-              background: inputMessage === p.text ? "rgba(179, 130, 53, 0.16)" : "rgba(255, 255, 255, 0.04)",
-              border: inputMessage === p.text ? "1px solid rgba(179, 130, 53, 0.45)" : "1px solid rgba(255, 255, 255, 0.07)",
-              color: inputMessage === p.text ? "#F5D76E" : "#A6ADB9",
-              padding: "0.3rem 0.7rem",
-              borderRadius: 999,
-              fontSize: "0.72rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              transition: "all 0.15s ease"
-            }}
-          >
-            {p.label}
-          </button>
-        ))}
-      </div>
-
       {/* Interactive Chat Canvas (Matching Exact Reference Layout) */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.9rem", marginBottom: "1.1rem" }}>
         {/* User Inbound Message */}
@@ -234,7 +216,7 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
             position: "relative"
           }}>
             <p style={{ margin: 0, fontSize: "0.88rem", lineHeight: 1.55, color: "#E5E7EB" }}>
-              {inputMessage}
+              {currentPrompt}
             </p>
             <div style={{ textAlign: "right", marginTop: "0.4rem", fontSize: "0.68rem", color: "#687082" }}>
               10:24 AM
@@ -265,8 +247,8 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
             padding: "1rem 1.15rem",
             position: "relative"
           }}>
-            {/* Priority & Triage Metadata Bar */}
-            {result && (
+            {/* Priority & Triage Metadata Bar (only when urgent or code mode) */}
+            {result && result.humanEscalationRequired && (
               <div style={{
                 display: "flex",
                 alignItems: "center",
@@ -289,9 +271,7 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
                   ● {result.priority}
                 </span>
                 <span style={{ color: "#8D95A7" }}>{result.category}</span>
-                {result.humanEscalationRequired && (
-                  <span style={{ color: "#F87171", fontWeight: 700 }}>⚠️ Human Flag</span>
-                )}
+                <span style={{ color: "#F87171", fontWeight: 700 }}>⚠️ Human Flag</span>
               </div>
             )}
 
@@ -323,25 +303,8 @@ export default function LiveGarudaPlayground({ onDeployClinic, onDeploySales, on
               {isProcessing ? "Analyzing input against business rules..." : (result ? result.reply : "Ready.")}
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.75rem" }}>
-              <button
-                type="button"
-                onClick={handleCTAClick}
-                style={{
-                  background: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: 6,
-                  padding: "0.38rem 0.85rem",
-                  fontWeight: 700,
-                  fontSize: "0.76rem",
-                  cursor: "pointer",
-                  boxShadow: "0 2px 8px rgba(179, 130, 53, 0.3)"
-                }}
-              >
-                {result?.ctaLabel || "Deploy This System →"}
-              </button>
-              <span style={{ fontSize: "0.68rem", color: "#687082" }}>10:24 AM</span>
+            <div style={{ textAlign: "right", marginTop: "0.4rem", fontSize: "0.68rem", color: "#687082" }}>
+              10:24 AM
             </div>
           </div>
         </div>
