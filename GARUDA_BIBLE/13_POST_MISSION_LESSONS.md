@@ -646,3 +646,75 @@ Pre-push dependency resolver guardrail: changed route files ke require() targets
   - Inscribed Rule 11 in `AGENTS.md` and `GEMINI.md`.
   - Inscribed `FD-022` in `GARUDA_BIBLE/03_FOUNDER_PRINCIPLES.md`.
   - Recorded `mem-les-017` in `data/memory/lessons.jsonl`.
+
+---
+
+## Mission: GARUDA OS Fintech Gateway — 3-Tier Commercial Pricing Layer Upgrade
+- **Timestamp**: 2026-10-01T23:10:00.000Z
+- **Commit SHA**: `f7dff2a`
+- **Category**: `commercial_fintech_and_treasury_architecture`
+- **Verification Evidence**:
+  - Live Public URL: `https://www.garudaos.in/fintech-gateway` (HTTP 200 OK, 14,877 bytes, live JS bundle verified with all 3 tiers).
+  - Test Suite:
+    - `npm run test:fintech`: 81/81 PASS (100% Clean)
+    - `npm run test:auth:context`: 12/12 PASS (100% Clean)
+    - `npm run test:saas:billing`: 10/10 PASS (100% Clean)
+    - `npm run test:cross`: 11/11 PASS (100% Clean)
+  - Frozen Core SHA-256 Hashes: 6/6 exact match (0 core modifications).
+  - Static Pre-rendering: 960 static HTML files across 451 canonical routes generated cleanly with exit code 0.
+  - Vercel Edge Deploy: `garuda-ai` and `garuda-ai-v1` deployments succeeded cleanly.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. Lack of explicit, client-facing commercial architecture pricing on the Fintech Gateway created ambiguity between GARUDA SaaS software fees and third-party regulated bank/PSP clearing fees.
+2. In early static prerendering, `/gateway-demo` and `/fintech` routes relied on SPA runtime fallbacks without dedicated prerendered directory index files.
+
+#### 2. Root Cause Forensic Analysis
+1. The fintech gateway was previously purely technical, demonstrating the state machine, zero-custody enforcer, and simulator without a transparent 3-tier commercial path for SMEs, exporters, and sovereign enterprises.
+2. Static server routes without explicit directory index paths in Express or Vercel can cause extra round-trip redirects unless dedicated `index.html` files are generated.
+
+#### 3. Permanent Architectural Countermeasure
+1. **Dedicated 3-Tier Commercial Pricing Architecture**: Integrated Cloud Starter (₹4,999/mo), Cross-Border Growth (₹49,000 setup + ₹9,999/mo), and Sovereign Enterprise (Custom Private VPC) directly into `FintechGatewayDemo.jsx` with full fee responsibility segregation (GARUDA Platform vs Regulated Provider vs Merchant).
+2. **Pricing Truth Layer**: Enforced compact transparency notice stating that commercial pricing is indicative and dependent on volume, corridors, provider availability, and commercial scope, with provider/bank fees separated.
+3. **Multi-Route Prerender Assurance**: Extended `scripts/prerender-seo.js` to emit dedicated `index.html` snapshots for all alias routes (`/fintech-gateway`, `/gateway-demo`, `/fintech`).
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **LAW: All fintech commercial pricing presentations must visually and legally segregate GARUDA software orchestration fees from regulated bank clearing fees and merchant responsibilities. Never claim live direct-bank settlement without approved provider underwriting.**
+
+---
+
+## Mission: GARUDA OS Fintech Gateway — Production Lead → Qualification → Proposal Pipeline
+- **Timestamp**: 2026-10-01T23:38:00.000Z
+- **Category**: `commercial_fintech_and_lead_qualification_pipeline`
+- **Verification Evidence**:
+  - Test Suite:
+    - `npm run test:fintech`: 92/92 PASS (100% Clean: 37 Hardening + 14 Sandbox + 22 Controlled Pilot + 8 Onboarding + 11 Qualification Pipeline)
+    - `npm run test:auth:context`: 12/12 PASS (100% Clean)
+    - `npm run test:saas:billing`: 10/10 PASS (100% Clean)
+    - `npm run test:cross`: 11/11 PASS (100% Clean)
+  - Frozen Core SHA-256 Hashes: 6/6 exact match (0 core modifications):
+    - `stateMachine.js`: 9115DA9F5DD2D0926B91D15781615F7B6C459A201D639423A4CA195F42DDC4B4
+    - `zeroCustodyEnforcer.js`: 8705192DAFDF08E04FCF5361F708863E50B9EA366653D0D439967C88D667044F
+    - `webhookSecurity.js`: C9B41A078F8A85237BD3A7452A9FF8F945AFF790A4F5938E607A2B57CC21E3D8
+    - `reconciliationEngine.js`: E58F9E88F76AC557D518BC16C4B40F50140B7A4F3EEA4369F959CD763D148EB8
+    - `auditLogger.js`: 92FF1EEC2B654267724A6A28918573B120EEACA7E92BF2BBF380086A973AE38B
+    - `fuelTankService.js`: 8BBA9F9B4C792FC5316BBF21C40C912BDBA2F030DA271F6FCB9147434FD7B7BD
+  - Static Pre-rendering: 964 static HTML files across 453 canonical routes generated cleanly with exit code 0.
+  - End-to-End Pipeline: Client CTAs (`/chat?topic=fintech-gateway&tier=...`) seamlessly trigger `FintechQualificationFlow`, formulate 19-section proposal draft, dispatch private Telegram alerts to Founder Praveen, and present auditable proposal at `/proposal/:id`.
+
+#### 1. Failure Modes & Hemorrhages Countered
+1. **Public Funnel Disconnect**: Commercial CTAs previously navigated to general chat without capturing structured payment volume, deployment tenancy, and corridor requirements.
+2. **Arbitrary AI Guesswork Risk**: Unpredictable LLM scoring for enterprise financial qualification could violate the 100% Anti-Fabrication Law by promising live bank rails.
+3. **Sensitive Financial Credential Leaks**: Potential risk of clients attempting to submit card data, bank passwords, or private keys through unconstrained forms.
+
+#### 2. Root Cause Forensic Analysis
+1. Lack of an interactive conversational qualification wizard connecting the public marketing page into GARUDA's revenue funnel.
+2. Traditional proposal generators produce generic statements rather than deterministic, explainable fintech architecture documents with 19 statutory sections.
+
+#### 3. Permanent Architectural Countermeasures
+1. **Deterministic Qualification Engine (`fintechQualificationService.js`)**: Rules-based classification into Cloud Starter, Cross-Border Growth, Sovereign Enterprise, or Custom Review with explicit explanations and provider gap analysis (Mock Bank = OPERATIONAL, ICICI/Wio/Modulr = ADAPTER READY / CREDENTIALS REQUIRED).
+2. **Deep Credential Stripping Invariant**: Strict rejection/stripping of cards, CVVs, passwords, private keys, and seed phrases across both client and server boundaries.
+3. **19-Section Statutory Proposal Draft**: Automatically generates complete technical drafts with zero-custody guarantees, 3-stage pilot paths (Sandbox -> Controlled Pilot -> Production), and fee responsibility segregation.
+4. **Founder Governance Gatekeeping**: All proposals default to `founderApproved: false` and `AWAITING_FOUNDER_APPROVAL`; alerts are privately formatted and dispatched to Founder Praveen via Telegram.
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **LAW: All fintech gateway inbound submissions must undergo deterministic architectural qualification with zero sensitive credential collection. Every proposal draft must feature the 19 statutory sections, explicit zero-custody demarcation, and mandatory Founder Praveen Mahawar approval gatekeeping.**

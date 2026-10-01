@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ChatConsole from "../components/ChatConsole";
 import SEOHead from "../components/SEOHead";
+import FintechQualificationFlow from "../components/FintechQualificationFlow";
 
 function timeAgo(iso) {
   const then = new Date(iso).getTime();
@@ -24,10 +25,21 @@ async function loadConversations() {
 export default function PublicChat() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const topic = searchParams.get("topic");
+  const tier = searchParams.get("tier");
+  const isFintechTopic = topic === "fintech-gateway" || Boolean(tier && ["cloud-starter", "cross-border-growth", "sovereign-enterprise"].includes(tier));
+  const [showFintechFlow, setShowFintechFlow] = useState(isFintechTopic);
+
   const [customer, setCustomer] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (isFintechTopic) {
+      setShowFintechFlow(true);
+    }
+  }, [isFintechTopic, tier]);
 
   const refreshConversations = useCallback(async () => {
     setConversations(await loadConversations());
@@ -124,14 +136,17 @@ export default function PublicChat() {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
               <h1 style={{ margin: 0, fontSize: "1.15rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, letterSpacing: "0.04em", color: "#ffffff" }}>
-                GARUDA AI SOLUTION ARCHITECT
+                {isFintechTopic ? "GARUDA FINTECH ARCHITECT" : "GARUDA AI SOLUTION ARCHITECT"}
               </h1>
               <span style={{ fontSize: "0.68rem", background: "rgba(179, 130, 53, 0.2)", border: "1px solid rgba(179, 130, 53, 0.4)", color: "#F5D76E", padding: "0.15rem 0.5rem", borderRadius: "4px", fontWeight: 700 }}>
-                EXECUTIVE SCOPING
+                {isFintechTopic ? "GATEWAY QUALIFICATION" : "EXECUTIVE SCOPING"}
               </span>
             </div>
             <div style={{ fontSize: "0.72rem", color: "#9ca3af", marginTop: "1px" }}>
-              Enterprise Project Scoping &amp; System Architecture · Governed by <strong style={{ color: "#C48B28" }}>Founder Praveen Mahawar</strong>
+              {isFintechTopic
+                ? "Zero-Custody Multi-Rail Commercial Scoping · Governed by "
+                : "Enterprise Project Scoping & System Architecture · Governed by "}
+              <strong style={{ color: "#C48B28" }}>Founder Praveen Mahawar</strong>
             </div>
           </div>
         </div>
@@ -292,54 +307,112 @@ export default function PublicChat() {
         {/* Chat Content Column */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, minHeight: 0 }}>
           {/* Executive Project Scoping Quick Actions */}
-          {!activeConversationId && (
+          {/* Executive Project Scoping Quick Actions */}
+          {!activeConversationId && !showFintechFlow && (
             <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(11,15,22,0.6)", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center", flexShrink: 0 }}>
-              {[
-                "🏛️ Plan an Electoral Campaign & Political War Room →",
-                "🏢 Architect Heavy Industry B2B System & Leads →",
-                "🏗️ Deploy Luxury Real Estate HNI Funnel →",
-                "🚀 Build Custom SaaS MVP & 1,000-Agent Fleet →",
-                "📞 Schedule Consultation with Founder Praveen Mahawar →"
-              ].map((chip) => (
-                <button
-                  key={chip}
-                  onClick={() => {
-                    const evt = new CustomEvent("garuda:insertPrompt", { detail: chip.replace(" →", "") });
-                    window.dispatchEvent(evt);
-                  }}
-                  style={{
-                    background: "rgba(212,175,55,0.1)",
-                    border: "1px solid rgba(212,175,55,0.25)",
-                    color: "#fef08a",
-                    padding: "0.35rem 0.75rem",
-                    borderRadius: "999px",
-                    fontSize: "0.78rem",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    display: "inline-flex",
-                    alignItems: "center"
-                  }}
-                >
-                  {chip}
-                </button>
-              ))}
+              {isFintechTopic ? (
+                [
+                  "🏛️ Return to Fintech Qualification Wizard →",
+                  "💳 What is GARUDA's Zero-Custody Invariant? →",
+                  "🌐 How does multi-rail routing work across Wio & ICICI? →",
+                  "🔒 How does HMAC webhook signature defense prevent tampering? →",
+                  "⚡ What are the 3 stages of controlled pilot deployment? →"
+                ].map((chip) => (
+                  <button
+                    key={chip}
+                    onClick={() => {
+                      if (chip.includes("Return to Fintech Qualification Wizard")) {
+                        setShowFintechFlow(true);
+                      } else {
+                        const evt = new CustomEvent("garuda:insertPrompt", { detail: chip.replace(" →", "") });
+                        window.dispatchEvent(evt);
+                      }
+                    }}
+                    style={{
+                      background: "rgba(212,175,55,0.12)",
+                      border: "1px solid rgba(212,175,55,0.3)",
+                      color: "#fef08a",
+                      padding: "0.35rem 0.75rem",
+                      borderRadius: "999px",
+                      fontSize: "0.78rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                      display: "inline-flex",
+                      alignItems: "center"
+                    }}
+                  >
+                    {chip}
+                  </button>
+                ))
+              ) : (
+                [
+                  "🏛️ Plan an Electoral Campaign & Political War Room →",
+                  "🏢 Architect Heavy Industry B2B System & Leads →",
+                  "🏗️ Deploy Luxury Real Estate HNI Funnel →",
+                  "🚀 Build Custom SaaS MVP & 1,000-Agent Fleet →",
+                  "📞 Schedule Consultation with Founder Praveen Mahawar →"
+                ].map((chip) => (
+                  <button
+                    key={chip}
+                    onClick={() => {
+                      const evt = new CustomEvent("garuda:insertPrompt", { detail: chip.replace(" →", "") });
+                      window.dispatchEvent(evt);
+                    }}
+                    style={{
+                      background: "rgba(212,175,55,0.1)",
+                      border: "1px solid rgba(212,175,55,0.25)",
+                      color: "#fef08a",
+                      padding: "0.35rem 0.75rem",
+                      borderRadius: "999px",
+                      fontSize: "0.78rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                      display: "inline-flex",
+                      alignItems: "center"
+                    }}
+                  >
+                    {chip}
+                  </button>
+                ))
+              )}
             </div>
           )}
 
-          {/* Main Chat */}
-          <main style={{ flex: 1, minWidth: 0, minHeight: 0, overflow: "hidden", padding: "1rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <div style={{ width: "100%", maxWidth: "800px", display: "flex", flexDirection: "column", gap: "0.75rem", flex: 1, minHeight: 0 }}>
-              <ChatConsole
-                conversationId={activeConversationId}
-                onConversationId={(id) => {
-                  setActiveConversationId(id);
-                  refreshConversations();
-                }}
-                placeholder="Describe your project, target market, or operational vision to the AI Architect..."
-                minHeight={0}
-              />
-            </div>
+          {/* Main Chat / Qualification Container */}
+          <main style={{ flex: 1, minWidth: 0, minHeight: 0, overflowY: "auto", padding: "1rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            {showFintechFlow ? (
+              <div style={{ width: "100%", maxWidth: "800px", paddingBottom: "2rem" }}>
+                <FintechQualificationFlow
+                  initialTier={tier}
+                  onSwitchToChat={() => setShowFintechFlow(false)}
+                />
+              </div>
+            ) : (
+              <div style={{ width: "100%", maxWidth: "800px", display: "flex", flexDirection: "column", gap: "0.75rem", flex: 1, minHeight: 0 }}>
+                {isFintechTopic && (
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(245,215,110,0.08)", border: "1px solid rgba(245,215,110,0.25)", padding: "0.5rem 1rem", borderRadius: "8px", fontSize: "0.8rem", color: "#fef08a", flexShrink: 0 }}>
+                    <span>🏛️ Active Scoping: <strong>Fintech Gateway ({tier ? tier.replace(/-/g, " ").toUpperCase() : "QUALIFICATION"})</strong></span>
+                    <button
+                      onClick={() => setShowFintechFlow(true)}
+                      style={{ background: "#f5d76e", color: "#000", border: "none", borderRadius: "4px", padding: "0.25rem 0.65rem", fontWeight: 700, cursor: "pointer", fontSize: "0.75rem" }}
+                    >
+                      Open Qualification Wizard →
+                    </button>
+                  </div>
+                )}
+                <ChatConsole
+                  conversationId={activeConversationId}
+                  onConversationId={(id) => {
+                    setActiveConversationId(id);
+                    refreshConversations();
+                  }}
+                  placeholder="Describe your payment requirements, corridors, or treasury challenges to the AI Architect..."
+                  minHeight={0}
+                />
+              </div>
+            )}
           </main>
         </div>
       </div>

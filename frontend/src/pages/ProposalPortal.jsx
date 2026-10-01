@@ -1295,6 +1295,120 @@ export default function ProposalPortal() {
           </div>
         </div>
 
+        {/* FINTECH GATEWAY SOVEREIGN ARCHITECTURE SPECIFICATION (When p.isFintech is true) */}
+        {p.isFintech && (
+          <div style={{ marginBottom: "2rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            {/* 1. Regulatory Demarcation & Zero Custody Covenant */}
+            <div style={{ background: "linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(11,15,22,0.95))", border: "1px solid rgba(16, 185, 129, 0.35)", borderRadius: 16, padding: "1.5rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.6rem" }}>
+                <span style={{ fontSize: "1.4rem" }}>🛡️</span>
+                <h3 style={{ margin: 0, fontSize: "1.1rem", color: "#10b981", fontWeight: 800 }}>
+                  STATUTORY ZERO-CUSTODY &amp; REGULATORY DEMARCATION
+                </h3>
+              </div>
+              <p style={{ color: "#d1fae5", fontSize: "0.88rem", lineHeight: 1.6, margin: "0 0 0.8rem" }}>
+                <strong>Zero-Custody Law:</strong> GARUDA is an enterprise gateway software provider, not a bank, NBFC, or custodial payment aggregator. GARUDA software never touches, pools, or holds customer funds at any stage. All transaction principals clear directly into {p.client?.name || p.customer?.name || "Merchant"}'s corporate accounts with licensed regulated clearing institutions.
+              </p>
+              <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", fontSize: "0.76rem", color: "#9ca3af", borderTop: "1px solid rgba(16, 185, 129, 0.2)", paddingTop: "0.6rem" }}>
+                <span>✓ Direct-to-Regulated Clearing</span>
+                <span>✓ Cryptographic Webhook Signatures</span>
+                <span>✓ Deterministic VAN Isolation</span>
+                <span>✓ Sovereign Zero-Hold State Machine</span>
+              </div>
+            </div>
+
+            {/* 2. Provider Readiness & Dependency Matrix */}
+            <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: "1.5rem" }}>
+              <h3 style={{ margin: "0 0 1rem", fontSize: "1.1rem", color: "#fff", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span style={{ color: GOLD }}>◈</span> Provider &amp; Banking Dependency Matrix
+              </h3>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem" }}>
+                {[
+                  { name: "GARUDA Mock Bank", status: "OPERATIONAL", color: "#10b981", desc: "Universal sandbox testing & protocol simulation available immediately with zero capital risk." },
+                  { name: "ICICI Bank Corporate (India)", status: "ADAPTER READY", color: "#f5d76e", desc: "UPI / IMPS / NEFT corporate rails. Requires ICICI commercial onboarding & client digital certificate." },
+                  { name: "Wio Bank PJSC (UAE)", status: "SANDBOX READY", color: "#38bdf8", desc: "AED domestic & GCC clearing. Requires client-provided Wio API credentials & UAE trade license." },
+                  { name: "Modulr Finance (UK/EU)", status: "ADAPTER READY", color: "#f5d76e", desc: "UK Faster Payments & SEPA clearing. Requires Modulr commercial account approval & authorization." }
+                ].map((prov, i) => (
+                  <div key={i} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "1rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
+                      <span style={{ fontWeight: 700, color: "#fff", fontSize: "0.9rem" }}>{prov.name}</span>
+                      <span style={{ fontSize: "0.68rem", fontWeight: 800, color: prov.color, background: "rgba(255,255,255,0.05)", border: `1px solid ${prov.color}`, padding: "0.15rem 0.45rem", borderRadius: 4 }}>
+                        {prov.status}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: "0.78rem", color: "#8d95a7", lineHeight: 1.4 }}>{prov.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 3. Three-Stage Pilot Path */}
+            <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: "1.5rem" }}>
+              <h3 style={{ margin: "0 0 1rem", fontSize: "1.1rem", color: "#fff", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span style={{ color: "#38bdf8" }}>🚀</span> Controlled 3-Stage Pilot Phasing
+              </h3>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
+                {[
+                  { stage: "Stage 1: Sandbox Testing", desc: "Full protocol testing using MockBank. Validates VAN provisioning, HMAC signatures, and reconciliation rules with zero capital risk." },
+                  { stage: "Stage 2: Controlled Pilot", desc: "Low-volume live testing on a single corridor with real regulated banking credentials. Dual-operator manual sign-off for reconciliation." },
+                  { stage: "Stage 3: Production Scale", desc: "Multi-rail automated routing with dynamic failover, real-time treasury telemetry, and continuous cryptographic audit logging." }
+                ].map((st, i) => (
+                  <div key={i} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "1rem" }}>
+                    <div style={{ fontWeight: 700, color: GOLD, fontSize: "0.85rem", marginBottom: "0.3rem" }}>{st.stage}</div>
+                    <div style={{ fontSize: "0.78rem", color: "#8d95a7", lineHeight: 1.4 }}>{st.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 4. Statutory Commercial Fee Segregation */}
+            <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: 16, padding: "1.5rem" }}>
+              <h3 style={{ margin: "0 0 0.8rem", fontSize: "1.1rem", color: "#fff" }}>
+                Statutory Fee Segregation Table
+              </h3>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", textAlign: "left", color: "#8d95a7" }}>
+                    <th style={{ padding: "0.6rem 0.4rem" }}>Fee Component</th>
+                    <th style={{ padding: "0.6rem 0.4rem" }}>Responsible Entity</th>
+                    <th style={{ padding: "0.6rem 0.4rem" }}>Commercial Scope</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#fff", fontWeight: 600 }}>GARUDA Software License</td>
+                    <td style={{ padding: "0.6rem 0.4rem", color: GOLD }}>GARUDA OS</td>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#8d95a7" }}>Software orchestration, routing state machine &amp; reconciliation</td>
+                  </tr>
+                  <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#fff", fontWeight: 600 }}>Interchange &amp; Clearing Fees</td>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#38bdf8" }}>Regulated Bank / Partner</td>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#8d95a7" }}>Direct interbank settlement, VAN clearing &amp; network charges</td>
+                  </tr>
+                  <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#fff", fontWeight: 600 }}>Foreign Exchange (FX) Spreads</td>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#38bdf8" }}>Regulated Bank / Partner</td>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#8d95a7" }}>Interbank FX conversion rates applied at time of clearing</td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#fff", fontWeight: 600 }}>Taxes (GST / VAT / Withholding)</td>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#cbd5e1" }}>Government Tax Authorities</td>
+                    <td style={{ padding: "0.6rem 0.4rem", color: "#8d95a7" }}>Statutory taxes applicable per regional jurisdiction</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* 5. Founder Approval Notice */}
+            <div style={{ background: "rgba(245,215,110,0.06)", border: `1px solid ${BORDER}`, borderRadius: 14, padding: "1.2rem", fontSize: "0.85rem", color: "#fef08a", lineHeight: 1.6 }}>
+              👑 <strong>GOVERNANCE STATUS: DRAFT PROPOSAL — SUBJECT TO FOUNDER APPROVAL</strong>
+              <div style={{ marginTop: "0.4rem", color: "#cbd5e1", fontSize: "0.82rem" }}>
+                This commercial architecture draft has been autonomously formulated by GARUDA Solution Architect and escalated directly to Founder Praveen Mahawar for institutional compliance, corridor approval, and commercial sign-off.
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Milestone Payment & Kickoff Action */}
         <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: 20, padding: "2rem", marginBottom: "2rem" }}>
           <h3 style={{ margin: "0 0 1.2rem", fontSize: "1.2rem", color: "#fff" }}>Milestone Schedule & Payment</h3>

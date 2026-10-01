@@ -59,6 +59,13 @@ try {
   businessMissionOrchestratorModule = null;
 }
 
+let fintechQualificationService;
+try {
+  fintechQualificationService = require("./fintechQualificationService");
+} catch {
+  fintechQualificationService = null;
+}
+
 const MAX_PAYLOAD_BYTES = 51200; // 50 KB strict limit
 
 const FORBIDDEN_CLIENT_FIELDS = [
@@ -174,6 +181,28 @@ class RevenueFunnelSecurityService {
       }
     }
 
+    // 2.5 Detect Fintech Gateway Payload
+    const isFintech = sanitized.service === "fintech-gateway" || sanitized.topic === "fintech-gateway" || Boolean(sanitized.fintechPayload) || Boolean(sanitized.paymentRequirements);
+    if (isFintech && (!sanitized.requirements || String(sanitized.requirements).trim().length < 10)) {
+      const fp = sanitized.fintechPayload || sanitized;
+      const comp = (fp.identity && fp.identity.company) || fp.company || fp.name || "Enterprise Merchant";
+      const tier = (fp.paymentRequirements && fp.paymentRequirements.selectedTier) || fp.selectedTier || fp.tier || "cloud-starter";
+      const vol = (fp.paymentRequirements && fp.paymentRequirements.expectedMonthlyVolume) || fp.expectedMonthlyVolume || "< ₹10 lakh";
+      sanitized.requirements = `Fintech Gateway Architecture for ${comp}: ${tier} deployment model with expected volume ${vol}. Zero-custody settlement and multi-rail routing.`;
+    }
+
+    if (isFintech) {
+      if (!sanitized.name && (sanitized.fintechPayload?.identity?.name || sanitized.identity?.name)) {
+        sanitized.name = sanitized.fintechPayload?.identity?.name || sanitized.identity?.name;
+      }
+      if (!sanitized.email && (sanitized.fintechPayload?.identity?.email || sanitized.identity?.email)) {
+        sanitized.email = sanitized.fintechPayload?.identity?.email || sanitized.identity?.email;
+      }
+      if (!sanitized.phone && (sanitized.fintechPayload?.identity?.phone || sanitized.identity?.phone)) {
+        sanitized.phone = sanitized.fintechPayload?.identity?.phone || sanitized.identity?.phone;
+      }
+    }
+
     // 3. Requirements validation & sanitization
     if (sanitized.requirements === undefined || sanitized.requirements === null) {
       const err = new Error("Project requirements are required for scoping (minimum 10 characters).");
@@ -264,7 +293,9 @@ class RevenueFunnelSecurityService {
       budget: parsedBudget,
       statedBudget: parsedBudget,
       timeline: cleanTimeline,
-      service: cleanService,
+      service: isFintech ? "fintech-gateway" : cleanService,
+      isFintech,
+      fintechPayload: sanitized.fintechPayload || (isFintech ? sanitized : null),
       environment,
       isTest,
       attribution: safeAttribution,
@@ -340,69 +371,93 @@ class RevenueFunnelSecurityService {
           { milestone: "Milestone 1 — Complete Governed Delivery & Acceptance", amountINR: estimatedINR, percentage: 100 }
         ];
 
-    const scopeId = `scope_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
+    const scopeId = sanitized.isFintech
+      ? `fintech_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`
+      : `scope_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
     const publicUrl = `https://garudaos.in/proposal/${scopeId}`;
 
-    // 5. Build Sovereign Proposal
-    const proposal = {
-      proposalId: scopeId,
-      scopeId,
-      project: {
-        title: `${bestCap.name}: Custom Architecture`,
-        requirements: sanitized.cleanRequirements
-      },
-      client: {
-        name: sanitized.name,
-        email: sanitized.email,
-        phone: sanitized.phone,
-        organization: sanitized.isTest ? "Sandbox Test Organization" : "Web Lead"
-      },
-      customer: {
-        name: sanitized.name,
-        email: sanitized.email,
-        phone: sanitized.phone,
-        contact: sanitized.contact,
-        service: sanitized.service,
-        attribution: sanitized.attribution
-      },
-      requirements: sanitized.cleanRequirements,
-      capabilityMatch: {
-        name: bestCap.name,
-        category: bestCap.category,
-        matchScore: assessment ? assessment.capabilityMatchScore : 85,
-        canExecuteAutonomously: bestCap.canMotherExecuteAutonomously || false
-      },
-      primaryUniverse: assessment ? assessment.primaryUniverse : "U06 Automation",
-      activatedUniverses: assessment && assessment.activatedUniverses ? assessment.activatedUniverses : ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"],
-      selectedCapabilities: assessment && assessment.selectedCapabilities ? assessment.selectedCapabilities : [],
-      deliverables: [
-        "Complete source code repository with clean architecture & tests",
-        "Deterministic QA & Automated Validation report with evidence logs",
-        "Verified SHA-256 artifact manifest & production delivery package",
-        "Deployment guide & post-launch warranty support"
-      ],
-      pricing: {
-        currency: "INR",
-        totalINR: estimatedINR,
-        totalUSD: estimatedUSD,
-        totalAmount: estimatedINR,
-        depositAmount: milestones[0] ? (milestones[0].amountINR || milestones[0].amount) : estimatedINR,
-        depositAmountINR: milestones[0] ? (milestones[0].amountINR || milestones[0].amount) : estimatedINR,
-        pricingModel: estimatedINR >= 30000 ? "milestone_based" : "fixed_price",
-        milestones
-      },
-      estimatedTimeline: sanitized.timeline,
-      status: "SCOPED",
-      governanceStatus: "AWAITING_FOUNDER_APPROVAL",
-      paymentStatus: "UNPAID",
-      paidAmount: 0,
-      verifiedRevenue: false,
-      founderApproved: false,
-      environment: sanitized.environment,
-      isTest: sanitized.isTest,
-      publicUrl,
-      createdAt: new Date().toISOString()
-    };
+    // Fintech Deterministic Qualification & Specialized Proposal Formulation
+    let cleanFintech = null;
+    let qualResult = null;
+    if (sanitized.isFintech && fintechQualificationService) {
+      try {
+        cleanFintech = fintechQualificationService.validateAndSanitizeFintechPayload(sanitized.fintechPayload || rawBody);
+        qualResult = fintechQualificationService.evaluateFintechRequirements(cleanFintech);
+      } catch (err) {
+        console.warn("[RevenueFunnelSecurity] Fintech qualification error:", err.message);
+      }
+    }
+
+    // 5. Build Sovereign Proposal (Specialized 19-section proposal for Fintech, standard for others)
+    let proposal;
+    if (qualResult) {
+      proposal = fintechQualificationService.buildFintechProposalDraft(cleanFintech, qualResult, { scopeId });
+      proposal.environment = sanitized.environment;
+      proposal.isTest = sanitized.isTest;
+      proposal.attribution = sanitized.attribution;
+      proposal.publicUrl = publicUrl;
+      estimatedINR = proposal.pricing?.totalAmount || estimatedINR || 50000;
+    } else {
+      proposal = {
+        proposalId: scopeId,
+        scopeId,
+        project: {
+          title: `${bestCap.name}: Custom Architecture`,
+          requirements: sanitized.cleanRequirements
+        },
+        client: {
+          name: sanitized.name,
+          email: sanitized.email,
+          phone: sanitized.phone,
+          organization: sanitized.isTest ? "Sandbox Test Organization" : "Web Lead"
+        },
+        customer: {
+          name: sanitized.name,
+          email: sanitized.email,
+          phone: sanitized.phone,
+          contact: sanitized.contact,
+          service: sanitized.service,
+          attribution: sanitized.attribution
+        },
+        requirements: sanitized.cleanRequirements,
+        capabilityMatch: {
+          name: bestCap.name,
+          category: bestCap.category,
+          matchScore: assessment ? assessment.capabilityMatchScore : 85,
+          canExecuteAutonomously: bestCap.canMotherExecuteAutonomously || false
+        },
+        primaryUniverse: assessment ? assessment.primaryUniverse : "U06 Automation",
+        activatedUniverses: assessment && assessment.activatedUniverses ? assessment.activatedUniverses : ["U01 Knowledge", "U02 Reasoning", "U09 Governance", "U10 Revenue"],
+        selectedCapabilities: assessment && assessment.selectedCapabilities ? assessment.selectedCapabilities : [],
+        deliverables: [
+          "Complete source code repository with clean architecture & tests",
+          "Deterministic QA & Automated Validation report with evidence logs",
+          "Verified SHA-256 artifact manifest & production delivery package",
+          "Deployment guide & post-launch warranty support"
+        ],
+        pricing: {
+          currency: "INR",
+          totalINR: estimatedINR,
+          totalUSD: estimatedUSD,
+          totalAmount: estimatedINR,
+          depositAmount: milestones[0] ? (milestones[0].amountINR || milestones[0].amount) : estimatedINR,
+          depositAmountINR: milestones[0] ? (milestones[0].amountINR || milestones[0].amount) : estimatedINR,
+          pricingModel: estimatedINR >= 30000 ? "milestone_based" : "fixed_price",
+          milestones
+        },
+        estimatedTimeline: sanitized.timeline,
+        status: "SCOPED",
+        governanceStatus: "AWAITING_FOUNDER_APPROVAL",
+        paymentStatus: "UNPAID",
+        paidAmount: 0,
+        verifiedRevenue: false,
+        founderApproved: false,
+        environment: sanitized.environment,
+        isTest: sanitized.isTest,
+        publicUrl,
+        createdAt: new Date().toISOString()
+      };
+    }
 
     // 6. Execute Autonomous Business Mission Loop (Phase 5.7)
     let acquisitionRecord = null;
@@ -449,11 +504,14 @@ class RevenueFunnelSecurityService {
       phone: sanitized.phone,
       contact: sanitized.contact,
       service: sanitized.service,
+      isFintech: Boolean(sanitized.isFintech),
+      fintechLeadData: cleanFintech || null,
+      fintechQualification: qualResult || null,
       requirements: sanitized.cleanRequirements,
       estimatedINR,
       environment: sanitized.environment,
       isTest: sanitized.isTest,
-      source: sanitized.attribution?.source || "project_scope_form",
+      source: sanitized.attribution?.source || (sanitized.isFintech ? "fintech_gateway_page" : "project_scope_form"),
       attribution: sanitized.attribution,
       status: "new",
       governance: "AWAITING_FOUNDER_APPROVAL",
@@ -494,10 +552,18 @@ class RevenueFunnelSecurityService {
     // 11. Escalate to Founder Telegram privately (Internal Alert Only, Zero Public Phone Flash)
     if (telegramBotService && !sanitized.isTest && process.env.NODE_ENV !== "test") {
       try {
-        await telegramBotService.notifyLeadCaptured({
-          ...leadRecord,
-          message: `🎯 [PUBLIC FUNNEL] Project Scope Received: ${sanitized.cleanRequirements.slice(0, 120)} (Est: ₹${estimatedINR.toLocaleString("en-IN")})\nProposal: ${publicUrl}`
-        });
+        if (sanitized.isFintech && cleanFintech && qualResult && telegramBotService.notifyFintechLeadCaptured) {
+          const alertMsg = fintechQualificationService.formatFintechTelegramAlert(cleanFintech, qualResult, publicUrl);
+          await telegramBotService.notifyFintechLeadCaptured({
+            ...leadRecord,
+            telegramAlert: alertMsg
+          });
+        } else {
+          await telegramBotService.notifyLeadCaptured({
+            ...leadRecord,
+            message: `🎯 [PUBLIC FUNNEL] Project Scope Received: ${sanitized.cleanRequirements.slice(0, 120)} (Est: ₹${estimatedINR.toLocaleString("en-IN")})\nProposal: ${publicUrl}`
+          });
+        }
       } catch (_) {}
     }
 
@@ -511,8 +577,11 @@ class RevenueFunnelSecurityService {
         proposalId: scopeId,
         proposalUrl: publicUrl,
         proposal,
+        fintechQualification: qualResult || undefined,
         environment: sanitized.environment,
-        message: "Project scope request received and formulated. Awaiting Founder review before formal dispatch."
+        message: sanitized.isFintech
+          ? "Fintech Gateway architecture scoped and drafted. Awaiting Founder review before formal dispatch."
+          : "Project scope request received and formulated. Awaiting Founder review before formal dispatch."
       }
     };
   }

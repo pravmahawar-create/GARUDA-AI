@@ -37,7 +37,7 @@
     "test:entitlement": "node --test-concurrency=1 src/services/capabilityEntitlementService.test.js",
     "test:auth:context": "node --test-concurrency=1 src/middleware/authContextMiddleware.test.js",
     "test:saas:billing": "node --test-concurrency=1 src/routes/saasBillingRoutes.test.js",
-    "test:fintech": "node src/fintech/fintech.test.js && node src/fintech/providerSandbox.test.js && node src/fintech/controlledPilot.test.js && node src/fintech/bankPartnerOnboarding.test.js",
+    "test:fintech": "node src/fintech/fintech.test.js && node src/fintech/providerSandbox.test.js && node src/fintech/controlledPilot.test.js && node src/fintech/bankPartnerOnboarding.test.js && node --test src/fintech/fintechQualificationPipeline.test.js",
     "fintech:provider:preflight": "node src/fintech/providerPreflight.js",
     "test:tenant:seats": "node --test-concurrency=1 src/routes/tenantRoutes.test.js",
     "test:investor": "node --test-concurrency=1 src/services/investorPresentationEngine.test.js",

@@ -71,6 +71,30 @@ function isDuplicate(text, chatId) {
   return false;
 }
 
+// ── Founder Alert Identical-Message Protection (2h) ──
+// Identical alerts (e.g. a daemon re-firing the same notification every
+// cycle) are suppressed for 2 hours. UNIQUE alerts (deals, leads, errors)
+// are unaffected because the key is the full text.
+const recentAlerts = new Map();
+const ALERT_DEDUP_WINDOW_MS = 7200000; // 2 hours
+
+function isDuplicateAlert(text) {
+  const key = String(text || "").slice(0, 200);
+  const now = Date.now();
+  const existing = recentAlerts.get(key);
+  if (existing && (now - existing) < ALERT_DEDUP_WINDOW_MS) {
+    console.log(`[TelegramBot] Founder alert deduped (identical within 2h): ${key.slice(0, 60)}...`);
+    return true;
+  }
+  recentAlerts.set(key, now);
+  if (recentAlerts.size > 200) {
+    for (const [k, v] of recentAlerts.entries()) {
+      if (now - v > ALERT_DEDUP_WINDOW_MS) recentAlerts.delete(k);
+    }
+  }
+  return false;
+}
+
 async function sendMessage(text, chatId) {
   const target = chatId || founderChatId();
   if (!target || !botToken()) return null;
@@ -118,6 +142,7 @@ function buildEngineUnavailableReply(llmResult) {
 async function sendFounderAlert(title, body) {
   if (!isConfigured()) return null;
   const text = `${title}\n\n${body}`;
+  if (isDuplicateAlert(text)) return { ok: true, deduped: true };
   return sendMessage(text);
 }
 
@@ -138,6 +163,13 @@ async function notifyLeadCaptured(lead) {
     lead.message ? `Message: ${String(lead.message).slice(0, 300)}` : null
   ].filter(Boolean).join("\n");
   return sendFounderAlert("GARUDA — New Lead (Attributed)", summary);
+}
+
+async function notifyFintechLeadCaptured(fintechLead) {
+  if (!fintechLead) return null;
+  const alertText = typeof fintechLead === "string" ? fintechLead : (fintechLead.telegramAlert || fintechLead.message || "");
+  if (!alertText) return null;
+  return sendFounderAlert("🦅 GARUDA FINTECH GATEWAY — QUALIFIED LEAD", alertText);
 }
 
 function detectMediaKind(message) {
@@ -354,6 +386,7 @@ module.exports = {
   handleUpdate,
   isConfigured,
   notifyLeadCaptured,
+  notifyFintechLeadCaptured,
   sendFounderAlert,
   sendMessage,
   setWebhook,
