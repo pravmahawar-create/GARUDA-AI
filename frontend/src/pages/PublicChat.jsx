@@ -95,9 +95,9 @@ export default function PublicChat() {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0.8rem 1.25rem",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-          background: "rgba(17, 24, 39, 0.7)",
-          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(179, 130, 53, 0.22)",
+          background: "rgba(11, 14, 20, 0.95)",
+          backdropFilter: "blur(14px)",
           zIndex: 10
         }}
       >
@@ -107,27 +107,31 @@ export default function PublicChat() {
             style={{
               background: "rgba(255, 255, 255, 0.05)",
               border: "1px solid rgba(255, 255, 255, 0.12)",
-              color: "#9ca3af",
+              color: "#cbd5e1",
               borderRadius: "6px",
               padding: "0.4rem 0.8rem",
               cursor: "pointer",
               fontSize: "0.85rem",
-              fontWeight: 500
+              fontWeight: 500,
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4rem"
             }}
           >
-            ← Home
+            <img src="/images/garuda_eagle_sigil.png" alt="GARUDA" style={{ width: 18, height: 15, objectFit: "contain" }} />
+            <span>← Home</span>
           </button>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-              <h1 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 900, letterSpacing: "0.04em", color: "#ffffff" }}>
+              <h1 style={{ margin: 0, fontSize: "1.15rem", fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, letterSpacing: "0.04em", color: "#ffffff" }}>
                 GARUDA AI SOLUTION ARCHITECT
               </h1>
-              <span style={{ fontSize: "0.68rem", background: "rgba(212,175,55,0.2)", border: "1px solid rgba(212,175,55,0.4)", color: "#fef08a", padding: "0.15rem 0.5rem", borderRadius: "4px", fontWeight: 700 }}>
+              <span style={{ fontSize: "0.68rem", background: "rgba(179, 130, 53, 0.2)", border: "1px solid rgba(179, 130, 53, 0.4)", color: "#F5D76E", padding: "0.15rem 0.5rem", borderRadius: "4px", fontWeight: 700 }}>
                 EXECUTIVE SCOPING
               </span>
             </div>
             <div style={{ fontSize: "0.72rem", color: "#9ca3af", marginTop: "1px" }}>
-              Enterprise Project Scoping & System Architecture · Governed by <strong style={{ color: "#d4af37" }}>Founder Praveen Mahawar</strong>
+              Enterprise Project Scoping &amp; System Architecture · Governed by <strong style={{ color: "#C48B28" }}>Founder Praveen Mahawar</strong>
             </div>
           </div>
         </div>

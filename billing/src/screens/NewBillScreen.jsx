@@ -79,13 +79,14 @@ export default function NewBillScreen() {
   }
 
   const selectedCustomer = customers.find((c) => c.id === customerId)
-  const billType = (selectedCustomer && (selectedCustomer.billType || (selectedCustomer.gstin ? 'gst' : 'kaccha'))) || 'kaccha'
+  const effectiveGstin = selectedCustomer?.gstin || (newGstin && newGstin.trim().length === 15 ? newGstin.trim().toUpperCase() : '')
+  const billType = (selectedCustomer && (selectedCustomer.billType || (selectedCustomer.gstin ? 'gst' : 'kaccha'))) || (effectiveGstin ? 'gst' : 'kaccha')
   const isKaccha = billType === 'kaccha'
 
   const totals = useMemo(() => {
-    const mode = gstTypeFor(company?.gstin, selectedCustomer?.gstin)
+    const mode = gstTypeFor(company?.gstin, effectiveGstin)
     return calcBill(rows, { gstRate: company?.gstRate ?? 18, discount, transport, billType, mode })
-  }, [rows, company, selectedCustomer, discount, transport, billType])
+  }, [rows, company, selectedCustomer, effectiveGstin, discount, transport, billType])
 
   const validLines = totals.lines.length > 0
 
@@ -233,8 +234,8 @@ export default function NewBillScreen() {
         </select>
         <input className="input" placeholder="Naam *" value={newName} onChange={(e) => setNewName(e.target.value)} />
         <div className="scope-bar">
-          <button type="button" className={`chip ${!selectedCustomer && newGstin ? 'chip-active' : ''}`} onClick={() => setNewGstin('')} disabled={Boolean(selectedCustomer)}>Non-GST (bina GSTIN)</button>
-          <button type="button" className={`chip ${!selectedCustomer && newGstin ? '' : 'chip-active'}`} onClick={() => setNewGstin(prompt('GSTIN daalo (15 digit)')?.toUpperCase() || newGstin)} disabled={Boolean(selectedCustomer)}>GST bill (GSTIN)</button>
+          <button type="button" className={`chip ${!effectiveGstin ? 'chip-active' : ''}`} onClick={() => setNewGstin('')} disabled={Boolean(selectedCustomer)}>Non-GST (bina GSTIN)</button>
+          <button type="button" className={`chip ${effectiveGstin ? 'chip-active' : ''}`} onClick={() => setNewGstin(prompt('GSTIN daalo (15 digit)')?.toUpperCase() || newGstin)} disabled={Boolean(selectedCustomer)}>GST bill (GSTIN)</button>
         </div>
         <div className="ir-top">
           <input className="input" type="tel" placeholder="Mobile" value={newMobile} onChange={(e) => setNewMobile(e.target.value)} />

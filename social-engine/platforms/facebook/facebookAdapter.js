@@ -27,6 +27,18 @@ class FacebookAdapter {
       return { authenticated: false, reason: 'LOGIN_REQUIRED' };
     }
 
+    const isLoginFormPresent = await page.evaluate(() => {
+      const hasEmailInput = Boolean(document.querySelector("input[name='email'], input#email"));
+      const hasPassInput = Boolean(document.querySelector("input[name='pass'], input#pass"));
+      const hasLoginBtn = Boolean(document.querySelector("button[name='login'], button#loginbutton"));
+      return (hasEmailInput && hasPassInput) || hasLoginBtn;
+    });
+
+    if (isLoginFormPresent) {
+      this.healthMonitor.setAuthStatus('AUTH_EXPIRED');
+      return { authenticated: false, reason: 'LOGIN_REQUIRED' };
+    }
+
     this.healthMonitor.setAuthStatus('VERIFIED');
     return { authenticated: true };
   }

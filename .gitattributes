@@ -1,0 +1,4 @@
+# Tell git not to complain about whitespace in compiled dist files
+billing/dist/** -whitespace
+frontend/dist/** -whitespace
+frontend/public/apps/** -whitespace

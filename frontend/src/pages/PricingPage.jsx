@@ -3,11 +3,30 @@ import { useNavigate } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 import BrandAssetImage from "../components/BrandAssetImage";
 
-const GOLD = "#d4af37";
-const GOLD_LIGHT = "#fef08a";
-const BG = "#030712";
-const PANEL = "#0a0f18";
-const BORDER = "rgba(212, 175, 55, 0.2)";
+const palette = {
+  canvas: "#F6F4EE",
+  canvasIvory: "#FAF9F6",
+  card: "#FFFFFF",
+  text: "#17181B",
+  textBody: "#292B30",
+  muted: "#525866",
+  subtle: "#8A8D95",
+  gold: "#B38235",
+  goldPrimary: "#C48B28",
+  goldDeep: "#9E6D1C",
+  goldLight: "#D6A84F",
+  goldGradient: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)",
+  border: "rgba(23, 24, 27, 0.08)",
+  borderGold: "rgba(179, 130, 53, 0.35)",
+  obsidian: "#10141D",
+  obsidianDeep: "#0B0E14"
+};
+
+const GOLD = palette.gold;
+const GOLD_LIGHT = palette.goldLight;
+const BG = palette.canvas;
+const PANEL = palette.card;
+const BORDER = palette.border;
 
 export default function PricingPage() {
   const navigate = useNavigate();
@@ -186,7 +205,13 @@ export default function PricingPage() {
   const displayPlans = plans.length > 0 ? plans : defaultPlans;
 
   return (
-    <div style={{ background: BG, color: "#fff", minHeight: "100vh", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <div style={{
+      background: palette.canvas,
+      color: palette.text,
+      minHeight: "100vh",
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+      WebkitFontSmoothing: "antialiased"
+    }}>
       <SEOHead
         title="GARUDA AI Pricing | SaaS Subscriptions & Custom Project Rates | GARUDA"
         description="Transparent pricing for GARUDA AI: SaaS subscriptions from ₹0 to ₹19,999/mo and fixed-price custom AI, software & automation projects with 50% milestone governance."
@@ -194,25 +219,102 @@ export default function PricingPage() {
       />
 
       {/* Header */}
-      <header style={{ borderBottom: `1px solid ${BORDER}`, padding: "1.2rem 2rem", background: PANEL }}>
+      <header style={{
+        borderBottom: `1px solid ${palette.border}`,
+        padding: "0.85rem clamp(1.25rem, 4vw, 3.5rem)",
+        background: "rgba(246, 244, 238, 0.92)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+        position: "sticky",
+        top: 0,
+        zIndex: 50
+      }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", cursor: "pointer" }} onClick={() => navigate("/")}>
-            <BrandAssetImage name="garuda_symbol" width={32} height={32} alt="GARUDA" />
-            <div>
-              <div style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "0.08em", color: "#fff" }}>GARUDA OS</div>
-              <div style={{ fontSize: "0.68rem", color: GOLD, letterSpacing: "0.05em" }}>SOVEREIGN PRICING</div>
-            </div>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.8rem",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0
+            }}
+          >
+            <img
+              src="/images/garuda_eagle_sigil.png"
+              alt="GARUDA Sigil"
+              style={{ width: 34, height: 28, objectFit: "contain" }}
+            />
+            <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1 }}>
+              <span style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontSize: "1.35rem",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                color: palette.text
+              }}>
+                GARUDA
+              </span>
+              <span style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "0.6rem",
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                color: "#686A70",
+                textTransform: "uppercase",
+                marginTop: "2px"
+              }}>
+                AI OPERATING SYSTEM
+              </span>
+            </span>
+            <span style={{
+              color: palette.goldDeep,
+              fontSize: "0.72rem",
+              padding: "0.22rem 0.65rem",
+              background: "rgba(179, 130, 53, 0.12)",
+              borderRadius: 999,
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              marginLeft: "0.4rem"
+            }}>
+              SOVEREIGN PRICING
+            </span>
+          </button>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
             <button
               onClick={() => navigate("/app")}
-              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", padding: "0.45rem 1rem", borderRadius: 8, fontSize: "0.85rem", cursor: "pointer" }}
+              style={{
+                background: "transparent",
+                border: `1px solid ${palette.border}`,
+                color: palette.text,
+                padding: "0.45rem 1.1rem",
+                borderRadius: 999,
+                fontSize: "0.82rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.16s ease"
+              }}
             >
               Dashboard
             </button>
             <button
               onClick={() => navigate("/demo")}
-              style={{ background: `linear-gradient(135deg, ${GOLD}, #b8860b)`, color: "#000", border: "none", padding: "0.45rem 1.2rem", borderRadius: 8, fontWeight: 800, fontSize: "0.85rem", cursor: "pointer" }}
+              style={{
+                background: palette.goldGradient,
+                color: "#FFFFFF",
+                border: "none",
+                padding: "0.48rem 1.25rem",
+                borderRadius: 999,
+                fontWeight: 700,
+                fontSize: "0.84rem",
+                cursor: "pointer",
+                boxShadow: "0 4px 14px rgba(179, 130, 53, 0.28)",
+                transition: "all 0.16s ease"
+              }}
             >
               Live Demo
             </button>
@@ -222,29 +324,59 @@ export default function PricingPage() {
 
       {/* Hero Section */}
       <section style={{ textAlign: "center", padding: "4rem 1.5rem 2rem", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ display: "inline-block", background: "rgba(212,175,55,0.1)", border: `1px solid ${GOLD}`, borderRadius: 999, padding: "0.3rem 1rem", fontSize: "0.8rem", color: GOLD_LIGHT, fontWeight: 700, marginBottom: "1rem" }}>
-          ⚡ 100% Anti-Fabrication • Deterministic AI Workforce
+        <div style={{
+          display: "inline-block",
+          background: "#FFFFFF",
+          border: `1px solid ${palette.borderGold}`,
+          borderRadius: 999,
+          padding: "0.35rem 1rem",
+          fontSize: "0.76rem",
+          color: palette.text,
+          fontWeight: 700,
+          marginBottom: "1rem",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.03)"
+        }}>
+          ✦ 100% Anti-Fabrication • Deterministic AI Workforce
         </div>
-        <h1 style={{ fontSize: "2.7rem", fontWeight: 900, margin: "0 0 1rem", letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-          Predictable Power. <span style={{ color: GOLD }}>Sovereign Autonomy.</span>
+        <h1 style={{
+          fontSize: "clamp(2.2rem, 5vw, 3.4rem)",
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontWeight: 700,
+          margin: "0 0 1rem",
+          letterSpacing: "-0.015em",
+          lineHeight: 1.18,
+          color: palette.text
+        }}>
+          Predictable Power.{" "}
+          <span style={{ color: palette.gold, fontStyle: "italic", fontFamily: "'Playfair Display', Georgia, serif" }}>
+            Sovereign Autonomy.
+          </span>
         </h1>
-        <p style={{ color: "#9ca3af", fontSize: "1.1rem", maxWidth: 650, margin: "0 auto 2rem", lineHeight: 1.6 }}>
+        <p style={{ color: palette.muted, fontSize: "1.06rem", maxWidth: 650, margin: "0 auto 2rem", lineHeight: 1.6 }}>
           Choose the sovereign workforce tier tailored for your velocity. Transparent limits, zero hidden fees, and authoritative data privacy.
         </p>
 
         {/* Currency Switcher */}
-        <div style={{ display: "inline-flex", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 999, padding: "0.3rem" }}>
+        <div style={{
+          display: "inline-flex",
+          background: "#FFFFFF",
+          border: `1px solid ${palette.border}`,
+          borderRadius: 999,
+          padding: "0.3rem",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.03)"
+        }}>
           <button
             onClick={() => setCurrency("INR")}
             style={{
-              background: currency === "INR" ? GOLD : "transparent",
-              color: currency === "INR" ? "#000" : "#9ca3af",
+              background: currency === "INR" ? palette.goldGradient : "transparent",
+              color: currency === "INR" ? "#FFFFFF" : palette.muted,
               border: "none",
               borderRadius: 999,
-              padding: "0.4rem 1.2rem",
-              fontWeight: 800,
-              fontSize: "0.85rem",
-              cursor: "pointer"
+              padding: "0.45rem 1.25rem",
+              fontWeight: 700,
+              fontSize: "0.84rem",
+              cursor: "pointer",
+              transition: "all 0.16s ease"
             }}
           >
             ₹ INR (India)
@@ -252,14 +384,15 @@ export default function PricingPage() {
           <button
             onClick={() => setCurrency("USD")}
             style={{
-              background: currency === "USD" ? GOLD : "transparent",
-              color: currency === "USD" ? "#000" : "#9ca3af",
+              background: currency === "USD" ? palette.goldGradient : "transparent",
+              color: currency === "USD" ? "#FFFFFF" : palette.muted,
               border: "none",
               borderRadius: 999,
-              padding: "0.4rem 1.2rem",
-              fontWeight: 800,
-              fontSize: "0.85rem",
-              cursor: "pointer"
+              padding: "0.45rem 1.25rem",
+              fontWeight: 700,
+              fontSize: "0.84rem",
+              cursor: "pointer",
+              transition: "all 0.16s ease"
             }}
           >
             $ USD (Global)
@@ -267,7 +400,17 @@ export default function PricingPage() {
         </div>
 
         {statusMessage && (
-          <div style={{ marginTop: "1.5rem", padding: "0.75rem 1.5rem", background: statusMessage.startsWith("✓") ? "rgba(117,244,171,0.12)" : "rgba(239,68,68,0.12)", border: `1px solid ${statusMessage.startsWith("✓") ? "#75f4ab" : "#f87171"}`, borderRadius: 8, display: "inline-block", color: statusMessage.startsWith("✓") ? "#75f4ab" : "#f87171", fontSize: "0.9rem", fontWeight: 700 }}>
+          <div style={{
+            marginTop: "1.5rem",
+            padding: "0.75rem 1.5rem",
+            background: statusMessage.startsWith("✓") ? "rgba(5,150,105,0.08)" : "rgba(220,38,38,0.08)",
+            border: `1px solid ${statusMessage.startsWith("✓") ? "#059669" : "#dc2626"}`,
+            borderRadius: 999,
+            display: "inline-block",
+            color: statusMessage.startsWith("✓") ? "#059669" : "#dc2626",
+            fontSize: "0.88rem",
+            fontWeight: 700
+          }}>
             {statusMessage}
           </div>
         )}
@@ -285,56 +428,74 @@ export default function PricingPage() {
               <div
                 key={plan.planId}
                 style={{
-                  background: PANEL,
-                  border: isCurrent ? "2px solid #75f4ab" : isPopular ? `2px solid ${GOLD}` : "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 16,
+                  background: "#FFFFFF",
+                  border: isCurrent
+                    ? "2px solid #059669"
+                    : isPopular
+                      ? `2px solid ${palette.gold}`
+                      : `1px solid ${palette.border}`,
+                  borderRadius: 20,
                   padding: "2rem 1.5rem",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
                   position: "relative",
-                  boxShadow: isPopular ? "0 10px 40px rgba(212,175,55,0.12)" : "none"
+                  boxShadow: isPopular ? "0 10px 30px rgba(179, 130, 53, 0.15)" : "0 4px 20px rgba(0,0,0,0.04)"
                 }}
               >
                 {isPopular && (
-                  <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${GOLD}, #b8860b)`, color: "#000", fontSize: "0.72rem", fontWeight: 900, letterSpacing: "0.08em", textTransform: "uppercase", padding: "0.2rem 0.8rem", borderRadius: 999 }}>
+                  <div style={{
+                    position: "absolute",
+                    top: -12,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: palette.goldGradient,
+                    color: "#FFFFFF",
+                    fontSize: "0.7rem",
+                    fontWeight: 800,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    padding: "0.22rem 0.85rem",
+                    borderRadius: 999,
+                    boxShadow: "0 2px 8px rgba(179, 130, 53, 0.3)"
+                  }}>
                     Most Popular
                   </div>
                 )}
 
                 <div>
-                  <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "#fff", marginBottom: "0.3rem" }}>
+                  <div style={{ fontSize: "1.2rem", fontWeight: 800, color: palette.text, marginBottom: "0.3rem" }}>
                     {plan.name}
                   </div>
-                  <div style={{ color: "#9ca3af", fontSize: "0.82rem", minHeight: 36, marginBottom: "1.2rem", lineHeight: 1.4 }}>
+                  <div style={{ color: palette.muted, fontSize: "0.82rem", minHeight: 36, marginBottom: "1.2rem", lineHeight: 1.4 }}>
                     {plan.tagline || `${plan.limits?.seats || 1} team seat(s) • ${plan.limits?.maxProjects || 10} projects`}
                   </div>
 
                   <div style={{ marginBottom: "1.5rem" }}>
-                    <span style={{ fontSize: "2.4rem", fontWeight: 900, color: isPopular ? GOLD_LIGHT : "#fff" }}>
+                    <span style={{ fontSize: "2.4rem", fontWeight: 800, color: palette.text }}>
                       {price}
                     </span>
-                    <span style={{ color: "#6b7280", fontSize: "0.9rem", marginLeft: "0.4rem" }}>/ month</span>
+                    <span style={{ color: palette.muted, fontSize: "0.9rem", marginLeft: "0.4rem" }}>/ month</span>
                   </div>
 
-                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "1.2rem", marginBottom: "1.5rem" }}>
-                    <div style={{ fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.05em", color: GOLD, fontWeight: 800, marginBottom: "0.8rem" }}>
+                  <div style={{ borderTop: `1px solid ${palette.border}`, paddingTop: "1.2rem", marginBottom: "1.5rem" }}>
+                    <div style={{ fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.05em", color: palette.goldDeep, fontWeight: 800, marginBottom: "0.8rem" }}>
                       Plan Limits & Capacity
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", fontSize: "0.85rem", color: "#cbd5e1", marginBottom: "1.2rem" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", fontSize: "0.85rem", color: palette.textBody, marginBottom: "1.2rem" }}>
                       <div>👥 <strong>{plan.limits?.seats || 1}</strong> Team Seat(s)</div>
                       <div>⚡ <strong>{((plan.limits?.maxTokensPerMonth || 1000000) / 1000000).toFixed(1)}M</strong> Monthly Tokens</div>
                       <div>🎨 <strong>{plan.limits?.maxGenerationsPerMonth || 100}</strong> Autonomous Media Gen</div>
                       <div>📂 <strong>{plan.limits?.maxProjects === 9999 ? "Unlimited" : plan.limits?.maxProjects}</strong> Active Projects</div>
                     </div>
 
-                    <div style={{ fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "#9ca3af", fontWeight: 800, marginBottom: "0.8rem" }}>
+                    <div style={{ fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.05em", color: palette.muted, fontWeight: 800, marginBottom: "0.8rem" }}>
                       Key Features
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                       {(plan.features || []).map((feat, idx) => (
-                        <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem", fontSize: "0.82rem", color: "#9ca3af", lineHeight: 1.4 }}>
-                          <span style={{ color: "#75f4ab", fontWeight: 800 }}>✓</span>
+                        <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem", fontSize: "0.82rem", color: palette.textBody, lineHeight: 1.4 }}>
+                          <span style={{ color: "#059669", fontWeight: 800 }}>✓</span>
                           <span>{feat}</span>
                         </div>
                       ))}
@@ -348,19 +509,19 @@ export default function PricingPage() {
                   style={{
                     width: "100%",
                     padding: "0.85rem 1rem",
-                    borderRadius: 10,
-                    fontWeight: 800,
+                    borderRadius: 999,
+                    fontWeight: 700,
                     fontSize: "0.92rem",
                     cursor: isCurrent ? "default" : "pointer",
                     border: "none",
                     background: isCurrent
-                      ? "rgba(117,244,171,0.15)"
+                      ? "rgba(5,150,105,0.12)"
                       : isPopular
-                        ? `linear-gradient(135deg, ${GOLD}, #b8860b)`
-                        : "rgba(255,255,255,0.08)",
-                    color: isCurrent ? "#75f4ab" : isPopular ? "#000" : "#fff",
-                    boxShadow: isPopular && !isCurrent ? "0 4px 20px rgba(212,175,55,0.25)" : "none",
-                    transition: "all 0.2s"
+                        ? palette.goldGradient
+                        : "rgba(23,24,27,0.06)",
+                    color: isCurrent ? "#059669" : isPopular ? "#FFFFFF" : palette.text,
+                    boxShadow: isPopular && !isCurrent ? "0 4px 15px rgba(179, 130, 53, 0.28)" : "none",
+                    transition: "all 0.16s ease"
                   }}
                 >
                   {isCurrent
@@ -379,8 +540,21 @@ export default function PricingPage() {
 
       {/* Enterprise / Strategic Advisory Banner */}
       <section style={{ maxWidth: 1000, margin: "0 auto 5rem", padding: "0 1.5rem" }}>
-        <div style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(10,15,24,0.9) 100%)", border: `1px solid ${BORDER}`, borderRadius: 16, padding: "2.5rem 2rem", textAlign: "center" }}>
-          <h3 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#fff", margin: "0 0 0.8rem" }}>
+        <div style={{
+          background: "linear-gradient(180deg, #10141D 0%, #0B0E14 100%)",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          borderRadius: 22,
+          padding: "2.5rem 2rem",
+          textAlign: "center",
+          boxShadow: "0 20px 50px rgba(10, 14, 22, 0.35)"
+        }}>
+          <h3 style={{
+            fontSize: "1.5rem",
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontWeight: 700,
+            color: "#FFFFFF",
+            margin: "0 0 0.8rem"
+          }}>
             Need Custom Workflows or Sovereign Air-Gapped Deployment?
           </h3>
           <p style={{ color: "#9ca3af", fontSize: "0.95rem", maxWidth: 650, margin: "0 auto 1.5rem", lineHeight: 1.6 }}>
@@ -389,9 +563,19 @@ export default function PricingPage() {
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
             <button
               onClick={() => navigate("/demo")}
-              style={{ background: `linear-gradient(135deg, ${GOLD}, #b8860b)`, color: "#000", border: "none", padding: "0.75rem 2rem", borderRadius: 8, fontWeight: 800, cursor: "pointer" }}
+              style={{
+                background: palette.goldGradient,
+                color: "#FFFFFF",
+                border: "none",
+                padding: "0.75rem 2rem",
+                borderRadius: 999,
+                fontWeight: 700,
+                cursor: "pointer",
+                boxShadow: "0 4px 15px rgba(179, 130, 53, 0.3)",
+                transition: "all 0.16s ease"
+              }}
             >
-              Book Strategic Architecture Demo
+              Book Strategic Architecture Demo →
             </button>
           </div>
         </div>

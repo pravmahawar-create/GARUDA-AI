@@ -66,6 +66,7 @@ export default function PublicChrome({ active = "", children, footer = true }) {
             <Link to="/chat" style={{ color: "#8d95a7", textDecoration: "none" }}>Public AI Chat</Link>
             <Link to="/app" style={{ color: "#8d95a7", textDecoration: "none" }}>Client Portal</Link>
             <Link to="/signup" style={{ color: "#8d95a7", textDecoration: "none" }}>Get Started</Link>
+            <a href="https://www.linkedin.com/company/garuda-os/" target="_blank" rel="noopener noreferrer" style={{ color: "#f5d76e", textDecoration: "none", fontWeight: 600 }}>LinkedIn (GARUDA OS)</a>
             <Link to="/founder" style={{ color: "#5b6472", textDecoration: "none" }}>Founder Console</Link>
           </div>
           <div>© {new Date().getFullYear()} GARUDA AI Operating System</div>

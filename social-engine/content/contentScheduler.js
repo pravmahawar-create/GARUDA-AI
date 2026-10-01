@@ -240,11 +240,25 @@ class ContentScheduler {
           tags: (post.hashtags || []).map(t => t.replace('#', '')),
           privacyStatus: 'public'
         });
+
+        let commentPosted = false;
+        if (uploadRes?.videoId && post.linkStrategy?.placement === 'FIRST_COMMENT' && post.firstCommentText) {
+          try {
+            const commentRes = await youtubeService.postComment({
+              videoId: uploadRes.videoId,
+              commentText: post.firstCommentText
+            });
+            commentPosted = Boolean(commentRes && commentRes.commentId);
+          } catch (cErr) {
+            console.warn('[ContentScheduler] YouTube comment note:', cErr.message);
+          }
+        }
+
         return {
           success: true,
           postId: uploadRes.videoId,
           postUrl: `https://youtube.com/watch?v=${uploadRes.videoId}`,
-          firstCommentPosted: false
+          firstCommentPosted: commentPosted
         };
       } catch (err) {
         return { success: false, error: err.message };

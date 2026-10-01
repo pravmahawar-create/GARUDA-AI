@@ -27,6 +27,7 @@ const CANONICAL_URLS = [
   { url: "/bot-verse", priority: "0.95", changefreq: "daily" },
   { url: "/cloth-gst.html", priority: "0.90", changefreq: "weekly" },
   { url: "/chat", priority: "0.90", changefreq: "weekly" },
+  { url: "/billing", priority: "0.95", changefreq: "daily" },
   { url: "/demo", priority: "0.85", changefreq: "weekly" },
   { url: "/experience", priority: "0.85", changefreq: "weekly" },
   { url: "/investor", priority: "0.85", changefreq: "weekly" },
@@ -53,6 +54,7 @@ const CANONICAL_URLS = [
   // Commercial SaaS/Pricing
   { url: "/pricing", priority: "0.85", changefreq: "weekly" },
   { url: "/starter", priority: "0.80", changefreq: "weekly" },
+  { url: "/whatsapp-bot", priority: "0.85", changefreq: "weekly" },
 
   // Guides & Knowledge Base
   { url: "/guides", priority: "0.85", changefreq: "weekly" },

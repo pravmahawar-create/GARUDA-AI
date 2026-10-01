@@ -59,3 +59,6 @@ output/raw/
 output/shorts/*.mp4
 output/shorts/*.webm
 output/*.jpg
+sessions/
+*.lock
+data/leads/social_*

@@ -50,7 +50,7 @@
     "test:router": "node --test-concurrency=1 src/services/adaptiveRouter/adaptiveRouterService.test.js",
     "test:self:awareness": "node --test-concurrency=1 src/services/selfAwareness/selfAwarenessService.test.js",
     "test:independence": "node --test-concurrency=1 src/services/independence/independenceService.test.js",
-    "test:cli": "node --test-concurrency=1 src/cli/garudaCli.test.js && node src/cli/garudaAgent.test.js",
+    "test:cli": "node --test-concurrency=1 src/cli/garudaCli.test.js && node src/cli/garudaAgent.test.js && node src/cli/security.test.js && node src/cli/toolParser.test.js && node src/cli/contextManager.test.js && node src/cli/diffEngine.test.js && node src/cli/sessionManager.test.js && node src/cli/streamProvider.test.js && node src/cli/garudaProduction.test.js && node src/cli/selfHealing.test.js && node src/cli/selfEvolution.test.js && node src/cli/longContext.test.js && node src/cli/taskPlanner.test.js && node src/cli/browserAgent.test.js && node src/cli/integrationE2E.test.js",
     "test:code:gen": "node --test-concurrency=1 src/services/codeGeneration/codeGenerationService.test.js",
     "test:orchestrator": "node --test-concurrency=1 src/services/orchestrator/orchestratorService.test.js",
     "test:smart": "node --test-concurrency=1 src/services/smartEngine/smartEngine.test.js",
@@ -153,11 +153,16 @@
     "pdf-parse": "^1.1.1",
     "puppeteer": "^25.10.0",
     "puppeteer-core": "^25.10.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-icons": "^5.7.0",
     "react-router-dom": "^7.18.2",
     "three": "^0.186.0",
     "vite": "^8.1.3"
+  },
+  "devDependencies": {
+    "tesseract.js": "^7.0.0"
   }
 }

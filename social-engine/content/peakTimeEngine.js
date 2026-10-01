@@ -193,14 +193,13 @@ class PeakTimeEngine {
 
     const targetHour = windowCalc.bestWindow.startHour;
     
-    // If today's target window is already past or within 15 minutes, schedule for tomorrow's window
-    const isPastToday = (currentIstHour > targetHour) || (currentIstHour === targetHour && currentIstMinute > 45);
-    
     const scheduledIst = new Date(nowIst);
-    if (isPastToday) {
+    scheduledIst.setUTCHours(targetHour, 15, 0, 0); // 15 minutes past the start hour
+
+    // If the scheduled slot is already in the past or within a 15-minute buffer, advance to next day
+    if (scheduledIst.getTime() <= nowIst.getTime() + 15 * 60 * 1000) {
       scheduledIst.setUTCDate(scheduledIst.getUTCDate() + 1);
     }
-    scheduledIst.setUTCHours(targetHour, 15, 0, 0); // 15 minutes past the start hour
 
     // Convert back from IST representation to real UTC Date
     return new Date(scheduledIst.getTime() - istOffsetMs);

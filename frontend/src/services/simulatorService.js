@@ -67,6 +67,20 @@ export function simulateResponse(mode, inputMessage, clientName = "Guest") {
       };
     }
 
+    if (text.match(/ai|system|business|software|bot|app|agency|starter|code|automate|workflow/i)) {
+      return {
+        priority: "AI SYSTEM INQUIRY",
+        priorityColor: "#75f4ab",
+        category: "Enterprise AI Architecture",
+        recommendedAction: "Autonomous system scoping & deployment",
+        humanEscalationRequired: false,
+        reply: `Namaste ${clientName}. While Dr. Sharma's clinic bot handles clinical patient intake, GARUDA OS builds custom autonomous AI systems, 24/7 receptionists, and workflows for any business. Turnkey setup starts at $199 (₹9,999) and Starter Kits are $49 (₹3,999). Tap below to deploy.`,
+        disclaimer: "SIMULATION: Cross-system intelligence routing inbound commercial inquiry.",
+        ctaLabel: "Deploy Your AI System →",
+        ctaType: "sales"
+      };
+    }
+
     // Default / Pricing
     return {
       priority: "STANDARD",
@@ -83,6 +97,20 @@ export function simulateResponse(mode, inputMessage, clientName = "Guest") {
 
   // Mode 2: Sales Lead Qualifier
   if (mode === SIMULATION_MODES.SALES) {
+    if (text.match(/ai system|autonomous|custom software|automate business|build system/i)) {
+      return {
+        priority: "ENTERPRISE INTAKE",
+        priorityColor: "#75f4ab",
+        category: "Autonomous System Engineering",
+        recommendedAction: "Direct scoping review by Founder Praveen",
+        humanEscalationRequired: false,
+        reply: `Namaste ${clientName}. GARUDA builds autonomous AI systems and 24/7 WhatsApp workflows tailored directly to your business logic. We can deploy turnkey in 48 hours ($199 / ₹9,999) or provide the Next.js 14 source code Starter Kit ($49 / ₹3,999). Tap below to begin scoping.`,
+        disclaimer: "SIMULATION: High-intent enterprise scoping protocol.",
+        ctaLabel: "Deploy Your AI System →",
+        ctaType: "sales"
+      };
+    }
+
     if (text.match(/cost|price|budget|rate|how much|fee/i)) {
       return {
         priority: "QUALIFIED LEAD",

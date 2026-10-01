@@ -313,7 +313,7 @@ function AppRoutes() {
       <Route path="/sovereign-starter" element={<BoilerplateStore />} />
       <Route path="/pricing" element={<PricingPage />} />
       <Route path="/plans" element={<PricingPage />} />
-      <Route path="/billing" element={<PricingPage />} />
+      <Route path="/pricing-plans" element={<PricingPage />} />
       <Route path="/garuda-ai-vs-garuda-linux" element={<GarudaVsLinux />} />
       <Route path="/case-studies" element={<CaseStudies />} />
       {/* GARUDA AAHAR — Human Nutrition & Wellness Platform */}

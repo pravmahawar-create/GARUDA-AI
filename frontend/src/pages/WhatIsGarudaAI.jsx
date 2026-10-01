@@ -5,16 +5,26 @@ import BrandAssetImage from "../components/BrandAssetImage";
 import SEOHead from "../components/SEOHead";
 
 const palette = {
-  bg: "#04070a",
-  panel: "#0b0f16",
-  panelSoft: "rgba(11, 15, 22, 0.75)",
-  line: "rgba(245, 215, 110, 0.16)",
-  text: "#f7f2dc",
-  muted: "#8d95a7",
-  gold: "#f5d76e",
-  goldStrong: "#b8860b",
-  green: "#75f4ab",
-  blue: "#7dd3fc"
+  canvas: "#F6F4EE",
+  canvasIvory: "#FAF9F6",
+  card: "#FFFFFF",
+  text: "#17181B",
+  textBody: "#292B30",
+  muted: "#525866",
+  subtle: "#8A8D95",
+  gold: "#B38235",
+  goldPrimary: "#C48B28",
+  goldDeep: "#9E6D1C",
+  goldLight: "#D6A84F",
+  goldGradient: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)",
+  border: "rgba(23, 24, 27, 0.08)",
+  borderGold: "rgba(179, 130, 53, 0.35)",
+  green: "#15803d",
+  greenBg: "rgba(22, 163, 74, 0.08)",
+  red: "#b91c1c",
+  redBg: "rgba(185, 28, 28, 0.08)",
+  obsidian: "#10141D",
+  obsidianDeep: "#0B0E14"
 };
 
 const fadeUp = {
@@ -58,15 +68,11 @@ const FAQS = [
   },
   {
     q: "Is GARUDA AI related to Garuda Linux or other projects?",
-    a: "No. GARUDA AI (official website: https://www.garudaos.in) is an independent AI Operating System and commercial software engineering company. It is entirely distinct from Garuda Linux (an open-source Linux OS distribution) and other unrelated projects bearing the name Garuda."
+    a: "No. GARUDA AI is a completely independent sovereign software and autonomous intelligence platform. It has no affiliation with Garuda Linux (an Arch Linux desktop distro), airline brands, or third-party financial institutions."
   },
   {
-    q: "What services does GARUDA AI provide?",
-    a: "GARUDA AI specializes in Custom AI Development (multi-agent & RAG architectures), Full-Stack SaaS MVP Engineering, Enterprise Business Workflow Automation, and Custom WhatsApp/Telegram AI Commercial Bots with built-in instant checkout."
-  },
-  {
-    q: "How does GARUDA AI ensure software quality and delivery truth?",
-    a: "GARUDA AI enforces the Anti-Fabrication Law and Payment Truth Law across all subsystems. All software builds must pass 100% automated regression test suites, and all commercial contracts are structured with transparent milestone governance (50% kickoff deposit, 50% upon verified delivery)."
+    q: "How can businesses engage or hire GARUDA AI?",
+    a: "Businesses can initiate solution scoping directly through the GARUDA engineering portal at garudaos.in/chat. We define deterministic deliverables, timeline milestones, and fixed pricing within 24 hours."
   }
 ];
 
@@ -87,7 +93,13 @@ export default function WhatIsGarudaAI() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: palette.bg, color: palette.text, fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif" }}>
+    <div style={{
+      minHeight: "100vh",
+      background: palette.canvas,
+      color: palette.text,
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+      WebkitFontSmoothing: "antialiased"
+    }}>
       <SEOHead
         title="What is GARUDA AI? | Autonomous AI Operating System"
         description="Learn what GARUDA AI is: The autonomous AI Operating System engineered for governed business automation, custom software execution, and multi-agent workflows."
@@ -100,38 +112,75 @@ export default function WhatIsGarudaAI() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "1.25rem clamp(1.25rem, 4vw, 4rem)",
-        borderBottom: "1px solid rgba(245,215,110,0.12)",
-        background: "rgba(4,7,10,0.8)",
-        backdropFilter: "blur(14px)",
+        padding: "0.85rem clamp(1.25rem, 4vw, 3.5rem)",
+        borderBottom: `1px solid ${palette.border}`,
+        background: "rgba(246, 244, 238, 0.92)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
         position: "sticky",
         top: 0,
         zIndex: 50
       }}>
-        <button type="button" onClick={() => navigate("/")} style={{ display: "flex", alignItems: "center", gap: "0.75rem", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-          <span style={{ width: 44, height: 44, display: "grid", placeItems: "center", overflow: "hidden" }}>
-            <BrandAssetImage kind="branding" alt="GARUDA sigil" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-          </span>
-          <span style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-            <span style={{ margin: 0, fontSize: "1.35rem", fontWeight: 800, letterSpacing: "0.12em", color: "#ffffff" }}>GARUDA</span>
-            <span style={{ fontSize: "0.7rem", background: "rgba(245,215,110,0.14)", color: palette.gold, padding: "0.2rem 0.55rem", borderRadius: 4, fontWeight: 700, letterSpacing: "0.08em" }}>AI OS</span>
-          </span>
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          style={{ display: "flex", alignItems: "center", gap: "0.8rem", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+        >
+          <img
+            src="/images/garuda_eagle_sigil.png"
+            alt="GARUDA Sigil"
+            style={{ width: "34px", height: "28px", objectFit: "contain" }}
+          />
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1 }}>
+            <div style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "1.25rem",
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              color: palette.text
+            }}>
+              GARUDA AI
+            </div>
+            <div style={{
+              fontSize: "0.6rem",
+              color: palette.muted,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              marginTop: "3px"
+            }}>
+              Autonomous AI Operating System
+            </div>
+          </div>
         </button>
+
         <nav style={{ display: "flex", alignItems: "center", gap: "clamp(1rem, 2vw, 2rem)" }}>
-          <button type="button" onClick={() => navigate("/")} style={{ background: "none", border: "none", color: "#9ca3af", cursor: "pointer", fontSize: "0.92rem" }}>Home</button>
-          <button type="button" onClick={() => navigate("/chat")} style={{ background: "none", border: "none", color: "#9ca3af", cursor: "pointer", fontSize: "0.92rem" }}>Public Chat</button>
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            style={{ background: "none", border: "none", color: palette.muted, cursor: "pointer", fontSize: "0.9rem", fontWeight: 500 }}
+          >
+            Home
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/case-studies")}
+            style={{ background: "none", border: "none", color: palette.muted, cursor: "pointer", fontSize: "0.9rem", fontWeight: 500 }}
+          >
+            Case Studies
+          </button>
           <button
             type="button"
             onClick={() => navigate("/chat")}
             style={{
-              background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
-              color: "#05070b",
+              background: palette.goldGradient,
+              color: "#FFFFFF",
               border: "none",
-              padding: "0.55rem 1.4rem",
+              padding: "0.6rem 1.35rem",
               borderRadius: 999,
-              fontWeight: 800,
+              fontWeight: 600,
               cursor: "pointer",
-              fontSize: "0.9rem"
+              fontSize: "0.88rem",
+              boxShadow: "0 2px 10px rgba(179, 130, 53, 0.25)"
             }}
           >
             Scoping Chat →
@@ -140,37 +189,96 @@ export default function WhatIsGarudaAI() {
       </header>
 
       {/* Hero Section */}
-      <main style={{ maxWidth: 960, margin: "0 auto", padding: "clamp(3rem, 6vw, 5rem) 1.5rem" }}>
+      <main style={{ maxWidth: 1040, margin: "0 auto", padding: "clamp(3rem, 6vw, 5rem) 1.5rem" }}>
         <motion.div {...fadeUp} style={{ textAlign: "center", marginBottom: "4rem" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.35rem 1rem", borderRadius: 999, border: "1px solid rgba(245,215,110,0.3)", background: "rgba(245,215,110,0.06)", color: palette.gold, fontSize: "0.8rem", fontWeight: 700, letterSpacing: "0.1em", marginBottom: "1.25rem" }}>
-            OFFICIAL BRAND & PRODUCT ENTITY
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            padding: "0.35rem 1rem",
+            borderRadius: 999,
+            border: `1px solid ${palette.borderGold}`,
+            background: "rgba(179, 130, 53, 0.08)",
+            color: palette.goldDeep,
+            fontSize: "0.78rem",
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            marginBottom: "1.25rem",
+            textTransform: "uppercase"
+          }}>
+            Official Brand & Product Entity
           </div>
-          <h1 style={{ fontSize: "clamp(2.4rem, 5vw, 3.8rem)", fontWeight: 800, lineHeight: 1.15, margin: "0 0 1.5rem", letterSpacing: "-0.02em" }}>
-            What is <span style={{ background: "linear-gradient(120deg, #f5d76e, #ffdf8a 55%, #b8860b)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>GARUDA AI</span>?
+          <h1 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "clamp(2.4rem, 5vw, 3.8rem)",
+            fontWeight: 700,
+            lineHeight: 1.15,
+            margin: "0 0 1.5rem",
+            letterSpacing: "-0.01em",
+            color: palette.text
+          }}>
+            What is <span style={{
+              background: palette.goldGradient,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent"
+            }}>GARUDA AI</span>?
           </h1>
-          <p style={{ color: palette.muted, fontSize: "clamp(1.1rem, 2vw, 1.25rem)", lineHeight: 1.7, maxWidth: 740, margin: "0 auto" }}>
+          <p style={{
+            color: palette.muted,
+            fontSize: "clamp(1.05rem, 2vw, 1.25rem)",
+            lineHeight: 1.7,
+            maxWidth: 760,
+            margin: "0 auto"
+          }}>
             GARUDA AI is an autonomous <b>AI Operating System</b> engineered for governed business automation, custom software execution, revenue operations, and multi-agent workflow orchestration.
           </p>
         </motion.div>
 
         {/* Section 1: Entity Disambiguation */}
-        <motion.section {...fadeUp} style={{ background: palette.panelSoft, border: "1px solid rgba(245,215,110,0.15)", borderRadius: 16, padding: "2.5rem", marginBottom: "3rem" }}>
-          <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: palette.gold, margin: "0 0 1rem" }}>
+        <motion.section {...fadeUp} style={{
+          background: palette.card,
+          border: `1px solid ${palette.border}`,
+          borderRadius: 16,
+          padding: "2.5rem",
+          marginBottom: "3rem",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)"
+        }}>
+          <h2 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "1.75rem",
+            fontWeight: 700,
+            color: palette.text,
+            margin: "0 0 1rem"
+          }}>
             Entity Identity & Disambiguation
           </h2>
-          <p style={{ color: "#d1d5db", lineHeight: 1.8, fontSize: "1rem", margin: "0 0 1.2rem" }}>
-            To clarify across Google Search and global knowledge bases: <b>GARUDA AI</b> (accessible officially at <a href="https://www.garudaos.in" style={{ color: palette.gold, textDecoration: "underline" }}>garudaos.in</a>) is a dedicated software and artificial intelligence platform.
+          <p style={{ color: palette.textBody, lineHeight: 1.8, fontSize: "1rem", margin: "0 0 1.5rem" }}>
+            To clarify across Google Search and global knowledge bases: <b>GARUDA AI</b> (accessible officially at <a href="https://www.garudaos.in" style={{ color: palette.goldDeep, textDecoration: "underline", fontWeight: 600 }}>garudaos.in</a>) is a dedicated software and artificial intelligence platform.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.2rem", marginTop: "1.5rem" }}>
-            <div style={{ background: "#05080e", padding: "1.2rem", borderRadius: 10, border: "1px solid rgba(16,185,129,0.3)" }}>
-              <div style={{ color: palette.green, fontWeight: 700, fontSize: "0.95rem", marginBottom: "0.4rem" }}>✓ What GARUDA AI Is</div>
-              <p style={{ color: "#9ca3af", fontSize: "0.88rem", lineHeight: 1.6, margin: 0 }}>
-                An autonomous AI Operating System and software engineering company that architects, builds, verifies, and delivers production custom AI and business workflows under founder governance.
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem" }}>
+            <div style={{
+              background: palette.greenBg,
+              padding: "1.5rem",
+              borderRadius: 12,
+              border: "1px solid rgba(22, 163, 74, 0.2)"
+            }}>
+              <div style={{ color: palette.green, fontWeight: 700, fontSize: "0.98rem", marginBottom: "0.5rem" }}>
+                ✓ What GARUDA AI Is
+              </div>
+              <p style={{ color: palette.textBody, fontSize: "0.9rem", lineHeight: 1.6, margin: 0 }}>
+                An autonomous AI Operating System and software engineering practice that architects, builds, verifies, and delivers production custom AI and business workflows under founder governance.
               </p>
             </div>
-            <div style={{ background: "#05080e", padding: "1.2rem", borderRadius: 10, border: "1px solid rgba(239,68,68,0.3)" }}>
-              <div style={{ color: "#f87171", fontWeight: 700, fontSize: "0.95rem", marginBottom: "0.4rem" }}>✗ What GARUDA AI Is Not</div>
-              <p style={{ color: "#9ca3af", fontSize: "0.88rem", lineHeight: 1.6, margin: 0 }}>
+            <div style={{
+              background: palette.redBg,
+              padding: "1.5rem",
+              borderRadius: 12,
+              border: "1px solid rgba(185, 28, 28, 0.2)"
+            }}>
+              <div style={{ color: palette.red, fontWeight: 700, fontSize: "0.98rem", marginBottom: "0.5rem" }}>
+                ✗ What GARUDA AI Is Not
+              </div>
+              <p style={{ color: palette.textBody, fontSize: "0.9rem", lineHeight: 1.6, margin: 0 }}>
                 It is NOT Garuda Linux (an Arch Linux desktop OS), NOT a generic wrapper script, NOT an ungrounded chatbot, and NOT affiliated with unrelated aviation or financial frameworks.
               </p>
             </div>
@@ -179,84 +287,221 @@ export default function WhatIsGarudaAI() {
 
         {/* Section 2: Architectural Pillars */}
         <motion.section {...fadeUp} style={{ marginBottom: "3.5rem" }}>
-          <h2 style={{ fontSize: "1.8rem", fontWeight: 800, textAlign: "center", margin: "0 0 2rem" }}>
+          <h2 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "2rem",
+            fontWeight: 700,
+            textAlign: "center",
+            margin: "0 0 2rem",
+            color: palette.text
+          }}>
             The 4 Pillars of the GARUDA Architecture
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem" }}>
             {ARCHITECTURAL_PILLARS.map((p, idx) => (
-              <div key={idx} style={{ background: palette.panelSoft, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.8rem" }}>
-                <div style={{ fontSize: "0.75rem", fontWeight: 700, color: palette.gold, background: "rgba(245,215,110,0.1)", padding: "0.2rem 0.6rem", borderRadius: 4, display: "inline-block", marginBottom: "0.8rem" }}>
+              <div
+                key={idx}
+                style={{
+                  background: palette.card,
+                  border: `1px solid ${palette.border}`,
+                  borderRadius: 14,
+                  padding: "1.8rem",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.03)"
+                }}
+              >
+                <div style={{
+                  fontSize: "0.72rem",
+                  fontWeight: 700,
+                  color: palette.goldDeep,
+                  background: "rgba(179, 130, 53, 0.1)",
+                  padding: "0.25rem 0.6rem",
+                  borderRadius: 4,
+                  display: "inline-block",
+                  marginBottom: "0.8rem",
+                  letterSpacing: "0.06em"
+                }}>
                   {p.badge}
                 </div>
-                <h3 style={{ fontSize: "1.15rem", fontWeight: 700, margin: "0 0 0.6rem", color: "#f3f4f6" }}>{p.title}</h3>
-                <p style={{ color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6, margin: 0 }}>{p.desc}</p>
+                <h3 style={{ fontSize: "1.15rem", fontWeight: 700, margin: "0 0 0.6rem", color: palette.text }}>
+                  {p.title}
+                </h3>
+                <p style={{ color: palette.muted, fontSize: "0.92rem", lineHeight: 1.6, margin: 0 }}>
+                  {p.desc}
+                </p>
               </div>
             ))}
           </div>
         </motion.section>
 
         {/* Section 3: Engineered Core Capabilities */}
-        <motion.section {...fadeUp} style={{ background: "#060a12", border: "1px solid rgba(245,215,110,0.12)", borderRadius: 16, padding: "2.5rem", marginBottom: "3.5rem" }}>
-          <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: "#fff", margin: "0 0 1.5rem" }}>
+        <motion.section {...fadeUp} style={{
+          background: palette.canvasIvory,
+          border: `1px solid ${palette.border}`,
+          borderRadius: 16,
+          padding: "2.5rem",
+          marginBottom: "3.5rem"
+        }}>
+          <h2 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "1.8rem",
+            fontWeight: 700,
+            color: palette.text,
+            margin: "0 0 1rem"
+          }}>
             Engineered Commercial Services
           </h2>
-          <p style={{ color: palette.muted, lineHeight: 1.7, marginBottom: "1.8rem" }}>
+          <p style={{ color: palette.muted, lineHeight: 1.7, marginBottom: "1.8rem", fontSize: "0.98rem" }}>
             Businesses engage GARUDA AI for fixed-scope, milestone-governed engineering deployments:
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem" }}>
-            <div onClick={() => navigate("/services/custom-ai-development")} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", padding: "1.2rem", borderRadius: 10, cursor: "pointer" }}>
-              <div style={{ fontWeight: 700, color: palette.gold, marginBottom: "0.3rem" }}>Custom AI Development →</div>
-              <div style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Deterministic agents, multi-turn RAG pipelines, vector stores.</div>
+            <div
+              onClick={() => navigate("/services/custom-ai-development")}
+              style={{
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
+                padding: "1.4rem",
+                borderRadius: 12,
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.02)"
+              }}
+            >
+              <div style={{ fontWeight: 700, color: palette.goldDeep, marginBottom: "0.35rem" }}>
+                Custom AI Development →
+              </div>
+              <div style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5 }}>
+                Deterministic agents, multi-turn RAG pipelines, vector stores.
+              </div>
             </div>
-            <div onClick={() => navigate("/services/custom-software-saas-mvp")} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", padding: "1.2rem", borderRadius: 10, cursor: "pointer" }}>
-              <div style={{ fontWeight: 700, color: palette.gold, marginBottom: "0.3rem" }}>SaaS MVP Development →</div>
-              <div style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Full-stack React, Node.js, Stripe/Razorpay billing, PostgreSQL.</div>
+            <div
+              onClick={() => navigate("/services/custom-software-saas-mvp")}
+              style={{
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
+                padding: "1.4rem",
+                borderRadius: 12,
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.02)"
+              }}
+            >
+              <div style={{ fontWeight: 700, color: palette.goldDeep, marginBottom: "0.35rem" }}>
+                SaaS MVP Development →
+              </div>
+              <div style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5 }}>
+                Full-stack React, Node.js, Stripe/Razorpay billing, PostgreSQL.
+              </div>
             </div>
-            <div onClick={() => navigate("/services/business-workflow-ai-automation")} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", padding: "1.2rem", borderRadius: 10, cursor: "pointer" }}>
-              <div style={{ fontWeight: 700, color: palette.gold, marginBottom: "0.3rem" }}>Business Workflow Automation →</div>
-              <div style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Event-driven integrations, document parsing, zero data loss.</div>
+            <div
+              onClick={() => navigate("/services/business-workflow-ai-automation")}
+              style={{
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
+                padding: "1.4rem",
+                borderRadius: 12,
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.02)"
+              }}
+            >
+              <div style={{ fontWeight: 700, color: palette.goldDeep, marginBottom: "0.35rem" }}>
+                Business Workflow Automation →
+              </div>
+              <div style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5 }}>
+                Event-driven integrations, document parsing, zero data loss.
+              </div>
             </div>
-            <div onClick={() => navigate("/services/whatsapp-telegram-ai-bots")} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", padding: "1.2rem", borderRadius: 10, cursor: "pointer" }}>
-              <div style={{ fontWeight: 700, color: palette.gold, marginBottom: "0.3rem" }}>WhatsApp & Telegram AI Bots →</div>
-              <div style={{ color: "#9ca3af", fontSize: "0.85rem" }}>24/7 intelligent customer scoping, quotes, and payment checkout.</div>
+            <div
+              onClick={() => navigate("/services/whatsapp-telegram-ai-bots")}
+              style={{
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
+                padding: "1.4rem",
+                borderRadius: 12,
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.02)"
+              }}
+            >
+              <div style={{ fontWeight: 700, color: palette.goldDeep, marginBottom: "0.35rem" }}>
+                WhatsApp & Telegram AI Bots →
+              </div>
+              <div style={{ color: palette.muted, fontSize: "0.88rem", lineHeight: 1.5 }}>
+                24/7 intelligent customer scoping, quotes, and payment checkout.
+              </div>
             </div>
           </div>
         </motion.section>
 
         {/* Section 4: Frequently Asked Questions */}
         <motion.section {...fadeUp} style={{ marginBottom: "4rem" }}>
-          <h2 style={{ fontSize: "1.8rem", fontWeight: 800, textAlign: "center", margin: "0 0 2rem" }}>
+          <h2 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "2rem",
+            fontWeight: 700,
+            textAlign: "center",
+            margin: "0 0 2rem",
+            color: palette.text
+          }}>
             Frequently Asked Questions
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
             {FAQS.map((faq, i) => (
-              <div key={i} style={{ background: palette.panelSoft, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "1.5rem" }}>
-                <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: palette.gold, margin: "0 0 0.6rem" }}>{faq.q}</h3>
-                <p style={{ color: "#d1d5db", fontSize: "0.95rem", lineHeight: 1.7, margin: 0 }}>{faq.a}</p>
+              <div
+                key={i}
+                style={{
+                  background: palette.card,
+                  border: `1px solid ${palette.border}`,
+                  borderRadius: 12,
+                  padding: "1.5rem",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.02)"
+                }}
+              >
+                <h3 style={{ fontSize: "1.08rem", fontWeight: 700, color: palette.goldDeep, margin: "0 0 0.6rem" }}>
+                  {faq.q}
+                </h3>
+                <p style={{ color: palette.muted, fontSize: "0.95rem", lineHeight: 1.7, margin: 0 }}>
+                  {faq.a}
+                </p>
               </div>
             ))}
           </div>
         </motion.section>
 
         {/* CTA */}
-        <motion.section {...fadeUp} style={{ textAlign: "center", padding: "3rem 1.5rem", background: "radial-gradient(circle at 50% 50%, rgba(245,215,110,0.12), transparent 70%)" }}>
-          <h2 style={{ fontSize: "2rem", fontWeight: 800, margin: "0 0 1rem" }}>Ready to Architect Your Solution?</h2>
-          <p style={{ color: palette.muted, maxWidth: 540, margin: "0 auto 2rem", fontSize: "1rem", lineHeight: 1.6 }}>
+        <motion.section {...fadeUp} style={{
+          textAlign: "center",
+          padding: "3.5rem 2rem",
+          background: `linear-gradient(180deg, ${palette.obsidian} 0%, ${palette.obsidianDeep} 100%)`,
+          borderRadius: 20,
+          border: `1px solid ${palette.borderGold}`,
+          color: "#FFFFFF",
+          boxShadow: "0 20px 50px rgba(16, 20, 29, 0.2)"
+        }}>
+          <h2 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "2.2rem",
+            fontWeight: 700,
+            margin: "0 0 1rem"
+          }}>
+            Ready to Architect Your Solution?
+          </h2>
+          <p style={{ color: "#b0b8c8", maxWidth: 540, margin: "0 auto 2rem", fontSize: "1rem", lineHeight: 1.65 }}>
             Speak directly with GARUDA AI's Solution Architect to formulate your architectural blueprint and milestone quote.
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
             <button
               onClick={() => navigate("/chat")}
               style={{
-                background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)",
-                color: "#05070b",
+                background: palette.goldGradient,
+                color: "#FFFFFF",
                 border: "none",
                 padding: "0.85rem 2.2rem",
                 borderRadius: 999,
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: "0.95rem",
                 cursor: "pointer",
-                boxShadow: "0 8px 24px rgba(245,215,110,0.25)"
+                boxShadow: "0 8px 24px rgba(179, 130, 53, 0.3)"
               }}
             >
               Start Instant Scoping Chat →
@@ -264,9 +509,9 @@ export default function WhatIsGarudaAI() {
             <button
               onClick={() => navigate("/")}
               style={{
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.15)",
-                color: palette.text,
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "#FFFFFF",
                 padding: "0.85rem 1.8rem",
                 borderRadius: 999,
                 fontWeight: 600,
@@ -281,13 +526,23 @@ export default function WhatIsGarudaAI() {
       </main>
 
       {/* Footer */}
-      <footer style={{ padding: "2.5rem clamp(1.25rem, 4vw, 4rem)", borderTop: "1px solid rgba(245,215,110,0.1)", textAlign: "center", color: "#5b6472", fontSize: "0.85rem", lineHeight: 1.7 }}>
-        © {new Date().getFullYear()} GARUDA AI Operating System. Founded by Praveen Mahawar. Official Website: https://www.garudaos.in.
-        <div style={{ marginTop: "0.5rem", color: "#6b7280" }}>
-          <a href="/what-is-garuda-ai" style={{ color: palette.gold, textDecoration: "none", marginRight: "1rem" }}>What is GARUDA AI?</a>
-          <a href="/services/custom-ai-development" style={{ color: "#9ca3af", textDecoration: "none", marginRight: "1rem" }}>Custom AI</a>
-          <a href="/services/custom-software-saas-mvp" style={{ color: "#9ca3af", textDecoration: "none", marginRight: "1rem" }}>SaaS MVP</a>
-          <a href="/chat" style={{ color: "#9ca3af", textDecoration: "none" }}>Scoping Chat</a>
+      <footer style={{
+        padding: "3rem clamp(1.25rem, 4vw, 4rem)",
+        borderTop: `1px solid ${palette.border}`,
+        textAlign: "center",
+        color: palette.subtle,
+        fontSize: "0.85rem",
+        lineHeight: 1.7,
+        background: palette.canvasIvory
+      }}>
+        <div>
+          © {new Date().getFullYear()} GARUDA AI Operating System. Founded by Praveen Mahawar. Official Website: https://www.garudaos.in.
+        </div>
+        <div style={{ marginTop: "0.75rem", display: "flex", gap: "1.2rem", justifyContent: "center", flexWrap: "wrap" }}>
+          <a href="/what-is-garuda-ai" style={{ color: palette.goldDeep, textDecoration: "none", fontWeight: 600 }}>What is GARUDA AI?</a>
+          <a href="/services/custom-ai-development" style={{ color: palette.muted, textDecoration: "none" }}>Custom AI</a>
+          <a href="/services/custom-software-saas-mvp" style={{ color: palette.muted, textDecoration: "none" }}>SaaS MVP</a>
+          <a href="/chat" style={{ color: palette.muted, textDecoration: "none" }}>Scoping Chat</a>
         </div>
       </footer>
     </div>

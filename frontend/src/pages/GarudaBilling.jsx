@@ -5,16 +5,26 @@ import BrandAssetImage from "../components/BrandAssetImage";
 import SEOHead from "../components/SEOHead";
 
 const palette = {
-  bg: "#04070a",
-  panel: "#0b0f16",
-  panelSoft: "rgba(11, 15, 22, 0.75)",
-  line: "rgba(245, 215, 110, 0.16)",
-  text: "#f7f2dc",
-  muted: "#8d95a7",
-  gold: "#f5d76e",
-  goldStrong: "#b8860b",
-  green: "#75f4ab",
-  blue: "#7dd3fc"
+  canvas: "#F6F4EE",
+  canvasIvory: "#FAF9F6",
+  card: "#FFFFFF",
+  text: "#17181B",
+  textBody: "#292B30",
+  muted: "#525866",
+  subtle: "#8A8D95",
+  gold: "#B38235",
+  goldPrimary: "#C48B28",
+  goldDeep: "#9E6D1C",
+  goldLight: "#D6A84F",
+  goldGradient: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)",
+  border: "rgba(23, 24, 27, 0.08)",
+  borderGold: "rgba(179, 130, 53, 0.35)",
+  green: "#15803d",
+  greenBg: "rgba(22, 163, 74, 0.12)",
+  blue: "#0284c7",
+  obsidian: "#10141D",
+  obsidianDeep: "#0B0E14",
+  obsidianCard: "#151B26"
 };
 
 const fadeUp = {
@@ -88,7 +98,13 @@ export default function GarudaBilling() {
   };
 
   return (
-    <div style={{ background: palette.bg, color: palette.text, minHeight: "100vh", fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{
+      background: palette.canvas,
+      color: palette.text,
+      minHeight: "100vh",
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+      WebkitFontSmoothing: "antialiased"
+    }}>
       <SEOHead
         title="GARUDA Billing — GST Billing Software Engineered Around Your Business"
         description="High-velocity offline-first POS & GST Tax Invoice software engineered for Indian retail and wholesale businesses. Auto GSTIN calculation, thermal print engine, and instant WhatsApp delivery."
@@ -101,25 +117,43 @@ export default function GarudaBilling() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        backdropFilter: "blur(12px)",
-        background: "rgba(4, 7, 10, 0.85)",
-        borderBottom: `1px solid ${palette.line}`,
-        padding: "1rem 1.5rem",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+        background: "rgba(246, 244, 238, 0.92)",
+        borderBottom: `1px solid ${palette.border}`,
+        padding: "0.85rem clamp(1.25rem, 4vw, 3.5rem)",
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
-        maxWidth: "1280px",
-        margin: "0 auto"
+        justifyContent: "space-between"
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", cursor: "pointer" }} onClick={() => navigate("/")}>
-          <BrandAssetImage
-            assetKey="official_logo"
-            alt="GARUDA Logo"
-            style={{ width: "36px", height: "36px", objectFit: "contain" }}
+        <div
+          style={{ display: "flex", alignItems: "center", gap: "0.8rem", cursor: "pointer" }}
+          onClick={() => navigate("/")}
+        >
+          <img
+            src="/images/garuda_eagle_sigil.png"
+            alt="GARUDA Sigil"
+            style={{ width: "34px", height: "28px", objectFit: "contain" }}
           />
-          <div>
-            <div style={{ fontSize: "1.1rem", fontWeight: "700", letterSpacing: "0.05em", color: palette.gold }}>GARUDA BILLING</div>
-            <div style={{ fontSize: "0.7rem", color: palette.muted, textTransform: "uppercase", letterSpacing: "0.1em" }}>High-Velocity Retail POS</div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1 }}>
+            <div style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "1.25rem",
+              fontWeight: "700",
+              letterSpacing: "0.06em",
+              color: palette.text
+            }}>
+              GARUDA BILLING
+            </div>
+            <div style={{
+              fontSize: "0.6rem",
+              color: palette.muted,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              marginTop: "3px"
+            }}>
+              High-Velocity Retail & Wholesale POS
+            </div>
           </div>
         </div>
 
@@ -127,16 +161,16 @@ export default function GarudaBilling() {
           <button
             onClick={() => navigate("/chat?ref=billing")}
             style={{
-              background: `linear-gradient(135deg, ${palette.gold}, ${palette.goldStrong})`,
-              color: "#04070a",
+              background: palette.goldGradient,
+              color: "#FFFFFF",
               border: "none",
-              borderRadius: "6px",
-              padding: "0.6rem 1.25rem",
+              borderRadius: "8px",
+              padding: "0.65rem 1.35rem",
               fontWeight: "600",
               fontSize: "0.875rem",
               cursor: "pointer",
               transition: "transform 0.15s ease",
-              boxShadow: "0 2px 10px rgba(245, 215, 110, 0.25)"
+              boxShadow: "0 2px 10px rgba(179, 130, 53, 0.25)"
             }}
             onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
             onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
@@ -153,12 +187,12 @@ export default function GarudaBilling() {
             display: "inline-block",
             padding: "0.35rem 0.85rem",
             borderRadius: "999px",
-            background: "rgba(245, 215, 110, 0.1)",
-            border: `1px solid ${palette.line}`,
+            background: "rgba(179, 130, 53, 0.1)",
+            border: `1px solid ${palette.borderGold}`,
             fontSize: "0.75rem",
             fontWeight: "600",
             letterSpacing: "0.1em",
-            color: palette.gold,
+            color: palette.goldDeep,
             marginBottom: "1.5rem",
             textTransform: "uppercase"
           }}>
@@ -166,42 +200,47 @@ export default function GarudaBilling() {
           </div>
 
           <h1 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
             fontSize: "clamp(2rem, 5vw, 3.75rem)",
-            fontWeight: "800",
+            fontWeight: "700",
             lineHeight: "1.15",
-            letterSpacing: "-0.02em",
-            color: "#ffffff",
+            letterSpacing: "-0.01em",
+            color: palette.text,
             marginBottom: "1.5rem",
             maxWidth: "900px",
             marginInline: "auto"
           }}>
-            GST Billing Software Engineered <span style={{ color: palette.gold }}>Around Your Business</span>
+            GST Billing Software Engineered <span style={{
+              background: palette.goldGradient,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent"
+            }}>Around Your Business</span>
           </h1>
 
           <p style={{
-            fontSize: "clamp(1rem, 2vw, 1.25rem)",
+            fontSize: "clamp(1rem, 2vw, 1.2rem)",
             color: palette.muted,
             maxWidth: "760px",
             margin: "0 auto 2.5rem",
-            lineHeight: "1.6"
+            lineHeight: "1.65"
           }}>
             Most billing software demos stop at the UI. GARUDA Billing completes the entire business transaction:
             real GSTIN entry, verified tax calculations, thermal receipt printing, and official Tax Invoices in sub-second time.
           </p>
 
-          <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", marginBottom: "3rem" }}>
+          <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", marginBottom: "3.5rem" }}>
             <button
               onClick={() => navigate("/chat?ref=billing")}
               style={{
-                background: `linear-gradient(135deg, ${palette.gold}, ${palette.goldStrong})`,
-                color: "#04070a",
+                background: palette.goldGradient,
+                color: "#FFFFFF",
                 border: "none",
                 borderRadius: "8px",
                 padding: "0.85rem 2rem",
-                fontWeight: "700",
+                fontWeight: "600",
                 fontSize: "1rem",
                 cursor: "pointer",
-                boxShadow: "0 4px 20px rgba(245, 215, 110, 0.3)"
+                boxShadow: "0 4px 20px rgba(179, 130, 53, 0.25)"
               }}
             >
               Get Custom Billing MVP
@@ -211,9 +250,9 @@ export default function GarudaBilling() {
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                background: "rgba(255, 255, 255, 0.05)",
+                background: palette.card,
                 color: palette.text,
-                border: `1px solid ${palette.line}`,
+                border: `1px solid ${palette.border}`,
                 borderRadius: "8px",
                 padding: "0.85rem 1.75rem",
                 fontWeight: "600",
@@ -221,7 +260,8 @@ export default function GarudaBilling() {
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "0.5rem"
+                gap: "0.5rem",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)"
               }}
             >
               ▶ Watch Proof Film (63s)
@@ -229,48 +269,75 @@ export default function GarudaBilling() {
           </div>
         </motion.div>
 
-        {/* Live Proof Card */}
+        {/* Live Forensic Proof Card - High-tech Obsidian Panel */}
         <motion.div {...fadeUp} style={{
-          background: palette.panel,
-          border: `1px solid ${palette.line}`,
+          background: `linear-gradient(180deg, ${palette.obsidian} 0%, ${palette.obsidianDeep} 100%)`,
+          border: `1px solid ${palette.borderGold}`,
           borderRadius: "16px",
           padding: "2rem",
           maxWidth: "860px",
           margin: "0 auto",
           textAlign: "left",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
+          boxShadow: "0 24px 60px rgba(16, 20, 29, 0.25)",
+          color: "#f7f2dc"
         }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${palette.line}`, paddingBottom: "1rem", marginBottom: "1.5rem", flexWrap: "wrap", gap: "0.5rem" }}>
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            paddingBottom: "1rem",
+            marginBottom: "1.5rem",
+            flexWrap: "wrap",
+            gap: "0.5rem"
+          }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <span style={{ fontSize: "1.2rem" }}>🧾</span>
-              <span style={{ fontWeight: "700", color: palette.gold, fontSize: "0.95rem" }}>REAL VERIFIED TRANSACTION AUDIT</span>
+              <span style={{ fontWeight: "700", color: "#F5D76E", fontSize: "0.95rem", letterSpacing: "0.04em" }}>
+                REAL VERIFIED TRANSACTION AUDIT
+              </span>
             </div>
-            <span style={{ fontSize: "0.75rem", background: "rgba(117, 244, 171, 0.15)", color: palette.green, padding: "0.25rem 0.6rem", borderRadius: "4px", fontWeight: "600" }}>
+            <span style={{
+              fontSize: "0.75rem",
+              background: "rgba(117, 244, 171, 0.15)",
+              color: "#75f4ab",
+              padding: "0.25rem 0.6rem",
+              borderRadius: "4px",
+              fontWeight: "600"
+            }}>
               ✓ OCR VERIFIED PROOF
             </span>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1.25rem", marginBottom: "1.5rem" }}>
-            <div style={{ background: "rgba(255,255,255,0.02)", padding: "1rem", borderRadius: "8px" }}>
-              <div style={{ fontSize: "0.75rem", color: palette.muted }}>INVOICE NUMBER</div>
-              <div style={{ fontSize: "1.1rem", fontWeight: "700", color: "#ffffff" }}>#0001</div>
+            <div style={{ background: "rgba(255,255,255,0.04)", padding: "1rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ fontSize: "0.72rem", color: "#8d95a7", letterSpacing: "0.05em", textTransform: "uppercase" }}>INVOICE NUMBER</div>
+              <div style={{ fontSize: "1.15rem", fontWeight: "700", color: "#ffffff", marginTop: "4px" }}>#0001</div>
             </div>
-            <div style={{ background: "rgba(255,255,255,0.02)", padding: "1rem", borderRadius: "8px" }}>
-              <div style={{ fontSize: "0.75rem", color: palette.muted }}>BUSINESS ENTITY</div>
-              <div style={{ fontSize: "1.1rem", fontWeight: "700", color: "#ffffff" }}>Sharma Hardware</div>
+            <div style={{ background: "rgba(255,255,255,0.04)", padding: "1rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ fontSize: "0.72rem", color: "#8d95a7", letterSpacing: "0.05em", textTransform: "uppercase" }}>BUSINESS ENTITY</div>
+              <div style={{ fontSize: "1.15rem", fontWeight: "700", color: "#ffffff", marginTop: "4px" }}>Sharma Hardware</div>
             </div>
-            <div style={{ background: "rgba(255,255,255,0.02)", padding: "1rem", borderRadius: "8px" }}>
-              <div style={{ fontSize: "0.75rem", color: palette.muted }}>VERIFIED GSTIN</div>
-              <div style={{ fontSize: "0.95rem", fontWeight: "700", color: palette.blue, fontFamily: "monospace" }}>23AABCS1429B1ZB</div>
+            <div style={{ background: "rgba(255,255,255,0.04)", padding: "1rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ fontSize: "0.72rem", color: "#8d95a7", letterSpacing: "0.05em", textTransform: "uppercase" }}>VERIFIED GSTIN</div>
+              <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#7dd3fc", fontFamily: "monospace", marginTop: "4px" }}>23AABCS1429B1ZB</div>
             </div>
-            <div style={{ background: "rgba(255,255,255,0.02)", padding: "1rem", borderRadius: "8px" }}>
-              <div style={{ fontSize: "0.75rem", color: palette.muted }}>FINAL TAX INVOICE TOTAL</div>
-              <div style={{ fontSize: "1.25rem", fontWeight: "800", color: palette.green }}>₹4,661.00</div>
+            <div style={{ background: "rgba(255,255,255,0.04)", padding: "1rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ fontSize: "0.72rem", color: "#8d95a7", letterSpacing: "0.05em", textTransform: "uppercase" }}>FINAL TAX INVOICE TOTAL</div>
+              <div style={{ fontSize: "1.3rem", fontWeight: "800", color: "#75f4ab", marginTop: "4px" }}>₹4,661.00</div>
             </div>
           </div>
 
-          <div style={{ fontSize: "0.85rem", color: palette.muted, lineHeight: "1.6", background: "rgba(0,0,0,0.3)", padding: "1rem", borderRadius: "8px", borderLeft: `3px solid ${palette.gold}` }}>
-            <strong style={{ color: palette.text }}>Forensic Proof Note:</strong> Subtotal ₹3,950.00 + CGST (9%) ₹355.50 + SGST (9%) ₹355.50 = ₹4,661.00. Zero simulated calculations. Tested against official Indian GST calculation rules.
+          <div style={{
+            fontSize: "0.85rem",
+            color: "#b0b8c8",
+            lineHeight: "1.6",
+            background: "rgba(0,0,0,0.35)",
+            padding: "1rem",
+            borderRadius: "8px",
+            borderLeft: "3px solid #F5D76E"
+          }}>
+            <strong style={{ color: "#ffffff" }}>Forensic Proof Note:</strong> Subtotal ₹3,950.00 + CGST (9%) ₹355.50 + SGST (9%) ₹355.50 = ₹4,661.00. Zero simulated calculations. Tested against official Indian GST calculation rules.
           </div>
         </motion.div>
       </section>
@@ -278,10 +345,15 @@ export default function GarudaBilling() {
       {/* Core Architectural Capabilities */}
       <section style={{ maxWidth: "1200px", margin: "0 auto", padding: "4rem 1.5rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <h2 style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)", fontWeight: "700", color: "#ffffff" }}>
+          <h2 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
+            fontWeight: "700",
+            color: palette.text
+          }}>
             Engineered For Speed, Reliability & Precision
           </h2>
-          <p style={{ color: palette.muted, maxWidth: "600px", margin: "0.5rem auto 0" }}>
+          <p style={{ color: palette.muted, maxWidth: "600px", margin: "0.5rem auto 0", fontSize: "1rem" }}>
             Built with modern offline-first web technologies and hardware-accelerated rendering.
           </p>
         </div>
@@ -292,24 +364,46 @@ export default function GarudaBilling() {
               key={idx}
               {...fadeUp}
               style={{
-                background: palette.panel,
-                border: `1px solid ${palette.line}`,
-                borderRadius: "12px",
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
+                borderRadius: "14px",
                 padding: "1.75rem",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)"
               }}
             >
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
-                  <span style={{ fontSize: "0.7rem", fontWeight: "700", color: palette.gold, background: "rgba(245, 215, 110, 0.1)", padding: "0.2rem 0.5rem", borderRadius: "4px" }}>
+                  <span style={{
+                    fontSize: "0.7rem",
+                    fontWeight: "700",
+                    color: palette.goldDeep,
+                    background: "rgba(179, 130, 53, 0.1)",
+                    padding: "0.25rem 0.55rem",
+                    borderRadius: "4px",
+                    letterSpacing: "0.06em"
+                  }}>
                     {cap.badge}
                   </span>
-                  <span style={{ fontSize: "0.75rem", color: palette.green, fontWeight: "600" }}>{cap.metric}</span>
+                  <span style={{
+                    fontSize: "0.75rem",
+                    color: palette.green,
+                    background: palette.greenBg,
+                    padding: "0.2rem 0.5rem",
+                    borderRadius: "4px",
+                    fontWeight: "600"
+                  }}>
+                    {cap.metric}
+                  </span>
                 </div>
-                <h3 style={{ fontSize: "1.2rem", fontWeight: "700", color: "#ffffff", marginBottom: "0.75rem" }}>{cap.title}</h3>
-                <p style={{ fontSize: "0.875rem", color: palette.muted, lineHeight: "1.6" }}>{cap.desc}</p>
+                <h3 style={{ fontSize: "1.15rem", fontWeight: "700", color: palette.text, marginBottom: "0.75rem" }}>
+                  {cap.title}
+                </h3>
+                <p style={{ fontSize: "0.875rem", color: palette.muted, lineHeight: "1.6" }}>
+                  {cap.desc}
+                </p>
               </div>
             </motion.div>
           ))}
@@ -318,22 +412,58 @@ export default function GarudaBilling() {
 
       {/* FAQs Section */}
       <section style={{ maxWidth: "860px", margin: "0 auto", padding: "2rem 1.5rem 5rem" }}>
-        <h2 style={{ fontSize: "1.75rem", fontWeight: "700", color: "#ffffff", textAlign: "center", marginBottom: "2.5rem" }}>
+        <h2 style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontSize: "2rem",
+          fontWeight: "700",
+          color: palette.text,
+          textAlign: "center",
+          marginBottom: "2.5rem"
+        }}>
           Frequently Asked Questions
         </h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
           {FAQS.map((faq, i) => (
-            <div key={i} style={{ background: palette.panel, border: `1px solid ${palette.line}`, borderRadius: "10px", padding: "1.5rem" }}>
-              <h3 style={{ fontSize: "1.05rem", fontWeight: "600", color: palette.gold, marginBottom: "0.5rem" }}>{faq.q}</h3>
-              <p style={{ fontSize: "0.9rem", color: palette.muted, lineHeight: "1.6", margin: 0 }}>{faq.a}</p>
+            <div
+              key={i}
+              style={{
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
+                borderRadius: "12px",
+                padding: "1.5rem",
+                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.02)"
+              }}
+            >
+              <h3 style={{
+                fontSize: "1.05rem",
+                fontWeight: "700",
+                color: palette.goldDeep,
+                marginBottom: "0.5rem"
+              }}>
+                {faq.q}
+              </h3>
+              <p style={{ fontSize: "0.92rem", color: palette.muted, lineHeight: "1.6", margin: 0 }}>
+                {faq.a}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Footer Call to Action */}
-      <footer style={{ borderTop: `1px solid ${palette.line}`, padding: "3rem 1.5rem", textAlign: "center", background: "#020406" }}>
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "700", color: "#ffffff", marginBottom: "1rem" }}>
+      <footer style={{
+        borderTop: `1px solid ${palette.border}`,
+        padding: "3.5rem 1.5rem",
+        textAlign: "center",
+        background: palette.canvasIvory
+      }}>
+        <h2 style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontSize: "1.75rem",
+          fontWeight: "700",
+          color: palette.text,
+          marginBottom: "1rem"
+        }}>
           Ready to Upgrade Your Business Invoicing?
         </h2>
         <p style={{ color: palette.muted, maxWidth: "550px", margin: "0 auto 2rem", fontSize: "0.95rem" }}>
@@ -342,19 +472,20 @@ export default function GarudaBilling() {
         <button
           onClick={() => navigate("/chat?ref=billing")}
           style={{
-            background: `linear-gradient(135deg, ${palette.gold}, ${palette.goldStrong})`,
-            color: "#04070a",
+            background: palette.goldGradient,
+            color: "#FFFFFF",
             border: "none",
             borderRadius: "8px",
             padding: "0.85rem 2.25rem",
-            fontWeight: "700",
+            fontWeight: "600",
             fontSize: "1rem",
-            cursor: "pointer"
+            cursor: "pointer",
+            boxShadow: "0 4px 16px rgba(179, 130, 53, 0.25)"
           }}
         >
           Talk to GARUDA Engineering
         </button>
-        <div style={{ fontSize: "0.75rem", color: palette.muted, marginTop: "2rem" }}>
+        <div style={{ fontSize: "0.75rem", color: palette.subtle, marginTop: "2rem" }}>
           © {new Date().getFullYear()} GARUDA OS. All rights reserved. Sovereign Anti-Fabrication Engineering.
         </div>
       </footer>

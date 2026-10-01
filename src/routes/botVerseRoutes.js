@@ -416,5 +416,184 @@ router.post("/youtube/upload", async (req, res) => {
   }
 });
 
+/**
+ * ⚡ LINKEDIN AUTONOMOUS DIRECT PUSH & OAUTH ENDPOINTS
+ */
+const linkedinDirectPush = require("../services/linkedinDirectPushService");
+
+router.get("/linkedin/status", (req, res) => {
+  try {
+    const profile = req.query.profile || "garuda";
+    return res.json({ success: true, ...linkedinDirectPush.getStatus(profile) });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get("/linkedin/auth-url", (req, res) => {
+  try {
+    const profile = req.query.profile || "garuda";
+    const host = req.headers["x-forwarded-host"] || req.headers.host || "www.garudaos.in";
+    const proto = req.headers["x-forwarded-proto"] || "https";
+    const redirectUri = `${proto}://${host}/api/bot-verse/linkedin/callback`;
+    const result = linkedinDirectPush.getAuthUrl(redirectUri, profile);
+    if (req.query.redirect === "true" && result.success && result.authUrl) {
+      return res.redirect(result.authUrl);
+    }
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get("/linkedin/callback", async (req, res) => {
+  try {
+    const { code, error, state } = req.query;
+    if (error) {
+      return res.redirect(`/bot-verse?linkedin_error=${encodeURIComponent(error)}`);
+    }
+    if (!code) {
+      return res.redirect(`/bot-verse?linkedin_error=No+authorization+code+received`);
+    }
+
+    let profile = "garuda";
+    if (state) {
+      try {
+        const parsed = JSON.parse(state);
+        if (parsed.profile) profile = parsed.profile;
+      } catch {
+        if (String(state).includes("praveen")) profile = "praveen";
+      }
+    }
+
+    const host = req.headers["x-forwarded-host"] || req.headers.host || "www.garudaos.in";
+    const proto = req.headers["x-forwarded-proto"] || "https";
+    const redirectUri = `${proto}://${host}/api/bot-verse/linkedin/callback`;
+    const authResult = await linkedinDirectPush.handleCallback(code, redirectUri, profile);
+
+    // Persist to MongoDB Atlas so local machine services can sync automatically
+    try {
+      const mongoose = require("mongoose");
+      const connectDB = require("../database/db");
+      if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+        await connectDB();
+      }
+      if (mongoose.connection && mongoose.connection.readyState === 1) {
+        const coll = mongoose.connection.db.collection("garuda_linkedin_tokens");
+        const tokens = linkedinDirectPush.getStoredTokens(profile);
+        await coll.updateOne(
+          { _id: profile },
+          { $set: { ...tokens, profile, updatedAt: new Date() } },
+          { upsert: true }
+        );
+      }
+    } catch (mErr) {
+      console.warn("[botVerseRoutes] MongoDB LinkedIn token sync note:", mErr.message);
+    }
+
+    if (!authResult.success) {
+      return res.redirect(`/bot-verse?linkedin_error=${encodeURIComponent(authResult.error || "Token exchange failed")}`);
+    }
+
+    return res.redirect(`/bot-verse?linkedin_connected=true&profile=${encodeURIComponent(profile)}`);
+  } catch (error) {
+    return res.redirect(`/bot-verse?linkedin_error=${encodeURIComponent(error.message)}`);
+  }
+});
+
+router.get("/linkedin/token-transfer", async (req, res) => {
+  try {
+    const fs = require("fs");
+    const path = require("path");
+    const dataDir = path.join(__dirname, "..", "..", "data");
+    const praveenPath = path.join(dataDir, "linkedin-tokens-praveen.json");
+    const garudaPath = path.join(dataDir, "linkedin-tokens.json");
+
+    let targetPath = null;
+    let targetProfile = "praveen";
+    if (fs.existsSync(praveenPath)) {
+      targetPath = praveenPath;
+      targetProfile = "praveen";
+    } else if (fs.existsSync(garudaPath)) {
+      targetPath = garudaPath;
+      targetProfile = "garuda";
+    }
+
+    if (!targetPath) {
+      return res.json({
+        success: false,
+        message: "No LinkedIn tokens file on disk",
+        dirExists: fs.existsSync(dataDir),
+        files: fs.existsSync(dataDir) ? fs.readdirSync(dataDir) : []
+      });
+    }
+
+    const raw = JSON.parse(fs.readFileSync(targetPath, "utf8"));
+    try {
+      const mongoose = require("mongoose");
+      const connectDB = require("../database/db");
+      if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+        await connectDB();
+      }
+      if (mongoose.connection && mongoose.connection.readyState === 1) {
+        const coll = mongoose.connection.db.collection("garuda_linkedin_tokens");
+        await coll.updateOne(
+          { _id: targetProfile },
+          { $set: { ...raw, profile: targetProfile, updatedAt: new Date() } },
+          { upsert: true }
+        );
+      }
+    } catch (mErr) {
+      console.warn("[token-transfer] Mongo LinkedIn sync warning:", mErr.message);
+    }
+
+    return res.json({
+      success: true,
+      profile: targetProfile,
+      memberName: raw.memberName,
+      memberUrn: raw.memberUrn,
+      tokens: {
+        refreshToken: raw.refreshToken,
+        accessToken: raw.accessToken,
+        memberName: raw.memberName,
+        memberUrn: raw.memberUrn,
+        expiresAt: raw.expiresAt
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.post("/linkedin/post", async (req, res) => {
+  try {
+    const { text, title, linkUrl, profile } = req.body || {};
+    const result = await linkedinDirectPush.publishPost({
+      text,
+      title,
+      linkUrl,
+      profile: profile || "garuda"
+    });
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post("/linkedin/upload", async (req, res) => {
+  try {
+    const { videoFilePath, title, commentary, profile } = req.body || {};
+    const result = await linkedinDirectPush.uploadVideoAndPost({
+      videoFilePath,
+      title,
+      commentary,
+      profile: profile || "garuda"
+    });
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;
 
