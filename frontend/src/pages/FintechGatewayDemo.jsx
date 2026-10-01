@@ -22,10 +22,7 @@ const palette = {
   green: "#15803d",
   greenBg: "rgba(22, 163, 74, 0.08)",
   red: "#b91c1c",
-  redBg: "rgba(185, 28, 28, 0.08)",
-  obsidian: "#10141D",
-  obsidianDeep: "#080B10",
-  obsidianSurface: "#151B26"
+  redBg: "rgba(185, 28, 28, 0.08)"
 };
 
 const RAILS = [
@@ -326,6 +323,14 @@ export default function FintechGatewayDemo() {
   const [activeNode, setActiveNode] = useState(ARCHITECTURE_NODES[2]); // Default: Gateway
   const [activeLifecycleStep, setActiveLifecycleStep] = useState(0);
 
+  React.useEffect(() => {
+    const prevBg = document.body.style.backgroundColor;
+    document.body.style.backgroundColor = palette.canvas;
+    return () => {
+      document.body.style.backgroundColor = prevBg;
+    };
+  }, []);
+
   // Financial calculations
   const grossAmountUSD = selectedTicket;
   const grossAmountINR = grossAmountUSD * 85;
@@ -360,7 +365,7 @@ export default function FintechGatewayDemo() {
   };
 
   return (
-    <div style={{ background: palette.obsidianDeep, minHeight: "100vh", color: "#FFFFFF", fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}>
+    <div style={{ background: palette.canvas, minHeight: "100vh", color: palette.text, fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}>
       <SEOHead
         title="Fintech Gateway • Payment Orchestration & Treasury | GARUDA OS"
         description="Sovereign payment orchestration and treasury infrastructure. Zero-custody architecture, multi-rail direct bank clearance, deterministic reconciliation, and cryptographic audit chains."
@@ -378,8 +383,8 @@ export default function FintechGatewayDemo() {
       {/* Top Sovereign Navigation */}
       <header style={{
         padding: "1rem clamp(1.25rem, 4vw, 4rem)",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-        background: "rgba(8, 11, 16, 0.88)",
+        borderBottom: `1px solid ${palette.border}`,
+        background: "rgba(246, 244, 238, 0.94)",
         backdropFilter: "blur(16px)",
         display: "flex",
         justifyContent: "space-between",
@@ -407,10 +412,10 @@ export default function FintechGatewayDemo() {
               style={{ width: 32, height: 32, objectFit: "contain" }}
             />
             <div style={{ textAlign: "left", lineHeight: 1 }}>
-              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "1.2rem", letterSpacing: "0.04em", color: "#FFFFFF" }}>
-                GARUDA <span style={{ color: palette.goldLight, fontStyle: "italic" }}>FINTECH</span>
+              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "1.2rem", letterSpacing: "0.04em", color: palette.text }}>
+                GARUDA <span style={{ color: palette.goldDeep, fontStyle: "italic" }}>FINTECH</span>
               </span>
-              <div style={{ fontSize: "0.62rem", color: palette.goldLight, letterSpacing: "0.22em", fontWeight: 700, marginTop: "2px" }}>
+              <div style={{ fontSize: "0.62rem", color: palette.goldPrimary, letterSpacing: "0.22em", fontWeight: 700, marginTop: "2px" }}>
                 UNIVERSE 12 • FINANCE
               </div>
             </div>
@@ -418,11 +423,11 @@ export default function FintechGatewayDemo() {
         </div>
 
         <nav style={{ display: "flex", alignItems: "center", gap: "1.5rem" }} className="desktop-nav">
-          <a href="#architecture" style={{ color: "#9CA3AF", textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Architecture</a>
-          <a href="#how-it-works" style={{ color: "#9CA3AF", textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Lifecycle</a>
-          <a href="#engines" style={{ color: "#9CA3AF", textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Core Engines</a>
-          <a href="#providers" style={{ color: "#9CA3AF", textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Providers</a>
-          <a href="#verification" style={{ color: "#9CA3AF", textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Verification</a>
+          <a href="#architecture" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Architecture</a>
+          <a href="#how-it-works" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Lifecycle</a>
+          <a href="#engines" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Core Engines</a>
+          <a href="#providers" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Providers</a>
+          <a href="#verification" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Verification</a>
           <button
             onClick={() => navigate("/chat?topic=fintech-gateway")}
             style={{
@@ -459,8 +464,8 @@ export default function FintechGatewayDemo() {
           padding: "0.4rem 1rem",
           borderRadius: 999,
           border: `1px solid ${palette.borderGold}`,
-          background: "rgba(196, 139, 40, 0.08)",
-          color: palette.goldLight,
+          background: "rgba(196, 139, 40, 0.1)",
+          color: palette.goldDeep,
           fontSize: "0.76rem",
           fontWeight: 700,
           letterSpacing: "0.12em",
@@ -476,17 +481,17 @@ export default function FintechGatewayDemo() {
           fontWeight: 700,
           lineHeight: 1.12,
           margin: "0 0 1.2rem",
-          color: "#FAF9F6"
+          color: palette.text
         }}>
           FINTECH GATEWAY
-          <span style={{ display: "block", fontSize: "clamp(1.2rem, 2.5vw, 1.9rem)", fontWeight: 400, color: palette.goldLight, marginTop: "0.6rem", fontStyle: "italic" }}>
+          <span style={{ display: "block", fontSize: "clamp(1.2rem, 2.5vw, 1.9rem)", fontWeight: 400, color: palette.goldDeep, marginTop: "0.6rem", fontStyle: "italic" }}>
             Payment Orchestration & Treasury Infrastructure
           </span>
         </h1>
 
         <p style={{
           fontSize: "clamp(1.05rem, 1.8vw, 1.2rem)",
-          color: "#9CA3AF",
+          color: palette.muted,
           maxWidth: 860,
           margin: "0 auto 2.8rem",
           lineHeight: 1.65
@@ -504,49 +509,49 @@ export default function FintechGatewayDemo() {
           textAlign: "left"
         }}>
           <div style={{
-            background: palette.obsidianSurface,
-            border: "1px solid rgba(255, 255, 255, 0.08)",
+            background: palette.card,
+            border: `1px solid ${palette.border}`,
             borderRadius: 16,
-            padding: "1.5rem",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.25)"
+            padding: "1.6rem",
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.04)"
           }}>
             <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>🛡️</div>
-            <div style={{ fontWeight: 700, fontSize: "1.05rem", color: "#FFFFFF", marginBottom: "0.35rem" }}>
+            <div style={{ fontWeight: 700, fontSize: "1.05rem", color: palette.text, marginBottom: "0.35rem" }}>
               Zero-Custody Architecture
             </div>
-            <div style={{ fontSize: "0.85rem", color: "#9CA3AF", lineHeight: 1.55 }}>
+            <div style={{ fontSize: "0.85rem", color: palette.muted, lineHeight: 1.55 }}>
               GARUDA never holds, pools, or touches customer principal funds. Principal clears directly into the merchant's corporate bank account via licensed banking rails.
             </div>
           </div>
 
           <div style={{
-            background: palette.obsidianSurface,
-            border: "1px solid rgba(255, 255, 255, 0.08)",
+            background: palette.card,
+            border: `1px solid ${palette.border}`,
             borderRadius: 16,
-            padding: "1.5rem",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.25)"
+            padding: "1.6rem",
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.04)"
           }}>
             <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>⚡</div>
-            <div style={{ fontWeight: 700, fontSize: "1.05rem", color: "#FFFFFF", marginBottom: "0.35rem" }}>
+            <div style={{ fontWeight: 700, fontSize: "1.05rem", color: palette.text, marginBottom: "0.35rem" }}>
               Direct Rail Routing
             </div>
-            <div style={{ fontSize: "0.85rem", color: "#9CA3AF", lineHeight: 1.55 }}>
+            <div style={{ fontSize: "0.85rem", color: palette.muted, lineHeight: 1.55 }}>
               Connects domestic and cross-border settlement rails (Fedwire, UAE FTS, RTGS, Faster Payments) with sub-minute clearance and auto-reconciliation.
             </div>
           </div>
 
           <div style={{
-            background: palette.obsidianSurface,
-            border: "1px solid rgba(255, 255, 255, 0.08)",
+            background: palette.card,
+            border: `1px solid ${palette.border}`,
             borderRadius: 16,
-            padding: "1.5rem",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.25)"
+            padding: "1.6rem",
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.04)"
           }}>
             <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>📜</div>
-            <div style={{ fontWeight: 700, fontSize: "1.05rem", color: "#FFFFFF", marginBottom: "0.35rem" }}>
+            <div style={{ fontWeight: 700, fontSize: "1.05rem", color: palette.text, marginBottom: "0.35rem" }}>
               Cryptographic Audit Chain
             </div>
-            <div style={{ fontSize: "0.85rem", color: "#9CA3AF", lineHeight: 1.55 }}>
+            <div style={{ fontSize: "0.85rem", color: palette.muted, lineHeight: 1.55 }}>
               Every state transition, webhook receipt, and reconciliation event is cryptographically sealed in an append-only SHA-256 hash-chained ledger.
             </div>
           </div>
@@ -572,14 +577,15 @@ export default function FintechGatewayDemo() {
           <a
             href="#architecture"
             style={{
-              background: "rgba(255, 255, 255, 0.05)",
-              color: "#FFFFFF",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
+              background: palette.card,
+              color: palette.text,
+              border: `1px solid ${palette.border}`,
               textDecoration: "none",
               padding: "0.85rem 1.8rem",
               borderRadius: 999,
               fontWeight: 600,
-              fontSize: "0.95rem"
+              fontSize: "0.95rem",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)"
             }}
           >
             Inspect Architecture Topology
@@ -592,16 +598,16 @@ export default function FintechGatewayDemo() {
         padding: "4rem clamp(1.25rem, 4vw, 4rem)",
         maxWidth: 1240,
         margin: "0 auto",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)"
+        borderTop: `1px solid ${palette.border}`
       }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <p style={{ color: palette.goldLight, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
+          <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
             ✦ SYSTEM TOPOLOGY
           </p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: "#FAF9F6", margin: 0 }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: palette.text, margin: 0 }}>
             Interactive Architecture Visualization
           </h2>
-          <p style={{ color: "#9CA3AF", fontSize: "0.95rem", maxWidth: 720, margin: "0.6rem auto 0" }}>
+          <p style={{ color: palette.muted, fontSize: "0.95rem", maxWidth: 720, margin: "0.6rem auto 0" }}>
             Click any node below to inspect its exact operational role, code reference, and technical invariants.
           </p>
         </div>
@@ -620,20 +626,21 @@ export default function FintechGatewayDemo() {
                 key={node.id}
                 onClick={() => setActiveNode(node)}
                 style={{
-                  background: isSelected ? "rgba(196, 139, 40, 0.22)" : palette.obsidianSurface,
-                  border: isSelected ? `1.5px solid ${palette.goldPrimary}` : "1px solid rgba(255, 255, 255, 0.08)",
+                  background: isSelected ? "rgba(196, 139, 40, 0.1)" : palette.card,
+                  border: isSelected ? `1.5px solid ${palette.goldPrimary}` : `1px solid ${palette.border}`,
                   borderRadius: 14,
                   padding: "0.9rem 0.75rem",
                   cursor: "pointer",
                   textAlign: "center",
+                  boxShadow: isSelected ? "0 4px 16px rgba(196, 139, 40, 0.15)" : "0 2px 8px rgba(0, 0, 0, 0.02)",
                   transition: "all 0.16s ease"
                 }}
               >
                 <div style={{ fontSize: "1.4rem", marginBottom: "0.3rem" }}>{node.icon}</div>
-                <div style={{ fontSize: "0.78rem", fontWeight: 700, color: isSelected ? palette.goldLight : "#E5E7EB", lineHeight: 1.2 }}>
+                <div style={{ fontSize: "0.78rem", fontWeight: 700, color: isSelected ? palette.goldDeep : palette.text, lineHeight: 1.2 }}>
                   {node.title.split(". ")[1]}
                 </div>
-                <div style={{ fontSize: "0.64rem", color: "#8D95A7", marginTop: "4px", textTransform: "uppercase" }}>
+                <div style={{ fontSize: "0.64rem", color: isSelected ? palette.goldPrimary : palette.subtle, marginTop: "4px", textTransform: "uppercase", fontWeight: 600 }}>
                   {node.category}
                 </div>
               </button>
@@ -643,48 +650,48 @@ export default function FintechGatewayDemo() {
 
         {/* Active Node Detailed Inspection Card */}
         <div style={{
-          background: "linear-gradient(135deg, #10141D 0%, #080B10 100%)",
+          background: palette.card,
           border: `1.5px solid ${palette.borderGold}`,
           borderRadius: 20,
           padding: "2rem",
-          boxShadow: "0 16px 40px rgba(0, 0, 0, 0.4)",
+          boxShadow: "0 12px 36px rgba(0, 0, 0, 0.06)",
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
           gap: "2rem",
           alignItems: "center"
         }}>
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.72rem", color: palette.goldLight, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.6rem" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.72rem", color: palette.goldDeep, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.6rem" }}>
               <span>●</span> {activeNode.category}
             </div>
-            <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.8rem", margin: "0 0 0.8rem", color: "#FAF9F6" }}>
+            <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.8rem", margin: "0 0 0.8rem", color: palette.text }}>
               {activeNode.title}
             </h3>
-            <p style={{ fontSize: "1rem", color: "#E5E7EB", lineHeight: 1.6, margin: "0 0 1rem" }}>
+            <p style={{ fontSize: "1rem", color: palette.textBody, lineHeight: 1.6, margin: "0 0 1rem" }}>
               {activeNode.summary}
             </p>
-            <p style={{ fontSize: "0.88rem", color: "#9CA3AF", lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: "0.88rem", color: palette.muted, lineHeight: 1.6, margin: 0 }}>
               {activeNode.detail}
             </p>
           </div>
 
           <div style={{
-            background: "rgba(0, 0, 0, 0.4)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
+            background: "#FAF9F6",
+            border: `1px solid ${palette.borderGold}`,
             borderRadius: 14,
             padding: "1.4rem",
             fontFamily: "ui-monospace, monospace"
           }}>
-            <div style={{ fontSize: "0.72rem", color: "#8D95A7", textTransform: "uppercase", marginBottom: "0.6rem" }}>
+            <div style={{ fontSize: "0.72rem", color: palette.goldDeep, textTransform: "uppercase", marginBottom: "0.6rem", fontWeight: 700 }}>
               VERIFIED IMPLEMENTATION REFERENCE
             </div>
-            <div style={{ color: palette.goldLight, fontSize: "0.88rem", fontWeight: 700, wordBreak: "break-all" }}>
+            <div style={{ color: palette.text, fontSize: "0.88rem", fontWeight: 700, wordBreak: "break-all" }}>
               {activeNode.fileRef}
             </div>
-            <div style={{ marginTop: "1rem", paddingTop: "0.8rem", borderTop: "1px solid rgba(255, 255, 255, 0.08)", fontSize: "0.78rem", color: "#4ade80" }}>
+            <div style={{ marginTop: "1rem", paddingTop: "0.8rem", borderTop: `1px solid ${palette.border}`, fontSize: "0.78rem", color: "#15803d", fontWeight: 600 }}>
               ✔ ZERO-CUSTODY INVARIANT: ENFORCED
             </div>
-            <div style={{ fontSize: "0.74rem", color: "#9CA3AF", marginTop: "4px" }}>
+            <div style={{ fontSize: "0.74rem", color: palette.muted, marginTop: "4px" }}>
               No customer funds transit or reside on GARUDA ledgers.
             </div>
           </div>
@@ -696,16 +703,16 @@ export default function FintechGatewayDemo() {
         padding: "4rem clamp(1.25rem, 4vw, 4rem)",
         maxWidth: 1240,
         margin: "0 auto",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)"
+        borderTop: `1px solid ${palette.border}`
       }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <p style={{ color: palette.goldLight, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
+          <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
             ✦ END-TO-END EXECUTION
           </p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: "#FAF9F6", margin: 0 }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: palette.text, margin: 0 }}>
             How It Works: The 7-Step Lifecycle
           </h2>
-          <p style={{ color: "#9CA3AF", fontSize: "0.95rem", maxWidth: 680, margin: "0.6rem auto 0" }}>
+          <p style={{ color: palette.muted, fontSize: "0.95rem", maxWidth: 680, margin: "0.6rem auto 0" }}>
             From payment initiation to direct corporate bank settlement, mapped to verified codebase methods.
           </p>
         </div>
@@ -715,15 +722,15 @@ export default function FintechGatewayDemo() {
             <div
               key={s.num}
               style={{
-                background: palette.obsidianSurface,
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
                 borderRadius: 16,
                 padding: "1.5rem",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
                 position: "relative",
-                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)"
+                boxShadow: "0 4px 16px rgba(0, 0, 0, 0.02)"
               }}
             >
               <div>
@@ -731,22 +738,22 @@ export default function FintechGatewayDemo() {
                   fontSize: "1.4rem",
                   fontFamily: "'Playfair Display', Georgia, serif",
                   fontWeight: 900,
-                  color: palette.goldLight,
+                  color: palette.goldDeep,
                   marginBottom: "0.4rem"
                 }}>
                   {s.num}
                 </div>
-                <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: "#FAF9F6", margin: "0 0 0.6rem" }}>
+                <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: palette.text, margin: "0 0 0.6rem" }}>
                   {s.title}
                 </h3>
-                <p style={{ fontSize: "0.84rem", color: "#9CA3AF", lineHeight: 1.55, margin: "0 0 1rem" }}>
+                <p style={{ fontSize: "0.84rem", color: palette.muted, lineHeight: 1.55, margin: "0 0 1rem" }}>
                   {s.desc}
                 </p>
               </div>
 
-              <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "0.8rem", fontSize: "0.74rem" }}>
-                <div style={{ color: "#8D95A7", fontFamily: "monospace" }}>{s.codeRef}</div>
-                <div style={{ color: "#4ade80", marginTop: "4px", fontWeight: 600 }}>{s.invariant}</div>
+              <div style={{ borderTop: `1px solid ${palette.border}`, paddingTop: "0.8rem", fontSize: "0.74rem" }}>
+                <div style={{ color: palette.subtle, fontFamily: "monospace" }}>{s.codeRef}</div>
+                <div style={{ color: "#059669", marginTop: "4px", fontWeight: 600 }}>{s.invariant}</div>
               </div>
             </div>
           ))}
@@ -758,16 +765,16 @@ export default function FintechGatewayDemo() {
         padding: "4rem clamp(1.25rem, 4vw, 4rem)",
         maxWidth: 1240,
         margin: "0 auto",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)"
+        borderTop: `1px solid ${palette.border}`
       }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <p style={{ color: palette.goldLight, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
+          <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
             ✦ SOVEREIGN CORE INFRASTRUCTURE
           </p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: "#FAF9F6", margin: 0 }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: palette.text, margin: 0 }}>
             The Engines Behind GARUDA Fintech Gateway
           </h2>
-          <p style={{ color: "#9CA3AF", fontSize: "0.95rem", maxWidth: 720, margin: "0.6rem auto 0" }}>
+          <p style={{ color: palette.muted, fontSize: "0.95rem", maxWidth: 720, margin: "0.6rem auto 0" }}>
             The 6 inviolable, permanently locked modules running inside the GARUDA kernel.
           </p>
         </div>
@@ -777,25 +784,25 @@ export default function FintechGatewayDemo() {
             <div
               key={e.name}
               style={{
-                background: "linear-gradient(180deg, #10141D 0%, #080B10 100%)",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
                 borderRadius: 18,
                 padding: "1.8rem",
-                boxShadow: "0 12px 30px rgba(0, 0, 0, 0.3)"
+                boxShadow: "0 6px 24px rgba(0, 0, 0, 0.03)"
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.8rem" }}>
                 <div>
-                  <h3 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#FAF9F6", margin: 0 }}>
+                  <h3 style={{ fontSize: "1.15rem", fontWeight: 800, color: palette.text, margin: 0 }}>
                     {e.name}
                   </h3>
-                  <span style={{ fontSize: "0.72rem", color: "#8D95A7", fontFamily: "monospace" }}>
+                  <span style={{ fontSize: "0.72rem", color: palette.goldDeep, fontFamily: "monospace", background: "rgba(23, 24, 27, 0.04)", padding: "0.15rem 0.45rem", borderRadius: 4, display: "inline-block", marginTop: "4px" }}>
                     {e.file}
                   </span>
                 </div>
                 <span style={{
-                  background: "rgba(196, 139, 40, 0.15)",
-                  color: palette.goldLight,
+                  background: "rgba(196, 139, 40, 0.12)",
+                  color: palette.goldDeep,
                   border: `1px solid ${palette.borderGold}`,
                   fontSize: "0.66rem",
                   fontWeight: 800,
@@ -808,16 +815,16 @@ export default function FintechGatewayDemo() {
 
               <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem", fontSize: "0.82rem", marginTop: "1rem" }}>
                 <div>
-                  <span style={{ color: palette.goldLight, fontWeight: 700 }}>WHAT IT DOES: </span>
-                  <span style={{ color: "#D1D5DB" }}>{e.what}</span>
+                  <span style={{ color: palette.goldDeep, fontWeight: 700 }}>WHAT IT DOES: </span>
+                  <span style={{ color: palette.textBody }}>{e.what}</span>
                 </div>
                 <div>
-                  <span style={{ color: palette.goldLight, fontWeight: 700 }}>WHY IT EXISTS: </span>
-                  <span style={{ color: "#D1D5DB" }}>{e.why}</span>
+                  <span style={{ color: palette.goldDeep, fontWeight: 700 }}>WHY IT EXISTS: </span>
+                  <span style={{ color: palette.textBody }}>{e.why}</span>
                 </div>
                 <div>
-                  <span style={{ color: "#4ade80", fontWeight: 700 }}>WHAT IT PROTECTS: </span>
-                  <span style={{ color: "#E5E7EB" }}>{e.protects}</span>
+                  <span style={{ color: "#059669", fontWeight: 700 }}>WHAT IT PROTECTS: </span>
+                  <span style={{ color: palette.text }}>{e.protects}</span>
                 </div>
               </div>
             </div>
@@ -830,25 +837,25 @@ export default function FintechGatewayDemo() {
         padding: "4rem clamp(1.25rem, 4vw, 4rem)",
         maxWidth: 1240,
         margin: "0 auto",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)"
+        borderTop: `1px solid ${palette.border}`
       }}>
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <p style={{ color: palette.goldLight, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
+          <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
             ✦ BANK RAIL ADAPTERS
           </p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: "#FAF9F6", margin: 0 }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: palette.text, margin: 0 }}>
             Provider Orchestration & Live Truth Matrix
           </h2>
-          <p style={{ color: "#9CA3AF", fontSize: "0.95rem", maxWidth: 720, margin: "0.6rem auto 0" }}>
+          <p style={{ color: palette.muted, fontSize: "0.95rem", maxWidth: 720, margin: "0.6rem auto 0" }}>
             In strict compliance with GARUDA Anti-Fabrication Law, operational status reflects verified hardware reality.
           </p>
 
           {/* Status Legend Strip */}
           <div style={{ display: "flex", justifyContent: "center", gap: "1.2rem", marginTop: "1.2rem", flexWrap: "wrap", fontSize: "0.78rem" }}>
-            <span style={{ color: "#4ade80" }}>🟢 OPERATIONAL (Mock Adapter)</span>
-            <span style={{ color: "#eab308" }}>🟡 SANDBOX / CREDENTIALS REQUIRED</span>
-            <span style={{ color: "#38bdf8" }}>🔵 ADAPTER READY</span>
-            <span style={{ color: "#f87171" }}>🔴 LIVE NOT CONNECTED</span>
+            <span style={{ color: "#15803d", fontWeight: 600 }}>🟢 OPERATIONAL (Mock Adapter)</span>
+            <span style={{ color: "#b45309", fontWeight: 600 }}>🟡 SANDBOX / CREDENTIALS REQUIRED</span>
+            <span style={{ color: "#0284c7", fontWeight: 600 }}>🔵 ADAPTER READY</span>
+            <span style={{ color: "#b91c1c", fontWeight: 600 }}>🔴 LIVE NOT CONNECTED</span>
           </div>
         </div>
 
@@ -857,34 +864,35 @@ export default function FintechGatewayDemo() {
             <div
               key={p.name}
               style={{
-                background: palette.obsidianSurface,
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
                 borderRadius: 18,
                 padding: "1.6rem",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
+                boxShadow: "0 6px 20px rgba(0, 0, 0, 0.03)"
               }}
             >
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.6rem" }}>
-                  <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#FAF9F6", margin: 0 }}>
+                  <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: palette.text, margin: 0 }}>
                     {p.name}
                   </h3>
                 </div>
-                <div style={{ fontSize: "0.78rem", color: palette.goldLight, fontWeight: 600, marginBottom: "0.8rem" }}>
+                <div style={{ fontSize: "0.78rem", color: palette.goldDeep, fontWeight: 700, marginBottom: "0.8rem" }}>
                   {p.rail}
                 </div>
-                <div style={{ fontSize: "0.82rem", color: "#9CA3AF", lineHeight: 1.55, marginBottom: "1rem" }}>
+                <div style={{ fontSize: "0.82rem", color: palette.muted, lineHeight: 1.55, marginBottom: "1rem" }}>
                   {p.details}
                 </div>
               </div>
 
-              <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "0.8rem", fontSize: "0.76rem" }}>
+              <div style={{ borderTop: `1px solid ${palette.border}`, paddingTop: "0.8rem", fontSize: "0.76rem" }}>
                 <div style={{ color: p.statusColor, fontWeight: 700, marginBottom: "4px" }}>
                   {p.statusBadge}
                 </div>
-                <div style={{ color: "#8D95A7" }}>{p.gate}</div>
+                <div style={{ color: palette.subtle }}>{p.gate}</div>
               </div>
             </div>
           ))}
@@ -896,16 +904,16 @@ export default function FintechGatewayDemo() {
         padding: "4rem clamp(1.25rem, 4vw, 4rem)",
         maxWidth: 1240,
         margin: "0 auto",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)"
+        borderTop: `1px solid ${palette.border}`
       }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <p style={{ color: palette.goldLight, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
+          <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
             ✦ ENTERPRISE GOVERNANCE
           </p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: "#FAF9F6", margin: 0 }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: palette.text, margin: 0 }}>
             Institutional Security & Control Perimeter
           </h2>
-          <p style={{ color: "#9CA3AF", fontSize: "0.95rem", maxWidth: 680, margin: "0.6rem auto 0" }}>
+          <p style={{ color: palette.muted, fontSize: "0.95rem", maxWidth: 680, margin: "0.6rem auto 0" }}>
             Mathematical and architectural invariants protecting sovereign multi-rail payments.
           </p>
         </div>
@@ -915,19 +923,20 @@ export default function FintechGatewayDemo() {
             <div
               key={ctrl.title}
               style={{
-                background: palette.obsidianSurface,
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                background: palette.card,
+                border: `1px solid ${palette.border}`,
                 borderRadius: 14,
-                padding: "1.4rem"
+                padding: "1.4rem",
+                boxShadow: "0 4px 16px rgba(0, 0, 0, 0.02)"
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.95rem", color: "#FAF9F6" }}>{ctrl.title}</span>
-                <span style={{ fontSize: "0.65rem", background: "rgba(255,255,255,0.06)", color: palette.goldLight, padding: "0.15rem 0.5rem", borderRadius: 4, fontWeight: 700 }}>
+                <span style={{ fontWeight: 700, fontSize: "0.95rem", color: palette.text }}>{ctrl.title}</span>
+                <span style={{ fontSize: "0.65rem", background: "rgba(196, 139, 40, 0.1)", color: palette.goldDeep, padding: "0.15rem 0.5rem", borderRadius: 4, fontWeight: 700 }}>
                   {ctrl.tag}
                 </span>
               </div>
-              <p style={{ fontSize: "0.82rem", color: "#9CA3AF", lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontSize: "0.82rem", color: palette.muted, lineHeight: 1.5, margin: 0 }}>
                 {ctrl.desc}
               </p>
             </div>
@@ -940,15 +949,15 @@ export default function FintechGatewayDemo() {
         padding: "4rem clamp(1.25rem, 4vw, 4rem)",
         maxWidth: 1240,
         margin: "0 auto",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)"
+        borderTop: `1px solid ${palette.border}`
       }}>
         <div style={{
-          background: "linear-gradient(180deg, #10141D 0%, #080B10 100%)",
+          background: palette.card,
           border: `1.5px solid ${palette.borderGold}`,
           borderRadius: 24,
           padding: "clamp(1.8rem, 3.5vw, 2.8rem)",
-          color: "#FFFFFF",
-          boxShadow: "0 24px 60px rgba(0, 0, 0, 0.45)"
+          color: palette.text,
+          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02)"
         }}>
           <div style={{
             display: "flex",
@@ -956,23 +965,23 @@ export default function FintechGatewayDemo() {
             alignItems: "center",
             flexWrap: "wrap",
             gap: "1rem",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            borderBottom: `1px solid ${palette.border}`,
             paddingBottom: "1.4rem",
             marginBottom: "2rem"
           }}>
             <div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", fontSize: "0.74rem", letterSpacing: "0.1em", color: palette.goldLight, fontWeight: 700 }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", fontSize: "0.74rem", letterSpacing: "0.1em", color: palette.goldDeep, fontWeight: 700 }}>
                 <span>●</span> INTERACTIVE CLIENT DEMO / SIMULATED RUNTIME (ZERO CUSTODY)
               </div>
-              <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.7rem", margin: "0.35rem 0 0", color: "#FAF9F6" }}>
+              <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.7rem", margin: "0.35rem 0 0", color: palette.text }}>
                 Simulate End-to-End Orchestration in Under 60 Seconds
               </h2>
             </div>
 
             <div style={{
-              background: "rgba(22, 163, 74, 0.15)",
-              border: "1px solid rgba(34, 197, 94, 0.4)",
-              color: "#4ade80",
+              background: palette.greenBg,
+              border: "1px solid rgba(22, 163, 74, 0.3)",
+              color: palette.green,
               padding: "0.35rem 0.85rem",
               borderRadius: 999,
               fontSize: "0.78rem",
@@ -991,7 +1000,7 @@ export default function FintechGatewayDemo() {
           }}>
             {/* 1. Ticket Size Selection */}
             <div>
-              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#8D95A7", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.7rem" }}>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: palette.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.7rem" }}>
                 1. Select Transaction Ticket Size
               </label>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem" }}>
@@ -1001,8 +1010,8 @@ export default function FintechGatewayDemo() {
                     type="button"
                     onClick={() => { setSelectedTicket(t.value); setSimComplete(false); }}
                     style={{
-                      background: selectedTicket === t.value ? "rgba(179, 130, 53, 0.22)" : "rgba(255, 255, 255, 0.04)",
-                      border: selectedTicket === t.value ? `1.5px solid ${palette.goldPrimary}` : "1px solid rgba(255, 255, 255, 0.08)",
+                      background: selectedTicket === t.value ? "rgba(196, 139, 40, 0.12)" : "#FAF9F6",
+                      border: selectedTicket === t.value ? `1.5px solid ${palette.goldPrimary}` : `1px solid ${palette.border}`,
                       borderRadius: 12,
                       padding: "0.75rem",
                       textAlign: "left",
@@ -1010,10 +1019,10 @@ export default function FintechGatewayDemo() {
                       transition: "all 0.16s ease"
                     }}
                   >
-                    <div style={{ fontWeight: 800, fontSize: "1.05rem", color: selectedTicket === t.value ? palette.goldLight : "#FFFFFF" }}>
+                    <div style={{ fontWeight: 800, fontSize: "1.05rem", color: selectedTicket === t.value ? palette.goldDeep : palette.text }}>
                       {t.label}
                     </div>
-                    <div style={{ fontSize: "0.72rem", color: "#8D95A7", marginTop: "2px" }}>
+                    <div style={{ fontSize: "0.72rem", color: palette.muted, marginTop: "2px" }}>
                       {t.desc} ({t.inr})
                     </div>
                   </button>
@@ -1023,7 +1032,7 @@ export default function FintechGatewayDemo() {
 
             {/* 2. Clearing Rail Selector */}
             <div>
-              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#8D95A7", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.7rem" }}>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: palette.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.7rem" }}>
                 2. Select Buyer Geographic Origin Rail
               </label>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
@@ -1033,8 +1042,8 @@ export default function FintechGatewayDemo() {
                     type="button"
                     onClick={() => { setSelectedRail(r); setSimComplete(false); }}
                     style={{
-                      background: selectedRail.id === r.id ? "rgba(179, 130, 53, 0.22)" : "rgba(255, 255, 255, 0.04)",
-                      border: selectedRail.id === r.id ? `1.5px solid ${palette.goldPrimary}` : "1px solid rgba(255, 255, 255, 0.08)",
+                      background: selectedRail.id === r.id ? "rgba(196, 139, 40, 0.12)" : "#FAF9F6",
+                      border: selectedRail.id === r.id ? `1.5px solid ${palette.goldPrimary}` : `1px solid ${palette.border}`,
                       borderRadius: 10,
                       padding: "0.55rem 0.85rem",
                       display: "flex",
@@ -1047,11 +1056,11 @@ export default function FintechGatewayDemo() {
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                       <span style={{ fontSize: "1.1rem" }}>{r.flag}</span>
-                      <span style={{ fontSize: "0.85rem", fontWeight: 600, color: selectedRail.id === r.id ? palette.goldLight : "#E5E7EB" }}>
+                      <span style={{ fontSize: "0.85rem", fontWeight: 600, color: selectedRail.id === r.id ? palette.goldDeep : palette.text }}>
                         {r.name}
                       </span>
                     </div>
-                    <span style={{ fontSize: "0.72rem", color: "#8D95A7", fontFamily: "monospace" }}>
+                    <span style={{ fontSize: "0.72rem", color: palette.muted, fontFamily: "monospace" }}>
                       {r.railLatency}
                     </span>
                   </button>
@@ -1061,7 +1070,7 @@ export default function FintechGatewayDemo() {
 
             {/* 3. Destination Bank Configuration */}
             <div>
-              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#8D95A7", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.7rem" }}>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: palette.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.7rem" }}>
                 3. Your Corporate Bank Account (Beneficiary)
               </label>
               <select
@@ -1069,11 +1078,11 @@ export default function FintechGatewayDemo() {
                 onChange={(e) => setMerchantBank(e.target.value)}
                 style={{
                   width: "100%",
-                  background: palette.obsidianSurface,
-                  border: "1px solid rgba(255, 255, 255, 0.12)",
+                  background: "#FAF9F6",
+                  border: `1px solid ${palette.border}`,
                   borderRadius: 12,
                   padding: "0.85rem 1rem",
-                  color: "#FFFFFF",
+                  color: palette.text,
                   fontSize: "0.9rem",
                   outline: "none",
                   cursor: "pointer",
@@ -1088,15 +1097,15 @@ export default function FintechGatewayDemo() {
               </select>
 
               <div style={{
-                background: "rgba(255, 255, 255, 0.03)",
-                border: "1px dashed rgba(255, 255, 255, 0.12)",
+                background: "rgba(196, 139, 40, 0.06)",
+                border: `1px dashed ${palette.borderGold}`,
                 borderRadius: 12,
                 padding: "0.85rem 1rem",
                 fontSize: "0.78rem",
-                color: "#9CA3AF",
+                color: palette.textBody,
                 lineHeight: 1.5
               }}>
-                <span style={{ color: palette.goldLight, fontWeight: 700 }}>🔒 Invariant Enforced:</span> Funds bypass GARUDA completely. Money lands directly in your corporate bank ledger.
+                <span style={{ color: palette.goldDeep, fontWeight: 700 }}>🔒 Invariant Enforced:</span> Funds bypass GARUDA completely. Money lands directly in your corporate bank ledger.
               </div>
             </div>
           </div>
@@ -1116,7 +1125,7 @@ export default function FintechGatewayDemo() {
                 fontSize: "1.05rem",
                 fontWeight: 700,
                 cursor: isSimulating ? "not-allowed" : "pointer",
-                boxShadow: "0 8px 24px rgba(179, 130, 53, 0.35)",
+                boxShadow: "0 8px 24px rgba(179, 130, 53, 0.28)",
                 transition: "all 0.16s ease",
                 opacity: isSimulating ? 0.7 : 1
               }}
@@ -1128,38 +1137,38 @@ export default function FintechGatewayDemo() {
           {/* Real-Time Execution Pipeline Steps */}
           {simStep > 0 && (
             <div style={{
-              background: "#080B10",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
+              background: "#FAF9F6",
+              border: `1px solid ${palette.border}`,
               borderRadius: 16,
               padding: "1.4rem",
               marginBottom: "2.4rem"
             }}>
-              <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#8D95A7", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1rem" }}>
+              <div style={{ fontSize: "0.78rem", fontWeight: 700, color: palette.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1rem" }}>
                 Deterministic Telemetry Stream
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontFamily: "ui-monospace, monospace", fontSize: "0.82rem" }}>
-                <div style={{ color: simStep >= 1 ? "#4ade80" : "#687082", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div style={{ color: simStep >= 1 ? "#15803d" : palette.subtle, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <span>{simStep >= 1 ? "✔" : "⏳"}</span>
                   <span>[STEP 1] PAYMENT_INTENT_CREATED: Idempotency checked, zero-custody validated, risk scored (Low).</span>
                 </div>
-                <div style={{ color: simStep >= 2 ? "#4ade80" : "#687082", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div style={{ color: simStep >= 2 ? "#15803d" : palette.subtle, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <span>{simStep >= 2 ? "✔" : "⏳"}</span>
                   <span>[STEP 2] VAN_PROVISIONED: Dedicated account ({selectedRail.vanPrefix}9842107) generated under {merchantBank.split(" ")[0]}.</span>
                 </div>
-                <div style={{ color: simStep >= 3 ? "#4ade80" : "#687082", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div style={{ color: simStep >= 3 ? "#15803d" : palette.subtle, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <span>{simStep >= 3 ? "✔" : "⏳"}</span>
                   <span>[STEP 3] DIRECT_CLEARING: Dispatched via {selectedRail.name} ({selectedRail.clearingBank}) direct to merchant.</span>
                 </div>
-                <div style={{ color: simStep >= 4 ? "#4ade80" : "#687082", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div style={{ color: simStep >= 4 ? "#15803d" : palette.subtle, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <span>{simStep >= 4 ? "✔" : "⏳"}</span>
                   <span>[STEP 4] WEBHOOK_VERIFIED: Constant-time HMAC-SHA256 authenticated, timestamp validated, nonce deduplicated.</span>
                 </div>
-                <div style={{ color: simStep >= 5 ? "#4ade80" : "#687082", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div style={{ color: simStep >= 5 ? "#15803d" : palette.subtle, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <span>{simStep >= 5 ? "✔" : "⏳"}</span>
                   <span>[STEP 5] RECONCILED_AND_SETTLED: Exact amount matched, state transition SHA-256 hash chained.</span>
                 </div>
-                <div style={{ color: simStep >= 6 ? palette.goldLight : "#687082", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div style={{ color: simStep >= 6 ? palette.goldDeep : palette.subtle, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <span>{simStep >= 6 ? "✔" : "⏳"}</span>
                   <span>[STEP 6] AUDIT_SEALED: Software metering fee (0.15% = ${garudaSoftwareFeeUSD.toLocaleString()}) deducted from Fuel Tank. Customer principal = 100% untouched.</span>
                 </div>
@@ -1169,16 +1178,16 @@ export default function FintechGatewayDemo() {
 
           {/* Explicit Illustrative Fee Notice */}
           <div style={{
-            background: "rgba(255, 255, 255, 0.03)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
+            background: "#FAF9F6",
+            border: `1px solid ${palette.border}`,
             borderRadius: 12,
             padding: "0.75rem 1.2rem",
             marginBottom: "1.4rem",
             fontSize: "0.78rem",
-            color: "#9CA3AF",
+            color: palette.textBody,
             lineHeight: 1.5
           }}>
-            <span style={{ color: palette.goldLight, fontWeight: 700, letterSpacing: "0.06em" }}>
+            <span style={{ color: palette.goldDeep, fontWeight: 700, letterSpacing: "0.06em" }}>
               ✦ ILLUSTRATIVE / SIMULATED FEE ASSUMPTIONS:
             </span>{" "}
             Comparative models reflect standard card-aggregator merchant discount rates (2.50%) vs direct interbank software orchestration (0.15% SaaS fee + clearing rail pass-through). Actual bank rail fees, FX spreads, and commercial terms are subject to negotiated client agreements with partner financial institutions.
@@ -1192,47 +1201,47 @@ export default function FintechGatewayDemo() {
           }}>
             {/* Traditional Gateway Card */}
             <div style={{
-              background: "rgba(185, 28, 28, 0.08)",
-              border: "1px solid rgba(239, 68, 68, 0.3)",
+              background: "rgba(185, 28, 28, 0.04)",
+              border: "1px solid rgba(220, 38, 38, 0.25)",
               borderRadius: 18,
               padding: "1.6rem"
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.95rem", color: "#f87171" }}>Traditional Card Gateway / Escrow</span>
-                <span style={{ background: "rgba(239, 68, 68, 0.2)", color: "#fca5a5", padding: "0.2rem 0.6rem", borderRadius: 999, fontSize: "0.72rem", fontWeight: 800 }}>2.50% CUT</span>
+                <span style={{ fontWeight: 700, fontSize: "0.95rem", color: palette.red }}>Traditional Card Gateway / Escrow</span>
+                <span style={{ background: "rgba(220, 38, 38, 0.1)", color: palette.red, padding: "0.2rem 0.6rem", borderRadius: 999, fontSize: "0.72rem", fontWeight: 800 }}>2.50% CUT</span>
               </div>
 
-              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: "#f87171", margin: "0.5rem 0" }}>
+              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.red, margin: "0.5rem 0" }}>
                 -${traditionalFeeUSD.toLocaleString()} USD
               </div>
-              <div style={{ fontSize: "0.82rem", color: "#fca5a5", marginBottom: "1.2rem" }}>
+              <div style={{ fontSize: "0.82rem", color: "#991b1b", marginBottom: "1.2rem" }}>
                 Total transaction processing fee (₹{(traditionalFeeUSD * 85).toLocaleString()} INR)
               </div>
 
-              <div style={{ borderTop: "1px solid rgba(239, 68, 68, 0.2)", paddingTop: "0.8rem", display: "flex", flexDirection: "column", gap: "0.4rem", fontSize: "0.82rem" }}>
+              <div style={{ borderTop: "1px solid rgba(220, 38, 38, 0.15)", paddingTop: "0.8rem", display: "flex", flexDirection: "column", gap: "0.4rem", fontSize: "0.82rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#9CA3AF" }}>Settlement Hold:</span>
-                  <span style={{ color: "#f87171", fontWeight: 700 }}>7 – 14 Business Days (Locked)</span>
+                  <span style={{ color: palette.muted }}>Settlement Hold:</span>
+                  <span style={{ color: palette.red, fontWeight: 700 }}>7 – 14 Business Days (Locked)</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#9CA3AF" }}>Net Received by Merchant:</span>
-                  <span style={{ color: "#E5E7EB", fontWeight: 700 }}>${traditionalNetUSD.toLocaleString()}</span>
+                  <span style={{ color: palette.muted }}>Net Received by Merchant:</span>
+                  <span style={{ color: palette.text, fontWeight: 700 }}>${traditionalNetUSD.toLocaleString()}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#9CA3AF" }}>Custody Risk:</span>
-                  <span style={{ color: "#f87171", fontWeight: 700 }}>Third-party pooled depository</span>
+                  <span style={{ color: palette.muted }}>Custody Risk:</span>
+                  <span style={{ color: palette.red, fontWeight: 700 }}>Third-party pooled depository</span>
                 </div>
               </div>
             </div>
 
             {/* GARUDA Sovereign Multi-Rail Card */}
             <div style={{
-              background: "rgba(179, 130, 53, 0.12)",
+              background: "rgba(196, 139, 40, 0.08)",
               border: `1.5px solid ${palette.goldPrimary}`,
               borderRadius: 18,
               padding: "1.6rem",
               position: "relative",
-              boxShadow: "0 8px 32px rgba(179, 130, 53, 0.2)"
+              boxShadow: "0 8px 32px rgba(179, 130, 53, 0.12)"
             }}>
               <div style={{
                 position: "absolute",
@@ -1250,33 +1259,33 @@ export default function FintechGatewayDemo() {
               </div>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
-                <span style={{ fontWeight: 700, fontSize: "0.95rem", color: palette.goldLight }}>GARUDA Sovereign Multi-Rail Switch</span>
-                <span style={{ background: "rgba(179, 130, 53, 0.25)", color: palette.goldLight, padding: "0.2rem 0.6rem", borderRadius: 999, fontSize: "0.72rem", fontWeight: 800 }}>0.15% SAAS METERING</span>
+                <span style={{ fontWeight: 700, fontSize: "0.95rem", color: palette.goldDeep }}>GARUDA Sovereign Multi-Rail Switch</span>
+                <span style={{ background: "rgba(196, 139, 40, 0.18)", color: palette.goldDeep, padding: "0.2rem 0.6rem", borderRadius: 999, fontSize: "0.72rem", fontWeight: 800 }}>0.15% SAAS METERING</span>
               </div>
 
-              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: "#4ade80", margin: "0.5rem 0" }}>
+              <div style={{ fontSize: "1.85rem", fontWeight: 800, color: "#15803d", margin: "0.5rem 0" }}>
                 +${totalSavedUSD.toLocaleString()} USD PRESERVED
               </div>
-              <div style={{ fontSize: "0.82rem", color: palette.goldLight, marginBottom: "1.2rem" }}>
+              <div style={{ fontSize: "0.82rem", color: palette.goldDeep, marginBottom: "1.2rem" }}>
                 Retained cash on this transaction (₹{totalSavedINR.toLocaleString()} INR)
               </div>
 
-              <div style={{ borderTop: "1px solid rgba(179, 130, 53, 0.25)", paddingTop: "0.8rem", display: "flex", flexDirection: "column", gap: "0.4rem", fontSize: "0.82rem" }}>
+              <div style={{ borderTop: "1px solid rgba(196, 139, 40, 0.2)", paddingTop: "0.8rem", display: "flex", flexDirection: "column", gap: "0.4rem", fontSize: "0.82rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#9CA3AF" }}>Settlement Hold:</span>
-                  <span style={{ color: "#4ade80", fontWeight: 700 }}>ZERO HOLD ({selectedRail.railLatency})</span>
+                  <span style={{ color: palette.muted }}>Settlement Hold:</span>
+                  <span style={{ color: "#15803d", fontWeight: 700 }}>ZERO HOLD ({selectedRail.railLatency})</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#9CA3AF" }}>GARUDA Software Metering:</span>
-                  <span style={{ color: palette.goldLight, fontWeight: 700 }}>${garudaSoftwareFeeUSD.toLocaleString()} (0.15%)</span>
+                  <span style={{ color: palette.muted }}>GARUDA Software Metering:</span>
+                  <span style={{ color: palette.goldDeep, fontWeight: 700 }}>${garudaSoftwareFeeUSD.toLocaleString()} (0.15%)</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#9CA3AF" }}>Interbank Rail Cost:</span>
-                  <span style={{ color: "#E5E7EB", fontWeight: 700 }}>Flat ${interbankRailFeeUSD}</span>
+                  <span style={{ color: palette.muted }}>Interbank Rail Cost:</span>
+                  <span style={{ color: palette.text, fontWeight: 700 }}>Flat ${interbankRailFeeUSD}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#9CA3AF" }}>Net Received Direct in Bank:</span>
-                  <span style={{ color: "#4ade80", fontWeight: 800, fontSize: "0.92rem" }}>${garudaNetUSD.toLocaleString()}</span>
+                  <span style={{ color: palette.muted }}>Net Received Direct in Bank:</span>
+                  <span style={{ color: "#15803d", fontWeight: 800, fontSize: "0.92rem" }}>${garudaNetUSD.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -1289,16 +1298,16 @@ export default function FintechGatewayDemo() {
         padding: "4rem clamp(1.25rem, 4vw, 4rem)",
         maxWidth: 1240,
         margin: "0 auto",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)"
+        borderTop: `1px solid ${palette.border}`
       }}>
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <p style={{ color: palette.goldLight, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
+          <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
             ✦ INTERNAL ENGINEERING VERIFICATION
           </p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: "#FAF9F6", margin: 0 }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: palette.text, margin: 0 }}>
             Automated Engineering Test Verification
           </h2>
-          <p style={{ color: "#9CA3AF", fontSize: "0.95rem", maxWidth: 680, margin: "0.6rem auto 0" }}>
+          <p style={{ color: palette.muted, fontSize: "0.95rem", maxWidth: 680, margin: "0.6rem auto 0" }}>
             Deterministic test execution results verified clean on local developer hardware.
           </p>
         </div>
@@ -1320,18 +1329,19 @@ export default function FintechGatewayDemo() {
             { label: "Frontend Build", val: "958 PAGES", sub: "451 canonical routes prerendered" }
           ].map((v) => (
             <div key={v.label} style={{
-              background: palette.obsidianSurface,
-              border: "1px solid rgba(255, 255, 255, 0.08)",
+              background: palette.card,
+              border: `1px solid ${palette.border}`,
               borderRadius: 14,
-              padding: "1.2rem 1.4rem"
+              padding: "1.2rem 1.4rem",
+              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.02)"
             }}>
-              <div style={{ fontSize: "0.72rem", color: "#8D95A7", textTransform: "uppercase", fontWeight: 700 }}>
+              <div style={{ fontSize: "0.72rem", color: palette.subtle, textTransform: "uppercase", fontWeight: 700 }}>
                 {v.label}
               </div>
-              <div style={{ fontSize: "1.25rem", fontWeight: 800, color: "#4ade80", margin: "0.3rem 0 0.15rem" }}>
+              <div style={{ fontSize: "1.25rem", fontWeight: 800, color: "#059669", margin: "0.3rem 0 0.15rem" }}>
                 {v.val}
               </div>
-              <div style={{ fontSize: "0.74rem", color: "#9CA3AF" }}>
+              <div style={{ fontSize: "0.74rem", color: palette.muted }}>
                 {v.sub}
               </div>
             </div>
@@ -1339,15 +1349,15 @@ export default function FintechGatewayDemo() {
         </div>
 
         <div style={{
-          background: "rgba(255, 255, 255, 0.03)",
-          border: "1px solid rgba(255, 255, 255, 0.08)",
+          background: "rgba(23, 24, 27, 0.03)",
+          border: `1px solid ${palette.border}`,
           borderRadius: 12,
           padding: "1rem 1.4rem",
           fontSize: "0.8rem",
-          color: "#9CA3AF",
+          color: palette.muted,
           textAlign: "center"
         }}>
-          <span style={{ color: palette.goldLight, fontWeight: 700 }}>INTERNAL VERIFICATION DISCLAIMER: </span>
+          <span style={{ color: palette.goldDeep, fontWeight: 700 }}>INTERNAL VERIFICATION DISCLAIMER: </span>
           The above metrics reflect verified automated test suite execution inside the local development environment. They demonstrate technical software invariants and do not independently constitute statutory regulatory certification or banking licenses.
         </div>
       </section>
@@ -1357,49 +1367,49 @@ export default function FintechGatewayDemo() {
         padding: "4rem clamp(1.25rem, 4vw, 4rem)",
         maxWidth: 1240,
         margin: "0 auto",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)"
+        borderTop: `1px solid ${palette.border}`
       }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <p style={{ color: palette.goldLight, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
+          <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
             ✦ STATUTORY COMPLIANCE BOUNDARY
           </p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: "#FAF9F6", margin: 0 }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "2.3rem", fontWeight: 700, color: palette.text, margin: 0 }}>
             Tri-Partite Regulatory Demarcation
           </h2>
-          <p style={{ color: "#9CA3AF", fontSize: "0.95rem", maxWidth: 700, margin: "0.6rem auto 0" }}>
+          <p style={{ color: palette.muted, fontSize: "0.95rem", maxWidth: 700, margin: "0.6rem auto 0" }}>
             Clear statutory segregation of technology, banking execution, and commercial merchant responsibilities.
           </p>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "1.8rem", marginBottom: "2rem" }}>
           {/* Card 1: GARUDA OS */}
-          <div style={{ background: palette.obsidianSurface, border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: 18, padding: "1.8rem" }}>
+          <div style={{ background: palette.card, border: `1px solid ${palette.border}`, borderRadius: 18, padding: "1.8rem", boxShadow: "0 6px 24px rgba(0, 0, 0, 0.03)" }}>
             <div style={{ fontSize: "1.6rem", marginBottom: "0.6rem" }}>🦅</div>
-            <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: palette.goldLight, margin: "0 0 0.6rem" }}>
+            <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: palette.goldDeep, margin: "0 0 0.6rem" }}>
               GARUDA OS
             </h3>
-            <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#8D95A7", textTransform: "uppercase", marginBottom: "0.8rem" }}>
+            <div style={{ fontSize: "0.78rem", fontWeight: 700, color: palette.subtle, textTransform: "uppercase", marginBottom: "0.8rem" }}>
               Technology & Orchestration Layer
             </div>
-            <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.84rem", color: "#D1D5DB", lineHeight: 1.6 }}>
+            <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.84rem", color: palette.textBody, lineHeight: 1.6 }}>
               <li>Software routing algorithms and Virtual Account Number (VAN) dispatch.</li>
               <li>Webhook security authentication (HMAC-SHA256) and replay defense.</li>
               <li>Deterministic reconciliation engine and anomaly quarantine.</li>
               <li>Cryptographic append-only SHA-256 audit ledger.</li>
-              <li style={{ color: "#f87171", fontWeight: 600 }}>Never takes custody, possession, or control of principal funds ($0.00).</li>
+              <li style={{ color: "#DC2626", fontWeight: 600 }}>Never takes custody, possession, or control of principal funds ($0.00).</li>
             </ul>
           </div>
 
           {/* Card 2: Regulated Bank */}
-          <div style={{ background: palette.obsidianSurface, border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: 18, padding: "1.8rem" }}>
+          <div style={{ background: palette.card, border: `1px solid ${palette.border}`, borderRadius: 18, padding: "1.8rem", boxShadow: "0 6px 24px rgba(0, 0, 0, 0.03)" }}>
             <div style={{ fontSize: "1.6rem", marginBottom: "0.6rem" }}>🏦</div>
-            <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#38bdf8", margin: "0 0 0.6rem" }}>
+            <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#0284c7", margin: "0 0 0.6rem" }}>
               Regulated Banking / PSP Partners
             </h3>
-            <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#8D95A7", textTransform: "uppercase", marginBottom: "0.8rem" }}>
+            <div style={{ fontSize: "0.78rem", fontWeight: 700, color: palette.subtle, textTransform: "uppercase", marginBottom: "0.8rem" }}>
               Licensed Payment & Clearing Execution Layer
             </div>
-            <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.84rem", color: "#D1D5DB", lineHeight: 1.6 }}>
+            <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.84rem", color: palette.textBody, lineHeight: 1.6 }}>
               <li>Direct membership in central bank clearing networks (Fedwire, UAE FTS, RTGS, FPS).</li>
               <li>Licensed deposit accounts, statutory safeguarding, and treasury custody.</li>
               <li>Statutory KYC, AML, customer due diligence, and sanctions screening.</li>
@@ -1408,15 +1418,15 @@ export default function FintechGatewayDemo() {
           </div>
 
           {/* Card 3: Merchant */}
-          <div style={{ background: palette.obsidianSurface, border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: 18, padding: "1.8rem" }}>
+          <div style={{ background: palette.card, border: `1px solid ${palette.border}`, borderRadius: 18, padding: "1.8rem", boxShadow: "0 6px 24px rgba(0, 0, 0, 0.03)" }}>
             <div style={{ fontSize: "1.6rem", marginBottom: "0.6rem" }}>🏢</div>
-            <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#4ade80", margin: "0 0 0.6rem" }}>
+            <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#059669", margin: "0 0 0.6rem" }}>
               Enterprise Merchant
             </h3>
-            <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#8D95A7", textTransform: "uppercase", marginBottom: "0.8rem" }}>
+            <div style={{ fontSize: "0.78rem", fontWeight: 700, color: palette.subtle, textTransform: "uppercase", marginBottom: "0.8rem" }}>
               Statutory Merchant of Record & Beneficiary
             </div>
-            <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.84rem", color: "#D1D5DB", lineHeight: 1.6 }}>
+            <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.84rem", color: palette.textBody, lineHeight: 1.6 }}>
               <li>Sole commercial beneficiary receiving 100% principal funds into corporate account.</li>
               <li>Maintains direct contractual and commercial relationships with banking providers.</li>
               <li>Fulfills commercial obligations, sales tax, VAT, and corporate reporting.</li>
@@ -1426,16 +1436,16 @@ export default function FintechGatewayDemo() {
         </div>
 
         <div style={{
-          background: "rgba(255, 255, 255, 0.02)",
-          border: "1px solid rgba(255, 255, 255, 0.08)",
+          background: "rgba(23, 24, 27, 0.03)",
+          border: `1px solid ${palette.border}`,
           borderRadius: 12,
           padding: "1.2rem 1.6rem",
           fontSize: "0.82rem",
-          color: "#9CA3AF",
+          color: palette.muted,
           lineHeight: 1.6,
           textAlign: "center"
         }}>
-          <span style={{ color: palette.goldLight, fontWeight: 700 }}>LEGAL NOTICE: </span>
+          <span style={{ color: palette.goldDeep, fontWeight: 700 }}>LEGAL NOTICE: </span>
           Regulatory treatment depends on jurisdiction, commercial product structure, and the activities actually performed. Commercial pilot launch requires formal underwriting by regulated banking partners and written opinion from licensed legal counsel in applicable jurisdictions (UAE, India, UK/EU).
         </div>
       </section>
@@ -1443,19 +1453,19 @@ export default function FintechGatewayDemo() {
       {/* PHASE 13: CLIENT CALL TO ACTION */}
       <section style={{
         padding: "5rem clamp(1.25rem, 4vw, 4rem)",
-        background: "linear-gradient(135deg, #10141D 0%, #080B10 100%)",
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)",
-        color: "#FFFFFF",
+        background: "linear-gradient(180deg, #FAF9F6 0%, #F2EFE8 100%)",
+        borderTop: `1px solid ${palette.border}`,
+        color: palette.text,
         textAlign: "center"
       }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
-          <p style={{ color: palette.goldLight, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
+          <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
             ✦ EXPLORE THE INFRASTRUCTURE
           </p>
-          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(2.2rem, 4vw, 3rem)", fontWeight: 700, margin: "0 0 1rem", color: "#FAF9F6" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(2.2rem, 4vw, 3rem)", fontWeight: 700, margin: "0 0 1rem", color: palette.text }}>
             Ready to Connect Sovereign Payment Orchestration?
           </h2>
-          <p style={{ color: "#9CA3AF", fontSize: "1.05rem", lineHeight: 1.65, marginBottom: "2.4rem" }}>
+          <p style={{ color: palette.muted, fontSize: "1.05rem", lineHeight: 1.65, marginBottom: "2.4rem" }}>
             Deploy zero-custody multi-rail routing, deterministic bank reconciliation, and real-time treasury telemetry for your enterprise operations.
           </p>
 
@@ -1480,22 +1490,23 @@ export default function FintechGatewayDemo() {
             <a
               href="#architecture"
               style={{
-                background: "transparent",
-                color: "#FAF9F6",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
+                background: palette.card,
+                color: palette.text,
+                border: `1px solid ${palette.border}`,
                 borderRadius: 999,
                 padding: "1rem 2rem",
                 fontWeight: 600,
                 fontSize: "1rem",
                 textDecoration: "none",
-                cursor: "pointer"
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)"
               }}
             >
               View Transaction Topology
             </a>
           </div>
 
-          <div style={{ marginTop: "2.5rem", fontSize: "0.8rem", color: "#8D95A7" }}>
+          <div style={{ marginTop: "2.5rem", fontSize: "0.8rem", color: palette.subtle }}>
             GARUDA AI Operating System • Canonical Universe 12 (Finance) • Founder Praveen Mahawar
           </div>
         </div>
