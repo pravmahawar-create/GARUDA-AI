@@ -221,7 +221,9 @@ const ROUTES = [
     filePaths: [
       path.join(DIST_DIR, "fintech-gateway", "index.html"),
       path.join(DIST_DIR, "fintech-gateway.html"),
+      path.join(DIST_DIR, "gateway-demo", "index.html"),
       path.join(DIST_DIR, "gateway-demo.html"),
+      path.join(DIST_DIR, "fintech", "index.html"),
       path.join(DIST_DIR, "fintech.html")
     ],
     title: "Fintech Gateway • Sovereign Payment Orchestration & Treasury | GARUDA OS",
@@ -240,6 +242,12 @@ const ROUTES = [
         <li>Deterministic Reconciliation Engine with 8-point automated variance analysis</li>
         <li>Append-only SHA-256 hash-chained Forensic Audit Logger</li>
         <li>Prepaid SaaS Fuel Tank Service for transparent metered technology fees</li>
+      </ul>
+      <h3>Commercial Architecture Tiers:</h3>
+      <ul>
+        <li>Cloud Starter: Managed Gateway Infrastructure for D2C Brands and Digital Commerce</li>
+        <li>Cross-Border Growth: Multi-Currency Treasury Orchestration for Exporters & International Businesses</li>
+        <li>Sovereign Enterprise: Private VPC & Dedicated Self-Hosted Architecture</li>
       </ul>
       <p><a href="/fintech-gateway">Explore Fintech Gateway Demo</a> | <a href="/chat?topic=fintech-gateway">Request Pilot Deployment</a></p>
     `

@@ -378,6 +378,18 @@ export default function FintechGatewayDemo() {
             display: none !important;
           }
         }
+        .garuda-tier-card {
+          transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .garuda-tier-card:hover {
+          transform: translateY(-4px);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .garuda-tier-card {
+            transition: none !important;
+            transform: none !important;
+          }
+        }
       `}</style>
 
       {/* Top Sovereign Navigation */}
@@ -422,12 +434,14 @@ export default function FintechGatewayDemo() {
           </button>
         </div>
 
-        <nav style={{ display: "flex", alignItems: "center", gap: "1.5rem" }} className="desktop-nav">
+        <nav style={{ display: "flex", alignItems: "center", gap: "1.2rem" }} className="desktop-nav">
+          <a href="#demo" style={{ color: palette.goldDeep, textDecoration: "none", fontSize: "0.82rem", fontWeight: 700, background: "rgba(196, 139, 40, 0.1)", padding: "0.35rem 0.85rem", borderRadius: 999, border: `1px solid ${palette.borderGold}` }}>⚡ Live Simulator</a>
           <a href="#architecture" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Architecture</a>
           <a href="#how-it-works" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Lifecycle</a>
           <a href="#engines" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Core Engines</a>
           <a href="#providers" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Providers</a>
           <a href="#verification" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Verification</a>
+          <a href="#pricing" style={{ color: palette.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>Commercial Tiers</a>
           <button
             onClick={() => navigate("/chat?topic=fintech-gateway")}
             style={{
@@ -1447,6 +1461,502 @@ export default function FintechGatewayDemo() {
         }}>
           <span style={{ color: palette.goldDeep, fontWeight: 700 }}>LEGAL NOTICE: </span>
           Regulatory treatment depends on jurisdiction, commercial product structure, and the activities actually performed. Commercial pilot launch requires formal underwriting by regulated banking partners and written opinion from licensed legal counsel in applicable jurisdictions (UAE, India, UK/EU).
+        </div>
+      </section>
+
+      {/* PHASE 12B: DEDICATED COMMERCIAL PRICING LAYER */}
+      <section id="pricing" style={{
+        padding: "4.5rem clamp(1.25rem, 4vw, 4rem)",
+        maxWidth: 1240,
+        margin: "0 auto",
+        borderTop: `1px solid ${palette.border}`
+      }}>
+        {/* Section Heading & Subheading */}
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <p style={{ color: palette.goldDeep, letterSpacing: "0.14em", fontSize: "0.76rem", fontWeight: 700, margin: "0 0 0.5rem", textTransform: "uppercase" }}>
+            ✦ COMMERCIAL ARCHITECTURE TIERS
+          </p>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(2rem, 3.8vw, 2.7rem)", fontWeight: 700, color: palette.text, margin: "0 0 0.8rem" }}>
+            Choose Your GARUDA Gateway Architecture
+          </h2>
+          <p style={{ color: palette.muted, fontSize: "1.02rem", maxWidth: 760, margin: "0 auto", lineHeight: 1.6 }}>
+            Start with managed gateway infrastructure, scale into multi-rail treasury orchestration, or deploy a private sovereign architecture for enterprise environments.
+          </p>
+        </div>
+
+        {/* Section 5: Statutory Demarcation & Fee Responsibility Segregation Explanatory Row */}
+        <div style={{
+          background: "#FAF9F6",
+          border: `1px solid ${palette.border}`,
+          borderRadius: 16,
+          padding: "1.4rem 1.8rem",
+          marginBottom: "3rem",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.02)"
+        }}>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "0.5rem",
+            marginBottom: "1rem",
+            borderBottom: `1px solid ${palette.border}`,
+            paddingBottom: "0.75rem"
+          }}>
+            <span style={{ fontSize: "0.74rem", fontWeight: 800, letterSpacing: "0.1em", color: palette.goldDeep, textTransform: "uppercase" }}>
+              ⚖ Fee & Responsibility Segregation Model
+            </span>
+            <span style={{ fontSize: "0.74rem", color: palette.subtle }}>
+              Zero-Custody Tri-Partite Demarcation
+            </span>
+          </div>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: "1.2rem"
+          }}>
+            <div style={{ padding: "0.9rem 1.1rem", background: palette.card, borderRadius: 12, border: `1px solid ${palette.border}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
+                <span style={{ fontSize: "1.1rem" }}>🦅</span>
+                <span style={{ fontWeight: 800, fontSize: "0.86rem", color: palette.text }}>GARUDA PLATFORM</span>
+              </div>
+              <div style={{ fontSize: "0.72rem", color: palette.goldDeep, fontWeight: 700, textTransform: "uppercase", marginBottom: "0.35rem" }}>
+                → Software / Orchestration / Infrastructure
+              </div>
+              <div style={{ fontSize: "0.78rem", color: palette.muted, lineHeight: 1.5 }}>
+                Software licensing, routing telemetry, zero-custody orchestration, webhook verification & cryptographic audit ledger infrastructure.
+              </div>
+            </div>
+
+            <div style={{ padding: "0.9rem 1.1rem", background: palette.card, borderRadius: 12, border: `1px solid ${palette.border}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
+                <span style={{ fontSize: "1.1rem" }}>🏦</span>
+                <span style={{ fontWeight: 800, fontSize: "0.86rem", color: palette.text }}>REGULATED PROVIDER</span>
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#0284c7", fontWeight: 700, textTransform: "uppercase", marginBottom: "0.35rem" }}>
+                → Banking / Clearing / Safeguarding / Execution
+              </div>
+              <div style={{ fontSize: "0.78rem", color: palette.muted, lineHeight: 1.5 }}>
+                Direct interbank clearing, licensed deposit safeguarding, statutory KYC/AML, FX conversion, and regulated banking fees.
+              </div>
+            </div>
+
+            <div style={{ padding: "0.9rem 1.1rem", background: palette.card, borderRadius: 12, border: `1px solid ${palette.border}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
+                <span style={{ fontSize: "1.1rem" }}>🏢</span>
+                <span style={{ fontWeight: 800, fontSize: "0.86rem", color: palette.text }}>MERCHANT</span>
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#059669", fontWeight: 700, textTransform: "uppercase", marginBottom: "0.35rem" }}>
+                → Commercial / Customer / Beneficiary Duties
+              </div>
+              <div style={{ fontSize: "0.78rem", color: palette.muted, lineHeight: 1.5 }}>
+                Direct underwriting contracts with financial partners, merchant tax obligations, and commercial customer responsibilities.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 3: Three Commercial Tier Cards */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(310px, 1fr))",
+          gap: "1.8rem",
+          alignItems: "stretch"
+        }}>
+          {/* TIER 01: CLOUD STARTER */}
+          <div className="garuda-tier-card" style={{
+            background: palette.card,
+            border: `1px solid ${palette.border}`,
+            borderRadius: 20,
+            padding: "2rem",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)",
+            position: "relative"
+          }}>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
+                <span style={{ fontSize: "0.72rem", fontWeight: 800, letterSpacing: "0.12em", color: palette.muted, textTransform: "uppercase" }}>
+                  TIER 01 • MANAGED INFRASTRUCTURE
+                </span>
+              </div>
+
+              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.55rem", fontWeight: 700, margin: "0 0 0.5rem", color: palette.text }}>
+                Cloud Starter
+              </h3>
+
+              <div style={{ fontSize: "0.8rem", color: palette.muted, marginBottom: "1.4rem", lineHeight: 1.5 }}>
+                <strong style={{ color: palette.textBody }}>Target:</strong> D2C Brands • SMEs • Early-stage businesses • Digital commerce companies
+              </div>
+
+              <div style={{ borderTop: `1px solid ${palette.border}`, borderBottom: `1px solid ${palette.border}`, padding: "1.2rem 0", marginBottom: "1.5rem" }}>
+                <div style={{ fontSize: "0.74rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: palette.subtle, marginBottom: "0.25rem" }}>
+                  Managed Software Tier
+                </div>
+                <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.text, letterSpacing: "-0.02em" }}>
+                  From ₹4,999 <span style={{ fontSize: "0.95rem", fontWeight: 500, color: palette.muted }}>/ month</span>
+                </div>
+                <div style={{ fontSize: "0.75rem", color: palette.muted, marginTop: "0.45rem", lineHeight: 1.45 }}>
+                  Commercial pricing subject to transaction volume, provider costs and final scope.
+                </div>
+              </div>
+
+              <div style={{ fontSize: "0.74rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: palette.goldDeep, marginBottom: "0.9rem" }}>
+                Core Capabilities
+              </div>
+
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.6rem", display: "flex", flexDirection: "column", gap: "0.65rem", fontSize: "0.84rem", color: palette.textBody }}>
+                {[
+                  "Hosted Gateway Infrastructure",
+                  "Multi-rail orchestration architecture",
+                  "Zero-custody design",
+                  "Direct-to-regulated-provider execution model",
+                  "Transaction lifecycle monitoring",
+                  "Webhook security",
+                  "Reconciliation architecture",
+                  "Gateway dashboard",
+                  "Standard support"
+                ].map((cap, i) => (
+                  <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", lineHeight: 1.45 }}>
+                    <span style={{ color: palette.goldDeep, fontWeight: 800, fontSize: "0.9rem" }}>✓</span>
+                    <span>{cap}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <div style={{
+                background: "rgba(23, 24, 27, 0.03)",
+                border: `1px solid ${palette.border}`,
+                borderRadius: 10,
+                padding: "0.75rem 0.9rem",
+                fontSize: "0.72rem",
+                color: palette.muted,
+                lineHeight: 1.45,
+                marginBottom: "1.3rem"
+              }}>
+                <span style={{ color: palette.text, fontWeight: 700 }}>Note:</span> Actual rail availability depends on approved regulated-provider connectivity and commercial onboarding. Live direct-bank settlement requires approved provider underwriting.
+              </div>
+
+              <button
+                type="button"
+                onClick={() => navigate("/chat?topic=fintech-gateway&tier=cloud-starter")}
+                style={{
+                  width: "100%",
+                  background: palette.card,
+                  color: palette.text,
+                  border: `1.5px solid ${palette.border}`,
+                  borderRadius: 12,
+                  padding: "0.85rem 1.4rem",
+                  fontSize: "0.9rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 0.16s ease",
+                  boxShadow: "0 2px 6px rgba(0, 0, 0, 0.02)"
+                }}
+              >
+                Discuss Starter Deployment →
+              </button>
+            </div>
+          </div>
+
+          {/* TIER 02: CROSS-BORDER GROWTH */}
+          <div className="garuda-tier-card" style={{
+            background: "linear-gradient(180deg, #FFFFFF 0%, #FAF8F2 100%)",
+            border: `1.5px solid ${palette.goldPrimary}`,
+            borderRadius: 20,
+            padding: "2rem",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            boxShadow: "0 12px 36px rgba(179, 130, 53, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04)",
+            position: "relative"
+          }}>
+            <div style={{
+              position: "absolute",
+              top: -12,
+              right: 20,
+              background: palette.goldGradient,
+              color: "#FFFFFF",
+              fontSize: "0.68rem",
+              fontWeight: 800,
+              letterSpacing: "0.08em",
+              padding: "0.3rem 0.85rem",
+              borderRadius: 999,
+              boxShadow: "0 4px 12px rgba(196, 139, 40, 0.3)"
+            }}>
+              MULTI-CURRENCY ORCHESTRATION
+            </div>
+
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
+                <span style={{ fontSize: "0.72rem", fontWeight: 800, letterSpacing: "0.12em", color: palette.goldDeep, textTransform: "uppercase" }}>
+                  TIER 02 • TREASURY SCALE
+                </span>
+              </div>
+
+              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.55rem", fontWeight: 700, margin: "0 0 0.5rem", color: palette.text }}>
+                Cross-Border Growth
+              </h3>
+
+              <div style={{ fontSize: "0.8rem", color: palette.muted, marginBottom: "1.4rem", lineHeight: 1.5 }}>
+                <strong style={{ color: palette.textBody }}>Target:</strong> Exporters • IT agencies • International service businesses • Multi-currency merchants
+              </div>
+
+              <div style={{ borderTop: `1px solid ${palette.borderGold}`, borderBottom: `1px solid ${palette.borderGold}`, padding: "1.2rem 0", marginBottom: "1.5rem" }}>
+                <div style={{ fontSize: "0.74rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: palette.goldDeep, marginBottom: "0.25rem" }}>
+                  Cross-Border Setup & Monthly Orchestration
+                </div>
+                <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: "0.6rem" }}>
+                  <div style={{ fontSize: "1.6rem", fontWeight: 800, color: palette.text, letterSpacing: "-0.02em" }}>
+                    From ₹49,000 <span style={{ fontSize: "0.82rem", fontWeight: 600, color: palette.muted }}>setup</span>
+                  </div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: palette.goldDeep }}>
+                    + ₹9,999 <span style={{ fontSize: "0.82rem", fontWeight: 500, color: palette.muted }}>/ month</span>
+                  </div>
+                </div>
+                <div style={{ fontSize: "0.75rem", color: palette.muted, marginTop: "0.45rem", lineHeight: 1.45 }}>
+                  Indicative commercial starting point; final pricing depends on corridors, currencies, providers and integration scope.
+                </div>
+              </div>
+
+              <div style={{ fontSize: "0.74rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: palette.goldDeep, marginBottom: "0.9rem" }}>
+                Everything in Cloud Starter, plus:
+              </div>
+
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.6rem", display: "flex", flexDirection: "column", gap: "0.65rem", fontSize: "0.84rem", color: palette.textBody }}>
+                {[
+                  "Multi-currency treasury orchestration",
+                  "USD / AED / INR / GBP / EUR workflow support",
+                  "Cross-border payment orchestration",
+                  "Multi-provider routing architecture",
+                  "Automated reconciliation",
+                  "Invoice/payment workflow integration",
+                  "Treasury visibility",
+                  "Custom integration support",
+                  "Priority implementation"
+                ].map((cap, i) => (
+                  <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", lineHeight: 1.45 }}>
+                    <span style={{ color: palette.goldDeep, fontWeight: 800, fontSize: "0.9rem" }}>✓</span>
+                    <span style={{ fontWeight: i === 1 ? 600 : 400 }}>{cap}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <div style={{
+                background: "rgba(196, 139, 40, 0.08)",
+                border: `1px solid ${palette.borderGold}`,
+                borderRadius: 10,
+                padding: "0.75rem 0.9rem",
+                fontSize: "0.72rem",
+                color: palette.textBody,
+                lineHeight: 1.45,
+                marginBottom: "1.3rem"
+              }}>
+                <span style={{ color: palette.goldDeep, fontWeight: 700 }}>Corridor Notice:</span> Supported architecture & configurable workflows for USD, AED, INR, GBP, EUR. Actual rail connectivity is subject to approved partner bank onboarding and corridor-specific provider underwriting.
+              </div>
+
+              <button
+                type="button"
+                onClick={() => navigate("/chat?topic=fintech-gateway&tier=cross-border-growth")}
+                style={{
+                  width: "100%",
+                  background: palette.goldGradient,
+                  color: "#FFFFFF",
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "0.85rem 1.4rem",
+                  fontSize: "0.9rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 0.16s ease",
+                  boxShadow: "0 6px 20px rgba(179, 130, 53, 0.35)"
+                }}
+              >
+                Plan Cross-Border Architecture →
+              </button>
+            </div>
+          </div>
+
+          {/* TIER 03: SOVEREIGN ENTERPRISE */}
+          <div className="garuda-tier-card" style={{
+            background: palette.card,
+            border: "1px solid rgba(23, 24, 27, 0.14)",
+            borderRadius: 20,
+            padding: "2rem",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            boxShadow: "0 6px 24px rgba(0, 0, 0, 0.04)",
+            position: "relative"
+          }}>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
+                <span style={{ fontSize: "0.72rem", fontWeight: 800, letterSpacing: "0.12em", color: palette.muted, textTransform: "uppercase" }}>
+                  TIER 03 • PRIVATE DEPLOYMENT
+                </span>
+                <span style={{ background: "rgba(23, 24, 27, 0.06)", color: palette.text, fontSize: "0.68rem", fontWeight: 700, padding: "0.2rem 0.55rem", borderRadius: 999 }}>
+                  SOVEREIGN
+                </span>
+              </div>
+
+              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.55rem", fontWeight: 700, margin: "0 0 0.5rem", color: palette.text }}>
+                Sovereign Enterprise
+              </h3>
+
+              <div style={{ fontSize: "0.8rem", color: palette.muted, marginBottom: "1.4rem", lineHeight: 1.5 }}>
+                <strong style={{ color: palette.textBody }}>Target:</strong> Large enterprises • Fintech infrastructure teams • NBFCs • Platforms • Organizations requiring private deployment
+              </div>
+
+              <div style={{ borderTop: `1px solid ${palette.border}`, borderBottom: `1px solid ${palette.border}`, padding: "1.2rem 0", marginBottom: "1.5rem" }}>
+                <div style={{ fontSize: "0.74rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: palette.subtle, marginBottom: "0.25rem" }}>
+                  Dedicated Architecture
+                </div>
+                <div style={{ fontSize: "1.85rem", fontWeight: 800, color: palette.text, letterSpacing: "-0.02em" }}>
+                  Custom
+                </div>
+                <div style={{ fontSize: "0.75rem", color: palette.muted, marginTop: "0.45rem", lineHeight: 1.45 }}>
+                  Private VPC / Self-Hosted Architecture. Available subject to commercial scope and agreement.
+                </div>
+              </div>
+
+              <div style={{ fontSize: "0.74rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: palette.goldDeep, marginBottom: "0.9rem" }}>
+                Core Capabilities
+              </div>
+
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1.6rem", display: "flex", flexDirection: "column", gap: "0.65rem", fontSize: "0.84rem", color: palette.textBody }}>
+                {[
+                  "Private deployment architecture",
+                  "Sovereign infrastructure model",
+                  "Dedicated environment",
+                  "Enterprise integration",
+                  "Custom provider orchestration",
+                  "Advanced treasury workflows",
+                  "Private audit infrastructure",
+                  "Enterprise security controls",
+                  "Dedicated SLA options",
+                  "Architecture-level customization",
+                  "Source-level deployment options subject to commercial agreement"
+                ].map((cap, i) => (
+                  <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", lineHeight: 1.45 }}>
+                    <span style={{ color: palette.goldDeep, fontWeight: 800, fontSize: "0.9rem" }}>✓</span>
+                    <span>{cap}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <div style={{
+                background: "rgba(23, 24, 27, 0.03)",
+                border: `1px solid ${palette.border}`,
+                borderRadius: 10,
+                padding: "0.75rem 0.9rem",
+                fontSize: "0.72rem",
+                color: palette.muted,
+                lineHeight: 1.45,
+                marginBottom: "1.3rem"
+              }}>
+                <span style={{ color: palette.text, fontWeight: 700 }}>Scope Grounding:</span> Private VPC deployment, custom provider orchestration, dedicated SLAs, and source-level licenses are available subject to commercial scope and agreement.
+              </div>
+
+              <button
+                type="button"
+                onClick={() => navigate("/chat?topic=fintech-gateway&tier=sovereign-enterprise")}
+                style={{
+                  width: "100%",
+                  background: palette.text,
+                  color: "#FFFFFF",
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "0.85rem 1.4rem",
+                  fontSize: "0.9rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 0.16s ease",
+                  boxShadow: "0 4px 16px rgba(23, 24, 27, 0.25)"
+                }}
+              >
+                Talk to Enterprise →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4: Compact Transparency Note (Pricing Truth Layer) */}
+        <div style={{
+          background: "#FAF9F6",
+          border: `1px solid ${palette.border}`,
+          borderRadius: 14,
+          padding: "1.2rem 1.6rem",
+          marginTop: "2.4rem",
+          marginBottom: "1.8rem",
+          display: "flex",
+          gap: "1rem",
+          alignItems: "flex-start"
+        }}>
+          <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>🔒</span>
+          <div style={{ fontSize: "0.82rem", color: palette.muted, lineHeight: 1.65 }}>
+            <div style={{ fontWeight: 700, color: palette.text, marginBottom: "0.3rem" }}>
+              Commercial Pricing Transparency & Boundary Notice
+            </div>
+            <p style={{ margin: "0 0 0.5rem" }}>
+              Commercial pricing shown here is an indicative starting point, not a binding quote. Final pricing depends on transaction volume, supported corridors, regulated-provider availability, integration complexity, infrastructure requirements and commercial agreements.
+            </p>
+            <p style={{ margin: 0, color: palette.textBody }}>
+              Provider fees, banking charges, FX costs, taxes and third-party infrastructure costs may apply separately.
+            </p>
+          </div>
+        </div>
+
+        {/* Section 6: Relationship to Global GARUDA Pricing */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "1rem",
+          paddingTop: "0.8rem",
+          borderTop: `1px solid ${palette.border}`
+        }}>
+          <Link
+            to="/pricing"
+            style={{
+              color: palette.goldDeep,
+              fontSize: "0.86rem",
+              fontWeight: 600,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.4rem"
+            }}
+          >
+            View GARUDA Platform Plans →
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => navigate("/chat?topic=fintech-enterprise")}
+            style={{
+              background: "none",
+              border: "none",
+              color: palette.muted,
+              fontSize: "0.86rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              padding: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.4rem"
+            }}
+          >
+            Need a fully custom architecture? Talk to GARUDA Enterprise →
+          </button>
         </div>
       </section>
 
