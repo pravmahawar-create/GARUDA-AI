@@ -4,6 +4,7 @@ import BrandAssetImage from "./BrandAssetImage";
 
 const NAV = [
   { key: "", label: "Home", to: "/" },
+  { key: "fintech", label: "Fintech Gateway", to: "/fintech-gateway" },
   { key: "pawan", label: "⚡ PAWAN Studio", to: "/pawan" },
   { key: "chat", label: "AI Chat", to: "/chat" },
   { key: "portal", label: "Client Portal", to: "/app" }
@@ -63,6 +64,7 @@ export default function PublicChrome({ active = "", children, footer = true }) {
         <footer style={{ padding: "2.6rem clamp(1.25rem, 4vw, 4rem)", borderTop: "1px solid rgba(245,215,110,0.1)", textAlign: "center", color: "#5b6472", fontSize: "0.85rem", lineHeight: 1.9 }}>
           <div style={{ display: "flex", justifyContent: "center", gap: "1.7rem", marginBottom: "1rem", flexWrap: "wrap" }}>
             <Link to="/" style={{ color: "#8d95a7", textDecoration: "none" }}>Home</Link>
+            <Link to="/fintech-gateway" style={{ color: "#f5d76e", textDecoration: "none", fontWeight: 600 }}>Fintech Gateway</Link>
             <Link to="/chat" style={{ color: "#8d95a7", textDecoration: "none" }}>Public AI Chat</Link>
             <Link to="/app" style={{ color: "#8d95a7", textDecoration: "none" }}>Client Portal</Link>
             <Link to="/signup" style={{ color: "#8d95a7", textDecoration: "none" }}>Get Started</Link>

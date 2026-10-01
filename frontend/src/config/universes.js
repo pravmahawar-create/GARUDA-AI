@@ -169,14 +169,15 @@ export const UNIVERSES = [
     scope: "founder"
   }),
 
-  U(12, "Finance Universe", "Automated settlements, escrow verification, and 24/7 quantitative market execution.", "▤", [
-    "Settlement Fee Engine", "Payment Webhooks", "Reconciliation Ledger", "P&L Integrity", "24/7 Global Alpha Quant Swarm"
+  U(12, "Finance Universe", "Sovereign payment orchestration, zero-custody multi-rail treasury, and quantitative execution.", "▤", [
+    "Fintech Gateway (Sovereign Switch)", "Zero-Custody State Machine", "Deterministic Reconciliation", "Dynamic Fee Engine", "Forensic Audit Ledger", "24/7 Global Alpha Quant Swarm"
   ], {
     status: "PRODUCTION_VERIFIED",
-    route: "/founder/quant",
-    flagship: "Settlement & 24/7 Global Alpha Quant Swarm (India, Forex, Crypto)",
-    connectedEngines: ["settlementService.js", "paymentWebhookService.js", "paymentReconciliationService.js", "globalQuantSwarm.js", "alphaQuantDaemon.js"],
-    scope: "founder"
+    route: "/fintech-gateway",
+    flagship: "GARUDA Sovereign Fintech Gateway & Treasury Infrastructure",
+    connectedEngines: ["orchestrationService.js", "stateMachine.js", "zeroCustodyEnforcer.js", "reconciliationEngine.js", "webhookSecurity.js", "auditLogger.js", "fuelTankService.js"],
+    scope: "public",
+    hub: true
   }),
 
   U(13, "Career Universe", "Executive positioning, skill progression roadmaps, and career leverage.", "☰", [

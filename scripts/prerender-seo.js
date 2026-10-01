@@ -217,6 +217,34 @@ const ROUTES = [
     `
   },
   {
+    path: "/fintech-gateway",
+    filePaths: [
+      path.join(DIST_DIR, "fintech-gateway", "index.html"),
+      path.join(DIST_DIR, "fintech-gateway.html"),
+      path.join(DIST_DIR, "gateway-demo.html"),
+      path.join(DIST_DIR, "fintech.html")
+    ],
+    title: "Fintech Gateway • Sovereign Payment Orchestration & Treasury | GARUDA OS",
+    description: "Connect payment providers, banking rails and merchant treasury operations through a controlled orchestration layer. Zero-custody architecture, multi-rail direct clearing, and deterministic reconciliation.",
+    canonical: "https://www.garudaos.in/fintech-gateway",
+    h1: "Fintech Gateway: Payment Orchestration & Treasury Infrastructure",
+    eyebrow: "CANONICAL UNIVERSE 12 (FINANCE) • SOVEREIGN INFRASTRUCTURE",
+    contentSnippet: `
+      <h2>Zero-Custody Payment Orchestration & Multi-Rail Routing</h2>
+      <p>GARUDA Fintech Gateway coordinates payment providers, banking rails and merchant treasury operations through a controlled software orchestration layer. Customer principal funds clear directly between regulated banking rails and merchant corporate treasury accounts with zero customer fund custody.</p>
+      <h3>Core Orchestration Engines:</h3>
+      <ul>
+        <li>13-State Deterministic State Machine with Cryptographic Transition Hashes</li>
+        <li>Zero-Custody Enforcer prohibiting customer wallets and pooled escrows</li>
+        <li>Timing-attack safe Webhook Security (HMAC-SHA256, 300s window, anti-replay nonces)</li>
+        <li>Deterministic Reconciliation Engine with 8-point automated variance analysis</li>
+        <li>Append-only SHA-256 hash-chained Forensic Audit Logger</li>
+        <li>Prepaid SaaS Fuel Tank Service for transparent metered technology fees</li>
+      </ul>
+      <p><a href="/fintech-gateway">Explore Fintech Gateway Demo</a> | <a href="/chat?topic=fintech-gateway">Request Pilot Deployment</a></p>
+    `
+  },
+  {
     path: "/services/custom-ai-development",
     filePaths: [
       path.join(DIST_DIR, "services", "custom-ai-development", "index.html"),

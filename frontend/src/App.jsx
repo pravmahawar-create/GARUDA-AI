@@ -51,6 +51,7 @@ import FounderIntelligence from "./pages/FounderIntelligence";
 import GarudaHealthApp from "./pages/GarudaHealthApp";
 import CyberShieldDashboard from "./pages/CyberShieldDashboard";
 import GarudaBilling from "./pages/GarudaBilling";
+import FintechGatewayDemo from "./pages/FintechGatewayDemo";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -323,6 +324,10 @@ function AppRoutes() {
       <Route path="/garuda-aahar" element={<GarudaHealthApp />} />
       {/* GARUDA CyberShield™ — Sovereign Anti-Troll Defense Cockpit */}
       <Route path="/cybershield" element={<CyberShieldDashboard customer={customer} onLogout={handleLogout} />} />
+      {/* GARUDA SOVEREIGN FINTECH — Multi-Rail Zero-Hold Switch */}
+      <Route path="/fintech-gateway" element={<FintechGatewayDemo />} />
+      <Route path="/gateway-demo" element={<FintechGatewayDemo />} />
+      <Route path="/fintech" element={<FintechGatewayDemo />} />
       <Route path="*" element={publicLanding} />
 
     </Routes>

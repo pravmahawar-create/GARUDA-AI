@@ -131,6 +131,8 @@ app.use("/api/tenants", require("./routes/tenantRoutes"));
 // GARUDA Offline-First Installment Automation Engine (Kist OS)
 app.use("/api/installment", require("./routes/installmentRoutes"));
 app.get("/kist", (req, res) => res.redirect("/apps/kist/"));
+// GARUDA Sovereign Payment Orchestration & Treasury Infrastructure (V2.0)
+app.use("/api/fintech", require("./routes/fintechOrchestrationRoutes"));
 
 
 app.use("/api/proposals", require("./routes/proposalRoutes"));
