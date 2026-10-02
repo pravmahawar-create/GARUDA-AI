@@ -1,3 +1,4 @@
+# Legacy / Media patterns
 frontend/public/images/vid_local25d_*.mp4
 frontend/public/images/asset_garuda_*.mp4
 frontend/public/audio/temp_*
@@ -5,3 +6,28 @@ frontend/public/audio_jarvis/*
 output/
 scratch/
 *.apk
+
+# Heavy non-web subprojects (Totaling >1.2 GB)
+sanatan-setu-app/
+garuda-kist-app/
+garuda-aahar-app/
+projects/
+backend-node/
+packages/
+
+# Local cache, models, and video production (Totaling >700 MB)
+models/
+.chrome-profile/
+veer_azaad_reel/
+GARUDA/
+.kilo/
+data/worktrees/
+data/proposals/*.html
+
+# Large local root media and brochure binaries
+*.mp4
+*.mkv
+*.avi
+ABSLI*.pdf
+*.zip
+*.tar.gz
