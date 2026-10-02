@@ -1,3 +1,4 @@
+# Baseline — Existing Known-Good
 frontend/public/images/vid_local25d_*.mp4
 frontend/public/images/asset_garuda_*.mp4
 frontend/public/audio/temp_*
@@ -5,3 +6,21 @@ frontend/public/audio_jarvis/*
 output/
 scratch/
 *.apk
+
+# Phase 2A — Forensically Validated Safe Exclusions
+GARUDA/
+data/browser-sessions/
+sanatan-setu-app/
+.chrome-profile/
+data/whatsapp-session/
+veer_azaad_reel/
+.kilo/
+data/worktrees/
+garuda-kist-app/
+garuda-aahar-app/
+billing/
+uploads/
+data/backups/
+data/chrome-profile-3/
+robocopy_garuda.log
+eng.traineddata
