@@ -52,6 +52,7 @@ import GarudaHealthApp from "./pages/GarudaHealthApp";
 import CyberShieldDashboard from "./pages/CyberShieldDashboard";
 import GarudaBilling from "./pages/GarudaBilling";
 import FintechGatewayDemo from "./pages/FintechGatewayDemo";
+import ConstituencyWarRoom from "./pages/ConstituencyWarRoom";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -328,6 +329,11 @@ function AppRoutes() {
       <Route path="/fintech-gateway" element={<FintechGatewayDemo />} />
       <Route path="/gateway-demo" element={<FintechGatewayDemo />} />
       <Route path="/fintech" element={<FintechGatewayDemo />} />
+      {/* GARUDA Live Constituency Intelligence War Room & Commercial Command */}
+      <Route path="/war-room" element={<ConstituencyWarRoom />} />
+      <Route path="/constituency" element={<Navigate to="/war-room" replace />} />
+      <Route path="/election" element={<Navigate to="/war-room" replace />} />
+      <Route path="/chunav" element={<Navigate to="/war-room" replace />} />
       <Route path="*" element={publicLanding} />
 
     </Routes>

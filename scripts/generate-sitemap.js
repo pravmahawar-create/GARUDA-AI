@@ -32,6 +32,7 @@ const CANONICAL_URLS = [
   { url: "/experience", priority: "0.85", changefreq: "weekly" },
   { url: "/investor", priority: "0.85", changefreq: "weekly" },
   { url: "/fintech-gateway", priority: "0.95", changefreq: "daily" },
+  { url: "/war-room", priority: "0.95", changefreq: "daily" },
 
   // Specialized Universes & Studios
   { url: "/scholar", priority: "0.90", changefreq: "weekly" },

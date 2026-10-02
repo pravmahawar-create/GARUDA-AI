@@ -1421,6 +1421,32 @@ const ROUTES = [
         "Deterministic Software Verification"
       ]
     }
+  },
+  {
+    path: "/war-room",
+    filePaths: [
+      path.join(DIST_DIR, "war-room", "index.html"),
+      path.join(DIST_DIR, "war-room.html")
+    ],
+    title: "GARUDA OS War Room | Live Constituency Intelligence & Electoral Command",
+    description: "GARUDA OS Live Constituency Intelligence War Room & Commercial Command. Real-time booth signals, verified electoral data, civic issue radar, narrative monitoring, and 15-minute rebuttal execution for Indian election campaigns.",
+    canonical: "https://www.garudaos.in/war-room",
+    h1: "GARUDA Live Constituency Intelligence War Room",
+    eyebrow: "SOVEREIGN ELECTORAL & CIVIC INTELLIGENCE COMMAND",
+    contentSnippet: `
+      <h2>Constituency Intelligence & Digital War Room</h2>
+      <p>GARUDA transforms raw electoral geography, verified Election Commission data, civic issues, and live information streams into decisive campaign intelligence. Built for MLAs, MPs, candidates, and professional political war rooms across India.</p>
+      <h3>Core War Room Capabilities:</h3>
+      <ul>
+        <li>Deterministic Constituency Coordinate Resolution & Administrative Boundary Mapping</li>
+        <li>Verified Polling Booth Structure & Historical Margin Variance Signals</li>
+        <li>Local Civic Issue Radar (Infrastructure, Water, Roads, Sanitation, Municipal Services)</li>
+        <li>Public Narrative & Digital Velocity Monitoring with 15-Minute Fact Rebuttal Engine</li>
+        <li>12-Section Classified Strategic Constituency Brief & Exportable Field Dossier</li>
+        <li>Single-Candidate Territorial Exclusivity Guarantee per Assembly / Parliamentary Seat</li>
+      </ul>
+      <p>Official Platform: <a href="https://www.garudaos.in/war-room">https://www.garudaos.in/war-room</a></p>
+    `
   }
 ];
 

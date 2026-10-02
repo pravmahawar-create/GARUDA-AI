@@ -133,7 +133,8 @@ app.use("/api/installment", require("./routes/installmentRoutes"));
 app.get("/kist", (req, res) => res.redirect("/apps/kist/"));
 // GARUDA Sovereign Payment Orchestration & Treasury Infrastructure (V2.0)
 app.use("/api/fintech", require("./routes/fintechOrchestrationRoutes"));
-
+// GARUDA Live Constituency Intelligence War Room & Commercial Command
+app.use("/api/war-room", require("./routes/warRoomRoutes"));
 
 app.use("/api/proposals", require("./routes/proposalRoutes"));
 app.use("/api/acquisition", require("./routes/acquisitionRoutes"));

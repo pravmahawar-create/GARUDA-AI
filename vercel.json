@@ -5,7 +5,7 @@
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(.*\\.html|/|/chat.*|/login.*|/app.*|/cybershield.*|/founder.*|/quant.*|/finance.*|/bot-verse.*|/pawan.*|/astra.*|/kids-play.*|/kids-app.*|/dost.*|/sahayak.*)",
+      "source": "/(.*\\.html|/|/chat.*|/login.*|/app.*|/cybershield.*|/founder.*|/quant.*|/finance.*|/bot-verse.*|/pawan.*|/astra.*|/kids-play.*|/kids-app.*|/dost.*|/sahayak.*|/war-room.*|/constituency.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -97,10 +97,26 @@
       "destination": "https://garuda-ai-xfif.onrender.com/apps/:path*"
     },
     {
+      "source": "/api/war-room/:path*",
+      "destination": "/api/war-room?path=:path*"
+    },
+    {
+      "source": "/api/war-room",
+      "destination": "/api/war-room"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
     },
 
+    {
+      "source": "/war-room",
+      "destination": "/war-room/index.html"
+    },
+    {
+      "source": "/constituency",
+      "destination": "/war-room/index.html"
+    },
     {
       "source": "/command-center",
       "destination": "/command-center/index.html"
