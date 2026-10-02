@@ -98,7 +98,7 @@
     },
     {
       "source": "/api/war-room/:path*",
-      "destination": "/api/war-room?path=:path*"
+      "destination": "/api/war-room"
     },
     {
       "source": "/api/war-room",
