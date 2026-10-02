@@ -282,86 +282,87 @@ export default function ConstituencyWarRoom() {
   const activeIssue = constituency.issueRadar.find(i => i.id === selectedIssueId) || constituency.issueRadar[0];
 
   return (
-    <div style={{ background: "#F7F5F0", minHeight: "100vh", color: "#17181B", fontFamily: "Inter, -apple-system, sans-serif" }}>
+    <div style={{ background: "#F7F5F0", minHeight: "100vh", color: "#17181B", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       <SEOHead
         title={`GARUDA OS · Live Constituency Intelligence War Room (${constituency.name})`}
         description="Publicly available and authorized data sources converted into a sovereign constituency intelligence command center."
         canonical="https://www.garudaos.in/war-room"
       />
 
-      <PublicChrome />
+      <PublicChrome active="" footer={true}>
+        <div style={{ background: "#F7F5F0", minHeight: "100%", paddingBottom: 88 }}>
 
-      {/* HERO SECTION */}
-      <section style={{ maxWidth: 1180, margin: "0 auto", padding: "48px 20px 32px 20px" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(196, 139, 40, 0.12)", border: "1px solid rgba(196, 139, 40, 0.3)", borderRadius: 999, padding: "6px 14px", marginBottom: 18 }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#059669", display: "inline-block", boxShadow: "0 0 8px #059669" }} />
-          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", color: "#9E6D1C", textTransform: "uppercase" }}>
-            LIVE CONSTITUENCY RADAR ACTIVE
-          </span>
-        </div>
+          {/* HERO SECTION */}
+          <section style={{ maxWidth: 1180, margin: "0 auto", padding: "34px 20px 22px 20px" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(196, 139, 40, 0.09)", border: "1px solid rgba(196, 139, 40, 0.25)", borderRadius: 999, padding: "5px 13px", marginBottom: 16 }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#059669", display: "inline-block", boxShadow: "0 0 6px #059669" }} />
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#8C5E14", textTransform: "uppercase" }}>
+                LIVE CONSTITUENCY RADAR ACTIVE
+              </span>
+            </div>
 
-        <h1 style={{ fontSize: "clamp(2rem, 4.5vw, 3.2rem)", fontWeight: 800, lineHeight: 1.15, color: "#17181B", letterSpacing: "-0.02em", marginBottom: 16 }}>
-          CONSTITUENCY KO ANDAZE SE NAHI.<br />
-          <span style={{ background: "linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            INTELLIGENCE SE SAMJHIYE.
-          </span>
-        </h1>
+            <h1 style={{ fontSize: "clamp(1.75rem, 3.6vw, 2.6rem)", fontWeight: 700, lineHeight: 1.2, color: "#17181B", letterSpacing: "-0.025em", marginBottom: 12 }}>
+              CONSTITUENCY KO ANDAZE SE NAHI.<br />
+              <span style={{ background: "linear-gradient(135deg, #B88220 0%, #8C5E14 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                INTELLIGENCE SE SAMJHIYE.
+              </span>
+            </h1>
 
-        <p style={{ fontSize: 16, lineHeight: 1.6, color: "#525866", maxWidth: 780, marginBottom: 32 }}>
-          GARUDA publicly available aur authorized data sources ko analyze karke constituency ka structured intelligence picture banata hai—electoral structure se lekar turnout history, public issues aur emerging narratives tak.
-        </p>
+            <p style={{ fontSize: 14, lineHeight: 1.6, color: "#525866", maxWidth: 700, marginBottom: 22 }}>
+              GARUDA publicly available aur authorized data sources ko analyze karke constituency ka structured intelligence picture banata hai—electoral structure se lekar turnout history, public issues aur emerging narratives tak.
+            </p>
 
-        {/* SEARCH INPUT BAR */}
-        <form onSubmit={handleSearch} style={{ background: "#FFFFFF", border: "1.5px solid rgba(196, 139, 40, 0.3)", borderRadius: 16, padding: "8px 10px 8px 20px", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12, boxShadow: "0 12px 36px rgba(0,0,0,0.05)", maxWidth: 760 }}>
-          <span style={{ fontSize: 20 }}>📡</span>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Enter Constituency / Ward / District / PIN Code (e.g. Thane 148, Indore-2, Noida-61)"
-            style={{ flex: 1, minWidth: 260, border: "none", outline: "none", fontSize: 15, fontWeight: 600, color: "#17181B", background: "transparent" }}
-          />
-          <button
-            type="submit"
-            disabled={isScanning}
-            style={{ background: "linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%)", color: "#FFFFFF", border: "none", padding: "12px 24px", borderRadius: 10, fontSize: 13, fontWeight: 700, letterSpacing: "0.05em", cursor: isScanning ? "not-allowed" : "pointer", boxShadow: "0 4px 14px rgba(179, 130, 53, 0.3)" }}
-          >
-            {isScanning ? "SCANNING SATELLITE..." : "INITIALIZE GARUDA RADAR"}
-          </button>
-        </form>
+            {/* SEARCH INPUT BAR */}
+            <form onSubmit={handleSearch} style={{ background: "#FFFFFF", border: "1px solid rgba(196, 139, 40, 0.28)", borderRadius: 12, padding: "5px 6px 5px 14px", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, boxShadow: "0 4px 16px rgba(0,0,0,0.03)", maxWidth: 720 }}>
+              <span style={{ fontSize: 18 }}>📡</span>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Enter Constituency / Ward / District / PIN Code (e.g. Thane 148, Indore-2, Noida-61)"
+                style={{ flex: 1, minWidth: 240, border: "none", outline: "none", fontSize: 13, fontWeight: 500, color: "#17181B", background: "transparent" }}
+              />
+              <button
+                type="submit"
+                disabled={isScanning}
+                style={{ background: "linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%)", color: "#FFFFFF", border: "none", padding: "9px 18px", borderRadius: 8, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.03em", cursor: isScanning ? "not-allowed" : "pointer", boxShadow: "0 3px 10px rgba(179, 130, 53, 0.25)" }}
+              >
+                {isScanning ? "SCANNING SATELLITE..." : "INITIALIZE GARUDA RADAR"}
+              </button>
+            </form>
 
-        {/* Quick Suggestion Pills */}
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 14 }}>
-          <span style={{ fontSize: 12, color: "#8A8D95", fontWeight: 600 }}>Quick Battlegrounds:</span>
-          {["Thane 148", "Indore-2", "Noida-61", "400607", "Lucknow Central", "Bhopal"].map(pill => (
-            <button
-              key={pill}
-              type="button"
-              onClick={() => { setQuery(pill); handleSearch(); }}
-              style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.1)", borderRadius: 999, padding: "4px 12px", fontSize: 12, fontWeight: 600, color: "#292B30", cursor: "pointer" }}
-            >
-              {pill}
-            </button>
-          ))}
-        </div>
-      </section>
+            {/* Quick Suggestion Pills */}
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 12 }}>
+              <span style={{ fontSize: 11.5, color: "#8A8D95", fontWeight: 600 }}>Quick Battlegrounds:</span>
+              {["Thane 148", "Indore-2", "Noida-61", "400607", "Lucknow Central", "Bhopal"].map(pill => (
+                <button
+                  key={pill}
+                  type="button"
+                  onClick={() => { setQuery(pill); handleSearch(); }}
+                  style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 999, padding: "3px 11px", fontSize: 11.5, fontWeight: 600, color: "#292B30", cursor: "pointer" }}
+                >
+                  {pill}
+                </button>
+              ))}
+            </div>
+          </section>
 
       {/* SCANNING RADAR OVERLAY (2-4s Command-Center Animation) */}
       {isScanning && (
-        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 20px 32px 20px" }}>
-          <div style={{ background: "#FFFFFF", border: "1.5px solid #C48B28", borderRadius: 16, padding: "28px 24px", boxShadow: "0 16px 40px rgba(196, 139, 40, 0.15)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <span style={{ fontSize: 12, fontWeight: 800, color: "#9E6D1C", letterSpacing: "0.1em" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 20px 24px 20px" }}>
+          <div style={{ background: "#FFFFFF", border: "1.5px solid #C48B28", borderRadius: 14, padding: "20px 20px", boxShadow: "0 12px 32px rgba(196, 139, 40, 0.12)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#9E6D1C", letterSpacing: "0.08em" }}>
                 STAGE {SCAN_STAGES[scanStageIndex].step} / 06 — {SCAN_STAGES[scanStageIndex].title}
               </span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#059669" }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>
                 TELEMETRY ACQUISITION IN PROGRESS
               </span>
             </div>
-            <div style={{ height: 6, background: "rgba(196, 139, 40, 0.15)", borderRadius: 999, overflow: "hidden", marginBottom: 14 }}>
+            <div style={{ height: 5, background: "rgba(196, 139, 40, 0.15)", borderRadius: 999, overflow: "hidden", marginBottom: 12 }}>
               <div style={{ height: "100%", width: `${((scanStageIndex + 1) / SCAN_STAGES.length) * 100}%`, background: "linear-gradient(90deg, #C48B28, #059669)", transition: "width 0.35s ease" }} />
             </div>
-            <p style={{ fontSize: 15, fontWeight: 600, color: "#17181B" }}>
+            <p style={{ fontSize: 13.5, fontWeight: 600, color: "#17181B", margin: 0 }}>
               {SCAN_STAGES[scanStageIndex].detail}
             </p>
           </div>
@@ -370,40 +371,40 @@ export default function ConstituencyWarRoom() {
 
       {/* MAIN COMMAND CENTER DASHBOARD */}
       {!isScanning && (
-        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 20px 60px 20px" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 20px 48px 20px" }}>
 
           {/* TOP COMMAND BAR */}
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.1)", borderRadius: 16, padding: "20px 24px", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 24, boxShadow: "0 4px 20px rgba(0,0,0,0.03)" }}>
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "16px 20px", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 14, marginBottom: 20, boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <h2 style={{ fontSize: 22, fontWeight: 800, color: "#17181B", margin: 0 }}>
+                <h2 style={{ fontSize: 18.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.015em", margin: 0 }}>
                   {constituency.name.toUpperCase()} — {constituency.state.toUpperCase()}
                 </h2>
-                <span style={{ background: "rgba(5, 150, 105, 0.12)", color: "#059669", border: "1px solid rgba(5, 150, 105, 0.3)", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>
+                <span style={{ background: "rgba(5, 150, 105, 0.12)", color: "#059669", border: "1px solid rgba(5, 150, 105, 0.3)", borderRadius: 4, padding: "2px 7px", fontSize: 10, fontWeight: 700 }}>
                   ACTIVE INTELLIGENCE
                 </span>
               </div>
-              <p style={{ fontSize: 13, color: "#686A70", margin: 0 }}>
+              <p style={{ fontSize: 12, color: "#686A70", margin: "3px 0 0 0" }}>
                 {constituency.canonicalName} · District: {constituency.district} · Assembly #{constituency.assemblyNumber}
               </p>
             </div>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#8A8D95" }}>TERRITORIAL EXCLUSIVITY</div>
-                <span style={{ fontSize: 13, fontWeight: 800, color: exclusivity.status === "ACTIVE" ? "#DC2626" : "#059669" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#8A8D95", letterSpacing: "0.06em" }}>TERRITORIAL EXCLUSIVITY</div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: exclusivity.status === "ACTIVE" ? "#DC2626" : "#059669" }}>
                   {exclusivity.status === "ACTIVE" ? "LOCKED // EXCLUSIVE" : "AVAILABLE TO ONBOARD"}
                 </span>
               </div>
               <button
                 onClick={generateBrief}
-                style={{ background: "#F7F5F0", border: "1px solid rgba(196, 139, 40, 0.4)", borderRadius: 8, padding: "8px 16px", fontSize: 12, fontWeight: 700, color: "#9E6D1C", cursor: "pointer" }}
+                style={{ background: "#FAF9F6", border: "1px solid rgba(196, 139, 40, 0.35)", borderRadius: 7, padding: "7px 14px", fontSize: 11.5, fontWeight: 700, color: "#9E6D1C", cursor: "pointer" }}
               >
                 📄 GENERATE BRIEF
               </button>
               <button
                 onClick={() => setDossierModalOpen(true)}
-                style={{ background: "#17181B", color: "#FFFFFF", border: "none", borderRadius: 8, padding: "8px 18px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+                style={{ background: "#17181B", color: "#FFFFFF", border: "none", borderRadius: 7, padding: "7px 16px", fontSize: 11.5, fontWeight: 700, cursor: "pointer" }}
               >
                 🔒 CLASSIFIED DOSSIER
               </button>
@@ -411,100 +412,100 @@ export default function ConstituencyWarRoom() {
           </div>
 
           {/* 6 CORE METRIC CARDS */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 16, marginBottom: 28 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(165px, 1fr))", gap: 12, marginBottom: 22 }}>
             
             {/* Card 1: Electoral Base */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#8A8D95" }}>ELECTORAL BASE</span>
-                <span style={{ fontSize: 10, fontWeight: 800, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 6px", borderRadius: 4 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>ELECTORAL BASE</span>
+                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
                   {constituency.electoralBase.electorsStatus}
                 </span>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#17181B" }}>
+              <div style={{ fontSize: 21, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
                 {constituency.electoralBase.registeredElectors.toLocaleString("en-IN")}
               </div>
-              <div style={{ fontSize: 11, color: "#686A70", marginTop: 4 }}>
+              <div style={{ fontSize: 11, color: "#686A70" }}>
                 Ratio: {constituency.electoralBase.electorPopulationRatio}
               </div>
             </div>
 
             {/* Card 2: Polling Structure */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#8A8D95" }}>POLLING BOOTHS</span>
-                <span style={{ fontSize: 10, fontWeight: 800, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 6px", borderRadius: 4 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>POLLING BOOTHS</span>
+                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
                   {constituency.pollingStructure.boothsStatus}
                 </span>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#17181B" }}>
+              <div style={{ fontSize: 21, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
                 {constituency.pollingStructure.totalBooths}
               </div>
-              <div style={{ fontSize: 11, color: "#686A70", marginTop: 4 }}>
+              <div style={{ fontSize: 11, color: "#686A70" }}>
                 ~{constituency.pollingStructure.averageElectorsPerBooth} voters / booth
               </div>
             </div>
 
             {/* Card 3: Historical Turnout */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#8A8D95" }}>LAST TURNOUT</span>
-                <span style={{ fontSize: 10, fontWeight: 800, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 6px", borderRadius: 4 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>LAST TURNOUT</span>
+                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
                   {constituency.historicalTurnout.turnoutStatus}
                 </span>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#17181B" }}>
+              <div style={{ fontSize: 21, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
                 {constituency.historicalTurnout.lastElectionTurnout}
               </div>
-              <div style={{ fontSize: 11, color: "#686A70", marginTop: 4 }}>
+              <div style={{ fontSize: 11, color: "#686A70" }}>
                 Trend: {constituency.historicalTurnout.turnoutTrend}
               </div>
             </div>
 
             {/* Card 4: Historical Margin */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#8A8D95" }}>WINNING MARGIN</span>
-                <span style={{ fontSize: 10, fontWeight: 800, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 6px", borderRadius: 4 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>WINNING MARGIN</span>
+                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
                   {constituency.historicalMargin.marginStatus}
                 </span>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#17181B" }}>
+              <div style={{ fontSize: 21, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
                 {constituency.historicalMargin.winningMarginPercentage}
               </div>
-              <div style={{ fontSize: 11, color: "#686A70", marginTop: 4 }}>
+              <div style={{ fontSize: 11, color: "#686A70" }}>
                 Margin: {constituency.historicalMargin.winningMarginVotes?.toLocaleString("en-IN")} votes
               </div>
             </div>
 
             {/* Card 5: Digital Reach (INFERRED) */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(196, 139, 40, 0.2)", borderRadius: 14, padding: "18px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#8A8D95" }}>DIGITAL REACH</span>
-                <span style={{ fontSize: 10, fontWeight: 800, background: "rgba(217, 119, 6, 0.12)", color: "#D97706", padding: "1px 6px", borderRadius: 4 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(196, 139, 40, 0.2)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>DIGITAL REACH</span>
+                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(217, 119, 6, 0.12)", color: "#D97706", padding: "1px 5px", borderRadius: 3 }}>
                   INFERRED
                 </span>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#9E6D1C" }}>
+              <div style={{ fontSize: 21, fontWeight: 700, color: "#9E6D1C", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
                 {constituency.digitalReachEstimate.estimatedDigitalReach.toLocaleString("en-IN")}
               </div>
-              <div style={{ fontSize: 11, color: "#686A70", marginTop: 4 }}>
+              <div style={{ fontSize: 11, color: "#686A70" }}>
                 TRAI Density Heuristic
               </div>
             </div>
 
             {/* Card 6: Data Coverage */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 16px", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#8A8D95" }}>DATA COVERAGE</span>
-                <span style={{ fontSize: 10, fontWeight: 800, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 6px", borderRadius: 4 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>DATA COVERAGE</span>
+                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
                   {dataCoverage.status}
                 </span>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#059669" }}>
+              <div style={{ fontSize: 21, fontWeight: 700, color: "#059669", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
                 {dataCoverage.percentage}
               </div>
-              <div style={{ fontSize: 11, color: "#686A70", marginTop: 4 }}>
+              <div style={{ fontSize: 11, color: "#686A70" }}>
                 {dataCoverage.verifiedCategories} / {dataCoverage.totalCategories} verified layers
               </div>
             </div>
@@ -512,37 +513,37 @@ export default function ConstituencyWarRoom() {
           </div>
 
           {/* TWO COLUMN GRID: BOOTH / AREA INTELLIGENCE + LOCAL ISSUE RADAR */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 24, marginBottom: 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 16, marginBottom: 24 }}>
 
             {/* AREA / BOOTH CLUSTER GRID */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.1)", borderRadius: 16, padding: "24px 20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 18px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
                 <div>
-                  <h3 style={{ fontSize: 16, fontWeight: 800, color: "#17181B", margin: 0 }}>
+                  <h3 style={{ fontSize: 14.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.01em", margin: 0 }}>
                     AREA & BOOTH CLUSTER SIGNALS
                   </h3>
-                  <p style={{ fontSize: 12, color: "#686A70", margin: "2px 0 0 0" }}>
+                  <p style={{ fontSize: 11.5, color: "#686A70", margin: "2px 0 0 0" }}>
                     Describing data conditions & turnout variance, not political assumptions.
                   </p>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#9E6D1C" }}>
+                <span style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C" }}>
                   {constituency.pockets.length} KEY CLUSTERS
                 </span>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {constituency.pockets.map((pocket, idx) => {
                   const stateColor = pocket.condition === "RED" ? "#DC2626" : pocket.condition === "AMBER" ? "#D97706" : "#059669";
                   const stateBg = pocket.condition === "RED" ? "rgba(220, 38, 38, 0.08)" : pocket.condition === "AMBER" ? "rgba(217, 119, 6, 0.08)" : "rgba(5, 150, 105, 0.08)";
                   return (
-                    <div key={idx} style={{ border: `1px solid ${stateColor}40`, background: "#FAF9F6", borderRadius: 10, padding: "12px 14px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: "#17181B" }}>{pocket.name}</span>
-                        <span style={{ fontSize: 10, fontWeight: 800, color: stateColor, background: stateBg, padding: "2px 6px", borderRadius: 4 }}>
+                    <div key={idx} style={{ border: `1px solid ${stateColor}40`, background: "#FAF9F6", borderRadius: 8, padding: "10px 12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+                        <span style={{ fontSize: 12.5, fontWeight: 600, color: "#17181B" }}>{pocket.name}</span>
+                        <span style={{ fontSize: 9.5, fontWeight: 700, color: stateColor, background: stateBg, padding: "1px 5px", borderRadius: 3 }}>
                           {pocket.label}
                         </span>
                       </div>
-                      <div style={{ fontSize: 12, color: "#525866", display: "flex", justifyContent: "space-between" }}>
+                      <div style={{ fontSize: 11, color: "#525866", display: "flex", justifyContent: "space-between" }}>
                         <span>Booths: {pocket.booths} · ~{pocket.electorsEst?.toLocaleString()} electors</span>
                         <span style={{ fontWeight: 600, color: "#9E6D1C" }}>{pocket.primaryIssue}</span>
                       </div>
@@ -553,38 +554,38 @@ export default function ConstituencyWarRoom() {
             </div>
 
             {/* LOCAL ISSUE RADAR */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.1)", borderRadius: 16, padding: "24px 20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 18px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
                 <div>
-                  <h3 style={{ fontSize: 16, fontWeight: 800, color: "#17181B", margin: 0 }}>
+                  <h3 style={{ fontSize: 14.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.01em", margin: 0 }}>
                     LOCAL CIVIC ISSUE RADAR
                   </h3>
-                  <p style={{ fontSize: 12, color: "#686A70", margin: "2px 0 0 0" }}>
+                  <p style={{ fontSize: 11.5, color: "#686A70", margin: "2px 0 0 0" }}>
                     Detected across public grievance portals & municipal notices.
                   </p>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#059669" }}>
+                <span style={{ fontSize: 10.5, fontWeight: 700, color: "#059669" }}>
                   24x7 MONITORING
                 </span>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {constituency.issueRadar.map(issue => (
                   <div
                     key={issue.id}
                     onClick={() => setSelectedIssueId(issue.id)}
                     style={{
-                      border: selectedIssueId === issue.id ? "1.5px solid #C48B28" : "1px solid rgba(23, 24, 27, 0.08)",
+                      border: selectedIssueId === issue.id ? "1.5px solid #C48B28" : "1px solid rgba(23, 24, 27, 0.07)",
                       background: selectedIssueId === issue.id ? "rgba(196, 139, 40, 0.06)" : "#FAF9F6",
-                      borderRadius: 10,
-                      padding: "12px 14px",
+                      borderRadius: 8,
+                      padding: "10px 12px",
                       cursor: "pointer",
                       transition: "all 0.15s ease"
                     }}
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: "#17181B" }}>{issue.name}</span>
-                      <span style={{ fontSize: 10, fontWeight: 800, color: issue.signal === "HIGH" ? "#DC2626" : "#D97706", background: issue.signal === "HIGH" ? "rgba(220, 38, 38, 0.1)" : "rgba(217, 119, 6, 0.1)", padding: "2px 6px", borderRadius: 4 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+                      <span style={{ fontSize: 12.5, fontWeight: 600, color: "#17181B" }}>{issue.name}</span>
+                      <span style={{ fontSize: 9.5, fontWeight: 700, color: issue.signal === "HIGH" ? "#DC2626" : "#D97706", background: issue.signal === "HIGH" ? "rgba(220, 38, 38, 0.1)" : "rgba(217, 119, 6, 0.1)", padding: "1px 5px", borderRadius: 3 }}>
                         {issue.signal} SIGNAL
                       </span>
                     </div>
@@ -600,35 +601,35 @@ export default function ConstituencyWarRoom() {
           </div>
 
           {/* PUBLIC NARRATIVE RADAR */}
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.1)", borderRadius: 16, padding: "24px 20px", marginBottom: 32 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 18px", marginBottom: 24 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 800, color: "#17181B", margin: 0 }}>
+                <h3 style={{ fontSize: 14.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.01em", margin: 0 }}>
                   PUBLIC NARRATIVE RADAR
                 </h3>
-                <p style={{ fontSize: 12, color: "#686A70", margin: "2px 0 0 0" }}>
+                <p style={{ fontSize: 11.5, color: "#686A70", margin: "2px 0 0 0" }}>
                   Monitors publicly stated claims. Never silently presents allegations as fact.
                 </p>
               </div>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#9E6D1C" }}>
+              <span style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C" }}>
                 {constituency.narratives.length} ACTIVE SIGNALS
               </span>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 14 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 12 }}>
               {constituency.narratives.map(nar => (
-                <div key={nar.id} style={{ border: "1px solid rgba(23, 24, 27, 0.08)", background: "#FAF9F6", borderRadius: 10, padding: "14px 16px" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#8A8D95", marginBottom: 4 }}>
+                <div key={nar.id} style={{ border: "1px solid rgba(23, 24, 27, 0.07)", background: "#FAF9F6", borderRadius: 8, padding: "12px 14px" }}>
+                  <div style={{ fontSize: 10.5, fontWeight: 600, color: "#8A8D95", marginBottom: 4 }}>
                     SOURCE: {nar.source} · {nar.timestamp}
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#17181B", lineHeight: 1.4, marginBottom: 10 }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 500, color: "#17181B", lineHeight: 1.45, marginBottom: 8 }}>
                     "{nar.claim}"
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: nar.verification.includes("Contradicted") ? "#DC2626" : "#059669" }}>
+                    <span style={{ fontSize: 10.5, fontWeight: 700, color: nar.verification.includes("Contradicted") ? "#DC2626" : "#059669" }}>
                       VERIFICATION: {nar.verification}
                     </span>
-                    <span style={{ fontSize: 10, fontWeight: 800, background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.15)", borderRadius: 4, padding: "2px 6px" }}>
+                    <span style={{ fontSize: 9.5, fontWeight: 700, background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.12)", borderRadius: 3, padding: "1px 5px" }}>
                       {nar.responseStatus}
                     </span>
                   </div>
@@ -638,23 +639,23 @@ export default function ConstituencyWarRoom() {
           </div>
 
           {/* 15-MINUTE RAPID RESPONSE WORKFLOW */}
-          <div style={{ background: "#FFFFFF", border: "1.5px solid rgba(196, 139, 40, 0.35)", borderRadius: 16, padding: "24px 20px", marginBottom: 40, boxShadow: "0 10px 30px rgba(196, 139, 40, 0.06)" }}>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 18 }}>
+          <div style={{ background: "#FFFFFF", border: "1.5px solid rgba(196, 139, 40, 0.3)", borderRadius: 14, padding: "20px 20px", marginBottom: 28, boxShadow: "0 6px 20px rgba(196, 139, 40, 0.04)" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 14 }}>
               <div>
-                <span style={{ fontSize: 11, fontWeight: 800, color: "#9E6D1C", letterSpacing: "0.08em" }}>
+                <span style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C", letterSpacing: "0.08em" }}>
                   REPUTATION & VERIFICATION PIPELINE
                 </span>
-                <h3 style={{ fontSize: 18, fontWeight: 800, color: "#17181B", margin: "2px 0 0 0" }}>
+                <h3 style={{ fontSize: 15.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.01em", margin: "2px 0 0 0" }}>
                   GARUDA RAPID RESPONSE (15-MINUTE TIMELINE)
                 </h3>
               </div>
-              <div style={{ fontSize: 12, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "4px 10px", borderRadius: 6 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "3px 8px", borderRadius: 5 }}>
                 ACTIVE TARGET: {activeIssue.name}
               </div>
             </div>
 
             {/* TIMELINE PROGRESS BARS */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 8, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 8, marginBottom: 16 }}>
               {[
                 { time: "00:00", label: "SIGNAL DETECTED" },
                 { time: "03:00", label: "SOURCE IDENTIFIED" },
@@ -662,15 +663,15 @@ export default function ConstituencyWarRoom() {
                 { time: "10:00", label: "FACT CHECK COMPLETE" },
                 { time: "15:00", label: "RESPONSE READY" }
               ].map((step, sIdx) => (
-                <div key={sIdx} style={{ background: "#FAF9F6", border: "1px solid rgba(196, 139, 40, 0.25)", borderRadius: 8, padding: "10px", textAlign: "center" }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: "#9E6D1C" }}>{step.time}</div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: "#17181B", marginTop: 2 }}>{step.label}</div>
+                <div key={sIdx} style={{ background: "#FAF9F6", border: "1px solid rgba(196, 139, 40, 0.2)", borderRadius: 7, padding: "8px 6px", textAlign: "center" }}>
+                  <div style={{ fontSize: 10.5, fontWeight: 800, color: "#9E6D1C" }}>{step.time}</div>
+                  <div style={{ fontSize: 9.5, fontWeight: 600, color: "#17181B", marginTop: 2 }}>{step.label}</div>
                 </div>
               ))}
             </div>
 
             {/* REBUTTAL ASSET TABS */}
-            <div style={{ display: "flex", gap: 8, borderBottom: "1px solid rgba(23, 24, 27, 0.08)", paddingBottom: 10, marginBottom: 14 }}>
+            <div style={{ display: "flex", gap: 6, borderBottom: "1px solid rgba(23, 24, 27, 0.08)", paddingBottom: 8, marginBottom: 12 }}>
               {[
                 { id: "summary", label: "Factual Summary" },
                 { id: "statement", label: "Official Statement Draft" },
@@ -684,10 +685,10 @@ export default function ConstituencyWarRoom() {
                     background: activeRebuttalTab === tab.id ? "#17181B" : "transparent",
                     color: activeRebuttalTab === tab.id ? "#FFFFFF" : "#525866",
                     border: "none",
-                    borderRadius: 6,
-                    padding: "6px 12px",
-                    fontSize: 12,
-                    fontWeight: 700,
+                    borderRadius: 5,
+                    padding: "5px 12px",
+                    fontSize: 11.5,
+                    fontWeight: 600,
                     cursor: "pointer"
                   }}
                 >
@@ -696,7 +697,7 @@ export default function ConstituencyWarRoom() {
               ))}
             </div>
 
-            <div style={{ background: "#FAF9F6", borderRadius: 10, padding: "16px", fontSize: 13, lineHeight: 1.6, color: "#292B30" }}>
+            <div style={{ background: "#FAF9F6", borderRadius: 8, padding: "14px 16px", fontSize: 12.5, lineHeight: 1.58, color: "#292B30" }}>
               {activeRebuttalTab === "summary" && (
                 <div>
                   <strong>Factual Synthesis:</strong> The claim alleging negligence regarding {activeIssue.name} in {constituency.name} is contradicted by official municipal sanction records showing active tenders and civil allocations.
@@ -721,20 +722,20 @@ export default function ConstituencyWarRoom() {
           </div>
 
           {/* COMMERCIAL COMMAND SECTION */}
-          <div ref={commandRef} style={{ background: "#FFFFFF", border: "1.5px solid rgba(196, 139, 40, 0.3)", borderRadius: 20, padding: "36px 24px", boxShadow: "0 20px 48px rgba(0,0,0,0.06)" }}>
-            <div style={{ textAlign: "center", maxWidth: 680, margin: "0 auto 32px auto" }}>
-              <div style={{ display: "inline-block", background: "rgba(196, 139, 40, 0.12)", color: "#9E6D1C", fontSize: 11, fontWeight: 800, padding: "4px 12px", borderRadius: 999, marginBottom: 12 }}>
+          <div ref={commandRef} style={{ background: "#FFFFFF", border: "1.5px solid rgba(196, 139, 40, 0.28)", borderRadius: 16, padding: "28px 20px", boxShadow: "0 12px 36px rgba(0,0,0,0.04)" }}>
+            <div style={{ textAlign: "center", maxWidth: 680, margin: "0 auto 26px auto" }}>
+              <div style={{ display: "inline-block", background: "rgba(196, 139, 40, 0.12)", color: "#9E6D1C", fontSize: 10.5, fontWeight: 700, padding: "3px 10px", borderRadius: 999, marginBottom: 10, letterSpacing: "0.06em" }}>
                 COMMERCIAL ACTIVATION // SOVEREIGN ENGINE
               </div>
-              <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 800, color: "#17181B", marginBottom: 10 }}>
+              <h2 style={{ fontSize: "clamp(1.4rem, 2.5vw, 1.85rem)", fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", marginBottom: 8 }}>
                 ACTIVATE GARUDA COMMAND
               </h2>
-              <p style={{ fontSize: 14, color: "#525866", lineHeight: 1.5 }}>
+              <p style={{ fontSize: 13, color: "#525866", lineHeight: 1.5, maxWidth: 640, margin: "0 auto" }}>
                 Aapne GARUDA ki intelligence capability dekh li. Ab isi intelligence ko continuous operational command layer mein convert kijiye.
               </p>
 
               {/* Currency Selector */}
-              <div style={{ display: "inline-flex", background: "#FAF9F6", border: "1px solid rgba(23, 24, 27, 0.1)", borderRadius: 8, padding: 4, marginTop: 12 }}>
+              <div style={{ display: "inline-flex", background: "#FAF9F6", border: "1px solid rgba(23, 24, 27, 0.1)", borderRadius: 7, padding: 3, marginTop: 10 }}>
                 {["INR", "USD", "AED", "GBP", "EUR"].map(curr => (
                   <button
                     key={curr}
@@ -743,10 +744,10 @@ export default function ConstituencyWarRoom() {
                       background: currency === curr ? "#17181B" : "transparent",
                       color: currency === curr ? "#FFFFFF" : "#525866",
                       border: "none",
-                      borderRadius: 6,
-                      padding: "4px 12px",
-                      fontSize: 12,
-                      fontWeight: 700,
+                      borderRadius: 5,
+                      padding: "3px 10px",
+                      fontSize: 11,
+                      fontWeight: 600,
                       cursor: "pointer"
                     }}
                   >
@@ -759,7 +760,7 @@ export default function ConstituencyWarRoom() {
             {/* PAYMENT STEP 1: SELECT PLAN */}
             {paymentStep === "SELECT_PLAN" && (
               <div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20, marginBottom: 32 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16, marginBottom: 24 }}>
                   {plans.map(plan => {
                     const isSelected = selectedPlanId === plan.id;
                     return (
@@ -768,9 +769,9 @@ export default function ConstituencyWarRoom() {
                         onClick={() => setSelectedPlanId(plan.id)}
                         style={{
                           background: isSelected ? "rgba(196, 139, 40, 0.05)" : "#FAF9F6",
-                          border: isSelected ? "2px solid #C48B28" : "1px solid rgba(23, 24, 27, 0.1)",
-                          borderRadius: 16,
-                          padding: "24px 20px",
+                          border: isSelected ? "1.5px solid #C48B28" : "1px solid rgba(23, 24, 27, 0.08)",
+                          borderRadius: 14,
+                          padding: "20px 18px",
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "space-between",
@@ -780,21 +781,21 @@ export default function ConstituencyWarRoom() {
                         }}
                       >
                         {plan.recommended && (
-                          <div style={{ position: "absolute", top: -11, right: 20, background: "linear-gradient(135deg, #c48b28, #9e6d1c)", color: "#FFFFFF", fontSize: 10, fontWeight: 800, padding: "2px 8px", borderRadius: 999 }}>
+                          <div style={{ position: "absolute", top: -10, right: 16, background: "linear-gradient(135deg, #c48b28, #9e6d1c)", color: "#FFFFFF", fontSize: 9.5, fontWeight: 700, padding: "2px 7px", borderRadius: 999, letterSpacing: "0.05em" }}>
                             RECOMMENDED
                           </div>
                         )}
                         <div>
-                          <div style={{ fontSize: 16, fontWeight: 800, color: "#17181B", marginBottom: 4 }}>{plan.name}</div>
-                          <div style={{ fontSize: 12, color: "#686A70", marginBottom: 14 }}>{plan.tier}</div>
-                          <div style={{ fontSize: 28, fontWeight: 800, color: "#17181B", marginBottom: 4 }}>
+                          <div style={{ fontSize: 14.5, fontWeight: 700, color: "#17181B", marginBottom: 2 }}>{plan.name}</div>
+                          <div style={{ fontSize: 11.5, color: "#686A70", marginBottom: 12 }}>{plan.tier}</div>
+                          <div style={{ fontSize: 23, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", marginBottom: 2 }}>
                             {plan.formattedPrice}
                           </div>
-                          <div style={{ fontSize: 11, color: "#8A8D95", marginBottom: 20 }}>{plan.billingCycle}</div>
+                          <div style={{ fontSize: 10.5, color: "#8A8D95", marginBottom: 16 }}>{plan.billingCycle}</div>
 
                           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                             {plan.features.map((feat, fIdx) => (
-                              <li key={fIdx} style={{ fontSize: 12, color: "#292B30", marginBottom: 8, display: "flex", alignItems: "flex-start", gap: 8 }}>
+                              <li key={fIdx} style={{ fontSize: 11.5, color: "#292B30", marginBottom: 6, display: "flex", alignItems: "flex-start", gap: 7 }}>
                                 <span style={{ color: "#059669", fontWeight: "bold" }}>✓</span>
                                 <span>{feat}</span>
                               </li>
@@ -807,13 +808,13 @@ export default function ConstituencyWarRoom() {
                           onClick={() => setPaymentStep("CLIENT_INFO")}
                           style={{
                             width: "100%",
-                            marginTop: 20,
-                            padding: "12px",
-                            borderRadius: 8,
+                            marginTop: 18,
+                            padding: "10px",
+                            borderRadius: 7,
                             border: "none",
                             background: isSelected ? "linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%)" : "#17181B",
                             color: "#FFFFFF",
-                            fontSize: 13,
+                            fontSize: 12,
                             fontWeight: 700,
                             cursor: "pointer"
                           }}
@@ -829,71 +830,71 @@ export default function ConstituencyWarRoom() {
 
             {/* PAYMENT STEP 2: CLIENT DETAILS FORM */}
             {paymentStep === "CLIENT_INFO" && (
-              <form onSubmit={handleCreateOrder} style={{ maxWidth: 540, margin: "0 auto" }}>
-                <h3 style={{ fontSize: 18, fontWeight: 800, color: "#17181B", marginBottom: 6 }}>
+              <form onSubmit={handleCreateOrder} style={{ maxWidth: 520, margin: "0 auto" }}>
+                <h3 style={{ fontSize: 16.5, fontWeight: 700, color: "#17181B", marginBottom: 4 }}>
                   Campaign & Principal Details
                 </h3>
-                <p style={{ fontSize: 13, color: "#686A70", marginBottom: 20 }}>
+                <p style={{ fontSize: 12, color: "#686A70", marginBottom: 16 }}>
                   Enter primary contact information for territorial locking of {constituency.name}.
                 </p>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 24 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#292B30", marginBottom: 4 }}>Principal / Campaign Leader Name</label>
+                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#292B30", marginBottom: 3 }}>Principal / Campaign Leader Name</label>
                     <input
                       type="text"
                       required
                       value={customerInfo.name}
                       onChange={e => setCustomerInfo({ ...customerInfo, name: e.target.value })}
                       placeholder="e.g. Adv. Rajesh Sharma"
-                      style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(23, 24, 27, 0.15)", fontSize: 14 }}
+                      style={{ width: "100%", padding: "8px 12px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", fontSize: 13 }}
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#292B30", marginBottom: 4 }}>Official Contact Number</label>
+                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#292B30", marginBottom: 3 }}>Official Contact Number</label>
                     <input
                       type="tel"
                       required
                       value={customerInfo.phone}
                       onChange={e => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
                       placeholder="e.g. +91 98765 43210"
-                      style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(23, 24, 27, 0.15)", fontSize: 14 }}
+                      style={{ width: "100%", padding: "8px 12px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", fontSize: 13 }}
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#292B30", marginBottom: 4 }}>Confidential Official Email</label>
+                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#292B30", marginBottom: 3 }}>Confidential Official Email</label>
                     <input
                       type="email"
                       value={customerInfo.email}
                       onChange={e => setCustomerInfo({ ...customerInfo, email: e.target.value })}
                       placeholder="e.g. leader@campaign.org"
-                      style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(23, 24, 27, 0.15)", fontSize: 14 }}
+                      style={{ width: "100%", padding: "8px 12px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", fontSize: 13 }}
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#292B30", marginBottom: 4 }}>Political Affiliation / Independent</label>
+                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#292B30", marginBottom: 3 }}>Political Affiliation / Independent</label>
                     <input
                       type="text"
                       value={customerInfo.party}
                       onChange={e => setCustomerInfo({ ...customerInfo, party: e.target.value })}
                       placeholder="e.g. Major Party Candidate / Independent"
-                      style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(23, 24, 27, 0.15)", fontSize: 14 }}
+                      style={{ width: "100%", padding: "8px 12px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", fontSize: 13 }}
                     />
                   </div>
                 </div>
 
-                <div style={{ display: "flex", gap: 12 }}>
+                <div style={{ display: "flex", gap: 10 }}>
                   <button
                     type="button"
                     onClick={() => setPaymentStep("SELECT_PLAN")}
-                    style={{ flex: 1, padding: "12px", borderRadius: 8, border: "1px solid rgba(23, 24, 27, 0.15)", background: "#FFFFFF", color: "#525866", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+                    style={{ flex: 1, padding: "10px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", background: "#FFFFFF", color: "#525866", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
                   >
                     BACK
                   </button>
                   <button
                     type="submit"
                     disabled={isProcessingPayment}
-                    style={{ flex: 2, padding: "12px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #c48b28, #9e6d1c)", color: "#FFFFFF", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+                    style={{ flex: 2, padding: "10px", borderRadius: 7, border: "none", background: "linear-gradient(135deg, #c48b28, #9e6d1c)", color: "#FFFFFF", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
                   >
                     {isProcessingPayment ? "CREATING ORDER..." : "PROCEED TO ACTIVATION"}
                   </button>
@@ -903,19 +904,19 @@ export default function ConstituencyWarRoom() {
 
             {/* PAYMENT STEP 3: ORDER CONFIRMATION & PAYMENT */}
             {paymentStep === "CONFIRMATION" && activeOrder && (
-              <div style={{ maxWidth: 540, margin: "0 auto", background: "#FAF9F6", border: "1px solid rgba(196, 139, 40, 0.3)", borderRadius: 16, padding: "24px" }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: "#9E6D1C", marginBottom: 4 }}>ORDER INITIALIZED</div>
-                <h3 style={{ fontSize: 20, fontWeight: 800, color: "#17181B", marginBottom: 12 }}>
+              <div style={{ maxWidth: 520, margin: "0 auto", background: "#FAF9F6", border: "1px solid rgba(196, 139, 40, 0.3)", borderRadius: 14, padding: "20px" }}>
+                <div style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C", marginBottom: 3 }}>ORDER INITIALIZED</div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#17181B", marginBottom: 10 }}>
                   Order #{activeOrder.orderId}
                 </h3>
-                <div style={{ fontSize: 13, color: "#292B30", lineHeight: 1.6, marginBottom: 20 }}>
+                <div style={{ fontSize: 12.5, color: "#292B30", lineHeight: 1.6, marginBottom: 16 }}>
                   <div><strong>Constituency:</strong> {activeOrder.constituency.name} ({activeOrder.constituency.state})</div>
                   <div><strong>Selected Package:</strong> {activeOrder.plan.name}</div>
                   <div><strong>Total Amount:</strong> {activeOrder.currency} {activeOrder.amount.toLocaleString()}</div>
                   <div><strong>Exclusivity Status:</strong> RESERVED (30 Minutes Lock)</div>
                 </div>
 
-                <div style={{ background: "rgba(196, 139, 40, 0.08)", border: "1px solid rgba(196, 139, 40, 0.25)", borderRadius: 8, padding: "10px 12px", marginBottom: 14, fontSize: 11, color: "#9E6D1C", lineHeight: 1.5 }}>
+                <div style={{ background: "rgba(196, 139, 40, 0.08)", border: "1px solid rgba(196, 139, 40, 0.25)", borderRadius: 7, padding: "9px 11px", marginBottom: 12, fontSize: 11, color: "#9E6D1C", lineHeight: 1.5 }}>
                   <strong>AUDIT SIMULATION NOTICE:</strong> This verification test invokes server-side cryptographic checks, reserves territorial exclusivity, generates a valid tax invoice, and alerts the Founder via Telegram without moving live funds.
                 </div>
 
@@ -923,11 +924,11 @@ export default function ConstituencyWarRoom() {
                   type="button"
                   onClick={handleSimulatePayment}
                   disabled={isProcessingPayment}
-                  style={{ width: "100%", padding: "14px", borderRadius: 8, border: "none", background: "#059669", color: "#FFFFFF", fontSize: 14, fontWeight: 800, cursor: "pointer", boxShadow: "0 6px 18px rgba(5, 150, 105, 0.25)", marginBottom: 10 }}
+                  style={{ width: "100%", padding: "12px", borderRadius: 7, border: "none", background: "#059669", color: "#FFFFFF", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 14px rgba(5, 150, 105, 0.2)", marginBottom: 8 }}
                 >
                   {isProcessingPayment ? "VERIFYING CRYPTOGRAPHIC PROOF..." : "RUN VERIFIED AUDIT AUTHORIZATION"}
                 </button>
-                <p style={{ fontSize: 11, color: "#8A8D95", textAlign: "center", margin: 0 }}>
+                <p style={{ fontSize: 10.5, color: "#8A8D95", textAlign: "center", margin: 0 }}>
                   Server-side cryptographic verification with SHA-256 HMAC integrity.
                 </p>
               </div>
@@ -935,18 +936,18 @@ export default function ConstituencyWarRoom() {
 
             {/* PAYMENT SUCCESS CONFIRMATION */}
             {paymentStep === "SUCCESS" && activeOrder && (
-              <div style={{ maxWidth: 560, margin: "0 auto", background: "#FFFFFF", border: "2px solid #059669", borderRadius: 16, padding: "28px 24px", textAlign: "center" }}>
-                <div style={{ width: 56, height: 56, borderRadius: "50%", background: "rgba(5, 150, 105, 0.12)", color: "#059669", fontSize: 26, display: "inline-grid", placeItems: "center", marginBottom: 12 }}>
+              <div style={{ maxWidth: 540, margin: "0 auto", background: "#FFFFFF", border: "2px solid #059669", borderRadius: 14, padding: "24px 20px", textAlign: "center" }}>
+                <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(5, 150, 105, 0.12)", color: "#059669", fontSize: 22, display: "inline-grid", placeItems: "center", marginBottom: 10 }}>
                   ✓
                 </div>
-                <h3 style={{ fontSize: 24, fontWeight: 800, color: "#17181B", marginBottom: 6 }}>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: "#17181B", marginBottom: 4 }}>
                   GARUDA COMMAND ACTIVATED
                 </h3>
-                <p style={{ fontSize: 13, color: "#525866", marginBottom: 20 }}>
+                <p style={{ fontSize: 12.5, color: "#525866", marginBottom: 16 }}>
                   Constituency {activeOrder.constituency.name} is now locked under territorial exclusivity.
                 </p>
 
-                <div style={{ background: "#FAF9F6", borderRadius: 10, padding: "14px 16px", textAlign: "left", fontSize: 12, lineHeight: 1.7, marginBottom: 20 }}>
+                <div style={{ background: "#FAF9F6", borderRadius: 8, padding: "12px 14px", textAlign: "left", fontSize: 11.5, lineHeight: 1.65, marginBottom: 16 }}>
                   <div><strong>Order ID:</strong> {activeOrder.orderId}</div>
                   <div><strong>Transaction ID:</strong> {activeOrder.transactionId || "TXN-VERIFIED"}</div>
                   <div><strong>Invoice Number:</strong> {activeOrder.invoiceNumber || "INV-2026-001"}</div>
@@ -958,13 +959,13 @@ export default function ConstituencyWarRoom() {
                 <div style={{ display: "flex", gap: 10 }}>
                   <Link
                     to="/command-center"
-                    style={{ flex: 1, padding: "12px", borderRadius: 8, background: "#17181B", color: "#FFFFFF", fontSize: 13, fontWeight: 700, textDecoration: "none", display: "grid", placeItems: "center" }}
+                    style={{ flex: 1, padding: "10px", borderRadius: 7, background: "#17181B", color: "#FFFFFF", fontSize: 12, fontWeight: 700, textDecoration: "none", display: "grid", placeItems: "center" }}
                   >
                     ENTER COMMAND CENTER
                   </Link>
                   <button
                     onClick={() => alert(`Invoice ${invoiceData?.invoiceNumber || activeOrder.invoiceNumber} downloaded. Total: ${activeOrder.currency} ${activeOrder.amount}`)}
-                    style={{ flex: 1, padding: "12px", borderRadius: 8, border: "1px solid rgba(23, 24, 27, 0.15)", background: "#FFFFFF", color: "#17181B", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+                    style={{ flex: 1, padding: "10px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.15)", background: "#FFFFFF", color: "#17181B", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
                   >
                     DOWNLOAD INVOICE
                   </button>
@@ -974,24 +975,24 @@ export default function ConstituencyWarRoom() {
 
             {/* PAYMENT FAILED GRACEFUL RECOVERY */}
             {paymentStep === "FAILED" && (
-              <div style={{ maxWidth: 540, margin: "0 auto", background: "#FFFFFF", border: "1.5px solid #DC2626", borderRadius: 16, padding: "28px 24px", textAlign: "center" }}>
-                <div style={{ fontSize: 28, color: "#DC2626", marginBottom: 8 }}>⚠️</div>
-                <h3 style={{ fontSize: 20, fontWeight: 800, color: "#17181B", marginBottom: 6 }}>
+              <div style={{ maxWidth: 520, margin: "0 auto", background: "#FFFFFF", border: "1.5px solid #DC2626", borderRadius: 14, padding: "24px 20px", textAlign: "center" }}>
+                <div style={{ fontSize: 24, color: "#DC2626", marginBottom: 6 }}>⚠️</div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#17181B", marginBottom: 4 }}>
                   PAYMENT NOT COMPLETED
                 </h3>
-                <p style={{ fontSize: 13, color: "#525866", marginBottom: 18 }}>
+                <p style={{ fontSize: 12.5, color: "#525866", marginBottom: 16 }}>
                   Aapka order surakshit hai. Transaction complete nahi hua: {paymentError || "Gateway timeout"}.
                 </p>
                 <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
                   <button
                     onClick={() => setPaymentStep("CONFIRMATION")}
-                    style={{ padding: "10px 18px", borderRadius: 8, background: "#17181B", color: "#FFFFFF", border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+                    style={{ padding: "9px 16px", borderRadius: 7, background: "#17181B", color: "#FFFFFF", border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
                   >
                     RETRY PAYMENT
                   </button>
                   <a
                     href="mailto:praveen@garudaos.in?subject=War Room Payment Support"
-                    style={{ padding: "10px 18px", borderRadius: 8, border: "1px solid rgba(23, 24, 27, 0.2)", background: "#FFFFFF", color: "#17181B", fontSize: 13, fontWeight: 700, textDecoration: "none" }}
+                    style={{ padding: "9px 16px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.18)", background: "#FFFFFF", color: "#17181B", fontSize: 12, fontWeight: 700, textDecoration: "none" }}
                   >
                     CONTACT SUPPORT
                   </a>
@@ -1002,8 +1003,8 @@ export default function ConstituencyWarRoom() {
           </div>
 
           {/* LEGAL & ANTI-FABRICATION GOVERNANCE NOTICE */}
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 16, padding: "20px 24px", marginTop: 24, fontSize: 12, color: "#686A70", lineHeight: 1.6 }}>
-            <strong style={{ color: "#17181B", display: "block", marginBottom: 6, fontSize: 13 }}>
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "16px 20px", marginTop: 20, fontSize: 11.5, color: "#686A70", lineHeight: 1.6 }}>
+            <strong style={{ color: "#17181B", display: "block", marginBottom: 4, fontSize: 12, fontWeight: 700 }}>
               🦅 GARUDA SOVEREIGN TRUTH LAW & CIVIC INTELLIGENCE GOVERNANCE MANDATE
             </strong>
             GARUDA WAR ROOM operates strictly on verified aggregate data from the Election Commission of India (ECI), public municipal gazettes, open civic grievance portals, and public information streams. GARUDA does NOT conduct individual voter surveillance, does NOT access private residential records, does NOT tap private WhatsApp groups, and does NOT fabricate telemetry or guarantee electoral victories. Every metric is formally classified as VERIFIED, PARTIAL, or INFERRED. Territorial exclusivity guarantees that only one registered campaign organization is onboarded per constituency cluster.
@@ -1011,6 +1012,9 @@ export default function ConstituencyWarRoom() {
 
         </div>
       )}
+
+        </div>
+      </PublicChrome>
 
       {/* MODAL: 12-SECTION AI CONSTITUENCY BRIEF */}
       {briefModalOpen && briefData && (
@@ -1098,14 +1102,14 @@ export default function ConstituencyWarRoom() {
       )}
 
       {/* STICKY BOTTOM BAR FOR MOBILE SCREENS */}
-      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.95)", backdropFilter: "blur(10px)", borderTop: "1px solid rgba(23, 24, 27, 0.1)", padding: "12px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 99 }}>
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(23, 24, 27, 0.08)", padding: "8px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 99 }}>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 800, color: "#9E6D1C" }}>{constituency.name}</div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#17181B" }}>TERRITORIAL WAR ROOM</div>
+          <div style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C" }}>{constituency.name}</div>
+          <div style={{ fontSize: 11.5, fontWeight: 700, color: "#17181B" }}>TERRITORIAL WAR ROOM</div>
         </div>
         <button
           onClick={() => commandRef.current?.scrollIntoView({ behavior: "smooth" })}
-          style={{ background: "linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%)", color: "#FFFFFF", border: "none", padding: "10px 20px", borderRadius: 8, fontSize: 12, fontWeight: 800, letterSpacing: "0.04em", cursor: "pointer", boxShadow: "0 4px 12px rgba(196, 139, 40, 0.3)" }}
+          style={{ background: "linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%)", color: "#FFFFFF", border: "none", padding: "8px 16px", borderRadius: 7, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.03em", cursor: "pointer", boxShadow: "0 2px 8px rgba(196, 139, 40, 0.25)" }}
         >
           ACTIVATE GARUDA COMMAND
         </button>
