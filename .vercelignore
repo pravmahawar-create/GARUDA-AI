@@ -25,3 +25,4 @@ data/chrome-profile-3/
 robocopy_garuda.log
 eng.traineddata
 backend-node/
+api/founder-command.js

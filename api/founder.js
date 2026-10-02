@@ -162,6 +162,18 @@ module.exports = async function handler(req, res) {
     }
 
     // -------------------------------------------------------------
+    // ACTION: COMMERCIAL (GET /api/founder/command/commercial)
+    // -------------------------------------------------------------
+    if (action === "commercial" || action === "revenue" || action === "pipeline") {
+      const commercialData = await founderCommandService.getCommercialSnapshot();
+      return res.status(200).json({
+        success: true,
+        generatedAt: new Date().toISOString(),
+        data: commercialData
+      });
+    }
+
+    // -------------------------------------------------------------
     // ACTION: WORKFORCE (GET /api/founder/command/workforce)
     // -------------------------------------------------------------
     if (action === "workforce" || action === "agents") {
