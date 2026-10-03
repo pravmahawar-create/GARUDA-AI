@@ -321,7 +321,7 @@ export default function MissionControlModule({
               Cadre Network Telemetry
             </div>
             <div style={{ fontSize: "0.75rem", color: p.textMuted, lineHeight: 1.45 }}>
-              348 Booth Nodes modeled in benchmark mode. Physical link unengaged.
+              {constituency?.pollingStructure?.totalBooths || 300} Booth Nodes modeled in benchmark mode. Physical link unengaged.
             </div>
           </div>
 
@@ -337,7 +337,7 @@ export default function MissionControlModule({
               Civic Infrastructure Signals
             </div>
             <div style={{ fontSize: "0.75rem", color: p.textMuted, lineHeight: 1.45 }}>
-              Pachpakhadi & Kopri transit belts flagged for high citizen grievance count.
+              {constituency?.pockets?.[0]?.name || "Central Core"} & {constituency?.pockets?.[1]?.name || "Transit"} belts flagged for high citizen grievance count.
             </div>
           </div>
 
@@ -353,7 +353,7 @@ export default function MissionControlModule({
               15-Min Rapid Rebuttal
             </div>
             <div style={{ fontSize: "0.75rem", color: p.textMuted, lineHeight: 1.45 }}>
-              Municipal water pipeline draft ready for candidate human authorization.
+              Counter-rebuttal draft regarding {constituency?.pockets?.[0]?.primaryIssue || "civic works"} ready for candidate authorization.
             </div>
           </div>
 

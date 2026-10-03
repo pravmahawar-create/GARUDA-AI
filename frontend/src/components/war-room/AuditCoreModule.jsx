@@ -14,17 +14,26 @@ export default function AuditCoreModule({
   const p = tokens.palette;
   const [filterAction, setFilterAction] = useState("ALL");
 
+  const districtName = constituency?.district || "Constituency";
+  const stateCode = constituency?.stateCode || "IN";
+  const assemblyNo = constituency?.assemblyNumber || 101;
+  const munPrefix = (districtName.slice(0, 3).toUpperCase()) + "MC";
+  const totalBooths = constituency?.pollingStructure?.totalBooths || 300;
+  const workOrderNo = (assemblyNo * 19 + 201) % 9000 + 1000;
+  const firstPocket = constituency?.pockets?.[0]?.name || "Core Sector";
+  const cleanConstituencyId = (constituency?.id || `constituency-${assemblyNo}`).toUpperCase().replace(/-/g, "_");
+
   const AUDIT_LOGS = [
     {
       id: "aud-001",
       when: "Today, 11:21:44 IST",
       who: "AI Synthesis Daemon (ID: #SYS-RAG-902)",
       what: "Generated 15-Minute Crisis Rebuttal Script",
-      source: "TMC Municipal Work Order #4102",
+      source: `${munPrefix} Municipal Work Order #${workOrderNo}`,
       before: "Status: UNRESOLVED_ALLEGATION",
       after: "Status: REBUTTAL_DRAFT_PENDING_HUMAN",
       approval: "Awaiting Campaign Leader Auth",
-      result: "SUCCESS (Hash: SHA-4102-EF)",
+      result: `SUCCESS (Hash: SHA-${workOrderNo}-EF)`,
       type: "REBUTTAL"
     },
     {
@@ -32,11 +41,11 @@ export default function AuditCoreModule({
       when: "Today, 11:20:19 IST",
       who: "Electoral Ingestion Engine",
       what: "Form 20 Dataset Checksum Audit",
-      source: "ECI Maharashtra Gazette 2024",
+      source: `ECI ${constituency?.state || "State"} Gazette 2024`,
       before: "Integrity: UNVERIFIED",
       after: "Integrity: 100% VERIFIED",
       approval: "Automated Cryptographic Pass",
-      result: "SUCCESS (Hash: SHA-148-OK)",
+      result: `SUCCESS (Hash: SHA-${assemblyNo}-OK)`,
       type: "DATA"
     },
     {
@@ -44,11 +53,11 @@ export default function AuditCoreModule({
       when: "Today, 10:48:02 IST",
       who: "War Room Gateway Operator",
       what: "Resolved Constituency Intelligence Model",
-      source: "Benchmark Registry (Thane 148)",
+      source: `Benchmark Registry (${constituency?.name || "Constituency"})`,
       before: "Model: NULL",
-      after: "Model: THANE_148_ACTIVE",
+      after: `Model: ${cleanConstituencyId}_ACTIVE`,
       approval: "System Handshake Protocol",
-      result: "INITIALIZED (348 Booths Loaded)",
+      result: `INITIALIZED (${totalBooths} Booths Loaded)`,
       type: "SYSTEM"
     },
     {
@@ -67,12 +76,12 @@ export default function AuditCoreModule({
       id: "aud-005",
       when: "Yesterday, 19:10:04 IST",
       who: "Civic Issue Scanner Daemon",
-      what: "Ingested Public TMC Grievances",
+      what: `Ingested Public ${munPrefix} Grievances`,
       source: "Public Civic Portal RSS",
       before: "References Count: 42",
       after: "References Count: 48 (High Signal)",
       approval: "Automated Frequency Threshold",
-      result: "FLAGGED (Ghodbunder Bottleneck)",
+      result: `FLAGGED (${firstPocket.split(" ")[0]} Bottleneck)`,
       type: "DATA"
     }
   ];

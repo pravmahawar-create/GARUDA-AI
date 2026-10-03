@@ -18,12 +18,22 @@ export default function IntelligenceModule({
   const p = tokens.palette;
   const [filterType, setFilterType] = useState("ALL"); // ALL, CIVIC, NARRATIVE, SYSTEM
 
+  const districtName = constituency?.district || "Constituency";
+  const stateCode = constituency?.stateCode || "IN";
+  const assemblyNo = constituency?.assemblyNumber || 101;
+  const munPrefix = (districtName.slice(0, 3).toUpperCase()) + "MC";
+  const totalBooths = constituency?.pollingStructure?.totalBooths || 300;
+  const turnoutVal = constituency?.historicalTurnout?.lastElectionTurnout || "58.4%";
+  const firstPocket = constituency?.pockets?.[0]?.name || "Core Sector";
+  const primaryNarrative = constituency?.narratives?.[0]?.claim || `Opposition allegation reported regarding ${firstPocket} infrastructure delay.`;
+  const primaryNarrativeShort = primaryNarrative.length > 70 ? (primaryNarrative.slice(0, 67) + "...") : primaryNarrative;
+
   const INTELLIGENCE_EVENTS = [
-    { time: "11:21:44", type: "REVIEW", source: "Crisis Workflow Module", status: "PENDING", evidenceRef: "ECI-PWD-4102", text: "Municipal pipeline counter-rebuttal script generated. Human sign-off required." },
-    { time: "11:21:02", type: "ANALYSIS", source: "Electoral Polarity Engine", status: "VERIFIED", evidenceRef: "FORM-20-AGG", text: "Turnout calculation completed across 348 Polling Booths (52.84% benchmark)." },
-    { time: "11:20:19", type: "VALIDATION", source: "Evidence Vault Core", status: "VERIFIED", evidenceRef: "SHA256-TH148", text: "Dataset SHA-256 checksum verified against official ECI final roll." },
-    { time: "11:20:04", type: "DATA INGESTION", source: "Municipal Gazette Scraper", status: "VERIFIED", evidenceRef: "TMC-GAZ-089", text: "Booth cluster dataset synchronized for Wards 14, 18, and 22." },
-    { time: "10:45:12", type: "NARRATIVE DETECTED", source: "Regional Print RSS", status: "PARTIAL", evidenceRef: "NEWS-RSS-88", text: "Opposition allegation reported regarding Majiwada flyover delay." }
+    { time: "11:21:44", type: "REVIEW", source: "Crisis Workflow Module", status: "PENDING", evidenceRef: `${munPrefix}-PWD-${(assemblyNo * 19 + 201) % 9000 + 1000}`, text: `Municipal counter-rebuttal script generated for ${firstPocket}. Human sign-off required.` },
+    { time: "11:21:02", type: "ANALYSIS", source: "Electoral Polarity Engine", status: "VERIFIED", evidenceRef: `FORM-20-${stateCode}`, text: `Turnout calculation completed across ${totalBooths} Polling Booths (${turnoutVal} benchmark).` },
+    { time: "11:20:19", type: "VALIDATION", source: "Evidence Vault Core", status: "VERIFIED", evidenceRef: `SHA256-${stateCode}-${assemblyNo}`, text: `Dataset SHA-256 checksum verified against official ECI ${stateCode} final roll.` },
+    { time: "11:20:04", type: "DATA INGESTION", source: "Municipal Gazette Scraper", status: "VERIFIED", evidenceRef: `${munPrefix}-GAZ-089`, text: `Booth cluster dataset synchronized for ${firstPocket}.` },
+    { time: "10:45:12", type: "NARRATIVE DETECTED", source: "Regional Print RSS", status: "PARTIAL", evidenceRef: `NEWS-RSS-${(assemblyNo % 90) + 10}`, text: `Opposition allegation reported: ${primaryNarrativeShort}` }
   ];
 
   const filteredEvents = filterType === "ALL"

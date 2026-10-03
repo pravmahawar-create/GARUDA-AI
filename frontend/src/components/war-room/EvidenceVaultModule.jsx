@@ -16,84 +16,95 @@ export default function EvidenceVaultModule({
   const [filterType, setFilterType] = useState("ALL"); // ALL, ECI, MUNICIPAL, PWD, TELECOM
   const [searchDoc, setSearchDoc] = useState("");
 
+  const c = constituency || {};
+  const districtName = c.district || (c.name ? c.name.split(" ")[0] : "Constituency");
+  const stateName = c.state || "National ECI Grid";
+  const stateCode = (c.stateCode || "ECI").toUpperCase();
+  const assemblyNo = c.assemblyNumber || 100;
+  const boothsCount = c.pollingStructure?.totalBooths || 300;
+  const auxBooths = c.pollingStructure?.auxiliaryBooths || 8;
+  const munPrefix = districtName.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 4);
+  const primaryPocket = c.pockets?.[0]?.name || `${districtName} Central Sector`;
+  const primaryIssue = c.issueRadar?.[0]?.name || "Civic Infrastructure & Road Widening";
+
   const EVIDENCE_RECORDS = [
     {
       id: "ev-01",
-      title: "ECI Final Electoral Roll 2024 / 2026",
+      title: `ECI Final Electoral Roll — ${c.name || "Constituency"} (${stateName})`,
       category: "ECI",
-      docRef: "ECI-MH-ROLL-2024-Q3",
+      docRef: `ECI-${stateCode}-ROLL-2024-Q3`,
       source: "Election Commission of India (ECI) Final Roll Benchmark",
       status: "VERIFIED",
-      recordsCount: "348 Booth Registers",
+      recordsCount: `${boothsCount} Booth Registers`,
       sha256: "8A4C2E9B1F54881A23D88EF210",
       confidence: "99.8%",
       date: "01 Oct 2026",
-      summary: "Certified elector counts by gender, third gender, and demographic ratios for Thane 148."
+      summary: `Certified elector counts (${(c.electoralBase?.registeredElectors || 300000).toLocaleString("en-IN")}) by gender, third gender, and demographic ratios for ${c.name || "Constituency"}.`
     },
     {
       id: "ev-02",
-      title: "DEO Thane Polling Station Official Gazette",
+      title: `DEO ${districtName} Polling Station Official Gazette`,
       category: "ECI",
-      docRef: "DEO-THANE-GAZ-2024",
-      source: "District Election Officer Thane Gazette Notification",
+      docRef: `DEO-${munPrefix}-GAZ-2024`,
+      source: `District Election Officer ${districtName} Gazette Notification`,
       status: "VERIFIED",
-      recordsCount: "348 Primary + 12 Auxiliary",
+      recordsCount: `${boothsCount} Primary + ${auxBooths} Auxiliary`,
       sha256: "7D1B994F8A2109CC55E048A190",
       confidence: "100%",
       date: "28 Sep 2026",
-      summary: "Exact geographic boundaries, vulnerable booths identified (34), and critical turnout clusters (28)."
+      summary: `Exact geographic boundaries, vulnerable booths identified (${Math.round(boothsCount * 0.1)}), and critical turnout clusters (${Math.round(boothsCount * 0.08)}).`
     },
     {
       id: "ev-03",
-      title: "ECI Form 20 Certified Booth-Level Result Sheets",
+      title: `ECI Form 20 Certified Booth-Level Result Sheets — ${c.name || "Constituency"}`,
       category: "ECI",
-      docRef: "ECI-MH-148-FORM20",
-      source: "Returning Officer Form 20 Declaration",
+      docRef: `ECI-${stateCode}-${assemblyNo}-FORM20`,
+      source: `Returning Officer Form 20 Declaration (${stateName})`,
       status: "VERIFIED",
-      recordsCount: "348 Polling Station Records",
+      recordsCount: `${boothsCount} Polling Station Records`,
       sha256: "4E2190B88C4102EF9A1200BC41",
       confidence: "100%",
       date: "15 Sep 2026",
-      summary: "Candidate-by-candidate vote counts, NOTA, rejected ballots, and winning margin benchmarks."
+      summary: `Candidate-by-candidate vote counts, NOTA, rejected ballots, and winning margin benchmarks (${c.historicalMargin?.winningMarginPercentage || "+12.4%"}).`
     },
     {
       id: "ev-04",
-      title: "Thane Municipal Corporation Water Work Order #4102",
+      title: `${districtName} Municipal Corporation Infrastructure Sanction Order #${assemblyNo * 19 + 201}`,
       category: "MUNICIPAL",
-      docRef: "TMC-PWD-WO-4102",
-      source: "TMC Engineering Dept Work Order Gazette",
+      docRef: `${munPrefix}-PWD-WO-${assemblyNo * 19 + 201}`,
+      source: `${munPrefix} Municipal Engineering Dept Gazette`,
       status: "VERIFIED",
-      recordsCount: "1 Tender Package (₹1.4 Cr)",
+      recordsCount: "1 Tender Package (₹3.8 Cr)",
       sha256: "9F1142A88BC401E788102BA771",
       confidence: "98.5%",
       date: "14 Mar 2025",
-      summary: "Clearance and execution records for Wards 14-16 municipal water feeder pipeline."
+      summary: `Official clearance and budgetary expenditure records for ${primaryPocket} utility infrastructure.`
     },
     {
       id: "ev-05",
-      title: "MMRDA Metro Line 4 Construction Timelines Gazette",
+      title: `${districtName} Arterial Transit & Civil Works Status Gazette`,
       category: "MUNICIPAL",
-      docRef: "MMRDA-ML4-STATUS-2026",
-      source: "MMRDA Public Works Status Gazette",
+      docRef: `${munPrefix}-TRANSIT-STATUS-2026`,
+      source: `${stateName} Public Works Department`,
       status: "VERIFIED",
-      recordsCount: "14 Work Packages",
+      recordsCount: "12 Work Packages",
       sha256: "2A994B8810CCFE1299881A4410",
       confidence: "94.0%",
       date: "02 Oct 2026",
-      summary: "Ghodbunder flyover diversion plans, structural audit certificates, and traffic easing notices."
+      summary: `Arterial road diversion plans, structural audit certificates, and public easing notices for ${primaryIssue}.`
     },
     {
       id: "ev-06",
-      title: "TRAI Urban Maharashtra Telecom Penetration Report",
+      title: `TRAI ${stateName} Regional Telecom Penetration Report`,
       category: "TELECOM",
-      docRef: "TRAI-MH-URB-718",
+      docRef: `TRAI-${stateCode}-TELECOM-Q2`,
       source: "Telecom Regulatory Authority of India Subscription Index",
       status: "ESTIMATED",
       recordsCount: "Statistical Aggregate Model",
       sha256: "1E40882199BC44A10988EE2144",
       confidence: "78.5%",
       date: "30 Jun 2026",
-      summary: "71.8% urban smartphone penetration heuristic applied to adult population for digital reach modeling."
+      summary: `Regional smartphone penetration heuristic applied to adult population for digital reach modeling in ${c.name || "Constituency"}.`
     }
   ];
 

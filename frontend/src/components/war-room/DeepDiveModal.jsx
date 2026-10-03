@@ -15,7 +15,7 @@ const DEEP_DIVE_BLUEPRINTS = {
     inputs: ["Serverless API Heartbeats", "ECI Gazette Ingestion Pipeline", "Field Cadre WebSocket Signals", "HMAC Verification Gateways"],
     process: [
       { step: "01", name: "POLL HEARTBEATS", desc: "Monitors sub-second connectivity across core microservices." },
-      { step: "02", name: "INGESTION CHECK", desc: "Compares current timestamp with authoritative ECI/TMC published gazette digests." },
+      { step: "02", name: "INGESTION CHECK", desc: "Compares current timestamp with authoritative ECI & Municipal published gazette digests." },
       { step: "03", name: "STATE VECTOR EVALUATION", desc: "Computes 5-vector state (GREEN, AMBER, RED, GREY). Never returns GREEN on null payload." },
       { step: "04", name: "EXECUTIVE SYNTHESIS", desc: "Renders top-level mission console with 0% fabricated operational indicators." }
     ],
@@ -30,7 +30,7 @@ const DEEP_DIVE_BLUEPRINTS = {
     title: "INTELLIGENCE RADAR // CIVIC ISSUE & NARRATIVE INGESTION",
     module: "02 — INTELLIGENCE",
     whatItDoes: "Extracts, parses, and correlates verified public civic grievances (RWA petitions, municipal notices, local gazettes) with emerging public opposition claims without individual surveillance.",
-    inputs: ["Municipal Corporation Grievance Portals (TMC/BMC)", "Public Gazette Work Orders", "Public Press Statements", "Public Regional News RSS"],
+    inputs: ["Municipal Corporation Grievance Portals", "Public Gazette Work Orders", "Public Press Statements", "Public Regional News RSS"],
     process: [
       { step: "01", name: "PUBLIC SIGNAL ACQUISITION", desc: "Ingests public municipal records and open digital references." },
       { step: "02", name: "NATURAL LANGUAGE CORRELATION", desc: "Clusters civic issues by ward, booth range, and frequency." },

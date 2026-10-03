@@ -17,6 +17,15 @@ export default function CrisisWorkflowModule({
 }) {
   const p = tokens.palette;
 
+  const districtName = constituency?.district || "Constituency";
+  const stateCode = constituency?.stateCode || "IN";
+  const assemblyNo = constituency?.assemblyNumber || 101;
+  const munPrefix = (districtName.slice(0, 3).toUpperCase()) + "MC";
+  const workOrderNo = (assemblyNo * 19 + 201) % 9000 + 1000;
+  const totalBooths = constituency?.pollingStructure?.totalBooths || 300;
+  const primaryPocket = constituency?.pockets?.[0]?.name || "Central Sector";
+  const activeCivicIssue = (typeof activeIssue === "string" ? activeIssue : activeIssue?.name) || constituency?.pockets?.[0]?.primaryIssue || "Municipal Infrastructure & Water Pressure";
+
   const [activeTab, setActiveTab] = useState("summary"); // summary, statement, script, evidence
   const [pipelineState, setPipelineState] = useState({
     status: "PENDING_APPROVAL", // PENDING_APPROVAL, APPROVED, PUBLISHED
@@ -28,7 +37,7 @@ export default function CrisisWorkflowModule({
   const PIPELINE_STAGES = [
     { step: "01", name: "SIGNAL DETECTED", time: "00:00", status: "COMPLETE", detail: "Keyword trigger detected in regional video stream" },
     { step: "02", name: "SOURCE VALIDATION", time: "03:00", status: "COMPLETE", detail: "Opposition spokesperson identity confirmed" },
-    { step: "03", name: "EVIDENCE RETRIEVAL", time: "06:00", status: "COMPLETE", detail: "TMC PWD Work Order #4102 pulled from Vector DB" },
+    { step: "03", name: "EVIDENCE RETRIEVAL", time: "06:00", status: "COMPLETE", detail: `${munPrefix} PWD Work Order #${workOrderNo} pulled from Vector DB` },
     { step: "04", name: "FACT CHECK AUDIT", time: "10:00", status: "COMPLETE", detail: "Official completion certificate refutes allegation" },
     { step: "05", name: "DRAFT SYNTHESIS", time: "12:00", status: "COMPLETE", detail: "Press statement & 30s video script generated" },
     { step: "06", name: "HUMAN REVIEW", time: "14:00", status: pipelineState.status === "PENDING_APPROVAL" ? "ACTIVE" : "COMPLETE", detail: "Awaiting Campaign Leader digital authorization" },
@@ -50,7 +59,7 @@ export default function CrisisWorkflowModule({
     setPipelineState(prev => ({
       ...prev,
       status: "PUBLISHED",
-      publishedChannels: ["Instagram Reels", "Facebook Video", "YouTube Shorts", "348 Booth WhatsApp Groups"]
+      publishedChannels: ["Instagram Reels", "Facebook Video", "YouTube Shorts", `${totalBooths} Booth WhatsApp Groups`]
     }));
   };
 
@@ -120,10 +129,10 @@ export default function CrisisWorkflowModule({
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 }}>
           <div>
             <div style={{ fontSize: "0.68rem", fontFamily: tokens.typography.fontMono, color: p.metallicGold }}>
-              ACTIVE INCIDENT TARGET // WARD 14-16 PIPELINE
+              ACTIVE INCIDENT TARGET // {primaryPocket.toUpperCase()}
             </div>
             <h3 style={{ fontSize: "1.1rem", fontFamily: tokens.typography.fontDisplay, color: p.warmIvory, margin: "2px 0 0 0" }}>
-              Allegation of delayed municipal water works in {constituency.name}
+              Allegation regarding {activeCivicIssue} in {constituency.name}
             </h3>
           </div>
           <div style={{ background: p.surfaceElevated, border: `1px solid ${p.border}`, borderRadius: 6, padding: "4px 10px", fontSize: "0.72rem", fontFamily: tokens.typography.fontMono, color: p.textSecondary }}>
@@ -163,28 +172,28 @@ export default function CrisisWorkflowModule({
         <div style={{ background: p.surfaceElevated, borderRadius: 8, padding: "16px 18px", fontSize: "0.85rem", lineHeight: 1.6, color: p.textPrimary, border: `1px solid ${p.borderSubtle}` }}>
           {activeTab === "summary" && (
             <div>
-              <strong style={{ color: p.metallicGold }}>Verified Factual Synthesis:</strong> The public claim alleging negligence regarding municipal water works in Wards 14–16 of {constituency.name} is contradicted by official municipal gazettes showing active sanction order #4102 and PWD completion certificates. Funds were fully utilized under verified public audits.
+              <strong style={{ color: p.metallicGold }}>Verified Factual Synthesis:</strong> The public claim alleging negligence regarding {activeCivicIssue} in {primaryPocket} of {constituency.name} is contradicted by official municipal gazettes showing active sanction order #{workOrderNo} and PWD completion certificates. Funds were fully utilized under verified public audits.
             </div>
           )}
           {activeTab === "statement" && (
             <div>
-              <strong style={{ color: p.metallicGold }}>Official Press Statement Draft:</strong> “The claims made earlier today regarding drinking water allocations are baseless, politically motivated, and directly refuted by Thane Municipal Corporation Work Order #4102. The infrastructure is commissioned and verified by public gazettes. We urge our citizens to rely strictly on verifiable administrative records.”
+              <strong style={{ color: p.metallicGold }}>Official Press Statement Draft:</strong> “The claims made earlier today regarding {activeCivicIssue} are baseless, politically motivated, and directly refuted by {districtName} Municipal Corporation Work Order #{workOrderNo}. The infrastructure is commissioned and verified by public gazettes. We urge our citizens to rely strictly on verifiable administrative records.”
             </div>
           )}
           {activeTab === "script" && (
             <div>
               <strong style={{ color: p.metallicGold }}>30-Second Kinetic Video/Reels Script:</strong><br />
               <strong>[00:00 - 00:05]</strong> Hook: “Opposition ka safed jhooth benaqaab! {constituency.name} ke vikas par afwaahein failana band karein.”<br />
-              <strong>[00:05 - 00:18]</strong> Proof: <em>(On-screen zoom into TMC PWD Sanction Certificate #4102 with official green stamp)</em> “Work order sanctioned hua, tender complete hua, aur pipeline functional hai.”<br />
+              <strong>[00:05 - 00:18]</strong> Proof: <em>(On-screen zoom into {munPrefix} PWD Sanction Certificate #{workOrderNo} with official green stamp)</em> “Work order sanctioned hua, tender complete hua, aur zameen par kaam functional hai.”<br />
               <strong>[00:18 - 00:30]</strong> Punch: “Kaam zameen par bolta hai, kagaz par nahi. Sach dekhein—GARUDA Verified Gazette Record.”
             </div>
           )}
           {activeTab === "evidence" && (
             <div>
               <strong style={{ color: p.metallicGold }}>Documented Citations in Evidence Vault:</strong><br />
-              1. TMC Municipal PWD Work Order #4102 (Sanction Date: 14 March 2025)<br />
-              2. Technical Inspection Certificate #PWD/CIVIL/8812 (Verification Date: 20 Aug 2025)<br />
-              3. Citizen Representation Audit Record (Ward Committee Minutes #14)
+              1. {munPrefix} Municipal PWD Work Order #{workOrderNo} (Sanction Date: 14 March 2025)<br />
+              2. Technical Inspection Certificate #{stateCode}/PWD/CIVIL/{assemblyNo * 31 + 104} (Verification Date: 20 Aug 2025)<br />
+              3. Citizen Representation Audit Record ({districtName} Ward Committee Minutes #{(assemblyNo % 20) + 1})
             </div>
           )}
         </div>
