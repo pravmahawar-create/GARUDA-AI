@@ -1447,6 +1447,22 @@ const ROUTES = [
       </ul>
       <p>Official Platform: <a href="https://www.garudaos.in/war-room">https://www.garudaos.in/war-room</a></p>
     `
+  },
+  {
+    path: "/booth-cadre",
+    filePaths: [
+      path.join(DIST_DIR, "booth-cadre", "index.html"),
+      path.join(DIST_DIR, "booth-cadre.html")
+    ],
+    title: "GARUDA Cadre Field PWA | Booth Active Telemetry",
+    description: "Low-bandwidth mobile field terminal for ground cadre. One-tap booth presence, anti-replay queued heartbeats, and real-time War Room synchronization.",
+    canonical: "https://www.garudaos.in/booth-cadre",
+    h1: "GARUDA Cadre Field PWA",
+    eyebrow: "GROUND CADRE PRESENCE & TELEMETRY TERMINAL",
+    contentSnippet: `
+      <h2>Mobile Ground Presence & Anti-Replay Heartbeat</h2>
+      <p>Lightweight field terminal optimized for low-end Android handsets (Redmi, Realme, Jio). One-tap booth presence confirmation, offline anti-replay queue, and verified telemetry handshake.</p>
+    `
   }
 ];
 

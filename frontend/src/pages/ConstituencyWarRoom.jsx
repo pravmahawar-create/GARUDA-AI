@@ -1,1119 +1,1483 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
-import PublicChrome from "../components/PublicChrome";
 
-// Pre-seeded Benchmark Data for Instant Zero-Latency Initial Render (Thane 148 default)
+import { tokens } from "../components/war-room/tokens";
+import EvidenceDrawer from "../components/war-room/EvidenceDrawer";
+import DeepDiveModal from "../components/war-room/DeepDiveModal";
+import MetaConnectionPanel from "../components/war-room/MetaConnectionPanel";
+
+// Benchmark data for Thane 148 default
+
+// 🏛️ Official GARUDA War Room Sovereign Palette (Warm Ivory, Graphite & Luxury Gold)
+const wp = {
+  // Foundation Canvas (Warm Ivory / Private Bank prestige)
+  canvas: "#F7F3EA",
+  canvasIvory: "#FBF9F4",
+  canvasSubtle: "#F5F1E8",
+  card: "#FFFFFF",
+
+  // Text Hierarchy (Graphite, Deep Graphite & Muted Text)
+  text: "#171717",
+  textBody: "#292B30",
+  deepGraphite: "#0F1110",
+  muted: "#6F6A61",
+  subtle: "#8E887E",
+
+  // Signature GARUDA Gold (Restrained Luxury Gold)
+  gold: "#B8862B",
+  goldPrimary: "#B8862B",
+  goldLuxury: "#C99A3A",
+  goldLight: "#E7C982",
+  goldMuted: "#D8B66A",
+  goldDeep: "#9E6D1C",
+  goldGradient: "linear-gradient(135deg, #E7C982 0%, #C99A3A 50%, #B8862B 100%)",
+  goldHalo: "rgba(184, 134, 43, 0.12)",
+
+  // Status Accents (Restrained)
+  green: "#059669",
+  greenLive: "#10B981",
+  greenBg: "rgba(5, 150, 105, 0.08)",
+  amber: "#D97706",
+  amberBg: "rgba(217, 119, 6, 0.08)",
+  red: "#DC2626",
+  redBg: "rgba(220, 38, 38, 0.08)",
+  cyan: "#0284C7",
+  cyanBg: "rgba(2, 132, 199, 0.08)",
+
+  // Borders & Shadows
+  border: "#E6DCC8",
+  borderSubtle: "rgba(23, 24, 27, 0.06)",
+  borderGold: "rgba(184, 134, 43, 0.35)",
+  shadow: "0 8px 30px rgba(40, 30, 15, 0.06)",
+  shadowSm: "0 2px 10px rgba(40, 30, 15, 0.04)"
+};
+
 const INITIAL_THANE = {
   id: "thane-148",
   name: "Thane (148)",
   canonicalName: "148 - Thane Assembly Constituency",
   district: "Thane",
   state: "Maharashtra",
-  stateCode: "MH",
   assemblyNumber: 148,
   type: "Urban Mega-Hub",
   electoralBase: {
-    registeredElectors: 342618,
+    registeredElectors: 428671,
     electorsStatus: "VERIFIED",
-    source: "Election Commission of India (ECI) Final Roll Benchmark",
-    maleElectors: 178920,
-    femaleElectors: 163682,
-    electorPopulationRatio: "62.4%",
-    electorRatioStatus: "VERIFIED"
+    source: "ECI Final Roll 2024",
+    maleElectors: 224190,
+    femaleElectors: 204481
   },
   pollingStructure: {
-    totalBooths: 348,
-    boothsStatus: "VERIFIED",
-    averageElectorsPerBooth: 985,
-    auxiliaryBooths: 12,
-    vulnerableBoothsIdentified: 34,
-    criticalTurnoutBooths: 28,
-    source: "District Election Officer Thane (DEO) Gazette"
+    totalBooths: 351,
+    activeBooths: 348,
+    gapBooths: 3,
+    boothsStatus: "VERIFIED"
   },
   historicalTurnout: {
     lastElectionTurnout: "52.84%",
-    previousTurnout: "55.12%",
-    turnoutStatus: "VERIFIED",
-    turnoutTrend: "Declining (-2.28%)",
-    urbanApathyIndex: "HIGH",
-    source: "ECI Statistical Report 2019/2024"
+    turnoutStatus: "VERIFIED"
   },
   historicalMargin: {
-    winningMarginVotes: 24522,
     winningMarginPercentage: "13.56%",
-    marginStatus: "VERIFIED",
-    competitivenessIndex: "MODERATE",
-    source: "State Election Commission Maharashtra"
-  },
-  digitalReachEstimate: {
-    estimatedDigitalReach: 246000,
-    reachStatus: "INFERRED",
-    methodology: "TRAI Urban Maharashtra Smartphone Density (71.8%)",
-    note: "Algorithmic inference based on public telecom density; not individual tracking"
-  },
-  pockets: [
-    { name: "Hiranandani Estate & Arcadia", booths: "22-38", condition: "AMBER", label: "HIGH TURNOUT VARIANCE", primaryIssue: "Ghodbunder Traffic & Metro-4 Link", electorsEst: 31200 },
-    { name: "Hiranandani Meadows & Gladys Alwares", booths: "39-51", condition: "NORMAL", label: "STABLE BASELINE", primaryIssue: "Municipal Water Pressure", electorsEst: 24500 },
-    { name: "Pachpakhadi & Teen Hath Naka", booths: "85-108", condition: "RED", label: "HIGH ISSUE CONCENTRATION", primaryIssue: "Junction Congestion & Flyover Access", electorsEst: 38900 },
-    { name: "Naupada & Gokhale Road", booths: "109-138", condition: "NORMAL", label: "HIGH SENIOR CITIZEN DENSITY", primaryIssue: "Old Building Redevelopment Rules", electorsEst: 42100 },
-    { name: "Kopri & East Transit Belt", booths: "180-212", condition: "RED", label: "CRITICAL INFRASTRUCTURE SIGNAL", primaryIssue: "Subway Drainage & Commuter Flow", electorsEst: 36400 }
-  ],
-  issueRadar: [
-    { id: "iss-1", name: "Traffic Congestion & Ghodbunder Bottlenecks", signal: "HIGH", publicReferences: 48, source: "Public TMC Grievance Portal & Regional News", lastDetected: "Today, 14:20 IST", status: "VERIFIED" },
-    { id: "iss-2", name: "Municipal Drinking Water Pressure Deficit", signal: "HIGH", publicReferences: 36, source: "Citizen RWA Representations to Municipal Body", lastDetected: "Yesterday, 19:10 IST", status: "VERIFIED" },
-    { id: "iss-3", name: "Metro Line 4 Construction Timelines & Road Diversions", signal: "MEDIUM", publicReferences: 29, source: "MMRDA Public Works Status Gazette", lastDetected: "2 Oct 2026", status: "VERIFIED" },
-    { id: "iss-4", name: "Property Tax Assessment & Assessment Slabs", signal: "MEDIUM", publicReferences: 19, source: "TMC General Body Meeting Minutes", lastDetected: "28 Sep 2026", status: "PARTIAL" },
-    { id: "iss-5", name: "Healthcare Bed Availability in Municipal Hospitals", signal: "LOW", publicReferences: 11, source: "Civic Health Dept Public Dashboard", lastDetected: "24 Sep 2026", status: "PARTIAL" }
-  ],
-  narratives: [
-    { id: "nar-1", claim: "Allegation of delayed municipal water pipeline allocation in Wards 14-16", source: "Regional Print & Opposition Press Briefing", timestamp: "3 hours ago", verification: "Contradicted by Public PWD Work Order #4102", responseStatus: "Response Ready" },
-    { id: "nar-2", claim: "Claim that Majiwada junction flyover ramp has stalled due to land litigation", source: "Local Citizen Forum Social Feed", timestamp: "Yesterday, 18:30 IST", verification: "Needs Review", responseStatus: "Reviewing" },
-    { id: "nar-3", claim: "Proposal for new senior citizen dedicated garden in Hiranandani zone", source: "Municipal Ward Committee Agenda", timestamp: "1 Oct 2026", verification: "Verified", responseStatus: "Published" }
-  ]
+    marginStatus: "VERIFIED"
+  }
 };
 
-const SCAN_STAGES = [
-  { step: "01", title: "LOCATION RESOLUTION", detail: "Resolving Constituency Coordinates..." },
-  { step: "02", title: "ADMINISTRATIVE GRID", detail: "Mapping Administrative & Ward Boundaries..." },
-  { step: "03", title: "ELECTORAL STRUCTURE", detail: "Loading ECI Electoral & Polling Booth Grid..." },
-  { step: "04", title: "HISTORICAL SIGNALS", detail: "Analyzing Historical Turnout & Margin Benchmark..." },
-  { step: "05", title: "PUBLIC ISSUE RADAR", detail: "Scanning Verified Public Grievances & Municipal Feeds..." },
-  { step: "06", title: "INTELLIGENCE SYNTHESIS", detail: "Constructing Constituency Intelligence Command Model..." }
-];
-
 export default function ConstituencyWarRoom() {
-  const [query, setQuery] = useState("Thane 148");
+  const navigate = useNavigate();
+  const p = tokens.palette;
+
+  // Active State
   const [constituency, setConstituency] = useState(INITIAL_THANE);
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanStageIndex, setScanStageIndex] = useState(0);
-  const [dataCoverage, setDataCoverage] = useState({ percentage: "83%", status: "PARTIAL", verifiedCategories: 10, totalCategories: 12 });
-  const [exclusivity, setExclusivity] = useState({ status: "AVAILABLE", message: "Constituency is open for territorial war-room exclusivity." });
-  
-  // Rebuttal & Brief States
-  const [selectedIssueId, setSelectedIssueId] = useState("iss-1");
-  const [activeRebuttalTab, setActiveRebuttalTab] = useState("summary");
-  const [briefModalOpen, setBriefModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, intel, booths, pwa, voter, rebuttal, cybershield, meta, analytics, commercial
+  const [activeMode, setActiveMode] = useState("Executive"); // Executive, Tactical, Field, Audit
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
+
+  // Modals & Drawers
   const [dossierModalOpen, setDossierModalOpen] = useState(false);
-  const [briefData, setBriefData] = useState(null);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [generatedPdf, setGeneratedPdf] = useState(null);
+  const [activeEvidence, setActiveEvidence] = useState(null);
+  const [deepDiveModuleId, setDeepDiveModuleId] = useState(null);
+  const [metaDiscovering, setMetaDiscovering] = useState(false);
+  const [metaResult, setMetaResult] = useState(null);
+  const [commercialModalOpen, setCommercialModalOpen] = useState(false);
 
-  // Commercial & Payment States
-  const [currency, setCurrency] = useState("INR");
-  const [selectedPlanId, setSelectedPlanId] = useState("garuda-command");
-  const [plans, setPlans] = useState([]);
-  const [paymentStep, setPaymentStep] = useState("SELECT_PLAN"); // SELECT_PLAN, CLIENT_INFO, CONFIRMATION, SUCCESS, FAILED
-  const [customerInfo, setCustomerInfo] = useState({ name: "", phone: "", email: "", party: "" });
-  const [activeOrder, setActiveOrder] = useState(null);
-  const [invoiceData, setInvoiceData] = useState(null);
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [paymentError, setPaymentError] = useState("");
-
-  const commandRef = useRef(null);
-
-  // Fetch plans on mount and on currency change
+  // Live Clock
   useEffect(() => {
-    fetchPlans(currency);
-  }, [currency]);
+    const updateTime = () => {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+      const timeStr = now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+      setCurrentTime(`${dateStr} | ${timeStr} IST`);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const fetchPlans = async (curr) => {
-    try {
-      const res = await fetch(`/api/war-room/plans?currency=${curr}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.plans) setPlans(data.plans);
-      }
-    } catch (_) {
-      // Fallback default plans
-      setPlans([
-        { id: "garuda-intel", name: "GARUDA INTELLIGENCE", tier: "Constituency Intelligence", formattedPrice: curr === "INR" ? "₹1,49,000" : "$1,788", billingCycle: "Monthly Retainer", features: ["Weekly Intelligence Dossier", "12-Category Issue Radar", "ECI Booth Analytics", "Public Narrative Feeds"] },
-        { id: "garuda-command", name: "GARUDA COMMAND", tier: "Full War Room Command", formattedPrice: curr === "INR" ? "₹3,49,000" : "$4,188", billingCycle: "Monthly Retainer", recommended: true, features: ["24x7 Live Candidate War Room", "15-Minute Rapid Rebuttal Engine", "Booth-Level Turnout Telemetry", "Psychographic Voter Messaging", "D-Day GOTV Command"] },
-        { id: "garuda-enterprise", name: "GARUDA ENTERPRISE", tier: "Multi-Constituency Party Cluster", formattedPrice: curr === "INR" ? "₹8,99,000" : "$10,788", billingCycle: "Campaign Retainer", features: ["Multi-Constituency Cluster", "Private Sovereign Cloud", "Candidate Likeness Cloned Engine", "24x7 On-Site Tactical Team"] }
-      ]);
-    }
+  // Handle Mode Change
+  const handleModeChange = (modeId) => {
+    setActiveMode(modeId);
   };
 
-  const handleSearch = async (e) => {
-    if (e) e.preventDefault();
-    if (!query.trim()) return;
-
-    setIsScanning(true);
-    setScanStageIndex(0);
-
-    // Run 6-stage radar animation (approx 2.4 seconds total)
-    const interval = setInterval(() => {
-      setScanStageIndex(prev => {
-        if (prev < SCAN_STAGES.length - 1) {
-          return prev + 1;
-        } else {
-          clearInterval(interval);
-          return prev;
-        }
-      });
-    }, 400);
-
+  // Handle Generate 12-Section PDF Dossier
+  const handleGenerateDossier = async () => {
+    setIsGeneratingPdf(true);
+    setDossierModalOpen(true);
     try {
-      const res = await fetch(`/api/war-room/resolve?q=${encodeURIComponent(query)}`);
-      let data = null;
-      if (res.ok) {
-        const json = await res.json();
-        data = json.data;
-      }
-      
-      setTimeout(() => {
-        clearInterval(interval);
-        setIsScanning(false);
-        if (data && data.constituency) {
-          setConstituency(data.constituency);
-          setDataCoverage(data.dataCoverage || dataCoverage);
-        }
-        // Check territorial exclusivity
-        checkExclusivity(query);
-      }, 2400);
-    } catch (_) {
-      setTimeout(() => {
-        clearInterval(interval);
-        setIsScanning(false);
-      }, 2400);
-    }
-  };
-
-  const checkExclusivity = async (cName) => {
-    try {
-      const res = await fetch(`/api/war-room/exclusivity?constituency=${encodeURIComponent(cName)}`);
-      if (res.ok) {
-        const json = await res.json();
-        if (json.data) setExclusivity(json.data);
-      }
-    } catch (_) {}
-  };
-
-  const generateBrief = async () => {
-    try {
-      const res = await fetch("/api/war-room/brief", {
+      const res = await fetch("/api/war-room/dossier/pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(constituency)
+        body: JSON.stringify({ constituencyData: constituency })
       });
-      if (res.ok) {
-        const json = await res.json();
-        setBriefData(json.data);
-        setBriefModalOpen(true);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setGeneratedPdf(data.data);
+      } else {
+        setGeneratedPdf({ error: data.message || "Failed to generate PDF" });
       }
-    } catch (_) {
-      alert("Failed to load brief data. Please check network connection.");
-    }
-  };
-
-  const handleCreateOrder = async (e) => {
-    e.preventDefault();
-    if (!customerInfo.name || !customerInfo.phone) {
-      alert("Please provide Campaign Principal Name and Phone Number.");
-      return;
-    }
-
-    setIsProcessingPayment(true);
-    setPaymentError("");
-
-    try {
-      const res = await fetch("/api/war-room/order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          constituency,
-          planId: selectedPlanId,
-          currency,
-          billingCycle: "monthly",
-          customerDetails: customerInfo
-        })
-      });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || "Failed to create order.");
-      }
-
-      setActiveOrder(json.data);
-      setPaymentStep("CONFIRMATION");
     } catch (err) {
-      setPaymentError(err.message);
-      setPaymentStep("FAILED");
+      setGeneratedPdf({ error: err.message });
     } finally {
-      setIsProcessingPayment(false);
+      setIsGeneratingPdf(false);
     }
   };
 
-  const handleSimulatePayment = async () => {
-    if (!activeOrder) return;
-    setIsProcessingPayment(true);
-    setPaymentError("");
-
+  // Handle Meta Discover Pages
+  const handleMetaDiscover = async () => {
+    setMetaDiscovering(true);
     try {
-      const res = await fetch("/api/war-room/verify-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderId: activeOrder.orderId,
-          paymentId: `pay_sov_${Date.now().toString(36)}`,
-          testMode: true
-        })
-      });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || "Payment verification failed.");
-      }
-
-      // Fetch Invoice
-      const invRes = await fetch(`/api/war-room/invoice/${activeOrder.orderId}`);
-      if (invRes.ok) {
-        const invJson = await invRes.json();
-        setInvoiceData(invJson.data);
-      }
-
-      setPaymentStep("SUCCESS");
-    } catch (err) {
-      setPaymentError(err.message);
-      setPaymentStep("FAILED");
+      const res = await fetch("/api/war-room/meta/discover");
+      const data = await res.json();
+      setMetaResult(data);
+    } catch (e) {
+      setMetaResult({ success: false, message: e.message });
     } finally {
-      setIsProcessingPayment(false);
+      setMetaDiscovering(false);
     }
   };
 
-  const activeIssue = constituency.issueRadar.find(i => i.id === selectedIssueId) || constituency.issueRadar[0];
+  // Quick Action Switcher
+  const handleQuickAction = (action) => {
+    if (action === "dossier") handleGenerateDossier();
+    if (action === "rebuttal") setActiveTab("rebuttal");
+    if (action === "cybershield") setActiveTab("cybershield");
+    if (action === "commercial") setCommercialModalOpen(true);
+  };
 
   return (
-    <div style={{ background: "#F7F5F0", minHeight: "100vh", color: "#17181B", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <div
+      style={{
+        backgroundColor: wp.canvas,
+        color: wp.text,
+        minHeight: "100vh",
+        display: "flex",
+        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+        overflowX: "hidden"
+      }}
+    >
       <SEOHead
-        title={`GARUDA OS · Live Constituency Intelligence War Room (${constituency.name})`}
-        description="Publicly available and authorized data sources converted into a sovereign constituency intelligence command center."
+        title="GARUDA OS Sovereign War Room | AI-Powered Constituency Intelligence"
+        description="High-command constituency war room for election campaigns. Live booth signals, Meta integration, 15-minute rapid rebuttal, ground cadre PWA, and single-seat territorial exclusivity."
         canonical="https://www.garudaos.in/war-room"
       />
 
-      <PublicChrome active="" footer={true}>
-        <div style={{ background: "#F7F5F0", minHeight: "100%", paddingBottom: 88 }}>
-
-          {/* HERO SECTION */}
-          <section style={{ maxWidth: 1180, margin: "0 auto", padding: "34px 20px 22px 20px" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(196, 139, 40, 0.09)", border: "1px solid rgba(196, 139, 40, 0.25)", borderRadius: 999, padding: "5px 13px", marginBottom: 16 }}>
-              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#059669", display: "inline-block", boxShadow: "0 0 6px #059669" }} />
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#8C5E14", textTransform: "uppercase" }}>
-                LIVE CONSTITUENCY RADAR ACTIVE
-              </span>
+      {/* ========================================================================= */}
+      {/* 1. LEFT SIDEBAR                                                           */}
+      {/* ========================================================================= */}
+      <aside
+        style={{
+          width: "264px",
+          backgroundColor: wp.canvasIvory,
+          borderRight: "1px solid " + wp.border,
+          display: "flex",
+          flexDirection: "column",
+          flexShrink: 0,
+          position: "sticky",
+          top: 0,
+          height: "100vh",
+          zIndex: 40,
+          padding: "20px 14px"
+        }}
+      >
+        {/* LOGO BRANDING */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "4px 8px 20px 8px", borderBottom: "1px solid " + wp.borderSubtle, marginBottom: "16px" }}>
+          <div
+            style={{
+              width: "42px",
+              height: "42px",
+              borderRadius: "11px",
+              background: wp.goldHalo,
+              border: "1.5px solid " + wp.goldMuted,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 14px rgba(184, 134, 43, 0.2)"
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+              <defs>
+                <linearGradient id="goldGradBrand" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#E7C982" />
+                  <stop offset="50%" stopColor="#C99A3A" />
+                  <stop offset="100%" stopColor="#9E6D1C" />
+                </linearGradient>
+              </defs>
+              <path d="M 50 20 L 76 34 L 88 56 L 76 60 L 64 48 L 50 64 L 36 48 L 24 60 L 12 56 L 24 34 Z" fill="url(#goldGradBrand)" />
+              <polygon points="50,14 62,38 78,42 66,54 70,72 50,60 30,72 34,54 22,42 38,38" fill="url(#goldGradBrand)" />
+              <polygon points="50,56 60,78 50,72 40,78" fill="url(#goldGradBrand)" />
+            </svg>
+          </div>
+          <div>
+            <div style={{ fontSize: "15px", fontWeight: 800, color: wp.deepGraphite, letterSpacing: "1.2px", lineHeight: 1.1, fontFamily: "'Inter', sans-serif" }}>
+              GARUDA OS
             </div>
-
-            <h1 style={{ fontSize: "clamp(1.75rem, 3.6vw, 2.6rem)", fontWeight: 700, lineHeight: 1.2, color: "#17181B", letterSpacing: "-0.025em", marginBottom: 12 }}>
-              CONSTITUENCY KO ANDAZE SE NAHI.<br />
-              <span style={{ background: "linear-gradient(135deg, #B88220 0%, #8C5E14 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                INTELLIGENCE SE SAMJHIYE.
-              </span>
-            </h1>
-
-            <p style={{ fontSize: 14, lineHeight: 1.6, color: "#525866", maxWidth: 700, marginBottom: 22 }}>
-              GARUDA publicly available aur authorized data sources ko analyze karke constituency ka structured intelligence picture banata hai—electoral structure se lekar turnout history, public issues aur emerging narratives tak.
-            </p>
-
-            {/* SEARCH INPUT BAR */}
-            <form onSubmit={handleSearch} style={{ background: "#FFFFFF", border: "1px solid rgba(196, 139, 40, 0.28)", borderRadius: 12, padding: "5px 6px 5px 14px", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, boxShadow: "0 4px 16px rgba(0,0,0,0.03)", maxWidth: 720 }}>
-              <span style={{ fontSize: 18 }}>📡</span>
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Enter Constituency / Ward / District / PIN Code (e.g. Thane 148, Indore-2, Noida-61)"
-                style={{ flex: 1, minWidth: 240, border: "none", outline: "none", fontSize: 13, fontWeight: 500, color: "#17181B", background: "transparent" }}
-              />
-              <button
-                type="submit"
-                disabled={isScanning}
-                style={{ background: "linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%)", color: "#FFFFFF", border: "none", padding: "9px 18px", borderRadius: 8, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.03em", cursor: isScanning ? "not-allowed" : "pointer", boxShadow: "0 3px 10px rgba(179, 130, 53, 0.25)" }}
-              >
-                {isScanning ? "SCANNING SATELLITE..." : "INITIALIZE GARUDA RADAR"}
-              </button>
-            </form>
-
-            {/* Quick Suggestion Pills */}
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 12 }}>
-              <span style={{ fontSize: 11.5, color: "#8A8D95", fontWeight: 600 }}>Quick Battlegrounds:</span>
-              {["Thane 148", "Indore-2", "Noida-61", "400607", "Lucknow Central", "Bhopal"].map(pill => (
-                <button
-                  key={pill}
-                  type="button"
-                  onClick={() => { setQuery(pill); handleSearch(); }}
-                  style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 999, padding: "3px 11px", fontSize: 11.5, fontWeight: 600, color: "#292B30", cursor: "pointer" }}
-                >
-                  {pill}
-                </button>
-              ))}
+            <div style={{ fontSize: "9.5px", fontWeight: 750, color: wp.muted, letterSpacing: "1.4px", textTransform: "uppercase", marginTop: "3px" }}>
+              SOVEREIGN WAR ROOM
             </div>
-          </section>
-
-      {/* SCANNING RADAR OVERLAY (2-4s Command-Center Animation) */}
-      {isScanning && (
-        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 20px 24px 20px" }}>
-          <div style={{ background: "#FFFFFF", border: "1.5px solid #C48B28", borderRadius: 14, padding: "20px 20px", boxShadow: "0 12px 32px rgba(196, 139, 40, 0.12)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#9E6D1C", letterSpacing: "0.08em" }}>
-                STAGE {SCAN_STAGES[scanStageIndex].step} / 06 — {SCAN_STAGES[scanStageIndex].title}
-              </span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>
-                TELEMETRY ACQUISITION IN PROGRESS
-              </span>
-            </div>
-            <div style={{ height: 5, background: "rgba(196, 139, 40, 0.15)", borderRadius: 999, overflow: "hidden", marginBottom: 12 }}>
-              <div style={{ height: "100%", width: `${((scanStageIndex + 1) / SCAN_STAGES.length) * 100}%`, background: "linear-gradient(90deg, #C48B28, #059669)", transition: "width 0.35s ease" }} />
-            </div>
-            <p style={{ fontSize: 13.5, fontWeight: 600, color: "#17181B", margin: 0 }}>
-              {SCAN_STAGES[scanStageIndex].detail}
-            </p>
           </div>
         </div>
-      )}
 
-      {/* MAIN COMMAND CENTER DASHBOARD */}
-      {!isScanning && (
-        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 20px 48px 20px" }}>
-
-          {/* TOP COMMAND BAR */}
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "16px 20px", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 14, marginBottom: 20, boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <h2 style={{ fontSize: 18.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.015em", margin: 0 }}>
-                  {constituency.name.toUpperCase()} — {constituency.state.toUpperCase()}
-                </h2>
-                <span style={{ background: "rgba(5, 150, 105, 0.12)", color: "#059669", border: "1px solid rgba(5, 150, 105, 0.3)", borderRadius: 4, padding: "2px 7px", fontSize: 10, fontWeight: 700 }}>
-                  ACTIVE INTELLIGENCE
-                </span>
-              </div>
-              <p style={{ fontSize: 12, color: "#686A70", margin: "3px 0 0 0" }}>
-                {constituency.canonicalName} · District: {constituency.district} · Assembly #{constituency.assemblyNumber}
-              </p>
-            </div>
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#8A8D95", letterSpacing: "0.06em" }}>TERRITORIAL EXCLUSIVITY</div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: exclusivity.status === "ACTIVE" ? "#DC2626" : "#059669" }}>
-                  {exclusivity.status === "ACTIVE" ? "LOCKED // EXCLUSIVE" : "AVAILABLE TO ONBOARD"}
-                </span>
-              </div>
+        {/* NAVIGATION ITEMS */}
+        <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px", overflowY: "auto" }}>
+          {[
+            { id: "dashboard", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>, title: "Dashboard", sub: "Command Center" },
+            { id: "intel", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><polygon points="12 2 2 8.5 2 15.5 12 22 22 15.5 22 8.5 12 2"/><circle cx="12" cy="12" r="3"/></svg>, title: "Constituency Intel", sub: "Data & Dossier" },
+            { id: "booths", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>, title: "Booth Management", sub: "348 / 351 Booths" },
+            { id: "pwa", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>, title: "Cadre Field PWA", sub: "Live Field Telemetry" },
+            { id: "voter", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, title: "Voter Insights", sub: "Demographics & Clusters" },
+            { id: "rebuttal", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>, title: "Crisis Rebuttal", sub: "15-Min Rapid Response" },
+            { id: "cybershield", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>, title: "CyberShield", sub: "Legal Notices & Takedown" },
+            { id: "meta", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><path d="M12 12c-2.5-3.5-5.5-4-8-1.5S2 16 5 17s6-1.5 7-5c1-3.5 4-6 7-5s4 4 1.5 6.5-5.5 2-8-1.5z"/></svg>, title: "Meta Integration", sub: "Ads, Pages & Publishing" },
+            { id: "analytics", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, title: "War Room Analytics", sub: "Performance & Reports" },
+            { id: "commercial", icon: (active) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? wp.goldPrimary : wp.muted} strokeWidth={active ? 2.2 : 1.8}><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>, title: "Commercial", sub: "₹35L Sovereign Plan" }
+          ].map((item) => {
+            const isActive = activeTab === item.id;
+            return (
               <button
-                onClick={generateBrief}
-                style={{ background: "#FAF9F6", border: "1px solid rgba(196, 139, 40, 0.35)", borderRadius: 7, padding: "7px 14px", fontSize: 11.5, fontWeight: 700, color: "#9E6D1C", cursor: "pointer" }}
+                key={item.id}
+                onClick={() => {
+                  if (item.id === "pwa") {
+                    navigate("/booth-cadre");
+                  } else if (item.id === "commercial") {
+                    setCommercialModalOpen(true);
+                  } else {
+                    setActiveTab(item.id);
+                  }
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "11px 14px",
+                  borderRadius: "10px",
+                  background: isActive ? "rgba(184, 134, 43, 0.12)" : "transparent",
+                  border: isActive ? "1px solid " + wp.goldMuted : "1px solid transparent",
+                  borderLeft: isActive ? "3px solid " + wp.goldPrimary : "1px solid transparent",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                  width: "100%"
+                }}
               >
-                📄 GENERATE BRIEF
-              </button>
-              <button
-                onClick={() => setDossierModalOpen(true)}
-                style={{ background: "#17181B", color: "#FFFFFF", border: "none", borderRadius: 7, padding: "7px 16px", fontSize: 11.5, fontWeight: 700, cursor: "pointer" }}
-              >
-                🔒 CLASSIFIED DOSSIER
-              </button>
-            </div>
-          </div>
-
-          {/* 6 CORE METRIC CARDS */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(165px, 1fr))", gap: 12, marginBottom: 22 }}>
-            
-            {/* Card 1: Electoral Base */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>ELECTORAL BASE</span>
-                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
-                  {constituency.electoralBase.electorsStatus}
+                <span style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {item.icon(isActive)}
                 </span>
-              </div>
-              <div style={{ fontSize: 21, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
-                {constituency.electoralBase.registeredElectors.toLocaleString("en-IN")}
-              </div>
-              <div style={{ fontSize: 11, color: "#686A70" }}>
-                Ratio: {constituency.electoralBase.electorPopulationRatio}
-              </div>
-            </div>
-
-            {/* Card 2: Polling Structure */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>POLLING BOOTHS</span>
-                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
-                  {constituency.pollingStructure.boothsStatus}
-                </span>
-              </div>
-              <div style={{ fontSize: 21, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
-                {constituency.pollingStructure.totalBooths}
-              </div>
-              <div style={{ fontSize: 11, color: "#686A70" }}>
-                ~{constituency.pollingStructure.averageElectorsPerBooth} voters / booth
-              </div>
-            </div>
-
-            {/* Card 3: Historical Turnout */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>LAST TURNOUT</span>
-                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
-                  {constituency.historicalTurnout.turnoutStatus}
-                </span>
-              </div>
-              <div style={{ fontSize: 21, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
-                {constituency.historicalTurnout.lastElectionTurnout}
-              </div>
-              <div style={{ fontSize: 11, color: "#686A70" }}>
-                Trend: {constituency.historicalTurnout.turnoutTrend}
-              </div>
-            </div>
-
-            {/* Card 4: Historical Margin */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>WINNING MARGIN</span>
-                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
-                  {constituency.historicalMargin.marginStatus}
-                </span>
-              </div>
-              <div style={{ fontSize: 21, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
-                {constituency.historicalMargin.winningMarginPercentage}
-              </div>
-              <div style={{ fontSize: 11, color: "#686A70" }}>
-                Margin: {constituency.historicalMargin.winningMarginVotes?.toLocaleString("en-IN")} votes
-              </div>
-            </div>
-
-            {/* Card 5: Digital Reach (INFERRED) */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(196, 139, 40, 0.2)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>DIGITAL REACH</span>
-                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(217, 119, 6, 0.12)", color: "#D97706", padding: "1px 5px", borderRadius: 3 }}>
-                  INFERRED
-                </span>
-              </div>
-              <div style={{ fontSize: 21, fontWeight: 700, color: "#9E6D1C", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
-                {constituency.digitalReachEstimate.estimatedDigitalReach.toLocaleString("en-IN")}
-              </div>
-              <div style={{ fontSize: 11, color: "#686A70" }}>
-                TRAI Density Heuristic
-              </div>
-            </div>
-
-            {/* Card 6: Data Coverage */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "14px 14px", boxShadow: "0 1px 4px rgba(0,0,0,0.02)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: "#7E828B", letterSpacing: "0.06em" }}>DATA COVERAGE</span>
-                <span style={{ fontSize: 9.5, fontWeight: 700, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "1px 5px", borderRadius: 3 }}>
-                  {dataCoverage.status}
-                </span>
-              </div>
-              <div style={{ fontSize: 21, fontWeight: 700, color: "#059669", letterSpacing: "-0.02em", margin: "4px 0 2px 0" }}>
-                {dataCoverage.percentage}
-              </div>
-              <div style={{ fontSize: 11, color: "#686A70" }}>
-                {dataCoverage.verifiedCategories} / {dataCoverage.totalCategories} verified layers
-              </div>
-            </div>
-
-          </div>
-
-          {/* TWO COLUMN GRID: BOOTH / AREA INTELLIGENCE + LOCAL ISSUE RADAR */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 16, marginBottom: 24 }}>
-
-            {/* AREA / BOOTH CLUSTER GRID */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 18px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <div>
-                  <h3 style={{ fontSize: 14.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.01em", margin: 0 }}>
-                    AREA & BOOTH CLUSTER SIGNALS
-                  </h3>
-                  <p style={{ fontSize: 11.5, color: "#686A70", margin: "2px 0 0 0" }}>
-                    Describing data conditions & turnout variance, not political assumptions.
-                  </p>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: "13.5px", fontWeight: isActive ? 750 : 600, color: isActive ? wp.deepGraphite : wp.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {item.title}
+                  </div>
+                  <div style={{ fontSize: "10.5px", color: isActive ? wp.goldPrimary : wp.muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: "1px" }}>
+                    {item.sub}
+                  </div>
                 </div>
-                <span style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C" }}>
-                  {constituency.pockets.length} KEY CLUSTERS
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* BOTTOM SINGLE-SEAT EXCLUSIVITY CARD */}
+        <div
+          style={{
+            marginTop: "16px",
+            background: wp.card,
+            boxShadow: wp.shadowSm,
+            border: "1px solid " + wp.border,
+            borderRadius: "12px",
+            padding: "13px 14px",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px"
+          }}
+        >
+          <div
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "9px",
+              background: wp.goldHalo,
+              border: "1px solid " + wp.borderGold,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "17px"
+            }}
+          >
+            🔒
+          </div>
+          <div>
+            <div style={{ fontSize: "11.5px", fontWeight: 800, color: wp.goldPrimary, letterSpacing: "0.5px" }}>
+              Single-Seat Exclusivity
+            </div>
+            <div style={{ fontSize: "9.5px", color: wp.muted, fontWeight: 700, letterSpacing: "0.4px", marginTop: "2px" }}>
+              ONLY ONE CANDIDATE PER SEAT
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* ========================================================================= */}
+      {/* 2. MAIN VIEWPORT (TOPBAR + CONTENT)                                       */}
+      {/* ========================================================================= */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+
+        {/* TOPBAR */}
+        <header
+          style={{
+            height: "68px",
+            backgroundColor: "rgba(251, 249, 244, 0.94)",
+            backdropFilter: "blur(12px)",
+            borderBottom: "1px solid " + wp.border,
+            padding: "0 28px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            position: "sticky",
+            top: 0,
+            zIndex: 30
+          }}
+        >
+          {/* LEFT: CONSTITUENCY DROPDOWN + LIVE PILL */}
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                background: wp.card,
+                boxShadow: wp.shadowSm,
+                border: "1px solid " + wp.border,
+                borderRadius: "9px",
+                padding: "7px 14px",
+                cursor: "pointer"
+              }}
+            >
+              <span style={{ fontSize: "15px" }}>🛡️</span>
+              <div>
+                <div style={{ fontSize: "13px", fontWeight: 750, color: wp.deepGraphite }}>{constituency.name}</div>
+                <div style={{ fontSize: "10px", color: wp.muted, marginTop: "1px" }}>{constituency.state} · Assembly</div>
+              </div>
+              <span style={{ fontSize: "10px", color: wp.muted, marginLeft: "4px" }}>▾</span>
+            </div>
+
+            {/* LIVE PILL */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                background: wp.greenBg,
+                border: "1px solid rgba(5, 150, 105, 0.35)",
+                borderRadius: "20px",
+                padding: "4px 11px",
+                fontSize: "11.5px",
+                fontWeight: 750,
+                color: wp.green
+              }}
+            >
+              <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: wp.green, boxShadow: "0 0 8px rgba(5, 150, 105, 0.4)" }} />
+              LIVE
+            </div>
+          </div>
+
+          {/* CENTER: SEARCH INPUT */}
+          <div
+            style={{
+              position: "relative",
+              maxWidth: "400px",
+              width: "100%",
+              margin: "0 24px"
+            }}
+          >
+            <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "13px", color: wp.muted }}>
+              🔍
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search booth, voter group, issue, report..."
+              style={{
+                width: "100%",
+                background: wp.card,
+                border: "1px solid " + wp.border,
+                borderRadius: "9px",
+                padding: "9px 42px 9px 36px",
+                fontSize: "12.5px",
+                color: wp.text,
+                outline: "none"
+              }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: wp.canvasSubtle,
+                border: "1px solid " + wp.border,
+                borderRadius: "5px",
+                padding: "2.5px 7px",
+                fontSize: "10.5px",
+                color: wp.muted,
+                fontFamily: "monospace"
+              }}
+            >
+              ⌘ K
+            </span>
+          </div>
+
+          {/* RIGHT: MODE SWITCHER + NOTIFICATION + USER PROFILE */}
+          <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
+            {/* MODE SWITCHER */}
+            <div
+              style={{
+                display: "flex",
+                background: wp.canvasSubtle,
+                border: "1px solid " + wp.border,
+                borderRadius: "9px",
+                padding: "3.5px"
+              }}
+            >
+              {["Executive", "Tactical", "Field", "Audit"].map((mode) => {
+                const isSelected = activeMode === mode;
+                return (
+                  <button
+                    key={mode}
+                    onClick={() => handleModeChange(mode)}
+                    style={{
+                      background: isSelected ? wp.goldGradient : "transparent",
+                      color: isSelected ? wp.deepGraphite : wp.muted,
+                      fontWeight: isSelected ? 800 : 600,
+                      fontSize: "11.5px",
+                      padding: "6px 14px",
+                      borderRadius: "7px",
+                      border: "none",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease",
+                      boxShadow: isSelected ? "0 2px 8px rgba(184, 134, 43, 0.25)" : "none"
+                    }}
+                  >
+                    {mode}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Operational Posture Indicator */}
+            <div style={{ display: "none" }} aria-hidden="true">
+              {`ACTIVE POSTURE // ${activeMode.toUpperCase()}`}
+            </div>
+
+            {/* NOTIFICATION BELL */}
+            <div style={{ position: "relative", cursor: "pointer", fontSize: "17px", color: wp.muted }}>
+              🔔
+              <span style={{ position: "absolute", top: "-2px", right: "-2px", width: "7px", height: "7px", borderRadius: "50%", background: wp.red }} />
+            </div>
+
+            {/* USER PROFILE */}
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", borderLeft: "1px solid " + wp.border, paddingLeft: "16px" }}>
+              <div
+                style={{
+                  width: "34px",
+                  height: "34px",
+                  borderRadius: "50%",
+                  background: wp.goldHalo,
+                  border: "1.5px solid " + wp.goldLuxury,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "11.5px",
+                  fontWeight: 800,
+                  color: wp.goldPrimary
+                }}
+              >
+                PM
+              </div>
+              <div>
+                <div style={{ fontSize: "12.5px", fontWeight: 750, color: wp.deepGraphite, lineHeight: 1.1 }}>Praveen Mahawar</div>
+                <div style={{ fontSize: "10px", color: wp.muted, marginTop: "2px" }}>Founder • GARUDA OS</div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* MAIN BODY CONTENT */}
+        <main style={{ flex: 1, padding: "28px 36px", display: "flex", flexDirection: "column", gap: "24px" }}>
+
+          {/* HEADER ROW: TITLE + CLOCK + GENERATE DOSSIER BUTTON */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <div
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
+                  <defs>
+                    <linearGradient id="goldGradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#E7C982" />
+                      <stop offset="50%" stopColor="#C99A3A" />
+                      <stop offset="100%" stopColor="#9E6D1C" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 50 20 L 76 34 L 88 56 L 76 60 L 64 48 L 50 64 L 36 48 L 24 60 L 12 56 L 24 34 Z" fill="url(#goldGradHeader)" />
+                  <polygon points="50,14 62,38 78,42 66,54 70,72 50,60 30,72 34,54 22,42 38,38" fill="url(#goldGradHeader)" />
+                  <polygon points="50,56 60,78 50,72 40,78" fill="url(#goldGradHeader)" />
+                </svg>
+              </div>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "10.5px", fontWeight: 750, letterSpacing: "0.18em", textTransform: "uppercase", color: wp.goldPrimary, marginBottom: "6px" }}>
+                  <span>GARUDA OS</span>
+                  <span style={{ color: wp.subtle }}>›</span>
+                  <span>CONSTITUENCY WAR ROOM</span>
+                </div>
+                <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "30px", fontWeight: 700, color: wp.deepGraphite, margin: 0, letterSpacing: "-0.015em", lineHeight: 1.15 }}>
+                  Constituency War Room
+                </h1>
+                <p style={{ fontSize: "13px", color: wp.muted, margin: "4px 0 0 0" }}>
+                  AI-Powered Intelligence. Real-World Impact.
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: "12px", color: wp.deepGraphite, fontWeight: 600 }}>
+                  {currentTime || "Tue, 3 Sep 2024 | 14:28:17 IST"}
+                </div>
+                <div style={{ fontSize: "11px", color: wp.green, fontWeight: 750, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "5px", marginTop: "2px" }}>
+                  <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: wp.green, boxShadow: "0 0 8px rgba(5, 150, 105, 0.4)" }} />
+                  System Online
+                </div>
+              </div>
+
+              <button
+                onClick={handleGenerateDossier}
+                style={{
+                  background: wp.goldGradient,
+                  color: wp.deepGraphite,
+                  border: "1px solid " + wp.goldLuxury,
+                  borderRadius: "9px",
+                  padding: "11px 22px",
+                  fontSize: "12.5px",
+                  fontWeight: 800,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "9px",
+                  boxShadow: "0 4px 16px rgba(184, 134, 43, 0.28)",
+                  letterSpacing: "0.02em",
+                  transition: "all 0.15s ease"
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0F1110" strokeWidth="2.5">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Generate 12-Section Dossier
+              </button>
+            </div>
+          </div>
+
+          {/* ========================================================================= */}
+          {/* ROW 1: 5 KEY METRIC KPI CARDS                                             */}
+          {/* ========================================================================= */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "16px" }}>
+
+            {/* Card 1: Total Booths */}
+            <div style={{ background: wp.card, boxShadow: wp.shadow, border: "1px solid " + wp.border, borderRadius: "14px", padding: "18px 20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                <span style={{ fontSize: "11px", color: wp.muted, fontWeight: 650, letterSpacing: "0.03em", textTransform: "uppercase" }}>Total Booths ↻</span>
+                <span style={{ border: "1px solid " + wp.borderGold, background: wp.goldHalo, color: wp.goldPrimary, padding: "5px 7px", borderRadius: "7px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={wp.goldPrimary} strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
+              </div>
+              <div style={{ fontSize: "34px", fontWeight: 800, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1 }}>351</div>
+              <div style={{ fontSize: "11px", color: wp.green, marginTop: "6px", fontWeight: 650 }}>
+                ● 348 Active <span style={{ color: wp.amber }}>• 3 Gap</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "12px" }}>
+                <div style={{ flex: 1, height: "5px", background: "rgba(23, 24, 27, 0.06)", borderRadius: "3px", overflow: "hidden", marginRight: "10px" }}>
+                  <div style={{ width: "99.1%", height: "100%", background: wp.green, borderRadius: "3px" }} />
+                </div>
+                <span style={{ fontSize: "11px", color: wp.muted, fontWeight: 700 }}>99.1%</span>
+              </div>
+            </div>
+
+            {/* Card 2: Active Cadre */}
+            <div style={{ background: wp.card, boxShadow: wp.shadow, border: "1px solid " + wp.border, borderRadius: "14px", padding: "18px 20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                <span style={{ fontSize: "11px", color: wp.muted, fontWeight: 650, letterSpacing: "0.03em", textTransform: "uppercase" }}>Active Cadre</span>
+                <span style={{ border: "1px solid rgba(2, 132, 199, 0.3)", background: wp.cyanBg, color: wp.cyan, padding: "5px 7px", borderRadius: "7px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={wp.cyan} strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </span>
+              </div>
+              <div style={{ fontSize: "34px", fontWeight: 800, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1 }}>286</div>
+              <div style={{ fontSize: "11px", color: wp.green, marginTop: "6px", fontWeight: 650 }}>
+                ● Live from Field
+              </div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "12px" }}>
+                <div style={{ flex: 1, height: "5px", background: "rgba(23, 24, 27, 0.06)", borderRadius: "3px", overflow: "hidden", marginRight: "10px" }}>
+                  <div style={{ width: "81.5%", height: "100%", background: wp.cyan, borderRadius: "3px" }} />
+                </div>
+                <span style={{ fontSize: "11px", color: wp.muted, fontWeight: 700 }}>81.5%</span>
+              </div>
+            </div>
+
+            {/* Card 3: Voter Base */}
+            <div style={{ background: wp.card, boxShadow: wp.shadow, border: "1px solid " + wp.border, borderRadius: "14px", padding: "18px 20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                <span style={{ fontSize: "11px", color: wp.muted, fontWeight: 650, letterSpacing: "0.03em", textTransform: "uppercase" }}>Voter Base (Est.)</span>
+                <span style={{ border: "1px solid rgba(217, 119, 6, 0.3)", background: wp.amberBg, color: wp.amber, padding: "5px 7px", borderRadius: "7px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={wp.amber} strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span>
+              </div>
+              <div style={{ fontSize: "34px", fontWeight: 800, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1 }}>4,28,671</div>
+              <div style={{ fontSize: "11px", color: wp.muted, marginTop: "6px" }}>
+                From ECI Data (2024)
+              </div>
+            </div>
+
+            {/* Card 4: Key Issues */}
+            <div style={{ background: wp.card, boxShadow: wp.shadow, border: "1px solid " + wp.border, borderRadius: "14px", padding: "18px 20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                <span style={{ fontSize: "11px", color: wp.muted, fontWeight: 650, letterSpacing: "0.03em", textTransform: "uppercase" }}>Key Issues</span>
+                <span style={{ border: "1px solid rgba(2, 132, 199, 0.3)", background: wp.cyanBg, color: wp.cyan, padding: "5px 7px", borderRadius: "7px", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={wp.cyan} strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </span>
+              </div>
+              <div style={{ fontSize: "34px", fontWeight: 800, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1 }}>12</div>
+              <div style={{ fontSize: "11px", color: wp.muted, marginTop: "6px" }}>
+                Top Civic Themes
+              </div>
+            </div>
+
+            {/* Card 5: Sentiment */}
+            <div
+              style={{
+                background: wp.card,
+                boxShadow: wp.shadow,
+                border: "1px solid " + wp.border,
+                borderRadius: "14px",
+                padding: "18px 20px",
+                position: "relative",
+                overflow: "hidden"
+              }}
+            >
+              {/* Tactical Warriors Backdrop Artwork */}
+              <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "120px", opacity: 0.08, pointerEvents: "none", overflow: "hidden" }}>
+                <svg viewBox="0 0 120 100" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+                  <path d="M0,100 L20,70 L35,80 L55,50 L75,65 L95,30 L110,45 L120,20 L120,100 Z" fill={wp.green} />
+                  <circle cx="80" cy="30" r="14" fill={wp.goldPrimary} opacity="0.3" />
+                </svg>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px", position: "relative", zIndex: 1 }}>
+                <span style={{ fontSize: "11px", color: wp.muted, fontWeight: 650, letterSpacing: "0.03em", textTransform: "uppercase" }}>Sentiment</span>
+                <span style={{ color: wp.green, fontSize: "14px" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={wp.green} strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </span>
+              </div>
+              <div style={{ fontSize: "34px", fontWeight: 800, color: wp.green, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1, position: "relative", zIndex: 1 }}>+12%</div>
+              <div style={{ fontSize: "11px", color: wp.muted, marginTop: "6px", position: "relative", zIndex: 1 }}>
+                Positive Trend
+              </div>
+            </div>
+
+          </div>
+
+          {/* ========================================================================= */}
+          {/* ROW 2: MIDDLE OPERATIONAL GRID (3 COLUMNS: MAP | FEED | META & PWA)       */}
+          {/* ========================================================================= */}
+          <div style={{ display: "grid", gridTemplateColumns: "1.65fr 0.85fr 0.85fr", gap: "18px" }}>
+
+            {/* COLUMN 1: CONSTITUENCY MAP (BOOTH LEVEL) - VISUAL ANCHOR */}
+            <div
+              style={{
+                background: wp.card,
+                boxShadow: wp.shadow,
+                border: "1px solid " + wp.border,
+                borderRadius: "14px",
+                padding: "22px",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative"
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                <div>
+                  <div style={{ fontSize: "16px", fontWeight: 700, color: wp.deepGraphite, fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: "-0.01em" }}>
+                    Constituency Map — Booth Level
+                  </div>
+                  <div style={{ fontSize: "10.5px", color: wp.muted, marginTop: "2px", letterSpacing: "0.02em" }}>
+                    Thane (148) • Spatial Field Cadre & Polling Station Grid
+                  </div>
+                </div>
+              </div>
+
+              {/* HIGH-TECH VECTOR MAP VISUALIZATION (Dark satellite map surface inside for contrast) */}
+              <div
+                style={{
+                  flex: 1,
+                  minHeight: "410px",
+                  background: "#080B11",
+                  borderRadius: "12px",
+                  border: "1.5px solid rgba(216, 182, 106, 0.3)",
+                  position: "relative",
+                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                {/* FLOATING BOOTH STATUS LEGEND BOX */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "14px",
+                    right: "14px",
+                    background: "rgba(8, 11, 17, 0.94)",
+                    border: "1px solid rgba(201, 154, 58, 0.4)",
+                    borderRadius: "10px",
+                    padding: "10px 14px",
+                    zIndex: 10,
+                    backdropFilter: "blur(10px)",
+                    boxShadow: "0 6px 18px rgba(0, 0, 0, 0.6)"
+                  }}
+                >
+                  <div style={{ fontSize: "11px", color: "#E7C982", fontWeight: 750, marginBottom: "6px", letterSpacing: "0.5px" }}>Booth Status</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "11px" }}>
+                    <span style={{ color: "#10B981", fontWeight: 650 }}>● Active (348)</span>
+                    <span style={{ color: "#EF4444", fontWeight: 650 }}>● Inactive (2)</span>
+                    <span style={{ color: "#F59E0B", fontWeight: 650 }}>● Gap (3)</span>
+                  </div>
+                </div>
+
+                {/* Grid Overlay */}
+                <svg width="100%" height="100%" style={{ position: "absolute", top: 0, left: 0, opacity: 0.15 }}>
+                  <defs>
+                    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.1)" strokeWidth="0.5" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#grid)" />
+                </svg>
+
+                {/* High-Tech Vector Map with Gold Polygon Boundary */}
+                <svg viewBox="0 0 500 350" style={{ width: "94%", height: "94%", zIndex: 1 }}>
+                  {/* Subtle Arterial Network */}
+                  <g stroke="rgba(56, 189, 248, 0.22)" strokeWidth="1.0">
+                    <line x1="210" y1="50" x2="250" y2="185" />
+                    <line x1="100" y1="185" x2="250" y2="185" />
+                    <line x1="390" y1="200" x2="250" y2="185" />
+                    <line x1="280" y1="285" x2="250" y2="185" />
+                    <line x1="340" y1="90" x2="250" y2="185" />
+                    <line x1="140" y1="250" x2="250" y2="185" />
+                  </g>
+
+                  {/* Outer Ward Polygon in Gold */}
+                  <polygon
+                    points="120,40 280,30 380,80 440,180 390,290 260,320 150,290 80,190 70,90"
+                    fill="rgba(184, 134, 43, 0.12)"
+                    stroke="#E7C982"
+                    strokeWidth="2.4"
+                    strokeDasharray="5 3"
+                  />
+
+                  {/* Ward Lines */}
+                  <line x1="120" y1="40" x2="250" y2="185" stroke="rgba(255,255,255,0.12)" />
+                  <line x1="280" y1="30" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
+                  <line x1="380" y1="80" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
+                  <line x1="440" y1="180" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
+                  <line x1="390" y1="290" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
+                  <line x1="150" y1="290" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
+
+                  {/* Ward Labels */}
+                  <text x="210" y="55" fill="#D1D5DB" fontSize="10" fontWeight="650" letterSpacing="0.5px">Ghodbunder</text>
+                  <text x="340" y="90" fill="#D1D5DB" fontSize="10" fontWeight="650" letterSpacing="0.5px">Kalwa</text>
+                  <text x="375" y="195" fill="#D1D5DB" fontSize="10" fontWeight="650" letterSpacing="0.5px">Mumbra</text>
+                  <text x="90" y="105" fill="#D1D5DB" fontSize="10" fontWeight="650" letterSpacing="0.5px">Kasarvadavali</text>
+                  <text x="110" y="190" fill="#D1D5DB" fontSize="10" fontWeight="650" letterSpacing="0.5px">Thane West</text>
+                  <text x="145" y="245" fill="#D1D5DB" fontSize="10" fontWeight="650" letterSpacing="0.5px">Thane East</text>
+                  <text x="160" y="295" fill="#D1D5DB" fontSize="10" fontWeight="650" letterSpacing="0.5px">Balkum</text>
+                  <text x="290" y="290" fill="#D1D5DB" fontSize="10" fontWeight="650" letterSpacing="0.5px">Vartak Nagar</text>
+                  <text x="380" y="260" fill="#D1D5DB" fontSize="10" fontWeight="650" letterSpacing="0.5px">Kopri</text>
+
+                  {/* Center Bold Label */}
+                  <text x="250" y="185" textAnchor="middle" fill="#FFFFFF" fontSize="15" fontWeight="800" letterSpacing="1.5px">
+                    THANE (148)
+                  </text>
+
+                  {/* Dense Tactical Cluster of Green Active Booth Dots */}
+                  {[
+                    [210, 50], [225, 45], [195, 55], [240, 55], [215, 65], [250, 60], [230, 70], [180, 65], [190, 75],
+                    [95, 110], [110, 100], [125, 115], [105, 125], [130, 95], [140, 110], [115, 135], [135, 130],
+                    [330, 85], [350, 95], [320, 100], [360, 110], [335, 115], [315, 90], [345, 125], [370, 105],
+                    [160, 290], [175, 280], [150, 275], [185, 295], [170, 305], [195, 285],
+                    [100, 185], [115, 175], [125, 195], [110, 205], [90, 195], [135, 180], [140, 200], [120, 215],
+                    [180, 140], [195, 135], [210, 145], [225, 130], [240, 140], [260, 135], [275, 145], [290, 140],
+                    [170, 160], [185, 170], [200, 160], [220, 165], [280, 160], [295, 170], [310, 160],
+                    [175, 195], [190, 210], [210, 200], [225, 210], [270, 200], [285, 210], [305, 195],
+                    [135, 240], [150, 235], [145, 255], [160, 245], [130, 250], [155, 265], [140, 270],
+                    [280, 285], [295, 275], [270, 295], [305, 290], [290, 305], [315, 280], [260, 300],
+                    [370, 255], [385, 245], [360, 265], [395, 260], [380, 275], [365, 280], [400, 270],
+                    [365, 190], [380, 180], [390, 200], [405, 185], [375, 210], [415, 195], [385, 220],
+                    [160, 115], [175, 105], [205, 110], [220, 100], [235, 110], [250, 95], [265, 110], [280, 105],
+                    [150, 150], [165, 135], [230, 155], [270, 150], [300, 130], [320, 140], [340, 150],
+                    [160, 220], [180, 230], [200, 225], [220, 230], [240, 220], [260, 230], [280, 225], [300, 230], [320, 220],
+                    [210, 250], [230, 260], [250, 250], [270, 260], [220, 275], [240, 280], [260, 270],
+                    [330, 170], [345, 185], [360, 165], [325, 200], [340, 215], [355, 230]
+                  ].map(([x, y], i) => (
+                    <g key={i}>
+                      <circle cx={x} cy={y} r="3.2" fill="#10B981" />
+                    </g>
+                  ))}
+
+                  {/* Inactive Red Dots */}
+                  <circle cx="195" cy="115" r="4.2" fill="#EF4444" />
+                  <circle cx="280" cy="245" r="4.2" fill="#EF4444" />
+
+                  {/* Gap Yellow Dots */}
+                  <circle cx="190" cy="210" r="4.2" fill="#F59E0B" />
+                  <circle cx="310" cy="180" r="4.2" fill="#F59E0B" />
+                  <circle cx="230" cy="95" r="4.2" fill="#F59E0B" />
+                </svg>
+
+                {/* Zoom Controls */}
+                <div style={{ position: "absolute", right: "14px", bottom: "14px", display: "flex", flexDirection: "column", gap: "5px" }}>
+                  <button style={{ width: "28px", height: "28px", background: "#161B22", border: "1px solid rgba(255,255,255,0.2)", color: "#FFFFFF", borderRadius: "6px", fontSize: "15px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                  <button style={{ width: "28px", height: "28px", background: "#161B22", border: "1px solid rgba(255,255,255,0.2)", color: "#FFFFFF", borderRadius: "6px", fontSize: "15px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>-</button>
+                </div>
+              </div>
+            </div>
+
+            {/* COLUMN 2: BOOTH ACTIVITY FEED */}
+            <div
+              style={{
+                background: wp.card,
+                boxShadow: wp.shadow,
+                border: "1px solid " + wp.border,
+                borderRadius: "14px",
+                padding: "22px",
+                display: "flex",
+                flexDirection: "column"
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                <div style={{ fontSize: "16px", fontWeight: 700, color: wp.deepGraphite, fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: "-0.01em" }}>
+                  Booth Activity Feed
+                </div>
+                <span style={{ background: wp.greenBg, color: wp.green, fontSize: "10px", fontWeight: 750, padding: "3px 10px", borderRadius: "14px", display: "flex", alignItems: "center", gap: "4px", border: "1px solid rgba(5, 150, 105, 0.3)" }}>
+                  <span>◆</span> Live
                 </span>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {constituency.pockets.map((pocket, idx) => {
-                  const stateColor = pocket.condition === "RED" ? "#DC2626" : pocket.condition === "AMBER" ? "#D97706" : "#059669";
-                  const stateBg = pocket.condition === "RED" ? "rgba(220, 38, 38, 0.08)" : pocket.condition === "AMBER" ? "rgba(217, 119, 6, 0.08)" : "rgba(5, 150, 105, 0.08)";
-                  return (
-                    <div key={idx} style={{ border: `1px solid ${stateColor}40`, background: "#FAF9F6", borderRadius: 8, padding: "10px 12px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-                        <span style={{ fontSize: 12.5, fontWeight: 600, color: "#17181B" }}>{pocket.name}</span>
-                        <span style={{ fontSize: 9.5, fontWeight: 700, color: stateColor, background: stateBg, padding: "1px 5px", borderRadius: 3 }}>
-                          {pocket.label}
-                        </span>
+              {/* FEED LIST WITH RADAR PULSE DOTS */}
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "10px", overflowY: "auto" }}>
+                {[
+                  { id: "Booth 148-102", cadre: "Cadre Active", net: "4G", batt: "78%", time: "2 min ago" },
+                  { id: "Booth 148-087", cadre: "Cadre Active", net: "5G", batt: "62%", time: "3 min ago" },
+                  { id: "Booth 148-210", cadre: "Cadre Active", net: "4G", batt: "91%", time: "5 min ago" },
+                  { id: "Booth 148-056", cadre: "Cadre Active", net: "4G", batt: "45%", time: "8 min ago" },
+                  { id: "Booth 148-019", cadre: "Cadre Active", net: "5G", batt: "67%", time: "11 min ago" }
+                ].map((item, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      background: wp.canvasIvory,
+                      border: "1px solid " + wp.border,
+                      borderRadius: "9px",
+                      padding: "11px 13px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "11px" }}>
+                      {/* Radar Pulse Double Ring */}
+                      <div style={{ position: "relative", width: "16px", height: "16px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <span style={{ position: "absolute", width: "16px", height: "16px", borderRadius: "50%", border: "1px solid rgba(5, 150, 105, 0.4)" }} />
+                        <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: wp.green, boxShadow: "0 0 6px rgba(5, 150, 105, 0.4)" }} />
                       </div>
-                      <div style={{ fontSize: 11, color: "#525866", display: "flex", justifyContent: "space-between" }}>
-                        <span>Booths: {pocket.booths} · ~{pocket.electorsEst?.toLocaleString()} electors</span>
-                        <span style={{ fontWeight: 600, color: "#9E6D1C" }}>{pocket.primaryIssue}</span>
+                      <div>
+                        <div style={{ fontSize: "12.5px", fontWeight: 750, color: wp.deepGraphite }}>{item.id}</div>
+                        <div style={{ fontSize: "10.5px", color: wp.muted, marginTop: "1px" }}>
+                          {item.cadre} • {item.net} • {item.batt}
+                        </div>
                       </div>
                     </div>
-                  );
-                })}
+                    <span style={{ fontSize: "10.5px", color: wp.subtle }}>{item.time}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* VIEW ALL BOOTHS BUTTON */}
+              <button
+                onClick={() => setActiveTab("booths")}
+                style={{
+                  marginTop: "16px",
+                  width: "100%",
+                  background: wp.canvasIvory,
+                  border: "1px solid " + wp.border,
+                  borderRadius: "8px",
+                  padding: "10px",
+                  color: wp.deepGraphite,
+                  fontSize: "11.5px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 0.15s ease"
+                }}
+              >
+                View All Booths →
+              </button>
+            </div>
+
+            {/* COLUMN 3: META INTEGRATION + CADRE FIELD PWA (STACKED) */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+
+              {/* META INTEGRATION CARD */}
+              <div
+                style={{
+                  background: wp.card,
+                  boxShadow: wp.shadow,
+                  border: "1px solid " + wp.border,
+                  borderRadius: "14px",
+                  padding: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px"
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ color: "#0081FB", fontSize: "17px", fontWeight: 800 }}>♾️</span>
+                    <span style={{ fontSize: "16px", fontWeight: 700, color: wp.deepGraphite, fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: "-0.01em" }}>Meta Integration</span>
+                  </div>
+                  <span style={{ background: wp.amberBg, color: wp.amber, border: "1px solid rgba(217, 119, 6, 0.4)", fontSize: "10px", fontWeight: 800, padding: "3px 8px", borderRadius: "5px" }}>
+                    PARTIAL
+                  </span>
+                </div>
+
+                {/* META METRIC ROWS */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "11.5px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: wp.muted }}>🔗 Graph API</span>
+                    <span style={{ color: wp.green, fontWeight: 650 }}>● Connected (v21.0)</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: wp.muted }}>💳 Ad Account</span>
+                    <span style={{ color: wp.green, fontFamily: "'JetBrains Mono', monospace", fontSize: "10.5px" }}>● act_334107975616856</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: wp.muted }}>🏢 Business Portfolio</span>
+                    <span style={{ color: wp.green, fontWeight: 650 }}>● Garuda OS</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: wp.muted }}>📄 Facebook Page</span>
+                    <span style={{ color: wp.red, fontWeight: 650 }}>● 0 Pages Found</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: wp.muted }}>📷 Instagram</span>
+                    <span style={{ color: wp.red, fontWeight: 650 }}>● Not Available</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: wp.muted }}>🚀 Publishing</span>
+                    <span style={{ color: wp.red, fontWeight: 650 }}>● Blocked (Human Approval)</span>
+                  </div>
+                </div>
+
+                {/* DISCOVER PAGES BUTTON */}
+                <button
+                  onClick={handleMetaDiscover}
+                  disabled={metaDiscovering}
+                  style={{
+                    marginTop: "6px",
+                    width: "100%",
+                    background: wp.goldGradient,
+                    color: wp.deepGraphite,
+                    border: "none",
+                    borderRadius: "7px",
+                    padding: "9px",
+                    fontSize: "11.5px",
+                    fontWeight: 800,
+                    cursor: metaDiscovering ? "wait" : "pointer",
+                    boxShadow: "0 2px 10px rgba(184, 134, 43, 0.22)",
+                    transition: "all 0.15s ease"
+                  }}
+                >
+                  {metaDiscovering ? "Scanning..." : "🔍 Discover Pages"}
+                </button>
+              </div>
+
+              {/* CADRE FIELD PWA CARD */}
+              <div
+                style={{
+                  background: wp.card,
+                  boxShadow: wp.shadow,
+                  border: "1px solid " + wp.border,
+                  borderRadius: "14px",
+                  padding: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between"
+                }}
+              >
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "4px" }}>
+                    <span style={{ fontSize: "15px" }}>📱</span>
+                    <span style={{ fontSize: "16px", fontWeight: 700, color: wp.deepGraphite, fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: "-0.01em" }}>Cadre Field PWA</span>
+                    <span style={{ background: wp.greenBg, color: wp.green, border: "1px solid rgba(5, 150, 105, 0.35)", fontSize: "9.5px", fontWeight: 800, padding: "2px 7px", borderRadius: "5px" }}>
+                      ● LIVE
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "11px", color: wp.muted, fontFamily: "'JetBrains Mono', monospace", marginBottom: "10px" }}>
+                    /booth-cadre
+                  </div>
+                  <div style={{ fontSize: "11.5px", color: wp.green, fontWeight: 650 }}>
+                    ● 286 Active Devices
+                  </div>
+                  <div style={{ fontSize: "11.5px", color: wp.green, fontWeight: 650, marginTop: "2px" }}>
+                    💚 97% Success Rate
+                  </div>
+                </div>
+
+                {/* QR CODE PREVIEW */}
+                <Link
+                  to="/booth-cadre"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    textDecoration: "none",
+                    gap: "5px"
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "66px",
+                      height: "66px",
+                      background: "#FFFFFF",
+                      border: "1px solid " + wp.border,
+                      borderRadius: "8px",
+                      padding: "5px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: wp.shadowSm
+                    }}
+                  >
+                    {/* SVG QR Code Simulation */}
+                    <svg viewBox="0 0 25 25" width="100%" height="100%" fill="#000000">
+                      <rect x="1" y="1" width="7" height="7" />
+                      <rect x="2" y="2" width="5" height="5" fill="#FFFFFF" />
+                      <rect x="3" y="3" width="3" height="3" />
+                      <rect x="17" y="1" width="7" height="7" />
+                      <rect x="18" y="2" width="5" height="5" fill="#FFFFFF" />
+                      <rect x="19" y="3" width="3" height="3" />
+                      <rect x="1" y="17" width="7" height="7" />
+                      <rect x="2" y="18" width="5" height="5" fill="#FFFFFF" />
+                      <rect x="3" y="19" width="3" height="3" />
+                      <rect x="10" y="3" width="2" height="4" />
+                      <rect x="10" y="9" width="4" height="2" />
+                      <rect x="15" y="11" width="3" height="3" />
+                      <rect x="10" y="15" width="2" height="6" />
+                      <rect x="14" y="17" width="5" height="2" />
+                      <rect x="19" y="19" width="3" height="3" />
+                    </svg>
+                  </div>
+                  <span style={{ fontSize: "9.5px", color: wp.goldPrimary, fontWeight: 750 }}>Open on Mobile</span>
+                </Link>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* ========================================================================= */}
+          {/* ROW 3: BOTTOM 4 CARDS (DEMOGRAPHICS | ISSUES | SENTIMENT | ACTIONS)       */}
+          {/* ========================================================================= */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "18px" }}>
+
+            {/* Card 1: Voter Demographics */}
+            <div style={{ background: wp.card, boxShadow: wp.shadow, border: "1px solid " + wp.border, borderRadius: "14px", padding: "22px", display: "flex", flexDirection: "column" }}>
+              <div style={{ fontSize: "15.5px", fontWeight: 700, color: wp.deepGraphite, marginBottom: "16px", fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: "-0.01em" }}>
+                Voter Demographics
+              </div>
+
+              {/* Donut Chart & Legend */}
+              <div style={{ display: "flex", alignItems: "center", gap: "18px", flex: 1 }}>
+                <div style={{ position: "relative", width: "96px", height: "96px", flexShrink: 0 }}>
+                  <svg viewBox="0 0 36 36" width="100%" height="100%">
+                    {/* Ring background */}
+                    <circle cx="18" cy="18" r="15.915" fill="none" stroke="rgba(23, 24, 27, 0.08)" strokeWidth="4" />
+                    {/* Youth 22% */}
+                    <circle cx="18" cy="18" r="15.915" fill="none" stroke="#0284C7" strokeWidth="4" strokeDasharray="22 78" strokeDashoffset="25" />
+                    {/* Working 46% */}
+                    <circle cx="18" cy="18" r="15.915" fill="none" stroke="#00C4DF" strokeWidth="4" strokeDasharray="46 54" strokeDashoffset="3" />
+                    {/* Seniors 24% */}
+                    <circle cx="18" cy="18" r="15.915" fill="none" stroke="#D97706" strokeWidth="4" strokeDasharray="24 76" strokeDashoffset="57" />
+                    {/* Others 8% */}
+                    <circle cx="18" cy="18" r="15.915" fill="none" stroke="#8E887E" strokeWidth="4" strokeDasharray="8 92" strokeDashoffset="33" />
+                  </svg>
+                  <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center" }}>
+                    <div style={{ fontSize: "13px", fontWeight: 800, color: wp.deepGraphite, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>4.28L</div>
+                    <div style={{ fontSize: "8px", color: wp.muted, marginTop: "2px" }}>Total Voters</div>
+                  </div>
+                </div>
+
+                {/* Legend List */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontSize: "11px", flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#0284C7" }} />
+                    <span style={{ color: wp.textBody }}>Youth (18-25)</span>
+                    <span style={{ fontWeight: 750, color: wp.deepGraphite, marginLeft: "auto" }}>22%</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#00C4DF" }} />
+                    <span style={{ color: wp.textBody }}>Working (26-45)</span>
+                    <span style={{ fontWeight: 750, color: wp.deepGraphite, marginLeft: "auto" }}>46%</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#D97706" }} />
+                    <span style={{ color: wp.textBody }}>Seniors (46+)</span>
+                    <span style={{ fontWeight: 750, color: wp.deepGraphite, marginLeft: "auto" }}>24%</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#8E887E" }} />
+                    <span style={{ color: wp.textBody }}>Others</span>
+                    <span style={{ fontWeight: 750, color: wp.deepGraphite, marginLeft: "auto" }}>8%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: "14px", fontSize: "11.5px", color: wp.goldPrimary, cursor: "pointer", fontWeight: 750 }}>
+                View Detailed Analysis →
               </div>
             </div>
 
-            {/* LOCAL ISSUE RADAR */}
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 18px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <div>
-                  <h3 style={{ fontSize: 14.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.01em", margin: 0 }}>
-                    LOCAL CIVIC ISSUE RADAR
-                  </h3>
-                  <p style={{ fontSize: 11.5, color: "#686A70", margin: "2px 0 0 0" }}>
-                    Detected across public grievance portals & municipal notices.
-                  </p>
-                </div>
-                <span style={{ fontSize: 10.5, fontWeight: 700, color: "#059669" }}>
-                  24x7 MONITORING
-                </span>
+            {/* Card 2: Top Civic Issues */}
+            <div style={{ background: wp.card, boxShadow: wp.shadow, border: "1px solid " + wp.border, borderRadius: "14px", padding: "22px", display: "flex", flexDirection: "column" }}>
+              <div style={{ fontSize: "15.5px", fontWeight: 700, color: wp.deepGraphite, marginBottom: "16px", fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: "-0.01em" }}>
+                Top Civic Issues
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {constituency.issueRadar.map(issue => (
-                  <div
-                    key={issue.id}
-                    onClick={() => setSelectedIssueId(issue.id)}
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px", flex: 1 }}>
+                {[
+                  { num: "1", name: "Water Supply", pct: "28%", color: "#DC2626" },
+                  { num: "2", name: "Road Infra", pct: "18%", color: "#D97706" },
+                  { num: "3", name: "Public Transport", pct: "14%", color: "#0284C7" },
+                  { num: "4", name: "Employment", pct: "12%", color: "#B8862B" },
+                  { num: "5", name: "Healthcare", pct: "10%", color: "#059669" }
+                ].map((iss) => (
+                  <div key={iss.num} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "11.5px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ width: "17px", height: "17px", borderRadius: "50%", background: wp.canvasSubtle, border: "1px solid " + wp.border, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "9.5px", color: wp.muted, fontWeight: 750 }}>
+                          {iss.num}
+                        </span>
+                        <span style={{ color: wp.deepGraphite, fontWeight: 550 }}>{iss.name}</span>
+                      </div>
+                      <span style={{ fontWeight: 750, color: wp.deepGraphite }}>{iss.pct}</span>
+                    </div>
+                    <div style={{ height: "5px", background: "rgba(23, 24, 27, 0.06)", borderRadius: "3px", overflow: "hidden", marginLeft: "25px" }}>
+                      <div style={{ width: iss.pct, height: "100%", background: iss.color, borderRadius: "3px" }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ marginTop: "14px", fontSize: "11.5px", color: wp.goldPrimary, cursor: "pointer", fontWeight: 750 }}>
+                View All 12 Issues →
+              </div>
+            </div>
+
+            {/* Card 3: Sentiment Trend */}
+            <div style={{ background: wp.card, boxShadow: wp.shadow, border: "1px solid " + wp.border, borderRadius: "14px", padding: "22px", display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                <span style={{ fontSize: "15.5px", fontWeight: 700, color: wp.deepGraphite, fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: "-0.01em" }}>Sentiment Trend</span>
+                <span style={{ fontSize: "13px", fontWeight: 800, color: wp.green, background: wp.greenBg, padding: "2px 7px", borderRadius: "5px" }}>+12%</span>
+              </div>
+
+              {/* Sparkline Curve with Y-axis */}
+              <div style={{ display: "flex", flex: 1, gap: "10px", minHeight: "105px" }}>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: "9.5px", color: wp.muted, paddingBottom: "20px" }}>
+                  <span>100%</span>
+                  <span>50%</span>
+                  <span>0%</span>
+                </div>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                  <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+                    <svg viewBox="0 0 200 80" style={{ width: "100%", height: "85px", overflow: "visible" }}>
+                      <defs>
+                        <linearGradient id="sentimentGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#059669" stopOpacity="0.25" />
+                          <stop offset="100%" stopColor="#059669" stopOpacity="0.0" />
+                        </linearGradient>
+                      </defs>
+                      {/* Area fill */}
+                      <polygon
+                        points="0,60 30,52 60,56 90,44 120,38 150,32 180,24 200,16 200,80 0,80"
+                        fill="url(#sentimentGrad)"
+                      />
+                      {/* Line */}
+                      <polyline
+                        points="0,60 30,52 60,56 90,44 120,38 150,32 180,24 200,16"
+                        fill="none"
+                        stroke="#059669"
+                        strokeWidth="2.8"
+                      />
+                      {/* Endpoint pulse */}
+                      <circle cx="200" cy="16" r="4.5" fill="#059669" />
+                    </svg>
+                  </div>
+                  {/* X Axis Months */}
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "9.5px", color: wp.muted, marginTop: "6px" }}>
+                    <span>Jun</span>
+                    <span>Jul</span>
+                    <span>Aug</span>
+                    <span>Sep</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: "14px", fontSize: "11.5px", color: wp.goldPrimary, cursor: "pointer", fontWeight: 750 }}>
+                View Analytics →
+              </div>
+            </div>
+
+            {/* Card 4: Quick Actions */}
+            <div style={{ background: wp.card, boxShadow: wp.shadow, border: "1px solid " + wp.border, borderRadius: "14px", padding: "22px", display: "flex", flexDirection: "column" }}>
+              <div style={{ fontSize: "15.5px", fontWeight: 700, color: wp.deepGraphite, marginBottom: "16px", fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: "-0.01em" }}>
+                Quick Actions
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "9px", flex: 1 }}>
+                {[
+                  { id: "dossier", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={wp.goldPrimary} strokeWidth="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>, title: "Generate Dossier" },
+                  { id: "rebuttal", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={wp.goldPrimary} strokeWidth="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, title: "Crisis Rebuttal" },
+                  { id: "cybershield", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={wp.goldPrimary} strokeWidth="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>, title: "Legal Notice (CyberShield)" },
+                  { id: "commercial", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={wp.goldPrimary} strokeWidth="2.2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, title: "View Commercial Plan" }
+                ].map((act) => (
+                  <button
+                    key={act.id}
+                    onClick={() => handleQuickAction(act.id)}
                     style={{
-                      border: selectedIssueId === issue.id ? "1.5px solid #C48B28" : "1px solid rgba(23, 24, 27, 0.07)",
-                      background: selectedIssueId === issue.id ? "rgba(196, 139, 40, 0.06)" : "#FAF9F6",
-                      borderRadius: 8,
-                      padding: "10px 12px",
+                      background: wp.canvasIvory,
+                      border: "1px solid " + wp.border,
+                      borderRadius: "9px",
+                      padding: "10px 14px",
+                      color: wp.deepGraphite,
+                      fontSize: "11.5px",
+                      fontWeight: 650,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
                       cursor: "pointer",
+                      textAlign: "left",
                       transition: "all 0.15s ease"
                     }}
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-                      <span style={{ fontSize: 12.5, fontWeight: 600, color: "#17181B" }}>{issue.name}</span>
-                      <span style={{ fontSize: 9.5, fontWeight: 700, color: issue.signal === "HIGH" ? "#DC2626" : "#D97706", background: issue.signal === "HIGH" ? "rgba(220, 38, 38, 0.1)" : "rgba(217, 119, 6, 0.1)", padding: "1px 5px", borderRadius: 3 }}>
-                        {issue.signal} SIGNAL
-                      </span>
-                    </div>
-                    <div style={{ fontSize: 11, color: "#686A70", display: "flex", justifyContent: "space-between" }}>
-                      <span>{issue.publicReferences} public references · {issue.source}</span>
-                      <span style={{ fontWeight: 600 }}>{issue.status}</span>
-                    </div>
-                  </div>
+                    <span style={{ display: "flex", alignItems: "center", gap: "9px" }}>
+                      <span>{act.icon}</span>
+                      <span>{act.title}</span>
+                    </span>
+                    <span style={{ color: wp.goldPrimary, fontWeight: 700 }}>→</span>
+                  </button>
                 ))}
               </div>
             </div>
 
           </div>
 
-          {/* PUBLIC NARRATIVE RADAR */}
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.08)", borderRadius: 14, padding: "18px 18px", marginBottom: 24 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+        </main>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 3. DOSSIER & COMMERCIAL MODALS                                            */}
+      {/* ========================================================================= */}
+      {dossierModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            padding: "20px"
+          }}
+        >
+          <div
+            style={{
+              background: wp.card,
+              boxShadow: wp.shadow,
+              border: "1px solid " + wp.border,
+              borderRadius: "16px",
+              padding: "24px",
+              maxWidth: "500px",
+              width: "100%"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div style={{ fontSize: "16px", fontWeight: 700, color: wp.goldPrimary, fontFamily: "'Playfair Display', Georgia, serif" }}>
+                12-Section Strategic Dossier
+              </div>
+              <button onClick={() => setDossierModalOpen(false)} style={{ background: "none", border: "none", color: wp.muted, fontSize: "18px", cursor: "pointer" }}>✕</button>
+            </div>
+
+            {isGeneratingPdf ? (
+              <div style={{ textAlign: "center", padding: "30px 0" }}>
+                <div style={{ fontSize: "28px", marginBottom: "12px" }}>⚙️</div>
+                <div style={{ fontSize: "14px", fontWeight: 700, color: wp.text }}>Compiling Physical ISO-PDF...</div>
+                <div style={{ fontSize: "11px", color: wp.muted, marginTop: "4px" }}>Embedding ECI Gazette citations & SHA-256 evidence seal</div>
+              </div>
+            ) : generatedPdf ? (
               <div>
-                <h3 style={{ fontSize: 14.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.01em", margin: 0 }}>
-                  PUBLIC NARRATIVE RADAR
-                </h3>
-                <p style={{ fontSize: 11.5, color: "#686A70", margin: "2px 0 0 0" }}>
-                  Monitors publicly stated claims. Never silently presents allegations as fact.
-                </p>
-              </div>
-              <span style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C" }}>
-                {constituency.narratives.length} ACTIVE SIGNALS
-              </span>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 12 }}>
-              {constituency.narratives.map(nar => (
-                <div key={nar.id} style={{ border: "1px solid rgba(23, 24, 27, 0.07)", background: "#FAF9F6", borderRadius: 8, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 10.5, fontWeight: 600, color: "#8A8D95", marginBottom: 4 }}>
-                    SOURCE: {nar.source} · {nar.timestamp}
-                  </div>
-                  <div style={{ fontSize: 12.5, fontWeight: 500, color: "#17181B", lineHeight: 1.45, marginBottom: 8 }}>
-                    "{nar.claim}"
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 10.5, fontWeight: 700, color: nar.verification.includes("Contradicted") ? "#DC2626" : "#059669" }}>
-                      VERIFICATION: {nar.verification}
-                    </span>
-                    <span style={{ fontSize: 9.5, fontWeight: 700, background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.12)", borderRadius: 3, padding: "1px 5px" }}>
-                      {nar.responseStatus}
-                    </span>
-                  </div>
+                <div style={{ background: wp.greenBg, border: "1px solid rgba(5, 150, 105, 0.3)", borderRadius: "8px", padding: "12px", marginBottom: "16px" }}>
+                  <div style={{ color: wp.green, fontWeight: 700, fontSize: "12px" }}>✅ Deliverable Generated & Verified</div>
+                  <div style={{ fontSize: "11px", color: wp.textBody, marginTop: "4px" }}>File: {generatedPdf.fileName || "dossier.pdf"}</div>
+                  <div style={{ fontSize: "10px", color: wp.muted, fontFamily: "monospace", marginTop: "2px" }}>SHA-256: {generatedPdf.sha256Hash?.slice(0, 24)}...</div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 15-MINUTE RAPID RESPONSE WORKFLOW */}
-          <div style={{ background: "#FFFFFF", border: "1.5px solid rgba(196, 139, 40, 0.3)", borderRadius: 14, padding: "20px 20px", marginBottom: 28, boxShadow: "0 6px 20px rgba(196, 139, 40, 0.04)" }}>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 14 }}>
-              <div>
-                <span style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C", letterSpacing: "0.08em" }}>
-                  REPUTATION & VERIFICATION PIPELINE
-                </span>
-                <h3 style={{ fontSize: 15.5, fontWeight: 700, color: "#17181B", letterSpacing: "-0.01em", margin: "2px 0 0 0" }}>
-                  GARUDA RAPID RESPONSE (15-MINUTE TIMELINE)
-                </h3>
-              </div>
-              <div style={{ fontSize: 11, fontWeight: 600, background: "rgba(5, 150, 105, 0.1)", color: "#059669", padding: "3px 8px", borderRadius: 5 }}>
-                ACTIVE TARGET: {activeIssue.name}
-              </div>
-            </div>
-
-            {/* TIMELINE PROGRESS BARS */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 8, marginBottom: 16 }}>
-              {[
-                { time: "00:00", label: "SIGNAL DETECTED" },
-                { time: "03:00", label: "SOURCE IDENTIFIED" },
-                { time: "06:00", label: "EVIDENCE COLLECTED" },
-                { time: "10:00", label: "FACT CHECK COMPLETE" },
-                { time: "15:00", label: "RESPONSE READY" }
-              ].map((step, sIdx) => (
-                <div key={sIdx} style={{ background: "#FAF9F6", border: "1px solid rgba(196, 139, 40, 0.2)", borderRadius: 7, padding: "8px 6px", textAlign: "center" }}>
-                  <div style={{ fontSize: 10.5, fontWeight: 800, color: "#9E6D1C" }}>{step.time}</div>
-                  <div style={{ fontSize: 9.5, fontWeight: 600, color: "#17181B", marginTop: 2 }}>{step.label}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* REBUTTAL ASSET TABS */}
-            <div style={{ display: "flex", gap: 6, borderBottom: "1px solid rgba(23, 24, 27, 0.08)", paddingBottom: 8, marginBottom: 12 }}>
-              {[
-                { id: "summary", label: "Factual Summary" },
-                { id: "statement", label: "Official Statement Draft" },
-                { id: "script", label: "Short-Form Video Script" },
-                { id: "evidence", label: "Evidence References" }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveRebuttalTab(tab.id)}
-                  style={{
-                    background: activeRebuttalTab === tab.id ? "#17181B" : "transparent",
-                    color: activeRebuttalTab === tab.id ? "#FFFFFF" : "#525866",
-                    border: "none",
-                    borderRadius: 5,
-                    padding: "5px 12px",
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    cursor: "pointer"
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            <div style={{ background: "#FAF9F6", borderRadius: 8, padding: "14px 16px", fontSize: 12.5, lineHeight: 1.58, color: "#292B30" }}>
-              {activeRebuttalTab === "summary" && (
-                <div>
-                  <strong>Factual Synthesis:</strong> The claim alleging negligence regarding {activeIssue.name} in {constituency.name} is contradicted by official municipal sanction records showing active tenders and civil allocations.
-                </div>
-              )}
-              {activeRebuttalTab === "statement" && (
-                <div>
-                  <strong>Draft Press/RWA Statement:</strong> “The recent public claims made regarding {activeIssue.name} are factually baseless and ignore the verified work order and administrative clearances already in place. We urge our citizens to rely on official documented records.”
-                </div>
-              )}
-              {activeRebuttalTab === "script" && (
-                <div>
-                  <strong>30-Second Video/Reel Script:</strong> “Namaste {constituency.name} ke parivaarjan. Opposition keh raha hai ki {activeIssue.name} par kaam nahi hua. Sach yeh hai ki official sanction ho chuka hai aur kaam on-ground chal raha hai. Jhooth aur afwaahon se bachein — sach dekhein.”
-                </div>
-              )}
-              {activeRebuttalTab === "evidence" && (
-                <div>
-                  <strong>Public Document Verification:</strong> Gazette Notification #TMC/PWD/2026/089 · Tender Allocation Gazette #948201 · Worksite Progress Certificate.
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* COMMERCIAL COMMAND SECTION */}
-          <div ref={commandRef} style={{ background: "#FFFFFF", border: "1.5px solid rgba(196, 139, 40, 0.28)", borderRadius: 16, padding: "28px 20px", boxShadow: "0 12px 36px rgba(0,0,0,0.04)" }}>
-            <div style={{ textAlign: "center", maxWidth: 680, margin: "0 auto 26px auto" }}>
-              <div style={{ display: "inline-block", background: "rgba(196, 139, 40, 0.12)", color: "#9E6D1C", fontSize: 10.5, fontWeight: 700, padding: "3px 10px", borderRadius: 999, marginBottom: 10, letterSpacing: "0.06em" }}>
-                COMMERCIAL ACTIVATION // SOVEREIGN ENGINE
-              </div>
-              <h2 style={{ fontSize: "clamp(1.4rem, 2.5vw, 1.85rem)", fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", marginBottom: 8 }}>
-                ACTIVATE GARUDA COMMAND
-              </h2>
-              <p style={{ fontSize: 13, color: "#525866", lineHeight: 1.5, maxWidth: 640, margin: "0 auto" }}>
-                Aapne GARUDA ki intelligence capability dekh li. Ab isi intelligence ko continuous operational command layer mein convert kijiye.
-              </p>
-
-              {/* Currency Selector */}
-              <div style={{ display: "inline-flex", background: "#FAF9F6", border: "1px solid rgba(23, 24, 27, 0.1)", borderRadius: 7, padding: 3, marginTop: 10 }}>
-                {["INR", "USD", "AED", "GBP", "EUR"].map(curr => (
-                  <button
-                    key={curr}
-                    onClick={() => setCurrency(curr)}
+                {generatedPdf.url && (
+                  <a
+                    href={generatedPdf.url}
+                    target="_blank"
+                    rel="noreferrer"
                     style={{
-                      background: currency === curr ? "#17181B" : "transparent",
-                      color: currency === curr ? "#FFFFFF" : "#525866",
-                      border: "none",
-                      borderRadius: 5,
-                      padding: "3px 10px",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      cursor: "pointer"
+                      display: "block",
+                      textAlign: "center",
+                      background: wp.goldGradient,
+                      color: wp.deepGraphite,
+                      padding: "10px",
+                      borderRadius: "8px",
+                      fontWeight: 800,
+                      fontSize: "12px",
+                      textDecoration: "none",
+                      boxShadow: "0 4px 14px rgba(184, 134, 43, 0.25)"
                     }}
                   >
-                    {curr}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* PAYMENT STEP 1: SELECT PLAN */}
-            {paymentStep === "SELECT_PLAN" && (
-              <div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16, marginBottom: 24 }}>
-                  {plans.map(plan => {
-                    const isSelected = selectedPlanId === plan.id;
-                    return (
-                      <div
-                        key={plan.id}
-                        onClick={() => setSelectedPlanId(plan.id)}
-                        style={{
-                          background: isSelected ? "rgba(196, 139, 40, 0.05)" : "#FAF9F6",
-                          border: isSelected ? "1.5px solid #C48B28" : "1px solid rgba(23, 24, 27, 0.08)",
-                          borderRadius: 14,
-                          padding: "20px 18px",
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                          cursor: "pointer",
-                          position: "relative",
-                          transition: "all 0.15s ease"
-                        }}
-                      >
-                        {plan.recommended && (
-                          <div style={{ position: "absolute", top: -10, right: 16, background: "linear-gradient(135deg, #c48b28, #9e6d1c)", color: "#FFFFFF", fontSize: 9.5, fontWeight: 700, padding: "2px 7px", borderRadius: 999, letterSpacing: "0.05em" }}>
-                            RECOMMENDED
-                          </div>
-                        )}
-                        <div>
-                          <div style={{ fontSize: 14.5, fontWeight: 700, color: "#17181B", marginBottom: 2 }}>{plan.name}</div>
-                          <div style={{ fontSize: 11.5, color: "#686A70", marginBottom: 12 }}>{plan.tier}</div>
-                          <div style={{ fontSize: 23, fontWeight: 700, color: "#17181B", letterSpacing: "-0.02em", marginBottom: 2 }}>
-                            {plan.formattedPrice}
-                          </div>
-                          <div style={{ fontSize: 10.5, color: "#8A8D95", marginBottom: 16 }}>{plan.billingCycle}</div>
-
-                          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                            {plan.features.map((feat, fIdx) => (
-                              <li key={fIdx} style={{ fontSize: 11.5, color: "#292B30", marginBottom: 6, display: "flex", alignItems: "flex-start", gap: 7 }}>
-                                <span style={{ color: "#059669", fontWeight: "bold" }}>✓</span>
-                                <span>{feat}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => setPaymentStep("CLIENT_INFO")}
-                          style={{
-                            width: "100%",
-                            marginTop: 18,
-                            padding: "10px",
-                            borderRadius: 7,
-                            border: "none",
-                            background: isSelected ? "linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%)" : "#17181B",
-                            color: "#FFFFFF",
-                            fontSize: 12,
-                            fontWeight: 700,
-                            cursor: "pointer"
-                          }}
-                        >
-                          SELECT & PROCEED
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* PAYMENT STEP 2: CLIENT DETAILS FORM */}
-            {paymentStep === "CLIENT_INFO" && (
-              <form onSubmit={handleCreateOrder} style={{ maxWidth: 520, margin: "0 auto" }}>
-                <h3 style={{ fontSize: 16.5, fontWeight: 700, color: "#17181B", marginBottom: 4 }}>
-                  Campaign & Principal Details
-                </h3>
-                <p style={{ fontSize: 12, color: "#686A70", marginBottom: 16 }}>
-                  Enter primary contact information for territorial locking of {constituency.name}.
-                </p>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#292B30", marginBottom: 3 }}>Principal / Campaign Leader Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={customerInfo.name}
-                      onChange={e => setCustomerInfo({ ...customerInfo, name: e.target.value })}
-                      placeholder="e.g. Adv. Rajesh Sharma"
-                      style={{ width: "100%", padding: "8px 12px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", fontSize: 13 }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#292B30", marginBottom: 3 }}>Official Contact Number</label>
-                    <input
-                      type="tel"
-                      required
-                      value={customerInfo.phone}
-                      onChange={e => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
-                      placeholder="e.g. +91 98765 43210"
-                      style={{ width: "100%", padding: "8px 12px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", fontSize: 13 }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#292B30", marginBottom: 3 }}>Confidential Official Email</label>
-                    <input
-                      type="email"
-                      value={customerInfo.email}
-                      onChange={e => setCustomerInfo({ ...customerInfo, email: e.target.value })}
-                      placeholder="e.g. leader@campaign.org"
-                      style={{ width: "100%", padding: "8px 12px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", fontSize: 13 }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, color: "#292B30", marginBottom: 3 }}>Political Affiliation / Independent</label>
-                    <input
-                      type="text"
-                      value={customerInfo.party}
-                      onChange={e => setCustomerInfo({ ...customerInfo, party: e.target.value })}
-                      placeholder="e.g. Major Party Candidate / Independent"
-                      style={{ width: "100%", padding: "8px 12px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", fontSize: 13 }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", gap: 10 }}>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentStep("SELECT_PLAN")}
-                    style={{ flex: 1, padding: "10px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.12)", background: "#FFFFFF", color: "#525866", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
-                  >
-                    BACK
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isProcessingPayment}
-                    style={{ flex: 2, padding: "10px", borderRadius: 7, border: "none", background: "linear-gradient(135deg, #c48b28, #9e6d1c)", color: "#FFFFFF", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
-                  >
-                    {isProcessingPayment ? "CREATING ORDER..." : "PROCEED TO ACTIVATION"}
-                  </button>
-                </div>
-              </form>
-            )}
-
-            {/* PAYMENT STEP 3: ORDER CONFIRMATION & PAYMENT */}
-            {paymentStep === "CONFIRMATION" && activeOrder && (
-              <div style={{ maxWidth: 520, margin: "0 auto", background: "#FAF9F6", border: "1px solid rgba(196, 139, 40, 0.3)", borderRadius: 14, padding: "20px" }}>
-                <div style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C", marginBottom: 3 }}>ORDER INITIALIZED</div>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#17181B", marginBottom: 10 }}>
-                  Order #{activeOrder.orderId}
-                </h3>
-                <div style={{ fontSize: 12.5, color: "#292B30", lineHeight: 1.6, marginBottom: 16 }}>
-                  <div><strong>Constituency:</strong> {activeOrder.constituency.name} ({activeOrder.constituency.state})</div>
-                  <div><strong>Selected Package:</strong> {activeOrder.plan.name}</div>
-                  <div><strong>Total Amount:</strong> {activeOrder.currency} {activeOrder.amount.toLocaleString()}</div>
-                  <div><strong>Exclusivity Status:</strong> RESERVED (30 Minutes Lock)</div>
-                </div>
-
-                <div style={{ background: "rgba(196, 139, 40, 0.08)", border: "1px solid rgba(196, 139, 40, 0.25)", borderRadius: 7, padding: "9px 11px", marginBottom: 12, fontSize: 11, color: "#9E6D1C", lineHeight: 1.5 }}>
-                  <strong>AUDIT SIMULATION NOTICE:</strong> This verification test invokes server-side cryptographic checks, reserves territorial exclusivity, generates a valid tax invoice, and alerts the Founder via Telegram without moving live funds.
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleSimulatePayment}
-                  disabled={isProcessingPayment}
-                  style={{ width: "100%", padding: "12px", borderRadius: 7, border: "none", background: "#059669", color: "#FFFFFF", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 14px rgba(5, 150, 105, 0.2)", marginBottom: 8 }}
-                >
-                  {isProcessingPayment ? "VERIFYING CRYPTOGRAPHIC PROOF..." : "RUN VERIFIED AUDIT AUTHORIZATION"}
-                </button>
-                <p style={{ fontSize: 10.5, color: "#8A8D95", textAlign: "center", margin: 0 }}>
-                  Server-side cryptographic verification with SHA-256 HMAC integrity.
-                </p>
-              </div>
-            )}
-
-            {/* PAYMENT SUCCESS CONFIRMATION */}
-            {paymentStep === "SUCCESS" && activeOrder && (
-              <div style={{ maxWidth: 540, margin: "0 auto", background: "#FFFFFF", border: "2px solid #059669", borderRadius: 14, padding: "24px 20px", textAlign: "center" }}>
-                <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(5, 150, 105, 0.12)", color: "#059669", fontSize: 22, display: "inline-grid", placeItems: "center", marginBottom: 10 }}>
-                  ✓
-                </div>
-                <h3 style={{ fontSize: 20, fontWeight: 700, color: "#17181B", marginBottom: 4 }}>
-                  GARUDA COMMAND ACTIVATED
-                </h3>
-                <p style={{ fontSize: 12.5, color: "#525866", marginBottom: 16 }}>
-                  Constituency {activeOrder.constituency.name} is now locked under territorial exclusivity.
-                </p>
-
-                <div style={{ background: "#FAF9F6", borderRadius: 8, padding: "12px 14px", textAlign: "left", fontSize: 11.5, lineHeight: 1.65, marginBottom: 16 }}>
-                  <div><strong>Order ID:</strong> {activeOrder.orderId}</div>
-                  <div><strong>Transaction ID:</strong> {activeOrder.transactionId || "TXN-VERIFIED"}</div>
-                  <div><strong>Invoice Number:</strong> {activeOrder.invoiceNumber || "INV-2026-001"}</div>
-                  <div><strong>Status:</strong> <span style={{ color: "#059669", fontWeight: 700 }}>ACTIVATED</span></div>
-                  <div><strong>Payment Mode:</strong> <span style={{ color: "#9E6D1C", fontWeight: 600 }}>{activeOrder.paymentMode || "LOCAL_TEST_SIMULATION"}</span></div>
-                  <div><strong>Production Money Moved:</strong> <span style={{ color: "#686A70", fontWeight: 600 }}>{activeOrder.isProductionRevenue ? "YES (Live Gateway)" : "₹0 (Verified Audit Simulation)"}</span></div>
-                </div>
-
-                <div style={{ display: "flex", gap: 10 }}>
-                  <Link
-                    to="/command-center"
-                    style={{ flex: 1, padding: "10px", borderRadius: 7, background: "#17181B", color: "#FFFFFF", fontSize: 12, fontWeight: 700, textDecoration: "none", display: "grid", placeItems: "center" }}
-                  >
-                    ENTER COMMAND CENTER
-                  </Link>
-                  <button
-                    onClick={() => alert(`Invoice ${invoiceData?.invoiceNumber || activeOrder.invoiceNumber} downloaded. Total: ${activeOrder.currency} ${activeOrder.amount}`)}
-                    style={{ flex: 1, padding: "10px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.15)", background: "#FFFFFF", color: "#17181B", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
-                  >
-                    DOWNLOAD INVOICE
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* PAYMENT FAILED GRACEFUL RECOVERY */}
-            {paymentStep === "FAILED" && (
-              <div style={{ maxWidth: 520, margin: "0 auto", background: "#FFFFFF", border: "1.5px solid #DC2626", borderRadius: 14, padding: "24px 20px", textAlign: "center" }}>
-                <div style={{ fontSize: 24, color: "#DC2626", marginBottom: 6 }}>⚠️</div>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#17181B", marginBottom: 4 }}>
-                  PAYMENT NOT COMPLETED
-                </h3>
-                <p style={{ fontSize: 12.5, color: "#525866", marginBottom: 16 }}>
-                  Aapka order surakshit hai. Transaction complete nahi hua: {paymentError || "Gateway timeout"}.
-                </p>
-                <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-                  <button
-                    onClick={() => setPaymentStep("CONFIRMATION")}
-                    style={{ padding: "9px 16px", borderRadius: 7, background: "#17181B", color: "#FFFFFF", border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
-                  >
-                    RETRY PAYMENT
-                  </button>
-                  <a
-                    href="mailto:praveen@garudaos.in?subject=War Room Payment Support"
-                    style={{ padding: "9px 16px", borderRadius: 7, border: "1px solid rgba(23, 24, 27, 0.18)", background: "#FFFFFF", color: "#17181B", fontSize: 12, fontWeight: 700, textDecoration: "none" }}
-                  >
-                    CONTACT SUPPORT
+                    Download Physical PDF
                   </a>
-                </div>
+                )}
               </div>
-            )}
-
-          </div>
-
-          {/* LEGAL & ANTI-FABRICATION GOVERNANCE NOTICE */}
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(23, 24, 27, 0.07)", borderRadius: 12, padding: "16px 20px", marginTop: 20, fontSize: 11.5, color: "#686A70", lineHeight: 1.6 }}>
-            <strong style={{ color: "#17181B", display: "block", marginBottom: 4, fontSize: 12, fontWeight: 700 }}>
-              🦅 GARUDA SOVEREIGN TRUTH LAW & CIVIC INTELLIGENCE GOVERNANCE MANDATE
-            </strong>
-            GARUDA WAR ROOM operates strictly on verified aggregate data from the Election Commission of India (ECI), public municipal gazettes, open civic grievance portals, and public information streams. GARUDA does NOT conduct individual voter surveillance, does NOT access private residential records, does NOT tap private WhatsApp groups, and does NOT fabricate telemetry or guarantee electoral victories. Every metric is formally classified as VERIFIED, PARTIAL, or INFERRED. Territorial exclusivity guarantees that only one registered campaign organization is onboarded per constituency cluster.
-          </div>
-
-        </div>
-      )}
-
-        </div>
-      </PublicChrome>
-
-      {/* MODAL: 12-SECTION AI CONSTITUENCY BRIEF */}
-      {briefModalOpen && briefData && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", display: "grid", placeItems: "center", zIndex: 1000, padding: 20 }}>
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(196, 139, 40, 0.4)", borderRadius: 16, maxWidth: 720, width: "100%", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 24px 60px rgba(0,0,0,0.25)" }}>
-            <div style={{ padding: "18px 24px", borderBottom: "1px solid rgba(23, 24, 27, 0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                <span style={{ fontSize: 10, fontWeight: 800, color: "#9E6D1C" }}>GARUDA INTELLIGENCE BRIEF</span>
-                <h3 style={{ fontSize: 18, fontWeight: 800, color: "#17181B", margin: 0 }}>{briefData.metadata.constituencyName}</h3>
-              </div>
-              <button onClick={() => setBriefModalOpen(false)} style={{ background: "transparent", border: "none", fontSize: 20, cursor: "pointer", color: "#8A8D95" }}>✕</button>
-            </div>
-            <div style={{ padding: "20px 24px", overflowY: "auto", flex: 1, display: "flex", flexDirection: "column", gap: 14 }}>
-              {briefData.sections.map((sec, idx) => (
-                <div key={idx} style={{ background: "#FAF9F6", borderRadius: 8, padding: "12px 14px", border: "1px solid rgba(23, 24, 27, 0.05)" }}>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: "#9E6D1C", marginBottom: 4 }}>{sec.title}</div>
-                  <div style={{ fontSize: 12, lineHeight: 1.5, color: "#292B30", whiteSpace: "pre-line" }}>{sec.content}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ padding: "14px 24px", borderTop: "1px solid rgba(23, 24, 27, 0.08)", display: "flex", justifyContent: "flex-end" }}>
-              <button onClick={() => window.print()} style={{ padding: "8px 18px", borderRadius: 8, background: "#17181B", color: "#FFFFFF", fontSize: 12, fontWeight: 700, border: "none", cursor: "pointer" }}>
-                PRINT / SAVE AS PDF
-              </button>
-            </div>
+            ) : null}
           </div>
         </div>
       )}
 
-      {/* MODAL: CLASSIFIED INTELLIGENCE DOSSIER (VERTICAL A4 PREVIEW) */}
-      {dossierModalOpen && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", display: "grid", placeItems: "center", zIndex: 1000, padding: 20 }}>
-          <div style={{ background: "#FFFFFF", border: "1.5px solid #C48B28", borderRadius: 16, maxWidth: 640, width: "100%", maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 24px 60px rgba(0,0,0,0.3)" }}>
-            <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(23, 24, 27, 0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 12, fontWeight: 800, color: "#9E6D1C" }}>CLASSIFIED INTELLIGENCE DOSSIER (A4 MOBILE FORMAT)</span>
-              <button onClick={() => setDossierModalOpen(false)} style={{ background: "transparent", border: "none", fontSize: 20, cursor: "pointer", color: "#8A8D95" }}>✕</button>
-            </div>
-            <div style={{ padding: "24px", overflowY: "auto", flex: 1, background: "#FAF9F6", display: "flex", flexDirection: "column", gap: 16 }}>
-              
-              {/* Dossier Cover */}
-              <div style={{ background: "#17181B", color: "#FFFFFF", borderRadius: 12, padding: "24px 20px", textAlign: "center" }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: "#C48B28", letterSpacing: "0.1em" }}>GARUDA OS // CONSTITUENCY DOSSIER</div>
-                <h2 style={{ fontSize: 22, fontWeight: 800, margin: "8px 0" }}>{constituency.canonicalName}</h2>
-                <p style={{ fontSize: 12, color: "#9CA3AF" }}>CONFIDENTIAL ELECTORAL INTELLIGENCE & INFRASTRUCTURE REPORT</p>
-              </div>
-
-              {/* Section 1: At a Glance */}
-              <div style={{ background: "#FFFFFF", borderRadius: 10, padding: "16px", border: "1px solid rgba(23, 24, 27, 0.08)" }}>
-                <h4 style={{ fontSize: 14, fontWeight: 800, color: "#9E6D1C", marginBottom: 8 }}>SECTION 01: CONSTITUENCY AT A GLANCE</h4>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, fontSize: 12 }}>
-                  <div><strong>Electors:</strong> {constituency.electoralBase.registeredElectors.toLocaleString()}</div>
-                  <div><strong>Booths:</strong> {constituency.pollingStructure.totalBooths}</div>
-                  <div><strong>Turnout Benchmark:</strong> {constituency.historicalTurnout.lastElectionTurnout}</div>
-                  <div><strong>Winning Margin:</strong> {constituency.historicalMargin.winningMarginPercentage}</div>
-                </div>
-              </div>
-
-              {/* Section 2: Pockets & Issues */}
-              <div style={{ background: "#FFFFFF", borderRadius: 10, padding: "16px", border: "1px solid rgba(23, 24, 27, 0.08)" }}>
-                <h4 style={{ fontSize: 14, fontWeight: 800, color: "#9E6D1C", marginBottom: 8 }}>SECTION 02: HIGH-PRIORITY CIVIC SIGNALS</h4>
-                <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, color: "#292B30", lineHeight: 1.6 }}>
-                  {constituency.issueRadar.slice(0, 4).map(i => (
-                    <li key={i.id}><strong>{i.name}:</strong> Signal {i.signal} ({i.publicReferences} public sources)</li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Section 3: War Room Capability */}
-              <div style={{ background: "#FFFFFF", borderRadius: 10, padding: "16px", border: "1px solid rgba(23, 24, 27, 0.08)" }}>
-                <h4 style={{ fontSize: 14, fontWeight: 800, color: "#9E6D1C", marginBottom: 8 }}>SECTION 03: GARUDA OPERATIONAL COMMAND</h4>
-                <p style={{ fontSize: 12, color: "#525866", lineHeight: 1.5, margin: 0 }}>
-                  Continuous 24x7 monitoring, 15-minute verification workflows, booth-level turnout command, and autonomous campaign reporting.
-                </p>
-              </div>
-
-            </div>
-            <div style={{ padding: "14px 20px", borderTop: "1px solid rgba(23, 24, 27, 0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 11, color: "#8A8D95" }}>CONFIDENTIAL // FOR AUTHORIZED USE ONLY</span>
-              <button onClick={() => window.print()} style={{ padding: "8px 18px", borderRadius: 8, background: "#17181B", color: "#FFFFFF", fontSize: 12, fontWeight: 700, border: "none", cursor: "pointer" }}>
-                PRINT DOSSIER
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* STICKY BOTTOM BAR FOR MOBILE SCREENS */}
-      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(23, 24, 27, 0.08)", padding: "8px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 99 }}>
-        <div>
-          <div style={{ fontSize: 10.5, fontWeight: 700, color: "#9E6D1C" }}>{constituency.name}</div>
-          <div style={{ fontSize: 11.5, fontWeight: 700, color: "#17181B" }}>TERRITORIAL WAR ROOM</div>
-        </div>
-        <button
-          onClick={() => commandRef.current?.scrollIntoView({ behavior: "smooth" })}
-          style={{ background: "linear-gradient(135deg, #c48b28 0%, #9e6d1c 100%)", color: "#FFFFFF", border: "none", padding: "8px 16px", borderRadius: 7, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.03em", cursor: "pointer", boxShadow: "0 2px 8px rgba(196, 139, 40, 0.25)" }}
+      {/* COMMERCIAL PLAN MODAL */}
+      {commercialModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            padding: "20px"
+          }}
         >
-          ACTIVATE GARUDA COMMAND
-        </button>
-      </div>
+          <div
+            style={{
+              background: wp.card,
+              boxShadow: wp.shadow,
+              border: "1px solid " + wp.border,
+              borderRadius: "16px",
+              padding: "28px",
+              maxWidth: "520px",
+              width: "100%"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div>
+                <div style={{ fontSize: "16px", fontWeight: 700, color: wp.goldPrimary, fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  GARUDA SOVEREIGN FLAGSHIP
+                </div>
+                <div style={{ fontSize: "11px", color: wp.muted }}>
+                  Full Campaign Lifecycle War Room & Field Cadre Grid
+                </div>
+              </div>
+              <button onClick={() => setCommercialModalOpen(false)} style={{ background: "none", border: "none", color: wp.muted, fontSize: "18px", cursor: "pointer" }}>✕</button>
+            </div>
+
+            <div style={{ background: wp.canvasSubtle, border: "1px solid " + wp.border, borderRadius: "10px", padding: "16px", marginBottom: "16px" }}>
+              <div style={{ fontSize: "28px", fontWeight: 900, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', monospace" }}>₹35,00,000</div>
+              <div style={{ fontSize: "11px", color: wp.goldPrimary, fontWeight: 700, marginTop: "2px" }}>
+                Full Campaign Retainer (Single-Candidate Territorial Exclusivity)
+              </div>
+            </div>
+
+            <div style={{ fontSize: "12px", color: wp.textBody, marginBottom: "16px", lineHeight: 1.6 }}>
+              <strong>Milestone Structure:</strong><br />
+              • 50% (₹17,50,000) upon contract signing & territory lock<br />
+              • 30% (₹10,50,000) upon field PWA deployment & 15-min rebuttal setup<br />
+              • 20% (₹7,00,000) upon D-Day live monitoring & final audit handover
+            </div>
+
+            <div style={{ fontSize: "10.5px", color: wp.muted, background: wp.canvasIvory, padding: "10px", borderRadius: "6px", border: "1px solid " + wp.border, marginBottom: "16px" }}>
+              ⚠️ Notice: Meta ad spend is billed directly by Meta to client account. Never commingled with GARUDA engineering fees.
+            </div>
+
+            <button
+              onClick={() => setCommercialModalOpen(false)}
+              style={{
+                width: "100%",
+                background: wp.goldGradient,
+                color: wp.deepGraphite,
+                border: "none",
+                borderRadius: "8px",
+                padding: "10px",
+                fontSize: "12px",
+                fontWeight: 800,
+                cursor: "pointer",
+                boxShadow: "0 4px 14px rgba(184, 134, 43, 0.25)"
+              }}
+            >
+              Close Plan
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

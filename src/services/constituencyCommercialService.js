@@ -2,7 +2,7 @@
  * 🦅 GARUDA OS — CONSTITUENCY COMMERCIAL COMMAND SERVICE
  * Manages commercial packages, multi-currency pricing, constituency territorial exclusivity,
  * server-side order lifecycle, cryptographic payment verification, activation, and founder notifications.
- * 
+ *
  * STRICT SECURITY & ANTI-FABRICATION INVARIANTS:
  * 1. Never trust client-supplied prices, currencies, or payment status.
  * 2. Server-side verification with HMAC-SHA256 signature checks.
@@ -79,6 +79,32 @@ const COMMERCIAL_PLANS = {
       "On-Site War Room Setup & Founder Strategic Consultation"
     ],
     recommended: false
+  },
+  "garuda-flagship": {
+    id: "garuda-flagship",
+    name: "GARUDA SOVEREIGN FLAGSHIP",
+    tier: "Full Campaign Lifecycle War Room & Field Cadre Grid",
+    badge: "FLAGSHIP CAMPAIGN SUITE",
+    description: "End-to-end sovereign campaign infrastructure: 24x7 War Room, Ground Cadre PWA Grid, 15-Min Rebuttal Engine, and Strict Territorial Exclusivity.",
+    priceINR: 3500000, // Rs. 35,00,000 full campaign contract
+    billingCycle: "Full Campaign Retainer (Milestones: 50% Onboarding / 30% Sprint / 20% D-Day)",
+    milestones: {
+      onboarding: "50% (₹17,50,000) upon contract signing & territory lock",
+      operationalSprint: "30% (₹10,50,000) upon field PWA deployment & 15-min rebuttal setup",
+      delivery: "20% (₹7,00,000) upon D-Day live monitoring & final audit handover"
+    },
+    clientAdSpendNotice: "Meta ad spend is billed directly by Meta to client account. Never commingled with GARUDA engineering fee.",
+    features: [
+      "Strict Single-Candidate Territorial Exclusivity (Absolute Lock)",
+      "Ground Cadre PWA Grid with Anti-Replay Heartbeat Architecture",
+      "24x7 Live Candidate War Room Telemetry & Executive Visual Command",
+      "15-Minute Rapid Response Rebuttal Engine (Fact-checked asset pipeline)",
+      "High-Resolution Constituency Intelligence Dossier with SHA-256 Checksums",
+      "Dedicated Technical Campaign Architect & On-Call Engineering Squad",
+      "Client Meta Ad Account Direct Push (Separate Client Direct Budget)",
+      "Zero Voter Profiling & Zero GOTV Manipulation Legal Compliance"
+    ],
+    recommended: true
   }
 };
 
@@ -123,12 +149,12 @@ class ConstituencyCommercialService {
       throw new Error(`Unsupported or invalid currency: ${currencyCode}. Supported: ${Object.keys(CURRENCY_RATES).join(", ")}`);
     }
     const currency = CURRENCY_RATES[code];
-    
+
     const localizedPlans = Object.values(COMMERCIAL_PLANS).map(plan => {
-      const price = currency.code === "INR" 
-        ? plan.priceINR 
+      const price = currency.code === "INR"
+        ? plan.priceINR
         : Math.round(plan.priceINR * currency.rate);
-      
+
       const formattedPrice = currency.code === "INR"
         ? `₹${price.toLocaleString("en-IN")}`
         : `${currency.symbol}${price.toLocaleString("en-US")}`;
@@ -243,7 +269,7 @@ class ConstituencyCommercialService {
     // Check exclusivity
     const constituencyKey = String(constituency.id || constituency.name || constituency).toLowerCase().trim().replace(/[^a-z0-9]/g, "-");
     const exclusivity = this.checkExclusivity(constituencyKey);
-    
+
     if (exclusivity.status === "ACTIVE") {
       throw new Error(`Constituency "${constituencyKey}" is already locked under territorial exclusivity.`);
     }
@@ -365,7 +391,7 @@ class ConstituencyCommercialService {
         .createHmac("sha256", keySecret)
         .update(`${orderId}|${paymentId}`)
         .digest("hex");
-      
+
       try {
         isSignatureValid = crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
       } catch {
@@ -402,7 +428,7 @@ class ConstituencyCommercialService {
     order.transactionId = transactionId;
     order.activatedAt = activatedAt;
     order.invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
-    
+
     // Explicit payment mode differentiation
     if (testMode) {
       order.paymentMode = "LOCAL_TEST_SIMULATION";
@@ -550,7 +576,7 @@ class ConstituencyCommercialService {
    * Sends structured internal alert to Founder Praveen
    */
   async sendFounderCommercialNotification(order) {
-    const alertMessage = 
+    const alertMessage =
       `🦅 GARUDA COMMERCIAL ACTIVATION\n\n` +
       `👤 Customer: ${order.customerDetails.name} (${order.customerDetails.phone || order.customerDetails.email || "Confidential"})\n` +
       `🏛 Constituency: ${order.constituency.name} (${order.constituency.state})\n` +
@@ -575,8 +601,8 @@ class ConstituencyCommercialService {
 }
 
 const constituencyCommercialService = new ConstituencyCommercialService();
-module.exports = { 
-  constituencyCommercialService, 
+module.exports = {
+  constituencyCommercialService,
   ConstituencyCommercialService,
   ORDER_STATUSES,
   COMMERCIAL_PLANS,

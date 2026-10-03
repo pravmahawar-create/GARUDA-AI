@@ -73,7 +73,7 @@ async function runTests() {
   console.log("Test 5: Commercial Plans Catalog & Currency Localization...");
   const inrPlans = constituencyCommercialService.getPlans("INR");
   assert.strictEqual(inrPlans.success, true);
-  assert.strictEqual(inrPlans.plans.length, 3);
+  assert.ok(inrPlans.plans.length >= 3);
   assert.strictEqual(inrPlans.plans[0].currency, "INR");
   assert.strictEqual(inrPlans.plans[0].price, 149000);
 
@@ -224,7 +224,7 @@ async function runTests() {
   assert.strictEqual(refundResult.success, true);
   assert.strictEqual(refundResult.status, ORDER_STATUSES.REFUNDED);
   assert.strictEqual(constituencyCommercialService.isOrderActive(orderA.orderId), false);
-  
+
   // Verify constituency was released back to AVAILABLE
   const releasedExcl = constituencyCommercialService.checkExclusivity("indore-2");
   assert.strictEqual(releasedExcl.status, "AVAILABLE");

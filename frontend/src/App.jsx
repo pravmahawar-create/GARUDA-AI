@@ -53,6 +53,7 @@ import CyberShieldDashboard from "./pages/CyberShieldDashboard";
 import GarudaBilling from "./pages/GarudaBilling";
 import FintechGatewayDemo from "./pages/FintechGatewayDemo";
 import ConstituencyWarRoom from "./pages/ConstituencyWarRoom";
+import BoothCadrePWA from "./pages/BoothCadrePWA";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -238,7 +239,7 @@ function AppRoutes() {
       <Route path="/scholar" element={<ScholarStudio />} />
       <Route path="/vidya" element={<ScholarStudio />} />
       <Route path="/research" element={<ScholarStudio />} />
-      
+
       {/* Ring 3 Canonical — Creative Production OS (website-first) */}
       <Route path="/creative" element={<CreativeProductionWorkspace />} />
       <Route path="/creative/legacy" element={<CreativeStudio />} />
@@ -334,6 +335,9 @@ function AppRoutes() {
       <Route path="/constituency" element={<Navigate to="/war-room" replace />} />
       <Route path="/election" element={<Navigate to="/war-room" replace />} />
       <Route path="/chunav" element={<Navigate to="/war-room" replace />} />
+      {/* GARUDA Cadre Field PWA */}
+      <Route path="/booth-cadre" element={<BoothCadrePWA />} />
+      <Route path="/cadre" element={<Navigate to="/booth-cadre" replace />} />
       <Route path="*" element={publicLanding} />
 
     </Routes>
