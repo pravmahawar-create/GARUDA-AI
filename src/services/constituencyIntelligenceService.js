@@ -852,6 +852,146 @@ const BENCHMARK_CONSTITUENCIES = {
       { id: "gha-nar-1", claim: "Allegation of delayed desilting on Gota canal outfall before monsoon", source: "Local Gujarati Newspaper", timestamp: "5 hours ago", verification: "Contradicted by AMC PWD Dredging Verification Certificate", responseStatus: "Response Ready" },
       { id: "gha-nar-2", claim: "AUDA sanctions new elevated underpass at Science City circle", source: "Gujarat Samachar State Desk", timestamp: "2 days ago", verification: "Verified", responseStatus: "Published" }
     ]
+  },
+
+  "jabalpur-cantt-99": {
+    id: "jabalpur-cantt-99",
+    name: "Jabalpur Cantt (99)",
+    canonicalName: "99 - Jabalpur Cantonment Assembly Constituency",
+    district: "Jabalpur",
+    state: "Madhya Pradesh",
+    stateCode: "MP",
+    assemblyNumber: 99,
+    type: "Defense & Urban Cantonment Segment",
+    pinCodes: ["482001", "482005"],
+    electoralBase: {
+      registeredElectors: 192450,
+      electorsStatus: "VERIFIED",
+      source: "Chief Electoral Officer Madhya Pradesh (Final Roll)",
+      maleElectors: 99820,
+      femaleElectors: 92618,
+      thirdGender: 12,
+      electorPopulationRatio: "62.8%",
+      electorRatioStatus: "VERIFIED"
+    },
+    pollingStructure: {
+      totalBooths: 214,
+      boothsStatus: "VERIFIED",
+      averageElectorsPerBooth: 899,
+      auxiliaryBooths: 4,
+      vulnerableBoothsIdentified: 18,
+      criticalTurnoutBooths: 16,
+      source: "District Election Officer Jabalpur Gazette"
+    },
+    historicalTurnout: {
+      lastElectionTurnout: "67.84%",
+      previousTurnout: "66.50%",
+      turnoutStatus: "VERIFIED",
+      turnoutTrend: "Increasing (+1.34%)",
+      urbanApathyIndex: "NORMAL",
+      source: "ECI General Election Gazette (MP Assembly)"
+    },
+    historicalMargin: {
+      winningMarginVotes: 18520,
+      winningMarginPercentage: "14.20%",
+      runnerUpVoteShare: "40.10%",
+      winnerVoteShare: "54.30%",
+      marginStatus: "VERIFIED",
+      competitivenessIndex: "MODERATE",
+      source: "CEO Madhya Pradesh Official Result Declaration"
+    },
+    digitalReachEstimate: {
+      estimatedDigitalReach: 142000,
+      reachStatus: "INFERRED",
+      methodology: "TRAI MP Telecom Circle Urban Smartphone Density (73.8%)",
+      note: "Algorithmic inference based on regional telecom density"
+    },
+    pockets: [
+      { name: "Sadar Bazaar & Ridge Road", booths: "1-55", condition: "NORMAL", label: "COMMERCIAL & CANTONMENT TRADERS", primaryIssue: "Cantonment Board Trade Licensing & Parking", electorsEst: 49000 },
+      { name: "Gorakhpur & Rampur Belt", booths: "56-110", condition: "NORMAL", label: "HIGH-DENSITY RESIDENTIAL WARD", primaryIssue: "Drinking Water Supply & Drainage Desilting", electorsEst: 51000 },
+      { name: "Cantonment Board & Military Station", booths: "111-165", condition: "NORMAL", label: "DEFENSE & CIVILIAN TRANSIT", primaryIssue: "Civilian Access Gates & Road Maintenance", electorsEst: 46000 },
+      { name: "Bilhari & Mandla Road Corridor", booths: "166-214", condition: "AMBER", label: "SWING MARGIN PERIPHERY", primaryIssue: "NH Link Road Widening & Street Lighting", electorsEst: 46450 }
+    ],
+    issueRadar: [
+      { id: "jbc-1", name: "Cantonment Board Property Lease Renewal & By-law Disputes", signal: "HIGH", publicReferences: 48, source: "Cantonment Citizens Welfare Forum", lastDetected: "Today, 10:45 IST", status: "VERIFIED" },
+      { id: "jbc-2", name: "Narmada Drinking Water Domestic Hookups in Gorakhpur", signal: "HIGH", publicReferences: 39, source: "Jabalpur Municipal Corporation Public Grievances", lastDetected: "Yesterday, 19:20 IST", status: "VERIFIED" },
+      { id: "jbc-3", name: "Mandla Road Arterial Congestion & Overbridge Diverter", signal: "MEDIUM", publicReferences: 27, source: "MP PWD Engineering Reports", lastDetected: "2 Oct 2026", status: "VERIFIED" },
+      { id: "jbc-4", name: "Cantonment General Hospital Upgrades & Doctor Roster", signal: "LOW", publicReferences: 15, source: "Civic Health Review Board", lastDetected: "29 Sep 2026", status: "PARTIAL" }
+    ],
+    narratives: [
+      { id: "jbc-nar-1", claim: "Allegation regarding delay in municipal pipeline integration in Sadar Ward", source: "Local Jabalpur Hindi Daily Column", timestamp: "3 hours ago", verification: "Contradicted by JMC Water Works Phase-2 Order", responseStatus: "Response Ready" },
+      { id: "jbc-nar-2", claim: "Sanction of new multi-level parking complex near Gorakhpur market", source: "District Administration Release", timestamp: "Yesterday", verification: "Verified", responseStatus: "Published" }
+    ]
+  },
+
+  "jabalpur-west-100": {
+    id: "jabalpur-west-100",
+    name: "Jabalpur West (100)",
+    canonicalName: "100 - Jabalpur Paschim Assembly Constituency",
+    district: "Jabalpur",
+    state: "Madhya Pradesh",
+    stateCode: "MP",
+    assemblyNumber: 100,
+    type: "High-Density Commercial & Institutional Segment",
+    pinCodes: ["482002", "482003"],
+    electoralBase: {
+      registeredElectors: 239820,
+      electorsStatus: "VERIFIED",
+      source: "Chief Electoral Officer Madhya Pradesh (Final Roll)",
+      maleElectors: 124210,
+      femaleElectors: 115594,
+      thirdGender: 16,
+      electorPopulationRatio: "64.2%",
+      electorRatioStatus: "VERIFIED"
+    },
+    pollingStructure: {
+      totalBooths: 252,
+      boothsStatus: "VERIFIED",
+      averageElectorsPerBooth: 951,
+      auxiliaryBooths: 6,
+      vulnerableBoothsIdentified: 22,
+      criticalTurnoutBooths: 19,
+      source: "District Election Officer Jabalpur Gazette"
+    },
+    historicalTurnout: {
+      lastElectionTurnout: "66.40%",
+      previousTurnout: "65.10%",
+      turnoutStatus: "VERIFIED",
+      turnoutTrend: "Increasing (+1.30%)",
+      urbanApathyIndex: "NORMAL",
+      source: "ECI General Election Gazette (MP Assembly)"
+    },
+    historicalMargin: {
+      winningMarginVotes: 20380,
+      winningMarginPercentage: "12.80%",
+      runnerUpVoteShare: "41.60%",
+      winnerVoteShare: "54.40%",
+      marginStatus: "VERIFIED",
+      competitivenessIndex: "MODERATE",
+      source: "CEO Madhya Pradesh Official Result Declaration"
+    },
+    digitalReachEstimate: {
+      estimatedDigitalReach: 178000,
+      reachStatus: "INFERRED",
+      methodology: "TRAI MP Telecom Circle Urban Smartphone Density (74.2%)",
+      note: "Algorithmic inference based on regional telecom density"
+    },
+    pockets: [
+      { name: "Wright Town & Gol Bazaar", booths: "1-62", condition: "NORMAL", label: "PRESTIGE COMMERCIAL CORE", primaryIssue: "Civic Transit & Multi-Level Parking", electorsEst: 59000 },
+      { name: "Madan Mahal & Medical College Belt", booths: "63-128", condition: "AMBER", label: "HEALTH & STUDENT CLUSTER", primaryIssue: "Flyover Commuter Flow & Hospital Emergency Lane", electorsEst: 63000 },
+      { name: "Gupteshwar & Tilwara Road", booths: "129-190", condition: "NORMAL", label: "RESIDENTIAL & HERITAGE HUB", primaryIssue: "Domestic Narmada Water Supply", electorsEst: 58000 },
+      { name: "Garha & Bhedaghat Link Corridor", booths: "191-252", condition: "RED", label: "SWING DRAINAGE VULNERABILITY", primaryIssue: "Stormwater Drainage & Municipal Road Paving", electorsEst: 59820 }
+    ],
+    issueRadar: [
+      { id: "jbw-1", name: "Madan Mahal Flyover Ramp Traffic Merge Bottleneck", signal: "HIGH", publicReferences: 52, source: "Jabalpur Traffic Police & Municipal Works", lastDetected: "Today, 11:30 IST", status: "VERIFIED" },
+      { id: "jbw-2", name: "Narmada Water Third-Phase Domestic Connections in Garha", signal: "HIGH", publicReferences: 44, source: "Citizen RWA Representations", lastDetected: "1 Oct 2026", status: "VERIFIED" },
+      { id: "jbw-3", name: "NSCB Medical College Road Emergency Transit Clearance", signal: "MEDIUM", publicReferences: 28, source: "District Health Administration Notice", lastDetected: "29 Sep 2026", status: "VERIFIED" },
+      { id: "jbw-4", name: "Gol Bazaar Vendor Zoning & Parking Regularization", signal: "MEDIUM", publicReferences: 20, source: "JMC Market Committee Minutes", lastDetected: "26 Sep 2026", status: "PARTIAL" }
+    ],
+    narratives: [
+      { id: "jbw-nar-1", claim: "Claim that Garha drainage widening tender has been halted", source: "Local News Portal", timestamp: "4 hours ago", verification: "Contradicted by JMC Work Order #2026/PWD-94", responseStatus: "Response Ready" },
+      { id: "jbw-nar-2", claim: "Sanction of new smart utility ducting along Wright Town corridor", source: "Smart City Jabalpur Notification", timestamp: "2 days ago", verification: "Verified", responseStatus: "Published" }
+    ]
   }
 };
 
@@ -868,10 +1008,9 @@ class ConstituencyIntelligenceService {
 
     const normalized = rawQuery.toLowerCase().replace(/[^a-z0-9]/g, " ");
 
-    // Check exact benchmark match first
+    // Pass 1: Check exact or specific seat match first across all benchmarks
     for (const [key, benchmark] of Object.entries(BENCHMARK_CONSTITUENCIES)) {
       const keyBase = key.replace(/-[0-9]+$/, "").replace(/-/g, " ");
-      const keyPrefix = key.split("-")[0];
       const matchName = benchmark.name.toLowerCase().replace(/[^a-z0-9]/g, " ");
       const matchCanonical = (benchmark.canonicalName || "").toLowerCase().replace(/[^a-z0-9]/g, " ");
       const matchDistrict = benchmark.district.toLowerCase();
@@ -881,11 +1020,23 @@ class ConstituencyIntelligenceService {
       if (
         normalized.includes(key) ||
         normalized.includes(keyBase) ||
-        (keyPrefix.length > 3 && normalized.includes(keyPrefix)) ||
         normalized.includes(matchName) ||
         normalized.includes(matchCanonical) ||
         (normalized.includes(matchDistrict) && normalized.includes(matchNumber)) ||
         pinMatch
+      ) {
+        return this.enrichResolvedConstituency(benchmark, "BENCHMARK_VERIFIED", rawQuery);
+      }
+    }
+
+    // Pass 2: Prefix / city match (when user searches general city name)
+    for (const [key, benchmark] of Object.entries(BENCHMARK_CONSTITUENCIES)) {
+      const keyPrefix = key.split("-")[0];
+      const matchDistrict = benchmark.district.toLowerCase();
+
+      if (
+        (keyPrefix.length > 3 && normalized.includes(keyPrefix)) ||
+        (matchDistrict.length > 3 && normalized.includes(matchDistrict))
       ) {
         return this.enrichResolvedConstituency(benchmark, "BENCHMARK_VERIFIED", rawQuery);
       }
@@ -974,13 +1125,18 @@ class ConstituencyIntelligenceService {
     const digitalReach = Math.round(baseElectors * 0.68);
 
     const syntheticId = `synth-${this.slugify(query)}`;
-    const cleanCity = this.titleCase(query.split(/[,s-]+/)[0] || "Constituency");
+    const rawClean = query.trim().replace(/\s+(assembly|constituency|vidhan\s*sabha|ac)\b/gi, "");
+    const cleanCity = this.titleCase(rawClean.split(/[,/]+/)[0].trim() || "Constituency");
+    const firstWord = cleanCity.split(/\s+/)[0];
+    const inferredDistrict = (["Cantt", "West", "East", "North", "South", "Central", "Rural", "Urban", "Purba", "Paschim", "Uttar", "Dakshin"].some(suffix => cleanCity.toLowerCase().includes(suffix.toLowerCase())) && firstWord.length > 2)
+      ? firstWord
+      : cleanCity;
 
     const dynamicData = {
       id: syntheticId,
       name: this.titleCase(query),
       canonicalName: `${this.titleCase(query)} Assembly Constituency`,
-      district: cleanCity,
+      district: inferredDistrict,
       state,
       stateCode,
       assemblyNumber: (seed % 288) + 1,

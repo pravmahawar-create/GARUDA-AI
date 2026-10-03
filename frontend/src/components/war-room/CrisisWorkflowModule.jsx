@@ -47,9 +47,10 @@ export default function CrisisWorkflowModule({
   ];
 
   const handleApprove = () => {
+    const leaderName = constituency?.candidateName || (constituency?.district ? `${constituency.district} Authorized Principal` : "Authorized Principal");
     setPipelineState({
       status: "APPROVED",
-      approvedBy: "Campaign Leader (Praveen Mahawar Auth Enclave)",
+      approvedBy: `Campaign Leader (${leaderName})`,
       approvedAt: new Date().toLocaleTimeString("en-IN"),
       publishedChannels: []
     });

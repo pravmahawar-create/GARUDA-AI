@@ -58,7 +58,7 @@ const DEEP_DIVE_BLUEPRINTS = {
     technology: ["TLS 1.3 Secure Enclave", "JWT Booth Identity Passports", "WebRTC / WebSocket Stream", "Battery & Network API"],
     validation: "If device fails heartbeat for > 120 seconds, status auto-switches from ONLINE to STALE DATA.",
     humanControl: "Central War Room Commander can revoke device passport, reassign booth in-charge, or trigger field verification call.",
-    output: "Live 348-Booth Telemetry Matrix, Device Inspector Drawer, and Tactical Event Feed.",
+    output: "Live Booth Cadre Telemetry Matrix, Device Inspector Drawer, and Tactical Event Feed.",
     auditability: "Every connection, disconnection, and slip delivery is recorded with timestamp and hardware fingerprint.",
     failureStates: "If live physical devices are unlinked, screen explicitly labels mode as 'BENCHMARK SIMULATION', obeying Anti-Fabrication Law."
   },

@@ -134,7 +134,9 @@ const BENCHMARK_CITIES = [
   { id: "lucknow-cantt", query: "Lucknow Cantt", name: "Lucknow Cantt (175)", state: "Uttar Pradesh", type: "Institutional & Urban Seat", booths: 356, electors: 352100 },
   { id: "patna-sahib", query: "Patna Sahib", name: "Patna Sahib (184)", state: "Bihar", type: "Historic Riverine Commercial Core", booths: 382, electors: 374000 },
   { id: "new-delhi-40", query: "New Delhi", name: "New Delhi (40)", state: "Delhi NCR", type: "National Power Epicenter", booths: 182, electors: 148200 },
-  { id: "ghatlodia-44", query: "Ghatlodia Ahmedabad", name: "Ghatlodia (44)", state: "Gujarat", type: "Prime Urban Constituency", booths: 420, electors: 418000 }
+  { id: "ghatlodia-44", query: "Ghatlodia Ahmedabad", name: "Ghatlodia (44)", state: "Gujarat", type: "Prime Urban Constituency", booths: 420, electors: 418000 },
+  { id: "jabalpur-cantt-99", query: "Jabalpur Cantt", name: "Jabalpur Cantt (99)", state: "Madhya Pradesh", type: "Defense & Urban Cantonment Segment", booths: 214, electors: 192450 },
+  { id: "jabalpur-west-100", query: "Jabalpur West", name: "Jabalpur West (100)", state: "Madhya Pradesh", type: "High-Density Commercial & Institutional Segment", booths: 252, electors: 239820 }
 ];
 
 export default function ConstituencyWarRoom() {
@@ -221,12 +223,8 @@ export default function ConstituencyWarRoom() {
 
     // Client-side fallback if offline / prerendering / API timeout
     const normalized = q.toLowerCase();
-    const benchmark = BENCHMARK_CITIES.find(
-      b => normalized.includes(b.id) ||
-           normalized.includes(b.name.toLowerCase().split(" ")[0]) ||
-           normalized.includes(b.query.toLowerCase()) ||
-           normalized.includes(b.state.toLowerCase())
-    );
+    const benchmark = BENCHMARK_CITIES.find(b => normalized.includes(b.id) || normalized.includes(b.query.toLowerCase())) ||
+      BENCHMARK_CITIES.find(b => normalized.includes(b.name.toLowerCase().split(" ")[0]));
 
     if (benchmark) {
       setConstituency({
@@ -279,7 +277,33 @@ export default function ConstituencyWarRoom() {
       setSearchQuery(benchmark.name);
     } else {
       // Dynamic synthesis for any arbitrary query
-      const cleanName = q.charAt(0).toUpperCase() + q.slice(1);
+      let state = "National ECI Grid";
+      let stateCode = "IN";
+      if (normalized.includes("mp") || normalized.includes("madhya pradesh") || normalized.includes("bhopal") || normalized.includes("indore") || normalized.includes("jabalpur") || normalized.includes("gwalior")) {
+        state = "Madhya Pradesh"; stateCode = "MP";
+      } else if (normalized.includes("up") || normalized.includes("uttar pradesh") || normalized.includes("lucknow") || normalized.includes("varanasi") || normalized.includes("noida") || normalized.includes("kanpur")) {
+        state = "Uttar Pradesh"; stateCode = "UP";
+      } else if (normalized.includes("mh") || normalized.includes("maharashtra") || normalized.includes("mumbai") || normalized.includes("pune") || normalized.includes("thane")) {
+        state = "Maharashtra"; stateCode = "MH";
+      } else if (normalized.includes("rj") || normalized.includes("rajasthan") || normalized.includes("jaipur")) {
+        state = "Rajasthan"; stateCode = "RJ";
+      } else if (normalized.includes("ka") || normalized.includes("karnataka") || normalized.includes("bangalore") || normalized.includes("bengaluru")) {
+        state = "Karnataka"; stateCode = "KA";
+      } else if (normalized.includes("gj") || normalized.includes("gujarat") || normalized.includes("ahmedabad")) {
+        state = "Gujarat"; stateCode = "GJ";
+      } else if (normalized.includes("br") || normalized.includes("bihar") || normalized.includes("patna")) {
+        state = "Bihar"; stateCode = "BR";
+      } else if (normalized.includes("delhi")) {
+        state = "Delhi NCR"; stateCode = "DL";
+      }
+
+      const rawClean = q.trim().replace(/\s+(assembly|constituency|vidhan\s*sabha|ac)\b/gi, "");
+      const cleanName = rawClean.charAt(0).toUpperCase() + rawClean.slice(1);
+      const firstWord = cleanName.split(/\s+/)[0];
+      const inferredDistrict = (["Cantt", "West", "East", "North", "South", "Central", "Rural", "Urban", "Purba", "Paschim", "Uttar", "Dakshin"].some(s => cleanName.toLowerCase().includes(s.toLowerCase())) && firstWord.length > 2)
+        ? firstWord
+        : cleanName;
+
       const randomSeed = Math.abs(q.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0));
       const electors = 240000 + (randomSeed % 120000);
       const booths = Math.round(electors / 950);
@@ -287,8 +311,9 @@ export default function ConstituencyWarRoom() {
         id: `custom-${q.toLowerCase().replace(/[^a-z0-9]/g, "-")}`,
         name: cleanName,
         canonicalName: `${cleanName} Assembly Constituency`,
-        district: cleanName.split(" ")[0],
-        state: "National ECI Grid",
+        district: inferredDistrict,
+        state: state,
+        stateCode: stateCode,
         assemblyNumber: (randomSeed % 250) + 1,
         type: "Assembly Constituency",
         electoralBase: {
@@ -336,6 +361,19 @@ export default function ConstituencyWarRoom() {
     setIsCityDropdownOpen(false);
     setIsResolving(false);
   };
+
+  // Auto-resolve constituency from URL query params (e.g. ?c=jabalpur-cantt-99 or ?q=Indore)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const target = params.get("c") || params.get("q") || params.get("seat") || params.get("city");
+      if (target) {
+        handleResolveConstituency(target);
+      }
+    } catch (e) {
+      console.warn("URL param resolution skipped:", e);
+    }
+  }, []);
 
   // Generate 12-Section PDF Dossier
   const handleGenerateDossier = async () => {
