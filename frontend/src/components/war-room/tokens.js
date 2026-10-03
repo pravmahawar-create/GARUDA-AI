@@ -55,9 +55,9 @@ export const tokens = {
     statusGreyBg: "rgba(104, 106, 112, 0.12)"
   },
   typography: {
-    fontDisplay: "'Plus Jakarta Sans', 'Inter', 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif",
-    fontUI: "'Inter', 'Plus Jakarta Sans', 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif",
-    fontMono: "'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace"
+    fontDisplay: "'Playfair Display', Georgia, serif",
+    fontUI: "'Playfair Display', Georgia, serif",
+    fontMono: "'Playfair Display', Georgia, serif"
   },
   classification: {
     FORTIFIED: {

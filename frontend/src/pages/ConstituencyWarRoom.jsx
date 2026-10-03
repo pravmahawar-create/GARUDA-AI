@@ -58,10 +58,10 @@ const wp = {
   shadow: "0 8px 30px rgba(40, 30, 15, 0.06)",
   shadowSm: "0 2px 10px rgba(40, 30, 15, 0.04)",
 
-  // 🏛️ Sovereign Fintech Typography Stack
-  fontDisplay: "'Plus Jakarta Sans', 'Inter', 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif",
-  fontUI: "'Inter', 'Plus Jakarta Sans', 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif",
-  fontMono: "'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace"
+  // 🏛️ Sovereign Unified Playfair Typography Stack (Single Unified Font Standard)
+  fontDisplay: "'Playfair Display', Georgia, serif",
+  fontUI: "'Playfair Display', Georgia, serif",
+  fontMono: "'Playfair Display', Georgia, serif"
 };
 
 // Benchmark default dataset for Thane 148
@@ -520,7 +520,7 @@ export default function ConstituencyWarRoom() {
               <rect x="19" y="19" width="3" height="3" />
             </svg>
           </div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "12px", color: wp.deepGraphite, background: wp.canvasIvory, padding: "8px 16px", borderRadius: "6px", border: "1px solid " + wp.border, marginBottom: "16px" }}>
+          <div style={{ fontFamily: wp.fontDisplay, fontSize: "12px", color: wp.deepGraphite, background: wp.canvasIvory, padding: "8px 16px", borderRadius: "6px", border: "1px solid " + wp.border, marginBottom: "16px" }}>
             https://www.garudaos.in/booth-cadre
           </div>
           <Link
@@ -557,7 +557,7 @@ export default function ConstituencyWarRoom() {
                 <div style={{ fontSize: "12.5px", fontWeight: 700, color: wp.deepGraphite }}>{spec.label}</div>
                 <div style={{ fontSize: "10.5px", color: wp.muted }}>{spec.note}</div>
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "12px", fontWeight: 800, color: wp.goldDeep }}>
+              <div style={{ fontFamily: wp.fontDisplay, fontSize: "12px", fontWeight: 800, color: wp.goldDeep }}>
                 {spec.val}
               </div>
             </div>
@@ -621,7 +621,7 @@ export default function ConstituencyWarRoom() {
 
       <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "20px" }}>
         <div style={{ background: wp.card, border: "1px solid " + wp.border, borderRadius: "14px", padding: "26px", boxShadow: wp.shadow }}>
-          <div style={{ fontSize: "32px", fontWeight: 900, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', monospace" }}>
+          <div style={{ fontSize: "32px", fontWeight: 900, color: wp.deepGraphite, fontFamily: wp.fontDisplay }}>
             ₹35,00,000
           </div>
           <div style={{ fontSize: "12px", color: wp.goldPrimary, fontWeight: 750, marginTop: "4px", marginBottom: "18px" }}>
@@ -639,7 +639,7 @@ export default function ConstituencyWarRoom() {
             <div key={i} style={{ background: wp.canvasIvory, border: "1px solid " + wp.border, borderRadius: "10px", padding: "14px 16px", marginBottom: "12px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
                 <span style={{ fontSize: "12.5px", fontWeight: 750, color: wp.deepGraphite }}>{ms.phase}</span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "12.5px", fontWeight: 800, color: wp.goldDeep }}>{ms.amount} ({ms.pct})</span>
+                <span style={{ fontFamily: wp.fontDisplay, fontSize: "12.5px", fontWeight: 800, color: wp.goldDeep }}>{ms.amount} ({ms.pct})</span>
               </div>
               <p style={{ fontSize: "11px", color: wp.muted, margin: 0 }}>{ms.desc}</p>
             </div>
@@ -774,7 +774,7 @@ export default function ConstituencyWarRoom() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={wp.goldPrimary} strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </span>
           </div>
-          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1 }}>
+          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.deepGraphite, fontFamily: wp.fontDisplay, lineHeight: 1.1 }}>
             {constituency.pollingStructure?.totalBooths || 348}
           </div>
           <div style={{ fontSize: "11px", color: wp.green, marginTop: "6px", fontWeight: 650 }}>
@@ -799,7 +799,7 @@ export default function ConstituencyWarRoom() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={wp.cyan} strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </span>
           </div>
-          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1 }}>
+          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.deepGraphite, fontFamily: wp.fontDisplay, lineHeight: 1.1 }}>
             {Math.round((constituency.pollingStructure?.totalBooths || 348) * 0.82)}
           </div>
           <div style={{ fontSize: "11px", color: wp.green, marginTop: "6px", fontWeight: 650 }}>
@@ -824,7 +824,7 @@ export default function ConstituencyWarRoom() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={wp.amber} strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </span>
           </div>
-          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1 }}>
+          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.deepGraphite, fontFamily: wp.fontDisplay, lineHeight: 1.1 }}>
             {constituency.electoralBase?.registeredElectors?.toLocaleString("en-IN") || "3,42,618"}
           </div>
           <div style={{ fontSize: "11px", color: wp.muted, marginTop: "6px" }}>
@@ -843,7 +843,7 @@ export default function ConstituencyWarRoom() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={wp.cyan} strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </span>
           </div>
-          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1 }}>
+          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.deepGraphite, fontFamily: wp.fontDisplay, lineHeight: 1.1 }}>
             {constituency.issueRadar?.length || 5}
           </div>
           <div style={{ fontSize: "11px", color: wp.muted, marginTop: "6px" }}>
@@ -871,7 +871,7 @@ export default function ConstituencyWarRoom() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={wp.green} strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
             </span>
           </div>
-          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.green, fontFamily: "'JetBrains Mono', 'Inter', monospace", lineHeight: 1.1, position: "relative", zIndex: 1 }}>
+          <div style={{ fontSize: "32px", fontWeight: 800, color: wp.green, fontFamily: wp.fontDisplay, lineHeight: 1.1, position: "relative", zIndex: 1 }}>
             {constituency.historicalMargin?.winningMarginPercentage || "+13.56%"}
           </div>
           <div style={{ fontSize: "11px", color: wp.muted, marginTop: "6px", position: "relative", zIndex: 1 }}>
@@ -1163,7 +1163,7 @@ export default function ConstituencyWarRoom() {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span style={{ color: wp.muted }}>💳 Ad Account</span>
-                <span style={{ color: wp.green, fontFamily: "'JetBrains Mono', monospace", fontSize: "10.5px" }}>● act_334107975616856</span>
+                <span style={{ color: wp.green, fontFamily: wp.fontDisplay, fontSize: "10.5px" }}>● act_334107975616856</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span style={{ color: wp.muted }}>🏢 Business Portfolio</span>
@@ -1227,7 +1227,7 @@ export default function ConstituencyWarRoom() {
                   ● LIVE
                 </span>
               </div>
-              <div style={{ fontSize: "11px", color: wp.muted, fontFamily: "'JetBrains Mono', monospace", marginBottom: "8px" }}>
+              <div style={{ fontSize: "11px", color: wp.muted, fontFamily: wp.fontDisplay, marginBottom: "8px" }}>
                 /booth-cadre
               </div>
               <div style={{ fontSize: "11.5px", color: wp.green, fontWeight: 650 }}>
@@ -1311,7 +1311,7 @@ export default function ConstituencyWarRoom() {
                 <circle cx="18" cy="18" r="15.915" fill="none" stroke="#8E887E" strokeWidth="4" strokeDasharray="8 92" strokeDashoffset="33" />
               </svg>
               <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center" }}>
-                <div style={{ fontSize: "12px", fontWeight: 800, color: wp.deepGraphite, lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>
+                <div style={{ fontSize: "12px", fontWeight: 800, color: wp.deepGraphite, lineHeight: 1, fontFamily: wp.fontDisplay }}>
                   {constituency.electoralBase?.registeredElectors ? `${(constituency.electoralBase.registeredElectors / 100000).toFixed(1)}L` : "3.4L"}
                 </div>
                 <div style={{ fontSize: "8px", color: wp.muted, marginTop: "2px" }}>Total Voters</div>
@@ -1516,18 +1516,39 @@ export default function ConstituencyWarRoom() {
 
   return (
     <div
+      className="garuda-war-room-root"
       style={{
         backgroundColor: wp.canvas,
         color: wp.text,
         minHeight: "100vh",
         display: "flex",
-        fontFamily: wp.fontUI,
+        fontFamily: "'Playfair Display', Georgia, serif",
         WebkitFontSmoothing: "antialiased",
         MozOsxFontSmoothing: "grayscale",
-        fontFeatureSettings: "'cv02', 'cv03', 'cv04', 'cv11'",
         overflowX: "hidden"
       }}
     >
+      <style>{`
+        .garuda-war-room-root,
+        .garuda-war-room-root *,
+        .garuda-war-room-root button,
+        .garuda-war-room-root input,
+        .garuda-war-room-root select,
+        .garuda-war-room-root textarea,
+        .garuda-war-room-root span,
+        .garuda-war-room-root div,
+        .garuda-war-room-root h1,
+        .garuda-war-room-root h2,
+        .garuda-war-room-root h3,
+        .garuda-war-room-root h4,
+        .garuda-war-room-root h5,
+        .garuda-war-room-root p,
+        .garuda-war-room-root table,
+        .garuda-war-room-root td,
+        .garuda-war-room-root th {
+          font-family: 'Playfair Display', Georgia, serif !important;
+        }
+      `}</style>
       <SEOHead
         title={`GARUDA OS Sovereign War Room | ${constituency.name} (${constituency.state})`}
         description={`High-command constituency war room for ${constituency.name}. Live booth signals, Meta integration, 15-minute rapid rebuttal, ground cadre PWA, and single-seat territorial exclusivity.`}
@@ -1581,7 +1602,7 @@ export default function ConstituencyWarRoom() {
             </svg>
           </div>
           <div>
-            <div style={{ fontSize: "15px", fontWeight: 800, color: wp.deepGraphite, letterSpacing: "1.2px", lineHeight: 1.1, fontFamily: "'Inter', sans-serif" }}>
+            <div style={{ fontSize: "15px", fontWeight: 800, color: wp.deepGraphite, letterSpacing: "1.2px", lineHeight: 1.1, fontFamily: wp.fontDisplay }}>
               GARUDA OS
             </div>
             <div style={{ fontSize: "9.5px", fontWeight: 750, color: wp.muted, letterSpacing: "1.4px", textTransform: "uppercase", marginTop: "3px" }}>
@@ -1893,7 +1914,7 @@ export default function ConstituencyWarRoom() {
                 padding: "2.5px 6px",
                 fontSize: "10px",
                 color: wp.muted,
-                fontFamily: "monospace",
+                fontFamily: wp.fontDisplay,
                 cursor: "pointer"
               }}
               title="Open Command Palette (Ctrl+K)"
@@ -2150,7 +2171,7 @@ export default function ConstituencyWarRoom() {
                 <div style={{ background: wp.greenBg, border: "1px solid rgba(5, 150, 105, 0.3)", borderRadius: "8px", padding: "12px", marginBottom: "16px" }}>
                   <div style={{ color: wp.green, fontWeight: 700, fontSize: "12px" }}>✅ Deliverable Generated & Verified</div>
                   <div style={{ fontSize: "11px", color: wp.textBody, marginTop: "4px" }}>File: {generatedPdf.fileName || "dossier.pdf"}</div>
-                  <div style={{ fontSize: "10px", color: wp.muted, fontFamily: "monospace", marginTop: "2px" }}>SHA-256: {generatedPdf.sha256Hash?.slice(0, 24)}...</div>
+                  <div style={{ fontSize: "10px", color: wp.muted, fontFamily: wp.fontDisplay, marginTop: "2px" }}>SHA-256: {generatedPdf.sha256Hash?.slice(0, 24)}...</div>
                 </div>
                 <button
                   onClick={() => alert(`Strategic Dossier for ${constituency.name} compiled with SHA-256 verification.`)}
@@ -2219,7 +2240,7 @@ export default function ConstituencyWarRoom() {
             </div>
 
             <div style={{ background: wp.canvasSubtle, border: "1px solid " + wp.border, borderRadius: "10px", padding: "16px", marginBottom: "16px" }}>
-              <div style={{ fontSize: "28px", fontWeight: 900, color: wp.deepGraphite, fontFamily: "'JetBrains Mono', monospace" }}>₹35,00,000</div>
+              <div style={{ fontSize: "28px", fontWeight: 900, color: wp.deepGraphite, fontFamily: wp.fontDisplay }}>₹35,00,000</div>
               <div style={{ fontSize: "11px", color: wp.goldPrimary, fontWeight: 700, marginTop: "2px" }}>
                 Full Campaign Retainer (Single-Candidate Territorial Exclusivity)
               </div>

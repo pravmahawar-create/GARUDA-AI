@@ -35,10 +35,21 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ success: true, data });
     }
 
-    // 2. POST /api/war-room/brief
-    if (req.method === "POST" && action === "brief") {
+    // 2. POST /api/war-room/brief or /api/war-room/dossier/pdf
+    if (req.method === "POST" && (action === "brief" || action === "dossier")) {
+      const crypto = require("crypto");
       const brief = constituencyIntelligenceService.generateConstituencyBrief(req.body || {});
-      return res.status(200).json({ success: true, data: brief });
+      const safeName = (req.body?.constituencyName || req.body?.constituencyId || req.body?.name || "CONSTITUENCY").replace(/[^a-zA-Z0-9]/g, "_");
+      const hash = crypto.createHash("sha256").update(JSON.stringify(brief)).digest("hex");
+      return res.status(200).json({
+        success: true,
+        data: {
+          fileName: `GARUDA_DOSSIER_${safeName}.pdf`,
+          sha256Hash: hash,
+          brief,
+          url: "#"
+        }
+      });
     }
 
     // 3. POST /api/war-room/rebuttal
