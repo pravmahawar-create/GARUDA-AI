@@ -34,6 +34,10 @@ const SEARCH_QUERIES = [
 let queryIndex = 0;
 
 async function runScoutCycle() {
+  if (String(process.env.GARUDA_SOCIAL_SCOUTS || "false").toLowerCase() !== "true") {
+    console.log("🛡️ [FOUNDER PROFILE SHIELD] LinkedIn scout disabled. Personal LinkedIn account strictly protected (Rule 2 Directive 4).");
+    return;
+  }
   const cookieVal = process.env.LINKEDIN_LI_AT;
   if (!cookieVal) {
     console.warn('⚠️ [LINKEDIN SCOUT DAEMON] LINKEDIN_LI_AT missing in .env. STATUS = BLOCKED.');

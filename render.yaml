@@ -54,17 +54,12 @@ services:
         value: false
       - key: GARUDA_RADAR_MONITOR
         value: true
-      - key: INSTAGRAM_SESSION_ID
-        sync: false
-      - key: INSTAGRAM_USER_ID
-        sync: false
+      # 🛡️ Founder Personal Profile Shield: Social scouts disabled on Render (Rule 2 Directive 4)
+      # Personal FB/IG/LinkedIn handles must never be scraped or touched by cloud bots.
       - key: GARUDA_SOCIAL_SCOUTS
-        value: true
-      - key: FB_C_USER
-        sync: false
-      - key: FB_XS
-        sync: false
-      - key: LINKEDIN_LI_AT
-        sync: false
+        value: false
       - key: GARUDA_REVENUE_HUNTER
         value: true
+      - key: GARUDA_PROBLEM_SCOUT
+        value: true
+

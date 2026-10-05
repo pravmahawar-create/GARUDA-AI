@@ -40,6 +40,10 @@ let isShuttingDown = false;
 
 function spawnScout(scout) {
   if (isShuttingDown) return null;
+  if (String(process.env.GARUDA_SOCIAL_SCOUTS || "false").toLowerCase() !== "true") {
+    log(`🛡️ [FOUNDER PROFILE SHIELD] Social scouts disabled by Founder Praveen (Rule 2 Directive 4). Refusing to spawn ${scout.name}.`);
+    return null;
+  }
   if (isScoutFrozen()) {
     log(`🧊 [ORCHESTRATOR] Scouts frozen — refusing to spawn ${scout.name}.`);
     return null;
@@ -109,6 +113,11 @@ process.on('SIGINT', () => handleShutdown('SIGINT'));
 process.on('SIGTERM', () => handleShutdown('SIGTERM'));
 
 async function startOrchestrator() {
+  if (String(process.env.GARUDA_SOCIAL_SCOUTS || "false").toLowerCase() !== "true") {
+    console.log("🛡️ [ORCHESTRATOR] Social scouts disabled by Founder Praveen (Rule 2 Directive 4). Founder personal handles 100% shielded. Exiting cleanly.");
+    log("🛡️ [ORCHESTRATOR] Social scouts disabled by Founder Praveen (Rule 2 Directive 4). Founder personal handles 100% shielded. Exiting cleanly.");
+    process.exit(0);
+  }
   if (isScoutFrozen()) {
     console.log('🧊 [ORCHESTRATOR] Scouts FROZEN by Founder until further order. Refusing to spawn scouts. Exiting cleanly.');
     log('🧊 [ORCHESTRATOR] Scouts FROZEN by Founder. Orchestrator aborted. No child scouts spawned.');

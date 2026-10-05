@@ -158,7 +158,8 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
         }
 
         // ── 24/7 Autonomous Social Scouts Fleet (Render Cloud 24x7) ──
-        const socialScoutsEnabled = String(process.env.GARUDA_SOCIAL_SCOUTS ?? "true").toLowerCase() === "true";
+        // Disabled by default to protect Founder's personal handles and prevent blank scraping (Rule 2 Directive 4)
+        const socialScoutsEnabled = String(process.env.GARUDA_SOCIAL_SCOUTS || "false").toLowerCase() === "true";
         if (socialScoutsEnabled) {
             try {
                 const { spawn } = require("child_process");

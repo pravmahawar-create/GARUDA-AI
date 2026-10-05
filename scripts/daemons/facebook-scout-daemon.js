@@ -91,6 +91,10 @@ function craftMicroscopicPitch(author, snippet) {
 }
 
 async function runScoutCycle() {
+  if (String(process.env.GARUDA_SOCIAL_SCOUTS || "false").toLowerCase() !== "true") {
+    console.log("🛡️ [FOUNDER PROFILE SHIELD] Facebook scout disabled. Personal Meta account strictly protected (Rule 2 Directive 4).");
+    return;
+  }
   const cUser = process.env.FB_C_USER;
   const xs = process.env.FB_XS;
 

@@ -36,6 +36,10 @@ const SYSTEM_ACCOUNTS = ['instagram', 'meta', 'threads', 'explore', 'direct', 'r
 let tagIndex = 0;
 
 async function runScoutCycle() {
+  if (String(process.env.GARUDA_SOCIAL_SCOUTS || "false").toLowerCase() !== "true") {
+    console.log("🛡️ [FOUNDER PROFILE SHIELD] Instagram scout disabled. Personal Instagram account strictly protected (Rule 2 Directive 4).");
+    return;
+  }
   const sessionId = process.env.INSTAGRAM_SESSION_ID;
   const userId = process.env.INSTAGRAM_USER_ID;
 
