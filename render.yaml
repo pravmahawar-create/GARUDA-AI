@@ -3,7 +3,7 @@ services:
     name: garuda-ai
     env: node
     plan: starter
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: node server.js
     healthCheckPath: /health
     envVars:
@@ -41,7 +41,7 @@ services:
       - key: WHATSAPP_HEADLESS
         value: true
       - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-        value: false
+        value: true
       - key: GARUDA_AGENCY_DAEMON
         value: true
       - key: GARUDA_AGENCY_INTERVAL_MS

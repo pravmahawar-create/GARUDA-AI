@@ -19,10 +19,14 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
 }
 
 (async () => {
-    const mongoConnected = await connectDB();
+    // ⚡ BIND IMMEDIATELY: Render health check requires sub-second port binding (0.0.0.0)
+    // Never block app.listen() with slow or retrying MongoDB connections!
+    app.listen(PORT, "0.0.0.0", async () => {
+        console.log(`[GARUDA] GARUDA AI listening immediately on 0.0.0.0:${PORT} (Render Healthcheck Ready)`);
 
-    app.listen(PORT, () => {
-        console.log(`[GARUDA] GARUDA AI running on http://localhost:${PORT} (mongo: ${mongoConnected ? "connected" : "degraded"})`);
+        // Asynchronously connect to MongoDB in background
+        const mongoConnected = await connectDB();
+        console.log(`[GARUDA] Database status: ${mongoConnected ? "connected" : "degraded"}`);
 
         // Workers are Mongo-backed; only start when the DB is available.
         // File/Supabase/NVIDIA features (lead-gen, outreach, affiliate, public chat) work regardless.

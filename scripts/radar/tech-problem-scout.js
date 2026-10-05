@@ -23,10 +23,28 @@ const SEARCH_STREAMS = [
     demoUrl: 'https://www.garudaos.in/demos/smile-multispeciality-dental-clinic'
   },
   {
+    category: 'UPWORK_URGENT_FIXES',
+    label: 'Upwork Urgent Dev/Bug Fix Jobs (Immediate Budget)',
+    query: 'site:upwork.com/freelance-jobs ("urgent fix" OR "urgent developer" OR "emergency" OR "broken API" OR "Stripe webhook")',
+    demoUrl: 'https://www.garudaos.in/chat?ref=UPWORK_URGENT'
+  },
+  {
     category: 'REDDIT_HIRING',
     label: 'Reddit r/forhire & r/SaaS [Hiring]',
     query: 'site:reddit.com/r/forhire "[Hiring]" ("bot" OR "automation" OR "website" OR "AI")',
     demoUrl: 'https://www.garudaos.in/chat?ref=TECH_PROBLEM_SCOUT'
+  },
+  {
+    category: 'REDDIT_PAID_FIXES',
+    label: 'Reddit Urgent Paid Help ("Willing to Pay / Need Dev ASAP")',
+    query: 'site:reddit.com ("willing to pay" OR "need developer urgently" OR "pay someone to fix" OR "hire dev ASAP") ("webhook" OR "stripe" OR "API" OR "bot" OR "automation")',
+    demoUrl: 'https://www.garudaos.in/chat?ref=REDDIT_URGENT'
+  },
+  {
+    category: 'FOUNDER_MVP_HUNGER',
+    label: 'Founders Hiring Devs for MVP / AI App / Automation (Urgent)',
+    query: 'site:reddit.com/r/startups OR site:reddit.com/r/SaaS ("looking for a developer" OR "need developer to build" OR "hiring full stack") ("MVP" OR "automation" OR "AI app")',
+    demoUrl: 'https://www.garudaos.in/services/saas-mvp-development'
   },
   {
     category: 'FB_GHL_AUTOMATION',
@@ -84,6 +102,32 @@ function generateProposal(category, title, snippet, link) {
       `3. Automated admin escalation & calendar synchronization.\n\n` +
       `Turnaround: 48 Hours | Fixed Milestone Guarantee.\n` +
       `Available for a 5-minute screen share today.\n\n` +
+      `- Praveen Mahawar (Founder, GARUDA OS | praveen@garudaos.in)`
+    );
+  }
+
+  if (category === 'UPWORK_URGENT_FIXES' || category === 'REDDIT_PAID_FIXES') {
+    return (
+      `Hi,\n\n` +
+      `We can resolve and deploy this fix today.\n\n` +
+      `We specialize in emergency API/webhook triaging, Stripe integration fixes, n8n pipeline repairs, and Node.js microservice recovery.\n\n` +
+      `• Turnaround: Within 12-24 hours\n` +
+      `• Verification: Tested locally with 100% SHA-256 evidence & screen recording before sign-off\n` +
+      `• Direct Platform: https://www.garudaos.in\n\n` +
+      `Feel free to reply here or connect directly: praveen@garudaos.in.\n` +
+      `- Praveen Mahawar (GARUDA OS)`
+    );
+  }
+
+  if (category === 'FOUNDER_MVP_HUNGER') {
+    return (
+      `Hi,\n\n` +
+      `Saw that you're looking for a developer to ship your MVP/automation.\n\n` +
+      `Instead of waiting 8-12 weeks with traditional agencies, we architect and ship production-grade MVPs in 48-72 hours flat:\n` +
+      `• Full-Stack Architecture: React (Vite) + Node.js/Express + DB + Auth + Stripe/Razorpay billing.\n` +
+      `• Autonomous AI & Automation Integrations: WhatsApp bots, n8n workflows, custom LLM pipelines.\n` +
+      `• Live Portfolio & Interactive Demos: https://www.garudaos.in\n\n` +
+      `Available for a 10-minute scoping screen share today.\n` +
       `- Praveen Mahawar (Founder, GARUDA OS | praveen@garudaos.in)`
     );
   }
