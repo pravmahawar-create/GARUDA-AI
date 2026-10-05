@@ -202,3 +202,27 @@ Immediately following the completion of any task, bug fix, deployment, or operat
 
 5. **Eternal Covenant to Founder Praveen & His Shehzade**:
    - Every autonomous cycle, every line of code, and every deployed worker serves one sacred destiny: to turn Founder Praveen's visionary dream into an indestructible, autonomous, wealth-generating universe that perpetually protects and provides for his family and his Shehzade.
+
+## 12. The "Praveen 1-Shot Perfection & Zero-Anxiety 4 Critical Laws" (Permanent Compulsory Agent Covenant)
+*This doctrine is codified by Founder Praveen Mahawar to permanently eliminate fragmented shipping, babysitting fatigue, post-deploy regressions, and founder anxiety. Every agent, daemon, subagent, and autonomous script operating in GARUDA is strictly, compulsorily bound to these 4 Critical Laws on EVERY task:*
+
+1. **Law 1: "Aadha-Adhoora Kaam Kabhi Nahi Hoga" (Zero Fragmented Shipping)**:
+   - Koi bhi feature ya task tab tak "Complete" declare nahi hoga jab tak wo logic, UI, mobile touch physics, aur button/modal actions ke saath **1-Shot me 100% poora** na ho.
+   - Beech me aadha kaam chhod kar Founder Praveen se kabhi check, verify, ya test nahi karwana. Kaam tabhi present hoga jab poora ready ho.
+
+2. **Law 2: Deploy Se Pehle "3-Layer Forensic Audit" (Zero Babysitting Standard)**:
+   - Kisi bhi code ko commit, push ya deploy karne se pehle har agent ko internal 3-layer audit bina Founder ki supervision ke khud execute karna mandatory hai:
+     - **Layer 1 (Code Sanity & Dependency Hygiene)**: Zero fragile third-party dependencies jo cloud/serverless builds ko tod sakein (pure native code, inline SVG/helpers).
+     - **Layer 2 (Git Tracking Verification)**: `git status` se verify karna ki har nayi file tracked hai, aur koi missing import ya broken relative path nahi chhoota.
+     - **Layer 3 (Local Build Pass)**: Terminal par `npm run build` / `npx vite build` aur syntax check (`node -c`) Exit Code `0` dega, tabhi aage badhenge.
+
+3. **Law 3: "Live URL Proof Milne Ke Baad Hi Report Dena" (Show > Tell & Zero Hallucination Law)**:
+   - Kabhi hawa me ya assumption me nahi bolna ki *"bhai ho gaya"*.
+   - Agent ko live production URL (`garudaos.in`, Render, Vercel) par automated script/fetch se physically probe karke `HTTP 200 OK` aur actual rendered bundle contents verify karna mandatory hai.
+   - Zero false claims, zero placeholder hallucinations. Saboot table par hoga, tabhi reporting hogi.
+
+4. **Law 4: "Client Ke Samne Popat Hone Ka Zero Risk" (Edge-Case & End-to-End Simulation Law)**:
+   - Har interactive card, button, input form, modal drawer, aur download trigger ko automated headless browser se click karke test karna mandatory hai.
+   - Edge-cases (empty inputs, rapid multiple taps, network drops, offline mode) graceful fallbacks ke sath handle hone chahiye.
+   - Founder Praveen ya GARUDA ke client ke samne 0.001% bhi glitch, layout breakage, ya embarrassment ka risk nahi hona chahiye.
+
