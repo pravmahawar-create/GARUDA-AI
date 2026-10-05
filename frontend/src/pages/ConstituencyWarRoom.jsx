@@ -14,6 +14,7 @@ import ElectoralAnalyticsModule from "../components/war-room/ElectoralAnalyticsM
 import CrisisWorkflowModule from "../components/war-room/CrisisWorkflowModule";
 import EvidenceVaultModule from "../components/war-room/EvidenceVaultModule";
 import ReportsModule from "../components/war-room/ReportsModule";
+import CadreGeofenceRadar from "../components/war-room/CadreGeofenceRadar";
 
 // 🏛️ Official GARUDA War Room Sovereign Palette (Warm Ivory, Graphite & Luxury Gold)
 const wp = {
@@ -75,6 +76,7 @@ const INITIAL_THANE = {
   assemblyNumber: 148,
   type: "Urban Mega-Hub",
   pinCodes: ["400601", "400602", "400607", "400610"],
+  coordinates: { lat: 19.2183, lng: 72.9781, label: "Teen Hath Naka / Pachpakhadi Centroid", elevation: "14m ASL" },
   electoralBase: {
     registeredElectors: 342618,
     electorsStatus: "VERIFIED",
@@ -123,20 +125,20 @@ const INITIAL_THANE = {
 
 // Major Battlegrounds across Indian States
 const BENCHMARK_CITIES = [
-  { id: "thane-148", query: "Thane 148", name: "Thane (148)", state: "Maharashtra", type: "Urban Mega-Hub", booths: 348, electors: 342618 },
-  { id: "indore-2", query: "Indore-2", name: "Indore-2 (205)", state: "Madhya Pradesh", type: "Industrial & Commercial Hub", booths: 362, electors: 368940 },
-  { id: "noida-61", query: "Noida-61", name: "Noida (61)", state: "Uttar Pradesh", type: "High-Rise Urban Corridor", booths: 724, electors: 712950 },
-  { id: "bhopal-central", query: "Bhopal Central", name: "Bhopal Central (153)", state: "Madhya Pradesh", type: "Administrative Capital Seat", booths: 284, electors: 248100 },
-  { id: "varanasi-cantt", query: "Varanasi Cantt", name: "Varanasi Cantt (390)", state: "Uttar Pradesh", type: "Heritage Urban Segment", booths: 412, electors: 415200 },
-  { id: "shantinagar-blr", query: "Shantinagar Bangalore", name: "Shantinagar (163)", state: "Karnataka", type: "Cosmopolitan Commercial Core", booths: 218, electors: 214500 },
-  { id: "colaba-mum", query: "Colaba Mumbai", name: "Colaba (187)", state: "Maharashtra", type: "South Mumbai Financial Gateway", booths: 268, electors: 278900 },
-  { id: "civil-lines-jai", query: "Civil Lines Jaipur", name: "Civil Lines (122)", state: "Rajasthan", type: "Heritage Capital Ward", booths: 254, electors: 236400 },
-  { id: "lucknow-cantt", query: "Lucknow Cantt", name: "Lucknow Cantt (175)", state: "Uttar Pradesh", type: "Institutional & Urban Seat", booths: 356, electors: 352100 },
-  { id: "patna-sahib", query: "Patna Sahib", name: "Patna Sahib (184)", state: "Bihar", type: "Historic Riverine Commercial Core", booths: 382, electors: 374000 },
-  { id: "new-delhi-40", query: "New Delhi", name: "New Delhi (40)", state: "Delhi NCR", type: "National Power Epicenter", booths: 182, electors: 148200 },
-  { id: "ghatlodia-44", query: "Ghatlodia Ahmedabad", name: "Ghatlodia (44)", state: "Gujarat", type: "Prime Urban Constituency", booths: 420, electors: 418000 },
-  { id: "jabalpur-cantt-99", query: "Jabalpur Cantt", name: "Jabalpur Cantt (99)", state: "Madhya Pradesh", type: "Defense & Urban Cantonment Segment", booths: 214, electors: 192450 },
-  { id: "jabalpur-west-100", query: "Jabalpur West", name: "Jabalpur West (100)", state: "Madhya Pradesh", type: "High-Density Commercial & Institutional Segment", booths: 252, electors: 239820 }
+  { id: "thane-148", query: "Thane 148", name: "Thane (148)", state: "Maharashtra", type: "Urban Mega-Hub", booths: 348, electors: 342618, coordinates: { lat: 19.2183, lng: 72.9781, label: "Teen Hath Naka / Pachpakhadi Centroid", elevation: "14m ASL" } },
+  { id: "indore-2", query: "Indore-2", name: "Indore-2 (205)", state: "Madhya Pradesh", type: "Industrial & Commercial Hub", booths: 362, electors: 368940, coordinates: { lat: 22.7533, lng: 75.8937, label: "Vijay Nagar / Pardesipura Centroid", elevation: "553m ASL" } },
+  { id: "noida-61", query: "Noida-61", name: "Noida (61)", state: "Uttar Pradesh", type: "High-Rise Urban Corridor", booths: 724, electors: 712950, coordinates: { lat: 28.5708, lng: 77.3260, label: "Sector 18 / Atta Market Centroid", elevation: "200m ASL" } },
+  { id: "bhopal-central", query: "Bhopal Central", name: "Bhopal Central (153)", state: "Madhya Pradesh", type: "Administrative Capital Seat", booths: 284, electors: 248100, coordinates: { lat: 23.2599, lng: 77.4126, label: "New Market / TT Nagar Centroid", elevation: "527m ASL" } },
+  { id: "varanasi-cantt", query: "Varanasi Cantt", name: "Varanasi Cantt (390)", state: "Uttar Pradesh", type: "Heritage Urban Segment", booths: 412, electors: 415200, coordinates: { lat: 25.3216, lng: 82.9873, label: "Cantonment Station Centroid", elevation: "81m ASL" } },
+  { id: "shantinagar-blr", query: "Shantinagar Bangalore", name: "Shantinagar (163)", state: "Karnataka", type: "Cosmopolitan Commercial Core", booths: 218, electors: 214500, coordinates: { lat: 12.9569, lng: 77.5993, label: "Richmond Town / Shantinagar Centroid", elevation: "920m ASL" } },
+  { id: "colaba-mum", query: "Colaba Mumbai", name: "Colaba (187)", state: "Maharashtra", type: "South Mumbai Financial Gateway", booths: 268, electors: 278900, coordinates: { lat: 18.9067, lng: 72.8147, label: "Gateway of India / Colaba Centroid", elevation: "11m ASL" } },
+  { id: "civil-lines-jai", query: "Civil Lines Jaipur", name: "Civil Lines (122)", state: "Rajasthan", type: "Heritage Capital Ward", booths: 254, electors: 236400, coordinates: { lat: 26.9054, lng: 75.7873, label: "Civil Lines Raj Bhavan Centroid", elevation: "431m ASL" } },
+  { id: "lucknow-cantt", query: "Lucknow Cantt", name: "Lucknow Cantt (175)", state: "Uttar Pradesh", type: "Institutional & Urban Seat", booths: 356, electors: 352100, coordinates: { lat: 26.8124, lng: 80.9532, label: "Dilkusha / Sadar Cantt Centroid", elevation: "123m ASL" } },
+  { id: "patna-sahib", query: "Patna Sahib", name: "Patna Sahib (184)", state: "Bihar", type: "Historic Riverine Commercial Core", booths: 382, electors: 374000, coordinates: { lat: 25.5941, lng: 85.2154, label: "Patna Sahib Gurudwara Centroid", elevation: "53m ASL" } },
+  { id: "new-delhi-40", query: "New Delhi", name: "New Delhi (40)", state: "Delhi NCR", type: "National Power Epicenter", booths: 182, electors: 148200, coordinates: { lat: 28.6139, lng: 77.2090, label: "Connaught Place / India Gate Centroid", elevation: "216m ASL" } },
+  { id: "ghatlodia-44", query: "Ghatlodia Ahmedabad", name: "Ghatlodia (44)", state: "Gujarat", type: "Prime Urban Constituency", booths: 420, electors: 418000, coordinates: { lat: 23.0754, lng: 72.5348, label: "Sola Road / Ghatlodia Centroid", elevation: "53m ASL" } },
+  { id: "jabalpur-cantt-99", query: "Jabalpur Cantt", name: "Jabalpur Cantt (99)", state: "Madhya Pradesh", type: "Defense & Urban Cantonment Segment", booths: 214, electors: 192450, coordinates: { lat: 23.1539, lng: 79.9575, label: "Sadar / Cantt Board HQ Centroid", elevation: "411m ASL" } },
+  { id: "jabalpur-west-100", query: "Jabalpur West", name: "Jabalpur West (100)", state: "Madhya Pradesh", type: "High-Density Commercial & Institutional Segment", booths: 252, electors: 239820, coordinates: { lat: 23.1685, lng: 79.9198, label: "Madan Mahal / Wright Town Centroid", elevation: "405m ASL" } }
 ];
 
 export default function ConstituencyWarRoom() {
@@ -236,6 +238,7 @@ export default function ConstituencyWarRoom() {
         state: benchmark.state,
         assemblyNumber: parseInt(benchmark.name.replace(/[^0-9]/g, "") || "100", 10),
         type: benchmark.type,
+        coordinates: benchmark.coordinates || { lat: 23.1539, lng: 79.9575, label: `${benchmark.name} Centroid`, elevation: "411m ASL" },
         electoralBase: {
           registeredElectors: benchmark.electors,
           electorsStatus: "VERIFIED",
@@ -251,20 +254,30 @@ export default function ConstituencyWarRoom() {
           boothsStatus: "VERIFIED"
         },
         historicalTurnout: {
-          lastElectionTurnout: "58.4%",
+          lastElectionTurnout: benchmark.id === "jabalpur-cantt-99" ? "67.84%" : "58.4%",
           turnoutStatus: "VERIFIED"
         },
         historicalMargin: {
-          winningMarginPercentage: "14.2%",
+          winningMarginPercentage: benchmark.id === "jabalpur-cantt-99" ? "14.20%" : "14.2%",
           marginStatus: "VERIFIED"
         },
-        pockets: [
+        pockets: benchmark.id === "jabalpur-cantt-99" ? [
+          { name: "Sadar Bazaar & Ridge Road", booths: "1-55", condition: "NORMAL", label: "COMMERCIAL & CANTONMENT TRADERS", primaryIssue: "Cantonment Board Trade Licensing & Parking", electorsEst: 49000 },
+          { name: "Gorakhpur & Rampur Belt", booths: "56-110", condition: "NORMAL", label: "HIGH-DENSITY RESIDENTIAL WARD", primaryIssue: "Drinking Water Supply & Drainage Desilting", electorsEst: 51000 },
+          { name: "Cantonment Board & Military Station", booths: "111-165", condition: "NORMAL", label: "DEFENSE & CIVILIAN TRANSIT", primaryIssue: "Civilian Access Gates & Road Maintenance", electorsEst: 46000 },
+          { name: "Bilhari & Mandla Road Corridor", booths: "166-214", condition: "AMBER", label: "SWING MARGIN PERIPHERY", primaryIssue: "NH Link Road Widening & Street Lighting", electorsEst: 46450 }
+        ] : [
           { name: `${benchmark.name.split(" ")[0]} Central Core`, booths: "1-80", condition: "NORMAL", label: "COMMERCIAL ZONE", primaryIssue: "Urban Transit & Parking", electorsEst: Math.round(benchmark.electors * 0.28) },
           { name: `${benchmark.name.split(" ")[0]} North Sector`, booths: "81-160", condition: "AMBER", label: "SWING MARGIN ZONE", primaryIssue: "Water Pressure & Drainage", electorsEst: Math.round(benchmark.electors * 0.26) },
           { name: `${benchmark.name.split(" ")[0]} South Belt`, booths: "161-240", condition: "RED", label: "HIGH GRIEVANCE DENSITY", primaryIssue: "Road Maintenance & Power Slabs", electorsEst: Math.round(benchmark.electors * 0.24) },
           { name: `${benchmark.name.split(" ")[0]} East Extension`, booths: `241-${benchmark.booths}`, condition: "NORMAL", label: "NEW EXPANSION", primaryIssue: "Municipal Services", electorsEst: Math.round(benchmark.electors * 0.22) }
         ],
-        issueRadar: [
+        issueRadar: benchmark.id === "jabalpur-cantt-99" ? [
+          { id: "jbc-1", name: "Cantonment Board Property Lease Renewal & By-law Disputes", signal: "HIGH", publicReferences: 48, source: "Cantonment Citizens Welfare Forum", lastDetected: "Today, 10:45 IST", status: "VERIFIED" },
+          { id: "jbc-2", name: "Narmada Drinking Water Domestic Hookups in Gorakhpur", signal: "HIGH", publicReferences: 39, source: "Jabalpur Municipal Corporation Public Grievances", lastDetected: "Yesterday, 19:20 IST", status: "VERIFIED" },
+          { id: "jbc-3", name: "Mandla Road Arterial Congestion & Overbridge Diverter", signal: "MEDIUM", publicReferences: 27, source: "MP PWD Engineering Reports", lastDetected: "2 Oct 2026", status: "VERIFIED" },
+          { id: "jbc-4", name: "Cantonment General Hospital Upgrades & Doctor Roster", signal: "LOW", publicReferences: 15, source: "Civic Health Review Board", lastDetected: "29 Sep 2026", status: "PARTIAL" }
+        ] : [
           { id: "iss-1", name: "Traffic & Road Infrastructure Bottlenecks", signal: "HIGH", publicReferences: 44, source: "Municipal Grievance Portal", lastDetected: "Today, 14:00 IST", status: "VERIFIED" },
           { id: "iss-2", name: "Domestic Water Supply & Pressure Stability", signal: "HIGH", publicReferences: 38, source: "Citizen RWA Petitions", lastDetected: "Yesterday, 18:30 IST", status: "VERIFIED" },
           { id: "iss-3", name: "Power Tariff & Smart Meter Billing Grievances", signal: "MEDIUM", publicReferences: 27, source: "Discom Grievance Cell", lastDetected: "2 Oct 2026", status: "VERIFIED" },
@@ -925,161 +938,13 @@ export default function ConstituencyWarRoom() {
       {/* ========================================================================= */}
       <div className="operational-grid">
 
-        {/* COLUMN 1: CONSTITUENCY MAP (BOOTH LEVEL) - VISUAL ANCHOR */}
-        <div
-          style={{
-            background: wp.card,
-            boxShadow: wp.shadow,
-            border: "1px solid " + wp.border,
-            borderRadius: "14px",
-            padding: "22px",
-            display: "flex",
-            flexDirection: "column",
-            position: "relative"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-            <div>
-              <div style={{ fontSize: "16px", fontWeight: 750, color: wp.deepGraphite, fontFamily: wp.fontDisplay, letterSpacing: "-0.02em" }}>
-                Constituency Map — Booth Level
-              </div>
-              <div style={{ fontSize: "10.5px", color: wp.muted, marginTop: "2px", letterSpacing: "0.02em" }}>
-                {constituency.name} • Spatial Field Cadre & Polling Station Grid ({constituency.state})
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveTab("booths")}
-              style={{
-                background: wp.canvasIvory,
-                border: "1px solid " + wp.border,
-                borderRadius: "6px",
-                padding: "5px 10px",
-                fontSize: "11px",
-                fontWeight: 700,
-                color: wp.goldDeep,
-                cursor: "pointer"
-              }}
-            >
-              Open Full Grid →
-            </button>
-          </div>
-
-          {/* HIGH-TECH VECTOR MAP VISUALIZATION */}
-          <div
-            style={{
-              flex: 1,
-              minHeight: "410px",
-              background: "#080B11",
-              borderRadius: "12px",
-              border: "1.5px solid rgba(216, 182, 106, 0.3)",
-              position: "relative",
-              overflow: "hidden",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            {/* FLOATING BOOTH STATUS LEGEND BOX */}
-            <div
-              style={{
-                position: "absolute",
-                top: "14px",
-                right: "14px",
-                background: "rgba(8, 11, 17, 0.94)",
-                border: "1px solid rgba(201, 154, 58, 0.4)",
-                borderRadius: "10px",
-                padding: "10px 14px",
-                zIndex: 10,
-                backdropFilter: "blur(10px)",
-                boxShadow: "0 6px 18px rgba(0, 0, 0, 0.6)"
-              }}
-            >
-              <div style={{ fontSize: "11px", color: "#E7C982", fontWeight: 750, marginBottom: "6px", letterSpacing: "0.5px" }}>Booth Status</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "11px" }}>
-                <span style={{ color: "#10B981", fontWeight: 650 }}>● Active ({constituency.pollingStructure?.totalBooths || 348})</span>
-                <span style={{ color: "#EF4444", fontWeight: 650 }}>● Critical (2)</span>
-                <span style={{ color: "#F59E0B", fontWeight: 650 }}>● Gap ({constituency.pollingStructure?.gapBooths || 3})</span>
-              </div>
-            </div>
-
-            {/* Grid Overlay */}
-            <svg width="100%" height="100%" style={{ position: "absolute", top: 0, left: 0, opacity: 0.15 }}>
-              <defs>
-                <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.1)" strokeWidth="0.5" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
-            </svg>
-
-            {/* High-Tech Vector Map with Gold Polygon Boundary */}
-            <svg viewBox="0 0 500 350" style={{ width: "94%", height: "94%", zIndex: 1 }}>
-              {/* Arterial Network */}
-              <g stroke="rgba(56, 189, 248, 0.22)" strokeWidth="1.0">
-                <line x1="210" y1="50" x2="250" y2="185" />
-                <line x1="100" y1="185" x2="250" y2="185" />
-                <line x1="390" y1="200" x2="250" y2="185" />
-                <line x1="280" y1="285" x2="250" y2="185" />
-                <line x1="340" y1="90" x2="250" y2="185" />
-                <line x1="140" y1="250" x2="250" y2="185" />
-              </g>
-
-              {/* Outer Boundary in Gold */}
-              <polygon
-                points="120,40 280,30 380,80 440,180 390,290 260,320 150,290 80,190 70,90"
-                fill="rgba(184, 134, 43, 0.12)"
-                stroke="#E7C982"
-                strokeWidth="2.4"
-                strokeDasharray="5 3"
-              />
-
-              {/* Ward Lines */}
-              <line x1="120" y1="40" x2="250" y2="185" stroke="rgba(255,255,255,0.12)" />
-              <line x1="280" y1="30" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
-              <line x1="380" y1="80" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
-              <line x1="440" y1="180" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
-              <line x1="390" y1="290" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
-              <line x1="150" y1="290" x2="250" y2="185" stroke="rgba(255,255,255,0.10)" />
-
-              {/* Center Bold Label */}
-              <text x="250" y="185" textAnchor="middle" fill="#FFFFFF" fontSize="15" fontWeight="800" letterSpacing="1.5px">
-                {constituency.name.toUpperCase()}
-              </text>
-              <text x="250" y="202" textAnchor="middle" fill="#E7C982" fontSize="9.5" fontWeight="700" letterSpacing="1px">
-                {constituency.state.toUpperCase()} ASSEMBLY GRID
-              </text>
-
-              {/* Dense Tactical Cluster of Green Active Booth Dots */}
-              {[
-                [210, 50], [225, 45], [195, 55], [240, 55], [215, 65], [250, 60], [230, 70], [180, 65], [190, 75],
-                [95, 110], [110, 100], [125, 115], [105, 125], [130, 95], [140, 110], [115, 135], [135, 130],
-                [330, 85], [350, 95], [320, 100], [360, 110], [335, 115], [315, 90], [345, 125], [370, 105],
-                [160, 290], [175, 280], [150, 275], [185, 295], [170, 305], [195, 285],
-                [100, 185], [115, 175], [125, 195], [110, 205], [90, 195], [135, 180], [140, 200], [120, 215],
-                [180, 140], [195, 135], [210, 145], [225, 130], [240, 140], [260, 135], [275, 145], [290, 140],
-                [170, 160], [185, 170], [200, 160], [220, 165], [280, 160], [295, 170], [310, 160],
-                [175, 195], [190, 210], [210, 200], [225, 210], [270, 200], [285, 210], [305, 195],
-                [135, 240], [150, 235], [145, 255], [160, 245], [130, 250], [155, 265], [140, 270],
-                [280, 285], [295, 275], [270, 295], [305, 290], [290, 305], [315, 280], [260, 300],
-                [370, 255], [385, 245], [360, 265], [395, 260], [380, 275], [365, 280], [400, 270],
-                [365, 190], [380, 180], [390, 200], [405, 185], [375, 210], [415, 195], [385, 220]
-              ].map(([x, y], i) => (
-                <g key={i}>
-                  <circle cx={x} cy={y} r="3.2" fill="#10B981" />
-                </g>
-              ))}
-
-              {/* Inactive Red Dots */}
-              <circle cx="195" cy="115" r="4.2" fill="#EF4444" />
-              <circle cx="280" cy="245" r="4.2" fill="#EF4444" />
-
-              {/* Gap Yellow Dots */}
-              <circle cx="190" cy="210" r="4.2" fill="#F59E0B" />
-              <circle cx="310" cy="180" r="4.2" fill="#F59E0B" />
-              <circle cx="230" cy="95" r="4.2" fill="#F59E0B" />
-            </svg>
-          </div>
-        </div>
+        {/* COLUMN 1: 2.0 KM GEOFENCED CADRE RADAR & MOBILE ACTIVITY GRID (VISUAL ANCHOR) */}
+        <CadreGeofenceRadar
+          constituency={constituency}
+          onInspectDevice={(device) => setInspectingDevice(device)}
+          onOpenBooths={() => setActiveTab("booths")}
+          wp={wp}
+        />
 
         {/* COLUMN 2: BOOTH ACTIVITY FEED */}
         <div

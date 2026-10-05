@@ -21,6 +21,7 @@ const BENCHMARK_CONSTITUENCIES = {
     assemblyNumber: 148,
     type: "Urban Mega-Hub",
     pinCodes: ["400601", "400602", "400607", "400610"],
+    coordinates: { lat: 19.2183, lng: 72.9781, label: "Teen Hath Naka / Pachpakhadi Centroid", elevation: "14m ASL" },
     electoralBase: {
       registeredElectors: 342618,
       electorsStatus: "VERIFIED",
@@ -864,6 +865,7 @@ const BENCHMARK_CONSTITUENCIES = {
     assemblyNumber: 99,
     type: "Defense & Urban Cantonment Segment",
     pinCodes: ["482001", "482005"],
+    coordinates: { lat: 23.1539, lng: 79.9575, label: "Sadar / Cantt Board HQ Centroid", elevation: "411m ASL" },
     electoralBase: {
       registeredElectors: 192450,
       electorsStatus: "VERIFIED",
@@ -934,6 +936,7 @@ const BENCHMARK_CONSTITUENCIES = {
     assemblyNumber: 100,
     type: "High-Density Commercial & Institutional Segment",
     pinCodes: ["482002", "482003"],
+    coordinates: { lat: 23.1685, lng: 79.9198, label: "Madan Mahal / Wright Town Centroid", elevation: "405m ASL" },
     electoralBase: {
       registeredElectors: 239820,
       electorsStatus: "VERIFIED",
