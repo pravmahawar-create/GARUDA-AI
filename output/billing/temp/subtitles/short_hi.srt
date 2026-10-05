@@ -1,0 +1,28 @@
+1
+00:00:00,000 --> 00:00:08,689
+Software banana alag baat hai... lekin ground par dukaandaar ke liye software banana? Yeh GARUDA ka kaam hai.
+
+2
+00:00:09,289 --> 00:00:17,689
+Sabse pehle dekhiye... counter par customer aaya, toh ek tap mein uska khata aur GST details samne.
+
+3
+00:00:18,289 --> 00:00:26,710
+Ab item add karte hain. Sariya aur Cement catalog se chuna... aur quantities direct enter ho gayi.
+
+4
+00:00:27,309 --> 00:00:37,030
+Aur yahan notice kijiye — subtotal, CGST aur SGST bina kisi calculator ke, yahin instantly calculate ho raha hai.
+
+5
+00:00:37,629 --> 00:00:46,989
+Save kiya... aur dekhiye, 80mm thermal receipt ready. Barcode aur pure tax breakup ke sath.
+
+6
+00:00:47,589 --> 00:00:55,389
+Mandi ya godown mein internet chala bhi gaya na... koi problem nahi. Local database ke sath billing rukti nahi.
+
+7
+00:00:55,989 --> 00:01:06,530
+Agar aapke business mein bhi aisi koi problem hai... toh GARUDA ko bataiye. Solution hum engineer karenge: garudaos.in
+

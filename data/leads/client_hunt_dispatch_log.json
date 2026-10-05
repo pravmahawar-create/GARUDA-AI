@@ -1,0 +1,163 @@
+{
+  "campaign": "client_hunt_pitches_v2",
+  "aadesh": "founder 2026-10-01: sab 8 ko premium approach, 3-4 tier attack, rates per their work",
+  "preFlight": "ALL chat?ref=* URLs PASS via pre-outreach-verifier.js @ 2026-10-01T16:23Z",
+  "dispatched": [
+    {
+      "key": "rank1_nisarga",
+      "to": "nisargacare1@gmail.com",
+      "subject": "Nisarga Care redesign — WITHOUT touching your Google index (audit + fixed ₹30,000)",
+      "status": "SENT",
+      "messageId": "<896f6476-1a2a-00b0-b858-07e240544873@garudaos.in>",
+      "sha256": "96c538306ef435969f68c5962ff145671c792c1e069ddf6fd049cc00c3d54819",
+      "at": "2026-10-01T16:56:53.436Z"
+    },
+    {
+      "key": "rank2_trivanta",
+      "to": "trivantahospitality@gmail.com",
+      "subject": "Trivanta Hospitality — luxury website blueprint (portfolio + fixed ₹30,000)",
+      "status": "SENT",
+      "messageId": "<bff5585a-510f-61f2-4195-3642fa6bfe43@garudaos.in>",
+      "sha256": "3ee0f9ff2978466c6fd2e52efcb516d8cdc05708c73a7ade282e9e9a0df147a7",
+      "at": "2026-10-01T16:58:03.856Z"
+    },
+    {
+      "key": "rank4_ukjack",
+      "to": "socialmedia2evolve@outlook.com",
+      "subject": "Silent white-label delivery bench for your UK client projects — rates inside",
+      "status": "SENT",
+      "messageId": "<51332b2e-5cd5-8d32-4c69-5717021f3659@garudaos.in>",
+      "sha256": "6970d5674a1ff90e5e7eb1f7851eb04c1a50eb9cc13c1d23964609303d555de8",
+      "at": "2026-10-01T16:59:33.643Z"
+    },
+    {
+      "key": "rank5_maxval",
+      "to": "sales@maxval.com",
+      "subject": "ATTN Pronojit Singh — dedicated web delivery bench vs new senior hire",
+      "status": "SENT",
+      "messageId": "<22d7c290-26ae-e781-18ff-484cd8294695@garudaos.in>",
+      "sha256": "df5456fb2f45e2ff8dc98be55a04623ec9a1fdc3f3b1eda9f6b7ef27029fa573",
+      "at": "2026-10-01T17:00:48.401Z"
+    },
+    {
+      "key": "rank1_nisarga_ig",
+      "channel": "instagram_dm",
+      "target": "@avintvnews123",
+      "lead": "Nisarga Care",
+      "at": "2026-10-01T17:03:35.381Z",
+      "status": "SENT",
+      "proof": [
+        "output/client_hunt/rank1_nisarga_ig_preview.png",
+        "output/client_hunt/rank1_nisarga_ig_sent.png"
+      ]
+    },
+    {
+      "key": "rank2_trivanta_ig",
+      "channel": "instagram_dm",
+      "target": "@thecrystanova",
+      "lead": "Trivanta Hospitality",
+      "at": "2026-10-01T17:06:16.978Z",
+      "status": "SENT",
+      "proof": [
+        "output/client_hunt/rank2_trivanta_ig_preview.png",
+        "output/client_hunt/rank2_trivanta_ig_sent.png"
+      ]
+    },
+    {
+      "key": "rank3_tasties_ig",
+      "channel": "instagram_dm",
+      "target": "@ms.tasties_",
+      "lead": "Multi-site luxury owner",
+      "at": "2026-10-01T17:08:43.782Z",
+      "status": "SENT",
+      "proof": [
+        "output/client_hunt/rank3_tasties_ig_preview.png",
+        "output/client_hunt/rank3_tasties_ig_sent.png"
+      ]
+    },
+    {
+      "key": "rank4_ukjack_ig",
+      "channel": "instagram_dm",
+      "target": "@socialmedia2evolve",
+      "lead": "Jack (UK collab)",
+      "at": "2026-10-01T17:10:57.206Z",
+      "status": "SENT",
+      "proof": [
+        "output/client_hunt/rank4_ukjack_ig_preview.png",
+        "output/client_hunt/rank4_ukjack_ig_sent.png"
+      ]
+    },
+    {
+      "key": "rank5_maxval_li",
+      "channel": "linkedin",
+      "target": "pronojitsingh",
+      "lead": "Pronojit Singh — MaxVal",
+      "at": "2026-10-01T17:14:59.769Z",
+      "status": "FAILED",
+      "error": "CONNECT_NOTE_BOX_NOT_FOUND"
+    },
+    {
+      "key": "rank6_dojo_li",
+      "channel": "linkedin",
+      "target": "priyanshu-thakur-180094304",
+      "lead": "Ashutosh Nandi — Dojo Eats",
+      "at": "2026-10-01T17:16:57.798Z",
+      "status": "FAILED",
+      "error": "CONNECT_NOTE_BOX_NOT_FOUND"
+    },
+    {
+      "key": "rank7_mohit_li",
+      "channel": "linkedin",
+      "target": "mohit-jain-264a7315b",
+      "lead": "Mohit Jain",
+      "at": "2026-10-01T17:19:19.199Z",
+      "status": "FAILED",
+      "error": "CONNECT_NOTE_BOX_NOT_FOUND"
+    },
+    {
+      "key": "rank8_ashok_li",
+      "channel": "linkedin",
+      "target": "vardhankore",
+      "lead": "Ashok Vardhan Kore",
+      "at": "2026-10-01T17:21:36.026Z",
+      "status": "FAILED",
+      "error": "CONNECT_NOTE_BOX_NOT_FOUND"
+    },
+    {
+      "key": "rank5_maxval_li",
+      "channel": "linkedin_connect_note",
+      "target": "pronojitsingh",
+      "lead": "Pronojit Singh — MaxVal",
+      "at": "2026-10-01T17:53:27.318Z",
+      "status": "FAILED",
+      "error": "NO_INVITE_DIALOG {\"url\":\"https://www.linkedin.com/in/pronojitsingh/?isSelfProfile=false\",\"overlays\":[],\"bodyHas\":true}"
+    },
+    {
+      "key": "rank6_dojo_li",
+      "channel": "linkedin_connect_note",
+      "target": "priyanshu-thakur-180094304",
+      "lead": "Dojo Eats (Shopify hiring)",
+      "at": "2026-10-01T17:55:50.788Z",
+      "status": "FAILED",
+      "error": "CONNECT_NOT_IN_MENU"
+    },
+    {
+      "key": "rank7_mohit_li",
+      "channel": "linkedin_connect_note",
+      "target": "mohit-jain-264a7315b",
+      "lead": "Mohit Jain",
+      "at": "2026-10-01T17:57:54.416Z",
+      "status": "FAILED",
+      "error": "MORE_NOT_FOUND"
+    },
+    {
+      "key": "rank8_ashok_li",
+      "channel": "linkedin_connect_note",
+      "target": "vardhankore",
+      "lead": "Ashok Vardhan Kore",
+      "at": "2026-10-01T17:59:41.028Z",
+      "status": "FAILED",
+      "error": "CONNECT_NOT_IN_MENU"
+    }
+  ]
+}

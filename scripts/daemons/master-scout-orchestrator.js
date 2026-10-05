@@ -17,7 +17,7 @@ const fs = require('fs');
 require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 
 const telegram = require('../../src/services/telegramBotService');
-const { acquireProcessLock } = require('./unified-lead-guard');
+const { acquireProcessLock, isScoutFrozen } = require('./unified-lead-guard');
 
 const LOG_FILE = path.join(__dirname, '..', '..', 'data', 'leads', 'master_scout_activity.log');
 if (!fs.existsSync(path.dirname(LOG_FILE))) fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
@@ -40,6 +40,10 @@ let isShuttingDown = false;
 
 function spawnScout(scout) {
   if (isShuttingDown) return null;
+  if (isScoutFrozen()) {
+    log(`🧊 [ORCHESTRATOR] Scouts frozen — refusing to spawn ${scout.name}.`);
+    return null;
+  }
 
   log(`🚀 Spawning ${scout.name}...`);
   const child = spawn('node', [scout.script], {
@@ -105,6 +109,11 @@ process.on('SIGINT', () => handleShutdown('SIGINT'));
 process.on('SIGTERM', () => handleShutdown('SIGTERM'));
 
 async function startOrchestrator() {
+  if (isScoutFrozen()) {
+    console.log('🧊 [ORCHESTRATOR] Scouts FROZEN by Founder until further order. Refusing to spawn scouts. Exiting cleanly.');
+    log('🧊 [ORCHESTRATOR] Scouts FROZEN by Founder. Orchestrator aborted. No child scouts spawned.');
+    process.exit(0);
+  }
   // 1. Single-Instance Protection: Acquire atomic process lock
   const lock = acquireProcessLock('master_scout_orchestrator');
   if (!lock.acquired) {

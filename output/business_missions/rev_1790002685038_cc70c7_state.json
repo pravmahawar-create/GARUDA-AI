@@ -1,0 +1,226 @@
+{
+  "missionId": "rev_1790002685038_cc70c7",
+  "leadId": "lead_1790002685038_093520",
+  "clientId": "client_60597b",
+  "projectId": "proj_rev_1790002685038_cc70c7",
+  "commercialStatus": "PAYMENT_UNVERIFIED",
+  "currency": "INR",
+  "proposedAmount": 50000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_UNVERIFIED",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790002685038_cc70c7_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685038_cc70c7_scope.json",
+      "sizeBytes": 874,
+      "sha256": "2a89c750cd7c5b160348b5b1898426b9e5e76cb5f9e7361f381bdb575a81ff46"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790002685038_cc70c7_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685038_cc70c7_proposal.md",
+      "sizeBytes": 841,
+      "sha256": "20e3d7a9cb0fd6159e215014eea69296b8ab04f8b0257f908800af5c91150564"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790002685038_cc70c7_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685038_cc70c7_deliverable.js",
+      "sizeBytes": 407,
+      "sha256": "0288553960fe9df2af0a04f499101f7a93c92e12e0976aaf9ae69938209ed75e"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790002685038_cc70c7_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685038_cc70c7_DELIVERY_MANIFEST.md",
+      "sizeBytes": 277,
+      "sha256": "e0a82e0eb496eb0ed9509e9707b6db0c5c1a2377fd3346dae7090d77ac2cd923"
+    }
+  ],
+  "confidence": 0.7,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_PAYMENT_SETTLEMENT",
+    "requiresFounder": false,
+    "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+  },
+  "state": "PAYMENT_UNVERIFIED",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T14:58:05.038Z",
+      "leadId": "lead_1790002685038_093520",
+      "customer": "Cyber Security Labs"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T14:58:05.038Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T14:58:05.039Z",
+      "bestCapability": "Governed software implementation",
+      "matchScore": 35
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T14:58:05.041Z",
+      "scopeSha256": "2a89c750cd7c5b160348b5b1898426b9e5e76cb5f9e7361f381bdb575a81ff46"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T14:58:05.042Z",
+      "proposedAmount": 50000,
+      "currency": "INR",
+      "proposalSha256": "20e3d7a9cb0fd6159e215014eea69296b8ab04f8b0257f908800af5c91150564"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T14:58:05.042Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T14:58:05.042Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T14:58:05.042Z",
+      "acceptedAt": "2026-09-21T14:58:05.042Z",
+      "signer": "Cyber Security Labs"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T14:58:05.042Z",
+      "projectId": "proj_rev_1790002685038_cc70c7"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T14:58:05.060Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T14:58:05.060Z",
+      "manifestSha": "e0a82e0eb496eb0ed9509e9707b6db0c5c1a2377fd3346dae7090d77ac2cd923",
+      "deliveredAt": "2026-09-21T14:58:05.060Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T14:58:05.060Z"
+    },
+    {
+      "state": "PAYMENT_UNVERIFIED",
+      "timestamp": "2026-09-21T14:58:05.061Z",
+      "reason": "Invalid Razorpay webhook signature"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "name": "Cyber Security Labs",
+      "email": "security@cybersec.com",
+      "requirements": "Build impenetrable API gateway with HMAC signature verification and rate limiting",
+      "budget": 50000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "estimatedINR": 50000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 25000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 25000,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685038_cc70c7_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685038_cc70c7_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "security@cybersec.com",
+      "message": "Commercial Proposal: Build impenetrable API gateway with HMAC signature verificat | Amount: INR 50,000",
+      "missionId": "rev_1790002685038_cc70c7",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "20e3d7a9cb0fd6159e215014eea69296b8ab04f8b0257f908800af5c91150564"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "2a89c750cd7c5b160348b5b1898426b9e5e76cb5f9e7361f381bdb575a81ff46"
+        }
+      ]
+    },
+    "projectRecord": {
+      "projectId": "proj_rev_1790002685038_cc70c7",
+      "missionId": "rev_1790002685038_cc70c7",
+      "client": {
+        "name": "Cyber Security Labs",
+        "email": "security@cybersec.com",
+        "phone": null,
+        "contact": "security@cybersec.com"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685038_cc70c7_scope.json",
+        "sha256": "2a89c750cd7c5b160348b5b1898426b9e5e76cb5f9e7361f381bdb575a81ff46"
+      },
+      "approvedTerms": {
+        "amount": 50000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 25000,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 25000,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "2a89c750cd7c5b160348b5b1898426b9e5e76cb5f9e7361f381bdb575a81ff46",
+        "20e3d7a9cb0fd6159e215014eea69296b8ab04f8b0257f908800af5c91150564"
+      ]
+    },
+    "founderApproved": true,
+    "clientAccepted": true
+  }
+}

@@ -1,0 +1,225 @@
+{
+  "missionId": "acq_1790004103866_7f6306",
+  "leadId": "lead_1790004103866_de5470",
+  "clientId": "client_de5470",
+  "projectId": "proj_acq_1790004103866_7f6306",
+  "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+  "currency": "INR",
+  "proposedAmount": 70000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "acq_1790004103866_7f6306_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_scope.json",
+      "sizeBytes": 853,
+      "sha256": "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "acq_1790004103866_7f6306_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_proposal.md",
+      "sizeBytes": 849,
+      "sha256": "fceb3c691b0104f6ed4bfe13be52fc4f1d2fcda471173a0cd788469543f5962a"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "acq_1790004103866_7f6306_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_deliverable.js",
+      "sizeBytes": 421,
+      "sha256": "27a63ee0f7ec8e3157e0b7df8297eca16e773ea25324337bae113b15a70208ce"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "acq_1790004103866_7f6306_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_DELIVERY_MANIFEST.md",
+      "sizeBytes": 270,
+      "sha256": "f21449ec2a46d0c95c82b9832b9099d3d3da80ccd8ea75b4beea81fbaa384c12"
+    }
+  ],
+  "confidence": 0.7,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_PAYMENT_SETTLEMENT",
+    "requiresFounder": false,
+    "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+  },
+  "state": "AWAITING_PAYMENT",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T15:21:43.893Z",
+      "leadId": "lead_1790004103866_de5470",
+      "customer": "Tech Venture"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T15:21:43.893Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.894Z",
+      "bestCapability": "REST & GraphQL API Integration & Microservices",
+      "matchScore": 35
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T15:21:43.897Z",
+      "scopeSha256": "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T15:21:43.899Z",
+      "proposedAmount": 70000,
+      "currency": "INR",
+      "proposalSha256": "fceb3c691b0104f6ed4bfe13be52fc4f1d2fcda471173a0cd788469543f5962a"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:21:43.899Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T15:21:43.899Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T15:21:43.899Z",
+      "acceptedAt": "2026-09-21T15:21:43.899Z",
+      "signer": "Tech Venture"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T15:21:43.900Z",
+      "projectId": "proj_acq_1790004103866_7f6306"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T15:21:43.959Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T15:21:43.959Z",
+      "manifestSha": "f21449ec2a46d0c95c82b9832b9099d3d3da80ccd8ea75b4beea81fbaa384c12",
+      "deliveredAt": "2026-09-21T15:21:43.959Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T15:21:43.959Z"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "leadId": "lead_1790004103866_de5470",
+      "missionId": "acq_1790004103866_7f6306",
+      "clientId": "client_de5470",
+      "name": "Tech Venture",
+      "email": null,
+      "phone": null,
+      "company": "UNKNOWN",
+      "requirements": "Build production microservice with layered validator and automated unit test suite",
+      "statedAmount": 70000
+    },
+    "bestCap": {
+      "capabilityId": "engineering.api-integration",
+      "category": "API Integration",
+      "name": "REST & GraphQL API Integration & Microservices",
+      "universe": "engineering",
+      "confidenceScore": 92,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "3-12 hours"
+    },
+    "estimatedINR": 70000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 35000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 35000,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_proposal.md",
+    "communicationAction": {
+      "channel": "telegram",
+      "recipient": "unspecified",
+      "message": "Commercial Proposal: Build production microservice with layered validator and aut | Amount: INR 70,000",
+      "missionId": "acq_1790004103866_7f6306",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "fceb3c691b0104f6ed4bfe13be52fc4f1d2fcda471173a0cd788469543f5962a"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130"
+        }
+      ]
+    },
+    "projectRecord": {
+      "projectId": "proj_acq_1790004103866_7f6306",
+      "missionId": "acq_1790004103866_7f6306",
+      "client": {
+        "name": "Tech Venture",
+        "email": null,
+        "phone": null,
+        "contact": "unspecified"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_scope.json",
+        "sha256": "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130"
+      },
+      "approvedTerms": {
+        "amount": 70000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 35000,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 35000,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130",
+        "fceb3c691b0104f6ed4bfe13be52fc4f1d2fcda471173a0cd788469543f5962a"
+      ]
+    },
+    "founderApproved": true,
+    "clientAccepted": true
+  }
+}

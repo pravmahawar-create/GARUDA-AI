@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-09-28T12:38:19.050Z",
+  "heroTimestampSec": 61,
+  "videoSource": "MASTER_16x9_V4_1.mp4",
+  "checks": {
+    "taxInvoice": true,
+    "sharmaHardware": true,
+    "gstin": true,
+    "cgst": true,
+    "sgst": true,
+    "grandTotal": true,
+    "invoiceNumber": true
+  },
+  "extractedOcrText": "TAX INVOICE\nNo: 0001\nDate: 2026-09-28\nBill To\nSharma Hardware\nGSTIN: 23AABCS1429B1ZB\nItem Qty Rate Amt\nCement - UltraTech 10 bag 395 33,950\nSubtotal33,950\nCGST (9%)3355.5\nSGST (9%)3355.5\nGRAND TOTALX4,661\nfour thousand six hundred sixty one Rupees Only\nThank you for your business!\n4,667 saki 4.661\n© Collect 4,661\nQR / bank bill par nahi dikh raha — Companies mein apni company ke \"Payment details” mein UPI ID ya\nbank account daalo. Iske baad QR + bank info automatically har bill (screen + PDF) par aa jayegi.\nPayment details set karo\n",
+  "passed": true
+}

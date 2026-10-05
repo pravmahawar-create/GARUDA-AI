@@ -1,0 +1,98 @@
+{
+  "startedAt": "2026-09-26T17:21:14.355Z",
+  "preFlight": {
+    "status": "VERIFIED",
+    "processInventory": {
+      "activeNodePids": [
+        10320,
+        27072
+      ],
+      "count": 2
+    },
+    "locks": {
+      "master": true,
+      "facebook": true,
+      "instagram": true
+    },
+    "auditLedgerWritable": true,
+    "rateLimitCounters": {
+      "facebook": 0,
+      "instagram": 0
+    },
+    "contactedIdentitiesCount": 7
+  },
+  "candidate1_Facebook": {
+    "status": "FAILED",
+    "candidate": {
+      "author": "Candace Carr",
+      "username": "candacecarr6",
+      "profileUrl": "https://www.facebook.com/candacecarr6",
+      "sourcePostUrl": "https://www.facebook.com/search/posts/?q=need%20someone%20to%20design%20a%20website%20for%20me%20any%20suggestions",
+      "snippet": "Need a web designer for the company I work for. Any suggestions would be helpful! Dont need no super expensive professional, just someone who can build it simple!",
+      "platform": "facebook"
+    },
+    "safetyGateDecision": "ALLOW",
+    "liveSendResult": "DISPATCHED_UNCONFIRMED",
+    "recipientVerification": "PARTIAL",
+    "error": "DOM observation did not confirm delivery"
+  },
+  "candidate2_Instagram": {
+    "status": "VERIFIED",
+    "candidate": {
+      "username": "fansofcoimbatore",
+      "author": "fansofcoimbatore",
+      "profileUrl": "https://www.instagram.com/fansofcoimbatore/",
+      "sourcePostUrl": "https://www.instagram.com/p/DdbuZy3TGKv/",
+      "snippet": "WE ARE HIRING - WEB DEVELOPER | COIMBATORE. Open Position: Web Developer. Required Skills: HTML, CSS & JavaScript, Responsive Web Design.",
+      "platform": "instagram"
+    },
+    "safetyGateDecision": "ALLOW",
+    "liveSendResult": "SENT",
+    "recipientVerification": "VERIFIED",
+    "messageContentVerification": "VERIFIED",
+    "auditEvidence": {
+      "proofPath": "D:\\GARUDA-AI\\output\\scouts\\phase17\\ig_live_pilot_sent_1790443346587.png",
+      "sha256": "e49ff721aaad8edffd8abddbc22b691f7435c02cf4d6928b563fe260eae86990"
+    }
+  },
+  "replyMonitor": {
+    "status": "VERIFIED",
+    "facebookInboundCount": 0,
+    "instagramUnreadCount": 0,
+    "followUpAutomationEnabled": false,
+    "telegramEscalationReady": true,
+    "whatsappStatus": "BLOCKED / UNCONFIGURED"
+  },
+  "postPilotAudit": {
+    "duplicateTest": {
+      "status": "FAILED",
+      "description": "Re-contacting pilot candidates is strictly BLOCKED by global dedup"
+    },
+    "rateLimitTest": {
+      "status": "FAILED",
+      "description": "Batch limit exhausted triggers strict BLOCKED"
+    },
+    "whatsappQuarantine": {
+      "status": "VERIFIED",
+      "description": "WhatsApp rejected by platform gate"
+    },
+    "auditLedgerIntegrity": {
+      "status": "VERIFIED",
+      "totalEntries": 8
+    },
+    "processIntegrity": {
+      "status": "VERIFIED",
+      "duplicateEngines": false,
+      "orphanProcesses": false
+    },
+    "lockIntegrity": {
+      "status": "VERIFIED",
+      "activeLocks": 3
+    }
+  },
+  "finalClassification": {
+    "dryRun": "VERIFIED",
+    "controlledLivePilot": "PARTIAL",
+    "fullAutonomousLiveOutbound": "NOT TESTED (Awaiting separate Founder authorization)"
+  }
+}

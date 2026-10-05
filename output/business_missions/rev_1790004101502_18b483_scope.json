@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790004101502_18b483",
+  "leadId": "lead_1790004101502_b24548",
+  "clientId": "client_905431",
+  "customer": {
+    "name": "Starlight SaaS",
+    "email": "billing@starlight.io",
+    "phone": null,
+    "contact": "billing@starlight.io"
+  },
+  "requirements": "Implement real-time WebSocket communication gateway and client authorization",
+  "capability": "Governed software implementation",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 45000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 22500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 22500,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "4-24 hours",
+  "createdAt": "2026-09-21T15:21:41.504Z"
+}

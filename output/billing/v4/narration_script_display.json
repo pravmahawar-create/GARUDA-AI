@@ -1,0 +1,121 @@
+[
+  {
+    "id": "scene_01_hook",
+    "name": "Hook: Billing App vs Custom Software",
+    "intent": "hook",
+    "display_text": "Billing apps toh bahut hain... lekin aapke business ke hisaab se customized software?",
+    "narrationEn": "There are plenty of billing apps... but software engineered specifically for your business?"
+  },
+  {
+    "id": "scene_02_problem",
+    "name": "Real Business Problem",
+    "intent": "problem",
+    "display_text": "Focus sirf bill printing par nahi... counter ka actual business workflow smoothly chalana hai.",
+    "narrationEn": "Focus is not just on printing bills... it is on driving your actual counter workflow smoothly."
+  },
+  {
+    "id": "scene_03_customer_gst",
+    "name": "GST Customer Entry & GSTIN Mode",
+    "intent": "live_demonstration",
+    "display_text": "Customer Sharma Hardware... aur yahan GSTIN add karte hi GST mode activate.",
+    "narrationEn": "Customer Sharma Hardware... and entering GSTIN activates verified GST invoice mode."
+  },
+  {
+    "id": "scene_04_items_calc",
+    "name": "Live Items & Real-Time GST Calculation",
+    "intent": "explanatory",
+    "display_text": "Cement item add kijiye... aur dekhiye real-time CGST aur SGST tax calculation.",
+    "narrationEn": "Add Cement item... and notice real-time CGST and SGST tax math updating automatically."
+  },
+  {
+    "id": "scene_05_offline",
+    "name": "Offline-First Proof",
+    "intent": "reassuring",
+    "display_text": "Internet chala bhi gaya na... billing rukti nahi. 100% offline-first indexed database.",
+    "narrationEn": "Even if the internet drops... billing does not stop. 100% offline-first indexed database."
+  },
+  {
+    "id": "scene_06_hero_gst_bill",
+    "name": "Actual GST Bill Generation: HERO MOMENT",
+    "intent": "feature_reveal",
+    "display_text": "Ab bill generate karte hain... aur ye dekhiye, actual GST Tax Invoice ready hai.",
+    "narrationEn": "Now generating the bill... and notice: the genuine GST Tax Invoice is ready."
+  },
+  {
+    "id": "scene_07_why_garuda",
+    "name": "Why GARUDA: Final Positioning",
+    "intent": "confident",
+    "display_text": "Yahi hai GARUDA ka difference: real working GST software, tailored for your business.",
+    "narrationEn": "This is the GARUDA difference: real working GST software, custom-tailored for your business."
+  },
+  {
+    "id": "scene_08_brand_cta",
+    "name": "GARUDA Brand Moment & CTA",
+    "intent": "cta",
+    "display_text": "Custom business software chahiye? Connect kijiye: garudaos.in",
+    "narrationEn": "Need custom business software? Connect at: garudaos.in"
+  },
+  {
+    "id": "m_scene_01_hook",
+    "name": "Master Hook: Problem vs Custom Engineering",
+    "intent": "hook",
+    "display_text": "Billing apps toh market mein bahut hain... lekin kya wo aapke business ke hisaab se bane hain?",
+    "narrationEn": "There are plenty of billing apps on the market... but are they engineered for your business?"
+  },
+  {
+    "id": "m_scene_02_workflow",
+    "name": "Workflow-First Architecture",
+    "intent": "problem",
+    "display_text": "GARUDA mein approach alag hai. Focus sirf slip nikalne par nahi, pure counter workflow ko streamline karne par hai.",
+    "narrationEn": "At GARUDA, the approach is different. Focus is not just printing slips, but streamlining your entire counter workflow."
+  },
+  {
+    "id": "m_scene_03_customer_gstin",
+    "name": "Customer & GSTIN Entry",
+    "intent": "discovery",
+    "display_text": "Customer select kijiye... Sharma Hardware... aur 15-digit GSTIN enter karte hi verified GST mode activate.",
+    "narrationEn": "Select customer... Sharma Hardware... and entering 15-digit GSTIN activates verified GST invoice mode."
+  },
+  {
+    "id": "m_scene_04_items",
+    "name": "Catalog Item Entry",
+    "intent": "live_demonstration",
+    "display_text": "Ab items add karte hain... Cement UltraTech 10 bags... rates aur units catalog se auto-populate hote hain.",
+    "narrationEn": "Now adding items... Cement UltraTech 10 bags... rates and units auto-populate from the catalog."
+  },
+  {
+    "id": "m_scene_05_gst_math",
+    "name": "Live Real-Time GST Calculation",
+    "intent": "result",
+    "display_text": "Yahan dekhiye: Subtotal ₹3,950... CGST 9% aur SGST 9% ka automatic tax breakup, Grand Total ₹4,661.",
+    "narrationEn": "Notice here: Subtotal ₹3,950... automatic CGST 9% and SGST 9% tax breakup, Grand Total ₹4,661."
+  },
+  {
+    "id": "m_scene_06_offline",
+    "name": "Offline-First Resilience",
+    "intent": "reassuring",
+    "display_text": "Aur agar counter par internet chala jaye? Koi chinta nahi. IndexedDB local architecture par poori billing live rehti hai.",
+    "narrationEn": "And what if internet drops at the counter? Zero worry. IndexedDB local architecture keeps billing fully active."
+  },
+  {
+    "id": "m_scene_07_hero_bill",
+    "name": "Actual GST Bill Hero Shot",
+    "intent": "feature_reveal",
+    "display_text": "Ab bill generate karte hain... aur ye dekhiye: complete Tax Invoice, customer GSTIN aur thermal print format ke saath ready.",
+    "narrationEn": "Now generating the bill... and notice: complete Tax Invoice, customer GSTIN, and thermal print format ready."
+  },
+  {
+    "id": "m_scene_08_differentiation",
+    "name": "Why GARUDA: The Architecture Answer",
+    "intent": "confident",
+    "display_text": "GARUDA ka difference yahi hai. Hum ready-made generic templates nahi bechte — aapke business logic ke according engineer karte hain.",
+    "narrationEn": "This is the GARUDA difference. We do not sell generic off-the-shelf templates — we engineer around your exact business logic."
+  },
+  {
+    "id": "m_scene_09_brand_close",
+    "name": "GARUDA Outro & CTA",
+    "intent": "cta",
+    "display_text": "Aapke business ke liye custom software aur automation chahiye? Aaj hi connect kijiye: garudaos.in",
+    "narrationEn": "Need custom software and automation for your business? Connect today at: garudaos.in"
+  }
+]

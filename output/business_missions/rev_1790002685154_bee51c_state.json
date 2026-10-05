@@ -1,0 +1,152 @@
+{
+  "missionId": "rev_1790002685154_bee51c",
+  "leadId": "lead_1790002685154_455ed5",
+  "clientId": "client_71632b",
+  "projectId": null,
+  "commercialStatus": "AWAITING_FOUNDER",
+  "currency": "INR",
+  "proposedAmount": 100000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790002685154_bee51c_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685154_bee51c_scope.json",
+      "sizeBytes": 876,
+      "sha256": "f801ce11e147c8f664375703512c3d5724e49c44fb39036a5cca4f3ad8d1f44a"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790002685154_bee51c_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685154_bee51c_proposal.md",
+      "sizeBytes": 834,
+      "sha256": "5f0d9874e7f314d66c30c6475257b73f6f34c03221fb90d1982281b61efbb46b"
+    }
+  ],
+  "confidence": 0.65,
+  "requiresFounder": true,
+  "nextAction": {
+    "action": "APPROVE_PROPOSAL_DISPATCH",
+    "requiresFounder": true,
+    "reason": "Founder authorization required before external proposal transmission",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "contact@enterprisecore.com",
+      "message": "Commercial Proposal: Develop mission-critical data migration script with zero dat | Amount: INR 1,00,000",
+      "missionId": "rev_1790002685154_bee51c",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "5f0d9874e7f314d66c30c6475257b73f6f34c03221fb90d1982281b61efbb46b"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "f801ce11e147c8f664375703512c3d5724e49c44fb39036a5cca4f3ad8d1f44a"
+        }
+      ]
+    }
+  },
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T14:58:05.154Z",
+      "leadId": "lead_1790002685154_455ed5",
+      "customer": "Enterprise Core"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T14:58:05.154Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T14:58:05.155Z",
+      "bestCapability": "Governed software implementation",
+      "matchScore": 35
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T14:58:05.156Z",
+      "scopeSha256": "f801ce11e147c8f664375703512c3d5724e49c44fb39036a5cca4f3ad8d1f44a"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T14:58:05.159Z",
+      "proposedAmount": 100000,
+      "currency": "INR",
+      "proposalSha256": "5f0d9874e7f314d66c30c6475257b73f6f34c03221fb90d1982281b61efbb46b"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-21T14:58:05.159Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-21T14:58:05.159Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "name": "Enterprise Core",
+      "email": "contact@enterprisecore.com",
+      "requirements": "Develop mission-critical data migration script with zero data loss guarantee",
+      "budget": 100000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "estimatedINR": 100000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 50000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 50000,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685154_bee51c_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685154_bee51c_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "contact@enterprisecore.com",
+      "message": "Commercial Proposal: Develop mission-critical data migration script with zero dat | Amount: INR 1,00,000",
+      "missionId": "rev_1790002685154_bee51c",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "5f0d9874e7f314d66c30c6475257b73f6f34c03221fb90d1982281b61efbb46b"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "f801ce11e147c8f664375703512c3d5724e49c44fb39036a5cca4f3ad8d1f44a"
+        }
+      ]
+    }
+  }
+}

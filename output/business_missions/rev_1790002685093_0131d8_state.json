@@ -1,0 +1,221 @@
+{
+  "missionId": "rev_1790002685093_0131d8",
+  "leadId": "lead_1790002685093_01d582",
+  "clientId": "client_5c8c89",
+  "projectId": "proj_rev_1790002685093_0131d8",
+  "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+  "currency": "INR",
+  "proposedAmount": 80000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790002685093_0131d8_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685093_0131d8_scope.json",
+      "sizeBytes": 861,
+      "sha256": "7b28ee22080a77c1be64cfac355e5f86632b154e00dd67550778baa02d94aa23"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790002685093_0131d8_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685093_0131d8_proposal.md",
+      "sizeBytes": 836,
+      "sha256": "daec3bc22359c64bacbab876b78ac381872671e67431bae3c3d0a1037280ec5d"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790002685093_0131d8_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685093_0131d8_deliverable.js",
+      "sizeBytes": 395,
+      "sha256": "dfecda455fee02a96dcb8b720ea5a92ebca7e4d53245670cc7a14104d17c00bb"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790002685093_0131d8_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685093_0131d8_DELIVERY_MANIFEST.md",
+      "sizeBytes": 271,
+      "sha256": "585cd8390e30c52d4d2a2a1627c89df856dcebea960b31057b4c7da7e5b6e760"
+    }
+  ],
+  "confidence": 0.7,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_PAYMENT_SETTLEMENT",
+    "requiresFounder": false,
+    "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+  },
+  "state": "AWAITING_PAYMENT",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T14:58:05.093Z",
+      "leadId": "lead_1790002685093_01d582",
+      "customer": "Apex Holdings"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T14:58:05.093Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T14:58:05.094Z",
+      "bestCapability": "Governed software implementation",
+      "matchScore": 35
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T14:58:05.095Z",
+      "scopeSha256": "7b28ee22080a77c1be64cfac355e5f86632b154e00dd67550778baa02d94aa23"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T14:58:05.096Z",
+      "proposedAmount": 80000,
+      "currency": "INR",
+      "proposalSha256": "daec3bc22359c64bacbab876b78ac381872671e67431bae3c3d0a1037280ec5d"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T14:58:05.096Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T14:58:05.096Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T14:58:05.096Z",
+      "acceptedAt": "2026-09-21T14:58:05.096Z",
+      "signer": "Apex Holdings"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T14:58:05.096Z",
+      "projectId": "proj_rev_1790002685093_0131d8"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T14:58:05.125Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T14:58:05.125Z",
+      "manifestSha": "585cd8390e30c52d4d2a2a1627c89df856dcebea960b31057b4c7da7e5b6e760",
+      "deliveredAt": "2026-09-21T14:58:05.125Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T14:58:05.125Z"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "name": "Apex Holdings",
+      "email": "director@apex.com",
+      "requirements": "Deliver custom executive dashboard with real-time analytics and data visualization",
+      "budget": 80000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "estimatedINR": 80000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 40000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 40000,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685093_0131d8_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685093_0131d8_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "director@apex.com",
+      "message": "Commercial Proposal: Deliver custom executive dashboard with real-time analytics  | Amount: INR 80,000",
+      "missionId": "rev_1790002685093_0131d8",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "daec3bc22359c64bacbab876b78ac381872671e67431bae3c3d0a1037280ec5d"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "7b28ee22080a77c1be64cfac355e5f86632b154e00dd67550778baa02d94aa23"
+        }
+      ]
+    },
+    "projectRecord": {
+      "projectId": "proj_rev_1790002685093_0131d8",
+      "missionId": "rev_1790002685093_0131d8",
+      "client": {
+        "name": "Apex Holdings",
+        "email": "director@apex.com",
+        "phone": null,
+        "contact": "director@apex.com"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685093_0131d8_scope.json",
+        "sha256": "7b28ee22080a77c1be64cfac355e5f86632b154e00dd67550778baa02d94aa23"
+      },
+      "approvedTerms": {
+        "amount": 80000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 40000,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 40000,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "7b28ee22080a77c1be64cfac355e5f86632b154e00dd67550778baa02d94aa23",
+        "daec3bc22359c64bacbab876b78ac381872671e67431bae3c3d0a1037280ec5d"
+      ]
+    },
+    "founderApproved": true,
+    "clientAccepted": true
+  }
+}

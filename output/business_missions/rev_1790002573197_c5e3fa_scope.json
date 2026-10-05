@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790002573197_c5e3fa",
+  "leadId": "lead_1790002573197_d654cf",
+  "clientId": "client_aa6b60",
+  "customer": {
+    "name": "Apex Holdings",
+    "email": "director@apex.com",
+    "phone": null,
+    "contact": "director@apex.com"
+  },
+  "requirements": "Deliver custom executive dashboard with real-time analytics and data visualization",
+  "capability": "Governed software implementation",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 80000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 40000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 40000,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "4-24 hours",
+  "createdAt": "2026-09-21T14:56:13.198Z"
+}

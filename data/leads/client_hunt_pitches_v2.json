@@ -1,0 +1,125 @@
+{
+  "version": "client_hunt_pitches_v2",
+  "createdAt": "2026-10-01T16:25:00.000Z",
+  "status": "APPROVED_BY_FOUNDER_Aadesh_2026-10-01",
+  "founderAadesh": "sab 8 ko premium approach karo, mobile number/emails/dms 3-4 tier attack karo, personal hot list feel, unke kaam ke hisab se rates bejho",
+  "rateCardSource": "frontend/src/pages/ServiceLanding.jsx baseINR/baseUSD + PricingPage.jsx SaaS tiers (2026-10-01 verified)",
+  "rateCard": {
+    "website-development": { "inr": 30000, "usd": 360 },
+    "business-automation": { "inr": 25000, "usd": 300 },
+    "custom-ai-development": { "inr": 45000, "usd": 550 },
+    "ai-agent-development": { "inr": 48000, "usd": 580 },
+    "rag-development": { "inr": 45000, "usd": 550 },
+    "custom-software-development": { "inr": 50000, "usd": 600 },
+    "saas-mvp-development": { "inr": 50000, "usd": 600 },
+    "whatsapp-telegram-ai-bots": { "inr": 20000, "usd": 250 },
+    "saasPlans": { "sovereign": 0, "creator": 1499, "sme": 4999, "enterprise": 19999 },
+    "terms": "Fixed-price, 50% milestone governance"
+  },
+  "preFlight": {
+    "checkedAt": "2026-10-01T16:23:00.000Z",
+    "urls": ["clienthunt", "nisargacare", "trivanta", "luxuryrevamp", "ukcollab", "maxval", "dojo", "mohit", "ashok"],
+    "verdict": "ALL PASS (200 OK, distinct title, no homepage collapse, via pre-outreach-verifier.js)"
+  },
+  "contacts": {
+    "1": { "email": "nisargacare1@gmail.com", "whatsapp": "+919731256246", "phone": "+919731256246", "source": "nisargacare.com footer + post caption 'WhatsApp number is in our website'", "igUser": "avintvnews123" },
+    "2": { "email": "trivantahospitality@gmail.com", "source": "their own hiring post caption (portfolio email)", "igUser": "thecrystanova", "igBrand": "thetrivanta" },
+    "3": { "igUser": "ms.tasties_", "source": "post asks DM only" },
+    "4": { "email": "socialmedia2evolve@outlook.com", "source": "their own post 'email me a portfolio'", "igUser": "socialmedia2evolve" },
+    "5": { "email": "sales@maxval.com", "altEmail": "info@maxval.com", "source": "maxval.com contact page", "linkedin": "https://www.linkedin.com/in/pronojitsingh/" },
+    "6": { "linkedin": "https://www.linkedin.com/in/priyanshu-thakur-180094304/", "source": "LinkedIn signal only" },
+    "7": { "linkedin": "https://www.linkedin.com/in/mohit-jain-264a7315b/", "source": "LinkedIn signal only" },
+    "8": { "linkedin": "https://www.linkedin.com/in/vardhankore/", "source": "LinkedIn signal only" }
+  },
+  "pitches": [
+    {
+      "rank": 1,
+      "lead": "Nisarga Care (nisargacare.com) — Bangalore elder care since 1989",
+      "tier": "HOT_EXPLICIT_REQUEST",
+      "rateLines": ["SEO-Safe Redesign (URL-preserving + 301 + GSC monitoring): ₹30,000 (~$360), 50% milestone", "Optional: 24x7 WhatsApp AI receptionist bot: ₹20,000 (~$250)"],
+      "tiers": [
+        { "channel": "whatsapp", "target": "+919731256246", "why": "their post explicitly says WhatsApp us" },
+        { "channel": "email", "target": "nisargacare1@gmail.com" },
+        { "channel": "instagram_dm", "target": "avintvnews123" }
+      ],
+      "whatsappMessage": "Namaste Nisarga Care team! 🙏 GARUDA OS here — saw your post: redesign nisargacare.com WITHOUT disturbing the Google index. That exact constraint is our specialty.\n\nFree 3-point audit of your live site:\n1) Your <title> tag is ~250 keywords — Google cuts at ~60, so 'Nisarga Care' never shows in SERPs (over-optimization risk on medical/YMYL sites).\n2) Homepage repeats keyword blocks — exactly what Google Helpful Content demotes for healthcare.\n3) Our fix: same URLs + 301 map + Search Console monitoring — every ranking, blog & backlink stays intact.\n\nScope & rate (transparent): SEO-safe redesign ₹30,000 fixed, 50% milestone. Optional WhatsApp AI receptionist ₹20,000.\n\n1989 ka trust aapka — design hamara kaam. Scoped chat: https://www.garudaos.in/chat?ref=nisargacare\n— Praveen Mahawar, Founder, GARUDA OS | praveen@garudaos.in",
+      "igMessage": "Hi! Saw your post about redesigning nisargacare.com without touching the Google index — that exact constraint is our specialty. Quick audit: your title tag is ~250 chars (Google cuts at 60), homepage keyword-blocks risk Helpful Content demotions. We migrate with URL preservation + 301s so all rankings survive. Fixed ₹30,000, 50% milestone. Scope: https://www.garudaos.in/chat?ref=nisargacare"
+    },
+    {
+      "rank": 2,
+      "lead": "Trivanta Hospitality Group — premium/luxury hospitality website",
+      "tier": "HOT",
+      "rateLines": ["Luxury website + inquiry/booking funnel: ₹30,000 (~$360), 50% milestone", "Optional booking automation: ₹25,000 (~$300)"],
+      "tiers": [
+        { "channel": "email", "target": "trivantahospitality@gmail.com", "why": "their post invites portfolio emails" },
+        { "channel": "instagram_dm", "target": "thecrystanova" }
+      ],
+      "emailSubject": "Trivanta Hospitality — luxury website blueprint + fixed rate (₹30,000)",
+      "igMessage": "Hi! Saw your post for Trivanta Hospitality Group — premium, luxury website. Two things agencies miss: (1) luxury is decided in the first 2 seconds — we art-direct around YOUR property photography, no stock hotel templates; (2) OTA commissions run 15-25% — we build the direct inquiry/booking funnel into the site so guests book YOU. Fixed ₹30,000, 50% milestone. Portfolio + scope: https://www.garudaos.in/chat?ref=trivanta"
+    },
+    {
+      "rank": 3,
+      "lead": "ms.tasties_ — multi-site owner (luxury branding, Shopify, restaurants)",
+      "tier": "HOT",
+      "rateLines": ["Per-site custom design: ₹30,000 (~$360)", "Conversion automation add-on: ₹25,000 (~$300)", "Long-term: Creator Pro ₹1,499/mo"],
+      "tiers": [{ "channel": "instagram_dm", "target": "ms.tasties_", "why": "post says DM portfolio + pricing + turnaround" }],
+      "igMessage": "Hi! Saw your post — 'CREATIVE not basic', luxury branding, Shopify, restaurants, long-term partner, and 'no 'I can do it' without receipts'. Fair — so here are receipts: every GARUDA build gets its own art direction (no templates), cinematic scroll showcases, conversion-first checkout, SHA-256 verified deploys.\n\nPricing (transparent, fixed): per-site design ₹30,000 · conversion automation ₹25,000 · 50% milestone, you own 100% code.\nTurnaround: production live in days, not months.\n\nSend us the site you think looks 'basic' — free concrete redesign direction before you decide. Scope: https://www.garudaos.in/chat?ref=luxuryrevamp"
+    },
+    {
+      "rank": 4,
+      "lead": "Jack / Social Media 2 Evolve (UK) — white-label delivery partner",
+      "tier": "WARM",
+      "rateLines": ["Website builds from ₹30,000 (~$360 / ~£280) — white-label margin for you", "SaaS MVP builds ₹50,000 (~$600)"],
+      "tiers": [
+        { "channel": "email", "target": "socialmedia2evolve@outlook.com", "why": "their post invites portfolio emails" },
+        { "channel": "instagram_dm", "target": "socialmedia2evolve" }
+      ],
+      "emailSubject": "Silent delivery bench for your UK client projects — portfolio + rates",
+      "igMessage": "Hi Jack! Saw your post looking for a UK-based web dev collaborator. We run as your silent white-label bench: NDA-ready, UK-hours overlap for same-day feedback, you keep client + margin, we ship design+build with deployment proof per release. Rates: websites from ₹30,000 (~£280) so your UK margin stays healthy; SaaS MVPs ₹50,000. One test project first. Scope: https://www.garudaos.in/chat?ref=ukcollab"
+    },
+    {
+      "rank": 5,
+      "lead": "Pronojit Singh — Global Head of Marketing, MaxVal Group (hiring Senior Web Developer)",
+      "tier": "WARM",
+      "rateLines": ["Dedicated build bench vs ₹12-18L/yr hire: website ₹30,000 · automation ₹25,000 · custom software ₹50,000 per project"],
+      "tiers": [
+        { "channel": "linkedin_dm", "target": "https://www.linkedin.com/in/pronojitsingh/" },
+        { "channel": "email", "target": "sales@maxval.com", "why": "official MaxVal sales channel, subject marks ATTN Pronojit" }
+      ],
+      "emailSubject": "ATTN Pronojit Singh — senior web dev bench vs new hire (starts this week)",
+      "linkedinMessage": "Hi Pronojit — saw MaxVal is expanding the web team. Quick reframe before the hiring loop starts: for project-based web delivery, a dedicated build partner beats a new full-time hire — start this week vs 6-8 weeks sourcing, scale per sprint vs fixed ₹12-18L cost between projects. We run as an invisible delivery unit: design + full-stack + QA with cryptographic deployment proof per release. Rates: websites ₹30,000 · automation ₹25,000 · custom software ₹50,000 (fixed, 50% milestone). Worth 15 minutes vs your hiring plan? https://www.garudaos.in/chat?ref=maxval"
+    },
+    {
+      "rank": 6,
+      "lead": "Ashutosh Nandi — Founder, Dojo Eats (hiring freelance Shopify developer)",
+      "tier": "WARM",
+      "rateLines": ["Shopify/e-com build: ₹30,000 (~$360)", "Order automation / AI bots: ₹20,000-25,000"],
+      "tiers": [{ "channel": "linkedin_dm", "target": "https://www.linkedin.com/in/priyanshu-thakur-180094304/" }],
+      "linkedinMessage": "Hi Ashutosh — saw Dojo Eats is hiring a freelance Shopify developer. For a food D2C brand the store IS the margin: every extra second at mobile checkout costs real orders. We ship conversion-first builds, custom brand design, launch QA (payment/shipping/tax tested end-to-end) — live in days. Fixed rates: store build ₹30,000 · order automation ₹20,000-25,000, 50% milestone, code 100% yours. Scope: https://www.garudaos.in/chat?ref=dojo"
+    },
+    {
+      "rank": 7,
+      "lead": "Mohit Jain — Founder (hiring freelance web developer)",
+      "tier": "WARM",
+      "rateLines": ["Website build: ₹30,000 (~$360), fixed scope"],
+      "tiers": [{ "channel": "linkedin_dm", "target": "https://www.linkedin.com/in/mohit-jain-264a7315b/" }],
+      "linkedinMessage": "Hi Mohit — saw you're hiring a freelance web developer. Straight comparison: freelancers vanish mid-project (you re-hire twice), agencies lock you into retainers. We're in between — fixed-scope builds, deployment proof per release, you own 100% code from day one. Rate: website ₹30,000 fixed, 50% milestone, timeline locked same-day on scope. Tell us what needs building: https://www.garudaos.in/chat?ref=mohit"
+    },
+    {
+      "rank": 8,
+      "lead": "Ashok Vardhan Kore — friend needs a web developer (referral path)",
+      "tier": "WARM",
+      "rateLines": ["Website build: ₹30,000 (~$360)"],
+      "tiers": [{ "channel": "linkedin_dm", "target": "https://www.linkedin.com/in/vardhankore/" }],
+      "linkedinMessage": "Hi Ashok — saw your post that a friend is looking for a web developer. Happy to point them right either way. If they want it built properly (custom design, fast delivery, code they fully own), we take fixed-scope projects: website ₹30,000 fixed, 50% milestone, shipped in days with deployment proof. Have them share scope here: https://www.garudaos.in/chat?ref=ashok"
+    }
+  ],
+  "dispatchRules": [
+    "Founder aadesh 2026-10-01 approves full multi-tier dispatch for all 8",
+    "Pre-flight PASS recorded for every URL before any send",
+    "Human-paced: 45-90s between sends per channel, max 4 per channel per run",
+    "GARUDA brand + praveen@garudaos.in only — zero founder personal number",
+    "Emails: Golden Outreach Doctrine (600px responsive, dark theme, industry palette)",
+    "No third-party brand pollution, no fabrications, proof screenshot per send"
+  ]
+}

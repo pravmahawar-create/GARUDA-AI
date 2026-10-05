@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GARUDA AUTONOMOUS REVENUE HUNTER - CLOUD 24/7 DAEMON
  * Runs on Render Cloud independently of Founder's laptop.
  * Survives laptop shutdown, network disconnects, and container restarts.
@@ -10,7 +10,7 @@ require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 
 const AutonomousRevenueHunter = require('../../social-engine/autonomousRevenueHunter');
 const TelegramAlertService = require('../../social-engine/notifications/telegramAlertService');
-const { acquireProcessLock } = require('./unified-lead-guard');
+const { acquireProcessLock, isScoutFrozen } = require('./unified-lead-guard');
 
 const LOG_FILE = path.join(__dirname, '..', '..', 'logs', 'social-engine.log');
 const INTERVAL_MINUTES = parseInt(process.env.GARUDA_HUNTER_INTERVAL_MINUTES || '60', 10);
@@ -26,8 +26,12 @@ function log(msg) {
 }
 
 async function startCloudHunter() {
+  if (isScoutFrozen()) {
+    log('🧊 Revenue Hunter FROZEN by Founder until further order. Exiting cleanly.');
+    process.exit(0);
+  }
   log('================================================================');
-  log('🦅 GARUDA AUTONOMOUS REVENUE HUNTER DAEMON INITIALIZING');
+  log('ðŸ¦… GARUDA AUTONOMOUS REVENUE HUNTER DAEMON INITIALIZING');
   log('Runtime: Render Cloud (24/7 Independent of Laptop Power State)');
   log(`Cycle Frequency: Every ${INTERVAL_MINUTES} minutes`);
   log('Scope: 20+ Software Categories (Web, Apps, SaaS, MVPs, Automation, AI, APIs)');
@@ -37,7 +41,7 @@ async function startCloudHunter() {
   // Single-instance protection
   const lock = acquireProcessLock('revenue_hunter_cloud_daemon');
   if (!lock.acquired) {
-    log(`⚠️ Another Revenue Hunter daemon is already running under PID ${lock.existingPid}. Terminating duplicate.`);
+    log(`âš ï¸ Another Revenue Hunter daemon is already running under PID ${lock.existingPid}. Terminating duplicate.`);
     process.exit(0);
   }
 
@@ -51,8 +55,8 @@ async function startCloudHunter() {
   try {
     await telegram.sendAlert(
       'INFO',
-      '🦅 Autonomous Revenue Hunter Live on Render Cloud',
-      `Hunter running 24/7 in cloud.\n• Multi-Scout: Active (Search, Conversation, Social)\n• 20+ Categories: Websites, SaaS, MVPs, Mobile Apps, Automation, APIs\n• Laptop Independence: 100% (Continues when laptop is closed)`
+      'ðŸ¦… Autonomous Revenue Hunter Live on Render Cloud',
+      `Hunter running 24/7 in cloud.\nâ€¢ Multi-Scout: Active (Search, Conversation, Social)\nâ€¢ 20+ Categories: Websites, SaaS, MVPs, Mobile Apps, Automation, APIs\nâ€¢ Laptop Independence: 100% (Continues when laptop is closed)`
     );
   } catch (err) {
     log(`Telegram boot notice note: ${err.message}`);
@@ -92,7 +96,7 @@ async function startCloudHunter() {
 
   // Graceful shutdown handlers
   const shutdown = () => {
-    log('🛑 Graceful shutdown signal received. Stopping cloud hunter & content schedulers...');
+    log('ðŸ›‘ Graceful shutdown signal received. Stopping cloud hunter & content schedulers...');
     clearInterval(contentInterval);
     hunter.stopScheduler();
     setTimeout(() => process.exit(0), 500);

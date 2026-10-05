@@ -1,0 +1,125 @@
+{
+  "startTimestamp": "2026-09-29T18:12:17.474Z",
+  "platform": "instagram",
+  "stateTransitions": [
+    {
+      "from": "INITIALIZING",
+      "to": "ACQUIRING_LOCK",
+      "timestamp": "2026-09-29T18:12:17.481Z",
+      "reason": "Acquiring process lock for audit cycle"
+    },
+    {
+      "from": "ACQUIRING_LOCK",
+      "to": "LAUNCHING_BROWSER",
+      "timestamp": "2026-09-29T18:12:17.483Z",
+      "reason": "Allocating browser sandbox context"
+    },
+    {
+      "from": "LAUNCHING_BROWSER",
+      "to": "AUTH_CHECK",
+      "timestamp": "2026-09-29T18:12:17.483Z",
+      "reason": "Evaluating platform session telemetry"
+    },
+    {
+      "from": "AUTH_CHECK",
+      "to": "READY",
+      "timestamp": "2026-09-29T18:12:17.483Z",
+      "reason": "Platform session verified and ready"
+    },
+    {
+      "from": "READY",
+      "to": "DISCOVERING",
+      "timestamp": "2026-09-29T18:12:17.483Z",
+      "reason": "Querying hashtag stream #needwebsite"
+    },
+    {
+      "from": "DISCOVERING",
+      "to": "EXTRACTING",
+      "timestamp": "2026-09-29T18:12:17.483Z",
+      "reason": "Isolating candidate post container"
+    },
+    {
+      "from": "EXTRACTING",
+      "to": "NORMALIZING",
+      "timestamp": "2026-09-29T18:12:17.483Z",
+      "reason": "Enforcing unified GARUDA lead schema"
+    },
+    {
+      "from": "NORMALIZING",
+      "to": "QUALIFYING",
+      "timestamp": "2026-09-29T18:12:17.484Z",
+      "reason": "Executing semantic buyer intent scoring"
+    },
+    {
+      "from": "QUALIFYING",
+      "to": "QUEUED",
+      "timestamp": "2026-09-29T18:12:17.485Z",
+      "reason": "Enqueuing qualified lead into governance queue"
+    },
+    {
+      "from": "QUEUED",
+      "to": "AWAITING_APPROVAL",
+      "timestamp": "2026-09-29T18:12:17.486Z",
+      "reason": "Outreach locked under human approval gate (NO DISPATCH)"
+    },
+    {
+      "from": "AWAITING_APPROVAL",
+      "to": "IDLE",
+      "timestamp": "2026-09-29T18:12:17.486Z",
+      "reason": "Audit discovery cycle finished; outreach parked awaiting human approval"
+    },
+    {
+      "from": "IDLE",
+      "to": "STOPPING",
+      "timestamp": "2026-09-29T18:12:17.486Z",
+      "reason": "Releasing sandbox resources"
+    },
+    {
+      "from": "STOPPING",
+      "to": "STOPPED",
+      "timestamp": "2026-09-29T18:12:17.487Z",
+      "reason": "Session closed cleanly"
+    }
+  ],
+  "extractedSample": {
+    "author": {
+      "name": "Apex Innovations",
+      "username": "apexinnovations",
+      "profileUrl": "https://www.instagram.com/apexinnovations/",
+      "confidence": 90
+    },
+    "postUrl": "https://www.instagram.com/p/sample_audit_post/",
+    "caption": "We are expanding our retail business and looking for a web developer to build our ecommerce platform in React. Paid gig.",
+    "confidence": 90,
+    "status": "VERIFIED"
+  },
+  "normalizedLead": {
+    "leadId": "lead_4048cb17bedddeff",
+    "platform": "instagram",
+    "name": "Apex Innovations",
+    "username": "apexinnovations",
+    "profileUrl": "https://www.instagram.com/apexinnovations/",
+    "sourcePostUrl": "https://www.instagram.com/p/sample_audit_post/",
+    "sourceText": "We are expanding our retail business and looking for a web developer to build our ecommerce platform in React. Paid gig.",
+    "intentSignals": [
+      "ECOMMERCE_DEVELOPMENT"
+    ],
+    "confidence": 90,
+    "status": "VERIFIED",
+    "discoveredAt": "2026-09-29T18:12:17.484Z"
+  },
+  "qualificationResult": {
+    "qualified": true,
+    "signals": [
+      "HIRING_DEVELOPER",
+      "BUDGET_MENTIONED"
+    ],
+    "confidence": 60,
+    "summary": "QUALIFIED (Score: 60)"
+  },
+  "queueStatus": "READY_FOR_DISPATCH",
+  "cleanupStatus": "CLEAN",
+  "lockStatus": "RELEASED",
+  "endTimestamp": "2026-09-29T18:12:17.488Z",
+  "success": true
+}

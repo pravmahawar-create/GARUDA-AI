@@ -1,0 +1,281 @@
+{
+  "leadId": "lead_1790368602633_f21b04",
+  "missionId": "acq_1790368602633_842f3b",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-25T20:36:42.631Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Payment Forger",
+    "email": "forger@untrusted.com",
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "forger@untrusted.com"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Deliver distributed enterprise ledger infrastructure",
+  "intent": {
+    "category": "MEDIUM_INTENT",
+    "confidence": 0.5,
+    "signals": [
+      "TIMELINE_INDICATED"
+    ],
+    "reason": "General inquiry"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-25T20:36:42.671Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "UNKNOWN",
+    "matchedCapabilities": [],
+    "bestCapability": null,
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U11 Business"
+    ],
+    "gaps": [
+      "Requested capability is not supported by GARUDA registry"
+    ],
+    "confidence": 0
+  },
+  "valueEstimation": {
+    "status": "UNKNOWN",
+    "estimatedINR": null,
+    "proposedAmount": 0,
+    "currency": "INR",
+    "source": "source_evidence_missing",
+    "confidence": 0
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": null,
+    "proposedAmount": 25000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Deliver distributed enterprise ledger infrastructure",
+    "clarificationQuestions": [
+      "What is your allocated budget range for this engagement?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Deliver distributed enterprise ledger infrastructure",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790368602633_842f3b_proposal.md",
+    "proposalSha256": "30c0cbddd6ae61a8821b21a36d1dea818024dddd8a278c5171349756296b38b1",
+    "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+  },
+  "founderGovernance": {
+    "requiresFounder": true,
+    "status": "AWAITING_FOUNDER_APPROVAL",
+    "dossier": {
+      "whyThisLead": "Intent: MEDIUM_INTENT (50% confidence). Channel: Direct. Signals: TIMELINE_INDICATED",
+      "whatClientWants": "Deliver distributed enterprise ledger infrastructure",
+      "whatGarudaCanDeliver": "Matched: Custom Software Engineering (Coverage: UNKNOWN). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Deliver distributed enterprise ledger infrastructure; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 25,000 (Milestones: 1)",
+      "risks": [
+        "Requested capability is not supported by GARUDA registry",
+        "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790368602633_842f3b_proposal.md",
+          "sha256": "30c0cbddd6ae61a8821b21a36d1dea818024dddd8a278c5171349756296b38b1"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "FOLLOWUP_READY",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": null,
+    "history": []
+  },
+  "commercialStatus": "AWAITING_FOUNDER",
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-25T20:36:42.633Z",
+      "leadId": "lead_1790368602633_f21b04"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-25T20:36:42.634Z",
+      "intentCategory": "MEDIUM_INTENT",
+      "signals": [
+        "TIMELINE_INDICATED"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-25T20:36:42.634Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-25T20:36:42.638Z",
+      "proposalSha256": "30c0cbddd6ae61a8821b21a36d1dea818024dddd8a278c5171349756296b38b1"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-25T20:36:42.638Z"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-25T20:36:42.670Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-25T20:36:42.671Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790368602633_842f3b_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790368602633_842f3b_proposal.md",
+      "sizeBytes": 856,
+      "sha256": "30c0cbddd6ae61a8821b21a36d1dea818024dddd8a278c5171349756296b38b1"
+    }
+  ],
+  "communicationAction": {
+    "channel": "email",
+    "recipient": "forger@untrusted.com",
+    "message": "Commercial Proposal: Deliver distributed enterprise ledger infrastructure | Proposed: INR 25,000",
+    "missionId": "acq_1790368602633_842f3b",
+    "requiresFounder": true,
+    "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+    "executionStatus": "REQUIRES_FOUNDER",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "30c0cbddd6ae61a8821b21a36d1dea818024dddd8a278c5171349756296b38b1"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-muhf8n4o-ac997cd9",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Deliver distributed enterprise ledger infrastructure",
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "contact": "forger@untrusted.com",
+      "budget": null,
+      "timeline": "3-7 business days",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-25T20:36:42.631Z",
+        "summary": "Direct (direct / none)"
+      },
+      "isTest": false,
+      "environment": "production"
+    },
+    "capAssessment": {
+      "coverage": "UNKNOWN",
+      "matchedCapabilities": [],
+      "bestCapability": null,
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U11 Business"
+      ],
+      "gaps": [
+        "Requested capability is not supported by GARUDA registry"
+      ],
+      "confidence": 0
+    },
+    "valEstimation": {
+      "status": "UNKNOWN",
+      "estimatedINR": null,
+      "proposedAmount": 0,
+      "currency": "INR",
+      "source": "source_evidence_missing",
+      "confidence": 0
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+        "amountINR": 25000,
+        "percentage": 100
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790368602633_842f3b_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "forger@untrusted.com",
+      "message": "Commercial Proposal: Deliver distributed enterprise ledger infrastructure | Proposed: INR 25,000",
+      "missionId": "acq_1790368602633_842f3b",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "30c0cbddd6ae61a8821b21a36d1dea818024dddd8a278c5171349756296b38b1"
+        }
+      ]
+    }
+  }
+}

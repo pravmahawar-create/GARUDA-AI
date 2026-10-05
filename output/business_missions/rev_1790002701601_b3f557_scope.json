@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790002701601_b3f557",
+  "leadId": "lead_1790002701667_a41e00",
+  "clientId": "client_c2f287",
+  "customer": {
+    "name": "Enterprise Core Infrastructure Ltd",
+    "email": "procurement@enterprisecore.in",
+    "phone": "+919876543210",
+    "contact": "procurement@enterprisecore.in"
+  },
+  "requirements": "Design and implement autonomous API gateway and forensic event reconciliation pipeline with HMAC cryptographic verification",
+  "capability": "Governed software implementation",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 85000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 42500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 42500,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "4-24 hours",
+  "createdAt": "2026-09-21T14:58:21.668Z"
+}

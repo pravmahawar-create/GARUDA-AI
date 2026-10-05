@@ -1,0 +1,548 @@
+{
+  "leadId": "lead_1790004103866_de5470",
+  "missionId": "acq_1790004103866_7f6306",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:43.866Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Tech Venture",
+    "email": null,
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "cto@venture.test"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Build production microservice with layered validator and automated unit test suite",
+  "intent": {
+    "category": "HIGH_INTENT",
+    "confidence": 0.85,
+    "signals": [
+      "TECH_KEYWORDS:build,service",
+      "BUDGET_INDICATED"
+    ],
+    "reason": "Detailed technical scope with concrete deliverable indicators"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:43.891Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "matchedCapabilities": [
+      {
+        "id": "engineering.api-integration",
+        "name": "REST & GraphQL API Integration & Microservices",
+        "category": "API Integration",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "testing.quality-assurance",
+        "name": "Automated QA Test Suite & Validation",
+        "category": "Quality Assurance",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "creative.3d-rendering",
+        "name": "3D Product Modeling & CAD Rendering",
+        "category": "Creative Services",
+        "universe": "creative",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "engineering.api-integration",
+      "category": "API Integration",
+      "name": "REST & GraphQL API Integration & Microservices",
+      "universe": "engineering",
+      "confidenceScore": 92,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "3-12 hours"
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U19 Creative"
+    ],
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ],
+    "confidence": 0.35
+  },
+  "valueEstimation": {
+    "status": "ESTIMATED",
+    "estimatedINR": 70000,
+    "proposedAmount": 70000,
+    "currency": "INR",
+    "source": "client_stated_budget",
+    "confidence": 0.9
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": 70000,
+    "proposedAmount": 70000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Build production microservice with layered validator and automated unit test suite",
+    "clarificationQuestions": [
+      "What is your expected timeline or target delivery deadline?",
+      "Could you specify which existing APIs or legacy platforms need integration?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Build production microservice with layered validator and automated unit test suite",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_proposal.md",
+    "proposalSha256": "0595108cd5b4ec95e526666bd3781d096df3dd0ad6353b243fe848f23745b4d1",
+    "recommendedNextAction": "AWAIT_CLIENT_DECISION"
+  },
+  "founderGovernance": {
+    "requiresFounder": false,
+    "status": "APPROVED",
+    "dossier": {
+      "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:build,service, BUDGET_INDICATED",
+      "whatClientWants": "Build production microservice with layered validator and automated unit test suite",
+      "whatGarudaCanDeliver": "Matched: REST & GraphQL API Integration & Microservices (Coverage: PARTIAL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Build production microservice with layered validator and automated unit test suite; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 70,000 (Milestones: 2)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_proposal.md",
+          "sha256": "0595108cd5b4ec95e526666bd3781d096df3dd0ad6353b243fe848f23745b4d1"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "FOLLOWUP_READY",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": null,
+    "history": []
+  },
+  "commercialStatus": "CONVERTED",
+  "state": "CLIENT_CONVERTED",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:43.866Z",
+      "leadId": "lead_1790004103866_de5470"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:43.866Z",
+      "intentCategory": "HIGH_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:build,service",
+        "BUDGET_INDICATED"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.866Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:43.870Z",
+      "proposalSha256": "0595108cd5b4ec95e526666bd3781d096df3dd0ad6353b243fe848f23745b4d1"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:43.870Z"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:21:43.891Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "CLIENT_CONVERTED",
+      "timestamp": "2026-09-21T15:21:43.892Z"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004103866_7f6306_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_proposal.md",
+      "sizeBytes": 992,
+      "sha256": "0595108cd5b4ec95e526666bd3781d096df3dd0ad6353b243fe848f23745b4d1"
+    }
+  ],
+  "communicationAction": {
+    "channel": "telegram",
+    "recipient": "cto@venture.test",
+    "message": "Commercial Proposal: Build production microservice with layered validator and automated unit test sui | Proposed: INR 70,000",
+    "missionId": "acq_1790004103866_7f6306",
+    "requiresFounder": true,
+    "approvalStatus": "APPROVED",
+    "executionStatus": "READY_TO_SEND",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "0595108cd5b4ec95e526666bd3781d096df3dd0ad6353b243fe848f23745b4d1"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube862t-2de7d3d3",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Build production microservice with layered validator and automated unit test suite",
+      "name": "Tech Venture",
+      "contact": "cto@venture.test",
+      "budget": 70000
+    },
+    "capAssessment": {
+      "coverage": "PARTIAL",
+      "matchedCapabilities": [
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "category": "API Integration",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "testing.quality-assurance",
+          "name": "Automated QA Test Suite & Validation",
+          "category": "Quality Assurance",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "creative.3d-rendering",
+          "name": "3D Product Modeling & CAD Rendering",
+          "category": "Creative Services",
+          "universe": "creative",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "engineering.api-integration",
+        "category": "API Integration",
+        "name": "REST & GraphQL API Integration & Microservices",
+        "universe": "engineering",
+        "confidenceScore": 92,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "3-12 hours"
+      },
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U19 Creative"
+      ],
+      "gaps": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "confidence": 0.35
+    },
+    "valEstimation": {
+      "status": "ESTIMATED",
+      "estimatedINR": 70000,
+      "proposedAmount": 70000,
+      "currency": "INR",
+      "source": "client_stated_budget",
+      "confidence": 0.9
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Core Architecture & Build",
+        "amountINR": 35000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Production Handover",
+        "amountINR": 35000,
+        "percentage": 50
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_proposal.md",
+    "communicationAction": {
+      "channel": "telegram",
+      "recipient": "cto@venture.test",
+      "message": "Commercial Proposal: Build production microservice with layered validator and automated unit test sui | Proposed: INR 70,000",
+      "missionId": "acq_1790004103866_7f6306",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "0595108cd5b4ec95e526666bd3781d096df3dd0ad6353b243fe848f23745b4d1"
+        }
+      ]
+    }
+  },
+  "revenueLifecycleResult": {
+    "missionId": "acq_1790004103866_7f6306",
+    "leadId": "lead_1790004103866_de5470",
+    "clientId": "client_de5470",
+    "projectId": "proj_acq_1790004103866_7f6306",
+    "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+    "currency": "INR",
+    "proposedAmount": 70000,
+    "proposedStatus": "PROPOSED",
+    "invoicedAmount": 0,
+    "invoiceStatus": "NOT_INVOICED",
+    "paidAmount": 0,
+    "paymentStatus": "PAYMENT_PENDING",
+    "revenueStatus": "UNKNOWN",
+    "paymentLinkInfo": null,
+    "evidence": [
+      {
+        "type": "scope_spec",
+        "fileName": "acq_1790004103866_7f6306_scope.json",
+        "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_scope.json",
+        "sizeBytes": 853,
+        "sha256": "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130"
+      },
+      {
+        "type": "proposal_document",
+        "fileName": "acq_1790004103866_7f6306_proposal.md",
+        "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_proposal.md",
+        "sizeBytes": 849,
+        "sha256": "fceb3c691b0104f6ed4bfe13be52fc4f1d2fcda471173a0cd788469543f5962a"
+      },
+      {
+        "type": "deliverable_code",
+        "fileName": "acq_1790004103866_7f6306_deliverable.js",
+        "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_deliverable.js",
+        "sizeBytes": 421,
+        "sha256": "27a63ee0f7ec8e3157e0b7df8297eca16e773ea25324337bae113b15a70208ce"
+      },
+      {
+        "type": "delivery_manifest",
+        "fileName": "acq_1790004103866_7f6306_DELIVERY_MANIFEST.md",
+        "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_DELIVERY_MANIFEST.md",
+        "sizeBytes": 270,
+        "sha256": "f21449ec2a46d0c95c82b9832b9099d3d3da80ccd8ea75b4beea81fbaa384c12"
+      }
+    ],
+    "confidence": 0.7,
+    "requiresFounder": false,
+    "nextAction": {
+      "action": "AWAIT_PAYMENT_SETTLEMENT",
+      "requiresFounder": false,
+      "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+    },
+    "state": "AWAITING_PAYMENT",
+    "stateHistory": [
+      {
+        "state": "LEAD_CAPTURED",
+        "timestamp": "2026-09-21T15:21:43.893Z",
+        "leadId": "lead_1790004103866_de5470",
+        "customer": "Tech Venture"
+      },
+      {
+        "state": "QUALIFYING",
+        "timestamp": "2026-09-21T15:21:43.893Z"
+      },
+      {
+        "state": "QUALIFIED",
+        "timestamp": "2026-09-21T15:21:43.894Z",
+        "bestCapability": "REST & GraphQL API Integration & Microservices",
+        "matchScore": 35
+      },
+      {
+        "state": "SCOPE_READY",
+        "timestamp": "2026-09-21T15:21:43.897Z",
+        "scopeSha256": "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130"
+      },
+      {
+        "state": "PROPOSAL_READY",
+        "timestamp": "2026-09-21T15:21:43.899Z",
+        "proposedAmount": 70000,
+        "currency": "INR",
+        "proposalSha256": "fceb3c691b0104f6ed4bfe13be52fc4f1d2fcda471173a0cd788469543f5962a"
+      },
+      {
+        "state": "FOUNDER_APPROVED",
+        "timestamp": "2026-09-21T15:21:43.899Z",
+        "approvedBy": "founder_praveen"
+      },
+      {
+        "state": "AWAITING_CLIENT",
+        "timestamp": "2026-09-21T15:21:43.899Z"
+      },
+      {
+        "state": "CLIENT_ACCEPTED",
+        "timestamp": "2026-09-21T15:21:43.899Z",
+        "acceptedAt": "2026-09-21T15:21:43.899Z",
+        "signer": "Tech Venture"
+      },
+      {
+        "state": "PROJECT_ACTIVE",
+        "timestamp": "2026-09-21T15:21:43.900Z",
+        "projectId": "proj_acq_1790004103866_7f6306"
+      },
+      {
+        "state": "DELIVERY_READY",
+        "timestamp": "2026-09-21T15:21:43.959Z",
+        "internalVerification": "INTERNAL_VERIFIED",
+        "reviewVerdict": "ALL_APPROVED"
+      },
+      {
+        "state": "DELIVERED",
+        "timestamp": "2026-09-21T15:21:43.959Z",
+        "manifestSha": "f21449ec2a46d0c95c82b9832b9099d3d3da80ccd8ea75b4beea81fbaa384c12",
+        "deliveredAt": "2026-09-21T15:21:43.959Z"
+      },
+      {
+        "state": "AWAITING_PAYMENT",
+        "timestamp": "2026-09-21T15:21:43.959Z"
+      }
+    ],
+    "memoryStatus": null,
+    "context": {
+      "lead": {
+        "leadId": "lead_1790004103866_de5470",
+        "missionId": "acq_1790004103866_7f6306",
+        "clientId": "client_de5470",
+        "name": "Tech Venture",
+        "email": null,
+        "phone": null,
+        "company": "UNKNOWN",
+        "requirements": "Build production microservice with layered validator and automated unit test suite",
+        "statedAmount": 70000
+      },
+      "bestCap": {
+        "capabilityId": "engineering.api-integration",
+        "category": "API Integration",
+        "name": "REST & GraphQL API Integration & Microservices",
+        "universe": "engineering",
+        "confidenceScore": 92,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "3-12 hours"
+      },
+      "estimatedINR": 70000,
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Advance Architecture & Core Build",
+          "amountINR": 35000,
+          "percentage": 50
+        },
+        {
+          "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+          "amountINR": 35000,
+          "percentage": 50
+        }
+      ],
+      "scopeFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_scope.json",
+      "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_proposal.md",
+      "communicationAction": {
+        "channel": "telegram",
+        "recipient": "unspecified",
+        "message": "Commercial Proposal: Build production microservice with layered validator and aut | Amount: INR 70,000",
+        "missionId": "acq_1790004103866_7f6306",
+        "requiresFounder": true,
+        "approvalStatus": "APPROVED",
+        "executionStatus": "READY_TO_SEND",
+        "evidence": [
+          {
+            "type": "proposal_hash",
+            "sha256": "fceb3c691b0104f6ed4bfe13be52fc4f1d2fcda471173a0cd788469543f5962a"
+          },
+          {
+            "type": "scope_hash",
+            "sha256": "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130"
+          }
+        ]
+      },
+      "projectRecord": {
+        "projectId": "proj_acq_1790004103866_7f6306",
+        "missionId": "acq_1790004103866_7f6306",
+        "client": {
+          "name": "Tech Venture",
+          "email": null,
+          "phone": null,
+          "contact": "unspecified"
+        },
+        "approvedScope": {
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103866_7f6306_scope.json",
+          "sha256": "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130"
+        },
+        "approvedTerms": {
+          "amount": 70000,
+          "currency": "INR",
+          "milestones": [
+            {
+              "milestone": "Milestone 1 — Advance Architecture & Core Build",
+              "amountINR": 35000,
+              "percentage": 50
+            },
+            {
+              "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+              "amountINR": 35000,
+              "percentage": 50
+            }
+          ]
+        },
+        "deliverables": [
+          "Modular production source code artifact with clean architecture",
+          "Deterministic test suite with 100% passing assertions",
+          "Cryptographic SHA-256 deliverable manifest and validation signoff"
+        ],
+        "acceptanceCriteria": [
+          "Exit code 0 on local execution and tests",
+          "Valid AST syntax with 0 unhandled exceptions",
+          "Physical artifact presence with verified non-zero bytes",
+          "Independent ReviewerSystem ALL_APPROVED verdict"
+        ],
+        "evidenceChain": [
+          "49d075d85e9c9ad05636479e92d513f236252db81b10536080359fc91869e130",
+          "fceb3c691b0104f6ed4bfe13be52fc4f1d2fcda471173a0cd788469543f5962a"
+        ]
+      },
+      "founderApproved": true,
+      "clientAccepted": true
+    }
+  }
+}

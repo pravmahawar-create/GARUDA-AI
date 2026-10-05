@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790003203261_222c84",
+  "leadId": "lead_1790003203261_4b4743",
+  "clientId": "client_a479d2",
+  "customer": {
+    "name": "Idempotent Corp",
+    "email": "audit@idempotent.com",
+    "phone": null,
+    "contact": "audit@idempotent.com"
+  },
+  "requirements": "Build idempotent webhook consumer with transactional outbox pattern",
+  "capability": "REST & GraphQL API Integration & Microservices",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 40000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 20000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 20000,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "3-12 hours",
+  "createdAt": "2026-09-21T15:06:43.262Z"
+}

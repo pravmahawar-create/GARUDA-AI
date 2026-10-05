@@ -1,0 +1,31 @@
+{
+  "missionId": "acq_1790003993943_805ad0",
+  "leadId": "lead_1790003993943_028333",
+  "clientId": "client_028333",
+  "customer": {
+    "name": "Devendra Varma",
+    "email": "devendra.varma@fintech-security.test",
+    "phone": "+91-98200-11223",
+    "contact": "devendra.varma@fintech-security.test"
+  },
+  "requirements": "Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and continuous compliance logging",
+  "capability": "Governed software implementation",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 50000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 25000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 25000,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "4-24 hours",
+  "createdAt": "2026-09-21T15:19:55.474Z"
+}

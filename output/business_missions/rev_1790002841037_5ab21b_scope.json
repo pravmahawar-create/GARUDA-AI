@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790002841037_5ab21b",
+  "leadId": "lead_1790002841037_54fcce",
+  "clientId": "client_3d32d6",
+  "customer": {
+    "name": "Vertex Cloud Systems",
+    "email": "cto@vertexcloud.com",
+    "phone": null,
+    "contact": "cto@vertexcloud.com"
+  },
+  "requirements": "Implement high-throughput event bus with dead-letter queue and retry policies",
+  "capability": "360° Celebrity & Event Digital War Room",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 55000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 27500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 27500,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "3-7 days",
+  "createdAt": "2026-09-21T15:00:41.038Z"
+}

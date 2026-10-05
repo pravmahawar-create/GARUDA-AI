@@ -1,0 +1,234 @@
+{
+  "missionId": "rev_1790002685280_31451c",
+  "leadId": "lead_1790002685320_dcdfbc",
+  "clientId": "client_0dba0a",
+  "projectId": "proj_rev_1790002685280_31451c",
+  "commercialStatus": "REVENUE_REALIZED",
+  "currency": "INR",
+  "proposedAmount": 65000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 65000,
+  "paymentStatus": "PAYMENT_VERIFIED",
+  "revenueStatus": "REVENUE_RECORDED",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790002685280_31451c_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685280_31451c_scope.json",
+      "sizeBytes": 924,
+      "sha256": "cc1299b803fd696e8ccfaa51293e9955ac8df7dae783fd753529f6883c97798d"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790002685280_31451c_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685280_31451c_proposal.md",
+      "sizeBytes": 857,
+      "sha256": "99ead9a79538b3224a3789cffbda34f56d172531fc8ce1872852ab7261609a83"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790002685280_31451c_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685280_31451c_deliverable.js",
+      "sizeBytes": 417,
+      "sha256": "af2427161820c82a1dd93b6effe1507877711a00bd7dab93dcacf0c8ecad0a8e"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790002685280_31451c_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685280_31451c_DELIVERY_MANIFEST.md",
+      "sizeBytes": 277,
+      "sha256": "a4b1a3659959c684233bc811f88aea3588e13aef19b05074e119cc72d1c439cd"
+    },
+    {
+      "type": "verified_payment_receipt",
+      "amount": 65000,
+      "currency": "INR",
+      "provider": "authoritative_webhook",
+      "providerReference": "pay_sovereign_1790002685320",
+      "eventId": "pay_sovereign_1790002685320",
+      "verifiedAt": "2026-09-21T14:58:05.330Z"
+    }
+  ],
+  "confidence": 0.65,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "ARCHIVE_COMPLETED_REVENUE_MISSION",
+    "requiresFounder": false
+  },
+  "state": "MISSION_COMPLETE",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T14:58:05.320Z",
+      "leadId": "lead_1790002685320_dcdfbc",
+      "customer": "Sovereign Logistics"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T14:58:05.320Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T14:58:05.321Z",
+      "bestCapability": "Vector Graphics, Logo & Layout Design",
+      "matchScore": 35
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T14:58:05.323Z",
+      "scopeSha256": "cc1299b803fd696e8ccfaa51293e9955ac8df7dae783fd753529f6883c97798d"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T14:58:05.324Z",
+      "proposedAmount": 65000,
+      "currency": "INR",
+      "proposalSha256": "99ead9a79538b3224a3789cffbda34f56d172531fc8ce1872852ab7261609a83"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T14:58:05.324Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T14:58:05.324Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T14:58:05.324Z",
+      "acceptedAt": "2026-09-21T14:58:05.324Z",
+      "signer": "Sovereign Logistics"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T14:58:05.324Z",
+      "projectId": "proj_rev_1790002685280_31451c"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T14:58:05.330Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T14:58:05.330Z",
+      "manifestSha": "a4b1a3659959c684233bc811f88aea3588e13aef19b05074e119cc72d1c439cd",
+      "deliveredAt": "2026-09-21T14:58:05.330Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T14:58:05.330Z"
+    },
+    {
+      "state": "PAYMENT_VERIFIED",
+      "timestamp": "2026-09-21T14:58:05.330Z",
+      "amount": 65000,
+      "providerReference": "pay_sovereign_1790002685320"
+    },
+    {
+      "state": "REVENUE_RECORDED",
+      "timestamp": "2026-09-21T14:58:05.330Z",
+      "amount": 65000,
+      "currency": "INR"
+    },
+    {
+      "state": "LEARNING_PROMOTED",
+      "timestamp": "2026-09-21T14:58:05.330Z"
+    },
+    {
+      "state": "MISSION_COMPLETE",
+      "timestamp": "2026-09-21T14:58:05.336Z"
+    }
+  ],
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mubddrir-820d0a0d",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.65
+  },
+  "context": {
+    "lead": {
+      "name": "Sovereign Logistics",
+      "email": "procurement@sovereignlogistics.in",
+      "phone": "+919876543210",
+      "requirements": "Design and implement autonomous fleet tracking gateway with MQTT and geofencing verification",
+      "budget": 65000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "creative.vector-design",
+      "category": "Creative Services",
+      "name": "Vector Graphics, Logo & Layout Design",
+      "universe": "creative",
+      "confidenceScore": 88,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "2-8 hours"
+    },
+    "estimatedINR": 65000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 32500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 32500,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685280_31451c_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685280_31451c_proposal.md",
+    "projectRecord": {
+      "projectId": "proj_rev_1790002685280_31451c",
+      "missionId": "rev_1790002685280_31451c",
+      "client": {
+        "name": "Sovereign Logistics",
+        "email": "procurement@sovereignlogistics.in",
+        "phone": "+919876543210",
+        "contact": "procurement@sovereignlogistics.in"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685280_31451c_scope.json",
+        "sha256": "cc1299b803fd696e8ccfaa51293e9955ac8df7dae783fd753529f6883c97798d"
+      },
+      "approvedTerms": {
+        "amount": 65000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 32500,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 32500,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "cc1299b803fd696e8ccfaa51293e9955ac8df7dae783fd753529f6883c97798d",
+        "99ead9a79538b3224a3789cffbda34f56d172531fc8ce1872852ab7261609a83"
+      ]
+    }
+  }
+}

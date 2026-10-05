@@ -1,0 +1,225 @@
+{
+  "missionId": "acq_1790003993943_805ad0",
+  "leadId": "lead_1790003993943_028333",
+  "clientId": "client_028333",
+  "projectId": "proj_acq_1790003993943_805ad0",
+  "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+  "currency": "INR",
+  "proposedAmount": 50000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "acq_1790003993943_805ad0_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_scope.json",
+      "sizeBytes": 957,
+      "sha256": "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "acq_1790003993943_805ad0_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+      "sizeBytes": 881,
+      "sha256": "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "acq_1790003993943_805ad0_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_deliverable.js",
+      "sizeBytes": 397,
+      "sha256": "7676e9e7557f6043da0bfaa7b932f20a439c58ffe6e1b56084c654cdf058de34"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "acq_1790003993943_805ad0_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_DELIVERY_MANIFEST.md",
+      "sizeBytes": 272,
+      "sha256": "3176c03d336b545937dc21acf8e0322a7628e62464ee5fefad9b9e3bee485ded"
+    }
+  ],
+  "confidence": 0.7,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_PAYMENT_SETTLEMENT",
+    "requiresFounder": false,
+    "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+  },
+  "state": "AWAITING_PAYMENT",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T15:19:55.472Z",
+      "leadId": "lead_1790003993943_028333",
+      "customer": "Devendra Varma"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T15:19:55.472Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:19:55.473Z",
+      "bestCapability": "Governed software implementation",
+      "matchScore": 35
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T15:19:55.476Z",
+      "scopeSha256": "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T15:19:55.478Z",
+      "proposedAmount": 50000,
+      "currency": "INR",
+      "proposalSha256": "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:19:55.478Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T15:19:55.478Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T15:19:55.478Z",
+      "acceptedAt": "2026-09-21T15:19:55.478Z",
+      "signer": "Devendra Varma"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T15:19:55.478Z",
+      "projectId": "proj_acq_1790003993943_805ad0"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T15:19:55.499Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T15:19:55.499Z",
+      "manifestSha": "3176c03d336b545937dc21acf8e0322a7628e62464ee5fefad9b9e3bee485ded",
+      "deliveredAt": "2026-09-21T15:19:55.499Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T15:19:55.499Z"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "leadId": "lead_1790003993943_028333",
+      "missionId": "acq_1790003993943_805ad0",
+      "clientId": "client_028333",
+      "name": "Devendra Varma",
+      "email": "devendra.varma@fintech-security.test",
+      "phone": "+91-98200-11223",
+      "company": "UNKNOWN",
+      "requirements": "Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and continuous compliance logging",
+      "statedAmount": 50000
+    },
+    "bestCap": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "estimatedINR": 50000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 25000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 25000,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "devendra.varma@fintech-security.test",
+      "message": "Commercial Proposal: Develop a sovereign AI-driven forensic threat detection engi | Amount: INR 50,000",
+      "missionId": "acq_1790003993943_805ad0",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb"
+        }
+      ]
+    },
+    "projectRecord": {
+      "projectId": "proj_acq_1790003993943_805ad0",
+      "missionId": "acq_1790003993943_805ad0",
+      "client": {
+        "name": "Devendra Varma",
+        "email": "devendra.varma@fintech-security.test",
+        "phone": "+91-98200-11223",
+        "contact": "devendra.varma@fintech-security.test"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_scope.json",
+        "sha256": "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb"
+      },
+      "approvedTerms": {
+        "amount": 50000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 25000,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 25000,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb",
+        "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+      ]
+    },
+    "founderApproved": true,
+    "clientAccepted": true
+  }
+}

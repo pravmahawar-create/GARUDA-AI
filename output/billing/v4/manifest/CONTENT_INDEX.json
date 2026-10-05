@@ -1,0 +1,23 @@
+{
+  "product": "GARUDA Billing",
+  "id": "billing",
+  "generatedAt": "2026-09-28T10:02:47.219Z",
+  "engine": "GARUDA_PRODUCT_PROOF_ENGINE_V1",
+  "truthAudit": {
+    "antiFabricationPassed": true,
+    "realSoftwareRecorded": true,
+    "verifiedEndpointsUsed": true
+  },
+  "assets": {
+    "masterVideo": {
+      "path": "D:\\GARUDA-AI\\output\\billing\\v4\\master\\MASTER_16x9_V4.mp4",
+      "sha256": "b3318d93a120883a17760b534a57b70df839641a43a489d2c107a94cf13fb031",
+      "sizeBytes": 2855641
+    },
+    "shortVideo": {
+      "path": "D:\\GARUDA-AI\\output\\billing\\v4\\shorts\\SHORT_9x16_V4.mp4",
+      "sha256": "c84135b1c2c3c55d5258324a0af46d8beae8350870248051d36f627db4c18344",
+      "sizeBytes": 2109732
+    }
+  }
+}

@@ -1,0 +1,229 @@
+{
+  "missionId": "rev_1790002490450_784c06",
+  "leadId": "lead_1790002490450_e798d0",
+  "clientId": "client_f0aaba",
+  "projectId": "proj_rev_1790002490450_784c06",
+  "commercialStatus": "DELIVERED_PENDING_SETTLEMENT",
+  "currency": "INR",
+  "proposedAmount": 45000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": {
+    "mode": "test",
+    "endpoint": "https://api.razorpay.com/v1/payment_links",
+    "execute": false,
+    "payload": {
+      "amount": 4500000,
+      "currency": "INR",
+      "reference_id": "rev_1790002490450_784c06",
+      "description": "GARUDA test invoice",
+      "callback_method": "get"
+    },
+    "governance": {
+      "preparedOnly": true,
+      "networkCallPerformed": false,
+      "liveCredentialsAccepted": false,
+      "founderApprovalRequiredForFutureDispatch": true
+    }
+  },
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790002490450_784c06_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490450_784c06_scope.json",
+      "sizeBytes": 862,
+      "sha256": "2f13e803fcaae4457982d076799e7fd63262a6572d6190167deb3ace5a10ebae"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790002490450_784c06_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490450_784c06_proposal.md",
+      "sizeBytes": 831,
+      "sha256": "3a0fd6641d449900ece7ab7d682fc9b5bb1f84f16a773acf3c5989628d0842c6"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790002490450_784c06_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490450_784c06_deliverable.js",
+      "sizeBytes": 397,
+      "sha256": "ac04cbb1159e28d7d615e84e925aa1e8c435123806869ad06bd481e59a09430a"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790002490450_784c06_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490450_784c06_DELIVERY_MANIFEST.md",
+      "sizeBytes": 272,
+      "sha256": "00c686932dc0193e07094813459f50414e5c9b59cdf583baf3d92af4559c3665"
+    }
+  ],
+  "confidence": 0.65,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_SETTLEMENT_RECEIPT",
+    "requiresFounder": false
+  },
+  "state": "MISSION_COMPLETE",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T14:54:50.450Z",
+      "leadId": "lead_1790002490450_e798d0",
+      "customer": "Starlight SaaS"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T14:54:50.450Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T14:54:50.451Z",
+      "bestCapability": "Governed software implementation",
+      "matchScore": 35
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T14:54:50.453Z",
+      "scopeSha256": "2f13e803fcaae4457982d076799e7fd63262a6572d6190167deb3ace5a10ebae"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T14:54:50.454Z",
+      "proposedAmount": 45000,
+      "currency": "INR",
+      "proposalSha256": "3a0fd6641d449900ece7ab7d682fc9b5bb1f84f16a773acf3c5989628d0842c6"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T14:54:50.454Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T14:54:50.454Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T14:54:50.454Z",
+      "acceptedAt": "2026-09-21T14:54:50.454Z",
+      "signer": "Starlight SaaS"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T14:54:50.454Z",
+      "projectId": "proj_rev_1790002490450_784c06"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T14:54:50.480Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T14:54:50.480Z",
+      "manifestSha": "00c686932dc0193e07094813459f50414e5c9b59cdf583baf3d92af4559c3665",
+      "deliveredAt": "2026-09-21T14:54:50.480Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T14:54:50.480Z"
+    },
+    {
+      "state": "LEARNING_PROMOTED",
+      "timestamp": "2026-09-21T14:54:50.480Z"
+    },
+    {
+      "state": "MISSION_COMPLETE",
+      "timestamp": "2026-09-21T14:54:50.488Z"
+    }
+  ],
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mubd9l69-86ab8399",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.65
+  },
+  "context": {
+    "lead": {
+      "name": "Starlight SaaS",
+      "email": "billing@starlight.io",
+      "requirements": "Implement real-time WebSocket communication gateway and client authorization",
+      "budget": 45000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "estimatedINR": 45000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 22500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 22500,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490450_784c06_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490450_784c06_proposal.md",
+    "projectRecord": {
+      "projectId": "proj_rev_1790002490450_784c06",
+      "missionId": "rev_1790002490450_784c06",
+      "client": {
+        "name": "Starlight SaaS",
+        "email": "billing@starlight.io",
+        "phone": null,
+        "contact": "billing@starlight.io"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490450_784c06_scope.json",
+        "sha256": "2f13e803fcaae4457982d076799e7fd63262a6572d6190167deb3ace5a10ebae"
+      },
+      "approvedTerms": {
+        "amount": 45000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 22500,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 22500,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "2f13e803fcaae4457982d076799e7fd63262a6572d6190167deb3ace5a10ebae",
+        "3a0fd6641d449900ece7ab7d682fc9b5bb1f84f16a773acf3c5989628d0842c6"
+      ]
+    }
+  }
+}

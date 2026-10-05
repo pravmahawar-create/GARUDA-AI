@@ -1,0 +1,128 @@
+[
+  {
+    "id": "scene_01_hook",
+    "name": "Hook: Billing App vs Custom Software",
+    "intent": "hook",
+    "display_text": "Billing app toh bahut hain...",
+    "narrationEn": "There are plenty of billing apps..."
+  },
+  {
+    "id": "scene_02_differentiation",
+    "name": "Real Workflow-First Architecture",
+    "intent": "problem",
+    "display_text": "...lekin actual business workflow ke around bana software?",
+    "narrationEn": "...but software engineered around your actual business workflow?"
+  },
+  {
+    "id": "scene_03_customer_gst",
+    "name": "GST Customer Entry & GSTIN Mode",
+    "intent": "live_demonstration",
+    "display_text": "Customer Sharma Hardware... aur GSTIN enter karte hi verified GST mode activate.",
+    "narrationEn": "Customer Sharma Hardware... and entering GSTIN activates verified GST invoice mode."
+  },
+  {
+    "id": "scene_04_items",
+    "name": "Catalog Item Entry",
+    "intent": "live_demonstration",
+    "display_text": "Catalog se UltraTech Cement... 10 bags at the rate ₹395 per bag.",
+    "narrationEn": "Now UltraTech Cement from catalog... 10 bags at the rate ₹395 per bag."
+  },
+  {
+    "id": "scene_05_gst_calc",
+    "name": "Real-Time GST Calculation",
+    "intent": "result",
+    "display_text": "Subtotal ₹3,950... CGST aur SGST breakup ke saath Grand Total ₹4,661.",
+    "narrationEn": "Subtotal ₹3,950... with CGST and SGST breakup, Grand Total ₹4,661."
+  },
+  {
+    "id": "scene_06_generate",
+    "name": "One-Tap Bill Generation",
+    "intent": "live_demonstration",
+    "display_text": "Ab single tap par bill generate karte hain.",
+    "narrationEn": "Now generating the bill with a single tap."
+  },
+  {
+    "id": "scene_07_hero_invoice",
+    "name": "REAL GST TAX INVOICE HERO",
+    "intent": "feature_reveal",
+    "display_text": "Real TAX INVOICE #0001, Sharma Hardware aur ₹4,661 ke saath ready.",
+    "narrationEn": "Real TAX INVOICE #0001, with Sharma Hardware and ₹4,661 ready."
+  },
+  {
+    "id": "scene_08_why_garuda",
+    "name": "Why GARUDA: Positioning",
+    "intent": "confident",
+    "display_text": "GARUDA ka focus sirf bill banana nahi... software ko business ke actual workflow ke around engineer karna hai.",
+    "narrationEn": "GARUDA's focus is not just making bills... we engineer software around your business's actual workflow."
+  },
+  {
+    "id": "scene_09_brand_cta",
+    "name": "GARUDA Outro & CTA",
+    "intent": "cta",
+    "display_text": "Custom software chahiye? Connect kijiye: garudaos.in/chat",
+    "narrationEn": "Need custom software? Connect at: garudaos.in/chat"
+  },
+  {
+    "id": "m_scene_01_hook",
+    "name": "Master Hook: Problem vs Custom Engineering",
+    "intent": "hook",
+    "display_text": "Billing apps toh market mein bahut hain... lekin kya wo aapke business ke actual workflow ke hisaab se bane hain?",
+    "narrationEn": "There are plenty of billing apps on the market... but are they engineered for your business's actual workflow?"
+  },
+  {
+    "id": "m_scene_02_workflow",
+    "name": "Workflow-First Architecture",
+    "intent": "problem",
+    "display_text": "GARUDA mein approach alag hai. Focus sirf slip nikalne par nahi, pure counter workflow ko streamline karne par hai.",
+    "narrationEn": "At GARUDA, the approach is different. Focus is not just printing slips, but streamlining your entire counter workflow."
+  },
+  {
+    "id": "m_scene_03_customer_gstin",
+    "name": "Customer & GSTIN Entry",
+    "intent": "discovery",
+    "display_text": "Customer Sharma Hardware... aur 15-digit GSTIN enter karte hi verified GST mode activate ho jata hai.",
+    "narrationEn": "Customer Sharma Hardware... and entering 15-digit GSTIN activates verified GST invoice mode."
+  },
+  {
+    "id": "m_scene_04_items",
+    "name": "Catalog Item Entry",
+    "intent": "live_demonstration",
+    "display_text": "Ab items add karte hain... UltraTech Cement 10 bags... rates aur units catalog se auto-populate hote hain.",
+    "narrationEn": "Now adding items... UltraTech Cement 10 bags... rates and units auto-populate from the catalog."
+  },
+  {
+    "id": "m_scene_05_gst_math",
+    "name": "Live Real-Time GST Calculation",
+    "intent": "result",
+    "display_text": "Yahan dekhiye: Subtotal ₹3,950... CGST 9% aur SGST 9% ka automatic tax breakup, Grand Total ₹4,661.",
+    "narrationEn": "Notice here: Subtotal ₹3,950... automatic CGST 9% and SGST 9% tax breakup, Grand Total ₹4,661."
+  },
+  {
+    "id": "m_scene_06_generate",
+    "name": "One-Click Invoice Save",
+    "intent": "live_demonstration",
+    "display_text": "Ab bill generate karte hain... single click par database record create.",
+    "narrationEn": "Now generating the bill... creating the database record with a single click."
+  },
+  {
+    "id": "m_scene_07_hero_invoice",
+    "name": "MASTER REAL GST TAX INVOICE HERO",
+    "intent": "feature_reveal",
+    "display_text": "Aur ye dekhiye: complete TAX INVOICE #0001, customer GSTIN aur ₹4,661 total ke saath ready.",
+    "narrationEn": "And notice: complete TAX INVOICE #0001, customer GSTIN, and ₹4,661 total ready."
+  },
+  {
+    "id": "m_scene_08_why_garuda",
+    "name": "Why GARUDA: The Architecture Answer",
+    "intent": "confident",
+    "display_text": "GARUDA ka focus sirf bill banana nahi hai. Hum software ko business ke actual workflow ke around engineer karte hain.",
+    "narrationEn": "GARUDA's focus is not just making bills. We engineer software around your business's actual workflow."
+  },
+  {
+    "id": "m_scene_09_brand_close",
+    "name": "GARUDA Outro & CTA",
+    "intent": "cta",
+    "display_text": "Aapke business ke liye custom software aur automation chahiye? Aaj hi connect kijiye: garudaos.in/chat",
+    "narrationEn": "Need custom software and automation for your business? Connect today at: garudaos.in/chat"
+  }
+]

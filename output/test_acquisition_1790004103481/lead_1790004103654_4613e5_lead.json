@@ -1,0 +1,323 @@
+{
+  "leadId": "lead_1790004103654_4613e5",
+  "missionId": "acq_1790004103654_c03861",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:43.654Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Fintech Startup",
+    "email": null,
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "team@fintech.test"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Build automated KYC verification workflow with document OCR",
+  "intent": {
+    "category": "HIGH_INTENT",
+    "confidence": 0.85,
+    "signals": [
+      "TECH_KEYWORDS:build,workflow",
+      "BUDGET_INDICATED"
+    ],
+    "reason": "Detailed technical scope with concrete deliverable indicators"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:43.691Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "FULL",
+    "matchedCapabilities": [
+      {
+        "id": "automation.workflow-automation",
+        "name": "Business Workflow & Process Automation",
+        "category": "Workflow Automation",
+        "universe": "automation",
+        "score": 95
+      },
+      {
+        "id": "engineering.software-implementation",
+        "name": "Governed software implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "automation.workflow-automation",
+      "category": "Workflow Automation",
+      "name": "Business Workflow & Process Automation",
+      "universe": "automation",
+      "confidenceScore": 88,
+      "score": 95,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "2-8 hours"
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation"
+    ],
+    "gaps": [],
+    "confidence": 0.88
+  },
+  "valueEstimation": {
+    "status": "ESTIMATED",
+    "estimatedINR": 90000,
+    "proposedAmount": 90000,
+    "currency": "INR",
+    "source": "client_stated_budget",
+    "confidence": 0.9
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": 90000,
+    "proposedAmount": 90000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Build automated KYC verification workflow with document OCR",
+    "clarificationQuestions": [
+      "What is your expected timeline or target delivery deadline?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Build automated KYC verification workflow with document OCR",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103654_c03861_proposal.md",
+    "proposalSha256": "a0551db9471646435e18a852f046cd4543c5d1e95568a9c683e660be4fde83bb",
+    "recommendedNextAction": "AWAIT_CLIENT_DECISION"
+  },
+  "founderGovernance": {
+    "requiresFounder": false,
+    "status": "APPROVED",
+    "dossier": {
+      "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:build,workflow, BUDGET_INDICATED",
+      "whatClientWants": "Build automated KYC verification workflow with document OCR",
+      "whatGarudaCanDeliver": "Matched: Business Workflow & Process Automation (Coverage: FULL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Build automated KYC verification workflow with document OCR; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 90,000 (Milestones: 2)",
+      "risks": [
+        "Standard commercial delivery risk"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103654_c03861_proposal.md",
+          "sha256": "a0551db9471646435e18a852f046cd4543c5d1e95568a9c683e660be4fde83bb"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 1,
+    "maxFollowUps": 3,
+    "status": "SENT",
+    "cooldownHours": 24,
+    "lastFollowUpAt": "2026-09-21T15:21:43.693Z",
+    "stopReason": null,
+    "history": [
+      {
+        "followUpNumber": 1,
+        "timestamp": "2026-09-21T15:21:43.693Z",
+        "provider": "ses_email_gateway",
+        "messageId": "ses_msg_48291039",
+        "evidence": {
+          "provider": "ses_email_gateway",
+          "messageId": "ses_msg_48291039",
+          "delivered": true,
+          "timestamp": "2026-09-21T15:21:43.692Z"
+        }
+      }
+    ],
+    "note": "Awaiting real provider delivery evidence before marking SENT"
+  },
+  "commercialStatus": "AWAITING_CLIENT",
+  "state": "AWAITING_CLIENT",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:43.654Z",
+      "leadId": "lead_1790004103654_4613e5"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:43.654Z",
+      "intentCategory": "HIGH_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:build,workflow",
+        "BUDGET_INDICATED"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.654Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:43.660Z",
+      "proposalSha256": "a0551db9471646435e18a852f046cd4543c5d1e95568a9c683e660be4fde83bb"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:43.660Z"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:21:43.691Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "FOLLOWUP_READY_UNSENT",
+      "timestamp": "2026-09-21T15:21:43.692Z"
+    },
+    {
+      "state": "FOLLOWUP_SENT",
+      "timestamp": "2026-09-21T15:21:43.693Z",
+      "followUpNumber": 1
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004103654_c03861_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103654_c03861_proposal.md",
+      "sizeBytes": 951,
+      "sha256": "a0551db9471646435e18a852f046cd4543c5d1e95568a9c683e660be4fde83bb"
+    }
+  ],
+  "communicationAction": {
+    "channel": "telegram",
+    "recipient": "team@fintech.test",
+    "message": "Commercial Proposal: Build automated KYC verification workflow with document OCR | Proposed: INR 90,000",
+    "missionId": "acq_1790004103654_c03861",
+    "requiresFounder": true,
+    "approvalStatus": "APPROVED",
+    "executionStatus": "READY_TO_SEND",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "a0551db9471646435e18a852f046cd4543c5d1e95568a9c683e660be4fde83bb"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube85x7-05cebd24",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Build automated KYC verification workflow with document OCR",
+      "name": "Fintech Startup",
+      "contact": "team@fintech.test",
+      "budget": 90000
+    },
+    "capAssessment": {
+      "coverage": "FULL",
+      "matchedCapabilities": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "category": "Workflow Automation",
+          "universe": "automation",
+          "score": 95
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 95,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U06 Automation"
+      ],
+      "gaps": [],
+      "confidence": 0.88
+    },
+    "valEstimation": {
+      "status": "ESTIMATED",
+      "estimatedINR": 90000,
+      "proposedAmount": 90000,
+      "currency": "INR",
+      "source": "client_stated_budget",
+      "confidence": 0.9
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Core Architecture & Build",
+        "amountINR": 45000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Production Handover",
+        "amountINR": 45000,
+        "percentage": 50
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103654_c03861_proposal.md",
+    "communicationAction": {
+      "channel": "telegram",
+      "recipient": "team@fintech.test",
+      "message": "Commercial Proposal: Build automated KYC verification workflow with document OCR | Proposed: INR 90,000",
+      "missionId": "acq_1790004103654_c03861",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "a0551db9471646435e18a852f046cd4543c5d1e95568a9c683e660be4fde83bb"
+        }
+      ]
+    }
+  }
+}

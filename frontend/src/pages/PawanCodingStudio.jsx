@@ -878,7 +878,7 @@ export default function PawanCodingStudio() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.08) 0%, #060503 60%, #030201 100%)", color: "#f8fafc", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", padding: "1.5rem 1rem" }}>
+    <div style={{ minHeight: "100dvh", height: "100dvh", background: "radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.08) 0%, #060503 60%, #030201 100%)", color: "#f8fafc", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", display: "flex", flexDirection: "column", padding: "0", maxWidth: "500px", margin: "0 auto", overscrollBehavior: "none", WebkitOverflowScrolling: "touch" }}>
       <style>{`
         @media (max-width: 768px) {
           .pawan-header { flex-direction: column !important; align-items: flex-start !important; }
@@ -896,11 +896,11 @@ export default function PawanCodingStudio() {
           .pawan-container { padding: 1rem 0.75rem !important; }
         }
       `}</style>
-      <div className="pawan-container" style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <div className="pawan-container" style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", flex: 1, paddingTop: "env(safe-area-inset-top, 0)", paddingBottom: "env(safe-area-inset-bottom, 0)" }}>
         
-        {/* Top Header & Brand Bar */}
-        <div style={{ borderBottom: "1px solid rgba(212, 175, 55, 0.2)", paddingBottom: "1.2rem", marginBottom: "1.8rem" }}>
-          <div className="pawan-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+        {/* Top Header & Brand Bar - Fixed on Mobile */}
+        <div className="pawan-header" style={{ position: "sticky", top: 0, zIndex: 40, background: "radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.08) 0%, #060503 60%, #030201 100%)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(212, 175, 55, 0.2)", padding: "0.8rem 0 1rem", marginBottom: "1rem", flexShrink: 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", maxWidth: "1200px", margin: "0 auto" }}>
             <div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(212, 175, 55, 0.1)", border: "1px solid rgba(212, 175, 55, 0.35)", borderRadius: "999px", padding: "3px 12px", marginBottom: "0.4rem" }}>
                 <span style={{ fontSize: "0.85rem" }}>🦅</span>
@@ -1015,17 +1015,18 @@ export default function PawanCodingStudio() {
           </div>
         </div>
 
-        {/* Main Workspace Layout */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1.5rem" }}>
+        {/* Main Workspace Layout - Flex Column for Mobile */}
+        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0, gap: "1rem" }}>
           
           {/* ================================================================= */}
           {/* 🦅 PAWAN SOVEREIGN CONSULTATIVE CHATBOX & EXECUTION CONSOLE       */}
           {/* ================================================================= */}
-          <div style={{ background: "#080705", border: "1px solid rgba(212, 175, 55, 0.35)", borderRadius: "14px", padding: "1.2rem", boxShadow: "0 15px 40px rgba(0,0,0,0.7)" }}>
+          <div style={{ background: "#080705", border: "1px solid rgba(212, 175, 55, 0.35)", borderRadius: "14px", padding: "1rem", boxShadow: "0 15px 40px rgba(0,0,0,0.7)", display: "flex", flexDirection: "column", flex: 1, minHeight: 0, overflow: "hidden" }}>
             
-            {/* Top Mode Switcher & Active Project Indicator */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.8rem", borderBottom: "1px solid rgba(212, 175, 55, 0.2)", paddingBottom: "0.8rem" }}>
-              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            {/* Top Mode Switcher & Active Project Indicator - Sticky */}
+            <div style={{ position: "sticky", top: 0, zIndex: 20, background: "#080705", borderBottom: "1px solid rgba(212, 175, 55, 0.2)", paddingBottom: "0.8rem", marginBottom: "0.8rem", flexShrink: 0 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.8rem" }}>
+                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                 <button
                   type="button"
                   onClick={() => setStudioMode("discuss")}
@@ -1132,9 +1133,9 @@ export default function PawanCodingStudio() {
               </div>
             </div>
 
-            {/* Conversational Stream (Spacious Mobile Chat Area) */}
+            {/* Conversational Stream - Scrollable Chat Area */}
             {studioMode === "discuss" && (
-              <div style={{ maxHeight: "420px", minHeight: "220px", overflowY: "auto", padding: "12px", background: "#040302", borderRadius: "10px", border: "1px solid #1c1917", marginBottom: "1rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div style={{ flex: 1, overflowY: "auto", padding: "12px", background: "#040302", borderRadius: "10px", border: "1px solid #1c1917", display: "flex", flexDirection: "column", gap: "1rem", minHeight: 0, WebkitOverflowScrolling: "touch" }}>
                 {messages.map((m) => (
                   <div
                     key={m.id}
@@ -1459,8 +1460,8 @@ export default function PawanCodingStudio() {
               </div>
             )}
 
-            {/* Input Textarea & Smart Action Bar */}
-            <form onSubmit={studioMode === "discuss" ? (e) => { e.preventDefault(); handleConsult(); } : handleExecute}>
+            {/* Input Textarea & Smart Action Bar - Fixed at Bottom on Mobile */}
+            <form onSubmit={studioMode === "discuss" ? (e) => { e.preventDefault(); handleConsult(); } : handleExecute} style={{ flexShrink: 0, position: "sticky", bottom: 0, background: "#080705", borderTop: "1px solid rgba(212, 175, 55, 0.2)", paddingTop: "0.8rem", marginTop: "auto", zIndex: 30 }}>
               <div style={{ position: "relative", marginBottom: "0.8rem" }}>
                 <textarea
                   rows="3"
@@ -1489,8 +1490,8 @@ export default function PawanCodingStudio() {
                     borderRadius: "10px",
                     padding: "14px",
                     color: "#ffffff",
-                    fontSize: "0.94rem",
-                    resize: "vertical",
+                    fontSize: "16px",
+                    resize: "none",
                     outline: "none",
                     lineHeight: 1.5,
                     fontFamily: "inherit"
@@ -2600,6 +2601,7 @@ export default function PawanCodingStudio() {
 
       </div>
     </div>
+  </div>
   );
 }
 

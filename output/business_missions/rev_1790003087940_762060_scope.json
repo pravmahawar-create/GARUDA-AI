@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790003087940_762060",
+  "leadId": "lead_1790003087940_0d831e",
+  "clientId": "client_31517a",
+  "customer": {
+    "name": "Cyber Security Labs",
+    "email": "security@cybersec.com",
+    "phone": null,
+    "contact": "security@cybersec.com"
+  },
+  "requirements": "Build impenetrable API gateway with HMAC signature verification and rate limiting",
+  "capability": "Governed software implementation",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 50000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 25000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 25000,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "4-24 hours",
+  "createdAt": "2026-09-21T15:04:47.941Z"
+}

@@ -1,0 +1,320 @@
+{
+  "leadId": "lead_1790004103834_2b8aa5",
+  "missionId": "acq_1790004103835_958e80",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:43.835Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Sovereign Enterprise",
+    "email": null,
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "director@sovereign.test"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Build an enterprise React dashboard with role-based access control and PostgreSQL schema",
+  "intent": {
+    "category": "HIGH_INTENT",
+    "confidence": 0.85,
+    "signals": [
+      "TECH_KEYWORDS:build,dashboard,react",
+      "BUDGET_INDICATED"
+    ],
+    "reason": "Detailed technical scope with concrete deliverable indicators"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:43.864Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "FULL",
+    "matchedCapabilities": [
+      {
+        "id": "engineering.repository-audit",
+        "name": "Repository architecture and quality audit",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 80
+      },
+      {
+        "id": "engineering.software-implementation",
+        "name": "Governed software implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 50
+      },
+      {
+        "id": "finance.sovereign-quant-advisory",
+        "name": "24/7 Sovereign Quant Fleet & Multi-Market Alpha Engine",
+        "category": "Financial Engineering & Quant",
+        "universe": "finance",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "engineering.repository-audit",
+      "category": "Software Engineering",
+      "name": "Repository architecture and quality audit",
+      "universe": "engineering",
+      "confidenceScore": 90,
+      "score": 80,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "2-6 hours"
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U12 Finance",
+      "U11 Business"
+    ],
+    "gaps": [],
+    "confidence": 0.9
+  },
+  "valueEstimation": {
+    "status": "ESTIMATED",
+    "estimatedINR": 85000,
+    "proposedAmount": 85000,
+    "currency": "INR",
+    "source": "client_stated_budget",
+    "confidence": 0.9
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": 85000,
+    "proposedAmount": 85000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Build an enterprise React dashboard with role-based access control and PostgreSQL schema",
+    "clarificationQuestions": [
+      "What is your expected timeline or target delivery deadline?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Build an enterprise React dashboard with role-based access control and PostgreSQL schema",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103835_958e80_proposal.md",
+    "proposalSha256": "9d0b3abc355174a67f53764f1e42c289994a823bf4b1e3d05b9140a497031a43",
+    "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+  },
+  "founderGovernance": {
+    "requiresFounder": true,
+    "status": "AWAITING_FOUNDER_APPROVAL",
+    "dossier": {
+      "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:build,dashboard,react, BUDGET_INDICATED",
+      "whatClientWants": "Build an enterprise React dashboard with role-based access control and PostgreSQL schema",
+      "whatGarudaCanDeliver": "Matched: Repository architecture and quality audit (Coverage: FULL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Build an enterprise React dashboard with role-based access control and PostgreSQL schema; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 85,000 (Milestones: 2)",
+      "risks": [
+        "Standard commercial delivery risk"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103835_958e80_proposal.md",
+          "sha256": "9d0b3abc355174a67f53764f1e42c289994a823bf4b1e3d05b9140a497031a43"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "FOLLOWUP_READY",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": null,
+    "history": []
+  },
+  "commercialStatus": "AWAITING_FOUNDER",
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:43.835Z",
+      "leadId": "lead_1790004103834_2b8aa5"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:43.835Z",
+      "intentCategory": "HIGH_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:build,dashboard,react",
+        "BUDGET_INDICATED"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.835Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:43.840Z",
+      "proposalSha256": "9d0b3abc355174a67f53764f1e42c289994a823bf4b1e3d05b9140a497031a43"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:43.841Z"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-21T15:21:43.864Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-21T15:21:43.864Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004103835_958e80_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103835_958e80_proposal.md",
+      "sizeBytes": 997,
+      "sha256": "9d0b3abc355174a67f53764f1e42c289994a823bf4b1e3d05b9140a497031a43"
+    }
+  ],
+  "communicationAction": {
+    "channel": "telegram",
+    "recipient": "director@sovereign.test",
+    "message": "Commercial Proposal: Build an enterprise React dashboard with role-based access control and PostgreSQ | Proposed: INR 85,000",
+    "missionId": "acq_1790004103835_958e80",
+    "requiresFounder": true,
+    "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+    "executionStatus": "REQUIRES_FOUNDER",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "9d0b3abc355174a67f53764f1e42c289994a823bf4b1e3d05b9140a497031a43"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube8621-89a353ac",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Build an enterprise React dashboard with role-based access control and PostgreSQL schema",
+      "name": "Sovereign Enterprise",
+      "contact": "director@sovereign.test",
+      "budget": 85000
+    },
+    "capAssessment": {
+      "coverage": "FULL",
+      "matchedCapabilities": [
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 80
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 50
+        },
+        {
+          "id": "finance.sovereign-quant-advisory",
+          "name": "24/7 Sovereign Quant Fleet & Multi-Market Alpha Engine",
+          "category": "Financial Engineering & Quant",
+          "universe": "finance",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "engineering.repository-audit",
+        "category": "Software Engineering",
+        "name": "Repository architecture and quality audit",
+        "universe": "engineering",
+        "confidenceScore": 90,
+        "score": 80,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-6 hours"
+      },
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U12 Finance",
+        "U11 Business"
+      ],
+      "gaps": [],
+      "confidence": 0.9
+    },
+    "valEstimation": {
+      "status": "ESTIMATED",
+      "estimatedINR": 85000,
+      "proposedAmount": 85000,
+      "currency": "INR",
+      "source": "client_stated_budget",
+      "confidence": 0.9
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Core Architecture & Build",
+        "amountINR": 42500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Production Handover",
+        "amountINR": 42500,
+        "percentage": 50
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103835_958e80_proposal.md",
+    "communicationAction": {
+      "channel": "telegram",
+      "recipient": "director@sovereign.test",
+      "message": "Commercial Proposal: Build an enterprise React dashboard with role-based access control and PostgreSQ | Proposed: INR 85,000",
+      "missionId": "acq_1790004103835_958e80",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "9d0b3abc355174a67f53764f1e42c289994a823bf4b1e3d05b9140a497031a43"
+        }
+      ]
+    }
+  }
+}

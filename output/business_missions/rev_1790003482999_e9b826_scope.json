@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790003482999_e9b826",
+  "leadId": "lead_1790003483040_0f1217",
+  "clientId": "client_cef02b",
+  "customer": {
+    "name": "Sovereign Logistics",
+    "email": "procurement@sovereignlogistics.in",
+    "phone": "+919876543210",
+    "contact": "procurement@sovereignlogistics.in"
+  },
+  "requirements": "Design and implement autonomous fleet tracking gateway with MQTT and geofencing verification",
+  "capability": "Vector Graphics, Logo & Layout Design",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 65000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 32500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 32500,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "2-8 hours",
+  "createdAt": "2026-09-21T15:11:23.040Z"
+}

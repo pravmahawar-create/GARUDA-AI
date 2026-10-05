@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790002556578_8f70e5",
+  "leadId": "lead_1790002556578_cf3eeb",
+  "clientId": "client_e67f75",
+  "customer": {
+    "name": "Delta Dynamics",
+    "email": "ops@deltadynamics.com",
+    "phone": null,
+    "contact": "ops@deltadynamics.com"
+  },
+  "requirements": "Engineer custom REST APIs with forensic input sanitization and rate limiting",
+  "capability": "REST & GraphQL API Integration & Microservices",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 50000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 25000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 25000,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "3-12 hours",
+  "createdAt": "2026-09-21T14:55:56.579Z"
+}

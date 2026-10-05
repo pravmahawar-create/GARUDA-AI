@@ -1,0 +1,337 @@
+{
+  "leadId": "lead_1790004103766_f77322",
+  "missionId": "acq_1790004103766_1134ac",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:43.766Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Creator Studio",
+    "email": null,
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "growth@creator.test"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Automated social media scheduler and analytics bot",
+  "intent": {
+    "category": "MEDIUM_INTENT",
+    "confidence": 0.7,
+    "signals": [
+      "TECH_KEYWORDS:bot"
+    ],
+    "reason": "Legitimate commercial inquiry requesting quotation or scope"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:43.790Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "matchedCapabilities": [
+      {
+        "id": "engineering.software-implementation",
+        "name": "Governed software implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "digital_marketing.editorial_growth",
+        "name": "Editorial Calendars & Multi-Channel Content Factory",
+        "category": "Digital Marketing",
+        "universe": "content",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U20 Content"
+    ],
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ],
+    "confidence": 0.35
+  },
+  "valueEstimation": {
+    "status": "UNKNOWN",
+    "estimatedINR": null,
+    "proposedAmount": 0,
+    "currency": "INR",
+    "source": "source_evidence_missing",
+    "confidence": 0
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": null,
+    "proposedAmount": 23750,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Automated social media scheduler and analytics bot",
+    "clarificationQuestions": [
+      "What is your allocated budget range for this engagement?",
+      "What is your expected timeline or target delivery deadline?",
+      "Could you specify which existing APIs or legacy platforms need integration?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Automated social media scheduler and analytics bot",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103766_1134ac_proposal.md",
+    "proposalSha256": "0939217f460d55eb5fed002d14d361894420cb2d501f423b8b2bca6e40f4a7d3",
+    "recommendedNextAction": "AWAIT_CLIENT_DECISION"
+  },
+  "founderGovernance": {
+    "requiresFounder": false,
+    "status": "APPROVED",
+    "dossier": {
+      "whyThisLead": "Intent: MEDIUM_INTENT (70% confidence). Channel: Direct. Signals: TECH_KEYWORDS:bot",
+      "whatClientWants": "Automated social media scheduler and analytics bot",
+      "whatGarudaCanDeliver": "Matched: Governed software implementation (Coverage: PARTIAL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Automated social media scheduler and analytics bot; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 23,750 (Milestones: 1)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements",
+        "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103766_1134ac_proposal.md",
+          "sha256": "0939217f460d55eb5fed002d14d361894420cb2d501f423b8b2bca6e40f4a7d3"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 2,
+    "maxFollowUps": 2,
+    "status": "EXHAUSTED",
+    "cooldownHours": 24,
+    "lastFollowUpAt": "2026-09-21T15:21:43.791Z",
+    "stopReason": "MAX_FOLLOWUPS_EXCEEDED",
+    "history": [
+      {
+        "followUpNumber": 1,
+        "timestamp": "2026-09-21T15:21:43.790Z",
+        "provider": "whatsapp",
+        "messageId": "wa_001",
+        "evidence": {
+          "provider": "whatsapp",
+          "messageId": "wa_001",
+          "delivered": true
+        }
+      },
+      {
+        "followUpNumber": 2,
+        "timestamp": "2026-09-21T15:21:43.791Z",
+        "provider": "whatsapp",
+        "messageId": "wa_002",
+        "evidence": {
+          "provider": "whatsapp",
+          "messageId": "wa_002",
+          "delivered": true
+        }
+      }
+    ]
+  },
+  "commercialStatus": "AWAITING_CLIENT",
+  "state": "AWAITING_CLIENT",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:43.766Z",
+      "leadId": "lead_1790004103766_f77322"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:43.766Z",
+      "intentCategory": "MEDIUM_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:bot"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.766Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:43.770Z",
+      "proposalSha256": "0939217f460d55eb5fed002d14d361894420cb2d501f423b8b2bca6e40f4a7d3"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:43.770Z"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:21:43.790Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "FOLLOWUP_SENT",
+      "timestamp": "2026-09-21T15:21:43.790Z",
+      "followUpNumber": 1
+    },
+    {
+      "state": "FOLLOWUP_SENT",
+      "timestamp": "2026-09-21T15:21:43.791Z",
+      "followUpNumber": 2
+    },
+    {
+      "state": "FOLLOWUP_EXHAUSTED",
+      "timestamp": "2026-09-21T15:21:43.792Z",
+      "count": 2
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004103766_1134ac_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103766_1134ac_proposal.md",
+      "sizeBytes": 863,
+      "sha256": "0939217f460d55eb5fed002d14d361894420cb2d501f423b8b2bca6e40f4a7d3"
+    }
+  ],
+  "communicationAction": {
+    "channel": "telegram",
+    "recipient": "growth@creator.test",
+    "message": "Commercial Proposal: Automated social media scheduler and analytics bot | Proposed: INR 23,750",
+    "missionId": "acq_1790004103766_1134ac",
+    "requiresFounder": true,
+    "approvalStatus": "APPROVED",
+    "executionStatus": "READY_TO_SEND",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "0939217f460d55eb5fed002d14d361894420cb2d501f423b8b2bca6e40f4a7d3"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube8601-cb4fb9ba",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Automated social media scheduler and analytics bot",
+      "name": "Creator Studio",
+      "contact": "growth@creator.test"
+    },
+    "capAssessment": {
+      "coverage": "PARTIAL",
+      "matchedCapabilities": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "digital_marketing.editorial_growth",
+          "name": "Editorial Calendars & Multi-Channel Content Factory",
+          "category": "Digital Marketing",
+          "universe": "content",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U20 Content"
+      ],
+      "gaps": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "confidence": 0.35
+    },
+    "valEstimation": {
+      "status": "UNKNOWN",
+      "estimatedINR": null,
+      "proposedAmount": 0,
+      "currency": "INR",
+      "source": "source_evidence_missing",
+      "confidence": 0
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+        "amountINR": 23750,
+        "percentage": 100
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103766_1134ac_proposal.md",
+    "communicationAction": {
+      "channel": "telegram",
+      "recipient": "growth@creator.test",
+      "message": "Commercial Proposal: Automated social media scheduler and analytics bot | Proposed: INR 23,750",
+      "missionId": "acq_1790004103766_1134ac",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "0939217f460d55eb5fed002d14d361894420cb2d501f423b8b2bca6e40f4a7d3"
+        }
+      ]
+    }
+  }
+}

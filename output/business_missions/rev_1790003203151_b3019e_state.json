@@ -1,0 +1,221 @@
+{
+  "missionId": "rev_1790003203151_b3019e",
+  "leadId": "lead_1790003203151_c6adaf",
+  "clientId": "client_c87a9e",
+  "projectId": "proj_rev_1790003203151_b3019e",
+  "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+  "currency": "INR",
+  "proposedAmount": 50000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790003203151_b3019e_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003203151_b3019e_scope.json",
+      "sizeBytes": 853,
+      "sha256": "99867a08ee704d66e7b70d81060ef632ea6a2ce5fda5786a98485c9d0cbcae16"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790003203151_b3019e_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003203151_b3019e_proposal.md",
+      "sizeBytes": 834,
+      "sha256": "db07f1e28a4e8b2c3fb9254be5e9499e2e6c23f3f784f185686c6979c46c2d1b"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790003203151_b3019e_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003203151_b3019e_deliverable.js",
+      "sizeBytes": 403,
+      "sha256": "74a10af8e09816f6786a42e47524bee7d5bab2c399df2dac8b958f48d377b51a"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790003203151_b3019e_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003203151_b3019e_DELIVERY_MANIFEST.md",
+      "sizeBytes": 275,
+      "sha256": "d7cdb75e82632cab2471fd524054ec97d96d65c48edf6dd8cd0d26a2969ab76f"
+    }
+  ],
+  "confidence": 0.7,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_PAYMENT_SETTLEMENT",
+    "requiresFounder": false,
+    "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+  },
+  "state": "AWAITING_PAYMENT",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T15:06:43.151Z",
+      "leadId": "lead_1790003203151_c6adaf",
+      "customer": "Nexus Innovations"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T15:06:43.151Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:06:43.152Z",
+      "bestCapability": "Governed software implementation",
+      "matchScore": 80
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T15:06:43.153Z",
+      "scopeSha256": "99867a08ee704d66e7b70d81060ef632ea6a2ce5fda5786a98485c9d0cbcae16"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T15:06:43.155Z",
+      "proposedAmount": 50000,
+      "currency": "INR",
+      "proposalSha256": "db07f1e28a4e8b2c3fb9254be5e9499e2e6c23f3f784f185686c6979c46c2d1b"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:06:43.155Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T15:06:43.155Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T15:06:43.155Z",
+      "acceptedAt": "2026-09-21T15:06:43.155Z",
+      "signer": "Nexus Innovations"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T15:06:43.155Z",
+      "projectId": "proj_rev_1790003203151_b3019e"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T15:06:43.185Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T15:06:43.185Z",
+      "manifestSha": "d7cdb75e82632cab2471fd524054ec97d96d65c48edf6dd8cd0d26a2969ab76f",
+      "deliveredAt": "2026-09-21T15:06:43.185Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T15:06:43.185Z"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "name": "Nexus Innovations",
+      "email": "lead@nexus.com",
+      "requirements": "Architect secure microservice backend with Docker containerization and CI/CD",
+      "budget": 50000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 80,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "estimatedINR": 50000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 25000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 25000,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003203151_b3019e_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003203151_b3019e_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "lead@nexus.com",
+      "message": "Commercial Proposal: Architect secure microservice backend with Docker containeri | Amount: INR 50,000",
+      "missionId": "rev_1790003203151_b3019e",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "db07f1e28a4e8b2c3fb9254be5e9499e2e6c23f3f784f185686c6979c46c2d1b"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "99867a08ee704d66e7b70d81060ef632ea6a2ce5fda5786a98485c9d0cbcae16"
+        }
+      ]
+    },
+    "projectRecord": {
+      "projectId": "proj_rev_1790003203151_b3019e",
+      "missionId": "rev_1790003203151_b3019e",
+      "client": {
+        "name": "Nexus Innovations",
+        "email": "lead@nexus.com",
+        "phone": null,
+        "contact": "lead@nexus.com"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003203151_b3019e_scope.json",
+        "sha256": "99867a08ee704d66e7b70d81060ef632ea6a2ce5fda5786a98485c9d0cbcae16"
+      },
+      "approvedTerms": {
+        "amount": 50000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 25000,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 25000,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "99867a08ee704d66e7b70d81060ef632ea6a2ce5fda5786a98485c9d0cbcae16",
+        "db07f1e28a4e8b2c3fb9254be5e9499e2e6c23f3f784f185686c6979c46c2d1b"
+      ]
+    },
+    "founderApproved": true,
+    "clientAccepted": true
+  }
+}

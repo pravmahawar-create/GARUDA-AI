@@ -1,0 +1,152 @@
+{
+  "missionId": "rev_1790004101383_a3f585",
+  "leadId": "lead_1790004101382_000621",
+  "clientId": "client_6d3bb6",
+  "projectId": null,
+  "commercialStatus": "AWAITING_FOUNDER",
+  "currency": "INR",
+  "proposedAmount": 75000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790004101383_a3f585_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101383_a3f585_scope.json",
+      "sizeBytes": 875,
+      "sha256": "21e2bac48f1db30d2c3217bd900323b43970f20f08e30779ca92006ba036953f"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790004101383_a3f585_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101383_a3f585_proposal.md",
+      "sizeBytes": 844,
+      "sha256": "04213afa63eaef26f68af13c95e388097f8c117bdfc7f73a2127437c040a3528"
+    }
+  ],
+  "confidence": 0.65,
+  "requiresFounder": true,
+  "nextAction": {
+    "action": "APPROVE_PROPOSAL_DISPATCH",
+    "requiresFounder": true,
+    "reason": "Founder authorization required before external proposal transmission",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "procurement@acme.com",
+      "message": "Commercial Proposal: Develop a custom multi-agent workflow for supply chain logis | Amount: INR 75,000",
+      "missionId": "rev_1790004101383_a3f585",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "04213afa63eaef26f68af13c95e388097f8c117bdfc7f73a2127437c040a3528"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "21e2bac48f1db30d2c3217bd900323b43970f20f08e30779ca92006ba036953f"
+        }
+      ]
+    }
+  },
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T15:21:41.383Z",
+      "leadId": "lead_1790004101382_000621",
+      "customer": "Acme Enterprises"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T15:21:41.383Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:41.428Z",
+      "bestCapability": "Governed software implementation",
+      "matchScore": 65
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T15:21:41.433Z",
+      "scopeSha256": "21e2bac48f1db30d2c3217bd900323b43970f20f08e30779ca92006ba036953f"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T15:21:41.439Z",
+      "proposedAmount": 75000,
+      "currency": "INR",
+      "proposalSha256": "04213afa63eaef26f68af13c95e388097f8c117bdfc7f73a2127437c040a3528"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-21T15:21:41.439Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-21T15:21:41.439Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "name": "Acme Enterprises",
+      "email": "procurement@acme.com",
+      "requirements": "Develop a custom multi-agent workflow for supply chain logistics and ERP data ingestion",
+      "budget": 75000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 65,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "estimatedINR": 75000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 37500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 37500,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101383_a3f585_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101383_a3f585_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "procurement@acme.com",
+      "message": "Commercial Proposal: Develop a custom multi-agent workflow for supply chain logis | Amount: INR 75,000",
+      "missionId": "rev_1790004101383_a3f585",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "04213afa63eaef26f68af13c95e388097f8c117bdfc7f73a2127437c040a3528"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "21e2bac48f1db30d2c3217bd900323b43970f20f08e30779ca92006ba036953f"
+        }
+      ]
+    }
+  }
+}

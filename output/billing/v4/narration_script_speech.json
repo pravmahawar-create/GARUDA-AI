@@ -1,0 +1,138 @@
+[
+  {
+    "id": "scene_01_hook",
+    "name": "Hook: Billing App vs Custom Software",
+    "intent": "hook",
+    "speech_text": "बिलिंग apps तो बहुत हैं... लेकिन आपके बिज़नेस के हिसाब से कस्टमाइज़्ड सॉफ्टवेयर?",
+    "energy": 0.9,
+    "pace": 1.05
+  },
+  {
+    "id": "scene_02_problem",
+    "name": "Real Business Problem",
+    "intent": "problem",
+    "speech_text": "फोकस सिर्फ़ बिल प्रिंटिंग पर नहीं... काउंटर का एक्चुअल बिज़नेस वर्कफ़्लो smoothly चलाना है.",
+    "energy": 0.85,
+    "pace": 1.04
+  },
+  {
+    "id": "scene_03_customer_gst",
+    "name": "GST Customer Entry & GSTIN Mode",
+    "intent": "live_demonstration",
+    "speech_text": "कस्टमर शर्मा हार्डवेयर... और यहाँ जीएसटीआईएन ऐड करते hi जीएसटी मोड activate.",
+    "energy": 0.88,
+    "pace": 1.04
+  },
+  {
+    "id": "scene_04_items_calc",
+    "name": "Live Items & Real-Time GST Calculation",
+    "intent": "explanatory",
+    "speech_text": "सीमेंट आइटम ऐड कीजिए... और देखिए रियल-टाइम सी जीएसटी और एस जीएसटी टैक्स कैलकुलेशन.",
+    "energy": 0.88,
+    "pace": 1.03
+  },
+  {
+    "id": "scene_05_offline",
+    "name": "Offline-First Proof",
+    "intent": "reassuring",
+    "speech_text": "इंटरनेट chala भी गया ना... बिलिंग रुकती नहीं. सौ प्रतिशत ऑफलाइन-first indexed डेटाबेस.",
+    "energy": 0.85,
+    "pace": 1.04
+  },
+  {
+    "id": "scene_06_hero_gst_bill",
+    "name": "Actual GST Bill Generation: HERO MOMENT",
+    "intent": "feature_reveal",
+    "speech_text": "अब बिल जनरेट करते हैं... और ये देखिए, एक्चुअल जीएसटी टैक्स इनवॉइस रेडी है.",
+    "energy": 0.92,
+    "pace": 1.03
+  },
+  {
+    "id": "scene_07_why_garuda",
+    "name": "Why GARUDA: Final Positioning",
+    "intent": "confident",
+    "speech_text": "यही है गरुड़ का डिफरेंस: real working जीएसटी सॉफ्टवेयर, टेलर-मेड for your बिज़नेस.",
+    "energy": 0.88,
+    "pace": 1.02
+  },
+  {
+    "id": "scene_08_brand_cta",
+    "name": "GARUDA Brand Moment & CTA",
+    "intent": "cta",
+    "speech_text": "कस्टम बिज़नेस सॉफ्टवेयर चाहिए? कनेक्ट कीजिए: गरुड़ ओ एस डॉट इन",
+    "energy": 0.88,
+    "pace": 1.03
+  },
+  {
+    "id": "m_scene_01_hook",
+    "name": "Master Hook: Problem vs Custom Engineering",
+    "intent": "hook",
+    "speech_text": "बिलिंग apps तो market में बहुत हैं... लेकिन kya वो आपके बिज़नेस के हिसाब से bane हैं?",
+    "energy": 0.9,
+    "pace": 1.04
+  },
+  {
+    "id": "m_scene_02_workflow",
+    "name": "Workflow-First Architecture",
+    "intent": "problem",
+    "speech_text": "गरुड़ में approach alag है. फोकस सिर्फ़ slip nikalne पर नहीं, pure काउंटर वर्कफ़्लो को streamline karne पर है.",
+    "energy": 0.86,
+    "pace": 1.03
+  },
+  {
+    "id": "m_scene_03_customer_gstin",
+    "name": "Customer & GSTIN Entry",
+    "intent": "discovery",
+    "speech_text": "कस्टमर सेलेक्ट कीजिए... शर्मा हार्डवेयर... और 15-digit जीएसटीआईएन enter करते hi वेरिफाइड जीएसटी मोड activate.",
+    "energy": 0.88,
+    "pace": 1.04
+  },
+  {
+    "id": "m_scene_04_items",
+    "name": "Catalog Item Entry",
+    "intent": "live_demonstration",
+    "speech_text": "अब आइटम्स ऐड करते हैं... सीमेंट अल्ट्राटेक 10 bags... rates और units कैटलॉग से ऑटो-populate hote हैं.",
+    "energy": 0.88,
+    "pace": 1.04
+  },
+  {
+    "id": "m_scene_05_gst_math",
+    "name": "Live Real-Time GST Calculation",
+    "intent": "result",
+    "speech_text": "यहाँ देखिए: सबटोटल तीन हज़ार नौ सौ पचास रुपये... सी जीएसटी नौ प्रतिशत और एस जीएसटी नौ प्रतिशत का automatic टैक्स ब्रेकअप, ग्रैंड टोटल चार हज़ार छह सौ इकसठ रुपये.",
+    "energy": 0.88,
+    "pace": 1.03
+  },
+  {
+    "id": "m_scene_06_offline",
+    "name": "Offline-First Resilience",
+    "intent": "reassuring",
+    "speech_text": "और agar काउंटर पर इंटरनेट chala jaye? कोई chinta नहीं. इंडेक्स डीबी लोकल आर्किटेक्चर पर poori बिलिंग लाइव रहती है.",
+    "energy": 0.86,
+    "pace": 1.03
+  },
+  {
+    "id": "m_scene_07_hero_bill",
+    "name": "Actual GST Bill Hero Shot",
+    "intent": "feature_reveal",
+    "speech_text": "अब बिल जनरेट करते हैं... और ये देखिए: complete टैक्स इनवॉइस, कस्टमर जीएसटीआईएन और थर्मल प्रिंट फॉर्मेट के साथ रेडी.",
+    "energy": 0.92,
+    "pace": 1.03
+  },
+  {
+    "id": "m_scene_08_differentiation",
+    "name": "Why GARUDA: The Architecture Answer",
+    "intent": "confident",
+    "speech_text": "गरुड़ का डिफरेंस यही है. Hum रेडी-made जेनेरिक टेम्प्लेट्स नहीं bechte — आपके बिज़नेस logic के according engineer करते हैं.",
+    "energy": 0.88,
+    "pace": 1.02
+  },
+  {
+    "id": "m_scene_09_brand_close",
+    "name": "GARUDA Outro & CTA",
+    "intent": "cta",
+    "speech_text": "आपके बिज़नेस के liye कस्टम सॉफ्टवेयर और automation चाहिए? Aaj hi कनेक्ट कीजिए: गरुड़ ओ एस डॉट इन",
+    "energy": 0.88,
+    "pace": 1.03
+  }
+]

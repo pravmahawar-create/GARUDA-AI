@@ -1,0 +1,364 @@
+{
+  "leadId": "lead_1790004110055_e5dd98",
+  "missionId": "acq_1790004110055_a9389d",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:50.051Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Status Hijacker",
+    "email": "hijacker@untrusted.com",
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "hijacker@untrusted.com"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Develop autonomous marketing intelligence engine",
+  "intent": {
+    "category": "HIGH_INTENT",
+    "confidence": 0.85,
+    "signals": [
+      "TECH_KEYWORDS:develop",
+      "TIMELINE_INDICATED"
+    ],
+    "reason": "Detailed technical scope with concrete deliverable indicators"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:50.093Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "matchedCapabilities": [
+      {
+        "id": "knowledge.research-synthesis",
+        "name": "Research and knowledge synthesis",
+        "category": "Research",
+        "universe": "knowledge",
+        "score": 50
+      },
+      {
+        "id": "digital_marketing.editorial_growth",
+        "name": "Editorial Calendars & Multi-Channel Content Factory",
+        "category": "Digital Marketing",
+        "universe": "content",
+        "score": 50
+      },
+      {
+        "id": "real_estate.growth_os",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "category": "Real Estate Intelligence",
+        "universe": "wealth",
+        "score": 35
+      },
+      {
+        "id": "creative.studio_orchestration",
+        "name": "Creative Studio Orchestration & IdentityLock™",
+        "category": "Creative Services",
+        "universe": "creative",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "knowledge.research-synthesis",
+      "category": "Research",
+      "name": "Research and knowledge synthesis",
+      "universe": "knowledge",
+      "confidenceScore": 94,
+      "score": 50,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "2-6 hours"
+    },
+    "primaryUniverse": "U01 Knowledge",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U20 Content",
+      "U24 Wealth & Real Estate",
+      "U19 Creative"
+    ],
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ],
+    "confidence": 0.5
+  },
+  "valueEstimation": {
+    "status": "UNKNOWN",
+    "estimatedINR": null,
+    "proposedAmount": 0,
+    "currency": "INR",
+    "source": "source_evidence_missing",
+    "confidence": 0
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": null,
+    "proposedAmount": 23500,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Develop autonomous marketing intelligence engine",
+    "clarificationQuestions": [
+      "What is your allocated budget range for this engagement?",
+      "Could you specify which existing APIs or legacy platforms need integration?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Develop autonomous marketing intelligence engine",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004110055_a9389d_proposal.md",
+    "proposalSha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05",
+    "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+  },
+  "founderGovernance": {
+    "requiresFounder": true,
+    "status": "AWAITING_FOUNDER_APPROVAL",
+    "dossier": {
+      "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:develop, TIMELINE_INDICATED",
+      "whatClientWants": "Develop autonomous marketing intelligence engine",
+      "whatGarudaCanDeliver": "Matched: Research and knowledge synthesis (Coverage: PARTIAL). Universe: U01 Knowledge",
+      "proposedScope": "End-to-end architecture & implementation for: Develop autonomous marketing intelligence engine; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 23,500 (Milestones: 1)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements",
+        "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004110055_a9389d_proposal.md",
+          "sha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "FOLLOWUP_READY",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": null,
+    "history": []
+  },
+  "commercialStatus": "AWAITING_FOUNDER",
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:50.055Z",
+      "leadId": "lead_1790004110055_e5dd98"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:50.055Z",
+      "intentCategory": "HIGH_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:develop",
+        "TIMELINE_INDICATED"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:50.055Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:50.061Z",
+      "proposalSha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:50.061Z"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-21T15:21:50.093Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-21T15:21:50.093Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004110055_a9389d_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004110055_a9389d_proposal.md",
+      "sizeBytes": 863,
+      "sha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+    }
+  ],
+  "communicationAction": {
+    "channel": "email",
+    "recipient": "hijacker@untrusted.com",
+    "message": "Commercial Proposal: Develop autonomous marketing intelligence engine | Proposed: INR 23,500",
+    "missionId": "acq_1790004110055_a9389d",
+    "requiresFounder": true,
+    "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+    "executionStatus": "REQUIRES_FOUNDER",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube8auy-6cd6d51c",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Develop autonomous marketing intelligence engine",
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "contact": "hijacker@untrusted.com",
+      "budget": null,
+      "timeline": "3-7 business days",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:50.051Z",
+        "summary": "Direct (direct / none)"
+      },
+      "isTest": false,
+      "environment": "production"
+    },
+    "capAssessment": {
+      "coverage": "PARTIAL",
+      "matchedCapabilities": [
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "category": "Research",
+          "universe": "knowledge",
+          "score": 50
+        },
+        {
+          "id": "digital_marketing.editorial_growth",
+          "name": "Editorial Calendars & Multi-Channel Content Factory",
+          "category": "Digital Marketing",
+          "universe": "content",
+          "score": 50
+        },
+        {
+          "id": "real_estate.growth_os",
+          "name": "Real Estate Growth OS & Performance Engine",
+          "category": "Real Estate Intelligence",
+          "universe": "wealth",
+          "score": 35
+        },
+        {
+          "id": "creative.studio_orchestration",
+          "name": "Creative Studio Orchestration & IdentityLock™",
+          "category": "Creative Services",
+          "universe": "creative",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "knowledge.research-synthesis",
+        "category": "Research",
+        "name": "Research and knowledge synthesis",
+        "universe": "knowledge",
+        "confidenceScore": 94,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-6 hours"
+      },
+      "primaryUniverse": "U01 Knowledge",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U20 Content",
+        "U24 Wealth & Real Estate",
+        "U19 Creative"
+      ],
+      "gaps": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "confidence": 0.5
+    },
+    "valEstimation": {
+      "status": "UNKNOWN",
+      "estimatedINR": null,
+      "proposedAmount": 0,
+      "currency": "INR",
+      "source": "source_evidence_missing",
+      "confidence": 0
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+        "amountINR": 23500,
+        "percentage": 100
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004110055_a9389d_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "hijacker@untrusted.com",
+      "message": "Commercial Proposal: Develop autonomous marketing intelligence engine | Proposed: INR 23,500",
+      "missionId": "acq_1790004110055_a9389d",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+        }
+      ]
+    }
+  }
+}

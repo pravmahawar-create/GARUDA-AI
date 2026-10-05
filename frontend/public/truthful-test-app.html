@@ -1,0 +1,81 @@
+<head>
+  <!-- 🦅 GARUDA PAWAN Mobile Superpower Container -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Truthful Test App">
+  <meta name="theme-color" content="#060503">
+  <link rel="icon" type="image/svg+xml" href="./icon-192.svg">
+  <link rel="apple-touch-icon" href="./icon-192.svg">
+</head>
+<h1>Hello</h1>
+
+  <!-- 🦅 GARUDA 1-Tap Home Screen Android Installation Hook -->
+  <div id="garuda-pwa-install-banner" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); width:90%; max-width:380px; background:#0B0F19; border:1px solid #D4AF37; border-radius:12px; padding:12px 16px; box-shadow:0 10px 30px rgba(0,0,0,0.8); z-index:999999; font-family:system-ui, -apple-system, sans-serif; color:#fff; align-items:center; justify-content:space-between; gap:12px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="./icon-192.svg" style="width:36px; height:36px; border-radius:8px;" alt="app icon" />
+      <div>
+        <div style="font-weight:800; font-size:13px; color:#FEF08A;">Install App on Phone</div>
+        <div style="font-size:11px; color:#94A3B8;">1-Tap Home Screen Launcher</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:6px;">
+      <button id="garuda-install-btn" style="background:#D4AF37; color:#000; font-weight:800; border:none; padding:7px 14px; border-radius:6px; font-size:12px; cursor:pointer;">Install</button>
+      <button id="garuda-install-close" style="background:transparent; color:#64748B; border:none; padding:4px; font-size:14px; cursor:pointer;">✕</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // 1. Service Worker Registration & OTA In-Place Self-Healing
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('./sw.js').then(function(reg) {
+            if (reg) {
+              reg.update();
+              window.addEventListener('focus', function() { reg.update(); });
+            }
+          }).catch(function(err) {
+            console.log('[GARUDA-SW] Registration notice:', err);
+          });
+        });
+
+        // Instant Hot-Reload when Pawan alters or repairs code
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+          console.log('[GARUDA-OTA] Live code altered by Pawan. Auto-refreshing container...');
+          window.location.reload();
+        });
+      }
+
+      // 2. Android Native Install Prompt Interception
+      var deferredPrompt = null;
+      var banner = document.getElementById('garuda-pwa-install-banner');
+      var installBtn = document.getElementById('garuda-install-btn');
+      var closeBtn = document.getElementById('garuda-install-close');
+
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (banner) banner.style.display = 'flex';
+      });
+
+      if (installBtn) {
+        installBtn.addEventListener('click', function() {
+          if (banner) banner.style.display = 'none';
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choice) {
+              deferredPrompt = null;
+            });
+          }
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          if (banner) banner.style.display = 'none';
+        });
+      }
+    })();
+  </script>

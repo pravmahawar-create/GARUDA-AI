@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>GARUDA OS — Power Demo | The Agentic Operating System</title>
+  <meta name="description" content="GARUDA OS — a sovereign agentic operating system. Watch a live workflow preview of 1000+ autonomous agents plan, build, verify and ship." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.garudaos.in/surprise.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="GARUDA OS — Power Demo" />
+  <meta property="og:description" content="A new power has awakened. Watch the GARUDA agentic workforce execute a full mission, live." />
+  <meta property="og:image" content="https://www.garudaos.in/favicon-512x512.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon/garuda-sigil-icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #04050c;
+      --bg-2: #080b18;
+      --panel: rgba(12, 16, 34, 0.72);
+      --line: rgba(120, 160, 255, 0.14);
+      --gold: #ffb347;
+      --gold-2: #ff8a00;
+      --cyan: #4de3ff;
+      --violet: #8b7bff;
+      --text: #e8ecff;
+      --muted: #8a93b8;
+      --ok: #46f0a8;
+      --danger: #ff5c7a;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Manrope", system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      overscroll-behavior: none;
+      overflow-x: hidden;
+    }
+
+    body { min-height: 100dvh; }
+
+    ::selection { background: rgba(255, 179, 71, 0.35); }
+
+    /* ---------- BOOT OVERLAY ---------- */
+    #boot {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    #boot.done { opacity: 0; visibility: hidden; pointer-events: none; }
+    .boot-inner { width: min(640px, 88vw); font-family: var(--mono); font-size: 13px; }
+    .boot-line { color: var(--muted); margin-bottom: 7px; opacity: 0; transform: translateY(6px); animation: bootIn 0.35s ease forwards; }
+    .boot-line .ok { color: var(--ok); }
+    .boot-line .hi { color: var(--gold); }
+    @keyframes bootIn { to { opacity: 1; transform: none; } }
+    .boot-sigil {
+      width: 74px; height: 74px; margin: 0 auto 26px;
+      display: block; filter: drop-shadow(0 0 18px rgba(255, 179, 71, 0.55));
+      animation: sigilPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes sigilPulse { 50% { transform: scale(1.06); filter: drop-shadow(0 0 34px rgba(255, 179, 71, 0.85)); } }
+    .boot-cursor::after { content: "\2588"; color: var(--gold); animation: blink 0.8s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ---------- BACKGROUND FIELD ---------- */
+    #field { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .grid-glow {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 45% at 50% -10%, rgba(77, 227, 255, 0.12), transparent 60%),
+        radial-gradient(ellipse 55% 40% at 85% 110%, rgba(255, 138, 0, 0.10), transparent 60%),
+        radial-gradient(ellipse 45% 35% at 10% 90%, rgba(139, 123, 255, 0.10), transparent 60%);
+    }
+    .grid-lines {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.35;
+      background-image:
+        linear-gradient(rgba(120, 160, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120, 160, 255, 0.06) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 85%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 85%);
+    }
+
+    .sim-badge {
+      position: fixed; top: 14px; right: 14px; z-index: 60;
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em;
+      color: rgba(232, 236, 255, 0.55);
+      border: 1px solid var(--line); background: rgba(8, 11, 24, 0.7);
+      padding: 6px 10px; border-radius: 999px; backdrop-filter: blur(8px);
+    }
+
+    main { position: relative; z-index: 10; max-width: 1080px; margin: 0 auto; padding: 0 20px 90px; }
+
+    /* ---------- HERO ---------- */
+    .hero { min-height: 92dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-top: 60px; }
+    .eyebrow {
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 22px;
+      padding: 8px 16px; border: 1px solid rgba(77, 227, 255, 0.25); border-radius: 999px;
+      background: rgba(77, 227, 255, 0.06);
+    }
+    .hero h1 {
+      font-family: "Playfair Display", serif; font-weight: 700;
+      font-size: clamp(56px, 13vw, 148px); line-height: 0.95; letter-spacing: 0.04em;
+      background: linear-gradient(115deg, #fff 15%, var(--gold) 48%, var(--gold-2) 72%, #fff 95%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: shimmer 5s linear infinite;
+      filter: drop-shadow(0 0 40px rgba(255, 179, 71, 0.25));
+    }
+    @keyframes shimmer { to { background-position: 200% center; } }
+    .hero h2 {
+      font-family: "Playfair Display", serif; font-style: italic; font-weight: 600;
+      font-size: clamp(20px, 4vw, 34px); color: var(--text); opacity: 0.9; margin-top: 14px;
+    }
+    .hero p.sub { color: var(--muted); font-size: clamp(14px, 2vw, 17px); max-width: 560px; margin: 20px auto 0; line-height: 1.7; }
+    .scroll-hint { margin-top: 46px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.3em; color: var(--muted); animation: bob 2s ease-in-out infinite; }
+    @keyframes bob { 50% { transform: translateY(8px); opacity: 0.5; } }
+
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ---------- STATS ---------- */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 10px; }
+    .stat {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+      padding: 26px 14px; text-align: center; backdrop-filter: blur(10px);
+      transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.16s ease;
+    }
+    .stat:active { transform: scale(0.975); }
+    .stat .num { font-family: var(--mono); font-weight: 600; font-size: clamp(26px, 4.5vw, 40px); color: var(--gold); }
+    .stat .lbl { margin-top: 8px; font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+
+    section { margin-top: 90px; }
+    .sec-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.35em; color: var(--cyan); text-transform: uppercase; }
+    .sec-title { font-family: "Playfair Display", serif; font-size: clamp(30px, 5vw, 48px); margin-top: 12px; font-weight: 700; }
+    .sec-desc { color: var(--muted); margin-top: 12px; max-width: 620px; line-height: 1.7; font-size: 15px; }
+
+    /* ---------- CONSOLE DEMO ---------- */
+    .console {
+      margin-top: 30px; background: rgba(6, 8, 18, 0.9); border: 1px solid var(--line);
+      border-radius: 18px; overflow: hidden; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+    }
+    .console-bar { display: flex; align-items: center; gap: 8px; padding: 13px 16px; border-bottom: 1px solid var(--line); background: rgba(12, 16, 34, 0.6); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
+    .console-title { margin-left: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
+    .console-body { display: grid; grid-template-columns: 240px 1fr; min-height: 380px; }
+    .agents { border-right: 1px solid var(--line); padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; background: rgba(8, 11, 24, 0.5); }
+    .agent {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid transparent; background: rgba(255, 255, 255, 0.025);
+      font-size: 13px; transition: all 0.3s ease;
+    }
+    .agent .pulse { width: 8px; height: 8px; border-radius: 50%; background: #3a4160; flex-shrink: 0; transition: all 0.3s ease; }
+    .agent.busy { border-color: rgba(77, 227, 255, 0.35); background: rgba(77, 227, 255, 0.07); }
+    .agent.busy .pulse { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation: blink 0.7s steps(1) infinite; }
+    .agent.done { border-color: rgba(70, 240, 168, 0.3); background: rgba(70, 240, 168, 0.06); }
+    .agent.done .pulse { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+    .agent small { color: var(--muted); display: block; font-size: 10.5px; margin-top: 2px; }
+    .log-wrap { padding: 16px; display: flex; flex-direction: column; }
+    #log { flex: 1; font-family: var(--mono); font-size: 12.5px; line-height: 1.75; overflow-y: auto; max-height: 330px; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(120,160,255,0.3) transparent; }
+    #log .ln { opacity: 0; animation: bootIn 0.3s ease forwards; }
+    #log .t { color: #4a5480; }
+    #log .info { color: var(--cyan); }
+    #log .win { color: var(--ok); }
+    #log .gold { color: var(--gold); }
+    #log .violet { color: var(--violet); }
+    .progress { height: 5px; background: rgba(255, 255, 255, 0.06); border-radius: 99px; margin-top: 14px; overflow: hidden; }
+    #bar { height: 100%; width: 0%; border-radius: 99px; background: linear-gradient(90deg, var(--cyan), var(--gold)); transition: width 0.5s ease; box-shadow: 0 0 12px rgba(255, 179, 71, 0.6); }
+    .run-btn {
+      margin-top: 16px; width: 100%; padding: 15px; border: none; border-radius: 12px;
+      font-family: var(--mono); font-size: 14px; font-weight: 600; letter-spacing: 0.22em; cursor: pointer;
+      color: #14100a; background: linear-gradient(115deg, var(--gold), var(--gold-2));
+      transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.16s ease, opacity 0.2s;
+      box-shadow: 0 8px 30px rgba(255, 138, 0, 0.35);
+      -webkit-user-select: none; user-select: none;
+    }
+    .run-btn:active { transform: scale(0.975); }
+    .run-btn:disabled { opacity: 0.55; cursor: wait; box-shadow: none; }
+
+    /* ---------- CAPABILITY GRID ---------- */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+    .card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px 22px;
+      backdrop-filter: blur(10px); position: relative; overflow: hidden;
+      transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.16s ease;
+    }
+    .card:hover { border-color: rgba(255, 179, 71, 0.4); transform: translateY(-4px); }
+    .card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0; transition: opacity 0.3s;
+    }
+    .card:hover::before { opacity: 1; }
+    .card .ico { font-size: 26px; margin-bottom: 14px; display: block; }
+    .card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .card p { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+
+    /* ---------- FINALE ---------- */
+    .finale { text-align: center; padding: 70px 0 20px; }
+    .finale h2 { font-family: "Playfair Display", serif; font-size: clamp(34px, 6vw, 64px); font-weight: 700; line-height: 1.15; }
+    .finale h2 em { font-style: italic; color: var(--gold); }
+    .finale p { color: var(--muted); margin-top: 18px; max-width: 540px; margin-inline: auto; line-height: 1.7; }
+    .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
+    .btn {
+      display: inline-block; padding: 16px 34px; border-radius: 12px; text-decoration: none;
+      font-weight: 700; font-size: 15px; letter-spacing: 0.04em;
+      transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.16s ease;
+    }
+    .btn:active { transform: scale(0.975); }
+    .btn.primary { color: #14100a; background: linear-gradient(115deg, var(--gold), var(--gold-2)); box-shadow: 0 10px 34px rgba(255, 138, 0, 0.4); }
+    .btn.ghost { color: var(--text); border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.04); }
+    footer { text-align: center; margin-top: 70px; font-family: var(--mono); font-size: 11.5px; color: #565f85; letter-spacing: 0.08em; }
+
+    @media (max-width: 760px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .cards { grid-template-columns: 1fr; }
+      .console-body { grid-template-columns: 1fr; }
+      .agents { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--line); overscroll-behavior-x: contain; touch-action: pan-x; scrollbar-width: none; }
+      .agents::-webkit-scrollbar { display: none; }
+      .agent { flex-shrink: 0; min-width: 150px; }
+      #log { max-height: 260px; }
+      section { margin-top: 64px; }
+      .hero { min-height: 84dvh; }
+    }
+  </style>
+</head>
+<body>
+  <div id="boot">
+    <div class="boot-inner">
+      <img class="boot-sigil" src="/favicon/garuda-sigil-icon.svg" alt="GARUDA" />
+      <div id="bootLines"></div>
+    </div>
+  </div>
+
+  <canvas id="field"></canvas>
+  <div class="grid-glow"></div>
+  <div class="grid-lines"></div>
+  <div class="sim-badge">WORKFLOW PREVIEW // SIMULATION</div>
+
+  <main>
+    <header class="hero">
+      <div class="eyebrow reveal">Sovereign Agentic Operating System</div>
+      <h1 class="reveal">GARUDA</h1>
+      <h2 class="reveal">A thousand engines. One will.</h2>
+      <p class="sub reveal">Duniya mein ek naya taqat aaya hai — ek autonomous agentic workforce jo sochta hai,
+        banata hai, verify karta hai, aur ship karta hai. Bina ruke. Bina thake. 24×7.</p>
+      <div class="scroll-hint">▼ SCROLL</div>
+    </header>
+
+    <div class="stats">
+      <div class="stat reveal"><div class="num" data-count="1000" data-suffix="+">0</div><div class="lbl">AUTONOMOUS AGENTS</div></div>
+      <div class="stat reveal"><div class="num" data-count="20" data-suffix="+">0</div><div class="lbl">AGENTIC SYSTEMS</div></div>
+      <div class="stat reveal"><div class="num" data-count="24" data-suffix="×7">0</div><div class="lbl">CLOUD-NATIVE UPTIME</div></div>
+      <div class="stat reveal"><div class="num" data-count="0" data-suffix="" data-text="ZERO">0</div><div class="lbl">MANUAL BOTTLENECKS</div></div>
+    </div>
+
+    <section>
+      <div class="sec-tag reveal">01 — Live Mission</div>
+      <div class="sec-title reveal">Watch the swarm work.</div>
+      <div class="sec-desc reveal">Ek mission do — aur GARUDA ke agents Scout, Architect, Builder aur Verifier banke
+        poora pipeline khud chalate hain. Neeche button dabao aur khud dekho.</div>
+
+      <div class="console reveal">
+        <div class="console-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="console-title">garuda-os // mission-control — swarm pipeline</span>
+        </div>
+        <div class="console-body">
+          <aside class="agents" id="agents">
+            <div class="agent" data-a="scout"><span class="pulse"></span><div>SCOUT<small>recon &amp; intel</small></div></div>
+            <div class="agent" data-a="architect"><span class="pulse"></span><div>ARCHITECT<small>blueprint &amp; plan</small></div></div>
+            <div class="agent" data-a="builder"><span class="pulse"></span><div>BUILDER<small>code &amp; compile</small></div></div>
+            <div class="agent" data-a="verifier"><span class="pulse"></span><div>VERIFIER<small>SHA-256 proof</small></div></div>
+            <div class="agent" data-a="shipper"><span class="pulse"></span><div>SHIPPER<small>deploy &amp; report</small></div></div>
+          </aside>
+          <div class="log-wrap">
+            <div id="log"><div class="ln"><span class="t">[idle]</span> Awaiting mission command…</div></div>
+            <div class="progress"><div id="bar"></div></div>
+            <button class="run-btn" id="runBtn">▶ EXECUTE MISSION</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-tag reveal">02 — Arsenal</div>
+      <div class="sec-title reveal">One OS. Every battlefield.</div>
+      <div class="cards">
+        <div class="card reveal"><span class="ico">🛰️</span><h3>Outreach Swarm</h3><p>Problem-first proposals, visual briefs aur follow-ups — har prospect ke liye custom, surgical precision se.</p></div>
+        <div class="card reveal"><span class="ico">🧠</span><h3>Persistent Memory</h3><p>Har mission ka post-mortem synapse ban jaata hai. Ek galti dobara kabhi nahi hoti — Zero-Repeat Law.</p></div>
+        <div class="card reveal"><span class="ico">⚔️</span><h3>Full-Stack Forge</h3><p>Web, SaaS MVP, mobile apps, automation — 1000-engineer speed se build, test aur deploy.</p></div>
+        <div class="card reveal"><span class="ico">🛡️</span><h3>Anti-Fabrication Core</h3><p>Show &gt; Tell. Har claim verified SHA-256 evidence ke saath. GARUDA kabhi jhooth nahi bolta.</p></div>
+        <div class="card reveal"><span class="ico">📡</span><h3>BOT-VERSE Omnipresence</h3><p>SEO, social aur organic flywheel — brand har jagah, har waqt, bina ruke.</p></div>
+        <div class="card reveal"><span class="ico">👑</span><h3>Sovereign Command</h3><p>Founder ek aadesh deta hai — swarm end-to-end nonstop execute kar deta hai. Zero friction.</p></div>
+      </div>
+    </section>
+
+    <section class="finale">
+      <h2 class="reveal">A new power has <em>awakened.</em></h2>
+      <p class="reveal">Ye bas ek jhalak thi. Asli GARUDA OS live hai — aur duniya badal chuki hai.</p>
+      <div class="cta-row reveal">
+        <a class="btn primary" href="https://www.garudaos.in" target="_blank" rel="noopener">Enter GARUDA OS →</a>
+        <a class="btn ghost" href="https://www.garudaos.in/chat" target="_blank" rel="noopener">Talk to the Swarm</a>
+      </div>
+      <footer>GARUDA OS © Founder Praveen Mahawar · garudaos.in</footer>
+    </section>
+  </main>
+
+  <script>
+    /* ---------- ANTI-FLICKER: reveal on scroll ---------- */
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+    /* ---------- BOOT SEQUENCE ---------- */
+    const bootMsgs = [
+      'GARUDA OS <span class="hi">v4.0</span> — cold boot initiated',
+      'mounting sovereign memory bank ........ <span class="ok">OK</span>',
+      'spawning agent swarm [1000+] .......... <span class="ok">OK</span>',
+      'anti-fabrication law enforcement ....... <span class="ok">ACTIVE</span>',
+      'linking mission control ............... <span class="ok">OK</span>',
+      '<span class="hi">GARUDA IS LIVE. A new power has awakened.</span>'
+    ];
+    const bootBox = document.getElementById("bootLines");
+    let bi = 0;
+    function bootStep() {
+      if (bi < bootMsgs.length) {
+        const d = document.createElement("div");
+        d.className = "boot-line" + (bi === bootMsgs.length - 1 ? " boot-cursor" : "");
+        d.innerHTML = "&gt; " + bootMsgs[bi];
+        d.style.animationDelay = "0s";
+        bootBox.appendChild(d);
+        bi++;
+        setTimeout(bootStep, bi === bootMsgs.length ? 900 : 420);
+      } else {
+        document.getElementById("boot").classList.add("done");
+      }
+    }
+    setTimeout(bootStep, 350);
+    document.getElementById("boot").addEventListener("click", () => document.getElementById("boot").classList.add("done"));
+
+    /* ---------- PARTICLE FIELD ---------- */
+    const cv = document.getElementById("field"), cx = cv.getContext("2d");
+    let W, H, parts = [];
+    function sizeCv() {
+      W = cv.width = window.innerWidth; H = cv.height = window.innerHeight;
+      parts = Array.from({ length: Math.min(90, Math.floor(W / 16)) }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.7 + 0.4, h: Math.random() < 0.5 ? 42 : 38
+      }));
+    }
+    sizeCv(); window.addEventListener("resize", sizeCv);
+    (function loop() {
+      cx.clearRect(0, 0, W, H);
+      for (const p of parts) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.29);
+        cx.fillStyle = p.h === 42 ? "rgba(77,227,255,0.55)" : "rgba(255,179,71,0.5)";
+        cx.fill();
+      }
+      requestAnimationFrame(loop);
+    })();
+
+    /* ---------- COUNTERS ---------- */
+    const cio = new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target; cio.unobserve(el);
+        if (el.dataset.text) { el.textContent = el.dataset.text; return; }
+        const target = +el.dataset.count, suf = el.dataset.suffix || "";
+        let n = 0; const step = Math.max(1, Math.ceil(target / 60));
+        const iv = setInterval(() => {
+          n += step;
+          if (n >= target) { n = target; clearInterval(iv); }
+          el.textContent = n + suf;
+        }, 28);
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll(".num").forEach((el) => cio.observe(el));
+
+    /* ---------- MISSION SIMULATION ---------- */
+    const script = [
+      { a: "scout", ms: 220, lines: [
+        ['info', 'SCOUT online — scanning target surface…'],
+        ['t', 'recon: stack fingerprint, public intel, pain points mapped']
+      ]},
+      { a: "architect", ms: 240, lines: [
+        ['violet', 'ARCHITECT online — drafting execution blueprint…'],
+        ['t', 'plan: 6 steps · dependencies resolved · risk gate armed']
+      ]},
+      { a: "builder", ms: 300, lines: [
+        ['gold', 'BUILDER online — writing production code…'],
+        ['t', 'modules compiled · tests written · lint clean']
+      ]},
+      { a: "verifier", ms: 240, lines: [
+        ['info', 'VERIFIER online — forensic audit layer…'],
+        ['win', 'SHA-256 evidence locked · 0 fabrications · exit code 0']
+      ]},
+      { a: "shipper", ms: 200, lines: [
+        ['gold', 'SHIPPER online — deploying to production…'],
+        ['win', 'MISSION COMPLETE — GARUDA never sleeps. 🕉️']
+      ]}
+    ];
+    const runBtn = document.getElementById("runBtn");
+    const logBox = document.getElementById("log");
+    const bar = document.getElementById("bar");
+    let running = false;
+
+    function stamp() {
+      const d = new Date();
+      return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + ':' + String(d.getSeconds()).padStart(2, '0');
+    }
+    function addLog(cls, text) {
+      const d = document.createElement("div");
+      d.className = "ln";
+      d.innerHTML = '<span class="t">[' + stamp() + ']</span> <span class="' + cls + '">' + text + '</span>';
+      logBox.appendChild(d);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+    runBtn.addEventListener("click", async () => {
+      if (running) return;
+      running = true; runBtn.disabled = true;
+      runBtn.textContent = "⧗ SWARM EXECUTING…";
+      logBox.innerHTML = "";
+      bar.style.width = "0%";
+      document.querySelectorAll(".agent").forEach((a) => a.classList.remove("busy", "done"));
+      addLog("gold", "MISSION #A7F3 dispatched → full autonomous pipeline engaged");
+      let done = 0;
+      for (const st of script) {
+        const node = document.querySelector('.agent[data-a="' + st.a + '"]');
+        node.classList.add("busy");
+        await sleep(st.ms);
+        for (const [cls, txt] of st.lines) { addLog(cls, txt); await sleep(240); }
+        node.classList.remove("busy"); node.classList.add("done");
+        done++;
+        bar.style.width = Math.round((done / script.length) * 100) + "%";
+      }
+      addLog("win", "proof manifest signed · report delivered to Founder command channel");
+      runBtn.textContent = "↻ RUN AGAIN";
+      runBtn.disabled = false;
+      running = false;
+    });
+  </script>
+</body>
+</html>

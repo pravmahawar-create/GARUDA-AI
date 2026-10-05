@@ -1,0 +1,225 @@
+{
+  "missionId": "acq_1790003373115_ab3390",
+  "leadId": "lead_1790003373115_6b61c7",
+  "clientId": "client_6b61c7",
+  "projectId": "proj_acq_1790003373115_ab3390",
+  "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+  "currency": "INR",
+  "proposedAmount": 95000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "acq_1790003373115_ab3390_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003373115_ab3390_scope.json",
+      "sizeBytes": 984,
+      "sha256": "80e3fd831397db18e775108a69d5d61379e88012f704c279bc67f9b5b32daced"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "acq_1790003373115_ab3390_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003373115_ab3390_proposal.md",
+      "sizeBytes": 917,
+      "sha256": "145e2b8790572abef39319bc43de855780131df6008a6cf75da82daeef0ba9df"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "acq_1790003373115_ab3390_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003373115_ab3390_deliverable.js",
+      "sizeBytes": 409,
+      "sha256": "7bbd572cb68579d2de9f2398bdab103c55951efc0aeed2910a42b647824edb6f"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "acq_1790003373115_ab3390_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003373115_ab3390_DELIVERY_MANIFEST.md",
+      "sizeBytes": 274,
+      "sha256": "31c84f06da0657bba86d667370a8cf4431e8288840801d925b81bc5ef1f8025b"
+    }
+  ],
+  "confidence": 0.7,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_PAYMENT_SETTLEMENT",
+    "requiresFounder": false,
+    "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+  },
+  "state": "AWAITING_PAYMENT",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T15:09:33.159Z",
+      "leadId": "lead_1790003373115_6b61c7",
+      "customer": "Dr. Vikram Sethi"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T15:09:33.159Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:09:33.160Z",
+      "bestCapability": "Automated QA Test Suite & Validation",
+      "matchScore": 50
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T15:09:33.163Z",
+      "scopeSha256": "80e3fd831397db18e775108a69d5d61379e88012f704c279bc67f9b5b32daced"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T15:09:33.170Z",
+      "proposedAmount": 95000,
+      "currency": "INR",
+      "proposalSha256": "145e2b8790572abef39319bc43de855780131df6008a6cf75da82daeef0ba9df"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:09:33.170Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T15:09:33.170Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T15:09:33.170Z",
+      "acceptedAt": "2026-09-21T15:09:33.170Z",
+      "signer": "Dr. Vikram Sethi"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T15:09:33.170Z",
+      "projectId": "proj_acq_1790003373115_ab3390"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T15:09:33.199Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T15:09:33.199Z",
+      "manifestSha": "31c84f06da0657bba86d667370a8cf4431e8288840801d925b81bc5ef1f8025b",
+      "deliveredAt": "2026-09-21T15:09:33.199Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T15:09:33.199Z"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "leadId": "lead_1790003373115_6b61c7",
+      "missionId": "acq_1790003373115_ab3390",
+      "clientId": "client_6b61c7",
+      "name": "Dr. Vikram Sethi",
+      "email": "vikram.sethi@aether-telemetry.io",
+      "phone": "+91-98100-23456",
+      "company": "Aether Telemetry Systems Ltd",
+      "requirements": "Architect and implement an autonomous enterprise telemetry pipeline with streaming AST validation, real-time event ingestion, and automated unit test suites",
+      "statedAmount": 95000
+    },
+    "bestCap": {
+      "capabilityId": "testing.quality-assurance",
+      "category": "Quality Assurance",
+      "name": "Automated QA Test Suite & Validation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 50,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "2-6 hours"
+    },
+    "estimatedINR": 95000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 47500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 47500,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003373115_ab3390_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003373115_ab3390_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "vikram.sethi@aether-telemetry.io",
+      "message": "Commercial Proposal: Architect and implement an autonomous enterprise telemetry p | Amount: INR 95,000",
+      "missionId": "acq_1790003373115_ab3390",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "145e2b8790572abef39319bc43de855780131df6008a6cf75da82daeef0ba9df"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "80e3fd831397db18e775108a69d5d61379e88012f704c279bc67f9b5b32daced"
+        }
+      ]
+    },
+    "projectRecord": {
+      "projectId": "proj_acq_1790003373115_ab3390",
+      "missionId": "acq_1790003373115_ab3390",
+      "client": {
+        "name": "Dr. Vikram Sethi",
+        "email": "vikram.sethi@aether-telemetry.io",
+        "phone": "+91-98100-23456",
+        "contact": "vikram.sethi@aether-telemetry.io"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003373115_ab3390_scope.json",
+        "sha256": "80e3fd831397db18e775108a69d5d61379e88012f704c279bc67f9b5b32daced"
+      },
+      "approvedTerms": {
+        "amount": 95000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 47500,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 47500,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "80e3fd831397db18e775108a69d5d61379e88012f704c279bc67f9b5b32daced",
+        "145e2b8790572abef39319bc43de855780131df6008a6cf75da82daeef0ba9df"
+      ]
+    },
+    "founderApproved": true,
+    "clientAccepted": true
+  }
+}

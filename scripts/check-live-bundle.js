@@ -1,20 +1,17 @@
-(async () => {
-  try {
-    const res = await fetch("https://www.garudaos.in/dost?_v=" + Date.now());
-    const html = await res.text();
-    const scriptMatch = html.match(/src="\/assets\/(index-[^"]+\.js)"/);
-    if (scriptMatch) {
-      const scriptUrl = "https://www.garudaos.in/assets/" + scriptMatch[1];
-      console.log("Live Bundle URL:", scriptUrl);
-      const bundleRes = await fetch(scriptUrl);
-      const bundleText = await bundleRes.text();
-      console.log("Bundle has garuda_dost_leads:", bundleText.includes("garuda_dost_leads"));
-      console.log("Bundle has garuda_pawan_chat_messages:", bundleText.includes("garuda_pawan_chat_messages"));
-      console.log("Bundle has showFounderPasskeyModal:", bundleText.includes("showFounderPasskeyModal") || bundleText.includes("praveen_garuda_core"));
-    } else {
-      console.log("No bundle match found in HTML");
-    }
-  } catch (e) {
-    console.error(e.message);
-  }
-})();
+const https = require('https');
+
+function check(url) {
+  https.get(url + '?nocache=' + Date.now(), {
+    headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache', 'User-Agent': 'Mozilla/5.0' }
+  }, res => {
+    let data = '';
+    res.on('data', c => data += c);
+    res.on('end', () => {
+      const scripts = data.match(/\/assets\/[a-zA-Z0-9_\-\.]+\.js/g);
+      console.log(url, 'Status:', res.statusCode, 'Scripts:', scripts ? scripts.slice(0, 3) : 'none');
+    });
+  });
+}
+
+check('https://www.garudaos.in/war-room');
+check('https://garuda-ai-v1.vercel.app/war-room');

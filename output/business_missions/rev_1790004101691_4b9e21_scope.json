@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790004101691_4b9e21",
+  "leadId": "lead_1790004101691_50414d",
+  "clientId": "client_091190",
+  "customer": {
+    "name": "Beta Testers Ltd",
+    "email": "tester@betatesters.com",
+    "phone": null,
+    "contact": "tester@betatesters.com"
+  },
+  "requirements": "Configure end-to-end sandbox testing suite with mock fixtures and assert checks",
+  "capability": "Automated QA Test Suite & Validation",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 35000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 17500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 17500,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "2-6 hours",
+  "createdAt": "2026-09-21T15:21:41.693Z"
+}

@@ -1,0 +1,327 @@
+{
+  "leadId": "lead_1790004103618_1dcc0d",
+  "missionId": "acq_1790004103618_4b73e2",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:43.618Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Harish Patel",
+    "email": null,
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "harish@realestate-hub.test"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Build automated high-performance scraper and notification pipeline for real estate listings",
+  "intent": {
+    "category": "HIGH_INTENT",
+    "confidence": 0.85,
+    "signals": [
+      "TECH_KEYWORDS:build,scraper",
+      "BUDGET_INDICATED"
+    ],
+    "reason": "Detailed technical scope with concrete deliverable indicators"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:43.652Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "matchedCapabilities": [
+      {
+        "id": "real_estate.growth_os",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "category": "Real Estate Intelligence",
+        "universe": "wealth",
+        "score": 65
+      },
+      {
+        "id": "engineering.repository-audit",
+        "name": "Repository architecture and quality audit",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "automation.workflow-automation",
+        "name": "Business Workflow & Process Automation",
+        "category": "Workflow Automation",
+        "universe": "automation",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "real_estate.growth_os",
+      "category": "Real Estate Intelligence",
+      "name": "Real Estate Growth OS & Performance Engine",
+      "universe": "wealth",
+      "confidenceScore": 94,
+      "score": 65,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "2-8 hours"
+    },
+    "primaryUniverse": "U24 Wealth & Real Estate",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U24 Wealth & Real Estate",
+      "U06 Automation",
+      "U07 Communication"
+    ],
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ],
+    "confidence": 0.65
+  },
+  "valueEstimation": {
+    "status": "ESTIMATED",
+    "estimatedINR": 50000,
+    "proposedAmount": 50000,
+    "currency": "INR",
+    "source": "client_stated_budget",
+    "confidence": 0.9
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": 50000,
+    "proposedAmount": 50000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Build automated high-performance scraper and notification pipeline for real estate listings",
+    "clarificationQuestions": [
+      "What is your expected timeline or target delivery deadline?",
+      "Could you specify which existing APIs or legacy platforms need integration?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Build automated high-performance scraper and notification pipeline for real estate listings",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103618_4b73e2_proposal.md",
+    "proposalSha256": "768fb4b9bec5c95f290bd7e30be898351a47ee712d8eedcd231dc86de4dd80bd",
+    "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+  },
+  "founderGovernance": {
+    "requiresFounder": true,
+    "status": "AWAITING_FOUNDER_APPROVAL",
+    "dossier": {
+      "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:build,scraper, BUDGET_INDICATED",
+      "whatClientWants": "Build automated high-performance scraper and notification pipeline for real estate listings",
+      "whatGarudaCanDeliver": "Matched: Real Estate Growth OS & Performance Engine (Coverage: PARTIAL). Universe: U24 Wealth & Real Estate",
+      "proposedScope": "End-to-end architecture & implementation for: Build automated high-performance scraper and notification pipeline for real estate listings; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 50,000 (Milestones: 2)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103618_4b73e2_proposal.md",
+          "sha256": "768fb4b9bec5c95f290bd7e30be898351a47ee712d8eedcd231dc86de4dd80bd"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "FOLLOWUP_READY",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": null,
+    "history": []
+  },
+  "commercialStatus": "AWAITING_FOUNDER",
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:43.618Z",
+      "leadId": "lead_1790004103618_1dcc0d"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:43.618Z",
+      "intentCategory": "HIGH_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:build,scraper",
+        "BUDGET_INDICATED"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.618Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:43.623Z",
+      "proposalSha256": "768fb4b9bec5c95f290bd7e30be898351a47ee712d8eedcd231dc86de4dd80bd"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:43.623Z"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-21T15:21:43.652Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-21T15:21:43.652Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004103618_4b73e2_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103618_4b73e2_proposal.md",
+      "sizeBytes": 1003,
+      "sha256": "768fb4b9bec5c95f290bd7e30be898351a47ee712d8eedcd231dc86de4dd80bd"
+    }
+  ],
+  "communicationAction": {
+    "channel": "telegram",
+    "recipient": "harish@realestate-hub.test",
+    "message": "Commercial Proposal: Build automated high-performance scraper and notification pipeline for real esta | Proposed: INR 50,000",
+    "missionId": "acq_1790004103618_4b73e2",
+    "requiresFounder": true,
+    "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+    "executionStatus": "REQUIRES_FOUNDER",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "768fb4b9bec5c95f290bd7e30be898351a47ee712d8eedcd231dc86de4dd80bd"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube85w0-4b01d2aa",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Build automated high-performance scraper and notification pipeline for real estate listings",
+      "name": "Harish Patel",
+      "contact": "harish@realestate-hub.test",
+      "budget": 50000
+    },
+    "capAssessment": {
+      "coverage": "PARTIAL",
+      "matchedCapabilities": [
+        {
+          "id": "real_estate.growth_os",
+          "name": "Real Estate Growth OS & Performance Engine",
+          "category": "Real Estate Intelligence",
+          "universe": "wealth",
+          "score": 65
+        },
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "category": "Workflow Automation",
+          "universe": "automation",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "real_estate.growth_os",
+        "category": "Real Estate Intelligence",
+        "name": "Real Estate Growth OS & Performance Engine",
+        "universe": "wealth",
+        "confidenceScore": 94,
+        "score": 65,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      "primaryUniverse": "U24 Wealth & Real Estate",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U24 Wealth & Real Estate",
+        "U06 Automation",
+        "U07 Communication"
+      ],
+      "gaps": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "confidence": 0.65
+    },
+    "valEstimation": {
+      "status": "ESTIMATED",
+      "estimatedINR": 50000,
+      "proposedAmount": 50000,
+      "currency": "INR",
+      "source": "client_stated_budget",
+      "confidence": 0.9
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Core Architecture & Build",
+        "amountINR": 25000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Production Handover",
+        "amountINR": 25000,
+        "percentage": 50
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103618_4b73e2_proposal.md",
+    "communicationAction": {
+      "channel": "telegram",
+      "recipient": "harish@realestate-hub.test",
+      "message": "Commercial Proposal: Build automated high-performance scraper and notification pipeline for real esta | Proposed: INR 50,000",
+      "missionId": "acq_1790004103618_4b73e2",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "768fb4b9bec5c95f290bd7e30be898351a47ee712d8eedcd231dc86de4dd80bd"
+        }
+      ]
+    }
+  }
+}

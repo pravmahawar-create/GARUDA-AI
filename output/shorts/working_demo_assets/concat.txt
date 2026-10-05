@@ -1,0 +1,4 @@
+file 'C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/output/shorts/working_demo_assets/part1.mp4'
+file 'C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/output/shorts/working_demo_assets/part2.mp4'
+file 'C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/output/shorts/working_demo_assets/part3.mp4'
+file 'C:/Users/hp/OneDrive/GARUDA/GARUDA-AI/output/shorts/working_demo_assets/part4.mp4'

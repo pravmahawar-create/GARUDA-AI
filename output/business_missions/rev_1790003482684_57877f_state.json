@@ -1,0 +1,217 @@
+{
+  "missionId": "rev_1790003482684_57877f",
+  "leadId": "lead_1790003482684_1f8478",
+  "clientId": "client_b51eb4",
+  "projectId": "proj_rev_1790003482684_57877f",
+  "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+  "currency": "INR",
+  "proposedAmount": 60000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 60000,
+  "invoiceStatus": "INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790003482684_57877f_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003482684_57877f_scope.json",
+      "sizeBytes": 880,
+      "sha256": "25c2f7db25d8e4f7a8182763a8c2a5af20cf2cd52372b1cfe5d0571b4f589c22"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790003482684_57877f_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003482684_57877f_proposal.md",
+      "sizeBytes": 842,
+      "sha256": "87feca9db0f03f4b03367acb6bf5818d49e7792c36f3b7b27926e07b0c3ea3a5"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790003482684_57877f_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003482684_57877f_deliverable.js",
+      "sizeBytes": 407,
+      "sha256": "e4da4a8cc13f07090c6cd83030c8e839f84c719c845bb24c22e650d0be06a924"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790003482684_57877f_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003482684_57877f_DELIVERY_MANIFEST.md",
+      "sizeBytes": 273,
+      "sha256": "33caa91f5b6b1cd52741d5151658085262ef6cf144db6ea777c4878476476997"
+    }
+  ],
+  "confidence": 0.7,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_PAYMENT_SETTLEMENT",
+    "requiresFounder": false,
+    "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+  },
+  "state": "AWAITING_PAYMENT",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T15:11:22.684Z",
+      "leadId": "lead_1790003482684_1f8478",
+      "customer": "TechCorp Global"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T15:11:22.684Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:11:22.685Z",
+      "bestCapability": "Custom Governed Software Engineering",
+      "matchScore": 0
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T15:11:22.686Z",
+      "scopeSha256": "25c2f7db25d8e4f7a8182763a8c2a5af20cf2cd52372b1cfe5d0571b4f589c22"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T15:11:22.688Z",
+      "proposedAmount": 60000,
+      "currency": "INR",
+      "proposalSha256": "87feca9db0f03f4b03367acb6bf5818d49e7792c36f3b7b27926e07b0c3ea3a5"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:11:22.688Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T15:11:22.688Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T15:11:22.688Z",
+      "acceptedAt": "2026-09-21T15:11:22.688Z",
+      "signer": "TechCorp Global"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T15:11:22.688Z",
+      "projectId": "proj_rev_1790003482684_57877f"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T15:11:22.719Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T15:11:22.719Z",
+      "manifestSha": "33caa91f5b6b1cd52741d5151658085262ef6cf144db6ea777c4878476476997",
+      "deliveredAt": "2026-09-21T15:11:22.719Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T15:11:22.719Z"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "name": "TechCorp Global",
+      "email": "finance@techcorp.com",
+      "requirements": "Build automated test infrastructure and continuous regression verification harness",
+      "budget": 60000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "name": "Custom Governed Software Engineering",
+      "category": "Software Engineering",
+      "estimatedDeliveryTime": "3-7 business days",
+      "confidenceScore": 85
+    },
+    "estimatedINR": 60000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 30000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 30000,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003482684_57877f_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003482684_57877f_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "finance@techcorp.com",
+      "message": "Commercial Proposal: Build automated test infrastructure and continuous regressio | Amount: INR 60,000",
+      "missionId": "rev_1790003482684_57877f",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "87feca9db0f03f4b03367acb6bf5818d49e7792c36f3b7b27926e07b0c3ea3a5"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "25c2f7db25d8e4f7a8182763a8c2a5af20cf2cd52372b1cfe5d0571b4f589c22"
+        }
+      ]
+    },
+    "projectRecord": {
+      "projectId": "proj_rev_1790003482684_57877f",
+      "missionId": "rev_1790003482684_57877f",
+      "client": {
+        "name": "TechCorp Global",
+        "email": "finance@techcorp.com",
+        "phone": null,
+        "contact": "finance@techcorp.com"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790003482684_57877f_scope.json",
+        "sha256": "25c2f7db25d8e4f7a8182763a8c2a5af20cf2cd52372b1cfe5d0571b4f589c22"
+      },
+      "approvedTerms": {
+        "amount": 60000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 30000,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 30000,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "25c2f7db25d8e4f7a8182763a8c2a5af20cf2cd52372b1cfe5d0571b4f589c22",
+        "87feca9db0f03f4b03367acb6bf5818d49e7792c36f3b7b27926e07b0c3ea3a5"
+      ]
+    },
+    "founderApproved": true,
+    "clientAccepted": true
+  }
+}

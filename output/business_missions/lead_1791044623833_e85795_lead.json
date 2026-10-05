@@ -1,0 +1,380 @@
+{
+  "leadId": "lead_1791044623833_e85795",
+  "missionId": "acq_1791044623833_819941",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-10-03T16:23:43.819Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "E2E Tester",
+    "email": "e2e@testcorp.com",
+    "phone": "+91 99999 88888",
+    "company": "UNKNOWN",
+    "contact": "e2e@testcorp.com"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Fintech Gateway Architecture for Test Automation Corp: cloud-starter deployment model with expected volume < ₹10 lakh. Zero-custody settlement and multi-rail routing.",
+  "intent": {
+    "category": "HIGH_INTENT",
+    "confidence": 0.85,
+    "signals": [
+      "TECH_KEYWORDS:automation,architecture",
+      "BUDGET_INDICATED",
+      "TIMELINE_INDICATED"
+    ],
+    "reason": "Detailed technical scope with concrete deliverable indicators"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-10-03T16:23:43.854Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "matchedCapabilities": [
+      {
+        "id": "automation.workflow-automation",
+        "name": "Business Workflow & Process Automation",
+        "category": "Workflow Automation",
+        "universe": "automation",
+        "score": 65
+      },
+      {
+        "id": "engineering.software-implementation",
+        "name": "Governed software implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 50
+      },
+      {
+        "id": "ai.agent-engineering",
+        "name": "Custom AI Agents & RAG Pipeline Engineering",
+        "category": "AI Agents",
+        "universe": "engineering",
+        "score": 50
+      },
+      {
+        "id": "engineering.repository-audit",
+        "name": "Repository architecture and quality audit",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "automation.spreadsheet-automation",
+        "name": "Excel & Google Sheets Data Automation",
+        "category": "Spreadsheet Automation",
+        "universe": "automation",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "automation.workflow-automation",
+      "category": "Workflow Automation",
+      "name": "Business Workflow & Process Automation",
+      "universe": "automation",
+      "confidenceScore": 88,
+      "score": 65,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "2-8 hours"
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation",
+      "U19 Creative",
+      "U12 Finance"
+    ],
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ],
+    "confidence": 0.65
+  },
+  "valueEstimation": {
+    "status": "UNKNOWN",
+    "estimatedINR": null,
+    "proposedAmount": 0,
+    "currency": "INR",
+    "source": "source_evidence_missing",
+    "confidence": 0
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": null,
+    "proposedAmount": 22000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Fintech Gateway Architecture for Test Automation Corp: cloud-starter deployment model with expected volume < ₹10 lakh. Zero-custody settlement and multi-rail routing.",
+    "clarificationQuestions": [
+      "What is your allocated budget range for this engagement?",
+      "Could you specify which existing APIs or legacy platforms need integration?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Fintech Gateway Architecture for Test Automation Corp: cloud-starter deployment model with expected ",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1791044623833_819941_proposal.md",
+    "proposalSha256": "c9a1c05a3208579b6491863c97edb40d9f9cc596bc38d02fa3dbff68a55d3486",
+    "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+  },
+  "founderGovernance": {
+    "requiresFounder": true,
+    "status": "AWAITING_FOUNDER_APPROVAL",
+    "dossier": {
+      "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:automation,architecture, BUDGET_INDICATED, TIMELINE_INDICATED",
+      "whatClientWants": "Fintech Gateway Architecture for Test Automation Corp: cloud-starter deployment model with expected volume < ₹10 lakh. Zero-custody settlement and multi-rail routing.",
+      "whatGarudaCanDeliver": "Matched: Business Workflow & Process Automation (Coverage: PARTIAL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Fintech Gateway Architecture for Test Automation Corp: cloud-starter deployment model with expected ; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 22,000 (Milestones: 1)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements",
+        "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1791044623833_819941_proposal.md",
+          "sha256": "c9a1c05a3208579b6491863c97edb40d9f9cc596bc38d02fa3dbff68a55d3486"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "FOLLOWUP_READY",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": null,
+    "history": []
+  },
+  "commercialStatus": "AWAITING_FOUNDER",
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-10-03T16:23:43.833Z",
+      "leadId": "lead_1791044623833_e85795"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-10-03T16:23:43.834Z",
+      "intentCategory": "HIGH_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:automation,architecture",
+        "BUDGET_INDICATED",
+        "TIMELINE_INDICATED"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-10-03T16:23:43.834Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-10-03T16:23:43.838Z",
+      "proposalSha256": "c9a1c05a3208579b6491863c97edb40d9f9cc596bc38d02fa3dbff68a55d3486"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-10-03T16:23:43.838Z"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-10-03T16:23:43.854Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-10-03T16:23:43.854Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1791044623833_819941_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1791044623833_819941_proposal.md",
+      "sizeBytes": 984,
+      "sha256": "c9a1c05a3208579b6491863c97edb40d9f9cc596bc38d02fa3dbff68a55d3486"
+    }
+  ],
+  "communicationAction": {
+    "channel": "email",
+    "recipient": "e2e@testcorp.com",
+    "message": "Commercial Proposal: Fintech Gateway Architecture for Test Automation Corp: cloud-starter deployment  | Proposed: INR 22,000",
+    "missionId": "acq_1791044623833_819941",
+    "requiresFounder": true,
+    "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+    "executionStatus": "REQUIRES_FOUNDER",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "c9a1c05a3208579b6491863c97edb40d9f9cc596bc38d02fa3dbff68a55d3486"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-muslq4f5-c47ad62f",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Fintech Gateway Architecture for Test Automation Corp: cloud-starter deployment model with expected volume < ₹10 lakh. Zero-custody settlement and multi-rail routing.",
+      "name": "E2E Tester",
+      "email": "e2e@testcorp.com",
+      "phone": "+91 99999 88888",
+      "contact": "e2e@testcorp.com",
+      "budget": null,
+      "timeline": "3-7 business days",
+      "service": "fintech-gateway",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-10-03T16:23:43.819Z",
+        "summary": "Direct (direct / none)"
+      },
+      "isTest": true,
+      "environment": "test"
+    },
+    "capAssessment": {
+      "coverage": "PARTIAL",
+      "matchedCapabilities": [
+        {
+          "id": "automation.workflow-automation",
+          "name": "Business Workflow & Process Automation",
+          "category": "Workflow Automation",
+          "universe": "automation",
+          "score": 65
+        },
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 50
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "category": "AI Agents",
+          "universe": "engineering",
+          "score": 50
+        },
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "category": "Spreadsheet Automation",
+          "universe": "automation",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "automation.workflow-automation",
+        "category": "Workflow Automation",
+        "name": "Business Workflow & Process Automation",
+        "universe": "automation",
+        "confidenceScore": 88,
+        "score": 65,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "2-8 hours"
+      },
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U06 Automation",
+        "U19 Creative",
+        "U12 Finance"
+      ],
+      "gaps": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "confidence": 0.65
+    },
+    "valEstimation": {
+      "status": "UNKNOWN",
+      "estimatedINR": null,
+      "proposedAmount": 0,
+      "currency": "INR",
+      "source": "source_evidence_missing",
+      "confidence": 0
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+        "amountINR": 22000,
+        "percentage": 100
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1791044623833_819941_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "e2e@testcorp.com",
+      "message": "Commercial Proposal: Fintech Gateway Architecture for Test Automation Corp: cloud-starter deployment  | Proposed: INR 22,000",
+      "missionId": "acq_1791044623833_819941",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "c9a1c05a3208579b6491863c97edb40d9f9cc596bc38d02fa3dbff68a55d3486"
+        }
+      ]
+    }
+  }
+}

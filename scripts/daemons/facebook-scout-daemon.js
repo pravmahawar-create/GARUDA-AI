@@ -17,7 +17,7 @@ const fs = require('fs');
 require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 
 const telegram = require('../../src/services/telegramBotService');
-const { isGloballyContacted, recordContactedLead, acquireProcessLock, withCycleLock } = require('./unified-lead-guard');
+const { isGloballyContacted, recordContactedLead, acquireProcessLock, withCycleLock, isScoutFrozen } = require('./unified-lead-guard');
 const { evaluateOutboundSafetyGate, logOutboundAttempt } = require('./outbound-safety-gate');
 
 const LEADS_FILE = path.join(__dirname, '..', '..', 'data', 'leads', 'facebook_private_dms.json');
@@ -352,6 +352,10 @@ async function runScoutCycle() {
 }
 
 async function startDaemon() {
+  if (isScoutFrozen()) {
+    console.log('🧊 [FB SCOUT] Scouts FROZEN by Founder until further order. Exiting cleanly.');
+    process.exit(0);
+  }
   const lock = acquireProcessLock('facebook_scout');
   if (!lock.acquired) {
     console.error(`🚨 [FB SCOUT FATAL] Another Facebook Scout is ALREADY running under PID ${lock.existingPid}. Aborting duplicate start.`);

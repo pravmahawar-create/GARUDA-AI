@@ -2299,6 +2299,34 @@
       "notes": "Found via agent.personal_usa_mobile_hunter (\"looking for\" \"mobile app developer\" OR \"app development\" USA email) — Audit: viewport:ok, copyright:unknown, load:1.4s, needsUpdate:false — garudaos.ai@gmail.com",
       "status": "scored",
       "createdAt": "2026-09-26T16:25:53.132Z"
+    },
+    {
+      "id": "PL_1790969687336_989579",
+      "firstName": "",
+      "lastName": "",
+      "email": "api@yelp.com",
+      "phone": "",
+      "businessName": "Getting Started with the Yelp Places API",
+      "city": "Adelaide",
+      "segments": [
+        "business_owner"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "growth",
+      "signals": [
+        "business_owner(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "AU",
+      "source": "web_research",
+      "notes": "Found via agent.personal_australia_web_hunter (site:yelp.com restaurants Australia contact) — Audit: viewport:ok, copyright:2004, load:0.4s, needsUpdate:true — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-10-02T19:34:47.336Z"
     }
   ]
 }

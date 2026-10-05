@@ -1,0 +1,146 @@
+[
+  {
+    "id": "scene_01_hook",
+    "name": "Hook: Billing App vs Custom Software",
+    "intent": "hook",
+    "speech_text": "बिलिंग app तो बहुत हैं...",
+    "energy": 0.9,
+    "pace": 1.1
+  },
+  {
+    "id": "scene_02_differentiation",
+    "name": "Real Workflow-First Architecture",
+    "intent": "problem",
+    "speech_text": "...लेकिन एक्चुअल बिज़नेस वर्कफ़्लो के around bana सॉफ्टवेयर?",
+    "energy": 0.88,
+    "pace": 1.1
+  },
+  {
+    "id": "scene_03_customer_gst",
+    "name": "GST Customer Entry & GSTIN Mode",
+    "intent": "live_demonstration",
+    "speech_text": "कस्टमर शर्मा हार्डवेयर... और जीएसटीआईएन enter करते hi वेरिफाइड जीएसटी मोड activate.",
+    "energy": 0.89,
+    "pace": 1.1
+  },
+  {
+    "id": "scene_04_items",
+    "name": "Catalog Item Entry",
+    "intent": "live_demonstration",
+    "speech_text": "कैटलॉग से अल्ट्राटेक सीमेंट... 10 bags at the रेट तीन सौ पचानवे रुपये per bag.",
+    "energy": 0.88,
+    "pace": 1.1
+  },
+  {
+    "id": "scene_05_gst_calc",
+    "name": "Real-Time GST Calculation",
+    "intent": "result",
+    "speech_text": "सबटोटल तीन हज़ार नौ सौ पचास रुपये... सी जीएसटी और एस जीएसटी ब्रेकअप के साथ ग्रैंड टोटल चार हज़ार छह सौ इकसठ रुपये.",
+    "energy": 0.9,
+    "pace": 1.1
+  },
+  {
+    "id": "scene_06_generate",
+    "name": "One-Tap Bill Generation",
+    "intent": "live_demonstration",
+    "speech_text": "अब सिंगल टैप पर बिल जनरेट करते हैं.",
+    "energy": 0.92,
+    "pace": 1.12
+  },
+  {
+    "id": "scene_07_hero_invoice",
+    "name": "REAL GST TAX INVOICE HERO",
+    "intent": "feature_reveal",
+    "speech_text": "Real TAX INVOICE ज़ीरो ज़ीरो ज़ीरो वन, शर्मा हार्डवेयर और चार हज़ार छह सौ इकसठ रुपये के साथ रेडी.",
+    "energy": 0.94,
+    "pace": 1.08
+  },
+  {
+    "id": "scene_08_why_garuda",
+    "name": "Why GARUDA: Positioning",
+    "intent": "confident",
+    "speech_text": "गरुड़ का फोकस सिर्फ़ बिल banana नहीं... सॉफ्टवेयर को बिज़नेस के एक्चुअल वर्कफ़्लो के around engineer karna है.",
+    "energy": 0.88,
+    "pace": 1.08
+  },
+  {
+    "id": "scene_09_brand_cta",
+    "name": "GARUDA Outro & CTA",
+    "intent": "cta",
+    "speech_text": "कस्टम सॉफ्टवेयर चाहिए? कनेक्ट कीजिए: गरुड़ ओ एस डॉट इन स्लैश चैट",
+    "energy": 0.88,
+    "pace": 1.1
+  },
+  {
+    "id": "m_scene_01_hook",
+    "name": "Master Hook: Problem vs Custom Engineering",
+    "intent": "hook",
+    "speech_text": "बिलिंग apps तो market में बहुत हैं... लेकिन kya वो आपके बिज़नेस के एक्चुअल वर्कफ़्लो के हिसाब से bane हैं?",
+    "energy": 0.9,
+    "pace": 1.04
+  },
+  {
+    "id": "m_scene_02_workflow",
+    "name": "Workflow-First Architecture",
+    "intent": "problem",
+    "speech_text": "गरुड़ में approach alag है. फोकस सिर्फ़ slip nikalne पर नहीं, pure काउंटर वर्कफ़्लो को streamline karne पर है.",
+    "energy": 0.86,
+    "pace": 1.03
+  },
+  {
+    "id": "m_scene_03_customer_gstin",
+    "name": "Customer & GSTIN Entry",
+    "intent": "discovery",
+    "speech_text": "कस्टमर शर्मा हार्डवेयर... और 15-digit जीएसटीआईएन enter करते hi वेरिफाइड जीएसटी मोड activate हो jata है.",
+    "energy": 0.88,
+    "pace": 1.04
+  },
+  {
+    "id": "m_scene_04_items",
+    "name": "Catalog Item Entry",
+    "intent": "live_demonstration",
+    "speech_text": "अब आइटम्स ऐड करते हैं... अल्ट्राटेक सीमेंट 10 bags... rates और units कैटलॉग से ऑटो-populate hote हैं.",
+    "energy": 0.88,
+    "pace": 1.04
+  },
+  {
+    "id": "m_scene_05_gst_math",
+    "name": "Live Real-Time GST Calculation",
+    "intent": "result",
+    "speech_text": "यहाँ देखिए: सबटोटल तीन हज़ार नौ सौ पचास रुपये... सी जीएसटी नौ प्रतिशत और एस जीएसटी नौ प्रतिशत का automatic टैक्स ब्रेकअप, ग्रैंड टोटल चार हज़ार छह सौ इकसठ रुपये.",
+    "energy": 0.9,
+    "pace": 1.03
+  },
+  {
+    "id": "m_scene_06_generate",
+    "name": "One-Click Invoice Save",
+    "intent": "live_demonstration",
+    "speech_text": "अब बिल जनरेट करते हैं... single क्लिक पर डेटाबेस record create.",
+    "energy": 0.92,
+    "pace": 1.03
+  },
+  {
+    "id": "m_scene_07_hero_invoice",
+    "name": "MASTER REAL GST TAX INVOICE HERO",
+    "intent": "feature_reveal",
+    "speech_text": "और ये देखिए: complete TAX INVOICE ज़ीरो ज़ीरो ज़ीरो वन, कस्टमर जीएसटीआईएन और चार हज़ार छह सौ इकसठ रुपये टोटल के साथ रेडी.",
+    "energy": 0.94,
+    "pace": 1.02
+  },
+  {
+    "id": "m_scene_08_why_garuda",
+    "name": "Why GARUDA: The Architecture Answer",
+    "intent": "confident",
+    "speech_text": "गरुड़ का फोकस सिर्फ़ बिल banana नहीं है. Hum सॉफ्टवेयर को बिज़नेस के एक्चुअल वर्कफ़्लो के around engineer करते हैं.",
+    "energy": 0.88,
+    "pace": 1.02
+  },
+  {
+    "id": "m_scene_09_brand_close",
+    "name": "GARUDA Outro & CTA",
+    "intent": "cta",
+    "speech_text": "आपके बिज़नेस के liye कस्टम सॉफ्टवेयर और automation चाहिए? Aaj hi कनेक्ट कीजिए: गरुड़ ओ एस डॉट इन स्लैश चैट",
+    "energy": 0.88,
+    "pace": 1.03
+  }
+]

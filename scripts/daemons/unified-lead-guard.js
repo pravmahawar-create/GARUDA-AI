@@ -208,10 +208,25 @@ async function withCycleLock(cycleName, asyncFn) {
   }
 }
 
+/**
+ * SCOUT FROZEN CHECK: Founder ne scouts freeze kiye hain — koi bhi scout
+ * daemon/orchestrator agar start karne ki koshish kare, to politely exit.
+ * Freeze hatane ke liye: data/locks/SCOUTS_FROZEN.flag file delete karein.
+ */
+const SCOUT_FROZEN_FLAG = path.join(__dirname, '..', '..', 'data', 'locks', 'SCOUTS_FROZEN.flag');
+function isScoutFrozen() {
+  try {
+    return fs.existsSync(SCOUT_FROZEN_FLAG);
+  } catch {
+    return false;
+  }
+}
+
 module.exports = {
   isGloballyContacted,
   recordContactedLead,
   acquireProcessLock,
   withCycleLock,
-  loadAllContactedLeads
+  loadAllContactedLeads,
+  isScoutFrozen
 };

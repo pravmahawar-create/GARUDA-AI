@@ -1,0 +1,32 @@
+1
+00:00:00,000 --> 00:00:07,009
+Billing apps toh bahut hain... lekin aapke business ke hisaab se customized software?
+
+2
+00:00:07,609 --> 00:00:15,390
+Focus sirf bill printing par nahi... counter ka actual business workflow smoothly chalana hai.
+
+3
+00:00:15,990 --> 00:00:23,500
+Customer Sharma Hardware... aur yahan GSTIN add karte hi GST mode activate.
+
+4
+00:00:24,100 --> 00:00:32,500
+Cement item add kijiye... aur dekhiye real-time CGST aur SGST tax calculation.
+
+5
+00:00:33,100 --> 00:00:41,789
+Internet chala bhi gaya na... billing rukti nahi. 100% offline-first indexed database.
+
+6
+00:00:42,390 --> 00:00:49,659
+Ab bill generate karte hain... aur ye dekhiye, actual GST Tax Invoice ready hai.
+
+7
+00:00:50,259 --> 00:00:57,289
+Yahi hai GARUDA ka difference: real working GST software, tailored for your business.
+
+8
+00:00:57,890 --> 00:01:04,560
+Custom business software chahiye? Connect kijiye: garudaos.in
+

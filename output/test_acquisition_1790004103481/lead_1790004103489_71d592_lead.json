@@ -1,0 +1,329 @@
+{
+  "leadId": "lead_1790004103489_71d592",
+  "missionId": "acq_1790004103489_9db88a",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:43.490Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Acme Prospect",
+    "email": "prospect@acme-inc.test",
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "prospect@acme-inc.test"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Build an automated customer support AI chatbot with Telegram integration",
+  "intent": {
+    "category": "HIGH_INTENT",
+    "confidence": 0.85,
+    "signals": [
+      "TECH_KEYWORDS:build,integration,bot"
+    ],
+    "reason": "Detailed technical scope with concrete deliverable indicators"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:43.558Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "matchedCapabilities": [
+      {
+        "id": "engineering.software-implementation",
+        "name": "Governed software implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 65
+      },
+      {
+        "id": "engineering.api-integration",
+        "name": "REST & GraphQL API Integration & Microservices",
+        "category": "API Integration",
+        "universe": "engineering",
+        "score": 50
+      },
+      {
+        "id": "ai.agent-engineering",
+        "name": "Custom AI Agents & RAG Pipeline Engineering",
+        "category": "AI Agents",
+        "universe": "engineering",
+        "score": 50
+      },
+      {
+        "id": "testing.quality-assurance",
+        "name": "Automated QA Test Suite & Validation",
+        "category": "Quality Assurance",
+        "universe": "engineering",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 65,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue"
+    ],
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ],
+    "confidence": 0.65
+  },
+  "valueEstimation": {
+    "status": "UNKNOWN",
+    "estimatedINR": null,
+    "proposedAmount": 0,
+    "currency": "INR",
+    "source": "source_evidence_missing",
+    "confidence": 0
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": null,
+    "proposedAmount": 23750,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Build an automated customer support AI chatbot with Telegram integration",
+    "clarificationQuestions": [
+      "What is your allocated budget range for this engagement?",
+      "What is your expected timeline or target delivery deadline?",
+      "Could you specify which existing APIs or legacy platforms need integration?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Build an automated customer support AI chatbot with Telegram integration",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103489_9db88a_proposal.md",
+    "proposalSha256": "f6c3b3abeeff91e0f22db84406b5831284a4eaaa0b0f70ca4112ef347dd6576e",
+    "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+  },
+  "founderGovernance": {
+    "requiresFounder": true,
+    "status": "AWAITING_FOUNDER_APPROVAL",
+    "dossier": {
+      "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:build,integration,bot",
+      "whatClientWants": "Build an automated customer support AI chatbot with Telegram integration",
+      "whatGarudaCanDeliver": "Matched: Governed software implementation (Coverage: PARTIAL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Build an automated customer support AI chatbot with Telegram integration; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 23,750 (Milestones: 1)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements",
+        "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103489_9db88a_proposal.md",
+          "sha256": "f6c3b3abeeff91e0f22db84406b5831284a4eaaa0b0f70ca4112ef347dd6576e"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "FOLLOWUP_READY",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": null,
+    "history": []
+  },
+  "commercialStatus": "AWAITING_FOUNDER",
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:43.490Z",
+      "leadId": "lead_1790004103489_71d592"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:43.491Z",
+      "intentCategory": "HIGH_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:build,integration,bot"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.491Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:43.531Z",
+      "proposalSha256": "f6c3b3abeeff91e0f22db84406b5831284a4eaaa0b0f70ca4112ef347dd6576e"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:43.531Z"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-21T15:21:43.558Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-21T15:21:43.558Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004103489_9db88a_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103489_9db88a_proposal.md",
+      "sizeBytes": 885,
+      "sha256": "f6c3b3abeeff91e0f22db84406b5831284a4eaaa0b0f70ca4112ef347dd6576e"
+    }
+  ],
+  "communicationAction": {
+    "channel": "email",
+    "recipient": "prospect@acme-inc.test",
+    "message": "Commercial Proposal: Build an automated customer support AI chatbot with Telegram integration | Proposed: INR 23,750",
+    "missionId": "acq_1790004103489_9db88a",
+    "requiresFounder": true,
+    "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+    "executionStatus": "REQUIRES_FOUNDER",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "f6c3b3abeeff91e0f22db84406b5831284a4eaaa0b0f70ca4112ef347dd6576e"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube85tc-c36a53dc",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Build an automated customer support AI chatbot with Telegram integration",
+      "name": "Acme Prospect",
+      "email": "prospect@acme-inc.test"
+    },
+    "capAssessment": {
+      "coverage": "PARTIAL",
+      "matchedCapabilities": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 65
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "category": "API Integration",
+          "universe": "engineering",
+          "score": 50
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "category": "AI Agents",
+          "universe": "engineering",
+          "score": 50
+        },
+        {
+          "id": "testing.quality-assurance",
+          "name": "Automated QA Test Suite & Validation",
+          "category": "Quality Assurance",
+          "universe": "engineering",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 65,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue"
+      ],
+      "gaps": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "confidence": 0.65
+    },
+    "valEstimation": {
+      "status": "UNKNOWN",
+      "estimatedINR": null,
+      "proposedAmount": 0,
+      "currency": "INR",
+      "source": "source_evidence_missing",
+      "confidence": 0
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+        "amountINR": 23750,
+        "percentage": 100
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103489_9db88a_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "prospect@acme-inc.test",
+      "message": "Commercial Proposal: Build an automated customer support AI chatbot with Telegram integration | Proposed: INR 23,750",
+      "missionId": "acq_1790004103489_9db88a",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "f6c3b3abeeff91e0f22db84406b5831284a4eaaa0b0f70ca4112ef347dd6576e"
+        }
+      ]
+    }
+  }
+}

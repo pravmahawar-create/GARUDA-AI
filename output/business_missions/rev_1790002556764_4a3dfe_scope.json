@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790002556764_4a3dfe",
+  "leadId": "lead_1790002556764_d8b49e",
+  "clientId": "client_5c3d0b",
+  "customer": {
+    "name": "Enterprise Core",
+    "email": "contact@enterprisecore.com",
+    "phone": null,
+    "contact": "contact@enterprisecore.com"
+  },
+  "requirements": "Develop mission-critical data migration script with zero data loss guarantee",
+  "capability": "Governed software implementation",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 100000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 50000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 50000,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "4-24 hours",
+  "createdAt": "2026-09-21T14:55:56.764Z"
+}

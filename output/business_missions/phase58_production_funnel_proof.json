@@ -1,0 +1,123 @@
+{
+  "missionId": "acq_1790003993943_805ad0",
+  "leadId": "lead_1790003993943_028333",
+  "scopeId": "scope_1790003993943_63241c",
+  "projectId": "proj_acq_1790003993943_805ad0",
+  "timestamp": "2026-09-21T15:19:55.506Z",
+  "executionEngine": "RevenueFunnelSecurityService + BusinessMissionOrchestrator",
+  "status": "PRODUCTION_FUNNEL_ACTIVATED",
+  "publicFunnelIntegration": {
+    "formComponent": "frontend/src/components/ProjectScopeForm.jsx",
+    "apiEndpoints": [
+      "/api/inbound/project-scope",
+      "/api/project-scope"
+    ],
+    "expressRouteMounted": "/api/inbound mounted in src/app.js",
+    "vercelServerlessHandler": "api/project-scope.js synchronized",
+    "trustBoundaryEnforced": true,
+    "maxPayloadBytes": 51200
+  },
+  "trustBoundarySanitization": {
+    "inputLength": 161,
+    "xssSanitized": true,
+    "strippedAuthorityFields": [
+      "founderApproved",
+      "paidAmount",
+      "verifiedRevenue",
+      "paymentStatus",
+      "confidence"
+    ],
+    "attributionSanitized": {
+      "channel": "Organic Search",
+      "source": "google",
+      "serverTimestampSpoofPrevented": true,
+      "verifiedFlagSpoofPrevented": true
+    }
+  },
+  "environmentSegregation": {
+    "environment": "test",
+    "isTest": true,
+    "quarantinedFromProductionRevenue": true,
+    "testLeadsIncremented": true,
+    "productionLeadsProtected": true
+  },
+  "idempotencyVerification": {
+    "repeatSubmissionReceived": true,
+    "idempotentResponseCode": 200,
+    "leadIdPreserved": "lead_1790003993943_028333",
+    "duplicateMissionsPrevented": true
+  },
+  "financialIntegrity": {
+    "estimatedINR": 50000,
+    "proposedAmountINR": 50000,
+    "depositAmountINR": 25000,
+    "paidAmountINR": 0,
+    "verifiedProductionRevenueINR": 0,
+    "antiFabricationEnforced": true
+  },
+  "founderGate": {
+    "initialState": "AWAITING_FOUNDER_APPROVAL",
+    "founderApproved": true,
+    "personalPhoneNumberProtected": true,
+    "officialContactEmail": "praveen@garudaos.in",
+    "channel": "email"
+  },
+  "activeProjectHandoff": {
+    "projectId": "proj_acq_1790003993943_805ad0",
+    "state": "AWAITING_PAYMENT",
+    "commercialStatus": "DELIVERED_AWAITING_PAYMENT"
+  },
+  "telemetryStatus": {
+    "visitorsInteracted": 0,
+    "projectScopeSubmissions": 3,
+    "qualifiedLeads": 0,
+    "disqualifiedLeads": 0,
+    "testLeads": 2,
+    "productionLeads": 0,
+    "proposalsGenerated": 2,
+    "awaitingFounderApproval": 2,
+    "founderApprovedProposals": 0,
+    "clientAcceptedProposals": 0,
+    "verifiedProductionDeposits": 0,
+    "verifiedProductionRevenue": 0,
+    "lastUpdated": "2026-09-21T15:19:55.470Z"
+  },
+  "physicalDeliverables": [
+    {
+      "type": "proposal_document",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+      "fileName": "acq_1790003993943_805ad0_proposal.md",
+      "sizeBytes": 881,
+      "sha256": "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+    },
+    {
+      "type": "scope_spec",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_scope.json",
+      "fileName": "acq_1790003993943_805ad0_scope.json",
+      "sizeBytes": 957,
+      "sha256": "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb"
+    },
+    {
+      "type": "proposal_document",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+      "fileName": "acq_1790003993943_805ad0_proposal.md",
+      "sizeBytes": 881,
+      "sha256": "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+    },
+    {
+      "type": "deliverable_code",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_deliverable.js",
+      "fileName": "acq_1790003993943_805ad0_deliverable.js",
+      "sizeBytes": 397,
+      "sha256": "7676e9e7557f6043da0bfaa7b932f20a439c58ffe6e1b56084c654cdf058de34"
+    },
+    {
+      "type": "delivery_manifest",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_DELIVERY_MANIFEST.md",
+      "fileName": "acq_1790003993943_805ad0_DELIVERY_MANIFEST.md",
+      "sizeBytes": 272,
+      "sha256": "3176c03d336b545937dc21acf8e0322a7628e62464ee5fefad9b9e3bee485ded"
+    }
+  ],
+  "sha256": "a55cb72d94f6ca071ff2d4fa45217975f8ff67dec0fdfc89d16f356f442b78c2"
+}

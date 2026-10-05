@@ -1,0 +1,132 @@
+{
+  "version": "client_hunt_pitches_v1",
+  "createdAt": "2026-10-01T16:10:00.000Z",
+  "status": "AWAITING_FOUNDER_APPROVAL",
+  "preFlight": {
+    "url": "https://www.garudaos.in/chat?ref=clienthunt",
+    "httpStatus": 200,
+    "title": "Talk to GARUDA AI | AI Solution Architect & Project Scoping",
+    "bytes": 13747,
+    "verdict": "PASS (200 OK, distinct title, authentic content, no homepage collapse)"
+  },
+  "pitches": [
+    {
+      "rank": 1,
+      "tier": "HOT_EXPLICIT_REQUEST",
+      "platform": "instagram",
+      "sourceUrl": "https://www.instagram.com/p/DdN22UcFGLj/",
+      "lead": "Nisarga Care (nisargacare.com)",
+      "signal": "Publicly posted 'Designer needed — redesign nisargacare.com without making any changes to the Google index, WhatsApp us'",
+      "miniAudit": [
+        "Their <title> tag is a ~250-character keyword-stuffed string — Google truncates at ~60 chars, so 'Nisarga Care' brand never shows in search results; over-optimization risk on a YMYL medical site",
+        "Homepage content is repetitive keyword paragraphs (2010-style SEO text) — exactly what Google's Helpful Content systems demote for healthcare sites",
+        "They fear redesign = losing Google ranking — real risk handled by URL-preserving migration: same URLs, 301 map, Search Console monitoring, blog posts untouched"
+      ],
+      "pitch": "Hi! Saw your post asking for a designer to redesign nisargacare.com WITHOUT disturbing the Google index — that specific constraint is exactly our specialty.\n\nQuick free audit of your current site:\n1) Your <title> tag is ~250 keywords long — Google cuts it at ~60, so 'Nisarga Care' never appears in search results. On medical/YMYL sites this over-optimization can actively trigger demotions.\n2) Your homepage repeats the same keyword blocks — Google's Helpful Content systems now demote exactly this pattern for healthcare.\n3) Your fear (redesign = losing rankings) is solvable: we migrate with URL preservation + 301 redirects + Search Console monitoring, so every existing ranking, blog post and backlink stays intact.\n\nWe rebuild the design while KEEPING your Google equity. 1989 ka trust aapka — design hamara kaam.\n\nScope chat: https://www.garudaos.in/chat?ref=nisargacare",
+      "channel": "instagram_dm_or_whatsapp(their public business number on site)"
+    },
+    {
+      "rank": 2,
+      "tier": "HOT",
+      "platform": "instagram",
+      "sourceUrl": "https://www.instagram.com/p/DaD1VpECGT0/",
+      "lead": "Trivanta Hospitality Group",
+      "signal": "Looking for web developer/agency for 'premium, modern, luxury hospitality' website",
+      "miniAudit": [
+        "Luxury hospitality buyers judge the brand in <2s — stock templates read as 'hotel', not 'luxury'",
+        "No site live yet = zero booking funnel; every week offline is lost direct bookings (OTAs take 15-25% commission)"
+      ],
+      "pitch": "Hi! Saw your post for Trivanta Hospitality Group — premium, luxury hospitality website.\n\nTwo things we'd get right that agencies usually miss:\n1) Luxury is decided in the first 2 seconds — we design around your property's photography with cinematic pacing, not a stock hotel template.\n2) Direct bookings are the profit: OTA commissions run 15-25%. We build the inquiry/booking funnel directly into the site so guests book YOU, not Booking.com.\n\nWe ship production-grade sites in days, not months — with SHA-256 verified deployments.\n\nScope chat: https://www.garudaos.in/chat?ref=trivanta",
+      "channel": "instagram_dm"
+    },
+    {
+      "rank": 3,
+      "tier": "HOT",
+      "platform": "instagram",
+      "sourceUrl": "https://www.instagram.com/p/Ddw68qlvd3_/",
+      "lead": "Business owner revamping multiple sites (luxury branding, Shopify, restaurants)",
+      "signal": "Actively hiring: 'CREATIVE — not basic. Luxury branding, Shopify, e-commerce, restaurant websites'",
+      "miniAudit": [
+        "Multi-site owner = recurring work, not one-off",
+        "'Creative not basic' is the buying signal — lead with visual proof, not feature lists"
+      ],
+      "pitch": "Hi! Saw your post looking for a creative (not basic) designer for your business websites — luxury branding, Shopify, restaurants.\n\n'Creative not basic' is exactly how we work: every build gets its own art direction — no templates, no recycled themes. Our recent work includes full product showcases with cinematic scroll, custom motion, and conversion-first checkout flows.\n\nSend us one site you think looks 'basic' today — we'll send back a concrete redesign direction (free, no strings) before you decide anything.\n\nScope chat: https://www.garudaos.in/chat?ref=luxuryrevamp",
+      "channel": "instagram_dm"
+    },
+    {
+      "rank": 4,
+      "tier": "WARM",
+      "platform": "instagram",
+      "sourceUrl": "https://www.instagram.com/p/DSAmoAZj9Mg/",
+      "lead": "UK-based agency founder (white-label collab)",
+      "signal": "Has client projects coming up, wants reliable UK-facing web dev partner",
+      "miniAudit": [
+        "UK client work = GBP rates, IST delivery hours = same-day turnaround advantage",
+        "Their risk: freelancer reliability — our counter = team + process + proof"
+      ],
+      "pitch": "Hi! Saw your post looking for a UK-based freelance web developer to collaborate on upcoming client projects.\n\nWe run as your silent delivery bench: white-label, NDA-ready, UK hours overlap for same-day feedback loops. You keep the client relationship and margins; we ship design + build with verified deployments and QA proof on every release.\n\nOne test project first — you judge the work before any commitment.\n\nScope chat: https://www.garudaos.in/chat?ref=ukcollab",
+      "channel": "instagram_dm"
+    },
+    {
+      "rank": 5,
+      "tier": "WARM",
+      "platform": "linkedin",
+      "sourceUrl": "https://www.linkedin.com/in/pronojitsingh/",
+      "lead": "Pronojit Singh — Head of Marketing, MaxVal (hiring Senior Web Developer)",
+      "signal": "Company expanding, hiring senior web dev",
+      "miniAudit": [
+        "Hiring a senior dev = 6-8 weeks + ₹12-18L annual cost for a project pipeline",
+        "Alternative: dedicated delivery bench — start this week, scale up/down per sprint"
+      ],
+      "pitch": "Hi Pronojit — saw MaxVal is expanding the web team.\n\nQuick reframe before the hiring loop starts: for project-based web delivery, a dedicated build partner often beats a new full-time hire — you start this week instead of 6-8 weeks of sourcing, and scale the bench up/down per sprint instead of carrying fixed cost between projects.\n\nWe run as an invisible delivery unit for product teams: design + full-stack build + QA with cryptographic deployment proof on every release.\n\nWorth 15 minutes to compare against your hiring plan? https://www.garudaos.in/chat?ref=maxval",
+      "channel": "linkedin_dm"
+    },
+    {
+      "rank": 6,
+      "tier": "WARM",
+      "platform": "linkedin",
+      "sourceUrl": "https://www.linkedin.com/in/priyanshu-thakur-180094304/",
+      "lead": "Ashutosh Nandi — Founder, Dojo Eats (hiring freelance Shopify developer)",
+      "signal": "Food brand needs Shopify build — direct buyer",
+      "miniAudit": [
+        "Food D2C on Shopify: speed + mobile checkout = revenue",
+        "Freelancer roulette vs. shipped-with-proof delivery"
+      ],
+      "pitch": "Hi Ashutosh — saw Dojo Eats is hiring a freelance Shopify developer.\n\nFor a food D2C brand the store IS the margin: every extra second at mobile checkout costs real orders. We ship Shopify builds with conversion-first checkout, custom brand design, and launch QA (payment, shipping, tax flows tested end-to-end) — production live in days.\n\nShare your store scope and we'll come back with a fixed plan: https://www.garudaos.in/chat?ref=dojo",
+      "channel": "linkedin_dm"
+    },
+    {
+      "rank": 7,
+      "tier": "WARM",
+      "platform": "linkedin",
+      "sourceUrl": "https://www.linkedin.com/in/mohit-jain-264a7315b/",
+      "lead": "Mohit Jain — Founder (hiring freelance web developer)",
+      "signal": "Direct freelance web dev hiring signal",
+      "miniAudit": [
+        "Founder-level buyer = fast decision cycle",
+        "Position against freelancer risk (disappearing mid-project)"
+      ],
+      "pitch": "Hi Mohit — saw you're hiring a freelance web developer.\n\nStraight comparison: freelancers vanish mid-project and you re-hire twice; agencies lock you into retainers. We work in between — fixed-scope builds, deployment proof on every release, and you own 100% of the code from day one.\n\nTell us what needs building and you'll have a fixed plan + timeline back same day: https://www.garudaos.in/chat?ref=mohit",
+      "channel": "linkedin_dm"
+    },
+    {
+      "rank": 8,
+      "tier": "WARM",
+      "platform": "linkedin",
+      "sourceUrl": "https://www.linkedin.com/in/vardhankore/",
+      "lead": "Ashok Vardhan Kore (friend needs a web developer)",
+      "signal": "Referral path — 'a friend of mine is looking for a web developer'",
+      "miniAudit": [
+        "Referral trust transfer — keep it helpful, not salesy"
+      ],
+      "pitch": "Hi Ashok — saw your post that a friend is looking for a web developer.\n\nHappy to point them in the right direction either way. If they want it built properly (custom design, fast delivery, code they fully own), we take fixed-scope projects and ship in days with deployment proof.\n\nHave them share the scope here and we'll come back with a plan: https://www.garudaos.in/chat?ref=ashok",
+      "channel": "linkedin_dm"
+    }
+  ],
+  "rules": [
+    "APPROVAL_REQUIRED: zero dispatch until founder_praveen approves",
+    "One pitch per lead, no follow-up spam (max 1 reminder after 72h if no reply)",
+    "pre-outreach-verifier PASS recorded above before any message leaves",
+    "GARUDA brand only, no personal profile actions, no fake claims"
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "leadId": "lead_1790004103694_6fc493",
+  "missionId": "acq_1790004103694_3fab76",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:43.694Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "SaaS Ops",
+    "email": null,
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "billing@saasops.test"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Custom billing engine for subscription management",
+  "intent": {
+    "category": "MEDIUM_INTENT",
+    "confidence": 0.5,
+    "signals": [],
+    "reason": "General inquiry"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:43.726Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "UNKNOWN",
+    "matchedCapabilities": [],
+    "bestCapability": null,
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U12 Finance"
+    ],
+    "gaps": [
+      "Requested capability is not supported by GARUDA registry"
+    ],
+    "confidence": 0
+  },
+  "valueEstimation": {
+    "status": "UNKNOWN",
+    "estimatedINR": null,
+    "proposedAmount": 0,
+    "currency": "INR",
+    "source": "source_evidence_missing",
+    "confidence": 0
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": null,
+    "proposedAmount": 25000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Custom billing engine for subscription management",
+    "clarificationQuestions": [
+      "What is your allocated budget range for this engagement?",
+      "What is your expected timeline or target delivery deadline?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Custom billing engine for subscription management",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103694_3fab76_proposal.md",
+    "proposalSha256": "10a9adf5eb5c4183db89ac0293408333676351e6298c769b25764a83f537b208",
+    "recommendedNextAction": "AWAIT_CLIENT_DECISION"
+  },
+  "founderGovernance": {
+    "requiresFounder": false,
+    "status": "APPROVED",
+    "dossier": {
+      "whyThisLead": "Intent: MEDIUM_INTENT (50% confidence). Channel: Direct. Signals: ",
+      "whatClientWants": "Custom billing engine for subscription management",
+      "whatGarudaCanDeliver": "Matched: Custom Software Engineering (Coverage: UNKNOWN). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Custom billing engine for subscription management; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 25,000 (Milestones: 1)",
+      "risks": [
+        "Requested capability is not supported by GARUDA registry",
+        "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103694_3fab76_proposal.md",
+          "sha256": "10a9adf5eb5c4183db89ac0293408333676351e6298c769b25764a83f537b208"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "STOPPED",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": "CLIENT_DECLINED",
+    "history": []
+  },
+  "commercialStatus": "CLIENT_DECLINED",
+  "state": "CLIENT_DECLINED",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:43.694Z",
+      "leadId": "lead_1790004103694_6fc493"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:43.694Z",
+      "intentCategory": "MEDIUM_INTENT",
+      "signals": []
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.694Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:43.700Z",
+      "proposalSha256": "10a9adf5eb5c4183db89ac0293408333676351e6298c769b25764a83f537b208"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:43.700Z"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:21:43.726Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "CLIENT_DECLINED",
+      "timestamp": "2026-09-21T15:21:43.727Z",
+      "reason": "Client declined"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004103694_3fab76_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103694_3fab76_proposal.md",
+      "sizeBytes": 847,
+      "sha256": "10a9adf5eb5c4183db89ac0293408333676351e6298c769b25764a83f537b208"
+    }
+  ],
+  "communicationAction": {
+    "channel": "telegram",
+    "recipient": "billing@saasops.test",
+    "message": "Commercial Proposal: Custom billing engine for subscription management | Proposed: INR 25,000",
+    "missionId": "acq_1790004103694_3fab76",
+    "requiresFounder": true,
+    "approvalStatus": "APPROVED",
+    "executionStatus": "READY_TO_SEND",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "10a9adf5eb5c4183db89ac0293408333676351e6298c769b25764a83f537b208"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube85y3-cf3638fb",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Custom billing engine for subscription management",
+      "name": "SaaS Ops",
+      "contact": "billing@saasops.test"
+    },
+    "capAssessment": {
+      "coverage": "UNKNOWN",
+      "matchedCapabilities": [],
+      "bestCapability": null,
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U12 Finance"
+      ],
+      "gaps": [
+        "Requested capability is not supported by GARUDA registry"
+      ],
+      "confidence": 0
+    },
+    "valEstimation": {
+      "status": "UNKNOWN",
+      "estimatedINR": null,
+      "proposedAmount": 0,
+      "currency": "INR",
+      "source": "source_evidence_missing",
+      "confidence": 0
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+        "amountINR": 25000,
+        "percentage": 100
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103694_3fab76_proposal.md",
+    "communicationAction": {
+      "channel": "telegram",
+      "recipient": "billing@saasops.test",
+      "message": "Commercial Proposal: Custom billing engine for subscription management | Proposed: INR 25,000",
+      "missionId": "acq_1790004103694_3fab76",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "10a9adf5eb5c4183db89ac0293408333676351e6298c769b25764a83f537b208"
+        }
+      ]
+    }
+  }
+}

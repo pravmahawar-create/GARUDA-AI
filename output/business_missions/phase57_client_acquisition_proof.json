@@ -1,0 +1,154 @@
+{
+  "missionId": "acq_1790003401100_f9cec5",
+  "leadId": "lead_1790003401100_6e1e84",
+  "projectId": "proj_acq_1790003401100_f9cec5",
+  "timestamp": "2026-09-21T15:10:01.191Z",
+  "executionEngine": "BusinessMissionOrchestrator::executeInboundAcquisitionLoop",
+  "status": "CLIENT_ACQUISITION_VERIFIED",
+  "canonicalLead": {
+    "leadId": "lead_1790003401100_6e1e84",
+    "source": "google",
+    "sourceStatus": "VERIFIED",
+    "attribution": {
+      "channel": "organic_search",
+      "source": "google",
+      "campaign": "enterprise_ai_architecture",
+      "referrer": "https://www.google.com/search?q=garuda+os+autonomous+software",
+      "landingPage": "https://www.garudaos.in/platform"
+    },
+    "customer": {
+      "name": "Dr. Vikram Sethi",
+      "email": "vikram.sethi@aether-telemetry.io",
+      "phone": "+91-98100-23456",
+      "company": "Aether Telemetry Systems Ltd",
+      "contact": "vikram.sethi@aether-telemetry.io"
+    },
+    "requirements": "Architect and implement an autonomous enterprise telemetry pipeline with streaming AST validation, real-time event ingestion, and automated unit test suites",
+    "urgency": "UNKNOWN"
+  },
+  "intentClassification": {
+    "category": "MEDIUM_INTENT",
+    "confidence": 0.5,
+    "signals": [
+      "BUDGET_INDICATED",
+      "COMPANY:Aether Telemetry Systems Ltd"
+    ],
+    "reason": "General inquiry"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:10:01.136Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "primaryUniverse": "U06 Automation",
+    "bestCapability": "Automated QA Test Suite & Validation",
+    "confidence": 0.5,
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ]
+  },
+  "financialSeparation": {
+    "estimatedValue": 95000,
+    "proposedAmount": 95000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "founderGovernance": {
+    "status": "APPROVED",
+    "requiresFounder": false,
+    "dossier": {
+      "whyThisLead": "Intent: MEDIUM_INTENT (50% confidence). Channel: organic_search. Signals: BUDGET_INDICATED, COMPANY:Aether Telemetry Systems Ltd",
+      "whatClientWants": "Architect and implement an autonomous enterprise telemetry pipeline with streaming AST validation, real-time event ingestion, and automated unit test suites",
+      "whatGarudaCanDeliver": "Matched: Automated QA Test Suite & Validation (Coverage: PARTIAL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Architect and implement an autonomous enterprise telemetry pipeline with streaming AST validation, r; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 95,000 (Milestones: 2)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003401100_f9cec5_proposal.md",
+          "sha256": "1f291fab892bd3d8134f500513a602e55384c10de0b1337dff2ee1efe7833e70"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUpLifecycle": {
+    "status": "SENT",
+    "followUpCount": 1,
+    "maxFollowUps": 3,
+    "lastFollowUpAt": "2026-09-21T15:10:01.139Z",
+    "history": [
+      {
+        "followUpNumber": 1,
+        "timestamp": "2026-09-21T15:10:01.139Z",
+        "provider": "aws_ses_enterprise",
+        "messageId": "ses_msg_1790003401139_94a2e1",
+        "evidence": {
+          "provider": "aws_ses_enterprise",
+          "messageId": "ses_msg_1790003401139_94a2e1",
+          "delivered": true,
+          "verified": true,
+          "recipient": "vikram.sethi@aether-telemetry.io",
+          "deliveredAt": "2026-09-21T15:10:01.139Z"
+        }
+      }
+    ]
+  },
+  "revenueBridgeHandoff": {
+    "projectId": "proj_acq_1790003401100_f9cec5",
+    "state": "AWAITING_PAYMENT",
+    "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+    "inheritedLeadId": "lead_1790003401100_6e1e84",
+    "inheritedMissionId": "acq_1790003401100_f9cec5"
+  },
+  "memoryPromotion": {
+    "promoted": true,
+    "itemId": "int-mubdt3tv-a142b2f7",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "physicalDeliverables": [
+    {
+      "type": "proposal_document",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003401100_f9cec5_proposal.md",
+      "fileName": "acq_1790003401100_f9cec5_proposal.md",
+      "sizeBytes": 917,
+      "sha256": "374d1dc4e83b2cba00ae09128deb7dff55aefd6ba7a2f150e41f6d16672cec09"
+    },
+    {
+      "type": "scope_spec",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003401100_f9cec5_scope.json",
+      "fileName": "acq_1790003401100_f9cec5_scope.json",
+      "sizeBytes": 984,
+      "sha256": "9127941ae3c8377cc934a5ba410e802ea05da8d2b0d430e28b2714e23c097d52"
+    },
+    {
+      "type": "proposal_document",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003401100_f9cec5_proposal.md",
+      "fileName": "acq_1790003401100_f9cec5_proposal.md",
+      "sizeBytes": 917,
+      "sha256": "374d1dc4e83b2cba00ae09128deb7dff55aefd6ba7a2f150e41f6d16672cec09"
+    },
+    {
+      "type": "deliverable_code",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003401100_f9cec5_deliverable.js",
+      "fileName": "acq_1790003401100_f9cec5_deliverable.js",
+      "sizeBytes": 409,
+      "sha256": "fb0a44bb79b2752d34e5a444dcdb28370ff3aec7673cfa3d73e4657b0196dfab"
+    },
+    {
+      "type": "delivery_manifest",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003401100_f9cec5_DELIVERY_MANIFEST.md",
+      "fileName": "acq_1790003401100_f9cec5_DELIVERY_MANIFEST.md",
+      "sizeBytes": 274,
+      "sha256": "2286ee73549cbd423b958901ca6bacc02f40cad6db804cb90eb71acb3c0fa753"
+    }
+  ],
+  "sha256": "d2795aa224e740e24fc9f0ac9a5d2e7806507d14c90a94ef443359f5cb1fbd0d"
+}

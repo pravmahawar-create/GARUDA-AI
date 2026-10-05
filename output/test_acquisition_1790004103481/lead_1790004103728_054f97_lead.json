@@ -1,0 +1,287 @@
+{
+  "leadId": "lead_1790004103728_054f97",
+  "missionId": "acq_1790004103728_f67c1b",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:43.728Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Fitness App",
+    "email": null,
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "info@fitapp.test"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Mobile fitness tracking dashboard application",
+  "intent": {
+    "category": "MEDIUM_INTENT",
+    "confidence": 0.7,
+    "signals": [
+      "TECH_KEYWORDS:dashboard,app,application"
+    ],
+    "reason": "Legitimate commercial inquiry requesting quotation or scope"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:43.764Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "matchedCapabilities": [
+      {
+        "id": "engineering.software-implementation",
+        "name": "Governed software implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 50
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 50,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue"
+    ],
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ],
+    "confidence": 0.5
+  },
+  "valueEstimation": {
+    "status": "UNKNOWN",
+    "estimatedINR": null,
+    "proposedAmount": 0,
+    "currency": "INR",
+    "source": "source_evidence_missing",
+    "confidence": 0
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": null,
+    "proposedAmount": 23750,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Mobile fitness tracking dashboard application",
+    "clarificationQuestions": [
+      "What is your allocated budget range for this engagement?",
+      "What is your expected timeline or target delivery deadline?",
+      "Could you specify which existing APIs or legacy platforms need integration?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Mobile fitness tracking dashboard application",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103728_f67c1b_proposal.md",
+    "proposalSha256": "bcb1ea5a4a7bf714c1d19edca734fc51e48a331be109567f5f4c66d3a434ea57",
+    "recommendedNextAction": "AWAIT_CLIENT_DECISION"
+  },
+  "founderGovernance": {
+    "requiresFounder": false,
+    "status": "APPROVED",
+    "dossier": {
+      "whyThisLead": "Intent: MEDIUM_INTENT (70% confidence). Channel: Direct. Signals: TECH_KEYWORDS:dashboard,app,application",
+      "whatClientWants": "Mobile fitness tracking dashboard application",
+      "whatGarudaCanDeliver": "Matched: Governed software implementation (Coverage: PARTIAL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Mobile fitness tracking dashboard application; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 23,750 (Milestones: 1)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements",
+        "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103728_f67c1b_proposal.md",
+          "sha256": "bcb1ea5a4a7bf714c1d19edca734fc51e48a331be109567f5f4c66d3a434ea57"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "STOPPED",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": "OPT_OUT",
+    "history": []
+  },
+  "commercialStatus": "STOPPED",
+  "state": "AWAITING_CLIENT",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:43.728Z",
+      "leadId": "lead_1790004103728_054f97"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:43.728Z",
+      "intentCategory": "MEDIUM_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:dashboard,app,application"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.728Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:43.735Z",
+      "proposalSha256": "bcb1ea5a4a7bf714c1d19edca734fc51e48a331be109567f5f4c66d3a434ea57"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:43.735Z"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:21:43.764Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "OPT_OUT_RECORDED",
+      "timestamp": "2026-09-21T15:21:43.765Z"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004103728_f67c1b_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103728_f67c1b_proposal.md",
+      "sizeBytes": 852,
+      "sha256": "bcb1ea5a4a7bf714c1d19edca734fc51e48a331be109567f5f4c66d3a434ea57"
+    }
+  ],
+  "communicationAction": {
+    "channel": "telegram",
+    "recipient": "info@fitapp.test",
+    "message": "Commercial Proposal: Mobile fitness tracking dashboard application | Proposed: INR 23,750",
+    "missionId": "acq_1790004103728_f67c1b",
+    "requiresFounder": true,
+    "approvalStatus": "APPROVED",
+    "executionStatus": "READY_TO_SEND",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "bcb1ea5a4a7bf714c1d19edca734fc51e48a331be109567f5f4c66d3a434ea57"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube85z3-6abc2730",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Mobile fitness tracking dashboard application",
+      "name": "Fitness App",
+      "contact": "info@fitapp.test"
+    },
+    "capAssessment": {
+      "coverage": "PARTIAL",
+      "matchedCapabilities": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 50
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue"
+      ],
+      "gaps": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "confidence": 0.5
+    },
+    "valEstimation": {
+      "status": "UNKNOWN",
+      "estimatedINR": null,
+      "proposedAmount": 0,
+      "currency": "INR",
+      "source": "source_evidence_missing",
+      "confidence": 0
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+        "amountINR": 23750,
+        "percentage": 100
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103728_f67c1b_proposal.md",
+    "communicationAction": {
+      "channel": "telegram",
+      "recipient": "info@fitapp.test",
+      "message": "Commercial Proposal: Mobile fitness tracking dashboard application | Proposed: INR 23,750",
+      "missionId": "acq_1790004103728_f67c1b",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "bcb1ea5a4a7bf714c1d19edca734fc51e48a331be109567f5f4c66d3a434ea57"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "missionId": "rev_1790002490798_939c0d",
+  "leadId": "lead_1790002490808_c729bc",
+  "clientId": "client_a525cf",
+  "projectId": null,
+  "commercialStatus": "AWAITING_FOUNDER",
+  "currency": "INR",
+  "proposedAmount": 65000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790002490798_939c0d_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490798_939c0d_scope.json",
+      "sizeBytes": 924,
+      "sha256": "67979b2c23ec53457a80bde1ade48b94f6d91cd68c8b4fcea10f263705268576"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790002490798_939c0d_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490798_939c0d_proposal.md",
+      "sizeBytes": 857,
+      "sha256": "a0ca6fc40b035e9735d127a4005549e9ab2af73667d6e14b454b6500abd4f25c"
+    }
+  ],
+  "confidence": 0.65,
+  "requiresFounder": true,
+  "nextAction": {
+    "action": "APPROVE_PROPOSAL_DISPATCH",
+    "requiresFounder": true,
+    "reason": "Founder authorization required before external proposal transmission",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "procurement@sovereignlogistics.in",
+      "message": "Commercial Proposal: Design and implement autonomous fleet tracking gateway with  | Amount: INR 65,000",
+      "missionId": "rev_1790002490798_939c0d",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "a0ca6fc40b035e9735d127a4005549e9ab2af73667d6e14b454b6500abd4f25c"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "67979b2c23ec53457a80bde1ade48b94f6d91cd68c8b4fcea10f263705268576"
+        }
+      ]
+    }
+  },
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T14:54:50.808Z",
+      "leadId": "lead_1790002490808_c729bc",
+      "customer": "Sovereign Logistics"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T14:54:50.808Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T14:54:50.809Z",
+      "bestCapability": "Vector Graphics, Logo & Layout Design",
+      "matchScore": 35
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T14:54:50.810Z",
+      "scopeSha256": "67979b2c23ec53457a80bde1ade48b94f6d91cd68c8b4fcea10f263705268576"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T14:54:50.812Z",
+      "proposedAmount": 65000,
+      "currency": "INR",
+      "proposalSha256": "a0ca6fc40b035e9735d127a4005549e9ab2af73667d6e14b454b6500abd4f25c"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-21T14:54:50.812Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-21T14:54:50.812Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "name": "Sovereign Logistics",
+      "email": "procurement@sovereignlogistics.in",
+      "phone": "+919876543210",
+      "requirements": "Design and implement autonomous fleet tracking gateway with MQTT and geofencing verification",
+      "budget": 65000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "creative.vector-design",
+      "category": "Creative Services",
+      "name": "Vector Graphics, Logo & Layout Design",
+      "universe": "creative",
+      "confidenceScore": 88,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "2-8 hours"
+    },
+    "estimatedINR": 65000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 32500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 32500,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490798_939c0d_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490798_939c0d_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "procurement@sovereignlogistics.in",
+      "message": "Commercial Proposal: Design and implement autonomous fleet tracking gateway with  | Amount: INR 65,000",
+      "missionId": "rev_1790002490798_939c0d",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "a0ca6fc40b035e9735d127a4005549e9ab2af73667d6e14b454b6500abd4f25c"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "67979b2c23ec53457a80bde1ade48b94f6d91cd68c8b4fcea10f263705268576"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "missionId": "acq_1790003401100_f9cec5",
+  "leadId": "lead_1790003401100_6e1e84",
+  "clientId": "client_6e1e84",
+  "customer": {
+    "name": "Dr. Vikram Sethi",
+    "email": "vikram.sethi@aether-telemetry.io",
+    "phone": "+91-98100-23456",
+    "contact": "vikram.sethi@aether-telemetry.io"
+  },
+  "requirements": "Architect and implement an autonomous enterprise telemetry pipeline with streaming AST validation, real-time event ingestion, and automated unit test suites",
+  "capability": "Automated QA Test Suite & Validation",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 95000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 47500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 47500,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "2-6 hours",
+  "createdAt": "2026-09-21T15:10:01.143Z"
+}

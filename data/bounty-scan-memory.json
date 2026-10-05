@@ -1,0 +1,210 @@
+{
+  "https://www.garudaos.in": {
+    "firstSeen": "2026-09-11T05:44:45.097Z",
+    "lastScanned": 1789105485097,
+    "sha256": "b47fac29fde156c80d187abd92155d6b4c063f80169102927784d64b58c48be0",
+    "status": "LOW",
+    "findingsCount": 5,
+    "consecutiveBlocks": 0
+  },
+  "https://example.com": {
+    "firstSeen": "2026-09-11T05:44:45.097Z",
+    "lastScanned": 1789105485097,
+    "sha256": "98bbe8519ee62e7622941c0fd0e3a64742b3ef85d449168083ffa9d3a0e3ff0c",
+    "status": "LOW",
+    "findingsCount": 6,
+    "consecutiveBlocks": 0
+  },
+  "https://github.com": {
+    "firstSeen": "2026-09-13T12:45:04.727Z",
+    "lastScanned": 1789303504727,
+    "sha256": "5eb33b6dfb8ce2f13d96b4dd23aae36f925680e8793a64c921719d62c147005a",
+    "status": "LOW",
+    "findingsCount": 1,
+    "consecutiveBlocks": 0
+  },
+  "https://shopify.com": {
+    "firstSeen": "2026-09-13T12:45:04.727Z",
+    "lastScanned": 1789303504727,
+    "sha256": "70ed58dab20c029099ce107630ceb33cf0f89e221a21a5e9e8962e9637e0fc72",
+    "status": "LOW",
+    "findingsCount": 4,
+    "consecutiveBlocks": 0
+  },
+  "https://gitlab.com": {
+    "firstSeen": "2026-09-13T12:45:04.727Z",
+    "lastScanned": 1789303504727,
+    "sha256": "8b08b427a743771b24709fd0a87e5f2d7dff32607a9afb876dfa503a2c3e3e46",
+    "status": "LOW",
+    "findingsCount": 3,
+    "consecutiveBlocks": 0
+  },
+  "https://wordpress.org": {
+    "firstSeen": "2026-09-13T12:48:27.270Z",
+    "lastScanned": 1789303707270,
+    "sha256": "c24e4213d4a7d79f5cb577c2a2f8c9ddb6ddd3a66599217f18185c79ed71f842",
+    "status": "LOW",
+    "findingsCount": 2,
+    "consecutiveBlocks": 0
+  },
+  "https://yelp.com": {
+    "firstSeen": "2026-09-13T12:49:37.541Z",
+    "lastScanned": 1789303777541,
+    "sha256": "978537740edf120e087eb812c88a556665ebd8e373bfb4787f0fa176cc91ec61",
+    "status": "VULNERABLE",
+    "findingsCount": 9,
+    "consecutiveBlocks": 4
+  },
+  "https://urbandictionary.com": {
+    "firstSeen": "2026-09-13T12:50:42.887Z",
+    "lastScanned": 1789303842887,
+    "sha256": "9a9111961e89609f17ab84a2ad58d7c53581cf9f7e3d5e5e79fb1296fd10199c",
+    "status": "LOW",
+    "findingsCount": 6,
+    "consecutiveBlocks": 0
+  },
+  "https://imgur.com": {
+    "firstSeen": "2026-09-13T12:52:14.445Z",
+    "lastScanned": 1789303934445,
+    "sha256": "af2389d682d7d6c669a8da860c2bee720807bd155ee16afc9a8847cb41e12ee3",
+    "status": "LOW",
+    "findingsCount": 1,
+    "consecutiveBlocks": 0
+  },
+  "https://vimeo.com": {
+    "firstSeen": "2026-09-13T12:52:57.869Z",
+    "lastScanned": 1789303977869,
+    "sha256": "24c99ab2268d6f9e451d4aa4db8440c1d37f01d9a7a2bd74c18b1c58850b1caf",
+    "status": "LOW",
+    "findingsCount": 4,
+    "consecutiveBlocks": 0
+  },
+  "https://tinder.com": {
+    "firstSeen": "2026-09-13T12:53:37.063Z",
+    "lastScanned": 1789304017063,
+    "sha256": "1a764f184594a57571d6f3919a87d8326c90183d2bb2fa01d8cc1e6d2cbf0968",
+    "status": "LOW",
+    "findingsCount": 3,
+    "consecutiveBlocks": 0
+  },
+  "https://airtable.com": {
+    "firstSeen": "2026-09-13T12:54:50.401Z",
+    "lastScanned": 1789304090401,
+    "sha256": "48ecf42ba96ef89653ecbdd6bb766a1a9bd70662e99f887c981fca1624cc7f0f",
+    "status": "LOW",
+    "findingsCount": 4,
+    "consecutiveBlocks": 0
+  },
+  "https://kayak.com": {
+    "firstSeen": "2026-09-13T12:55:47.842Z",
+    "lastScanned": 1789304147842,
+    "sha256": "3e5f88841fab264380b2a9b854200e9aad7527e3e5ad1a623e472f2c477e9f0b",
+    "status": "LOW",
+    "findingsCount": 4,
+    "consecutiveBlocks": 0
+  },
+  "https://mapbox.com": {
+    "firstSeen": "2026-09-13T12:56:43.246Z",
+    "lastScanned": 1789304203246,
+    "sha256": "ea18dedcb0b78a9d185c913893da6c76e4f756550962e74670ba9929cb2d1ee5",
+    "status": "LOW",
+    "findingsCount": 1,
+    "consecutiveBlocks": 0
+  },
+  "https://scopely.com": {
+    "firstSeen": "2026-09-13T12:57:49.390Z",
+    "lastScanned": 1789304269390,
+    "sha256": "724a6f1aba8d7210dcb913d2a0597fb7be14ae1787d792c8e424fe1d3fdf55b2",
+    "status": "LOW",
+    "findingsCount": 6,
+    "consecutiveBlocks": 5
+  },
+  "https://irccloud.com": {
+    "firstSeen": "2026-09-13T13:50:51.031Z",
+    "lastScanned": 1789307451031,
+    "sha256": "8e2cff034b254d209a3067526a456c2f3208e4e581d022ed5c1573d9915b9f2e",
+    "status": "LOW",
+    "findingsCount": 2,
+    "consecutiveBlocks": 0
+  },
+  "https://glasswire.com": {
+    "firstSeen": "2026-09-13T13:51:36.146Z",
+    "lastScanned": 1789307496146,
+    "sha256": "3420624fc0082ba7353167898aa6337ec5476456ac8b4582e093267de1fb12d4",
+    "status": "LOW",
+    "findingsCount": 6,
+    "consecutiveBlocks": 0
+  },
+  "https://coinmate.io": {
+    "firstSeen": "2026-09-13T13:52:36.859Z",
+    "lastScanned": 1789307556859,
+    "sha256": "bfcf8b2f913056c4c408fe4b752da5a62e7c6e563deaa360bccf87542657fa0a",
+    "status": "LOW",
+    "findingsCount": 1,
+    "consecutiveBlocks": 0
+  },
+  "https://algolia.com": {
+    "firstSeen": "2026-09-13T13:53:05.569Z",
+    "lastScanned": 1789307585569,
+    "sha256": "e8cdb9a4ebf7bf2b019d6c0ee1b6294887deee45a78f033ee3cd280b5c19402c",
+    "status": "LOW",
+    "findingsCount": 1,
+    "consecutiveBlocks": 0
+  },
+  "https://moneybird.com": {
+    "firstSeen": "2026-09-13T13:53:50.693Z",
+    "lastScanned": 1789307630693,
+    "sha256": "c00f794e98c56f1a04d2cf1e8a2cd868d4c204c2d2ad3e2dfb21c102c4d86f66",
+    "status": "LOW",
+    "findingsCount": 2,
+    "consecutiveBlocks": 0
+  },
+  "https://mainwp.com": {
+    "firstSeen": "2026-09-13T13:54:27.466Z",
+    "lastScanned": 1789307667466,
+    "sha256": "29329f849bf246ce45c0d02bd6ca21480846df896dea0ab42de8fa6470973c92",
+    "status": "LOW",
+    "findingsCount": 4,
+    "consecutiveBlocks": 0
+  },
+  "https://bitaccess.com": {
+    "firstSeen": "2026-09-13T13:56:14.824Z",
+    "lastScanned": 1789307774824,
+    "sha256": "3ab00eedee70e2a8a54a91b859852f83c899af85d5b274771a43462be82bdfd3",
+    "status": "LOW",
+    "findingsCount": 3,
+    "consecutiveBlocks": 1
+  },
+  "https://wordpoints.com": {
+    "firstSeen": "2026-09-13T13:56:40.212Z",
+    "lastScanned": 1789307800212,
+    "sha256": "272c9fe37c625fccf16e14d25f01c3ca33fdd5a478b052467b72231cc1aad813",
+    "status": "LOW",
+    "findingsCount": 4,
+    "consecutiveBlocks": 0
+  },
+  "https://legalrobot.com": {
+    "firstSeen": "2026-09-13T13:57:46.150Z",
+    "lastScanned": 1789307866150,
+    "sha256": "26dbbc891e20a2d637681717082bfb0eac7f484ea89bffc1ce799e5e03ecd596",
+    "status": "LOW",
+    "findingsCount": 1,
+    "consecutiveBlocks": 0
+  },
+  "https://matomo.com": {
+    "firstSeen": "2026-09-13T14:03:06.995Z",
+    "lastScanned": 1789308186995,
+    "sha256": "4d2ac7e8031031a3fb7383e63905792535484cb4dd6749ee2a26e507c33ebb28",
+    "status": "LOW",
+    "findingsCount": 2,
+    "consecutiveBlocks": 0
+  },
+  "https://badoo.com": {
+    "firstSeen": "2026-09-13T14:04:46.217Z",
+    "lastScanned": 1789308286217,
+    "sha256": "c880fb3f16b19efdf45fc088b0535fdd06acf9faf4cb1c34a6a308212124b285",
+    "status": "LOW",
+    "findingsCount": 2,
+    "consecutiveBlocks": 0
+  }
+}

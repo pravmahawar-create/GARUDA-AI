@@ -57415,5 +57415,691 @@
     "publicUrl": "https://garudaos.in/proposal/scope_1790456133527_23d5fb",
     "createdAt": "2026-09-26T20:55:33.527Z",
     "updatedAt": "2026-09-26T20:55:33.555Z"
+  },
+  "fintech_1791044623832_23e1b5": {
+    "proposalId": "fintech_1791044623832_23e1b5",
+    "scopeId": "fintech_1791044623832_23e1b5",
+    "isFintech": true,
+    "service": "fintech-gateway",
+    "project": {
+      "title": "GARUDA Gateway: Cloud Starter Architecture for Test Automation Corp",
+      "requirements": "Deployment model: Cloud Starter. Corridors: INR (domestic). Volume: < ₹10 lakh. Integrations: REST API, Webhooks. Direct bank zero-custody clearing."
+    },
+    "client": {
+      "name": "E2E Tester",
+      "company": "Test Automation Corp",
+      "organization": "Test Automation Corp",
+      "email": "e2e@testcorp.com",
+      "phone": "+91 99999 88888",
+      "country": "India"
+    },
+    "customer": {
+      "name": "E2E Tester",
+      "email": "e2e@testcorp.com",
+      "phone": "+91 99999 88888",
+      "company": "Test Automation Corp",
+      "service": "fintech-gateway"
+    },
+    "fintechLeadData": {
+      "identity": {
+        "name": "E2E Tester",
+        "company": "Test Automation Corp",
+        "email": "e2e@testcorp.com",
+        "phone": "+91 99999 88888",
+        "country": "India"
+      },
+      "business": {
+        "businessType": "D2C / E-commerce",
+        "industry": "Digital Commerce",
+        "website": "",
+        "operatingCountries": [
+          "India"
+        ]
+      },
+      "paymentRequirements": {
+        "selectedTier": "cloud-starter",
+        "moneyMovement": "domestic",
+        "expectedMonthlyVolume": "< ₹10 lakh",
+        "expectedMonthlyTransactionCount": "100 - 1,000",
+        "transactionCurrency": "INR",
+        "requiredCurrencies": [
+          "INR"
+        ],
+        "sendingCountries": [
+          "India"
+        ],
+        "receivingCountries": [
+          "India"
+        ],
+        "paymentDirection": "pay-in",
+        "settlementPreference": "T+1"
+      },
+      "integration": {
+        "existingPaymentProvider": "None",
+        "bankingPartner": "Standard Commercial Bank",
+        "requiredIntegrations": [
+          "REST API",
+          "Webhooks"
+        ],
+        "APIRequired": true,
+        "webhookRequired": true,
+        "ERPRequired": false,
+        "invoicingRequired": false
+      },
+      "deployment": {
+        "deploymentModel": "hosted"
+      },
+      "commercial": {
+        "budgetRange": "Standard Tier Pricing",
+        "implementationUrgency": "30–60 days",
+        "expectedGoLiveWindow": "30–60 days"
+      },
+      "metadata": {
+        "source": "fintech-gateway-cta",
+        "landingPage": "https://www.garudaos.in/fintech-gateway",
+        "selectedTier": "cloud-starter",
+        "createdAt": "2026-10-03T16:23:43.832Z",
+        "qualificationStatus": "QUALIFIED",
+        "founderApprovalStatus": "AWAITING_FOUNDER_APPROVAL"
+      },
+      "strippedFields": []
+    },
+    "fintechQualification": {
+      "recommendedTier": "CLOUD_STARTER",
+      "recommendedTierDetails": {
+        "key": "CLOUD_STARTER",
+        "slug": "cloud-starter",
+        "title": "Cloud Starter",
+        "indicativePricing": "From ₹4,999 / month",
+        "setupFeeINR": 0,
+        "monthlyFeeINR": 4999,
+        "deploymentModel": "Hosted Gateway Infrastructure",
+        "targetAudience": "D2C Brands, SMEs, Early-stage digital commerce",
+        "summary": "Single-tenant managed gateway container with multi-rail orchestration, direct regulated-provider connectivity, and deterministic reconciliation."
+      },
+      "selectedTier": "CLOUD_STARTER",
+      "selectedTierDetails": {
+        "key": "CLOUD_STARTER",
+        "slug": "cloud-starter",
+        "title": "Cloud Starter",
+        "indicativePricing": "From ₹4,999 / month",
+        "setupFeeINR": 0,
+        "monthlyFeeINR": 4999,
+        "deploymentModel": "Hosted Gateway Infrastructure",
+        "targetAudience": "D2C Brands, SMEs, Early-stage digital commerce",
+        "summary": "Single-tenant managed gateway container with multi-rail orchestration, direct regulated-provider connectivity, and deterministic reconciliation."
+      },
+      "tierMatches": true,
+      "reasons": [
+        "Hosted multi-tenant gateway infrastructure suitable for cloud deployment.",
+        "Business profile (D2C / E-commerce) matches digital commerce / SME cloud gateway tier.",
+        "Single-currency domestic payment flows match Cloud Starter architecture.",
+        "Volume tier (< ₹10 lakh) is fully supported by managed Cloud Starter rate limits."
+      ],
+      "scores": {
+        "starterScore": 80,
+        "crossBorderScore": 0,
+        "enterpriseScore": 0
+      },
+      "customReviewFlags": [],
+      "providerGaps": [
+        {
+          "provider": "GARUDA Mock Sandbox Bank",
+          "status": "OPERATIONAL",
+          "requirement": "Available immediately for protocol testing, simulated VAN provisioning, and webhook validation."
+        },
+        {
+          "provider": "ICICI Bank Corporate (India)",
+          "status": "ADAPTER_READY / CREDENTIALS_REQUIRED",
+          "requirement": "Merchant must complete ICICI Corporate Banking API commercial onboarding."
+        }
+      ],
+      "estimatedComplexity": "Standard Deployment (3–7 Days)",
+      "status": "Preliminary Architecture Fit — Non-Binding / Subject to Founder Approval"
+    },
+    "fintechSections": {
+      "section01_executiveSummary": {
+        "title": "1. Executive Summary",
+        "content": "This proposal defines the preliminary technical and commercial architecture for deploying GARUDA OS Fintech Gateway for Test Automation Corp. Based on evaluated parameters, Test Automation Corp is classified under the Cloud Starter deployment model (Hosted Gateway Infrastructure). GARUDA operates strictly as an autonomous zero-custody gateway orchestration layer; all transaction principals clear directly into Test Automation Corp's designated commercial banking partners."
+      },
+      "section02_businessProfileAndObjectives": {
+        "title": "2. Business Profile & Objectives",
+        "content": "Organization: Test Automation Corp (D2C / E-commerce in Digital Commerce). Primary Objective: Implement robust, low-latency payment infrastructure supporting domestic transaction flows with expected volume of < ₹10 lakh across target operating jurisdictions (India)."
+      },
+      "section03_currentPaymentWorkflow": {
+        "title": "3. Current Payment Workflow Analysis",
+        "content": "Current provider: None. Existing banking infrastructure: Standard Commercial Bank. Target settlement model: T+1. The proposed architecture modernizes manual reconciliation into deterministic event-driven webhook state machines."
+      },
+      "section04_recommendedGatewayArchitecture": {
+        "title": "4. Recommended Gateway Architecture",
+        "tier": "CLOUD_STARTER",
+        "tierTitle": "Cloud Starter",
+        "content": "Single-tenant managed gateway container with multi-rail orchestration, direct regulated-provider connectivity, and deterministic reconciliation.",
+        "selectedVsRecommended": "Client selection (Cloud Starter) matches the evaluated architectural recommendation."
+      },
+      "section05_providerAndBankingDependencyMatrix": {
+        "title": "5. Provider & Banking Dependency Matrix",
+        "content": "Truthful provider readiness status across target corridors:",
+        "dependencies": [
+          {
+            "provider": "GARUDA Mock Sandbox Bank",
+            "status": "OPERATIONAL",
+            "requirement": "Available immediately for protocol testing, simulated VAN provisioning, and webhook validation."
+          },
+          {
+            "provider": "ICICI Bank Corporate (India)",
+            "status": "ADAPTER_READY / CREDENTIALS_REQUIRED",
+            "requirement": "Merchant must complete ICICI Corporate Banking API commercial onboarding."
+          }
+        ]
+      },
+      "section06_crossBorderCorridorAnalysis": {
+        "title": "6. Cross-Border Corridor Analysis",
+        "content": "Target currencies: INR. Flow direction: pay-in. Sending countries: India; Receiving countries: India. Cross-border transactions are orchestrated without intermediary pooling; foreign exchange conversions are executed by regulated banking partners."
+      },
+      "section07_settlementAndTreasuryArchitecture": {
+        "title": "7. Settlement & Treasury Architecture",
+        "content": "Multi-rail virtual account generation (VAN) isolated per customer transaction intent. Deterministic reconciliation engine categorizes incoming webhooks into MATCHED_EXACT, PARTIAL_PAYMENT, OVERPAYMENT, or MANUAL_REVIEW with zero race conditions."
+      },
+      "section08_securityAndWebhookArchitecture": {
+        "title": "8. Security & Webhook Architecture",
+        "content": "HMAC SHA-256 cryptographic webhook signatures with 300-second timestamp drift tolerance, nonces deduplication, and immediate replay attack rejection. Complete secret redaction across all audit logs."
+      },
+      "section09_integrationPlan": {
+        "title": "9. Integration Plan",
+        "content": "Selected integrations: REST API, Webhooks. REST API endpoints for payment intent creation; bidirectional secure webhooks for status callbacks; optional ERP/accounting bridge."
+      },
+      "section10_deploymentModel": {
+        "title": "10. Deployment Model",
+        "content": "Model: Hosted Gateway Infrastructure. Client preference: hosted. Enforces network segregation, strict environment variable secret storage, and zero persistence of plaintext card or banking secrets."
+      },
+      "section11_regulatoryAndZeroCustodyDemarcation": {
+        "title": "11. Regulatory & Zero-Custody Demarcation",
+        "content": "MANDATORY STATUTORY DECLARATION: GARUDA is an enterprise technology provider, not a bank, NBFC, payment aggregator, or money transmitter. GARUDA software never touches, holds, or pools customer funds at any stage of the payment lifecycle. Funds move exclusively across regulated payment rails under client's direct agreements with licensed clearing providers."
+      },
+      "section12_implementationPhasing": {
+        "title": "12. Implementation Phasing",
+        "content": "Target Go-Live: 30–60 days. Phased rollout ensures zero disruption: Phase 1 Architecture & Sandbox (Days 1–5), Phase 2 Provider Integration & Verification (Days 6–12), Phase 3 Pilot Activation & Handover."
+      },
+      "section13_pilotPhaseDefinition": {
+        "title": "13. Pilot Phase Definition",
+        "stages": [
+          {
+            "stage": "Stage 1: Sandbox Testing",
+            "description": "Full protocol testing using GARUDA Mock Bank. Validates VAN provisioning, webhook signatures, idempotency, and reconciliation rules with zero capital risk."
+          },
+          {
+            "stage": "Stage 2: Controlled Pilot",
+            "description": "Low-volume live testing on a single corridor with real regulated banking credentials. Dual-operator manual sign-off for reconciliation verification."
+          },
+          {
+            "stage": "Stage 3: Production Scale",
+            "description": "Multi-rail automated routing with dynamic failover, real-time treasury telemetry, and continuous cryptographic audit logging."
+          }
+        ]
+      },
+      "section14_acceptanceCriteria": {
+        "title": "14. Acceptance Criteria",
+        "content": "100% passage on automated webhook security tests (10 mandatory scenarios); zero reconciliation discrepancies across sandbox simulation; validated end-to-end zero-custody audit trace."
+      },
+      "section15_indicativeCommercialStartingPoint": {
+        "title": "15. Indicative Commercial Starting Point",
+        "tier": "Cloud Starter",
+        "pricing": "From ₹4,999 / month",
+        "setupFeeINR": 0,
+        "monthlyFeeINR": 4999,
+        "disclaimer": "Indicative starting point only; not a binding commercial offer. Final pricing depends on transaction volume, supported corridors, regulated-provider availability, and commercial scope."
+      },
+      "section16_thirdPartyProviderCostDemarcation": {
+        "title": "16. Third-Party Provider Cost Demarcation",
+        "content": "Statutory segregation of financial responsibilities:",
+        "breakdown": [
+          {
+            "item": "GARUDA Platform License / Software Fee",
+            "party": "Payable to GARUDA OS (Software orchestration)"
+          },
+          {
+            "item": "Banking Interchange & Clearing Fees",
+            "party": "Billed directly by Acquiring Bank / Partner (Wio, ICICI, Modulr)"
+          },
+          {
+            "item": "Foreign Exchange (FX) Spreads & Swaps",
+            "party": "Applied directly by interbank clearing institutions"
+          },
+          {
+            "item": "Applicable Taxes (GST / VAT / Corporate Taxes)",
+            "party": "Statutory compliance per jurisdiction"
+          }
+        ]
+      },
+      "section17_technicalAssumptions": {
+        "title": "17. Technical Assumptions",
+        "content": "Client provides lawful corporate identity and maintains active, good-standing corporate accounts with licensed banking/payment providers in all operating jurisdictions."
+      },
+      "section18_clientResponsibilities": {
+        "title": "18. Client Responsibilities",
+        "content": "Executing commercial agreements directly with licensed payment providers; safeguarding API secret credentials on client systems; maintaining corporate compliance with applicable AML/KYC regulations."
+      },
+      "section19_founderApprovalNotice": {
+        "title": "19. Founder Approval Notice",
+        "content": "DRAFT PROPOSAL — PRELIMINARY ARCHITECTURAL EVALUATION. This document is a non-binding technical scoping draft generated autonomously by GARUDA Solution Architect and is strictly subject to formal review and sign-off by Founder Praveen Mahawar before execution of commercial agreements."
+      }
+    },
+    "deliverables": [
+      "Dedicated Cloud Starter gateway orchestration container",
+      "Zero-Custody multi-rail settlement state machine",
+      "Cryptographic webhook verification & HMAC tamper defense",
+      "Deterministic VAN allocation & reconciliation engine",
+      "Multi-currency treasury visibility & export suite",
+      "3-stage pilot deployment roadmap with sandbox verification"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 14997,
+      "totalUSD": 176,
+      "totalAmount": 14997,
+      "depositAmount": 4999,
+      "pricingModel": "commercial_software_license",
+      "indicativeQuote": "From ₹4,999 / month",
+      "indicativeSetupFeeINR": 0,
+      "indicativeMonthlyFeeINR": 4999,
+      "statutoryDemarcation": [
+        {
+          "item": "GARUDA Platform License / Software Fee",
+          "party": "Payable to GARUDA OS (Software orchestration)"
+        },
+        {
+          "item": "Banking Interchange & Clearing Fees",
+          "party": "Billed directly by Acquiring Bank / Partner (Wio, ICICI, Modulr)"
+        },
+        {
+          "item": "Foreign Exchange (FX) Spreads & Swaps",
+          "party": "Applied directly by interbank clearing institutions"
+        },
+        {
+          "item": "Applicable Taxes (GST / VAT / Corporate Taxes)",
+          "party": "Statutory compliance per jurisdiction"
+        }
+      ]
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "Standard Deployment (3–7 Days)"
+    },
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "pipelineStage": "PROPOSAL_DRAFT",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "publicUrl": "https://garudaos.in/proposal/fintech_1791044623832_23e1b5",
+    "createdAt": "2026-10-03T16:23:43.832Z",
+    "environment": "test",
+    "isTest": true,
+    "attribution": {
+      "channel": "Direct",
+      "source": "direct",
+      "medium": "none",
+      "campaign": null,
+      "term": null,
+      "content": null,
+      "utm_source": null,
+      "utm_medium": null,
+      "utm_campaign": null,
+      "utm_term": null,
+      "utm_content": null,
+      "gclid": null,
+      "fbclid": null,
+      "ref": null,
+      "referrerDomain": null,
+      "referrerUrl": null,
+      "landingPath": "/",
+      "capturedAt": "2026-10-03T16:23:43.819Z",
+      "summary": "Direct (direct / none)"
+    },
+    "updatedAt": "2026-10-03T16:23:43.856Z"
+  },
+  "fintech_1791044941777_fdfba8": {
+    "proposalId": "fintech_1791044941777_fdfba8",
+    "scopeId": "fintech_1791044941777_fdfba8",
+    "isFintech": true,
+    "service": "fintech-gateway",
+    "project": {
+      "title": "GARUDA Gateway: Cloud Starter Architecture for Test Automation Corp",
+      "requirements": "Deployment model: Cloud Starter. Corridors: INR (domestic). Volume: < ₹10 lakh. Integrations: REST API, Webhooks. Direct bank zero-custody clearing."
+    },
+    "client": {
+      "name": "E2E Tester",
+      "company": "Test Automation Corp",
+      "organization": "Test Automation Corp",
+      "email": "e2e@testcorp.com",
+      "phone": "+91 99999 88888",
+      "country": "India"
+    },
+    "customer": {
+      "name": "E2E Tester",
+      "email": "e2e@testcorp.com",
+      "phone": "+91 99999 88888",
+      "company": "Test Automation Corp",
+      "service": "fintech-gateway"
+    },
+    "fintechLeadData": {
+      "identity": {
+        "name": "E2E Tester",
+        "company": "Test Automation Corp",
+        "email": "e2e@testcorp.com",
+        "phone": "+91 99999 88888",
+        "country": "India"
+      },
+      "business": {
+        "businessType": "D2C / E-commerce",
+        "industry": "Digital Commerce",
+        "website": "",
+        "operatingCountries": [
+          "India"
+        ]
+      },
+      "paymentRequirements": {
+        "selectedTier": "cloud-starter",
+        "moneyMovement": "domestic",
+        "expectedMonthlyVolume": "< ₹10 lakh",
+        "expectedMonthlyTransactionCount": "100 - 1,000",
+        "transactionCurrency": "INR",
+        "requiredCurrencies": [
+          "INR"
+        ],
+        "sendingCountries": [
+          "India"
+        ],
+        "receivingCountries": [
+          "India"
+        ],
+        "paymentDirection": "pay-in",
+        "settlementPreference": "T+1"
+      },
+      "integration": {
+        "existingPaymentProvider": "None",
+        "bankingPartner": "Standard Commercial Bank",
+        "requiredIntegrations": [
+          "REST API",
+          "Webhooks"
+        ],
+        "APIRequired": true,
+        "webhookRequired": true,
+        "ERPRequired": false,
+        "invoicingRequired": false
+      },
+      "deployment": {
+        "deploymentModel": "hosted"
+      },
+      "commercial": {
+        "budgetRange": "Standard Tier Pricing",
+        "implementationUrgency": "30–60 days",
+        "expectedGoLiveWindow": "30–60 days"
+      },
+      "metadata": {
+        "source": "fintech-gateway-cta",
+        "landingPage": "https://www.garudaos.in/fintech-gateway",
+        "selectedTier": "cloud-starter",
+        "createdAt": "2026-10-03T16:29:01.777Z",
+        "qualificationStatus": "QUALIFIED",
+        "founderApprovalStatus": "AWAITING_FOUNDER_APPROVAL"
+      },
+      "strippedFields": []
+    },
+    "fintechQualification": {
+      "recommendedTier": "CLOUD_STARTER",
+      "recommendedTierDetails": {
+        "key": "CLOUD_STARTER",
+        "slug": "cloud-starter",
+        "title": "Cloud Starter",
+        "indicativePricing": "From ₹4,999 / month",
+        "setupFeeINR": 0,
+        "monthlyFeeINR": 4999,
+        "deploymentModel": "Hosted Gateway Infrastructure",
+        "targetAudience": "D2C Brands, SMEs, Early-stage digital commerce",
+        "summary": "Single-tenant managed gateway container with multi-rail orchestration, direct regulated-provider connectivity, and deterministic reconciliation."
+      },
+      "selectedTier": "CLOUD_STARTER",
+      "selectedTierDetails": {
+        "key": "CLOUD_STARTER",
+        "slug": "cloud-starter",
+        "title": "Cloud Starter",
+        "indicativePricing": "From ₹4,999 / month",
+        "setupFeeINR": 0,
+        "monthlyFeeINR": 4999,
+        "deploymentModel": "Hosted Gateway Infrastructure",
+        "targetAudience": "D2C Brands, SMEs, Early-stage digital commerce",
+        "summary": "Single-tenant managed gateway container with multi-rail orchestration, direct regulated-provider connectivity, and deterministic reconciliation."
+      },
+      "tierMatches": true,
+      "reasons": [
+        "Hosted multi-tenant gateway infrastructure suitable for cloud deployment.",
+        "Business profile (D2C / E-commerce) matches digital commerce / SME cloud gateway tier.",
+        "Single-currency domestic payment flows match Cloud Starter architecture.",
+        "Volume tier (< ₹10 lakh) is fully supported by managed Cloud Starter rate limits."
+      ],
+      "scores": {
+        "starterScore": 80,
+        "crossBorderScore": 0,
+        "enterpriseScore": 0
+      },
+      "customReviewFlags": [],
+      "providerGaps": [
+        {
+          "provider": "GARUDA Mock Sandbox Bank",
+          "status": "OPERATIONAL",
+          "requirement": "Available immediately for protocol testing, simulated VAN provisioning, and webhook validation."
+        },
+        {
+          "provider": "ICICI Bank Corporate (India)",
+          "status": "ADAPTER_READY / CREDENTIALS_REQUIRED",
+          "requirement": "Merchant must complete ICICI Corporate Banking API commercial onboarding."
+        }
+      ],
+      "estimatedComplexity": "Standard Deployment (3–7 Days)",
+      "status": "Preliminary Architecture Fit — Non-Binding / Subject to Founder Approval"
+    },
+    "fintechSections": {
+      "section01_executiveSummary": {
+        "title": "1. Executive Summary",
+        "content": "This proposal defines the preliminary technical and commercial architecture for deploying GARUDA OS Fintech Gateway for Test Automation Corp. Based on evaluated parameters, Test Automation Corp is classified under the Cloud Starter deployment model (Hosted Gateway Infrastructure). GARUDA operates strictly as an autonomous zero-custody gateway orchestration layer; all transaction principals clear directly into Test Automation Corp's designated commercial banking partners."
+      },
+      "section02_businessProfileAndObjectives": {
+        "title": "2. Business Profile & Objectives",
+        "content": "Organization: Test Automation Corp (D2C / E-commerce in Digital Commerce). Primary Objective: Implement robust, low-latency payment infrastructure supporting domestic transaction flows with expected volume of < ₹10 lakh across target operating jurisdictions (India)."
+      },
+      "section03_currentPaymentWorkflow": {
+        "title": "3. Current Payment Workflow Analysis",
+        "content": "Current provider: None. Existing banking infrastructure: Standard Commercial Bank. Target settlement model: T+1. The proposed architecture modernizes manual reconciliation into deterministic event-driven webhook state machines."
+      },
+      "section04_recommendedGatewayArchitecture": {
+        "title": "4. Recommended Gateway Architecture",
+        "tier": "CLOUD_STARTER",
+        "tierTitle": "Cloud Starter",
+        "content": "Single-tenant managed gateway container with multi-rail orchestration, direct regulated-provider connectivity, and deterministic reconciliation.",
+        "selectedVsRecommended": "Client selection (Cloud Starter) matches the evaluated architectural recommendation."
+      },
+      "section05_providerAndBankingDependencyMatrix": {
+        "title": "5. Provider & Banking Dependency Matrix",
+        "content": "Truthful provider readiness status across target corridors:",
+        "dependencies": [
+          {
+            "provider": "GARUDA Mock Sandbox Bank",
+            "status": "OPERATIONAL",
+            "requirement": "Available immediately for protocol testing, simulated VAN provisioning, and webhook validation."
+          },
+          {
+            "provider": "ICICI Bank Corporate (India)",
+            "status": "ADAPTER_READY / CREDENTIALS_REQUIRED",
+            "requirement": "Merchant must complete ICICI Corporate Banking API commercial onboarding."
+          }
+        ]
+      },
+      "section06_crossBorderCorridorAnalysis": {
+        "title": "6. Cross-Border Corridor Analysis",
+        "content": "Target currencies: INR. Flow direction: pay-in. Sending countries: India; Receiving countries: India. Cross-border transactions are orchestrated without intermediary pooling; foreign exchange conversions are executed by regulated banking partners."
+      },
+      "section07_settlementAndTreasuryArchitecture": {
+        "title": "7. Settlement & Treasury Architecture",
+        "content": "Multi-rail virtual account generation (VAN) isolated per customer transaction intent. Deterministic reconciliation engine categorizes incoming webhooks into MATCHED_EXACT, PARTIAL_PAYMENT, OVERPAYMENT, or MANUAL_REVIEW with zero race conditions."
+      },
+      "section08_securityAndWebhookArchitecture": {
+        "title": "8. Security & Webhook Architecture",
+        "content": "HMAC SHA-256 cryptographic webhook signatures with 300-second timestamp drift tolerance, nonces deduplication, and immediate replay attack rejection. Complete secret redaction across all audit logs."
+      },
+      "section09_integrationPlan": {
+        "title": "9. Integration Plan",
+        "content": "Selected integrations: REST API, Webhooks. REST API endpoints for payment intent creation; bidirectional secure webhooks for status callbacks; optional ERP/accounting bridge."
+      },
+      "section10_deploymentModel": {
+        "title": "10. Deployment Model",
+        "content": "Model: Hosted Gateway Infrastructure. Client preference: hosted. Enforces network segregation, strict environment variable secret storage, and zero persistence of plaintext card or banking secrets."
+      },
+      "section11_regulatoryAndZeroCustodyDemarcation": {
+        "title": "11. Regulatory & Zero-Custody Demarcation",
+        "content": "MANDATORY STATUTORY DECLARATION: GARUDA is an enterprise technology provider, not a bank, NBFC, payment aggregator, or money transmitter. GARUDA software never touches, holds, or pools customer funds at any stage of the payment lifecycle. Funds move exclusively across regulated payment rails under client's direct agreements with licensed clearing providers."
+      },
+      "section12_implementationPhasing": {
+        "title": "12. Implementation Phasing",
+        "content": "Target Go-Live: 30–60 days. Phased rollout ensures zero disruption: Phase 1 Architecture & Sandbox (Days 1–5), Phase 2 Provider Integration & Verification (Days 6–12), Phase 3 Pilot Activation & Handover."
+      },
+      "section13_pilotPhaseDefinition": {
+        "title": "13. Pilot Phase Definition",
+        "stages": [
+          {
+            "stage": "Stage 1: Sandbox Testing",
+            "description": "Full protocol testing using GARUDA Mock Bank. Validates VAN provisioning, webhook signatures, idempotency, and reconciliation rules with zero capital risk."
+          },
+          {
+            "stage": "Stage 2: Controlled Pilot",
+            "description": "Low-volume live testing on a single corridor with real regulated banking credentials. Dual-operator manual sign-off for reconciliation verification."
+          },
+          {
+            "stage": "Stage 3: Production Scale",
+            "description": "Multi-rail automated routing with dynamic failover, real-time treasury telemetry, and continuous cryptographic audit logging."
+          }
+        ]
+      },
+      "section14_acceptanceCriteria": {
+        "title": "14. Acceptance Criteria",
+        "content": "100% passage on automated webhook security tests (10 mandatory scenarios); zero reconciliation discrepancies across sandbox simulation; validated end-to-end zero-custody audit trace."
+      },
+      "section15_indicativeCommercialStartingPoint": {
+        "title": "15. Indicative Commercial Starting Point",
+        "tier": "Cloud Starter",
+        "pricing": "From ₹4,999 / month",
+        "setupFeeINR": 0,
+        "monthlyFeeINR": 4999,
+        "disclaimer": "Indicative starting point only; not a binding commercial offer. Final pricing depends on transaction volume, supported corridors, regulated-provider availability, and commercial scope."
+      },
+      "section16_thirdPartyProviderCostDemarcation": {
+        "title": "16. Third-Party Provider Cost Demarcation",
+        "content": "Statutory segregation of financial responsibilities:",
+        "breakdown": [
+          {
+            "item": "GARUDA Platform License / Software Fee",
+            "party": "Payable to GARUDA OS (Software orchestration)"
+          },
+          {
+            "item": "Banking Interchange & Clearing Fees",
+            "party": "Billed directly by Acquiring Bank / Partner (Wio, ICICI, Modulr)"
+          },
+          {
+            "item": "Foreign Exchange (FX) Spreads & Swaps",
+            "party": "Applied directly by interbank clearing institutions"
+          },
+          {
+            "item": "Applicable Taxes (GST / VAT / Corporate Taxes)",
+            "party": "Statutory compliance per jurisdiction"
+          }
+        ]
+      },
+      "section17_technicalAssumptions": {
+        "title": "17. Technical Assumptions",
+        "content": "Client provides lawful corporate identity and maintains active, good-standing corporate accounts with licensed banking/payment providers in all operating jurisdictions."
+      },
+      "section18_clientResponsibilities": {
+        "title": "18. Client Responsibilities",
+        "content": "Executing commercial agreements directly with licensed payment providers; safeguarding API secret credentials on client systems; maintaining corporate compliance with applicable AML/KYC regulations."
+      },
+      "section19_founderApprovalNotice": {
+        "title": "19. Founder Approval Notice",
+        "content": "DRAFT PROPOSAL — PRELIMINARY ARCHITECTURAL EVALUATION. This document is a non-binding technical scoping draft generated autonomously by GARUDA Solution Architect and is strictly subject to formal review and sign-off by Founder Praveen Mahawar before execution of commercial agreements."
+      }
+    },
+    "deliverables": [
+      "Dedicated Cloud Starter gateway orchestration container",
+      "Zero-Custody multi-rail settlement state machine",
+      "Cryptographic webhook verification & HMAC tamper defense",
+      "Deterministic VAN allocation & reconciliation engine",
+      "Multi-currency treasury visibility & export suite",
+      "3-stage pilot deployment roadmap with sandbox verification"
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalINR": 14997,
+      "totalUSD": 176,
+      "totalAmount": 14997,
+      "depositAmount": 4999,
+      "pricingModel": "commercial_software_license",
+      "indicativeQuote": "From ₹4,999 / month",
+      "indicativeSetupFeeINR": 0,
+      "indicativeMonthlyFeeINR": 4999,
+      "statutoryDemarcation": [
+        {
+          "item": "GARUDA Platform License / Software Fee",
+          "party": "Payable to GARUDA OS (Software orchestration)"
+        },
+        {
+          "item": "Banking Interchange & Clearing Fees",
+          "party": "Billed directly by Acquiring Bank / Partner (Wio, ICICI, Modulr)"
+        },
+        {
+          "item": "Foreign Exchange (FX) Spreads & Swaps",
+          "party": "Applied directly by interbank clearing institutions"
+        },
+        {
+          "item": "Applicable Taxes (GST / VAT / Corporate Taxes)",
+          "party": "Statutory compliance per jurisdiction"
+        }
+      ]
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "Standard Deployment (3–7 Days)"
+    },
+    "status": "SCOPED",
+    "governanceStatus": "AWAITING_FOUNDER_APPROVAL",
+    "pipelineStage": "PROPOSAL_DRAFT",
+    "paymentStatus": "UNPAID",
+    "paidAmount": 0,
+    "verifiedRevenue": false,
+    "founderApproved": false,
+    "publicUrl": "https://garudaos.in/proposal/fintech_1791044941777_fdfba8",
+    "createdAt": "2026-10-03T16:29:01.777Z",
+    "environment": "test",
+    "isTest": true,
+    "attribution": {
+      "channel": "Direct",
+      "source": "direct",
+      "medium": "none",
+      "campaign": null,
+      "term": null,
+      "content": null,
+      "utm_source": null,
+      "utm_medium": null,
+      "utm_campaign": null,
+      "utm_term": null,
+      "utm_content": null,
+      "gclid": null,
+      "fbclid": null,
+      "ref": null,
+      "referrerDomain": null,
+      "referrerUrl": null,
+      "landingPath": "/",
+      "capturedAt": "2026-10-03T16:29:01.763Z",
+      "summary": "Direct (direct / none)"
+    },
+    "updatedAt": "2026-10-03T16:29:01.797Z"
   }
 }

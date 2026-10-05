@@ -1,0 +1,86 @@
+{
+  "data": {
+    "plainId": 1833781567,
+    "publicContactInfo": {
+      "$type": "com.linkedin.voyager.identity.shared.PublicContactInfo"
+    },
+    "premiumSubscriber": false,
+    "*miniProfile": "urn:li:fs_miniProfile:ACoAAG1NST8BhO7cPbqkWFxv6mAUDOHxVY84dVo",
+    "$type": "com.linkedin.voyager.common.Me"
+  },
+  "included": [
+    {
+      "customPronoun": null,
+      "memorialized": false,
+      "lastName": "AI OPERATING SYSTEM",
+      "dashEntityUrn": "urn:li:fsd_profile:ACoAAG1NST8BhO7cPbqkWFxv6mAUDOHxVY84dVo",
+      "standardizedPronoun": null,
+      "occupation": "Founder & Chief Architect at GARUDA OS | India’s Sovereign AI Operating System | Autonomous Software Engineering, Multi-Agent Swarms & Enterprise Automation",
+      "objectUrn": "urn:li:member:1833781567",
+      "$anti_abuse_metadata": {
+        "$anti_abuse_uuid": "71037d5f-65ea-4636-9fd5-4516394a9e0e"
+      },
+      "backgroundImage": {
+        "digitalmediaAsset": "urn:li:digitalmediaAsset:D4D16AQFTZ8o6RCeP8g",
+        "artifacts": [
+          {
+            "width": 1375,
+            "fileIdentifyingUrlPathSegment": "350_1400/B4DaCm4v0.KIAU-/0/1789506289246?e=1792022400&v=beta&t=1Hwo9w0VWK5DhCGhKZVq_WZ6xxs5Gx3PYdUKGx4ry6c",
+            "expiresAt": 1792022400000,
+            "height": 343,
+            "$type": "com.linkedin.common.VectorArtifact"
+          },
+          {
+            "width": 800,
+            "fileIdentifyingUrlPathSegment": "200_800/B4DaCm4v0.KIAQ-/0/1789506289246?e=1792022400&v=beta&t=WBGbsuccWTET-zlKZQieR-Klj_kcOCUEh5Ix3ZmK_wI",
+            "expiresAt": 1792022400000,
+            "height": 199,
+            "$type": "com.linkedin.common.VectorArtifact"
+          }
+        ],
+        "rootUrl": "https://media.licdn.com/dms/image/v2/D4D16AQFTZ8o6RCeP8g/profile-displaybackgroundimage-shrink_",
+        "$type": "com.linkedin.common.VectorImage"
+      },
+      "picture": {
+        "digitalmediaAsset": "urn:li:digitalmediaAsset:D4D03AQEyCfMrUn_OVA",
+        "artifacts": [
+          {
+            "width": 100,
+            "fileIdentifyingUrlPathSegment": "scale_100_100/B4DaCm5huMI4Ac-/0/1789506495195?e=1792022400&v=beta&t=IqYZ6HCJj2O9_q61nOODE2orW7oQYghWLhuDKnHwRUs",
+            "expiresAt": 1792022400000,
+            "height": 100,
+            "$type": "com.linkedin.common.VectorArtifact"
+          },
+          {
+            "width": 400,
+            "fileIdentifyingUrlPathSegment": "scale_400_400/B4DaCm5huMI4Ak-/0/1789506495196?e=1792022400&v=beta&t=LbBv3olwLc8QxNtdVBS64jLnlrVTRg6Dwoggn5WxWuE",
+            "expiresAt": 1792022400000,
+            "height": 400,
+            "$type": "com.linkedin.common.VectorArtifact"
+          },
+          {
+            "width": 200,
+            "fileIdentifyingUrlPathSegment": "scale_200_200/B4DaCm5huMI4Ag-/0/1789506495195?e=1792022400&v=beta&t=8h1uccOQceJWwzHgkEV4tFSAJNhWUYshRyjHY7mhOTg",
+            "expiresAt": 1792022400000,
+            "height": 200,
+            "$type": "com.linkedin.common.VectorArtifact"
+          },
+          {
+            "width": 800,
+            "fileIdentifyingUrlPathSegment": "crop_800_800/B4DaCm5huMI4AM-/0/1789506495196?e=1792022400&v=beta&t=Pvrygti5s6ghzTlbQm1nA22INMWFQxkKrkgrW4k9MDs",
+            "expiresAt": 1792022400000,
+            "height": 800,
+            "$type": "com.linkedin.common.VectorArtifact"
+          }
+        ],
+        "rootUrl": "https://media.licdn.com/dms/image/v2/D4D03AQEyCfMrUn_OVA/profile-displayphoto-",
+        "$type": "com.linkedin.common.VectorImage"
+      },
+      "$type": "com.linkedin.voyager.identity.shared.MiniProfile",
+      "firstName": "GARUDA-AI",
+      "entityUrn": "urn:li:fs_miniProfile:ACoAAG1NST8BhO7cPbqkWFxv6mAUDOHxVY84dVo",
+      "publicIdentifier": "garuda-ai-ai-operating-system-227168432",
+      "trackingId": "hQ3r2zEKTUaW8SrlNrskdA=="
+    }
+  ]
+}

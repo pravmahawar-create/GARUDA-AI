@@ -1,0 +1,228 @@
+{
+  "missionId": "rev_1790004101691_4b9e21",
+  "leadId": "lead_1790004101691_50414d",
+  "clientId": "client_091190",
+  "projectId": "proj_rev_1790004101691_4b9e21",
+  "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+  "currency": "INR",
+  "proposedAmount": 35000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790004101691_4b9e21_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101691_4b9e21_scope.json",
+      "sizeBytes": 874,
+      "sha256": "f33fc868deff2dbc839762d2bb583a4ad637be5fc5c9b4270cadaee618f38e5c"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790004101691_4b9e21_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101691_4b9e21_proposal.md",
+      "sizeBytes": 840,
+      "sha256": "071b84a0e04ee5ed11f462d18aa9b604eb41a829cccaf71436b772b68f4c425c"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790004101691_4b9e21_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101691_4b9e21_deliverable.js",
+      "sizeBytes": 409,
+      "sha256": "3ca6f349a3f055d922e01741422c0da89007a40dd528b88142b015cb5982a987"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790004101691_4b9e21_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101691_4b9e21_DELIVERY_MANIFEST.md",
+      "sizeBytes": 274,
+      "sha256": "c03ce7bb8820bec0036ad5b16e712131f6cc2a280f86ffb3dfad0f3ac9c52049"
+    },
+    {
+      "type": "test_payment_receipt",
+      "mode": "test",
+      "testAmount": 35000,
+      "verified": true,
+      "note": "Razorpay test mode webhook verified in sandbox. Zero production revenue recorded."
+    }
+  ],
+  "confidence": 0.7,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_PAYMENT_SETTLEMENT",
+    "requiresFounder": false,
+    "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+  },
+  "state": "AWAITING_PAYMENT",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T15:21:41.692Z",
+      "leadId": "lead_1790004101691_50414d",
+      "customer": "Beta Testers Ltd"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T15:21:41.692Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:41.693Z",
+      "bestCapability": "Automated QA Test Suite & Validation",
+      "matchScore": 50
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T15:21:41.697Z",
+      "scopeSha256": "f33fc868deff2dbc839762d2bb583a4ad637be5fc5c9b4270cadaee618f38e5c"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T15:21:41.701Z",
+      "proposedAmount": 35000,
+      "currency": "INR",
+      "proposalSha256": "071b84a0e04ee5ed11f462d18aa9b604eb41a829cccaf71436b772b68f4c425c"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:21:41.701Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T15:21:41.701Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T15:21:41.701Z",
+      "acceptedAt": "2026-09-21T15:21:41.701Z",
+      "signer": "Beta Testers Ltd"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T15:21:41.701Z",
+      "projectId": "proj_rev_1790004101691_4b9e21"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T15:21:41.742Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T15:21:41.742Z",
+      "manifestSha": "c03ce7bb8820bec0036ad5b16e712131f6cc2a280f86ffb3dfad0f3ac9c52049",
+      "deliveredAt": "2026-09-21T15:21:41.742Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T15:21:41.742Z"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "name": "Beta Testers Ltd",
+      "email": "tester@betatesters.com",
+      "requirements": "Configure end-to-end sandbox testing suite with mock fixtures and assert checks",
+      "budget": 35000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "testing.quality-assurance",
+      "category": "Quality Assurance",
+      "name": "Automated QA Test Suite & Validation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 50,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "2-6 hours"
+    },
+    "estimatedINR": 35000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 17500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 17500,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101691_4b9e21_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101691_4b9e21_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "tester@betatesters.com",
+      "message": "Commercial Proposal: Configure end-to-end sandbox testing suite with mock fixture | Amount: INR 35,000",
+      "missionId": "rev_1790004101691_4b9e21",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "071b84a0e04ee5ed11f462d18aa9b604eb41a829cccaf71436b772b68f4c425c"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "f33fc868deff2dbc839762d2bb583a4ad637be5fc5c9b4270cadaee618f38e5c"
+        }
+      ]
+    },
+    "projectRecord": {
+      "projectId": "proj_rev_1790004101691_4b9e21",
+      "missionId": "rev_1790004101691_4b9e21",
+      "client": {
+        "name": "Beta Testers Ltd",
+        "email": "tester@betatesters.com",
+        "phone": null,
+        "contact": "tester@betatesters.com"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790004101691_4b9e21_scope.json",
+        "sha256": "f33fc868deff2dbc839762d2bb583a4ad637be5fc5c9b4270cadaee618f38e5c"
+      },
+      "approvedTerms": {
+        "amount": 35000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 17500,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 17500,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "f33fc868deff2dbc839762d2bb583a4ad637be5fc5c9b4270cadaee618f38e5c",
+        "071b84a0e04ee5ed11f462d18aa9b604eb41a829cccaf71436b772b68f4c425c"
+      ]
+    },
+    "founderApproved": true,
+    "clientAccepted": true
+  }
+}

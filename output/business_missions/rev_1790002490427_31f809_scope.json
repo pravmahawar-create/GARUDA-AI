@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790002490427_31f809",
+  "leadId": "lead_1790002490427_fd971e",
+  "clientId": "client_3e7b50",
+  "customer": {
+    "name": "Acme Enterprises",
+    "email": "procurement@acme.com",
+    "phone": null,
+    "contact": "procurement@acme.com"
+  },
+  "requirements": "Develop a custom multi-agent workflow for supply chain logistics and ERP data ingestion",
+  "capability": "Governed software implementation",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 75000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 37500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 37500,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "4-24 hours",
+  "createdAt": "2026-09-21T14:54:50.441Z"
+}

@@ -1,0 +1,36 @@
+1
+00:00:00,000 --> 00:00:02,379
+Billing app toh bahut hain...
+
+2
+00:00:02,980 --> 00:00:07,369
+...lekin actual business workflow ke around bana software?
+
+3
+00:00:07,969 --> 00:00:15,239
+Customer Sharma Hardware... aur GSTIN enter karte hi verified GST mode activate.
+
+4
+00:00:15,839 --> 00:00:23,109
+Catalog se UltraTech Cement... 10 bags at the rate ₹395 per bag.
+
+5
+00:00:23,709 --> 00:00:33,959
+Subtotal ₹3,950... CGST aur SGST breakup ke saath Grand Total ₹4,661.
+
+6
+00:00:34,559 --> 00:00:37,749
+Ab single tap par bill generate karte hain.
+
+7
+00:00:38,349 --> 00:00:46,679
+Real TAX INVOICE #0001, Sharma Hardware aur ₹4,661 ke saath ready.
+
+8
+00:00:47,279 --> 00:00:55,939
+GARUDA ka focus sirf bill banana nahi... software ko business ke actual workflow ke around engineer karna hai.
+
+9
+00:00:56,539 --> 00:01:03,069
+Custom software chahiye? Connect kijiye: garudaos.in/chat
+

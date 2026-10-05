@@ -1,0 +1,31 @@
+{
+  "missionId": "rev_1790002684927_3da459",
+  "leadId": "lead_1790002684927_2acf70",
+  "clientId": "client_87879a",
+  "customer": {
+    "name": "TechCorp Global",
+    "email": "finance@techcorp.com",
+    "phone": null,
+    "contact": "finance@techcorp.com"
+  },
+  "requirements": "Build automated test infrastructure and continuous regression verification harness",
+  "capability": "Custom Governed Software Engineering",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 60000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 30000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 30000,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "3-7 business days",
+  "createdAt": "2026-09-21T14:58:04.929Z"
+}

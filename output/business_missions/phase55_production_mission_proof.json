@@ -1,0 +1,175 @@
+{
+  "executionTimestamp": "2026-09-21T14:31:19.703Z",
+  "elapsedMs": 4266,
+  "contract": {
+    "missionId": "biz_1790001075435_78f371",
+    "state": "MISSION_COMPLETE",
+    "goal": "Analyze the current GARUDA business/project infrastructure, identify one concrete executable revenue opportunity supported by existing evidence, generate the required execution plan and business artifact, validate it, review it, and record the resulting next action.",
+    "businessObjective": "revenue_opportunity_specification",
+    "executionStatus": "COMPLETED",
+    "verificationStatus": "VERIFIED",
+    "reviewStatus": "ALL_APPROVED",
+    "evidence": [
+      {
+        "type": "spec_document",
+        "fileName": "biz_1790001075435_78f371_spec.json",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\biz_1790001075435_78f371_spec.json",
+        "sizeBytes": 1017,
+        "sha256": "00fb0629ca7320ccb41a0c33f2a222df34cd6059e01eb3cf73d923c8eac33bf6"
+      },
+      {
+        "type": "proposal_document",
+        "fileName": "prop_1790001077173_ee3999_executive_proposal.md",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\prop_1790001077173_ee3999_executive_proposal.md",
+        "sizeBytes": 1210,
+        "sha256": "5bc24da4fa8cbecc6a762d12bd6d977c26104a605864052f1bda10a6ebcd3a22"
+      }
+    ],
+    "confidence": 0.65,
+    "outcome": {
+      "artifactsCount": 2,
+      "artifacts": [
+        {
+          "type": "spec_document",
+          "fileName": "biz_1790001075435_78f371_spec.json",
+          "path": "D:\\GARUDA-AI\\output\\business_missions\\biz_1790001075435_78f371_spec.json",
+          "sizeBytes": 1017,
+          "sha256": "00fb0629ca7320ccb41a0c33f2a222df34cd6059e01eb3cf73d923c8eac33bf6"
+        },
+        {
+          "type": "proposal_document",
+          "fileName": "prop_1790001077173_ee3999_executive_proposal.md",
+          "path": "D:\\GARUDA-AI\\output\\business_missions\\prop_1790001077173_ee3999_executive_proposal.md",
+          "sizeBytes": 1210,
+          "sha256": "5bc24da4fa8cbecc6a762d12bd6d977c26104a605864052f1bda10a6ebcd3a22",
+          "proposalId": "prop_1790001077173_ee3999"
+        }
+      ],
+      "plan": {
+        "missionId": "biz_1790001075435_78f371",
+        "goal": "Analyze the current GARUDA business/project infrastructure, identify one concrete executable revenue opportunity supported by existing evidence, generate the required execution plan and business artifact, validate it, review it, and record the resulting next action.",
+        "intent": "create_code_artifact",
+        "stages": [
+          {
+            "name": "Scoping & Requirement Analysis",
+            "status": "PLANNED"
+          },
+          {
+            "name": "Artifact & Deliverable Generation",
+            "status": "PLANNED"
+          },
+          {
+            "name": "Verification & Quality Audit",
+            "status": "PLANNED"
+          },
+          {
+            "name": "Multi-Reviewer Assessment",
+            "status": "PLANNED"
+          },
+          {
+            "name": "Outcome Packaging & Founder Review",
+            "status": "PLANNED"
+          }
+        ]
+      },
+      "nazarSummary": {
+        "lensesUsed": 10,
+        "findingsCount": 10,
+        "riskLevel": "LOW"
+      },
+      "reviewerSummary": {
+        "verdict": "ALL_APPROVED",
+        "reviewerCount": 4,
+        "verdictCounts": {
+          "APPROVED": 4
+        }
+      },
+      "durationMs": 4266
+    },
+    "revenueImpact": {
+      "status": "UNKNOWN",
+      "amount": 0,
+      "currency": "INR",
+      "evidence": [],
+      "note": "Zero direct monetary transactions in current local scoping mission"
+    },
+    "clientImpact": {
+      "status": "ENGAGED",
+      "client": {
+        "name": "Enterprise Operational Infrastructure Lead",
+        "industry": "Enterprise AI Workflow & Automation",
+        "market": "India / Global SaaS",
+        "tier": "Pilot"
+      },
+      "details": "Commercial deliverable prepared and verified for Enterprise Operational Infrastructure Lead"
+    },
+    "nextAction": {
+      "action": "RETAIN_LOCAL_ARTIFACTS",
+      "requiresFounder": false,
+      "reason": "Safe local business artifacts generated, validated, and verified",
+      "targetArtifacts": [
+        "D:\\GARUDA-AI\\output\\business_missions\\biz_1790001075435_78f371_spec.json",
+        "D:\\GARUDA-AI\\output\\business_missions\\prop_1790001077173_ee3999_executive_proposal.md"
+      ],
+      "client": {
+        "name": "Enterprise Operational Infrastructure Lead",
+        "industry": "Enterprise AI Workflow & Automation",
+        "market": "India / Global SaaS",
+        "tier": "Pilot"
+      }
+    },
+    "memoryStatus": {
+      "promoted": true,
+      "itemId": "int-mubcfclq-1a286692",
+      "evaluationStatus": "EVALUATED",
+      "confidence": 0.65
+    },
+    "stateHistory": [
+      {
+        "state": "MISSION_CREATED",
+        "timestamp": "2026-09-21T14:31:15.436Z"
+      },
+      {
+        "state": "UNDERSTANDING",
+        "timestamp": "2026-09-21T14:31:15.436Z"
+      },
+      {
+        "state": "INTELLIGENCE_READY",
+        "timestamp": "2026-09-21T14:31:15.438Z"
+      },
+      {
+        "state": "PLAN_READY",
+        "timestamp": "2026-09-21T14:31:17.170Z"
+      },
+      {
+        "state": "EXECUTING",
+        "timestamp": "2026-09-21T14:31:17.170Z"
+      },
+      {
+        "state": "EXECUTION_COMPLETE",
+        "timestamp": "2026-09-21T14:31:19.688Z",
+        "artifactsCount": 2
+      },
+      {
+        "state": "VERIFYING",
+        "timestamp": "2026-09-21T14:31:19.688Z"
+      },
+      {
+        "state": "REVIEWING",
+        "timestamp": "2026-09-21T14:31:19.689Z"
+      },
+      {
+        "state": "OUTCOME_RECORDED",
+        "timestamp": "2026-09-21T14:31:19.693Z"
+      },
+      {
+        "state": "MEMORY_PROMOTED",
+        "timestamp": "2026-09-21T14:31:19.693Z"
+      },
+      {
+        "state": "MISSION_COMPLETE",
+        "timestamp": "2026-09-21T14:31:19.701Z"
+      }
+    ]
+  }
+}

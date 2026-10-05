@@ -1,0 +1,584 @@
+{
+  "leadId": "lead_1790003993943_028333",
+  "missionId": "acq_1790003993943_805ad0",
+  "source": "google",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Organic Search",
+    "source": "google",
+    "campaign": "enterprise_ai_architecture",
+    "referrer": "UNKNOWN",
+    "landingPath": "/platform#project-scope"
+  },
+  "customer": {
+    "name": "Devendra Varma",
+    "email": "devendra.varma@fintech-security.test",
+    "phone": "+91-98200-11223",
+    "company": "UNKNOWN",
+    "contact": "devendra.varma@fintech-security.test"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and continuous compliance logging",
+  "intent": {
+    "category": "HIGH_INTENT",
+    "confidence": 0.85,
+    "signals": [
+      "TECH_KEYWORDS:develop",
+      "BUDGET_INDICATED",
+      "TIMELINE_INDICATED"
+    ],
+    "reason": "Detailed technical scope with concrete deliverable indicators"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:19:53.970Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "matchedCapabilities": [
+      {
+        "id": "engineering.software-implementation",
+        "name": "Governed software implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "knowledge.research-synthesis",
+        "name": "Research and knowledge synthesis",
+        "category": "Research",
+        "universe": "knowledge",
+        "score": 35
+      },
+      {
+        "id": "documentation.technical-documentation",
+        "name": "Technical Documentation & API Specs",
+        "category": "Technical Documentation",
+        "universe": "knowledge",
+        "score": 35
+      },
+      {
+        "id": "ai.agent-engineering",
+        "name": "Custom AI Agents & RAG Pipeline Engineering",
+        "category": "AI Agents",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "brand.identity_lock_system",
+        "name": "IdentityLock™ Brand Governance & Executive Styling",
+        "category": "Brand Identity",
+        "universe": "brand",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U21 Brand"
+    ],
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ],
+    "confidence": 0.35
+  },
+  "valueEstimation": {
+    "status": "ESTIMATED",
+    "estimatedINR": 50000,
+    "proposedAmount": 50000,
+    "currency": "INR",
+    "source": "client_stated_budget",
+    "confidence": 0.9
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": 50000,
+    "proposedAmount": 50000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and continuous compliance logging",
+    "clarificationQuestions": [
+      "Could you specify which existing APIs or legacy platforms need integration?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and con",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+    "proposalSha256": "e54202efe1755923b27a85f0244793adf6d45814d29293cc52076df9b8c77568",
+    "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+  },
+  "founderGovernance": {
+    "requiresFounder": false,
+    "status": "APPROVED",
+    "dossier": {
+      "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Organic Search. Signals: TECH_KEYWORDS:develop, BUDGET_INDICATED, TIMELINE_INDICATED",
+      "whatClientWants": "Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and continuous compliance logging",
+      "whatGarudaCanDeliver": "Matched: Governed software implementation (Coverage: PARTIAL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and con; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 50,000 (Milestones: 2)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+          "sha256": "e54202efe1755923b27a85f0244793adf6d45814d29293cc52076df9b8c77568"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "FOLLOWUP_READY",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": null,
+    "history": []
+  },
+  "commercialStatus": "CONVERTED",
+  "state": "CLIENT_CONVERTED",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:19:53.943Z",
+      "leadId": "lead_1790003993943_028333"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:19:53.944Z",
+      "intentCategory": "HIGH_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:develop",
+        "BUDGET_INDICATED",
+        "TIMELINE_INDICATED"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:19:53.944Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:19:53.949Z",
+      "proposalSha256": "e54202efe1755923b27a85f0244793adf6d45814d29293cc52076df9b8c77568"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:19:53.949Z"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-21T15:19:53.970Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-21T15:19:53.970Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:19:55.471Z"
+    },
+    {
+      "state": "CLIENT_CONVERTED",
+      "timestamp": "2026-09-21T15:19:55.471Z"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790003993943_805ad0_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+      "sizeBytes": 1030,
+      "sha256": "e54202efe1755923b27a85f0244793adf6d45814d29293cc52076df9b8c77568"
+    }
+  ],
+  "communicationAction": {
+    "channel": "email",
+    "recipient": "devendra.varma@fintech-security.test",
+    "message": "Commercial Proposal: Develop a sovereign AI-driven forensic threat detection engine with automated AS | Proposed: INR 50,000",
+    "missionId": "acq_1790003993943_805ad0",
+    "requiresFounder": true,
+    "approvalStatus": "APPROVED",
+    "executionStatus": "READY_TO_SEND",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "e54202efe1755923b27a85f0244793adf6d45814d29293cc52076df9b8c77568"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube5t9c-9739a294",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and continuous compliance logging",
+      "name": "Devendra Varma",
+      "email": "devendra.varma@fintech-security.test",
+      "phone": "+91-98200-11223",
+      "contact": "devendra.varma@fintech-security.test",
+      "budget": 50000,
+      "timeline": "3-7 business days",
+      "service": "custom-ai-development",
+      "attribution": {
+        "channel": "Organic Search",
+        "source": "google",
+        "campaign": "enterprise_ai_architecture",
+        "referrer": "UNKNOWN",
+        "landingPath": "/platform#project-scope"
+      },
+      "isTest": true,
+      "environment": "test"
+    },
+    "capAssessment": {
+      "coverage": "PARTIAL",
+      "matchedCapabilities": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "knowledge.research-synthesis",
+          "name": "Research and knowledge synthesis",
+          "category": "Research",
+          "universe": "knowledge",
+          "score": 35
+        },
+        {
+          "id": "documentation.technical-documentation",
+          "name": "Technical Documentation & API Specs",
+          "category": "Technical Documentation",
+          "universe": "knowledge",
+          "score": 35
+        },
+        {
+          "id": "ai.agent-engineering",
+          "name": "Custom AI Agents & RAG Pipeline Engineering",
+          "category": "AI Agents",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "brand.identity_lock_system",
+          "name": "IdentityLock™ Brand Governance & Executive Styling",
+          "category": "Brand Identity",
+          "universe": "brand",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U21 Brand"
+      ],
+      "gaps": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "confidence": 0.35
+    },
+    "valEstimation": {
+      "status": "ESTIMATED",
+      "estimatedINR": 50000,
+      "proposedAmount": 50000,
+      "currency": "INR",
+      "source": "client_stated_budget",
+      "confidence": 0.9
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Core Architecture & Build",
+        "amountINR": 25000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Production Handover",
+        "amountINR": 25000,
+        "percentage": 50
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "devendra.varma@fintech-security.test",
+      "message": "Commercial Proposal: Develop a sovereign AI-driven forensic threat detection engine with automated AS | Proposed: INR 50,000",
+      "missionId": "acq_1790003993943_805ad0",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "e54202efe1755923b27a85f0244793adf6d45814d29293cc52076df9b8c77568"
+        }
+      ]
+    }
+  },
+  "revenueLifecycleResult": {
+    "missionId": "acq_1790003993943_805ad0",
+    "leadId": "lead_1790003993943_028333",
+    "clientId": "client_028333",
+    "projectId": "proj_acq_1790003993943_805ad0",
+    "commercialStatus": "DELIVERED_AWAITING_PAYMENT",
+    "currency": "INR",
+    "proposedAmount": 50000,
+    "proposedStatus": "PROPOSED",
+    "invoicedAmount": 0,
+    "invoiceStatus": "NOT_INVOICED",
+    "paidAmount": 0,
+    "paymentStatus": "PAYMENT_PENDING",
+    "revenueStatus": "UNKNOWN",
+    "paymentLinkInfo": null,
+    "evidence": [
+      {
+        "type": "scope_spec",
+        "fileName": "acq_1790003993943_805ad0_scope.json",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_scope.json",
+        "sizeBytes": 957,
+        "sha256": "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb"
+      },
+      {
+        "type": "proposal_document",
+        "fileName": "acq_1790003993943_805ad0_proposal.md",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+        "sizeBytes": 881,
+        "sha256": "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+      },
+      {
+        "type": "deliverable_code",
+        "fileName": "acq_1790003993943_805ad0_deliverable.js",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_deliverable.js",
+        "sizeBytes": 397,
+        "sha256": "7676e9e7557f6043da0bfaa7b932f20a439c58ffe6e1b56084c654cdf058de34"
+      },
+      {
+        "type": "delivery_manifest",
+        "fileName": "acq_1790003993943_805ad0_DELIVERY_MANIFEST.md",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_DELIVERY_MANIFEST.md",
+        "sizeBytes": 272,
+        "sha256": "3176c03d336b545937dc21acf8e0322a7628e62464ee5fefad9b9e3bee485ded"
+      }
+    ],
+    "confidence": 0.7,
+    "requiresFounder": false,
+    "nextAction": {
+      "action": "AWAIT_PAYMENT_SETTLEMENT",
+      "requiresFounder": false,
+      "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+    },
+    "state": "AWAITING_PAYMENT",
+    "stateHistory": [
+      {
+        "state": "LEAD_CAPTURED",
+        "timestamp": "2026-09-21T15:19:55.472Z",
+        "leadId": "lead_1790003993943_028333",
+        "customer": "Devendra Varma"
+      },
+      {
+        "state": "QUALIFYING",
+        "timestamp": "2026-09-21T15:19:55.472Z"
+      },
+      {
+        "state": "QUALIFIED",
+        "timestamp": "2026-09-21T15:19:55.473Z",
+        "bestCapability": "Governed software implementation",
+        "matchScore": 35
+      },
+      {
+        "state": "SCOPE_READY",
+        "timestamp": "2026-09-21T15:19:55.476Z",
+        "scopeSha256": "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb"
+      },
+      {
+        "state": "PROPOSAL_READY",
+        "timestamp": "2026-09-21T15:19:55.478Z",
+        "proposedAmount": 50000,
+        "currency": "INR",
+        "proposalSha256": "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+      },
+      {
+        "state": "FOUNDER_APPROVED",
+        "timestamp": "2026-09-21T15:19:55.478Z",
+        "approvedBy": "founder_praveen"
+      },
+      {
+        "state": "AWAITING_CLIENT",
+        "timestamp": "2026-09-21T15:19:55.478Z"
+      },
+      {
+        "state": "CLIENT_ACCEPTED",
+        "timestamp": "2026-09-21T15:19:55.478Z",
+        "acceptedAt": "2026-09-21T15:19:55.478Z",
+        "signer": "Devendra Varma"
+      },
+      {
+        "state": "PROJECT_ACTIVE",
+        "timestamp": "2026-09-21T15:19:55.478Z",
+        "projectId": "proj_acq_1790003993943_805ad0"
+      },
+      {
+        "state": "DELIVERY_READY",
+        "timestamp": "2026-09-21T15:19:55.499Z",
+        "internalVerification": "INTERNAL_VERIFIED",
+        "reviewVerdict": "ALL_APPROVED"
+      },
+      {
+        "state": "DELIVERED",
+        "timestamp": "2026-09-21T15:19:55.499Z",
+        "manifestSha": "3176c03d336b545937dc21acf8e0322a7628e62464ee5fefad9b9e3bee485ded",
+        "deliveredAt": "2026-09-21T15:19:55.499Z"
+      },
+      {
+        "state": "AWAITING_PAYMENT",
+        "timestamp": "2026-09-21T15:19:55.499Z"
+      }
+    ],
+    "memoryStatus": null,
+    "context": {
+      "lead": {
+        "leadId": "lead_1790003993943_028333",
+        "missionId": "acq_1790003993943_805ad0",
+        "clientId": "client_028333",
+        "name": "Devendra Varma",
+        "email": "devendra.varma@fintech-security.test",
+        "phone": "+91-98200-11223",
+        "company": "UNKNOWN",
+        "requirements": "Develop a sovereign AI-driven forensic threat detection engine with automated AST inspection and continuous compliance logging",
+        "statedAmount": 50000
+      },
+      "bestCap": {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      "estimatedINR": 50000,
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Advance Architecture & Core Build",
+          "amountINR": 25000,
+          "percentage": 50
+        },
+        {
+          "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+          "amountINR": 25000,
+          "percentage": 50
+        }
+      ],
+      "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_scope.json",
+      "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_proposal.md",
+      "communicationAction": {
+        "channel": "email",
+        "recipient": "devendra.varma@fintech-security.test",
+        "message": "Commercial Proposal: Develop a sovereign AI-driven forensic threat detection engi | Amount: INR 50,000",
+        "missionId": "acq_1790003993943_805ad0",
+        "requiresFounder": true,
+        "approvalStatus": "APPROVED",
+        "executionStatus": "READY_TO_SEND",
+        "evidence": [
+          {
+            "type": "proposal_hash",
+            "sha256": "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+          },
+          {
+            "type": "scope_hash",
+            "sha256": "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb"
+          }
+        ]
+      },
+      "projectRecord": {
+        "projectId": "proj_acq_1790003993943_805ad0",
+        "missionId": "acq_1790003993943_805ad0",
+        "client": {
+          "name": "Devendra Varma",
+          "email": "devendra.varma@fintech-security.test",
+          "phone": "+91-98200-11223",
+          "contact": "devendra.varma@fintech-security.test"
+        },
+        "approvedScope": {
+          "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790003993943_805ad0_scope.json",
+          "sha256": "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb"
+        },
+        "approvedTerms": {
+          "amount": 50000,
+          "currency": "INR",
+          "milestones": [
+            {
+              "milestone": "Milestone 1 — Advance Architecture & Core Build",
+              "amountINR": 25000,
+              "percentage": 50
+            },
+            {
+              "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+              "amountINR": 25000,
+              "percentage": 50
+            }
+          ]
+        },
+        "deliverables": [
+          "Modular production source code artifact with clean architecture",
+          "Deterministic test suite with 100% passing assertions",
+          "Cryptographic SHA-256 deliverable manifest and validation signoff"
+        ],
+        "acceptanceCriteria": [
+          "Exit code 0 on local execution and tests",
+          "Valid AST syntax with 0 unhandled exceptions",
+          "Physical artifact presence with verified non-zero bytes",
+          "Independent ReviewerSystem ALL_APPROVED verdict"
+        ],
+        "evidenceChain": [
+          "059ac20949d8e315cd347da179b14cad55c0f05ce184d04d576f6bd8bbe234fb",
+          "5b72f92b33afba23c3388525c59a9ecfd5e70c1cb4afcdf5ab62bc072272ba08"
+        ]
+      },
+      "founderApproved": true,
+      "clientAccepted": true
+    }
+  }
+}

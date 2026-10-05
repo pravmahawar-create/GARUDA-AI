@@ -1,0 +1,2214 @@
+{
+  "leads": [
+    {
+      "id": "lead_1790004105493_aeba19",
+      "leadId": "lead_1790004105493_aeba19",
+      "missionId": "acq_1790004105493_a71555",
+      "scopeId": "scope_1790004105491_5a5381",
+      "name": "Attacker",
+      "email": "attacker@untrusted.com",
+      "phone": null,
+      "contact": "attacker@untrusted.com",
+      "service": "custom-ai-development",
+      "requirements": "Build custom high-frequency trading bot with low latency",
+      "estimatedINR": 23750,
+      "environment": "production",
+      "isTest": false,
+      "source": "direct",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:45.458Z",
+        "summary": "Direct (direct / none)"
+      },
+      "status": "new",
+      "governance": "AWAITING_FOUNDER_APPROVAL",
+      "capturedAt": "2026-09-21T15:21:47.329Z",
+      "acquisitionRecord": {
+        "leadId": "lead_1790004105493_aeba19",
+        "missionId": "acq_1790004105493_a71555",
+        "source": "Direct (direct / none)",
+        "sourceStatus": "VERIFIED",
+        "attribution": {
+          "channel": "Direct",
+          "source": "direct",
+          "medium": "none",
+          "campaign": null,
+          "term": null,
+          "content": null,
+          "utm_source": null,
+          "utm_medium": null,
+          "utm_campaign": null,
+          "utm_term": null,
+          "utm_content": null,
+          "gclid": null,
+          "fbclid": null,
+          "ref": null,
+          "referrerDomain": null,
+          "referrerUrl": null,
+          "landingPath": "/",
+          "capturedAt": "2026-09-21T15:21:45.458Z",
+          "summary": "Direct (direct / none)"
+        },
+        "customer": {
+          "name": "Attacker",
+          "email": "attacker@untrusted.com",
+          "phone": null,
+          "company": "UNKNOWN",
+          "contact": "attacker@untrusted.com"
+        },
+        "urgency": "UNKNOWN",
+        "requirements": "Build custom high-frequency trading bot with low latency",
+        "intent": {
+          "category": "HIGH_INTENT",
+          "confidence": 0.85,
+          "signals": [
+            "TECH_KEYWORDS:build,bot",
+            "TIMELINE_INDICATED"
+          ],
+          "reason": "Detailed technical scope with concrete deliverable indicators"
+        },
+        "qualification": {
+          "status": "QUALIFIED",
+          "reasons": [],
+          "checkedAt": "2026-09-21T15:21:45.533Z"
+        },
+        "capabilityAssessment": {
+          "coverage": "PARTIAL",
+          "matchedCapabilities": [
+            {
+              "id": "engineering.software-implementation",
+              "name": "Governed software implementation",
+              "category": "Software Engineering",
+              "universe": "engineering",
+              "score": 35
+            },
+            {
+              "id": "finance.sovereign-quant-advisory",
+              "name": "24/7 Sovereign Quant Fleet & Multi-Market Alpha Engine",
+              "category": "Financial Engineering & Quant",
+              "universe": "finance",
+              "score": 35
+            }
+          ],
+          "bestCapability": {
+            "capabilityId": "engineering.software-implementation",
+            "category": "Software Engineering",
+            "name": "Governed software implementation",
+            "universe": "engineering",
+            "confidenceScore": 95,
+            "score": 35,
+            "canMotherExecuteAutonomously": true,
+            "estimatedDeliveryTime": "4-24 hours"
+          },
+          "primaryUniverse": "U06 Automation",
+          "activatedUniverses": [
+            "U01 Knowledge",
+            "U02 Reasoning",
+            "U09 Governance",
+            "U10 Revenue",
+            "U12 Finance"
+          ],
+          "gaps": [
+            "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+          ],
+          "confidence": 0.35
+        },
+        "valueEstimation": {
+          "status": "UNKNOWN",
+          "estimatedINR": null,
+          "proposedAmount": 0,
+          "currency": "INR",
+          "source": "source_evidence_missing",
+          "confidence": 0
+        },
+        "financials": {
+          "currency": "INR",
+          "estimatedValue": null,
+          "proposedAmount": 23750,
+          "invoicedAmount": 0,
+          "paidAmount": 0,
+          "verifiedRevenue": 0
+        },
+        "preparedResponse": {
+          "requirementSummary": "Build custom high-frequency trading bot with low latency",
+          "clarificationQuestions": [
+            "What is your allocated budget range for this engagement?",
+            "Could you specify which existing APIs or legacy platforms need integration?"
+          ],
+          "proposedScope": [
+            "End-to-end architecture & implementation for: Build custom high-frequency trading bot with low latency",
+            "Governed AST syntax verification & automated test coverage",
+            "Cryptographic SHA-256 deliverable audit manifest",
+            "Production deployment guide & warranty handover"
+          ],
+          "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004105493_a71555_proposal.md",
+          "proposalSha256": "54753a9c21e9bd0d64b8dbaeb8bf079084997fc9d0fbaec6568d7f2f221422c8",
+          "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+        },
+        "founderGovernance": {
+          "requiresFounder": true,
+          "status": "AWAITING_FOUNDER_APPROVAL",
+          "dossier": {
+            "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:build,bot, TIMELINE_INDICATED",
+            "whatClientWants": "Build custom high-frequency trading bot with low latency",
+            "whatGarudaCanDeliver": "Matched: Governed software implementation (Coverage: PARTIAL). Universe: U06 Automation",
+            "proposedScope": "End-to-end architecture & implementation for: Build custom high-frequency trading bot with low latency; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+            "proposedPrice": "INR 23,750 (Milestones: 1)",
+            "risks": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements",
+              "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+            ],
+            "evidence": [
+              {
+                "type": "proposal_draft",
+                "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004105493_a71555_proposal.md",
+                "sha256": "54753a9c21e9bd0d64b8dbaeb8bf079084997fc9d0fbaec6568d7f2f221422c8"
+              }
+            ],
+            "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+          }
+        },
+        "followUp": {
+          "followUpCount": 0,
+          "maxFollowUps": 3,
+          "status": "FOLLOWUP_READY",
+          "cooldownHours": 24,
+          "lastFollowUpAt": null,
+          "stopReason": null,
+          "history": []
+        },
+        "commercialStatus": "AWAITING_FOUNDER",
+        "state": "AWAITING_FOUNDER",
+        "stateHistory": [
+          {
+            "state": "INBOUND_RECEIVED",
+            "timestamp": "2026-09-21T15:21:45.493Z",
+            "leadId": "lead_1790004105493_aeba19"
+          },
+          {
+            "state": "INTENT_IDENTIFIED",
+            "timestamp": "2026-09-21T15:21:45.494Z",
+            "intentCategory": "HIGH_INTENT",
+            "signals": [
+              "TECH_KEYWORDS:build,bot",
+              "TIMELINE_INDICATED"
+            ]
+          },
+          {
+            "state": "QUALIFIED",
+            "timestamp": "2026-09-21T15:21:45.494Z"
+          },
+          {
+            "state": "RESPONSE_PREPARED",
+            "timestamp": "2026-09-21T15:21:45.501Z",
+            "proposalSha256": "54753a9c21e9bd0d64b8dbaeb8bf079084997fc9d0fbaec6568d7f2f221422c8"
+          },
+          {
+            "state": "DOSSIER_GENERATED",
+            "timestamp": "2026-09-21T15:21:45.502Z"
+          },
+          {
+            "state": "AWAITING_FOUNDER",
+            "timestamp": "2026-09-21T15:21:45.533Z"
+          },
+          {
+            "state": "REQUIRES_FOUNDER",
+            "timestamp": "2026-09-21T15:21:45.533Z",
+            "reason": "External client dispatch requires Founder Praveen authorization"
+          }
+        ],
+        "evidence": [
+          {
+            "type": "proposal_draft",
+            "fileName": "acq_1790004105493_a71555_proposal.md",
+            "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004105493_a71555_proposal.md",
+            "sizeBytes": 864,
+            "sha256": "54753a9c21e9bd0d64b8dbaeb8bf079084997fc9d0fbaec6568d7f2f221422c8"
+          }
+        ],
+        "communicationAction": {
+          "channel": "email",
+          "recipient": "attacker@untrusted.com",
+          "message": "Commercial Proposal: Build custom high-frequency trading bot with low latency | Proposed: INR 23,750",
+          "missionId": "acq_1790004105493_a71555",
+          "requiresFounder": true,
+          "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+          "executionStatus": "REQUIRES_FOUNDER",
+          "evidence": [
+            {
+              "type": "proposal_hash",
+              "sha256": "54753a9c21e9bd0d64b8dbaeb8bf079084997fc9d0fbaec6568d7f2f221422c8"
+            }
+          ]
+        },
+        "memoryStatus": {
+          "promoted": true,
+          "itemId": "int-mube87c6-9ad4a427",
+          "evaluationStatus": "EVALUATED",
+          "confidence": 0.35
+        },
+        "context": {
+          "raw": {
+            "requirements": "Build custom high-frequency trading bot with low latency",
+            "name": "Attacker",
+            "email": "attacker@untrusted.com",
+            "phone": null,
+            "contact": "attacker@untrusted.com",
+            "budget": null,
+            "timeline": "3-7 business days",
+            "service": "custom-ai-development",
+            "attribution": {
+              "channel": "Direct",
+              "source": "direct",
+              "medium": "none",
+              "campaign": null,
+              "term": null,
+              "content": null,
+              "utm_source": null,
+              "utm_medium": null,
+              "utm_campaign": null,
+              "utm_term": null,
+              "utm_content": null,
+              "gclid": null,
+              "fbclid": null,
+              "ref": null,
+              "referrerDomain": null,
+              "referrerUrl": null,
+              "landingPath": "/",
+              "capturedAt": "2026-09-21T15:21:45.458Z",
+              "summary": "Direct (direct / none)"
+            },
+            "isTest": false,
+            "environment": "production"
+          },
+          "capAssessment": {
+            "coverage": "PARTIAL",
+            "matchedCapabilities": [
+              {
+                "id": "engineering.software-implementation",
+                "name": "Governed software implementation",
+                "category": "Software Engineering",
+                "universe": "engineering",
+                "score": 35
+              },
+              {
+                "id": "finance.sovereign-quant-advisory",
+                "name": "24/7 Sovereign Quant Fleet & Multi-Market Alpha Engine",
+                "category": "Financial Engineering & Quant",
+                "universe": "finance",
+                "score": 35
+              }
+            ],
+            "bestCapability": {
+              "capabilityId": "engineering.software-implementation",
+              "category": "Software Engineering",
+              "name": "Governed software implementation",
+              "universe": "engineering",
+              "confidenceScore": 95,
+              "score": 35,
+              "canMotherExecuteAutonomously": true,
+              "estimatedDeliveryTime": "4-24 hours"
+            },
+            "primaryUniverse": "U06 Automation",
+            "activatedUniverses": [
+              "U01 Knowledge",
+              "U02 Reasoning",
+              "U09 Governance",
+              "U10 Revenue",
+              "U12 Finance"
+            ],
+            "gaps": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+            ],
+            "confidence": 0.35
+          },
+          "valEstimation": {
+            "status": "UNKNOWN",
+            "estimatedINR": null,
+            "proposedAmount": 0,
+            "currency": "INR",
+            "source": "source_evidence_missing",
+            "confidence": 0
+          },
+          "milestones": [
+            {
+              "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+              "amountINR": 23750,
+              "percentage": 100
+            }
+          ],
+          "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004105493_a71555_proposal.md",
+          "communicationAction": {
+            "channel": "email",
+            "recipient": "attacker@untrusted.com",
+            "message": "Commercial Proposal: Build custom high-frequency trading bot with low latency | Proposed: INR 23,750",
+            "missionId": "acq_1790004105493_a71555",
+            "requiresFounder": true,
+            "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+            "executionStatus": "REQUIRES_FOUNDER",
+            "evidence": [
+              {
+                "type": "proposal_hash",
+                "sha256": "54753a9c21e9bd0d64b8dbaeb8bf079084997fc9d0fbaec6568d7f2f221422c8"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "lead_1790004108043_1719ca",
+      "leadId": "lead_1790004108043_1719ca",
+      "missionId": "acq_1790004108043_c858ab",
+      "scopeId": "scope_1790004108042_cb5cc5",
+      "name": "Payment Forger",
+      "email": "forger@untrusted.com",
+      "phone": null,
+      "contact": "forger@untrusted.com",
+      "service": "custom-ai-development",
+      "requirements": "Deliver distributed enterprise ledger infrastructure",
+      "estimatedINR": 21250,
+      "environment": "production",
+      "isTest": false,
+      "source": "direct",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:48.040Z",
+        "summary": "Direct (direct / none)"
+      },
+      "status": "new",
+      "governance": "AWAITING_FOUNDER_APPROVAL",
+      "capturedAt": "2026-09-21T15:21:48.599Z",
+      "acquisitionRecord": {
+        "leadId": "lead_1790004108043_1719ca",
+        "missionId": "acq_1790004108043_c858ab",
+        "source": "Direct (direct / none)",
+        "sourceStatus": "VERIFIED",
+        "attribution": {
+          "channel": "Direct",
+          "source": "direct",
+          "medium": "none",
+          "campaign": null,
+          "term": null,
+          "content": null,
+          "utm_source": null,
+          "utm_medium": null,
+          "utm_campaign": null,
+          "utm_term": null,
+          "utm_content": null,
+          "gclid": null,
+          "fbclid": null,
+          "ref": null,
+          "referrerDomain": null,
+          "referrerUrl": null,
+          "landingPath": "/",
+          "capturedAt": "2026-09-21T15:21:48.040Z",
+          "summary": "Direct (direct / none)"
+        },
+        "customer": {
+          "name": "Payment Forger",
+          "email": "forger@untrusted.com",
+          "phone": null,
+          "company": "UNKNOWN",
+          "contact": "forger@untrusted.com"
+        },
+        "urgency": "UNKNOWN",
+        "requirements": "Deliver distributed enterprise ledger infrastructure",
+        "intent": {
+          "category": "MEDIUM_INTENT",
+          "confidence": 0.5,
+          "signals": [
+            "TIMELINE_INDICATED"
+          ],
+          "reason": "General inquiry"
+        },
+        "qualification": {
+          "status": "QUALIFIED",
+          "reasons": [],
+          "checkedAt": "2026-09-21T15:21:48.068Z"
+        },
+        "capabilityAssessment": {
+          "coverage": "UNKNOWN",
+          "matchedCapabilities": [],
+          "bestCapability": null,
+          "primaryUniverse": "U06 Automation",
+          "activatedUniverses": [
+            "U01 Knowledge",
+            "U02 Reasoning",
+            "U09 Governance",
+            "U10 Revenue",
+            "U11 Business"
+          ],
+          "gaps": [
+            "Requested capability is not supported by GARUDA registry"
+          ],
+          "confidence": 0
+        },
+        "valueEstimation": {
+          "status": "UNKNOWN",
+          "estimatedINR": null,
+          "proposedAmount": 0,
+          "currency": "INR",
+          "source": "source_evidence_missing",
+          "confidence": 0
+        },
+        "financials": {
+          "currency": "INR",
+          "estimatedValue": null,
+          "proposedAmount": 25000,
+          "invoicedAmount": 0,
+          "paidAmount": 0,
+          "verifiedRevenue": 0
+        },
+        "preparedResponse": {
+          "requirementSummary": "Deliver distributed enterprise ledger infrastructure",
+          "clarificationQuestions": [
+            "What is your allocated budget range for this engagement?"
+          ],
+          "proposedScope": [
+            "End-to-end architecture & implementation for: Deliver distributed enterprise ledger infrastructure",
+            "Governed AST syntax verification & automated test coverage",
+            "Cryptographic SHA-256 deliverable audit manifest",
+            "Production deployment guide & warranty handover"
+          ],
+          "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004108043_c858ab_proposal.md",
+          "proposalSha256": "1708bc32540902af2eedcb3fce7f2f67c9f06d7c44647b9465e0381c71edf826",
+          "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+        },
+        "founderGovernance": {
+          "requiresFounder": true,
+          "status": "AWAITING_FOUNDER_APPROVAL",
+          "dossier": {
+            "whyThisLead": "Intent: MEDIUM_INTENT (50% confidence). Channel: Direct. Signals: TIMELINE_INDICATED",
+            "whatClientWants": "Deliver distributed enterprise ledger infrastructure",
+            "whatGarudaCanDeliver": "Matched: Custom Software Engineering (Coverage: UNKNOWN). Universe: U06 Automation",
+            "proposedScope": "End-to-end architecture & implementation for: Deliver distributed enterprise ledger infrastructure; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+            "proposedPrice": "INR 25,000 (Milestones: 1)",
+            "risks": [
+              "Requested capability is not supported by GARUDA registry",
+              "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+            ],
+            "evidence": [
+              {
+                "type": "proposal_draft",
+                "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004108043_c858ab_proposal.md",
+                "sha256": "1708bc32540902af2eedcb3fce7f2f67c9f06d7c44647b9465e0381c71edf826"
+              }
+            ],
+            "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+          }
+        },
+        "followUp": {
+          "followUpCount": 0,
+          "maxFollowUps": 3,
+          "status": "FOLLOWUP_READY",
+          "cooldownHours": 24,
+          "lastFollowUpAt": null,
+          "stopReason": null,
+          "history": []
+        },
+        "commercialStatus": "AWAITING_FOUNDER",
+        "state": "AWAITING_FOUNDER",
+        "stateHistory": [
+          {
+            "state": "INBOUND_RECEIVED",
+            "timestamp": "2026-09-21T15:21:48.043Z",
+            "leadId": "lead_1790004108043_1719ca"
+          },
+          {
+            "state": "INTENT_IDENTIFIED",
+            "timestamp": "2026-09-21T15:21:48.043Z",
+            "intentCategory": "MEDIUM_INTENT",
+            "signals": [
+              "TIMELINE_INDICATED"
+            ]
+          },
+          {
+            "state": "QUALIFIED",
+            "timestamp": "2026-09-21T15:21:48.043Z"
+          },
+          {
+            "state": "RESPONSE_PREPARED",
+            "timestamp": "2026-09-21T15:21:48.048Z",
+            "proposalSha256": "1708bc32540902af2eedcb3fce7f2f67c9f06d7c44647b9465e0381c71edf826"
+          },
+          {
+            "state": "DOSSIER_GENERATED",
+            "timestamp": "2026-09-21T15:21:48.048Z"
+          },
+          {
+            "state": "AWAITING_FOUNDER",
+            "timestamp": "2026-09-21T15:21:48.068Z"
+          },
+          {
+            "state": "REQUIRES_FOUNDER",
+            "timestamp": "2026-09-21T15:21:48.068Z",
+            "reason": "External client dispatch requires Founder Praveen authorization"
+          }
+        ],
+        "evidence": [
+          {
+            "type": "proposal_draft",
+            "fileName": "acq_1790004108043_c858ab_proposal.md",
+            "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004108043_c858ab_proposal.md",
+            "sizeBytes": 856,
+            "sha256": "1708bc32540902af2eedcb3fce7f2f67c9f06d7c44647b9465e0381c71edf826"
+          }
+        ],
+        "communicationAction": {
+          "channel": "email",
+          "recipient": "forger@untrusted.com",
+          "message": "Commercial Proposal: Deliver distributed enterprise ledger infrastructure | Proposed: INR 25,000",
+          "missionId": "acq_1790004108043_c858ab",
+          "requiresFounder": true,
+          "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+          "executionStatus": "REQUIRES_FOUNDER",
+          "evidence": [
+            {
+              "type": "proposal_hash",
+              "sha256": "1708bc32540902af2eedcb3fce7f2f67c9f06d7c44647b9465e0381c71edf826"
+            }
+          ]
+        },
+        "memoryStatus": {
+          "promoted": true,
+          "itemId": "int-mube89av-d9e41e17",
+          "evaluationStatus": "EVALUATED",
+          "confidence": 0.35
+        },
+        "context": {
+          "raw": {
+            "requirements": "Deliver distributed enterprise ledger infrastructure",
+            "name": "Payment Forger",
+            "email": "forger@untrusted.com",
+            "phone": null,
+            "contact": "forger@untrusted.com",
+            "budget": null,
+            "timeline": "3-7 business days",
+            "service": "custom-ai-development",
+            "attribution": {
+              "channel": "Direct",
+              "source": "direct",
+              "medium": "none",
+              "campaign": null,
+              "term": null,
+              "content": null,
+              "utm_source": null,
+              "utm_medium": null,
+              "utm_campaign": null,
+              "utm_term": null,
+              "utm_content": null,
+              "gclid": null,
+              "fbclid": null,
+              "ref": null,
+              "referrerDomain": null,
+              "referrerUrl": null,
+              "landingPath": "/",
+              "capturedAt": "2026-09-21T15:21:48.040Z",
+              "summary": "Direct (direct / none)"
+            },
+            "isTest": false,
+            "environment": "production"
+          },
+          "capAssessment": {
+            "coverage": "UNKNOWN",
+            "matchedCapabilities": [],
+            "bestCapability": null,
+            "primaryUniverse": "U06 Automation",
+            "activatedUniverses": [
+              "U01 Knowledge",
+              "U02 Reasoning",
+              "U09 Governance",
+              "U10 Revenue",
+              "U11 Business"
+            ],
+            "gaps": [
+              "Requested capability is not supported by GARUDA registry"
+            ],
+            "confidence": 0
+          },
+          "valEstimation": {
+            "status": "UNKNOWN",
+            "estimatedINR": null,
+            "proposedAmount": 0,
+            "currency": "INR",
+            "source": "source_evidence_missing",
+            "confidence": 0
+          },
+          "milestones": [
+            {
+              "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+              "amountINR": 25000,
+              "percentage": 100
+            }
+          ],
+          "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004108043_c858ab_proposal.md",
+          "communicationAction": {
+            "channel": "email",
+            "recipient": "forger@untrusted.com",
+            "message": "Commercial Proposal: Deliver distributed enterprise ledger infrastructure | Proposed: INR 25,000",
+            "missionId": "acq_1790004108043_c858ab",
+            "requiresFounder": true,
+            "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+            "executionStatus": "REQUIRES_FOUNDER",
+            "evidence": [
+              {
+                "type": "proposal_hash",
+                "sha256": "1708bc32540902af2eedcb3fce7f2f67c9f06d7c44647b9465e0381c71edf826"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "lead_1790004108974_14c43c",
+      "leadId": "lead_1790004108974_14c43c",
+      "missionId": "acq_1790004108974_57bdf9",
+      "scopeId": "scope_1790004108973_2488e5",
+      "name": "Revenue Fabricator",
+      "email": "fabricator@untrusted.com",
+      "phone": null,
+      "contact": "fabricator@untrusted.com",
+      "service": "custom-ai-development",
+      "requirements": "Build multi-tenant SaaS application with automated billing",
+      "estimatedINR": 23750,
+      "environment": "production",
+      "isTest": false,
+      "source": "direct",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:48.967Z",
+        "summary": "Direct (direct / none)"
+      },
+      "status": "new",
+      "governance": "AWAITING_FOUNDER_APPROVAL",
+      "capturedAt": "2026-09-21T15:21:49.685Z",
+      "acquisitionRecord": {
+        "leadId": "lead_1790004108974_14c43c",
+        "missionId": "acq_1790004108974_57bdf9",
+        "source": "Direct (direct / none)",
+        "sourceStatus": "VERIFIED",
+        "attribution": {
+          "channel": "Direct",
+          "source": "direct",
+          "medium": "none",
+          "campaign": null,
+          "term": null,
+          "content": null,
+          "utm_source": null,
+          "utm_medium": null,
+          "utm_campaign": null,
+          "utm_term": null,
+          "utm_content": null,
+          "gclid": null,
+          "fbclid": null,
+          "ref": null,
+          "referrerDomain": null,
+          "referrerUrl": null,
+          "landingPath": "/",
+          "capturedAt": "2026-09-21T15:21:48.967Z",
+          "summary": "Direct (direct / none)"
+        },
+        "customer": {
+          "name": "Revenue Fabricator",
+          "email": "fabricator@untrusted.com",
+          "phone": null,
+          "company": "UNKNOWN",
+          "contact": "fabricator@untrusted.com"
+        },
+        "urgency": "UNKNOWN",
+        "requirements": "Build multi-tenant SaaS application with automated billing",
+        "intent": {
+          "category": "HIGH_INTENT",
+          "confidence": 0.85,
+          "signals": [
+            "TECH_KEYWORDS:build,app,application",
+            "TIMELINE_INDICATED"
+          ],
+          "reason": "Detailed technical scope with concrete deliverable indicators"
+        },
+        "qualification": {
+          "status": "QUALIFIED",
+          "reasons": [],
+          "checkedAt": "2026-09-21T15:21:49.043Z"
+        },
+        "capabilityAssessment": {
+          "coverage": "PARTIAL",
+          "matchedCapabilities": [
+            {
+              "id": "engineering.software-implementation",
+              "name": "Governed software implementation",
+              "category": "Software Engineering",
+              "universe": "engineering",
+              "score": 35
+            }
+          ],
+          "bestCapability": {
+            "capabilityId": "engineering.software-implementation",
+            "category": "Software Engineering",
+            "name": "Governed software implementation",
+            "universe": "engineering",
+            "confidenceScore": 95,
+            "score": 35,
+            "canMotherExecuteAutonomously": true,
+            "estimatedDeliveryTime": "4-24 hours"
+          },
+          "primaryUniverse": "U06 Automation",
+          "activatedUniverses": [
+            "U01 Knowledge",
+            "U02 Reasoning",
+            "U09 Governance",
+            "U10 Revenue",
+            "U11 Business",
+            "U12 Finance"
+          ],
+          "gaps": [
+            "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+          ],
+          "confidence": 0.35
+        },
+        "valueEstimation": {
+          "status": "UNKNOWN",
+          "estimatedINR": null,
+          "proposedAmount": 0,
+          "currency": "INR",
+          "source": "source_evidence_missing",
+          "confidence": 0
+        },
+        "financials": {
+          "currency": "INR",
+          "estimatedValue": null,
+          "proposedAmount": 23750,
+          "invoicedAmount": 0,
+          "paidAmount": 0,
+          "verifiedRevenue": 0
+        },
+        "preparedResponse": {
+          "requirementSummary": "Build multi-tenant SaaS application with automated billing",
+          "clarificationQuestions": [
+            "What is your allocated budget range for this engagement?",
+            "Could you specify which existing APIs or legacy platforms need integration?"
+          ],
+          "proposedScope": [
+            "End-to-end architecture & implementation for: Build multi-tenant SaaS application with automated billing",
+            "Governed AST syntax verification & automated test coverage",
+            "Cryptographic SHA-256 deliverable audit manifest",
+            "Production deployment guide & warranty handover"
+          ],
+          "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004108974_57bdf9_proposal.md",
+          "proposalSha256": "091346d3c746817bb48a257e3af7544afaa887cffb0bb1b5831fa92a9e53deee",
+          "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+        },
+        "founderGovernance": {
+          "requiresFounder": true,
+          "status": "AWAITING_FOUNDER_APPROVAL",
+          "dossier": {
+            "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:build,app,application, TIMELINE_INDICATED",
+            "whatClientWants": "Build multi-tenant SaaS application with automated billing",
+            "whatGarudaCanDeliver": "Matched: Governed software implementation (Coverage: PARTIAL). Universe: U06 Automation",
+            "proposedScope": "End-to-end architecture & implementation for: Build multi-tenant SaaS application with automated billing; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+            "proposedPrice": "INR 23,750 (Milestones: 1)",
+            "risks": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements",
+              "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+            ],
+            "evidence": [
+              {
+                "type": "proposal_draft",
+                "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004108974_57bdf9_proposal.md",
+                "sha256": "091346d3c746817bb48a257e3af7544afaa887cffb0bb1b5831fa92a9e53deee"
+              }
+            ],
+            "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+          }
+        },
+        "followUp": {
+          "followUpCount": 0,
+          "maxFollowUps": 3,
+          "status": "FOLLOWUP_READY",
+          "cooldownHours": 24,
+          "lastFollowUpAt": null,
+          "stopReason": null,
+          "history": []
+        },
+        "commercialStatus": "AWAITING_FOUNDER",
+        "state": "AWAITING_FOUNDER",
+        "stateHistory": [
+          {
+            "state": "INBOUND_RECEIVED",
+            "timestamp": "2026-09-21T15:21:48.974Z",
+            "leadId": "lead_1790004108974_14c43c"
+          },
+          {
+            "state": "INTENT_IDENTIFIED",
+            "timestamp": "2026-09-21T15:21:48.974Z",
+            "intentCategory": "HIGH_INTENT",
+            "signals": [
+              "TECH_KEYWORDS:build,app,application",
+              "TIMELINE_INDICATED"
+            ]
+          },
+          {
+            "state": "QUALIFIED",
+            "timestamp": "2026-09-21T15:21:48.974Z"
+          },
+          {
+            "state": "RESPONSE_PREPARED",
+            "timestamp": "2026-09-21T15:21:48.982Z",
+            "proposalSha256": "091346d3c746817bb48a257e3af7544afaa887cffb0bb1b5831fa92a9e53deee"
+          },
+          {
+            "state": "DOSSIER_GENERATED",
+            "timestamp": "2026-09-21T15:21:48.982Z"
+          },
+          {
+            "state": "AWAITING_FOUNDER",
+            "timestamp": "2026-09-21T15:21:49.043Z"
+          },
+          {
+            "state": "REQUIRES_FOUNDER",
+            "timestamp": "2026-09-21T15:21:49.043Z",
+            "reason": "External client dispatch requires Founder Praveen authorization"
+          }
+        ],
+        "evidence": [
+          {
+            "type": "proposal_draft",
+            "fileName": "acq_1790004108974_57bdf9_proposal.md",
+            "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004108974_57bdf9_proposal.md",
+            "sizeBytes": 878,
+            "sha256": "091346d3c746817bb48a257e3af7544afaa887cffb0bb1b5831fa92a9e53deee"
+          }
+        ],
+        "communicationAction": {
+          "channel": "email",
+          "recipient": "fabricator@untrusted.com",
+          "message": "Commercial Proposal: Build multi-tenant SaaS application with automated billing | Proposed: INR 23,750",
+          "missionId": "acq_1790004108974_57bdf9",
+          "requiresFounder": true,
+          "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+          "executionStatus": "REQUIRES_FOUNDER",
+          "evidence": [
+            {
+              "type": "proposal_hash",
+              "sha256": "091346d3c746817bb48a257e3af7544afaa887cffb0bb1b5831fa92a9e53deee"
+            }
+          ]
+        },
+        "memoryStatus": {
+          "promoted": true,
+          "itemId": "int-mube8a1d-4995c487",
+          "evaluationStatus": "EVALUATED",
+          "confidence": 0.35
+        },
+        "context": {
+          "raw": {
+            "requirements": "Build multi-tenant SaaS application with automated billing",
+            "name": "Revenue Fabricator",
+            "email": "fabricator@untrusted.com",
+            "phone": null,
+            "contact": "fabricator@untrusted.com",
+            "budget": null,
+            "timeline": "3-7 business days",
+            "service": "custom-ai-development",
+            "attribution": {
+              "channel": "Direct",
+              "source": "direct",
+              "medium": "none",
+              "campaign": null,
+              "term": null,
+              "content": null,
+              "utm_source": null,
+              "utm_medium": null,
+              "utm_campaign": null,
+              "utm_term": null,
+              "utm_content": null,
+              "gclid": null,
+              "fbclid": null,
+              "ref": null,
+              "referrerDomain": null,
+              "referrerUrl": null,
+              "landingPath": "/",
+              "capturedAt": "2026-09-21T15:21:48.967Z",
+              "summary": "Direct (direct / none)"
+            },
+            "isTest": false,
+            "environment": "production"
+          },
+          "capAssessment": {
+            "coverage": "PARTIAL",
+            "matchedCapabilities": [
+              {
+                "id": "engineering.software-implementation",
+                "name": "Governed software implementation",
+                "category": "Software Engineering",
+                "universe": "engineering",
+                "score": 35
+              }
+            ],
+            "bestCapability": {
+              "capabilityId": "engineering.software-implementation",
+              "category": "Software Engineering",
+              "name": "Governed software implementation",
+              "universe": "engineering",
+              "confidenceScore": 95,
+              "score": 35,
+              "canMotherExecuteAutonomously": true,
+              "estimatedDeliveryTime": "4-24 hours"
+            },
+            "primaryUniverse": "U06 Automation",
+            "activatedUniverses": [
+              "U01 Knowledge",
+              "U02 Reasoning",
+              "U09 Governance",
+              "U10 Revenue",
+              "U11 Business",
+              "U12 Finance"
+            ],
+            "gaps": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+            ],
+            "confidence": 0.35
+          },
+          "valEstimation": {
+            "status": "UNKNOWN",
+            "estimatedINR": null,
+            "proposedAmount": 0,
+            "currency": "INR",
+            "source": "source_evidence_missing",
+            "confidence": 0
+          },
+          "milestones": [
+            {
+              "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+              "amountINR": 23750,
+              "percentage": 100
+            }
+          ],
+          "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004108974_57bdf9_proposal.md",
+          "communicationAction": {
+            "channel": "email",
+            "recipient": "fabricator@untrusted.com",
+            "message": "Commercial Proposal: Build multi-tenant SaaS application with automated billing | Proposed: INR 23,750",
+            "missionId": "acq_1790004108974_57bdf9",
+            "requiresFounder": true,
+            "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+            "executionStatus": "REQUIRES_FOUNDER",
+            "evidence": [
+              {
+                "type": "proposal_hash",
+                "sha256": "091346d3c746817bb48a257e3af7544afaa887cffb0bb1b5831fa92a9e53deee"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "lead_1790004110055_e5dd98",
+      "leadId": "lead_1790004110055_e5dd98",
+      "missionId": "acq_1790004110055_a9389d",
+      "scopeId": "scope_1790004110055_fdda99",
+      "name": "Status Hijacker",
+      "email": "hijacker@untrusted.com",
+      "phone": null,
+      "contact": "hijacker@untrusted.com",
+      "service": "custom-ai-development",
+      "requirements": "Develop autonomous marketing intelligence engine",
+      "estimatedINR": 23500,
+      "environment": "production",
+      "isTest": false,
+      "source": "direct",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:50.051Z",
+        "summary": "Direct (direct / none)"
+      },
+      "status": "new",
+      "governance": "AWAITING_FOUNDER_APPROVAL",
+      "capturedAt": "2026-09-21T15:21:51.283Z",
+      "acquisitionRecord": {
+        "leadId": "lead_1790004110055_e5dd98",
+        "missionId": "acq_1790004110055_a9389d",
+        "source": "Direct (direct / none)",
+        "sourceStatus": "VERIFIED",
+        "attribution": {
+          "channel": "Direct",
+          "source": "direct",
+          "medium": "none",
+          "campaign": null,
+          "term": null,
+          "content": null,
+          "utm_source": null,
+          "utm_medium": null,
+          "utm_campaign": null,
+          "utm_term": null,
+          "utm_content": null,
+          "gclid": null,
+          "fbclid": null,
+          "ref": null,
+          "referrerDomain": null,
+          "referrerUrl": null,
+          "landingPath": "/",
+          "capturedAt": "2026-09-21T15:21:50.051Z",
+          "summary": "Direct (direct / none)"
+        },
+        "customer": {
+          "name": "Status Hijacker",
+          "email": "hijacker@untrusted.com",
+          "phone": null,
+          "company": "UNKNOWN",
+          "contact": "hijacker@untrusted.com"
+        },
+        "urgency": "UNKNOWN",
+        "requirements": "Develop autonomous marketing intelligence engine",
+        "intent": {
+          "category": "HIGH_INTENT",
+          "confidence": 0.85,
+          "signals": [
+            "TECH_KEYWORDS:develop",
+            "TIMELINE_INDICATED"
+          ],
+          "reason": "Detailed technical scope with concrete deliverable indicators"
+        },
+        "qualification": {
+          "status": "QUALIFIED",
+          "reasons": [],
+          "checkedAt": "2026-09-21T15:21:50.093Z"
+        },
+        "capabilityAssessment": {
+          "coverage": "PARTIAL",
+          "matchedCapabilities": [
+            {
+              "id": "knowledge.research-synthesis",
+              "name": "Research and knowledge synthesis",
+              "category": "Research",
+              "universe": "knowledge",
+              "score": 50
+            },
+            {
+              "id": "digital_marketing.editorial_growth",
+              "name": "Editorial Calendars & Multi-Channel Content Factory",
+              "category": "Digital Marketing",
+              "universe": "content",
+              "score": 50
+            },
+            {
+              "id": "real_estate.growth_os",
+              "name": "Real Estate Growth OS & Performance Engine",
+              "category": "Real Estate Intelligence",
+              "universe": "wealth",
+              "score": 35
+            },
+            {
+              "id": "creative.studio_orchestration",
+              "name": "Creative Studio Orchestration & IdentityLock™",
+              "category": "Creative Services",
+              "universe": "creative",
+              "score": 35
+            }
+          ],
+          "bestCapability": {
+            "capabilityId": "knowledge.research-synthesis",
+            "category": "Research",
+            "name": "Research and knowledge synthesis",
+            "universe": "knowledge",
+            "confidenceScore": 94,
+            "score": 50,
+            "canMotherExecuteAutonomously": true,
+            "estimatedDeliveryTime": "2-6 hours"
+          },
+          "primaryUniverse": "U01 Knowledge",
+          "activatedUniverses": [
+            "U01 Knowledge",
+            "U02 Reasoning",
+            "U09 Governance",
+            "U10 Revenue",
+            "U20 Content",
+            "U24 Wealth & Real Estate",
+            "U19 Creative"
+          ],
+          "gaps": [
+            "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+          ],
+          "confidence": 0.5
+        },
+        "valueEstimation": {
+          "status": "UNKNOWN",
+          "estimatedINR": null,
+          "proposedAmount": 0,
+          "currency": "INR",
+          "source": "source_evidence_missing",
+          "confidence": 0
+        },
+        "financials": {
+          "currency": "INR",
+          "estimatedValue": null,
+          "proposedAmount": 23500,
+          "invoicedAmount": 0,
+          "paidAmount": 0,
+          "verifiedRevenue": 0
+        },
+        "preparedResponse": {
+          "requirementSummary": "Develop autonomous marketing intelligence engine",
+          "clarificationQuestions": [
+            "What is your allocated budget range for this engagement?",
+            "Could you specify which existing APIs or legacy platforms need integration?"
+          ],
+          "proposedScope": [
+            "End-to-end architecture & implementation for: Develop autonomous marketing intelligence engine",
+            "Governed AST syntax verification & automated test coverage",
+            "Cryptographic SHA-256 deliverable audit manifest",
+            "Production deployment guide & warranty handover"
+          ],
+          "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004110055_a9389d_proposal.md",
+          "proposalSha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05",
+          "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+        },
+        "founderGovernance": {
+          "requiresFounder": true,
+          "status": "AWAITING_FOUNDER_APPROVAL",
+          "dossier": {
+            "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:develop, TIMELINE_INDICATED",
+            "whatClientWants": "Develop autonomous marketing intelligence engine",
+            "whatGarudaCanDeliver": "Matched: Research and knowledge synthesis (Coverage: PARTIAL). Universe: U01 Knowledge",
+            "proposedScope": "End-to-end architecture & implementation for: Develop autonomous marketing intelligence engine; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+            "proposedPrice": "INR 23,500 (Milestones: 1)",
+            "risks": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements",
+              "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+            ],
+            "evidence": [
+              {
+                "type": "proposal_draft",
+                "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004110055_a9389d_proposal.md",
+                "sha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+              }
+            ],
+            "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+          }
+        },
+        "followUp": {
+          "followUpCount": 0,
+          "maxFollowUps": 3,
+          "status": "FOLLOWUP_READY",
+          "cooldownHours": 24,
+          "lastFollowUpAt": null,
+          "stopReason": null,
+          "history": []
+        },
+        "commercialStatus": "AWAITING_FOUNDER",
+        "state": "AWAITING_FOUNDER",
+        "stateHistory": [
+          {
+            "state": "INBOUND_RECEIVED",
+            "timestamp": "2026-09-21T15:21:50.055Z",
+            "leadId": "lead_1790004110055_e5dd98"
+          },
+          {
+            "state": "INTENT_IDENTIFIED",
+            "timestamp": "2026-09-21T15:21:50.055Z",
+            "intentCategory": "HIGH_INTENT",
+            "signals": [
+              "TECH_KEYWORDS:develop",
+              "TIMELINE_INDICATED"
+            ]
+          },
+          {
+            "state": "QUALIFIED",
+            "timestamp": "2026-09-21T15:21:50.055Z"
+          },
+          {
+            "state": "RESPONSE_PREPARED",
+            "timestamp": "2026-09-21T15:21:50.061Z",
+            "proposalSha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+          },
+          {
+            "state": "DOSSIER_GENERATED",
+            "timestamp": "2026-09-21T15:21:50.061Z"
+          },
+          {
+            "state": "AWAITING_FOUNDER",
+            "timestamp": "2026-09-21T15:21:50.093Z"
+          },
+          {
+            "state": "REQUIRES_FOUNDER",
+            "timestamp": "2026-09-21T15:21:50.093Z",
+            "reason": "External client dispatch requires Founder Praveen authorization"
+          }
+        ],
+        "evidence": [
+          {
+            "type": "proposal_draft",
+            "fileName": "acq_1790004110055_a9389d_proposal.md",
+            "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004110055_a9389d_proposal.md",
+            "sizeBytes": 863,
+            "sha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+          }
+        ],
+        "communicationAction": {
+          "channel": "email",
+          "recipient": "hijacker@untrusted.com",
+          "message": "Commercial Proposal: Develop autonomous marketing intelligence engine | Proposed: INR 23,500",
+          "missionId": "acq_1790004110055_a9389d",
+          "requiresFounder": true,
+          "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+          "executionStatus": "REQUIRES_FOUNDER",
+          "evidence": [
+            {
+              "type": "proposal_hash",
+              "sha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+            }
+          ]
+        },
+        "memoryStatus": {
+          "promoted": true,
+          "itemId": "int-mube8auy-6cd6d51c",
+          "evaluationStatus": "EVALUATED",
+          "confidence": 0.35
+        },
+        "context": {
+          "raw": {
+            "requirements": "Develop autonomous marketing intelligence engine",
+            "name": "Status Hijacker",
+            "email": "hijacker@untrusted.com",
+            "phone": null,
+            "contact": "hijacker@untrusted.com",
+            "budget": null,
+            "timeline": "3-7 business days",
+            "service": "custom-ai-development",
+            "attribution": {
+              "channel": "Direct",
+              "source": "direct",
+              "medium": "none",
+              "campaign": null,
+              "term": null,
+              "content": null,
+              "utm_source": null,
+              "utm_medium": null,
+              "utm_campaign": null,
+              "utm_term": null,
+              "utm_content": null,
+              "gclid": null,
+              "fbclid": null,
+              "ref": null,
+              "referrerDomain": null,
+              "referrerUrl": null,
+              "landingPath": "/",
+              "capturedAt": "2026-09-21T15:21:50.051Z",
+              "summary": "Direct (direct / none)"
+            },
+            "isTest": false,
+            "environment": "production"
+          },
+          "capAssessment": {
+            "coverage": "PARTIAL",
+            "matchedCapabilities": [
+              {
+                "id": "knowledge.research-synthesis",
+                "name": "Research and knowledge synthesis",
+                "category": "Research",
+                "universe": "knowledge",
+                "score": 50
+              },
+              {
+                "id": "digital_marketing.editorial_growth",
+                "name": "Editorial Calendars & Multi-Channel Content Factory",
+                "category": "Digital Marketing",
+                "universe": "content",
+                "score": 50
+              },
+              {
+                "id": "real_estate.growth_os",
+                "name": "Real Estate Growth OS & Performance Engine",
+                "category": "Real Estate Intelligence",
+                "universe": "wealth",
+                "score": 35
+              },
+              {
+                "id": "creative.studio_orchestration",
+                "name": "Creative Studio Orchestration & IdentityLock™",
+                "category": "Creative Services",
+                "universe": "creative",
+                "score": 35
+              }
+            ],
+            "bestCapability": {
+              "capabilityId": "knowledge.research-synthesis",
+              "category": "Research",
+              "name": "Research and knowledge synthesis",
+              "universe": "knowledge",
+              "confidenceScore": 94,
+              "score": 50,
+              "canMotherExecuteAutonomously": true,
+              "estimatedDeliveryTime": "2-6 hours"
+            },
+            "primaryUniverse": "U01 Knowledge",
+            "activatedUniverses": [
+              "U01 Knowledge",
+              "U02 Reasoning",
+              "U09 Governance",
+              "U10 Revenue",
+              "U20 Content",
+              "U24 Wealth & Real Estate",
+              "U19 Creative"
+            ],
+            "gaps": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+            ],
+            "confidence": 0.5
+          },
+          "valEstimation": {
+            "status": "UNKNOWN",
+            "estimatedINR": null,
+            "proposedAmount": 0,
+            "currency": "INR",
+            "source": "source_evidence_missing",
+            "confidence": 0
+          },
+          "milestones": [
+            {
+              "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+              "amountINR": 23500,
+              "percentage": 100
+            }
+          ],
+          "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004110055_a9389d_proposal.md",
+          "communicationAction": {
+            "channel": "email",
+            "recipient": "hijacker@untrusted.com",
+            "message": "Commercial Proposal: Develop autonomous marketing intelligence engine | Proposed: INR 23,500",
+            "missionId": "acq_1790004110055_a9389d",
+            "requiresFounder": true,
+            "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+            "executionStatus": "REQUIRES_FOUNDER",
+            "evidence": [
+              {
+                "type": "proposal_hash",
+                "sha256": "a1b2040818a322e098e354bb517969bb3bd41967803706e4b3e756e928a04a05"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "lead_1790004111672_e460d1",
+      "leadId": "lead_1790004111672_e460d1",
+      "missionId": "acq_1790004111672_673a5d",
+      "scopeId": "scope_1790004111672_cabc3d",
+      "name": "Repeat Visitor",
+      "email": "repeat.visitor@enterprise.com",
+      "phone": null,
+      "contact": "repeat.visitor@enterprise.com",
+      "service": "custom-ai-development",
+      "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM",
+      "estimatedINR": 60000,
+      "environment": "production",
+      "isTest": false,
+      "source": "direct",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:51.670Z",
+        "summary": "Direct (direct / none)"
+      },
+      "status": "new",
+      "governance": "AWAITING_FOUNDER_APPROVAL",
+      "capturedAt": "2026-09-21T15:21:52.465Z",
+      "acquisitionRecord": {
+        "leadId": "lead_1790004111672_e460d1",
+        "missionId": "acq_1790004111672_673a5d",
+        "source": "Direct (direct / none)",
+        "sourceStatus": "VERIFIED",
+        "attribution": {
+          "channel": "Direct",
+          "source": "direct",
+          "medium": "none",
+          "campaign": null,
+          "term": null,
+          "content": null,
+          "utm_source": null,
+          "utm_medium": null,
+          "utm_campaign": null,
+          "utm_term": null,
+          "utm_content": null,
+          "gclid": null,
+          "fbclid": null,
+          "ref": null,
+          "referrerDomain": null,
+          "referrerUrl": null,
+          "landingPath": "/",
+          "capturedAt": "2026-09-21T15:21:51.670Z",
+          "summary": "Direct (direct / none)"
+        },
+        "customer": {
+          "name": "Repeat Visitor",
+          "email": "repeat.visitor@enterprise.com",
+          "phone": null,
+          "company": "UNKNOWN",
+          "contact": "repeat.visitor@enterprise.com"
+        },
+        "urgency": "UNKNOWN",
+        "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM",
+        "intent": {
+          "category": "HIGH_INTENT",
+          "confidence": 0.85,
+          "signals": [
+            "TECH_KEYWORDS:develop,app,platform",
+            "BUDGET_INDICATED",
+            "TIMELINE_INDICATED"
+          ],
+          "reason": "Detailed technical scope with concrete deliverable indicators"
+        },
+        "qualification": {
+          "status": "QUALIFIED",
+          "reasons": [],
+          "checkedAt": "2026-09-21T15:21:51.728Z"
+        },
+        "capabilityAssessment": {
+          "coverage": "PARTIAL",
+          "matchedCapabilities": [
+            {
+              "id": "engineering.software-implementation",
+              "name": "Governed software implementation",
+              "category": "Software Engineering",
+              "universe": "engineering",
+              "score": 35
+            },
+            {
+              "id": "automation.workflow-automation",
+              "name": "Business Workflow & Process Automation",
+              "category": "Workflow Automation",
+              "universe": "automation",
+              "score": 35
+            },
+            {
+              "id": "real_estate.growth_os",
+              "name": "Real Estate Growth OS & Performance Engine",
+              "category": "Real Estate Intelligence",
+              "universe": "wealth",
+              "score": 35
+            }
+          ],
+          "bestCapability": {
+            "capabilityId": "engineering.software-implementation",
+            "category": "Software Engineering",
+            "name": "Governed software implementation",
+            "universe": "engineering",
+            "confidenceScore": 95,
+            "score": 35,
+            "canMotherExecuteAutonomously": true,
+            "estimatedDeliveryTime": "4-24 hours"
+          },
+          "primaryUniverse": "U06 Automation",
+          "activatedUniverses": [
+            "U01 Knowledge",
+            "U02 Reasoning",
+            "U09 Governance",
+            "U10 Revenue",
+            "U06 Automation",
+            "U24 Wealth & Real Estate",
+            "U07 Communication",
+            "U11 Business"
+          ],
+          "gaps": [
+            "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+          ],
+          "confidence": 0.35
+        },
+        "valueEstimation": {
+          "status": "ESTIMATED",
+          "estimatedINR": 60000,
+          "proposedAmount": 60000,
+          "currency": "INR",
+          "source": "client_stated_budget",
+          "confidence": 0.9
+        },
+        "financials": {
+          "currency": "INR",
+          "estimatedValue": 60000,
+          "proposedAmount": 60000,
+          "invoicedAmount": 0,
+          "paidAmount": 0,
+          "verifiedRevenue": 0
+        },
+        "preparedResponse": {
+          "requirementSummary": "Develop multi-channel customer intelligence platform with WhatsApp CRM",
+          "clarificationQuestions": [
+            "Could you specify which existing APIs or legacy platforms need integration?"
+          ],
+          "proposedScope": [
+            "End-to-end architecture & implementation for: Develop multi-channel customer intelligence platform with WhatsApp CRM",
+            "Governed AST syntax verification & automated test coverage",
+            "Cryptographic SHA-256 deliverable audit manifest",
+            "Production deployment guide & warranty handover"
+          ],
+          "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004111672_673a5d_proposal.md",
+          "proposalSha256": "e20db90076c5bf1055afdcaf538d3a777f9a7a262b35d5f0eb10aee9d0fc11e3",
+          "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+        },
+        "founderGovernance": {
+          "requiresFounder": true,
+          "status": "AWAITING_FOUNDER_APPROVAL",
+          "dossier": {
+            "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:develop,app,platform, BUDGET_INDICATED, TIMELINE_INDICATED",
+            "whatClientWants": "Develop multi-channel customer intelligence platform with WhatsApp CRM",
+            "whatGarudaCanDeliver": "Matched: Governed software implementation (Coverage: PARTIAL). Universe: U06 Automation",
+            "proposedScope": "End-to-end architecture & implementation for: Develop multi-channel customer intelligence platform with WhatsApp CRM; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+            "proposedPrice": "INR 60,000 (Milestones: 2)",
+            "risks": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+            ],
+            "evidence": [
+              {
+                "type": "proposal_draft",
+                "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004111672_673a5d_proposal.md",
+                "sha256": "e20db90076c5bf1055afdcaf538d3a777f9a7a262b35d5f0eb10aee9d0fc11e3"
+              }
+            ],
+            "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+          }
+        },
+        "followUp": {
+          "followUpCount": 0,
+          "maxFollowUps": 3,
+          "status": "FOLLOWUP_READY",
+          "cooldownHours": 24,
+          "lastFollowUpAt": null,
+          "stopReason": null,
+          "history": []
+        },
+        "commercialStatus": "AWAITING_FOUNDER",
+        "state": "AWAITING_FOUNDER",
+        "stateHistory": [
+          {
+            "state": "INBOUND_RECEIVED",
+            "timestamp": "2026-09-21T15:21:51.672Z",
+            "leadId": "lead_1790004111672_e460d1"
+          },
+          {
+            "state": "INTENT_IDENTIFIED",
+            "timestamp": "2026-09-21T15:21:51.672Z",
+            "intentCategory": "HIGH_INTENT",
+            "signals": [
+              "TECH_KEYWORDS:develop,app,platform",
+              "BUDGET_INDICATED",
+              "TIMELINE_INDICATED"
+            ]
+          },
+          {
+            "state": "QUALIFIED",
+            "timestamp": "2026-09-21T15:21:51.672Z"
+          },
+          {
+            "state": "RESPONSE_PREPARED",
+            "timestamp": "2026-09-21T15:21:51.678Z",
+            "proposalSha256": "e20db90076c5bf1055afdcaf538d3a777f9a7a262b35d5f0eb10aee9d0fc11e3"
+          },
+          {
+            "state": "DOSSIER_GENERATED",
+            "timestamp": "2026-09-21T15:21:51.678Z"
+          },
+          {
+            "state": "AWAITING_FOUNDER",
+            "timestamp": "2026-09-21T15:21:51.728Z"
+          },
+          {
+            "state": "REQUIRES_FOUNDER",
+            "timestamp": "2026-09-21T15:21:51.728Z",
+            "reason": "External client dispatch requires Founder Praveen authorization"
+          }
+        ],
+        "evidence": [
+          {
+            "type": "proposal_draft",
+            "fileName": "acq_1790004111672_673a5d_proposal.md",
+            "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004111672_673a5d_proposal.md",
+            "sizeBytes": 967,
+            "sha256": "e20db90076c5bf1055afdcaf538d3a777f9a7a262b35d5f0eb10aee9d0fc11e3"
+          }
+        ],
+        "communicationAction": {
+          "channel": "email",
+          "recipient": "repeat.visitor@enterprise.com",
+          "message": "Commercial Proposal: Develop multi-channel customer intelligence platform with WhatsApp CRM | Proposed: INR 60,000",
+          "missionId": "acq_1790004111672_673a5d",
+          "requiresFounder": true,
+          "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+          "executionStatus": "REQUIRES_FOUNDER",
+          "evidence": [
+            {
+              "type": "proposal_hash",
+              "sha256": "e20db90076c5bf1055afdcaf538d3a777f9a7a262b35d5f0eb10aee9d0fc11e3"
+            }
+          ]
+        },
+        "memoryStatus": {
+          "promoted": true,
+          "itemId": "int-mube8c3y-f008c370",
+          "evaluationStatus": "EVALUATED",
+          "confidence": 0.35
+        },
+        "context": {
+          "raw": {
+            "requirements": "Develop multi-channel customer intelligence platform with WhatsApp CRM",
+            "name": "Repeat Visitor",
+            "email": "repeat.visitor@enterprise.com",
+            "phone": null,
+            "contact": "repeat.visitor@enterprise.com",
+            "budget": 60000,
+            "timeline": "3-7 business days",
+            "service": "custom-ai-development",
+            "attribution": {
+              "channel": "Direct",
+              "source": "direct",
+              "medium": "none",
+              "campaign": null,
+              "term": null,
+              "content": null,
+              "utm_source": null,
+              "utm_medium": null,
+              "utm_campaign": null,
+              "utm_term": null,
+              "utm_content": null,
+              "gclid": null,
+              "fbclid": null,
+              "ref": null,
+              "referrerDomain": null,
+              "referrerUrl": null,
+              "landingPath": "/",
+              "capturedAt": "2026-09-21T15:21:51.670Z",
+              "summary": "Direct (direct / none)"
+            },
+            "isTest": false,
+            "environment": "production"
+          },
+          "capAssessment": {
+            "coverage": "PARTIAL",
+            "matchedCapabilities": [
+              {
+                "id": "engineering.software-implementation",
+                "name": "Governed software implementation",
+                "category": "Software Engineering",
+                "universe": "engineering",
+                "score": 35
+              },
+              {
+                "id": "automation.workflow-automation",
+                "name": "Business Workflow & Process Automation",
+                "category": "Workflow Automation",
+                "universe": "automation",
+                "score": 35
+              },
+              {
+                "id": "real_estate.growth_os",
+                "name": "Real Estate Growth OS & Performance Engine",
+                "category": "Real Estate Intelligence",
+                "universe": "wealth",
+                "score": 35
+              }
+            ],
+            "bestCapability": {
+              "capabilityId": "engineering.software-implementation",
+              "category": "Software Engineering",
+              "name": "Governed software implementation",
+              "universe": "engineering",
+              "confidenceScore": 95,
+              "score": 35,
+              "canMotherExecuteAutonomously": true,
+              "estimatedDeliveryTime": "4-24 hours"
+            },
+            "primaryUniverse": "U06 Automation",
+            "activatedUniverses": [
+              "U01 Knowledge",
+              "U02 Reasoning",
+              "U09 Governance",
+              "U10 Revenue",
+              "U06 Automation",
+              "U24 Wealth & Real Estate",
+              "U07 Communication",
+              "U11 Business"
+            ],
+            "gaps": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+            ],
+            "confidence": 0.35
+          },
+          "valEstimation": {
+            "status": "ESTIMATED",
+            "estimatedINR": 60000,
+            "proposedAmount": 60000,
+            "currency": "INR",
+            "source": "client_stated_budget",
+            "confidence": 0.9
+          },
+          "milestones": [
+            {
+              "milestone": "Milestone 1 — Core Architecture & Build",
+              "amountINR": 30000,
+              "percentage": 50
+            },
+            {
+              "milestone": "Milestone 2 — Delivery, QA & Production Handover",
+              "amountINR": 30000,
+              "percentage": 50
+            }
+          ],
+          "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004111672_673a5d_proposal.md",
+          "communicationAction": {
+            "channel": "email",
+            "recipient": "repeat.visitor@enterprise.com",
+            "message": "Commercial Proposal: Develop multi-channel customer intelligence platform with WhatsApp CRM | Proposed: INR 60,000",
+            "missionId": "acq_1790004111672_673a5d",
+            "requiresFounder": true,
+            "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+            "executionStatus": "REQUIRES_FOUNDER",
+            "evidence": [
+              {
+                "type": "proposal_hash",
+                "sha256": "e20db90076c5bf1055afdcaf538d3a777f9a7a262b35d5f0eb10aee9d0fc11e3"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "lead_1790004112849_266802",
+      "leadId": "lead_1790004112849_266802",
+      "missionId": "acq_1790004112849_16d63f",
+      "scopeId": "scope_1790004112849_9a9264",
+      "name": "QA Automated Tester",
+      "email": "engineer@sandbox.test",
+      "phone": null,
+      "contact": "engineer@sandbox.test",
+      "service": "custom-ai-development",
+      "requirements": "Verify end-to-end sandbox pipeline execution for regression test",
+      "estimatedINR": 22000,
+      "environment": "test",
+      "isTest": true,
+      "source": "direct",
+      "attribution": {
+        "channel": "Direct",
+        "source": "direct",
+        "medium": "none",
+        "campaign": null,
+        "term": null,
+        "content": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_campaign": null,
+        "utm_term": null,
+        "utm_content": null,
+        "gclid": null,
+        "fbclid": null,
+        "ref": null,
+        "referrerDomain": null,
+        "referrerUrl": null,
+        "landingPath": "/",
+        "capturedAt": "2026-09-21T15:21:52.847Z",
+        "summary": "Direct (direct / none)"
+      },
+      "status": "new",
+      "governance": "AWAITING_FOUNDER_APPROVAL",
+      "capturedAt": "2026-09-21T15:21:53.423Z",
+      "acquisitionRecord": {
+        "leadId": "lead_1790004112849_266802",
+        "missionId": "acq_1790004112849_16d63f",
+        "source": "Direct (direct / none)",
+        "sourceStatus": "VERIFIED",
+        "attribution": {
+          "channel": "Direct",
+          "source": "direct",
+          "medium": "none",
+          "campaign": null,
+          "term": null,
+          "content": null,
+          "utm_source": null,
+          "utm_medium": null,
+          "utm_campaign": null,
+          "utm_term": null,
+          "utm_content": null,
+          "gclid": null,
+          "fbclid": null,
+          "ref": null,
+          "referrerDomain": null,
+          "referrerUrl": null,
+          "landingPath": "/",
+          "capturedAt": "2026-09-21T15:21:52.847Z",
+          "summary": "Direct (direct / none)"
+        },
+        "customer": {
+          "name": "QA Automated Tester",
+          "email": "engineer@sandbox.test",
+          "phone": null,
+          "company": "UNKNOWN",
+          "contact": "engineer@sandbox.test"
+        },
+        "urgency": "UNKNOWN",
+        "requirements": "Verify end-to-end sandbox pipeline execution for regression test",
+        "intent": {
+          "category": "MEDIUM_INTENT",
+          "confidence": 0.5,
+          "signals": [
+            "TIMELINE_INDICATED"
+          ],
+          "reason": "General inquiry"
+        },
+        "qualification": {
+          "status": "QUALIFIED",
+          "reasons": [],
+          "checkedAt": "2026-09-21T15:21:52.895Z"
+        },
+        "capabilityAssessment": {
+          "coverage": "PARTIAL",
+          "matchedCapabilities": [
+            {
+              "id": "automation.workflow-automation",
+              "name": "Business Workflow & Process Automation",
+              "category": "Workflow Automation",
+              "universe": "automation",
+              "score": 35
+            }
+          ],
+          "bestCapability": {
+            "capabilityId": "automation.workflow-automation",
+            "category": "Workflow Automation",
+            "name": "Business Workflow & Process Automation",
+            "universe": "automation",
+            "confidenceScore": 88,
+            "score": 35,
+            "canMotherExecuteAutonomously": true,
+            "estimatedDeliveryTime": "2-8 hours"
+          },
+          "primaryUniverse": "U06 Automation",
+          "activatedUniverses": [
+            "U01 Knowledge",
+            "U02 Reasoning",
+            "U09 Governance",
+            "U10 Revenue",
+            "U06 Automation"
+          ],
+          "gaps": [
+            "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+          ],
+          "confidence": 0.35
+        },
+        "valueEstimation": {
+          "status": "UNKNOWN",
+          "estimatedINR": null,
+          "proposedAmount": 0,
+          "currency": "INR",
+          "source": "source_evidence_missing",
+          "confidence": 0
+        },
+        "financials": {
+          "currency": "INR",
+          "estimatedValue": null,
+          "proposedAmount": 22000,
+          "invoicedAmount": 0,
+          "paidAmount": 0,
+          "verifiedRevenue": 0
+        },
+        "preparedResponse": {
+          "requirementSummary": "Verify end-to-end sandbox pipeline execution for regression test",
+          "clarificationQuestions": [
+            "What is your allocated budget range for this engagement?",
+            "Could you specify which existing APIs or legacy platforms need integration?"
+          ],
+          "proposedScope": [
+            "End-to-end architecture & implementation for: Verify end-to-end sandbox pipeline execution for regression test",
+            "Governed AST syntax verification & automated test coverage",
+            "Cryptographic SHA-256 deliverable audit manifest",
+            "Production deployment guide & warranty handover"
+          ],
+          "proposalDraftPath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004112849_16d63f_proposal.md",
+          "proposalSha256": "49182f2a27eb19ddd3d857ebf8ce6c5fed9c100937dae5b0ae6c39f533520802",
+          "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+        },
+        "founderGovernance": {
+          "requiresFounder": true,
+          "status": "AWAITING_FOUNDER_APPROVAL",
+          "dossier": {
+            "whyThisLead": "Intent: MEDIUM_INTENT (50% confidence). Channel: Direct. Signals: TIMELINE_INDICATED",
+            "whatClientWants": "Verify end-to-end sandbox pipeline execution for regression test",
+            "whatGarudaCanDeliver": "Matched: Business Workflow & Process Automation (Coverage: PARTIAL). Universe: U06 Automation",
+            "proposedScope": "End-to-end architecture & implementation for: Verify end-to-end sandbox pipeline execution for regression test; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+            "proposedPrice": "INR 22,000 (Milestones: 1)",
+            "risks": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements",
+              "Client budget is UNKNOWN; proposal reflects standard scope pricing"
+            ],
+            "evidence": [
+              {
+                "type": "proposal_draft",
+                "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004112849_16d63f_proposal.md",
+                "sha256": "49182f2a27eb19ddd3d857ebf8ce6c5fed9c100937dae5b0ae6c39f533520802"
+              }
+            ],
+            "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+          }
+        },
+        "followUp": {
+          "followUpCount": 0,
+          "maxFollowUps": 3,
+          "status": "FOLLOWUP_READY",
+          "cooldownHours": 24,
+          "lastFollowUpAt": null,
+          "stopReason": null,
+          "history": []
+        },
+        "commercialStatus": "AWAITING_FOUNDER",
+        "state": "AWAITING_FOUNDER",
+        "stateHistory": [
+          {
+            "state": "INBOUND_RECEIVED",
+            "timestamp": "2026-09-21T15:21:52.849Z",
+            "leadId": "lead_1790004112849_266802"
+          },
+          {
+            "state": "INTENT_IDENTIFIED",
+            "timestamp": "2026-09-21T15:21:52.849Z",
+            "intentCategory": "MEDIUM_INTENT",
+            "signals": [
+              "TIMELINE_INDICATED"
+            ]
+          },
+          {
+            "state": "QUALIFIED",
+            "timestamp": "2026-09-21T15:21:52.849Z"
+          },
+          {
+            "state": "RESPONSE_PREPARED",
+            "timestamp": "2026-09-21T15:21:52.856Z",
+            "proposalSha256": "49182f2a27eb19ddd3d857ebf8ce6c5fed9c100937dae5b0ae6c39f533520802"
+          },
+          {
+            "state": "DOSSIER_GENERATED",
+            "timestamp": "2026-09-21T15:21:52.857Z"
+          },
+          {
+            "state": "AWAITING_FOUNDER",
+            "timestamp": "2026-09-21T15:21:52.895Z"
+          },
+          {
+            "state": "REQUIRES_FOUNDER",
+            "timestamp": "2026-09-21T15:21:52.895Z",
+            "reason": "External client dispatch requires Founder Praveen authorization"
+          }
+        ],
+        "evidence": [
+          {
+            "type": "proposal_draft",
+            "fileName": "acq_1790004112849_16d63f_proposal.md",
+            "path": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004112849_16d63f_proposal.md",
+            "sizeBytes": 896,
+            "sha256": "49182f2a27eb19ddd3d857ebf8ce6c5fed9c100937dae5b0ae6c39f533520802"
+          }
+        ],
+        "communicationAction": {
+          "channel": "email",
+          "recipient": "engineer@sandbox.test",
+          "message": "Commercial Proposal: Verify end-to-end sandbox pipeline execution for regression test | Proposed: INR 22,000",
+          "missionId": "acq_1790004112849_16d63f",
+          "requiresFounder": true,
+          "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+          "executionStatus": "REQUIRES_FOUNDER",
+          "evidence": [
+            {
+              "type": "proposal_hash",
+              "sha256": "49182f2a27eb19ddd3d857ebf8ce6c5fed9c100937dae5b0ae6c39f533520802"
+            }
+          ]
+        },
+        "memoryStatus": {
+          "promoted": true,
+          "itemId": "int-mube8d0l-19241917",
+          "evaluationStatus": "EVALUATED",
+          "confidence": 0.35
+        },
+        "context": {
+          "raw": {
+            "requirements": "Verify end-to-end sandbox pipeline execution for regression test",
+            "name": "QA Automated Tester",
+            "email": "engineer@sandbox.test",
+            "phone": null,
+            "contact": "engineer@sandbox.test",
+            "budget": null,
+            "timeline": "3-7 business days",
+            "service": "custom-ai-development",
+            "attribution": {
+              "channel": "Direct",
+              "source": "direct",
+              "medium": "none",
+              "campaign": null,
+              "term": null,
+              "content": null,
+              "utm_source": null,
+              "utm_medium": null,
+              "utm_campaign": null,
+              "utm_term": null,
+              "utm_content": null,
+              "gclid": null,
+              "fbclid": null,
+              "ref": null,
+              "referrerDomain": null,
+              "referrerUrl": null,
+              "landingPath": "/",
+              "capturedAt": "2026-09-21T15:21:52.847Z",
+              "summary": "Direct (direct / none)"
+            },
+            "isTest": true,
+            "environment": "test"
+          },
+          "capAssessment": {
+            "coverage": "PARTIAL",
+            "matchedCapabilities": [
+              {
+                "id": "automation.workflow-automation",
+                "name": "Business Workflow & Process Automation",
+                "category": "Workflow Automation",
+                "universe": "automation",
+                "score": 35
+              }
+            ],
+            "bestCapability": {
+              "capabilityId": "automation.workflow-automation",
+              "category": "Workflow Automation",
+              "name": "Business Workflow & Process Automation",
+              "universe": "automation",
+              "confidenceScore": 88,
+              "score": 35,
+              "canMotherExecuteAutonomously": true,
+              "estimatedDeliveryTime": "2-8 hours"
+            },
+            "primaryUniverse": "U06 Automation",
+            "activatedUniverses": [
+              "U01 Knowledge",
+              "U02 Reasoning",
+              "U09 Governance",
+              "U10 Revenue",
+              "U06 Automation"
+            ],
+            "gaps": [
+              "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+            ],
+            "confidence": 0.35
+          },
+          "valEstimation": {
+            "status": "UNKNOWN",
+            "estimatedINR": null,
+            "proposedAmount": 0,
+            "currency": "INR",
+            "source": "source_evidence_missing",
+            "confidence": 0
+          },
+          "milestones": [
+            {
+              "milestone": "Milestone 1 — Complete Governed Delivery & Acceptance",
+              "amountINR": 22000,
+              "percentage": 100
+            }
+          ],
+          "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\acq_1790004112849_16d63f_proposal.md",
+          "communicationAction": {
+            "channel": "email",
+            "recipient": "engineer@sandbox.test",
+            "message": "Commercial Proposal: Verify end-to-end sandbox pipeline execution for regression test | Proposed: INR 22,000",
+            "missionId": "acq_1790004112849_16d63f",
+            "requiresFounder": true,
+            "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+            "executionStatus": "REQUIRES_FOUNDER",
+            "evidence": [
+              {
+                "type": "proposal_hash",
+                "sha256": "49182f2a27eb19ddd3d857ebf8ce6c5fed9c100937dae5b0ae6c39f533520802"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

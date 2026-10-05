@@ -1,0 +1,212 @@
+{
+  "missionId": "rev_1790002490756_0d4ed0",
+  "leadId": "lead_1790002490756_18c2c1",
+  "clientId": "client_e81a31",
+  "projectId": "proj_rev_1790002490756_0d4ed0",
+  "commercialStatus": "REVENUE_REALIZED",
+  "currency": "INR",
+  "proposedAmount": 40000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 40000,
+  "paymentStatus": "PAYMENT_VERIFIED",
+  "revenueStatus": "REVENUE_RECORDED",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790002490756_0d4ed0_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490756_0d4ed0_scope.json",
+      "sizeBytes": 868,
+      "sha256": "752d04945a9fc2ee1e1600c9d41d1711c1cc374d0f39865c6d55eb3a051c6362"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790002490756_0d4ed0_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490756_0d4ed0_proposal.md",
+      "sizeBytes": 837,
+      "sha256": "ae2e90054bccead9d58bc925eed6288d646fe81dc05301c3abdff35f10193097"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790002490756_0d4ed0_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490756_0d4ed0_deliverable.js",
+      "sizeBytes": 427,
+      "sha256": "5ad485065318cc7e44ae07ea4a4b81dc9359ad7b6d4b40a143629206da36821c"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790002490756_0d4ed0_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490756_0d4ed0_DELIVERY_MANIFEST.md",
+      "sizeBytes": 273,
+      "sha256": "88f8b5d87e81e554a0f91a0277a843d2c6074ee80bb716b14466c2efb67a9be8"
+    }
+  ],
+  "confidence": 0.65,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "ARCHIVE_COMPLETED_REVENUE_MISSION",
+    "requiresFounder": false
+  },
+  "state": "MISSION_COMPLETE",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T14:54:50.756Z",
+      "leadId": "lead_1790002490756_18c2c1",
+      "customer": "Idempotent Corp"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T14:54:50.756Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T14:54:50.756Z",
+      "bestCapability": "REST & GraphQL API Integration & Microservices",
+      "matchScore": 35
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T14:54:50.758Z",
+      "scopeSha256": "752d04945a9fc2ee1e1600c9d41d1711c1cc374d0f39865c6d55eb3a051c6362"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T14:54:50.759Z",
+      "proposedAmount": 40000,
+      "currency": "INR",
+      "proposalSha256": "ae2e90054bccead9d58bc925eed6288d646fe81dc05301c3abdff35f10193097"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T14:54:50.759Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T14:54:50.759Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T14:54:50.759Z",
+      "acceptedAt": "2026-09-21T14:54:50.759Z",
+      "signer": "Idempotent Corp"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T14:54:50.759Z",
+      "projectId": "proj_rev_1790002490756_0d4ed0"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T14:54:50.790Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T14:54:50.790Z",
+      "manifestSha": "88f8b5d87e81e554a0f91a0277a843d2c6074ee80bb716b14466c2efb67a9be8",
+      "deliveredAt": "2026-09-21T14:54:50.790Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T14:54:50.790Z"
+    },
+    {
+      "state": "LEARNING_PROMOTED",
+      "timestamp": "2026-09-21T14:54:50.790Z"
+    },
+    {
+      "state": "MISSION_COMPLETE",
+      "timestamp": "2026-09-21T14:54:50.797Z"
+    }
+  ],
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mubd9leu-43ae72e2",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.65
+  },
+  "context": {
+    "lead": {
+      "name": "Idempotent Corp",
+      "email": "audit@idempotent.com",
+      "requirements": "Build idempotent webhook consumer with transactional outbox pattern",
+      "budget": 40000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "engineering.api-integration",
+      "category": "API Integration",
+      "name": "REST & GraphQL API Integration & Microservices",
+      "universe": "engineering",
+      "confidenceScore": 92,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "3-12 hours"
+    },
+    "estimatedINR": 40000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 20000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 20000,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490756_0d4ed0_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490756_0d4ed0_proposal.md",
+    "projectRecord": {
+      "projectId": "proj_rev_1790002490756_0d4ed0",
+      "missionId": "rev_1790002490756_0d4ed0",
+      "client": {
+        "name": "Idempotent Corp",
+        "email": "audit@idempotent.com",
+        "phone": null,
+        "contact": "audit@idempotent.com"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002490756_0d4ed0_scope.json",
+        "sha256": "752d04945a9fc2ee1e1600c9d41d1711c1cc374d0f39865c6d55eb3a051c6362"
+      },
+      "approvedTerms": {
+        "amount": 40000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 20000,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 20000,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "752d04945a9fc2ee1e1600c9d41d1711c1cc374d0f39865c6d55eb3a051c6362",
+        "ae2e90054bccead9d58bc925eed6288d646fe81dc05301c3abdff35f10193097"
+      ]
+    }
+  }
+}

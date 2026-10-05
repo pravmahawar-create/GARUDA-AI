@@ -1,0 +1,233 @@
+{
+  "missionId": "rev_1790002685160_91a713",
+  "leadId": "lead_1790002685160_c42aae",
+  "clientId": "client_bc0930",
+  "projectId": "proj_rev_1790002685160_91a713",
+  "commercialStatus": "REVENUE_REALIZED",
+  "currency": "INR",
+  "proposedAmount": 55000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 55000,
+  "paymentStatus": "PAYMENT_VERIFIED",
+  "revenueStatus": "REVENUE_RECORDED",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790002685160_91a713_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685160_91a713_scope.json",
+      "sizeBytes": 873,
+      "sha256": "4089bbb6b7fc725e7d44c6b73b03c89a7e5b214666a2b37f0f93e8f2f95105a0"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790002685160_91a713_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685160_91a713_proposal.md",
+      "sizeBytes": 846,
+      "sha256": "8bd14e2f0f3e7c039196cd90b4694fd22f20b710134d2e8098c604d688bce7ee"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790002685160_91a713_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685160_91a713_deliverable.js",
+      "sizeBytes": 425,
+      "sha256": "9ae838bb38eba1457fe0ce805d27d8869af1ed0d15af7f46a4626c927b0d7af9"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790002685160_91a713_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685160_91a713_DELIVERY_MANIFEST.md",
+      "sizeBytes": 278,
+      "sha256": "f63ce083e765c80190e4c7f48f4a3a7266ea027ef6e73bf9d400dbb9b57c1b87"
+    },
+    {
+      "type": "verified_payment_receipt",
+      "amount": 55000,
+      "currency": "INR",
+      "provider": "authoritative_webhook",
+      "providerReference": "pay_auth_1790002685160_979263",
+      "eventId": "pay_auth_1790002685160_979263",
+      "verifiedAt": "2026-09-21T14:58:05.184Z"
+    }
+  ],
+  "confidence": 0.65,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "ARCHIVE_COMPLETED_REVENUE_MISSION",
+    "requiresFounder": false
+  },
+  "state": "MISSION_COMPLETE",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T14:58:05.160Z",
+      "leadId": "lead_1790002685160_c42aae",
+      "customer": "Vertex Cloud Systems"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T14:58:05.160Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T14:58:05.161Z",
+      "bestCapability": "360° Celebrity & Event Digital War Room",
+      "matchScore": 50
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T14:58:05.163Z",
+      "scopeSha256": "4089bbb6b7fc725e7d44c6b73b03c89a7e5b214666a2b37f0f93e8f2f95105a0"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T14:58:05.164Z",
+      "proposedAmount": 55000,
+      "currency": "INR",
+      "proposalSha256": "8bd14e2f0f3e7c039196cd90b4694fd22f20b710134d2e8098c604d688bce7ee"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T14:58:05.164Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T14:58:05.164Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T14:58:05.164Z",
+      "acceptedAt": "2026-09-21T14:58:05.164Z",
+      "signer": "Vertex Cloud Systems"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T14:58:05.164Z",
+      "projectId": "proj_rev_1790002685160_91a713"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T14:58:05.184Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T14:58:05.184Z",
+      "manifestSha": "f63ce083e765c80190e4c7f48f4a3a7266ea027ef6e73bf9d400dbb9b57c1b87",
+      "deliveredAt": "2026-09-21T14:58:05.184Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T14:58:05.184Z"
+    },
+    {
+      "state": "PAYMENT_VERIFIED",
+      "timestamp": "2026-09-21T14:58:05.184Z",
+      "amount": 55000,
+      "providerReference": "pay_auth_1790002685160_979263"
+    },
+    {
+      "state": "REVENUE_RECORDED",
+      "timestamp": "2026-09-21T14:58:05.184Z",
+      "amount": 55000,
+      "currency": "INR"
+    },
+    {
+      "state": "LEARNING_PROMOTED",
+      "timestamp": "2026-09-21T14:58:05.184Z"
+    },
+    {
+      "state": "MISSION_COMPLETE",
+      "timestamp": "2026-09-21T14:58:05.194Z"
+    }
+  ],
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mubddrep-e215d182",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.65
+  },
+  "context": {
+    "lead": {
+      "name": "Vertex Cloud Systems",
+      "email": "cto@vertexcloud.com",
+      "requirements": "Implement high-throughput event bus with dead-letter queue and retry policies",
+      "budget": 55000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "entertainment.campaign_war_room",
+      "category": "Event & Entertainment Campaigns",
+      "name": "360° Celebrity & Event Digital War Room",
+      "universe": "entertainment",
+      "confidenceScore": 96,
+      "score": 50,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "3-7 days"
+    },
+    "estimatedINR": 55000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 27500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 27500,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685160_91a713_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685160_91a713_proposal.md",
+    "projectRecord": {
+      "projectId": "proj_rev_1790002685160_91a713",
+      "missionId": "rev_1790002685160_91a713",
+      "client": {
+        "name": "Vertex Cloud Systems",
+        "email": "cto@vertexcloud.com",
+        "phone": null,
+        "contact": "cto@vertexcloud.com"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002685160_91a713_scope.json",
+        "sha256": "4089bbb6b7fc725e7d44c6b73b03c89a7e5b214666a2b37f0f93e8f2f95105a0"
+      },
+      "approvedTerms": {
+        "amount": 55000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 27500,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 27500,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "4089bbb6b7fc725e7d44c6b73b03c89a7e5b214666a2b37f0f93e8f2f95105a0",
+        "8bd14e2f0f3e7c039196cd90b4694fd22f20b710134d2e8098c604d688bce7ee"
+      ]
+    }
+  }
+}

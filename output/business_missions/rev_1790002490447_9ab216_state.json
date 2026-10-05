@@ -1,0 +1,43 @@
+{
+  "missionId": "rev_1790002490447_9ab216",
+  "leadId": "lead_1790002490447_540e2a",
+  "clientId": "client_88cb47",
+  "projectId": null,
+  "commercialStatus": "DISQUALIFIED",
+  "currency": "INR",
+  "proposedAmount": 0,
+  "proposedStatus": "PROJECTED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_PENDING",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [],
+  "confidence": 0.1,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "DISQUALIFIED_OUT_OF_SCOPE",
+    "requiresFounder": false
+  },
+  "state": "DISQUALIFIED",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T14:54:50.447Z",
+      "leadId": "lead_1790002490447_540e2a",
+      "customer": "TechCorp Global"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T14:54:50.447Z"
+    },
+    {
+      "state": "DISQUALIFIED",
+      "timestamp": "2026-09-21T14:54:50.448Z",
+      "reason": "No matching capability found in registry"
+    }
+  ],
+  "memoryStatus": null,
+  "context": null
+}

@@ -1,0 +1,226 @@
+{
+  "missionId": "rev_1790002840865_4992c9",
+  "leadId": "lead_1790002840865_104182",
+  "clientId": "client_f55fd5",
+  "projectId": "proj_rev_1790002840865_4992c9",
+  "commercialStatus": "PAYMENT_UNVERIFIED",
+  "currency": "INR",
+  "proposedAmount": 50000,
+  "proposedStatus": "PROPOSED",
+  "invoicedAmount": 0,
+  "invoiceStatus": "NOT_INVOICED",
+  "paidAmount": 0,
+  "paymentStatus": "PAYMENT_UNVERIFIED",
+  "revenueStatus": "UNKNOWN",
+  "paymentLinkInfo": null,
+  "evidence": [
+    {
+      "type": "scope_spec",
+      "fileName": "rev_1790002840865_4992c9_scope.json",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002840865_4992c9_scope.json",
+      "sizeBytes": 878,
+      "sha256": "4cfe67f9643fb8d5db3c498feece9ae2c8da9d0ebf3b6887c486bd4f7b5bbbad"
+    },
+    {
+      "type": "proposal_document",
+      "fileName": "rev_1790002840865_4992c9_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002840865_4992c9_proposal.md",
+      "sizeBytes": 845,
+      "sha256": "cbfc296c1aea49072949de251a427939f3233252983be1e0523889103a35aac5"
+    },
+    {
+      "type": "deliverable_code",
+      "fileName": "rev_1790002840865_4992c9_deliverable.js",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002840865_4992c9_deliverable.js",
+      "sizeBytes": 425,
+      "sha256": "dc40d32898f1d36a7590150102be53b5dec34a52af4b218275f837afa5be67f4"
+    },
+    {
+      "type": "delivery_manifest",
+      "fileName": "rev_1790002840865_4992c9_DELIVERY_MANIFEST.md",
+      "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002840865_4992c9_DELIVERY_MANIFEST.md",
+      "sizeBytes": 272,
+      "sha256": "38d5b7b9c39d62641ac48788030c861ccb4db06a9cde50ba9e6fad05f9d0b850"
+    }
+  ],
+  "confidence": 0.7,
+  "requiresFounder": false,
+  "nextAction": {
+    "action": "AWAIT_PAYMENT_SETTLEMENT",
+    "requiresFounder": false,
+    "reason": "Deliverables verified and accepted; awaiting client payment settlement"
+  },
+  "state": "PAYMENT_UNVERIFIED",
+  "stateHistory": [
+    {
+      "state": "LEAD_CAPTURED",
+      "timestamp": "2026-09-21T15:00:40.865Z",
+      "leadId": "lead_1790002840865_104182",
+      "customer": "Delta Dynamics"
+    },
+    {
+      "state": "QUALIFYING",
+      "timestamp": "2026-09-21T15:00:40.865Z"
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:00:40.865Z",
+      "bestCapability": "REST & GraphQL API Integration & Microservices",
+      "matchScore": 50
+    },
+    {
+      "state": "SCOPE_READY",
+      "timestamp": "2026-09-21T15:00:40.867Z",
+      "scopeSha256": "4cfe67f9643fb8d5db3c498feece9ae2c8da9d0ebf3b6887c486bd4f7b5bbbad"
+    },
+    {
+      "state": "PROPOSAL_READY",
+      "timestamp": "2026-09-21T15:00:40.869Z",
+      "proposedAmount": 50000,
+      "currency": "INR",
+      "proposalSha256": "cbfc296c1aea49072949de251a427939f3233252983be1e0523889103a35aac5"
+    },
+    {
+      "state": "FOUNDER_APPROVED",
+      "timestamp": "2026-09-21T15:00:40.869Z",
+      "approvedBy": "founder_praveen"
+    },
+    {
+      "state": "AWAITING_CLIENT",
+      "timestamp": "2026-09-21T15:00:40.869Z"
+    },
+    {
+      "state": "CLIENT_ACCEPTED",
+      "timestamp": "2026-09-21T15:00:40.869Z",
+      "acceptedAt": "2026-09-21T15:00:40.869Z",
+      "signer": "Delta Dynamics"
+    },
+    {
+      "state": "PROJECT_ACTIVE",
+      "timestamp": "2026-09-21T15:00:40.869Z",
+      "projectId": "proj_rev_1790002840865_4992c9"
+    },
+    {
+      "state": "DELIVERY_READY",
+      "timestamp": "2026-09-21T15:00:40.896Z",
+      "internalVerification": "INTERNAL_VERIFIED",
+      "reviewVerdict": "ALL_APPROVED"
+    },
+    {
+      "state": "DELIVERED",
+      "timestamp": "2026-09-21T15:00:40.896Z",
+      "manifestSha": "38d5b7b9c39d62641ac48788030c861ccb4db06a9cde50ba9e6fad05f9d0b850",
+      "deliveredAt": "2026-09-21T15:00:40.896Z"
+    },
+    {
+      "state": "AWAITING_PAYMENT",
+      "timestamp": "2026-09-21T15:00:40.896Z"
+    },
+    {
+      "state": "PAYMENT_UNVERIFIED",
+      "timestamp": "2026-09-21T15:00:40.896Z",
+      "reason": "No authoritative payment webhook signature or cryptographic proof provided"
+    }
+  ],
+  "memoryStatus": null,
+  "context": {
+    "lead": {
+      "name": "Delta Dynamics",
+      "email": "ops@deltadynamics.com",
+      "requirements": "Engineer custom REST APIs with forensic input sanitization and rate limiting",
+      "budget": 50000,
+      "currency": "INR"
+    },
+    "bestCap": {
+      "capabilityId": "engineering.api-integration",
+      "category": "API Integration",
+      "name": "REST & GraphQL API Integration & Microservices",
+      "universe": "engineering",
+      "confidenceScore": 92,
+      "score": 50,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "3-12 hours"
+    },
+    "estimatedINR": 50000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 25000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 25000,
+        "percentage": 50
+      }
+    ],
+    "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002840865_4992c9_scope.json",
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002840865_4992c9_proposal.md",
+    "communicationAction": {
+      "channel": "email",
+      "recipient": "ops@deltadynamics.com",
+      "message": "Commercial Proposal: Engineer custom REST APIs with forensic input sanitization a | Amount: INR 50,000",
+      "missionId": "rev_1790002840865_4992c9",
+      "requiresFounder": true,
+      "approvalStatus": "APPROVED",
+      "executionStatus": "READY_TO_SEND",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "cbfc296c1aea49072949de251a427939f3233252983be1e0523889103a35aac5"
+        },
+        {
+          "type": "scope_hash",
+          "sha256": "4cfe67f9643fb8d5db3c498feece9ae2c8da9d0ebf3b6887c486bd4f7b5bbbad"
+        }
+      ]
+    },
+    "projectRecord": {
+      "projectId": "proj_rev_1790002840865_4992c9",
+      "missionId": "rev_1790002840865_4992c9",
+      "client": {
+        "name": "Delta Dynamics",
+        "email": "ops@deltadynamics.com",
+        "phone": null,
+        "contact": "ops@deltadynamics.com"
+      },
+      "approvedScope": {
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002840865_4992c9_scope.json",
+        "sha256": "4cfe67f9643fb8d5db3c498feece9ae2c8da9d0ebf3b6887c486bd4f7b5bbbad"
+      },
+      "approvedTerms": {
+        "amount": 50000,
+        "currency": "INR",
+        "milestones": [
+          {
+            "milestone": "Milestone 1 — Advance Architecture & Core Build",
+            "amountINR": 25000,
+            "percentage": 50
+          },
+          {
+            "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+            "amountINR": 25000,
+            "percentage": 50
+          }
+        ]
+      },
+      "deliverables": [
+        "Modular production source code artifact with clean architecture",
+        "Deterministic test suite with 100% passing assertions",
+        "Cryptographic SHA-256 deliverable manifest and validation signoff"
+      ],
+      "acceptanceCriteria": [
+        "Exit code 0 on local execution and tests",
+        "Valid AST syntax with 0 unhandled exceptions",
+        "Physical artifact presence with verified non-zero bytes",
+        "Independent ReviewerSystem ALL_APPROVED verdict"
+      ],
+      "evidenceChain": [
+        "4cfe67f9643fb8d5db3c498feece9ae2c8da9d0ebf3b6887c486bd4f7b5bbbad",
+        "cbfc296c1aea49072949de251a427939f3233252983be1e0523889103a35aac5"
+      ]
+    },
+    "founderApproved": true,
+    "clientAccepted": true
+  }
+}

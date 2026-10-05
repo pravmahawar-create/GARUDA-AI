@@ -1,0 +1,339 @@
+{
+  "leadId": "lead_1790004103569_11b736",
+  "missionId": "acq_1790004103570_306cc7",
+  "source": "Direct (direct / none)",
+  "sourceStatus": "VERIFIED",
+  "attribution": {
+    "channel": "Direct",
+    "source": "direct",
+    "medium": "none",
+    "campaign": null,
+    "term": null,
+    "content": null,
+    "utm_source": null,
+    "utm_medium": null,
+    "utm_campaign": null,
+    "utm_term": null,
+    "utm_content": null,
+    "gclid": null,
+    "fbclid": null,
+    "ref": null,
+    "referrerDomain": null,
+    "referrerUrl": null,
+    "landingPath": "/",
+    "capturedAt": "2026-09-21T15:21:43.570Z",
+    "summary": "Direct (direct / none)"
+  },
+  "customer": {
+    "name": "Logistics Enterprise",
+    "email": null,
+    "phone": null,
+    "company": "UNKNOWN",
+    "contact": "ops@logistics.example.com"
+  },
+  "urgency": "UNKNOWN",
+  "requirements": "Develop an automated WhatsApp lead capture bot with database synchronization",
+  "intent": {
+    "category": "HIGH_INTENT",
+    "confidence": 0.85,
+    "signals": [
+      "TECH_KEYWORDS:develop,app,database",
+      "BUDGET_INDICATED"
+    ],
+    "reason": "Detailed technical scope with concrete deliverable indicators"
+  },
+  "qualification": {
+    "status": "QUALIFIED",
+    "reasons": [],
+    "checkedAt": "2026-09-21T15:21:43.616Z"
+  },
+  "capabilityAssessment": {
+    "coverage": "PARTIAL",
+    "matchedCapabilities": [
+      {
+        "id": "engineering.software-implementation",
+        "name": "Governed software implementation",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "engineering.repository-audit",
+        "name": "Repository architecture and quality audit",
+        "category": "Software Engineering",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "engineering.api-integration",
+        "name": "REST & GraphQL API Integration & Microservices",
+        "category": "API Integration",
+        "universe": "engineering",
+        "score": 35
+      },
+      {
+        "id": "automation.spreadsheet-automation",
+        "name": "Excel & Google Sheets Data Automation",
+        "category": "Spreadsheet Automation",
+        "universe": "automation",
+        "score": 35
+      }
+    ],
+    "bestCapability": {
+      "capabilityId": "engineering.software-implementation",
+      "category": "Software Engineering",
+      "name": "Governed software implementation",
+      "universe": "engineering",
+      "confidenceScore": 95,
+      "score": 35,
+      "canMotherExecuteAutonomously": true,
+      "estimatedDeliveryTime": "4-24 hours"
+    },
+    "primaryUniverse": "U06 Automation",
+    "activatedUniverses": [
+      "U01 Knowledge",
+      "U02 Reasoning",
+      "U09 Governance",
+      "U10 Revenue",
+      "U06 Automation",
+      "U07 Communication"
+    ],
+    "gaps": [
+      "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+    ],
+    "confidence": 0.35
+  },
+  "valueEstimation": {
+    "status": "ESTIMATED",
+    "estimatedINR": 65000,
+    "proposedAmount": 65000,
+    "currency": "INR",
+    "source": "client_stated_budget",
+    "confidence": 0.9
+  },
+  "financials": {
+    "currency": "INR",
+    "estimatedValue": 65000,
+    "proposedAmount": 65000,
+    "invoicedAmount": 0,
+    "paidAmount": 0,
+    "verifiedRevenue": 0
+  },
+  "preparedResponse": {
+    "requirementSummary": "Develop an automated WhatsApp lead capture bot with database synchronization",
+    "clarificationQuestions": [
+      "What is your expected timeline or target delivery deadline?",
+      "Could you specify which existing APIs or legacy platforms need integration?"
+    ],
+    "proposedScope": [
+      "End-to-end architecture & implementation for: Develop an automated WhatsApp lead capture bot with database synchronization",
+      "Governed AST syntax verification & automated test coverage",
+      "Cryptographic SHA-256 deliverable audit manifest",
+      "Production deployment guide & warranty handover"
+    ],
+    "proposalDraftPath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103570_306cc7_proposal.md",
+    "proposalSha256": "391b818b08f799f24ae2ba8ee139fbe1f0b81b8a5e087f88ee98493571c675a1",
+    "recommendedNextAction": "AWAIT_FOUNDER_APPROVAL"
+  },
+  "founderGovernance": {
+    "requiresFounder": true,
+    "status": "AWAITING_FOUNDER_APPROVAL",
+    "dossier": {
+      "whyThisLead": "Intent: HIGH_INTENT (85% confidence). Channel: Direct. Signals: TECH_KEYWORDS:develop,app,database, BUDGET_INDICATED",
+      "whatClientWants": "Develop an automated WhatsApp lead capture bot with database synchronization",
+      "whatGarudaCanDeliver": "Matched: Governed software implementation (Coverage: PARTIAL). Universe: U06 Automation",
+      "proposedScope": "End-to-end architecture & implementation for: Develop an automated WhatsApp lead capture bot with database synchronization; Governed AST syntax verification & automated test coverage; Cryptographic SHA-256 deliverable audit manifest; Production deployment guide & warranty handover",
+      "proposedPrice": "INR 65,000 (Milestones: 2)",
+      "risks": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "evidence": [
+        {
+          "type": "proposal_draft",
+          "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103570_306cc7_proposal.md",
+          "sha256": "391b818b08f799f24ae2ba8ee139fbe1f0b81b8a5e087f88ee98493571c675a1"
+        }
+      ],
+      "nextAction": "FOUNDER_APPROVAL_REQUIRED_BEFORE_EXTERNAL_COMMUNICATION"
+    }
+  },
+  "followUp": {
+    "followUpCount": 0,
+    "maxFollowUps": 3,
+    "status": "FOLLOWUP_READY",
+    "cooldownHours": 24,
+    "lastFollowUpAt": null,
+    "stopReason": null,
+    "history": []
+  },
+  "commercialStatus": "AWAITING_FOUNDER",
+  "state": "AWAITING_FOUNDER",
+  "stateHistory": [
+    {
+      "state": "INBOUND_RECEIVED",
+      "timestamp": "2026-09-21T15:21:43.570Z",
+      "leadId": "lead_1790004103569_11b736"
+    },
+    {
+      "state": "INTENT_IDENTIFIED",
+      "timestamp": "2026-09-21T15:21:43.570Z",
+      "intentCategory": "HIGH_INTENT",
+      "signals": [
+        "TECH_KEYWORDS:develop,app,database",
+        "BUDGET_INDICATED"
+      ]
+    },
+    {
+      "state": "QUALIFIED",
+      "timestamp": "2026-09-21T15:21:43.570Z"
+    },
+    {
+      "state": "RESPONSE_PREPARED",
+      "timestamp": "2026-09-21T15:21:43.574Z",
+      "proposalSha256": "391b818b08f799f24ae2ba8ee139fbe1f0b81b8a5e087f88ee98493571c675a1"
+    },
+    {
+      "state": "DOSSIER_GENERATED",
+      "timestamp": "2026-09-21T15:21:43.574Z"
+    },
+    {
+      "state": "AWAITING_FOUNDER",
+      "timestamp": "2026-09-21T15:21:43.616Z"
+    },
+    {
+      "state": "REQUIRES_FOUNDER",
+      "timestamp": "2026-09-21T15:21:43.616Z",
+      "reason": "External client dispatch requires Founder Praveen authorization"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "proposal_draft",
+      "fileName": "acq_1790004103570_306cc7_proposal.md",
+      "path": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103570_306cc7_proposal.md",
+      "sizeBytes": 975,
+      "sha256": "391b818b08f799f24ae2ba8ee139fbe1f0b81b8a5e087f88ee98493571c675a1"
+    }
+  ],
+  "communicationAction": {
+    "channel": "telegram",
+    "recipient": "ops@logistics.example.com",
+    "message": "Commercial Proposal: Develop an automated WhatsApp lead capture bot with database synchronization | Proposed: INR 65,000",
+    "missionId": "acq_1790004103570_306cc7",
+    "requiresFounder": true,
+    "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+    "executionStatus": "REQUIRES_FOUNDER",
+    "evidence": [
+      {
+        "type": "proposal_hash",
+        "sha256": "391b818b08f799f24ae2ba8ee139fbe1f0b81b8a5e087f88ee98493571c675a1"
+      }
+    ]
+  },
+  "memoryStatus": {
+    "promoted": true,
+    "itemId": "int-mube85uw-58fe0803",
+    "evaluationStatus": "EVALUATED",
+    "confidence": 0.35
+  },
+  "context": {
+    "raw": {
+      "requirements": "Develop an automated WhatsApp lead capture bot with database synchronization",
+      "name": "Logistics Enterprise",
+      "contact": "ops@logistics.example.com",
+      "budget": 65000
+    },
+    "capAssessment": {
+      "coverage": "PARTIAL",
+      "matchedCapabilities": [
+        {
+          "id": "engineering.software-implementation",
+          "name": "Governed software implementation",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "engineering.repository-audit",
+          "name": "Repository architecture and quality audit",
+          "category": "Software Engineering",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "engineering.api-integration",
+          "name": "REST & GraphQL API Integration & Microservices",
+          "category": "API Integration",
+          "universe": "engineering",
+          "score": 35
+        },
+        {
+          "id": "automation.spreadsheet-automation",
+          "name": "Excel & Google Sheets Data Automation",
+          "category": "Spreadsheet Automation",
+          "universe": "automation",
+          "score": 35
+        }
+      ],
+      "bestCapability": {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 35,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      "primaryUniverse": "U06 Automation",
+      "activatedUniverses": [
+        "U01 Knowledge",
+        "U02 Reasoning",
+        "U09 Governance",
+        "U10 Revenue",
+        "U06 Automation",
+        "U07 Communication"
+      ],
+      "gaps": [
+        "Partial match: scope overlaps with registry capabilities but has uncovered domain-specific requirements"
+      ],
+      "confidence": 0.35
+    },
+    "valEstimation": {
+      "status": "ESTIMATED",
+      "estimatedINR": 65000,
+      "proposedAmount": 65000,
+      "currency": "INR",
+      "source": "client_stated_budget",
+      "confidence": 0.9
+    },
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Core Architecture & Build",
+        "amountINR": 32500,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Production Handover",
+        "amountINR": 32500,
+        "percentage": 50
+      }
+    ],
+    "proposalFilePath": "D:\\GARUDA-AI\\output\\test_acquisition_1790004103481\\acq_1790004103570_306cc7_proposal.md",
+    "communicationAction": {
+      "channel": "telegram",
+      "recipient": "ops@logistics.example.com",
+      "message": "Commercial Proposal: Develop an automated WhatsApp lead capture bot with database synchronization | Proposed: INR 65,000",
+      "missionId": "acq_1790004103570_306cc7",
+      "requiresFounder": true,
+      "approvalStatus": "PENDING_FOUNDER_APPROVAL",
+      "executionStatus": "REQUIRES_FOUNDER",
+      "evidence": [
+        {
+          "type": "proposal_hash",
+          "sha256": "391b818b08f799f24ae2ba8ee139fbe1f0b81b8a5e087f88ee98493571c675a1"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "executionTimestamp": "2026-09-21T14:58:21.699Z",
+  "record": {
+    "missionId": "rev_1790002701601_b3f557",
+    "leadId": "lead_1790002701667_a41e00",
+    "clientId": "client_c2f287",
+    "projectId": "proj_rev_1790002701601_b3f557",
+    "commercialStatus": "REVENUE_REALIZED",
+    "currency": "INR",
+    "proposedAmount": 85000,
+    "proposedStatus": "PROPOSED",
+    "invoicedAmount": 0,
+    "invoiceStatus": "NOT_INVOICED",
+    "paidAmount": 85000,
+    "paymentStatus": "PAYMENT_VERIFIED",
+    "revenueStatus": "REVENUE_RECORDED",
+    "paymentLinkInfo": null,
+    "evidence": [
+      {
+        "type": "scope_spec",
+        "fileName": "rev_1790002701601_b3f557_scope.json",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002701601_b3f557_scope.json",
+        "sizeBytes": 958,
+        "sha256": "be2164d279d77de791dea6cf80a570eaf28df178598d661df8fa4febe9bc8a36"
+      },
+      {
+        "type": "proposal_document",
+        "fileName": "rev_1790002701601_b3f557_proposal.md",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002701601_b3f557_proposal.md",
+        "sizeBytes": 898,
+        "sha256": "6edfe80cef63691d133391976bec6f5445bf653e01f047cb9913e143898bf39c"
+      },
+      {
+        "type": "deliverable_code",
+        "fileName": "rev_1790002701601_b3f557_deliverable.js",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002701601_b3f557_deliverable.js",
+        "sizeBytes": 437,
+        "sha256": "d230bb2659cfc5fd52679dbe6140a0f333210ca7649af2a92891dda8e3ec4d1f"
+      },
+      {
+        "type": "delivery_manifest",
+        "fileName": "rev_1790002701601_b3f557_DELIVERY_MANIFEST.md",
+        "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002701601_b3f557_DELIVERY_MANIFEST.md",
+        "sizeBytes": 292,
+        "sha256": "7ff94d12ee414534bf440a9db413a9f470ff3c707b3d8bafb38cd20dcbedb269"
+      },
+      {
+        "type": "verified_payment_receipt",
+        "amount": 85000,
+        "currency": "INR",
+        "provider": "authoritative_webhook",
+        "providerReference": "pay_verified_1790002701667_821a79",
+        "eventId": "pay_verified_1790002701667_821a79",
+        "verifiedAt": "2026-09-21T14:58:21.681Z"
+      }
+    ],
+    "confidence": 0.65,
+    "requiresFounder": false,
+    "nextAction": {
+      "action": "ARCHIVE_COMPLETED_REVENUE_MISSION",
+      "requiresFounder": false
+    },
+    "state": "MISSION_COMPLETE",
+    "stateHistory": [
+      {
+        "state": "LEAD_CAPTURED",
+        "timestamp": "2026-09-21T14:58:21.667Z",
+        "leadId": "lead_1790002701667_a41e00",
+        "customer": "Enterprise Core Infrastructure Ltd"
+      },
+      {
+        "state": "QUALIFYING",
+        "timestamp": "2026-09-21T14:58:21.667Z"
+      },
+      {
+        "state": "QUALIFIED",
+        "timestamp": "2026-09-21T14:58:21.668Z",
+        "bestCapability": "Governed software implementation",
+        "matchScore": 50
+      },
+      {
+        "state": "SCOPE_READY",
+        "timestamp": "2026-09-21T14:58:21.670Z",
+        "scopeSha256": "be2164d279d77de791dea6cf80a570eaf28df178598d661df8fa4febe9bc8a36"
+      },
+      {
+        "state": "PROPOSAL_READY",
+        "timestamp": "2026-09-21T14:58:21.672Z",
+        "proposedAmount": 85000,
+        "currency": "INR",
+        "proposalSha256": "6edfe80cef63691d133391976bec6f5445bf653e01f047cb9913e143898bf39c"
+      },
+      {
+        "state": "FOUNDER_APPROVED",
+        "timestamp": "2026-09-21T14:58:21.672Z",
+        "approvedBy": "founder_praveen"
+      },
+      {
+        "state": "AWAITING_CLIENT",
+        "timestamp": "2026-09-21T14:58:21.672Z"
+      },
+      {
+        "state": "CLIENT_ACCEPTED",
+        "timestamp": "2026-09-21T14:58:21.672Z",
+        "acceptedAt": "2026-09-21T14:58:21.672Z",
+        "signer": "Enterprise Core Infrastructure Ltd"
+      },
+      {
+        "state": "PROJECT_ACTIVE",
+        "timestamp": "2026-09-21T14:58:21.672Z",
+        "projectId": "proj_rev_1790002701601_b3f557"
+      },
+      {
+        "state": "DELIVERY_READY",
+        "timestamp": "2026-09-21T14:58:21.681Z",
+        "internalVerification": "INTERNAL_VERIFIED",
+        "reviewVerdict": "ALL_APPROVED"
+      },
+      {
+        "state": "DELIVERED",
+        "timestamp": "2026-09-21T14:58:21.681Z",
+        "manifestSha": "7ff94d12ee414534bf440a9db413a9f470ff3c707b3d8bafb38cd20dcbedb269",
+        "deliveredAt": "2026-09-21T14:58:21.681Z"
+      },
+      {
+        "state": "AWAITING_PAYMENT",
+        "timestamp": "2026-09-21T14:58:21.681Z"
+      },
+      {
+        "state": "PAYMENT_VERIFIED",
+        "timestamp": "2026-09-21T14:58:21.681Z",
+        "amount": 85000,
+        "providerReference": "pay_verified_1790002701667_821a79"
+      },
+      {
+        "state": "REVENUE_RECORDED",
+        "timestamp": "2026-09-21T14:58:21.681Z",
+        "amount": 85000,
+        "currency": "INR"
+      },
+      {
+        "state": "LEARNING_PROMOTED",
+        "timestamp": "2026-09-21T14:58:21.681Z"
+      },
+      {
+        "state": "MISSION_COMPLETE",
+        "timestamp": "2026-09-21T14:58:21.695Z"
+      }
+    ],
+    "memoryStatus": {
+      "promoted": true,
+      "itemId": "int-mubde450-71df0cfa",
+      "evaluationStatus": "EVALUATED",
+      "confidence": 0.65
+    },
+    "context": {
+      "lead": {
+        "name": "Enterprise Core Infrastructure Ltd",
+        "email": "procurement@enterprisecore.in",
+        "phone": "+919876543210",
+        "contact": "procurement@enterprisecore.in",
+        "requirements": "Design and implement autonomous API gateway and forensic event reconciliation pipeline with HMAC cryptographic verification",
+        "budget": 85000,
+        "currency": "INR",
+        "attribution": {
+          "channel": "Inbound Scope Form",
+          "source": "https://garudaos.in"
+        }
+      },
+      "bestCap": {
+        "capabilityId": "engineering.software-implementation",
+        "category": "Software Engineering",
+        "name": "Governed software implementation",
+        "universe": "engineering",
+        "confidenceScore": 95,
+        "score": 50,
+        "canMotherExecuteAutonomously": true,
+        "estimatedDeliveryTime": "4-24 hours"
+      },
+      "estimatedINR": 85000,
+      "milestones": [
+        {
+          "milestone": "Milestone 1 — Advance Architecture & Core Build",
+          "amountINR": 42500,
+          "percentage": 50
+        },
+        {
+          "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+          "amountINR": 42500,
+          "percentage": 50
+        }
+      ],
+      "scopeFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002701601_b3f557_scope.json",
+      "proposalFilePath": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002701601_b3f557_proposal.md",
+      "projectRecord": {
+        "projectId": "proj_rev_1790002701601_b3f557",
+        "missionId": "rev_1790002701601_b3f557",
+        "client": {
+          "name": "Enterprise Core Infrastructure Ltd",
+          "email": "procurement@enterprisecore.in",
+          "phone": "+919876543210",
+          "contact": "procurement@enterprisecore.in"
+        },
+        "approvedScope": {
+          "path": "D:\\GARUDA-AI\\output\\business_missions\\rev_1790002701601_b3f557_scope.json",
+          "sha256": "be2164d279d77de791dea6cf80a570eaf28df178598d661df8fa4febe9bc8a36"
+        },
+        "approvedTerms": {
+          "amount": 85000,
+          "currency": "INR",
+          "milestones": [
+            {
+              "milestone": "Milestone 1 — Advance Architecture & Core Build",
+              "amountINR": 42500,
+              "percentage": 50
+            },
+            {
+              "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+              "amountINR": 42500,
+              "percentage": 50
+            }
+          ]
+        },
+        "deliverables": [
+          "Modular production source code artifact with clean architecture",
+          "Deterministic test suite with 100% passing assertions",
+          "Cryptographic SHA-256 deliverable manifest and validation signoff"
+        ],
+        "acceptanceCriteria": [
+          "Exit code 0 on local execution and tests",
+          "Valid AST syntax with 0 unhandled exceptions",
+          "Physical artifact presence with verified non-zero bytes",
+          "Independent ReviewerSystem ALL_APPROVED verdict"
+        ],
+        "evidenceChain": [
+          "be2164d279d77de791dea6cf80a570eaf28df178598d661df8fa4febe9bc8a36",
+          "6edfe80cef63691d133391976bec6f5445bf653e01f047cb9913e143898bf39c"
+        ]
+      }
+    }
+  }
+}

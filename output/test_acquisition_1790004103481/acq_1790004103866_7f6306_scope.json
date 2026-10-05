@@ -1,0 +1,31 @@
+{
+  "missionId": "acq_1790004103866_7f6306",
+  "leadId": "lead_1790004103866_de5470",
+  "clientId": "client_de5470",
+  "customer": {
+    "name": "Tech Venture",
+    "email": null,
+    "phone": null,
+    "contact": "unspecified"
+  },
+  "requirements": "Build production microservice with layered validator and automated unit test suite",
+  "capability": "REST & GraphQL API Integration & Microservices",
+  "pricing": {
+    "currency": "INR",
+    "totalINR": 70000,
+    "milestones": [
+      {
+        "milestone": "Milestone 1 — Advance Architecture & Core Build",
+        "amountINR": 35000,
+        "percentage": 50
+      },
+      {
+        "milestone": "Milestone 2 — Delivery, QA & Acceptance Signoff",
+        "amountINR": 35000,
+        "percentage": 50
+      }
+    ]
+  },
+  "timeline": "3-12 hours",
+  "createdAt": "2026-09-21T15:21:43.894Z"
+}
