@@ -14,7 +14,6 @@ import ElectoralAnalyticsModule from "../components/war-room/ElectoralAnalyticsM
 import CrisisWorkflowModule from "../components/war-room/CrisisWorkflowModule";
 import EvidenceVaultModule from "../components/war-room/EvidenceVaultModule";
 import ReportsModule from "../components/war-room/ReportsModule";
-import QRCodeMatrix from "../components/war-room/QRCodeMatrix";
 
 // 🏛️ Official GARUDA War Room Sovereign Palette (Warm Ivory, Graphite & Luxury Gold)
 const wp = {
@@ -541,11 +540,24 @@ export default function ConstituencyWarRoom() {
           <p style={{ fontSize: "12px", color: wp.muted, maxWidth: "340px", marginBottom: "20px" }}>
             Booth agents open this link directly in Chrome / Safari to launch the offline-first Cadre PWA without app store dependency.
           </p>
-          <div style={{ background: "#FFFFFF", padding: "14px", borderRadius: "12px", border: "2px solid " + wp.borderGold, boxShadow: wp.shadowSm, marginBottom: "16px" }}>
-            <QRCodeMatrix
-              value={constituency?.id ? `https://www.garudaos.in/booth-cadre?c=${constituency.id}` : "https://www.garudaos.in/booth-cadre"}
-              size={160}
-            />
+          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "12px", border: "2px solid " + wp.borderGold, boxShadow: wp.shadowSm, marginBottom: "16px" }}>
+            <svg viewBox="0 0 25 25" width="160" height="160" fill="#000000">
+              <rect x="1" y="1" width="7" height="7" />
+              <rect x="2" y="2" width="5" height="5" fill="#FFFFFF" />
+              <rect x="3" y="3" width="3" height="3" />
+              <rect x="17" y="1" width="7" height="7" />
+              <rect x="18" y="2" width="5" height="5" fill="#FFFFFF" />
+              <rect x="19" y="3" width="3" height="3" />
+              <rect x="1" y="17" width="7" height="7" />
+              <rect x="2" y="18" width="5" height="5" fill="#FFFFFF" />
+              <rect x="3" y="19" width="3" height="3" />
+              <rect x="10" y="3" width="2" height="4" />
+              <rect x="10" y="9" width="4" height="2" />
+              <rect x="15" y="11" width="3" height="3" />
+              <rect x="10" y="15" width="2" height="6" />
+              <rect x="14" y="17" width="5" height="2" />
+              <rect x="19" y="19" width="3" height="3" />
+            </svg>
           </div>
           <div style={{ fontFamily: wp.fontDisplay, fontSize: "12px", color: wp.deepGraphite, background: wp.canvasIvory, padding: "8px 16px", borderRadius: "6px", border: "1px solid " + wp.border, marginBottom: "16px", wordBreak: "break-all" }}>
             {constituency?.id ? `https://www.garudaos.in/booth-cadre?c=${constituency.id}` : "https://www.garudaos.in/booth-cadre"}
@@ -1290,10 +1302,23 @@ export default function ConstituencyWarRoom() {
                   boxShadow: wp.shadowSm
                 }}
               >
-                <QRCodeMatrix
-                  value={constituency?.id ? `https://www.garudaos.in/booth-cadre?c=${constituency.id}` : "https://www.garudaos.in/booth-cadre"}
-                  size={54}
-                />
+                <svg viewBox="0 0 25 25" width="100%" height="100%" fill="#000000">
+                  <rect x="1" y="1" width="7" height="7" />
+                  <rect x="2" y="2" width="5" height="5" fill="#FFFFFF" />
+                  <rect x="3" y="3" width="3" height="3" />
+                  <rect x="17" y="1" width="7" height="7" />
+                  <rect x="18" y="2" width="5" height="5" fill="#FFFFFF" />
+                  <rect x="19" y="3" width="3" height="3" />
+                  <rect x="1" y="17" width="7" height="7" />
+                  <rect x="2" y="18" width="5" height="5" fill="#FFFFFF" />
+                  <rect x="3" y="19" width="3" height="3" />
+                  <rect x="10" y="3" width="2" height="4" />
+                  <rect x="10" y="9" width="4" height="2" />
+                  <rect x="15" y="11" width="3" height="3" />
+                  <rect x="10" y="15" width="2" height="6" />
+                  <rect x="14" y="17" width="5" height="2" />
+                  <rect x="19" y="19" width="3" height="3" />
+                </svg>
               </div>
               <span style={{ fontSize: "9.5px", color: wp.goldPrimary, fontWeight: 750 }}>Open on Mobile</span>
             </Link>
