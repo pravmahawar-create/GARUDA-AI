@@ -14,6 +14,7 @@ import ElectoralAnalyticsModule from "../components/war-room/ElectoralAnalyticsM
 import CrisisWorkflowModule from "../components/war-room/CrisisWorkflowModule";
 import EvidenceVaultModule from "../components/war-room/EvidenceVaultModule";
 import ReportsModule from "../components/war-room/ReportsModule";
+import QRCodeMatrix from "../components/war-room/QRCodeMatrix";
 
 // 🏛️ Official GARUDA War Room Sovereign Palette (Warm Ivory, Graphite & Luxury Gold)
 const wp = {
@@ -164,6 +165,7 @@ export default function ConstituencyWarRoom() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [metaDiscovering, setMetaDiscovering] = useState(false);
   const [commercialModalOpen, setCommercialModalOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Close dropdown on outside click
   const dropdownRef = useRef(null);
@@ -530,7 +532,7 @@ export default function ConstituencyWarRoom() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+      <div className="pwa-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
         {/* QR Code & Mobile Launch Card */}
         <div style={{ background: wp.card, border: "1px solid " + wp.border, borderRadius: "14px", padding: "26px", boxShadow: wp.shadow, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
           <div style={{ fontSize: "15px", fontWeight: 750, color: wp.deepGraphite, marginBottom: "8px" }}>
@@ -539,27 +541,14 @@ export default function ConstituencyWarRoom() {
           <p style={{ fontSize: "12px", color: wp.muted, maxWidth: "340px", marginBottom: "20px" }}>
             Booth agents open this link directly in Chrome / Safari to launch the offline-first Cadre PWA without app store dependency.
           </p>
-          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "12px", border: "2px solid " + wp.borderGold, boxShadow: wp.shadowSm, marginBottom: "16px" }}>
-            <svg viewBox="0 0 25 25" width="160" height="160" fill="#000000">
-              <rect x="1" y="1" width="7" height="7" />
-              <rect x="2" y="2" width="5" height="5" fill="#FFFFFF" />
-              <rect x="3" y="3" width="3" height="3" />
-              <rect x="17" y="1" width="7" height="7" />
-              <rect x="18" y="2" width="5" height="5" fill="#FFFFFF" />
-              <rect x="19" y="3" width="3" height="3" />
-              <rect x="1" y="17" width="7" height="7" />
-              <rect x="2" y="18" width="5" height="5" fill="#FFFFFF" />
-              <rect x="3" y="19" width="3" height="3" />
-              <rect x="10" y="3" width="2" height="4" />
-              <rect x="10" y="9" width="4" height="2" />
-              <rect x="15" y="11" width="3" height="3" />
-              <rect x="10" y="15" width="2" height="6" />
-              <rect x="14" y="17" width="5" height="2" />
-              <rect x="19" y="19" width="3" height="3" />
-            </svg>
+          <div style={{ background: "#FFFFFF", padding: "14px", borderRadius: "12px", border: "2px solid " + wp.borderGold, boxShadow: wp.shadowSm, marginBottom: "16px" }}>
+            <QRCodeMatrix
+              value={constituency?.id ? `https://www.garudaos.in/booth-cadre?c=${constituency.id}` : "https://www.garudaos.in/booth-cadre"}
+              size={160}
+            />
           </div>
-          <div style={{ fontFamily: wp.fontDisplay, fontSize: "12px", color: wp.deepGraphite, background: wp.canvasIvory, padding: "8px 16px", borderRadius: "6px", border: "1px solid " + wp.border, marginBottom: "16px" }}>
-            https://www.garudaos.in/booth-cadre
+          <div style={{ fontFamily: wp.fontDisplay, fontSize: "12px", color: wp.deepGraphite, background: wp.canvasIvory, padding: "8px 16px", borderRadius: "6px", border: "1px solid " + wp.border, marginBottom: "16px", wordBreak: "break-all" }}>
+            {constituency?.id ? `https://www.garudaos.in/booth-cadre?c=${constituency.id}` : "https://www.garudaos.in/booth-cadre"}
           </div>
           <Link
             to="/booth-cadre"
@@ -657,7 +646,7 @@ export default function ConstituencyWarRoom() {
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "20px" }}>
+      <div className="commercial-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
         <div style={{ background: wp.card, border: "1px solid " + wp.border, borderRadius: "14px", padding: "26px", boxShadow: wp.shadow }}>
           <div style={{ fontSize: "32px", fontWeight: 900, color: wp.deepGraphite, fontFamily: wp.fontDisplay }}>
             ₹35,00,000
@@ -717,7 +706,7 @@ export default function ConstituencyWarRoom() {
   const renderDashboardView = () => (
     <>
       {/* HEADER ROW: TITLE + CLOCK + GENERATE DOSSIER BUTTON */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="dashboard-header-row">
         <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
           <div
             style={{
@@ -799,7 +788,7 @@ export default function ConstituencyWarRoom() {
       {/* ========================================================================= */}
       {/* ROW 1: 5 DYNAMIC KEY METRIC KPI CARDS                                      */}
       {/* ========================================================================= */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "16px" }}>
+      <div className="kpi-grid">
 
         {/* Card 1: Total Booths */}
         <div
@@ -922,7 +911,7 @@ export default function ConstituencyWarRoom() {
       {/* ========================================================================= */}
       {/* ROW 2: MIDDLE OPERATIONAL GRID (3 COLUMNS: MAP | FEED | META & PWA)       */}
       {/* ========================================================================= */}
-      <div style={{ display: "grid", gridTemplateColumns: "1.65fr 0.85fr 0.85fr", gap: "18px" }}>
+      <div className="operational-grid">
 
         {/* COLUMN 1: CONSTITUENCY MAP (BOOTH LEVEL) - VISUAL ANCHOR */}
         <div
@@ -1301,23 +1290,10 @@ export default function ConstituencyWarRoom() {
                   boxShadow: wp.shadowSm
                 }}
               >
-                <svg viewBox="0 0 25 25" width="100%" height="100%" fill="#000000">
-                  <rect x="1" y="1" width="7" height="7" />
-                  <rect x="2" y="2" width="5" height="5" fill="#FFFFFF" />
-                  <rect x="3" y="3" width="3" height="3" />
-                  <rect x="17" y="1" width="7" height="7" />
-                  <rect x="18" y="2" width="5" height="5" fill="#FFFFFF" />
-                  <rect x="19" y="3" width="3" height="3" />
-                  <rect x="1" y="17" width="7" height="7" />
-                  <rect x="2" y="18" width="5" height="5" fill="#FFFFFF" />
-                  <rect x="3" y="19" width="3" height="3" />
-                  <rect x="10" y="3" width="2" height="4" />
-                  <rect x="10" y="9" width="4" height="2" />
-                  <rect x="15" y="11" width="3" height="3" />
-                  <rect x="10" y="15" width="2" height="6" />
-                  <rect x="14" y="17" width="5" height="2" />
-                  <rect x="19" y="19" width="3" height="3" />
-                </svg>
+                <QRCodeMatrix
+                  value={constituency?.id ? `https://www.garudaos.in/booth-cadre?c=${constituency.id}` : "https://www.garudaos.in/booth-cadre"}
+                  size={54}
+                />
               </div>
               <span style={{ fontSize: "9.5px", color: wp.goldPrimary, fontWeight: 750 }}>Open on Mobile</span>
             </Link>
@@ -1330,7 +1306,7 @@ export default function ConstituencyWarRoom() {
       {/* ========================================================================= */}
       {/* ROW 3: BOTTOM 4 CARDS (DEMOGRAPHICS | ISSUES | SENTIMENT | ACTIONS)       */}
       {/* ========================================================================= */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "18px" }}>
+      <div className="bottom-cards-grid">
 
         {/* Card 1: Voter Demographics */}
         <div style={{ background: wp.card, boxShadow: wp.shadow, border: "1px solid " + wp.border, borderRadius: "14px", padding: "22px", display: "flex", flexDirection: "column" }}>
@@ -1586,6 +1562,238 @@ export default function ConstituencyWarRoom() {
         .garuda-war-room-root th {
           font-family: 'Playfair Display', Georgia, serif !important;
         }
+
+        /* Sovereign Touch & Motion Standards (Praveen 1-Shot Perfection) */
+        .garuda-touch-tap {
+          -webkit-tap-highlight-color: transparent;
+          user-select: none;
+          -webkit-touch-callout: none;
+          transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.16s ease;
+        }
+        .garuda-touch-tap:active {
+          transform: scale(0.975);
+        }
+
+        /* Horizontal Scroll Isolation */
+        .isolated-h-scroll {
+          overscroll-behavior-x: contain;
+          overscroll-behavior-y: none;
+          touch-action: pan-x;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+        .isolated-h-scroll::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* Responsive Layout Grid & Module Styling */
+        .garuda-war-room-sidebar {
+          width: 264px;
+          background-color: #FBF9F4;
+          border-right: 1px solid #E6DCC8;
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          z-index: 40;
+          padding: 20px 14px;
+          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .garuda-war-room-header {
+          min-height: 68px;
+          background-color: rgba(251, 249, 244, 0.94);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border-bottom: 1px solid #E6DCC8;
+          padding: 0 28px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 30;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+
+        .garuda-war-room-search {
+          position: relative;
+          max-width: 460px;
+          width: 100%;
+          margin: 0 24px;
+          display: flex;
+          align-items: center;
+          flex: 1;
+        }
+
+        .garuda-war-room-main {
+          flex: 1;
+          padding: 24px 32px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .dashboard-header-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 14px;
+        }
+
+        .kpi-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 16px;
+        }
+
+        .operational-grid {
+          display: grid;
+          grid-template-columns: 1.65fr 0.85fr 0.85fr;
+          gap: 18px;
+        }
+
+        .bottom-cards-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 18px;
+        }
+
+        .mobile-only {
+          display: none !important;
+        }
+
+        .desktop-only {
+          display: flex !important;
+        }
+
+        .mobile-bottom-nav {
+          display: none;
+        }
+
+        .mobile-drawer-overlay {
+          display: none;
+        }
+
+        /* TABLET & MOBILE VIEWPORT BREAKPOINTS (max-width: 1023px) */
+        @media (max-width: 1023px) {
+          .garuda-war-room-sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+            width: 290px !important;
+            max-width: 85vw !important;
+            height: 100vh !important;
+            z-index: 100 !important;
+            box-shadow: 0 0 40px rgba(40, 30, 15, 0.3) !important;
+            transform: translateX(-100%);
+          }
+
+          .garuda-war-room-sidebar.open {
+            transform: translateX(0) !important;
+          }
+
+          .mobile-drawer-overlay {
+            display: block !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 17, 16, 0.45);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 90;
+          }
+
+          .garuda-war-room-header {
+            padding: 8px 14px !important;
+            min-height: 58px !important;
+          }
+
+          .garuda-war-room-search {
+            margin: 6px 0 !important;
+            max-width: 100% !important;
+            order: 3;
+            width: 100% !important;
+          }
+
+          .garuda-war-room-main {
+            padding: 16px 14px 85px 14px !important;
+            gap: 16px !important;
+          }
+
+          .kpi-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
+          }
+          .kpi-grid > div:last-child {
+            grid-column: span 2;
+          }
+
+          .operational-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+
+          .bottom-cards-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 14px !important;
+          }
+
+          .desktop-only {
+            display: none !important;
+          }
+
+          .mobile-only {
+            display: flex !important;
+          }
+
+          /* FIXED BOTTOM NAVIGATION BAR */
+          .mobile-bottom-nav {
+            display: flex !important;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(251, 249, 244, 0.96);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid #E6DCC8;
+            z-index: 80;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 4px;
+            box-shadow: 0 -4px 18px rgba(40, 30, 15, 0.06);
+          }
+
+          .mobile-city-dropdown {
+            width: 90vw !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            max-width: 380px !important;
+          }
+        }
+
+        /* PHONES (< 640px) */
+        @media (max-width: 640px) {
+          .kpi-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .kpi-grid > div:last-child {
+            grid-column: span 1 !important;
+          }
+
+          .bottom-cards-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
       `}</style>
       <SEOHead
         title={`GARUDA OS Sovereign War Room | ${constituency.name} (${constituency.state})`}
@@ -1594,23 +1802,35 @@ export default function ConstituencyWarRoom() {
       />
 
       {/* ========================================================================= */}
-      {/* 1. LEFT SIDEBAR (STICKY NAVIGATION)                                      */}
+      {/* 1. LEFT SIDEBAR (STICKY NAVIGATION / MOBILE SLIDE-OVER DRAWER)           */}
       {/* ========================================================================= */}
       <aside
-        style={{
-          width: "264px",
-          backgroundColor: wp.canvasIvory,
-          borderRight: "1px solid " + wp.border,
-          display: "flex",
-          flexDirection: "column",
-          flexShrink: 0,
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          zIndex: 40,
-          padding: "20px 14px"
-        }}
+        className={`garuda-war-room-sidebar ${mobileMenuOpen ? "open" : ""}`}
       >
+        {/* MOBILE DRAWER CLOSE HEADER */}
+        <div className="mobile-only" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "12px", marginBottom: "12px", borderBottom: "1px solid " + wp.borderSubtle }}>
+          <div style={{ fontSize: "11px", fontWeight: 800, color: wp.goldPrimary, letterSpacing: "1.2px", textTransform: "uppercase" }}>
+            WAR ROOM COMMAND
+          </div>
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="garuda-touch-tap"
+            style={{
+              background: wp.card,
+              border: "1px solid " + wp.border,
+              borderRadius: "8px",
+              padding: "4px 9px",
+              fontSize: "15px",
+              color: wp.deepGraphite,
+              cursor: "pointer",
+              lineHeight: 1
+            }}
+            aria-label="Close Navigation Menu"
+          >
+            ✕
+          </button>
+        </div>
+
         {/* LOGO BRANDING */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "4px 8px 18px 8px", borderBottom: "1px solid " + wp.borderSubtle, marginBottom: "14px" }}>
           <div
@@ -1669,7 +1889,9 @@ export default function ConstituencyWarRoom() {
                 key={item.id}
                 onClick={() => {
                   setActiveTab(item.id);
+                  setMobileMenuOpen(false);
                 }}
+                className="garuda-touch-tap"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -1751,24 +1973,34 @@ export default function ConstituencyWarRoom() {
 
         {/* TOPBAR */}
         <header
-          style={{
-            height: "68px",
-            backgroundColor: "rgba(251, 249, 244, 0.94)",
-            backdropFilter: "blur(12px)",
-            borderBottom: "1px solid " + wp.border,
-            padding: "0 28px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            position: "sticky",
-            top: 0,
-            zIndex: 30
-          }}
+          className="garuda-war-room-header"
         >
-          {/* LEFT: CONSTITUENCY DROPDOWN TRIGGER + LIVE PILL */}
-          <div style={{ display: "flex", alignItems: "center", gap: "14px", position: "relative" }} ref={dropdownRef}>
+          {/* LEFT: HAMBURGER (MOBILE) + CONSTITUENCY DROPDOWN TRIGGER + LIVE PILL */}
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative" }} ref={dropdownRef}>
+            <button
+              className="mobile-only garuda-touch-tap"
+              onClick={() => setMobileMenuOpen(true)}
+              style={{
+                background: wp.card,
+                border: "1px solid " + wp.border,
+                borderRadius: "9px",
+                padding: "7px 11px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: wp.deepGraphite,
+                fontSize: "17px",
+                boxShadow: wp.shadowSm
+              }}
+              title="Open Navigation Menu"
+              aria-label="Open Navigation Menu"
+            >
+              ☰
+            </button>
             <div
               onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+              className="garuda-touch-tap"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -1795,6 +2027,7 @@ export default function ConstituencyWarRoom() {
             {/* INTERACTIVE BATTLEGROUND SELECTOR DROPDOWN */}
             {isCityDropdownOpen && (
               <div
+                className="mobile-city-dropdown"
                 style={{
                   position: "absolute",
                   top: "calc(100% + 8px)",
@@ -1883,14 +2116,7 @@ export default function ConstituencyWarRoom() {
 
           {/* CENTER: SEARCH INPUT WITH RESOLVE ACTION */}
           <div
-            style={{
-              position: "relative",
-              maxWidth: "460px",
-              width: "100%",
-              margin: "0 24px",
-              display: "flex",
-              alignItems: "center"
-            }}
+            className="garuda-war-room-search"
           >
             <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "13px", color: wp.muted }}>
               🔍
@@ -1962,9 +2188,10 @@ export default function ConstituencyWarRoom() {
           </div>
 
           {/* RIGHT: MODE SWITCHER + NOTIFICATION + USER PROFILE */}
-          <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-            {/* MODE SWITCHER */}
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            {/* MODE SWITCHER (DESKTOP) */}
             <div
+              className="desktop-only"
               style={{
                 display: "flex",
                 background: wp.canvasSubtle,
@@ -2009,7 +2236,7 @@ export default function ConstituencyWarRoom() {
             </div>
 
             {/* USER PROFILE */}
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", borderLeft: "1px solid " + wp.border, paddingLeft: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", borderLeft: "1px solid " + wp.border, paddingLeft: "12px" }}>
               <div
                 style={{
                   width: "34px",
@@ -2027,7 +2254,7 @@ export default function ConstituencyWarRoom() {
               >
                 PM
               </div>
-              <div>
+              <div className="desktop-only" style={{ flexDirection: "column" }}>
                 <div style={{ fontSize: "12.5px", fontWeight: 750, color: wp.deepGraphite, lineHeight: 1.1 }}>Praveen Mahawar</div>
                 <div style={{ fontSize: "10px", color: wp.muted, marginTop: "2px" }}>Founder • GARUDA OS</div>
               </div>
@@ -2036,18 +2263,18 @@ export default function ConstituencyWarRoom() {
         </header>
 
         {/* MAIN BODY CONTENT */}
-        <main style={{ flex: 1, padding: "24px 32px", display: "flex", flexDirection: "column", gap: "20px" }}>
+        <main className="garuda-war-room-main">
 
           {/* BATTLEGROUND QUICK-SWITCH STRIP */}
           <div
+            className="isolated-h-scroll"
             style={{
               display: "flex",
               alignItems: "center",
               gap: "8px",
               overflowX: "auto",
               paddingBottom: "8px",
-              borderBottom: "1px solid " + wp.borderSubtle,
-              scrollbarWidth: "none"
+              borderBottom: "1px solid " + wp.borderSubtle
             }}
           >
             <span style={{ fontSize: "11px", fontWeight: 750, color: wp.muted, textTransform: "uppercase", letterSpacing: "0.06em", flexShrink: 0 }}>
@@ -2344,6 +2571,62 @@ export default function ConstituencyWarRoom() {
         onClose={() => setInspectingDevice(null)}
         device={inspectingDevice}
       />
+
+      {/* MOBILE DRAWER BACKDROP OVERLAY */}
+      {mobileMenuOpen && (
+        <div
+          className="mobile-drawer-overlay"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* MOBILE DOCKED BOTTOM NAVIGATION (Praveen 1-Shot Perfection Law) */}
+      <nav className="mobile-bottom-nav">
+        {[
+          { id: "dashboard", icon: "🏛️", label: "Overview" },
+          { id: "intel", icon: "📊", label: "Intel" },
+          { id: "booths", icon: "📍", label: "Booths" },
+          { id: "rebuttal", icon: "⚡", label: "Rebuttal" },
+          { id: "menu", icon: "☰", label: "More", isMenu: true }
+        ].map((item) => {
+          const isActive = !item.isMenu && activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                if (item.isMenu) {
+                  setMobileMenuOpen(!mobileMenuOpen);
+                } else {
+                  setActiveTab(item.id);
+                  setMobileMenuOpen(false);
+                }
+              }}
+              className="garuda-touch-tap"
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "transparent",
+                border: "none",
+                padding: "6px 2px",
+                cursor: "pointer",
+                color: isActive ? wp.goldPrimary : wp.muted
+              }}
+              aria-label={item.label}
+            >
+              <span style={{ fontSize: "17px", lineHeight: 1 }}>{item.icon}</span>
+              <span style={{ fontSize: "10px", fontWeight: isActive ? 800 : 600, marginTop: "3px", letterSpacing: "0.2px" }}>
+                {item.label}
+              </span>
+              {isActive && (
+                <span style={{ width: "14px", height: "2.5px", borderRadius: "2px", background: wp.goldPrimary, marginTop: "2px" }} />
+              )}
+            </button>
+          );
+        })}
+      </nav>
 
     </div>
   );
