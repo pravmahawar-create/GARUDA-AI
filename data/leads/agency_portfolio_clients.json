@@ -1,0 +1,128 @@
+[
+  {
+    "clientName": "Harley Medical Group",
+    "clientType": "Private Healthcare",
+    "originAgency": "Velocity Digital London",
+    "city": "London",
+    "country": "United Kingdom",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.573Z"
+  },
+  {
+    "clientName": "Apex Wealth London",
+    "clientType": "Fintech",
+    "originAgency": "Velocity Digital London",
+    "city": "London",
+    "country": "United Kingdom",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.578Z"
+  },
+  {
+    "clientName": "Northern Hospitality Group",
+    "clientType": "Dining & Venues",
+    "originAgency": "Kinetic Web Manchester",
+    "city": "Manchester",
+    "country": "United Kingdom",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Belgravia Aesthetic Clinic",
+    "clientType": "Cosmetic Surgery",
+    "originAgency": "Apexcraft Media London",
+    "city": "London",
+    "country": "United Kingdom",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Bay Street Legal",
+    "clientType": "Corporate Law",
+    "originAgency": "Nexus Interactive Toronto",
+    "city": "Toronto",
+    "country": "Canada",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Yorkville Health",
+    "clientType": "Wellness",
+    "originAgency": "Nexus Interactive Toronto",
+    "city": "Toronto",
+    "country": "Canada",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Whistler Alpine Real Estate",
+    "clientType": "Luxury Property",
+    "originAgency": "Pacific Digital Vancouver",
+    "city": "Vancouver",
+    "country": "Canada",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Manhattan Specialty Care",
+    "clientType": "Multi-Clinic Health",
+    "originAgency": "Vortex Digital NYC",
+    "city": "New York",
+    "country": "United States",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Texas Lone Star Freight",
+    "clientType": "Logistics",
+    "originAgency": "Catalyst Tech Austin",
+    "city": "Austin",
+    "country": "United States",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Indiranagar Orthodontics",
+    "clientType": "Dental Chain",
+    "originAgency": "Synapse Tech Labs Bangalore",
+    "city": "Bangalore",
+    "country": "India",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Koramangala Fitness Club",
+    "clientType": "Gym & Lifestyle",
+    "originAgency": "Synapse Tech Labs Bangalore",
+    "city": "Bangalore",
+    "country": "India",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Bandra Aesthetics & Skin",
+    "clientType": "Dermatology",
+    "originAgency": "Elevate Digital Mumbai",
+    "city": "Mumbai",
+    "country": "India",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Emirates Luxury Yachts",
+    "clientType": "High-Ticket Marine",
+    "originAgency": "Apex Gulf Media Dubai",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  },
+  {
+    "clientName": "Dubai Marina Dental Studio",
+    "clientType": "Cosmetic Dentistry",
+    "originAgency": "Apex Gulf Media Dubai",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "inferredNeed": "24/7 AI Receptionist & After-Hours Lead Capture",
+    "discoveredAt": "2026-10-05T19:50:58.579Z"
+  }
+]

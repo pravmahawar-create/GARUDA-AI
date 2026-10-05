@@ -130,5 +130,17 @@
     "status": "dispatched_fallback",
     "providerResponseId": "250 OK",
     "timestamp": "2026-09-13T20:02:46.908Z"
+  },
+  {
+    "id": "AGENCY_UK_LDN_VELOCITY",
+    "agencyName": "Velocity Digital London",
+    "city": "London",
+    "country": "United Kingdom",
+    "email": "info@velocitydigital.co.uk",
+    "subject": "Confidential Agency Brief: White-Label AI Engineering Backbone for Velocity Digital London",
+    "sha256": "fe5b75d3375c2b4450087b6a97a99dc75ea695871e505e9d4aedcb1ca184d0b2",
+    "status": "dispatched",
+    "providerResponseId": "250 Message received",
+    "timestamp": "2026-10-05T19:52:29.618Z"
   }
 ]

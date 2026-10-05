@@ -69,14 +69,24 @@ async function startCloudHunter() {
       const summary = await hunter.runCycle({ dryRun: false });
       log(`Initial cycle finished: ${summary.leadsDiscovered} discovered, ${summary.leadsQualified} qualified, ${summary.queuedForApproval} queued.`);
 
-      // 🦅 Run High-Intent Problem Signal Scout on Cloud
+      // 🦅 Run High-Intent Problem Signal Scout on Cloud (Silent in background)
       try {
         log('⚡ [SIGNAL_SCOUT] Running High-Intent Tech Problem Scout on Render Cloud...');
         const { runScout } = require('../radar/tech-problem-scout');
-        await runScout({ notifyTelegram: true });
-        log('✔ [SIGNAL_SCOUT] Scout completed and Telegram alert dispatched.');
+        await runScout({ notifyTelegram: false });
+        log('✔ [SIGNAL_SCOUT] Scout completed silently in background.');
       } catch (scoutErr) {
         log(`⚠ [SIGNAL_SCOUT] Scout cycle note: ${scoutErr.message}`);
+      }
+
+      // 🏢 Run 24/7 White-Label Agency & Reverse-Portfolio Harvester on Cloud
+      try {
+        log('⚡ [AGENCY_HARVESTER] Running Autonomous Agency & Portfolio Harvester on Render Cloud...');
+        const { harvestAndDispatchAgencies } = require('../radar/agency-portfolio-harvester');
+        const agRes = await harvestAndDispatchAgencies({ maxDispatchPerCycle: 3, autoDispatch: true });
+        log(`✔ [AGENCY_HARVESTER] Complete: ${agRes.discovered || 0} active in queue, ${agRes.dispatched || 0} dispatched.`);
+      } catch (agErr) {
+        log(`⚠ [AGENCY_HARVESTER] Harvester cycle note: ${agErr.message}`);
       }
 
       log('Checking scheduled social content items on Render startup...');
@@ -91,15 +101,27 @@ async function startCloudHunter() {
   // Arm recurring schedule for Revenue Hunter & Signal Scout
   hunter.startScheduler(INTERVAL_MINUTES * 60 * 1000);
 
-  // Recurring Problem Signal Scout (every 60 minutes)
+  // Recurring Problem Signal Scout (every 60 minutes, silent in background)
   const scoutInterval = setInterval(async () => {
     try {
       log('⚡ [SIGNAL_SCOUT] Recurring High-Intent Tech Problem Scout running...');
       const { runScout } = require('../radar/tech-problem-scout');
-      await runScout({ notifyTelegram: true });
-      log('✔ [SIGNAL_SCOUT] Recurring scout completed.');
+      await runScout({ notifyTelegram: false });
+      log('✔ [SIGNAL_SCOUT] Recurring scout completed silently.');
     } catch (scoutErr) {
       log(`⚠ [SIGNAL_SCOUT] Recurring scout error: ${scoutErr.message}`);
+    }
+  }, INTERVAL_MINUTES * 60 * 1000);
+
+  // Recurring Agency & Portfolio Harvester (every 60 minutes, silent in background)
+  const agencyInterval = setInterval(async () => {
+    try {
+      log('⚡ [AGENCY_HARVESTER] Recurring Agency & Portfolio Harvester running on Cloud...');
+      const { harvestAndDispatchAgencies } = require('../radar/agency-portfolio-harvester');
+      const agRes = await harvestAndDispatchAgencies({ maxDispatchPerCycle: 3, autoDispatch: true });
+      log(`✔ [AGENCY_HARVESTER] Recurring cycle complete: ${agRes.dispatched || 0} dispatched.`);
+    } catch (agErr) {
+      log(`⚠ [AGENCY_HARVESTER] Recurring cycle error: ${agErr.message}`);
     }
   }, INTERVAL_MINUTES * 60 * 1000);
 
@@ -120,6 +142,7 @@ async function startCloudHunter() {
   const shutdown = () => {
     log('🛑 Graceful shutdown signal received. Stopping cloud hunter, scouts & content schedulers...');
     clearInterval(scoutInterval);
+    clearInterval(agencyInterval);
     clearInterval(contentInterval);
     hunter.stopScheduler();
     setTimeout(() => process.exit(0), 500);

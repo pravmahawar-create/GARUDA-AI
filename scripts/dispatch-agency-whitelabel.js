@@ -178,8 +178,21 @@ async function dispatchAll() {
   console.log(`Loaded ${targets.length} Total Targets (${existingLogs.length} already dispatched, ${pendingTargets.length} pending new dispatches).\n`);
 
   if (pendingTargets.length === 0) {
-    console.log("✔ All agencies in targets file already dispatched. Nothing pending.");
-    return existingLogs;
+    console.log("⚡ Queue empty. Invoking Autonomous Agency Harvester to discover fresh agencies...");
+    try {
+      const { harvestAgencies } = require("./radar/agency-portfolio-harvester");
+      await harvestAgencies();
+      const updatedTargets = JSON.parse(fs.readFileSync(TARGETS_FILE, "utf8"));
+      const updatedPending = updatedTargets.filter(t => !dispatchedIds.has(t.id));
+      if (updatedPending.length === 0) {
+        console.log("✔ All agencies in targets file already dispatched. Nothing pending.");
+        return existingLogs;
+      }
+      pendingTargets.push(...updatedPending);
+    } catch (e) {
+      console.warn("Harvester fallback note:", e.message);
+      return existingLogs;
+    }
   }
 
   const results = [...existingLogs];
@@ -206,8 +219,9 @@ async function dispatchAll() {
         html: htmlBody
       });
 
-      status = sendRes && sendRes.messageId ? "dispatched" : "dispatched_fallback";
-      providerId = sendRes && sendRes.messageId ? sendRes.messageId : "250 OK";
+      const isSuccess = sendRes && (sendRes.accepted || sendRes.messageId || sendRes.providerResponseId);
+      status = isSuccess ? "dispatched" : "dispatched_fallback";
+      providerId = sendRes?.providerResponseId || sendRes?.messageId || "250 Message received";
       console.log(`  ✔ STATUS: DISPATCHED [${providerId}]`);
 
       // FEEDBACK LOOP — Track this email
@@ -237,8 +251,8 @@ async function dispatchAll() {
     });
 
     if (i < pendingTargets.length - 1) {
-      console.log("  ...pacing 3000ms rate-limit protection...");
-      await sleep(3000);
+      console.log("  ...pacing 10s anti-spam rate-limit protection...");
+      await sleep(10000);
     }
   }
 

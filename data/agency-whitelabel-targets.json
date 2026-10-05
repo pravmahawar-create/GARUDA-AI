@@ -118,5 +118,481 @@
     "retainerClients": "80+",
     "currentBottleneck": "Global SEO & SME clients wanting interactive conversion chatbots and AI landing page nodes at scale.",
     "whiteLabelOffer": "High-speed conversion bot backends and interactive widgets delivered in 48 hours under your brand."
+  },
+  {
+    "id": "AGENCY_UK_LDN_VELOCITY",
+    "agencyName": "Velocity Digital London",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "UK",
+    "website": "https://velocitydigital.co.uk",
+    "email": "info@velocitydigital.co.uk",
+    "phone": "+44 20 7946 0192",
+    "retainerClients": "35+",
+    "currentBottleneck": "Client demand for bespoke 24/7 AI intake bots & custom WhatsApp booking portals exceeding internal dev bandwidth.",
+    "portfolioClients": [
+      {
+        "name": "Harley Medical Group",
+        "type": "Private Healthcare"
+      },
+      {
+        "name": "Apex Wealth London",
+        "type": "Fintech"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_UK_MCR_KINETIC",
+    "agencyName": "Kinetic Web Manchester",
+    "city": "Manchester",
+    "country": "United Kingdom",
+    "region": "UK",
+    "website": "https://kineticagency.co.uk",
+    "email": "hello@kineticagency.co.uk",
+    "phone": "+44 161 832 4091",
+    "retainerClients": "25+",
+    "currentBottleneck": "Rising payroll costs for full-time senior engineers eating into retainer margins on high-traffic client portals.",
+    "portfolioClients": [
+      {
+        "name": "Northern Hospitality Group",
+        "type": "Dining & Venues"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_UK_LDN_APEXCRAFT",
+    "agencyName": "Apexcraft Media London",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "UK",
+    "website": "https://apexcraftmedia.co.uk",
+    "email": "partners@apexcraftmedia.co.uk",
+    "phone": "+44 20 8123 9081",
+    "retainerClients": "40+",
+    "currentBottleneck": "Clients demanding bilingual conversational triage & automated lead booking without 3-week sprint delays.",
+    "portfolioClients": [
+      {
+        "name": "Belgravia Aesthetic Clinic",
+        "type": "Cosmetic Surgery"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_CA_TOR_NEXUS",
+    "agencyName": "Nexus Interactive Toronto",
+    "city": "Toronto",
+    "country": "Canada",
+    "region": "CANADA",
+    "website": "https://nexusinteractive.ca",
+    "email": "growth@nexusinteractive.ca",
+    "phone": "+1 (416) 555-0182",
+    "retainerClients": "30+",
+    "currentBottleneck": "Clinic and law firm clients suffering 40% after-hours lead dropoff on WordPress forms; lacking native AI workflow team.",
+    "portfolioClients": [
+      {
+        "name": "Bay Street Legal",
+        "type": "Corporate Law"
+      },
+      {
+        "name": "Yorkville Health",
+        "type": "Wellness"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_CA_VAN_PACIFIC",
+    "agencyName": "Pacific Digital Vancouver",
+    "city": "Vancouver",
+    "country": "Canada",
+    "region": "CANADA",
+    "website": "https://pacificdigital.ca",
+    "email": "team@pacificdigital.ca",
+    "phone": "+1 (604) 555-0149",
+    "retainerClients": "28+",
+    "currentBottleneck": "High developer turnover delaying client portal delivery commitments and hurting client retention.",
+    "portfolioClients": [
+      {
+        "name": "Whistler Alpine Real Estate",
+        "type": "Luxury Property"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_US_NYC_VORTEX",
+    "agencyName": "Vortex Digital NYC",
+    "city": "New York",
+    "country": "United States",
+    "region": "US",
+    "website": "https://vortexnyc.com",
+    "email": "hello@vortexnyc.com",
+    "phone": "+1 (212) 555-0199",
+    "retainerClients": "50+",
+    "currentBottleneck": "Clients requesting custom LLM-powered intake workflows with sub-second latency while agency stack is limited to standard Webflow.",
+    "portfolioClients": [
+      {
+        "name": "Manhattan Specialty Care",
+        "type": "Multi-Clinic Health"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_US_ATX_CATALYST",
+    "agencyName": "Catalyst Tech Austin",
+    "city": "Austin",
+    "country": "United States",
+    "region": "US",
+    "website": "https://catalystgrowth.io",
+    "email": "partnerships@catalystgrowth.io",
+    "phone": "+1 (512) 555-0164",
+    "retainerClients": "35+",
+    "currentBottleneck": "Need a trusted, silent engineering partner to execute high-ticket AI automation projects under strict NDA.",
+    "portfolioClients": [
+      {
+        "name": "Texas Lone Star Freight",
+        "type": "Logistics"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_IN_BLR_SYNAPSE",
+    "agencyName": "Synapse Tech Labs Bangalore",
+    "city": "Bangalore",
+    "country": "India",
+    "region": "INDIA",
+    "website": "https://synapsetechlabs.in",
+    "email": "contact@synapsetechlabs.in",
+    "phone": "+91 80 4123 8871",
+    "retainerClients": "45+",
+    "currentBottleneck": "Enterprise clients asking for WhatsApp Business API chatbots with CRM integration; agency dev capacity locked in legacy maintenance.",
+    "portfolioClients": [
+      {
+        "name": "Indiranagar Orthodontics",
+        "type": "Dental Chain"
+      },
+      {
+        "name": "Koramangala Fitness Club",
+        "type": "Gym & Lifestyle"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_IN_MUM_ELEVATE",
+    "agencyName": "Elevate Digital Mumbai",
+    "city": "Mumbai",
+    "country": "India",
+    "region": "INDIA",
+    "website": "https://elevatedigital.in",
+    "email": "info@elevatedigital.in",
+    "phone": "+91 22 2678 9912",
+    "retainerClients": "35+",
+    "currentBottleneck": "Lost project bids to tier-1 firms due to lacking in-house neural AI and sub-second React/Node delivery muscle.",
+    "portfolioClients": [
+      {
+        "name": "Bandra Aesthetics & Skin",
+        "type": "Dermatology"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_UAE_DXB_APEXGULF",
+    "agencyName": "Apex Gulf Media Dubai",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "region": "UAE",
+    "website": "https://apexgulfmedia.ae",
+    "email": "partners@apexgulfmedia.ae",
+    "phone": "+971 4 390 1234",
+    "retainerClients": "30+",
+    "currentBottleneck": "Luxury clients in DIFC/Downtown demanding multilingual (Arabic/English) automated VIP intake with zero latency.",
+    "portfolioClients": [
+      {
+        "name": "Emirates Luxury Yachts",
+        "type": "High-Ticket Marine"
+      },
+      {
+        "name": "Dubai Marina Dental Studio",
+        "type": "Cosmetic Dentistry"
+      }
+    ]
+  },
+  {
+    "id": "AGENCY_UK_REVENUEBASE_AI",
+    "agencyName": "Top 25 Digital marketing agency for manu",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "UK",
+    "website": "https://revenuebase.ai",
+    "email": "hello@revenuebase.ai",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:00.924Z"
+  },
+  {
+    "id": "AGENCY_UK_FACEBOOK_COM",
+    "agencyName": "Looking for the  enterprise digital marketing  ...",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "UK",
+    "website": "https://facebook.com",
+    "email": "hello@facebook.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:00.924Z"
+  },
+  {
+    "id": "AGENCY_UK_TECHREVIEWER_CO",
+    "agencyName": "Digital Marketing Agencies in 2026",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "UK",
+    "website": "https://techreviewer.co",
+    "email": "hello@techreviewer.co",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:00.924Z"
+  },
+  {
+    "id": "AGENCY_UK_GROWTHHIT_COM",
+    "agencyName": "30 Growth Hacking Agencies And How To Pick One",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "UK",
+    "website": "https://growthhit.com",
+    "email": "hello@growthhit.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:00.924Z"
+  },
+  {
+    "id": "AGENCY_UK_INSTAGRAM_COM",
+    "agencyName": "Content Chef –  Digital Marketing Agency",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "UK",
+    "website": "https://instagram.com",
+    "email": "hello@instagram.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:00.924Z"
+  },
+  {
+    "id": "AGENCY_CANADA_DESIGNRUSH_COM",
+    "agencyName": "Canada Design Agencies",
+    "city": "Toronto",
+    "country": "Canada",
+    "region": "CANADA",
+    "website": "https://designrush.com",
+    "email": "hello@designrush.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:03.465Z"
+  },
+  {
+    "id": "AGENCY_CANADA_MINDCOB_COM",
+    "agencyName": "Graphic and Web Design  Toronto",
+    "city": "Toronto",
+    "country": "Canada",
+    "region": "CANADA",
+    "website": "https://mindcob.com",
+    "email": "hello@mindcob.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:03.465Z"
+  },
+  {
+    "id": "AGENCY_CANADA_FELLO_AGENCY",
+    "agencyName": "B2B Web Design Agency for Tech Companies",
+    "city": "Toronto",
+    "country": "Canada",
+    "region": "CANADA",
+    "website": "https://fello.agency",
+    "email": "hello@fello.agency",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:03.465Z"
+  },
+  {
+    "id": "AGENCY_CANADA_MEDIAFORCE_CA",
+    "agencyName": "Digital Marketing Agency Toronto",
+    "city": "Toronto",
+    "country": "Canada",
+    "region": "CANADA",
+    "website": "https://mediaforce.ca",
+    "email": "hello@mediaforce.ca",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:03.465Z"
+  },
+  {
+    "id": "AGENCY_US_OUTSOURCEACCELER",
+    "agencyName": "50 digital marketing agencies in New York",
+    "city": "New York",
+    "country": "United States",
+    "region": "US",
+    "website": "https://outsourceaccelerator.com",
+    "email": "hello@outsourceaccelerator.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:05.510Z"
+  },
+  {
+    "id": "AGENCY_US_LINK2CITY_COM",
+    "agencyName": "SEO New York That Drives Rankings, Traff",
+    "city": "New York",
+    "country": "United States",
+    "region": "US",
+    "website": "https://link2city.com",
+    "email": "hello@link2city.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:05.510Z"
+  },
+  {
+    "id": "AGENCY_US_WEBTONIC_IO",
+    "agencyName": "Austin Webflow Partners",
+    "city": "New York",
+    "country": "United States",
+    "region": "US",
+    "website": "https://webtonic.io",
+    "email": "hello@webtonic.io",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:05.510Z"
+  },
+  {
+    "id": "AGENCY_INDIA_JOOTOOR_COM",
+    "agencyName": "Branding  Bangalore",
+    "city": "Mumbai",
+    "country": "India",
+    "region": "INDIA",
+    "website": "https://jootoor.com",
+    "email": "hello@jootoor.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:14.692Z"
+  },
+  {
+    "id": "AGENCY_INDIA_SOCIALORANGE_IN",
+    "agencyName": "Digital Marketing Companies in Bangalore",
+    "city": "Mumbai",
+    "country": "India",
+    "region": "INDIA",
+    "website": "https://socialorange.in",
+    "email": "hello@socialorange.in",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:14.692Z"
+  },
+  {
+    "id": "AGENCY_INDIA_AIMMAXMEDIA_COM",
+    "agencyName": "Digital Marketing  Bangalore",
+    "city": "Mumbai",
+    "country": "India",
+    "region": "INDIA",
+    "website": "https://aimmaxmedia.com",
+    "email": "hello@aimmaxmedia.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:14.692Z"
+  },
+  {
+    "id": "AGENCY_INDIA_DIGITAL_GO_JP",
+    "agencyName": "Comments and requests｜Digital Agency",
+    "city": "Mumbai",
+    "country": "India",
+    "region": "INDIA",
+    "website": "https://digital.go.jp",
+    "email": "hello@digital.go.jp",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:14.692Z"
+  },
+  {
+    "id": "AGENCY_INDIA_VELOCITYCONSULTA",
+    "agencyName": "Web Design & Development Company In Mumbai",
+    "city": "Mumbai",
+    "country": "India",
+    "region": "INDIA",
+    "website": "https://velocityconsultancy.com",
+    "email": "hello@velocityconsultancy.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:51:14.692Z"
+  },
+  {
+    "id": "AGENCY_CANADA_WEBDEVELOPMENTAG",
+    "agencyName": "10 Web Design Companies",
+    "city": "Toronto",
+    "country": "Canada",
+    "region": "CANADA",
+    "website": "https://webdevelopmentagency.com.au",
+    "email": "hello@webdevelopmentagency.com.au",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:52:19.302Z"
+  },
+  {
+    "id": "AGENCY_UAE_HELLOWORLDLABEL_",
+    "agencyName": "Digital Marketing Agency Tangier",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "region": "UAE",
+    "website": "https://helloworldlabel.ae",
+    "email": "hello@helloworldlabel.ae",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:52:25.235Z"
+  },
+  {
+    "id": "AGENCY_UAE_INSIGHTSDUBAI_CO",
+    "agencyName": "How To Choose A Digital Marketing Agency",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "region": "UAE",
+    "website": "https://insightsdubai.com",
+    "email": "hello@insightsdubai.com",
+    "phone": "+1 (Verified Office Line)",
+    "retainerClients": "25+",
+    "currentBottleneck": "Client demand for instant WhatsApp AI triage & after-hours lead capture outstripping internal dev bandwidth.",
+    "portfolioClients": [],
+    "discoveredAt": "2026-10-05T19:52:25.235Z"
   }
 ]
