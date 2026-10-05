@@ -3303,7 +3303,7 @@ const UI_STRINGS = {
 // -----------------------------------------------------------------
 // ⚡ LIVE GARUDA CLINICAL AI INTELLIGENCE ENGINE (POWERED BY QWEN 27B / GROQ)
 // -----------------------------------------------------------------
-const GROQ_API_KEY = "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";
+const GROQ_API_KEY = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_GROQ_API_KEY) || "";
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
 
 async function askGarudaAI({ query, appLang, userProfile, conversationHistory }) {

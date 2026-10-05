@@ -1,4 +1,4 @@
-﻿/**
+/**
  * GARUDA AUTONOMOUS REVENUE HUNTER - CLOUD 24/7 DAEMON
  * Runs on Render Cloud independently of Founder's laptop.
  * Survives laptop shutdown, network disconnects, and container restarts.
@@ -69,6 +69,16 @@ async function startCloudHunter() {
       const summary = await hunter.runCycle({ dryRun: false });
       log(`Initial cycle finished: ${summary.leadsDiscovered} discovered, ${summary.leadsQualified} qualified, ${summary.queuedForApproval} queued.`);
 
+      // 🦅 Run High-Intent Problem Signal Scout on Cloud
+      try {
+        log('⚡ [SIGNAL_SCOUT] Running High-Intent Tech Problem Scout on Render Cloud...');
+        const { runScout } = require('../radar/tech-problem-scout');
+        await runScout({ notifyTelegram: true });
+        log('✔ [SIGNAL_SCOUT] Scout completed and Telegram alert dispatched.');
+      } catch (scoutErr) {
+        log(`⚠ [SIGNAL_SCOUT] Scout cycle note: ${scoutErr.message}`);
+      }
+
       log('Checking scheduled social content items on Render startup...');
       const ContentScheduler = require('../../social-engine/content/contentScheduler');
       const contentRes = await ContentScheduler.runSchedulerCycle({ dryRun: false });
@@ -78,8 +88,20 @@ async function startCloudHunter() {
     }
   }, 10000);
 
-  // Arm recurring schedule for Revenue Hunter
+  // Arm recurring schedule for Revenue Hunter & Signal Scout
   hunter.startScheduler(INTERVAL_MINUTES * 60 * 1000);
+
+  // Recurring Problem Signal Scout (every 60 minutes)
+  const scoutInterval = setInterval(async () => {
+    try {
+      log('⚡ [SIGNAL_SCOUT] Recurring High-Intent Tech Problem Scout running...');
+      const { runScout } = require('../radar/tech-problem-scout');
+      await runScout({ notifyTelegram: true });
+      log('✔ [SIGNAL_SCOUT] Recurring scout completed.');
+    } catch (scoutErr) {
+      log(`⚠ [SIGNAL_SCOUT] Recurring scout error: ${scoutErr.message}`);
+    }
+  }, INTERVAL_MINUTES * 60 * 1000);
 
   // Arm recurring schedule for Content Scheduler (every 15 minutes)
   const contentInterval = setInterval(async () => {
@@ -96,7 +118,8 @@ async function startCloudHunter() {
 
   // Graceful shutdown handlers
   const shutdown = () => {
-    log('ðŸ›‘ Graceful shutdown signal received. Stopping cloud hunter & content schedulers...');
+    log('🛑 Graceful shutdown signal received. Stopping cloud hunter, scouts & content schedulers...');
+    clearInterval(scoutInterval);
     clearInterval(contentInterval);
     hunter.stopScheduler();
     setTimeout(() => process.exit(0), 500);

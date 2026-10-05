@@ -15,6 +15,12 @@ services:
         value: smtp.zoho.in
       - key: GARUDA_EMAIL_PORT
         value: 465
+      - key: GARUDA_EMAIL_USER
+        value: praveen@garudaos.in
+      - key: GARUDA_EMAIL_PASS
+        sync: false
+      - key: SERPER_API_KEY
+        sync: false
       - key: TELEGRAM_BOT_TOKEN
         sync: false
       - key: TELEGRAM_FOUNDER_CHAT_ID
