@@ -168,6 +168,215 @@ export default function ConstituencyWarRoom() {
   const [commercialModalOpen, setCommercialModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // ---------------------------------------------------------------------------
+  // 📱 3-TIER ANDROID HARDWARE & GESTURE BACK-BUTTON LIFECYCLE (Praveen 1-Shot Perfection)
+  // "Sequence se aage peeche hona chahiye" - Golden Rule 7 Directive 4
+  // ---------------------------------------------------------------------------
+  const tabHistoryRef = useRef(["dashboard"]);
+  const [tabHistoryLength, setTabHistoryLength] = useState(1);
+  const isPoppingRef = useRef(false);
+  const lastBackPressRef = useRef(0);
+  const [backToast, setBackToast] = useState("");
+  const backToastTimeoutRef = useRef(null);
+
+  // Active state bundle ref so event listeners always access fresh real-time values without listener churn
+  const activeStateRef = useRef({
+    commercialModalOpen: false,
+    dossierModalOpen: false,
+    inspectingDevice: null,
+    deepDiveModuleId: null,
+    activeEvidence: null,
+    commandPaletteOpen: false,
+    isCityDropdownOpen: false,
+    mobileMenuOpen: false,
+    activeTab: "dashboard"
+  });
+
+  activeStateRef.current = {
+    commercialModalOpen,
+    dossierModalOpen,
+    inspectingDevice,
+    deepDiveModuleId,
+    activeEvidence,
+    commandPaletteOpen,
+    isCityDropdownOpen,
+    mobileMenuOpen,
+    activeTab
+  };
+
+  const triggerBackToast = (msg) => {
+    if (backToastTimeoutRef.current) clearTimeout(backToastTimeoutRef.current);
+    setBackToast(msg);
+    backToastTimeoutRef.current = setTimeout(() => {
+      setBackToast("");
+    }, 2500);
+  };
+
+  // Sync activeTab transitions into sequential history stack
+  useEffect(() => {
+    if (isPoppingRef.current) {
+      isPoppingRef.current = false;
+      return;
+    }
+    const stack = tabHistoryRef.current;
+    if (stack[stack.length - 1] !== activeTab) {
+      stack.push(activeTab);
+      setTabHistoryLength(stack.length);
+      try {
+        window.history.pushState({ garudaWarRoom: true, tab: activeTab }, "");
+      } catch (e) {
+        // Safe fallback in restricted sandboxes
+      }
+    }
+  }, [activeTab]);
+
+  // Master 3-Tier Back Cascade Handler
+  const handleCustomBack = (isPopStateEvent = false) => {
+    const s = activeStateRef.current;
+
+    // TIER 1: ACTIVE MODAL / DRAWER / SHEET / INSPECTOR FIRST
+    if (s.commercialModalOpen) {
+      setCommercialModalOpen(false);
+      if (isPopStateEvent) {
+        try { window.history.pushState({ garudaWarRoom: true, tab: s.activeTab }, ""); } catch (e) {}
+      }
+      return;
+    }
+    if (s.dossierModalOpen) {
+      setDossierModalOpen(false);
+      if (isPopStateEvent) {
+        try { window.history.pushState({ garudaWarRoom: true, tab: s.activeTab }, ""); } catch (e) {}
+      }
+      return;
+    }
+    if (s.inspectingDevice) {
+      setInspectingDevice(null);
+      if (isPopStateEvent) {
+        try { window.history.pushState({ garudaWarRoom: true, tab: s.activeTab }, ""); } catch (e) {}
+      }
+      return;
+    }
+    if (s.deepDiveModuleId) {
+      setDeepDiveModuleId(null);
+      if (isPopStateEvent) {
+        try { window.history.pushState({ garudaWarRoom: true, tab: s.activeTab }, ""); } catch (e) {}
+      }
+      return;
+    }
+    if (s.activeEvidence) {
+      setActiveEvidence(null);
+      if (isPopStateEvent) {
+        try { window.history.pushState({ garudaWarRoom: true, tab: s.activeTab }, ""); } catch (e) {}
+      }
+      return;
+    }
+    if (s.commandPaletteOpen) {
+      setCommandPaletteOpen(false);
+      if (isPopStateEvent) {
+        try { window.history.pushState({ garudaWarRoom: true, tab: s.activeTab }, ""); } catch (e) {}
+      }
+      return;
+    }
+    if (s.isCityDropdownOpen) {
+      setIsCityDropdownOpen(false);
+      if (isPopStateEvent) {
+        try { window.history.pushState({ garudaWarRoom: true, tab: s.activeTab }, ""); } catch (e) {}
+      }
+      return;
+    }
+    if (s.mobileMenuOpen) {
+      setMobileMenuOpen(false);
+      if (isPopStateEvent) {
+        try { window.history.pushState({ garudaWarRoom: true, tab: s.activeTab }, ""); } catch (e) {}
+      }
+      return;
+    }
+
+    // TIER 2: SEQUENTIAL SUB-TAB REVERSE ("Sequence se peeche")
+    const stack = tabHistoryRef.current;
+    if (stack.length > 1) {
+      stack.pop(); // Pop current active tab
+      const prevTab = stack[stack.length - 1] || "dashboard";
+      setTabHistoryLength(stack.length);
+      isPoppingRef.current = true;
+      setActiveTab(prevTab);
+      if (!isPopStateEvent) {
+        try { window.history.back(); } catch (e) {}
+      }
+      return;
+    }
+
+    // If stack has 1 entry but activeTab is somehow not dashboard, return to dashboard
+    if (s.activeTab !== "dashboard") {
+      isPoppingRef.current = true;
+      tabHistoryRef.current = ["dashboard"];
+      setTabHistoryLength(1);
+      setActiveTab("dashboard");
+      if (!isPopStateEvent) {
+        try { window.history.back(); } catch (e) {}
+      }
+      return;
+    }
+
+    // TIER 3: HOME ROOT 2.5s DOUBLE-PRESS EXIT SAFEGUARD
+    const now = Date.now();
+    if (now - lastBackPressRef.current < 2500) {
+      if (window.Capacitor?.Plugins?.App?.exitApp) {
+        window.Capacitor.Plugins.App.exitApp();
+      } else {
+        try { window.history.back(); } catch (e) {}
+      }
+    } else {
+      lastBackPressRef.current = now;
+      triggerBackToast("War Room se bahar nikalne ke liye dubara Back dabayein");
+      if (isPopStateEvent) {
+        try {
+          window.history.pushState({ garudaWarRoom: true, tab: "dashboard", rootGuard: true }, "");
+        } catch (e) {}
+      }
+    }
+  };
+
+  // Setup Browser History Priming and Native Capacitor / Popstate Listeners
+  useEffect(() => {
+    try {
+      window.history.replaceState({ garudaWarRoom: true, tab: "dashboard", root: true }, "");
+      window.history.pushState({ garudaWarRoom: true, tab: "dashboard", rootGuard: true }, "");
+    } catch (e) {
+      console.warn("History priming error:", e);
+    }
+
+    const onPopState = () => {
+      handleCustomBack(true);
+    };
+    window.addEventListener("popstate", onPopState);
+
+    let capListener = null;
+    try {
+      if (window.Capacitor?.Plugins?.App?.addListener) {
+        window.Capacitor.Plugins.App.addListener("backButton", () => {
+          handleCustomBack(false);
+        }).then((l) => {
+          capListener = l;
+        }).catch((e) => {
+          console.warn("Capacitor backButton listener registration:", e);
+        });
+      }
+    } catch (err) {
+      console.warn("Capacitor plugin check:", err);
+    }
+
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+      if (capListener && capListener.remove) {
+        capListener.remove();
+      }
+      if (backToastTimeoutRef.current) {
+        clearTimeout(backToastTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Close dropdown on outside click
   const dropdownRef = useRef(null);
   useEffect(() => {
@@ -1464,6 +1673,18 @@ export default function ConstituencyWarRoom() {
           transform: scale(0.975);
         }
 
+        /* Toast Animation */
+        @keyframes garudaToastFadeIn {
+          from {
+            opacity: 0;
+            transform: translate(-50%, 14px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+          }
+        }
+
         /* Horizontal Scroll Isolation */
         .isolated-h-scroll {
           overscroll-behavior-x: contain;
@@ -1865,8 +2086,33 @@ export default function ConstituencyWarRoom() {
         <header
           className="garuda-war-room-header"
         >
-          {/* LEFT: HAMBURGER (MOBILE) + CONSTITUENCY DROPDOWN TRIGGER + LIVE PILL */}
+          {/* LEFT: HAMBURGER (MOBILE) + SEQUENTIAL BACK (MOBILE) + CONSTITUENCY DROPDOWN TRIGGER + LIVE PILL */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", position: "relative" }} ref={dropdownRef}>
+            {tabHistoryLength > 1 && (
+              <button
+                className="mobile-only garuda-touch-tap"
+                onClick={() => handleCustomBack(false)}
+                style={{
+                  background: wp.card,
+                  border: "1.5px solid " + wp.goldPrimary,
+                  borderRadius: "9px",
+                  padding: "7px 11px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: wp.goldDeep,
+                  fontSize: "13px",
+                  fontWeight: 800,
+                  boxShadow: "0 2px 8px rgba(184, 134, 43, 0.16)",
+                  gap: "4px"
+                }}
+                title="Pichle Screen Par Jayein (Back)"
+                aria-label="Pichle Screen Par Jayein"
+              >
+                ← Back
+              </button>
+            )}
             <button
               className="mobile-only garuda-touch-tap"
               onClick={() => setMobileMenuOpen(true)}
@@ -2517,6 +2763,41 @@ export default function ConstituencyWarRoom() {
           );
         })}
       </nav>
+
+      {/* TIER 3 EXIT SAFEGUARD TOAST (Praveen 1-Shot Perfection) */}
+      {backToast && (
+        <div
+          role="status"
+          aria-live="polite"
+          style={{
+            position: "fixed",
+            bottom: "74px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "rgba(15, 17, 16, 0.94)",
+            color: "#FFFFFF",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            border: "1px solid " + wp.goldPrimary,
+            borderRadius: "30px",
+            padding: "10px 20px",
+            fontSize: "12px",
+            fontWeight: 700,
+            letterSpacing: "0.2px",
+            boxShadow: "0 12px 36px rgba(0, 0, 0, 0.35)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            gap: "9px",
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+            animation: "garudaToastFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
+          }}
+        >
+          <span style={{ fontSize: "14px" }}>🛡️</span>
+          <span>{backToast}</span>
+        </div>
+      )}
 
     </div>
   );
