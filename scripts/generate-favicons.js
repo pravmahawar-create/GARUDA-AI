@@ -79,7 +79,7 @@ function createIco(pngBuffers) {
 async function generateFavicons() {
   console.log("=== GENERATING AUTHENTIC GARUDA GOLDEN EAGLE FAVICONS (TINY-SCALE OPTIMIZED) ===");
 
-  if (!sharp || !fs.existsSync(SOURCE_IMAGE)) {
+  if (!sharp || !fs.existsSync(SOURCE_IMAGE) || process.env.RENDER || process.env.CI) {
     copyPrebuiltAssets();
     return;
   }

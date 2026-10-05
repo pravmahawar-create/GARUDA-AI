@@ -2327,6 +2327,34 @@
       "notes": "Found via agent.personal_australia_web_hunter (site:yelp.com restaurants Australia contact) — Audit: viewport:ok, copyright:2004, load:0.4s, needsUpdate:true — garudaos.ai@gmail.com",
       "status": "scored",
       "createdAt": "2026-10-02T19:34:47.336Z"
+    },
+    {
+      "id": "PL_1791230864153_dbf41f",
+      "firstName": "",
+      "lastName": "",
+      "email": "hello@orbix.studio",
+      "phone": "",
+      "businessName": "14 Trusted Custom Software Development Companies 2026",
+      "city": "Munich",
+      "segments": [
+        "urgent"
+      ],
+      "score": 47,
+      "grade": "POTENTIAL",
+      "action": "can_generate",
+      "query": "awareness",
+      "signals": [
+        "urgent(1)",
+        "email_found",
+        "gstin_or_website",
+        "named_business_in_city"
+      ],
+      "locale": "en",
+      "country": "DE",
+      "source": "web_research",
+      "notes": "Found via agent.personal_global_software_hunter (\"looking for\" \"custom software\" OR \"SaaS\" developer Europe contact) — Audit: viewport:ok, copyright:2023, load:1.1s, needsUpdate:false — garudaos.ai@gmail.com",
+      "status": "scored",
+      "createdAt": "2026-10-05T20:07:44.153Z"
     }
   ]
 }
