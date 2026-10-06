@@ -20,7 +20,7 @@ const DispatchWorker = require('./outreach/dispatchWorker');
 const TruthVerifier = require('./outreach/truthVerifier');
 const OutreachPolicyEngine = require('./outreach/policyEngine');
 const ResponseMonitor = require('./outreach/responseMonitor');
-const FollowUpEngine = require('./outreach/followUpEngine');
+const FollowUpEngine = require('./outreach/followupEngine');
 const TelegramAlertService = require('./notifications/telegramAlertService');
 
 // Scouts
