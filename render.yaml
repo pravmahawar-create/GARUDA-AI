@@ -3,7 +3,7 @@ services:
     name: garuda-ai
     env: node
     plan: starter
-    buildCommand: npm install --include=dev --no-audit --no-fund && npm run build
+    buildCommand: npm install --include=dev --no-audit --no-fund && npm run build:render
     startCommand: node server.js
     healthCheckPath: /health
     envVars:

@@ -9,6 +9,7 @@
   "scripts": {
     "garuda": "node scripts/garuda-dev.js",
     "build": "vite build && node scripts/generate-sitemap.js && node scripts/generate-favicons.js && node scripts/prerender-seo.js",
+    "build:render": "vite build",
     "seo": "node scripts/generate-sitemap.js && node scripts/prerender-seo.js",
     "preview": "vite preview",
     "test:tools": "node --test-concurrency=1 src/tools/executionTools.test.js",

@@ -225,5 +225,30 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
         } else {
             console.log("[GARUDA] Revenue Hunter daemon idle — set GARUDA_REVENUE_HUNTER=true to enable");
         }
+
+        // ── 24/7 HackerOne Email Watcher (Delayed warm up: 25s) ──
+        setTimeout(() => {
+            try {
+                const watcher = require("./src/services/hackerOneEmailWatcher");
+                watcher.startWatcher(10 * 60 * 1000);
+                console.log("[GARUDA] HackerOne email watcher armed — 10m poll (Zoho)");
+            } catch (e) { console.warn("[HackerOneWatcher] init skip", String(e.message).slice(0, 80)); }
+        }, 25000);
+
+        // ── 24/7 Overnight Serper Hunters (Delayed warm up: 35s) ──
+        const overnightEnabled = String(process.env.GARUDA_OVERNIGHT_HUNTERS || "false").toLowerCase() === "true";
+        if (overnightEnabled) {
+            setTimeout(() => {
+                try {
+                    const overnight = require("./src/workers/overnightSerperHuntersWorker");
+                    if (overnight.founderApprovedTonight()) {
+                        console.log("[GARUDA] Overnight hunters loop starting (SERPER 2500, founder YES tonight)...");
+                        overnight.startOvernightLoop();
+                    }
+                } catch (e) { console.warn("[Overnight] start failed:", String(e.message).slice(0, 100)); }
+            }, 35000);
+        } else {
+            console.log("[GARUDA] Overnight hunters idle — set GARUDA_OVERNIGHT_HUNTERS=true to enable");
+        }
     });
 })();

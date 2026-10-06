@@ -9,6 +9,26 @@ const fs = require("fs");
 
 const app = express();
 
+// ⚡ ULTRA-FAST HEALTH CHECK: Immediate sub-millisecond response for Render & uptime probes
+// Must execute BEFORE rate-limiters, body-parsers, and auth middleware.
+const healthResponse = (req, res) => {
+  let database = "mongodb";
+  try {
+    const connectDB = require("./database/db");
+    database = connectDB.isMongoConnected() ? "mongodb-connected" : "degraded";
+  } catch (err) { /* silent check */ }
+  if (database === "degraded") res.setHeader("Cache-Control", "no-store, must-revalidate");
+  res.json({
+    success: true,
+    service: "GARUDA AI Backend",
+    status: database === "degraded" ? "degraded" : "healthy",
+    database,
+    timestamp: new Date().toISOString()
+  });
+};
+app.get("/health", healthResponse);
+app.get("/api/health", healthResponse);
+
 // Security headers
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -69,23 +89,6 @@ app.use("/data/creative-assets", express.static(creativeAssetsPath, { maxAge: "1
 app.use("/assets/creative", express.static(creativeAssetsPath, { maxAge: "1d", etag: true }));
 app.use(require("./middleware/authContextMiddleware"));
 
-const healthResponse = (req, res) => {
-  let database = "mongodb";
-  try {
-    const connectDB = require("./database/db");
-    database = connectDB.isMongoConnected() ? "mongodb-connected" : "degraded";
-  } catch (err) { console.warn("[health] DB check failed:", String(err.message).slice(0,120)); }
-  // Prevent caching degraded health as healthy
-  if (database === "degraded") res.setHeader("Cache-Control", "no-store, must-revalidate");
-  res.json({
-    success: true,
-    service: "GARUDA AI Backend",
-    status: database === "degraded" ? "degraded" : "healthy",
-    database,
-    timestamp: new Date().toISOString()
-  });
-};
-
 app.get("/", (req, res) => {
   const distIndex = path.join(__dirname, "..", "frontend", "dist", "index.html");
   if (fs.existsSync(distIndex)) {
@@ -93,9 +96,6 @@ app.get("/", (req, res) => {
   }
   res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
-
-app.get("/health", healthResponse);
-app.get("/api/health", healthResponse);
 
 app.use("/api/mother", require("./routes/motherAgentRoutes"));
 app.use("/api/intelligence", require("./routes/intelligenceRoutes"));
@@ -205,33 +205,22 @@ const abslKnowledgeService = require("./services/abslKnowledgeService");
 const abslKnowledgeSeedService = require("./services/abslKnowledgeSeedService");
 // Note: Revenue Operating Cycle workers boot via server.js only when MongoDB connection is verified.
 
-// HackerOne email auto-detect (Zoho) — no more manual batana
-try{
-  const watcher = require("./services/hackerOneEmailWatcher");
-  watcher.startWatcher(10*60*1000);
-  console.log("[GARUDA] HackerOne email watcher armed — 10m poll (Zoho)");
-} catch(e){ console.log("[HackerOneWatcher] init skip", String(e.message).slice(0,80)); }
-
-// Overnight Serper Hunters — laptop band ke baad bhi subah tak (Render pe) — Founder YES tonight
-try{
+// Overnight Serper Hunters API endpoints (execution managed via server.js / manual API)
+try {
   const overnight = require("./workers/overnightSerperHuntersWorker");
-  // Auto-start if env GARUDA_OVERNIGHT_HUNTERS === "true" or founder approved tonight (06:00)
-  if(process.env.GARUDA_OVERNIGHT_HUNTERS === "true" || overnight.founderApprovedTonight()){
-    console.log("[GARUDA] Overnight hunters loop starting (SERPER 2500, founder YES tonight)...");
-    overnight.startOvernightLoop();
-  }
-  // Expose API for manual control
   const appRef = app;
-  appRef.get("/api/hunters/overnight/status", (req,res)=> res.json({success:true, ...overnight.getOvernightStatus()}));
-  appRef.post("/api/hunters/overnight/start", (req,res)=>{
-    const r=overnight.startOvernightLoop();
-    res.json({success:true, ...r, status: overnight.getOvernightStatus()});
+  appRef.get("/api/hunters/overnight/status", (req, res) => res.json({ success: true, ...overnight.getOvernightStatus() }));
+  appRef.post("/api/hunters/overnight/start", (req, res) => {
+    const r = overnight.startOvernightLoop();
+    res.json({ success: true, ...r, status: overnight.getOvernightStatus() });
   });
-  appRef.post("/api/hunters/overnight/stop", (req,res)=>{
+  appRef.post("/api/hunters/overnight/stop", (req, res) => {
     overnight.stopOvernightLoop();
-    res.json({success:true, stopped:true, status: overnight.getOvernightStatus()});
+    res.json({ success: true, stopped: true, status: overnight.getOvernightStatus() });
   });
-}catch(e){ console.log("[Overnight] init failed", String(e.message).slice(0,100)); }
+} catch (e) {
+  console.log("[Overnight] routes setup skipped", String(e.message).slice(0, 100));
+}
 
 app.get("/api/telegram", async (req, res) => {
   try {

@@ -155,6 +155,7 @@ async function main() {
         const info = await transporter.sendMail({
           from: FROM_HEADER,
           to: lead.email,
+          replyTo: process.env.GARUDA_REPLY_TO || "garudaos.ai@gmail.com",
           subject: subject,
           text: body
         });
