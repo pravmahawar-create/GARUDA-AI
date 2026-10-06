@@ -3,7 +3,7 @@ const connectDB = require("./src/database/db");
 const { initRevenueOperatingCycle } = require("./src/services/revenueOperatingCycleInitializer");
 require("dotenv").config();
 
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT, 10) || (process.env.RENDER ? 10000 : 3000);
 
 // ── KEEP-ALIVE: Prevent Render free-tier cold start ──
 // Pings own /health endpoint every 10 min so Render never spins down the process.

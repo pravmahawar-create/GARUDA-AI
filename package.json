@@ -2,11 +2,12 @@
   "name": "garuda-ai",
   "version": "1.0.0",
   "description": "AI Operating System for ABSLI Life Insurance",
-  "main": "index.js",
+  "main": "server.js",
   "bin": {
     "garuda": "bin/garuda.js"
   },
   "scripts": {
+    "start": "node server.js",
     "garuda": "node scripts/garuda-dev.js",
     "build": "vite build && node scripts/generate-sitemap.js && node scripts/generate-favicons.js && node scripts/prerender-seo.js",
     "build:render": "vite build",
