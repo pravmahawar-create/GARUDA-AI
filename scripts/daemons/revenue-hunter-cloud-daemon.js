@@ -89,6 +89,16 @@ async function startCloudHunter() {
         log(`⚠ [AGENCY_HARVESTER] Harvester cycle note: ${agErr.message}`);
       }
 
+      // 🎯 Run Triple-Threat Cloud Lead Hunter (Ad-Burners + Demo Factory + Distress Gigs)
+      try {
+        log('⚡ [TRIPLE_THREAT] Running Triple-Threat Cloud Lead Hunter...');
+        const { runTripleThreatCycle } = require('../radar/triple-threat-runner');
+        const ttRes = await runTripleThreatCycle();
+        log(`✔ [TRIPLE_THREAT] Complete: ${ttRes.adBurnersFound || 0} ad-burners, ${ttRes.distressGigsCaptured || 0} distress gigs captured.`);
+      } catch (ttErr) {
+        log(`⚠ [TRIPLE_THREAT] Triple-threat cycle note: ${ttErr.message}`);
+      }
+
       log('Checking scheduled social content items on Render startup...');
       const ContentScheduler = require('../../social-engine/content/contentScheduler');
       const contentRes = await ContentScheduler.runSchedulerCycle({ dryRun: false });
@@ -125,6 +135,18 @@ async function startCloudHunter() {
     }
   }, INTERVAL_MINUTES * 60 * 1000);
 
+  // Recurring Triple-Threat Cloud Hunter (every 60 minutes, silent in background)
+  const tripleThreatInterval = setInterval(async () => {
+    try {
+      log('⚡ [TRIPLE_THREAT] Recurring Triple-Threat Cloud Hunter running...');
+      const { runTripleThreatCycle } = require('../radar/triple-threat-runner');
+      const ttRes = await runTripleThreatCycle();
+      log(`✔ [TRIPLE_THREAT] Recurring complete: ${ttRes.adBurnersFound || 0} ad-burners, ${ttRes.distressGigsCaptured || 0} distress gigs.`);
+    } catch (ttErr) {
+      log(`⚠ [TRIPLE_THREAT] Recurring triple-threat error: ${ttErr.message}`);
+    }
+  }, INTERVAL_MINUTES * 60 * 1000);
+
   // Arm recurring schedule for Content Scheduler (every 15 minutes)
   const contentInterval = setInterval(async () => {
     try {
@@ -143,6 +165,7 @@ async function startCloudHunter() {
     log('🛑 Graceful shutdown signal received. Stopping cloud hunter, scouts & content schedulers...');
     clearInterval(scoutInterval);
     clearInterval(agencyInterval);
+    clearInterval(tripleThreatInterval);
     clearInterval(contentInterval);
     hunter.stopScheduler();
     setTimeout(() => process.exit(0), 500);
