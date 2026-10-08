@@ -171,6 +171,7 @@ app.use("/api/marketplace", require("./routes/marketplaceRoutes"));
   app.use("/api/autonomous", require("./routes/autonomousRoutes"));
   app.use("/api/feedback", (req, res) => require("../api/feedback-dashboard")(req, res));
   app.use("/api/brain", (req, res) => require("../api/garuda-brain")(req, res));
+  app.use("/api/scholar-chat", (req, res) => require("../api/scholar-chat")(req, res));
 
 // 🎙️ Natural Indian Voice Speech Engine (Google Natural TTS stream) — rate-limited
 app.get("/api/audio/tts", ttsLimiter, async (req, res) => {

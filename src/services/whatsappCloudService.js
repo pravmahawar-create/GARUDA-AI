@@ -56,4 +56,9 @@ async function sendMessage(phone, message, opts = {}) {
   return { ...result, provider: "whatsapp_browser" };
 }
 
-module.exports = { isCloudConfigured, sendCloudMessage, sendMessage };
+async function sendFounderWhatsAppAlert(message) {
+  const founderPhone = process.env.FOUNDER_PHONE || "919098750362";
+  return await sendCloudMessage(founderPhone, message);
+}
+
+module.exports = { isCloudConfigured, sendCloudMessage, sendMessage, sendFounderWhatsAppAlert };

@@ -249,8 +249,71 @@ async function generateWithNvidia({ message, history, mode }) {
   return reply.trim();
 }
 
+async function generateWithGroq({ message, history, mode }) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error("GROQ_API_KEY not configured");
+
+  const systemPrompt = buildScholarSystemPrompt(mode);
+  const messages = [{ role: "system", content: systemPrompt }];
+
+  if (Array.isArray(history)) {
+    for (const item of history) {
+      if (!item || !item.role) continue;
+      const role = item.role === "user" ? "user" : "assistant";
+      const content = item.text || item.content || "";
+      if (content) messages.push({ role, content });
+    }
+  }
+  messages.push({ role: "user", content: message.trim() });
+
+  const candidateModels = ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"];
+  let lastErr = null;
+
+  for (const model of candidateModels) {
+    try {
+      const res = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model,
+          messages,
+          max_tokens: 4096,
+          temperature: mode === "academic_research" ? 0.4 : mode === "code_engineering" ? 0.2 : 0.6
+        })
+      }, 30000);
+
+      if (!res.ok) {
+        throw new Error(`Groq returned HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      const reply = data?.choices?.[0]?.message?.content ?? null;
+      if (reply && reply.trim()) {
+        return reply.trim();
+      }
+    } catch (err) {
+      lastErr = err;
+      console.warn(`Scholar Groq Model (${model}) warning:`, err.message);
+    }
+  }
+
+  throw lastErr || new Error("All Groq models failed");
+}
+
 async function generateScholarReplyWithFallbacks({ message, history, mode, attachments }) {
-  // Tier 1 & 2: Primary Google Gemini Suite
+  // Tier 1: Groq Ultra-Fast Lightning Inference (openai/gpt-oss-120b & qwen/qwen3.8-27b)
+  if (process.env.GROQ_API_KEY) {
+    try {
+      return await generateWithGroq({ message, history, mode });
+    } catch (groqErr) {
+      console.warn("Scholar Groq Tier failed, falling back to Gemini:", groqErr.message);
+    }
+  }
+
+  // Tier 2: Primary Google Gemini Suite
   if (process.env.GEMINI_API_KEY) {
     try {
       return await generateWithGemini({ message, history, mode, attachments });

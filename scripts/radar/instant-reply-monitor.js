@@ -108,6 +108,16 @@ async function triggerFounderPing(leadInfo) {
   } catch (err) {
     console.error("❌ Failed to ping Founder Telegram:", err.message);
   }
+
+  try {
+    const waService = require("../../src/services/whatsappCloudService");
+    if (waService.isCloudConfigured()) {
+      await waService.sendFounderWhatsAppAlert(`${alertTitle}\n\n${alertBody}`);
+      console.log("✔ Founder WhatsApp ping dispatched successfully!");
+    }
+  } catch (err) {
+    console.warn("⚠️ Founder WhatsApp ping failed:", err.message);
+  }
 }
 
 async function runMonitorCycle() {

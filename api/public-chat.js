@@ -262,25 +262,75 @@ async function generateWithGemini({ message, history, attachments = [] }) {
   throw err;
 }
 
-async function generateReply(message, history, attachments = []) {
-  const nvidiaKey = getNvidiaApiKey();
-  const geminiKey = process.env.GEMINI_API_KEY;
+async function generateWithGroq({ message, history }) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error("GROQ_API_KEY not configured");
 
+  const messages = buildHistoryMessages(history, message);
+  const candidateModels = ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"];
+  let lastErr = null;
+
+  for (const model of candidateModels) {
+    try {
+      const res = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model,
+          messages,
+          max_tokens: 3072,
+          temperature: 0.6
+        })
+      }, 20000);
+
+      if (!res.ok) {
+        throw new Error(`Groq returned HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      const reply = data?.choices?.[0]?.message?.content ?? null;
+      if (reply && reply.trim()) {
+        return reply.trim();
+      }
+    } catch (err) {
+      lastErr = err;
+      console.warn(`Public Chat Groq Model (${model}) warning:`, err.message);
+    }
+  }
+
+  throw lastErr || new Error("All Groq models failed");
+}
+
+async function generateReply(message, history, attachments = []) {
+  // Tier 1: Groq Ultra-Fast Lightning Inference (openai/gpt-oss-120b & qwen/qwen3.8-27b)
+  if (process.env.GROQ_API_KEY) {
+    try {
+      return await generateWithGroq({ message, history });
+    } catch (groqErr) {
+      console.warn("Public Chat Groq Error:", groqErr && groqErr.message ? groqErr.message : groqErr);
+    }
+  }
+
+  // Tier 2: Google Gemini Suite
+  const geminiKey = process.env.GEMINI_API_KEY;
   if (geminiKey) {
     try {
       return await generateWithGemini({ message, history, attachments });
     } catch (error) {
       console.warn("Public Chat Gemini Error:", error && error.message ? error.message : error);
-      if (!nvidiaKey) return generateLocalFallback(message);
     }
   }
 
+  // Tier 3: NVIDIA
+  const nvidiaKey = getNvidiaApiKey();
   if (nvidiaKey) {
     try {
       return await generateWithNvidia({ message, history });
     } catch (error) {
       console.warn("Public Chat NVIDIA Error:", error && error.message ? error.message : error);
-      return generateLocalFallback(message);
     }
   }
 
@@ -590,7 +640,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const isTest = req.headers["x-garuda-test"] === "true" || (req.body && req.body.isTest === true);
+    const isTest = (req.headers && req.headers["x-garuda-test"] === "true") || (req.body && req.body.isTest === true);
     const clientRef = String((req.query && req.query.ref) || (req.body && req.body.ref) || "").trim();
 
     let clinicAgentResult = null;

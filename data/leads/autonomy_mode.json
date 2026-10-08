@@ -1,6 +1,8 @@
 {
   "mode": "APPROVAL_REQUIRED",
-  "updatedAt": "2026-09-29T19:47:04.121Z",
+  "genericColdOutreach": "PAUSED",
+  "activeFocus": "INBOUND_NEED_SIGNALS_ONLY",
+  "updatedAt": "2026-10-08T16:46:40.000Z",
   "updatedBy": "founder_praveen",
-  "reason": "Founder control update"
+  "reason": "Founder mandate: Halted generic cold email blasts; 100% bandwidth locked onto active inbound demand and screaming need signals."
 }
