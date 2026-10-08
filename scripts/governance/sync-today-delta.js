@@ -24,8 +24,7 @@ console.log(`[GARUDA-DELTA] Scanning for files modified after: ${new Date(baseMt
 // Collect modified files
 const trackedDirs = [
   { root: 'D:\\GARUDA-AI', prefix: 'GARUDA-AI' },
-  { root: 'C:\\Users\\hp\\.gemini\\antigravity-cli\\conversations', prefix: 'conversations' },
-  { root: 'C:\\Users\\hp\\.gemini\\antigravity-cli\\brain', prefix: 'brain' }
+  { root: 'C:\\Users\\hp\\.gemini\\antigravity-cli', prefix: 'antigravity-cli' }
 ];
 
 const fileListPath = path.join(VAULT_DIR, 'modified_files.txt');
@@ -38,7 +37,7 @@ function scanDir(dir) {
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        if (/node_modules|\.git|\.chrome-profile|\.cache|dist|build|\.next/.test(entry.name)) continue;
+        if (/node_modules|\.git|\.chrome-profile|\.cache|dist|build|\.next|bin|updater|crashes/.test(entry.name)) continue;
         scanDir(fullPath);
       } else if (entry.isFile()) {
         try {

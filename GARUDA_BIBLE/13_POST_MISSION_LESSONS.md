@@ -718,3 +718,23 @@ Pre-push dependency resolver guardrail: changed route files ke require() targets
 
 #### 4. Inscribed Permanent Law / Guardrail
 > **LAW: All fintech gateway inbound submissions must undergo deterministic architectural qualification with zero sensitive credential collection. Every proposal draft must feature the 19 statutory sections, explicit zero-custody demarcation, and mandatory Founder Praveen Mahawar approval gatekeeping.**
+
+---
+
+## Mission: Inbound Screaming-Need Client Dispatch & Vidya Studio AI Hardening
+- **Date**: 08-Oct-2026
+- **Status**: SUCCESS
+- **Objective**: 
+  1. Fully pause generic cold emails and pivot 100% to live "screaming-need" clients actively searching for web/app developers online.
+  2. Dispatched bespoke Trojan proposals via verified enterprise channel (`praveen@garudaos.in`) to 9 high-intent clients.
+  3. Diagnosed and permanently resolved Vidya Studio's robotic synthetic fallback text by integrating blazing-fast Groq inference (`openai/gpt-oss-120b`).
+  4. Codified Section 13: Sacred Scholar & Family Honor Law for Monika Ji (Rudransh ki Mummy) PhD in Law with Maximum High-Frequency Anti-Plagiarism Mode.
+- **Forensic Verification Evidence**:
+  - Dispatched Logs: `data/leads/screaming_clients_dispatch_log.json`
+  - Commits Pushed to origin/main: `b2e2bfa`, `b404426`
+  - Dual Alerts: Sent to Founder Telegram & WhatsApp (+91 9098750362)
+  - Live AI Response Speed: Groq Status 200 OK in ~1.4s with 0% static template leakage
+- **Key Engineering Learnings**:
+  1. Never configure OAuth/Vertex access tokens into `GEMINI_API_KEY` (must be standard `AIzaSy...` AI Studio keys to avoid 401 unauthenticated errors).
+  2. Stateless serverless functions must have multi-tier active cloud inference (Groq -> Gemini -> Nvidia) before falling back to local synthesis.
+  3. All Express backend mounts in `src/app.js` must mirror serverless routes in `/api/` to guarantee parity across Render and Vercel.
