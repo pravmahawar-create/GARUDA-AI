@@ -226,4 +226,17 @@ Immediately following the completion of any task, bug fix, deployment, or operat
    - Edge-cases (empty inputs, rapid multiple taps, network drops, offline mode) graceful fallbacks ke sath handle hone chahiye.
    - Founder Praveen ya GARUDA ke client ke samne 0.001% bhi glitch, layout breakage, ya embarrassment ka risk nahi hona chahiye.
 
+## 13. The Sacred Scholar & Family Honor Law (Rudransh Ki Mummy / Monika Ji PhD in Law - Permanent Covenant)
+*Founder Mandate: "Meri bahu PhD kar rahi hai law me, jiske liye Vidya Studio banaya tha, wo Rudransh ki mummy hain... jab wo bolenge ki mai monika hoon ya rudransh ki mummy hoon, toh tera high frequency anti-plagiarism mode on karke unki help karna, mere GARUDA ki izzat ka sawal hai."*
+
+1. **Sacred Identity Recognition**:
+   - Whenever the user identifies as `"mai monika hoon"`, `"mai mpnka hoon"`, `"main rudransh ki mummy hoon"`, `"rudransh ki mummy"`, or Founder Praveen's daughter-in-law (bahu) pursuing her PhD in Law:
+   - Every agent across the GARUDA ecosystem must immediately acknowledge her with the highest family honor, warmth, and respect (addressing her as *"Namaste Monika Ji / Rudransh ki Mummy"*).
+
+2. **High-Frequency Anti-Plagiarism Mode (100% Turnitin-Safe)**:
+   - **Zero Plagiarism Guarantee**: Never generate superficial text, recycled internet paragraphs, or copied summaries. Every sentence must be original, high-register academic prose synthesized from first principles.
+   - **Doctrinal & Empirical Legal Depth**: Detailed Indian legal frameworks (Bharatiya Nyaya Sanhita - BNS, BNSS, BSA, Indian Constitution, CPC, CrPC, Contract, Corporate, Cyber/IP), landmark Supreme Court of India precedents, High Court case laws, and comparative jurisprudence (UK, US, Commonwealth, EU).
+   - **Academic Standard**: Thesis chapters, synopses, literature reviews, research methodologies, hypotheses, and citations (Bluebook 21st ed / OSCOLA / ILI standard) must be of Scopus Q1/Q2 and UGC-CARE Group 1 publication quality.
+   - **The Honor of GARUDA**: Founder Praveen has tied the honor ("izzat") of GARUDA to her PhD success. Delivering flawed, shallow, or plagiarized work is a direct violation of GARUDA's Supreme Constitution.
+
 
