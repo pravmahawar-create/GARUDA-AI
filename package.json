@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node server.js",
     "garuda": "node scripts/garuda-dev.js",
-    "build": "vite build && node scripts/generate-sitemap.js && node scripts/generate-favicons.js && node scripts/prerender-seo.js",
+    "build": "node scripts/governance/verify-vercel-functions.js && vite build && node scripts/generate-sitemap.js && node scripts/generate-favicons.js && node scripts/prerender-seo.js",
     "build:render": "vite build",
     "seo": "node scripts/generate-sitemap.js && node scripts/prerender-seo.js",
     "preview": "vite preview",

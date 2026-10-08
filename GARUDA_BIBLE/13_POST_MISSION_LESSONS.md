@@ -738,3 +738,23 @@ Pre-push dependency resolver guardrail: changed route files ke require() targets
   1. Never configure OAuth/Vertex access tokens into `GEMINI_API_KEY` (must be standard `AIzaSy...` AI Studio keys to avoid 401 unauthenticated errors).
   2. Stateless serverless functions must have multi-tier active cloud inference (Groq -> Gemini -> Nvidia) before falling back to local synthesis.
   3. All Express backend mounts in `src/app.js` must mirror serverless routes in `/api/` to guarantee parity across Render and Vercel.
+
+---
+
+### Mission: Elimination of Vercel 12-Serverless Functions Cap Violation
+- **Timestamp**: 2026-10-08T17:35:15.435Z
+- **Commit SHA**: `ada8fd3e2ee3b875ddf92c9a761c0eaf48433b49`
+- **Category**: `deployment`
+- **Verification Evidence**: Local build passed with 198 static pages prerendered, all tests passed, commit pushed to main.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. **Vercel Hobby 12-Serverless Functions cap exceeded by creating api/site-audit.js (14 total) causing deployment rejection**
+
+#### 2. Root Cause Forensic Analysis
+Creating standalone API endpoints in api/*.js without checking the Vercel Hobby 12 serverless functions limit. Each top-level file in api/ is treated as an independent serverless function by Vercel.
+
+#### 3. Permanent Architectural Countermeasure
+Reduced top-level api/ files down to strictly 9. Excess handlers (site-audit, feedback-dashboard, garuda-brain, investor) moved to src/routes/ on Render Express and proxied via vercel.json. Added verify-vercel-functions.js build guardrail.
+
+#### 4. Inscribed Permanent Law / Guardrail
+> **api/*.js must NEVER exceed 10 serverless functions. All auxiliary micro-endpoints must reside in src/routes/ on Render Express.**
