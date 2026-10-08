@@ -236,5 +236,73 @@
         "a": "Modern React, Vite, Node.js, Express, Meta WhatsApp Cloud API, PostgreSQL/Supabase, MongoDB, Tailwind, and serverless edge functions."
       }
     ]
+  },
+  "fix-stripe-razorpay-payment-gateway-webhooks": {
+    "slug": "fix-stripe-razorpay-payment-gateway-webhooks",
+    "title": "Fix Broken Stripe & Razorpay Webhooks, Checkout Drops & Multi-Currency Failover",
+    "seoTitle": "Fix Stripe & Razorpay Webhook Failures | Multi-Rail Payment Switch | GARUDA OS",
+    "seoDescription": "Payment checkout dropping transactions or webhooks failing to provision access? Deploy GARUDA's sub-second multi-rail payment switch with automated failover and reconciliation in 48 hours.",
+    "targetQuery": "how to fix stripe razorpay payment gateway webhook failure",
+    "category": "Fintech & Payment Gateway Engineering",
+    "urgencyLevel": "IMMEDIATE REVENUE LOSS",
+    "stats": {
+      "lossRate": "22% - 35%",
+      "timeframe": "Failed Checkouts & Webhook Timeouts",
+      "bounceIncrease": "Lost Customer Trust",
+      "resolutionTime": "48 Hours"
+    },
+    "symptom": "Customers enter card or UPI details but transactions fail with vague gateway timeouts, webhooks miss database fulfillment events, or international cards are declined without a backup rail.",
+    "rootCause": "Fragile single-provider dependency, unhandled asynchronous webhook idempotency, and lack of automated multi-rail payment routing (e.g. failing over from Razorpay to Cashfree or Stripe to Lemonsqueezy).",
+    "garudaSolution": "GARUDA deploys an enterprise Multi-Rail Payment Switch with automated retry queues, cryptographic webhook verification, multi-currency support (USD, INR, GBP, EUR, AED), and real-time ledger reconciliation.",
+    "deliverables": [
+      "Multi-Rail Gateway Switch (Primary + Instant Automatic Fallback)",
+      "Zero-Loss Webhook Processing with Idempotency Key validation",
+      "Cross-border multi-currency checkout routing with localized payment rails",
+      "Automated WhatsApp & Email customer payment confirmation triggers"
+    ],
+    "faqs": [
+      {
+        "q": "How does the multi-rail failover work during a checkout?",
+        "a": "If the primary gateway (e.g. Stripe or Razorpay) returns an 5xx outage or bank downtime error, our checkout engine silently re-routes the session to your configured secondary rail without making the customer re-enter their entire order."
+      },
+      {
+        "q": "How do you handle missed webhooks when servers reboot?",
+        "a": "We use persistent event reconciliation queues (Redis/PostgreSQL/Supabase) with exponential backoff that poll gateway APIs to verify payment capture even if the webhook delivery was dropped."
+      }
+    ]
+  },
+  "fix-meta-ads-capi-high-roas-funnels": {
+    "slug": "fix-meta-ads-capi-high-roas-funnels",
+    "title": "Fix iOS Pixel Drops with Meta Server-Side CAPI & Sub-Second 1-Tap Funnels",
+    "seoTitle": "Fix Meta Ads Pixel Drop & Low ROAS | Server-Side CAPI & Funnel Architecture | GARUDA OS",
+    "seoDescription": "Losing ad spend to iOS privacy blocks and slow landing pages? Deploy server-side Meta Conversions API (CAPI) + sub-500ms 1-tap WhatsApp lead funnel in 48 hours to revive ROAS.",
+    "targetQuery": "how to fix meta ads pixel tracking drop server side capi",
+    "category": "Performance Digital Marketing & Telemetry",
+    "urgencyLevel": "DIRECT AD SPEND HEMORRHAGE",
+    "stats": {
+      "lossRate": "40% - 55%",
+      "timeframe": "iOS 14/17 Pixel Drop & Ad Click Loss",
+      "bounceIncrease": "Negative ROAS",
+      "resolutionTime": "48 Hours"
+    },
+    "symptom": "Your Meta / Facebook Ads dashboard shows high click volume, but purchase/lead events are missing or delayed by 72 hours, causing Meta's algorithm to optimize for low-quality spam traffic.",
+    "rootCause": "Browser ad-blockers, iOS Safari Intelligent Tracking Prevention (ITP), and cookie decay eliminate up to 50% of client-side JavaScript pixels. Without server-to-server Conversions API (CAPI), ad platforms fly blind.",
+    "garudaSolution": "GARUDA integrates direct Server-Side Meta Conversions API (CAPI) paired with an ultra-lightweight sub-500ms mobile conversion lander and 1-tap instant WhatsApp attribution.",
+    "deliverables": [
+      "Direct Server-Side Meta Conversions API (CAPI) node with 100% deduplication",
+      "Sub-500ms Edge-rendered mobile lander eliminating bounce rates",
+      "1-Tap WhatsApp Lead Capture with pre-filled UTM campaign parameters",
+      "Dual server & browser event match quality score reaching 8.5+/10"
+    ],
+    "faqs": [
+      {
+        "q": "Why is Server-Side CAPI mandatory in 2026?",
+        "a": "Traditional browser pixels miss 40% or more of conversions due to ad blockers and browser privacy restrictions. CAPI sends verified purchase and lead events directly from your backend server to Meta, restoring algorithm targeting accuracy."
+      },
+      {
+        "q": "Can you integrate this with our existing CRM and WhatsApp?",
+        "a": "Yes. Every verified lead is simultaneously pushed to Meta CAPI, your CRM (HubSpot/Zoho/Sheets), and your phone via instant WhatsApp alert."
+      }
+    ]
   }
 }

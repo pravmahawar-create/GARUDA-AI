@@ -69,6 +69,8 @@ const CANONICAL_URLS = [
   { url: "/solutions/fix-broken-lead-funnel-marketing-spend", priority: "0.90", changefreq: "weekly" },
   { url: "/solutions/urgent-web-developer-48-hour-mvp", priority: "0.90", changefreq: "weekly" },
   { url: "/solutions/white-label-agency-development-bottleneck", priority: "0.90", changefreq: "weekly" },
+  { url: "/solutions/fix-stripe-razorpay-payment-gateway-webhooks", priority: "0.90", changefreq: "weekly" },
+  { url: "/solutions/fix-meta-ads-capi-high-roas-funnels", priority: "0.90", changefreq: "weekly" },
 
   // Guides & Knowledge Base
   { url: "/guides", priority: "0.85", changefreq: "weekly" },

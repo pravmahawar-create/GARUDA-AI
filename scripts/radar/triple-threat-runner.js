@@ -30,11 +30,15 @@ const AD_SPEND_KEYWORDS = [
   'commercial real estate broker'
 ];
 
-// Distress keywords where founders are begging for urgent tech rescue
+// Distress & high-intent queries where founders are begging for urgent tech/fintech/marketing rescue
 const DISTRESS_QUERIES = [
   'site:reddit.com/r/forhire "[Hiring]" ("urgent developer" OR "emergency bug fix" OR "developer ghosted")',
   'site:x.com ("looking for urgent developer" OR "need dev to fix ASAP" OR "developer ghosted me")',
-  'site:upwork.com/freelance-jobs ("urgent bug" OR "emergency fix" OR "need developer today")'
+  'site:upwork.com/freelance-jobs ("urgent bug" OR "emergency fix" OR "need developer today")',
+  'site:upwork.com/freelance-jobs ("Stripe webhook" OR "Razorpay" OR "payment gateway" OR "failed checkout")',
+  'site:reddit.com/r/forhire "[Hiring]" ("Stripe" OR "Razorpay" OR "payment gateway" OR "checkout")',
+  'site:upwork.com/freelance-jobs ("Meta CAPI" OR "Conversions API" OR "landing page conversion" OR "fix ROAS")',
+  'site:reddit.com/r/forhire "[Hiring]" ("Meta CAPI" OR "high converting landing page" OR "ad funnel")'
 ];
 
 async function searchSerper(query, num = 5) {
@@ -119,14 +123,25 @@ async function runTripleThreatCycle() {
 
       for (const item of distressResults) {
         if (!item.link) continue;
-        if (existingDistress.some(d => d.link === item.link)) continue;
+        const text = `${item.title || ''} ${item.snippet || ''}`.toLowerCase();
+        let category = 'EMERGENCY_DEV_RESCUE';
+        let dedicatedSolutionUrl = 'https://www.garudaos.in/solutions/urgent-web-developer-48-hour-mvp';
+
+        if (text.includes('stripe') || text.includes('razorpay') || text.includes('webhook') || text.includes('checkout') || text.includes('payment')) {
+          category = 'FINTECH_PAYMENT_RESCUE';
+          dedicatedSolutionUrl = 'https://www.garudaos.in/solutions/fix-stripe-razorpay-payment-gateway-webhooks';
+        } else if (text.includes('capi') || text.includes('meta') || text.includes('pixel') || text.includes('roas') || text.includes('funnel') || text.includes('conversion')) {
+          category = 'DIGITAL_MARKETING_CAPI_RESCUE';
+          dedicatedSolutionUrl = 'https://www.garudaos.in/solutions/fix-meta-ads-capi-high-roas-funnels';
+        }
 
         existingDistress.push({
           id: `DISTRESS_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
           title: item.title,
           snippet: item.snippet,
           link: item.link,
-          category: 'EMERGENCY_RESCUE',
+          category,
+          dedicatedSolutionUrl,
           offer: '48-Hour Production Sprint & Milestone Guarantee',
           scoutedAt: new Date().toISOString(),
           status: 'HOT_DISTRESS'
