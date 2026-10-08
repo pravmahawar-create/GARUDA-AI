@@ -77,6 +77,10 @@
       "destination": "/api/proposals"
     },
     {
+      "source": "/api/site-audit",
+      "destination": "/api/site-audit"
+    },
+    {
       "source": "/api/webhook/razorpay",
       "destination": "https://garuda-ai-xfif.onrender.com/api/webhook/razorpay"
     },
@@ -412,6 +416,22 @@
     {
       "source": "/services/:slug",
       "destination": "/index.html"
+    },
+    {
+      "source": "/audit",
+      "destination": "/audit/index.html"
+    },
+    {
+      "source": "/lead-audit",
+      "destination": "/audit/index.html"
+    },
+    {
+      "source": "/solutions",
+      "destination": "/solutions/index.html"
+    },
+    {
+      "source": "/solutions/:slug",
+      "destination": "/solutions/:slug/index.html"
     },
     {
       "source": "/privacy",

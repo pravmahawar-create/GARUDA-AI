@@ -54,6 +54,9 @@ import GarudaBilling from "./pages/GarudaBilling";
 import FintechGatewayDemo from "./pages/FintechGatewayDemo";
 import ConstituencyWarRoom from "./pages/ConstituencyWarRoom";
 import BoothCadrePWA from "./pages/BoothCadrePWA";
+import LeadLeakAudit from "./pages/LeadLeakAudit";
+import SolutionsHub from "./pages/SolutionsHub";
+import SolutionDetail from "./pages/SolutionDetail";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -334,10 +337,15 @@ function AppRoutes() {
       <Route path="/war-room" element={<ConstituencyWarRoom />} />
       <Route path="/constituency" element={<Navigate to="/war-room" replace />} />
       <Route path="/election" element={<Navigate to="/war-room" replace />} />
-      <Route path="/chunav" element={<Navigate to="/war-room" replace />} />
       {/* GARUDA Cadre Field PWA */}
       <Route path="/booth-cadre" element={<BoothCadrePWA />} />
       <Route path="/cadre" element={<Navigate to="/booth-cadre" replace />} />
+      {/* GARUDA Sovereign Audit & Problem-First Solutions */}
+      <Route path="/audit" element={<LeadLeakAudit />} />
+      <Route path="/lead-audit" element={<LeadLeakAudit />} />
+      <Route path="/tools/audit" element={<LeadLeakAudit />} />
+      <Route path="/solutions" element={<SolutionsHub />} />
+      <Route path="/solutions/:slug" element={<SolutionDetail />} />
       <Route path="*" element={publicLanding} />
 
     </Routes>

@@ -58,6 +58,18 @@ const CANONICAL_URLS = [
   { url: "/starter", priority: "0.80", changefreq: "weekly" },
   { url: "/whatsapp-bot", priority: "0.85", changefreq: "weekly" },
 
+  // Diagnostic Tools & Problem-Solution Engineering (AEO & SEO)
+  { url: "/audit", priority: "0.95", changefreq: "daily" },
+  { url: "/lead-audit", priority: "0.90", changefreq: "weekly" },
+  { url: "/solutions", priority: "0.95", changefreq: "daily" },
+  { url: "/solutions/website-losing-leads-after-hours", priority: "0.90", changefreq: "weekly" },
+  { url: "/solutions/automate-whatsapp-booking-crm", priority: "0.90", changefreq: "weekly" },
+  { url: "/solutions/website-slow-loading-dropping-visitors", priority: "0.90", changefreq: "weekly" },
+  { url: "/solutions/ai-receptionist-for-clinics-and-businesses", priority: "0.90", changefreq: "weekly" },
+  { url: "/solutions/fix-broken-lead-funnel-marketing-spend", priority: "0.90", changefreq: "weekly" },
+  { url: "/solutions/urgent-web-developer-48-hour-mvp", priority: "0.90", changefreq: "weekly" },
+  { url: "/solutions/white-label-agency-development-bottleneck", priority: "0.90", changefreq: "weekly" },
+
   // Guides & Knowledge Base
   { url: "/guides", priority: "0.85", changefreq: "weekly" },
   { url: "/guides/ai-agent-vs-chatbot", priority: "0.80", changefreq: "monthly" },

@@ -1463,8 +1463,145 @@ const ROUTES = [
       <h2>Mobile Ground Presence & Anti-Replay Heartbeat</h2>
       <p>Lightweight field terminal optimized for low-end Android handsets (Redmi, Realme, Jio). One-tap booth presence confirmation, offline anti-replay queue, and verified telemetry handshake.</p>
     `
+  },
+  {
+    path: "/audit",
+    filePaths: [
+      path.join(DIST_DIR, "audit", "index.html"),
+      path.join(DIST_DIR, "audit.html"),
+      path.join(DIST_DIR, "lead-audit", "index.html"),
+      path.join(DIST_DIR, "lead-audit.html")
+    ],
+    title: "Free Website Lead-Leak & Speed Scanner | Forensic Conversion Audit | GARUDA OS",
+    description: "Audit your website for after-hours lead drops, slow mobile latency, and conversion hemorrhages. Free instant forensic diagnostic report with 48-hour fix by GARUDA OS.",
+    canonical: "https://www.garudaos.in/audit",
+    h1: "Find Exactly Where Your Website Is Hemorrhaging Leads",
+    eyebrow: "FORENSIC CONVERSION & PERFORMANCE SCANNER",
+    contentSnippet: `
+      <h2>Zero-Bullshit Diagnostic Engine</h2>
+      <p>Most businesses lose 60% to 75% of prospective clients after 7:00 PM due to static contact forms, slow mobile loading, and zero 24/7 conversational response. Enter your URL to run a forensic audit.</p>
+      <h3>What this scanner audits:</h3>
+      <ul>
+        <li><strong>Server TTFB & Edge Latency:</strong> Measures mobile response delay and abandonment risk.</li>
+        <li><strong>After-Hours Conversational Capture:</strong> Checks for active WhatsApp Cloud API and 24/7 AI Receptionist presence.</li>
+        <li><strong>Mobile Fluidity & Viewport:</strong> Identifies layout jumps, tap friction, and viewport bugs.</li>
+        <li><strong>Schema.org & Google AI Overview (AEO):</strong> Validates structured data for Google AI citation.</li>
+      </ul>
+      <p><a href="/chat">Discuss your audit results with a GARUDA Systems Architect</a> | <a href="/solutions">View Problem Solutions Directory</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "GARUDA Sovereign Lead-Leak & Speed Scanner",
+      "operatingSystem": "All",
+      "applicationCategory": "BusinessApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Free forensic website audit tool that identifies after-hours lead loss, mobile latency bottlenecks, and conversion leaks with 48-hour resolution blueprints."
+    }
+  },
+  {
+    path: "/solutions",
+    filePaths: [
+      path.join(DIST_DIR, "solutions", "index.html"),
+      path.join(DIST_DIR, "solutions.html")
+    ],
+    title: "Solutions & Emergency Engineering Blueprints | GARUDA OS",
+    description: "Solve your business's critical technical and revenue bottlenecks in 48 hours. Explore solutions for after-hours lead loss, WhatsApp automation, and urgent development.",
+    canonical: "https://www.garudaos.in/solutions",
+    h1: "Identify Your Bottleneck. Solve It In 48 Hours.",
+    eyebrow: "FORENSIC PROBLEM-SOLUTION DIRECTORY",
+    contentSnippet: `
+      <h2>Engineering Solutions for Real Business Problems</h2>
+      <p>Every business bottleneck maps to a deterministic engineering solution. Explore our verified blueprints below:</p>
+      <ul>
+        <li><a href="/solutions/website-losing-leads-after-hours">Why Websites Lose 65% of Leads After Hours & How to Fix It</a></li>
+        <li><a href="/solutions/automate-whatsapp-booking-crm">Automate Customer Bookings & CRM Workflows on WhatsApp 24/7</a></li>
+        <li><a href="/solutions/website-slow-loading-dropping-visitors">Why Slow Website Loading Kills Mobile Conversions & How to Fix It</a></li>
+        <li><a href="/solutions/ai-receptionist-for-clinics-and-businesses">Deploy 24/7 AI Receptionist for Clinics, Law Firms & Boutiques</a></li>
+        <li><a href="/solutions/fix-broken-lead-funnel-marketing-spend">Fix Broken Marketing Funnels & Bleeding Paid Ad Spend</a></li>
+        <li><a href="/solutions/urgent-web-developer-48-hour-mvp">Need an Urgent Web Developer? 48-Hour Production Sprint</a></li>
+        <li><a href="/solutions/white-label-agency-development-bottleneck">White-Label AI & Web Engineering Backbone for Digital Agencies</a></li>
+      </ul>
+      <p><a href="/audit">Run Free Website Lead-Leak Audit</a> | <a href="/chat">Speak with GARUDA Systems Architect</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "GARUDA OS Solutions Directory",
+      "description": "Comprehensive engineering blueprints and 48-hour production resolutions for after-hours lead drops, WhatsApp automation, mobile speed bottlenecks, and agency white-label scaling.",
+      "url": "https://www.garudaos.in/solutions"
+    }
   }
 ];
+
+// Dynamically register all programmatically generated solutions from solutionsData.json
+try {
+  const solutionsJsonPath = path.resolve(__dirname, "../frontend/src/config/solutionsData.json");
+  if (fs.existsSync(solutionsJsonPath)) {
+    const solutionsData = JSON.parse(fs.readFileSync(solutionsJsonPath, "utf8"));
+    for (const [sKey, sol] of Object.entries(solutionsData)) {
+      ROUTES.push({
+        path: `/solutions/${sol.slug}`,
+        filePaths: [
+          path.join(DIST_DIR, "solutions", sol.slug, "index.html"),
+          path.join(DIST_DIR, "solutions", `${sol.slug}.html`)
+        ],
+        title: sol.seoTitle,
+        description: sol.seoDescription,
+        canonical: `https://www.garudaos.in/solutions/${sol.slug}`,
+        h1: sol.title,
+        eyebrow: `${sol.category.toUpperCase()} — 48-HOUR RESOLUTION`,
+        contentSnippet: `
+          <h2>Forensic Problem Diagnosis</h2>
+          <p>${sol.symptom}</p>
+          <h2>The Technical Root Cause</h2>
+          <p>${sol.rootCause}</p>
+          <h2>The GARUDA 48-Hour Resolution Blueprint</h2>
+          <p>${sol.garudaSolution}</p>
+          <h3>What GARUDA Deploys in 48 Hours:</h3>
+          <ul>
+            ${sol.deliverables.map(d => `<li>${d}</li>`).join("")}
+          </ul>
+          <p><a href="/chat?ref=SOL_${sol.slug}">Start 48-Hour Scoping Chat with GARUDA</a> | <a href="/audit">Run Free Lead-Leak Scanner</a></p>
+        `,
+        schema: {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "HowTo",
+              "name": sol.title,
+              "description": sol.seoDescription,
+              "totalTime": "P2D",
+              "step": sol.deliverables.map((item, idx) => ({
+                "@type": "HowToStep",
+                "position": idx + 1,
+                "name": `Step ${idx + 1}: ${item}`,
+                "text": item
+              }))
+            },
+            {
+              "@type": "FAQPage",
+              "mainEntity": sol.faqs.map(faq => ({
+                "@type": "Question",
+                "name": faq.q,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": faq.a
+                }
+              }))
+            }
+          ]
+        }
+      });
+    }
+  }
+} catch (err) {
+  console.warn("Notice: Unable to register solutionsData:", err.message);
+}
 
 // Dynamically register all active proposals from data/proposals.json and clinicProposalSeeds.json for deterministic pre-rendering
 // OPTIMIZATION: In production Vercel builds, proposal portal uses dynamic React client SPA routing (/proposal/:id).
