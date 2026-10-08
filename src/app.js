@@ -169,8 +169,9 @@ app.use("/api/boilerplate", require("./routes/boilerplateRoutes"));
 app.use("/api/marketplace", require("./routes/marketplaceRoutes"));
 // GARUDA Autonomous — single pane status + trigger (no daily manual)
   app.use("/api/autonomous", require("./routes/autonomousRoutes"));
-  app.use("/api/feedback", (req, res) => require("../api/feedback-dashboard")(req, res));
-  app.use("/api/brain", (req, res) => require("../api/garuda-brain")(req, res));
+  app.use("/api/feedback", (req, res) => require("./routes/feedbackDashboardRoute")(req, res));
+  app.use("/api/brain", (req, res) => require("./routes/garudaBrainRoute")(req, res));
+  app.use("/api/site-audit", (req, res) => require("./routes/siteAuditRoute")(req, res));
   app.use("/api/scholar-chat", (req, res) => require("../api/scholar-chat")(req, res));
 
 // 🎙️ Natural Indian Voice Speech Engine (Google Natural TTS stream) — rate-limited

@@ -8,7 +8,7 @@
 
 const assert = require("assert");
 const founderCommandService = require("./founderCommandService");
-const founderCommandHandler = require("../../api/founder-command");
+const founderCommandHandler = require("../../api/founder");
 const persistentProposalService = require("./persistentProposalService");
 const governedProjectDeliveryService = require("./governedProjectDeliveryService");
 const clientProposalService = require("./clientProposalService");

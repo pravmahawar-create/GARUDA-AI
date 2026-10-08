@@ -823,6 +823,7 @@ class FounderCommandService {
 
       workforceSection = {
         available: true,
+        activeWorkers: telemetry.currentlyExecuting || 0,
         ...telemetry,
         activeAgents: ["FounderCommandService", ...telemetry.roster.map(r => r.name)],
         runningJobs,

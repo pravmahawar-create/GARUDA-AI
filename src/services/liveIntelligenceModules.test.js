@@ -23,7 +23,7 @@ const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
 const founderCommandService = require("./founderCommandService");
-const founderCommandHandler = require("../../api/founder-command");
+const founderCommandHandler = require("../../api/founder");
 const garudaEventService = require("./garudaEventService");
 
 const VALID_FOUNDER_KEY = "garuda_founder_secret_key_2026";
