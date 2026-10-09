@@ -8,6 +8,33 @@
 
 ---
 
+### Mission: Alpha-Quant Multi-Tier Profit Ratchet, Big-3 Heavyweights Gatekeeper & Opportunity Radar
+- **Timestamp**: 2026-10-10T01:14:00.000Z
+- **Commit SHA**: `f1b6070`
+- **Category**: `quant_derivatives_governance`
+- **Verification Evidence**: Local syntax checks exit code 0; `npm run build` passed with exit code 0 (222 static HTML pages); Telegram message ID 818 delivered to Founder Praveen (`chat_id: 1777047936`).
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. **Premature ITM High Delta Retracement Hunter Trap**: When switching to slightly In-The-Money options (Delta 0.60), a standard 18-point option stop loss allowed only a 30-point Nifty retracement buffer, which was easily triggered by normal 5-minute index wick noise. ATM options (Delta 0.50) provide a full 36-point Nifty breathing room, allowing trends to survive normal consolidations and reach profit targets.
+2. **Artificial Setup Inflation via Heavyweight Adders**: Adding a flat +15 points to weak setups when heavyweights moved artificially pushed marginal 45% setups into false entries. True institutional quants use Heavyweights as a **Veto/Gatekeeper** (divergent heavyweights zero out the signal) rather than an artificial score inflater.
+3. **The "Green-to-Red" Retail Psychological Bleed**: Allowing a trade that reached +₹600–₹800 to reverse back into a -₹450 loss due to waiting for the exact full target violates capital preservation.
+
+#### 2. Root Cause Forensic Analysis
+1. Index derivatives require calibrating option Delta against spot ATR. An 18-point stop loss is optimized for ATM Delta (~0.50) in liquid Nifty contracts.
+2. Divergence between Nifty and its Top 3 components (HDFC Bank, Reliance, ICICI Bank, ~29% weight) is the primary indicator of retail fakeout traps.
+3. Without a dynamic profit ratchet, option time decay and sudden intraday reversals turn winning trades into losses.
+
+#### 3. Permanent Architectural Countermeasures
+1. **Multi-Tier Profit Ratchet**:
+   - Tier 1: At +15 pts profit (+₹375), Stop Loss is immediately moved to Cost + 1.5 pts buffer (Risk = ₹0).
+   - Tier 2: At +25 pts profit (+₹625), Stop Loss is moved to +15 pts (Locking in +₹375 minimum profit).
+   - Tier 3: At +36 pts (+₹900) or momentum exhaust, full target is taken.
+2. **Big-3 Heavyweights Gatekeeper Veto**: If 2 or more of Reliance, HDFC Bank, and ICICI Bank oppose Nifty's direction, the signal score is immediately set to 0 (hard veto).
+3. **Opportunity Radar**: Proactively scans high-beta F&O movers (Bank Nifty, SBIN, Reliance) to alert the Founder if another stock offers higher profit with lower risk, while strictly honoring Sovereign Trader Override commands.
+4. **40-Minute Time-Decay Shield**: Automatically exits stagnant positions before theta decay rots option premiums.
+
+---
+
 ### Mission: Local Client Radar, Direct Outreach & Vercel SPA CleanUrls Demohosting
 - **Timestamp**: 2026-09-19T10:37:38.365Z
 - **Commit SHA**: `961cb52`
