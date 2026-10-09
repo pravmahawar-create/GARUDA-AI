@@ -1,5 +1,8 @@
+# GARUDA OS Sovereign Robots & AI Crawler Directives
 User-agent: *
 Allow: /
+Allow: /solutions/
+Allow: /audit
 Allow: /what-is-garuda-ai
 Allow: /garuda-ai-vs-garuda-linux
 Allow: /praveen-mahawar
@@ -23,6 +26,44 @@ Allow: /starter
 Allow: /case-studies
 Allow: /services/
 Allow: /guides/
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+# Explicit VIP Access for Generative AI Search Engines (AEO & GEO)
+User-agent: GPTBot
+Allow: /
+Allow: /solutions/
+Allow: /services/
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /solutions/
+Allow: /services/
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /solutions/
+Allow: /services/
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /solutions/
+Allow: /services/
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Google-Extended
+Allow: /
+Allow: /solutions/
+Allow: /services/
+Allow: /llms.txt
+Allow: /llms-full.txt
 
 # Protect private, authenticated & internal administrative routes
 Disallow: /founder
