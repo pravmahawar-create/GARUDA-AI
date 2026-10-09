@@ -335,39 +335,69 @@ async function runSniperDemo() {
 async function runLiveMarketScanner() {
   console.log('========================================================================================');
   console.log('🦅 GARUDA Alpha-Quant: NIFTY 50 Options Sniper Daemon [LIVE MARKET SCANNER]');
-  console.log('Features: Big-3 Heavyweights Confluence + ITM Strike + ₹1,800 Daily Lock + 40m Timer');
-  console.log('Polling Nifty 50 and Heavyweights every 30 seconds during market hours...');
+  console.log('Features: Big-3 Heavyweights + Profit Ratchet + Opportunity Radar + 40m Timer Shield');
+  console.log('Active Monitoring: Continuous 30s High/Low Position Guard | 5-Minute Candle Breakout');
   console.log('========================================================================================\n');
 
   const daemon = new NiftyOptionsSniperDaemon();
-  let lastProcessedCandleTime = null;
+  let lastProcessedCandleTimestamp = null;
+  let lastRadarScanMinutes = 0;
+  let lastActiveDateStr = '';
+
+  // Check trader CLI preference (e.g. --asset=NIFTY or --asset=SBIN)
+  const assetArg = process.argv.find(a => a.startsWith('--asset='));
+  const lockedAsset = assetArg ? assetArg.split('=')[1] : null;
+
+  if (lockedAsset) {
+    const res = daemon.radar.setTraderPreference(lockedAsset);
+    console.log(`\n${res.message}\n`);
+  }
 
   async function checkMarket() {
     try {
       const now = new Date();
+      const dayOfWeek = now.getDay(); // 0 is Sunday, 6 is Saturday
       const totalMinutesIST = (now.getUTCHours() * 60 + now.getUTCMinutes() + 330) % 1440;
-      const isMarketHours = totalMinutesIST >= 555 && totalMinutesIST <= 930; // 9:15 AM to 3:30 PM
+      const currentDateStr = now.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric' });
+      const timeNow = now.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-      if (!isMarketHours) {
-        const timeNow = now.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' });
-        console.log(`[${timeNow}] ⏸️ Market closed or outside active session. Scanner in standby mode.`);
+      // Daily Session Reset on new trading day
+      if (currentDateStr !== lastActiveDateStr) {
+        if (lastActiveDateStr !== '') {
+          console.log(`\n📅 [NEW TRADING DAY DETECTED: ${currentDateStr}] Resetting daily session ledger...`);
+          daemon.resetDailySession();
+        }
+        lastActiveDateStr = currentDateStr;
+      }
+
+      // 1. Weekend Guard
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        console.log(`[${timeNow}] ⏸️ Weekend (${dayOfWeek === 6 ? 'Saturday' : 'Sunday'}). NSE market closed. Scanner in standby mode.`);
         return;
       }
 
-      const rawCandles = await daemon.feed.fetchCandles(BENCHMARK_SYMBOL, '5m', '1d');
-      if (!rawCandles || rawCandles.length < 25) return;
+      // 2. Market Hours Guard: 09:15 AM (555 min) to 03:30 PM (930 min)
+      const isMarketHours = totalMinutesIST >= 555 && totalMinutesIST <= 930;
+      if (!isMarketHours) {
+        console.log(`[${timeNow}] ⏸️ Outside NSE trading hours (09:15 AM - 03:30 PM IST). Scanner in standby mode.`);
+        return;
+      }
+
+      // 3. Fetch 5-day lookback so indicators are 100% computed even at 09:16 AM
+      const rawCandles = await daemon.feed.fetchCandles(BENCHMARK_SYMBOL, '5m', '5d');
+      if (!rawCandles || rawCandles.length < 25) {
+        console.warn(`[${timeNow}] ⚠️ Insufficient candles from feed (${rawCandles ? rawCandles.length : 0}). Retrying next tick...`);
+        return;
+      }
 
       const candles = daemon.feed.enrichIndicators(rawCandles);
       const currentCandle = candles[candles.length - 1];
 
-      if (lastProcessedCandleTime === currentCandle.time) return;
-      lastProcessedCandleTime = currentCandle.time;
-
-      // Fetch Big-3 Heavyweights current candles
+      // 4. Fetch Big-3 Heavyweights current candles
       const hwCandles = [];
       for (const hw of HEAVYWEIGHT_SYMBOLS) {
         try {
-          const hwRaw = await daemon.feed.fetchCandles(hw.symbol, '5m', '1d');
+          const hwRaw = await daemon.feed.fetchCandles(hw.symbol, '5m', '5d');
           if (hwRaw && hwRaw.length > 0) {
             const enriched = daemon.feed.enrichIndicators(hwRaw);
             hwCandles.push({ symbol: hw.symbol, name: hw.name, candle: enriched[enriched.length - 1] });
@@ -376,6 +406,57 @@ async function runLiveMarketScanner() {
       }
 
       const history = candles.slice(Math.max(0, candles.length - 26), candles.length - 1);
+
+      // 5. IF POSITION IS OPEN: Continuous 30-second guard (Never wait for 5m candle close!)
+      if (daemon.currentPosition) {
+        const exitEvent = daemon.manageOpenPosition(currentCandle, totalMinutesIST, timeNow);
+        if (exitEvent.action === 'EXIT_TRIGGERED') {
+          const t = exitEvent.trade;
+          const msg = 
+`🦅 *GARUDA SNIPER TRADE CLOSED*
+🎯 *Contract*: ${t.contract}
+💵 *Exit Premium*: ₹${t.exitPremium} | Net P&L: *${t.netPnl >= 0 ? '+' : ''}₹${t.netPnl}*
+Reason: \`${t.exitReason}\`
+💼 *Today's Cumulative P&L*: *₹${daemon.dailyPnl}*`;
+
+          console.log(msg);
+          await daemon.notifier.sendMessage(msg);
+
+          if (daemon.isLockedToday) {
+            const lockMsg = 
+`🔒 *GARUDA TERMINAL HARD LOCK ACTIVATED*
+🎯 *Reason*: ${daemon.lockReason}
+🛑 *Rules Enforced*: No more trades for the rest of today.
+Capital protected. Profits locked!`;
+            console.log(lockMsg);
+            await daemon.notifier.sendMessage(lockMsg);
+          }
+        }
+        return;
+      }
+
+      // 6. IF NO POSITION: Only evaluate fresh entry ONCE per 5-minute candle timestamp
+      if (lastProcessedCandleTimestamp === currentCandle.timestamp) {
+        return; // Candle already scanned for entry
+      }
+      lastProcessedCandleTimestamp = currentCandle.timestamp;
+
+      console.log(`[${timeNow}] 🔍 Scanning new 5-minute candle (${new Date(currentCandle.time).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' })}) | Nifty: ₹${currentCandle.close}`);
+
+      // 7. Periodic Opportunity Radar Check (Once every 15 minutes in morning window)
+      const isMorning = totalMinutesIST >= 585 && totalMinutesIST <= 690;
+      if (isMorning && (totalMinutesIST - lastRadarScanMinutes >= 15)) {
+        lastRadarScanMinutes = totalMinutesIST;
+        try {
+          const opp = await daemon.radar.scanOpportunities(daemon.capital);
+          if (opp && opp.hasSuperAlpha && opp.advisoryMessage) {
+            console.log('\n' + opp.advisoryMessage + '\n');
+            await daemon.notifier.sendMessage(opp.advisoryMessage);
+          }
+        } catch (e) {}
+      }
+
+      // 8. Evaluate fresh Nifty setup
       const event = daemon.evaluateCandle(currentCandle, history, hwCandles);
 
       if (event.action === 'ENTRY_TRIGGERED') {
@@ -383,7 +464,7 @@ async function runLiveMarketScanner() {
         const msg = 
 `🦅 *GARUDA SNIPER ALERT: NIFTY 50 ENTRY*
 ⚡ *Action*: *BUY ${pos.contract}*
-💰 *Entry Premium*: ₹${pos.entryPremium} (~₹3,550 for 1 Lot)
+💰 *Entry Premium*: ₹${pos.entryPremium} (~₹2,875 for 1 Lot)
 🛑 *Strict Stop-Loss*: ₹${pos.stopLossPremium} (Risk: ₹450)
 🎯 *Target 1*: ₹${pos.target1Premium} (Trail SL to Cost)
 🏁 *Target 2*: ₹${pos.target2Premium} (+₹900 Profit)
@@ -395,43 +476,13 @@ async function runLiveMarketScanner() {
 
         console.log(msg);
         await daemon.notifier.sendMessage(msg);
-      } else if (event.action === 'EXIT_TRIGGERED') {
-        const t = event.trade;
-        const msg = 
-`🦅 *GARUDA SNIPER TRADE CLOSED*
-🎯 *Contract*: ${t.contract}
-💵 *Exit Premium*: ₹${t.exitPremium} | Net P&L: *${t.netPnl >= 0 ? '+' : ''}₹${t.netPnl}*
-Reason: \`${t.exitReason}\`
-💼 *Today's Cumulative P&L*: *₹${daemon.dailyPnl}*`;
-
-        console.log(msg);
-        await daemon.notifier.sendMessage(msg);
-
-        if (daemon.isLockedToday) {
-          const lockMsg = 
-`🔒 *GARUDA TERMINAL HARD LOCK ACTIVATED*
-🎯 *Reason*: ${daemon.lockReason}
-🛑 *Rules Enforced*: No more trades for the rest of today.
-Capital protected. Profits locked!`;
-          console.log(lockMsg);
-          await daemon.notifier.sendMessage(lockMsg);
-        }
       }
     } catch (err) {
       console.warn('⚠️ Market scan error:', err.message);
     }
   }
 
-  // Check trader CLI preference (e.g. --asset=NIFTY or --asset=SBIN)
-  const assetArg = process.argv.find(a => a.startsWith('--asset='));
-  const lockedAsset = assetArg ? assetArg.split('=')[1] : null;
-
-  if (lockedAsset) {
-    const res = daemon.radar.setTraderPreference(lockedAsset);
-    console.log(`\n${res.message}\n`);
-  }
-
-  // Initial check
+  // Initial immediate check
   await checkMarket();
   // Poll every 30 seconds
   setInterval(checkMarket, 30000);
