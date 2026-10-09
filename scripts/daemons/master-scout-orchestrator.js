@@ -140,21 +140,9 @@ async function startOrchestrator() {
   log(`Master Process PID: ${process.pid}`);
   log('================================================================');
 
-  // Notify Founder via Telegram
-  try {
-    await telegram.sendFounderAlert(
-      '🦅 GARUDA MASTER SCOUTS DEPLOYED (HARDENED)',
-      'Autonomous scout daemons initialized with strict Anti-Fabrication & Single-Instance controls:\n\n' +
-      '• Facebook Scout: Strict Private Messenger DMs only (Buyer qualification)\n' +
-      '• Instagram Scout: Strict Private Direct Messages only (@garudaos.ai)\n' +
-      '• LinkedIn Scout: Strict InMail/Private Message mode (Auth status monitored)\n' +
-      '• Zero Public Comments: Enforced globally across all scouts\n' +
-      '• Cross-Platform Dedup: Active (FB ↔ IG ↔ LinkedIn unified ledger)\n\n' +
-      'Status: Inbound inquiries trigger instant Telegram alerts. WhatsApp is unconfigured.'
-    );
-  } catch (e) {
-    log(`Telegram alert notice: ${e.message}`);
-  }
+  // Routine master startup alert to Telegram suppressed (Founder Quiet Law).
+  // Notifications reserved strictly for inbound customer replies.
+  log('✔ Telegram master startup announcement suppressed. Alerts strictly reserved for incoming client deals.');
 
   // Spawn each scout
   for (const scout of SCOUTS) {

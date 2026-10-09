@@ -51,16 +51,9 @@ async function startCloudHunter() {
 
   const telegram = new TelegramAlertService();
 
-  // Send boot notification to Founder Telegram
-  try {
-    await telegram.sendAlert(
-      'INFO',
-      'ðŸ¦… Autonomous Revenue Hunter Live on Render Cloud',
-      `Hunter running 24/7 in cloud.\nâ€¢ Multi-Scout: Active (Search, Conversation, Social)\nâ€¢ 20+ Categories: Websites, SaaS, MVPs, Mobile Apps, Automation, APIs\nâ€¢ Laptop Independence: 100% (Continues when laptop is closed)`
-    );
-  } catch (err) {
-    log(`Telegram boot notice note: ${err.message}`);
-  }
+  // Routine boot notification to Telegram suppressed (Founder Anti-Noise & Anti-Fabrication Law).
+  // Alerts reserved strictly for confirmed inbound replies or closed deals.
+  log('✔ Telegram boot announcement suppressed (Silent background execution).');
 
   // Initial immediate run after warm-up delay (10s)
   setTimeout(async () => {

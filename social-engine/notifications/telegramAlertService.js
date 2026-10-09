@@ -28,6 +28,13 @@ class TelegramAlertService {
   }
 
   async sendAlert(level, title, message, metadata = {}) {
+    // Founder Anti-Noise & Anti-Fabrication Law: Routine info/debug/heartbeat pings must NEVER reach Founder Telegram
+    const suppressedLevels = ['INFO', 'DEBUG', 'ROUTINE', 'HEARTBEAT', 'BOOT', 'LIFECYCLE'];
+    if (suppressedLevels.includes(String(level).toUpperCase())) {
+      console.log(`[TelegramAlertService] Muted non-critical ${level} alert: "${title}" (Founder Quiet Law)`);
+      return { delivered: false, suppressed: true, reason: 'MUTED_ROUTINE_LEVEL' };
+    }
+
     const icons = {
       INFO: 'ℹ️',
       WARNING: '🟡',

@@ -194,8 +194,9 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
             console.log("[GARUDA] Social scouts daemon idle — set GARUDA_SOCIAL_SCOUTS=true to enable");
         }
 
-        // ── 24/7 Autonomous Revenue Hunter Subsystem (Render Cloud 24x7) ──
-        const revenueHunterEnabled = String(process.env.GARUDA_REVENUE_HUNTER ?? "true").toLowerCase() === "true";
+        // ── 24/7 Autonomous Revenue Hunter Subsystem (Render Cloud 24x7) — SILENCED BY DEFAULT ──
+        // Enable only with explicit GARUDA_REVENUE_HUNTER=true. Default is strictly FALSE.
+        const revenueHunterEnabled = String(process.env.GARUDA_REVENUE_HUNTER || "false").toLowerCase() === "true";
         if (revenueHunterEnabled) {
             try {
                 const { spawn } = require("child_process");
