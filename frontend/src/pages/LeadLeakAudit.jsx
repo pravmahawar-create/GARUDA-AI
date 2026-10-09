@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
+import { PALETTE } from "../theme/palette";
 import { trackEvent } from "../utils/telemetry";
 
 export default function LeadLeakAudit() {
@@ -31,7 +32,6 @@ export default function LeadLeakAudit() {
     setAuditResult(null);
     setScanStep(0);
 
-    // Step animation interval
     const stepInterval = setInterval(() => {
       setScanStep((prev) => (prev < steps.length - 1 ? prev + 1 : prev));
     }, 900);
@@ -77,7 +77,7 @@ export default function LeadLeakAudit() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#030712", color: "#f3f4f6", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: PALETTE.canvas, color: PALETTE.text, fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}>
       <SEOHead
         title="Free Website Lead-Leak & Speed Scanner | Forensic Conversion Audit | GARUDA OS"
         description="Audit your website for after-hours lead drops, slow mobile latency, and conversion hemorrhages. Free instant forensic diagnostic report with 48-hour fix by GARUDA OS."
@@ -86,22 +86,22 @@ export default function LeadLeakAudit() {
       />
 
       {/* Top Fixed Header */}
-      <header style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(3, 7, 18, 0.85)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", padding: "1rem 1.5rem" }}>
+      <header style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(247, 244, 238, 0.94)", backdropFilter: "blur(14px)", borderBottom: `1px solid ${PALETTE.border}`, padding: "1rem 1.5rem" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Link to="/" style={{ display: "flex", alignItems: "center", gap: "0.75rem", textDecoration: "none" }}>
-            <span style={{ fontSize: "1.25rem", fontWeight: 800, letterSpacing: "-0.02em", color: "#fff" }}>
-              GARUDA <span style={{ color: "#38bdf8" }}>AUDIT</span>
+            <span style={{ fontSize: "1.25rem", fontWeight: 800, letterSpacing: "-0.02em", color: PALETTE.text, fontFamily: "'Playfair Display', Georgia, serif" }}>
+              GARUDA <span style={{ color: PALETTE.goldDeep }}>AUDIT</span>
             </span>
-            <span style={{ fontSize: "0.65rem", padding: "0.15rem 0.5rem", borderRadius: "9999px", background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", border: "1px solid rgba(56, 189, 248, 0.3)", fontWeight: 600 }}>
+            <span style={{ fontSize: "0.68rem", padding: "0.2rem 0.55rem", borderRadius: "9999px", background: PALETTE.goldHalo, color: PALETTE.goldDeep, border: `1px solid ${PALETTE.borderGold}`, fontWeight: 700 }}>
               FORENSIC v2.0
             </span>
           </Link>
 
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <Link to="/solutions" style={{ fontSize: "0.85rem", color: "#9ca3af", textDecoration: "none", transition: "color 0.2s" }}>
+            <Link to="/solutions" style={{ fontSize: "0.85rem", color: PALETTE.muted, textDecoration: "none", fontWeight: 600 }}>
               Problem Directory
             </Link>
-            <Link to="/chat" style={{ fontSize: "0.85rem", padding: "0.45rem 0.9rem", borderRadius: "6px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f3f4f6", textDecoration: "none", fontWeight: 500 }}>
+            <Link to="/chat" style={{ fontSize: "0.85rem", padding: "0.45rem 0.95rem", borderRadius: "8px", background: PALETTE.card, border: `1px solid ${PALETTE.border}`, color: PALETTE.text, textDecoration: "none", fontWeight: 600, boxShadow: PALETTE.shadowSm }}>
               Talk to Architect
             </Link>
           </div>
@@ -112,17 +112,17 @@ export default function LeadLeakAudit() {
       <main style={{ maxWidth: 1000, margin: "0 auto", padding: "3rem 1.5rem 6rem" }}>
         {/* Hero Section */}
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.35rem 0.85rem", borderRadius: "9999px", background: "rgba(239, 68, 68, 0.12)", border: "1px solid rgba(239, 68, 68, 0.25)", color: "#f87171", fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1.25rem" }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", animation: "pulse 2s infinite" }} />
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.4rem 1rem", borderRadius: "9999px", background: PALETTE.redBg, border: "1px solid rgba(220, 38, 38, 0.22)", color: PALETTE.red, fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1.25rem" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: PALETTE.red }} />
             Zero-Bullshit Diagnostic Engine
           </div>
 
-          <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.03em", margin: "0 0 1rem", background: "linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+          <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)", fontWeight: 800, lineHeight: 1.18, letterSpacing: "-0.03em", margin: "0 0 1.25rem", color: PALETTE.text, fontFamily: "'Playfair Display', Georgia, serif" }}>
             Find Exactly Where Your Website Is Hemorrhaging Leads
           </h1>
 
-          <p style={{ maxWidth: 680, margin: "0 auto 2.25rem", color: "#94a3b8", fontSize: "1.05rem", lineHeight: 1.6 }}>
-            Most businesses lose <strong style={{ color: "#f87171" }}>60% to 75%</strong> of their prospective clients after 7:00 PM due to static contact forms, slow mobile loading, and zero 24/7 conversational response. Enter your URL to run a forensic audit.
+          <p style={{ maxWidth: 680, margin: "0 auto 2.25rem", color: PALETTE.muted, fontSize: "1.05rem", lineHeight: 1.6 }}>
+            Most businesses lose <strong style={{ color: PALETTE.red }}>60% to 75%</strong> of their prospective clients after 7:00 PM due to static contact forms, slow mobile loading, and zero 24/7 conversational response. Enter your URL to run a forensic audit.
           </p>
 
           {/* Audit Input Form */}
@@ -132,7 +132,7 @@ export default function LeadLeakAudit() {
                 e.preventDefault();
                 runAudit();
               }}
-              style={{ display: "flex", gap: "0.5rem", background: "rgba(15, 23, 42, 0.8)", border: "1px solid rgba(56, 189, 248, 0.3)", borderRadius: "12px", padding: "0.4rem", boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.15)" }}
+              style={{ display: "flex", gap: "0.5rem", background: PALETTE.card, border: `1px solid ${PALETTE.borderGold}`, borderRadius: "12px", padding: "0.45rem", boxShadow: PALETTE.shadowMd }}
             >
               <input
                 type="text"
@@ -140,19 +140,19 @@ export default function LeadLeakAudit() {
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
                 disabled={loading}
-                style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "#fff", fontSize: "1rem", padding: "0.75rem 1rem", fontFamily: "inherit" }}
+                style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: PALETTE.text, fontSize: "1rem", padding: "0.75rem 1rem", fontFamily: "inherit" }}
               />
               <button
                 type="submit"
                 disabled={loading}
-                style={{ background: "linear-gradient(135deg, #0284c7 0%, #2563eb 100%)", color: "#fff", border: "none", borderRadius: "8px", padding: "0.75rem 1.5rem", fontSize: "0.95rem", fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", gap: "0.5rem" }}
+                style={{ background: PALETTE.goldGradient, color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "0.85rem 1.6rem", fontSize: "0.95rem", fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", boxShadow: PALETTE.shadowGold, transition: "opacity 0.2s", display: "flex", alignItems: "center", gap: "0.5rem" }}
               >
                 {loading ? "Scanning..." : "Scan Website →"}
               </button>
             </form>
 
             {/* Quick Sample Links */}
-            <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "0.75rem", fontSize: "0.8rem", color: "#64748b" }}>
+            <div style={{ marginTop: "0.95rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "0.75rem", fontSize: "0.82rem", color: PALETTE.muted }}>
               <span>Or test live sample:</span>
               <button
                 type="button"
@@ -160,7 +160,7 @@ export default function LeadLeakAudit() {
                   setUrlInput("dentistryonmain.ca");
                   runAudit("dentistryonmain.ca");
                 }}
-                style={{ background: "none", border: "none", color: "#38bdf8", cursor: "pointer", textDecoration: "underline", padding: 0, font: "inherit" }}
+                style={{ background: "none", border: "none", color: PALETTE.goldDeep, cursor: "pointer", textDecoration: "underline", padding: 0, font: "inherit", fontWeight: 600 }}
               >
                 Dental Clinic
               </button>
@@ -171,7 +171,7 @@ export default function LeadLeakAudit() {
                   setUrlInput("apexlawgroup.com");
                   runAudit("apexlawgroup.com");
                 }}
-                style={{ background: "none", border: "none", color: "#38bdf8", cursor: "pointer", textDecoration: "underline", padding: 0, font: "inherit" }}
+                style={{ background: "none", border: "none", color: PALETTE.goldDeep, cursor: "pointer", textDecoration: "underline", padding: 0, font: "inherit", fontWeight: 600 }}
               >
                 Law Firm
               </button>
@@ -182,14 +182,14 @@ export default function LeadLeakAudit() {
                   setUrlInput("velocitydigital.co.uk");
                   runAudit("velocitydigital.co.uk");
                 }}
-                style={{ background: "none", border: "none", color: "#38bdf8", cursor: "pointer", textDecoration: "underline", padding: 0, font: "inherit" }}
+                style={{ background: "none", border: "none", color: PALETTE.goldDeep, cursor: "pointer", textDecoration: "underline", padding: 0, font: "inherit", fontWeight: 600 }}
               >
                 Agency
               </button>
             </div>
 
             {errorMsg && (
-              <div style={{ marginTop: "1rem", padding: "0.75rem", borderRadius: "8px", background: "rgba(239, 68, 68, 0.15)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#fca5a5", fontSize: "0.85rem" }}>
+              <div style={{ marginTop: "1rem", padding: "0.85rem", borderRadius: "8px", background: PALETTE.redBg, border: "1px solid rgba(220, 38, 38, 0.25)", color: PALETTE.red, fontSize: "0.88rem", fontWeight: 600 }}>
                 {errorMsg}
               </div>
             )}
@@ -198,10 +198,10 @@ export default function LeadLeakAudit() {
 
         {/* Loading Radar */}
         {loading && (
-          <div style={{ background: "rgba(15, 23, 42, 0.6)", border: "1px solid rgba(56, 189, 248, 0.2)", borderRadius: "16px", padding: "2.5rem 1.5rem", textAlign: "center", maxWidth: 650, margin: "2rem auto" }}>
-            <div style={{ width: 48, height: 48, borderRadius: "50%", border: "3px solid rgba(56, 189, 248, 0.2)", borderTopColor: "#38bdf8", margin: "0 auto 1.5rem", animation: "spin 1s linear infinite" }} />
-            <h3 style={{ fontSize: "1.1rem", margin: "0 0 0.5rem", color: "#f3f4f6" }}>Running Forensic Audit</h3>
-            <p style={{ color: "#38bdf8", fontSize: "0.9rem", margin: 0, fontFamily: "monospace" }}>
+          <div style={{ background: PALETTE.card, border: `1px solid ${PALETTE.borderGold}`, borderRadius: "16px", padding: "2.5rem 1.5rem", textAlign: "center", maxWidth: 650, margin: "2rem auto", boxShadow: PALETTE.shadowMd }}>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", border: `3px solid ${PALETTE.goldHalo}`, borderTopColor: PALETTE.goldPrimary, margin: "0 auto 1.5rem", animation: "spin 1s linear infinite" }} />
+            <h3 style={{ fontSize: "1.2rem", margin: "0 0 0.5rem", color: PALETTE.text, fontFamily: "'Playfair Display', Georgia, serif" }}>Running Forensic Audit</h3>
+            <p style={{ color: PALETTE.goldDeep, fontSize: "0.92rem", margin: 0, fontFamily: "monospace", fontWeight: 600 }}>
               {steps[scanStep]}
             </p>
           </div>
@@ -211,15 +211,15 @@ export default function LeadLeakAudit() {
         {auditResult && !loading && (
           <div style={{ marginTop: "2rem", animation: "fadeIn 0.3s ease-out" }}>
             {/* Header Summary Banner */}
-            <div style={{ background: "rgba(15, 23, 42, 0.8)", border: `1px solid ${auditResult.scores?.grade === "A" ? "rgba(34, 197, 94, 0.4)" : (auditResult.scores?.grade === "B" ? "rgba(56, 189, 248, 0.4)" : "rgba(239, 68, 68, 0.4)")}`, borderRadius: "16px", padding: "2rem", marginBottom: "2rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem" }}>
+            <div style={{ background: PALETTE.card, border: `1px solid ${auditResult.scores?.grade === "A" ? "rgba(5, 150, 105, 0.35)" : (auditResult.scores?.grade === "B" ? "rgba(196, 139, 40, 0.35)" : "rgba(220, 38, 38, 0.35)")}`, borderRadius: "16px", padding: "2rem", marginBottom: "2rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem", boxShadow: PALETTE.shadowLg }}>
               <div>
-                <div style={{ fontSize: "0.8rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>
+                <div style={{ fontSize: "0.78rem", color: PALETTE.muted, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem", fontWeight: 600 }}>
                   Diagnostic Report For
                 </div>
-                <h2 style={{ fontSize: "1.6rem", fontWeight: 700, margin: "0 0 0.35rem", color: "#fff" }}>
+                <h2 style={{ fontSize: "1.7rem", fontWeight: 800, margin: "0 0 0.35rem", color: PALETTE.text, fontFamily: "'Playfair Display', Georgia, serif" }}>
                   {auditResult.target?.domain}
                 </h2>
-                <div style={{ fontSize: "0.85rem", color: "#64748b" }}>
+                <div style={{ fontSize: "0.85rem", color: PALETTE.muted }}>
                   Scanned on {new Date(auditResult.target?.scannedAt).toLocaleTimeString()} • Latency: {auditResult.metrics?.latencyMs}ms
                 </div>
               </div>
@@ -227,15 +227,15 @@ export default function LeadLeakAudit() {
               {/* Health Badge */}
               <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "0.75rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  <div style={{ fontSize: "0.75rem", color: PALETTE.muted, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
                     Conversion Health
                   </div>
-                  <div style={{ fontSize: "1.2rem", fontWeight: 700, color: auditResult.scores?.overall >= 75 ? "#4ade80" : (auditResult.scores?.overall >= 60 ? "#fbbf24" : "#f87171") }}>
+                  <div style={{ fontSize: "1.25rem", fontWeight: 800, color: auditResult.scores?.overall >= 75 ? PALETTE.green : (auditResult.scores?.overall >= 60 ? PALETTE.amber : PALETTE.red) }}>
                     {auditResult.hemorrhageAnalysis?.riskLevel} RISK
                   </div>
                 </div>
 
-                <div style={{ width: 72, height: 72, borderRadius: "14px", display: "grid", placeItems: "center", fontSize: "2rem", fontWeight: 900, background: auditResult.scores?.overall >= 75 ? "rgba(34, 197, 94, 0.15)" : (auditResult.scores?.overall >= 60 ? "rgba(251, 191, 36, 0.15)" : "rgba(239, 68, 68, 0.15)"), border: `2px solid ${auditResult.scores?.overall >= 75 ? "#22c55e" : (auditResult.scores?.overall >= 60 ? "#f59e0b" : "#ef4444")}`, color: auditResult.scores?.overall >= 75 ? "#4ade80" : (auditResult.scores?.overall >= 60 ? "#fbbf24" : "#f87171") }}>
+                <div style={{ width: 72, height: 72, borderRadius: "14px", display: "grid", placeItems: "center", fontSize: "2.1rem", fontWeight: 900, fontFamily: "'Playfair Display', Georgia, serif", background: auditResult.scores?.overall >= 75 ? PALETTE.greenBg : (auditResult.scores?.overall >= 60 ? PALETTE.amberBg : PALETTE.redBg), border: `2px solid ${auditResult.scores?.overall >= 75 ? PALETTE.green : (auditResult.scores?.overall >= 60 ? PALETTE.amber : PALETTE.red)}`, color: auditResult.scores?.overall >= 75 ? PALETTE.green : (auditResult.scores?.overall >= 60 ? PALETTE.amber : PALETTE.red) }}>
                   {auditResult.scores?.grade}
                 </div>
               </div>
@@ -243,50 +243,50 @@ export default function LeadLeakAudit() {
 
             {/* Metrics Breakdown Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem", marginBottom: "2rem" }}>
-              <div style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "12px", padding: "1.25rem" }}>
-                <div style={{ fontSize: "0.75rem", color: "#94a3b8", textTransform: "uppercase", marginBottom: "0.35rem" }}>
+              <div style={{ background: PALETTE.card, border: `1px solid ${PALETTE.border}`, borderRadius: "12px", padding: "1.35rem", boxShadow: PALETTE.shadowSm }}>
+                <div style={{ fontSize: "0.75rem", color: PALETTE.muted, textTransform: "uppercase", marginBottom: "0.35rem", fontWeight: 600 }}>
                   After-Hours Capture
                 </div>
-                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: auditResult.metrics?.hasWhatsApp || auditResult.metrics?.hasLiveChat ? "#4ade80" : "#f87171", margin: "0 0 0.35rem" }}>
+                <div style={{ fontSize: "1.5rem", fontWeight: 800, color: auditResult.metrics?.hasWhatsApp || auditResult.metrics?.hasLiveChat ? PALETTE.green : PALETTE.red, margin: "0 0 0.35rem", fontFamily: "'Playfair Display', Georgia, serif" }}>
                   {auditResult.metrics?.hasWhatsApp || auditResult.metrics?.hasLiveChat ? "Active" : "HEMORRHAGING"}
                 </div>
-                <div style={{ fontSize: "0.8rem", color: "#64748b" }}>
+                <div style={{ fontSize: "0.82rem", color: PALETTE.muted }}>
                   {auditResult.metrics?.hasWhatsApp ? "Instant WhatsApp active" : "Zero 24/7 conversational capture"}
                 </div>
               </div>
 
-              <div style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "12px", padding: "1.25rem" }}>
-                <div style={{ fontSize: "0.75rem", color: "#94a3b8", textTransform: "uppercase", marginBottom: "0.35rem" }}>
+              <div style={{ background: PALETTE.card, border: `1px solid ${PALETTE.border}`, borderRadius: "12px", padding: "1.35rem", boxShadow: PALETTE.shadowSm }}>
+                <div style={{ fontSize: "0.75rem", color: PALETTE.muted, textTransform: "uppercase", marginBottom: "0.35rem", fontWeight: 600 }}>
                   Edge Latency & TTFB
                 </div>
-                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: auditResult.metrics?.latencyMs < 900 ? "#4ade80" : (auditResult.metrics?.latencyMs < 1600 ? "#fbbf24" : "#f87171"), margin: "0 0 0.35rem" }}>
+                <div style={{ fontSize: "1.5rem", fontWeight: 800, color: auditResult.metrics?.latencyMs < 900 ? PALETTE.green : (auditResult.metrics?.latencyMs < 1600 ? PALETTE.amber : PALETTE.red), margin: "0 0 0.35rem", fontFamily: "'Playfair Display', Georgia, serif" }}>
                   {auditResult.metrics?.latencyMs}ms
                 </div>
-                <div style={{ fontSize: "0.8rem", color: "#64748b" }}>
+                <div style={{ fontSize: "0.82rem", color: PALETTE.muted }}>
                   {auditResult.metrics?.latencyMs < 900 ? "Sub-second speed" : "Mobile bounce risk"}
                 </div>
               </div>
 
-              <div style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "12px", padding: "1.25rem" }}>
-                <div style={{ fontSize: "0.75rem", color: "#94a3b8", textTransform: "uppercase", marginBottom: "0.35rem" }}>
+              <div style={{ background: PALETTE.card, border: `1px solid ${PALETTE.border}`, borderRadius: "12px", padding: "1.35rem", boxShadow: PALETTE.shadowSm }}>
+                <div style={{ fontSize: "0.75rem", color: PALETTE.muted, textTransform: "uppercase", marginBottom: "0.35rem", fontWeight: 600 }}>
                   Estimated Traffic Loss
                 </div>
-                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "#f87171", margin: "0 0 0.35rem" }}>
+                <div style={{ fontSize: "1.5rem", fontWeight: 800, color: PALETTE.red, margin: "0 0 0.35rem", fontFamily: "'Playfair Display', Georgia, serif" }}>
                   {auditResult.hemorrhageAnalysis?.estimatedDropRate}
                 </div>
-                <div style={{ fontSize: "0.8rem", color: "#64748b" }}>
+                <div style={{ fontSize: "0.82rem", color: PALETTE.muted }}>
                   After-hours traffic drop rate
                 </div>
               </div>
 
-              <div style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "12px", padding: "1.25rem" }}>
-                <div style={{ fontSize: "0.75rem", color: "#94a3b8", textTransform: "uppercase", marginBottom: "0.35rem" }}>
+              <div style={{ background: PALETTE.card, border: `1px solid ${PALETTE.border}`, borderRadius: "12px", padding: "1.35rem", boxShadow: PALETTE.shadowSm }}>
+                <div style={{ fontSize: "0.75rem", color: PALETTE.muted, textTransform: "uppercase", marginBottom: "0.35rem", fontWeight: 600 }}>
                   Google AI Overview (AEO)
                 </div>
-                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: auditResult.metrics?.hasSchema ? "#4ade80" : "#fbbf24", margin: "0 0 0.35rem" }}>
+                <div style={{ fontSize: "1.5rem", fontWeight: 800, color: auditResult.metrics?.hasSchema ? PALETTE.green : PALETTE.amber, margin: "0 0 0.35rem", fontFamily: "'Playfair Display', Georgia, serif" }}>
                   {auditResult.metrics?.hasSchema ? "Structured" : "Unindexed"}
                 </div>
-                <div style={{ fontSize: "0.8rem", color: "#64748b" }}>
+                <div style={{ fontSize: "0.82rem", color: PALETTE.muted }}>
                   {auditResult.metrics?.hasSchema ? "Schema.org detected" : "Missing JSON-LD Schema"}
                 </div>
               </div>
@@ -294,23 +294,23 @@ export default function LeadLeakAudit() {
 
             {/* Forensic Vulnerabilities List */}
             {auditResult.vulnerabilities?.length > 0 && (
-              <div style={{ background: "rgba(15, 23, 42, 0.6)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "16px", padding: "1.75rem", marginBottom: "2rem" }}>
-                <h3 style={{ fontSize: "1.2rem", fontWeight: 700, margin: "0 0 1.25rem", color: "#fff", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: "#ef4444" }}>⚠</span> Identified Forensic Hemorrhages
+              <div style={{ background: PALETTE.card, border: `1px solid ${PALETTE.border}`, borderRadius: "16px", padding: "2rem", marginBottom: "2rem", boxShadow: PALETTE.shadowMd }}>
+                <h3 style={{ fontSize: "1.3rem", fontWeight: 700, margin: "0 0 1.25rem", color: PALETTE.text, display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  <span style={{ color: PALETTE.red }}>⚠</span> Identified Forensic Hemorrhages
                 </h3>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                   {auditResult.vulnerabilities.map((v, i) => (
-                    <div key={i} style={{ background: "rgba(2, 6, 23, 0.6)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "10px", padding: "1.25rem" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
-                        <span style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f3f4f6" }}>
+                    <div key={i} style={{ background: PALETTE.canvasIvory, border: `1px solid ${PALETTE.borderSubtle}`, borderRadius: "10px", padding: "1.25rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.45rem" }}>
+                        <span style={{ fontSize: "0.98rem", fontWeight: 700, color: PALETTE.text }}>
                           {v.title}
                         </span>
-                        <span style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem", borderRadius: "4px", background: v.severity === "CRITICAL" ? "rgba(239, 68, 68, 0.2)" : "rgba(245, 158, 11, 0.2)", color: v.severity === "CRITICAL" ? "#fca5a5" : "#fcd34d", fontWeight: 700 }}>
+                        <span style={{ fontSize: "0.7rem", padding: "0.2rem 0.55rem", borderRadius: "4px", background: v.severity === "CRITICAL" ? PALETTE.redBg : PALETTE.amberBg, color: v.severity === "CRITICAL" ? PALETTE.red : PALETTE.amber, fontWeight: 700 }}>
                           {v.severity}
                         </span>
                       </div>
-                      <p style={{ margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: 1.5 }}>
+                      <p style={{ margin: 0, fontSize: "0.88rem", color: PALETTE.muted, lineHeight: 1.55 }}>
                         {v.detail}
                       </p>
                     </div>
@@ -320,20 +320,20 @@ export default function LeadLeakAudit() {
             )}
 
             {/* GARUDA 48-Hour Resolution Card */}
-            <div style={{ background: "linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(37, 99, 235, 0.12) 100%)", border: "1px solid rgba(56, 189, 248, 0.35)", borderRadius: "16px", padding: "2rem", textAlign: "left" }}>
-              <div style={{ display: "inline-block", fontSize: "0.75rem", padding: "0.2rem 0.6rem", borderRadius: "9999px", background: "rgba(56, 189, 248, 0.2)", color: "#38bdf8", fontWeight: 700, marginBottom: "0.75rem" }}>
+            <div style={{ background: PALETTE.card, border: `1px solid ${PALETTE.borderGold}`, borderRadius: "16px", padding: "2.25rem", textAlign: "left", boxShadow: PALETTE.shadowLg }}>
+              <div style={{ display: "inline-block", fontSize: "0.75rem", padding: "0.3rem 0.85rem", borderRadius: "9999px", background: PALETTE.goldHalo, color: PALETTE.goldDeep, border: `1px solid ${PALETTE.borderGold}`, fontWeight: 700, marginBottom: "0.85rem" }}>
                 GUARANTEED RESOLUTION
               </div>
 
-              <h3 style={{ fontSize: "1.35rem", fontWeight: 700, margin: "0 0 0.5rem", color: "#fff" }}>
+              <h3 style={{ fontSize: "1.45rem", fontWeight: 800, margin: "0 0 0.5rem", color: PALETTE.text, fontFamily: "'Playfair Display', Georgia, serif" }}>
                 {auditResult.prescription?.title}
               </h3>
 
-              <p style={{ color: "#94a3b8", fontSize: "0.9rem", margin: "0 0 1.25rem" }}>
+              <p style={{ color: PALETTE.muted, fontSize: "0.95rem", margin: "0 0 1.25rem", lineHeight: 1.6 }}>
                 Eliminate these bottlenecks permanently with zero tech debt. GARUDA engineers deliver verified, production-ready code in 48 hours.
               </p>
 
-              <ul style={{ margin: "0 0 1.75rem", paddingLeft: "1.25rem", color: "#cbd5e1", fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <ul style={{ margin: "0 0 1.75rem", paddingLeft: "1.25rem", color: PALETTE.textBody, fontSize: "0.92rem", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
                 {auditResult.prescription?.blueprint?.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
@@ -345,14 +345,14 @@ export default function LeadLeakAudit() {
                   onClick={() => {
                     navigate(`/chat?ref=AUDIT_${encodeURIComponent(auditResult.target?.domain || "DIRECT")}`);
                   }}
-                  style={{ background: "linear-gradient(135deg, #0284c7 0%, #2563eb 100%)", color: "#fff", border: "none", borderRadius: "8px", padding: "0.85rem 1.75rem", fontSize: "0.95rem", fontWeight: 700, cursor: "pointer", boxShadow: "0 10px 25px rgba(2, 132, 199, 0.3)" }}
+                  style={{ background: PALETTE.goldGradient, color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "0.9rem 1.8rem", fontSize: "0.95rem", fontWeight: 700, cursor: "pointer", boxShadow: PALETTE.shadowGold, transition: "opacity 0.2s" }}
                 >
                   Deploy 48-Hour Resolution With GARUDA →
                 </button>
 
                 <a
                   href={`mailto:praveen@garudaos.in?subject=Audit Inquiry for ${encodeURIComponent(auditResult.target?.domain || "")}&body=Hello Praveen, I ran an audit on ${encodeURIComponent(auditResult.target?.url || "")} and would like to fix our conversion leaks.`}
-                  style={{ color: "#94a3b8", fontSize: "0.85rem", textDecoration: "underline", marginLeft: "0.5rem" }}
+                  style={{ color: PALETTE.goldDeep, fontSize: "0.88rem", textDecoration: "underline", marginLeft: "0.5rem", fontWeight: 600 }}
                 >
                   Or email directly (praveen@garudaos.in)
                 </a>

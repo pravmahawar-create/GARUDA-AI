@@ -3,11 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 import { UNIVERSES, RINGS, STATUS } from "../config/universes";
 
-const GOLD = "#d4af37";
-const GOLD_LIGHT = "#fef08a";
-const BG = "#030712";
-const PANEL = "rgba(15, 23, 42, 0.75)";
-const BORDER = "rgba(212, 175, 55, 0.25)";
+const GOLD = "#8B6118";
+const GOLD_LIGHT = "#C48B28";
+const BG = "#F7F4EE";
+const PANEL = "#FFFFFF";
+const BORDER = "rgba(23, 24, 27, 0.08)";
+const TEXT = "#17181B";
+const MUTED = "#525866";
 
 const CLIENT_PROJECTS = [
   {
@@ -94,7 +96,7 @@ export default function FounderKingdomAccess() {
   });
 
   return (
-    <main style={{ minHeight: "100vh", background: BG, color: "#f8fafc", fontFamily: "sans-serif", padding: "1.5rem" }}>
+    <main style={{ minHeight: "100vh", background: BG, color: TEXT, fontFamily: "sans-serif", padding: "1.5rem" }}>
       <SEOHead
         title="Founder Kingdom Access — GARUDA 27 Universes Sovereign Map"
         description="Central founder command surface providing a complete visual map of all 27 Canonical Universes, projects, demos, and system operations."
@@ -111,14 +113,14 @@ export default function FounderKingdomAccess() {
                 <span style={{ fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.2em", color: GOLD, fontWeight: "bold" }}>
                   SOVEREIGN FOUNDER ACCESS SURFACE
                 </span>
-                <span style={{ background: "rgba(117, 244, 171, 0.15)", color: "#75f4ab", fontSize: "0.75rem", padding: "0.2rem 0.7rem", borderRadius: "999px", fontWeight: "bold", border: "1px solid rgba(117,244,171,0.3)" }}>
+                <span style={{ background: "rgba(5, 150, 105, 0.08)", color: "#059669", fontSize: "0.75rem", padding: "0.2rem 0.7rem", borderRadius: "999px", fontWeight: "bold", border: "1px solid rgba(5, 150, 105, 0.2)" }}>
                   27 UNIVERSES GOVERNED
                 </span>
               </div>
-              <h1 style={{ fontSize: "2.2rem", margin: "0 0 0.4rem", color: "#fff", letterSpacing: "-0.02em" }}>
+              <h1 style={{ fontSize: "2.2rem", margin: "0 0 0.4rem", color: TEXT, letterSpacing: "-0.02em" }}>
                 GARUDA Kingdom Central Access
               </h1>
-              <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.95rem", maxWidth: "880px", lineHeight: "1.5" }}>
+              <p style={{ margin: 0, color: MUTED, fontSize: "0.95rem", maxWidth: "880px", lineHeight: "1.5" }}>
                 One central access surface for Founder Praveen Mahawar. Every canonical Universe, client project workspace, live demonstration, and system tool mapped truthfully without architectural contamination.
               </p>
             </div>
@@ -127,14 +129,14 @@ export default function FounderKingdomAccess() {
               <button
                 type="button"
                 onClick={() => navigate("/command-center")}
-                style={{ background: "linear-gradient(135deg, #d4af37, #b8860b)", color: "#000", border: "none", borderRadius: "8px", padding: "0.6rem 1.2rem", fontWeight: "bold", fontSize: "0.9rem", cursor: "pointer" }}
+                style={{ background: "linear-gradient(135deg, #C48B28, #9E6D1C)", color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "0.6rem 1.2rem", fontWeight: "bold", fontSize: "0.9rem", cursor: "pointer" }}
               >
                 ⚡ High Command Center
               </button>
               <button
                 type="button"
                 onClick={() => navigate("/founder")}
-                style={{ background: "rgba(255,255,255,0.05)", color: "#cbd5e1", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "8px", padding: "0.6rem 1.1rem", fontSize: "0.9rem", cursor: "pointer" }}
+                style={{ background: "#FAF9F6", color: TEXT, border: "1px solid rgba(23, 24, 27, 0.12)", borderRadius: "8px", padding: "0.6rem 1.1rem", fontSize: "0.9rem", cursor: "pointer" }}
               >
                 Founder Workspace
               </button>
@@ -160,9 +162,9 @@ export default function FounderKingdomAccess() {
                 style={{
                   padding: "0.5rem 1rem",
                   borderRadius: "8px",
-                  border: selectedFilter === tab.id ? `1px solid ${GOLD}` : "1px solid rgba(255,255,255,0.1)",
-                  background: selectedFilter === tab.id ? "rgba(212,175,55,0.18)" : "rgba(15,23,42,0.6)",
-                  color: selectedFilter === tab.id ? GOLD_LIGHT : "#94a3b8",
+                  border: selectedFilter === tab.id ? `1px solid ${GOLD_LIGHT}` : "1px solid rgba(23, 24, 27, 0.08)",
+                  background: selectedFilter === tab.id ? "rgba(196, 139, 40, 0.12)" : "#FFFFFF",
+                  color: selectedFilter === tab.id ? GOLD : MUTED,
                   fontWeight: selectedFilter === tab.id ? "bold" : "normal",
                   fontSize: "0.85rem",
                   cursor: "pointer"
@@ -186,7 +188,7 @@ export default function FounderKingdomAccess() {
               <div
                 key={tool.route}
                 onClick={() => navigate(tool.route)}
-                style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "10px", padding: "1.2rem", cursor: "pointer", transition: "transform 0.2s, border-color 0.2s" }}
+                style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "10px", padding: "1.2rem", cursor: "pointer", transition: "transform 0.2s, border-color 0.2s", boxShadow: "0 4px 16px rgba(23, 24, 27, 0.03)" }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = GOLD; e.currentTarget.style.transform = "translateY(-2px)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = BORDER; e.currentTarget.style.transform = "translateY(0)"; }}
               >
@@ -194,8 +196,8 @@ export default function FounderKingdomAccess() {
                   <span style={{ fontSize: "1.5rem" }}>{tool.icon}</span>
                   <span style={{ color: GOLD, fontSize: "0.8rem", fontWeight: "bold" }}>LAUNCH ➔</span>
                 </div>
-                <h3 style={{ margin: "0 0 0.3rem", color: "#fff", fontSize: "1.05rem" }}>{tool.name}</h3>
-                <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.8rem", lineHeight: "1.4" }}>{tool.description}</p>
+                <h3 style={{ margin: "0 0 0.3rem", color: TEXT, fontSize: "1.05rem" }}>{tool.name}</h3>
+                <p style={{ margin: 0, color: MUTED, fontSize: "0.8rem", lineHeight: "1.4" }}>{tool.description}</p>
               </div>
             ))}
           </div>
@@ -219,7 +221,7 @@ export default function FounderKingdomAccess() {
                 return (
                   <div
                     key={u.id}
-                    style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1.4rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
+                    style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1.4rem", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 4px 16px rgba(23, 24, 27, 0.03)" }}
                   >
                     <div>
                       {/* Card Header */}
@@ -227,7 +229,7 @@ export default function FounderKingdomAccess() {
                         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                           <span style={{ fontSize: "1.2rem", color: GOLD }}>{u.icon}</span>
                           <span style={{ color: GOLD, fontWeight: "bold", fontSize: "0.85rem", letterSpacing: "0.05em" }}>{u.id}</span>
-                          <span style={{ color: "#64748b", fontSize: "0.75rem" }}>· Ring {u.ring}</span>
+                          <span style={{ color: MUTED, fontSize: "0.75rem" }}>· Ring {u.ring}</span>
                         </div>
                         <span style={{ background: statusMeta.bg, color: statusMeta.color, fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold", border: `1px solid ${statusMeta.color}40` }}>
                           {statusMeta.label}
@@ -235,12 +237,12 @@ export default function FounderKingdomAccess() {
                       </div>
 
                       {/* Universe Title & Purpose */}
-                      <h3 style={{ margin: "0 0 0.4rem", color: "#fff", fontSize: "1.15rem" }}>{u.name}</h3>
-                      <p style={{ margin: "0 0 0.8rem", color: "#94a3b8", fontSize: "0.85rem", lineHeight: "1.4" }}>{u.tagline}</p>
+                      <h3 style={{ margin: "0 0 0.4rem", color: TEXT, fontSize: "1.15rem" }}>{u.name}</h3>
+                      <p style={{ margin: "0 0 0.8rem", color: MUTED, fontSize: "0.85rem", lineHeight: "1.4" }}>{u.tagline}</p>
 
                       {/* Flagship Feature */}
                       {u.flagship && (
-                        <div style={{ background: "rgba(0,0,0,0.4)", padding: "0.5rem 0.75rem", borderRadius: "6px", marginBottom: "0.8rem", fontSize: "0.75rem", color: GOLD_LIGHT, border: "1px solid rgba(212,175,55,0.15)" }}>
+                        <div style={{ background: "#FAF9F6", padding: "0.5rem 0.75rem", borderRadius: "6px", marginBottom: "0.8rem", fontSize: "0.75rem", color: GOLD, border: "1px solid rgba(196,139,40,0.25)" }}>
                           <strong>Flagship:</strong> {u.flagship}
                         </div>
                       )}
@@ -248,7 +250,7 @@ export default function FounderKingdomAccess() {
                       {/* Capabilities / Modules */}
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1rem" }}>
                         {u.modules.map((m) => (
-                          <span key={m} style={{ background: "rgba(255,255,255,0.04)", color: "#cbd5e1", padding: "0.2rem 0.5rem", borderRadius: "4px", fontSize: "0.7rem" }}>
+                          <span key={m} style={{ background: "#FAF9F6", color: TEXT, padding: "0.2rem 0.5rem", borderRadius: "4px", fontSize: "0.7rem", border: "1px solid rgba(23,24,27,0.06)" }}>
                             {m}
                           </span>
                         ))}
@@ -256,7 +258,7 @@ export default function FounderKingdomAccess() {
 
                       {/* Connected Engines */}
                       {u.connectedEngines && u.connectedEngines.length > 0 && (
-                        <div style={{ fontSize: "0.7rem", color: "#64748b", marginBottom: "1rem" }}>
+                        <div style={{ fontSize: "0.7rem", color: MUTED, marginBottom: "1rem" }}>
                           <strong>Engines:</strong> {u.connectedEngines.join(", ")}
                         </div>
                       )}
@@ -268,12 +270,12 @@ export default function FounderKingdomAccess() {
                         <button
                           type="button"
                           onClick={() => navigate(u.route)}
-                          style={{ width: "100%", padding: "0.6rem", background: "rgba(212,175,55,0.15)", border: `1px solid ${GOLD}`, borderRadius: "6px", color: GOLD_LIGHT, fontWeight: "bold", fontSize: "0.8rem", cursor: "pointer" }}
+                          style={{ width: "100%", padding: "0.6rem", background: "rgba(196,139,40,0.1)", border: `1px solid ${GOLD_LIGHT}`, borderRadius: "6px", color: GOLD, fontWeight: "bold", fontSize: "0.8rem", cursor: "pointer" }}
                         >
                           ⚡ Enter {u.name} ({u.route})
                         </button>
                       ) : (
-                        <div style={{ width: "100%", padding: "0.5rem", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "6px", color: "#64748b", textAlign: "center", fontSize: "0.75rem" }}>
+                        <div style={{ width: "100%", padding: "0.5rem", background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.08)", borderRadius: "6px", color: MUTED, textAlign: "center", fontSize: "0.75rem" }}>
                           Canonical Blueprint Verified (Roadmap Build)
                         </div>
                       )}
@@ -295,7 +297,7 @@ export default function FounderKingdomAccess() {
                 <h2 style={{ fontSize: "1.2rem", color: GOLD, textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 0.2rem" }}>
                   Projects & Client Workspaces
                 </h2>
-                <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.85rem" }}>
+                <p style={{ margin: 0, color: MUTED, fontSize: "0.85rem" }}>
                   Strictly partitioned client implementations. (A Project ≠ A Universe).
                 </p>
               </div>
@@ -303,23 +305,23 @@ export default function FounderKingdomAccess() {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: "1.25rem" }}>
               {CLIENT_PROJECTS.map((proj) => (
-                <div key={proj.id} style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1.4rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <div key={proj.id} style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1.4rem", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 4px 16px rgba(23, 24, 27, 0.03)" }}>
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
                       <span style={{ color: GOLD, fontWeight: "bold", fontSize: "0.8rem" }}>{proj.id}</span>
-                      <span style={{ background: "rgba(117,244,171,0.15)", color: "#75f4ab", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
+                      <span style={{ background: "rgba(5, 150, 105, 0.08)", color: "#059669", fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
                         {proj.status}
                       </span>
                     </div>
-                    <h3 style={{ margin: "0 0 0.4rem", color: "#fff", fontSize: "1.05rem" }}>{proj.name}</h3>
-                    <p style={{ margin: "0 0 0.6rem", color: "#38bdf8", fontSize: "0.8rem" }}>Client: {proj.clientEmail}</p>
-                    <p style={{ margin: "0 0 0.8rem", color: "#94a3b8", fontSize: "0.8rem", lineHeight: "1.4" }}>{proj.scope}</p>
-                    <div style={{ fontSize: "0.7rem", color: "#64748b", marginBottom: "1rem" }}>Seal: {proj.seal}</div>
+                    <h3 style={{ margin: "0 0 0.4rem", color: TEXT, fontSize: "1.05rem" }}>{proj.name}</h3>
+                    <p style={{ margin: "0 0 0.6rem", color: "#0284C7", fontSize: "0.8rem" }}>Client: {proj.clientEmail}</p>
+                    <p style={{ margin: "0 0 0.8rem", color: MUTED, fontSize: "0.8rem", lineHeight: "1.4" }}>{proj.scope}</p>
+                    <div style={{ fontSize: "0.7rem", color: MUTED, marginBottom: "1rem" }}>Seal: {proj.seal}</div>
                   </div>
                   <button
                     type="button"
                     onClick={() => navigate(proj.accessRoute)}
-                    style={{ width: "100%", padding: "0.6rem", background: "rgba(56,189,248,0.15)", border: "1px solid #38bdf8", borderRadius: "6px", color: "#38bdf8", fontWeight: "bold", fontSize: "0.8rem", cursor: "pointer" }}
+                    style={{ width: "100%", padding: "0.6rem", background: "rgba(2, 132, 199, 0.08)", border: "1px solid rgba(2, 132, 199, 0.25)", borderRadius: "6px", color: "#0284C7", fontWeight: "bold", fontSize: "0.8rem", cursor: "pointer" }}
                   >
                     🔍 Inspect Client Workspace ({proj.accessRoute})
                   </button>
@@ -339,7 +341,7 @@ export default function FounderKingdomAccess() {
                 <h2 style={{ fontSize: "1.2rem", color: GOLD, textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 0.2rem" }}>
                   Demonstrations & Case Studies
                 </h2>
-                <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.85rem" }}>
+                <p style={{ margin: 0, color: MUTED, fontSize: "0.85rem" }}>
                   Live customer sandboxes, interactive scoping chat, and verified proposal portals.
                 </p>
               </div>
@@ -347,22 +349,22 @@ export default function FounderKingdomAccess() {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: "1.25rem" }}>
               {DEMOS_AND_CASE_STUDIES.map((demo) => (
-                <div key={demo.id} style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1.4rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <div key={demo.id} style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1.4rem", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 4px 16px rgba(23, 24, 27, 0.03)" }}>
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
-                      <span style={{ color: "#38bdf8", fontWeight: "bold", fontSize: "0.75rem" }}>{demo.type}</span>
-                      <span style={{ background: "rgba(212,175,55,0.15)", color: GOLD_LIGHT, fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
+                      <span style={{ color: "#0284C7", fontWeight: "bold", fontSize: "0.75rem" }}>{demo.type}</span>
+                      <span style={{ background: "rgba(196,139,40,0.1)", color: GOLD, fontSize: "0.7rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontWeight: "bold" }}>
                         {demo.badge}
                       </span>
                     </div>
-                    <h3 style={{ margin: "0 0 0.3rem", color: "#fff", fontSize: "1.05rem" }}>{demo.title}</h3>
+                    <h3 style={{ margin: "0 0 0.3rem", color: TEXT, fontSize: "1.05rem" }}>{demo.title}</h3>
                     <div style={{ color: GOLD, fontSize: "0.75rem", marginBottom: "0.6rem" }}>{demo.domain}</div>
-                    <p style={{ margin: "0 0 1rem", color: "#94a3b8", fontSize: "0.8rem", lineHeight: "1.4" }}>{demo.description}</p>
+                    <p style={{ margin: "0 0 1rem", color: MUTED, fontSize: "0.8rem", lineHeight: "1.4" }}>{demo.description}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => navigate(demo.route)}
-                    style={{ width: "100%", padding: "0.6rem", background: "rgba(212,175,55,0.15)", border: `1px solid ${GOLD}`, borderRadius: "6px", color: GOLD_LIGHT, fontWeight: "bold", fontSize: "0.8rem", cursor: "pointer" }}
+                    style={{ width: "100%", padding: "0.6rem", background: "rgba(196,139,40,0.1)", border: `1px solid ${GOLD_LIGHT}`, borderRadius: "6px", color: GOLD, fontWeight: "bold", fontSize: "0.8rem", cursor: "pointer" }}
                   >
                     🚀 Launch Demonstration ({demo.route})
                   </button>
@@ -380,7 +382,7 @@ export default function FounderKingdomAccess() {
             <h2 style={{ fontSize: "1.2rem", color: GOLD, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1rem" }}>
               27 Universes Architectural Truth Matrix
             </h2>
-            <div style={{ overflowX: "auto", background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1rem" }}>
+            <div style={{ overflowX: "auto", background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1rem", boxShadow: "0 4px 16px rgba(23, 24, 27, 0.03)" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", textAlign: "left" }}>
                 <thead>
                   <tr style={{ borderBottom: `1px solid ${BORDER}`, color: GOLD }}>
@@ -397,17 +399,17 @@ export default function FounderKingdomAccess() {
                   {UNIVERSES.map((u) => {
                     const statusMeta = STATUS[u.status] || STATUS.ROADMAP;
                     return (
-                      <tr key={u.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                      <tr key={u.id} style={{ borderBottom: "1px solid rgba(23, 24, 27, 0.06)" }}>
                         <td style={{ padding: "0.75rem", fontWeight: "bold", color: GOLD }}>{u.id}</td>
-                        <td style={{ padding: "0.75rem", color: "#fff", fontWeight: "bold" }}>{u.name}</td>
-                        <td style={{ padding: "0.75rem", color: "#94a3b8" }}>Ring {u.ring}</td>
-                        <td style={{ padding: "0.75rem", color: "#a78bfa" }}>universes.md</td>
-                        <td style={{ padding: "0.75rem", color: "#cbd5e1" }}>{u.connectedEngines[0] || "Architecture Blueprint"}</td>
+                        <td style={{ padding: "0.75rem", color: TEXT, fontWeight: "bold" }}>{u.name}</td>
+                        <td style={{ padding: "0.75rem", color: MUTED }}>Ring {u.ring}</td>
+                        <td style={{ padding: "0.75rem", color: "#4F46E5" }}>universes.md</td>
+                        <td style={{ padding: "0.75rem", color: MUTED }}>{u.connectedEngines[0] || "Architecture Blueprint"}</td>
                         <td style={{ padding: "0.75rem" }}>
                           {u.route ? (
-                            <Link to={u.route} style={{ color: "#38bdf8", textDecoration: "none" }}>{u.route}</Link>
+                            <Link to={u.route} style={{ color: "#0284C7", textDecoration: "none" }}>{u.route}</Link>
                           ) : (
-                            <span style={{ color: "#64748b" }}>—</span>
+                            <span style={{ color: MUTED }}>—</span>
                           )}
                         </td>
                         <td style={{ padding: "0.75rem" }}>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
 import { SOLUTIONS_DATA } from "../config/solutionsData";
+import { PALETTE } from "../theme/palette";
 
 export default function SolutionsHub() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export default function SolutionsHub() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#030712", color: "#f3f4f6", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: PALETTE.canvas, color: PALETTE.text, fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}>
       <SEOHead
         title="Solutions & Emergency Engineering Blueprints | GARUDA OS"
         description="Solve your business's critical technical and revenue bottlenecks in 48 hours. Explore solutions for after-hours lead loss, WhatsApp automation, and urgent development."
@@ -59,19 +60,19 @@ export default function SolutionsHub() {
       />
 
       {/* Top Header */}
-      <header style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(3, 7, 18, 0.85)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", padding: "1rem 1.5rem" }}>
+      <header style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(247, 244, 238, 0.94)", backdropFilter: "blur(14px)", borderBottom: `1px solid ${PALETTE.border}`, padding: "1rem 1.5rem" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Link to="/" style={{ display: "flex", alignItems: "center", gap: "0.75rem", textDecoration: "none" }}>
-            <span style={{ fontSize: "1.25rem", fontWeight: 800, letterSpacing: "-0.02em", color: "#fff" }}>
-              GARUDA <span style={{ color: "#38bdf8" }}>SOLUTIONS</span>
+            <span style={{ fontSize: "1.25rem", fontWeight: 800, letterSpacing: "-0.02em", color: PALETTE.text, fontFamily: "'Playfair Display', Georgia, serif" }}>
+              GARUDA <span style={{ color: PALETTE.goldDeep }}>SOLUTIONS</span>
             </span>
           </Link>
 
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <Link to="/audit" style={{ fontSize: "0.85rem", padding: "0.45rem 0.9rem", borderRadius: "6px", background: "rgba(239, 68, 68, 0.15)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#fca5a5", textDecoration: "none", fontWeight: 600 }}>
+            <Link to="/audit" style={{ fontSize: "0.85rem", padding: "0.45rem 0.95rem", borderRadius: "8px", background: PALETTE.redBg, border: "1px solid rgba(220, 38, 38, 0.25)", color: PALETTE.red, textDecoration: "none", fontWeight: 700 }}>
               ⚡ Free Lead-Leak Audit
             </Link>
-            <Link to="/chat" style={{ fontSize: "0.85rem", padding: "0.45rem 0.9rem", borderRadius: "6px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f3f4f6", textDecoration: "none", fontWeight: 500 }}>
+            <Link to="/chat" style={{ fontSize: "0.85rem", padding: "0.45rem 0.95rem", borderRadius: "8px", background: PALETTE.card, border: `1px solid ${PALETTE.border}`, color: PALETTE.text, textDecoration: "none", fontWeight: 600, boxShadow: PALETTE.shadowSm }}>
               Talk to Architect
             </Link>
           </div>
@@ -82,15 +83,15 @@ export default function SolutionsHub() {
       <main style={{ maxWidth: 1100, margin: "0 auto", padding: "3.5rem 1.5rem 6rem" }}>
         {/* Banner */}
         <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.35rem 0.85rem", borderRadius: "9999px", background: "rgba(56, 189, 248, 0.1)", border: "1px solid rgba(56, 189, 248, 0.25)", color: "#38bdf8", fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1.25rem" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.4rem 1rem", borderRadius: "9999px", background: PALETTE.goldHalo, border: `1px solid ${PALETTE.borderGold}`, color: PALETTE.goldDeep, fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1.25rem" }}>
             Forensic Problem Directory
           </div>
 
-          <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.03em", margin: "0 0 1rem", color: "#fff" }}>
+          <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)", fontWeight: 800, lineHeight: 1.18, letterSpacing: "-0.03em", margin: "0 0 1.25rem", color: PALETTE.text, fontFamily: "'Playfair Display', Georgia, serif" }}>
             Identify Your Bottleneck. Solve It In 48 Hours.
           </h1>
 
-          <p style={{ maxWidth: 650, margin: "0 auto 2.5rem", color: "#94a3b8", fontSize: "1.05rem", lineHeight: 1.6 }}>
+          <p style={{ maxWidth: 650, margin: "0 auto 2.5rem", color: PALETTE.muted, fontSize: "1.05rem", lineHeight: 1.6 }}>
             Every business problem maps to a deterministic engineering solution. Select your current bottleneck below to view the architectural breakdown and 48-hour resolution plan.
           </p>
 
@@ -101,7 +102,7 @@ export default function SolutionsHub() {
               placeholder="Search problem (e.g. pwa, leads, speed, whatsapp, billing)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{ width: "100%", background: "rgba(15, 23, 42, 0.8)", border: "1px solid rgba(255, 255, 255, 0.15)", borderRadius: "10px", padding: "0.75rem 1.25rem", color: "#fff", fontSize: "0.95rem", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", background: PALETTE.card, border: `1px solid ${PALETTE.border}`, borderRadius: "10px", padding: "0.85rem 1.25rem", color: PALETTE.text, fontSize: "0.95rem", outline: "none", boxSizing: "border-box", boxShadow: PALETTE.shadowSm }}
             />
           </div>
 
@@ -114,14 +115,15 @@ export default function SolutionsHub() {
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
                   style={{
-                    background: active ? "linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)" : "rgba(15, 23, 42, 0.6)",
-                    color: active ? "#000" : "#94a3b8",
+                    background: active ? PALETTE.goldGradient : PALETTE.card,
+                    color: active ? "#FFFFFF" : PALETTE.muted,
                     fontWeight: active ? 700 : 500,
-                    border: active ? "1px solid #38bdf8" : "1px solid rgba(255, 255, 255, 0.08)",
+                    border: active ? `1px solid ${PALETTE.goldPrimary}` : `1px solid ${PALETTE.border}`,
                     borderRadius: "9999px",
-                    padding: "0.35rem 0.85rem",
-                    fontSize: "0.78rem",
+                    padding: "0.4rem 0.95rem",
+                    fontSize: "0.8rem",
                     cursor: "pointer",
+                    boxShadow: active ? PALETTE.shadowGold : PALETTE.shadowSm,
                     transition: "all 0.15s ease"
                   }}
                 >
@@ -133,22 +135,22 @@ export default function SolutionsHub() {
         </div>
 
         {/* Free Audit Highlight Card */}
-        <div style={{ background: "linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%)", border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: "16px", padding: "1.75rem 2rem", marginBottom: "3rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem" }}>
+        <div style={{ background: PALETTE.card, border: "1px solid rgba(220, 38, 38, 0.22)", borderRadius: "16px", padding: "2rem 2.25rem", marginBottom: "3rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem", boxShadow: PALETTE.shadowMd }}>
           <div>
-            <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#f87171", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.35rem" }}>
+            <div style={{ fontSize: "0.75rem", fontWeight: 700, color: PALETTE.red, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.35rem" }}>
               Instant Diagnostic Tool
             </div>
-            <h2 style={{ fontSize: "1.35rem", fontWeight: 700, margin: "0 0 0.4rem", color: "#fff" }}>
+            <h2 style={{ fontSize: "1.45rem", fontWeight: 800, margin: "0 0 0.45rem", color: PALETTE.text, fontFamily: "'Playfair Display', Georgia, serif" }}>
               Not sure why your website visitors aren't converting?
             </h2>
-            <p style={{ margin: 0, fontSize: "0.9rem", color: "#94a3b8", maxWidth: 600 }}>
+            <p style={{ margin: 0, fontSize: "0.92rem", color: PALETTE.muted, maxWidth: 620, lineHeight: 1.55 }}>
               Run our free Lead-Leak & Speed Scanner to pinpoint after-hours drops, mobile TTFB latency, and missing conversion triggers in 5 seconds.
             </p>
           </div>
 
           <Link
             to="/audit"
-            style={{ background: "#ef4444", color: "#fff", padding: "0.75rem 1.5rem", borderRadius: "8px", fontWeight: 700, textDecoration: "none", fontSize: "0.95rem", whiteSpace: "nowrap" }}
+            style={{ background: PALETTE.red, color: "#FFFFFF", padding: "0.85rem 1.65rem", borderRadius: "10px", fontWeight: 700, textDecoration: "none", fontSize: "0.95rem", whiteSpace: "nowrap", boxShadow: "0 4px 14px rgba(220, 38, 38, 0.25)", transition: "opacity 0.2s" }}
           >
             Launch Free Audit →
           </Link>
@@ -160,42 +162,44 @@ export default function SolutionsHub() {
             <Link
               key={sol.slug}
               to={`/solutions/${sol.slug}`}
-              style={{ background: "rgba(15, 23, 42, 0.6)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "14px", padding: "1.75rem", textDecoration: "none", color: "inherit", display: "flex", flexDirection: "column", justifyContent: "space-between", transition: "transform 0.2s, border-color 0.2s" }}
+              style={{ background: PALETTE.card, border: `1px solid ${PALETTE.border}`, borderRadius: "14px", padding: "1.75rem", textDecoration: "none", color: "inherit", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: PALETTE.shadowSm, transition: "transform 0.2s, box-shadow 0.2s, border-color 0.2s" }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-3px)";
-                e.currentTarget.style.borderColor = "rgba(56, 189, 248, 0.4)";
+                e.currentTarget.style.borderColor = PALETTE.borderGold;
+                e.currentTarget.style.boxShadow = PALETTE.shadowLg;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
+                e.currentTarget.style.borderColor = PALETTE.border;
+                e.currentTarget.style.boxShadow = PALETTE.shadowSm;
               }}
             >
               <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-                  <span style={{ fontSize: "0.7rem", color: "#38bdf8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.85rem" }}>
+                  <span style={{ fontSize: "0.72rem", color: PALETTE.goldDeep, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
                     {sol.category}
                   </span>
-                  <span style={{ fontSize: "0.65rem", padding: "0.15rem 0.5rem", borderRadius: "4px", background: "rgba(239, 68, 68, 0.15)", color: "#fca5a5", fontWeight: 700 }}>
+                  <span style={{ fontSize: "0.68rem", padding: "0.2rem 0.55rem", borderRadius: "4px", background: PALETTE.redBg, color: PALETTE.red, fontWeight: 700, border: "1px solid rgba(220, 38, 38, 0.15)" }}>
                     {sol.urgencyLevel}
                   </span>
                 </div>
 
-                <h3 style={{ fontSize: "1.15rem", fontWeight: 700, margin: "0 0 0.75rem", color: "#fff", lineHeight: 1.4 }}>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 700, margin: "0 0 0.85rem", color: PALETTE.text, lineHeight: 1.4, fontFamily: "'Playfair Display', Georgia, serif" }}>
                   {sol.title}
                 </h3>
 
-                <p style={{ fontSize: "0.85rem", color: "#94a3b8", lineHeight: 1.5, margin: "0 0 1.25rem" }}>
+                <p style={{ fontSize: "0.88rem", color: PALETTE.muted, lineHeight: 1.55, margin: "0 0 1.35rem" }}>
                   {sol.symptom}
                 </p>
               </div>
 
               <div>
-                <div style={{ padding: "0.75rem", borderRadius: "8px", background: "rgba(2, 6, 23, 0.5)", border: "1px solid rgba(255, 255, 255, 0.04)", marginBottom: "1rem", display: "flex", justifyContent: "space-between", fontSize: "0.8rem" }}>
-                  <span style={{ color: "#64748b" }}>Resolution Turnaround:</span>
-                  <span style={{ color: "#38bdf8", fontWeight: 700 }}>{sol.stats.resolutionTime}</span>
+                <div style={{ padding: "0.8rem 1rem", borderRadius: "8px", background: PALETTE.canvasSubtle, border: `1px solid ${PALETTE.borderSubtle}`, marginBottom: "1rem", display: "flex", justifyContent: "space-between", fontSize: "0.82rem" }}>
+                  <span style={{ color: PALETTE.muted }}>Resolution Turnaround:</span>
+                  <span style={{ color: PALETTE.goldDeep, fontWeight: 800 }}>{sol.stats.resolutionTime}</span>
                 </div>
 
-                <span style={{ color: "#38bdf8", fontSize: "0.85rem", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                <span style={{ color: PALETTE.goldDeep, fontSize: "0.88rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "0.35rem" }}>
                   View Forensic Blueprint →
                 </span>
               </div>

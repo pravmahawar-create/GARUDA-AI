@@ -191,7 +191,7 @@ export const UNIVERSES = [
   }),
 
   U(14, "Education Universe", "Academic research intelligence, thesis derivations, and integrity audits.", "◎", [
-    "GARUDA Vidya Studio", "Formal Derivations", "Turnitin Integrity Audit", "Executive White PDF"
+    "GARUDA Vidya Studio", "Formal Derivations", "Academic Integrity Audit", "Executive White PDF"
   ], {
     status: "PRODUCTION_VERIFIED",
     route: "/scholar",

@@ -5,33 +5,31 @@
 body {
   margin: 0;
   font-family: Inter, Arial, sans-serif;
-  background: #02040a;
-  color: #fff;
+  background: #F7F4EE;
+  color: #17181B;
 }
 
 .kingdomOS {
   min-height: 100vh;
   padding: 28px;
   background:
-    radial-gradient(circle at 70% 0%, rgba(212,175,55,.22), transparent 30%),
-    radial-gradient(circle at 25% 20%, rgba(0,120,255,.16), transparent 35%),
-    linear-gradient(135deg, #030711, #061321 55%, #02040a);
+    radial-gradient(circle at 70% 0%, rgba(196,139,40,.06), transparent 30%),
+    radial-gradient(circle at 25% 20%, rgba(139,97,24,.04), transparent 35%),
+    #F7F4EE;
 }
 
 .missionHome {
   max-width: 1280px;
   margin: 0 auto 22px;
   padding: 44px;
-  border: 1px solid rgba(255,255,255,.12);
+  border: 1px solid rgba(23,24,27,.08);
   border-radius: 34px;
-  background:
-    linear-gradient(135deg, rgba(8,18,34,.88), rgba(2,8,18,.78)),
-    radial-gradient(circle at 80% 20%, rgba(212,175,55,.18), transparent 30%);
-  box-shadow: 0 35px 120px rgba(0,0,0,.45);
+  background: #FFFFFF;
+  box-shadow: 0 16px 48px rgba(23,24,27,.06);
 }
 
 .eyebrow {
-  color: #f5d76e;
+  color: #8B6118;
   letter-spacing: 7px;
   font-size: 13px;
   font-weight: 900;
@@ -43,10 +41,11 @@ body {
   font-size: clamp(42px, 7vw, 86px);
   line-height: .95;
   letter-spacing: -3px;
+  color: #17181B;
 }
 
 .tagline {
-  color: #b8c7dd;
+  color: #525866;
   font-size: 22px;
 }
 
@@ -56,8 +55,8 @@ body {
   gap: 14px;
   padding: 10px;
   border-radius: 24px;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
+  background: #FAF9F6;
+  border: 1px solid rgba(23,24,27,.12);
 }
 
 .missionBox input {
@@ -65,7 +64,7 @@ body {
   border: 0;
   outline: 0;
   background: transparent;
-  color: white;
+  color: #17181B;
   padding: 20px;
   font-size: 18px;
 }
@@ -74,8 +73,8 @@ body {
 .quickGrid button {
   border: 0;
   border-radius: 18px;
-  background: linear-gradient(135deg, #f7d96b, #b9861f);
-  color: #07101a;
+  background: linear-gradient(135deg, #C48B28, #9E6D1C);
+  color: #FFFFFF;
   padding: 18px 24px;
   font-weight: 950;
   cursor: pointer;
@@ -89,9 +88,9 @@ body {
 }
 
 .quickGrid button {
-  background: rgba(255,255,255,.07);
-  color: #f7d96b;
-  border: 1px solid rgba(247,217,107,.22);
+  background: #FFFFFF;
+  color: #8B6118;
+  border: 1px solid rgba(196,139,40,.28);
   text-align: left;
 }
 
@@ -105,10 +104,10 @@ body {
 
 .chatCore,
 .motherCore {
-  border: 1px solid rgba(255,255,255,.12);
+  border: 1px solid rgba(23,24,27,.08);
   border-radius: 28px;
-  background: rgba(5,13,25,.82);
-  box-shadow: 0 25px 90px rgba(0,0,0,.35);
+  background: #FFFFFF;
+  box-shadow: 0 12px 36px rgba(23,24,27,.05);
 }
 
 .chatCore {
@@ -120,23 +119,24 @@ body {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 18px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(23,24,27,.08);
 }
 
 .chatTop p {
   margin: 0;
-  color: #f7d96b;
+  color: #8B6118;
   font-weight: 900;
 }
 
 .chatTop h2 {
   margin: 6px 0 0;
   font-size: 36px;
+  color: #17181B;
 }
 
 .chatTop span {
-  background: rgba(31,255,122,.14);
-  color: #75ffab;
+  background: rgba(5,150,105,.12);
+  color: #059669;
   padding: 10px 16px;
   border-radius: 999px;
   font-weight: 900;
@@ -159,15 +159,15 @@ body {
 }
 
 .bubble.garuda {
-  background: linear-gradient(135deg, #0e1b30, #081120);
-  border: 1px solid rgba(255,255,255,.08);
-  color: #dce8f8;
+  background: #FAF9F6;
+  border: 1px solid rgba(23,24,27,.08);
+  color: #17181B;
 }
 
 .bubble.user {
   margin-left: auto;
-  background: linear-gradient(135deg, #f7d96b, #b9861f);
-  color: #07101a;
+  background: linear-gradient(135deg, #C48B28, #9E6D1C);
+  color: #FFFFFF;
   font-weight: 900;
 }
 
@@ -176,7 +176,7 @@ body {
 }
 
 .panelTitle {
-  color: #f7d96b;
+  color: #8B6118;
   letter-spacing: 4px;
   font-weight: 950;
 }
@@ -185,8 +185,9 @@ body {
   margin-top: 16px;
   padding: 18px;
   border-radius: 18px;
-  background: rgba(255,255,255,.065);
-  color: #e3edf9;
+  background: #FAF9F6;
+  border: 1px solid rgba(23,24,27,.06);
+  color: #17181B;
   font-weight: 850;
 }
 
@@ -196,8 +197,8 @@ body {
   display: inline-block;
   margin-right: 12px;
   border-radius: 50%;
-  background: #32ff7e;
-  box-shadow: 0 0 20px #32ff7e;
+  background: #059669;
+  box-shadow: 0 0 16px rgba(5,150,105,.4);
 }
 
 .agent-debug-panel {
@@ -205,20 +206,22 @@ body {
   margin: 0 0 16px auto;
   max-width: 360px;
   padding: 14px 16px;
-  border: 1px solid rgba(247,217,107,.2);
+  border: 1px solid rgba(196,139,40,.25);
   border-radius: 16px;
-  background: rgba(5,12,24,.8);
-  color: #e8eef8;
+  background: #FFFFFF;
+  color: #17181B;
+  box-shadow: 0 6px 20px rgba(23,24,27,.05);
   font-size: 13px;
 }
 
 .selfbuild-panel {
   margin: 18px 0 14px;
   padding: 16px 18px;
-  border: 1px solid rgba(247,217,107,.2);
+  border: 1px solid rgba(196,139,40,.25);
   border-radius: 18px;
-  background: rgba(5,12,24,.8);
-  color: #e8eef8;
+  background: #FFFFFF;
+  color: #17181B;
+  box-shadow: 0 6px 20px rgba(23,24,27,.05);
 }
 
 .selfbuild-panel p {
@@ -230,10 +233,11 @@ body {
   margin: 0 0 16px auto;
   max-width: 420px;
   padding: 14px 16px;
-  border: 1px solid rgba(247,217,107,.2);
+  border: 1px solid rgba(196,139,40,.25);
   border-radius: 16px;
-  background: rgba(5,12,24,.8);
-  color: #e8eef8;
+  background: #FFFFFF;
+  color: #17181B;
+  box-shadow: 0 6px 20px rgba(23,24,27,.05);
   font-size: 13px;
 }
 
@@ -242,10 +246,11 @@ body {
   margin: 0 0 16px auto;
   max-width: 420px;
   padding: 14px 16px;
-  border: 1px solid rgba(247,217,107,.2);
+  border: 1px solid rgba(196,139,40,.25);
   border-radius: 16px;
-  background: rgba(5,12,24,.8);
-  color: #e8eef8;
+  background: #FFFFFF;
+  color: #17181B;
+  box-shadow: 0 6px 20px rgba(23,24,27,.05);
   font-size: 13px;
 }
 
@@ -254,10 +259,11 @@ body {
   margin: 0 0 16px auto;
   max-width: 420px;
   padding: 14px 16px;
-  border: 1px solid rgba(247,217,107,.2);
+  border: 1px solid rgba(196,139,40,.25);
   border-radius: 16px;
-  background: rgba(5,12,24,.8);
-  color: #e8eef8;
+  background: #FFFFFF;
+  color: #17181B;
+  box-shadow: 0 6px 20px rgba(23,24,27,.05);
   font-size: 13px;
 }
 
@@ -266,10 +272,11 @@ body {
   margin: 0 0 16px auto;
   max-width: 420px;
   padding: 14px 16px;
-  border: 1px solid rgba(247,217,107,.2);
+  border: 1px solid rgba(196,139,40,.25);
   border-radius: 16px;
-  background: rgba(5,12,24,.8);
-  color: #e8eef8;
+  background: #FFFFFF;
+  color: #17181B;
+  box-shadow: 0 6px 20px rgba(23,24,27,.05);
   font-size: 13px;
 }
 

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>परियोजना प्रतिवेदन - मध्यप्रदेश विज्ञान एवं प्रौद्योगिकी परिषद (MPCST)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f3460;
+            --primary-dark: #16213e;
+            --accent: #e94560;
+            --secondary: #00adb5;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Mukta', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 24px;
+        }
+
+        .paper-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 48px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        .no-print-bar {
+            max-width: 900px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn-print {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-print:hover {
+            background: var(--accent);
+        }
+
+        .header-section {
+            border-bottom: 3px double var(--primary);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .gov-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .gov-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .scheme-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .project-title-box {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 16px;
+            text-align: left;
+        }
+
+        .project-title-box h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 8px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            font-size: 14px;
+            margin-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            padding-top: 12px;
+        }
+
+        .meta-item span {
+            color: #94a3b8;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            border-left: 4px solid var(--accent);
+            padding-left: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        p {
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #334155;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #334155;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #fafafa;
+        }
+
+        .table-total {
+            background-color: #e0f2fe !important;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-left: 4px solid #16a34a;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 16px 0;
+        }
+
+        .video-box {
+            background: #faf5ff;
+            border: 1px solid #e9d5ff;
+            border-left: 4px solid #9333ea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .video-box h3 {
+            color: #6b21a8;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .video-card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .video-card {
+            background: white;
+            border: 1px solid #d8b4fe;
+            border-radius: 6px;
+            padding: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .video-card h4 {
+            color: #7e22ce;
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .video-card p {
+            font-size: 13px;
+            color: #4b5563;
+            margin-bottom: 0;
+        }
+
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .check-item {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .check-item::before {
+            content: "✓";
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .signature-section {
+            margin-top: 48px;
+            display: flex;
+            justify-content: space-between;
+            padding-top: 24px;
+            border-top: 1px dashed #cbd5e1;
+        }
+
+        .sign-block {
+            text-align: center;
+            width: 200px;
+        }
+
+        .sign-line {
+            margin-top: 40px;
+            border-bottom: 1px solid #64748b;
+        }
+
+        .sign-title {
+            margin-top: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .paper-container {
+                box-shadow: none;
+                border: none;
+                padding: 20px;
+                max-width: 100%;
+            }
+            .no-print-bar {
+                display: none !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print-bar">
+        <div>
+            <strong>मध्यप्रदेश विज्ञान एवं प्रौद्योगिकी परिषद (MPCST)</strong> — प्रोजेक्ट रिपोर्ट व वीडियो कार्ययोजना
+        </div>
+        <button class="btn-print" onclick="window.print()">
+            🖨️ प्रिंट करें / PDF सेव करें
+        </button>
+    </div>
+
+    <div class="paper-container">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="gov-title">मध्यप्रदेश विज्ञान एवं प्रौद्योगिकी परिषद</div>
+            <div class="gov-subtitle">विज्ञान भवन, नेहरू नगर, भोपाल - 462 003 | फोन: 0755-2433138 | www.mpcost.nic.in</div>
+            <div class="scheme-badge">विज्ञान के प्रचार प्रसार / विज्ञान लोकव्यापीकरण योजना</div>
+
+            <div class="project-title-box">
+                <h1>शाला के विद्यार्थियों की विज्ञान प्रतियोगिता</h1>
+                <div style="font-size: 15px; color: #e2e8f0;">3-दिवसीय ग्रामीण विज्ञान संवर्धन, हैंड्स-ऑन कार्यशाला एवं मॉडल प्रतियोगिता</div>
+                <div class="meta-grid">
+                    <div class="meta-item"><span>लक्षित वर्ग:</span> कक्षा 6वीं से 12वीं के स्कूली विद्यार्थी</div>
+                    <div class="meta-item"><span>स्वीकृत/प्रस्तावित बजट:</span> ₹ 2,39,100/- (दो लाख उनतालीस हजार एक सौ)</div>
+                    <div class="meta-item"><span>कार्य अवधि:</span> 3 दिवस</div>
+                    <div class="meta-item"><span>माध्यम:</span> हिन्दी एवं अंग्रेजी</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="section">
+            <div class="section-title">1. प्रस्तावना एवं आवश्यकता (Executive Summary & Local Need)</div>
+            <p>
+                मध्य प्रदेश के ग्रामीण और दूरदराज के क्षेत्रों में प्रतिभावान बच्चों में विज्ञान के प्रति गहरी रुचि होती है, परंतु सुसज्जित प्रयोगशालाओं, प्रयोगात्मक किट्स और आधुनिक तकनीकी मार्गदर्शन के अभाव में उनका ज्ञान केवल किताबी परिभाषाओं तक सीमित रह जाता है।
+            </p>
+            <p>
+                इस अंतर को दूर करने के लिए मध्यप्रदेश विज्ञान एवं प्रौद्योगिकी परिषद (MPCST) की विज्ञान लोकव्यापीकरण योजना के अंतर्गत इस 3-दिवसीय आयोजन की रूपरेखा तैयार की गई है। इसका मुख्य उद्देश्य बच्चों को "करके सीखने" (Learning by Doing) का अवसर प्रदान करना, उनमें वैज्ञानिक दृष्टिकोण जाग्रत करना तथा स्थानीय समस्याओं (जैसे ऊर्जा, जल एवं पर्यावरण) के समाधान हेतु नवाचार की भावना को बढ़ावा देना है।
+            </p>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section">
+            <div class="section-title">2. परियोजना के मुख्य उद्देश्य (Key Objectives)</div>
+            <ul>
+                <li><strong>वैज्ञानिक चेतना का विकास:</strong> ग्रामीण बच्चों में अंधविश्वास और झिझक समाप्त कर तार्किक व खोजी सोच पैदा करना।</li>
+                <li><strong>व्यावहारिक विज्ञान मॉडल:</strong> प्रकाश, ध्वनि, विद्युत परिपथ और ऊर्जा सिद्धांतों को स्वयं अपने हाथों से मॉडल बनाकर समझना।</li>
+                <li><strong>टीमवर्क एवं नेतृत्व:</strong> सामूहिक प्रतियोगिताओं के जरिए परस्पर सहयोग, समस्या समाधान और मंच प्रस्तुति का आत्मविश्वास जगाना।</li>
+                <li><strong>डिजिटल एवं तकनीकी ज्ञान:</strong> कंप्यूटर, प्रोजेक्टर और विज्ञान वीडियो के माध्यम से आधुनिक वैज्ञानिक दुनिया से परिचय कराना।</li>
+            </ul>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section">
+            <div class="section-title">3. तीन-दिवसीय विस्तृत कार्यक्रम रूपरेखा (3-Day Activity Schedule)</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">दिवस</th>
+                        <th style="width: 25%;">समय</th>
+                        <th>गतिविधि एवं विवरण</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="3" style="font-weight: 700; color: var(--primary);">दिवस 1</td>
+                        <td>09:30 AM - 11:30 AM</td>
+                        <td><strong>पंजीयन एवं उद्घाटन सत्र:</strong> किट वितरण, दीप प्रज्वलन, अतिथियों व मेंटर्स का स्वागत।</td>
+                    </tr>
+                    <tr>
+                        <td>11:30 AM - 01:00 PM</td>
+                        <td><strong>विजुअल साइंस शो:</strong> प्रोजेक्टर पर वैज्ञानिक खोजों, इसरो एवं विज्ञान रहस्यों पर डॉक्यूमेंट्री प्रदर्शन।</td>
+                    </tr>
+                    <tr>
+                        <td>02:00 PM - 04:30 PM</td>
+                        <td><strong>विज्ञान प्रश्नमंच (Quiz):</strong> कक्षावार लिखित व ओरल बज़र राउंड, प्रारंभिक टीमों का चयन।</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="3" style="font-weight: 700; color: var(--primary);">दिवस 2</td>
+                        <td>09:30 AM - 01:00 PM</td>
+                        <td><strong>हैंड्स-ऑन मॉडल मेकिंग कार्यशाला:</strong> प्रकाश, लेंस, दर्पण, मोटर, विद्युत स्विच व तार संयोजन।</td>
+                    </tr>
+                    <tr>
+                        <td>01:00 PM - 02:00 PM</td>
+                        <td>अल्पाहार एवं भोजन अवकाश।</td>
+                    </tr>
+                    <tr>
+                        <td>02:00 PM - 04:30 PM</td>
+                        <td><strong>पर्यावरण व ऊर्जा मॉडल:</strong> सौर ऊर्जा, जल संचयन, कचरा प्रबंधन व चार्ट प्रेजेंटेशन।</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" style="font-weight: 700; color: var(--primary);">दिवस 3</td>
+                        <td>09:30 AM - 01:30 PM</td>
+                        <td><strong>भव्य विज्ञान प्रदर्शनी:</strong> बच्चों द्वारा मॉडल्स का जीवंत प्रदर्शन एवं निर्णायक मंडल द्वारा मूल्यांकन।</td>
+                    </tr>
+                    <tr>
+                        <td>02:30 PM - 04:30 PM</td>
+                        <td><strong>समापन एवं सम्मान समारोह:</strong> विजेताओं को शील्ड/पुरस्कार, सभी को सहभागिता प्रमाण पत्र एवं आभार।</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Section 4 -->
+        <div class="section">
+            <div class="section-title">4. प्रस्तावित मदवार बजट विवरणी (Head-wise Itemized Budget)</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 8%; text-align: center;">क्र.</th>
+                        <th>मद (Head of Expenditure)</th>
+                        <th style="width: 25%; text-align: right;">प्रस्तावित राशि (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: center;">1</td>
+                        <td>साइंस मॉडल किट्स व प्रदर्शनी सामग्री (Motors, Lenses, Wires, Kits)</td>
+                        <td style="text-align: right; font-weight: 600;">₹ 60,000/-</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">2</td>
+                        <td>कार्यक्रम आयोजक एवं तकनीकी प्रशिक्षक / रिसोर्स पर्सन मानदेय</td>
+                        <td style="text-align: right; font-weight: 600;">₹ 55,000/-</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">3</td>
+                        <td>स्टेशनरी, बैकड्रॉप बैनर्स, सहभागिता प्रमाणपत्र, प्रतियोगिता फोल्डर्स</td>
+                        <td style="text-align: right; font-weight: 600;">₹ 40,100/-</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">4</td>
+                        <td>विज्ञान क्विज एवं अन्य प्रतियोगिता सामग्री व बज़र सिस्टम</td>
+                        <td style="text-align: right; font-weight: 600;">₹ 15,000/-</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">5</td>
+                        <td>प्रचार-प्रसार सामग्री, पैम्फलेट्स एवं आमंत्रण पत्र</td>
+                        <td style="text-align: right; font-weight: 600;">₹ 15,000/-</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">6</td>
+                        <td>3 दिवसीय छात्र-छात्राओं, शिक्षकों व अतिथियों हेतु पौष्टिक अल्पाहार/भोजन</td>
+                        <td style="text-align: right; font-weight: 600;">₹ 35,000/-</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">7</td>
+                        <td>विजेताओं हेतु पुरस्कार, साइंस किट्स एवं अतिथियों हेतु स्मृति चिन्ह</td>
+                        <td style="text-align: right; font-weight: 600;">₹ 19,000/-</td>
+                    </tr>
+                    <tr class="table-total">
+                        <td colspan="2" style="text-align: right; font-size: 15px;">कुल प्रस्तावित बजट (TOTAL BUDGET):</td>
+                        <td style="text-align: right; font-size: 16px; font-weight: 800; color: #0f3460;">₹ 2,39,100/-</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="font-size: 13px; color: var(--text-muted); text-align: right;">*(अक्षरी: दो लाख उनतालीस हजार एक सौ रुपये मात्र)*</div>
+        </div>
+
+        <!-- Section 5: Video Production Plan -->
+        <div class="section">
+            <div class="video-box">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="section-title" style="margin-bottom: 0; border-left-color: #9333ea; color: #6b21a8;">
+                        5. विशेष कार्ययोजना: वीडियो एवं मल्टीमीडिया निर्माण (Video Production Scope)
+                    </div>
+                    <span style="background: #7e22ce; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700;">
+                        अनिवार्य दस्तावेजीकरण
+                    </span>
+                </div>
+                <p style="margin-top: 12px;">
+                    MPCST प्रपत्र के बिंदु 4.12 अनुसार कार्यक्रम का वीडियो दस्तावेजीकरण अनिवार्य है। परिषद में अंतिम रिपोर्ट प्रेषित करने तथा सोशल मीडिया/प्रचार-प्रसार हेतु निम्नलिखित 4-स्तरीय वीडियो पैकेज प्रस्तावित है:
+                </p>
+
+                <div class="video-card-grid">
+                    <div class="video-card">
+                        <h4>🎥 1. मुख्य डॉक्यूमेंट्री (5 - 7 मिनट)</h4>
+                        <p>संपूर्ण 3-दिवसीय आयोजन का हाई-रेजोल्यूशन सारांश, छात्र व शिक्षक इंटरव्यू, ग्रामीण नवाचार, निर्णायक प्रतिक्रियाएं व परिषद हेतु आधिकारिक प्रस्तुतीकरण।</p>
+                    </div>
+                    <div class="video-card">
+                        <h4>⚡ 2. इवेंट टीज़र / प्रोमो (45 - 60 सेकंड)</h4>
+                        <p>हाई-एनर्जी म्यूजिक, आधुनिक कट्स और मोशन ग्राफिक्स के साथ सोशल मीडिया और व्हाट्सएप शेयरिंग हेतु आकर्षक प्रोमो।</p>
+                    </div>
+                    <div class="video-card">
+                        <h4>📱 3. डेली रील्स / हाइलाइट्स (3 x 60 सेकंड)</h4>
+                        <p>प्रतिदिन शाम को त्वरित एडिट के साथ इंस्टाग्राम, यूट्यूब शॉर्ट्स और स्टेटस हेतु दिनभर की प्रमुख गतिविधियों की रील्स।</p>
+                    </div>
+                    <div class="video-card">
+                        <h4>🌟 4. 'नन्हा कलाम' इनोवेशन सीरीज (5 रील्स)</h4>
+                        <p>शीर्ष 5 ग्रामीण बाल वैज्ञानिकों के व्यक्तिगत मॉडल्स पर केंद्रित 45-60 सेकंड के प्रेरणादायक माइक्रो-इंटरव्यूज।</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 14px; font-size: 13px; color: #581c87; background: #f3e8ff; padding: 10px 14px; border-radius: 6px;">
+                    <strong>तकनीकी मानक:</strong> 4K/1080p सिनेमैटिक कवरेज, वायरलेस लैपल माइक द्वारा स्पष्ट ऑडियो, प्रेरणादायक हिन्दी वॉयस-ओवर, एवं MPCST ब्राडिंग वॉटरमार्क।
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Checklist -->
+        <div class="section">
+            <div class="section-title">6. संलग्न आवश्यक दस्तावेजों की चेकलिस्ट</div>
+            <div class="checklist-grid">
+                <div class="check-item">परियोजना प्रस्ताव 09 प्रतियों में</div>
+                <div class="check-item">विस्तृत मदवार बजट विवरणी</div>
+                <div class="check-item">संस्था पंजीयन एवं उपनियम/बाय-लॉज</div>
+                <div class="check-item">विगत 3 वर्षों का प्रगति प्रतिवेदन</div>
+                <div class="check-item">विगत 3 वर्षों की सीए ऑडिटेड रिपोर्ट</div>
+                <div class="check-item">वर्तमान कार्यकारिणी पदाधिकारियों की सूची</div>
+                <div class="check-item">बैंक पासबुक / निरस्त चेक प्रति</div>
+                <div class="check-item">नीति आयोग दर्पण पोर्टल पंजीयन प्रति</div>
+                <div class="check-item">अध्यक्ष/सचिव आधार कार्ड छायाप्रति</div>
+                <div class="check-item">गैर-काली सूची में होने का शपथ-पत्र</div>
+                <div class="check-item">परिषद के नियमों की स्वीकृति पत्र</div>
+                <div class="check-item">आरटीआई (RTI) घोषणा पत्र</div>
+            </div>
+        </div>
+
+        <!-- Signature Section -->
+        <div class="signature-section">
+            <div class="sign-block">
+                <div class="sign-line"></div>
+                <div class="sign-title">हस्ताक्षर कार्यक्रम समन्वयक<br>(नाम, पद एवं सील)</div>
+            </div>
+            <div class="sign-block">
+                <div class="sign-line"></div>
+                <div class="sign-title">हस्ताक्षर अध्यक्ष / सचिव<br>(संस्था की अधिकृत मुहर सहित)</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

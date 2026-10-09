@@ -125,10 +125,10 @@ export default function CustomerAuthForm({ mode, onAuthenticated }) {
   }
 
   return (
-    <main className="garuda-shell" style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
-      <form onSubmit={submit} style={{ width: "min(100% - 2rem, 400px)", padding: "2rem", border: "1px solid rgba(255,255,255,.15)", borderRadius: "12px", background: "#111827" }}>
-        <p className="eyebrow">GARUDA AI</p>
-        <h1 style={{ marginTop: 0 }}>{isSignup ? "Create your account" : "Welcome back"}</h1>
+    <main className="garuda-shell" style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#F7F4EE" }}>
+      <form onSubmit={submit} style={{ width: "min(100% - 2rem, 400px)", padding: "2rem", border: "1px solid rgba(23,24,27,0.08)", borderRadius: "16px", background: "#FFFFFF", boxShadow: "0 20px 48px -8px rgba(23,24,27,0.06), 0 4px 12px rgba(0,0,0,0.02)" }}>
+        <p className="eyebrow" style={{ color: "#8B6118", letterSpacing: "0.2em", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", margin: "0 0 0.5rem" }}>GARUDA AI</p>
+        <h1 style={{ marginTop: 0, color: "#17181B" }}>{isSignup ? "Create your account" : "Welcome back"}</h1>
         <button
           type="button"
           disabled={googleLoading || loading || demoLoading}
@@ -139,16 +139,16 @@ export default function CustomerAuthForm({ mode, onAuthenticated }) {
             alignItems: "center",
             justifyContent: "center",
             gap: "0.75rem",
-            background: "#ffffff",
-            color: "#1f2937",
-            border: "none",
+            background: "#FAF9F6",
+            color: "#17181B",
+            border: "1px solid rgba(23,24,27,0.12)",
             borderRadius: "8px",
             padding: "0.75rem 1rem",
             fontSize: "0.95rem",
             fontWeight: 600,
             cursor: googleLoading ? "wait" : "pointer",
             marginBottom: "1.25rem",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.04)",
             transition: "opacity 0.2s ease"
           }}
         >
@@ -161,11 +161,11 @@ export default function CustomerAuthForm({ mode, onAuthenticated }) {
           {googleLoading ? "Connecting to Google..." : "Continue with Google"}
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", margin: "0 0 1.25rem 0" }}>
-          <span style={{ flex: 1, height: 1, background: "rgba(255,255,255,.12)" }} />
-          <span style={{ color: "#6b7280", fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>or continue with email</span>
-          <span style={{ flex: 1, height: 1, background: "rgba(255,255,255,.12)" }} />
+          <span style={{ flex: 1, height: 1, background: "rgba(23,24,27,0.08)" }} />
+          <span style={{ color: "#525866", fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>or continue with email</span>
+          <span style={{ flex: 1, height: 1, background: "rgba(23,24,27,0.08)" }} />
         </div>
-        <label htmlFor="customer-email">Email</label>
+        <label htmlFor="customer-email" style={{ color: "#1F242E", fontSize: "0.88rem", fontWeight: 600 }}>Email</label>
         <input
           id="customer-email"
           type="email"
@@ -173,9 +173,9 @@ export default function CustomerAuthForm({ mode, onAuthenticated }) {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           required
-          style={{ width: "100%", margin: "0.5rem 0 1rem", padding: "0.75rem" }}
+          style={{ width: "100%", margin: "0.5rem 0 1rem", padding: "0.75rem", background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.12)", borderRadius: "8px", color: "#17181B" }}
         />
-        <label htmlFor="customer-password">Password</label>
+        <label htmlFor="customer-password" style={{ color: "#1F242E", fontSize: "0.88rem", fontWeight: 600 }}>Password</label>
         <input
           id="customer-password"
           type="password"
@@ -184,29 +184,29 @@ export default function CustomerAuthForm({ mode, onAuthenticated }) {
           onChange={(event) => setPassword(event.target.value)}
           minLength="5"
           required
-          style={{ width: "100%", margin: "0.5rem 0 1rem", padding: "0.75rem" }}
+          style={{ width: "100%", margin: "0.5rem 0 1rem", padding: "0.75rem", background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.12)", borderRadius: "8px", color: "#17181B" }}
         />
-        {isSignup && <p style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Use at least 5 characters.</p>}
-        {error && <p role="alert" style={{ color: "#fca5a5" }}>{error}</p>}
-        <button type="submit" disabled={loading || demoLoading} className="hero-panel__button hero-panel__button--primary" style={{ width: "100%" }}>
+        {isSignup && <p style={{ color: "#525866", fontSize: "0.85rem" }}>Use at least 5 characters.</p>}
+        {error && <p role="alert" style={{ color: "#DC2626", background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.2)", borderRadius: "8px", padding: "0.5rem 0.75rem", fontSize: "0.85rem" }}>{error}</p>}
+        <button type="submit" disabled={loading || demoLoading} className="hero-panel__button hero-panel__button--primary" style={{ width: "100%", background: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)", color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "0.8rem", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 15px rgba(179,130,53,0.28)" }}>
           {loading ? "Please wait..." : isSignup ? "Create account" : "Log in"}
         </button>
-        <p style={{ color: "#9ca3af", marginBottom: 0 }}>
+        <p style={{ color: "#525866", marginBottom: 0, marginTop: "1rem" }}>
           {isSignup ? "Already have an account?" : "New to GARUDA?"}{" "}
-          <Link to={isSignup ? "/login" : "/signup"} style={{ color: "#fbbf24" }}>
+          <Link to={isSignup ? "/login" : "/signup"} style={{ color: "#8B6118", fontWeight: 600, textDecoration: "none" }}>
             {isSignup ? "Log in" : "Get started"}
           </Link>
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", margin: "1.25rem 0" }}>
-          <span style={{ flex: 1, height: 1, background: "rgba(255,255,255,.12)" }} />
-          <span style={{ color: "#6b7280", fontSize: "0.8rem" }}>or</span>
-          <span style={{ flex: 1, height: 1, background: "rgba(255,255,255,.12)" }} />
+          <span style={{ flex: 1, height: 1, background: "rgba(23,24,27,0.08)" }} />
+          <span style={{ color: "#525866", fontSize: "0.8rem" }}>or</span>
+          <span style={{ flex: 1, height: 1, background: "rgba(23,24,27,0.08)" }} />
         </div>
         <button
           type="button"
           disabled={demoLoading || loading}
           onClick={demoLogin}
-          style={{ width: "100%", background: "transparent", border: "1px solid rgba(251,191,36,.45)", color: "#fbbf24", padding: "0.75rem", borderRadius: "8px", fontWeight: 700, cursor: "pointer", fontSize: "0.95rem" }}
+          style={{ width: "100%", background: "#FAF9F6", border: "1px solid rgba(196,139,40,0.35)", color: "#8B6118", padding: "0.75rem", borderRadius: "8px", fontWeight: 700, cursor: "pointer", fontSize: "0.95rem" }}
         >
           {demoLoading ? "Preparing demo…" : "Try a one-click demo account"}
         </button>

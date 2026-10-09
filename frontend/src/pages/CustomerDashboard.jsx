@@ -5,11 +5,13 @@ import ChatConsole from "../components/ChatConsole";
 import BrandAssetImage from "../components/BrandAssetImage";
 import { openPristineWhitePdf } from "../utils/printPdf";
 
-const GOLD = "#d4af37";
-const GOLD_LIGHT = "#fef08a";
-const BG = "#030712";
-const PANEL = "#0a0f18";
-const BORDER = "rgba(212, 175, 55, 0.2)";
+const GOLD = "#8B6118";
+const GOLD_LIGHT = "#C48B28";
+const BG = "#F7F4EE";
+const PANEL = "#FFFFFF";
+const BORDER = "rgba(23, 24, 27, 0.08)";
+const TEXT = "#17181B";
+const MUTED = "#525866";
 
 const SOVEREIGN_UNIVERSES = [
   {
@@ -276,7 +278,7 @@ export default function CustomerDashboard({ customer, onLogout }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, color: "#f8fafc", fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: BG, color: TEXT, fontFamily: "Inter, system-ui, sans-serif" }}>
       <SEOHead
         title="Client Workspace & Sovereign Cockpit | GARUDA AI Operating System"
         description="Authorized client workspace for active universes, custom software, verified deliverables, proposals, and AI architect consultation."
@@ -286,8 +288,8 @@ export default function CustomerDashboard({ customer, onLogout }) {
       {/* Header */}
       <header
         style={{
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-          background: "rgba(10, 15, 24, 0.8)",
+          borderBottom: "1px solid rgba(23, 24, 27, 0.08)",
+          background: "rgba(255, 255, 255, 0.88)",
           backdropFilter: "blur(12px)",
           position: "sticky",
           top: 0,
@@ -300,26 +302,26 @@ export default function CustomerDashboard({ customer, onLogout }) {
               asset="emblem"
               variant="gold"
               alt="GARUDA AI"
-              style={{ width: 34, height: 34, borderRadius: "50%", border: `1px solid ${GOLD}` }}
+              style={{ width: 34, height: 34, borderRadius: "50%", border: `1px solid ${GOLD_LIGHT}` }}
             />
             <div>
-              <div style={{ fontWeight: 900, fontSize: "1.05rem", letterSpacing: "0.08em", color: "#fff" }}>GARUDA</div>
+              <div style={{ fontWeight: 900, fontSize: "1.05rem", letterSpacing: "0.08em", color: TEXT }}>GARUDA</div>
               <div style={{ fontSize: "0.68rem", color: GOLD, letterSpacing: "0.05em" }}>SOVEREIGN WORKSPACE</div>
             </div>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <div style={{ fontSize: "0.8rem", color: "#9ca3af", textAlign: "right" }}>
-              <div style={{ color: "#fff", fontWeight: 700 }}>{customer?.name || "Garudian Client"}</div>
+            <div style={{ fontSize: "0.8rem", color: MUTED, textAlign: "right" }}>
+              <div style={{ color: TEXT, fontWeight: 700 }}>{customer?.name || "Garudian Client"}</div>
               <div style={{ fontSize: "0.72rem" }}>{customer?.email}</div>
             </div>
             {onLogout && (
               <button
                 onClick={onLogout}
                 style={{
-                  background: "rgba(239, 68, 68, 0.12)",
-                  border: "1px solid rgba(239, 68, 68, 0.3)",
-                  color: "#f87171",
+                  background: "rgba(220, 38, 38, 0.08)",
+                  border: "1px solid rgba(220, 38, 38, 0.25)",
+                  color: "#DC2626",
                   padding: "0.35rem 0.75rem",
                   borderRadius: 6,
                   fontSize: "0.78rem",
@@ -337,7 +339,7 @@ export default function CustomerDashboard({ customer, onLogout }) {
       {/* Main Container */}
       <main style={{ maxWidth: 1240, margin: "0 auto", padding: "1.5rem" }}>
         {/* Navigation Tabs */}
-        <div style={{ display: "flex", gap: "0.5rem", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "0.75rem", marginBottom: "1.75rem", overflowX: "auto" }}>
+        <div style={{ display: "flex", gap: "0.5rem", borderBottom: "1px solid rgba(23, 24, 27, 0.08)", paddingBottom: "0.75rem", marginBottom: "1.75rem", overflowX: "auto" }}>
           {[
             { id: "universes", label: "🪐 Sovereign Universes", icon: "🌌" },
             { id: "cybershield", label: "🛡️ CyberShield™ Defense", icon: "🛡️", route: "/cybershield" },
@@ -357,9 +359,9 @@ export default function CustomerDashboard({ customer, onLogout }) {
                 }
               }}
               style={{
-                background: activeTab === tab.id ? "rgba(212, 175, 55, 0.15)" : "transparent",
-                border: activeTab === tab.id ? `1px solid ${GOLD}` : "1px solid transparent",
-                color: activeTab === tab.id ? GOLD_LIGHT : "#9ca3af",
+                background: activeTab === tab.id ? "rgba(196, 139, 40, 0.12)" : "transparent",
+                border: activeTab === tab.id ? `1px solid ${GOLD_LIGHT}` : "1px solid transparent",
+                color: activeTab === tab.id ? GOLD : MUTED,
                 padding: "0.55rem 1.1rem",
                 borderRadius: 8,
                 fontSize: "0.85rem",
@@ -380,12 +382,12 @@ export default function CustomerDashboard({ customer, onLogout }) {
 
         {/* Global Notifications */}
         {actionError && (
-          <div style={{ marginBottom: "1.25rem", padding: "0.75rem 1rem", background: "rgba(239,68,68,0.15)", border: "1px solid #f87171", borderRadius: 8, color: "#f87171", fontSize: "0.85rem" }}>
+          <div style={{ marginBottom: "1.25rem", padding: "0.75rem 1rem", background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.25)", borderRadius: 8, color: "#DC2626", fontSize: "0.85rem" }}>
             {actionError}
           </div>
         )}
         {actionSuccess && (
-          <div style={{ marginBottom: "1.25rem", padding: "0.75rem 1rem", background: "rgba(117,244,171,0.15)", border: "1px solid #75f4ab", borderRadius: 8, color: "#75f4ab", fontSize: "0.85rem" }}>
+          <div style={{ marginBottom: "1.25rem", padding: "0.75rem 1rem", background: "rgba(5,150,105,0.08)", border: "1px solid rgba(5,150,105,0.25)", borderRadius: 8, color: "#059669", fontSize: "0.85rem" }}>
             {actionSuccess}
           </div>
         )}
@@ -395,22 +397,22 @@ export default function CustomerDashboard({ customer, onLogout }) {
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
               <div>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.25rem 0.65rem", borderRadius: 999, background: "rgba(212,175,55,0.1)", border: `1px solid ${BORDER}`, color: GOLD_LIGHT, fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.4rem" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.25rem 0.65rem", borderRadius: 999, background: "rgba(196,139,40,0.1)", border: `1px solid ${BORDER}`, color: GOLD, fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.4rem" }}>
                   <span>⚡</span> ACTIVE SOVEREIGN FLEET & CAPABILITIES
                 </div>
-                <h1 style={{ fontSize: "1.6rem", fontWeight: 900, color: "#fff", margin: "0.2rem 0" }}>
+                <h1 style={{ fontSize: "1.6rem", fontWeight: 900, color: TEXT, margin: "0.2rem 0" }}>
                   GARUDA Sovereign Universes
                 </h1>
-                <p style={{ color: "#9ca3af", fontSize: "0.88rem", maxWidth: 750, margin: 0 }}>
+                <p style={{ color: MUTED, fontSize: "0.88rem", maxWidth: 750, margin: 0 }}>
                   Explore active autonomous capabilities governed by <strong style={{ color: GOLD }}>Founder Praveen Mahawar</strong>. Launch instant scoping or review technical architecture directly with the AI Solution Architect.
                 </p>
               </div>
               <button
                 onClick={() => navigate("/enterprise")}
                 style={{
-                  background: "rgba(212,175,55,0.12)",
-                  border: `1px solid ${GOLD}`,
-                  color: GOLD_LIGHT,
+                  background: "rgba(196,139,40,0.1)",
+                  border: `1px solid ${GOLD_LIGHT}`,
+                  color: GOLD,
                   padding: "0.5rem 1.1rem",
                   borderRadius: 8,
                   fontSize: "0.82rem",
@@ -429,7 +431,7 @@ export default function CustomerDashboard({ customer, onLogout }) {
                   key={u.id}
                   style={{
                     background: PANEL,
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(23,24,27,0.08)",
                     borderRadius: 14,
                     padding: "1.4rem",
                     display: "flex",
@@ -437,18 +439,18 @@ export default function CustomerDashboard({ customer, onLogout }) {
                     justifyContent: "space-between",
                     position: "relative",
                     transition: "border-color 0.2s ease, transform 0.2s ease",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.3)"
+                    boxShadow: "0 6px 24px rgba(23,24,27,0.04)"
                   }}
                 >
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.85rem" }}>
                       <span style={{ fontSize: "1.8rem" }}>{u.icon}</span>
-                      <span style={{ fontSize: "0.65rem", background: "rgba(212,175,55,0.15)", border: `1px solid ${BORDER}`, color: GOLD_LIGHT, padding: "0.2rem 0.5rem", borderRadius: 4, fontWeight: 800 }}>
+                      <span style={{ fontSize: "0.65rem", background: "rgba(196,139,40,0.1)", border: `1px solid rgba(196,139,40,0.25)`, color: GOLD, padding: "0.2rem 0.5rem", borderRadius: 4, fontWeight: 800 }}>
                         {u.badge}
                       </span>
                     </div>
 
-                    <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#fff", margin: "0 0 0.35rem" }}>
+                    <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: TEXT, margin: "0 0 0.35rem" }}>
                       {u.name}
                     </h3>
 
@@ -456,15 +458,15 @@ export default function CustomerDashboard({ customer, onLogout }) {
                       {u.metrics}
                     </div>
 
-                    <p style={{ fontSize: "0.82rem", color: "#9ca3af", lineHeight: 1.55, margin: "0 0 1rem" }}>
+                    <p style={{ fontSize: "0.82rem", color: MUTED, lineHeight: 1.55, margin: "0 0 1rem" }}>
                       {u.desc}
                     </p>
 
-                    <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "0.85rem", marginBottom: "1.25rem" }}>
-                      <div style={{ fontSize: "0.72rem", color: "#cbd5e1", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.4rem" }}>
+                    <div style={{ borderTop: "1px solid rgba(23,24,27,0.06)", paddingTop: "0.85rem", marginBottom: "1.25rem" }}>
+                      <div style={{ fontSize: "0.72rem", color: TEXT, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.4rem" }}>
                         Active Capabilities:
                       </div>
-                      <ul style={{ margin: 0, paddingLeft: "1.1rem", fontSize: "0.78rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                      <ul style={{ margin: 0, paddingLeft: "1.1rem", fontSize: "0.78rem", color: MUTED, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
                         {u.capabilities.map((c, i) => (
                           <li key={i}>{c}</li>
                         ))}
@@ -477,8 +479,8 @@ export default function CustomerDashboard({ customer, onLogout }) {
                       onClick={() => handleLaunchUniverseScoping(u)}
                       style={{
                         flex: 1,
-                        background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)",
-                        color: "#05070a",
+                        background: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)",
+                        color: "#FFFFFF",
                         border: "none",
                         borderRadius: 8,
                         padding: "0.6rem 1rem",
@@ -494,9 +496,9 @@ export default function CustomerDashboard({ customer, onLogout }) {
                       <button
                         onClick={() => navigate(u.exploreRoute)}
                         style={{
-                          background: "rgba(255,255,255,0.04)",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          color: "#cbd5e1",
+                          background: "#FAF9F6",
+                          border: "1px solid rgba(23,24,27,0.12)",
+                          color: TEXT,
                           borderRadius: 8,
                           padding: "0.6rem 0.85rem",
                           fontWeight: 700,
@@ -516,22 +518,22 @@ export default function CustomerDashboard({ customer, onLogout }) {
 
         {/* TAB 1: TALK TO ARCHITECT CONSOLE */}
         {activeTab === "architect" && (
-          <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: 16, padding: "1.5rem", boxShadow: "0 20px 40px rgba(0,0,0,0.5)" }}>
+          <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: 16, padding: "1.5rem", boxShadow: "0 12px 36px rgba(23,24,27,0.04)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.25rem", flexWrap: "wrap", gap: "0.75rem" }}>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <h2 style={{ fontSize: "1.25rem", fontWeight: 900, color: "#fff", margin: 0 }}>
+                  <h2 style={{ fontSize: "1.25rem", fontWeight: 900, color: TEXT, margin: 0 }}>
                     ⚡ AI Solution Architect Console
                   </h2>
-                  <span style={{ fontSize: "0.68rem", background: "rgba(212,175,55,0.2)", border: `1px solid ${BORDER}`, color: GOLD_LIGHT, padding: "0.15rem 0.5rem", borderRadius: 4, fontWeight: 800 }}>
+                  <span style={{ fontSize: "0.68rem", background: "rgba(196,139,40,0.1)", border: `1px solid rgba(196,139,40,0.25)`, color: GOLD, padding: "0.15rem 0.5rem", borderRadius: 4, fontWeight: 800 }}>
                     EXECUTIVE SCOPING
                   </span>
                 </div>
-                <p style={{ color: "#9ca3af", fontSize: "0.82rem", margin: "0.3rem 0 0" }}>
+                <p style={{ color: MUTED, fontSize: "0.82rem", margin: "0.3rem 0 0" }}>
                   Enterprise Project Scoping & System Architecture · Governed by <strong style={{ color: GOLD }}>Founder Praveen Mahawar</strong>
                 </p>
               </div>
-              <span style={{ fontSize: "0.72rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#8d95a7", padding: "0.3rem 0.7rem", borderRadius: 6, fontWeight: 700 }}>
+              <span style={{ fontSize: "0.72rem", background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.08)", color: MUTED, padding: "0.3rem 0.7rem", borderRadius: 6, fontWeight: 700 }}>
                 Direct Console · 100% Anti-Fabrication
               </span>
             </div>
@@ -549,29 +551,29 @@ export default function CustomerDashboard({ customer, onLogout }) {
         {activeTab === "projects" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-              <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#fff", margin: 0 }}>Active Projects & Governed Deliverables</h2>
-              <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>Strict Tenancy Isolation Enforced</span>
+              <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: TEXT, margin: 0 }}>Active Projects & Governed Deliverables</h2>
+              <span style={{ fontSize: "0.75rem", color: MUTED }}>Strict Tenancy Isolation Enforced</span>
             </div>
 
             {loading ? (
-              <p style={{ color: "#94a3b8", fontSize: "0.9rem" }}>Loading your projects...</p>
+              <p style={{ color: MUTED, fontSize: "0.9rem" }}>Loading your projects...</p>
             ) : projects.length === 0 ? (
-              <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, padding: "2.5rem 1.5rem", textAlign: "center" }}>
+              <div style={{ background: PANEL, border: "1px solid rgba(23,24,27,0.08)", borderRadius: 12, padding: "2.5rem 1.5rem", textAlign: "center" }}>
                 <span style={{ fontSize: "2rem" }}>📂</span>
-                <h3 style={{ color: "#fff", margin: "0.75rem 0 0.3rem", fontSize: "1.1rem" }}>No Active Custom Projects Yet</h3>
-                <p style={{ color: "#9ca3af", fontSize: "0.85rem", maxWidth: 480, margin: "0 auto 1.25rem" }}>
+                <h3 style={{ color: TEXT, margin: "0.75rem 0 0.3rem", fontSize: "1.1rem" }}>No Active Custom Projects Yet</h3>
+                <p style={{ color: MUTED, fontSize: "0.85rem", maxWidth: 480, margin: "0 auto 1.25rem" }}>
                   Submit your business requirements or talk with our AI Solution Architect to generate a verified project scope, milestone escrow, and delivery package.
                 </p>
                 <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center" }}>
                   <button
                     onClick={() => setActiveTab("architect")}
-                    style={{ background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)", color: "#000", border: "none", borderRadius: 8, padding: "0.55rem 1.25rem", fontWeight: 800, fontSize: "0.85rem", cursor: "pointer" }}
+                    style={{ background: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)", color: "#FFFFFF", border: "none", borderRadius: 8, padding: "0.55rem 1.25rem", fontWeight: 800, fontSize: "0.85rem", cursor: "pointer" }}
                   >
                     Talk to Solution Architect ➔
                   </button>
                   <button
                     onClick={() => setActiveTab("universes")}
-                    style={{ background: "rgba(255,255,255,0.06)", color: "#fff", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "0.55rem 1.25rem", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}
+                    style={{ background: "#FAF9F6", color: TEXT, border: "1px solid rgba(23,24,27,0.12)", borderRadius: 8, padding: "0.55rem 1.25rem", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}
                   >
                     Explore Sovereign Universes
                   </button>
@@ -583,29 +585,29 @@ export default function CustomerDashboard({ customer, onLogout }) {
                   const isExpanded = expandedProjectId === proj.projectId;
                   const manifest = proj.deliveryManifest || proj.deliveryPackage?.manifest || [];
                   return (
-                    <div key={proj.projectId} style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "1.25rem" }}>
+                    <div key={proj.projectId} style={{ background: PANEL, border: "1px solid rgba(23,24,27,0.08)", borderRadius: 12, padding: "1.25rem" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.5rem" }}>
                         <div>
                           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                            <h3 style={{ color: "#fff", margin: 0, fontSize: "1.05rem", fontWeight: 800 }}>{proj.title}</h3>
-                            <span style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem", borderRadius: 4, background: proj.status === "completed" ? "rgba(16,185,129,0.2)" : "rgba(212,175,55,0.2)", color: proj.status === "completed" ? "#34d399" : GOLD_LIGHT, fontWeight: 700 }}>
+                            <h3 style={{ color: TEXT, margin: 0, fontSize: "1.05rem", fontWeight: 800 }}>{proj.title}</h3>
+                            <span style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem", borderRadius: 4, background: proj.status === "completed" ? "rgba(5,150,105,0.1)" : "rgba(196,139,40,0.1)", color: proj.status === "completed" ? "#059669" : GOLD, fontWeight: 700 }}>
                               {proj.status?.toUpperCase()}
                             </span>
                           </div>
-                          <div style={{ color: "#9ca3af", fontSize: "0.78rem", marginTop: "0.25rem" }}>
-                            Project ID: <code style={{ color: GOLD_LIGHT }}>{proj.projectId}</code> · Target: {proj.targetDate || "Continuous"}
+                          <div style={{ color: MUTED, fontSize: "0.78rem", marginTop: "0.25rem" }}>
+                            Project ID: <code style={{ color: GOLD }}>{proj.projectId}</code> · Target: {proj.targetDate || "Continuous"}
                           </div>
                         </div>
                         <div style={{ display: "flex", gap: "0.5rem" }}>
                           <button
                             onClick={() => handleExportProjectPdf(proj)}
-                            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}
+                            style={{ background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.12)", color: TEXT, padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}
                           >
                             Export PDF SOW
                           </button>
                           <button
                             onClick={() => setExpandedProjectId(isExpanded ? null : proj.projectId)}
-                            style={{ background: "rgba(212,175,55,0.12)", border: `1px solid ${BORDER}`, color: GOLD_LIGHT, padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}
+                            style={{ background: "rgba(196,139,40,0.1)", border: `1px solid rgba(196,139,40,0.25)`, color: GOLD, padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}
                           >
                             {isExpanded ? "Hide Details" : "View Package"}
                           </button>
@@ -613,23 +615,23 @@ export default function CustomerDashboard({ customer, onLogout }) {
                       </div>
 
                       {isExpanded && (
-                        <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                          <div style={{ fontSize: "0.82rem", color: "#cbd5e1", marginBottom: "0.75rem" }}>
+                        <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid rgba(23,24,27,0.06)" }}>
+                          <div style={{ fontSize: "0.82rem", color: TEXT, marginBottom: "0.75rem" }}>
                             <strong>Activated Universes:</strong> {(proj.activatedUniverses || []).join(", ") || "Core Multi-Agent"}
                           </div>
-                          <div style={{ fontSize: "0.82rem", color: "#9ca3af", marginBottom: "1rem" }}>
+                          <div style={{ fontSize: "0.82rem", color: MUTED, marginBottom: "1rem" }}>
                             <strong>Scope Summary:</strong> {proj.requirements || "Custom enterprise software execution governed by SHA-256 evidence."}
                           </div>
 
-                          <h4 style={{ color: "#fff", fontSize: "0.88rem", fontWeight: 700, margin: "0 0 0.5rem" }}>Governed Deliverables Manifest ({manifest.length})</h4>
+                          <h4 style={{ color: TEXT, fontSize: "0.88rem", fontWeight: 700, margin: "0 0 0.5rem" }}>Governed Deliverables Manifest ({manifest.length})</h4>
                           {manifest.length === 0 ? (
-                            <p style={{ color: "#6b7280", fontSize: "0.8rem", margin: 0 }}>Deliverable verification underway.</p>
+                            <p style={{ color: MUTED, fontSize: "0.8rem", margin: 0 }}>Deliverable verification underway.</p>
                           ) : (
                             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "0.6rem" }}>
                               {manifest.map((item, idx) => (
-                                <div key={idx} style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "0.75rem" }}>
-                                  <div style={{ fontWeight: 700, color: "#fff", fontSize: "0.82rem" }}>{item.label || item.name}</div>
-                                  <div style={{ fontSize: "0.7rem", color: "#9ca3af", marginTop: "0.2rem" }}>
+                                <div key={idx} style={{ background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.08)", borderRadius: 8, padding: "0.75rem" }}>
+                                  <div style={{ fontWeight: 700, color: TEXT, fontSize: "0.82rem" }}>{item.label || item.name}</div>
+                                  <div style={{ fontSize: "0.7rem", color: MUTED, marginTop: "0.2rem" }}>
                                     Domain: <span style={{ color: GOLD }}>{item.universe || "Core"}</span> · SHA-256: <code>{item.sha256?.slice(0, 8)}...</code>
                                   </div>
                                 </div>
@@ -650,22 +652,22 @@ export default function CustomerDashboard({ customer, onLogout }) {
         {activeTab === "proposals" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-              <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#fff", margin: 0 }}>Executive Proposals & Escrow Milestones</h2>
-              <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>100% Anti-Fabrication Guarantee</span>
+              <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: TEXT, margin: 0 }}>Executive Proposals & Escrow Milestones</h2>
+              <span style={{ fontSize: "0.75rem", color: MUTED }}>100% Anti-Fabrication Guarantee</span>
             </div>
 
             {loading ? (
-              <p style={{ color: "#94a3b8", fontSize: "0.9rem" }}>Loading proposals...</p>
+              <p style={{ color: MUTED, fontSize: "0.9rem" }}>Loading proposals...</p>
             ) : proposals.length === 0 ? (
-              <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, padding: "2.5rem 1.5rem", textAlign: "center" }}>
+              <div style={{ background: PANEL, border: "1px solid rgba(23,24,27,0.08)", borderRadius: 12, padding: "2.5rem 1.5rem", textAlign: "center" }}>
                 <span style={{ fontSize: "2rem" }}>📑</span>
-                <h3 style={{ color: "#fff", margin: "0.75rem 0 0.3rem", fontSize: "1.1rem" }}>No Active Commercial Proposals</h3>
-                <p style={{ color: "#9ca3af", fontSize: "0.85rem", maxWidth: 450, margin: "0 auto 1.25rem" }}>
+                <h3 style={{ color: TEXT, margin: "0.75rem 0 0.3rem", fontSize: "1.1rem" }}>No Active Commercial Proposals</h3>
+                <p style={{ color: MUTED, fontSize: "0.85rem", maxWidth: 450, margin: "0 auto 1.25rem" }}>
                   When you finalize requirements with the AI Solution Architect or Founder Praveen, your formal proposal and milestone contracts will appear here.
                 </p>
                 <button
                   onClick={() => setActiveTab("architect")}
-                  style={{ background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)", color: "#000", border: "none", borderRadius: 8, padding: "0.55rem 1.25rem", fontWeight: 800, fontSize: "0.85rem", cursor: "pointer" }}
+                  style={{ background: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)", color: "#FFFFFF", border: "none", borderRadius: 8, padding: "0.55rem 1.25rem", fontWeight: 800, fontSize: "0.85rem", cursor: "pointer" }}
                 >
                   Initiate Architectural Scope ➔
                 </button>
@@ -673,23 +675,23 @@ export default function CustomerDashboard({ customer, onLogout }) {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 {proposals.map((prop) => (
-                  <div key={prop.proposalId} style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "1.25rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+                  <div key={prop.proposalId} style={{ background: PANEL, border: "1px solid rgba(23,24,27,0.08)", borderRadius: 12, padding: "1.25rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
                     <div>
                       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <h3 style={{ color: "#fff", margin: 0, fontSize: "1.05rem", fontWeight: 800 }}>{prop.title}</h3>
-                        <span style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem", borderRadius: 4, background: "rgba(212,175,55,0.2)", color: GOLD_LIGHT, fontWeight: 700 }}>
+                        <h3 style={{ color: TEXT, margin: 0, fontSize: "1.05rem", fontWeight: 800 }}>{prop.title}</h3>
+                        <span style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem", borderRadius: 4, background: "rgba(196,139,40,0.1)", color: GOLD, fontWeight: 700 }}>
                           {prop.status?.toUpperCase()}
                         </span>
                       </div>
-                      <div style={{ color: "#9ca3af", fontSize: "0.78rem", marginTop: "0.25rem" }}>
-                        Proposal ID: <code style={{ color: GOLD_LIGHT }}>{prop.proposalId}</code> · Total Value: <strong style={{ color: "#fff" }}>{prop.pricing?.total || prop.amount}</strong>
+                      <div style={{ color: MUTED, fontSize: "0.78rem", marginTop: "0.25rem" }}>
+                        Proposal ID: <code style={{ color: GOLD }}>{prop.proposalId}</code> · Total Value: <strong style={{ color: TEXT }}>{prop.pricing?.total || prop.amount}</strong>
                       </div>
                     </div>
                     <a
                       href={`/proposal/${prop.proposalId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)", color: "#000", padding: "0.5rem 1.1rem", borderRadius: 8, fontSize: "0.82rem", fontWeight: 800, textDecoration: "none" }}
+                      style={{ background: "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)", color: "#FFFFFF", padding: "0.5rem 1.1rem", borderRadius: 8, fontSize: "0.82rem", fontWeight: 800, textDecoration: "none" }}
                     >
                       Review & Sign SOW ➔
                     </a>
@@ -705,20 +707,20 @@ export default function CustomerDashboard({ customer, onLogout }) {
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
               <div>
-                <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#fff", margin: 0 }}>Programmatic Developer API Keys</h2>
-                <div style={{ fontSize: "0.8rem", color: "#9ca3af", marginTop: "0.2rem" }}>
+                <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: TEXT, margin: 0 }}>Programmatic Developer API Keys</h2>
+                <div style={{ fontSize: "0.8rem", color: MUTED, marginTop: "0.2rem" }}>
                   All keys use the standardized GARUDA API format: <code style={{ color: GOLD }}>grd_live_&lt;secret&gt;</code>.
                 </div>
               </div>
             </div>
 
             {createdKeyData && (
-              <div style={{ marginBottom: "1.5rem", padding: "1.25rem", background: "rgba(212,175,55,0.08)", border: `1px solid ${GOLD}`, borderRadius: 12 }}>
-                <div style={{ color: GOLD_LIGHT, fontWeight: 800, fontSize: "0.95rem", marginBottom: "0.4rem" }}>
+              <div style={{ marginBottom: "1.5rem", padding: "1.25rem", background: "rgba(196,139,40,0.08)", border: `1px solid rgba(196,139,40,0.25)`, borderRadius: 12 }}>
+                <div style={{ color: GOLD, fontWeight: 800, fontSize: "0.95rem", marginBottom: "0.4rem" }}>
                   ⚡ Your New API Key (Save it now - shown only once!):
                 </div>
                 <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
-                  <code style={{ background: "#000", border: "1px solid rgba(255,255,255,0.2)", padding: "0.6rem 1rem", borderRadius: 8, color: "#fff", fontSize: "0.88rem", flex: 1, wordBreak: "break-all" }}>
+                  <code style={{ background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.12)", padding: "0.6rem 1rem", borderRadius: 8, color: TEXT, fontSize: "0.88rem", flex: 1, wordBreak: "break-all" }}>
                     {createdKeyData.apiKey}
                   </code>
                   <button
@@ -727,7 +729,7 @@ export default function CustomerDashboard({ customer, onLogout }) {
                       setCopiedKey(true);
                       setTimeout(() => setCopiedKey(false), 2000);
                     }}
-                    style={{ background: copiedKey ? "#10b981" : "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)", color: "#000", border: "none", borderRadius: 8, padding: "0.6rem 1.2rem", fontWeight: 800, fontSize: "0.82rem", cursor: "pointer" }}
+                    style={{ background: copiedKey ? "#059669" : "linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)", color: "#FFFFFF", border: "none", borderRadius: 8, padding: "0.6rem 1.2rem", fontWeight: 800, fontSize: "0.82rem", cursor: "pointer" }}
                   >
                     {copiedKey ? "✓ Copied!" : "Copy Key"}
                   </button>
@@ -741,35 +743,35 @@ export default function CustomerDashboard({ customer, onLogout }) {
                 placeholder="Key Name (e.g. Production Webhook Engine)"
                 value={newKeyName}
                 onChange={(e) => setNewKeyName(e.target.value)}
-                style={{ flex: "1 1 280px", background: PANEL, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "0.65rem 1rem", color: "#fff", fontSize: "0.88rem" }}
+                style={{ flex: "1 1 280px", background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.12)", borderRadius: 8, padding: "0.65rem 1rem", color: TEXT, fontSize: "0.88rem" }}
               />
               <button
                 type="submit"
                 disabled={keyActionLoading || !newKeyName.trim()}
-                style={{ background: `linear-gradient(135deg, ${GOLD}, #b8860b)`, color: "#000", border: "none", borderRadius: 8, padding: "0.65rem 1.4rem", fontWeight: 800, cursor: "pointer" }}
+                style={{ background: `linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)`, color: "#FFFFFF", border: "none", borderRadius: 8, padding: "0.65rem 1.4rem", fontWeight: 800, cursor: "pointer" }}
               >
                 {keyActionLoading ? "Generating…" : "+ Generate Key"}
               </button>
             </form>
 
-            <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ background: PANEL, border: "1px solid rgba(23,24,27,0.08)", borderRadius: 14, overflow: "hidden" }}>
               {apiKeys.length === 0 ? (
-                <div style={{ padding: "2.5rem 1rem", textAlign: "center", color: "#6b7280", fontSize: "0.9rem" }}>
+                <div style={{ padding: "2.5rem 1rem", textAlign: "center", color: MUTED, fontSize: "0.9rem" }}>
                   No active developer keys found. Generate a key above to access the GARUDA API programmatically.
                 </div>
               ) : (
                 apiKeys.map((k) => (
-                  <div key={k.keyId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div key={k.keyId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid rgba(23,24,27,0.06)" }}>
                     <div>
-                      <div style={{ fontWeight: 700, color: "#fff", fontSize: "0.92rem" }}>{k.name}</div>
-                      <div style={{ fontFamily: "monospace", color: "#9ca3af", fontSize: "0.78rem", marginTop: "0.2rem" }}>
-                        Prefix: <code style={{ color: GOLD_LIGHT }}>{k.keyPrefix}</code> • Status: <span style={{ color: k.status === "active" ? "#75f4ab" : "#f87171" }}>{k.status}</span>
+                      <div style={{ fontWeight: 700, color: TEXT, fontSize: "0.92rem" }}>{k.name}</div>
+                      <div style={{ fontFamily: "monospace", color: MUTED, fontSize: "0.78rem", marginTop: "0.2rem" }}>
+                        Prefix: <code style={{ color: GOLD }}>{k.keyPrefix}</code> • Status: <span style={{ color: k.status === "active" ? "#059669" : "#DC2626" }}>{k.status}</span>
                       </div>
                     </div>
                     {k.status === "active" && (
                       <button
                         onClick={() => handleRevokeApiKey(k.keyId)}
-                        style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", cursor: "pointer", fontWeight: 700 }}
+                        style={{ background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.25)", color: "#DC2626", padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", cursor: "pointer", fontWeight: 700 }}
                       >
                         Revoke
                       </button>
@@ -786,14 +788,14 @@ export default function CustomerDashboard({ customer, onLogout }) {
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
               <div>
-                <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#fff", margin: 0 }}>Team Workspace & Seats</h2>
-                <div style={{ fontSize: "0.8rem", color: "#9ca3af", marginTop: "0.2rem" }}>
+                <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: TEXT, margin: 0 }}>Team Workspace & Seats</h2>
+                <div style={{ fontSize: "0.8rem", color: MUTED, marginTop: "0.2rem" }}>
                   Seats Used: <span style={{ color: GOLD, fontWeight: 700 }}>{teamMembers.length}</span> / {tenantInfo?.maxSeats || 5} available in your workspace.
                 </div>
               </div>
               <button
                 onClick={() => navigate("/pricing")}
-                style={{ background: "rgba(212,175,55,0.15)", border: `1px solid ${GOLD}`, color: GOLD_LIGHT, padding: "0.45rem 1rem", borderRadius: 8, fontSize: "0.82rem", fontWeight: 700, cursor: "pointer" }}
+                style={{ background: "rgba(196,139,40,0.1)", border: `1px solid rgba(196,139,40,0.25)`, color: GOLD, padding: "0.45rem 1rem", borderRadius: 8, fontSize: "0.82rem", fontWeight: 700, cursor: "pointer" }}
               >
                 Upgrade Seat Quota ➔
               </button>
@@ -805,12 +807,12 @@ export default function CustomerDashboard({ customer, onLogout }) {
                 placeholder="colleague@company.com"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
-                style={{ flex: "1 1 240px", background: PANEL, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "0.65rem 1rem", color: "#fff", fontSize: "0.88rem" }}
+                style={{ flex: "1 1 240px", background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.12)", borderRadius: 8, padding: "0.65rem 1rem", color: TEXT, fontSize: "0.88rem" }}
               />
               <select
                 value={inviteRole}
                 onChange={(e) => setInviteRole(e.target.value)}
-                style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "0.65rem 1rem", color: "#fff", fontSize: "0.88rem" }}
+                style={{ background: "#FAF9F6", border: "1px solid rgba(23,24,27,0.12)", borderRadius: 8, padding: "0.65rem 1rem", color: TEXT, fontSize: "0.88rem" }}
               >
                 <option value="tenant_member">Member (Standard)</option>
                 <option value="tenant_admin">Admin (Full Control)</option>
@@ -819,30 +821,30 @@ export default function CustomerDashboard({ customer, onLogout }) {
               <button
                 type="submit"
                 disabled={teamActionLoading || !inviteEmail.trim()}
-                style={{ background: `linear-gradient(135deg, ${GOLD}, #b8860b)`, color: "#000", border: "none", borderRadius: 8, padding: "0.65rem 1.4rem", fontWeight: 800, cursor: "pointer" }}
+                style={{ background: `linear-gradient(135deg, #C48B28 0%, #9E6D1C 100%)`, color: "#FFFFFF", border: "none", borderRadius: 8, padding: "0.65rem 1.4rem", fontWeight: 800, cursor: "pointer" }}
               >
                 {teamActionLoading ? "Inviting…" : "+ Send Invite"}
               </button>
             </form>
 
-            <div style={{ background: PANEL, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ background: PANEL, border: "1px solid rgba(23,24,27,0.08)", borderRadius: 14, overflow: "hidden" }}>
               {teamMembers.length === 0 ? (
-                <div style={{ padding: "2.5rem 1rem", textAlign: "center", color: "#6b7280", fontSize: "0.9rem" }}>
+                <div style={{ padding: "2.5rem 1rem", textAlign: "center", color: MUTED, fontSize: "0.9rem" }}>
                   No additional members invited yet. Add team members above to collaborate on sovereign projects.
                 </div>
               ) : (
                 teamMembers.map((m) => (
-                  <div key={m.membershipId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div key={m.membershipId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid rgba(23,24,27,0.06)" }}>
                     <div>
-                      <div style={{ fontWeight: 700, color: "#fff", fontSize: "0.92rem" }}>{m.email || m.userId}</div>
-                      <div style={{ color: "#9ca3af", fontSize: "0.78rem", marginTop: "0.2rem" }}>
-                        Role: <span style={{ color: GOLD_LIGHT, textTransform: "capitalize" }}>{m.role?.replace("tenant_", "")}</span> • Status: <span style={{ color: m.status === "active" ? "#75f4ab" : "#fef08a" }}>{m.status}</span>
+                      <div style={{ fontWeight: 700, color: TEXT, fontSize: "0.92rem" }}>{m.email || m.userId}</div>
+                      <div style={{ color: MUTED, fontSize: "0.78rem", marginTop: "0.2rem" }}>
+                        Role: <span style={{ color: GOLD, textTransform: "capitalize" }}>{m.role?.replace("tenant_", "")}</span> • Status: <span style={{ color: m.status === "active" ? "#059669" : "#D97706" }}>{m.status}</span>
                       </div>
                     </div>
                     {m.role !== "platform_founder" && (
                       <button
                         onClick={() => handleRevokeMember(m.membershipId)}
-                        style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", cursor: "pointer", fontWeight: 700 }}
+                        style={{ background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.25)", color: "#DC2626", padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", cursor: "pointer", fontWeight: 700 }}
                       >
                         Remove
                       </button>

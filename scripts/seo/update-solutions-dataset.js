@@ -45,10 +45,10 @@ const newSolutions = {
   },
   "phd-research-paper-ugc-care-scopus-anti-plagiarism": {
     "slug": "phd-research-paper-ugc-care-scopus-anti-plagiarism",
-    "title": "Eliminate PhD Research Paralysis: Scopus & UGC-CARE Formatting with Anti-Plagiarism Engine",
-    "seoTitle": "PhD Research Paper Writing, Scopus Formatting & Anti-Plagiarism | Vidya Studio | GARUDA OS",
-    "seoDescription": "Overcome literature review paralysis, Scopus / UGC-CARE manuscript rejections, and high Turnitin similarity. Deploy GARUDA Vidya Studio for verified academic and legal research assistance in 48 hours.",
-    "targetQuery": "phd research paper literature review scopus ugc care anti plagiarism",
+    "title": "Eliminate PhD Research Paralysis: Scopus & UGC-CARE Formatting with Academic Integrity Verification",
+    "seoTitle": "PhD Research Paper Synthesis, Scopus Formatting & Academic Integrity | Vidya Studio | GARUDA OS",
+    "seoDescription": "Overcome literature review paralysis, Scopus / UGC-CARE manuscript rejections, and citation attribution gaps. Deploy GARUDA Vidya Studio for verified academic and legal research assistance in 48 hours.",
+    "targetQuery": "phd research paper literature review scopus ugc care academic integrity citation audit",
     "category": "Academic Research & Legal Intelligence",
     "urgencyLevel": "SCHOLARLY & PUBLICATION DEADLINE",
     "stats": {
@@ -58,11 +58,11 @@ const newSolutions = {
       "resolutionTime": "48 Hours"
     },
     "symptom": "Scholars, legal researchers, and PhD candidates spend months overwhelmed by hundreds of unorganized PDF papers, struggling to formulate structured literature matrices, citation bibliographies, or clear research methodologies.",
-    "rootCause": "Traditional generic AI tools (ChatGPT) hallucinate citations, invent fake case law citations, and generate robotic syntactical patterns that trigger 35%+ Turnitin/Ouriginal plagiarism and AI-detector flags.",
-    "garudaSolution": "GARUDA deploys Vidya Studio (Section 13 Sacred Scholar Architecture): deep grounded vector synthesis across verified academic corpora, automated citation cross-matching (APA, Bluebook, OSCOLA), high-frequency anti-plagiarism paraphrase synthesis, and Scopus/UGC-CARE publication formatting.",
+    "rootCause": "Traditional generic AI tools (ChatGPT) hallucinate citations, invent fake case law citations, and generate ungrounded claims that fail peer review and academic integrity audits.",
+    "garudaSolution": "GARUDA deploys Vidya Studio (Section 13 Sacred Scholar Architecture): deep grounded vector synthesis across verified academic corpora, automated citation cross-matching (APA, Bluebook, OSCOLA), verifiable source attribution, and Scopus/UGC-CARE publication compliance.",
     "deliverables": [
       "Deep Academic & Legal Literature Review Synthesis with Verified Case Citations",
-      "High-Frequency Anti-Plagiarism Engine (Turnitin/Ouriginal Similarity Reduction)",
+      "Strict Academic Integrity & Pre-Submission Citation Verification Engine (Zero Hallucinated Citations)",
       "Strict Scopus / Web of Science / UGC-CARE Journal Guideline Formatting",
       "Comprehensive Research Methodology, Hypothesis Formulation & Abstract Polishing"
     ],

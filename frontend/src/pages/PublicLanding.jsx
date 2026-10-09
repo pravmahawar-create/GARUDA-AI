@@ -1212,7 +1212,7 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             <h4 style={{ color: "#ffffff", fontFamily: "'Inter', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Problem Solutions (48h)</h4>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.45rem" }}>
               <li><a href="/solutions/struggling-with-pwa-mobile-web-app-problems" style={{ color: "#38bdf8", textDecoration: "none", fontWeight: 600 }}>📱 Struggling with PWA? Fix Mobile Lag</a></li>
-              <li><a href="/solutions/phd-research-paper-ugc-care-scopus-anti-plagiarism" style={{ color: "#9ca3af", textDecoration: "none" }}>🎓 PhD Research & Anti-Plagiarism</a></li>
+              <li><a href="/solutions/phd-research-paper-ugc-care-scopus-anti-plagiarism" style={{ color: "#9ca3af", textDecoration: "none" }}>🎓 PhD Research & Academic Integrity</a></li>
               <li><a href="/solutions/retail-billing-gst-invoice-speed-bottlenecks" style={{ color: "#9ca3af", textDecoration: "none" }}>🛒 Retail POS & GST Checkout Speed</a></li>
               <li><a href="/solutions/online-brand-defamation-social-media-troll-bsa-evidence" style={{ color: "#9ca3af", textDecoration: "none" }}>🛡️ Brand Defamation & BSA Evidence</a></li>
               <li><a href="/solutions/election-constituency-booth-voter-data-intelligence" style={{ color: "#9ca3af", textDecoration: "none" }}>🗳️ Election War Room & Booth Cadre</a></li>
