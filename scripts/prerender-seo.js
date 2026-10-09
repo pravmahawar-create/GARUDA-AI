@@ -1510,7 +1510,7 @@ const ROUTES = [
       path.join(DIST_DIR, "solutions.html")
     ],
     title: "Solutions & Emergency Engineering Blueprints | GARUDA OS",
-    description: "Solve your business's critical technical and revenue bottlenecks in 48 hours. Explore solutions for after-hours lead loss, WhatsApp automation, and urgent development.",
+    description: "Solve your business's critical technical and revenue bottlenecks in 48 hours. Explore solutions for PWA mobile lag, after-hours lead loss, WhatsApp automation, and urgent development.",
     canonical: "https://www.garudaos.in/solutions",
     h1: "Identify Your Bottleneck. Solve It In 48 Hours.",
     eyebrow: "FORENSIC PROBLEM-SOLUTION DIRECTORY",
@@ -1518,13 +1518,15 @@ const ROUTES = [
       <h2>Engineering Solutions for Real Business Problems</h2>
       <p>Every business bottleneck maps to a deterministic engineering solution. Explore our verified blueprints below:</p>
       <ul>
-        <li><a href="/solutions/website-losing-leads-after-hours">Why Websites Lose 65% of Leads After Hours & How to Fix It</a></li>
-        <li><a href="/solutions/automate-whatsapp-booking-crm">Automate Customer Bookings & CRM Workflows on WhatsApp 24/7</a></li>
-        <li><a href="/solutions/website-slow-loading-dropping-visitors">Why Slow Website Loading Kills Mobile Conversions & How to Fix It</a></li>
-        <li><a href="/solutions/ai-receptionist-for-clinics-and-businesses">Deploy 24/7 AI Receptionist for Clinics, Law Firms & Boutiques</a></li>
-        <li><a href="/solutions/fix-broken-lead-funnel-marketing-spend">Fix Broken Marketing Funnels & Bleeding Paid Ad Spend</a></li>
-        <li><a href="/solutions/urgent-web-developer-48-hour-mvp">Need an Urgent Web Developer? 48-Hour Production Sprint</a></li>
-        <li><a href="/solutions/white-label-agency-development-bottleneck">White-Label AI & Web Engineering Backbone for Digital Agencies</a></li>
+        ${(() => {
+          try {
+            const sp = path.resolve(__dirname, "../frontend/src/config/solutionsData.json");
+            const sd = JSON.parse(fs.readFileSync(sp, "utf8"));
+            return Object.values(sd).map(s => `<li><a href="/solutions/${s.slug}"><strong>${s.title}</strong></a> — ${s.seoDescription}</li>`).join("\n        ");
+          } catch {
+            return `<li><a href="/solutions/struggling-with-pwa-mobile-web-app-problems">Struggling with PWA? Fix Progressive Web App Cache Traps & Mobile Lag</a></li>`;
+          }
+        })()}
       </ul>
       <p><a href="/audit">Run Free Website Lead-Leak Audit</a> | <a href="/chat">Speak with GARUDA Systems Architect</a></p>
     `,

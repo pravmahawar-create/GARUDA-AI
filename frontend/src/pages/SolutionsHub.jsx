@@ -6,15 +6,39 @@ import { SOLUTIONS_DATA } from "../config/solutionsData";
 export default function SolutionsHub() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState("ALL");
   const solutionsList = Object.values(SOLUTIONS_DATA);
+
+  const categories = [
+    { id: "ALL", label: `All Problems (${solutionsList.length})` },
+    { id: "pwa", label: "📱 PWA & Mobile", match: ["pwa", "mobile"] },
+    { id: "ai", label: "🤖 AI & Agents", match: ["ai", "conversational", "receptionist", "support", "swarms"] },
+    { id: "academic", label: "🎓 Academic & Legal", match: ["academic", "legal", "phd"] },
+    { id: "retail", label: "🛒 Retail & Billing", match: ["retail", "pos", "gst"] },
+    { id: "cyber", label: "🛡️ Cyber & Reputation", match: ["cyber", "reputation", "troll"] },
+    { id: "fintech", label: "💳 Fintech & Rails", match: ["fintech", "payment", "stripe"] },
+    { id: "electoral", label: "🗳️ Electoral & Cadre", match: ["electoral", "political", "booth"] },
+    { id: "health", label: "🥗 Health & Nutrition", match: ["clinical", "nutrition", "health"] },
+    { id: "code", label: "⚡ Code & Sprints", match: ["refactoring", "engineering", "sprint", "developer"] },
+  ];
 
   const filteredSolutions = solutionsList.filter((s) => {
     const q = search.toLowerCase();
-    return (
+    const matchesSearch = !q || (
       s.title.toLowerCase().includes(q) ||
       s.category.toLowerCase().includes(q) ||
-      s.symptom.toLowerCase().includes(q)
+      s.symptom.toLowerCase().includes(q) ||
+      (s.targetQuery && s.targetQuery.toLowerCase().includes(q))
     );
+
+    if (!matchesSearch) return false;
+    if (activeCategory === "ALL") return true;
+
+    const catObj = categories.find(c => c.id === activeCategory);
+    if (!catObj || !catObj.match) return true;
+
+    const catText = (s.category + " " + s.title + " " + s.slug).toLowerCase();
+    return catObj.match.some(m => catText.includes(m));
   });
 
   const hubSchema = {
@@ -71,14 +95,40 @@ export default function SolutionsHub() {
           </p>
 
           {/* Quick Filter Box */}
-          <div style={{ maxWidth: 500, margin: "0 auto" }}>
+          <div style={{ maxWidth: 500, margin: "0 auto 1.5rem" }}>
             <input
               type="text"
-              placeholder="Search problem (e.g. leads, speed, whatsapp, agency)..."
+              placeholder="Search problem (e.g. pwa, leads, speed, whatsapp, billing)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{ width: "100%", background: "rgba(15, 23, 42, 0.8)", border: "1px solid rgba(255, 255, 255, 0.15)", borderRadius: "10px", padding: "0.75rem 1.25rem", color: "#fff", fontSize: "0.95rem", outline: "none", boxSizing: "border-box" }}
             />
+          </div>
+
+          {/* Category Filter Pills */}
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.5rem", maxWidth: 900, margin: "0 auto" }}>
+            {categories.map((cat) => {
+              const active = activeCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  style={{
+                    background: active ? "linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)" : "rgba(15, 23, 42, 0.6)",
+                    color: active ? "#000" : "#94a3b8",
+                    fontWeight: active ? 700 : 500,
+                    border: active ? "1px solid #38bdf8" : "1px solid rgba(255, 255, 255, 0.08)",
+                    borderRadius: "9999px",
+                    padding: "0.35rem 0.85rem",
+                    fontSize: "0.78rem",
+                    cursor: "pointer",
+                    transition: "all 0.15s ease"
+                  }}
+                >
+                  {cat.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 

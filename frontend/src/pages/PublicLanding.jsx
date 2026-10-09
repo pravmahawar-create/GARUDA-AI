@@ -261,13 +261,16 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
           >
             Home
           </a>
-          <a href="#products" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
+          <a href="/solutions" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
             Solutions
+          </a>
+          <a href="/audit" style={{ color: "#f87171", textDecoration: "none", fontSize: "0.88rem", fontWeight: 600 }}>
+            ⚡ Free Audit
           </a>
           <a href="#how-it-works" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
             Use Cases
           </a>
-          <a href="#products" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
+          <a href="/pricing" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
             Pricing
           </a>
           <a href="#ecosystem" style={{ color: "#525866", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
@@ -1198,17 +1201,34 @@ export default function PublicLanding({ onGetStarted, onFounderLogin }) {
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.45rem" }}>
               <li><a href="/starter" style={{ color: palette.goldLight, textDecoration: "none", fontWeight: 700 }}>Next.js 14 AI Starter Kit ($49)</a></li>
               <li><a href="/whatsapp-bot" style={{ color: "#9ca3af", textDecoration: "none" }}>WhatsApp AI Receptionist</a></li>
-              <li><a href="/pricing" style={{ color: "#9ca3af", textDecoration: "none" }}>Transparent Pricing</a></li>
+              <li><a href="/fintech-gateway" style={{ color: "#9ca3af", textDecoration: "none" }}>Multi-Rail Fintech Gateway</a></li>
               <li><a href="/billing" style={{ color: "#9ca3af", textDecoration: "none" }}>GARUDA Billing Engine</a></li>
+              <li><a href="/cybershield" style={{ color: "#9ca3af", textDecoration: "none" }}>CyberShield™ Anti-Troll Defense</a></li>
+              <li><a href="/health" style={{ color: "#9ca3af", textDecoration: "none" }}>GARUDA Aahar Clinical Health</a></li>
+              <li><a href="/pricing" style={{ color: "#9ca3af", textDecoration: "none" }}>Transparent SaaS Plans</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 style={{ color: "#ffffff", fontFamily: "'Inter', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Problem Solutions (48h)</h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.45rem" }}>
+              <li><a href="/solutions/struggling-with-pwa-mobile-web-app-problems" style={{ color: "#38bdf8", textDecoration: "none", fontWeight: 600 }}>📱 Struggling with PWA? Fix Mobile Lag</a></li>
+              <li><a href="/solutions/phd-research-paper-ugc-care-scopus-anti-plagiarism" style={{ color: "#9ca3af", textDecoration: "none" }}>🎓 PhD Research & Anti-Plagiarism</a></li>
+              <li><a href="/solutions/retail-billing-gst-invoice-speed-bottlenecks" style={{ color: "#9ca3af", textDecoration: "none" }}>🛒 Retail POS & GST Checkout Speed</a></li>
+              <li><a href="/solutions/online-brand-defamation-social-media-troll-bsa-evidence" style={{ color: "#9ca3af", textDecoration: "none" }}>🛡️ Brand Defamation & BSA Evidence</a></li>
+              <li><a href="/solutions/election-constituency-booth-voter-data-intelligence" style={{ color: "#9ca3af", textDecoration: "none" }}>🗳️ Election War Room & Booth Cadre</a></li>
+              <li><a href="/solutions/clinical-diet-timetable-diabetes-bp-fatty-liver" style={{ color: "#9ca3af", textDecoration: "none" }}>🥗 Multi-Disease Clinical Diet Timetable</a></li>
+              <li><a href="/solutions" style={{ color: palette.goldLight, textDecoration: "none", fontWeight: 700 }}>Browse All 21 Solutions →</a></li>
             </ul>
           </div>
           <div>
             <h4 style={{ color: "#ffffff", fontFamily: "'Inter', sans-serif", margin: "0 0 0.8rem 0", fontSize: "0.9rem", fontWeight: 700 }}>Engineering Services</h4>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.45rem" }}>
+              <li><a href="/audit" style={{ color: "#f87171", textDecoration: "none", fontWeight: 600 }}>⚡ Free Lead-Leak & Speed Audit</a></li>
               <li><a href="/services/whatsapp-telegram-ai-bots" style={{ color: "#9ca3af", textDecoration: "none" }}>WhatsApp Automation Bots</a></li>
               <li><a href="/services/ai-agent-development" style={{ color: "#9ca3af", textDecoration: "none" }}>Autonomous AI Agents</a></li>
               <li><a href="/services/custom-software-development" style={{ color: "#9ca3af", textDecoration: "none" }}>Custom Software Engineering</a></li>
               <li><a href="/services/saas-mvp-development" style={{ color: "#9ca3af", textDecoration: "none" }}>SaaS MVP Development</a></li>
+              <li><a href="/services/business-automation" style={{ color: "#9ca3af", textDecoration: "none" }}>Business Workflow Automation</a></li>
             </ul>
           </div>
           <div>

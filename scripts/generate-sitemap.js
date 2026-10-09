@@ -62,15 +62,6 @@ const CANONICAL_URLS = [
   { url: "/audit", priority: "0.95", changefreq: "daily" },
   { url: "/lead-audit", priority: "0.90", changefreq: "weekly" },
   { url: "/solutions", priority: "0.95", changefreq: "daily" },
-  { url: "/solutions/website-losing-leads-after-hours", priority: "0.90", changefreq: "weekly" },
-  { url: "/solutions/automate-whatsapp-booking-crm", priority: "0.90", changefreq: "weekly" },
-  { url: "/solutions/website-slow-loading-dropping-visitors", priority: "0.90", changefreq: "weekly" },
-  { url: "/solutions/ai-receptionist-for-clinics-and-businesses", priority: "0.90", changefreq: "weekly" },
-  { url: "/solutions/fix-broken-lead-funnel-marketing-spend", priority: "0.90", changefreq: "weekly" },
-  { url: "/solutions/urgent-web-developer-48-hour-mvp", priority: "0.90", changefreq: "weekly" },
-  { url: "/solutions/white-label-agency-development-bottleneck", priority: "0.90", changefreq: "weekly" },
-  { url: "/solutions/fix-stripe-razorpay-payment-gateway-webhooks", priority: "0.90", changefreq: "weekly" },
-  { url: "/solutions/fix-meta-ads-capi-high-roas-funnels", priority: "0.90", changefreq: "weekly" },
 
   // Guides & Knowledge Base
   { url: "/guides", priority: "0.85", changefreq: "weekly" },
@@ -93,6 +84,28 @@ const CANONICAL_URLS = [
   { url: "/privacy", priority: "0.50", changefreq: "yearly" },
   { url: "/terms", priority: "0.50", changefreq: "yearly" }
 ];
+
+// Dynamically inject all programmatically generated solutions from solutionsData.json
+try {
+  const solutionsPath = path.resolve(__dirname, "../frontend/src/config/solutionsData.json");
+  if (fs.existsSync(solutionsPath)) {
+    const solData = JSON.parse(fs.readFileSync(solutionsPath, "utf8"));
+    const existingUrls = new Set(CANONICAL_URLS.map(u => u.url));
+    for (const [key, item] of Object.entries(solData)) {
+      const solUrl = `/solutions/${item.slug}`;
+      if (!existingUrls.has(solUrl)) {
+        CANONICAL_URLS.push({
+          url: solUrl,
+          priority: "0.90",
+          changefreq: "weekly"
+        });
+        existingUrls.add(solUrl);
+      }
+    }
+  }
+} catch (e) {
+  console.warn("Notice: Failed to load solutionsData for sitemap:", e.message);
+}
 
 function generateSitemapXml() {
   const xmlItems = CANONICAL_URLS.map(item => `  <url>
