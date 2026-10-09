@@ -3,6 +3,7 @@
  * Dispatches high-conviction Roman Hindi alerts directly to Founder Praveen.
  */
 
+try { require('dotenv').config(); } catch (e) {}
 const https = require('https');
 
 class TelegramQuantNotifier {

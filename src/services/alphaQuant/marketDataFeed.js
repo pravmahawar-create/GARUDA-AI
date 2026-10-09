@@ -21,6 +21,13 @@ const DEFAULT_SYMBOLS = [
 
 const BENCHMARK_SYMBOL = '^NSEI'; // Nifty 50 Index
 
+// Top 3 institutional heavyweights making up ~29% of Nifty 50
+const HEAVYWEIGHT_SYMBOLS = [
+  { symbol: 'HDFCBANK.NS', name: 'HDFC Bank', weight: 11.5 },
+  { symbol: 'RELIANCE.NS', name: 'Reliance Industries', weight: 9.2 },
+  { symbol: 'ICICIBANK.NS', name: 'ICICI Bank', weight: 8.0 }
+];
+
 class MarketDataFeed {
   constructor() {
     this.cache = new Map();
@@ -372,5 +379,6 @@ class MarketDataFeed {
 module.exports = {
   MarketDataFeed,
   DEFAULT_SYMBOLS,
+  HEAVYWEIGHT_SYMBOLS,
   BENCHMARK_SYMBOL
 };

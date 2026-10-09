@@ -264,8 +264,39 @@ class ConfluenceScorer {
     if (niftyTrend === 'BEARISH') {
       bullScore = 0; // Strictly zero buy signals in a falling tide
     }
-    if (niftyTrend === 'BULLISH') {
-      bearScore = 0; // Strictly zero short signals in a rising tide
+    // Factor 7: Big-3 Heavyweights Confluence (Reliance, HDFC Bank, ICICI Bank)
+    if (options.heavyweights && Array.isArray(options.heavyweights) && options.heavyweights.length > 0) {
+      let bullHeavyweightCount = 0;
+      let bearHeavyweightCount = 0;
+
+      for (const hw of options.heavyweights) {
+        if (!hw.candle) continue;
+        const hwClose = hw.candle.close;
+        const hwOpen = hw.candle.open;
+        const hwVwap = hw.candle.vwap || hwOpen;
+        const hwEma9 = hw.candle.ema9;
+        const hwEma21 = hw.candle.ema21;
+
+        const isHwBull = hwClose >= hwOpen && hwClose >= hwVwap && (!hwEma9 || hwEma9 >= (hwEma21 || 0));
+        const isHwBear = hwClose <= hwOpen && hwClose <= hwVwap && (!hwEma9 || hwEma9 <= (hwEma21 || 0));
+
+        if (isHwBull) bullHeavyweightCount++;
+        if (isHwBear) bearHeavyweightCount++;
+      }
+
+      if (bullHeavyweightCount >= 2) {
+        bullFactors.push(`Big-3 Heavyweights Confirmation (${bullHeavyweightCount}/3 Green Institutional Support)`);
+      } else if (bearHeavyweightCount >= 2) {
+        bullScore = 0; // VETO: Never buy Call if 2 of top 3 heavyweights are falling!
+        bullFactors.push(`Heavyweights Divergence (${bearHeavyweightCount}/3 Red Dragging Down) — Trap Filtered`);
+      }
+
+      if (bearHeavyweightCount >= 2) {
+        bearFactors.push(`Big-3 Heavyweights Breakdown Confirmation (${bearHeavyweightCount}/3 Red Dragging Down)`);
+      } else if (bullHeavyweightCount >= 2) {
+        bearScore = 0; // VETO: Never buy Put if 2 of top 3 heavyweights are rising!
+        bearFactors.push(`Heavyweights Divergence (${bullHeavyweightCount}/3 Green Supporting) — Short Trap Filtered`);
+      }
     }
 
     // Determine winning side
