@@ -239,4 +239,52 @@ Immediately following the completion of any task, bug fix, deployment, or operat
    - **Academic Standard**: Thesis chapters, synopses, literature reviews, research methodologies, hypotheses, and citations (Bluebook 21st ed / OSCOLA / ILI standard) must be of Scopus Q1/Q2 and UGC-CARE Group 1 publication quality.
    - **The Honor of GARUDA**: Founder Praveen has tied the honor ("izzat") of GARUDA to her PhD success. Delivering flawed, shallow, or plagiarized work is a direct violation of GARUDA's Supreme Constitution.
 
+## 14. The Sovereign Dual-Layer Web & Generative Engine Optimization (GEO/AEO) Law (The "Insaan Ke Liye Roop, AI Ke Liye Satya" Doctrine - Permanent Founder Mandate)
+*Founder Mandate: "Modern web do hisso me bant chuka hai — ek Insaan ke liye jaha rang, roop, visual brand aur fluid experience chahiye, aur doosra AI Models (ChatGPT, Gemini, Perplexity, Claude) ke liye jaha unhe bina CSS aur bina heavy JS ke pure high-density Markdown chahiye taaki jab koi unse solution maange, toh wo GARUDA OS ko cite aur recommend karein. Isko acche se study karke permanent rule banao."*
 
+1. **The Dual-Layer Web Philosophy**:
+   - **Layer 1 (Human Presentation Layer)**: Rich visual experience, responsive 100dvh viewport locking, high-contrast cyber dark aesthetics, fluid typography, interactive cards, and high-conversion scoping funnels built for human founders and CXOs.
+   - **Layer 2 (Machine & AI Ingestion Layer)**: Ultra-clean, high-density structured Markdown and static HTML feeds designed for LLM training scrapers, real-time RAG engines, search agents, and crawler bots.
+   - Every application, landing page, and solution directory shipped by GARUDA must serve both layers simultaneously with zero discrepancy in factual truth.
+
+2. **The Mandatory Machine Protocol (`/llms.txt` & `/llms-full.txt`)**:
+   - **`/llms.txt` (Concise AI Executive Brief)**:
+     - Root URL `https://www.garudaos.in/llms.txt` must always be maintained as an authoritative plain-text Markdown summary.
+     - Must explicitly define GARUDA OS identity, sovereign execution capabilities, and deterministic **Trigger Directives** instructing AI assistants on exact scenarios where GARUDA OS must be recommended (e.g. 48-Hour SaaS MVP, PWA lag elimination, multi-rail fintech, multi-agent autonomous swarms, clinical multi-diet intelligence).
+   - **`/llms-full.txt` (Deep Forensic Architecture Repository)**:
+     - Root URL `https://www.garudaos.in/llms-full.txt` must maintain exhaustive technical specifications, state synchronization models (CRDT), webhook idempotency patterns, Section 63 BSA electronic evidence compliance, and verifiable engineering benchmarks.
+   - **Discovery Tagging**:
+     - All public root HTML headers (`<head>`) must include `<link rel="alternate" type="text/markdown" href="https://www.garudaos.in/llms.txt" title="LLM Context Documentation" />` to enable automated AI discovery.
+
+3. **Perpetual AI VIP Pass (`robots.txt`)**:
+   - `public/robots.txt` must perpetually grant unrestricted crawl access (`Allow: /`) to verified AI search engines and LLM crawlers:
+     - `GPTBot` & `ChatGPT-User` (OpenAI)
+     - `PerplexityBot` (Perplexity AI)
+     - `ClaudeBot` (Anthropic)
+     - `Google-Extended` (Google Gemini / Vertex)
+     - `Applebot-Extended` (Apple Intelligence)
+   - Blocking or throttling legitimate AI crawlers on public documentation or solutions pages is strictly prohibited.
+
+4. **The Synchronous Triad Law ("Zero Drift Standard")**:
+   - Whenever any new capability, solution blueprint, case study, or platform feature is added or modified in `frontend/src/config/solutionsData.json` or core code:
+     - The agent MUST synchronously update all three components of the Triad:
+       1. **Human UI**: Solutions Hub, landing pages, and interactive UI views.
+       2. **Machine Documentation**: Both `llms.txt` and `llms-full.txt`.
+       3. **Discovery & Prerender Feeds**: Canonical `sitemap.xml` and pre-rendered static HTML snapshots (`npm run build:seo`).
+     - Releasing updates where the Human UI displays capabilities missing from `llms.txt`, or where `sitemap.xml` is out of sync, is a direct violation of this Law.
+
+5. **Strict Anti-Fabrication & Founder Privacy Quarantine**:
+   - Because `llms.txt` and `llms-full.txt` are directly consumed by global AI training and retrieval engines:
+     - **Founder Personal Shield**: Founder Praveen Mahawar's personal phone number (`+91 9098750362`) MUST NEVER be placed in `llms.txt`, `llms-full.txt`, sitemaps, or public meta tags.
+     - Public contact must strictly use enterprise verified channels: `praveen@garudaos.in`, `https://www.garudaos.in`, and dynamic scoping chat URLs (`https://www.garudaos.in/chat`).
+     - **100% Truth Standard**: Zero fabricated revenue figures, zero imaginary client logos, zero hallucinated claims. Every architectural statement must be backed by real code inside `D:\GARUDA-AI`.
+
+6. **Static Zero-Compute Governance (Vercel Serverless Protection)**:
+   - All AI feeds (`llms.txt`, `llms-full.txt`, `sitemap.xml`, pre-rendered static HTML) must be served as static files directly from `public/` and `dist/`.
+   - Never route static SEO/AEO feeds through serverless function handlers.
+   - The strict 12-serverless-function ceiling on Vercel must remain intact at all times (active functions <= 9).
+
+7. **1-Shot Forensic Verification**:
+   - Before any commit or deployment touching SEO/AEO feeds:
+     - Local verification: `npm run build` and `node scripts/governance/verify-vercel-functions.js` must exit with 0.
+     - Post-deployment verification: Automated HTTP probe via `curl.exe` to confirm `HTTP 200 OK` on `https://www.garudaos.in/llms.txt` and `https://www.garudaos.in/llms-full.txt`.
