@@ -758,3 +758,32 @@ Reduced top-level api/ files down to strictly 9. Excess handlers (site-audit, fe
 
 #### 4. Inscribed Permanent Law / Guardrail
 > **api/*.js must NEVER exceed 10 serverless functions. All auxiliary micro-endpoints must reside in src/routes/ on Render Express.**
+
+---
+
+### Mission: Sovereign AEO & GEO Domination Engine Deployment (21 Blueprints & llms.txt Standard)
+- **Timestamp**: 2026-10-09T11:45:00.000Z
+- **Commit SHAs**: `03bea35cfc41b7ef2a0ef561198456016c0ed584`, `294dce209e5203d4d8bd92dbe37db9ab373de809`
+- **Category**: `seo_aeo_deployment`
+- **Status**: SUCCESS (100% Clean Green Production Live)
+
+#### 1. Strategic Objectives Executed
+1. Scaled GARUDA Solutions Hub from 9 to 21 problem-first engineering blueprints (`solutionsData.json`), adding solutions for PWA Mobile Lag, PhD Research & Anti-Plagiarism, Vyapaar POS, CyberShield Brand Defamation, Constituency War Room, Clinical Health, and Bharat Digitization.
+2. Implemented the global Generative Engine Optimization (GEO) standard via `/llms.txt` and `/llms-full.txt` at website root to provide direct, clean Markdown ingestion feeds for ChatGPT, Perplexity, Claude, and Gemini.
+3. Updated `robots.txt` with explicit VIP permissions for `GPTBot`, `ChatGPT-User`, `PerplexityBot`, `ClaudeBot`, and `Google-Extended`.
+4. Injected auto-discovery `<link rel="alternate" type="text/markdown" href="https://www.garudaos.in/llms.txt" />` tags across the `<head>` of homepage and all 21 solution pages.
+5. Strictly preserved Vercel Hobby serverless function ceiling at exactly 9/12 (zero function bloat).
+
+#### 2. Forensic Physical Proof & Live Telemetry
+- **Live llms.txt**: `https://www.garudaos.in/llms.txt` (HTTP 200 OK, full Markdown feed).
+- **Live llms-full.txt**: `https://www.garudaos.in/llms-full.txt` (HTTP 200 OK, complete architecture doc).
+- **Live robots.txt**: `https://www.garudaos.in/robots.txt` (HTTP 200 OK, explicit `User-agent: GPTBot` directives).
+- **Live Sitemap**: `https://www.garudaos.in/sitemap.xml` (HTTP 200 OK, 69 canonical URLs auto-synced).
+- **Live Prerender**: 222 static HTML snapshots across 81 canonical routes cleanly built (Exit Code 0).
+- **Vercel Deployments**: Both `Production - garuda-ai` and `Production - garuda-ai-v1` verified `success`.
+
+#### 3. Permanent Architectural Guardrails Codified
+1. All future public commercial knowledge and engineering blueprints must be represented in both Pre-Rendered Static HTML and clean Markdown in `/llms.txt` to maximize both traditional SERP and AI Overviews / Chatbot citations.
+2. Founder Praveen Mahawar's personal phone number is strictly quarantined to internal private alerts and must NEVER be published in `llms.txt` or public crawlers.
+3. Vercel serverless function limit must be continuously verified via `verify-vercel-functions.js` before every single commit and deploy.
+
