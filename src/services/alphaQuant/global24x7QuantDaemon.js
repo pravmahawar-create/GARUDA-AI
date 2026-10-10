@@ -13,6 +13,7 @@ const { ForexFeed, FOREX_PAIRS } = require('./forexFeed');
 const { ConfluenceScorer } = require('./confluenceScorer');
 const { PaperTradingEngine } = require('./paperTradingEngine');
 const { TelegramQuantNotifier } = require('./telegramQuantNotifier');
+const { DerivativesMath } = require('./derivativesMath');
 
 const LEDGER_24X7_PATH = path.join(__dirname, '..', '..', '..', 'data', 'garuda-24x7-quant-ledger.json');
 const USD_INR_RATE = 87.0;
@@ -22,9 +23,11 @@ class Global24x7QuantDaemon {
     this.pollIntervalSeconds = options.pollIntervalSeconds || 60; // Check every 60 seconds
     this.minConfidenceThreshold = options.minConfidenceThreshold || 82; // 82%+ Ultra Confluence
     this.maxDailyTrades = options.maxDailyTrades || 5; // Max 5 sniper trades per day
-    this.dailyProfitTargetInr = options.dailyProfitTargetInr || 2500; // 2.5% daily target on ₹1L (₹2,500)
-    this.dailyMaxLossInr = options.dailyMaxLossInr || 1200; // Max 1.2% loss circuit breaker
     this.initialCapital = options.initialCapital || 100000;
+    this.targetDailyReturnPercent = options.targetDailyReturnPercent || 0.025; // 2.5% daily target
+    this.maxDailyRiskPercent = options.maxDailyRiskPercent || 0.012; // 1.2% loss circuit breaker
+    this.dailyProfitTargetInr = Math.round(this.initialCapital * this.targetDailyReturnPercent);
+    this.dailyMaxLossInr = Math.round(this.initialCapital * this.maxDailyRiskPercent);
     this.sendTelegramAlerts = options.sendTelegramAlerts || false;
 
     // Sub-Feeds
