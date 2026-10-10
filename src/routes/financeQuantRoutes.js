@@ -10,11 +10,15 @@ const { GlobalQuantSwarm } = require('../services/alphaQuant/globalQuantSwarm');
 const { AlphaQuantDaemon } = require('../services/alphaQuant/alphaQuantDaemon');
 const { Global24x7QuantDaemon } = require('../services/alphaQuant/global24x7QuantDaemon');
 const { AlphaPotentialAgent } = require('../services/alphaQuant/alphaPotentialAgent');
+const { OptionChainRadar } = require('../services/alphaQuant/optionChainRadar');
+const { MarketDataFeed } = require('../services/alphaQuant/marketDataFeed');
 const authRouter = require('../../api/auth');
 
 const globalSwarm = new GlobalQuantSwarm();
 const daemon24x7 = new Global24x7QuantDaemon({ minConfidenceThreshold: 82 });
 const potentialAgent = new AlphaPotentialAgent();
+const optionRadar = new OptionChainRadar();
+const dataFeed = new MarketDataFeed();
 
 /**
  * Middleware: Delicate & Critical Controls strictly reserved for Founder Praveen
@@ -152,12 +156,24 @@ router.get('/dashboard', async (req, res) => {
       }
     ];
 
+    let vixData = null;
+    let macro15m = null;
+    let optionChain = null;
+    try {
+      vixData = await dataFeed.fetchIndiaVix();
+      macro15m = await dataFeed.fetchMacro15mTrend();
+      optionChain = optionRadar.evaluateOptionChain(25000, { vix: vixData?.vix, macroTrend: macro15m?.macroTrend });
+    } catch (e) {}
+
     res.json({
       success: true,
       universe: 'U12: Finance Universe',
       timestamp: new Date().toISOString(),
       daemon: status,
       agents,
+      volatility: vixData,
+      macro15m,
+      optionChain,
       opportunities: opportunities || [],
       subRupeeMoonshots: moonshots || [],
       wallet: status.wallet,

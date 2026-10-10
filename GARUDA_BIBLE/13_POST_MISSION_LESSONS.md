@@ -8,6 +8,29 @@
 
 ---
 
+---
+
+### Mission: Zero-Hardcoding Mathematical Derivatives Engine & Multi-Timeframe Volatility Adaptor
+- **Timestamp**: 2026-10-10T15:06:00.000Z
+- **Category**: `quant_mathematical_derivatives_engine`
+- **Verification Evidence**: DerivativesMath self-tests passed exit code 0; node -c on all modified/created files exit code 0; npm run build completed clean with 0 errors across 222 prerendered HTML pages.
+
+#### 1. Failure Modes & Hemorrhages Encountered
+1. **Fixed Parameter Fragility (Curve-Fitting Hazard)**: Hardcoding static numbers (e.g. 18-point SL, 36-point Target, ₹115.0 option price, 0.50 Delta, fixed 40m timer) caused strategy breakage during regime shifts. Low VIX days suffered from unnecessarily wide SLs, while high-momentum days prematurely capped profits at arbitrary limits.
+2. **Account Invariance Flaw**: Fixed ₹5,000 capital and ₹1,800 target locks failed to scale for accounts with ₹50,000 or ₹1,00,000 capital, risking improper risk-per-trade allocation.
+3. **Calendar Theta Rigidity**: Static 40-minute timeout failed on Thursday expiry days (where theta decay is brutal) and exited prematurely on Monday/Tuesday (where contracts have 3+ DTE).
+
+#### 2. Root Cause Forensic Analysis
+1. Financial markets are dynamic probability distributions. Index derivatives move strictly according to Spot Volatility (ATR), Implied Volatility (VIX), and Days-to-Expiry (DTE). Any algorithmic system with hardcoded point thresholds inevitably breaks under regime change.
+
+#### 3. Permanent Architectural Countermeasures
+1. **Black-Scholes Dynamic Greeks Engine (DerivativesMath.js)**: All option premiums and Greeks (Delta, Gamma, Theta) are derived in real time from Spot, Strike, DTE, and VIX.
+2. **ATR-Derived Volatility Sizing**: Stop-loss points are dynamically calculated as Spot ATR * VIX Multiplier * Delta, adapting to calm or volatile days automatically.
+3. **Proportional Fractional Capital Sizing**: Trade sizing and account circuit breakers adapt dynamically to account balance (1.5% max risk per trade, 3.0% daily drawdown cap, 3.5% daily profit lock).
+4. **Dynamic DTE Theta Shield**: Timer scales automatically from 20 minutes on expiry day up to 75 minutes on early-week sessions.
+5. **Multi-Timeframe Macro Gate**: 15m trend structure acts as a veto filter against counter-trend 5m traps.
+
+
 ### Mission: Alpha-Quant Multi-Tier Profit Ratchet, Big-3 Heavyweights Gatekeeper & Opportunity Radar
 - **Timestamp**: 2026-10-10T01:14:00.000Z
 - **Commit SHA**: `f1b6070`

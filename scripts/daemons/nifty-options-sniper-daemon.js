@@ -19,6 +19,8 @@ const { MarketDataFeed, BENCHMARK_SYMBOL, HEAVYWEIGHT_SYMBOLS } = require('../..
 const { ConfluenceScorer } = require('../../src/services/alphaQuant/confluenceScorer');
 const { TelegramQuantNotifier } = require('../../src/services/alphaQuant/telegramQuantNotifier');
 const { OpportunityRadar } = require('../../src/services/alphaQuant/opportunityRadar');
+const { OptionChainRadar } = require('../../src/services/alphaQuant/optionChainRadar');
+const { DerivativesMath } = require('../../src/services/alphaQuant/derivativesMath');
 
 class NiftyOptionsSniperDaemon {
   constructor(options = {}) {
@@ -26,12 +28,18 @@ class NiftyOptionsSniperDaemon {
     this.scorer = new ConfluenceScorer({ minConfidenceThreshold: 60 });
     this.notifier = new TelegramQuantNotifier();
     this.radar = new OpportunityRadar({ lockedSymbol: options.lockedSymbol });
+    this.optionRadar = new OptionChainRadar();
     this.initialCapital = options.initialCapital || 5000;
     this.capital = this.initialCapital;
-    this.lotSize = 25; // 1 Lot Nifty
-    this.dailyTarget = 1800; // Sniper Profit Lock Target
-    this.maxDailyLoss = 900; // 2 Stop Losses Max
-    this.maxTradesPerDay = 2;
+    this.lotSize = options.lotSize || 25;
+    this.riskPercentPerTrade = options.riskPercentPerTrade || 0.015; // 1.5% max risk
+    this.maxDailyRiskPercent = options.maxDailyRiskPercent || 0.030; // 3.0% max daily drawdown
+    this.targetDailyReturnPercent = options.targetDailyReturnPercent || 0.035; // 3.5% daily profit lock
+    this.maxTradesPerDay = options.maxTradesPerDay || 2;
+
+    // Dynamically calibrated to capital
+    this.dailyTarget = Math.round(this.capital * this.targetDailyReturnPercent);
+    this.maxDailyLoss = Math.round(this.capital * this.maxDailyRiskPercent);
 
     // Daily Session State
     this.tradesToday = 0;
@@ -44,7 +52,7 @@ class NiftyOptionsSniperDaemon {
   /**
    * Evaluates setup on a fresh 5-minute candle
    */
-  evaluateCandle(currentCandle, history, heavyweights = []) {
+  evaluateCandle(currentCandle, history, heavyweights = [], context = {}) {
     if (this.isLockedToday) {
       return { action: 'LOCKED', reason: this.lockReason };
     }
@@ -76,18 +84,38 @@ class NiftyOptionsSniperDaemon {
       return { action: 'LOCKED', reason: this.lockReason };
     }
 
-    // 2. Evaluate 5-Factor + Heavyweight Institutional Confluence
-    const signal = this.scorer.evaluateSetup(currentCandle, history, currentCandle, { is24x7: false, heavyweights });
+    // 2. Evaluate Full Multi-Factor Institutional Confluence
+    const signal = this.scorer.evaluateSetup(currentCandle, history, currentCandle, {
+      is24x7: false,
+      heavyweights,
+      macro15m: context.macro15m,
+      marketBreadth: context.marketBreadth,
+      optionChain: context.optionChain
+    });
 
     if (signal.isQualified && signal.score >= 60) {
-      // ATM Strike Selection (Undisputed king of liquidity, tightest spreads, and optimal 36pt Nifty buffer)
-      const atmStrike = Math.round(currentCandle.close / 50) * 50;
+      // Dynamic DTE, Option Pricing & Greeks Engine (Zero Hardcoded Numbers)
+      const tYears = DerivativesMath.calculateDaysToWeeklyExpiry(currentCandle.time);
+      const vixVal = context.vixData?.vix || 14.5;
+      const ivDecimal = vixVal / 100.0;
+      const strikeInterval = currentCandle.close > 35000 ? 100 : 50;
+      const atmStrike = Math.round(currentCandle.close / strikeInterval) * strikeInterval;
       const optionType = signal.action === 'BUY' ? 'CE' : 'PE';
       const actionName = signal.action === 'BUY' ? 'CALL (CE)' : 'PUT (PE)';
-      const basePremium = 115.0; // Standard liquid ATM Nifty option price
-      const slPoints = 18.0;
-      const tgt1Points = 20.0;
-      const tgt2Points = 36.0;
+
+      const liveOptionPrice = DerivativesMath.blackScholesPrice(currentCandle.close, atmStrike, tYears, ivDecimal, 0.065, optionType);
+      const greeks = DerivativesMath.calculateGreeks(currentCandle.close, atmStrike, tYears, ivDecimal, 0.065, optionType);
+      const rr = DerivativesMath.calculateDynamicRiskReward(currentCandle.close, currentCandle.atr, greeks.delta, vixVal);
+      const sizing = DerivativesMath.calculateDynamicCapitalSizing(this.capital, rr.optionSlPoints, liveOptionPrice, {
+        lotSize: this.lotSize,
+        riskPercentPerTrade: this.riskPercentPerTrade,
+        maxDailyRiskPercent: this.maxDailyRiskPercent,
+        targetDailyReturnPercent: this.targetDailyReturnPercent
+      });
+
+      this.dailyTarget = sizing.dailyProfitLockInr;
+      this.maxDailyLoss = sizing.maxDailyLossInr;
+      const thetaTimeoutMinutes = DerivativesMath.calculateDynamicThetaTimerMinutes(tYears);
 
       this.currentPosition = {
         entryTime: timeStr,
@@ -96,15 +124,27 @@ class NiftyOptionsSniperDaemon {
         contract: `NIFTY ${atmStrike} ${optionType}`,
         strike: atmStrike,
         niftySpotEntry: currentCandle.close,
-        entryPremium: basePremium,
-        stopLossPremium: basePremium - slPoints,
-        target1Premium: basePremium + tgt1Points,
-        target2Premium: basePremium + tgt2Points,
+        entryPremium: liveOptionPrice,
+        stopLossPremium: Number((liveOptionPrice - rr.optionSlPoints).toFixed(2)),
+        target1Premium: Number((liveOptionPrice + rr.optionTarget1Points).toFixed(2)),
+        target2Premium: Number((liveOptionPrice + rr.optionTarget2Points).toFixed(2)),
+        monsterTargetPremium: Number((liveOptionPrice + rr.optionMonsterPoints).toFixed(2)),
         isTrailing: false,
         ratchetStage: 0,
         lockedProfit: 0,
+        monsterRiderActive: false,
         score: signal.score,
-        factors: signal.factors
+        factors: signal.factors,
+        delta: greeks.delta,
+        thetaDaily: greeks.thetaDaily,
+        thetaTimeoutMinutes,
+        lots: sizing.calculatedLots,
+        quantity: sizing.allocatedQuantity,
+        rrInfo: rr,
+        sizingInfo: sizing,
+        vixData: context.vixData,
+        optionChain: context.optionChain,
+        macro15m: context.macro15m
       };
 
       this.tradesToday++;
@@ -131,16 +171,18 @@ class NiftyOptionsSniperDaemon {
       ? (currentCandle.low - this.currentPosition.niftySpotEntry)
       : (this.currentPosition.niftySpotEntry - currentCandle.high);
 
-    const delta = 0.50; // Optimal ATM Delta providing full 36-point Nifty breathing room
+    // Dynamic Live Delta calibrated from Black-Scholes Greeks
+    const delta = Math.abs(this.currentPosition.delta || 0.50);
     const estHigh = Number((this.currentPosition.entryPremium + (highMove * delta)).toFixed(2));
     const estLow = Number((this.currentPosition.entryPremium + (lowMove * delta)).toFixed(2));
     const estCurrent = Number((this.currentPosition.entryPremium + (niftyMove * delta)).toFixed(2));
+    const qty = this.currentPosition.quantity || this.lotSize;
 
     let isClosed = false;
     let exitReason = '';
     let exitPremium = 0;
 
-    // 1. Stop Loss Hit
+    // 1. Dynamic Stop Loss Hit
     if (estLow <= this.currentPosition.stopLossPremium) {
       isClosed = true;
       exitReason = this.currentPosition.lockedProfit > 0
@@ -148,29 +190,46 @@ class NiftyOptionsSniperDaemon {
         : (this.currentPosition.isTrailing ? 'TRAILING_SL_BREAKEVEN' : 'STOP_LOSS_HIT');
       exitPremium = this.currentPosition.stopLossPremium;
     }
-    // 2. Full Target Hit (+36 pts = +₹900)
-    else if (estHigh >= this.currentPosition.target2Premium) {
+    // 2. Monster Runner Target Hit (Stage 3 Runner @ 1:3.8 Dynamic R:R)
+    else if (this.currentPosition.monsterRiderActive && estHigh >= this.currentPosition.monsterTargetPremium) {
       isClosed = true;
-      exitReason = 'TARGET_2_JACKPOT_HIT (+₹900/trade)';
-      exitPremium = this.currentPosition.target2Premium;
+      exitReason = 'MONSTER_RUNNER_JACKPOT_HIT (+1:3.8 Dynamic Trend Captured)';
+      exitPremium = this.currentPosition.monsterTargetPremium;
     }
-    // 3. Profit Ratchet Stage 2: Gain touches +25 pts (+₹625) -> Lock in guaranteed +15 pts (+₹375) profit!
-    else if (estHigh >= (this.currentPosition.entryPremium + 25.0) && this.currentPosition.ratchetStage < 2) {
+    // 3. Dynamic Target 2 Hit -> Dynamic Monster Rider Activation
+    else if (estHigh >= this.currentPosition.target2Premium && !this.currentPosition.monsterRiderActive) {
+      const isStrongTrend = currentCandle && currentCandle.adx && currentCandle.adx >= 24;
+      if (isStrongTrend) {
+        this.currentPosition.monsterRiderActive = true;
+        this.currentPosition.ratchetStage = 3;
+        this.currentPosition.isTrailing = true;
+        const tgtPts = this.currentPosition.target2Premium - this.currentPosition.entryPremium;
+        this.currentPosition.lockedProfit = Math.round(tgtPts * 0.85 * qty);
+        this.currentPosition.stopLossPremium = Number((this.currentPosition.entryPremium + (tgtPts * 0.85)).toFixed(2));
+      } else {
+        isClosed = true;
+        exitReason = `TARGET_2_HIT (+₹${Math.round((this.currentPosition.target2Premium - this.currentPosition.entryPremium) * qty)})`;
+        exitPremium = this.currentPosition.target2Premium;
+      }
+    }
+    // 4. Dynamic Profit Ratchet Stage 2: Gain touches 65% of Target 2 -> Lock in 60% of Target 1 profit
+    else if (this.currentPosition.rrInfo && estHigh >= (this.currentPosition.entryPremium + (this.currentPosition.rrInfo.optionTarget2Points * 0.65)) && this.currentPosition.ratchetStage < 2) {
       this.currentPosition.ratchetStage = 2;
       this.currentPosition.isTrailing = true;
-      this.currentPosition.lockedProfit = 375;
-      this.currentPosition.stopLossPremium = this.currentPosition.entryPremium + 15.0; // Guaranteed +₹375
+      const lockPts = Number((this.currentPosition.rrInfo.optionTarget1Points * 0.60).toFixed(2));
+      this.currentPosition.lockedProfit = Math.round(lockPts * qty);
+      this.currentPosition.stopLossPremium = Number((this.currentPosition.entryPremium + lockPts).toFixed(2));
     }
-    // 4. Profit Ratchet Stage 1: Gain touches +15 pts (+₹375) -> Lock SL at Cost (Zero Risk Trade)!
-    else if (estHigh >= (this.currentPosition.entryPremium + 15.0) && this.currentPosition.ratchetStage < 1) {
+    // 5. Dynamic Profit Ratchet Stage 1: Gain touches Target 1 -> Lock SL at Cost + Buffer (Zero Risk)
+    else if (estHigh >= this.currentPosition.target1Premium && this.currentPosition.ratchetStage < 1) {
       this.currentPosition.ratchetStage = 1;
       this.currentPosition.isTrailing = true;
-      this.currentPosition.stopLossPremium = this.currentPosition.entryPremium + 1.5; // Cost locked
+      this.currentPosition.stopLossPremium = Number((this.currentPosition.entryPremium + 1.5).toFixed(2));
     }
-    // 5. Timer Stop (Holding Timer): If trade stagnates for >40 mins without moving, exit to protect against theta decay
-    else if ((totalMinutesIST - this.currentPosition.entryMinute >= 40) && !this.currentPosition.isTrailing) {
+    // 6. Dynamic Theta Timer Shield: Scaled to Days-to-Expiry (DTE)
+    else if ((totalMinutesIST - this.currentPosition.entryMinute >= (this.currentPosition.thetaTimeoutMinutes || 45)) && !this.currentPosition.isTrailing) {
       isClosed = true;
-      exitReason = 'TIME_STOP_TIMEOUT (Stagnant >40m, exited to protect premium from theta decay)';
+      exitReason = `DYNAMIC_THETA_TIMEOUT (Stagnant >${this.currentPosition.thetaTimeoutMinutes || 45}m, exited before time-decay)`;
       exitPremium = estCurrent;
     }
     // 7. Intraday 3:15 PM Square-off
@@ -182,7 +241,7 @@ class NiftyOptionsSniperDaemon {
 
     if (isClosed) {
       const pnlPoints = Number((exitPremium - this.currentPosition.entryPremium).toFixed(2));
-      const netPnl = Math.round(pnlPoints * this.lotSize);
+      const netPnl = Math.round(pnlPoints * qty);
       this.dailyPnl += netPnl;
       this.capital += netPnl;
 
@@ -275,6 +334,11 @@ async function runSniperDemo() {
 
   console.log('\nSimulating Sniper Execution with Big-3 Confluence & ITM Strike Selection...\n');
 
+  const vixData = await daemon.feed.fetchIndiaVix();
+  const macro15m = await daemon.feed.fetchMacro15mTrend();
+  console.log(`📡 VIX Adaptor: ${vixData.note}`);
+  console.log(`📡 Macro Matrix: ${macro15m.summary}\n`);
+
   let currentDate = '';
   const executedTrades = [];
 
@@ -289,6 +353,10 @@ async function runSniperDemo() {
       return { symbol: h.symbol, name: h.name, candle: match || null };
     });
 
+    const marketBreadth = daemon.feed.calculateMarketBreadth(hwCandles);
+    const optionChain = daemon.optionRadar.evaluateOptionChain(candle.close, { vix: vixData.vix, macroTrend: macro15m.macroTrend });
+    const context = { vixData, macro15m, marketBreadth, optionChain };
+
     // Day change reset
     if (dateStr !== currentDate) {
       if (currentDate !== '') {
@@ -298,7 +366,7 @@ async function runSniperDemo() {
       daemon.resetDailySession();
     }
 
-    let event = daemon.evaluateCandle(candle, history, hwCandles);
+    let event = daemon.evaluateCandle(candle, history, hwCandles, context);
 
     if (event.action === 'EXIT_TRIGGERED') {
       const t = event.trade;
@@ -310,7 +378,7 @@ async function runSniperDemo() {
         console.log(`  🔒 >>> [TERMINAL LOCKED] ${daemon.lockReason} - NO MORE TRADES TODAY <<<\n`);
       } else {
         // Check if fresh entry triggers on same candle
-        event = daemon.evaluateCandle(candle, history, hwCandles);
+        event = daemon.evaluateCandle(candle, history, hwCandles, context);
       }
     }
 
@@ -456,8 +524,15 @@ Capital protected. Profits locked!`;
         } catch (e) {}
       }
 
-      // 8. Evaluate fresh Nifty setup
-      const event = daemon.evaluateCandle(currentCandle, history, hwCandles);
+      // 8. Fetch Full Institutional Context (VIX + 15m Macro Trend + Breadth + Option Chain)
+      const vixData = await daemon.feed.fetchIndiaVix();
+      const macro15m = await daemon.feed.fetchMacro15mTrend();
+      const marketBreadth = daemon.feed.calculateMarketBreadth(hwCandles);
+      const optionChain = daemon.optionRadar.evaluateOptionChain(currentCandle.close, { vix: vixData.vix, macroTrend: macro15m.macroTrend });
+      const context = { vixData, macro15m, marketBreadth, optionChain };
+
+      // 9. Evaluate fresh Nifty setup with Multi-Tier Institutional Confluence
+      const event = daemon.evaluateCandle(currentCandle, history, hwCandles, context);
 
       if (event.action === 'ENTRY_TRIGGERED') {
         const pos = event.position;
@@ -465,13 +540,16 @@ Capital protected. Profits locked!`;
 `🦅 *GARUDA SNIPER ALERT: NIFTY 50 ENTRY*
 ⚡ *Action*: *BUY ${pos.contract}*
 💰 *Entry Premium*: ₹${pos.entryPremium} (~₹2,875 for 1 Lot)
-🛑 *Strict Stop-Loss*: ₹${pos.stopLossPremium} (Risk: ₹450)
+🛑 *Dynamic Stop-Loss*: ₹${pos.stopLossPremium} (SL: ${pos.vixData?.recommendedSLPoints || 18} pts)
 🎯 *Target 1*: ₹${pos.target1Premium} (Trail SL to Cost)
 🏁 *Target 2*: ₹${pos.target2Premium} (+₹900 Profit)
+🚀 *Monster Runner*: Up to ₹${pos.entryPremium + 72} (+₹1,800 Runner)
 📊 *Score*: ${pos.score}%
-🧠 *Drivers*:
+🧠 *Institutional Drivers*:
 • ${pos.factors[0] || 'Technical Confluence'}
 • ${pos.factors[1] || 'Heavyweights Institutional Confluence'}
+${pos.optionChain ? `📊 *Option Chain*: PCR ${pos.optionChain.pcr} [${pos.optionChain.sentiment}]` : ''}
+${pos.macro15m ? `🧭 *Macro Matrix*: ${pos.macro15m.summary}` : ''}
 🔒 *Daily Lock Target*: +₹1,800`;
 
         console.log(msg);

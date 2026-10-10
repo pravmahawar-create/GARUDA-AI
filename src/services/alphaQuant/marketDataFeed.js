@@ -374,6 +374,140 @@ class MarketDataFeed {
       adx: adx[i]
     }));
   }
+
+  /**
+   * Fetch Live India VIX for dynamic volatility adaptation
+   */
+  async fetchIndiaVix() {
+    try {
+      const url = `https://query1.finance.yahoo.com/v8/finance/chart/%5EINDIAVIX?interval=1d&range=5d`;
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const quotes = data.chart?.result?.[0]?.indicators?.quote?.[0];
+      const validCloses = quotes?.close?.filter(x => x != null) || [];
+      const currentVix = validCloses.length > 0 ? Number(validCloses[validCloses.length - 1].toFixed(2)) : 14.5;
+
+      let regime = 'NORMAL_VOLATILITY';
+      let slPoints = 18.0;
+      let tgt1Points = 20.0;
+      let tgt2Points = 36.0;
+
+      if (currentVix < 12.5) {
+        regime = 'LOW_VOLATILITY';
+        slPoints = 14.0;
+        tgt1Points = 18.0;
+        tgt2Points = 28.0;
+      } else if (currentVix > 16.5) {
+        regime = 'HIGH_VOLATILITY';
+        slPoints = 24.0;
+        tgt1Points = 28.0;
+        tgt2Points = 54.0;
+      }
+
+      return {
+        vix: currentVix,
+        regime,
+        recommendedSLPoints: slPoints,
+        recommendedTgt1Points: tgt1Points,
+        recommendedTgt2Points: tgt2Points,
+        note: `VIX ${currentVix} [${regime}] -> Dynamic SL: ${slPoints} pts | Tgt: ${tgt2Points} pts`
+      };
+    } catch (err) {
+      return {
+        vix: 14.5,
+        regime: 'NORMAL_VOLATILITY',
+        recommendedSLPoints: 18.0,
+        recommendedTgt1Points: 20.0,
+        recommendedTgt2Points: 36.0,
+        note: 'Default baseline volatility profile active.'
+      };
+    }
+  }
+
+  /**
+   * Fetch 15-minute Macro Trend for Multi-Timeframe Fractal Matrix
+   */
+  async fetchMacro15mTrend(symbol = BENCHMARK_SYMBOL) {
+    try {
+      const raw15m = await this.fetchCandles(symbol, '15m', '5d');
+      if (!raw15m || raw15m.length < 20) {
+        return { macroTrend: 'SIDEWAYS', reason: 'Insufficient 15m data' };
+      }
+
+      const closes = raw15m.map(c => c.close);
+      const ema9 = this.calculateEMA(closes, 9);
+      const ema21 = this.calculateEMA(closes, 21);
+      const ema50 = this.calculateEMA(closes, 50);
+      const rsi = this.calculateRSI(closes, 14);
+
+      const latest = raw15m[raw15m.length - 1];
+      const curEma9 = ema9[ema9.length - 1];
+      const curEma21 = ema21[ema21.length - 1];
+      const curEma50 = ema50[ema50.length - 1];
+      const curRsi = rsi[rsi.length - 1] || 50;
+
+      let macroTrend = 'SIDEWAYS';
+      let confidence = 50;
+
+      if (curEma9 > curEma21 && latest.close >= curEma21 && curRsi >= 50) {
+        macroTrend = 'BULLISH';
+        confidence = (curEma21 > curEma50) ? 90 : 75;
+      } else if (curEma9 < curEma21 && latest.close <= curEma21 && curRsi <= 50) {
+        macroTrend = 'BEARISH';
+        confidence = (curEma21 < curEma50) ? 90 : 75;
+      }
+
+      return {
+        macroTrend,
+        confidence,
+        timeframe: '15m',
+        close: latest.close,
+        rsi: curRsi,
+        ema9: curEma9,
+        ema21: curEma21,
+        summary: `15m Macro Trend: ${macroTrend} (${confidence}% conviction, RSI: ${curRsi})`
+      };
+    } catch (err) {
+      return { macroTrend: 'SIDEWAYS', confidence: 50, error: err.message };
+    }
+  }
+
+  /**
+   * Calculate Market Breadth (Constituents Advance/Decline Ratio)
+   */
+  calculateMarketBreadth(constituents = []) {
+    if (!constituents || constituents.length === 0) {
+      return { breadth: 'NEUTRAL', advancePercent: 50, advances: 0, declines: 0 };
+    }
+
+    let advances = 0;
+    let declines = 0;
+
+    for (const c of constituents) {
+      if (c.candle) {
+        if (c.candle.close > c.candle.open) advances++;
+        else if (c.candle.close < c.candle.open) declines++;
+      }
+    }
+
+    const total = advances + declines || 1;
+    const advancePercent = Math.round((advances / total) * 100);
+
+    let breadth = 'NEUTRAL';
+    if (advancePercent >= 65) breadth = 'STRONG_BULLISH';
+    else if (advancePercent <= 35) breadth = 'STRONG_BEARISH';
+
+    return {
+      breadth,
+      advancePercent,
+      advances,
+      declines,
+      summary: `Market Breadth: ${advances} Advances / ${declines} Declines (${advancePercent}% Green) [${breadth}]`
+    };
+  }
 }
 
 module.exports = {

@@ -299,6 +299,58 @@ class ConfluenceScorer {
       }
     }
 
+    // Factor 8: Multi-Timeframe Fractal Matrix Gate (15m Macro Alignment)
+    if (options.macro15m) {
+      const macro = options.macro15m.macroTrend;
+      if (macro === 'BULLISH') {
+        bullScore += 15;
+        bullFactors.push('Multi-Timeframe Fractal Alignment: 15m Macro Trend is Strongly Bullish (+15 Pts)');
+        bearScore = 0; // VETO: Never short against 15m Bullish Tide!
+        bearFactors.push('VETO: 15m Macro Trend is Bullish — Counter-trend Put Short Blocked');
+      } else if (macro === 'BEARISH') {
+        bearScore += 15;
+        bearFactors.push('Multi-Timeframe Fractal Alignment: 15m Macro Trend is Strongly Bearish (+15 Pts)');
+        bullScore = 0; // VETO: Never buy call against 15m Bearish Tide!
+        bullFactors.push('VETO: 15m Macro Trend is Bearish — Counter-trend Call Buy Blocked');
+      }
+    }
+
+    // Factor 9: Market Breadth Advance/Decline Gate
+    if (options.marketBreadth) {
+      const breadth = options.marketBreadth.breadth;
+      if (breadth === 'STRONG_BULLISH') {
+        bullScore += 10;
+        bullFactors.push(`Broad Institutional Participation: ${options.marketBreadth.advancePercent}% Constituents Green`);
+        bearScore = 0; // VETO: Do not short against broad market buying tide
+      } else if (breadth === 'STRONG_BEARISH') {
+        bearScore += 10;
+        bearFactors.push(`Broad Institutional Selling: ${100 - options.marketBreadth.advancePercent}% Constituents Red`);
+        bullScore = 0; // VETO: Do not buy calls when entire market is dumping
+      }
+    }
+
+    // Factor 10: Option Chain PCR & Gamma Squeeze Gate
+    if (options.optionChain) {
+      const oc = options.optionChain;
+      if (oc.gammaSqueezeRisk) {
+        bullScore += 15;
+        bullFactors.push(`Gamma Squeeze Imminent: Spot crossing Call Wall (₹${oc.callResistanceWall}) — Call Writers Trapped`);
+      }
+      if (oc.pcr < 0.65) {
+        // Extreme Oversold -> Veto fresh Put buying (Short Trap)
+        bearScore = 0;
+        bearFactors.push(`VETO: Extreme Oversold PCR (${oc.pcr}) — Short covering bounce trap filtered`);
+        bullScore += 10;
+        bullFactors.push(`Oversold Contrarian Tail: PCR (${oc.pcr}) ripe for mean-reversion bounce`);
+      } else if (oc.pcr > 1.45) {
+        // Extreme Overbought -> Veto fresh Call buying (Long Trap)
+        bullScore = 0;
+        bullFactors.push(`VETO: Extreme Overbought PCR (${oc.pcr}) — Retail Long Trap filtered at top`);
+        bearScore += 10;
+        bearFactors.push(`Overbought Fatigue: PCR (${oc.pcr}) ripe for profit-taking pullback`);
+      }
+    }
+
     // Determine winning side
     const isBull = bullScore >= bearScore;
     const finalScore = Math.max(0, isBull ? bullScore : bearScore);
