@@ -16,7 +16,20 @@ if (!fs.existsSync(BASE_TEMPLATE_PATH)) {
   process.exit(1);
 }
 
-const baseTemplate = fs.readFileSync(BASE_TEMPLATE_PATH, "utf8");
+let baseTemplate = fs.readFileSync(BASE_TEMPLATE_PATH, "utf8");
+
+// Secure Token Ingestion: Consume real verification tokens from environment if configured by Founder
+const googleToken = (process.env.VITE_GOOGLE_SITE_VERIFICATION || process.env.GOOGLE_SITE_VERIFICATION || "").trim();
+const bingToken = (process.env.VITE_BING_SITE_VERIFICATION || process.env.BING_SITE_VERIFICATION || "").trim();
+
+if (googleToken) {
+  baseTemplate = baseTemplate.replace("REPLACE_WITH_SEARCH_CONSOLE_TOKEN", googleToken);
+  console.log("✔ Injected real Google Search Console verification token into base template");
+}
+if (bingToken) {
+  baseTemplate = baseTemplate.replace("REPLACE_WITH_BING_WEBMASTER_TOKEN", bingToken);
+  console.log("✔ Injected real Bing Webmaster Tools verification token into base template");
+}
 
 const ROUTES = [
   {

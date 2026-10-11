@@ -57,6 +57,12 @@ export default function ProjectScopeForm({
     setLoading(true);
     const attribution = getAttributionPayload();
 
+    trackEvent("project_scope_submitted", {
+      service,
+      budget,
+      channel: attribution.channel || "Direct"
+    });
+
     try {
       const payload = {
         name: name.trim(),
@@ -81,7 +87,7 @@ export default function ProjectScopeForm({
       }
 
       setResult(data);
-      trackEvent("project_scope_submitted", {
+      trackEvent("lead_created_success", {
         scopeId: data.proposal?.scopeId || data.leadId,
         service,
         budget,

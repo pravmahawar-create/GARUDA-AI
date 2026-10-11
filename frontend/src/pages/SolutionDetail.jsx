@@ -34,7 +34,10 @@ export default function SolutionDetail() {
     if (!contactInput.trim()) return;
 
     setSubmitting(true);
-    trackEvent("quick_inquiry_submitted", { slug: solution.slug, contact: contactInput });
+    trackEvent("quick_inquiry_submitted", {
+      slug: solution.slug,
+      contactType: contactInput.includes("@") ? "email" : "phone"
+    });
 
     try {
       await fetch("/api/inbound/project-scope", {

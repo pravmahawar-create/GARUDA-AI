@@ -155,7 +155,9 @@ async function notifyLeadCaptured(lead) {
     lead.scopeId ? `Scope Reference: #${lead.scopeId}` : null,
     lead.service ? `Service: ${lead.service}` : null,
     attr.channel ? `Channel: ${attr.channel}` : null,
-    lead.source ? `Source / Campaign: ${lead.source}` : null,
+    (lead.source || attr.campaign || attr.utm_campaign)
+      ? `Source / Campaign: ${[lead.source, attr.campaign || attr.utm_campaign].filter(Boolean).join(" / ")}`
+      : null,
     attr.landingPath ? `Landing Page: ${attr.landingPath}` : null,
     attr.referrerDomain ? `Referrer: ${attr.referrerDomain}` : null,
     lead.email ? `Email: ${lead.email}` : null,
@@ -241,13 +243,13 @@ async function handleUpdate(update) {
 
   if (!text) return null;
 
-  // 1) Command routing: Allow founder commands and slash commands
-  const isCommand = text.startsWith("/") || /(^|\s)\/(leads|status|hunt|missions|botverse|help)\b/i.test(text);
-  if (isFounder || isCommand) {
+  // 1) Command routing: Execute only on explicit slash commands (e.g. /status, /help, /leads)
+  const isCommand = text.startsWith("/") || /(^|\s)\/(leads|status|hunt|missions|botverse|help|pipeline)\b/i.test(text);
+  if (isCommand) {
     try {
       const commandResult = await garudaCommandRouter.dispatchCommand(text, { founderApproved: true });
       if (commandResult && commandResult.command && commandResult.message) {
-        const reply = `${commandResult.message}\n\n[EXECUTED: ${commandResult.command}]`;
+        const reply = commandResult.message;
         await sendMessage(reply, chatId);
         return {
           ok: true,
@@ -261,7 +263,7 @@ async function handleUpdate(update) {
       }
     } catch (error) {
       const errMsg = error && error.message ? error.message : String(error);
-      const reply = `[COMMAND ERROR]\n${errMsg}\n\n[koi background task start nahi hua — ye real error hai]`;
+      const reply = `[Command Error] ${errMsg}`;
       await sendMessage(reply, chatId);
       return {
         ok: true,
@@ -338,26 +340,38 @@ async function handleUpdate(update) {
   let founderReply = null;
   try {
     const result = await garudaConversation.chat(`telegram:${chatId}`, text);
-    if (result.response) founderReply = trimConciseReply(result.response);
-  } catch (err) { console.warn("[Brain] founder chat error:", String(err.message).slice(0,80)); }
+    if (result && result.response) founderReply = trimConciseReply(result.response);
+  } catch (err) {
+    console.warn("[Brain] founder chat error:", String(err.message).slice(0, 80));
+  }
 
-  // Founder reply from brain (string) or fallback to llmProvider
+  // Founder reply from brain (string) or fallback to brain.think
   let answer;
   if (typeof founderReply === "string" && founderReply.trim()) {
     answer = founderReply;
   } else {
-    // Fallback: old llmProvider
-    const fallback = reply && typeof reply === "object" ? reply : { answer: founderReply || "" };
-    answer = fallback.answer && typeof fallback.answer === "string" && fallback.answer.trim() && !fallback.error
-      ? trimConciseReply(fallback.answer)
-      : buildEngineUnavailableReply(fallback);
+    try {
+      const fallbackResult = await brain.think(text, {
+        systemPrompt:
+          "You are GARUDA, the autonomous AI workforce founded by Praveen Mahawar. " +
+          "Communicate strictly in Roman Hindi (Hinglish). Be respectful, natural, sharp, and concise. " +
+          "Never fabricate data. Talk like a loyal, high-intelligence partner.",
+        temperature: 0.6,
+        maxTokens: 600
+      });
+      if (fallbackResult && fallbackResult.content) {
+        answer = trimConciseReply(fallbackResult.content);
+      }
+    } catch (_) {}
+
+    if (!answer) {
+      answer = "Bhai, main sun raha hoon. Ek second dijiye, connection verify ho raha hai.";
+    }
   }
 
   await persistChatExchange(chatId, text, answer);
-  const truthSuffix =
-    "\n\n[CONVERSATIONAL ONLY — koi background task ya command execute nahi hua]" +
-    "\n[Sach check karna ho to bhejo: /pipeline ya /status]";
-  await sendMessage(answer + truthSuffix, chatId);
+  // Send clean, direct, respectful answer (zero robotic suffixes)
+  await sendMessage(answer, chatId);
 
   return {
     ok: true,

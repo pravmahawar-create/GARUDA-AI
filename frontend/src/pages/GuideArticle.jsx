@@ -16,6 +16,10 @@ export default function GuideArticle() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    trackEvent("guide_view", {
+      slug: guide.slug,
+      title: guide.title
+    });
   }, [guide]);
 
   const articleSchema = {

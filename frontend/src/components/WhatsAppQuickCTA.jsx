@@ -21,7 +21,7 @@ export default function WhatsAppQuickCTA({
 
   const handleClick = () => {
     trackEvent("whatsapp_cta_click", {
-      phone: phoneNumber,
+      channel: "whatsapp",
       landingPath: window.location.pathname
     });
   };

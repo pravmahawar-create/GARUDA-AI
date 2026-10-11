@@ -360,6 +360,11 @@ export default function ServiceLanding() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    trackEvent("service_page_view", {
+      service: service.slug,
+      category: service.category,
+      baseINR: service.baseINR
+    });
   }, [service]);
 
   const conv = CURRENCY_CONVERSIONS[selectedCurrency] || CURRENCY_CONVERSIONS.INR;
@@ -465,7 +470,10 @@ export default function ServiceLanding() {
             ))}
           </select>
           <button
-            onClick={() => navigate("/chat?topic=" + service.slug)}
+            onClick={() => {
+              trackEvent("nav_chat_cta_click", { location: "service_header", service: service.slug });
+              navigate("/chat?topic=" + service.slug);
+            }}
             style={{ background: "linear-gradient(135deg, #f5d76e 0%, #b8860b 100%)", color: "#05070a", border: "none", padding: "0.55rem 1.2rem", borderRadius: "8px", fontWeight: 800, cursor: "pointer", fontSize: "0.88rem" }}
           >
             Discuss on Live Chat →

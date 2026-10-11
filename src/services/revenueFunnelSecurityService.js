@@ -259,23 +259,41 @@ class RevenueFunnelSecurityService {
     // 7. Attribution Sanitization (Reject client overwrite of server authority)
     let clientAttribution = sanitized.attribution;
     let safeAttribution = null;
+    const resolvedFallback = attributionService
+      ? attributionService.resolveAttribution({
+          body: sanitized,
+          headers,
+          req: { headers }
+        })
+      : null;
+
     if (clientAttribution && typeof clientAttribution === "object") {
       safeAttribution = {
-        channel: this.sanitizeString(clientAttribution.channel) || "Direct",
-        source: this.sanitizeString(clientAttribution.source) || "direct",
-        campaign: this.sanitizeString(clientAttribution.campaign) || "UNKNOWN",
-        referrer: this.sanitizeString(clientAttribution.referrer) || "UNKNOWN",
-        landingPath: this.sanitizeString(clientAttribution.landingPath) || "UNKNOWN"
+        channel:
+          this.sanitizeString(clientAttribution.channel) ||
+          (resolvedFallback ? resolvedFallback.channel : "Direct"),
+        source:
+          this.sanitizeString(clientAttribution.source || clientAttribution.utm_source) ||
+          (resolvedFallback ? resolvedFallback.source : "direct"),
+        campaign:
+          this.sanitizeString(clientAttribution.campaign || clientAttribution.utm_campaign) ||
+          (resolvedFallback ? resolvedFallback.campaign : "UNKNOWN"),
+        utm_campaign:
+          this.sanitizeString(clientAttribution.utm_campaign || clientAttribution.campaign) ||
+          (resolvedFallback ? resolvedFallback.campaign : "UNKNOWN"),
+        referrer:
+          this.sanitizeString(clientAttribution.referrer || clientAttribution.referrerDomain) ||
+          (resolvedFallback ? resolvedFallback.referrer : "UNKNOWN"),
+        landingPath:
+          this.sanitizeString(clientAttribution.landingPath) ||
+          (resolvedFallback ? resolvedFallback.landingPath : "UNKNOWN")
       };
       // Strips client-forged server timestamps or verified authority flags
       delete safeAttribution.verified;
       delete safeAttribution.serverTimestamp;
       delete safeAttribution.internalId;
-    } else if (attributionService) {
-      safeAttribution = attributionService.resolveAttribution({
-        body: sanitized,
-        headers
-      });
+    } else if (resolvedFallback) {
+      safeAttribution = resolvedFallback;
     }
 
     // 8. Deterministic Content Hash for Idempotency

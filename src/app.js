@@ -271,13 +271,17 @@ app.post("/api/telegram/knowledge/seed", async (req, res) => {
   }
 });
 
-app.post("/api/telegram", async (req, res) => {
-  try {
-    const result = await telegramBotService.handleUpdate(req.body || {});
-    return res.json({ ok: true, result });
-  } catch (error) {
-    return res.status(200).json({ ok: true, error: String(error && error.message ? error.message : error) });
-  }
+app.post("/api/telegram", (req, res) => {
+  // Immediately acknowledge Telegram within 50ms to eliminate read timeouts and duplicate message retries
+  res.status(200).json({ ok: true });
+
+  setImmediate(async () => {
+    try {
+      await telegramBotService.handleUpdate(req.body || {});
+    } catch (error) {
+      console.error("[Telegram Webhook Async Error]:", error && error.message ? error.message : error);
+    }
+  });
 });
 
 // 24/7 Radar Monitoring Status Endpoint
