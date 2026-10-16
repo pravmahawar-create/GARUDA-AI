@@ -27,7 +27,7 @@ export default function PublicChat() {
   const [searchParams] = useSearchParams();
   const topic = searchParams.get("topic");
   const tier = searchParams.get("tier");
-  const isFintechTopic = topic === "fintech-gateway" || Boolean(tier && ["cloud-starter", "cross-border-growth", "sovereign-enterprise"].includes(tier));
+  const isFintechTopic = topic === "fintech-gateway" || topic === "fintech-enterprise" || String(topic || "").startsWith("fintech") || Boolean(tier && ["cloud-starter", "cross-border-growth", "sovereign-enterprise"].includes(tier));
   const [showFintechFlow, setShowFintechFlow] = useState(isFintechTopic);
 
   const [customer, setCustomer] = useState(null);

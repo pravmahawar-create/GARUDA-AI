@@ -28,6 +28,26 @@ const BG = palette.canvas;
 const PANEL = palette.card;
 const BORDER = palette.border;
 
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") return resolve(false);
+    if (window.Razorpay) return resolve(true);
+    const existing = document.getElementById("razorpay-checkout-script");
+    if (existing) {
+      existing.addEventListener("load", () => resolve(true));
+      existing.addEventListener("error", () => resolve(false));
+      return;
+    }
+    const script = document.createElement("script");
+    script.id = "razorpay-checkout-script";
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export default function PricingPage() {
   const navigate = useNavigate();
   const [currency, setCurrency] = useState("INR");
@@ -36,6 +56,10 @@ export default function PricingPage() {
   const [currentSub, setCurrentSub] = useState(null);
   const [processingPlan, setProcessingPlan] = useState(null);
   const [statusMessage, setStatusMessage] = useState("");
+  const [upiModal, setUpiModal] = useState(null);
+  const [utrInput, setUtrInput] = useState("");
+  const [verifyingUtr, setVerifyingUtr] = useState(false);
+  const [copiedUpi, setCopiedUpi] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -79,16 +103,37 @@ export default function PricingPage() {
         throw new Error(data.message || "Failed to initialize checkout.");
       }
 
-      // Check if Razorpay script is loaded or redirect to checkout
       const order = data.data;
-      if (window.Razorpay) {
+
+      // Domestic Indian Payments: Direct UPI Settlement to Founder GPay (pravmahawar@okhdfcbank)
+      if (currency === "INR" && order.domesticPayment) {
+        const targetPlan = plans.find(p => p.planId === planId) || defaultPlans.find(p => p.planId === planId);
+        setUpiModal({
+          planId,
+          planName: targetPlan ? targetPlan.name : planId.toUpperCase(),
+          amount: order.amount,
+          orderId: order.orderId,
+          upiId: order.domesticPayment.upiId,
+          payeeName: order.domesticPayment.payeeName,
+          upiUri: order.domesticPayment.upiUri
+        });
+        setUtrInput("");
+        setProcessingPlan(null);
+        return;
+      }
+
+      // International Card / Alternate Rails via Razorpay if configured
+      const scriptLoaded = await loadRazorpayScript();
+      const hasValidKey = order.keyId && !order.keyId.includes("placeholder") && /^rzp_(test|live)_/.test(order.keyId);
+
+      if (scriptLoaded && window.Razorpay && hasValidKey) {
         const options = {
           key: order.keyId,
           amount: order.amount * 100,
           currency: order.currency,
           name: "GARUDA AI Operating System",
           description: order.notes?.description || "GARUDA SaaS Subscription",
-          order_id: order.orderId.startsWith("order_") && !order.orderId.includes("placeholder") ? order.orderId : undefined,
+          order_id: order.orderId && order.orderId.startsWith("order_") && !order.orderId.includes("placeholder") ? order.orderId : undefined,
           handler: async (response) => {
             const actRes = await fetch("/api/billing/activate", {
               method: "POST",
@@ -106,32 +151,50 @@ export default function PricingPage() {
               setStatusMessage(`✓ Upgraded to ${planId.toUpperCase()} tier successfully!`);
             }
           },
-          theme: { color: "#d4af37" }
+          theme: { color: "#C48B28" }
         };
         const rzp = new window.Razorpay(options);
         rzp.open();
       } else {
-        // Direct simulation / activation fallback
-        const actRes = await fetch("/api/billing/activate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            plan: planId,
-            interval: "monthly",
-            paymentId: `pay_direct_${Date.now()}`,
-            orderId: order.orderId
-          })
-        });
-        const actData = await actRes.json();
-        if (actData.success) {
-          setCurrentSub(actData.data);
-          setStatusMessage(`✓ Subscription activated! Plan: ${planId.toUpperCase()}`);
-        }
+        setStatusMessage(`Order prepared: ${order.plan ? order.plan.toUpperCase() : planId.toUpperCase()} (${order.currency || currency} ${order.amount}). For direct corporate wire or invoicing, contact praveen@garudaos.in.`);
       }
     } catch (err) {
       setStatusMessage(`Error: ${err.message}`);
     } finally {
       setProcessingPlan(null);
+    }
+  };
+
+  const handleVerifyUpiPayment = async () => {
+    if (!utrInput.trim()) {
+      setStatusMessage("Please enter the 12-digit UPI reference number (UTR) from your payment app.");
+      return;
+    }
+    try {
+      setVerifyingUtr(true);
+      const res = await fetch("/api/billing/activate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          plan: upiModal.planId,
+          interval: "monthly",
+          paymentId: `upi_${utrInput.trim()}`,
+          orderId: upiModal.orderId,
+          provider: "upi",
+          utr: utrInput.trim()
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Activation failed");
+      }
+      setCurrentSub(data.data);
+      setStatusMessage(`✓ Subscription activated successfully for ${upiModal.planName}! Ref/UTR: ${utrInput.trim()}`);
+      setUpiModal(null);
+    } catch (err) {
+      setStatusMessage(`Error verifying UPI payment: ${err.message}`);
+    } finally {
+      setVerifyingUtr(false);
     }
   };
 
@@ -580,6 +643,164 @@ export default function PricingPage() {
           </div>
         </div>
       </section>
+
+      {/* Direct Indian Domestic UPI Payment Modal */}
+      {upiModal && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0,0,0,0.78)",
+          backdropFilter: "blur(8px)",
+          zIndex: 100,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "1rem"
+        }}>
+          <div style={{
+            background: "#10141D",
+            border: "1px solid rgba(196, 139, 40, 0.35)",
+            borderRadius: 22,
+            maxWidth: 480,
+            width: "100%",
+            padding: "2rem",
+            color: "#FFFFFF",
+            boxShadow: "0 25px 60px rgba(0, 0, 0, 0.6)"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.2rem" }}>
+              <div>
+                <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "#C48B28", fontWeight: 800 }}>
+                  🇮🇳 Domestic Indian Settlement
+                </span>
+                <h3 style={{ fontSize: "1.35rem", fontWeight: 700, margin: "0.2rem 0 0" }}>
+                  {upiModal.planName}
+                </h3>
+              </div>
+              <button
+                onClick={() => setUpiModal(null)}
+                style={{ background: "transparent", border: "none", color: "#9ca3af", fontSize: "1.4rem", cursor: "pointer", padding: "0.2rem" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.2rem", marginBottom: "1.2rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.6rem" }}>
+                <span style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Amount Due:</span>
+                <span style={{ color: "#C48B28", fontSize: "1.1rem", fontWeight: 800 }}>₹{upiModal.amount}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.6rem" }}>
+                <span style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Beneficiary:</span>
+                <span style={{ color: "#FFFFFF", fontSize: "0.85rem", fontWeight: 600 }}>{upiModal.payeeName}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ color: "#9ca3af", fontSize: "0.85rem" }}>UPI ID:</span>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                  <code style={{ background: "rgba(196, 139, 40, 0.15)", color: "#E5B555", padding: "0.2rem 0.5rem", borderRadius: 6, fontSize: "0.9rem", fontWeight: 700 }}>
+                    {upiModal.upiId}
+                  </code>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(upiModal.upiId);
+                      setCopiedUpi(true);
+                      setTimeout(() => setCopiedUpi(false), 2000);
+                    }}
+                    style={{
+                      background: "rgba(255,255,255,0.08)",
+                      border: "none",
+                      color: "#FFFFFF",
+                      borderRadius: 6,
+                      padding: "0.25rem 0.6rem",
+                      fontSize: "0.75rem",
+                      cursor: "pointer"
+                    }}
+                  >
+                    {copiedUpi ? "✓ Copied" : "Copy"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {upiModal.upiUri && (
+              <a
+                href={upiModal.upiUri}
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  background: palette.goldGradient,
+                  color: "#FFFFFF",
+                  textDecoration: "none",
+                  padding: "0.8rem 1rem",
+                  borderRadius: 12,
+                  fontWeight: 700,
+                  fontSize: "0.92rem",
+                  marginBottom: "1.2rem",
+                  boxShadow: "0 4px 15px rgba(179, 130, 53, 0.3)"
+                }}
+              >
+                📱 Pay via GPay / PhonePe / Paytm →
+              </a>
+            )}
+
+            <div style={{ marginBottom: "1.2rem" }}>
+              <label style={{ display: "block", fontSize: "0.82rem", color: "#9ca3af", marginBottom: "0.4rem", fontWeight: 600 }}>
+                Enter 12-Digit UPI Transaction ID / UTR:
+              </label>
+              <input
+                type="text"
+                value={utrInput}
+                onChange={(e) => setUtrInput(e.target.value)}
+                placeholder="e.g. 428712345678"
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  padding: "0.75rem 1rem",
+                  borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  background: "rgba(0,0,0,0.3)",
+                  color: "#FFFFFF",
+                  fontSize: "0.92rem",
+                  outline: "none"
+                }}
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: "0.8rem" }}>
+              <button
+                onClick={() => setUpiModal(null)}
+                style={{
+                  flex: 1,
+                  padding: "0.75rem",
+                  borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "transparent",
+                  color: "#9ca3af",
+                  fontWeight: 600,
+                  cursor: "pointer"
+                }}
+              >
+                Close
+              </button>
+              <button
+                onClick={handleVerifyUpiPayment}
+                disabled={verifyingUtr}
+                style={{
+                  flex: 2,
+                  padding: "0.75rem",
+                  borderRadius: 10,
+                  border: "none",
+                  background: "#059669",
+                  color: "#FFFFFF",
+                  fontWeight: 700,
+                  cursor: verifyingUtr ? "wait" : "pointer"
+                }}
+              >
+                {verifyingUtr ? "Verifying…" : "Verify & Activate"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

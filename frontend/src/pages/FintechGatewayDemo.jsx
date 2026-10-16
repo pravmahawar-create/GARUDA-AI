@@ -2925,8 +2925,23 @@ export default function FintechGatewayDemo() {
             </a>
           </div>
 
-          <div style={{ marginTop: "2.5rem", fontSize: "0.8rem", color: palette.subtle }}>
-            GARUDA AI Operating System • Canonical Universe 12 (Finance) • Founder Praveen Mahawar
+          <div style={{ marginTop: "2.5rem", fontSize: "0.8rem", color: palette.subtle, lineHeight: 1.8 }}>
+            <div>GARUDA AI Operating System • Canonical Universe 12 (Finance) • Founder: Praveen Mahawar</div>
+            <div style={{ margin: "0.5rem 0", color: palette.muted, fontSize: "0.76rem" }}>
+              Enterprise Contact: <a href="mailto:praveen@garudaos.in" style={{ color: palette.goldDeep, textDecoration: "none", fontWeight: 600 }}>praveen@garudaos.in</a> • Official Platform: <a href="https://www.garudaos.in" style={{ color: palette.goldDeep, textDecoration: "none", fontWeight: 600 }}>garudaos.in</a>
+            </div>
+            <div style={{ display: "flex", gap: "1.2rem", justifyContent: "center", flexWrap: "wrap", margin: "0.6rem 0", fontSize: "0.78rem" }}>
+              <Link to="/terms" style={{ color: palette.muted, textDecoration: "none" }}>Terms of Service</Link>
+              <span>•</span>
+              <Link to="/privacy" style={{ color: palette.muted, textDecoration: "none" }}>Privacy Policy</Link>
+              <span>•</span>
+              <Link to="/pricing" style={{ color: palette.muted, textDecoration: "none" }}>Platform Pricing</Link>
+              <span>•</span>
+              <Link to="/chat?topic=fintech-gateway" style={{ color: palette.goldDeep, textDecoration: "none", fontWeight: 600 }}>Scope Architecture</Link>
+            </div>
+            <p style={{ margin: "0.8rem auto 0", maxWidth: 720, fontSize: "0.72rem", color: palette.subtle, lineHeight: 1.5 }}>
+              Regulatory Classification: GARUDA OS is a specialized payment orchestration and treasury software provider. GARUDA does not take deposits, operate an escrow, or hold customer funds. All fund custody, currency clearing, and regulated payment operations are performed exclusively by licensed banking partners and regulated financial institutions.
+            </p>
           </div>
         </div>
       </section>

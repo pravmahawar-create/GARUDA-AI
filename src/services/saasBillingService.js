@@ -242,6 +242,11 @@ async function createSubscriptionOrder({ tenantId, plan, interval = "monthly", c
 
   const amount = currency.toUpperCase() === "USD" ? planInfo.priceUsd : planInfo.priceInr;
   const orderId = `order_sub_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;
+  const isDomestic = currency.toUpperCase() === "INR";
+  const upiId = "pravmahawar@okhdfcbank";
+  const upiUri = isDomestic && amount > 0
+    ? `upi://pay?pa=${upiId}&pn=GARUDA%20OS&am=${amount}&cu=INR&tn=GARUDA%20${encodeURIComponent(planInfo.name)}%20${orderId}`
+    : null;
 
   return {
     success: true,
@@ -251,6 +256,13 @@ async function createSubscriptionOrder({ tenantId, plan, interval = "monthly", c
     amount,
     currency: currency.toUpperCase(),
     orderId,
+    domesticPayment: isDomestic ? {
+      method: "UPI",
+      upiId,
+      payeeName: "Praveen Mahawar / GARUDA OS",
+      upiUri,
+      instructions: "Pay directly via Google Pay / PhonePe / Paytm / BHIM to pravmahawar@okhdfcbank and submit your transaction UTR for verification."
+    } : null,
     keyId: process.env.RAZORPAY_KEY_ID_LIVE || process.env.RAZORPAY_KEY_ID_TEST || "rzp_test_placeholder",
     notes: {
       planName: planInfo.name,
@@ -265,7 +277,8 @@ async function activateSubscription({
   interval = "monthly",
   paymentId,
   orderId,
-  provider = "razorpay"
+  provider = "upi",
+  metadata = {}
 }) {
   if (!tenantId) throw new Error("tenantId is required");
   const planInfo = PLAN_CATALOG[plan];
@@ -294,7 +307,8 @@ async function activateSubscription({
     metadata: {
       paymentId,
       orderId,
-      activatedAt: now.toISOString()
+      activatedAt: now.toISOString(),
+      ...metadata
     }
   };
 

@@ -86,6 +86,9 @@ function extractPaymentDetails(event) {
   
   const paymentCaptured = type === "payment.captured" || type === "payment_link.paid";
   
+  const notes = paymentEntity.notes || {};
+  const isSaaS = Boolean(notes.tenantId && (notes.plan || notes.planName));
+
   return {
     provider: "razorpay",
     eventType: type,
@@ -98,6 +101,8 @@ function extractPaymentDetails(event) {
     capturedAt,
     paymentCaptured,
     isRefund,
+    notes,
+    isSaaS,
     mode: getProviderMode(),
     rawEvent: event
   };
@@ -119,7 +124,9 @@ async function createRevenueRecordFromPayment(details) {
   }
   
   let clientName = "Unknown Client";
-  if (candidateId && mongoose.Types.ObjectId.isValid(candidateId)) {
+  if (details.notes?.tenantId) {
+    clientName = String(details.notes.tenantId);
+  } else if (candidateId && mongoose.Types.ObjectId.isValid(candidateId)) {
     const { DiscoveryCandidate } = require("../models/DiscoveryCandidate");
     const candidate = await DiscoveryCandidate.findById(candidateId).lean();
     if (candidate) clientName = candidate.company || candidate.title || "Unknown Client";
@@ -145,7 +152,7 @@ async function createRevenueRecordFromPayment(details) {
     },
     amount: details.amount / 100,
     currency: details.currency,
-    source: "razorpay_webhook",
+    source: details.isSaaS ? "razorpay_saas_webhook" : "razorpay_webhook",
     client: clientName,
     status: "received",
     capturedAt: new Date(details.capturedAt),
@@ -260,7 +267,9 @@ async function processRazorpayWebhook(rawBody, headers) {
     return { success: true, ignored: true, reason: `Event ${details.eventType} does not indicate payment capture`, mode };
   }
   
-  if (!hasValidReference(details.referenceId)) {
+  const isSaaSSubscription = Boolean(details.isSaaS || (details.notes?.tenantId && (details.notes?.plan || details.notes?.planName)));
+
+  if (!hasValidReference(details.referenceId) && !isSaaSSubscription) {
     const item = await paymentReconciliationService.createReconciliationItem(details, "payment_reference_unresolvable");
     return {
       success: true,
@@ -278,6 +287,21 @@ async function processRazorpayWebhook(rawBody, headers) {
   const { missionId } = parseReferenceId(details.referenceId);
   if (missionId) {
     unlockResult = await triggerDeliveryUnlock(missionId, details);
+  } else if (isSaaSSubscription) {
+    try {
+      const saasBillingService = require("./saasBillingService");
+      const subResult = await saasBillingService.activateSubscription({
+        tenantId: String(details.notes.tenantId),
+        plan: String(details.notes.plan || details.notes.planName || "creator").toLowerCase(),
+        interval: String(details.notes.interval || "monthly"),
+        paymentId: details.paymentId,
+        orderId: details.referenceId || `order_${details.paymentId}`,
+        provider: "razorpay"
+      });
+      unlockResult = { unlocked: true, type: "saas_subscription", subscription: subResult.subscription };
+    } catch (subErr) {
+      unlockResult = { unlocked: false, error: subErr.message };
+    }
   }
   
   return {
