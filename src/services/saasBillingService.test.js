@@ -73,6 +73,34 @@ async function runTests() {
   assert.strictEqual(newUsage.limits.maxGenerationsPerMonth, 1000);
   console.log("✓ Subscription activation and limit upgrade verified");
 
+  // Test 7: submitUpiPayment sets status to pending_verification without upgrading limits
+  const upiSubmission = await saasBillingService.submitUpiPayment({
+    tenantId: "tenant_upi_buyer_1",
+    plan: "creator",
+    orderId: "order_sub_test_upi_1",
+    utr: "428799990001"
+  });
+  assert.strictEqual(upiSubmission.success, true);
+  assert.strictEqual(upiSubmission.status, "pending_verification");
+  assert.strictEqual(upiSubmission.pendingPayment.utr, "428799990001");
+
+  // Verify that usage meter is NOT upgraded while pending
+  const buyerUsage = await saasBillingService.getUsage("tenant_upi_buyer_1");
+  assert.strictEqual(buyerUsage.limits.maxTokensPerMonth, 500000, "Limits must remain on personal tier while pending");
+  console.log("✓ UPI submit puts order in pending_verification without granting unpaid access");
+
+  // Test 8: confirmUpiPayment activates plan and upgrades limits upon human verification
+  const approval = await saasBillingService.confirmUpiPayment({
+    orderId: "order_sub_test_upi_1",
+    approvedBy: "Founder Praveen"
+  });
+  assert.strictEqual(approval.success, true);
+  assert.strictEqual(approval.status, "active");
+
+  const approvedUsage = await saasBillingService.getUsage("tenant_upi_buyer_1");
+  assert.strictEqual(approvedUsage.limits.maxTokensPerMonth, 2000000, "Limits must upgrade to creator tier after approval");
+  console.log("✓ UPI confirmation activates subscription and upgrades limits upon human verification");
+
   console.log("All saasBillingService tests passed successfully!");
 }
 

@@ -3,10 +3,12 @@ const { VALID_PLANS } = require("./Tenant");
 
 const SUBSCRIPTION_STATUSES = [
   "active",
+  "pending_verification",
   "past_due",
   "canceled",
   "incomplete",
-  "trialing"
+  "trialing",
+  "rejected"
 ];
 
 const BILLING_INTERVALS = ["monthly", "yearly"];
@@ -53,7 +55,7 @@ const SubscriptionSchema = new mongoose.Schema(
     },
     provider: {
       type: String,
-      enum: ["razorpay", "stripe", "manual"],
+      enum: ["razorpay", "stripe", "manual", "upi"],
       default: "razorpay"
     },
     providerSubscriptionId: {

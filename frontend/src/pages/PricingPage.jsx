@@ -60,6 +60,7 @@ export default function PricingPage() {
   const [utrInput, setUtrInput] = useState("");
   const [verifyingUtr, setVerifyingUtr] = useState(false);
   const [copiedUpi, setCopiedUpi] = useState(false);
+  const [submittedUtrInfo, setSubmittedUtrInfo] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -186,13 +187,24 @@ export default function PricingPage() {
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.message || "Activation failed");
+        throw new Error(data.message || "UTR submission failed");
       }
-      setCurrentSub(data.data);
-      setStatusMessage(`✓ Subscription activated successfully for ${upiModal.planName}! Ref/UTR: ${utrInput.trim()}`);
-      setUpiModal(null);
+      setSubmittedUtrInfo({
+        planName: upiModal.planName,
+        amount: upiModal.amount,
+        utr: utrInput.trim(),
+        orderId: upiModal.orderId
+      });
+      setStatusMessage(`✓ UTR #${utrInput.trim()} submitted! Bank credit is being verified by our team.`);
+      // Refresh currentSub to reflect pending verification status
+      fetch("/api/billing/subscription")
+        .then((r) => r.json())
+        .then((subRes) => {
+          if (subRes && subRes.data) setCurrentSub(subRes.data);
+        })
+        .catch(() => {});
     } catch (err) {
-      setStatusMessage(`Error verifying UPI payment: ${err.message}`);
+      setStatusMessage(`Error submitting UPI UTR: ${err.message}`);
     } finally {
       setVerifyingUtr(false);
     }
@@ -462,6 +474,22 @@ export default function PricingPage() {
           </button>
         </div>
 
+        {currentSub && currentSub.pendingPayment && (
+          <div style={{
+            marginTop: "1.2rem",
+            padding: "0.75rem 1.5rem",
+            background: "rgba(234, 179, 8, 0.12)",
+            border: "1px solid #EAB308",
+            borderRadius: 14,
+            display: "inline-block",
+            color: "#A16207",
+            fontSize: "0.88rem",
+            fontWeight: 700
+          }}>
+            ⏳ Domestic UPI Verification Pending: UTR #{currentSub.pendingPayment.utr} submitted for {currentSub.pendingPayment.plan.toUpperCase()} tier (₹{currentSub.pendingPayment.amount}). Bank credit is being verified.
+          </div>
+        )}
+
         {statusMessage && (
           <div style={{
             marginTop: "1.5rem",
@@ -667,137 +695,203 @@ export default function PricingPage() {
             color: "#FFFFFF",
             boxShadow: "0 25px 60px rgba(0, 0, 0, 0.6)"
           }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.2rem" }}>
-              <div>
-                <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "#C48B28", fontWeight: 800 }}>
-                  🇮🇳 Domestic Indian Settlement
+            {submittedUtrInfo ? (
+              <div style={{ textAlign: "center", padding: "0.5rem 0" }}>
+                <div style={{ fontSize: "3rem", marginBottom: "0.8rem" }}>⏳</div>
+                <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "#EAB308", fontWeight: 800 }}>
+                  Bank Verification Pending
                 </span>
-                <h3 style={{ fontSize: "1.35rem", fontWeight: 700, margin: "0.2rem 0 0" }}>
-                  {upiModal.planName}
+                <h3 style={{ fontSize: "1.35rem", fontWeight: 700, margin: "0.3rem 0 0.8rem", color: "#FFFFFF" }}>
+                  Payment Under Human Review
                 </h3>
-              </div>
-              <button
-                onClick={() => setUpiModal(null)}
-                style={{ background: "transparent", border: "none", color: "#9ca3af", fontSize: "1.4rem", cursor: "pointer", padding: "0.2rem" }}
-              >
-                ✕
-              </button>
-            </div>
+                <p style={{ color: "#9ca3af", fontSize: "0.85rem", lineHeight: 1.5, margin: "0 0 1.2rem" }}>
+                  Aapka UTR reference submit ho gaya hai. Hamari team HDFC bank account me credit verify karke <strong>{submittedUtrInfo.planName}</strong> plan activate karegi.
+                </p>
 
-            <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.2rem", marginBottom: "1.2rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.6rem" }}>
-                <span style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Amount Due:</span>
-                <span style={{ color: "#C48B28", fontSize: "1.1rem", fontWeight: 800 }}>₹{upiModal.amount}</span>
+                <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1rem", marginBottom: "1.2rem", textAlign: "left", fontSize: "0.85rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                    <span style={{ color: "#9ca3af" }}>Submitted UTR:</span>
+                    <strong style={{ color: "#FFFFFF", fontFamily: "monospace" }}>{submittedUtrInfo.utr}</strong>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                    <span style={{ color: "#9ca3af" }}>Plan Amount:</span>
+                    <strong style={{ color: "#C48B28" }}>₹{submittedUtrInfo.amount}</strong>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "#9ca3af" }}>Verification Status:</span>
+                    <span style={{ color: "#EAB308", fontWeight: 700 }}>Pending Bank Confirmation</span>
+                  </div>
+                </div>
+
+                <p style={{ fontSize: "0.78rem", color: "#6b7280", margin: "0 0 1.5rem" }}>
+                  Anti-fraud policy: Galat ya farzi UTR enter karne par subscription activate nahi hoga. Urgent assistance: <strong style={{ color: "#9ca3af" }}>praveen@garudaos.in</strong>
+                </p>
+
+                <button
+                  onClick={() => {
+                    setUpiModal(null);
+                    setSubmittedUtrInfo(null);
+                    setUtrInput("");
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "0.8rem",
+                    borderRadius: 12,
+                    border: "none",
+                    background: palette.goldGradient,
+                    color: "#FFFFFF",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    boxShadow: "0 4px 15px rgba(179, 130, 53, 0.3)"
+                  }}
+                >
+                  Understood & Close
+                </button>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.6rem" }}>
-                <span style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Beneficiary:</span>
-                <span style={{ color: "#FFFFFF", fontSize: "0.85rem", fontWeight: 600 }}>{upiModal.payeeName}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ color: "#9ca3af", fontSize: "0.85rem" }}>UPI ID:</span>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                  <code style={{ background: "rgba(196, 139, 40, 0.15)", color: "#E5B555", padding: "0.2rem 0.5rem", borderRadius: 6, fontSize: "0.9rem", fontWeight: 700 }}>
-                    {upiModal.upiId}
-                  </code>
+            ) : (
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.2rem" }}>
+                  <div>
+                    <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "#C48B28", fontWeight: 800 }}>
+                      🇮🇳 Domestic Indian Settlement
+                    </span>
+                    <h3 style={{ fontSize: "1.35rem", fontWeight: 700, margin: "0.2rem 0 0" }}>
+                      {upiModal.planName}
+                    </h3>
+                  </div>
                   <button
                     onClick={() => {
-                      navigator.clipboard.writeText(upiModal.upiId);
-                      setCopiedUpi(true);
-                      setTimeout(() => setCopiedUpi(false), 2000);
+                      setUpiModal(null);
+                      setUtrInput("");
+                    }}
+                    style={{ background: "transparent", border: "none", color: "#9ca3af", fontSize: "1.4rem", cursor: "pointer", padding: "0.2rem" }}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.2rem", marginBottom: "1.2rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.6rem" }}>
+                    <span style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Amount Due:</span>
+                    <span style={{ color: "#C48B28", fontSize: "1.1rem", fontWeight: 800 }}>₹{upiModal.amount}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.6rem" }}>
+                    <span style={{ color: "#9ca3af", fontSize: "0.85rem" }}>Beneficiary:</span>
+                    <span style={{ color: "#FFFFFF", fontSize: "0.85rem", fontWeight: 600 }}>{upiModal.payeeName}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: "#9ca3af", fontSize: "0.85rem" }}>UPI ID:</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                      <code style={{ background: "rgba(196, 139, 40, 0.15)", color: "#E5B555", padding: "0.2rem 0.5rem", borderRadius: 6, fontSize: "0.9rem", fontWeight: 700 }}>
+                        {upiModal.upiId}
+                      </code>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(upiModal.upiId);
+                          setCopiedUpi(true);
+                          setTimeout(() => setCopiedUpi(false), 2000);
+                        }}
+                        style={{
+                          background: "rgba(255,255,255,0.08)",
+                          border: "none",
+                          color: "#FFFFFF",
+                          borderRadius: 6,
+                          padding: "0.25rem 0.6rem",
+                          fontSize: "0.75rem",
+                          cursor: "pointer"
+                        }}
+                      >
+                        {copiedUpi ? "✓ Copied" : "Copy"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {upiModal.upiUri && (
+                  <a
+                    href={upiModal.upiUri}
+                    style={{
+                      display: "block",
+                      textAlign: "center",
+                      background: palette.goldGradient,
+                      color: "#FFFFFF",
+                      textDecoration: "none",
+                      padding: "0.8rem 1rem",
+                      borderRadius: 12,
+                      fontWeight: 700,
+                      fontSize: "0.92rem",
+                      marginBottom: "1.2rem",
+                      boxShadow: "0 4px 15px rgba(179, 130, 53, 0.3)"
+                    }}
+                  >
+                    📱 Pay via GPay / PhonePe / Paytm →
+                  </a>
+                )}
+
+                <div style={{ marginBottom: "1.2rem" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", color: "#9ca3af", marginBottom: "0.4rem", fontWeight: 600 }}>
+                    Enter 12-Digit UPI Transaction ID / UTR:
+                  </label>
+                  <input
+                    type="text"
+                    value={utrInput}
+                    onChange={(e) => setUtrInput(e.target.value)}
+                    placeholder="e.g. 428712345678"
+                    style={{
+                      width: "100%",
+                      boxSizing: "border-box",
+                      padding: "0.75rem 1rem",
+                      borderRadius: 10,
+                      border: "1px solid rgba(255,255,255,0.15)",
+                      background: "rgba(0,0,0,0.3)",
+                      color: "#FFFFFF",
+                      fontSize: "0.92rem",
+                      outline: "none"
+                    }}
+                  />
+                  <span style={{ display: "block", fontSize: "0.74rem", color: "#6b7280", marginTop: "0.3rem" }}>
+                    UTR bank statement me verify hone ke baad human admin dwaara subscription activate kiya jayega.
+                  </span>
+                </div>
+
+                <div style={{ display: "flex", gap: "0.8rem" }}>
+                  <button
+                    onClick={() => {
+                      setUpiModal(null);
+                      setUtrInput("");
                     }}
                     style={{
-                      background: "rgba(255,255,255,0.08)",
-                      border: "none",
-                      color: "#FFFFFF",
-                      borderRadius: 6,
-                      padding: "0.25rem 0.6rem",
-                      fontSize: "0.75rem",
+                      flex: 1,
+                      padding: "0.75rem",
+                      borderRadius: 10,
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      background: "transparent",
+                      color: "#9ca3af",
+                      fontWeight: 600,
                       cursor: "pointer"
                     }}
                   >
-                    {copiedUpi ? "✓ Copied" : "Copy"}
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleVerifyUpiPayment}
+                    disabled={verifyingUtr}
+                    style={{
+                      flex: 2,
+                      padding: "0.75rem",
+                      borderRadius: 10,
+                      border: "none",
+                      background: "#059669",
+                      color: "#FFFFFF",
+                      fontWeight: 700,
+                      cursor: verifyingUtr ? "wait" : "pointer"
+                    }}
+                  >
+                    {verifyingUtr ? "Submitting…" : "Submit UTR for Verification"}
                   </button>
                 </div>
               </div>
-            </div>
-
-            {upiModal.upiUri && (
-              <a
-                href={upiModal.upiUri}
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  background: palette.goldGradient,
-                  color: "#FFFFFF",
-                  textDecoration: "none",
-                  padding: "0.8rem 1rem",
-                  borderRadius: 12,
-                  fontWeight: 700,
-                  fontSize: "0.92rem",
-                  marginBottom: "1.2rem",
-                  boxShadow: "0 4px 15px rgba(179, 130, 53, 0.3)"
-                }}
-              >
-                📱 Pay via GPay / PhonePe / Paytm →
-              </a>
             )}
-
-            <div style={{ marginBottom: "1.2rem" }}>
-              <label style={{ display: "block", fontSize: "0.82rem", color: "#9ca3af", marginBottom: "0.4rem", fontWeight: 600 }}>
-                Enter 12-Digit UPI Transaction ID / UTR:
-              </label>
-              <input
-                type="text"
-                value={utrInput}
-                onChange={(e) => setUtrInput(e.target.value)}
-                placeholder="e.g. 428712345678"
-                style={{
-                  width: "100%",
-                  boxSizing: "border-box",
-                  padding: "0.75rem 1rem",
-                  borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  background: "rgba(0,0,0,0.3)",
-                  color: "#FFFFFF",
-                  fontSize: "0.92rem",
-                  outline: "none"
-                }}
-              />
-            </div>
-
-            <div style={{ display: "flex", gap: "0.8rem" }}>
-              <button
-                onClick={() => setUpiModal(null)}
-                style={{
-                  flex: 1,
-                  padding: "0.75rem",
-                  borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  background: "transparent",
-                  color: "#9ca3af",
-                  fontWeight: 600,
-                  cursor: "pointer"
-                }}
-              >
-                Close
-              </button>
-              <button
-                onClick={handleVerifyUpiPayment}
-                disabled={verifyingUtr}
-                style={{
-                  flex: 2,
-                  padding: "0.75rem",
-                  borderRadius: 10,
-                  border: "none",
-                  background: "#059669",
-                  color: "#FFFFFF",
-                  fontWeight: 700,
-                  cursor: verifyingUtr ? "wait" : "pointer"
-                }}
-              >
-                {verifyingUtr ? "Verifying…" : "Verify & Activate"}
-              </button>
-            </div>
           </div>
         </div>
       )}

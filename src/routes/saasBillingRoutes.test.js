@@ -138,6 +138,37 @@ async function run() {
     assert.strictEqual(r8.status, 200);
     console.log("✓ DELETE /api/billing/api-keys/:id passed");
 
+    // 8b. POST /api/billing/activate with provider "upi" returns 202 pending_verification
+    const r8b = await request("POST", "/api/billing/activate", {
+      plan: "sme",
+      interval: "monthly",
+      provider: "upi",
+      orderId: "order_sub_upi_test_route_1",
+      utr: "428799990002"
+    }, {
+      "x-garuda-tenant-id": "tenant_saas_test_upi"
+    });
+    assert.strictEqual(r8b.status, 202);
+    assert.strictEqual(r8b.body.status, "pending_verification");
+    console.log("✓ POST /api/billing/activate with UPI correctly queued in pending_verification");
+
+    // 8c. GET /api/billing/admin/pending-upi lists the pending UTR
+    const r8c = await request("GET", "/api/billing/admin/pending-upi");
+    assert.strictEqual(r8c.status, 200);
+    assert(r8c.body.data.some(p => p.utr === "428799990002"));
+    console.log("✓ GET /api/billing/admin/pending-upi returns submitted UTR");
+
+    // 8d. POST /api/billing/admin/verify-upi approves and activates subscription
+    const r8d = await request("POST", "/api/billing/admin/verify-upi", {
+      orderId: "order_sub_upi_test_route_1",
+      utr: "428799990002",
+      action: "approve"
+    });
+    assert.strictEqual(r8d.status, 200);
+    assert.strictEqual(r8d.body.status, "active");
+    assert.strictEqual(r8d.body.subscription.plan, "sme");
+    console.log("✓ POST /api/billing/admin/verify-upi human bank approval activates subscription");
+
     // 9. Merchant billing mounted on /api/merchant-billing/voice
     const r9 = await request("POST", "/api/merchant-billing/voice", {});
     assert.strictEqual(r9.status, 400, "Merchant voice without text returns 400");

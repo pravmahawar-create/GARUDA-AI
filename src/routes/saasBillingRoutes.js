@@ -75,6 +75,28 @@ router.post("/activate", async (req, res) => {
       return res.status(400).json({ success: false, message: "plan is required" });
     }
 
+    // Direct domestic UPI payments require human bank verification before activation
+    if (provider === "upi" || req.body.utr) {
+      const utr = req.body.utr || (paymentId && paymentId.startsWith("upi_") ? paymentId.replace("upi_", "") : paymentId);
+      const result = await saasBillingService.submitUpiPayment({
+        tenantId,
+        plan,
+        interval,
+        orderId,
+        utr,
+        metadata: {
+          ip: req.ip,
+          userAgent: req.get("user-agent")
+        }
+      });
+      return res.status(202).json({
+        success: true,
+        status: "pending_verification",
+        message: "UTR submitted successfully. Our team will verify credit in HDFC account and activate your subscription.",
+        data: result.pendingPayment
+      });
+    }
+
     const result = await saasBillingService.activateSubscription({
       tenantId,
       plan,
@@ -83,9 +105,50 @@ router.post("/activate", async (req, res) => {
       orderId,
       provider
     });
-    return res.json({ success: true, data: result.subscription });
+    return res.json({ success: true, status: "active", data: result.subscription });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// GET /api/billing/admin/pending-upi - List pending UPI payments for human bank verification
+router.get("/admin/pending-upi", async (req, res) => {
+  try {
+    const list = saasBillingService.getPendingUpiPayments();
+    return res.json({ success: true, count: list.length, data: list });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// POST /api/billing/admin/verify-upi - Approve or reject submitted UTR after human verification
+router.post("/admin/verify-upi", async (req, res) => {
+  try {
+    const { orderId, utr, action = "approve", reason } = req.body || {};
+    if (!orderId && !utr) {
+      return res.status(400).json({ success: false, message: "orderId or utr is required" });
+    }
+
+    if (action === "approve") {
+      const result = await saasBillingService.confirmUpiPayment({
+        orderId,
+        utr,
+        approvedBy: "founder_praveen"
+      });
+      return res.json(result);
+    } else if (action === "reject") {
+      const result = await saasBillingService.rejectUpiPayment({
+        orderId,
+        utr,
+        reason: reason || "Payment not credited to bank account",
+        rejectedBy: "founder_praveen"
+      });
+      return res.json(result);
+    } else {
+      return res.status(400).json({ success: false, message: `Invalid action: ${action}. Use 'approve' or 'reject'.` });
+    }
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
   }
 });
 
