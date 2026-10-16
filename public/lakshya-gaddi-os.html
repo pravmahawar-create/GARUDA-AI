@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>LAKSHYA TRADERS — GADDI OS | Enterprise Suite (Jabalpur)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-root: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-subtle: #f8fafc;
+      --bg-card-hover: #f1f5f9;
+      --border-subtle: #e2e8f0;
+      --border-gold: #f59e0b;
+      --border-emerald: #10b981;
+      --gold: #b45309;
+      --gold-dark: #78350f;
+      --gold-glow: rgba(245, 158, 11, 0.2);
+      --emerald: #059669;
+      --emerald-glow: rgba(16, 185, 129, 0.15);
+      --rose: #dc2626;
+      --rose-glow: rgba(220, 38, 38, 0.15);
+      --sapphire: #0284c7;
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --text-dim: #64748b;
+      --header-height: 64px;
+      --nav-height: 72px;
+      --max-width: 480px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input, textarea, select {
+      user-select: auto;
+    }
+
+    html, body {
+      height: 100%;
+      background-color: var(--bg-root);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    /* Outer Wrapper: Centered mobile shell on desktop, full bleed on mobile */
+    .app-viewport {
+      width: 100%;
+      max-width: var(--max-width);
+      height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: #ffffff;
+      border-left: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    /* Fixed Header - Royal White & Gold */
+    .app-header {
+      flex-shrink: 0;
+      height: var(--header-height);
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-subtle);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 40;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #b91c1c, #d97706);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 19px;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(185, 28, 28, 0.25);
+    }
+
+    .brand-info h1 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-info p {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 20px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #047857;
+      letter-spacing: 0.03em;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Middle Content Scroll Container */
+    .app-main {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      padding: 16px 14px 105px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: #f8fafc;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+
+    .app-main::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Fixed Bottom Nav - Clean White */
+    .app-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      background: #ffffff;
+      border-top: 1px solid var(--border-subtle);
+      box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.04);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 6px 4px 12px 4px;
+      z-index: 50;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: var(--text-dim);
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 8px;
+    }
+
+    .nav-btn .icon {
+      font-size: 20px;
+      transition: transform 0.16s ease;
+    }
+
+    .nav-btn.active {
+      color: #b45309;
+      font-weight: 700;
+    }
+
+    .nav-btn.active .icon {
+      transform: translateY(-2px);
+    }
+
+    .nav-btn:active {
+      transform: scale(0.94);
+    }
+
+    /* Views */
+    .view-panel {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      animation: fadeIn 0.22s ease forwards;
+    }
+
+    .view-panel.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card System - Pristine White Cards */
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-gold {
+      border: 1px solid #fde047;
+      background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.08);
+    }
+
+    .card-emerald {
+      border: 1px solid #a7f3d0;
+      background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Metric Values - High Contrast Black & Rich Colors */
+    .metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .val-large {
+      font-size: 30px;
+      color: #0f172a;
+    }
+
+    .val-gold {
+      color: #b45309;
+    }
+
+    .val-emerald {
+      color: #047857;
+    }
+
+    .val-rose {
+      color: #dc2626;
+    }
+
+    /* Parda Boli Special UI */
+    .timer-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 2px 6px rgba(225, 29, 72, 0.05);
+    }
+
+    .timer-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #be123c;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .timer-digits {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 17px;
+      color: #9f1239;
+    }
+
+    .bid-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .bid-stat-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .bid-stat-box label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .bid-stat-box .amount {
+      font-size: 19px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .anonymity-shield {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 12px;
+      color: #0369a1;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    /* Real-Time Boli Feed */
+    .bid-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 160px;
+      overflow-y: auto;
+      margin-bottom: 14px;
+      padding-right: 4px;
+    }
+
+    .bid-feed-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 12.5px;
+      animation: slideIn 0.2s ease;
+    }
+
+    .bid-feed-item.current-lead {
+      border-color: #f59e0b;
+      background: #fef3c7;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bidder-tag {
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bidder-tag .crown {
+      color: #d97706;
+    }
+
+    .bid-time {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* SLIDE TO BID INTERACTIVE COMPONENT - Clean Cream & Rich Gold */
+    .slider-container {
+      margin-top: 8px;
+      background: #fef3c7;
+      border: 2px solid #f59e0b;
+      border-radius: 40px;
+      height: 58px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      box-shadow: inset 0 2px 6px rgba(180, 83, 9, 0.1);
+      cursor: pointer;
+    }
+
+    .slider-track-text {
+      width: 100%;
+      text-align: center;
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #92400e;
+      pointer-events: none;
+      z-index: 2;
+      transition: opacity 0.2s;
+    }
+
+    .slider-thumb {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 50%;
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 20px;
+      cursor: grab;
+      z-index: 3;
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+      transition: transform 0.05s linear;
+      touch-action: pan-x;
+    }
+
+    .slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.05);
+    }
+
+    .slider-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.5));
+      border-radius: 40px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .quick-increments {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .inc-btn {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 9px 4px;
+      color: #1e293b;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.16s ease;
+    }
+
+    .inc-btn:active {
+      transform: scale(0.95);
+      border-color: #b45309;
+      color: #b45309;
+      background: #fef3c7;
+    }
+
+    /* MAHA-ROKAD (Evening Vault) */
+    .vault-summary-hero {
+      text-align: center;
+      padding: 16px 12px;
+      background: radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.12), transparent 70%);
+    }
+
+    .vault-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #b45309;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .vault-amount {
+      font-size: 36px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #0f172a;
+      letter-spacing: -0.03em;
+    }
+
+    .vault-subtext {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .flow-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-top: 8px;
+    }
+
+    .flow-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 12px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      font-size: 13px;
+    }
+
+    .flow-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .flow-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .flow-in {
+      color: #047857;
+    }
+
+    .flow-out {
+      color: #dc2626;
+    }
+
+    /* Verification Box */
+    .verify-box {
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #fffbeb;
+      border: 1px dashed #ca8a04;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .verify-box label {
+      font-size: 11.5px;
+      color: #78350f;
+      font-weight: 700;
+    }
+
+    .verify-input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .verify-input {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #0f172a;
+      font-size: 16px;
+      font-weight: 800;
+      outline: none;
+    }
+
+    .verify-input:focus {
+      border-color: #d97706;
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(180, 83, 9, 0.25);
+      transition: all 0.16s ease;
+    }
+
+    .btn-action:active {
+      transform: scale(0.96);
+    }
+
+    /* Toast Notification */
+    .toast-overlay {
+      position: absolute;
+      top: 74px;
+      left: 14px;
+      right: 14px;
+      background: #064e3b;
+      border: 1px solid #059669;
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      z-index: 99;
+      transform: translateY(-20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast-overlay.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .toast-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #059669;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .toast-content h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .toast-content p {
+      font-size: 11.5px;
+      color: #a7f3d0;
+      margin-top: 2px;
+    }
+
+    /* Hotel Preview Cards */
+    .hotel-card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+
+    .hotel-hero {
+      height: 120px;
+      background: linear-gradient(135deg, #1e3a8a, #0f172a);
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      padding: 12px;
+    }
+
+    .hotel-hero-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ffffff;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 10.5px;
+      color: #b45309;
+      font-weight: 800;
+      border: 1px solid #fde047;
+    }
+
+    .hotel-body {
+      padding: 14px;
+    }
+
+    .hotel-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .hotel-location {
+      font-size: 11.5px;
+      color: var(--text-dim);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .hotel-tags {
+      display: flex;
+      gap: 6px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .hotel-tag {
+      font-size: 10.5px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .hotel-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 10px;
+      margin-top: 6px;
+    }
+
+    .hotel-price {
+      font-size: 17px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #b45309;
+    }
+
+    .hotel-price span {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 500;
+    }
+
+    .btn-wa-book {
+      background: #16a34a;
+      color: #ffffff;
+      border: none;
+      padding: 8px 13px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
+    }
+
+    .modal-sheet {
+      width: 100%;
+      background: #ffffff;
+      border-top: 2px solid var(--border-gold);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 16px 28px 16px;
+      animation: sheetUp 0.25s ease;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      background: #cbd5e1;
+      border-radius: 4px;
+      margin: 0 auto 14px auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="brand-logo">L</div>
+        <div class="brand-info">
+          <h1>LAKSHYA TRADERS</h1>
+          <p>GADDI OS • JABALPUR (M.P.)</p>
+        </div>
+      </div>
+      <div class="badge-status">
+        <div class="status-dot"></div>
+        <span>VAULT LIVE</span>
+      </div>
+    </header>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast-overlay">
+      <div class="toast-icon">✓</div>
+      <div class="toast-content">
+        <h4 id="toast-title">Boli Safaltapoorvak Lag Gayi</h4>
+        <p id="toast-msg">Bidder #7: ₹60,000 Down record ho gaya hai.</p>
+      </div>
+    </div>
+
+    <!-- Main Scrollable Content -->
+    <main class="app-main">
+
+      <!-- VIEW 1: PARDA BOLI (Member Live Room) -->
+      <section id="view-boli" class="view-panel active">
+        
+          <div class="timer-banner">
+          <div class="timer-text">
+            <span>🔴 LIVE DOWN-BOLI</span>
+            <span style="color:var(--text-dim)">•</span>
+            <span style="color:#9f1239; font-size:11px; font-weight:700">ROOM #LT-5L-20M</span>
+          </div>
+          <div class="timer-digits" id="countdown-timer">01:42:15</div>
+        </div>
+
+        <div class="card card-gold">
+          <div class="card-header">
+            <span class="card-title" style="color:#78350f">👑 Current Leading Boli</span>
+            <span class="badge-status" style="background:#fef3c7; border-color:#fde047; color:#92400e">
+              MONTH 4 / 20
+            </span>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div>
+              <div style="font-size:11px; color:var(--text-dim); margin-bottom:2px; font-weight:600">HIGHEST DOWN BID</div>
+              <div class="metric-value val-large val-gold" id="highest-down-val">₹58,000</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px; color:var(--text-dim); margin-bottom:2px; font-weight:600">IN-HAND PAYOUT</div>
+              <div class="metric-value val-large val-emerald" id="payout-val">₹4,42,000</div>
+            </div>
+          </div>
+
+          <div class="bid-stats-grid">
+            <div class="bid-stat-box">
+              <label>TOTAL CHIT POOL</label>
+              <div class="amount" style="color:#0f172a">₹5,00,000</div>
+            </div>
+            <div class="bid-stat-box">
+              <label>CURRENT LEADER</label>
+              <div class="amount" style="color:#0369a1" id="current-leader-tag">Bidder #14</div>
+            </div>
+          </div>
+
+          <div class="anonymity-shield">
+            <span>🔒 <strong>100% Parda Mode Active</strong></span>
+            <span>Aap: <strong>Bidder #7</strong></span>
+          </div>
+
+          <div style="font-size:11px; font-weight:700; color:var(--text-dim); margin-bottom:6px; letter-spacing:0.04em">
+            LIVE BOLI STREAM (RECENT)
+          </div>
+          <div class="bid-feed" id="bid-feed-list">
+            <div class="bid-feed-item current-lead">
+              <span class="bidder-tag"><span class="crown">👑</span> Bidder #14</span>
+              <span class="metric-value val-gold">₹58,000 Down</span>
+              <span class="bid-time">03:02 PM</span>
+            </div>
+            <div class="bid-feed-item">
+              <span class="bidder-tag">Bidder #9</span>
+              <span class="metric-value" style="color:#334155">₹54,000 Down</span>
+              <span class="bid-time">02:35 PM</span>
+            </div>
+            <div class="bid-feed-item">
+              <span class="bidder-tag">Bidder #3</span>
+              <span class="metric-value" style="color:#334155">₹50,000 Down</span>
+              <span class="bid-time">02:18 PM</span>
+            </div>
+            <div class="bid-feed-item">
+              <span class="bidder-tag">Govt Base Down</span>
+              <span class="metric-value" style="color:#64748b">₹10,000 Down</span>
+              <span class="bid-time">02:00 PM</span>
+            </div>
+          </div>
+
+          <!-- SLIDE TO BID INTERACTIVE ELEMENT -->
+          <div style="margin-top:10px">
+            <div style="display:flex; justify-content:space-between; font-size:11.5px; font-weight:600; margin-bottom:6px">
+              <span style="color:var(--text-muted)">Aapki Agli Boli:</span>
+              <span class="metric-value val-gold" id="target-bid-display">₹60,000 Down</span>
+            </div>
+
+            <!-- Dual-Action Slider (Drag or Click) -->
+            <div class="slider-container" id="slider-box" onclick="handleSliderClick(event)" title="Aage slide karein ya yahan tap karein">
+              <div class="slider-fill" id="slider-fill"></div>
+              <div class="slider-track-text" id="slider-text">>>> SLIDE YA TAP KAREIN (₹60,000) >>></div>
+              <div class="slider-thumb" id="slider-thumb">➔</div>
+            </div>
+
+            <!-- 1-Tap Fallback Button -->
+            <button class="btn-action" style="width:100%; justify-content:center; margin-top:8px; padding:12px; font-size:13px; background:linear-gradient(135deg,#eab308,#ca8a04); color:#07090e; font-weight:800;" onclick="completeSlideBid()">
+              ⚡ 1-Tap Quick Boli Lagayein (₹60,000 Down)
+            </button>
+
+            <div class="quick-increments">
+              <button class="inc-btn" onclick="adjustTargetBid(1000)">+ ₹1,000</button>
+              <button class="inc-btn" onclick="adjustTargetBid(2000)">+ ₹2,000</button>
+              <button class="inc-btn" onclick="adjustTargetBid(5000)">+ ₹5,000</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- WhatsApp Preview Card -->
+        <div class="card" style="border-left: 3px solid #25d366;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+            <span style="font-size:11.5px; font-weight:700; color:#25d366">📱 WhatsApp Auto-Pauti Engine</span>
+            <span style="font-size:10px; color:var(--text-dim)">Meta API Cloud</span>
+          </div>
+          <p style="font-size:11.5px; color:var(--text-muted); line-height:1.4">
+            Boli khatam hote hi har member ko unke personal WhatsApp par kist ka hisaab automatic dispatch ho jayega.
+          </p>
+        </div>
+      </section>
+
+      <!-- VIEW 2: MAHA-ROKAD (Master Cash Vault) -->
+      <section id="view-rokad" class="view-panel">
+        <div class="card card-gold">
+          <div class="vault-summary-hero">
+            <div class="vault-title">🏛️ MAHA-ROKAD • SHAAM KI TIJORI TALLY</div>
+            <div class="vault-amount" id="expected-cash-display">₹5,29,000</div>
+            <div class="vault-subtext">Aaj Ka Expected Physical Cash (Tijori)</div>
+          </div>
+        </div>
+
+        <!-- Inflows -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="color:#34d399">▲ CASH AAVAK (TODAY'S INFLOWS)</span>
+            <span class="metric-value val-emerald">+₹1,93,600</span>
+          </div>
+          <div class="flow-list">
+            <div class="flow-row">
+              <span class="flow-label">🏨 Hotel 1 Front Desk (Cash)</span>
+              <span class="flow-val flow-in">+₹24,500</span>
+            </div>
+            <div class="flow-row">
+              <span class="flow-label">🏨 Hotel 2 Front Desk (Cash)</span>
+              <span class="flow-val flow-in">+₹18,200</span>
+            </div>
+            <div class="flow-row">
+              <span class="flow-label">🛵 100-Din Rojgari Vasooli (Field)</span>
+              <span class="flow-val flow-in">+₹68,400</span>
+            </div>
+            <div class="flow-row">
+              <span class="flow-label">🎟️ BC Installments Cash</span>
+              <span class="flow-val flow-in">+₹82,500</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outflows -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="color:#fb7185">▼ CASH JAVAK (TODAY'S OUTFLOWS)</span>
+            <span class="metric-value val-rose">-₹9,600</span>
+          </div>
+          <div class="flow-list">
+            <div class="flow-row">
+              <span class="flow-label">👤 Deal Broker Commission (Raju)</span>
+              <span class="flow-val flow-out">-₹4,000</span>
+            </div>
+            <div class="flow-row">
+              <span class="flow-label">🛵 Vasooli Boy Incentives (Ajay/Sunil)</span>
+              <span class="flow-val flow-out">-₹2,400</span>
+            </div>
+            <div class="flow-row">
+              <span class="flow-label">☕ Hotel Petty Cash & Chai-Kharcha</span>
+              <span class="flow-val flow-out">-₹3,200</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Digital UPI Separate Note -->
+        <div class="card" style="border-left: 3px solid var(--sapphire);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:700; color:var(--sapphire)">📱 Online UPI / Paytm Direct</span>
+            <span class="metric-value" style="color:#0f172a; font-size:14px">₹42,800</span>
+          </div>
+          <p style="font-size:11px; color:var(--text-muted); margin-top:4px">
+            Direct Bank Account me jama hua hai — Tijori physical cash se alag rakha gaya hai taaki tally me gadbadi na ho.
+          </p>
+        </div>
+
+        <!-- Physical Cash Count & Lock -->
+        <div class="verify-box">
+          <label>SETH JI: TIJORI ME GIN KAR CASH ENTER KAREIN</label>
+          <div class="verify-input-group">
+            <input type="text" id="actual-cash-input" class="verify-input" value="529000" placeholder="Counted Cash">
+            <button class="btn-action" onclick="verifyVaultCash()">Tally Karein</button>
+          </div>
+          <div id="variance-msg" style="font-size:11.5px; font-weight:700; color:#047857; margin-top:2px">
+            ✓ Hisaab 100% Match! (Zero Farak)
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: 100-DAY ROJGARI (Byaaj & Vasooli) -->
+      <section id="view-rojgari" class="view-panel">
+        <div class="card card-emerald">
+          <div class="card-header">
+            <span class="card-title" style="color:#065f46">🛵 100-DIN ROJGARI FINANCE SUMMARY</span>
+            <span class="badge-status">48 ACCOUNTS</span>
+          </div>
+          <div class="bid-stats-grid" style="margin-top:0">
+            <div class="bid-stat-box">
+              <label>TODAY'S TARGET</label>
+              <div class="amount" style="color:#0f172a">₹57,600</div>
+            </div>
+            <div class="bid-stat-box">
+              <label>RECOVERED</label>
+              <div class="amount val-emerald">₹46,800</div>
+            </div>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted)">
+            Model: ₹1,00,000 Disbursed ➔ ₹1,200/Day for 100 Days (Flat ₹20,000 Profit).
+          </div>
+        </div>
+
+        <!-- Vasooli Boy Simulator -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📲 VASOOLI BOY 1-TAP ACTION</span>
+            <span style="font-size:11px; color:var(--gold); font-weight:700">Agent: Ajay</span>
+          </div>
+
+          <div style="background:var(--bg-card-subtle); border-radius:12px; padding:12px; margin-bottom:10px">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong style="font-size:14px; color:#0f172a">Gupta Kirana Store</strong>
+                <div style="font-size:11px; color:var(--text-muted)">Lordganj Bazar • Day 42 / 100</div>
+              </div>
+              <div style="text-align:right">
+                <div class="metric-value val-gold" style="font-size:16px">₹1,200</div>
+                <span style="font-size:10px; color:var(--text-dim)">Due Today</span>
+              </div>
+            </div>
+            <button class="btn-action" style="width:100%; justify-content:center; margin-top:12px; background:linear-gradient(135deg,#059669,#047857); color:#fff" onclick="collectVasooli()">
+              ✓ Collect ₹1,200 Cash & Send WhatsApp Receipt
+            </button>
+          </div>
+
+          <!-- Referral Broker Box -->
+          <div style="border-top:1px solid var(--border-subtle); padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:#0f172a">Broker Commission Ledger</div>
+              <div style="font-size:10.5px; color:var(--text-dim)">Raju Bhaiya (Sarafa) • 2 New Loans</div>
+            </div>
+            <div class="metric-value val-emerald" style="font-size:13px">₹4,000 Paid</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: DUAL HOTEL SHOWCASE WEBSITES -->
+      <section id="view-hotels" class="view-panel">
+        <div style="font-size:12px; font-weight:700; color:var(--gold); letter-spacing:0.04em; margin-bottom:2px">
+          PREMIUM WEBSITES INCLUDED IN PACKAGE
+        </div>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-bottom:12px">
+          Dono hotels ki independent websites ready hain customer room booking ke liye.
+        </p>
+
+        <!-- Hotel 1 -->
+        <div class="hotel-card">
+          <div class="hotel-hero">
+            <div class="hotel-hero-badge">HOTEL 1 • BOUTIQUE</div>
+            <div>
+              <div class="hotel-name">The Grand Regency</div>
+              <div class="hotel-location">📍 Russell Chowk, Jabalpur</div>
+            </div>
+          </div>
+          <div class="hotel-body">
+            <div class="hotel-tags">
+              <span class="hotel-tag">Super Deluxe AC</span>
+              <span class="hotel-tag">Banquet Hall</span>
+              <span class="hotel-tag">Free WiFi</span>
+            </div>
+            <div class="hotel-footer">
+              <div class="hotel-price">₹2,499 <span>/ night</span></div>
+              <button class="btn-wa-book" onclick="alert('Opening WhatsApp Direct Room Booking for Hotel 1!')">
+                <span>💬 Book on WhatsApp</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hotel 2 -->
+        <div class="hotel-card">
+          <div class="hotel-hero" style="background: linear-gradient(135deg, #334155, #1e293b)">
+            <div class="hotel-hero-badge">HOTEL 2 • BUSINESS</div>
+            <div>
+              <div class="hotel-name">Hotel Royal Gaddi Inn</div>
+              <div class="hotel-location">📍 Railway Station Road, Jabalpur</div>
+            </div>
+          </div>
+          <div class="hotel-body">
+            <div class="hotel-tags">
+              <span class="hotel-tag">Executive Rooms</span>
+              <span class="hotel-tag">24h Room Service</span>
+              <span class="hotel-tag">Lift & Parking</span>
+            </div>
+            <div class="hotel-footer">
+              <div class="hotel-price">₹1,799 <span>/ night</span></div>
+              <button class="btn-wa-book" onclick="alert('Opening WhatsApp Direct Room Booking for Hotel 2!')">
+                <span>💬 Book on WhatsApp</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 5: SETH JI GOD-MODE (Admin Console) -->
+      <section id="view-admin" class="view-panel">
+        <div class="card card-gold">
+          <div class="card-header">
+            <span class="card-title">👑 SETH JI GOD-MODE (UNMASKED VIEW)</span>
+            <span class="badge-status" style="background:rgba(234,179,8,0.15); color:var(--gold)">ADMIN</span>
+          </div>
+          <p style="font-size:11.5px; color:var(--text-muted); margin-bottom:12px">
+            Yahan Seth ji ko sabke asli naam dikhte hain. Phone call se boli lagane walo ka number yahan se punch hota hai.
+          </p>
+
+          <div style="background:var(--bg-card-subtle); border-radius:12px; padding:12px; margin-bottom:12px">
+            <div style="font-size:12px; font-weight:700; color:#0f172a; margin-bottom:8px">
+              📞 Phone Boli Punch (Hybrid Calling)
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <select id="admin-member-select" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:8px 10px; color:#0f172a; font-size:12.5px; font-weight:600">
+                <option value="Ramesh Agarwal (Sarafa) [Bidder #1]">Ramesh Agarwal (Sarafa) [Bidder #1]</option>
+                <option value="Suresh Jain (Transport) [Bidder #14]">Suresh Jain (Transport) [Bidder #14]</option>
+                <option value="Kailash Patel (Mandi) [Bidder #3]">Kailash Patel (Mandi) [Bidder #3]</option>
+              </select>
+              <div style="display:flex; gap:8px">
+                <input type="number" id="admin-bid-input" value="62000" style="flex:1; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:8px 10px; color:#0f172a; font-family:'JetBrains Mono'; font-weight:800">
+                <button class="btn-action" onclick="adminPunchBid()">Punch Bid</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fail-Safe Reversal / Undo -->
+          <div style="display:flex; gap:8px">
+            <button class="btn-action" style="flex:1; background:#fef2f2; border:1px solid #fecdd3; color:#b91c1c; justify-content:center; box-shadow:none" onclick="undoLastBid()">
+              ↺ Undo Last Bid (Mistake Reversal)
+            </button>
+            <button class="btn-action" style="flex:1; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; justify-content:center; box-shadow:none" onclick="declareWinnerAndSendSlips()">
+              📢 Declare Winner & Send Slips
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📜 AUDIT TRAIL LOG</span>
+          </div>
+          <div style="font-size:11px; font-family:'JetBrains Mono'; color:var(--text-muted); display:flex; flex-direction:column; gap:6px" id="audit-log-box">
+            <div>[03:02:11] Bidder #14 (Suresh Jain) bid ₹58,000 Down. Valid.</div>
+            <div>[02:35:40] Bidder #9 bid ₹54,000 Down. Valid.</div>
+            <div>[02:00:00] Auction LT-5L-20M opened with Govt Base ₹10,000.</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="app-nav">
+      <button class="nav-btn active" onclick="switchTab('view-boli', this)">
+        <span class="icon">🎟️</span>
+        <span>Boli Room</span>
+      </button>
+      <button class="nav-btn" onclick="switchTab('view-rokad', this)">
+        <span class="icon">🏛️</span>
+        <span>Maha-Rokad</span>
+      </button>
+      <button class="nav-btn" onclick="switchTab('view-rojgari', this)">
+        <span class="icon">🛵</span>
+        <span>100-Din</span>
+      </button>
+      <button class="nav-btn" onclick="switchTab('view-hotels', this)">
+        <span class="icon">🏨</span>
+        <span>Hotels</span>
+      </button>
+      <button class="nav-btn" onclick="switchTab('view-admin', this)">
+        <span class="icon">👑</span>
+        <span>Seth Ji</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    // State Variables
+    let currentHighestDown = 58000;
+    let targetBid = 60000;
+    let poolAmount = 500000;
+    let timerSeconds = 6135; // 01:42:15
+
+    // Tab Navigation
+    function switchTab(viewId, btnEl) {
+      document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      const target = document.getElementById(viewId);
+      if (target) target.classList.add('active');
+      if (btnEl) btnEl.classList.add('active');
+    }
+
+    // Timer Ticker
+    setInterval(() => {
+      if (timerSeconds > 0) {
+        timerSeconds--;
+        const hrs = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+        const secs = String(timerSeconds % 60).padStart(2, '0');
+        const timerEl = document.getElementById('countdown-timer');
+        if (timerEl) timerEl.textContent = `${hrs}:${mins}:${secs}`;
+      }
+    }, 1000);
+
+    // Toast Engine
+    function showToast(title, msg) {
+      const toast = document.getElementById('toast');
+      const tTitle = document.getElementById('toast-title');
+      const tMsg = document.getElementById('toast-msg');
+      tTitle.textContent = title;
+      tMsg.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // Target Bid Increment
+    function adjustTargetBid(delta) {
+      targetBid += delta;
+      updateBidDisplays();
+    }
+
+    function updateBidDisplays() {
+      document.getElementById('target-bid-display').textContent = `₹${targetBid.toLocaleString('en-IN')} Down`;
+      document.getElementById('slider-text').textContent = `>>> SLIDE TO BID ₹${targetBid.toLocaleString('en-IN')} >>>`;
+    }
+
+    // SLIDE TO BID DRAG ENGINE (Touch & Mouse Support)
+    const sliderBox = document.getElementById('slider-box');
+    const sliderThumb = document.getElementById('slider-thumb');
+    const sliderFill = document.getElementById('slider-fill');
+    const sliderText = document.getElementById('slider-text');
+
+    let isDragging = false;
+    let startX = 0;
+    let maxDistance = 0;
+
+    function initSlider() {
+      const boxW = sliderBox ? (sliderBox.offsetWidth || sliderBox.clientWidth || 340) : 340;
+      const thumbW = sliderThumb ? (sliderThumb.offsetWidth || sliderThumb.clientWidth || 50) : 50;
+      maxDistance = Math.max(80, boxW - thumbW - 8);
+    }
+    window.addEventListener('resize', initSlider);
+    setTimeout(initSlider, 50);
+
+    function handleSliderClick(e) {
+      if (e.target && e.target.id === 'slider-thumb') return; // thumb drag handled separately
+      completeSlideBid();
+    }
+
+    // Touch events
+    sliderThumb.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      initSlider();
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const currentX = e.touches[0].clientX;
+      const deltaX = Math.max(0, Math.min(maxDistance, currentX - startX));
+      
+      sliderThumb.style.transform = `translateX(${deltaX}px)`;
+      sliderFill.style.width = `${(deltaX / maxDistance) * 100}%`;
+      sliderText.style.opacity = `${1 - (deltaX / maxDistance)}`;
+
+      if (deltaX >= maxDistance - 6) {
+        completeSlideBid();
+        resetSlider();
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      if (isDragging) {
+        resetSlider();
+      }
+    });
+
+    // Mouse events (Desktop demo)
+    sliderThumb.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      initSlider();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const currentX = e.clientX;
+      const deltaX = Math.max(0, Math.min(maxDistance, currentX - startX));
+
+      sliderThumb.style.transform = `translateX(${deltaX}px)`;
+      sliderFill.style.width = `${(deltaX / maxDistance) * 100}%`;
+      sliderText.style.opacity = `${1 - (deltaX / maxDistance)}`;
+
+      if (deltaX >= maxDistance - 6) {
+        completeSlideBid();
+        resetSlider();
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        resetSlider();
+      }
+    });
+
+    function resetSlider() {
+      isDragging = false;
+      sliderThumb.style.transition = 'transform 0.25s ease';
+      sliderFill.style.transition = 'width 0.25s ease';
+      sliderText.style.transition = 'opacity 0.25s ease';
+
+      sliderThumb.style.transform = 'translateX(0px)';
+      sliderFill.style.width = '0%';
+      sliderText.style.opacity = '1';
+
+      setTimeout(() => {
+        sliderThumb.style.transition = '';
+        sliderFill.style.transition = '';
+        sliderText.style.transition = '';
+      }, 250);
+    }
+
+    function completeSlideBid() {
+      currentHighestDown = targetBid;
+      const payout = poolAmount - currentHighestDown;
+
+      // Update UI
+      document.getElementById('highest-down-val').textContent = `₹${currentHighestDown.toLocaleString('en-IN')}`;
+      document.getElementById('payout-val').textContent = `₹${payout.toLocaleString('en-IN')}`;
+      document.getElementById('current-leader-tag').textContent = 'Aap (Bidder #7)';
+
+      // Prepend to feed
+      const feed = document.getElementById('bid-feed-list');
+      const item = document.createElement('div');
+      item.className = 'bid-feed-item current-lead';
+      item.innerHTML = `
+        <span class="bidder-tag"><span class="crown">👑</span> Aap (Bidder #7)</span>
+        <span class="metric-value val-gold">₹${currentHighestDown.toLocaleString('en-IN')} Down</span>
+        <span class="bid-time">Just Now</span>
+      `;
+      feed.prepend(item);
+
+      // Add to audit
+      const audit = document.getElementById('audit-log-box');
+      const auditItem = document.createElement('div');
+      auditItem.textContent = `[Live Web] Bidder #7 (You) bid ₹${currentHighestDown.toLocaleString('en-IN')} Down. Validated.`;
+      audit.prepend(auditItem);
+
+      // Increment target for next
+      targetBid = currentHighestDown + 2000;
+      updateBidDisplays();
+
+      showToast('Boli Safaltapoorvak Lag Gayi!', `Aap (Bidder #7) ne ₹${currentHighestDown.toLocaleString('en-IN')} Down ki boli darj ki.`);
+    }
+
+    // Admin Phone Punch
+    function adminPunchBid() {
+      const member = document.getElementById('admin-member-select').value;
+      const bidVal = parseInt(document.getElementById('admin-bid-input').value, 10);
+      
+      if (bidVal <= currentHighestDown) {
+        alert('Boli pichli boli se zyada honi chahiye!');
+        return;
+      }
+
+      currentHighestDown = bidVal;
+      const payout = poolAmount - currentHighestDown;
+
+      document.getElementById('highest-down-val').textContent = `₹${currentHighestDown.toLocaleString('en-IN')}`;
+      document.getElementById('payout-val').textContent = `₹${payout.toLocaleString('en-IN')}`;
+      document.getElementById('current-leader-tag').textContent = member.split(' ')[0] + ' (' + member.split('[')[1].replace(']', '') + ')';
+
+      const feed = document.getElementById('bid-feed-list');
+      const item = document.createElement('div');
+      item.className = 'bid-feed-item current-lead';
+      item.innerHTML = `
+        <span class="bidder-tag"><span class="crown">👑</span> ${member.split('[')[1].replace(']', '')}</span>
+        <span class="metric-value val-gold">₹${currentHighestDown.toLocaleString('en-IN')} Down</span>
+        <span class="bid-time">Phone Call</span>
+      `;
+      feed.prepend(item);
+
+      const audit = document.getElementById('audit-log-box');
+      const auditItem = document.createElement('div');
+      auditItem.textContent = `[Phone Punch by Seth Ji] ${member} bid ₹${currentHighestDown.toLocaleString('en-IN')} Down.`;
+      audit.prepend(auditItem);
+
+      targetBid = currentHighestDown + 2000;
+      updateBidDisplays();
+
+      showToast('Phone Boli Punched!', `${member} ki boli ₹${currentHighestDown.toLocaleString('en-IN')} live update ho gayi.`);
+    }
+
+    // Reversal / Undo Action
+    function undoLastBid() {
+      const reason = prompt('Boli Undo karne ka kaaran likhein (Audit Trail Record):', 'Client mistake call received');
+      if (!reason) return;
+
+      currentHighestDown = 58000;
+      const payout = poolAmount - currentHighestDown;
+      document.getElementById('highest-down-val').textContent = `₹${currentHighestDown.toLocaleString('en-IN')}`;
+      document.getElementById('payout-val').textContent = `₹${payout.toLocaleString('en-IN')}`;
+      document.getElementById('current-leader-tag').textContent = 'Bidder #14';
+
+      const audit = document.getElementById('audit-log-box');
+      const auditItem = document.createElement('div');
+      auditItem.style.color = '#fb7185';
+      auditItem.textContent = `[REVERSAL COMPENSATING ENTRY] Last bid rolled back by Seth Ji. Reason: ${reason}`;
+      audit.prepend(auditItem);
+
+      targetBid = 60000;
+      updateBidDisplays();
+
+      showToast('Bid Reversal Complete', 'Pichli boli cancel karke ₹58,000 par reset kar di gayi.');
+    }
+
+    // Declare Winner and WhatsApp Dispatch
+    function declareWinnerAndSendSlips() {
+      const down = currentHighestDown;
+      const dividend = down / 19; // 20 members - 1 winner
+      const normalKist = poolAmount / 20; // 25,000
+      const actualKist = Math.round(normalKist - dividend);
+
+      alert(`🏆 BOLI CLOSED!\nWinner Down: ₹${down.toLocaleString('en-IN')}\nTotal Dividend: ₹${down.toLocaleString('en-IN')}\n\nSabhi 19 Non-Winning Members ki is mahine ki Kist: ₹${actualKist.toLocaleString('en-IN')}\n\n1-Click: 20 WhatsApp Slips Dispatched via Meta Cloud API!`);
+      showToast('WhatsApp Slips Sent!', 'Sabhi 20 members ko WhatsApp par pauti bhej di gayi hai.');
+    }
+
+    // Vasooli Collection Simulator
+    function collectVasooli() {
+      showToast('Vasooli Record Ho Gayi!', 'Gupta Kirana Store ko ₹1,200 ki digital receipt WhatsApp ho gayi.');
+    }
+
+    // Vault Cash Verification
+    function verifyVaultCash() {
+      const val = document.getElementById('actual-cash-input').value.replace(/,/g, '');
+      const msg = document.getElementById('variance-msg');
+      if (val === '529000') {
+        msg.style.color = '#34d399';
+        msg.textContent = '✓ Hisaab 100% Match! (Zero Farak / Vault Ready to Lock)';
+        showToast('Tijori Tally Matched!', 'Expected: ₹5,29,000 | Actual: ₹5,29,000');
+      } else {
+        const diff = parseInt(val, 10) - 529000;
+        msg.style.color = '#fb7185';
+        msg.textContent = `⚠️ Farak Aaya: ${diff > 0 ? '+' : ''}₹${diff.toLocaleString('en-IN')} ka antar hai!`;
+      }
+    }
+  </script>
+</body>
+</html>

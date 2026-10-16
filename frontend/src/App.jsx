@@ -57,6 +57,7 @@ import BoothCadrePWA from "./pages/BoothCadrePWA";
 import LeadLeakAudit from "./pages/LeadLeakAudit";
 import SolutionsHub from "./pages/SolutionsHub";
 import SolutionDetail from "./pages/SolutionDetail";
+import VyaparOS from "./pages/VyaparOS";
 import { initAttribution } from "./utils/attribution";
 
 
@@ -346,6 +347,11 @@ function AppRoutes() {
       <Route path="/tools/audit" element={<LeadLeakAudit />} />
       <Route path="/solutions" element={<SolutionsHub />} />
       <Route path="/solutions/:slug" element={<SolutionDetail />} />
+      {/* VYAPAR OS / GADDI HUB — Unified Enterprise Business OS (Lakshya Traders, Jabalpur) */}
+      <Route path="/vyapar-os" element={<VyaparOS />} />
+      <Route path="/vyapar" element={<Navigate to="/vyapar-os" replace />} />
+      <Route path="/gaddi-hub" element={<Navigate to="/vyapar-os" replace />} />
+      <Route path="/gaddi" element={<Navigate to="/vyapar-os" replace />} />
       <Route path="*" element={publicLanding} />
 
     </Routes>

@@ -251,5 +251,38 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
         } else {
             console.log("[GARUDA] Overnight hunters idle — set GARUDA_OVERNIGHT_HUNTERS=true to enable");
         }
+
+        // ── 24/7 Alpha-Quant NIFTY Options Sniper Daemon (Render Cloud 24x7) ──
+        // Continuous market hours (09:15 AM - 03:30 PM IST) institutional scanning with Telegram dispatch
+        const quantSniperEnabled = String(process.env.GARUDA_QUANT_SNIPER ?? "true").toLowerCase() !== "false";
+        if (quantSniperEnabled) {
+            try {
+                const { spawn } = require("child_process");
+                const path = require("path");
+                const sniperDaemonPath = path.join(__dirname, "scripts", "daemons", "nifty-options-sniper-daemon.js");
+                let sniperRestartCount = 0;
+                const spawnSniper = () => {
+                    const child = spawn("node", [sniperDaemonPath, "--live"], {
+                        stdio: "inherit",
+                        detached: false,
+                        env: process.env
+                    });
+                    child._spawnAt = Date.now();
+                    console.log(`[GARUDA] 🦅 24/7 Alpha-Quant Sniper Daemon spawned on Render Cloud (PID ${child.pid}, restart #${sniperRestartCount})`);
+                    child.on("error", e => console.error("[GARUDA] Alpha-Quant Sniper spawn failed:", e.message));
+                    child.on("exit", (code, signal) => {
+                        const uptimeSec = ((Date.now() - child._spawnAt)/1000).toFixed(0);
+                        console.log(`[GARUDA] Alpha-Quant Sniper exited code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 30s`);
+                        sniperRestartCount++;
+                        setTimeout(spawnSniper, 30000);
+                    });
+                    return child;
+                };
+                // Initial warm up delay (25s) after server boot
+                setTimeout(spawnSniper, 25000);
+            } catch (e) { console.error("[GARUDA] Alpha-Quant Sniper boot failed:", e.message); }
+        } else {
+            console.log("[GARUDA] Alpha-Quant Sniper daemon idle — set GARUDA_QUANT_SNIPER=true to enable");
+        }
     });
 })();
