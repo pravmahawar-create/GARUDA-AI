@@ -17,6 +17,8 @@ if (!fs.existsSync(BASE_TEMPLATE_PATH)) {
 }
 
 let baseTemplate = fs.readFileSync(BASE_TEMPLATE_PATH, "utf8");
+// Ensure clean root container even if baseTemplate was previously prerendered
+baseTemplate = baseTemplate.replace(/<div id="root">[\s\S]*?<\/div>/i, '<div id="root"></div>');
 
 // Secure Token Ingestion: Consume real verification tokens from environment if configured by Founder
 const googleToken = (process.env.VITE_GOOGLE_SITE_VERIFICATION || process.env.GOOGLE_SITE_VERIFICATION || "").trim();

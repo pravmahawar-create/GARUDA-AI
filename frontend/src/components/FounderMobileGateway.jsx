@@ -112,10 +112,13 @@ export default function FounderMobileGateway() {
       });
 
       const data = await res.json();
+      if (!res.ok && !data.reply) {
+        throw new Error(data.error?.message || data.error || `Server responded with ${res.status}`);
+      }
       const botReply = {
         id: "bot_" + Date.now(),
         role: "assistant",
-        text: data.reply || "Praveen ji, command receive ho gaya hai. Status update live hai.",
+        text: data.reply || "Praveen ji, Antigravity AI response ready nahi ho paya. Please try again.",
         actions: data.actions || [],
         time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
