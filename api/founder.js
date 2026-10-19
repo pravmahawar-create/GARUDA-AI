@@ -27,7 +27,58 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // 1. Mandatory Founder Authentication & Authorization Gate
+  // Parse Routing & Actions
+  let pathStr = "";
+  if (Array.isArray(req.query.path)) {
+    pathStr = req.query.path.join("/");
+  } else if (typeof req.query.path === "string") {
+    pathStr = req.query.path;
+  }
+
+  const url = new URL(req.url, `https://${req.headers.host || "garudaos.in"}`);
+  const cleanPath = url.pathname.replace(/^\/api\/founder(-command)?(\/command)?\/?/, "");
+  const combinedPath = pathStr || cleanPath;
+
+  // -------------------------------------------------------------
+  // 24/7 SOVEREIGN MOBILE GATEWAY (CHAT, STATE, KEYS, DISPATCH)
+  // -------------------------------------------------------------
+  if (combinedPath.startsWith("gateway")) {
+    const subPath = combinedPath.replace(/^gateway\/?/, "").toLowerCase();
+    const founderGatewayService = require("../src/services/founderGatewayService");
+
+    try {
+      if (subPath.startsWith("chat") && req.method === "POST") {
+        const { message, history } = req.body || {};
+        if (!message) {
+          return res.status(400).json({ success: false, error: "Message is required" });
+        }
+        const reply = await founderGatewayService.chatWithFounder({ message, history });
+        return res.status(200).json(reply);
+      }
+      if (subPath.startsWith("state")) {
+        const state = await founderGatewayService.getGatewayState();
+        return res.status(200).json(state);
+      }
+      if (subPath.startsWith("keys")) {
+        if (req.method === "POST") {
+          const { provider, key } = req.body || {};
+          const reg = founderGatewayService.registerKey({ provider, key });
+          return res.status(200).json(reg);
+        }
+        const keys = founderGatewayService.getKeyHealth();
+        return res.status(200).json({ success: true, ...keys });
+      }
+      if (subPath.startsWith("dispatch") && req.method === "POST") {
+        const { leadId, customNote } = req.body || {};
+        const disp = await founderGatewayService.dispatchLeadOutreach({ leadId, customNote });
+        return res.status(200).json(disp);
+      }
+    } catch (gwErr) {
+      return res.status(500).json({ success: false, error: gwErr.message });
+    }
+  }
+
+  // 1. Mandatory Founder Authentication & Authorization Gate (Command Center)
   try {
     founderCommandService.verifyFounderAuth(req);
   } catch (authErr) {
@@ -40,18 +91,6 @@ module.exports = async function handler(req, res) {
       }
     });
   }
-
-  // 2. Parse Routing & Actions
-  let pathStr = "";
-  if (Array.isArray(req.query.path)) {
-    pathStr = req.query.path.join("/");
-  } else if (typeof req.query.path === "string") {
-    pathStr = req.query.path;
-  }
-
-  const url = new URL(req.url, `https://${req.headers.host || "garudaos.in"}`);
-  const cleanPath = url.pathname.replace(/^\/api\/founder(-command)?(\/command)?\/?/, "");
-  const combinedPath = pathStr || cleanPath;
   const pathParts = combinedPath.split(/[/,]+/).filter(Boolean);
 
   // If routing /api/founder/command/projects/proj_123
