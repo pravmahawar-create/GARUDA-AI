@@ -127,21 +127,24 @@ async function syncBrainToCloud() {
     });
   }
 
-  // Add top urgent screaming buyers (up to 5 freshest)
-  const freshBuyers = Array.isArray(urgentBuyers) ? urgentBuyers.slice(0, 5) : [];
+  // Add top urgent screaming buyers (freshly hunted)
+  const buyerList = Array.isArray(urgentBuyers) ? urgentBuyers : (urgentBuyers?.leads || []);
+  const freshBuyers = buyerList.slice(0, 10);
   for (const b of freshBuyers) {
-    const bEmail = b.contactEmail || b.email || `buyer-${(b.id || Math.random().toString(36).slice(2, 7))}@buyer.garudaos.in`;
+    const linkHash = b.link ? crypto.createHash("md5").update(b.link).digest("hex").slice(0, 8) : Math.random().toString(36).slice(2, 7);
+    const bEmail = b.contactEmail || b.email || `reddit-urgent-${linkHash}@garudaos.in`;
     leadsToSync.push({
       email: bEmail,
-      first_name: b.title || b.name || "Urgent Buyer",
-      source: b.source || "Reddit / Twitter High Intent",
+      first_name: (b.title || "Urgent Tech Buyer").slice(0, 50),
+      source: b.link ? `Reddit Urgent: ${b.link.slice(0, 60)}` : "Reddit r/forhire (Urgent)",
       message: JSON.stringify({
-        budget: b.budget || "Commercial",
-        problemStatement: b.description || b.postContent || "Technical automation required",
-        url: b.url || b.permalink || null,
+        title: b.title,
+        link: b.link,
+        snippet: b.snippet,
+        urgentPitch: b.urgentPitch,
         type: "screaming_buyer"
       }),
-      reply_snippet: b.urgencyScore ? `Urgency: ${b.urgencyScore}` : "High Intent",
+      reply_snippet: "Urgent Demand / Needs Help",
       status: "scouted_ready"
     });
   }
