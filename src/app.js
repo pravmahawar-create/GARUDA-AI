@@ -156,7 +156,14 @@ app.use("/api/revenue-hunter", require("./routes/revenueHunterRoutes"));
 // GARUDA Autonomous Social Content Operations & Peak-Time Intelligence Engine
 app.use("/api/content", require("./routes/contentOperationsRoutes"));
 
-app.use("/api/founder", (req, res) => require("../api/founder")(req, res));
+// GARUDA Founder 24/7 Sovereign Mobile Gateway & Cloud Brain Sync
+app.use("/api/founder/gateway", require("./routes/founderGatewayRoutes"));
+app.use("/api/founder", (req, res, next) => {
+  if (req.path.startsWith("/gateway")) {
+    return require("./routes/founderGatewayRoutes")(req, res, next);
+  }
+  return require("../api/founder")(req, res);
+});
 app.use("/api/founder-command", (req, res) => require("../api/founder")(req, res));
 app.use("/api/inbound", require("./routes/inboundRoutes"));
 app.use("/api/project-scope", (req, res) => require("../api/project-scope")(req, res));

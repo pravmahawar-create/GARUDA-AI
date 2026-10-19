@@ -258,8 +258,10 @@ function AppRoutes() {
       <Route path="/play" element={<GarudaCyberTycoon />} />
       <Route path="/game" element={<Navigate to="/play" replace />} />
 
-      {/* Founder Sovereign Access */}
+      {/* Founder Sovereign Access & 24/7 Mobile Gateway */}
       <Route path="/founder/access" element={<FounderKingdomAccess />} />
+      <Route path="/founder/mobile" element={<FounderKingdomAccess />} />
+      <Route path="/founder/gateway" element={<FounderKingdomAccess />} />
       <Route path="/enterprise" element={<SovereignEnterpriseMatrix />} />
       <Route path="/founder/enterprise" element={<SovereignEnterpriseMatrix />} />
       <Route path="/sovereign-matrix" element={<SovereignEnterpriseMatrix />} />

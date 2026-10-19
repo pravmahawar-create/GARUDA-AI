@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import SEOHead from "../components/SEOHead";
+import FounderMobileGateway from "../components/FounderMobileGateway";
 import { UNIVERSES, RINGS, STATUS } from "../config/universes";
 
 const GOLD = "#8B6118";
@@ -72,6 +73,7 @@ const DEMOS_AND_CASE_STUDIES = [
 ];
 
 const FOUNDER_SYSTEM_TOOLS = [
+  { name: "24/7 Mobile Antigravity Gateway", route: "/founder/access?tab=gateway", icon: "📱", description: "Operate leads, approvals, and AI pair-programming directly from your smartphone 24/7." },
   { name: "Sovereign Enterprise & Electoral Matrix", route: "/enterprise", icon: "🏛️", description: "Billion-dollar turnkey campaign & enterprise dominance cockpit: Political War Room, Industrial Conglomerates & High-Ticket Commercial Escrows." },
   { name: "Universe 12: Shares & 24/7 Trading Fleet", route: "/founder/quant", icon: "📈", description: "24/7 Multi-Market Trading Swarm: Alpha-India (NSE Bluechips), Forex, Crypto & Moonshot Gems with Sovereign Master Kill Switch." },
   { name: "High Command Center", route: "/command-center", icon: "⚡", description: "Sovereign aggregate telemetry, active project execution triggers, and workforce controls." },
@@ -84,10 +86,16 @@ const FOUNDER_SYSTEM_TOOLS = [
 
 export default function FounderKingdomAccess() {
   const navigate = useNavigate();
-  const [selectedFilter, setSelectedFilter] = useState("ALL"); // 'ALL' | 'RING1' | 'RING2' | 'RING3' | 'RING4' | 'PROJECTS' | 'DEMOS' | 'MATRIX'
+  const [selectedFilter, setSelectedFilter] = useState(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("tab") === "gateway" || window.innerWidth < 768) return "GATEWAY";
+    }
+    return "GATEWAY";
+  });
 
   const filteredUniverses = UNIVERSES.filter((u) => {
-    if (selectedFilter === "ALL") return true;
+    if (selectedFilter === "ALL" || selectedFilter === "GATEWAY") return true;
     if (selectedFilter === "RING1") return u.ring === 1;
     if (selectedFilter === "RING2") return u.ring === 2;
     if (selectedFilter === "RING3") return u.ring === 3;
@@ -146,6 +154,7 @@ export default function FounderKingdomAccess() {
           {/* Filter Bar */}
           <div style={{ display: "flex", gap: "0.5rem", marginTop: "1.5rem", flexWrap: "wrap" }}>
             {[
+              { id: "GATEWAY", label: "📱 24/7 Mobile Antigravity" },
               { id: "ALL", label: "All 27 Universes" },
               { id: "RING1", label: "Ring 1: Core Intelligence (9)" },
               { id: "RING2", label: "Ring 2: Human Empowerment (9)" },
@@ -175,6 +184,15 @@ export default function FounderKingdomAccess() {
             ))}
           </div>
         </div>
+
+        {/* ========================================================================= */}
+        {/* SECTION: 24/7 MOBILE ANTIGRAVITY GATEWAY                                  */}
+        {/* ========================================================================= */}
+        {selectedFilter === "GATEWAY" && (
+          <div style={{ marginBottom: "2.5rem" }}>
+            <FounderMobileGateway />
+          </div>
+        )}
 
         {/* ========================================================================= */}
         {/* SECTION 4: FOUNDER SYSTEM TOOLS QUICK ACCESS                              */}
