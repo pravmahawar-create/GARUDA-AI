@@ -40,25 +40,57 @@ function getConfiguredProvider() {
     .trim()
     .toLowerCase();
 
-  const KNOWN = ["nvidia", "openai", "gemini", "ollama"];
+  const KNOWN = ["cascade", "groq", "nvidia", "openai", "gemini", "ollama"];
 
   if (explicit && explicit !== "fallback" && KNOWN.includes(explicit)) {
     return explicit;
   }
 
-  if (getNvidiaApiKey()) {
-    return "nvidia";
-  }
+  // Tier 0: Always prioritize sovereign multi-key cascade (Groq -> NVIDIA -> Gemini)
+  return "cascade";
+}
 
-  if (getGeminiApiKey()) {
-    return "gemini";
-  }
+async function generateCascadeAnswer({
+  query,
+  context,
+  systemPrompt,
+  conversationHistory,
+  metadata = {},
+} = {}) {
+  try {
+    const sovereignAiCascadeService = require("../services/sovereignAiCascadeService");
+    const cascadeRes = await sovereignAiCascadeService.generateCompletion({
+      prompt: query,
+      systemPrompt: systemPrompt || (context ? `GARUDA verified context:\n${normalizeContext(context)}` : undefined),
+      messages: Array.isArray(conversationHistory) && conversationHistory.length > 0 ? conversationHistory : undefined,
+      temperature: metadata && metadata.fastLane ? 0.3 : 0.5,
+      maxTokens: metadata && metadata.fastLane ? 600 : 800
+    });
 
-  if (getOpenAIApiKey()) {
-    return "openai";
+    if (cascadeRes && cascadeRes.success && cascadeRes.text) {
+      return {
+        answer: cascadeRes.text,
+        provider: cascadeRes.provider || "sovereign_cascade",
+        model: cascadeRes.provider,
+        grounded: Boolean(context),
+        citations: [],
+        warnings: [],
+        latencyMs: cascadeRes.latencyMs
+      };
+    }
+    return {
+      answer: null,
+      provider: "sovereign_cascade",
+      warnings: ["CASCADE_UNAVAILABLE"]
+    };
+  } catch (err) {
+    return {
+      answer: null,
+      provider: "sovereign_cascade",
+      warnings: ["CASCADE_ERROR"],
+      error: err.message
+    };
   }
-
-  return DEFAULT_PROVIDER;
 }
 
 function getLLMApiKey() {
@@ -74,11 +106,11 @@ function getNvidiaApiKey() {
 }
 
 function getNvidiaModel() {
-  return (
-    process.env.NVIDIA_MODEL ||
-    process.env.GARUDA_NVIDIA_MODEL ||
-    "meta/llama-3.1-70b-instruct"
-  );
+  const envModel = (process.env.NVIDIA_MODEL || process.env.GARUDA_NVIDIA_MODEL || "").trim();
+  if (envModel && !envModel.includes("meta/llama-3.1-70b-instruct")) {
+    return envModel;
+  }
+  return "meta/llama-3.2-11b-vision-instruct";
 }
 
 function getOpenAIApiKey() {
@@ -947,11 +979,11 @@ async function generateNvidiaAnswer({
 
   const isFastLane = metadata && metadata.fastLane === true;
 
-  // Founder console (fastLane) uses a natural-conversation model that follows
-  // the founder persona prompt cleanly. Other consumers keep the global model.
+  const envFounderModel = (process.env.GARUDA_FOUNDER_NVIDIA_MODEL || "").trim();
   const model = isFastLane
-    ? process.env.GARUDA_FOUNDER_NVIDIA_MODEL ||
-      "meta/llama-3.1-70b-instruct"
+    ? ((envFounderModel && !envFounderModel.includes("meta/llama-3.1-70b-instruct"))
+        ? envFounderModel
+        : "meta/llama-3.2-11b-vision-instruct")
     : getNvidiaModel();
 
   if (!apiKey) {
@@ -1204,7 +1236,9 @@ async function generateAnswer({
 
   let result;
 
-  if (provider === "openai") {
+  if (provider === "cascade" || provider === "groq") {
+    result = await generateCascadeAnswer(adapterArgs);
+  } else if (provider === "openai") {
     result = await generateOpenAIAnswer(adapterArgs);
   } else if (provider === "gemini") {
     result = await generateGeminiAnswer(adapterArgs);
@@ -1321,6 +1355,33 @@ async function generateAnswer({
       lastWarnings: result && Array.isArray(result.warnings) ? result.warnings : [],
       lastError: result && result.error ? result.error : null,
     });
+
+    // Sovereign Multi-Provider Cascade Rescue (Groq from Cloud Vault -> NVIDIA 11B -> Gemini)
+    try {
+      const sovereignAiCascadeService = require("../services/sovereignAiCascadeService");
+      const cascadeRes = await sovereignAiCascadeService.generateCompletion({
+        prompt: query,
+        systemPrompt: systemPrompt || (context ? `GARUDA verified context:\n${normalizeContext(context)}` : undefined),
+        messages: Array.isArray(conversationHistory) && conversationHistory.length > 0 ? conversationHistory : undefined
+      });
+      if (cascadeRes && cascadeRes.success && cascadeRes.text) {
+        logRouterEvent("sovereign_cascade_rescue_success", {
+          provider: cascadeRes.provider,
+          latencyMs: cascadeRes.latencyMs
+        });
+        return {
+          answer: cascadeRes.text,
+          provider: cascadeRes.provider || "sovereign_cascade",
+          model: cascadeRes.provider,
+          grounded: Boolean(context),
+          citations: [],
+          warnings: ["SOVEREIGN_CASCADE_RESCUE"],
+          latencyMs: cascadeRes.latencyMs
+        };
+      }
+    } catch (rescueErr) {
+      logRouterEvent("sovereign_cascade_rescue_failed", { error: rescueErr.message });
+    }
 
     // Honest degraded response: report the configured/attempted model back and
     // return a clean non-empty message so the caller knows the generative

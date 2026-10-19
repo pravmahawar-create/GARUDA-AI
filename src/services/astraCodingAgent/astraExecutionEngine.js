@@ -156,6 +156,22 @@ class AstraExecutionEngine {
    * High-speed Multi-Provider LLM Caller
    */
   async callLLM(prompt, options = {}) {
+    // 0. Primary Sovereign AI Multi-Provider Cascade (Vault Sync + Failover)
+    try {
+      const cascade = require("../sovereignAiCascadeService");
+      const cascadeResult = await cascade.generateCompletion({
+        systemPrompt: "You are GARUDA Astra/Pawan, an elite sovereign AI software architect created by Praveen Mahawar. You always output valid, clean JSON with zero conversational filler.",
+        prompt,
+        temperature: options.temperature || 0.1,
+        maxTokens: options.maxTokens || 2048
+      });
+      if (cascadeResult && cascadeResult.text) {
+        return cascadeResult.text;
+      }
+    } catch (err) {
+      console.warn("[Astra/Pawan] Cascade note:", err.message);
+    }
+
     // 1. Try Groq (Superfast 120B / 27B)
     const groqKey = process.env.GROQ_API_KEY;
     if (groqKey) {
@@ -408,18 +424,16 @@ Output ONLY the JSON object.`;
       };
     }
 
-    // 3. Fallback to Groq for text-only consultation
-    if (groqKey) {
-      try {
-        const text = await this.callLLM(consultPrompt);
-        if (text) {
-          const parsed = this.parseLlmJson(text);
-          if (parsed) {
-            return { success: true, consultation: parsed };
-          }
+    // 3. Multi-Provider Cascade for text consultation
+    try {
+      const text = await this.callLLM(consultPrompt);
+      if (text) {
+        const parsed = this.parseLlmJson(text);
+        if (parsed) {
+          return { success: true, consultation: parsed };
         }
-      } catch (err) {}
-    }
+      }
+    } catch (err) {}
 
     // 4. Autonomous Sovereign Fallback (Prevents 500 error / broken UI on LLM latency/quota blips)
     return {

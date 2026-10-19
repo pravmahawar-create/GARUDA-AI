@@ -1,8 +1,8 @@
 {
   "status": "SUCCESS_SYNCHRONIZED",
-  "timestamp": "2026-10-19T15:46:12.282Z",
-  "syncedLeadsCount": 5,
+  "timestamp": "2026-10-19T16:05:21.424Z",
+  "syncedLeadsCount": 15,
   "lessonsCount": 29,
-  "syncHash": "43f6a84e2edcacba3c65001d13d99eb64d0a579afe1142d6c3d1a8f9ef2e9a54",
+  "syncHash": "9730a3521386fa5368876300ea1b84aa76498d92322270fc257f198f17f0f8b2",
   "supabaseUrl": "https://gcifzzuyswrcwvkcfqbr.supabase.co"
 }

@@ -311,6 +311,22 @@ async function generateWithGroq({ message, history }) {
 }
 
 async function generateReply(message, history, attachments = []) {
+  // Tier 0: Primary Sovereign Multi-Provider AI Cascade Engine (Vault-Synced & Auto-Failover)
+  try {
+    const cascade = require("../src/services/sovereignAiCascadeService");
+    const uniformMessages = buildHistoryMessages(history, message);
+    const cascadeResult = await cascade.generateCompletion({
+      messages: uniformMessages,
+      temperature: 0.6,
+      maxTokens: 3072
+    });
+    if (cascadeResult && cascadeResult.text) {
+      return cascadeResult.text;
+    }
+  } catch (err) {
+    console.warn("Public Chat Cascade Note:", err.message);
+  }
+
   // Tier 1: Groq Ultra-Fast Lightning Inference (openai/gpt-oss-120b & qwen/qwen3.8-27b)
   if (process.env.GROQ_API_KEY) {
     try {

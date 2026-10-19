@@ -14,11 +14,50 @@ class SovereignAiCascadeService {
   constructor() {
     this.keyCooldowns = new Map(); // keyId -> { until: timestamp, reason: string }
     this.runtimeKeys = new Map();  // provider -> array of keys
+    this._lastVaultSync = 0;
     this.stats = {
       totalRequests: 0,
       failoversTriggered: 0,
       providerSuccesses: {}
     };
+  }
+
+  /**
+   * Automatically fetch active keys from Supabase Cloud Vault if environment variables are missing
+   */
+  async syncKeysFromVault() {
+    if (this._lastVaultSync && Date.now() - this._lastVaultSync < 180000) return;
+    this._lastVaultSync = Date.now();
+    try {
+      const { createClient } = require("@supabase/supabase-js");
+      const SUPABASE_URL = process.env.SUPABASE_URL || "https://gcifzzuyswrcwvkcfqbr.supabase.co";
+      const SUPABASE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || "sb_publishable_uYLXTH4M1PFyem5pQSMJtQ_7YqZ2rFp";
+      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      const { data } = await supabase.from("leads")
+        .select("message")
+        .eq("email", "system-ai-keys-sync@garudaos.in")
+        .order("id", { ascending: false })
+        .limit(1);
+
+      if (data && data[0] && data[0].message) {
+        const vault = JSON.parse(data[0].message);
+        if (vault.groqKey) {
+          const list = this.runtimeKeys.get("groq") || [];
+          if (!list.includes(vault.groqKey)) {
+            list.push(vault.groqKey);
+            this.runtimeKeys.set("groq", list);
+          }
+        }
+        if (vault.nvidiaKey) {
+          const list = this.runtimeKeys.get("nvidia") || [];
+          if (!list.includes(vault.nvidiaKey)) {
+            list.push(vault.nvidiaKey);
+            this.runtimeKeys.set("nvidia", list);
+          }
+        }
+      }
+    } catch (e) {}
   }
 
   /**
@@ -96,7 +135,14 @@ class SovereignAiCascadeService {
       if (prompt) uniformMessages.push({ role: "user", content: prompt });
     }
 
-    const { groqKeys, nvidiaKeys, geminiKeys } = this.getAllKeys();
+    let { groqKeys, nvidiaKeys, geminiKeys } = this.getAllKeys();
+    if (groqKeys.length === 0) {
+      await this.syncKeysFromVault();
+      const updated = this.getAllKeys();
+      groqKeys = updated.groqKeys;
+      nvidiaKeys = updated.nvidiaKeys;
+      geminiKeys = updated.geminiKeys;
+    }
 
     // ── TIER 1: GROQ HIGH-SPEED CLOUD (Line-up through all keys & models) ──
     for (let kIdx = 0; kIdx < groqKeys.length; kIdx++) {
@@ -167,10 +213,9 @@ class SovereignAiCascadeService {
       if (this.isKeyOnCooldown(keyId)) continue;
 
       const nvidiaModels = [
-        "nvidia/llama-3.1-nemotron-70b-instruct",
-        "mistralai/mistral-large-2-instruct",
-        "deepseek-ai/deepseek-coder-6.7b-instruct",
-        "meta/llama-3.2-11b-vision-instruct"
+        "meta/llama-3.2-11b-vision-instruct",
+        "meta/llama-3.2-90b-vision-instruct",
+        "nvidia/llama-3.1-nemotron-70b-instruct"
       ];
 
       for (const model of nvidiaModels) {
@@ -305,6 +350,19 @@ class SovereignAiCascadeService {
       current.push(key.trim());
       this.runtimeKeys.set(p, current);
     }
+    // Also persist to Supabase vault asynchronously
+    try {
+      const { createClient } = require("@supabase/supabase-js");
+      const SUPABASE_URL = process.env.SUPABASE_URL || "https://gcifzzuyswrcwvkcfqbr.supabase.co";
+      const SUPABASE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || "sb_publishable_uYLXTH4M1PFyem5pQSMJtQ_7YqZ2rFp";
+      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      const updatePayload = {};
+      if (p === "groq") updatePayload.groqKey = key.trim();
+      if (p === "nvidia") updatePayload.nvidiaKey = key.trim();
+      if (p === "gemini") updatePayload.geminiKey = key.trim();
+      updatePayload.updatedAt = new Date().toISOString();
+      supabase.from("leads").update({ message: JSON.stringify(updatePayload), reply_snippet: "KEY_UPDATED" }).eq("email", "system-ai-keys-sync@garudaos.in").then(() => {});
+    } catch {}
     return { success: true, provider: p, totalKeys: current.length };
   }
 
