@@ -1,0 +1,78 @@
+{
+  "updatedAt": "2026-10-20T01:08:00.000Z",
+  "doctrine": "100% Anti-Fabrication Law | Show > Tell | Zero Unauthorized Dispatch | Revenue First",
+  "exclusionNotice": "Lakshya Dairy / Lakshya Traders is strictly and permanently excluded from all active acquisition operations, queues, reports, and reminders per Founder directive.",
+  "totalActiveProspects": 6,
+  "totalProposalsPrepared": 6,
+  "totalDispatched": 6,
+  "repliesReceived": 0,
+  "verifiedRevenueCollected": 0,
+  "prospects": [
+    {
+      "id": "PROSPECT_01_NAIVE_AREA6965",
+      "target": "u/Naive_Area6965",
+      "channel": "Reddit Direct Message",
+      "requirement": "Playwright CDP Automation & Database Logging Suite",
+      "starterMilestone": "$250 – $300 USD",
+      "dispatchedAt": "2026-10-16T21:36:46+05:30",
+      "status": "CONTACTED_AWAITING_REPLY",
+      "followUpStatus": "READY_FOR_FOUNDER_APPROVAL",
+      "followUpDraft": "Hi /u/Naive_Area6965, following up on your Playwright CDP automation requirement. We have a working Node.js CDP session module pre-built and can complete your first workflow validation loop with structured DB logging under the $250 starter milestone within 24 hours. Let me know if you would like to review the code sample."
+    },
+    {
+      "id": "PROSPECT_02_ILILLLIILLIII",
+      "target": "u/IlIlllIIllIII",
+      "channel": "Reddit Chat",
+      "requirement": "Bilingual Arabic (RTL) + English (LTR) Marketplace MVP",
+      "starterMilestone": "$750 USD",
+      "dispatchedAt": "2026-10-16T21:49:00+05:30",
+      "status": "CONTACTED_AWAITING_REPLY",
+      "followUpStatus": "READY_FOR_FOUNDER_APPROVAL",
+      "followUpDraft": "Hi /u/IlIlllIIllIII, touching base on your bilingual RTL/LTR marketplace MVP. We have pre-architected the RTL UI shell and category schema to eliminate CSS layout shift. Happy to share a quick live screen-walkthrough if you're finalizing your senior developer selection this week."
+    },
+    {
+      "id": "PROSPECT_03_PUZZLEHEADED_TEA4149",
+      "target": "u/Puzzleheaded_Tea4149",
+      "channel": "Reddit Chat",
+      "requirement": "Spanish AI Conversational Language Tutor MVP",
+      "starterMilestone": "$300 – $450 USD",
+      "dispatchedAt": "2026-10-16T22:05:00+05:30",
+      "status": "CONTACTED_AWAITING_REPLY",
+      "followUpStatus": "READY_FOR_FOUNDER_APPROVAL",
+      "followUpDraft": "Hi /u/Puzzleheaded_Tea4149, following up regarding the Spanish conversational AI tutor MVP. We have live speech-to-text grammar evaluation pipelines operational in production and can deliver your Milestone 1 in 48 hours. Let me know if you'd like to test the prototype."
+    },
+    {
+      "id": "PROSPECT_04_PRESENT_SNOW_9703",
+      "target": "u/Present_Snow_9703",
+      "channel": "Reddit Direct Message",
+      "requirement": "Software Engineer for Technical VA & Developer Tooling",
+      "starterMilestone": "$30/hr USD (Est $600-$900/mo)",
+      "dispatchedAt": "2026-10-19T21:46:06+05:30",
+      "status": "DELIVERED_CONFIRMED",
+      "followUpStatus": "WAITING_48H_WINDOW",
+      "followUpEligibleAt": "2026-10-21T21:46:00+05:30"
+    },
+    {
+      "id": "PROSPECT_05_MANGAFRIED",
+      "target": "u/Mangafried",
+      "channel": "Reddit Direct Message",
+      "requirement": "Search Atlas AI Builder & Community Channel Strategist",
+      "starterMilestone": "$20-$30/hr USD",
+      "dispatchedAt": "2026-10-19T21:46:34+05:30",
+      "status": "DELIVERED_CONFIRMED",
+      "followUpStatus": "WAITING_48H_WINDOW",
+      "followUpEligibleAt": "2026-10-21T21:46:00+05:30"
+    },
+    {
+      "id": "PROSPECT_06_IVII0",
+      "target": "u/IVII0",
+      "channel": "Reddit Direct Message",
+      "requirement": "B2B SaaS Security Assessment under DORA / OWASP ASVS",
+      "starterMilestone": "$500 – $1,200 USD",
+      "dispatchedAt": "2026-10-19T21:47:01+05:30",
+      "status": "DELIVERED_CONFIRMED",
+      "followUpStatus": "WAITING_48H_WINDOW",
+      "followUpEligibleAt": "2026-10-21T21:47:00+05:30"
+    }
+  ]
+}

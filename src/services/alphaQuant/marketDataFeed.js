@@ -209,7 +209,7 @@ class MarketDataFeed {
     let currentDay = null;
 
     for (const c of candles) {
-      const candleDay = c.time.toDateString();
+      const candleDay = (c.time instanceof Date ? c.time : new Date(c.time)).toDateString();
       if (candleDay !== currentDay) {
         // Reset VWAP at start of each trading session
         currentDay = candleDay;
