@@ -61,11 +61,16 @@ async function callNvidia(prompt, { systemPrompt, temperature = 0.7, maxTokens =
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) throw new Error("No Nvidia API key found");
 
+  const envModel = (process.env.NVIDIA_MODEL || process.env.GARUDA_NVIDIA_MODEL || "").trim();
+  const model = (envModel && !envModel.includes("meta/llama-3.1-70b-instruct"))
+    ? envModel
+    : "meta/llama-3.2-11b-vision-instruct";
+
   const res = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: process.env.NVIDIA_MODEL || "nvidia/llama-3.1-nemotron-70b-instruct",
+      model,
       messages: [
         { role: "system", content: systemPrompt || "You are GARUDA, an intelligent AI assistant." },
         { role: "user", content: prompt }
@@ -87,11 +92,13 @@ async function callGroq(prompt, { systemPrompt, temperature = 0.7, maxTokens = 2
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) throw new Error("No Groq API key found");
 
+  const groqModel = process.env.GROQ_MODEL || "qwen/qwen3.8-27b";
+
   const res = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: "openai/gpt-oss-120b",
+      model: groqModel,
       messages: [
         { role: "system", content: systemPrompt || "You are GARUDA, an intelligent AI assistant." },
         { role: "user", content: prompt }
@@ -129,6 +136,24 @@ async function think(prompt, options = {}) {
       console.log(`[Brain] ${p} failed: ${err.message}`);
       continue;
     }
+  }
+
+  // Supreme failover: Invoke Sovereign AI Cascade (recovers keys from Supabase vault)
+  try {
+    const cascade = require("./sovereignAiCascadeService");
+    const cascadePrompt = options.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt;
+    const cascadeRes = await cascade.generateCompletion({
+      prompt: cascadePrompt,
+      temperature: options.temperature || 0.7,
+      maxTokens: options.maxTokens || 1024
+    });
+    if (cascadeRes && cascadeRes.text) {
+      const latency = Date.now() - startTime;
+      console.log(`[Brain] sovereign-cascade (${cascadeRes.provider}) responded in ${latency}ms`);
+      return { content: cascadeRes.text, provider: cascadeRes.provider, latencyMs: latency };
+    }
+  } catch (cascadeErr) {
+    console.log(`[Brain] sovereign-cascade fallback failed: ${cascadeErr.message}`);
   }
 
   throw new Error("All LLM providers failed");

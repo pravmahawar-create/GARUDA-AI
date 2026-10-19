@@ -41,7 +41,11 @@ function detectPreferredProvider() {
 
 function defaultModelForProvider(provider) {
   if (provider === "nvidia") {
-    return process.env.GARUDA_NVIDIA_MODEL || process.env.NVIDIA_MODEL || "meta/llama-3.1-70b-instruct";
+    const envModel = (process.env.GARUDA_NVIDIA_MODEL || process.env.NVIDIA_MODEL || "").trim();
+    if (envModel && !envModel.includes("meta/llama-3.1-70b-instruct")) {
+      return envModel;
+    }
+    return "meta/llama-3.2-11b-vision-instruct";
   }
   if (provider === "gemini") {
     return process.env.GARUDA_GEMINI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash";

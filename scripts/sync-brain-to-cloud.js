@@ -226,6 +226,29 @@ async function syncBrainToCloud() {
     }
   }
 
+  // 6. Inscribe Active AI Keys in Cloud Vault for 24/7 Mobile/Render Failover
+  const vaultPayload = {
+    groqKey: process.env.GROQ_API_KEY || "",
+    nvidiaKey: process.env.NVIDIA_API_KEY || "",
+    updatedAt: new Date().toISOString()
+  };
+  const keyRecord = {
+    email: "system-ai-keys-sync@garudaos.in",
+    first_name: "GARUDA AI Keys Vault",
+    source: "laptop-keys-sync",
+    message: JSON.stringify(vaultPayload),
+    reply_snippet: "active-keys",
+    status: "VAULT_ACTIVE"
+  };
+  const existingKeySync = (existingLeads || []).find(l => l.email === "system-ai-keys-sync@garudaos.in");
+  if (existingKeySync) {
+    await supabase.from("leads").update(keyRecord).eq("id", existingKeySync.id);
+    console.log(`[SYNC] AI Keys Vault updated in Supabase (ID: ${existingKeySync.id})`);
+  } else {
+    const { data: newKeySync } = await supabase.from("leads").insert([keyRecord]).select();
+    console.log(`[SYNC] AI Keys Vault created in Supabase (ID: ${newKeySync?.[0]?.id})`);
+  }
+
   // Also write local receipt file
   const receipt = {
     status: "SUCCESS_SYNCHRONIZED",
