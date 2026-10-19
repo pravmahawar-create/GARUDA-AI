@@ -139,12 +139,14 @@ async function run() {
     console.log("✓ DELETE /api/billing/api-keys/:id passed");
 
     // 8b. POST /api/billing/activate with provider "upi" returns 202 pending_verification
+    const testUtr = "4287" + Date.now().toString().slice(-8);
+    const testOrderId = `order_sub_upi_test_${Date.now()}`;
     const r8b = await request("POST", "/api/billing/activate", {
       plan: "sme",
       interval: "monthly",
       provider: "upi",
-      orderId: "order_sub_upi_test_route_1",
-      utr: "428799990002"
+      orderId: testOrderId,
+      utr: testUtr
     }, {
       "x-garuda-tenant-id": "tenant_saas_test_upi"
     });
@@ -155,13 +157,13 @@ async function run() {
     // 8c. GET /api/billing/admin/pending-upi lists the pending UTR
     const r8c = await request("GET", "/api/billing/admin/pending-upi");
     assert.strictEqual(r8c.status, 200);
-    assert(r8c.body.data.some(p => p.utr === "428799990002"));
+    assert(r8c.body.data.some(p => p.utr === testUtr));
     console.log("✓ GET /api/billing/admin/pending-upi returns submitted UTR");
 
     // 8d. POST /api/billing/admin/verify-upi approves and activates subscription
     const r8d = await request("POST", "/api/billing/admin/verify-upi", {
-      orderId: "order_sub_upi_test_route_1",
-      utr: "428799990002",
+      orderId: testOrderId,
+      utr: testUtr,
       action: "approve"
     });
     assert.strictEqual(r8d.status, 200);
