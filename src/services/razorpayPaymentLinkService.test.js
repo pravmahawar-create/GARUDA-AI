@@ -55,7 +55,7 @@ test("getProviderConfig not ready without credentials", () => {
 });
 
 test("buildPaymentLinkPayload rejects invalid amount", () => {
-  assert.throws(() => buildPaymentLinkPayload({ missionId: "a", candidateId: "b", amount: 0.5 }), /at least 1.00/);
+  assert.throws(() => buildPaymentLinkPayload({ missionId: "a", candidateId: "b", amount: 0.5 }), /between 1\.00 and 100000\.00/);
 });
 
 test("buildPaymentLinkPayload accepts non-INR currency", () => {
