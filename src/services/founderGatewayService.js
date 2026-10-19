@@ -127,112 +127,46 @@ User Message: "${message}"
 
 Respond directly to Founder Praveen in natural Roman Hindi:`;
 
-    // 1. Try Groq (Superfast 27B / 120B)
-    if (groqKey) {
-      const groqModels = ["qwen/qwen3.8-27b", "openai/gpt-oss-120b"];
-      for (const model of groqModels) {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 12000);
-          const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${groqKey}`,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              model,
-              messages: [
-                { role: "system", content: "You are Antigravity, Founder Praveen Mahawar's sovereign AI coding partner." },
-                { role: "user", content: systemPrompt }
-              ],
-              temperature: 0.3,
-              max_tokens: 800
-            }),
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-          if (res.ok) {
-            const data = await res.json();
-            const text = data.choices?.[0]?.message?.content;
-            if (text) {
-              const actions = [];
-              if (state.stats?.pendingApprovals > 0) {
-                actions.push({ label: "Review Pending Leads", action: "view_leads" });
-              }
-              actions.push({ label: "Check System Health", action: "health" });
-              return {
-                success: true,
-                reply: text.trim(),
-                actions,
-                provider: "groq:" + model,
-                syncedAt: state.stats?.lastSyncedAt
-              };
-            }
-          }
-        } catch (err) {
-          console.warn(`[GATEWAY] Groq ${model} attempt failed:`, err.message);
-        }
-      }
-    }
+    // Unified Sovereign Cascade Engine (Groq -> NVIDIA -> Gemini -> Deterministic)
+    const cascade = require("./sovereignAiCascadeService");
+    const cascadeResult = await cascade.generateCompletion({
+      prompt: systemPrompt,
+      temperature: 0.3,
+      maxTokens: 800
+    });
 
-    // 2. Fallback to Gemini
-    if (geminiKey) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: systemPrompt }] }],
-            generationConfig: {
-              temperature: 0.3,
-              maxOutputTokens: 800
-            }
-          }),
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
-        if (res.ok) {
-          const data = await res.json();
-          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (text) {
-            const actions = [];
-            if (state.stats?.pendingApprovals > 0) {
-              actions.push({ label: "Review Pending Leads", action: "view_leads" });
-            }
-            actions.push({ label: "Check System Health", action: "health" });
-            return {
-              success: true,
-              reply: text.trim(),
-              actions,
-              provider: "gemini",
-              syncedAt: state.stats?.lastSyncedAt
-            };
-          }
-        }
-      } catch (err) {
-        console.warn("[GATEWAY] Gemini attempt failed:", err.message);
-      }
-    }
-
-    // 3. Deterministic Antigravity Fallback
     const actions = [];
     if (state.stats?.pendingApprovals > 0) {
       actions.push({ label: "Review Pending Leads", action: "view_leads" });
     }
     actions.push({ label: "Check System Health", action: "health" });
+    actions.push({ label: "API Keys Health", action: "keys" });
 
     return {
       success: true,
-      reply: `Praveen ji, Antigravity Mobile Gateway active hai! Total ${state.stats?.totalLeads || 0} leads cloud me synced hain, jisme se ${state.stats?.pendingApprovals || 0} approvals pending hain aur ${state.stats?.contactedCount || 0} contacted hain. Aap direct mobile se dispatch ya check kar sakte hain.`,
+      reply: cascadeResult.text || "Praveen ji, Antigravity Cloud sync active hai.",
       actions,
-      provider: "deterministic_core",
+      provider: cascadeResult.provider,
+      latencyMs: cascadeResult.latencyMs,
+      cascadeAttempts: cascadeResult.cascadeAttempts,
       syncedAt: state.stats?.lastSyncedAt
     };
+  }
+
+  /**
+   * Health report of all lined up API keys
+   */
+  getKeyHealth() {
+    const cascade = require("./sovereignAiCascadeService");
+    return cascade.getHealthReport();
+  }
+
+  /**
+   * Runtime injection of a new API key
+   */
+  registerKey(payload) {
+    const cascade = require("./sovereignAiCascadeService");
+    return cascade.registerKey(payload);
   }
 
   /**

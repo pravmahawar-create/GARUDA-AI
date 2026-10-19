@@ -36,6 +36,10 @@ export default function FounderMobileGateway() {
   const [stateLoading, setStateLoading] = useState(true);
   const [dispatchingId, setDispatchingId] = useState(null);
   const [dispatchSuccessMsg, setDispatchSuccessMsg] = useState(null);
+  const [keyHealthData, setKeyHealthData] = useState(null);
+  const [keyProviderInput, setKeyProviderInput] = useState("groq");
+  const [keySecretInput, setKeySecretInput] = useState("");
+  const [keyAddMsg, setKeyAddMsg] = useState(null);
   const chatBottomRef = useRef(null);
 
   // Fetch Gateway State from cloud backend
@@ -54,8 +58,22 @@ export default function FounderMobileGateway() {
     }
   };
 
+  // Fetch AI Key Health Report
+  const fetchKeyHealth = async () => {
+    try {
+      const res = await fetch("/api/founder/gateway/keys");
+      const data = await res.json();
+      if (data.success) {
+        setKeyHealthData(data);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch key health:", err);
+    }
+  };
+
   useEffect(() => {
     fetchState();
+    fetchKeyHealth();
   }, []);
 
   useEffect(() => {
@@ -136,6 +154,31 @@ export default function FounderMobileGateway() {
       alert("Dispatch error: " + err.message);
     } finally {
       setDispatchingId(null);
+    }
+  };
+
+  const handleAddKey = async (e) => {
+    e.preventDefault();
+    if (!keySecretInput.trim()) return;
+    try {
+      const res = await fetch("/api/founder/gateway/keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          provider: keyProviderInput,
+          key: keySecretInput.trim()
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setKeyAddMsg(`✓ ${keyProviderInput.toUpperCase()} key added to failover lineup! Total keys: ${data.totalKeys}`);
+        setKeySecretInput("");
+        fetchKeyHealth();
+      } else {
+        alert("Failed to add key: " + data.error);
+      }
+    } catch (err) {
+      alert("Error adding key: " + err.message);
     }
   };
 
@@ -222,10 +265,11 @@ export default function FounderMobileGateway() {
         </div>
 
         {/* Tab Switcher */}
-        <div style={{ display: "flex", background: BG, padding: "3px", borderRadius: "8px", border: `1px solid ${BORDER}` }}>
+        <div style={{ display: "flex", background: BG, padding: "3px", borderRadius: "8px", border: `1px solid ${BORDER}`, flexWrap: "wrap", gap: "2px" }}>
           {[
             { id: "chat", label: "💬 Chat" },
             { id: "leads", label: `🎯 Leads (${gatewayState?.stats?.totalLeads || 0})` },
+            { id: "keys", label: "🔑 Keys" },
             { id: "sync", label: "⚡ State" }
           ].map((tab) => (
             <button
@@ -585,6 +629,234 @@ export default function FounderMobileGateway() {
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── TAB: AI KEYS LINE-UP & AUTO-FAILOVER ── */}
+      {activeTab === "keys" && (
+        <div style={{ flex: 1, overflowY: "auto", padding: "1.25rem", background: BG }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
+            <div>
+              <h3 style={{ margin: 0, fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem" }}>
+                AI Keys Line-Up & Cascade
+              </h3>
+              <p style={{ margin: "2px 0 0 0", fontSize: "0.78rem", color: MUTED }}>
+                Automatic 0ms failover: Groq ➔ NVIDIA NIM ➔ Gemini ➔ Deterministic Core.
+              </p>
+            </div>
+            <button
+              onClick={fetchKeyHealth}
+              style={{
+                background: PANEL,
+                border: `1px solid ${BORDER}`,
+                padding: "4px 10px",
+                borderRadius: "8px",
+                fontSize: "0.74rem",
+                cursor: "pointer"
+              }}
+            >
+              ↻ Refresh
+            </button>
+          </div>
+
+          {keyAddMsg && (
+            <div
+              style={{
+                background: "#ECFDF5",
+                border: "1px solid #10B981",
+                color: "#065F46",
+                padding: "0.6rem 0.9rem",
+                borderRadius: "8px",
+                fontSize: "0.78rem",
+                marginBottom: "1rem"
+              }}
+            >
+              {keyAddMsg}
+            </div>
+          )}
+
+          {/* Cascade Line-up Cards */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem", marginBottom: "1.5rem" }}>
+            {/* 1. Groq Keys */}
+            <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "1rem" }}>⚡</span>
+                  <strong style={{ fontSize: "0.9rem", color: TEXT }}>1. Groq High-Speed (Primary)</strong>
+                </div>
+                <span style={{ fontSize: "0.68rem", color: MUTED }}>Sub-350ms Latency</span>
+              </div>
+              {(keyHealthData?.lineup?.groq || []).map((k) => (
+                <div
+                  key={k.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    background: BG,
+                    padding: "6px 10px",
+                    borderRadius: "8px",
+                    marginTop: "5px",
+                    fontSize: "0.76rem"
+                  }}
+                >
+                  <span style={{ fontFamily: "monospace", color: TEXT }}>{k.masked}</span>
+                  <span
+                    style={{
+                      padding: "2px 8px",
+                      borderRadius: "6px",
+                      fontSize: "0.68rem",
+                      fontWeight: "bold",
+                      background: k.status === "ACTIVE_ONLINE" ? "#D1FAE5" : "#FEF3C7",
+                      color: k.status === "ACTIVE_ONLINE" ? "#065F46" : "#92400E"
+                    }}
+                  >
+                    {k.status === "ACTIVE_ONLINE" ? "● ACTIVE" : `COOLDOWN (${k.cooldownRemainingSeconds}s)`}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* 2. NVIDIA NIM Keys */}
+            <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "1rem" }}>🟢</span>
+                  <strong style={{ fontSize: "0.9rem", color: TEXT }}>2. NVIDIA NIM GPU Cloud (Secondary)</strong>
+                </div>
+                <span style={{ fontSize: "0.68rem", color: MUTED }}>Nemotron 70B & Mistral</span>
+              </div>
+              {(keyHealthData?.lineup?.nvidia || []).map((k) => (
+                <div
+                  key={k.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    background: BG,
+                    padding: "6px 10px",
+                    borderRadius: "8px",
+                    marginTop: "5px",
+                    fontSize: "0.76rem"
+                  }}
+                >
+                  <span style={{ fontFamily: "monospace", color: TEXT }}>{k.masked}</span>
+                  <span
+                    style={{
+                      padding: "2px 8px",
+                      borderRadius: "6px",
+                      fontSize: "0.68rem",
+                      fontWeight: "bold",
+                      background: k.status === "ACTIVE_ONLINE" ? "#D1FAE5" : "#FEF3C7",
+                      color: k.status === "ACTIVE_ONLINE" ? "#065F46" : "#92400E"
+                    }}
+                  >
+                    {k.status === "ACTIVE_ONLINE" ? "● ACTIVE" : `COOLDOWN (${k.cooldownRemainingSeconds}s)`}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* 3. Gemini Keys */}
+            <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "1rem" }}>✨</span>
+                  <strong style={{ fontSize: "0.9rem", color: TEXT }}>3. Google Gemini (Tertiary)</strong>
+                </div>
+                <span style={{ fontSize: "0.68rem", color: MUTED }}>Flash & Pro Latest</span>
+              </div>
+              {(keyHealthData?.lineup?.gemini || []).map((k) => (
+                <div
+                  key={k.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    background: BG,
+                    padding: "6px 10px",
+                    borderRadius: "8px",
+                    marginTop: "5px",
+                    fontSize: "0.76rem"
+                  }}
+                >
+                  <span style={{ fontFamily: "monospace", color: TEXT }}>{k.masked}</span>
+                  <span
+                    style={{
+                      padding: "2px 8px",
+                      borderRadius: "6px",
+                      fontSize: "0.68rem",
+                      fontWeight: "bold",
+                      background: k.status === "ACTIVE_ONLINE" ? "#D1FAE5" : "#FEF3C7",
+                      color: k.status === "ACTIVE_ONLINE" ? "#065F46" : "#92400E"
+                    }}
+                  >
+                    {k.status === "ACTIVE_ONLINE" ? "● ACTIVE" : `COOLDOWN (${k.cooldownRemainingSeconds}s)`}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Runtime Key Injector Form */}
+          <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "1.1rem" }}>
+            <h4 style={{ margin: "0 0 0.5rem 0", fontSize: "0.88rem", color: GOLD }}>
+              + Add / Update API Key (Runtime Line-Up)
+            </h4>
+            <p style={{ margin: "0 0 0.8rem 0", fontSize: "0.74rem", color: MUTED }}>
+              Paste any new API key here from your phone. It joins the failover rotation immediately without restarting the server.
+            </p>
+            <form onSubmit={handleAddKey} style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <select
+                  value={keyProviderInput}
+                  onChange={(e) => setKeyProviderInput(e.target.value)}
+                  style={{
+                    padding: "0.5rem",
+                    borderRadius: "8px",
+                    border: `1px solid ${BORDER}`,
+                    background: BG,
+                    fontSize: "0.8rem",
+                    color: TEXT
+                  }}
+                >
+                  <option value="groq">Groq</option>
+                  <option value="nvidia">NVIDIA NIM</option>
+                  <option value="gemini">Gemini</option>
+                </select>
+                <input
+                  type="password"
+                  value={keySecretInput}
+                  onChange={(e) => setKeySecretInput(e.target.value)}
+                  placeholder="Paste API Key (gsk_... / nvapi-... / AQ....)"
+                  style={{
+                    flex: 1,
+                    padding: "0.5rem 0.8rem",
+                    borderRadius: "8px",
+                    border: `1px solid ${BORDER}`,
+                    background: BG,
+                    fontSize: "0.8rem",
+                    color: TEXT
+                  }}
+                />
+              </div>
+              <button
+                type="submit"
+                style={{
+                  background: `linear-gradient(135deg, ${GOLD_LIGHT}, ${GOLD})`,
+                  color: "#FFF",
+                  border: "none",
+                  padding: "0.6rem 1rem",
+                  borderRadius: "8px",
+                  fontSize: "0.8rem",
+                  fontWeight: "bold",
+                  cursor: "pointer"
+                }}
+              >
+                Line Up Key in Cascade
+              </button>
+            </form>
+          </div>
         </div>
       )}
 

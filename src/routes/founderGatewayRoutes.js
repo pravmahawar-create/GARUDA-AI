@@ -68,6 +68,33 @@ router.post("/dispatch", async (req, res) => {
 });
 
 /**
+ * GET /api/founder/gateway/keys
+ * Live health report of all lined up AI keys (Groq, NVIDIA, Gemini)
+ */
+router.get("/keys", (req, res) => {
+  try {
+    const report = founderGatewayService.getKeyHealth();
+    res.json({ success: true, ...report });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * POST /api/founder/gateway/keys
+ * Runtime injection or update of an API key from mobile console
+ */
+router.post("/keys", (req, res) => {
+  try {
+    const { provider, key } = req.body || {};
+    const result = founderGatewayService.registerKey({ provider, key });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
  * GET /api/founder/gateway/health
  * Sub-second status probe
  */
