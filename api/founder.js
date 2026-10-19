@@ -28,16 +28,10 @@ module.exports = async function handler(req, res) {
   }
 
   // Parse Routing & Actions
-  let pathStr = "";
-  if (Array.isArray(req.query.path)) {
-    pathStr = req.query.path.join("/");
-  } else if (typeof req.query.path === "string") {
-    pathStr = req.query.path;
-  }
-
   const url = new URL(req.url, `https://${req.headers.host || "garudaos.in"}`);
+  let pathStr = (req.query && (Array.isArray(req.query.path) ? req.query.path.join("/") : req.query.path)) || url.searchParams.get("path") || "";
   const cleanPath = url.pathname.replace(/^\/api\/founder(-command)?(\/command)?\/?/, "");
-  const combinedPath = pathStr || cleanPath;
+  const combinedPath = (pathStr || cleanPath || "").toLowerCase();
 
   // -------------------------------------------------------------
   // 24/7 SOVEREIGN MOBILE GATEWAY (CHAT, STATE, KEYS, DISPATCH)
