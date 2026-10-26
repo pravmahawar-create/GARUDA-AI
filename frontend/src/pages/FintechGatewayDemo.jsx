@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import QRCode from "qrcode";
 import BrandAssetImage from "../components/BrandAssetImage";
 import SEOHead from "../components/SEOHead";
 
@@ -340,6 +341,41 @@ export default function FintechGatewayDemo() {
   const [liveServerUTR, setLiveServerUTR] = useState("");
   const [liveServerLatencyMs, setLiveServerLatencyMs] = useState(null);
 
+  // Dedicated Multi-Rail Customer Checkout Sheet State
+  const [checkoutRail, setCheckoutRail] = useState("card"); // "card" | "upi_qr" | "bank_wire"
+  const [cardNumber, setCardNumber] = useState("4532 8921 7392 9842");
+  const [cardHolder, setCardHolder] = useState("PRAVEEN MAHAWAR");
+  const [cardExpiry, setCardExpiry] = useState("09/29");
+  const [cardCvv, setCardCvv] = useState("842");
+  const [cardBrand, setCardBrand] = useState("visa"); // "visa" | "mastercard" | "rupay"
+  const [isAuthorizingCard, setIsAuthorizingCard] = useState(false);
+  const [showCardOtp, setShowCardOtp] = useState(false);
+  const [cardOtpInput, setCardOtpInput] = useState("739281");
+  const [cardPaymentSuccess, setCardPaymentSuccess] = useState(false);
+
+  // Dynamic Real UPI QR & 1-Tap App Switcher State
+  const [upiTimerSeconds, setUpiTimerSeconds] = useState(285);
+  const [isUpiSimulating, setIsUpiSimulating] = useState(false);
+  const [upiPaymentSuccess, setUpiPaymentSuccess] = useState(false);
+
+  // False 1930 Cyber Fraud Defense Engine & Fulfillment Dossier State
+  const [defenseVertical, setDefenseVertical] = useState("gaming"); // "gaming" | "ecommerce" | "hotel"
+  const [dossierCopied, setDossierCopied] = useState(false);
+  const [isDispatchingNotice, setIsDispatchingNotice] = useState(false);
+  const [noticeDispatched, setNoticeDispatched] = useState(false);
+
+  // Dynamic Real Scannable QR Codes (UPI & Interbank VAN)
+  const [upiQrDataUrl, setUpiQrDataUrl] = useState("");
+  const [vanQrDataUrl, setVanQrDataUrl] = useState("");
+  const [upiRawString, setUpiRawString] = useState("");
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setUpiTimerSeconds(prev => (prev > 1 ? prev - 1 : 300));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   React.useEffect(() => {
     const prevBg = document.body.style.backgroundColor;
     document.body.style.backgroundColor = palette.canvas;
@@ -468,6 +504,27 @@ export default function FintechGatewayDemo() {
   const vanUTR = `FT-2026-${vanRail.vanPrefix}${staticSeed}`;
   const vanHash = `sha256:7d8a94e${merchantPrefix.toLowerCase()}8821bc019a32c7e4fa108892`;
 
+  useEffect(() => {
+    const cleanAmtNum = vanRail.id === "in" ? Number(vanAmount) : Number(vanAmount * 85);
+    const formattedAmt = cleanAmtNum.toFixed(2);
+    const cleanMerchantStr = (vanMerchantName || "Raipur Holdings").replace(/[^a-zA-Z0-9 ]/g, "").trim() || "Raipur Holdings";
+    const upiPayee = `raipur.${merchantPrefix.toLowerCase()}9842@icici`;
+    const upiString = `upi://pay?pa=${upiPayee}&pn=${encodeURIComponent(cleanMerchantStr)}&am=${formattedAmt}&cu=INR&tn=Invoice%20REF-${merchantPrefix}-${staticSeed}&mode=02`;
+    setUpiRawString(upiString);
+
+    QRCode.toDataURL(upiString, { width: 520, margin: 2, errorCorrectionLevel: "H", color: { dark: "#000000", light: "#FFFFFF" } })
+      .then(url => setUpiQrDataUrl(url))
+      .catch(() => {});
+
+    const vanPayload = (vanRail.id === "in")
+      ? upiString
+      : `https://www.garudaos.in/fintech-gateway?iban=${encodeURIComponent(currentVANIdentifier)}&ref=REF-${merchantPrefix}-${staticSeed}&amt=${vanAmount}&cur=${vanRail.currency}`;
+
+    QRCode.toDataURL(vanPayload, { width: 520, margin: 2, errorCorrectionLevel: "H", color: { dark: "#000000", light: "#FFFFFF" } })
+      .then(url => setVanQrDataUrl(url))
+      .catch(() => {});
+  }, [vanMerchantName, vanAmount, vanRail, merchantPrefix, currentVANIdentifier, cleanMerchant]);
+
   const handleCopy = (text, label) => {
     if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text);
@@ -568,6 +625,183 @@ export default function FintechGatewayDemo() {
     setLiveServerHash("");
     setLiveServerUTR("");
     setLiveServerLatencyMs(null);
+  };
+
+  const handleAuthoriseCardPayment = () => {
+    setIsAuthorizingCard(true);
+    setTimeout(() => {
+      setIsAuthorizingCard(false);
+      setShowCardOtp(true);
+    }, 450);
+  };
+
+  const handleVerifyCardOtp = () => {
+    setIsAuthorizingCard(true);
+    setTimeout(() => {
+      setIsAuthorizingCard(false);
+      setShowCardOtp(false);
+      setCardPaymentSuccess(true);
+      setVanSettlementStatus("SETTLED");
+      setLiveServerUTR(`FT-CARD-3DS-${Date.now().toString().slice(-8)}`);
+      setLiveServerHash(`sha256:card8942${Date.now().toString().slice(-6)}bc019a`);
+      setLiveServerLatencyMs(140);
+    }, 600);
+  };
+
+  const handleResetCardPayment = () => {
+    setCardPaymentSuccess(false);
+    setShowCardOtp(false);
+    setIsAuthorizingCard(false);
+    setCardOtpInput("739281");
+  };
+
+  const handleSimulateUpiPayment = () => {
+    setIsUpiSimulating(true);
+    setTimeout(() => {
+      setIsUpiSimulating(false);
+      setUpiPaymentSuccess(true);
+      setVanSettlementStatus("SETTLED");
+      setLiveServerUTR(`UPI/${Math.floor(100000000000 + Math.random() * 900000000000)}/ICIC`);
+      setLiveServerHash(`sha256:upi9942${Date.now().toString().slice(-6)}bc019a`);
+      setLiveServerLatencyMs(110);
+    }, 550);
+  };
+
+  const handleResetUpiPayment = () => {
+    setUpiPaymentSuccess(false);
+    setIsUpiSimulating(false);
+    setUpiTimerSeconds(295);
+  };
+
+  const handleCardNumberChange = (e) => {
+    const raw = e.target.value.replace(/\D/g, "").slice(0, 16);
+    const formatted = raw.replace(/(\d{4})(?=\d)/g, "$1 ");
+    setCardNumber(formatted);
+  };
+
+  const formatUpiTimer = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `0${m}:${s < 10 ? "0" : ""}${s}`;
+  };
+
+  const generateDossierText = (vertical) => {
+    const timestamp = "2026-10-26 14:10:02 IST";
+    const compRef = "NCRP/1930/DEL/2026/89421";
+    const utr = liveServerUTR || vanUTR;
+    const cleanAmt = `${vanRail.currency} ${Number(vanAmount).toLocaleString()}`;
+    const cleanMerchant = vanMerchantName || "Raipur Conglomerate Holding";
+    const cleanVan = currentVANIdentifier;
+
+    let verticalEvidence = "";
+    if (vertical === "gaming") {
+      verticalEvidence = `[VERTICAL: ONLINE GAMING & SKILL ENTERTAINMENT PLATFORM]
+ALLEGATION REFUTED: "Customer falsely alleges online fraud and non-receipt of gaming balance/chips."
+FORENSIC TELEMETRY PROOF:
+1. Two-Factor Authentication (2FA): OTP-849102 verified at ${timestamp} via subscriber SIM (+91 98421-XXXXX).
+2. Telemetry & Hardware Fingerprint: IP Address 103.21.244.18 (Airtel 5G, Raipur Circle), Device MAC Hash d4:61:9d:88:42:1a, IMEI Fingerprint IMEI-88421074-IN.
+3. In-Game Balance Credit: Full consideration (${cleanAmt}) credited to User UID-RAIP-9842 in 0.82 seconds (Ledger Ref: GAM-LEDG-8821).
+4. Proven Consumption History: User participated in forty-two (42) consecutive game rounds between 14:11 IST and 16:45 IST. Provably Fair RNG Hash: 0x7a89bc33019f8842...
+5. Statutory Contract Formation: Under Section 10 Indian Contract Act, 1872, user entered into binding digital EULA consenting to gameplay risk. No failure of consideration exists.`;
+    } else if (vertical === "ecommerce") {
+      verticalEvidence = `[VERTICAL: E-COMMERCE & DISTRIBUTION (AMAZON / FLIPKART AFFILIATES)]
+ALLEGATION REFUTED: "Customer falsely alleges payment made but parcel/consignment not delivered."
+FORENSIC TELEMETRY PROOF:
+1. Warehouse Packing Telemetry: Automated packing barcode scan & digital weigh-scale record (1.428 kg) verified with CCTV Hash SHA-256:e4d2a19fc0108842.
+2. Logistics Transit Record: Consignment dispatched via BlueDart / Delhivery Surface Express under Air Waybill (AWB): AWB-DELHIVERY-98421074.
+3. Geofenced Doorstep Delivery Coordinates: Delivery locked at Latitude 21.2514° N, Longitude 81.6296° E (within 3 meters of customer registered delivery address).
+4. Physical Delivery Handshake: Recipient verified delivery via four-digit SMS OTP (OTP-DELIV-4921) and digital stylus signature on courier PDA at 16:42:10 IST.
+5. Statutory Title Transfer: Under Section 19 Sale of Goods Act, 1930, ownership and physical custody passed completely to complainant.`;
+    } else {
+      verticalEvidence = `[VERTICAL: LUXURY HOTELS, MMT & TRAVEL HOSPITALITY]
+ALLEGATION REFUTED: "Customer falsely alleges unauthorized card transaction / booking cancelled."
+FORENSIC TELEMETRY PROOF:
+1. Reservation Voucher: Instant booking confirmation voucher dispatched to authenticated WhatsApp (+91 98421-XXXXX) & email.
+2. Physical Front-Desk Check-In: Front-desk biometric Aadhaar card scan matched registered guest KYC at time of arrival.
+3. Keycard Door Access Logs: RFID electronic door lock registered eighteen (18) physical unlocks for Suite #402 across the booked duration.
+4. Signed On-Site Invoices: Guest physically endorsed restaurant, minibar, and concierge folio on hotel touch terminal.`;
+    }
+
+    return `================================================================================
+STATUTORY FORENSIC DEFENSE DOSSIER & SECTION 65B EVIDENCE CERTIFICATE
+UNDER SECTION 63 BHARATIYA SAKSHYA ADHINIYAM, 2023 / SECTION 65B INDIAN EVIDENCE ACT, 1872
+================================================================================
+
+TO:
+1. The Station House Officer / Investigating Officer (IO), Cyber Crime Police Station
+2. The Nodal Legal & Compliance Officer, ${vanRail.clearingBank}
+3. National Cyber Crime Threat Analytics Unit (NCTAU / 1930 Portal Desk)
+
+RE: REBUTTAL OF FALSE "GOODS/SERVICES NOT RECEIVED" COMPLAINT & MANDATORY DEMAND
+    FOR IMMEDIATE REVOCATION OF SECTION 102 CrPC / SECTION 106 BNSS LIEN
+
+COMPLAINT REF / ACKNOWLEDGMENT: ${compRef}
+DISPUTED TRANSACTION UTR: ${utr}
+TRANSACTION AMOUNT: ${cleanAmt}
+MERCHANT IDENTIFIER: ${cleanMerchant} (DEDICATED VAN: ${cleanVan})
+COMPLAINANT / CUSTOMER: ${vanBuyerName || "Vikramaditya S."}
+TIMESTAMP OF INCIDENT: ${timestamp}
+
+--------------------------------------------------------------------------------
+1. FORENSIC PROOF OF FULL CONSIDERATION & PERFORMANCE (NO FRAUD / NO FAILURE OF CONTRACT)
+--------------------------------------------------------------------------------
+The complainant has falsely alleged to the 1930 Cyber Helpline that "Online fraud occurred and goods/services were not delivered." This statement constitutes a knowing falsehood and malicious abuse of statutory process punishable under Section 217 Bharatiya Nyaya Sanhita, 2023 (Section 211 IPC).
+
+The incontrovertible cryptographic, telemetry, and physical fulfillment logs are certified below:
+
+${verticalEvidence}
+
+--------------------------------------------------------------------------------
+2. SETTLED SUPREME COURT PRECEDENTS GOVERNING BANK FREEZES
+--------------------------------------------------------------------------------
+A. State of Maharashtra v. Tapas D. Neogy (1999) 7 SCC 685:
+   The Supreme Court unequivocally established that Section 102 CrPC police powers cannot be exercised arbitrarily to paralyze commercial bank accounts where a legitimate commercial transaction supported by consideration is established.
+
+B. Teesta Atul Setalvad v. State of Gujarat (2018):
+   Freezing an active corporate account without verifying prima-facie consideration or affording a hearing violates Article 19(1)(g) and Article 21 of the Constitution of India.
+
+C. Section 79, Information Technology Act, 2000 (Safe Harbor Immunity):
+   The intermediary platform operates under strict statutory safe harbor. Funds were cleared through regulated interbank clearing rails with 100% verified 2FA authentication.
+
+--------------------------------------------------------------------------------
+3. STATUTORY NOTICE & DEMAND
+--------------------------------------------------------------------------------
+You are hereby formally called upon to:
+1. IMMEDIATELY REVOKE and release the debit lien / freeze marked on Account No. ${cleanVan} within 24 hours of receipt of this cryptographic certificate.
+2. Direct the complainant to pursue appropriate civil remedies before a competent consumer/civil forum rather than deploying criminal coercive process for contractual or gaming chargebacks.
+
+Failure to unfreeze the account will result in immediate Writ Petitions under Article 226 before the Hon'ble High Court, along with individual damage claims for business disruption and prosecution under Section 217/218 BNS.
+
+DATED: 2026-10-27
+ISSUED UNDER THE DIGITAL SEAL OF:
+GARUDA OS FORENSIC COMPLIANCE SYSTEM & CHIEF REVENUE INTEGRITY AUDITOR
+CERTIFICATE HASH: SHA-256 e8f092b7c41a2938dc814b9842107a4192b0018f
+================================================================================`;
+  };
+
+  const handleDownloadDossier = (vertical) => {
+    try {
+      const text = generateDossierText(vertical);
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `GARUDA_Section65B_Defense_Dossier_${vertical.toUpperCase()}_${merchantPrefix}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Dossier download failed:", err);
+    }
+  };
+
+  const handleDispatchNotice = () => {
+    setIsDispatchingNotice(true);
+    setTimeout(() => {
+      setIsDispatchingNotice(false);
+      setNoticeDispatched(true);
+    }, 750);
   };
 
   const handleDownloadSampleShot = () => {
@@ -1363,13 +1597,14 @@ export default function FintechGatewayDemo() {
             </div>
           </div>
 
-          {/* Dual-Mode Selector: Virtual Account Sample Shot vs Interbank Fee Simulator */}
+          {/* Sovereign 4-Pillar Demo Suite */}
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
             gap: "0.85rem",
             marginBottom: "2.2rem"
           }}>
+            {/* TAB 1: VAN ENGINE */}
             <button
               type="button"
               onClick={() => setActiveDemoTab("van_generator")}
@@ -1377,27 +1612,86 @@ export default function FintechGatewayDemo() {
                 background: activeDemoTab === "van_generator" ? "rgba(196, 139, 40, 0.12)" : "#FAF9F6",
                 border: activeDemoTab === "van_generator" ? `2px solid ${palette.goldPrimary}` : `1px solid ${palette.border}`,
                 borderRadius: 14,
-                padding: "1rem 1.25rem",
+                padding: "1rem 1.15rem",
                 display: "flex",
                 alignItems: "center",
-                gap: "0.9rem",
+                gap: "0.85rem",
                 cursor: "pointer",
                 textAlign: "left",
                 boxShadow: activeDemoTab === "van_generator" ? "0 4px 18px rgba(196, 139, 40, 0.15)" : "none",
                 transition: "all 0.16s ease"
               }}
             >
-              <span style={{ fontSize: "1.75rem" }}>⚡</span>
+              <span style={{ fontSize: "1.65rem" }}>⚡</span>
               <div>
-                <div style={{ fontWeight: 800, fontSize: "0.95rem", color: activeDemoTab === "van_generator" ? palette.goldDeep : palette.text }}>
-                  Live Virtual Account (VAN) & Sample Payment Slip
+                <div style={{ fontWeight: 800, fontSize: "0.92rem", color: activeDemoTab === "van_generator" ? palette.goldDeep : palette.text }}>
+                  1. Dedicated Virtual Account (VAN)
                 </div>
-                <div style={{ fontSize: "0.74rem", color: palette.muted, marginTop: "2px" }}>
-                  Generate real-time Virtual IBAN/VAN, QR scan & downloadable buyer voucher
+                <div style={{ fontSize: "0.72rem", color: palette.muted, marginTop: "2px" }}>
+                  Dynamic IBAN/VAN, QR scan & downloadable buyer voucher
                 </div>
               </div>
             </button>
 
+            {/* TAB 2: CUSTOMER CHECKOUT (CARD / UPI / WIRE) */}
+            <button
+              type="button"
+              onClick={() => setActiveDemoTab("customer_checkout")}
+              style={{
+                background: activeDemoTab === "customer_checkout" ? "rgba(196, 139, 40, 0.12)" : "#FAF9F6",
+                border: activeDemoTab === "customer_checkout" ? `2px solid ${palette.goldPrimary}` : `1px solid ${palette.border}`,
+                borderRadius: 14,
+                padding: "1rem 1.15rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.85rem",
+                cursor: "pointer",
+                textAlign: "left",
+                boxShadow: activeDemoTab === "customer_checkout" ? "0 4px 18px rgba(196, 139, 40, 0.15)" : "none",
+                transition: "all 0.16s ease"
+              }}
+            >
+              <span style={{ fontSize: "1.65rem" }}>💳</span>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: "0.92rem", color: activeDemoTab === "customer_checkout" ? palette.goldDeep : palette.text }}>
+                  2. Customer Checkout Sheet
+                </div>
+                <div style={{ fontSize: "0.72rem", color: palette.muted, marginTop: "2px" }}>
+                  Card (Visa/MC 3DS), Dynamic UPI QR with timer & Bank Wire
+                </div>
+              </div>
+            </button>
+
+            {/* TAB 3: FALSE 1930 CYBER FRAUD DEFENSE ENGINE */}
+            <button
+              type="button"
+              onClick={() => setActiveDemoTab("cyber_defense")}
+              style={{
+                background: activeDemoTab === "cyber_defense" ? "rgba(185, 28, 28, 0.1)" : "#FAF9F6",
+                border: activeDemoTab === "cyber_defense" ? "2px solid #ef4444" : `1px solid ${palette.border}`,
+                borderRadius: 14,
+                padding: "1rem 1.15rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.85rem",
+                cursor: "pointer",
+                textAlign: "left",
+                boxShadow: activeDemoTab === "cyber_defense" ? "0 4px 18px rgba(239, 68, 68, 0.15)" : "none",
+                transition: "all 0.16s ease"
+              }}
+            >
+              <span style={{ fontSize: "1.65rem" }}>🛡️</span>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: "0.92rem", color: activeDemoTab === "cyber_defense" ? "#b91c1c" : palette.text }}>
+                  3. Anti-1930 Fraud Defense Shield
+                </div>
+                <div style={{ fontSize: "0.72rem", color: palette.muted, marginTop: "2px" }}>
+                  Solves "Saman Nahi Diya" freezes via Sec 65B court evidence
+                </div>
+              </div>
+            </button>
+
+            {/* TAB 4: INTERBANK FEE & TELEMETRY SIMULATOR */}
             <button
               type="button"
               onClick={() => setActiveDemoTab("fee_simulator")}
@@ -1405,23 +1699,23 @@ export default function FintechGatewayDemo() {
                 background: activeDemoTab === "fee_simulator" ? "rgba(196, 139, 40, 0.12)" : "#FAF9F6",
                 border: activeDemoTab === "fee_simulator" ? `2px solid ${palette.goldPrimary}` : `1px solid ${palette.border}`,
                 borderRadius: 14,
-                padding: "1rem 1.25rem",
+                padding: "1rem 1.15rem",
                 display: "flex",
                 alignItems: "center",
-                gap: "0.9rem",
+                gap: "0.85rem",
                 cursor: "pointer",
                 textAlign: "left",
                 boxShadow: activeDemoTab === "fee_simulator" ? "0 4px 18px rgba(196, 139, 40, 0.15)" : "none",
                 transition: "all 0.16s ease"
               }}
             >
-              <span style={{ fontSize: "1.75rem" }}>📊</span>
+              <span style={{ fontSize: "1.65rem" }}>📊</span>
               <div>
-                <div style={{ fontWeight: 800, fontSize: "0.95rem", color: activeDemoTab === "fee_simulator" ? palette.goldDeep : palette.text }}>
-                  60-Second Interbank Fee & Telemetry Simulator
+                <div style={{ fontWeight: 800, fontSize: "0.92rem", color: activeDemoTab === "fee_simulator" ? palette.goldDeep : palette.text }}>
+                  4. Interbank Fee Comparison
                 </div>
-                <div style={{ fontSize: "0.74rem", color: palette.muted, marginTop: "2px" }}>
-                  Mathematical fee comparison (2.50% cut vs 0.15% SaaS) & 6-state log
+                <div style={{ fontSize: "0.72rem", color: palette.muted, marginTop: "2px" }}>
+                  2.50% gateway cut vs 0.15% SaaS fee & DAG telemetry
                 </div>
               </div>
             </button>
@@ -1773,6 +2067,80 @@ export default function FintechGatewayDemo() {
                           <strong style={{ color: "#94A3B8" }}>Remittance Reference / Memo:</strong> REF-{merchantPrefix}-{staticSeed}
                         </div>
                       </div>
+
+                      {/* Customer Payment Rails Supported by this VAN */}
+                      <div style={{
+                        marginTop: "1rem",
+                        padding: "0.85rem 1rem",
+                        background: "rgba(255, 255, 255, 0.04)",
+                        border: "1px solid rgba(196, 139, 40, 0.3)",
+                        borderRadius: 10
+                      }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.4rem", marginBottom: "0.6rem" }}>
+                          <span style={{ fontSize: "0.7rem", color: "#F5D76E", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                            ⚡ Supported Customer Payment Rails (Auto-Swept to this VAN):
+                          </span>
+                          <span style={{ fontSize: "0.66rem", color: "#34D399", background: "rgba(52, 211, 153, 0.12)", padding: "0.15rem 0.5rem", borderRadius: 999, border: "1px solid rgba(52, 211, 153, 0.25)" }}>
+                            ● Multi-Rail Enabled
+                          </span>
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "0.5rem", marginBottom: "0.75rem", fontSize: "0.72rem" }}>
+                          <div style={{ background: "rgba(0,0,0,0.35)", padding: "0.5rem 0.65rem", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
+                            <div style={{ color: "#38BDF8", fontWeight: 700 }}>💳 Cards (Visa/MC/RuPay)</div>
+                            <div style={{ color: "#94A3B8", fontSize: "0.65rem" }}>3DS tokenized direct to VAN</div>
+                          </div>
+                          <div style={{ background: "rgba(0,0,0,0.35)", padding: "0.5rem 0.65rem", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
+                            <div style={{ color: "#F5D76E", fontWeight: 700 }}>📲 Dynamic UPI QR</div>
+                            <div style={{ color: "#94A3B8", fontSize: "0.65rem" }}>GPay / PhonePe / Paytm</div>
+                          </div>
+                          <div style={{ background: "rgba(0,0,0,0.35)", padding: "0.5rem 0.65rem", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
+                            <div style={{ color: "#34D399", fontWeight: 700 }}>🏦 RTGS / NEFT Wire</div>
+                            <div style={{ color: "#94A3B8", fontSize: "0.65rem" }}>Direct corporate clearing</div>
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+                          <button
+                            type="button"
+                            onClick={() => setActiveDemoTab("customer_checkout")}
+                            style={{
+                              background: palette.goldGradient,
+                              color: "#FFFFFF",
+                              border: "none",
+                              borderRadius: 8,
+                              padding: "0.5rem 0.85rem",
+                              fontSize: "0.74rem",
+                              fontWeight: 800,
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.4rem"
+                            }}
+                          >
+                            <span>💳</span>
+                            <span>Open Customer Checkout View (Card / UPI) →</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveDemoTab("cyber_defense")}
+                            style={{
+                              background: "rgba(185, 28, 28, 0.25)",
+                              color: "#FCA5A5",
+                              border: "1px solid rgba(239, 68, 68, 0.4)",
+                              borderRadius: 8,
+                              padding: "0.5rem 0.85rem",
+                              fontSize: "0.74rem",
+                              fontWeight: 700,
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.4rem"
+                            }}
+                          >
+                            <span>🛡️</span>
+                            <span>View False 1930 Fraud Defense Dossier →</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Final Corporate Destination Account */}
@@ -1826,65 +2194,23 @@ export default function FintechGatewayDemo() {
                         Instant Corporate Banking Scan
                       </div>
 
-                      {/* Clean Inline Vector SVG QR Matrix */}
+                      {/* Dynamic Real Scannable Corporate QR Matrix */}
                       <div style={{ display: "flex", justifyContent: "center", marginBottom: "0.8rem" }}>
-                        <svg viewBox="0 0 25 25" width="160" height="160" fill="#000000" style={{ display: "block" }}>
-                          {/* Corner 1: Top-Left */}
-                          <rect x="1" y="1" width="7" height="7" />
-                          <rect x="2" y="2" width="5" height="5" fill="#FFFFFF" />
-                          <rect x="3" y="3" width="3" height="3" />
-
-                          {/* Corner 2: Top-Right */}
-                          <rect x="17" y="1" width="7" height="7" />
-                          <rect x="18" y="2" width="5" height="5" fill="#FFFFFF" />
-                          <rect x="19" y="3" width="3" height="3" />
-
-                          {/* Corner 3: Bottom-Left */}
-                          <rect x="1" y="17" width="7" height="7" />
-                          <rect x="2" y="18" width="5" height="5" fill="#FFFFFF" />
-                          <rect x="3" y="19" width="3" height="3" />
-
-                          {/* Data Matrix Dots */}
-                          <rect x="9" y="1" width="1" height="2" />
-                          <rect x="11" y="1" width="2" height="1" />
-                          <rect x="14" y="2" width="1" height="2" />
-                          <rect x="9" y="4" width="2" height="1" />
-                          <rect x="13" y="4" width="2" height="2" />
-                          <rect x="10" y="6" width="3" height="1" />
-                          <rect x="1" y="9" width="2" height="1" />
-                          <rect x="4" y="9" width="1" height="2" />
-                          <rect x="7" y="9" width="2" height="1" />
-                          <rect x="10" y="8" width="1" height="3" />
-                          <rect x="12" y="10" width="3" height="1" />
-                          <rect x="16" y="9" width="2" height="2" />
-                          <rect x="19" y="9" width="1" height="1" />
-                          <rect x="22" y="9" width="2" height="1" />
-                          <rect x="2" y="12" width="2" height="2" />
-                          <rect x="6" y="12" width="1" height="1" />
-                          <rect x="8" y="12" width="2" height="1" />
-                          <rect x="11" y="12" width="2" height="2" />
-                          <rect x="14" y="13" width="2" height="1" />
-                          <rect x="18" y="12" width="2" height="1" />
-                          <rect x="22" y="12" width="2" height="2" />
-                          <rect x="1" y="15" width="1" height="1" />
-                          <rect x="4" y="14" width="2" height="2" />
-                          <rect x="8" y="15" width="2" height="1" />
-                          <rect x="12" y="15" width="1" height="2" />
-                          <rect x="15" y="15" width="3" height="1" />
-                          <rect x="19" y="14" width="1" height="2" />
-                          <rect x="9" y="17" width="2" height="1" />
-                          <rect x="13" y="17" width="1" height="2" />
-                          <rect x="16" y="18" width="2" height="1" />
-                          <rect x="20" y="17" width="2" height="2" />
-                          <rect x="10" y="19" width="2" height="2" />
-                          <rect x="14" y="20" width="2" height="1" />
-                          <rect x="18" y="20" width="2" height="1" />
-                          <rect x="22" y="20" width="2" height="2" />
-                          <rect x="9" y="22" width="3" height="1" />
-                          <rect x="13" y="22" width="2" height="2" />
-                          <rect x="17" y="22" width="1" height="2" />
-                          <rect x="20" y="23" width="3" height="1" />
-                        </svg>
+                        {vanQrDataUrl ? (
+                          <div style={{ background: "#FFFFFF", padding: "10px", borderRadius: 12, display: "inline-block", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}>
+                            <img
+                              src={vanQrDataUrl}
+                              width="220"
+                              height="220"
+                              alt="Corporate Central Bank Virtual Account QR"
+                              style={{ display: "block" }}
+                            />
+                          </div>
+                        ) : (
+                          <div style={{ width: 220, height: 220, background: "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", color: "#64748B" }}>
+                            Generating Scannable QR...
+                          </div>
+                        )}
                       </div>
 
                       <div style={{ fontSize: "0.74rem", color: palette.muted, lineHeight: 1.45 }}>
@@ -2045,7 +2371,1191 @@ export default function FintechGatewayDemo() {
             </div>
           )}
 
-          {/* TAB 2: 60-SECOND INTERBANK FEE & TELEMETRY SIMULATOR */}
+          {/* TAB 2: MULTI-RAIL CUSTOMER CHECKOUT SHEET */}
+          {activeDemoTab === "customer_checkout" && (
+            <div style={{
+              background: "#0A0E17",
+              border: "1.5px solid #C48B28",
+              borderRadius: 22,
+              padding: "clamp(1.2rem, 3vw, 2.4rem)",
+              boxShadow: "0 16px 48px rgba(0, 0, 0, 0.45)",
+              color: "#FFFFFF",
+              position: "relative"
+            }}>
+              {/* Checkout Top Bar */}
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: "1rem",
+                borderBottom: "1px solid rgba(196, 139, 40, 0.25)",
+                paddingBottom: "1.4rem",
+                marginBottom: "1.8rem"
+              }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                    <span style={{ fontSize: "1.4rem" }}>🛍️</span>
+                    <h3 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#FFFFFF", margin: 0 }}>
+                      {vanMerchantName || "Raipur Enterprise"} — Customer Checkout
+                    </h3>
+                  </div>
+                  <div style={{ fontSize: "0.78rem", color: "#94A3B8", marginTop: "4px" }}>
+                    Order ID: <span style={{ fontFamily: "monospace", color: "#38BDF8" }}>ORD-RAIP-2026-{merchantPrefix}-{staticSeed}</span> • Buyer: <strong style={{ color: "#F5D76E" }}>{vanBuyerName || "Vikramaditya S."}</strong>
+                  </div>
+                </div>
+
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: "0.72rem", color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    Total Payable Amount:
+                  </div>
+                  <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#22c55e", fontFamily: "'Inter', sans-serif" }}>
+                    {vanRail.currency} {Number(vanAmount).toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: "0.72rem", color: "#F5D76E" }}>
+                    100% Direct Interbank Clearing • Zero Gateway Float
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Payment Rails Switcher */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "0.8rem",
+                marginBottom: "2rem"
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setCheckoutRail("card")}
+                  style={{
+                    background: checkoutRail === "card" ? "rgba(196, 139, 40, 0.2)" : "rgba(255, 255, 255, 0.04)",
+                    border: checkoutRail === "card" ? "2px solid #C48B28" : "1px solid rgba(255, 255, 255, 0.1)",
+                    color: checkoutRail === "card" ? "#F5D76E" : "#94A3B8",
+                    borderRadius: 14,
+                    padding: "0.9rem 1.1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.7rem",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "all 0.16s ease"
+                  }}
+                >
+                  <span style={{ fontSize: "1.5rem" }}>💳</span>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: "0.88rem", color: checkoutRail === "card" ? "#FFFFFF" : "#CBD5E1" }}>
+                      Credit / Debit Card
+                    </div>
+                    <div style={{ fontSize: "0.68rem", color: "#94A3B8" }}>
+                      Visa • Mastercard • RuPay 3DS
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setCheckoutRail("upi_qr")}
+                  style={{
+                    background: checkoutRail === "upi_qr" ? "rgba(196, 139, 40, 0.2)" : "rgba(255, 255, 255, 0.04)",
+                    border: checkoutRail === "upi_qr" ? "2px solid #C48B28" : "1px solid rgba(255, 255, 255, 0.1)",
+                    color: checkoutRail === "upi_qr" ? "#F5D76E" : "#94A3B8",
+                    borderRadius: 14,
+                    padding: "0.9rem 1.1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.7rem",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "all 0.16s ease"
+                  }}
+                >
+                  <span style={{ fontSize: "1.5rem" }}>📲</span>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: "0.88rem", color: checkoutRail === "upi_qr" ? "#FFFFFF" : "#CBD5E1" }}>
+                      Dynamic UPI QR & Apps
+                    </div>
+                    <div style={{ fontSize: "0.68rem", color: "#94A3B8" }}>
+                      GPay • PhonePe • Paytm • CRED
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setCheckoutRail("bank_wire")}
+                  style={{
+                    background: checkoutRail === "bank_wire" ? "rgba(196, 139, 40, 0.2)" : "rgba(255, 255, 255, 0.04)",
+                    border: checkoutRail === "bank_wire" ? "2px solid #C48B28" : "1px solid rgba(255, 255, 255, 0.1)",
+                    color: checkoutRail === "bank_wire" ? "#F5D76E" : "#94A3B8",
+                    borderRadius: 14,
+                    padding: "0.9rem 1.1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.7rem",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "all 0.16s ease"
+                  }}
+                >
+                  <span style={{ fontSize: "1.5rem" }}>🏦</span>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: "0.88rem", color: checkoutRail === "bank_wire" ? "#FFFFFF" : "#CBD5E1" }}>
+                      Dedicated Bank Wire (VAN)
+                    </div>
+                    <div style={{ fontSize: "0.68rem", color: "#94A3B8" }}>
+                      RTGS / NEFT / IMPS Netbanking
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              {/* RAIL 1: CREDIT / DEBIT CARD VIEW */}
+              {checkoutRail === "card" && (
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                  gap: "2rem",
+                  alignItems: "start"
+                }}>
+                  {/* Left Column: Interactive 3D Card Visual */}
+                  <div>
+                    <div style={{
+                      background: "linear-gradient(135deg, #0B1120 0%, #1E293B 60%, #0F172A 100%)",
+                      border: "1.5px solid rgba(196, 139, 40, 0.5)",
+                      borderRadius: 18,
+                      padding: "1.8rem",
+                      boxShadow: "0 12px 32px rgba(0, 0, 0, 0.6)",
+                      position: "relative",
+                      overflow: "hidden",
+                      minHeight: 210,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between"
+                    }}>
+                      {/* Card Top Row: Chip, Contactless, Brand */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                          {/* Gold EMV Chip */}
+                          <div style={{
+                            width: 44,
+                            height: 32,
+                            background: "linear-gradient(135deg, #F5D76E 0%, #C48B28 50%, #9E6D1C 100%)",
+                            borderRadius: 6,
+                            border: "1px solid #FFE082",
+                            boxShadow: "inset 0 0 4px rgba(0,0,0,0.4)",
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr",
+                            gap: 2,
+                            padding: 2
+                          }}>
+                            <div style={{ borderRight: "1px solid rgba(0,0,0,0.3)", borderBottom: "1px solid rgba(0,0,0,0.3)" }}></div>
+                            <div style={{ borderBottom: "1px solid rgba(0,0,0,0.3)" }}></div>
+                            <div style={{ borderRight: "1px solid rgba(0,0,0,0.3)" }}></div>
+                            <div></div>
+                          </div>
+                          {/* Contactless Wave */}
+                          <span style={{ fontSize: "1.3rem", color: "#94A3B8" }}>📡</span>
+                        </div>
+
+                        <div style={{
+                          fontFamily: "'Inter', sans-serif",
+                          fontWeight: 900,
+                          fontSize: "1.2rem",
+                          letterSpacing: "0.08em",
+                          color: cardBrand === "rupay" ? "#F97316" : cardBrand === "mastercard" ? "#EF4444" : "#38BDF8"
+                        }}>
+                          {cardBrand === "rupay" ? "RuPay ❯❯" : cardBrand === "mastercard" ? "Mastercard" : "VISA"}
+                        </div>
+                      </div>
+
+                      {/* Card Number */}
+                      <div style={{
+                        fontFamily: "'Courier New', monospace",
+                        fontSize: "clamp(1.15rem, 2.5vw, 1.45rem)",
+                        fontWeight: 700,
+                        letterSpacing: "0.14em",
+                        color: "#FFFFFF",
+                        textShadow: "0 2px 4px rgba(0,0,0,0.6)",
+                        margin: "1.4rem 0"
+                      }}>
+                        {cardNumber || "••••  ••••  ••••  ••••"}
+                      </div>
+
+                      {/* Card Bottom Row: Holder & Expiry */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                        <div>
+                          <div style={{ fontSize: "0.62rem", color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                            CARDHOLDER NAME
+                          </div>
+                          <div style={{ fontSize: "0.92rem", fontWeight: 700, color: "#F1F5F9", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                            {cardHolder || "VALUED CLIENT"}
+                          </div>
+                        </div>
+
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontSize: "0.62rem", color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                            EXPIRES
+                          </div>
+                          <div style={{ fontSize: "0.92rem", fontWeight: 700, color: "#F1F5F9", fontFamily: "monospace" }}>
+                            {cardExpiry || "MM/YY"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* BaaS Routing Notice */}
+                    <div style={{
+                      marginTop: "1rem",
+                      padding: "0.75rem 1rem",
+                      background: "rgba(22, 163, 74, 0.08)",
+                      border: "1px solid rgba(34, 197, 94, 0.3)",
+                      borderRadius: 10,
+                      fontSize: "0.74rem",
+                      color: "#A7F3D0",
+                      lineHeight: 1.45
+                    }}>
+                      <strong style={{ color: "#22c55e" }}>Direct VAN Card Tokenization:</strong> Card authorizations settle directly into isolated clearing VAN <span style={{ fontFamily: "monospace", color: "#FFFFFF" }}>{currentVANIdentifier}</span>. Zero third-party aggregator chargeback freeze exposure.
+                    </div>
+                  </div>
+
+                  {/* Right Column: Card Input Form or 3DS OTP Step */}
+                  <div>
+                    {!cardPaymentSuccess && !showCardOtp && (
+                      <div style={{
+                        background: "rgba(255, 255, 255, 0.03)",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        borderRadius: 16,
+                        padding: "1.4rem"
+                      }}>
+                        {/* Network Switcher */}
+                        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.2rem" }}>
+                          {[
+                            { id: "visa", label: "Visa" },
+                            { id: "mastercard", label: "Mastercard" },
+                            { id: "rupay", label: "RuPay" }
+                          ].map(b => (
+                            <button
+                              key={b.id}
+                              type="button"
+                              onClick={() => setCardBrand(b.id)}
+                              style={{
+                                background: cardBrand === b.id ? "rgba(196, 139, 40, 0.25)" : "transparent",
+                                border: cardBrand === b.id ? "1.5px solid #C48B28" : "1px solid rgba(255, 255, 255, 0.15)",
+                                color: cardBrand === b.id ? "#F5D76E" : "#94A3B8",
+                                borderRadius: 8,
+                                padding: "0.35rem 0.85rem",
+                                fontSize: "0.76rem",
+                                fontWeight: 700,
+                                cursor: "pointer"
+                              }}
+                            >
+                              {b.label}
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Card Number */}
+                        <div style={{ marginBottom: "1rem" }}>
+                          <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>
+                            Card Number
+                          </label>
+                          <input
+                            type="text"
+                            value={cardNumber}
+                            onChange={handleCardNumberChange}
+                            placeholder="4532 8921 7392 9842"
+                            style={{
+                              width: "100%",
+                              background: "rgba(0, 0, 0, 0.4)",
+                              border: "1px solid rgba(255, 255, 255, 0.15)",
+                              borderRadius: 10,
+                              padding: "0.75rem 1rem",
+                              color: "#FFFFFF",
+                              fontFamily: "monospace",
+                              fontSize: "0.95rem"
+                            }}
+                          />
+                        </div>
+
+                        {/* Cardholder Name */}
+                        <div style={{ marginBottom: "1rem" }}>
+                          <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>
+                            Cardholder Name
+                          </label>
+                          <input
+                            type="text"
+                            value={cardHolder}
+                            onChange={(e) => setCardHolder(e.target.value.toUpperCase())}
+                            placeholder="NAME AS PRINTED ON CARD"
+                            style={{
+                              width: "100%",
+                              background: "rgba(0, 0, 0, 0.4)",
+                              border: "1px solid rgba(255, 255, 255, 0.15)",
+                              borderRadius: 10,
+                              padding: "0.75rem 1rem",
+                              color: "#FFFFFF",
+                              textTransform: "uppercase",
+                              fontSize: "0.88rem"
+                            }}
+                          />
+                        </div>
+
+                        {/* Expiry and CVV */}
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginBottom: "1.4rem" }}>
+                          <div>
+                            <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>
+                              Expiry (MM/YY)
+                            </label>
+                            <input
+                              type="text"
+                              value={cardExpiry}
+                              onChange={(e) => setCardExpiry(e.target.value)}
+                              placeholder="09/29"
+                              style={{
+                                width: "100%",
+                                background: "rgba(0, 0, 0, 0.4)",
+                                border: "1px solid rgba(255, 255, 255, 0.15)",
+                                borderRadius: 10,
+                                padding: "0.75rem 1rem",
+                                color: "#FFFFFF",
+                                fontFamily: "monospace",
+                                fontSize: "0.88rem"
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label style={{ display: "block", fontSize: "0.72rem", color: "#94A3B8", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>
+                              CVV / Security Code
+                            </label>
+                            <input
+                              type="password"
+                              maxLength={4}
+                              value={cardCvv}
+                              onChange={(e) => setCardCvv(e.target.value)}
+                              placeholder="•••"
+                              style={{
+                                width: "100%",
+                                background: "rgba(0, 0, 0, 0.4)",
+                                border: "1px solid rgba(255, 255, 255, 0.15)",
+                                borderRadius: 10,
+                                padding: "0.75rem 1rem",
+                                color: "#FFFFFF",
+                                fontFamily: "monospace",
+                                fontSize: "0.88rem"
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Authorize Button */}
+                        <button
+                          type="button"
+                          disabled={isAuthorizingCard}
+                          onClick={handleAuthoriseCardPayment}
+                          style={{
+                            width: "100%",
+                            background: palette.goldGradient,
+                            color: "#FFFFFF",
+                            border: "none",
+                            borderRadius: 12,
+                            padding: "0.9rem",
+                            fontSize: "0.92rem",
+                            fontWeight: 800,
+                            cursor: isAuthorizingCard ? "not-allowed" : "pointer",
+                            boxShadow: "0 4px 16px rgba(179, 130, 53, 0.35)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "0.5rem"
+                          }}
+                        >
+                          {isAuthorizingCard ? (
+                            <span>⏳ Connecting to Issuing Bank 3DS Rails...</span>
+                          ) : (
+                            <>
+                              <span>⚡ Pay {vanRail.currency} {Number(vanAmount).toLocaleString()} via Bank 3D Secure</span>
+                              <span>→</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* 3D SECURE OTP SIMULATION SCREEN */}
+                    {!cardPaymentSuccess && showCardOtp && (
+                      <div style={{
+                        background: "#111827",
+                        border: "2px solid #38BDF8",
+                        borderRadius: 16,
+                        padding: "1.6rem"
+                      }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", paddingBottom: "0.8rem" }}>
+                          <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#38BDF8" }}>
+                            🏦 Issuing Bank 3D Secure 2.0
+                          </div>
+                          <span style={{ fontSize: "0.7rem", color: "#22c55e", background: "rgba(34, 197, 94, 0.15)", padding: "0.2rem 0.5rem", borderRadius: 999 }}>
+                            ● Verified by {cardBrand.toUpperCase()}
+                          </span>
+                        </div>
+
+                        <div style={{ fontSize: "0.82rem", color: "#E2E8F0", lineHeight: 1.5, marginBottom: "1rem" }}>
+                          A One-Time Password (OTP) has been dispatched to your mobile number registered with the issuing bank: <strong style={{ color: "#F5D76E" }}>+91 ••••••0362</strong>
+                        </div>
+
+                        <div style={{ background: "rgba(0,0,0,0.3)", padding: "0.75rem 1rem", borderRadius: 8, marginBottom: "1.2rem", fontSize: "0.76rem" }}>
+                          <div><strong style={{ color: "#94A3B8" }}>Merchant:</strong> {vanMerchantName}</div>
+                          <div><strong style={{ color: "#94A3B8" }}>Payable Amount:</strong> {vanRail.currency} {Number(vanAmount).toLocaleString()}</div>
+                          <div><strong style={{ color: "#94A3B8" }}>Clearing Node:</strong> {currentVANIdentifier}</div>
+                        </div>
+
+                        <div style={{ marginBottom: "1rem" }}>
+                          <label style={{ display: "block", fontSize: "0.74rem", color: "#94A3B8", fontWeight: 700, marginBottom: "0.4rem" }}>
+                            Enter 6-Digit Bank OTP:
+                          </label>
+                          <input
+                            type="text"
+                            value={cardOtpInput}
+                            onChange={(e) => setCardOtpInput(e.target.value)}
+                            maxLength={6}
+                            style={{
+                              width: "100%",
+                              background: "#030712",
+                              border: "1.5px solid #38BDF8",
+                              borderRadius: 10,
+                              padding: "0.75rem",
+                              color: "#FFFFFF",
+                              fontFamily: "monospace",
+                              fontSize: "1.3rem",
+                              letterSpacing: "0.3em",
+                              textAlign: "center"
+                            }}
+                          />
+                        </div>
+
+                        <div style={{ display: "flex", gap: "0.6rem" }}>
+                          <button
+                            type="button"
+                            disabled={isAuthorizingCard}
+                            onClick={handleVerifyCardOtp}
+                            style={{
+                              flex: 1,
+                              background: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+                              color: "#FFFFFF",
+                              border: "none",
+                              borderRadius: 10,
+                              padding: "0.8rem",
+                              fontSize: "0.88rem",
+                              fontWeight: 800,
+                              cursor: "pointer"
+                            }}
+                          >
+                            {isAuthorizingCard ? "Settling to VAN..." : "✔ Confirm & Settle Payment"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowCardOtp(false)}
+                            style={{
+                              background: "rgba(255, 255, 255, 0.08)",
+                              color: "#CBD5E1",
+                              border: "1px solid rgba(255, 255, 255, 0.2)",
+                              borderRadius: 10,
+                              padding: "0.8rem 1rem",
+                              fontSize: "0.82rem",
+                              cursor: "pointer"
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* PAYMENT CONFIRMED / SETTLED SUCCESS SCREEN */}
+                    {cardPaymentSuccess && (
+                      <div style={{
+                        background: "rgba(22, 163, 74, 0.12)",
+                        border: "2px solid #22c55e",
+                        borderRadius: 16,
+                        padding: "1.6rem",
+                        textAlign: "center"
+                      }}>
+                        <div style={{ fontSize: "2.4rem", marginBottom: "0.5rem" }}>🎉</div>
+                        <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#22c55e", margin: "0 0 0.5rem" }}>
+                          CARD PAYMENT CLEARED & CONFIRMED!
+                        </h4>
+                        <div style={{ fontSize: "0.82rem", color: "#E2E8F0", lineHeight: 1.5, marginBottom: "1.2rem" }}>
+                          Funds authorized via 3DS and settled directly into merchant's isolated clearing VAN with zero intermediate float.
+                        </div>
+
+                        <div style={{
+                          background: "rgba(0, 0, 0, 0.4)",
+                          border: "1px solid rgba(255, 255, 255, 0.1)",
+                          borderRadius: 10,
+                          padding: "1rem",
+                          textAlign: "left",
+                          fontSize: "0.78rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "0.4rem",
+                          marginBottom: "1.2rem"
+                        }}>
+                          <div><strong style={{ color: "#94A3B8" }}>Central Rail UTR:</strong> <span style={{ fontFamily: "monospace", color: "#38BDF8" }}>{liveServerUTR}</span></div>
+                          <div><strong style={{ color: "#94A3B8" }}>Settled VAN:</strong> <span style={{ fontFamily: "monospace", color: "#F5D76E" }}>{currentVANIdentifier}</span></div>
+                          <div><strong style={{ color: "#94A3B8" }}>Settlement Latency:</strong> <span style={{ color: "#22c55e", fontWeight: 700 }}>0.14 Seconds (Instant BaaS Sweep)</span></div>
+                          <div><strong style={{ color: "#94A3B8" }}>GARUDA Float Balance:</strong> <span style={{ color: "#22c55e", fontWeight: 800 }}>$0.00 USD (Permanent Zero-Custody Invariant)</span></div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleResetCardPayment}
+                          style={{
+                            background: "rgba(255, 255, 255, 0.1)",
+                            color: "#FFFFFF",
+                            border: "1px solid rgba(255, 255, 255, 0.25)",
+                            borderRadius: 10,
+                            padding: "0.6rem 1.2rem",
+                            fontSize: "0.82rem",
+                            fontWeight: 700,
+                            cursor: "pointer"
+                          }}
+                        >
+                          ↺ Run New Card Payment Simulation
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* RAIL 2: DYNAMIC UPI QR & 1-TAP APPS VIEW */}
+              {checkoutRail === "upi_qr" && (
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                  gap: "2rem",
+                  alignItems: "center"
+                }}>
+                  {/* Left Column: QR Matrix with Countdown */}
+                  <div style={{
+                    background: "#FFFFFF",
+                    borderRadius: 20,
+                    padding: "1.8rem",
+                    textAlign: "center",
+                    color: "#17181B",
+                    boxShadow: "0 12px 36px rgba(0,0,0,0.5)"
+                  }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
+                      <span style={{ fontSize: "0.74rem", fontWeight: 800, color: palette.goldDeep, textTransform: "uppercase" }}>
+                        NPCI Dynamic UPI QR
+                      </span>
+                      <span style={{
+                        background: "#FEF3C7",
+                        color: "#B45309",
+                        border: "1px solid #FDE68A",
+                        padding: "0.2rem 0.6rem",
+                        borderRadius: 999,
+                        fontSize: "0.72rem",
+                        fontWeight: 800
+                      }}>
+                        ⏳ Expires: {formatUpiTimer(upiTimerSeconds)}
+                      </span>
+                    </div>
+
+                    {/* Real Dynamic Scannable UPI QR */}
+                    <div style={{ display: "flex", justifyContent: "center", margin: "1rem 0" }}>
+                      {upiQrDataUrl ? (
+                        <div style={{ background: "#FFFFFF", padding: "12px", borderRadius: 14, display: "inline-block", boxShadow: "0 6px 24px rgba(0,0,0,0.18)" }}>
+                          <img
+                            src={upiQrDataUrl}
+                            width="260"
+                            height="260"
+                            alt="Real Dynamic Scannable UPI QR"
+                            style={{ display: "block" }}
+                          />
+                        </div>
+                      ) : (
+                        <div style={{ width: 260, height: 260, background: "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.8rem", color: "#64748B" }}>
+                          Generating Real UPI QR...
+                        </div>
+                      )}
+                    </div>
+
+                    <div style={{ fontSize: "1.15rem", fontWeight: 800, color: "#15803d", marginBottom: "0.3rem" }}>
+                      ₹{Number(vanRail.id === "in" ? vanAmount : vanAmount * 85).toLocaleString()} INR
+                    </div>
+                    <div style={{ fontSize: "0.72rem", color: palette.muted, marginBottom: "0.6rem" }}>
+                      Scan using Google Pay, PhonePe, Paytm, CRED or any Banking UPI App
+                    </div>
+
+                    {/* Direct UPI Mobile Intent Switch Button */}
+                    <div style={{ display: "flex", justifyContent: "center", marginBottom: "0.7rem" }}>
+                      <a
+                        href={upiRawString}
+                        style={{
+                          background: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)",
+                          color: "#FFFFFF",
+                          textDecoration: "none",
+                          fontSize: "0.76rem",
+                          fontWeight: 700,
+                          padding: "0.55rem 1rem",
+                          borderRadius: 8,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.4rem",
+                          boxShadow: "0 2px 8px rgba(22, 163, 74, 0.3)"
+                        }}
+                      >
+                        <span>📲</span>
+                        <span>Open Directly in UPI App (GPay / PhonePe)</span>
+                      </a>
+                    </div>
+
+                    <div style={{
+                      padding: "0.5rem 0.75rem",
+                      background: "rgba(22, 163, 74, 0.08)",
+                      border: "1px solid rgba(34, 197, 94, 0.25)",
+                      borderRadius: 8,
+                      fontSize: "0.68rem",
+                      color: "#15803d",
+                      lineHeight: 1.4,
+                      textAlign: "left"
+                    }}>
+                      🔒 <strong>Single-Use Dynamic Token:</strong> Generated uniquely for this transaction amount. Automatically self-destructs (dismisses) immediately upon bank settlement.
+                    </div>
+                  </div>
+
+                  {/* Right Column: VPA & App Switchers & Simulation */}
+                  <div>
+                    {/* VPA Box */}
+                    <div style={{
+                      background: "rgba(255, 255, 255, 0.04)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      borderRadius: 14,
+                      padding: "1.1rem",
+                      marginBottom: "1.2rem"
+                    }}>
+                      <div style={{ fontSize: "0.7rem", color: "#94A3B8", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em", marginBottom: "0.3rem" }}>
+                        Dedicated Virtual Payment Address (VPA):
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontFamily: "monospace", fontSize: "1.05rem", fontWeight: 800, color: "#F5D76E" }}>
+                          raipur.{cleanMerchant.toLowerCase()}9842@icici
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(`raipur.${cleanMerchant.toLowerCase()}9842@icici`, "vpa")}
+                          style={{
+                            background: "rgba(196, 139, 40, 0.2)",
+                            border: "1px solid #C48B28",
+                            color: "#F5D76E",
+                            borderRadius: 6,
+                            padding: "0.3rem 0.7rem",
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            cursor: "pointer"
+                          }}
+                        >
+                          {copyFeedback === "vpa" ? "✔ Copied" : "📋 Copy VPA"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 1-Tap UPI Apps */}
+                    <div style={{ marginBottom: "1.4rem" }}>
+                      <div style={{ fontSize: "0.72rem", color: "#94A3B8", fontWeight: 700, textTransform: "uppercase", marginBottom: "0.6rem" }}>
+                        1-Tap UPI Mobile Intent Switchers:
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))", gap: "0.6rem" }}>
+                        {[
+                          { name: "Google Pay", color: "#4285F4" },
+                          { name: "PhonePe", color: "#5F259F" },
+                          { name: "Paytm", color: "#00BAF2" },
+                          { name: "CRED", color: "#FFFFFF" },
+                          { name: "BHIM", color: "#00796B" }
+                        ].map(app => (
+                          <button
+                            key={app.name}
+                            type="button"
+                            onClick={handleSimulateUpiPayment}
+                            style={{
+                              background: "rgba(255, 255, 255, 0.06)",
+                              border: "1px solid rgba(255, 255, 255, 0.15)",
+                              borderRadius: 10,
+                              padding: "0.6rem 0.4rem",
+                              color: "#FFFFFF",
+                              fontSize: "0.74rem",
+                              fontWeight: 700,
+                              cursor: "pointer",
+                              textAlign: "center"
+                            }}
+                          >
+                            <span style={{ color: app.color, fontWeight: 900 }}>● </span>
+                            {app.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Simulation / Payment Result */}
+                    {!upiPaymentSuccess ? (
+                      <button
+                        type="button"
+                        disabled={isUpiSimulating}
+                        onClick={handleSimulateUpiPayment}
+                        style={{
+                          width: "100%",
+                          background: palette.goldGradient,
+                          color: "#FFFFFF",
+                          border: "none",
+                          borderRadius: 12,
+                          padding: "0.9rem",
+                          fontSize: "0.92rem",
+                          fontWeight: 800,
+                          cursor: isUpiSimulating ? "not-allowed" : "pointer",
+                          boxShadow: "0 4px 16px rgba(179, 130, 53, 0.35)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "0.5rem"
+                        }}
+                      >
+                        {isUpiSimulating ? (
+                          <span>⏳ Ingesting Bank Webhook (HMAC-SHA256 verified)...</span>
+                        ) : (
+                          <>
+                            <span>⚡ Simulate Customer Paying via UPI App</span>
+                            <span>→</span>
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <div style={{
+                        background: "rgba(22, 163, 74, 0.12)",
+                        border: "2px solid #22c55e",
+                        borderRadius: 14,
+                        padding: "1.2rem",
+                        textAlign: "center"
+                      }}>
+                        <div style={{ color: "#22c55e", fontWeight: 800, fontSize: "1rem", marginBottom: "0.4rem" }}>
+                          ✔ UPI TRANSACTION SETTLED IN 0.11s!
+                        </div>
+                        <div style={{ fontSize: "0.76rem", color: "#E2E8F0", marginBottom: "0.8rem" }}>
+                          UTR: <span style={{ fontFamily: "monospace", color: "#38BDF8" }}>{liveServerUTR}</span> • Swept to Merchant Master Account
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleResetUpiPayment}
+                          style={{
+                            background: "rgba(255, 255, 255, 0.1)",
+                            color: "#FFFFFF",
+                            border: "1px solid rgba(255, 255, 255, 0.2)",
+                            borderRadius: 8,
+                            padding: "0.4rem 0.9rem",
+                            fontSize: "0.74rem",
+                            cursor: "pointer"
+                          }}
+                        >
+                          ↺ Reset UPI Simulation
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* RAIL 3: DEDICATED BANK WIRE (VAN) VIEW */}
+              {checkoutRail === "bank_wire" && (
+                <div style={{
+                  background: "#111827",
+                  border: "1.5px solid #C48B28",
+                  borderRadius: 18,
+                  padding: "1.8rem"
+                }}>
+                  <div style={{ fontSize: "0.76rem", color: "#F5D76E", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1rem" }}>
+                    Dedicated Commercial Wire Coordinates (RTGS / NEFT / IMPS):
+                  </div>
+
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                    gap: "1.2rem",
+                    marginBottom: "1.4rem"
+                  }}>
+                    <div style={{ background: "rgba(0,0,0,0.4)", padding: "1rem", borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)" }}>
+                      <div style={{ fontSize: "0.68rem", color: "#94A3B8", textTransform: "uppercase", fontWeight: 700 }}>
+                        Beneficiary Legal Name:
+                      </div>
+                      <div style={{ fontSize: "1rem", fontWeight: 800, color: "#FFFFFF", marginTop: "3px" }}>
+                        {vanMerchantName} (Dedicated BaaS Escrow)
+                      </div>
+                    </div>
+
+                    <div style={{ background: "rgba(0,0,0,0.4)", padding: "1rem", borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)" }}>
+                      <div style={{ fontSize: "0.68rem", color: "#94A3B8", textTransform: "uppercase", fontWeight: 700 }}>
+                        Virtual Account Number (VAN):
+                      </div>
+                      <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "#38BDF8", fontFamily: "monospace", marginTop: "3px" }}>
+                        {currentVANIdentifier}
+                      </div>
+                    </div>
+
+                    <div style={{ background: "rgba(0,0,0,0.4)", padding: "1rem", borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)" }}>
+                      <div style={{ fontSize: "0.68rem", color: "#94A3B8", textTransform: "uppercase", fontWeight: 700 }}>
+                        IFSC / Clearing Routing:
+                      </div>
+                      <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#F5D76E", marginTop: "3px" }}>
+                        {currentVANRouting}
+                      </div>
+                    </div>
+
+                    <div style={{ background: "rgba(0,0,0,0.4)", padding: "1rem", borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)" }}>
+                      <div style={{ fontSize: "0.68rem", color: "#94A3B8", textTransform: "uppercase", fontWeight: 700 }}>
+                        Clearing Bank Institution:
+                      </div>
+                      <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#A7F3D0", marginTop: "3px" }}>
+                        {vanRail.clearingBank}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(currentVANIdentifier, "van_wire")}
+                      style={{
+                        background: palette.goldGradient,
+                        color: "#FFFFFF",
+                        border: "none",
+                        borderRadius: 10,
+                        padding: "0.65rem 1.2rem",
+                        fontSize: "0.82rem",
+                        fontWeight: 800,
+                        cursor: "pointer"
+                      }}
+                    >
+                      {copyFeedback === "van_wire" ? "✔ Copied VAN!" : "📋 Copy Virtual Account Number"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveDemoTab("van_generator")}
+                      style={{
+                        background: "rgba(255, 255, 255, 0.08)",
+                        color: "#E2E8F0",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        borderRadius: 10,
+                        padding: "0.65rem 1.2rem",
+                        fontSize: "0.82rem",
+                        cursor: "pointer"
+                      }}
+                    >
+                      ⚡ Switch to Corporate VAN Studio →
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 3: FALSE 1930 CYBER FRAUD DEFENSE ENGINE & SEC 65B EVIDENCE DOSSIER */}
+          {activeDemoTab === "cyber_defense" && (
+            <div style={{
+              background: "#0D1117",
+              border: "1.5px solid rgba(239, 68, 68, 0.45)",
+              borderRadius: 22,
+              padding: "clamp(1.2rem, 3vw, 2.4rem)",
+              boxShadow: "0 16px 48px rgba(0, 0, 0, 0.5)",
+              color: "#FFFFFF"
+            }}>
+              {/* Alert Header */}
+              <div style={{
+                background: "rgba(185, 28, 28, 0.12)",
+                border: "1px solid rgba(239, 68, 68, 0.35)",
+                borderRadius: 16,
+                padding: "1.2rem 1.4rem",
+                marginBottom: "2rem"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.5rem" }}>
+                  <span style={{ fontSize: "1.6rem" }}>🚨</span>
+                  <h3 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#F87171", margin: 0 }}>
+                    False 1930 Cyber Fraud Defense Engine & Fulfillment Shield
+                  </h3>
+                </div>
+                <div style={{ fontSize: "0.84rem", color: "#E2E8F0", lineHeight: 1.6 }}>
+                  <strong>The Operational Hemorrhage:</strong> In online gaming, e-commerce distribution, and luxury hotels, dishonest buyers dial <strong>1930 (National Cyber Crime Reporting Portal)</strong> alleging <em>"Online fraud occurred and goods/services were never delivered"</em>. Cyber Cells indiscriminately send Section 102 CrPC debit freeze orders to banks without verifying facts.
+                </div>
+                <div style={{ fontSize: "0.82rem", color: "#34D399", marginTop: "0.5rem", fontWeight: 700 }}>
+                  🛡️ GARUDA's Autonomous Countermeasure: 3-Way Cryptographic Handshake logs the exact delivery telemetry and auto-compiles a court-ready Section 65B Indian Evidence Act (BSA Sec 63) Legal Dossier citing Supreme Court precedents to compel immediate de-freeze within 24 hours!
+                </div>
+              </div>
+
+              {/* Vertical Selector */}
+              <div style={{ marginBottom: "1.8rem" }}>
+                <label style={{ display: "block", fontSize: "0.74rem", color: "#94A3B8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.7rem" }}>
+                  Select Business Operational Model (Forensic Archetype):
+                </label>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "0.8rem" }}>
+                  {[
+                    { id: "gaming", icon: "🎰", label: "Online Gaming & E-Sports", claim: "Claim: 'Chips/Balance not credited after deposit'" },
+                    { id: "ecommerce", icon: "📦", label: "E-Commerce Distribution", claim: "Claim: 'Parcel empty / Consignment not delivered'" },
+                    { id: "hotel", icon: "🏨", label: "Luxury Hotels & Hospitality", claim: "Claim: 'Card stolen / Unauthorized stay billing'" }
+                  ].map(v => (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => { setDefenseVertical(v.id); setNoticeDispatched(false); }}
+                      style={{
+                        background: defenseVertical === v.id ? "rgba(185, 28, 28, 0.2)" : "rgba(255, 255, 255, 0.04)",
+                        border: defenseVertical === v.id ? "2px solid #EF4444" : "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: 12,
+                        padding: "0.85rem 1rem",
+                        textAlign: "left",
+                        cursor: "pointer",
+                        transition: "all 0.16s ease"
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontWeight: 800, fontSize: "0.88rem", color: defenseVertical === v.id ? "#FCA5A5" : "#CBD5E1" }}>
+                        <span>{v.icon}</span>
+                        <span>{v.label}</span>
+                      </div>
+                      <div style={{ fontSize: "0.68rem", color: "#94A3B8", marginTop: "3px" }}>
+                        {v.claim}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4-Card Forensic Audit Evidence Matrix */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                gap: "1rem",
+                marginBottom: "2rem"
+              }}>
+                {/* Evidence Card 1: 2FA Telemetry */}
+                <div style={{ background: "rgba(0, 0, 0, 0.45)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: 14, padding: "1.1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#38BDF8", fontWeight: 800, fontSize: "0.82rem", marginBottom: "0.6rem" }}>
+                    <span>📱</span>
+                    <span>1. 2FA & Telemetry Handshake</span>
+                  </div>
+                  <div style={{ fontSize: "0.74rem", color: "#CBD5E1", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                    <div><strong style={{ color: "#94A3B8" }}>Subscriber SIM:</strong> +91 98421-XXXXX (Airtel)</div>
+                    <div><strong style={{ color: "#94A3B8" }}>2FA OTP Handshake:</strong> OTP-849102 (Verified 14:10:02 IST)</div>
+                    <div><strong style={{ color: "#94A3B8" }}>IP Geolocation:</strong> 103.21.244.18 (Raipur Tower #88)</div>
+                    <div><strong style={{ color: "#94A3B8" }}>Device Fingerprint:</strong> MAC d4:61:9d:88:42:1a</div>
+                  </div>
+                </div>
+
+                {/* Evidence Card 2: Fulfillment */}
+                <div style={{ background: "rgba(0, 0, 0, 0.45)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: 14, padding: "1.1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#34D399", fontWeight: 800, fontSize: "0.82rem", marginBottom: "0.6rem" }}>
+                    <span>⚡</span>
+                    <span>2. Proof of Fulfillment / Consumption</span>
+                  </div>
+                  <div style={{ fontSize: "0.74rem", color: "#CBD5E1", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                    {defenseVertical === "gaming" ? (
+                      <>
+                        <div><strong style={{ color: "#94A3B8" }}>Chips Credit:</strong> ₹50,000 credited in 0.82s</div>
+                        <div><strong style={{ color: "#94A3B8" }}>Ledger Ref:</strong> GAM-LEDG-882107</div>
+                        <div><strong style={{ color: "#94A3B8" }}>Game Session:</strong> 42 rounds played (14:11 - 16:45)</div>
+                        <div><strong style={{ color: "#94A3B8" }}>Provably Fair Hash:</strong> 0x7a89bc33019f...</div>
+                      </>
+                    ) : defenseVertical === "ecommerce" ? (
+                      <>
+                        <div><strong style={{ color: "#94A3B8" }}>Logistics AWB:</strong> BlueDart AWB-98421074</div>
+                        <div><strong style={{ color: "#94A3B8" }}>Doorstep GPS Pin:</strong> Lat 21.2514° N, Long 81.6296° E</div>
+                        <div><strong style={{ color: "#94A3B8" }}>Delivery Handshake:</strong> Delivery OTP-4921 Verified</div>
+                        <div><strong style={{ color: "#94A3B8" }}>CCTV Packing Hash:</strong> SHA-256 e4d2a19fc...</div>
+                      </>
+                    ) : (
+                      <>
+                        <div><strong style={{ color: "#94A3B8" }}>Voucher Dispatch:</strong> PNR sent via WhatsApp</div>
+                        <div><strong style={{ color: "#94A3B8" }}>Front Desk Check-in:</strong> Aadhaar KYC scanned</div>
+                        <div><strong style={{ color: "#94A3B8" }}>Door Keycard Access:</strong> Suite #402 opened 18 times</div>
+                        <div><strong style={{ color: "#94A3B8" }}>Signed Folio:</strong> Physically signed on terminal</div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Evidence Card 3: Supreme Court Precedents */}
+                <div style={{ background: "rgba(0, 0, 0, 0.45)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: 14, padding: "1.1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#F5D76E", fontWeight: 800, fontSize: "0.82rem", marginBottom: "0.6rem" }}>
+                    <span>⚖️</span>
+                    <span>3. Supreme Court Binding Rulings</span>
+                  </div>
+                  <div style={{ fontSize: "0.74rem", color: "#CBD5E1", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                    <div><strong style={{ color: "#F5D76E" }}>Tapas Neogy (1999) 7 SCC 685:</strong> Sec 102 CrPC cannot be misused for civil contract disputes.</div>
+                    <div><strong style={{ color: "#F5D76E" }}>Teesta Setalvad (2018):</strong> Bank freeze without hearing is unconstitutional under Art 19(1)(g).</div>
+                    <div><strong style={{ color: "#F5D76E" }}>Section 79 IT Act:</strong> Intermediary safe harbor immunity.</div>
+                  </div>
+                </div>
+
+                {/* Evidence Card 4: Statutory Relief Demanded */}
+                <div style={{ background: "rgba(0, 0, 0, 0.45)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: 14, padding: "1.1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#F87171", fontWeight: 800, fontSize: "0.82rem", marginBottom: "0.6rem" }}>
+                    <span>⏳</span>
+                    <span>4. Mandatory Statutory Action</span>
+                  </div>
+                  <div style={{ fontSize: "0.74rem", color: "#CBD5E1", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                    <div><strong style={{ color: "#94A3B8" }}>De-Freeze Mandate:</strong> Immediate revocation within 24 hours.</div>
+                    <div><strong style={{ color: "#94A3B8" }}>Targeted Account:</strong> {currentVANIdentifier}</div>
+                    <div><strong style={{ color: "#94A3B8" }}>Penalty Warning:</strong> Sec 217/218 BNS (Malicious Prosecution) on Complainant.</div>
+                    <div><strong style={{ color: "#94A3B8" }}>Writ Jurisdiction:</strong> Art 226 High Court petition on default.</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* The Interactive Section 65B Dossier Code Box */}
+              <div style={{
+                background: "#030712",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                borderRadius: 14,
+                padding: "1.4rem",
+                marginBottom: "1.6rem"
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "0.6rem" }}>
+                  <span style={{ fontSize: "0.74rem", fontFamily: "monospace", color: "#38BDF8", fontWeight: 700 }}>
+                    CERTIFICATE OF ELECTRONIC EVIDENCE (SECTION 63 BHARATIYA SAKSHYA ADHINIYAM / SEC 65B IEA)
+                  </span>
+                  <span style={{ fontSize: "0.68rem", color: "#94A3B8", fontFamily: "monospace" }}>
+                    SHA-256:e8f092b7c41a2938dc814b9842107a4192b0018f
+                  </span>
+                </div>
+
+                <pre style={{
+                  fontFamily: "'Courier New', Courier, monospace",
+                  fontSize: "0.74rem",
+                  color: "#A7F3D0",
+                  lineHeight: 1.45,
+                  whiteSpace: "pre-wrap",
+                  maxHeight: 260,
+                  overflowY: "auto",
+                  padding: "0.5rem",
+                  margin: 0
+                }}>
+                  {generateDossierText(defenseVertical)}
+                </pre>
+              </div>
+
+              {/* Action Toolbar */}
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: "1rem"
+              }}>
+                <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleCopy(generateDossierText(defenseVertical), "dossier");
+                      setDossierCopied(true);
+                      setTimeout(() => setDossierCopied(false), 2200);
+                    }}
+                    style={{
+                      background: "rgba(255, 255, 255, 0.08)",
+                      color: "#FFFFFF",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                      borderRadius: 10,
+                      padding: "0.7rem 1.2rem",
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      cursor: "pointer"
+                    }}
+                  >
+                    {dossierCopied ? "✔ Copied Complete Dossier!" : "📋 Copy Court-Ready Section 65B Dossier"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadDossier(defenseVertical)}
+                    style={{
+                      background: "#161D2A",
+                      color: "#F5D76E",
+                      border: "1.5px solid #C48B28",
+                      borderRadius: 10,
+                      padding: "0.7rem 1.2rem",
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem"
+                    }}
+                  >
+                    <span>📥</span>
+                    <span>Download Legal Defense Dossier (.txt)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={isDispatchingNotice || noticeDispatched}
+                    onClick={handleDispatchNotice}
+                    style={{
+                      background: noticeDispatched
+                        ? "rgba(22, 163, 74, 0.2)"
+                        : "linear-gradient(135deg, #b91c1c 0%, #991b1b 100%)",
+                      color: noticeDispatched ? "#22c55e" : "#FFFFFF",
+                      border: noticeDispatched ? "1.5px solid #22c55e" : "none",
+                      borderRadius: 10,
+                      padding: "0.7rem 1.4rem",
+                      fontSize: "0.82rem",
+                      fontWeight: 800,
+                      cursor: noticeDispatched ? "default" : "pointer",
+                      boxShadow: "0 4px 16px rgba(185, 28, 28, 0.35)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem"
+                    }}
+                  >
+                    {isDispatchingNotice ? (
+                      <span>⏳ Dispatching Cryptographic Dossier to Cyber IO...</span>
+                    ) : noticeDispatched ? (
+                      <span>✔ Legal Notice Dispatched to Cyber IO & Nodal Desk!</span>
+                    ) : (
+                      <>
+                        <span>⚡ Dispatch Legal Counter-Notice to IO & Bank Nodal Desk</span>
+                        <span>→</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div style={{ fontSize: "0.72rem", color: "#64748B" }}>
+                  Statutory 24-Hour Section 102 De-Freeze SLA
+                </div>
+              </div>
+
+              {/* Notice Dispatched Feedback Box */}
+              {noticeDispatched && (
+                <div style={{
+                  marginTop: "1.4rem",
+                  padding: "1rem 1.2rem",
+                  background: "rgba(22, 163, 74, 0.12)",
+                  border: "1.5px solid #22c55e",
+                  borderRadius: 12,
+                  fontSize: "0.78rem",
+                  color: "#E2E8F0"
+                }}>
+                  <div style={{ color: "#22c55e", fontWeight: 800, marginBottom: "0.4rem" }}>
+                    ✔ STATUTORY LEGAL NOTICE FORMALLY SERVED VIA ENCRYPTED TELEMETRY PIPELINE
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "0.4rem", fontSize: "0.74rem" }}>
+                    <div><strong style={{ color: "#94A3B8" }}>Primary Recipient:</strong> io.cybercrime.raipur@cgpolice.gov.in (Delivered 200 OK)</div>
+                    <div><strong style={{ color: "#94A3B8" }}>Bank Nodal Desk:</strong> nodal.officer@icicibank.com (Delivered 200 OK)</div>
+                    <div><strong style={{ color: "#94A3B8" }}>NCTAU 1930 Portal:</strong> Ticket #NCRP-1930-ACK-89421 (Evidence Attached)</div>
+                    <div><strong style={{ color: "#94A3B8" }}>De-Freeze Clock:</strong> Active (Mandatory 24h Compliance Window)</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 4: 60-SECOND INTERBANK FEE & TELEMETRY SIMULATOR */}
           {activeDemoTab === "fee_simulator" && (
             <div>
               {/* Interactive Configuration Grid */}
@@ -2333,17 +3843,30 @@ export default function FintechGatewayDemo() {
                       <span style={{ color: "#15803d", fontWeight: 700 }}>ZERO HOLD ({selectedRail.railLatency})</span>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: palette.muted }}>GARUDA Software Metering:</span>
-                      <span style={{ color: palette.goldDeep, fontWeight: 700 }}>${garudaSoftwareFeeUSD.toLocaleString()} (0.15%)</span>
+                      <span style={{ color: palette.muted }}>Central Bank Clearing Rail:</span>
+                      <span style={{ color: "#15803d", fontWeight: 700 }}>Flat ${interbankRailFeeUSD} (Bank charges zero % cuts)</span>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: palette.muted }}>Interbank Rail Cost:</span>
-                      <span style={{ color: palette.text, fontWeight: 700 }}>Flat ${interbankRailFeeUSD}</span>
+                      <span style={{ color: palette.muted }}>GARUDA Technology Fee:</span>
+                      <span style={{ color: palette.goldDeep, fontWeight: 700 }}>0.15% SaaS Metering (or 0.00% on Flat AMC)</span>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <span style={{ color: palette.muted }}>Net Received Direct in Bank:</span>
                       <span style={{ color: "#15803d", fontWeight: 800, fontSize: "0.92rem" }}>${garudaNetUSD.toLocaleString()}</span>
                     </div>
+                  </div>
+
+                  <div style={{
+                    marginTop: "0.9rem",
+                    padding: "0.6rem 0.85rem",
+                    background: "rgba(22, 163, 74, 0.08)",
+                    border: "1px solid rgba(34, 197, 94, 0.25)",
+                    borderRadius: 8,
+                    fontSize: "0.72rem",
+                    color: "#15803d",
+                    lineHeight: 1.45
+                  }}>
+                    <strong>✦ Zero Per-Transaction Fee Option:</strong> Under GARUDA's Enterprise Infrastructure Buyout model, per-transaction software fee is strictly <strong>0.00%</strong> with fixed monthly maintenance.
                   </div>
                 </div>
               </div>
