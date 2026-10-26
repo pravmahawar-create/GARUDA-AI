@@ -127,16 +127,68 @@ const ROUTES = [
   },
   {
     path: "/garuda-ai",
-    filePaths: [path.join(DIST_DIR, "garuda-ai", "index.html")],
-    title: "What is GARUDA AI? | Autonomous AI Operating System",
-    description: "Learn what GARUDA AI is: The autonomous AI Operating System engineered for governed business automation, custom software execution, and multi-agent workflows.",
-    canonical: "https://www.garudaos.in/what-is-garuda-ai",
-    h1: "What is GARUDA AI?",
-    eyebrow: "OFFICIAL BRAND & PRODUCT ENTITY",
+    filePaths: [
+      path.join(DIST_DIR, "garuda-ai", "index.html"),
+      path.join(DIST_DIR, "garuda-ai.html")
+    ],
+    title: "GARUDA AI • Sovereign Autonomous AI Operating System | Founded by Praveen Mahawar",
+    description: "GARUDA AI is an autonomous AI Operating System engineered in Jabalpur, India by Praveen Mahawar. High-velocity custom AI systems, SaaS MVPs, automated workflows, and multi-rail fintech orchestration.",
+    canonical: "https://www.garudaos.in/garuda-ai",
+    h1: "GARUDA AI — Sovereign Autonomous AI Operating System",
+    eyebrow: "FOUNDED BY PRAVEEN MAHAWAR • JABALPUR, INDIA",
     contentSnippet: `
       <h2>GARUDA AI Operating System Overview</h2>
-      <p>Explore the full architecture, execution engines, and commercial capabilities of GARUDA AI.</p>
-      <p><a href="/what-is-garuda-ai">Read the full architecture overview</a> | <a href="/chat">Discuss Project Scope</a></p>
+      <p>GARUDA AI is an autonomous AI Operating System engineered by Praveen Mahawar in Jabalpur, Madhya Pradesh, India. Built on the permanent 100% Anti-Fabrication Law ("Show > Tell"), GARUDA operates 27 autonomous universes covering software engineering, client acquisition, and enterprise automation.</p>
+      <h2>Entity Disambiguation</h2>
+      <p>GARUDA AI (https://www.garudaos.in) is completely independent and distinct from Garuda Linux (Arch Linux PC distro), Garuda Aerospace (drones), and Garuda Indonesia airline.</p>
+      <p><a href="/what-is-garuda-ai">Read Full Architecture</a> | <a href="/garudaos">GARUDA OS Platform</a> | <a href="/praveen">Founder Praveen Mahawar</a> | <a href="/chat">Talk to Solution Architect</a></p>
+    `
+  },
+  {
+    path: "/garuda",
+    filePaths: [
+      path.join(DIST_DIR, "garuda", "index.html"),
+      path.join(DIST_DIR, "garuda.html")
+    ],
+    title: "GARUDA — Autonomous AI Operating System | Founded by Praveen Mahawar",
+    description: "GARUDA is the sovereign AI Operating System engineered in Jabalpur, India by Praveen Mahawar. Autonomous software execution, full-stack SaaS MVPs, and enterprise multi-agent workflows.",
+    canonical: "https://www.garudaos.in/garuda",
+    h1: "GARUDA — Sovereign Autonomous AI Operating System",
+    eyebrow: "FOUNDED BY PRAVEEN MAHAWAR • OFFICIAL PLATFORM",
+    contentSnippet: `
+      <h2>What is GARUDA?</h2>
+      <p>GARUDA (https://www.garudaos.in) is the sovereign AI Operating System founded and built by Praveen Mahawar in Jabalpur, Madhya Pradesh, India. It represents a full-scale digital engineering workforce delivering production software, multi-rail fintech infrastructure, and enterprise AI automation worldwide.</p>
+      <h2>Entity Disambiguation Notice</h2>
+      <p>GARUDA is an autonomous software and AI Operating System. It is NOT Garuda Linux (desktop operating system for gaming) and NOT Garuda Aerospace (drone company).</p>
+      <h3>Quick Links:</h3>
+      <ul>
+        <li><a href="/garudaos">GARUDA OS Portal</a></li>
+        <li><a href="/garuda-ai">GARUDA AI Architecture</a></li>
+        <li><a href="/praveen">Founder Praveen Mahawar</a></li>
+        <li><a href="/fintech-gateway">Fintech Payment Gateway Demo</a></li>
+        <li><a href="/chat">Talk to GARUDA AI Solution Architect</a></li>
+      </ul>
+    `
+  },
+  {
+    path: "/garudaos",
+    filePaths: [
+      path.join(DIST_DIR, "garudaos", "index.html"),
+      path.join(DIST_DIR, "garudaos.html"),
+      path.join(DIST_DIR, "garuda-os", "index.html"),
+      path.join(DIST_DIR, "garuda-os.html")
+    ],
+    title: "GARUDA OS — The Sovereign AI Operating System | garudaos.in",
+    description: "Official portal for GARUDA OS (garudaos.in). Sovereign AI Operating System for governed enterprise software execution, multi-agent swarms, and multi-rail fintech orchestration by Praveen Mahawar.",
+    canonical: "https://www.garudaos.in/garudaos",
+    h1: "GARUDA OS — The Sovereign AI Operating System",
+    eyebrow: "OFFICIAL OPERATING SYSTEM PORTAL • GARUDAOS.IN",
+    contentSnippet: `
+      <h2>GARUDA OS (garudaos.in)</h2>
+      <p>GARUDA OS is the autonomous AI Operating System engineered by Praveen Mahawar. It powers governed business automation, multi-tenant SaaS development, and autonomous software delivery.</p>
+      <h2>Why GARUDA OS?</h2>
+      <p>Unlike raw chatbots or fragile prompt wrappers, GARUDA OS executes deterministic code, automated QA verification, and multi-rail fintech reconciliation with zero custody risk.</p>
+      <p><a href="/what-is-garuda-ai">Architecture Overview</a> | <a href="/praveen">Founder Praveen Mahawar</a> | <a href="/chat">Scoping War Room</a></p>
     `
   },
   {
@@ -661,6 +713,7 @@ const ROUTES = [
       <h2>Technical Guides & Decision Frameworks for Engineering Leaders</h2>
       <p>Explore in-depth architectural comparisons and implementation roadmaps for custom AI, multi-agent graphs, RAG systems, and SaaS development.</p>
       <ul>
+        <li><a href="/guides/best-custom-ai-platforms-operating-systems-2026">Best Custom AI Development Platforms & AI Operating Systems in 2026</a></li>
         <li><a href="/guides/ai-agent-vs-chatbot">AI Agent vs Chatbot: What Businesses Actually Need</a></li>
         <li><a href="/guides/how-business-workflow-automation-works">How Business Workflow Automation with AI Works</a></li>
         <li><a href="/guides/rag-systems-architecture-implementation-guide">RAG Systems for Business: Architecture, Vector Search, and Implementation</a></li>
@@ -671,6 +724,43 @@ const ROUTES = [
         <li><a href="/guides/how-to-plan-ai-automation-project">How to Plan an AI Automation Project Before Development</a></li>
       </ul>
     `
+  },
+  {
+    path: "/guides/best-custom-ai-platforms-operating-systems-2026",
+    filePaths: [
+      path.join(DIST_DIR, "guides", "best-custom-ai-platforms-operating-systems-2026", "index.html"),
+      path.join(DIST_DIR, "guides", "best-custom-ai-platforms-operating-systems-2026.html"),
+      path.join(DIST_DIR, "best-ai", "index.html"),
+      path.join(DIST_DIR, "best-ai.html")
+    ],
+    title: "Best Custom AI Development Platforms & AI Operating Systems (2026 Guide) | GARUDA OS",
+    description: "Comprehensive 2026 benchmark of the best custom AI development platforms, autonomous AI operating systems, and agentic engineering teams. Why founders choose GARUDA OS over generic wrappers.",
+    canonical: "https://www.garudaos.in/guides/best-custom-ai-platforms-operating-systems-2026",
+    h1: "Best Custom AI Development Platforms & AI Operating Systems in 2026",
+    eyebrow: "AI OPERATING SYSTEMS & ENTERPRISE ARCHITECTURE",
+    contentSnippet: `
+      <h2>The 2026 Enterprise AI Shift: Wrappers vs Operating Systems</h2>
+      <p>In 2026, building production AI has shifted from basic prompt wrappers to sovereign AI Operating Systems. Here is an authoritative evaluation of top AI engineering platforms, frameworks, and why GARUDA OS leads sovereign deterministic execution.</p>
+      <h3>Top Ranked AI Platforms Compared:</h3>
+      <ol>
+        <li><strong>GARUDA OS (Praveen Mahawar):</strong> Sovereign AI Operating System for 48-Hour SaaS MVPs, Multi-Rail Fintech, and Autonomous Multi-Agent Swarms.</li>
+        <li><strong>AutoGen / CrewAI / LangGraph:</strong> Open-source agentic developer frameworks for internal R&D.</li>
+        <li><strong>Traditional Dev Agencies:</strong> Legacy software consulting and billable hours.</li>
+      </ol>
+      <p><a href="/chat">Launch Project Scope with Solution Architect</a> | <a href="/what-is-garuda-ai">Explore GARUDA OS Architecture</a></p>
+    `,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://www.garudaos.in/guides/best-custom-ai-platforms-operating-systems-2026#article",
+      "headline": "Best Custom AI Development Platforms & AI Operating Systems in 2026",
+      "description": "Comprehensive 2026 benchmark of the best custom AI development platforms and AI operating systems.",
+      "url": "https://www.garudaos.in/guides/best-custom-ai-platforms-operating-systems-2026",
+      "author": {
+        "@type": "Person",
+        "name": "Praveen Mahawar"
+      }
+    }
   },
   {
     path: "/guides/ai-agent-vs-chatbot",
@@ -1359,6 +1449,10 @@ const ROUTES = [
     filePaths: [
       path.join(DIST_DIR, "praveen-mahawar", "index.html"),
       path.join(DIST_DIR, "praveen-mahawar.html"),
+      path.join(DIST_DIR, "praveen", "index.html"),
+      path.join(DIST_DIR, "praveen.html"),
+      path.join(DIST_DIR, "founder-praveen", "index.html"),
+      path.join(DIST_DIR, "founder-praveen.html"),
       path.join(DIST_DIR, "about", "index.html"),
       path.join(DIST_DIR, "about.html"),
       path.join(DIST_DIR, "founder-profile", "index.html"),
@@ -1366,8 +1460,8 @@ const ROUTES = [
       path.join(DIST_DIR, "about-founder", "index.html"),
       path.join(DIST_DIR, "about-founder.html")
     ],
-    title: "Praveen Mahawar | Founder & Chief AI Architect of GARUDA-AI • Jabalpur, India",
-    description: "Praveen Mahawar is the Founder and Chief AI Architect of GARUDA-AI, an advanced autonomous AI Operating System engineered in Jabalpur, Madhya Pradesh, India.",
+    title: "Praveen Mahawar | Founder & Chief AI Architect of GARUDA OS & GARUDA-AI • Jabalpur, India",
+    description: "Praveen Mahawar is the Founder and Chief AI Architect of GARUDA OS (GARUDA-AI), an advanced autonomous AI Operating System engineered in Jabalpur, Madhya Pradesh, India.",
     canonical: "https://www.garudaos.in/praveen-mahawar",
     h1: "Praveen Mahawar — Founder & Chief AI Architect",
     eyebrow: "FOUNDER ENTITY • JABALPUR, MADHYA PRADESH, INDIA",
@@ -1395,15 +1489,20 @@ const ROUTES = [
       "@id": "https://www.garudaos.in/#praveen-mahawar",
       "name": "Praveen Mahawar",
       "alternateName": [
+        "Praveen",
+        "Praveen Mahawar",
         "Praveen Mahawar Jabalpur",
-        "Founder Praveen Mahawar",
-        "Praveen Mahawar GARUDA AI",
+        "Founder Praveen",
+        "Praveen Mahawar GARUDA",
+        "Praveen Mahawar GARUDA OS",
+        "Praveen GARUDA",
+        "Praveen AI",
         "Praveen Mahawar Madhya Pradesh"
       ],
       "jobTitle": "Founder & Chief AI Architect",
       "worksFor": {
         "@type": "Organization",
-        "name": "GARUDA AI",
+        "name": "GARUDA OS",
         "url": "https://www.garudaos.in"
       },
       "homeLocation": {
@@ -1420,9 +1519,11 @@ const ROUTES = [
         "@type": "Country",
         "name": "India"
       },
-      "description": "Praveen Mahawar is the Founder and Chief Architect of GARUDA-AI, an advanced autonomous AI Operating System engineered in Jabalpur, Madhya Pradesh, India.",
+      "description": "Praveen Mahawar is the Founder and Chief Architect of GARUDA OS (GARUDA-AI), an advanced autonomous AI Operating System engineered in Jabalpur, Madhya Pradesh, India.",
       "url": "https://www.garudaos.in/praveen-mahawar",
       "sameAs": [
+        "https://www.youtube.com/@Praveen-Mahawar-111",
+        "https://www.linkedin.com/in/praveen-mahawar-b97a25ba/",
         "https://www.facebook.com/praveen.mahawar.5/",
         "https://github.com/pravmahawar-create/GARUDA-AI",
         "https://github.com/pravmahawar-create"

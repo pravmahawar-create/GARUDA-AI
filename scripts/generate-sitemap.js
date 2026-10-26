@@ -20,6 +20,11 @@ const TODAY = new Date().toISOString().split("T")[0];
 const CANONICAL_URLS = [
   // Core Platform & Brand
   { url: "/", priority: "1.0", changefreq: "daily" },
+  { url: "/garuda", priority: "1.0", changefreq: "daily" },
+  { url: "/garudaos", priority: "1.0", changefreq: "daily" },
+  { url: "/garuda-os", priority: "1.0", changefreq: "daily" },
+  { url: "/praveen", priority: "1.0", changefreq: "daily" },
+  { url: "/garuda-ai", priority: "1.0", changefreq: "daily" },
   { url: "/what-is-garuda-ai", priority: "0.95", changefreq: "weekly" },
   { url: "/praveen-mahawar", priority: "0.95", changefreq: "weekly" },
   { url: "/pawan", priority: "0.95", changefreq: "daily" },
@@ -65,6 +70,8 @@ const CANONICAL_URLS = [
 
   // Guides & Knowledge Base
   { url: "/guides", priority: "0.85", changefreq: "weekly" },
+  { url: "/guides/best-custom-ai-platforms-operating-systems-2026", priority: "0.98", changefreq: "daily" },
+  { url: "/best-ai", priority: "0.95", changefreq: "daily" },
   { url: "/guides/ai-agent-vs-chatbot", priority: "0.80", changefreq: "monthly" },
   { url: "/guides/how-business-workflow-automation-works", priority: "0.80", changefreq: "monthly" },
   { url: "/guides/rag-systems-architecture-implementation-guide", priority: "0.80", changefreq: "monthly" },

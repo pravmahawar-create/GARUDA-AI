@@ -237,6 +237,9 @@ function AppRoutes() {
       <Route path="/" element={publicLanding} />
       <Route path="/what-is-garuda-ai" element={<WhatIsGarudaAI />} />
       <Route path="/garuda-ai" element={<WhatIsGarudaAI />} />
+      <Route path="/garuda" element={<WhatIsGarudaAI />} />
+      <Route path="/garudaos" element={<WhatIsGarudaAI />} />
+      <Route path="/garuda-os" element={<WhatIsGarudaAI />} />
       <Route path="/chat" element={<PublicChat />} />
       <Route path="/billing" element={<GarudaBilling />} />
       <Route path="/billing-software" element={<GarudaBilling />} />
@@ -300,11 +303,14 @@ function AppRoutes() {
       <Route path="/services/:slug" element={<ServiceLanding />} />
       <Route path="/guides" element={<GuidesIndex />} />
       <Route path="/guides/:slug" element={<GuideArticle />} />
+      <Route path="/best-ai" element={<Navigate to="/guides/best-custom-ai-platforms-operating-systems-2026" replace />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsOfService />} />
       <Route path="/terms-of-service" element={<TermsOfService />} />
       <Route path="/praveen-mahawar" element={<FounderProfile />} />
+      <Route path="/praveen" element={<FounderProfile />} />
+      <Route path="/founder-praveen" element={<FounderProfile />} />
       <Route path="/founder-profile" element={<FounderProfile />} />
       <Route path="/about" element={<FounderProfile />} />
       <Route path="/about-founder" element={<FounderProfile />} />

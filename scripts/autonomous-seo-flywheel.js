@@ -19,6 +19,11 @@ const INDEXNOW_KEY = "c37b8ef9d18e4726b2aa8d76e73f8361";
 
 const TARGET_URLS = [
   "/",
+  "/garuda",
+  "/garudaos",
+  "/garuda-os",
+  "/praveen",
+  "/garuda-ai",
   "/what-is-garuda-ai",
   "/praveen-mahawar",
   "/pawan",
