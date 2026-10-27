@@ -59,6 +59,16 @@ output/raw/
 output/shorts/*.mp4
 output/shorts/*.webm
 output/*.jpg
+output/*.png
+output/**/*.png
+output/*.mp4
+output/*.gif
+output/**/*.mp4
+output/**/*.gif
+output/creative-video/
+output/video_all_screens/
+output/video_reference_frames/
+veer-azad-portal/
 sessions/
 *.lock
 data/leads/social_*

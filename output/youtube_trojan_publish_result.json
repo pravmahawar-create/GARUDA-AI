@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "mode": "100%_AUTONOMOUS_API_EXECUTION",
+  "videoId": "j1H9_eq5j7U",
+  "title": "Why 87% of AI Coding Agents Fail in Production Monorepos | GARUDA OS",
+  "privacyStatus": "public",
+  "publishedAt": "2026-10-19T20:23:32Z",
+  "youtubeUrl": "https://www.youtube.com/watch?v=j1H9_eq5j7U",
+  "shortsUrl": "https://www.youtube.com/shorts/j1H9_eq5j7U",
+  "seo": {
+    "title": "Why 87% of AI Coding Agents Fail in Production Monorepos | GARUDA OS",
+    "descriptionLength": 1669,
+    "tagsCount": 16,
+    "category": "Science & Technology (28)",
+    "thumbnail": "D:\\GARUDA-AI\\output\\trojan_visual.png"
+  },
+  "verified": true,
+  "verification": {
+    "pageTitle": "Why 87% of AI Coding Agents Fail in Production Monorepos | GARUDA OS - YouTube",
+    "hasVideoPlayer": {
+      "hasVideoTag": true,
+      "videoSrc": "",
+      "paused": true,
+      "readyState": 0
+    },
+    "proofScreenshot": "D:\\GARUDA-AI\\output\\youtube_trojan_live_proof.png"
+  },
+  "timestamp": "2026-10-19T20:23:38.264Z"
+}
