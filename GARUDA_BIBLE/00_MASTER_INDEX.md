@@ -30,6 +30,7 @@ Defines GARUDA Bible authority order and canonical chapter list.
 - `10_DECISION_REGISTRY.md` — architecture decision handling
 - `11_FOUNDER_DECISION_REGISTRY.md` — recovered founder locks and unresolved aliases
 - `13_POST_MISSION_LESSONS.md` — autonomous post-mission learning and zero-repeat registry
+- `14_PERPETUAL_SOVEREIGN_LIFECYCLE.md` — immortal architecture, local GPU LLM, 0% fee direct bank UPI rails & perpetual daemon standard
 
 ## Canonical product maps
 
