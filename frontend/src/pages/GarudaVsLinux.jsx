@@ -39,6 +39,11 @@ const faqSchema = {
       "@type": "Question",
       "name": "What is Garuda Linux?",
       "acceptedAnswer": { "@type": "Answer", "text": "Garuda Linux is a beautiful, performant Arch Linux distribution focused on desktop usability, gaming, and system performance. Official site is garudalinux.org. GARUDA AI respects and recommends it for Linux desktop users." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is GARUDA AI related to garuda.ai or other third-party LinkedIn pages?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. GARUDA (GARUDA OS / garudaos.in) is engineered in Jabalpur, India by Founder Praveen Mahawar. Our official, verified LinkedIn Company Page is https://www.linkedin.com/company/garuda-os/ and the founder profile is https://www.linkedin.com/in/praveen-mahawar-b97a25ba/. We are completely distinct and independent from third-party garuda.ai domains." }
     }
   ]
 };
