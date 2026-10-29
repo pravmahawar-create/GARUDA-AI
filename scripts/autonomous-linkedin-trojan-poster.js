@@ -18,28 +18,38 @@ if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 const EMAIL = process.env.LINKEDIN_EMAIL || "garudaos.ai@gmail.com";
 const PASS = process.env.LINKEDIN_PASS || "Ayeshapm1@";
 
-const POST_CONTENT = `The industry is asking the wrong question about Devin, Copilot, and AI software engineers.
+const POST_CONTENT = `The "Mumbai Server" Lie: Why 90% of "Sovereign AI" in India Still Violates the DPDP Act.
 
-The question isn't: "Can an LLM write code?" (Any 7B model can spit out Python syntax).
-The real question is: "Can an autonomous AI survive in an enterprise monorepo without breaking production?"
+Every enterprise AI review in BFSI starts with one question: "Is the model hosted in India?"
+The vendor nods: "Yes, weights are in Mumbai." The box gets checked. The architecture is declared "Sovereign."
 
-In 2026, 87% of autonomous coding loops fail because of three fatal architectural flaws:
+This is a dangerous architectural illusion.
 
-1. The Wrapper Hallucination:
-Agents write code directly against raw chat prompts. They hallucinate packages that don't exist, modify unstaged files, and push breaking changes without containment.
+A model does not hold customer data. The orchestration pipeline does.
+In production enterprise architectures, a single customer prompt fans out into:
+1. Embedding computation (often routed through foreign API endpoints).
+2. Vector lookup (stored across multi-tenant US/EU cloud clusters).
+3. Tool execution (third-party webhook triggers).
+4. Observability telemetry (Datadog/LangSmith capturing unmasked raw prompt PII).
+5. Evaluation logs and error traces.
 
-2. Zero Worktree State Isolation:
-Real engineering requires ephemeral Git Worktrees. If an AI agent isn't isolated in a dedicated sandbox worktree with strict process boundaries, it corrupts repo state.
+The model weights sat in Mumbai.
+Six copies of the customer's private financial data did not.
 
-3. The Missing Pre-Commit Forensic Gate:
-In enterprise software, an agent's work cannot be trusted on "faith". Every patch must pass AST syntax interrogation, clean local compilation (exit code 0), and cryptographically verified SHA-256 state tracking before human signoff.
+Under India's Digital Personal Data Protection (DPDP) Act and RBI compliance frameworks, sovereignty is NOT a deployment zip-code. 
+Sovereignty is the cryptographic integrity of the entire data path.
 
-Chatbots give you code suggestions.
-GARUDA gives you an Unstoppable, Governed Engineering Workforce.
+At GARUDA OS, we engineered sovereign AI around a zero-leakage standard:
+- 100% Air-gapped deterministic local embeddings.
+- In-VPC vector containment (zero external telemetry).
+- Zero third-party observability leakage.
+- Cryptographic SHA-256 state tracking for verifiable legal provenance.
 
-Explore the Sovereign Architecture: https://www.garudaos.in
+If your sovereign AI architecture fits on one slide, it’s not an architecture — it’s just a hosting diagram.
 
-#GARUDA #AIArchitecture #EnterpriseEngineering #SoftwareDevelopment #AutonomousAgents #Devin #SystemDesign #TechLeadership #SaaS`;
+Explore True Sovereign Architecture: https://www.garudaos.in
+
+#SovereignAI #DPDP #BFSI #AIGovernance #DataResidency #EnterpriseAI #GARUDAOS #TechLeadership #Fintech`;
 
 const IMAGE_PATH = path.resolve(__dirname, "../output/trojan_visual.png");
 

@@ -24,9 +24,37 @@ const RESPONSE_STATUSES = [
 ];
 
 /**
- * Persistent Deal Store (In-Memory Ledger with SHA-256 state tracking)
+ * Persistent Deal Store (Durable Disk Ledger with SHA-256 state tracking)
  */
+const fs = require("fs");
+const path = require("path");
+const LEDGER_FILE = path.join(__dirname, "..", "..", "data", "garuda-deal-ledger.json");
+
 const dealLedger = new Map();
+
+function loadLedger() {
+  try {
+    if (fs.existsSync(LEDGER_FILE)) {
+      const list = JSON.parse(fs.readFileSync(LEDGER_FILE, "utf8"));
+      if (Array.isArray(list)) {
+        list.forEach((deal) => {
+          if (deal && deal.dealId) dealLedger.set(deal.dealId, deal);
+        });
+      }
+    }
+  } catch (e) {}
+}
+
+function saveLedger() {
+  try {
+    const dir = path.dirname(LEDGER_FILE);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    const list = Array.from(dealLedger.values());
+    fs.writeFileSync(LEDGER_FILE, JSON.stringify(list, null, 2), "utf8");
+  } catch (e) {}
+}
+
+loadLedger();
 
 /**
  * PHASE 1: SUBMISSION TRACKER
@@ -96,7 +124,7 @@ function recordDealSubmission(submissionInput = {}, context = {}) {
     client: plainText(submissionInput.client || submissionInput.company || "Client"),
     platform: plainText(submissionInput.platform || submissionInput.source || "Direct"),
     title: plainText(submissionInput.title || submissionInput.opportunityTitle || "Software Engineering Project"),
-    submissionDate: now.toISOString(),
+    submissionDate: submissionInput.submissionDate ? new Date(submissionInput.submissionDate).toISOString() : now.toISOString(),
     proposalVersion: String(submissionInput.proposalVersion || "v1.0.0"),
     pricing: {
       quotedPrice: Number(submissionInput.pricing?.quotedPrice || submissionInput.quotedPrice || 0),
@@ -118,6 +146,7 @@ function recordDealSubmission(submissionInput = {}, context = {}) {
 
   record.clientWorkspace = createClientWorkspace(record);
   dealLedger.set(dealId, record);
+  saveLedger();
 
   return {
     success: true,
@@ -172,6 +201,7 @@ function recordClientResponse(responseInput = {}, context = {}) {
   }
 
   dealLedger.set(dealId, deal);
+  saveLedger();
 
   return {
     success: true,
@@ -199,6 +229,7 @@ function recordDealOutcome(outcomeInput = {}, context = {}) {
       deal.actualPaymentCollected = Number(outcomeInput.actualPaymentCollected || outcomeInput.agreedPrice || deal.pricing.quotedPrice);
     }
     dealLedger.set(dealId, deal);
+    saveLedger();
   }
 
   const { recordClosingOutcome: recordClosingOutcomeSystem } = require("./revenueClosingSystemService");
@@ -333,6 +364,7 @@ function getEmpiricalProbability() {
 
 function clearDealTrackerStore() {
   dealLedger.clear();
+  saveLedger();
 }
 
 module.exports = {

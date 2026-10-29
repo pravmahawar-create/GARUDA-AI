@@ -94,4 +94,117 @@ router.post("/retainers/confirm", async (req, res) => {
   }
 });
 
+// 🦅 Mission M38: 12-Stage Autonomous Commercial Revenue Pipeline Routes
+const commercialPipelineService = require("../services/unifiedCommercialPipelineService");
+
+router.post("/pipeline/ingest", (req, res) => {
+  try {
+    const result = commercialPipelineService.ingestLead(req.body);
+    return res.status(201).json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.get("/pipeline/metrics", (_req, res) => {
+  try {
+    const metrics = commercialPipelineService.getPipelineMetrics();
+    return res.json({ success: true, data: metrics });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.get("/pipeline/status/:id", (req, res) => {
+  try {
+    const record = commercialPipelineService.getPipelineRecord(req.params.id);
+    if (!record) return res.status(404).json({ success: false, message: "Pipeline record not found" });
+    return res.json({ success: true, data: record });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/pipeline/qualify/:id", (req, res) => {
+  try {
+    const result = commercialPipelineService.qualifyLead(req.params.id, req.body);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/pipeline/demonstrate/:id", (req, res) => {
+  try {
+    const result = commercialPipelineService.prepareDemonstration(req.params.id);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/pipeline/propose/:id", (req, res) => {
+  try {
+    const result = commercialPipelineService.generateProposal(req.params.id, req.body);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/pipeline/checkout/:id", (req, res) => {
+  try {
+    const result = commercialPipelineService.initiateCheckout(req.params.id);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/pipeline/verify-payment/:id", (req, res) => {
+  try {
+    const result = commercialPipelineService.verifyPayment(req.params.id, req.body);
+    if (!result.success) return res.status(400).json(result);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/pipeline/deliver/:id", (req, res) => {
+  try {
+    const result = commercialPipelineService.deliverProduct(req.params.id);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/pipeline/onboard/:id", (req, res) => {
+  try {
+    const result = commercialPipelineService.completeOnboarding(req.params.id, req.body);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/pipeline/retain/:id", (req, res) => {
+  try {
+    const result = commercialPipelineService.scheduleRetention(req.params.id);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.post("/pipeline/upsell/:id", (req, res) => {
+  try {
+    const result = commercialPipelineService.triggerUpsell(req.params.id, req.body?.upsellType);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
 module.exports = router;

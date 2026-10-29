@@ -154,22 +154,43 @@ async function run() {
     assert.strictEqual(r8b.body.status, "pending_verification");
     console.log("✓ POST /api/billing/activate with UPI correctly queued in pending_verification");
 
-    // 8c. GET /api/billing/admin/pending-upi lists the pending UTR
-    const r8c = await request("GET", "/api/billing/admin/pending-upi");
+    // 8c. SECURITY CHECK: GET /api/billing/admin/pending-upi without auth returns 403
+    const r8c_unauth = await request("GET", "/api/billing/admin/pending-upi");
+    assert.strictEqual(r8c_unauth.status, 403);
+    assert.strictEqual(r8c_unauth.body.error, "SOVEREIGN_FOUNDER_REQUIRED");
+    console.log("✓ Security Check: Unauthenticated access to /admin/pending-upi blocked with 403");
+
+    // 8c2. GET /api/billing/admin/pending-upi with founder auth returns 200
+    const founderPin = process.env.FOUNDER_ACCESS_PASSWORD || "garuda_founder_pin";
+    const r8c = await request("GET", "/api/billing/admin/pending-upi", null, {
+      "x-founder-pin": founderPin
+    });
     assert.strictEqual(r8c.status, 200);
     assert(r8c.body.data.some(p => p.utr === testUtr));
-    console.log("✓ GET /api/billing/admin/pending-upi returns submitted UTR");
+    console.log("✓ GET /api/billing/admin/pending-upi returns submitted UTR with founder auth");
 
-    // 8d. POST /api/billing/admin/verify-upi approves and activates subscription
-    const r8d = await request("POST", "/api/billing/admin/verify-upi", {
+    // 8d. SECURITY CHECK: POST /api/billing/admin/verify-upi without auth returns 403
+    const r8d_unauth = await request("POST", "/api/billing/admin/verify-upi", {
       orderId: testOrderId,
       utr: testUtr,
       action: "approve"
     });
+    assert.strictEqual(r8d_unauth.status, 403);
+    assert.strictEqual(r8d_unauth.body.error, "SOVEREIGN_FOUNDER_REQUIRED");
+    console.log("✓ Security Check: Unauthenticated approval attempt blocked with 403");
+
+    // 8d2. POST /api/billing/admin/verify-upi with founder auth approves and activates subscription
+    const r8d = await request("POST", "/api/billing/admin/verify-upi", {
+      orderId: testOrderId,
+      utr: testUtr,
+      action: "approve"
+    }, {
+      "x-founder-pin": founderPin
+    });
     assert.strictEqual(r8d.status, 200);
     assert.strictEqual(r8d.body.status, "active");
     assert.strictEqual(r8d.body.subscription.plan, "sme");
-    console.log("✓ POST /api/billing/admin/verify-upi human bank approval activates subscription");
+    console.log("✓ POST /api/billing/admin/verify-upi human bank approval activates subscription with founder auth");
 
     // 9. Merchant billing mounted on /api/merchant-billing/voice
     const r9 = await request("POST", "/api/merchant-billing/voice", {});

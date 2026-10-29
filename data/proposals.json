@@ -60159,5 +60159,419 @@
       "summary": "Direct (direct / none)"
     },
     "updatedAt": "2026-10-16T16:45:55.190Z"
+  },
+  "prop_1793132393657_d828b2": {
+    "proposalId": "prop_1793132393657_d828b2",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Build Next.js Landing Page with Stripe Payment Modal",
+      "requirements": "Responsive landing page with user checkout integration and automated receipt email",
+      "category": "Software Engineering",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Sarah Connor (TEST / SIMULATION)",
+      "email": "sarah@cyberdyne.io",
+      "phone": null,
+      "organization": "Cyberdyne Tech",
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 80,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 10000,
+        "amountINR": 10000,
+        "percentage": 50,
+        "status": "PAID",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 10000,
+        "amountINR": 10000,
+        "percentage": 50,
+        "status": "PAID",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 20000,
+      "totalINR": 20000,
+      "depositAmount": 10000,
+      "depositAmountINR": 10000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-11-10T20:19:53.693Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 10000,
+      "depositStatus": "PAID",
+      "paymentTruth": {
+        "verified": true,
+        "state": "PAYMENT_VERIFIED",
+        "paymentId": "pay_rzp_live_98124981",
+        "providerEvidence": "razorpay_hmac_signature_verified",
+        "amountPaid": 10000,
+        "currency": "INR",
+        "verifiedAt": "2026-10-27T20:20:01.081Z"
+      },
+      "invoiceId": "inv_1793132401081_5319af",
+      "invoiceNumber": "GRD-INV-2026-5319AF"
+    },
+    "governance": {
+      "autonomousAuthorized": true,
+      "founderApproved": true,
+      "scopeHash": "35c001be148961fef8026a15852bc1592297d410bcff067e80f1219f8567d8b9",
+      "policyTier": "LOW_RISK_TIER_1"
+    },
+    "status": "CLOSED",
+    "isTest": true,
+    "publicUrl": "https://garudaos.in/proposal/prop_1793132393657_d828b2",
+    "createdAt": "2026-10-27T20:19:53.693Z",
+    "updatedAt": "2026-10-27T20:21:51.697Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_autonomous_policy",
+        "status": "APPROVED",
+        "timestamp": "2026-10-27T20:19:53.693Z",
+        "details": {
+          "totalINR": 20000,
+          "currency": "INR",
+          "totalInCurrency": 20000,
+          "depositAmount": 10000
+        }
+      },
+      {
+        "action": "CLIENT_VIEWED",
+        "actor": "client_portal",
+        "timestamp": "2026-10-27T20:19:58.757Z"
+      },
+      {
+        "action": "CLIENT_ACCEPTED",
+        "actor": "client",
+        "signer": "Sarah Connor",
+        "timestamp": "2026-10-27T20:19:59.247Z"
+      },
+      {
+        "action": "PAYMENT_CLAIM_RECORDED",
+        "actor": "system_truth_gate",
+        "verified": false,
+        "status": "PAYMENT_CLAIMED",
+        "timestamp": "2026-10-27T20:20:00.101Z"
+      },
+      {
+        "action": "PAYMENT_CLAIM_RECORDED",
+        "actor": "system_truth_gate",
+        "verified": false,
+        "status": "PAYMENT_EVIDENCE_UNVERIFIED",
+        "timestamp": "2026-10-27T20:20:00.562Z"
+      },
+      {
+        "action": "DEPOSIT_VERIFIED",
+        "actor": "razorpay_webhook_gate",
+        "verified": true,
+        "paymentId": "pay_rzp_live_98124981",
+        "amount": 10000,
+        "timestamp": "2026-10-27T20:20:01.081Z"
+      },
+      {
+        "action": "DELIVERY_COMPLETED",
+        "actor": "qa_validator_engine",
+        "manifestHash": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+        "timestamp": "2026-10-27T20:21:50.648Z"
+      },
+      {
+        "action": "FINAL_CLIENT_ACCEPTANCE",
+        "actor": "client",
+        "timestamp": "2026-10-27T20:21:51.187Z"
+      },
+      {
+        "action": "FINAL_PAYMENT_VERIFIED",
+        "actor": "razorpay_webhook_gate",
+        "paymentId": "pay_rzp_live_final_98124982",
+        "status": "REVENUE_REALIZED",
+        "timestamp": "2026-10-27T20:21:51.697Z"
+      }
+    ],
+    "clientAcceptance": {
+      "acceptedAt": "2026-10-27T20:19:59.247Z",
+      "signerName": "Sarah Connor",
+      "signerEmail": "sarah@cyberdyne.io",
+      "ipAddress": "203.0.113.42",
+      "agreementConfirmed": true
+    },
+    "missionId": "mission_1793132401557_67070b",
+    "delivery": {
+      "deliveredAt": "2026-10-27T20:21:50.648Z",
+      "manifestHash": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+      "sha256Manifest": "357480cf74c288bb5e34b7c199e436cf39fe71ada340a29d7ab19fc0331d04c2",
+      "qaReportUrl": null,
+      "testSuiteResults": "24/24 Automated Test Assertions Passed",
+      "releaseNotes": "Full responsive Next.js landing page with Stripe modal deployed"
+    },
+    "finalAcceptance": {
+      "acceptedAt": "2026-10-27T20:21:51.187Z",
+      "clientNotes": "Everything tested and works great on our domain.",
+      "acceptanceSignature": "Sarah Connor"
+    },
+    "finalPayment": {
+      "verified": true,
+      "paymentId": "pay_rzp_live_final_98124982",
+      "amount": 10000,
+      "currency": "INR",
+      "verifiedAt": "2026-10-27T20:21:51.697Z",
+      "invoiceId": "inv_1793132511697_0d5778",
+      "invoiceNumber": "GRD-INV-2026-0D5778"
+    }
+  },
+  "prop_1793132397041_71e12b": {
+    "proposalId": "prop_1793132397041_71e12b",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Enterprise Multi-Tenant AI Agent RAG Pipeline",
+      "requirements": "Full-stack enterprise RAG engine with vector database, user authentication, and admin telemetry",
+      "category": "Software Engineering",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Arthur Dent",
+      "email": "arthur@hitchhiker.com",
+      "phone": null,
+      "organization": null,
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 99,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 75000,
+        "amountINR": 75000,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 75000,
+        "amountINR": 75000,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "INR",
+      "totalAmount": 150000,
+      "totalINR": 150000,
+      "depositAmount": 75000,
+      "depositAmountINR": 75000,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-11-10T20:19:57.042Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 75000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": false,
+      "scopeHash": "4651b9b34a9fdc75db98958c443f5c4b31169dca7581ac4bf0bc7f94fb8ee5b0",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
+    },
+    "status": "WAITING_APPROVAL",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1793132397041_71e12b",
+    "createdAt": "2026-10-27T20:19:57.042Z",
+    "updatedAt": "2026-10-27T20:19:57.042Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "garuda_proposal_engine",
+        "status": "WAITING_APPROVAL",
+        "timestamp": "2026-10-27T20:19:57.042Z",
+        "details": {
+          "totalINR": 150000,
+          "currency": "INR",
+          "totalInCurrency": 150000,
+          "depositAmount": 75000
+        }
+      }
+    ]
+  },
+  "prop_1793132397918_2ec459": {
+    "proposalId": "prop_1793132397918_2ec459",
+    "version": 1,
+    "candidateId": null,
+    "scopeId": null,
+    "project": {
+      "title": "Dubai Hotel WhatsApp Concierge & Booking Sync",
+      "requirements": "Automated WhatsApp bot integrating with hotel property management system",
+      "category": "Software Engineering",
+      "tags": [
+        "custom_software",
+        "governed_execution"
+      ]
+    },
+    "client": {
+      "name": "Tariq Al-Mansoor",
+      "email": null,
+      "phone": null,
+      "organization": "Emirates Hospitality",
+      "attribution": null
+    },
+    "capabilityMatch": {
+      "name": "Governed software implementation",
+      "category": "Software Engineering",
+      "matchScore": 50,
+      "canMotherExecuteAutonomously": true
+    },
+    "scope": {
+      "inclusions": [
+        "Complete production-ready codebase with clean modular architecture",
+        "Automated test runner suite with 100% passing test assertions",
+        "Cryptographic SHA-256 delivery manifest and verification report",
+        "Deployment setup & 14-day warranty support"
+      ],
+      "exclusions": [
+        "Third-party paid API subscription costs (e.g. OpenAI/Twilio API usage)",
+        "Domain purchasing & cloud hosting provider fees",
+        "Scope alterations outside the agreed requirements specification"
+      ]
+    },
+    "milestones": [
+      {
+        "milestoneId": "m1",
+        "title": "Milestone 1 — Advance Deposit & Architecture Kickoff",
+        "amount": 3000,
+        "amountINR": 69600,
+        "percentage": 50,
+        "status": "PENDING_PAYMENT",
+        "deliverableSummary": "Initial project scoping, schema design, and core implementation initialization."
+      },
+      {
+        "milestoneId": "m2",
+        "title": "Milestone 2 — Final Delivery, Automated QA & Deployment",
+        "amount": 3000,
+        "amountINR": 69600,
+        "percentage": 50,
+        "status": "UPON_DELIVERY",
+        "deliverableSummary": "Full functional implementation, test suite verification, and final client handover."
+      }
+    ],
+    "pricing": {
+      "currency": "AED",
+      "totalAmount": 6000,
+      "totalINR": 139200,
+      "depositAmount": 3000,
+      "depositAmountINR": 69600,
+      "depositPercentage": 50,
+      "pricingModel": "milestone_based"
+    },
+    "timeline": {
+      "estimatedDeliveryDays": "4-24 hours",
+      "expiryDate": "2026-11-10T20:19:57.919Z"
+    },
+    "payment": {
+      "paymentMethod": "Razorpay / Global Cards",
+      "depositRequired": 3000,
+      "depositStatus": "UNPAID",
+      "paymentTruth": {
+        "verified": false,
+        "state": "DEPOSIT_PENDING",
+        "providerEvidence": null
+      }
+    },
+    "governance": {
+      "autonomousAuthorized": false,
+      "founderApproved": true,
+      "scopeHash": "94d0eb56b5afa46824b7309faad7f5dfeb648b88b160f27651ed8528cc4a527d",
+      "policyTier": "STANDARD_GOVERNED_TIER_2"
+    },
+    "status": "APPROVED",
+    "isTest": false,
+    "publicUrl": "https://garudaos.in/proposal/prop_1793132397918_2ec459",
+    "createdAt": "2026-10-27T20:19:57.919Z",
+    "updatedAt": "2026-10-27T20:19:57.919Z",
+    "auditTrail": [
+      {
+        "action": "PROPOSAL_CREATED",
+        "actor": "founder",
+        "status": "APPROVED",
+        "timestamp": "2026-10-27T20:19:57.919Z",
+        "details": {
+          "totalINR": 139200,
+          "currency": "AED",
+          "totalInCurrency": 6000,
+          "depositAmount": 3000
+        }
+      }
+    ]
   }
 }

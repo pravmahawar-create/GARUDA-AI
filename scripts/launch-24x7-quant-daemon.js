@@ -3,25 +3,26 @@
  * 🦅 GARUDA: 24/7 Global Autonomous Quant Daemon Launcher
  * Usage:
  *   node scripts/launch-24x7-quant-daemon.js --once
- *   node scripts/launch-24x7-quant-daemon.js --daemon --interval 60
+ *   node scripts/launch-24x7-quant-daemon.js --daemon --interval 60 --alerts
  */
 
 const { Global24x7QuantDaemon } = require('../src/services/alphaQuant/global24x7QuantDaemon');
+const { generateAndDispatchPulse } = require('./dispatch-daily-quant-pulse');
 
 async function main() {
   const args = process.argv.slice(2);
   const isOnce = args.includes('--once');
-  const enableAlerts = args.includes('--alerts');
+  const enableAlerts = args.includes('--alerts') || true; // Default enable alerts for Founder
 
-  let interval = 60;
+  let interval = 120; // 2 minutes polling
   const intIdx = args.indexOf('--interval');
   if (intIdx !== -1 && args[intIdx + 1]) {
-    interval = parseInt(args[intIdx + 1], 10) || 60;
+    interval = parseInt(args[intIdx + 1], 10) || 120;
   }
 
   const daemon = new Global24x7QuantDaemon({
     pollIntervalSeconds: interval,
-    minConfidenceThreshold: 82,
+    minConfidenceThreshold: 80, // 80%+ Confluence
     maxDailyTrades: 5,
     dailyProfitTargetInr: 2500, // ₹2,500 target (+2.5% daily growth)
     dailyMaxLossInr: 1200,      // ₹1,200 loss limit (capital defense)
@@ -43,6 +44,26 @@ async function main() {
   } else {
     console.log(`🦅 Launching GARUDA 24/7 Global Quant Daemon (Polling every ${interval}s)...`);
     daemon.start();
+
+    // Schedule Daily Market Pulse at 09:15 AM IST (NSE Opening Bell)
+    let lastPulseDate = new Date().toDateString();
+
+    setInterval(async () => {
+      try {
+        const now = new Date();
+        const totalMinutesIST = (now.getUTCHours() * 60 + now.getUTCMinutes() + 330) % 1440;
+        const currentDate = now.toDateString();
+
+        // 09:15 AM IST is 555 minutes from midnight
+        if (totalMinutesIST >= 555 && totalMinutesIST <= 570 && lastPulseDate !== currentDate) {
+          console.log('🔔 Triggering Daily Morning Market Intelligence Pulse...');
+          lastPulseDate = currentDate;
+          await generateAndDispatchPulse();
+        }
+      } catch (err) {
+        console.warn('Daily pulse scheduled check error:', err.message);
+      }
+    }, 60000);
 
     process.on('SIGINT', () => {
       console.log('\nStopping 24/7 daemon...');
