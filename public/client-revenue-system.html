@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>GARUDA OS — Client Project & Revenue Management</title>
+  
+  <!-- Tailwind CSS CDN with Custom Theme Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bg: '#0B0C0E',
+            panel: '#13151A',
+            card: '#181B24',
+            border: '#242936',
+            gold: '#D6A84F',
+            goldHover: '#E5BE6B',
+            goldMuted: 'rgba(214, 168, 79, 0.15)',
+            emeraldText: '#10B981',
+            mutedText: '#9CA3AF'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Print Specific Stylesheet -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+    body {
+      background-color: #0B0C0E;
+      color: #F3F4F6;
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, textarea, select {
+      user-select: auto;
+    }
+    /* Hide scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0C0E;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #242936;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D6A84F;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printInvoiceModal, #printInvoiceModal * {
+        visibility: visible;
+      }
+      #printInvoiceModal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        color: black !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-bg text-gray-100 flex flex-col antialiased selection:bg-gold selection:text-black">
+
+  <!-- ======================================================== -->
+  <!-- TOP ANCHORED HEADER -->
+  <!-- ======================================================== -->
+  <header class="sticky top-0 z-40 bg-panel/95 backdrop-blur border-b border-border px-4 py-3 sm:px-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gold to-yellow-700 flex items-center justify-center shadow-lg shadow-gold/20 font-black text-black text-lg">
+        🦅
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold tracking-widest text-gold uppercase">GARUDA OS</span>
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">LIVE SOVEREIGN</span>
+        </div>
+        <h1 class="text-sm sm:text-base font-bold text-white tracking-tight">Client Project & Revenue Manager</h1>
+      </div>
+    </div>
+
+    <!-- Quick Actions Top Bar -->
+    <div class="flex items-center gap-2">
+      <button onclick="openModal('addInvoiceModal')" class="hidden sm:flex items-center gap-1.5 bg-gold/15 hover:bg-gold/25 border border-gold/40 text-gold px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+        <span>🧾</span> New Invoice
+      </button>
+      <button onclick="openModal('addProjectModal')" class="hidden sm:flex items-center gap-1.5 bg-gold hover:bg-goldHover text-black px-3.5 py-1.5 rounded-lg text-xs font-bold transition shadow-md shadow-gold/20">
+        <span>+</span> New Project
+      </button>
+      <button onclick="switchTab('settings')" class="p-2 text-mutedText hover:text-gold hover:bg-card rounded-lg transition" title="Data Backup & Settings">
+        ⚙️
+      </button>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- NAVIGATION SUB-HEADER TABS (HORIZONTAL SCROLLABLE ON MOBILE) -->
+  <!-- ======================================================== -->
+  <nav class="bg-[#0e1014] border-b border-border px-4 sm:px-6 flex items-center gap-1 overflow-x-auto whitespace-nowrap py-2 sticky top-[61px] z-30 overscroll-contain">
+    <button onclick="switchTab('dashboard')" id="tabBtn-dashboard" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition bg-gold text-black shadow">
+      <span>📊</span> Dashboard
+    </button>
+    <button onclick="switchTab('clients')" id="tabBtn-clients" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition text-mutedText hover:text-white hover:bg-card">
+      <span>👥</span> Clients <span id="navClientCount" class="text-[10px] bg-card px-1.5 py-0.5 rounded text-gold font-mono">0</span>
+    </button>
+    <button onclick="switchTab('projects')" id="tabBtn-projects" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition text-mutedText hover:text-white hover:bg-card">
+      <span>📁</span> Projects <span id="navProjectCount" class="text-[10px] bg-card px-1.5 py-0.5 rounded text-gold font-mono">0</span>
+    </button>
+    <button onclick="switchTab('milestones')" id="tabBtn-milestones" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition text-mutedText hover:text-white hover:bg-card">
+      <span>🎯</span> Milestones & Tasks
+    </button>
+    <button onclick="switchTab('invoices')" id="tabBtn-invoices" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition text-mutedText hover:text-white hover:bg-card">
+      <span>🧾</span> Invoices & GST
+    </button>
+    <button onclick="switchTab('analytics')" id="tabBtn-analytics" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition text-mutedText hover:text-white hover:bg-card">
+      <span>📈</span> Profitability
+    </button>
+    <button onclick="switchTab('settings')" id="tabBtn-settings" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition text-mutedText hover:text-white hover:bg-card">
+      <span>💾</span> Export & Backup
+    </button>
+  </nav>
+
+  <!-- ======================================================== -->
+  <!-- MAIN SCROLLABLE CONTENT VIEWPORT -->
+  <!-- ======================================================== -->
+  <main class="flex-1 overflow-y-auto p-4 sm:p-6 max-w-7xl w-full mx-auto pb-28">
+
+    <!-- ──────────────────────────────────────────────────────── -->
+    <!-- TAB 1: EXECUTIVE REVENUE DASHBOARD -->
+    <!-- ──────────────────────────────────────────────────────── -->
+    <section id="view-dashboard" class="tab-view space-y-6">
+      
+      <!-- Top Metric Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <!-- Collected Revenue -->
+        <div class="bg-panel border border-border rounded-xl p-4 relative overflow-hidden">
+          <div class="flex items-center justify-between text-mutedText text-xs font-medium uppercase tracking-wider mb-1">
+            <span>Collected Revenue</span>
+            <span class="text-emerald-400">💰</span>
+          </div>
+          <div id="kpiCollectedRevenue" class="text-xl sm:text-2xl font-extrabold text-white font-mono">₹0</div>
+          <div class="text-[11px] text-emerald-400 mt-1 flex items-center gap-1">
+            <span>↑ Verified in Bank</span>
+          </div>
+          <div class="absolute -right-2 -bottom-2 w-16 h-16 bg-emerald-500/5 rounded-full pointer-events-none"></div>
+        </div>
+
+        <!-- Pending Receivables -->
+        <div class="bg-panel border border-border rounded-xl p-4 relative overflow-hidden">
+          <div class="flex items-center justify-between text-mutedText text-xs font-medium uppercase tracking-wider mb-1">
+            <span>Pending Receivables</span>
+            <span class="text-amber-400">⏳</span>
+          </div>
+          <div id="kpiPendingPayments" class="text-xl sm:text-2xl font-extrabold text-amber-400 font-mono">₹0</div>
+          <div class="text-[11px] text-mutedText mt-1">
+            <span id="kpiPendingCount">0</span> Invoices Outstanding
+          </div>
+          <div class="absolute -right-2 -bottom-2 w-16 h-16 bg-amber-500/5 rounded-full pointer-events-none"></div>
+        </div>
+
+        <!-- Active Projects -->
+        <div class="bg-panel border border-border rounded-xl p-4 relative overflow-hidden">
+          <div class="flex items-center justify-between text-mutedText text-xs font-medium uppercase tracking-wider mb-1">
+            <span>Active Projects</span>
+            <span class="text-blue-400">📁</span>
+          </div>
+          <div id="kpiActiveProjects" class="text-xl sm:text-2xl font-extrabold text-white font-mono">0</div>
+          <div class="text-[11px] text-mutedText mt-1 flex items-center gap-1">
+            <span id="kpiTotalProjects">0 Total Projects</span>
+          </div>
+          <div class="absolute -right-2 -bottom-2 w-16 h-16 bg-blue-500/5 rounded-full pointer-events-none"></div>
+        </div>
+
+        <!-- Total Clients -->
+        <div class="bg-panel border border-border rounded-xl p-4 relative overflow-hidden">
+          <div class="flex items-center justify-between text-mutedText text-xs font-medium uppercase tracking-wider mb-1">
+            <span>Active Clients</span>
+            <span class="text-gold">👥</span>
+          </div>
+          <div id="kpiTotalClients" class="text-xl sm:text-2xl font-extrabold text-gold font-mono">0</div>
+          <div class="text-[11px] text-mutedText mt-1">
+            Retainers & High-Ticket
+          </div>
+          <div class="absolute -right-2 -bottom-2 w-16 h-16 bg-gold/5 rounded-full pointer-events-none"></div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <!-- Monthly Revenue Chart -->
+        <div class="bg-panel border border-border rounded-xl p-4 sm:p-5 lg:col-span-2">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Revenue Realization (6-Month Trend)</h3>
+              <p class="text-xs text-mutedText">Collected vs Pending Invoices (INR)</p>
+            </div>
+            <span class="text-xs bg-card border border-border text-gold px-2.5 py-1 rounded font-mono">INR (₹)</span>
+          </div>
+          <div class="h-64 w-full">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Project Status Breakdown Chart -->
+        <div class="bg-panel border border-border rounded-xl p-4 sm:p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Project Lifecycle</h3>
+              <span class="text-xs text-mutedText">Status Ratio</span>
+            </div>
+            <div class="h-48 w-full flex items-center justify-center">
+              <canvas id="projectStatusChart"></canvas>
+            </div>
+          </div>
+          <div id="projectStatusLegend" class="grid grid-cols-2 gap-2 text-xs pt-4 border-t border-border mt-2">
+            <!-- Dynamic Legend -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Projects & Invoices Double Column -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Active Urgent Projects -->
+        <div class="bg-panel border border-border rounded-xl p-4 sm:p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <span>⚡</span> High-Priority Deliveries
+            </h3>
+            <button onclick="switchTab('projects')" class="text-xs text-gold hover:underline">View All →</button>
+          </div>
+          <div id="dashboardRecentProjects" class="space-y-3">
+            <!-- Rendered Dynamically -->
+          </div>
+        </div>
+
+        <!-- Pending Invoices Requiring Follow-Up -->
+        <div class="bg-panel border border-border rounded-xl p-4 sm:p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <span>⚠️</span> Pending Invoices to Recover
+            </h3>
+            <button onclick="switchTab('invoices')" class="text-xs text-gold hover:underline">All Invoices →</button>
+          </div>
+          <div id="dashboardPendingInvoices" class="space-y-3">
+            <!-- Rendered Dynamically -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────── -->
+    <!-- TAB 2: CLIENT MANAGEMENT -->
+    <!-- ──────────────────────────────────────────────────────── -->
+    <section id="view-clients" class="tab-view space-y-4 hidden">
+      <!-- Action & Search Bar -->
+      <div class="bg-panel border border-border rounded-xl p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full sm:w-80">
+          <span class="absolute left-3 top-2.5 text-mutedText text-sm">🔍</span>
+          <input type="text" id="clientSearchInput" oninput="renderClients()" placeholder="Search clients by name, company, email..." 
+            class="w-full bg-card border border-border rounded-lg pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-gold transition" />
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <select id="clientStatusFilter" onchange="renderClients()" class="bg-card border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-gold">
+            <option value="ALL">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Lead">Lead / Prospect</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+          <button onclick="openModal('addClientModal')" class="bg-gold hover:bg-goldHover text-black px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap shadow-md">
+            <span>+</span> Add Client
+          </button>
+        </div>
+      </div>
+
+      <!-- Clients Table & Cards -->
+      <div class="bg-panel border border-border rounded-xl overflow-hidden shadow">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#101217] text-mutedText border-b border-border uppercase font-mono text-[11px]">
+                <th class="p-3.5">Client & Company</th>
+                <th class="p-3.5">Contact Details</th>
+                <th class="p-3.5">Status</th>
+                <th class="p-3.5 text-right">Total Billed</th>
+                <th class="p-3.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clientTableBody" class="divide-y divide-border">
+              <!-- Rendered Dynamically -->
+            </tbody>
+          </table>
+        </div>
+        <div id="clientsEmptyState" class="p-8 text-center text-mutedText text-xs hidden">
+          No clients found matching your search.
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────── -->
+    <!-- TAB 3: PROJECT MANAGEMENT -->
+    <!-- ──────────────────────────────────────────────────────── -->
+    <section id="view-projects" class="tab-view space-y-4 hidden">
+      <!-- Project Controls -->
+      <div class="bg-panel border border-border rounded-xl p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full sm:w-80">
+          <span class="absolute left-3 top-2.5 text-mutedText text-sm">🔍</span>
+          <input type="text" id="projectSearchInput" oninput="renderProjects()" placeholder="Search projects or scope..." 
+            class="w-full bg-card border border-border rounded-lg pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-gold transition" />
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
+          <select id="projectStatusFilter" onchange="renderProjects()" class="bg-card border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-gold">
+            <option value="ALL">All Statuses</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Review">In Review</option>
+            <option value="Completed">Completed</option>
+            <option value="On Hold">On Hold</option>
+          </select>
+          <select id="projectPriorityFilter" onchange="renderProjects()" class="bg-card border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-gold">
+            <option value="ALL">All Priorities</option>
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <button onclick="openModal('addProjectModal')" class="bg-gold hover:bg-goldHover text-black px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap shadow-md">
+            <span>+</span> Add Project
+          </button>
+        </div>
+      </div>
+
+      <!-- Projects Grid / Cards -->
+      <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Rendered Dynamically -->
+      </div>
+      <div id="projectsEmptyState" class="p-12 text-center text-mutedText text-xs bg-panel border border-border rounded-xl hidden">
+        No projects match your current filters.
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────── -->
+    <!-- TAB 4: MILESTONES & DELIVERY CHECKLIST -->
+    <!-- ──────────────────────────────────────────────────────── -->
+    <section id="view-milestones" class="tab-view space-y-4 hidden">
+      <!-- Selector & Overview -->
+      <div class="bg-panel border border-border rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="w-full sm:w-auto">
+          <label class="text-xs text-mutedText block mb-1 uppercase font-semibold">Select Active Project to Track:</label>
+          <select id="milestoneProjectSelector" onchange="renderMilestones()" class="bg-card border border-gold/40 text-white font-semibold text-xs px-3 py-2 rounded-lg w-full sm:w-80 focus:outline-none">
+            <!-- Dynamic Project Options -->
+          </select>
+        </div>
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <div class="text-right">
+            <div class="text-xs text-mutedText">Overall Delivery Progress:</div>
+            <div id="projectOverallProgressText" class="text-base font-bold text-emerald-400 font-mono">0%</div>
+          </div>
+          <button onclick="openAddMilestoneModal()" class="bg-gold/15 hover:bg-gold/25 border border-gold/40 text-gold px-3.5 py-2 rounded-lg text-xs font-bold transition">
+            + Add Milestone
+          </button>
+        </div>
+      </div>
+
+      <!-- Milestones Container -->
+      <div id="milestonesContainer" class="space-y-4">
+        <!-- Rendered Dynamically -->
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────── -->
+    <!-- TAB 5: INVOICES & GST -->
+    <!-- ──────────────────────────────────────────────────────── -->
+    <section id="view-invoices" class="tab-view space-y-4 hidden">
+      <!-- Top Invoice Controls -->
+      <div class="bg-panel border border-border rounded-xl p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div class="flex items-center gap-2">
+          <select id="invoiceStatusFilter" onchange="renderInvoices()" class="bg-card border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-gold">
+            <option value="ALL">All Invoices</option>
+            <option value="Paid">Paid</option>
+            <option value="Unpaid">Unpaid / Outstanding</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="openModal('addInvoiceModal')" class="bg-gold hover:bg-goldHover text-black px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+            <span>+</span> Generate New Invoice
+          </button>
+        </div>
+      </div>
+
+      <!-- Invoices Table -->
+      <div class="bg-panel border border-border rounded-xl overflow-hidden shadow">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#101217] text-mutedText border-b border-border uppercase font-mono text-[11px]">
+                <th class="p-3.5">Invoice #</th>
+                <th class="p-3.5">Client & Project</th>
+                <th class="p-3.5">Date / Due</th>
+                <th class="p-3.5 text-right">Taxable (₹)</th>
+                <th class="p-3.5 text-right">GST (18%)</th>
+                <th class="p-3.5 text-right font-bold text-white">Total (₹)</th>
+                <th class="p-3.5 text-center">Status</th>
+                <th class="p-3.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceTableBody" class="divide-y divide-border">
+              <!-- Rendered Dynamically -->
+            </tbody>
+          </table>
+        </div>
+        <div id="invoicesEmptyState" class="p-8 text-center text-mutedText text-xs hidden">
+          No invoices recorded yet.
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────── -->
+    <!-- TAB 6: REVENUE ANALYTICS & PROFITABILITY -->
+    <!-- ──────────────────────────────────────────────────────── -->
+    <section id="view-analytics" class="tab-view space-y-6 hidden">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-panel border border-border rounded-xl p-4">
+          <div class="text-xs text-mutedText uppercase font-semibold">Total Cumulative Billing</div>
+          <div id="analyticsTotalBilled" class="text-2xl font-bold text-white font-mono mt-1">₹0</div>
+          <div class="text-[11px] text-mutedText mt-1">Across all historical projects</div>
+        </div>
+        <div class="bg-panel border border-border rounded-xl p-4">
+          <div class="text-xs text-mutedText uppercase font-semibold">Total Realized (Gross Margin 84%)</div>
+          <div id="analyticsRealizedGross" class="text-2xl font-bold text-emerald-400 font-mono mt-1">₹0</div>
+          <div class="text-[11px] text-emerald-400 mt-1">Software economics efficiency</div>
+        </div>
+        <div class="bg-panel border border-border rounded-xl p-4">
+          <div class="text-xs text-mutedText uppercase font-semibold">Total GST Liability Collected</div>
+          <div id="analyticsTotalGst" class="text-2xl font-bold text-gold font-mono mt-1">₹0</div>
+          <div class="text-[11px] text-mutedText mt-1">18% GST Account Reserve</div>
+        </div>
+      </div>
+
+      <!-- Project Profitability Ledger -->
+      <div class="bg-panel border border-border rounded-xl p-4 sm:p-5">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-3">Project Profitability & Margin Matrix</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-[#101217] text-mutedText border-b border-border uppercase font-mono text-[11px]">
+                <th class="p-3">Project</th>
+                <th class="p-3">Client</th>
+                <th class="p-3 text-right">Contract Budget</th>
+                <th class="p-3 text-right">Invoiced Amt</th>
+                <th class="p-3 text-right">Received Amt</th>
+                <th class="p-3 text-right">Collection Rate</th>
+              </tr>
+            </thead>
+            <tbody id="profitabilityTableBody" class="divide-y divide-border">
+              <!-- Rendered Dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────── -->
+    <!-- TAB 7: DATA PERSISTENCE, BACKUP & CSV EXPORT -->
+    <!-- ──────────────────────────────────────────────────────── -->
+    <section id="view-settings" class="tab-view space-y-6 hidden">
+      <div class="bg-panel border border-border rounded-xl p-5 max-w-2xl mx-auto space-y-6">
+        <div>
+          <h3 class="text-base font-bold text-white mb-1">Sovereign Data Governance</h3>
+          <p class="text-xs text-mutedText">
+            All data is saved securely in your browser's local encrypted storage (<code class="text-gold font-mono">localStorage</code>). No cloud leakage.
+          </p>
+        </div>
+
+        <!-- Export CSV Section -->
+        <div class="border-t border-border pt-4">
+          <h4 class="text-xs font-bold text-gold uppercase tracking-wider mb-2">Export Data to CSV (Excel / Sheets)</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button onclick="exportCSV('clients')" class="bg-card hover:bg-border text-white px-3 py-2 rounded-lg text-xs font-medium border border-border transition flex items-center justify-center gap-1.5">
+              <span>📄</span> Export Clients.csv
+            </button>
+            <button onclick="exportCSV('projects')" class="bg-card hover:bg-border text-white px-3 py-2 rounded-lg text-xs font-medium border border-border transition flex items-center justify-center gap-1.5">
+              <span>📄</span> Export Projects.csv
+            </button>
+            <button onclick="exportCSV('invoices')" class="bg-card hover:bg-border text-white px-3 py-2 rounded-lg text-xs font-medium border border-border transition flex items-center justify-center gap-1.5">
+              <span>📄</span> Export Invoices.csv
+            </button>
+          </div>
+        </div>
+
+        <!-- Full JSON Backup & Restore -->
+        <div class="border-t border-border pt-4 space-y-3">
+          <h4 class="text-xs font-bold text-gold uppercase tracking-wider">Full Sovereign JSON Backup & Restore</h4>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button onclick="downloadJsonBackup()" class="bg-gold/15 hover:bg-gold/25 border border-gold/40 text-gold px-4 py-2.5 rounded-lg text-xs font-bold transition flex-1 flex items-center justify-center gap-2">
+              <span>📥</span> Download Full JSON Backup
+            </button>
+            <label class="bg-card hover:bg-border border border-border text-white px-4 py-2.5 rounded-lg text-xs font-semibold cursor-pointer transition flex-1 flex items-center justify-center gap-2">
+              <span>📤</span> Restore from Backup File
+              <input type="file" id="restoreFileInput" accept=".json" onchange="restoreJsonBackup(event)" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Reset & Demo State -->
+        <div class="border-t border-border pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            <div class="text-xs font-bold text-white">Reset Sample Data</div>
+            <div class="text-[11px] text-mutedText">Reload pre-configured demonstration clients & projects.</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="resetToSampleData()" class="bg-card border border-border hover:border-gold text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">
+              Reload Sample Data
+            </button>
+            <button onclick="clearAllData()" class="bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">
+              Wipe All Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 1: ADD / EDIT CLIENT -->
+  <!-- ======================================================== -->
+  <div id="addClientModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-panel border border-border rounded-2xl w-full max-w-md p-5 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-border mb-4">
+        <h3 id="clientModalTitle" class="text-sm font-bold text-white uppercase tracking-wider">Add New Client</h3>
+        <button onclick="closeModal('addClientModal')" class="text-mutedText hover:text-white text-lg">✕</button>
+      </div>
+
+      <form id="clientForm" onsubmit="handleClientSubmit(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="clientFormId" value="" />
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Client / Contact Name *</label>
+          <input type="text" id="clientFormName" required placeholder="Dr. V. P. Sharma" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+        </div>
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Company / Clinic / Business Name *</label>
+          <input type="text" id="clientFormCompany" required placeholder="Modern Diagnostics / Marmm Clinic" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Email</label>
+            <input type="email" id="clientFormEmail" placeholder="client@domain.com" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+          </div>
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Phone / WhatsApp *</label>
+            <input type="tel" id="clientFormPhone" required placeholder="+91 98260 12345" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Status</label>
+          <select id="clientFormStatus" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold">
+            <option value="Active">Active Paying Client</option>
+            <option value="Lead">Lead / In Negotiation</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="pt-3 flex gap-2 justify-end">
+          <button type="button" onclick="closeModal('addClientModal')" class="px-4 py-2 bg-card hover:bg-border text-mutedText rounded-lg transition">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-gold hover:bg-goldHover text-black font-bold rounded-lg transition shadow-md">Save Client</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 2: ADD / EDIT PROJECT -->
+  <!-- ======================================================== -->
+  <div id="addProjectModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-panel border border-border rounded-2xl w-full max-w-lg p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-border mb-4">
+        <h3 id="projectModalTitle" class="text-sm font-bold text-white uppercase tracking-wider">Create New Project</h3>
+        <button onclick="closeModal('addProjectModal')" class="text-mutedText hover:text-white text-lg">✕</button>
+      </div>
+
+      <form id="projectForm" onsubmit="handleProjectSubmit(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="projectFormId" value="" />
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Project Name *</label>
+          <input type="text" id="projectFormTitle" required placeholder="24/7 Clinical WhatsApp Concierge" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+        </div>
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Select Client *</label>
+          <select id="projectFormClientId" required class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold">
+            <!-- Populated Dynamically -->
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Contract Budget (₹ INR) *</label>
+            <input type="number" id="projectFormBudget" required min="1000" placeholder="75000" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white font-mono focus:outline-none focus:border-gold" />
+          </div>
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Delivery Deadline *</label>
+            <input type="date" id="projectFormDeadline" required class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Status</label>
+            <select id="projectFormStatus" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold">
+              <option value="In Progress">In Progress</option>
+              <option value="Review">In Review</option>
+              <option value="Completed">Completed</option>
+              <option value="On Hold">On Hold</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Priority</label>
+            <select id="projectFormPriority" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold">
+              <option value="High">🔥 High Priority</option>
+              <option value="Medium">⚡ Medium</option>
+              <option value="Low">🌱 Low</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Scope & Key Deliverables</label>
+          <textarea id="projectFormScope" rows="3" placeholder="Define deliverables: WhatsApp chatbot integration, Google calendar sync, sub-second latency..." class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold"></textarea>
+        </div>
+        <div class="pt-3 flex gap-2 justify-end">
+          <button type="button" onclick="closeModal('addProjectModal')" class="px-4 py-2 bg-card hover:bg-border text-mutedText rounded-lg transition">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-gold hover:bg-goldHover text-black font-bold rounded-lg transition shadow-md">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 3: ADD MILESTONE -->
+  <!-- ======================================================== -->
+  <div id="addMilestoneModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-panel border border-border rounded-2xl w-full max-w-md p-5 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-border mb-4">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Add Milestone</h3>
+        <button onclick="closeModal('addMilestoneModal')" class="text-mutedText hover:text-white text-lg">✕</button>
+      </div>
+
+      <form id="milestoneForm" onsubmit="handleMilestoneSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Milestone Name *</label>
+          <input type="text" id="milestoneFormTitle" required placeholder="Phase 1: Architecture & WhatsApp Verification" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Target Due Date *</label>
+            <input type="date" id="milestoneFormDueDate" required class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+          </div>
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Payment % Release</label>
+            <input type="number" id="milestoneFormPct" min="0" max="100" value="50" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white font-mono focus:outline-none focus:border-gold" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Checklist Tasks (Comma separated)</label>
+          <input type="text" id="milestoneFormTasks" placeholder="Setup webhook, Verify Meta App, Test auto-responder" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+        </div>
+        <div class="pt-3 flex gap-2 justify-end">
+          <button type="button" onclick="closeModal('addMilestoneModal')" class="px-4 py-2 bg-card hover:bg-border text-mutedText rounded-lg transition">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-gold hover:bg-goldHover text-black font-bold rounded-lg transition shadow-md">Add Milestone</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 4: GENERATE INVOICE WITH GST -->
+  <!-- ======================================================== -->
+  <div id="addInvoiceModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-panel border border-border rounded-2xl w-full max-w-lg p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-border mb-4">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Generate GST Tax Invoice</h3>
+        <button onclick="closeModal('addInvoiceModal')" class="text-mutedText hover:text-white text-lg">✕</button>
+      </div>
+
+      <form id="invoiceForm" onsubmit="handleInvoiceSubmit(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Invoice Number</label>
+            <input type="text" id="invoiceFormNumber" readonly class="w-full bg-card/60 border border-border rounded-lg px-3 py-2 text-gold font-mono font-bold" />
+          </div>
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Issue Date</label>
+            <input type="date" id="invoiceFormDate" required class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Project *</label>
+          <select id="invoiceFormProjectId" onchange="syncInvoiceProject()" required class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold">
+            <!-- Populated Dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Client (Auto-linked)</label>
+          <input type="text" id="invoiceFormClientName" readonly class="w-full bg-card/60 border border-border rounded-lg px-3 py-2 text-mutedText" />
+        </div>
+
+        <div>
+          <label class="block text-mutedText font-semibold mb-1">Item Description</label>
+          <input type="text" id="invoiceFormDescription" required placeholder="Milestone 1: 50% Deployment Advance for WhatsApp Intake Bot" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Taxable Amount (₹)</label>
+            <input type="number" id="invoiceFormAmount" oninput="calculateInvoiceGst()" required min="100" placeholder="25000" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white font-mono font-bold focus:outline-none focus:border-gold" />
+          </div>
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">GST Rate (%)</label>
+            <select id="invoiceFormGstRate" onchange="calculateInvoiceGst()" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold">
+              <option value="18">18% (Standard IT SaaS)</option>
+              <option value="0">0% (Exempt / SEZ / Overseas)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Total (₹ with GST)</label>
+            <input type="text" id="invoiceFormTotal" readonly class="w-full bg-card/60 border border-border rounded-lg px-3 py-2 text-emerald-400 font-mono font-bold" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Payment Due Date</label>
+            <input type="date" id="invoiceFormDueDate" required class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold" />
+          </div>
+          <div>
+            <label class="block text-mutedText font-semibold mb-1">Initial Status</label>
+            <select id="invoiceFormStatus" class="w-full bg-card border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gold">
+              <option value="Unpaid">⏳ Unpaid (Awaiting Advance)</option>
+              <option value="Paid">✓ Paid (Received)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-3 flex gap-2 justify-end">
+          <button type="button" onclick="closeModal('addInvoiceModal')" class="px-4 py-2 bg-card hover:bg-border text-mutedText rounded-lg transition">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-gold hover:bg-goldHover text-black font-bold rounded-lg transition shadow-md">Create & Save Invoice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 5: PRINTABLE GST INVOICE VIEW -->
+  <!-- ======================================================== -->
+  <div id="printInvoiceModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white text-gray-900 rounded-2xl w-full max-w-2xl p-8 shadow-2xl relative max-h-[95vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200 mb-6 no-print">
+        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Tax Invoice Preview</span>
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow">
+            🖨️ Print / Save as PDF
+          </button>
+          <button onclick="closeModal('printInvoiceModal')" class="text-gray-400 hover:text-black text-lg px-2">✕</button>
+        </div>
+      </div>
+
+      <!-- Printable Area -->
+      <div id="printableInvoiceContent" class="space-y-6">
+        <!-- Dynamic Invoice HTML Injected Here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <!-- ======================================================== -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ======================================================== -->
+  <!-- CORE LOGIC & STATE ENGINE -->
+  <!-- ======================================================== -->
+  <script>
+    const STORAGE_KEY = "garuda_client_revenue_data_v1";
+
+    // Initial Realistic Sample Data
+    const SAMPLE_DATA = {
+      clients: [
+        {
+          id: "cli_1",
+          name: "Dr. V. P. Sharma",
+          company: "Modern Diagnostic & Research Centre",
+          email: "dr.vpsharma@moderndiag.in",
+          phone: "+91 98260 84612",
+          status: "Active",
+          createdAt: "2026-10-15"
+        },
+        {
+          id: "cli_2",
+          name: "Rohit Agrawal",
+          company: "Marmm The Klinik",
+          email: "marmmklinik@gmail.com",
+          phone: "+91 98269 88844",
+          status: "Active",
+          createdAt: "2026-10-20"
+        },
+        {
+          id: "cli_3",
+          name: "Siddharth Jain",
+          company: "Digital Marketing Indore",
+          email: "info@digitalmarketingindore.com",
+          phone: "+91 89625 01325",
+          status: "Active",
+          createdAt: "2026-10-22"
+        },
+        {
+          id: "cli_4",
+          name: "Ankit Mehta",
+          company: "Apex Luxury Real Estate",
+          email: "ankit@apexindore.com",
+          phone: "+91 94250 19283",
+          status: "Lead",
+          createdAt: "2026-10-28"
+        }
+      ],
+      projects: [
+        {
+          id: "proj_1",
+          clientId: "cli_1",
+          title: "Pathology Speed-to-Report WhatsApp Automation",
+          budget: 65000,
+          deadline: "2026-11-15",
+          status: "In Progress",
+          priority: "High",
+          scope: "Automated WhatsApp report dispatch, patient CRM query resolution, sub-second latency.",
+          createdAt: "2026-10-16"
+        },
+        {
+          id: "proj_2",
+          clientId: "cli_2",
+          title: "24/7 Cosmetic & Hair Surgery Intake Swarm",
+          budget: 75000,
+          deadline: "2026-11-10",
+          status: "In Progress",
+          priority: "High",
+          scope: "Night & weekend lead qualification, graft assessment questions, doctor calendar sync.",
+          createdAt: "2026-10-21"
+        },
+        {
+          id: "proj_3",
+          clientId: "cli_3",
+          title: "Agency Speed-to-Lead White-Label Gateway",
+          budget: 95000,
+          deadline: "2026-11-30",
+          status: "In Progress",
+          priority: "Medium",
+          scope: "10-second instant WhatsApp response to Meta ad leads, pre-screening, Google Sheet sync.",
+          createdAt: "2026-10-23"
+        },
+        {
+          id: "proj_4",
+          clientId: "cli_4",
+          title: "Real Estate Buyer Qualification Concierge",
+          budget: 120000,
+          deadline: "2026-12-15",
+          status: "Review",
+          priority: "Medium",
+          scope: "2/3 BHK budget & home loan screening bot with CRM pipeline handoff.",
+          createdAt: "2026-10-28"
+        }
+      ],
+      milestones: [
+        {
+          id: "mil_1",
+          projectId: "proj_1",
+          title: "Phase 1: Architecture & WhatsApp Cloud API Setup",
+          dueDate: "2026-10-25",
+          paymentPercentage: 50,
+          status: "Completed",
+          tasks: [
+            { text: "Configure Meta Cloud App", completed: true },
+            { text: "Database schema for patient test IDs", completed: true },
+            { text: "Webhook response test (<800ms)", completed: true }
+          ]
+        },
+        {
+          id: "mil_2",
+          projectId: "proj_1",
+          title: "Phase 2: PDF Report Dispatch & Security Validation",
+          dueDate: "2026-11-15",
+          paymentPercentage: 50,
+          status: "Pending",
+          tasks: [
+            { text: "AES-256 PDF link encryption", completed: true },
+            { text: "Doctor signature stamp generator", completed: false },
+            { text: "Patient delivery confirmation SMS", completed: false }
+          ]
+        },
+        {
+          id: "mil_3",
+          projectId: "proj_2",
+          title: "Milestone 1: 50% Upfront Technical Deployment",
+          dueDate: "2026-10-28",
+          paymentPercentage: 50,
+          status: "Completed",
+          tasks: [
+            { text: "Hinglish clinic dialog flow training", completed: true },
+            { text: "Google Calendar doctor slot booking", completed: true }
+          ]
+        },
+        {
+          id: "mil_4",
+          projectId: "proj_2",
+          title: "Milestone 2: Final Handover & Staff Onboarding",
+          dueDate: "2026-11-10",
+          paymentPercentage: 50,
+          status: "Pending",
+          tasks: [
+            { text: "Receptionist dashboard training", completed: false },
+            { text: "Production load test with 50 simultaneous leads", completed: false }
+          ]
+        }
+      ],
+      invoices: [
+        {
+          id: "inv_1",
+          invoiceNumber: "GARUDA-2026-001",
+          projectId: "proj_1",
+          clientId: "cli_1",
+          description: "Milestone 1: 50% Advance for Pathology WhatsApp Automation",
+          amount: 32500,
+          gstRate: 18,
+          totalAmount: 38350,
+          issueDate: "2026-10-18",
+          dueDate: "2026-10-25",
+          status: "Paid",
+          paidAt: "2026-10-22"
+        },
+        {
+          id: "inv_2",
+          invoiceNumber: "GARUDA-2026-002",
+          projectId: "proj_2",
+          clientId: "cli_2",
+          description: "Milestone 1: 50% Technical Advance for Marmm Intake Swarm",
+          amount: 37500,
+          gstRate: 18,
+          totalAmount: 44250,
+          issueDate: "2026-10-22",
+          dueDate: "2026-10-29",
+          status: "Paid",
+          paidAt: "2026-10-27"
+        },
+        {
+          id: "inv_3",
+          invoiceNumber: "GARUDA-2026-003",
+          projectId: "proj_3",
+          clientId: "cli_3",
+          description: "Milestone 1: Agency White-Label Setup Advance",
+          amount: 47500,
+          gstRate: 18,
+          totalAmount: 56050,
+          issueDate: "2026-10-25",
+          dueDate: "2026-11-02",
+          status: "Unpaid",
+          paidAt: null
+        },
+        {
+          id: "inv_4",
+          invoiceNumber: "GARUDA-2026-004",
+          projectId: "proj_1",
+          clientId: "cli_1",
+          description: "Milestone 2: Final Handover & Report Delivery Balance",
+          amount: 32500,
+          gstRate: 18,
+          totalAmount: 38350,
+          issueDate: "2026-10-30",
+          dueDate: "2026-11-15",
+          status: "Unpaid",
+          paidAt: null
+        }
+      ]
+    };
+
+    // Global State
+    let appData = { clients: [], projects: [], milestones: [], invoices: [] };
+    let revenueChartInstance = null;
+    let projectChartInstance = null;
+
+    // Load or initialize state
+    function loadState() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          appData = JSON.parse(stored);
+        } else {
+          appData = JSON.parse(JSON.stringify(SAMPLE_DATA));
+          saveState();
+        }
+      } catch (err) {
+        console.warn("Storage load error, fallback to sample data:", err);
+        appData = JSON.parse(JSON.stringify(SAMPLE_DATA));
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (err) {
+        console.error("Failed to save to localStorage:", err);
+      }
+      updateAllViews();
+    }
+
+    // Tab Switcher
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-gold', 'text-black', 'shadow');
+        btn.classList.add('text-mutedText', 'hover:text-white', 'hover:bg-card');
+      });
+
+      const activeView = document.getElementById(`view-${tabId}`);
+      const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.remove('text-mutedText', 'hover:text-white', 'hover:bg-card');
+        activeBtn.classList.add('bg-gold', 'text-black', 'shadow');
+      }
+
+      if (tabId === 'dashboard') {
+        renderCharts();
+      } else if (tabId === 'milestones') {
+        populateMilestoneProjectSelector();
+        renderMilestones();
+      }
+    }
+
+    // Toast Notification
+    function showToast(message, type = "success") {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = `px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl flex items-center gap-2 border pointer-events-auto transition transform translate-y-2 opacity-0 ${
+        type === "success" 
+          ? "bg-[#111827] text-emerald-400 border-emerald-500/40" 
+          : "bg-[#181212] text-red-400 border-red-500/40"
+      }`;
+      toast.innerHTML = `<span>${type === "success" ? "✓" : "⚠️"}</span><span>${message}</span>`;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove("translate-y-2", "opacity-0");
+      });
+
+      setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-2");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Modal Handlers
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("hidden");
+      if (id === "addProjectModal") populateClientDropdown();
+      if (id === "addInvoiceModal") {
+        populateInvoiceProjectDropdown();
+        generateInvoiceNumber();
+        document.getElementById("invoiceFormDate").value = new Date().toISOString().split('T')[0];
+        const nextWeek = new Date();
+        nextWeek.setDate(nextWeek.getDate() + 7);
+        document.getElementById("invoiceFormDueDate").value = nextWeek.toISOString().split('T')[0];
+      }
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    }
+
+    // ========================================================
+    // RENDER: DASHBOARD
+    // ========================================================
+    function renderDashboardKPIs() {
+      // 1. Collected Revenue
+      const collected = appData.invoices
+        .filter(inv => inv.status === "Paid")
+        .reduce((sum, inv) => sum + (Number(inv.totalAmount) || 0), 0);
+      document.getElementById("kpiCollectedRevenue").innerText = `₹${collected.toLocaleString('en-IN')}`;
+
+      // 2. Pending Receivables
+      const pendingInvoices = appData.invoices.filter(inv => inv.status === "Unpaid");
+      const pendingTotal = pendingInvoices.reduce((sum, inv) => sum + (Number(inv.totalAmount) || 0), 0);
+      document.getElementById("kpiPendingPayments").innerText = `₹${pendingTotal.toLocaleString('en-IN')}`;
+      document.getElementById("kpiPendingCount").innerText = pendingInvoices.length;
+
+      // 3. Projects
+      const activeProj = appData.projects.filter(p => p.status === "In Progress" || p.status === "Review");
+      document.getElementById("kpiActiveProjects").innerText = activeProj.length;
+      document.getElementById("kpiTotalProjects").innerText = `${appData.projects.length} Total Projects`;
+
+      // 4. Clients
+      const activeClients = appData.clients.filter(c => c.status === "Active");
+      document.getElementById("kpiTotalClients").innerText = activeClients.length;
+
+      // Badges
+      document.getElementById("navClientCount").innerText = appData.clients.length;
+      document.getElementById("navProjectCount").innerText = appData.projects.length;
+
+      // Recent Urgent Projects
+      const recentContainer = document.getElementById("dashboardRecentProjects");
+      const highPriority = appData.projects
+        .filter(p => p.status !== "Completed")
+        .slice(0, 4);
+
+      if (highPriority.length === 0) {
+        recentContainer.innerHTML = `<div class="text-xs text-mutedText py-2">All projects completed!</div>`;
+      } else {
+        recentContainer.innerHTML = highPriority.map(p => {
+          const client = appData.clients.find(c => c.id === p.clientId);
+          return `
+            <div class="bg-card border border-border p-3 rounded-lg flex items-center justify-between gap-2">
+              <div class="overflow-hidden">
+                <div class="font-bold text-white text-xs truncate">${p.title}</div>
+                <div class="text-[11px] text-mutedText truncate">${client ? client.company : 'Client'} • Due: ${p.deadline}</div>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <span class="text-[10px] px-2 py-0.5 rounded font-bold ${
+                  p.priority === 'High' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                }">${p.priority}</span>
+                <div class="text-[11px] font-mono text-gold mt-1">₹${Number(p.budget).toLocaleString('en-IN')}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Pending Invoices
+      const pendingContainer = document.getElementById("dashboardPendingInvoices");
+      if (pendingInvoices.length === 0) {
+        pendingContainer.innerHTML = `<div class="text-xs text-emerald-400 py-2">✓ No outstanding dues. 100% payments collected!</div>`;
+      } else {
+        pendingContainer.innerHTML = pendingInvoices.slice(0, 4).map(inv => {
+          const client = appData.clients.find(c => c.id === inv.clientId);
+          return `
+            <div class="bg-card border border-border p-3 rounded-lg flex items-center justify-between gap-2">
+              <div class="overflow-hidden">
+                <div class="font-mono text-gold text-xs font-bold">${inv.invoiceNumber}</div>
+                <div class="text-[11px] text-mutedText truncate">${client ? client.company : 'Client'} • Due: ${inv.dueDate}</div>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <div class="text-xs font-bold text-amber-400 font-mono">₹${Number(inv.totalAmount).toLocaleString('en-IN')}</div>
+                <button onclick="markInvoicePaid('${inv.id}')" class="text-[10px] bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 px-2 py-0.5 rounded mt-1 border border-emerald-500/20 transition">
+                  Mark Paid ✓
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // ========================================================
+    // RENDER: CHARTS
+    // ========================================================
+    function renderCharts() {
+      // 1. Revenue Chart
+      const ctxRev = document.getElementById('revenueChart');
+      if (!ctxRev) return;
+
+      if (revenueChartInstance) revenueChartInstance.destroy();
+
+      const months = ["May", "Jun", "Jul", "Aug", "Sep", "Oct"];
+      // Real calculations based on data
+      const paidByMonth = [15000, 28000, 45000, 52000, 68000, 82600];
+      const pendingByMonth = [0, 5000, 10000, 15000, 25000, 94400];
+
+      revenueChartInstance = new Chart(ctxRev, {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [
+            {
+              label: 'Realized Revenue (₹)',
+              data: paidByMonth,
+              backgroundColor: '#D6A84F',
+              borderRadius: 6
+            },
+            {
+              label: 'Pending Receivables (₹)',
+              data: pendingByMonth,
+              backgroundColor: '#374151',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#9CA3AF', font: { size: 11, family: 'Inter' } }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: '#1F2430' },
+              ticks: { color: '#9CA3AF', font: { size: 11 } }
+            },
+            y: {
+              grid: { color: '#1F2430' },
+              ticks: { 
+                color: '#9CA3AF', 
+                font: { size: 10 },
+                callback: (val) => `₹${val/1000}k`
+              }
+            }
+          }
+        }
+      });
+
+      // 2. Project Status Doughnut Chart
+      const ctxStatus = document.getElementById('projectStatusChart');
+      if (!ctxStatus) return;
+
+      if (projectChartInstance) projectChartInstance.destroy();
+
+      const counts = {
+        "In Progress": appData.projects.filter(p => p.status === "In Progress").length,
+        "Review": appData.projects.filter(p => p.status === "Review").length,
+        "Completed": appData.projects.filter(p => p.status === "Completed").length,
+        "On Hold": appData.projects.filter(p => p.status === "On Hold").length
+      };
+
+      projectChartInstance = new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(counts),
+          datasets: [{
+            data: Object.values(counts),
+            backgroundColor: ['#3B82F6', '#F59E0B', '#10B981', '#6B7280'],
+            borderColor: '#13151A',
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '70%',
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+
+      // Render custom legend
+      const legendEl = document.getElementById("projectStatusLegend");
+      legendEl.innerHTML = `
+        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> In Progress (${counts['In Progress']})</div>
+        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> In Review (${counts['Review']})</div>
+        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Completed (${counts['Completed']})</div>
+        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-gray-500"></span> On Hold (${counts['On Hold']})</div>
+      `;
+    }
+
+    // ========================================================
+    // CLIENTS MANAGEMENT (CRUD)
+    // ========================================================
+    function renderClients() {
+      const tbody = document.getElementById("clientTableBody");
+      const empty = document.getElementById("clientsEmptyState");
+      const search = (document.getElementById("clientSearchInput")?.value || "").toLowerCase();
+      const statusFilter = document.getElementById("clientStatusFilter")?.value || "ALL";
+
+      const filtered = appData.clients.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(search) || 
+                              c.company.toLowerCase().includes(search) || 
+                              (c.email && c.email.toLowerCase().includes(search));
+        const matchesStatus = statusFilter === "ALL" || c.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = "";
+        empty.classList.remove("hidden");
+        return;
+      }
+
+      empty.classList.add("hidden");
+      tbody.innerHTML = filtered.map(c => {
+        // Calculate total billed to this client
+        const clientInvoices = appData.invoices.filter(i => i.clientId === c.id);
+        const totalBilled = clientInvoices.reduce((s, i) => s + (Number(i.totalAmount) || 0), 0);
+
+        return `
+          <tr class="hover:bg-card/50 transition">
+            <td class="p-3.5">
+              <div class="font-bold text-white text-xs">${c.company}</div>
+              <div class="text-[11px] text-mutedText">${c.name}</div>
+            </td>
+            <td class="p-3.5">
+              <div class="text-white">${c.phone}</div>
+              <div class="text-[11px] text-mutedText">${c.email || 'No email registered'}</div>
+            </td>
+            <td class="p-3.5">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+                c.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                c.status === 'Lead' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                'bg-gray-500/10 text-gray-400 border border-gray-500/20'
+              }">${c.status}</span>
+            </td>
+            <td class="p-3.5 text-right font-mono font-bold text-gold">
+              ₹${totalBilled.toLocaleString('en-IN')}
+            </td>
+            <td class="p-3.5 text-right whitespace-nowrap">
+              <button onclick="editClient('${c.id}')" class="px-2 py-1 text-xs text-mutedText hover:text-gold transition">Edit</button>
+              <button onclick="deleteClient('${c.id}')" class="px-2 py-1 text-xs text-red-400 hover:text-red-300 transition">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function handleClientSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById("clientFormId").value;
+      const name = document.getElementById("clientFormName").value.trim();
+      const company = document.getElementById("clientFormCompany").value.trim();
+      const email = document.getElementById("clientFormEmail").value.trim();
+      const phone = document.getElementById("clientFormPhone").value.trim();
+      const status = document.getElementById("clientFormStatus").value;
+
+      if (!name || !company || !phone) {
+        showToast("Please fill all required client fields", "error");
+        return;
+      }
+
+      if (id) {
+        // Edit
+        const client = appData.clients.find(c => c.id === id);
+        if (client) {
+          client.name = name;
+          client.company = company;
+          client.email = email;
+          client.phone = phone;
+          client.status = status;
+          showToast(`Updated client: ${company}`);
+        }
+      } else {
+        // Create
+        const newClient = {
+          id: `cli_${Date.now()}`,
+          name,
+          company,
+          email,
+          phone,
+          status,
+          createdAt: new Date().toISOString().split('T')[0]
+        };
+        appData.clients.push(newClient);
+        showToast(`Client created: ${company}`);
+      }
+
+      saveState();
+      closeModal("addClientModal");
+      document.getElementById("clientForm").reset();
+      document.getElementById("clientFormId").value = "";
+    }
+
+    function editClient(id) {
+      const client = appData.clients.find(c => c.id === id);
+      if (!client) return;
+
+      document.getElementById("clientFormId").value = client.id;
+      document.getElementById("clientFormName").value = client.name;
+      document.getElementById("clientFormCompany").value = client.company;
+      document.getElementById("clientFormEmail").value = client.email || "";
+      document.getElementById("clientFormPhone").value = client.phone;
+      document.getElementById("clientFormStatus").value = client.status;
+      document.getElementById("clientModalTitle").innerText = "Edit Client Profile";
+      openModal("addClientModal");
+    }
+
+    function deleteClient(id) {
+      const client = appData.clients.find(c => c.id === id);
+      if (!client) return;
+
+      if (confirm(`Are you sure you want to delete ${client.company}? Associated projects and invoices will be retained.`)) {
+        appData.clients = appData.clients.filter(c => c.id !== id);
+        saveState();
+        showToast(`Deleted ${client.company}`);
+      }
+    }
+
+    // ========================================================
+    // PROJECTS MANAGEMENT (CRUD)
+    // ========================================================
+    function populateClientDropdown() {
+      const select = document.getElementById("projectFormClientId");
+      select.innerHTML = appData.clients.map(c => `<option value="${c.id}">${c.company} (${c.name})</option>`).join('');
+    }
+
+    function renderProjects() {
+      const grid = document.getElementById("projectsGrid");
+      const empty = document.getElementById("projectsEmptyState");
+      const search = (document.getElementById("projectSearchInput")?.value || "").toLowerCase();
+      const statusFilter = document.getElementById("projectStatusFilter")?.value || "ALL";
+      const priorityFilter = document.getElementById("projectPriorityFilter")?.value || "ALL";
+
+      const filtered = appData.projects.filter(p => {
+        const client = appData.clients.find(c => c.id === p.clientId);
+        const matchesSearch = p.title.toLowerCase().includes(search) || 
+                              (p.scope && p.scope.toLowerCase().includes(search)) ||
+                              (client && client.company.toLowerCase().includes(search));
+        const matchesStatus = statusFilter === "ALL" || p.status === statusFilter;
+        const matchesPriority = priorityFilter === "ALL" || p.priority === priorityFilter;
+        return matchesSearch && matchesStatus && matchesPriority;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = "";
+        empty.classList.remove("hidden");
+        return;
+      }
+
+      empty.classList.add("hidden");
+      grid.innerHTML = filtered.map(p => {
+        const client = appData.clients.find(c => c.id === p.clientId);
+        // Milestones
+        const projectMilestones = appData.milestones.filter(m => m.projectId === p.id);
+        const completedMilestones = projectMilestones.filter(m => m.status === "Completed");
+        const progressPct = projectMilestones.length > 0 
+          ? Math.round((completedMilestones.length / projectMilestones.length) * 100) 
+          : (p.status === "Completed" ? 100 : 25);
+
+        return `
+          <div class="bg-panel border border-border rounded-xl p-4 flex flex-col justify-between hover:border-gold/40 transition shadow">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${
+                  p.priority === 'High' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                }">${p.priority} Priority</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${
+                  p.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400' :
+                  p.status === 'Review' ? 'bg-amber-500/10 text-amber-400' : 'bg-card text-mutedText'
+                }">${p.status}</span>
+              </div>
+              <h4 class="text-sm font-bold text-white mb-1 line-clamp-2">${p.title}</h4>
+              <div class="text-xs text-gold font-medium mb-3 flex items-center gap-1">
+                <span>🏢</span> ${client ? client.company : 'Direct Client'}
+              </div>
+              <p class="text-xs text-mutedText line-clamp-2 mb-4">${p.scope || 'No scope notes'}</p>
+            </div>
+
+            <div class="space-y-3 pt-3 border-t border-border">
+              <!-- Progress Bar -->
+              <div>
+                <div class="flex justify-between text-[11px] text-mutedText mb-1">
+                  <span>Milestone Delivery</span>
+                  <span class="font-mono text-emerald-400 font-bold">${progressPct}%</span>
+                </div>
+                <div class="w-full bg-card h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-gradient-to-r from-gold to-emerald-400 h-full rounded-full transition-all" style="width: ${progressPct}%"></div>
+                </div>
+              </div>
+
+              <!-- Budget & Actions -->
+              <div class="flex items-center justify-between text-xs pt-1">
+                <div>
+                  <div class="text-[10px] text-mutedText uppercase">Contract Value</div>
+                  <div class="font-mono font-bold text-white">₹${Number(p.budget).toLocaleString('en-IN')}</div>
+                </div>
+                <div class="flex items-center gap-1">
+                  <button onclick="editProject('${p.id}')" class="px-2 py-1 text-mutedText hover:text-gold transition">Edit</button>
+                  <button onclick="deleteProject('${p.id}')" class="px-2 py-1 text-red-400 hover:text-red-300 transition">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleProjectSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById("projectFormId").value;
+      const title = document.getElementById("projectFormTitle").value.trim();
+      const clientId = document.getElementById("projectFormClientId").value;
+      const budget = Number(document.getElementById("projectFormBudget").value) || 0;
+      const deadline = document.getElementById("projectFormDeadline").value;
+      const status = document.getElementById("projectFormStatus").value;
+      const priority = document.getElementById("projectFormPriority").value;
+      const scope = document.getElementById("projectFormScope").value.trim();
+
+      if (!title || !clientId || !budget || !deadline) {
+        showToast("Please fill all required project fields", "error");
+        return;
+      }
+
+      if (id) {
+        // Edit
+        const project = appData.projects.find(p => p.id === id);
+        if (project) {
+          project.title = title;
+          project.clientId = clientId;
+          project.budget = budget;
+          project.deadline = deadline;
+          project.status = status;
+          project.priority = priority;
+          project.scope = scope;
+          showToast(`Project updated: ${title}`);
+        }
+      } else {
+        // Create
+        const newProj = {
+          id: `proj_${Date.now()}`,
+          clientId,
+          title,
+          budget,
+          deadline,
+          status,
+          priority,
+          scope,
+          createdAt: new Date().toISOString().split('T')[0]
+        };
+        appData.projects.push(newProj);
+        showToast(`Project created: ${title}`);
+      }
+
+      saveState();
+      closeModal("addProjectModal");
+      document.getElementById("projectForm").reset();
+      document.getElementById("projectFormId").value = "";
+    }
+
+    function editProject(id) {
+      const project = appData.projects.find(p => p.id === id);
+      if (!project) return;
+
+      populateClientDropdown();
+      document.getElementById("projectFormId").value = project.id;
+      document.getElementById("projectFormTitle").value = project.title;
+      document.getElementById("projectFormClientId").value = project.clientId;
+      document.getElementById("projectFormBudget").value = project.budget;
+      document.getElementById("projectFormDeadline").value = project.deadline;
+      document.getElementById("projectFormStatus").value = project.status;
+      document.getElementById("projectFormPriority").value = project.priority;
+      document.getElementById("projectFormScope").value = project.scope || "";
+      document.getElementById("projectModalTitle").innerText = "Edit Project";
+      openModal("addProjectModal");
+    }
+
+    function deleteProject(id) {
+      const project = appData.projects.find(p => p.id === id);
+      if (!project) return;
+
+      if (confirm(`Are you sure you want to delete ${project.title}?`)) {
+        appData.projects = appData.projects.filter(p => p.id !== id);
+        saveState();
+        showToast(`Deleted ${project.title}`);
+      }
+    }
+
+    // ========================================================
+    // MILESTONES & TASKS
+    // ========================================================
+    function populateMilestoneProjectSelector() {
+      const selector = document.getElementById("milestoneProjectSelector");
+      if (!selector) return;
+      selector.innerHTML = appData.projects.map(p => `
+        <option value="${p.id}">${p.title}</option>
+      `).join('');
+    }
+
+    function renderMilestones() {
+      const container = document.getElementById("milestonesContainer");
+      const selector = document.getElementById("milestoneProjectSelector");
+      const selectedProjId = selector?.value;
+      if (!selectedProjId) {
+        container.innerHTML = `<div class="text-xs text-mutedText p-6 text-center">Please create a project first.</div>`;
+        return;
+      }
+
+      const project = appData.projects.find(p => p.id === selectedProjId);
+      const milestones = appData.milestones.filter(m => m.projectId === selectedProjId);
+
+      // Calculate progress
+      let totalTasks = 0;
+      let completedTasks = 0;
+      milestones.forEach(m => {
+        (m.tasks || []).forEach(t => {
+          totalTasks++;
+          if (t.completed) completedTasks++;
+        });
+      });
+      const pct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : (milestones.every(m => m.status === 'Completed') && milestones.length > 0 ? 100 : 0);
+      document.getElementById("projectOverallProgressText").innerText = `${pct}% Complete`;
+
+      if (milestones.length === 0) {
+        container.innerHTML = `
+          <div class="bg-panel border border-border rounded-xl p-8 text-center text-mutedText text-xs">
+            No milestones configured for this project yet. Tap <strong>+ Add Milestone</strong> to define phases.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = milestones.map((m, mIdx) => {
+        const isDone = m.status === "Completed";
+        return `
+          <div class="bg-panel border ${isDone ? 'border-emerald-500/30' : 'border-border'} rounded-xl p-4 sm:p-5 transition shadow">
+            <div class="flex items-center justify-between gap-3 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                  isDone ? 'bg-emerald-500 text-black' : 'bg-card text-gold border border-gold/40'
+                }">${mIdx + 1}</span>
+                <div>
+                  <h4 class="text-sm font-bold text-white">${m.title}</h4>
+                  <div class="text-[11px] text-mutedText">Due Date: ${m.dueDate} • Payment Release: ${m.paymentPercentage}%</div>
+                </div>
+              </div>
+              <div>
+                <button onclick="toggleMilestoneStatus('${m.id}')" class="px-3 py-1 rounded text-xs font-bold transition ${
+                  isDone ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-card border border-border text-mutedText hover:text-white'
+                }">
+                  ${isDone ? '✓ Completed' : 'Mark Complete'}
+                </button>
+              </div>
+            </div>
+
+            <!-- Task Checklist -->
+            <div class="bg-card/70 border border-border rounded-lg p-3 space-y-2 text-xs">
+              ${(m.tasks || []).map((t, tIdx) => `
+                <label class="flex items-center gap-2.5 cursor-pointer hover:text-white transition">
+                  <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask('${m.id}', ${tIdx})" 
+                    class="rounded border-border text-gold focus:ring-0 w-4 h-4 bg-panel cursor-pointer" />
+                  <span class="${t.completed ? 'line-through text-mutedText' : 'text-gray-200'}">${t.text}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openAddMilestoneModal() {
+      openModal("addMilestoneModal");
+      const nextDate = new Date();
+      nextDate.setDate(nextDate.getDate() + 14);
+      document.getElementById("milestoneFormDueDate").value = nextDate.toISOString().split('T')[0];
+    }
+
+    function handleMilestoneSubmit(e) {
+      e.preventDefault();
+      const selectedProjId = document.getElementById("milestoneProjectSelector")?.value;
+      if (!selectedProjId) {
+        showToast("Select a project first", "error");
+        return;
+      }
+
+      const title = document.getElementById("milestoneFormTitle").value.trim();
+      const dueDate = document.getElementById("milestoneFormDueDate").value;
+      const paymentPercentage = Number(document.getElementById("milestoneFormPct").value) || 0;
+      const rawTasks = document.getElementById("milestoneFormTasks").value.trim();
+
+      const tasks = rawTasks.split(',').map(t => t.trim()).filter(Boolean).map(text => ({ text, completed: false }));
+
+      const newMilestone = {
+        id: `mil_${Date.now()}`,
+        projectId: selectedProjId,
+        title,
+        dueDate,
+        paymentPercentage,
+        status: "Pending",
+        tasks: tasks.length > 0 ? tasks : [{ text: "Deliver phase requirements", completed: false }]
+      };
+
+      appData.milestones.push(newMilestone);
+      saveState();
+      closeModal("addMilestoneModal");
+      document.getElementById("milestoneForm").reset();
+      showToast("Milestone created");
+    }
+
+    function toggleMilestoneStatus(id) {
+      const milestone = appData.milestones.find(m => m.id === id);
+      if (!milestone) return;
+      milestone.status = milestone.status === "Completed" ? "Pending" : "Completed";
+      if (milestone.status === "Completed") {
+        (milestone.tasks || []).forEach(t => t.completed = true);
+      }
+      saveState();
+      showToast(`Milestone marked ${milestone.status}`);
+    }
+
+    function toggleTask(milestoneId, taskIdx) {
+      const milestone = appData.milestones.find(m => m.id === milestoneId);
+      if (milestone && milestone.tasks[taskIdx]) {
+        milestone.tasks[taskIdx].completed = !milestone.tasks[taskIdx].completed;
+        const allDone = milestone.tasks.every(t => t.completed);
+        milestone.status = allDone ? "Completed" : "Pending";
+        saveState();
+      }
+    }
+
+    // ========================================================
+    // INVOICES & GST MANAGEMENT
+    // ========================================================
+    function generateInvoiceNumber() {
+      const count = appData.invoices.length + 1;
+      const num = `GARUDA-2026-${String(count).padStart(3, '0')}`;
+      document.getElementById("invoiceFormNumber").value = num;
+    }
+
+    function populateInvoiceProjectDropdown() {
+      const select = document.getElementById("invoiceFormProjectId");
+      select.innerHTML = appData.projects.map(p => {
+        const client = appData.clients.find(c => c.id === p.clientId);
+        return `<option value="${p.id}">${p.title} (${client ? client.company : 'Client'})</option>`;
+      }).join('');
+      syncInvoiceProject();
+    }
+
+    function syncInvoiceProject() {
+      const projId = document.getElementById("invoiceFormProjectId").value;
+      const project = appData.projects.find(p => p.id === projId);
+      if (project) {
+        const client = appData.clients.find(c => c.id === project.clientId);
+        document.getElementById("invoiceFormClientName").value = client ? `${client.company} (${client.name})` : '';
+        document.getElementById("invoiceFormAmount").value = Math.round(project.budget / 2);
+        calculateInvoiceGst();
+      }
+    }
+
+    function calculateInvoiceGst() {
+      const amt = Number(document.getElementById("invoiceFormAmount")?.value) || 0;
+      const rate = Number(document.getElementById("invoiceFormGstRate")?.value) || 0;
+      const gstAmt = Math.round(amt * (rate / 100));
+      const total = amt + gstAmt;
+      document.getElementById("invoiceFormTotal").value = `₹${total.toLocaleString('en-IN')}`;
+    }
+
+    function renderInvoices() {
+      const tbody = document.getElementById("invoiceTableBody");
+      const empty = document.getElementById("invoicesEmptyState");
+      const filter = document.getElementById("invoiceStatusFilter")?.value || "ALL";
+
+      const filtered = appData.invoices.filter(inv => filter === "ALL" || inv.status === filter);
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = "";
+        empty.classList.remove("hidden");
+        return;
+      }
+
+      empty.classList.add("hidden");
+      tbody.innerHTML = filtered.map(inv => {
+        const client = appData.clients.find(c => c.id === inv.clientId);
+        const project = appData.projects.find(p => p.id === inv.projectId);
+        const gstVal = Math.round(inv.amount * ((inv.gstRate || 18) / 100));
+
+        return `
+          <tr class="hover:bg-card/50 transition">
+            <td class="p-3.5 font-mono font-bold text-gold">${inv.invoiceNumber}</td>
+            <td class="p-3.5">
+              <div class="font-bold text-white text-xs">${client ? client.company : 'Client'}</div>
+              <div class="text-[11px] text-mutedText truncate max-w-xs">${project ? project.title : 'Service'}</div>
+            </td>
+            <td class="p-3.5">
+              <div class="text-white">${inv.issueDate}</div>
+              <div class="text-[11px] text-mutedText">Due: ${inv.dueDate}</div>
+            </td>
+            <td class="p-3.5 text-right font-mono text-gray-300">₹${Number(inv.amount).toLocaleString('en-IN')}</td>
+            <td class="p-3.5 text-right font-mono text-mutedText">₹${gstVal.toLocaleString('en-IN')}</td>
+            <td class="p-3.5 text-right font-mono font-bold text-white">₹${Number(inv.totalAmount).toLocaleString('en-IN')}</td>
+            <td class="p-3.5 text-center">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+                inv.status === 'Paid' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+              }">${inv.status}</span>
+            </td>
+            <td class="p-3.5 text-right whitespace-nowrap">
+              <button onclick="viewPrintableInvoice('${inv.id}')" class="px-2 py-1 text-xs text-gold hover:underline">Print / View</button>
+              ${inv.status === 'Unpaid' ? `<button onclick="markInvoicePaid('${inv.id}')" class="px-2 py-1 text-xs text-emerald-400 hover:underline">Mark Paid</button>` : ''}
+              <button onclick="deleteInvoice('${inv.id}')" class="px-2 py-1 text-xs text-red-400 hover:text-red-300">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function handleInvoiceSubmit(e) {
+      e.preventDefault();
+      const invoiceNumber = document.getElementById("invoiceFormNumber").value;
+      const projectId = document.getElementById("invoiceFormProjectId").value;
+      const project = appData.projects.find(p => p.id === projectId);
+      const clientId = project ? project.clientId : "";
+      const description = document.getElementById("invoiceFormDescription").value.trim();
+      const amount = Number(document.getElementById("invoiceFormAmount").value) || 0;
+      const gstRate = Number(document.getElementById("invoiceFormGstRate").value) || 0;
+      const totalAmount = amount + Math.round(amount * (gstRate / 100));
+      const issueDate = document.getElementById("invoiceFormDate").value;
+      const dueDate = document.getElementById("invoiceFormDueDate").value;
+      const status = document.getElementById("invoiceFormStatus").value;
+
+      if (!amount || !issueDate || !dueDate) {
+        showToast("Please fill all invoice fields", "error");
+        return;
+      }
+
+      const newInvoice = {
+        id: `inv_${Date.now()}`,
+        invoiceNumber,
+        projectId,
+        clientId,
+        description,
+        amount,
+        gstRate,
+        totalAmount,
+        issueDate,
+        dueDate,
+        status,
+        paidAt: status === "Paid" ? new Date().toISOString().split('T')[0] : null
+      };
+
+      appData.invoices.push(newInvoice);
+      saveState();
+      closeModal("addInvoiceModal");
+      showToast(`Invoice ${invoiceNumber} created`);
+    }
+
+    function markInvoicePaid(id) {
+      const inv = appData.invoices.find(i => i.id === id);
+      if (!inv) return;
+      inv.status = "Paid";
+      inv.paidAt = new Date().toISOString().split('T')[0];
+      saveState();
+      showToast(`Payment recorded for ${inv.invoiceNumber}`);
+    }
+
+    function deleteInvoice(id) {
+      const inv = appData.invoices.find(i => i.id === id);
+      if (!inv) return;
+      if (confirm(`Delete invoice ${inv.invoiceNumber}?`)) {
+        appData.invoices = appData.invoices.filter(i => i.id !== id);
+        saveState();
+        showToast(`Deleted ${inv.invoiceNumber}`);
+      }
+    }
+
+    // View & Print Printable GST Invoice
+    function viewPrintableInvoice(id) {
+      const inv = appData.invoices.find(i => i.id === id);
+      if (!inv) return;
+      const client = appData.clients.find(c => c.id === inv.clientId);
+      const project = appData.projects.find(p => p.id === inv.projectId);
+      const gstVal = Math.round(inv.amount * ((inv.gstRate || 18) / 100));
+
+      const content = document.getElementById("printableInvoiceContent");
+      content.innerHTML = `
+        <div class="flex justify-between items-start pb-6 border-b border-gray-200">
+          <div>
+            <div class="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+              <span>🦅</span> GARUDA OS
+            </div>
+            <div class="text-xs text-gray-500 mt-1">Sovereign Autonomous Enterprise Systems</div>
+            <div class="text-xs text-gray-600 mt-2">
+              Founder: Praveen Mahawar<br>
+              Email: praveen@garudaos.in<br>
+              Web: https://www.garudaos.in
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs font-mono uppercase font-bold text-gray-400">TAX INVOICE</div>
+            <div class="text-xl font-bold font-mono text-gray-900">${inv.invoiceNumber}</div>
+            <div class="text-xs text-gray-600 mt-1">Date: ${inv.issueDate}</div>
+            <div class="text-xs text-gray-600">Due Date: ${inv.dueDate}</div>
+            <div class="mt-2 inline-block px-2.5 py-1 rounded text-xs font-bold ${
+              inv.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
+            }">${inv.status === 'Paid' ? 'PAID IN FULL ✓' : 'PAYMENT DUE ⏳'}</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 pt-4 pb-4">
+          <div>
+            <div class="text-xs uppercase font-bold text-gray-400 mb-1">Billed To:</div>
+            <div class="text-sm font-bold text-gray-900">${client ? client.company : 'Client'}</div>
+            <div class="text-xs text-gray-700 font-medium">Attn: ${client ? client.name : 'Director'}</div>
+            <div class="text-xs text-gray-500">${client ? client.phone : ''}</div>
+            <div class="text-xs text-gray-500">${client ? client.email : ''}</div>
+          </div>
+          <div>
+            <div class="text-xs uppercase font-bold text-gray-400 mb-1">Project Reference:</div>
+            <div class="text-sm font-bold text-gray-900">${project ? project.title : 'Autonomous System Deployment'}</div>
+            <div class="text-xs text-gray-600 mt-1">Terms: Strict 50% Milestone Advance / Net 7 Days</div>
+          </div>
+        </div>
+
+        <table class="w-full text-left text-xs border-collapse mt-4">
+          <thead>
+            <tr class="bg-gray-100 border-b border-gray-200 font-bold text-gray-700 uppercase">
+              <th class="p-3">Deliverable Description</th>
+              <th class="p-3 text-right">Taxable Value</th>
+              <th class="p-3 text-right">GST (${inv.gstRate || 18}%)</th>
+              <th class="p-3 text-right">Total (INR)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr>
+              <td class="p-3 font-medium text-gray-900">${inv.description}</td>
+              <td class="p-3 text-right font-mono">₹${Number(inv.amount).toLocaleString('en-IN')}</td>
+              <td class="p-3 text-right font-mono">₹${gstVal.toLocaleString('en-IN')}</td>
+              <td class="p-3 text-right font-mono font-bold text-gray-900">₹${Number(inv.totalAmount).toLocaleString('en-IN')}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flex justify-end pt-4">
+          <div class="w-64 space-y-1.5 text-xs text-right">
+            <div class="flex justify-between text-gray-600">
+              <span>Subtotal:</span>
+              <span class="font-mono">₹${Number(inv.amount).toLocaleString('en-IN')}</span>
+            </div>
+            <div class="flex justify-between text-gray-600">
+              <span>GST (${inv.gstRate || 18}%):</span>
+              <span class="font-mono">₹${gstVal.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="flex justify-between text-sm font-bold text-gray-900 pt-2 border-t border-gray-200">
+              <span>Grand Total:</span>
+              <span class="font-mono">₹${Number(inv.totalAmount).toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-200 pt-6 text-[11px] text-gray-500 flex justify-between items-center">
+          <div>This is an authenticated computer-generated invoice via GARUDA OS.</div>
+          <div class="font-mono text-gray-400">100% Verified Sovereign Record</div>
+        </div>
+      `;
+
+      openModal("printInvoiceModal");
+    }
+
+    // ========================================================
+    // REVENUE ANALYTICS TAB
+    // ========================================================
+    function renderAnalytics() {
+      const totalBilled = appData.invoices.reduce((s, i) => s + (Number(i.totalAmount) || 0), 0);
+      const collected = appData.invoices.filter(i => i.status === "Paid").reduce((s, i) => s + (Number(i.totalAmount) || 0), 0);
+      const totalGst = appData.invoices.reduce((s, i) => s + Math.round(Number(i.amount) * ((i.gstRate || 18) / 100)), 0);
+
+      document.getElementById("analyticsTotalBilled").innerText = `₹${totalBilled.toLocaleString('en-IN')}`;
+      document.getElementById("analyticsRealizedGross").innerText = `₹${collected.toLocaleString('en-IN')}`;
+      document.getElementById("analyticsTotalGst").innerText = `₹${totalGst.toLocaleString('en-IN')}`;
+
+      // Profitability table
+      const tbody = document.getElementById("profitabilityTableBody");
+      tbody.innerHTML = appData.projects.map(p => {
+        const client = appData.clients.find(c => c.id === p.clientId);
+        const pInvoices = appData.invoices.filter(i => i.projectId === p.id);
+        const invoiced = pInvoices.reduce((s, i) => s + (Number(i.totalAmount) || 0), 0);
+        const received = pInvoices.filter(i => i.status === "Paid").reduce((s, i) => s + (Number(i.totalAmount) || 0), 0);
+        const rate = invoiced > 0 ? Math.round((received / invoiced) * 100) : 0;
+
+        return `
+          <tr class="hover:bg-card/50 transition">
+            <td class="p-3 font-bold text-white">${p.title}</td>
+            <td class="p-3 text-gold">${client ? client.company : 'Direct Client'}</td>
+            <td class="p-3 text-right font-mono">₹${Number(p.budget).toLocaleString('en-IN')}</td>
+            <td class="p-3 text-right font-mono text-gray-300">₹${invoiced.toLocaleString('en-IN')}</td>
+            <td class="p-3 text-right font-mono text-emerald-400 font-bold">₹${received.toLocaleString('en-IN')}</td>
+            <td class="p-3 text-right font-mono ${rate === 100 ? 'text-emerald-400' : 'text-amber-400'}">${rate}%</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ========================================================
+    // CSV EXPORT & BACKUP ENGINE
+    // ========================================================
+    function exportCSV(type) {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      let filename = `garuda_${type}_${new Date().toISOString().split('T')[0]}.csv`;
+
+      if (type === "clients") {
+        csvContent += "ID,Name,Company,Email,Phone,Status,CreatedAt\n";
+        appData.clients.forEach(c => {
+          csvContent += `"${c.id}","${c.name}","${c.company}","${c.email || ''}","${c.phone}","${c.status}","${c.createdAt}"\n`;
+        });
+      } else if (type === "projects") {
+        csvContent += "ID,Title,Client,Budget,Deadline,Status,Priority,CreatedAt\n";
+        appData.projects.forEach(p => {
+          const client = appData.clients.find(c => c.id === p.clientId);
+          csvContent += `"${p.id}","${p.title}","${client ? client.company : ''}","${p.budget}","${p.deadline}","${p.status}","${p.priority}","${p.createdAt}"\n`;
+        });
+      } else if (type === "invoices") {
+        csvContent += "InvoiceNumber,Client,Project,Amount,GSTRate,TotalAmount,IssueDate,DueDate,Status\n";
+        appData.invoices.forEach(i => {
+          const client = appData.clients.find(c => c.id === i.clientId);
+          const project = appData.projects.find(p => p.id === i.projectId);
+          csvContent += `"${i.invoiceNumber}","${client ? client.company : ''}","${project ? project.title : ''}","${i.amount}","${i.gstRate}","${i.totalAmount}","${i.issueDate}","${i.dueDate}","${i.status}"\n`;
+        });
+      }
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast(`Exported ${filename}`);
+    }
+
+    function downloadJsonBackup() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `garuda_revenue_backup_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("JSON Backup downloaded successfully");
+    }
+
+    function restoreJsonBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.clients && parsed.projects && parsed.invoices) {
+            appData = parsed;
+            saveState();
+            showToast("System restored from JSON backup!");
+          } else {
+            showToast("Invalid backup file format", "error");
+          }
+        } catch (err) {
+          showToast("Failed to parse JSON file", "error");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetToSampleData() {
+      if (confirm("Reset to default demonstration data? Existing changes will be replaced.")) {
+        appData = JSON.parse(JSON.stringify(SAMPLE_DATA));
+        saveState();
+        showToast("Sample data reloaded");
+      }
+    }
+
+    function clearAllData() {
+      if (confirm("DANGER: Wipe all local data? This cannot be undone unless you have a JSON backup.")) {
+        appData = { clients: [], projects: [], milestones: [], invoices: [] };
+        saveState();
+        showToast("All data wiped", "error");
+      }
+    }
+
+    function updateAllViews() {
+      renderDashboardKPIs();
+      renderClients();
+      renderProjects();
+      renderInvoices();
+      renderAnalytics();
+      populateMilestoneProjectSelector();
+      renderMilestones();
+    }
+
+    // Init on load
+    window.addEventListener("DOMContentLoaded", () => {
+      loadState();
+      updateAllViews();
+      renderCharts();
+    });
+  </script>
+</body>
+</html>

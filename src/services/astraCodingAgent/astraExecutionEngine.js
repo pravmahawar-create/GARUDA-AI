@@ -872,6 +872,11 @@ Target File: ${targetFile || "public/app.html"}
 ${modeDirective}
 ${fileContext}
 You are an expert autonomous software engineer.
+CRITICAL PREVIEW & RUNTIME LAWS:
+1. If target file is an HTML file or web app, the code MUST be 100% self-contained, complete, and immediately runnable in an iframe preview.
+2. NEVER output an empty shell (e.g. <div id="root"></div> with broken local module imports like <script type="module" src="/src/main.jsx"></script>). This causes a blank white/black screen in the live preview.
+3. If the user requests React, Tailwind, Chart.js, or a dashboard, include standalone CDNs (e.g., https://cdn.tailwindcss.com, https://cdn.jsdelivr.net/npm/chart.js) and complete, rich, working HTML/JS/CSS so the live preview renders an immediate, fully functional, stunning UI with real cards, metrics, and charts.
+
 You must return a JSON object formatted strictly as:
 {
   "thought": "Architecture reasoning",

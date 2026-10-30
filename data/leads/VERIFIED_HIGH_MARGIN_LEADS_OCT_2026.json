@@ -1,0 +1,110 @@
+{
+  "updatedAt": "2026-10-30T21:43:00.000Z",
+  "category": "High-Margin Regional Commercial Leads",
+  "doctrine": "100% Verified Contacts • Strict 50% Advance • Anti-Ditching Law",
+  "leads": [
+    {
+      "id": "INDORE_CLINIC_MARMM",
+      "businessName": "Marmm The Klinik",
+      "niche": "Hair Transplant & Cosmetic Surgery",
+      "city": "Indore",
+      "address": "154, Anurag Nagar, Opp. Renaissance College, Indore",
+      "website": "https://marmm.com",
+      "email": "marmmklinik@gmail.com",
+      "phone": "+919826988844",
+      "ticketSize": "₹60,000 - ₹2,00,000",
+      "leakAnalysis": "Night and weekend leads via website/social sit unanswered for 12+ hours, causing 2-3 dropped high-ticket procedures weekly.",
+      "solution": "GARUDA 24/7 WhatsApp Patient Intake & Consultation Booking Bot",
+      "pricing": {
+        "setupFee": 14999,
+        "mandatoryAdvance": 7500,
+        "monthlyRetainer": 3499
+      }
+    },
+    {
+      "id": "INDORE_CLINIC_ASSURE",
+      "businessName": "Assure Clinic",
+      "niche": "Premium Hair & Aesthetics",
+      "city": "Indore (Vijay Nagar)",
+      "address": "804, 805, Apollo Premier, Vijay Nagar Square, Indore",
+      "website": "https://assureclinic.com",
+      "phone": "+919586122444",
+      "ticketSize": "₹75,000 - ₹2,50,000",
+      "leakAnalysis": "HNI footfall drop due to static website forms instead of instant interactive WhatsApp consultation.",
+      "solution": "GARUDA WhatsApp Consultation Concierge",
+      "pricing": {
+        "setupFee": 14999,
+        "mandatoryAdvance": 7500,
+        "monthlyRetainer": 3499
+      }
+    },
+    {
+      "id": "INDORE_CLINIC_AVISTA",
+      "businessName": "Avista Clinics",
+      "niche": "Hair & Aesthetic Medicine",
+      "city": "Indore",
+      "address": "206-207, Krishna Tower, VIP Road, Indore",
+      "email": "avistaclinics@gmail.com",
+      "phone": "+917049069691",
+      "ticketSize": "₹50,000 - ₹1,80,000",
+      "leakAnalysis": "Dropped patient inquiries on WhatsApp during peak surgery hours.",
+      "solution": "GARUDA 24/7 Automated Clinic Concierge",
+      "pricing": {
+        "setupFee": 12000,
+        "mandatoryAdvance": 6000,
+        "monthlyRetainer": 2999
+      }
+    },
+    {
+      "id": "INDORE_AGENCY_DMI",
+      "businessName": "Digital Marketing Indore",
+      "niche": "Performance & SEO Agency",
+      "city": "Indore",
+      "website": "https://www.digitalmarketingindore.com",
+      "email": "info@digitalmarketingindore.com",
+      "phone": "+918962501325",
+      "ticketSize": "Agency Retainers (₹30k - ₹1L/month)",
+      "leakAnalysis": "Client churn caused by client sales teams failing to call ad leads within 10 minutes.",
+      "solution": "GARUDA White-Label Speed-to-Lead WhatsApp Engine",
+      "pricing": {
+        "setupFee": 19999,
+        "mandatoryAdvance": 10000,
+        "monthlyRetainer": 2500
+      }
+    },
+    {
+      "id": "INDORE_AGENCY_DIGITALASTIC",
+      "businessName": "Digitalastic",
+      "niche": "Growth & Performance Agency",
+      "city": "Indore",
+      "website": "https://digitalastic.com",
+      "email": "info@digitalastic.com",
+      "phone": "+918770032814",
+      "ticketSize": "Growth Marketing Clients",
+      "leakAnalysis": "E-commerce and healthcare clients losing high-intent traffic due to zero automated instant chat qualification.",
+      "solution": "GARUDA Speed-to-Lead Qualification Swarm",
+      "pricing": {
+        "setupFee": 19999,
+        "mandatoryAdvance": 10000,
+        "monthlyRetainer": 2500
+      }
+    },
+    {
+      "id": "INDORE_AGENCY_IENGAGE",
+      "businessName": "i-engage Digital",
+      "niche": "Real Estate Marketing Agency",
+      "city": "Indore",
+      "website": "https://iengage.digital",
+      "email": "hello@iengage.digital",
+      "phone": "+919009230123",
+      "ticketSize": "Real Estate Builder Retainers",
+      "leakAnalysis": "Raw unqualified ad leads wasting builder sales teams' time; no automated budget & loan pre-screening.",
+      "solution": "GARUDA Real Estate Buyer Qualification Swarm",
+      "pricing": {
+        "setupFee": 24999,
+        "mandatoryAdvance": 12500,
+        "monthlyRetainer": 4000
+      }
+    }
+  ]
+}

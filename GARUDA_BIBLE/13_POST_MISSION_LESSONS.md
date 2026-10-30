@@ -898,3 +898,12 @@ Reduced top-level api/ files down to strictly 9. Excess handlers (site-audit, fe
    - 222 static HTML snapshots across 81 canonical routes successfully prerendered with Exit Code 0.
 
 
+
+
+## MISSION POST-MORTEM: MOBILE CONSULTATION, CONSOLE ENTER & 24/7 MARKET PULSE (30 OCT 2026)
+- Commit: 7a2ddffe31257ceb13a15131689677456f69f5bb
+- Defect 1: Pawan mobile consultation latency exceeded mobile fetch limits (45s) due to unconstrained vision cascading. Patch: Sub-second Groq gpt-oss-120b capped at 800-1000 tokens (1041ms).
+- Defect 2: Virtual keyboards on mobile suppress onKeyDown Enter if not wrapped in native <form onSubmit>. Patch: Rigid <form onSubmit={(e) => { e.preventDefault(); handleSend(); }}> across all workspaces.
+- Defect 3: Render sleep mode freezes background daemons; GitHub cron free tier delay misses 09:15 AM IST. Patch: Windows Task Scheduler local lock + GitHub Action backup + Mobile on-demand 1-tap dispatch.
+- Defect 4: Telegram entity parse crashes dropped market updates. Patch: Automatic sanitized plain-text fallback.
+- Defect 5: Founder trapped on mobile without laptop. Patch: Live Alpha-Quant mobile cards + 1-Tap Telegram dispatch button.
