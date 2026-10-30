@@ -8,7 +8,7 @@
  * - Dynamic Cooldown: Automatically rests exhausted keys and restores them when ready.
  */
 
-try { require("dotenv").config(); } catch {}
+try { require("dotenv").config({ override: true }); } catch {}
 
 class SovereignAiCascadeService {
   constructor() {
@@ -82,7 +82,7 @@ class SovereignAiCascadeService {
     const cerebrasKeys = parseKeys(process.env.CEREBRAS_API_KEY, "CEREBRAS_API_KEY", process.env.CEREBRAS_API_KEYS);
     const groqKeys = parseKeys(process.env.GROQ_API_KEY, "GROQ_API_KEY", process.env.GROQ_API_KEYS);
     const nvidiaKeys = parseKeys(process.env.NVIDIA_API_KEY, "NVIDIA_API_KEY", process.env.NVIDIA_API_KEYS);
-    const geminiKeys = parseKeys(process.env.GEMINI_API_KEY, "GEMINI_API_KEY", process.env.GEMINI_API_KEYS);
+    let geminiKeys = parseKeys(process.env.GEMINI_API_KEY, "GEMINI_API_KEY", process.env.GEMINI_API_KEYS);
 
     // Add fallback keys from env if present
     if (process.env.GEMINI_API_KEY_1 && !geminiKeys.includes(process.env.GEMINI_API_KEY_1.trim())) {
@@ -97,6 +97,15 @@ class SovereignAiCascadeService {
     (this.runtimeKeys.get("groq") || []).forEach(k => { if (!groqKeys.includes(k)) groqKeys.push(k); });
     (this.runtimeKeys.get("nvidia") || []).forEach(k => { if (!nvidiaKeys.includes(k)) nvidiaKeys.push(k); });
     (this.runtimeKeys.get("gemini") || []).forEach(k => { if (!geminiKeys.includes(k)) geminiKeys.push(k); });
+
+    // Prioritize genuine Google AI keys (starting with AIzaSy) as Primary
+    geminiKeys = geminiKeys.sort((a, b) => {
+      const aValid = a.startsWith("AIzaSy");
+      const bValid = b.startsWith("AIzaSy");
+      if (aValid && !bValid) return -1;
+      if (!aValid && bValid) return 1;
+      return 0;
+    });
 
     return { cerebrasKeys, groqKeys, nvidiaKeys, geminiKeys };
   }
@@ -147,29 +156,27 @@ class SovereignAiCascadeService {
       geminiKeys = updated.geminiKeys;
     }
 
-        // ── TIER 0: CEREBRAS WAFER-SCALE ULTRA-SPEED ENGINE (2,000 tok/s) ──
-    for (let kIdx = 0; kIdx < (cerebrasKeys || []).length; kIdx++) {
-      const key = cerebrasKeys[kIdx];
-      const keyId = `cerebras_${kIdx}_${key.slice(-6)}`;
+    // ── TIER 0: GOOGLE GEMINI PRO & FLASH (PRIMARY SOVEREIGN ENGINE - 8,192 TOKENS) ──
+    for (let kIdx = 0; kIdx < geminiKeys.length; kIdx++) {
+      const key = geminiKeys[kIdx];
+      const keyId = `gemini_${kIdx}_${key.slice(-6)}`;
       if (this.isKeyOnCooldown(keyId)) continue;
 
-      const cerebrasModels = ["qwen-3.8-27b", "gpt-oss-120b"];
-      for (const model of cerebrasModels) {
+      const geminiModels = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest", "gemini-1.5-flash"];
+      const promptText = uniformMessages.map(m => `${m.role}: ${m.content}`).join("\n\n");
+      const geminiMaxTokens = Math.max(maxTokens || 2048, 4096);
+
+      for (const model of geminiModels) {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 12000);
+          const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-          const res = await fetch("https://api.cerebras.ai/v1/chat/completions", {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
             method: "POST",
-            headers: {
-              "Authorization": `Bearer ${key}`,
-              "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              model,
-              messages: uniformMessages,
-              temperature,
-              max_tokens: maxTokens
+              contents: [{ parts: [{ text: promptText }] }],
+              generationConfig: { temperature, maxOutputTokens: geminiMaxTokens }
             }),
             signal: controller.signal
           });
@@ -177,9 +184,20 @@ class SovereignAiCascadeService {
 
           if (res.ok) {
             const data = await res.json();
-            const text = data.choices?.[0]?.message?.content;
+            const candidate = data.candidates?.[0];
+            const finishReason = candidate?.finishReason;
+
+            // Strict Anti-Truncation Law: If token limit was exceeded, do not treat as success!
+            if (finishReason === "MAX_TOKENS") {
+              cascadeAttempts.push({ tier: "gemini", keyId, model, error: "OUTPUT_TRUNCATED_MAX_TOKENS" });
+              this.stats.failoversTriggered++;
+              continue; // Cascade to next model/key
+            }
+
+            const parts = candidate?.content?.parts || [];
+            const text = parts.map(p => p.text || "").join("").trim();
             if (text && text.trim()) {
-              const providerName = `cerebras:${model}[k${kIdx + 1}]`;
+              const providerName = `gemini:${model}[k${kIdx + 1}]`;
               this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
               return {
                 success: true,
@@ -193,7 +211,7 @@ class SovereignAiCascadeService {
 
           const errData = await res.json().catch(() => ({}));
           const errMsg = errData.error?.message || `HTTP ${res.status}`;
-          cascadeAttempts.push({ tier: "cerebras", keyId, model, error: errMsg });
+          cascadeAttempts.push({ tier: "gemini", keyId, model, error: errMsg });
           this.stats.failoversTriggered++;
 
           if (res.status === 429 || res.status === 401 || errMsg.includes("quota") || errMsg.includes("rate limit")) {
@@ -201,7 +219,7 @@ class SovereignAiCascadeService {
             break;
           }
         } catch (err) {
-          cascadeAttempts.push({ tier: "cerebras", keyId, model, error: err.message });
+          cascadeAttempts.push({ tier: "gemini", keyId, model, error: err.message });
           this.stats.failoversTriggered++;
         }
       }
@@ -213,7 +231,7 @@ class SovereignAiCascadeService {
       const keyId = `groq_${kIdx}_${key.slice(-6)}`;
       if (this.isKeyOnCooldown(keyId)) continue;
 
-      const groqModels = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"];
+      const groqModels = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile", "qwen/qwen3.8-27b"];
       const groqMaxTokens = Math.min(maxTokens || 800, 1000);
       for (const model of groqModels) {
         try {
@@ -238,7 +256,17 @@ class SovereignAiCascadeService {
 
           if (res.ok) {
             const data = await res.json();
-            const text = data.choices?.[0]?.message?.content;
+            const choice = data.choices?.[0];
+            const finishReason = choice?.finish_reason;
+
+            // Strict Anti-Truncation Law
+            if (finishReason === "length") {
+              cascadeAttempts.push({ tier: "groq", keyId, model, error: "OUTPUT_TRUNCATED_MAX_TOKENS" });
+              this.stats.failoversTriggered++;
+              continue;
+            }
+
+            const text = choice?.message?.content;
             if (text && text.trim()) {
               const providerName = `groq:${model}[k${kIdx + 1}]`;
               this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
@@ -270,7 +298,77 @@ class SovereignAiCascadeService {
       }
     }
 
-    // ── TIER 2: NVIDIA NIM ENTERPRISE GPU CLOUD (Auto-Failover) ──
+    // ── TIER 2: CEREBRAS WAFER-SCALE ULTRA-SPEED ENGINE (2,000 tok/s) ──
+    for (let kIdx = 0; kIdx < (cerebrasKeys || []).length; kIdx++) {
+      const key = cerebrasKeys[kIdx];
+      const keyId = `cerebras_${kIdx}_${key.slice(-6)}`;
+      if (this.isKeyOnCooldown(keyId)) continue;
+
+      const cerebrasModels = ["qwen-3.8-27b", "gpt-oss-120b"];
+      for (const model of cerebrasModels) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+          const res = await fetch("https://api.cerebras.ai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${key}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model,
+              messages: uniformMessages,
+              temperature,
+              max_tokens: maxTokens
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const data = await res.json();
+            const choice = data.choices?.[0];
+            const finishReason = choice?.finish_reason;
+
+            // Strict Anti-Truncation Law
+            if (finishReason === "length") {
+              cascadeAttempts.push({ tier: "cerebras", keyId, model, error: "OUTPUT_TRUNCATED_MAX_TOKENS" });
+              this.stats.failoversTriggered++;
+              continue;
+            }
+
+            const text = choice?.message?.content;
+            if (text && text.trim()) {
+              const providerName = `cerebras:${model}[k${kIdx + 1}]`;
+              this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
+              return {
+                success: true,
+                text: text.trim(),
+                provider: providerName,
+                latencyMs: Date.now() - startTime,
+                cascadeAttempts
+              };
+            }
+          }
+
+          const errData = await res.json().catch(() => ({}));
+          const errMsg = errData.error?.message || `HTTP ${res.status}`;
+          cascadeAttempts.push({ tier: "cerebras", keyId, model, error: errMsg });
+          this.stats.failoversTriggered++;
+
+          if (res.status === 429 || res.status === 401 || errMsg.includes("quota") || errMsg.includes("rate limit")) {
+            this.setKeyCooldown(keyId, errMsg, 180);
+            break;
+          }
+        } catch (err) {
+          cascadeAttempts.push({ tier: "cerebras", keyId, model, error: err.message });
+          this.stats.failoversTriggered++;
+        }
+      }
+    }
+
+    // ── TIER 3: NVIDIA NIM ENTERPRISE GPU CLOUD (Auto-Failover) ──
     for (let kIdx = 0; kIdx < nvidiaKeys.length; kIdx++) {
       const key = nvidiaKeys[kIdx];
       const keyId = `nvidia_${kIdx}_${key.slice(-6)}`;
@@ -305,7 +403,17 @@ class SovereignAiCascadeService {
 
           if (res.ok) {
             const data = await res.json();
-            const text = data.choices?.[0]?.message?.content;
+            const choice = data.choices?.[0];
+            const finishReason = choice?.finish_reason;
+
+            // Strict Anti-Truncation Law
+            if (finishReason === "length") {
+              cascadeAttempts.push({ tier: "nvidia", keyId, model, error: "OUTPUT_TRUNCATED_MAX_TOKENS" });
+              this.stats.failoversTriggered++;
+              continue;
+            }
+
+            const text = choice?.message?.content;
             if (text && text.trim()) {
               const providerName = `nvidia:${model}[k${kIdx + 1}]`;
               this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
@@ -330,64 +438,6 @@ class SovereignAiCascadeService {
           }
         } catch (err) {
           cascadeAttempts.push({ tier: "nvidia", keyId, model, error: err.message });
-          this.stats.failoversTriggered++;
-        }
-      }
-    }
-
-    // ── TIER 3: GOOGLE GEMINI PRO & FLASH (Auto-Failover) ──
-    for (let kIdx = 0; kIdx < geminiKeys.length; kIdx++) {
-      const key = geminiKeys[kIdx];
-      const keyId = `gemini_${kIdx}_${key.slice(-6)}`;
-      if (this.isKeyOnCooldown(keyId)) continue;
-
-      const geminiModels = ["gemini-2.5-flash", "gemini-flash-latest"];
-      const promptText = uniformMessages.map(m => `${m.role}: ${m.content}`).join("\n\n");
-
-      for (const model of geminiModels) {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: promptText }] }],
-              generationConfig: { temperature, maxOutputTokens: maxTokens }
-            }),
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-
-          if (res.ok) {
-            const data = await res.json();
-            const parts = data.candidates?.[0]?.content?.parts || [];
-            const text = parts.map(p => p.text || "").join("").trim();
-            if (text && text.trim()) {
-              const providerName = `gemini:${model}[k${kIdx + 1}]`;
-              this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
-              return {
-                success: true,
-                text: text.trim(),
-                provider: providerName,
-                latencyMs: Date.now() - startTime,
-                cascadeAttempts
-              };
-            }
-          }
-
-          const errData = await res.json().catch(() => ({}));
-          const errMsg = errData.error?.message || `HTTP ${res.status}`;
-          cascadeAttempts.push({ tier: "gemini", keyId, model, error: errMsg });
-          this.stats.failoversTriggered++;
-
-          if (res.status === 429 || res.status === 401 || errMsg.includes("quota") || errMsg.includes("rate limit")) {
-            this.setKeyCooldown(keyId, errMsg, 180);
-            break;
-          }
-        } catch (err) {
-          cascadeAttempts.push({ tier: "gemini", keyId, model, error: err.message });
           this.stats.failoversTriggered++;
         }
       }

@@ -287,14 +287,14 @@ class AstraExecutionEngine {
    * High-speed Multi-Provider LLM Caller
    */
   async callLLM(prompt, options = {}) {
-    // 0. Primary Sovereign AI Multi-Provider Cascade (Vault Sync + Failover)
+    // 0. Primary Sovereign AI Multi-Provider Cascade (Vault Sync + Gemini Primary Failover)
     try {
       const cascade = require("../sovereignAiCascadeService");
       const cascadeResult = await cascade.generateCompletion({
         systemPrompt: "You are GARUDA Astra/Pawan, an elite sovereign AI software architect created by Praveen Mahawar. You always output valid, clean JSON with zero conversational filler.",
         prompt,
         temperature: options.temperature || 0.1,
-        maxTokens: options.maxTokens || 1000
+        maxTokens: options.maxTokens || 4096
       });
       if (cascadeResult && cascadeResult.success && !cascadeResult.isFallback && cascadeResult.text) {
         return cascadeResult.text;
@@ -303,14 +303,57 @@ class AstraExecutionEngine {
       console.warn("[Astra/Pawan] Cascade note:", err.message);
     }
 
-    // 1. Try Groq (Superfast 120B / 27B / Llama 3.3)
-    const groqKey = process.env.GROQ_API_KEY;
-    if (groqKey) {
-      const groqModels = [options.model || "openai/gpt-oss-120b", "qwen/qwen3.8-27b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"];
-      for (const m of groqModels) {
+    // 1. PRIMARY FALLBACK: Google Gemini (2.5-flash, 2.0-flash, 1.5-flash) - 8,192 Max Output Tokens
+    try { require("dotenv").config({ override: true }); } catch {}
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (geminiKey && geminiKey.startsWith("AIzaSy")) {
+      const geminiModels = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-flash-latest"];
+      for (const gm of geminiModels) {
         try {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 25000);
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${gm}:generateContent?key=${geminiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [
+                {
+                  role: "user",
+                  parts: [{ text: `You are GARUDA Astra/Pawan, an elite autonomous software engineer created by Praveen Mahawar. Always return valid JSON only.\n\n${prompt}` }]
+                }
+              ],
+              generationConfig: {
+                temperature: 0.1,
+                maxOutputTokens: options.maxTokens || 4096,
+                responseMimeType: "application/json"
+              }
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const data = await res.json();
+            const candidate = data.candidates?.[0];
+            if (candidate?.finishReason === "MAX_TOKENS") {
+              continue; // Truncated, try next
+            }
+            const parts = candidate?.content?.parts || [];
+            const text = parts.map(p => p.text || "").join("").trim();
+            if (text) return text;
+          }
+        } catch (err) {}
+      }
+    }
+
+    // 2. SECONDARY FALLBACK: Groq (Llama 3.3 70B, GPT-OSS 120B)
+    const groqKey = process.env.GROQ_API_KEY;
+    if (groqKey) {
+      const groqModels = [options.model || "openai/gpt-oss-120b", "llama-3.3-70b-versatile", "qwen/qwen3.8-27b", "llama-3.1-8b-instant"];
+      for (const m of groqModels) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 20000);
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -334,43 +377,9 @@ class AstraExecutionEngine {
 
           if (res.ok) {
             const data = await res.json();
-            const text = data.choices?.[0]?.message?.content;
-            if (text) return text;
-          }
-        } catch (err) {}
-      }
-    }
-
-    // 2. Try Google Gemini (2.0-flash, 1.5-flash & 1.5-pro)
-    const geminiKey = process.env.GEMINI_API_KEY;
-    if (geminiKey) {
-      const geminiModels = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-2.5-flash", "gemini-1.5-pro"];
-      for (const gm of geminiModels) {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 25000);
-          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${gm}:generateContent?key=${geminiKey}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [
-                {
-                  role: "user",
-                  parts: [{ text: `You are GARUDA Astra/Pawan, an elite autonomous software engineer created by Praveen Mahawar. Always return valid JSON only.\n\n${prompt}` }]
-                }
-              ],
-              generationConfig: {
-                temperature: 0.1,
-                responseMimeType: "application/json"
-              }
-            }),
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-
-          if (res.ok) {
-            const data = await res.json();
-            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            const choice = data.choices?.[0];
+            if (choice?.finish_reason === "length") continue; // Truncated
+            const text = choice?.message?.content;
             if (text) return text;
           }
         } catch (err) {}
