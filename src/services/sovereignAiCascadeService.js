@@ -79,6 +79,7 @@ class SovereignAiCascadeService {
       return keys.filter(Boolean);
     };
 
+    const cerebrasKeys = parseKeys(process.env.CEREBRAS_API_KEY, "CEREBRAS_API_KEY", process.env.CEREBRAS_API_KEYS);
     const groqKeys = parseKeys(process.env.GROQ_API_KEY, "GROQ_API_KEY", process.env.GROQ_API_KEYS);
     const nvidiaKeys = parseKeys(process.env.NVIDIA_API_KEY, "NVIDIA_API_KEY", process.env.NVIDIA_API_KEYS);
     const geminiKeys = parseKeys(process.env.GEMINI_API_KEY, "GEMINI_API_KEY", process.env.GEMINI_API_KEYS);
@@ -92,11 +93,12 @@ class SovereignAiCascadeService {
     }
 
     // Runtime injected keys
+    (this.runtimeKeys.get("cerebras") || []).forEach(k => { if (!cerebrasKeys.includes(k)) cerebrasKeys.push(k); });
     (this.runtimeKeys.get("groq") || []).forEach(k => { if (!groqKeys.includes(k)) groqKeys.push(k); });
     (this.runtimeKeys.get("nvidia") || []).forEach(k => { if (!nvidiaKeys.includes(k)) nvidiaKeys.push(k); });
     (this.runtimeKeys.get("gemini") || []).forEach(k => { if (!geminiKeys.includes(k)) geminiKeys.push(k); });
 
-    return { groqKeys, nvidiaKeys, geminiKeys };
+    return { cerebrasKeys, groqKeys, nvidiaKeys, geminiKeys };
   }
 
   isKeyOnCooldown(keyId) {
@@ -135,13 +137,74 @@ class SovereignAiCascadeService {
       if (prompt) uniformMessages.push({ role: "user", content: prompt });
     }
 
-    let { groqKeys, nvidiaKeys, geminiKeys } = this.getAllKeys();
+    let { cerebrasKeys, groqKeys, nvidiaKeys, geminiKeys } = this.getAllKeys();
     if (groqKeys.length === 0) {
       await this.syncKeysFromVault();
       const updated = this.getAllKeys();
+      cerebrasKeys = updated.cerebrasKeys;
       groqKeys = updated.groqKeys;
       nvidiaKeys = updated.nvidiaKeys;
       geminiKeys = updated.geminiKeys;
+    }
+
+        // ── TIER 0: CEREBRAS WAFER-SCALE ULTRA-SPEED ENGINE (2,000 tok/s) ──
+    for (let kIdx = 0; kIdx < (cerebrasKeys || []).length; kIdx++) {
+      const key = cerebrasKeys[kIdx];
+      const keyId = `cerebras_${kIdx}_${key.slice(-6)}`;
+      if (this.isKeyOnCooldown(keyId)) continue;
+
+      const cerebrasModels = ["qwen-3.8-27b", "gpt-oss-120b"];
+      for (const model of cerebrasModels) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+          const res = await fetch("https://api.cerebras.ai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${key}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model,
+              messages: uniformMessages,
+              temperature,
+              max_tokens: maxTokens
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const data = await res.json();
+            const text = data.choices?.[0]?.message?.content;
+            if (text && text.trim()) {
+              const providerName = `cerebras:${model}[k${kIdx + 1}]`;
+              this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
+              return {
+                success: true,
+                text: text.trim(),
+                provider: providerName,
+                latencyMs: Date.now() - startTime,
+                cascadeAttempts
+              };
+            }
+          }
+
+          const errData = await res.json().catch(() => ({}));
+          const errMsg = errData.error?.message || `HTTP ${res.status}`;
+          cascadeAttempts.push({ tier: "cerebras", keyId, model, error: errMsg });
+          this.stats.failoversTriggered++;
+
+          if (res.status === 429 || res.status === 401 || errMsg.includes("quota") || errMsg.includes("rate limit")) {
+            this.setKeyCooldown(keyId, errMsg, 180);
+            break;
+          }
+        } catch (err) {
+          cascadeAttempts.push({ tier: "cerebras", keyId, model, error: err.message });
+          this.stats.failoversTriggered++;
+        }
+      }
     }
 
     // ── TIER 1: GROQ HIGH-SPEED CLOUD (Line-up through all keys & models) ──
@@ -277,7 +340,7 @@ class SovereignAiCascadeService {
       const keyId = `gemini_${kIdx}_${key.slice(-6)}`;
       if (this.isKeyOnCooldown(keyId)) continue;
 
-      const geminiModels = ["gemini-flash-latest", "gemini-2.5-flash", "gemini-pro-latest"];
+      const geminiModels = ["gemini-2.5-flash", "gemini-flash-latest"];
       const promptText = uniformMessages.map(m => `${m.role}: ${m.content}`).join("\n\n");
 
       for (const model of geminiModels) {
@@ -298,7 +361,8 @@ class SovereignAiCascadeService {
 
           if (res.ok) {
             const data = await res.json();
-            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            const parts = data.candidates?.[0]?.content?.parts || [];
+            const text = parts.map(p => p.text || "").join("").trim();
             if (text && text.trim()) {
               const providerName = `gemini:${model}[k${kIdx + 1}]`;
               this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
@@ -331,7 +395,8 @@ class SovereignAiCascadeService {
     // ── TIER 4: DETERMINISTIC SOVEREIGN FALLBACK CORE ──
     const fallbackText = "Praveen ji, sabhi cloud APIs failover mode me hain. Antigravity Sovereign Core active hai aur saari leads Supabase me 100% safe hain.";
     return {
-      success: true,
+      success: false, // Invariant: deterministic fallback is never reported as successful AI task execution
+      isFallback: true,
       text: fallbackText,
       provider: "deterministic_core_resilience",
       latencyMs: Date.now() - startTime,

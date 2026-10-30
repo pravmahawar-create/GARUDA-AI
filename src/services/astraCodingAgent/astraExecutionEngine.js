@@ -108,6 +108,57 @@ class AstraExecutionEngine {
   }
 
   /**
+   * Resilient Code Sanitizer
+   * Eliminates escaped quotes (\" -> "), unescapes stringified newlines (\n -> \n),
+   * and prevents HTML attribute & JS DOM selector corruption.
+   */
+  _sanitizeCodeContent(content) {
+    if (!content || typeof content !== "string") return content;
+    let code = content.trim();
+
+    // 1. Strip surrounding quotes if the entire code was wrapped in JSON string quotes
+    if (code.startsWith('"') && (code.endsWith('"') || !code.includes("\n"))) {
+      if (code.endsWith('"') && !code.endsWith('\\"')) {
+        code = code.slice(1, -1);
+      } else {
+        code = code.slice(1);
+      }
+    }
+
+    // 2. Unescape newlines if stringified (i.e. contains literal \n and not native newlines)
+    if (code.includes("\\n") && (code.match(/\\n/g) || []).length > (code.match(/\n/g) || []).length) {
+      code = code.replace(/\\r\\n/g, "\n").replace(/\\n/g, "\n").replace(/\\r/g, "\r").replace(/\\t/g, "\t");
+    }
+
+    // 3. Clean escaped quotes in HTML tags: e.g. <input id=\"company\" name=\"company\">
+    code = code.replace(/<[^>]+>/g, (tag) => {
+      return tag.replace(/\\"/g, '"').replace(/\\'/g, "'");
+    });
+
+    // 4. Clean residual escaped quotes in DOM and Storage method calls
+    code = code.replace(/(\b(?:querySelector(?:All)?|getElementById|getElementsByClassName|getElementsByTagName|getAttribute|setAttribute|getItem|setItem|removeItem)\s*\(\s*)\\"([^"\\]+)\\"/g, '$1"$2"');
+
+    // 5. If standalone \" still exists across the document and it's HTML
+    if (code.includes('\\"') && (code.includes("<!DOCTYPE") || code.includes("<html") || code.includes("<body"))) {
+      code = code.replace(/\\"/g, '"');
+    }
+
+    // 6. Mobile viewport & table overflow governance (Golden Rule #7)
+    if (code.includes("<!DOCTYPE") || code.includes("<html") || code.includes("<body")) {
+      if (code.includes("<table") && !code.includes("overflow-x")) {
+        const responsiveGuard = "\n<style>html,body{max-width:100%;overflow-x:hidden;}table{max-width:100%;display:block;overflow-x:auto;}</style>\n";
+        if (code.includes("</head>")) {
+          code = code.replace("</head>", responsiveGuard + "</head>");
+        } else if (code.includes("<body")) {
+          code = code.replace(/<body[^>]*>/, "$&" + responsiveGuard);
+        }
+      }
+    }
+
+    return code.trim();
+  }
+
+  /**
    * Resilient JSON Parser for LLM output (handles fences, unescaped code, extra text)
    */
   parseLlmJson(rawText) {
@@ -118,36 +169,116 @@ class AstraExecutionEngine {
     } else if (cleaned.startsWith("```")) {
       cleaned = cleaned.replace(/^```\s*/, "").replace(/\s*```$/, "");
     }
+
+    let result = null;
+
+    // 1. Direct JSON parse
     try {
-      return JSON.parse(cleaned);
+      result = JSON.parse(cleaned);
     } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
 
-    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
+    // 2. JSON parse with invalid escape sequences normalized
+    if (!result) {
       try {
-        return JSON.parse(jsonMatch[0]);
+        const preFixed = cleaned.replace(/\\([^"\\\/bfnrtu]|u(?![\da-fA-F]{4}))/g, '\\\\$1');
+        result = JSON.parse(preFixed);
+      } catch (err) {}
+    }
+
+    // 3. Match top-level JSON object
+    if (!result) {
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          result = JSON.parse(jsonMatch[0]);
+        } catch (err) {
+          try {
+            const preFixed = jsonMatch[0].replace(/\\([^"\\\/bfnrtu]|u(?![\da-fA-F]{4}))/g, '\\\\$1');
+            result = JSON.parse(preFixed);
+          } catch (e2) {}
+        }
+      }
+    }
+
+    // 4. Regex extraction fallback for code blocks with unescaped or truncated characters
+    if (!result) {
+      try {
+        const thoughtMatch = cleaned.match(/"thought"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/);
+        const targetMatch = cleaned.match(/"targetFile"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/);
+        const summaryMatch = cleaned.match(/"summary"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/);
+        const codeMatch = cleaned.match(/"newContent"\s*:\s*([\s\S]+?)(?:,\s*"summary"\s*:|\s*\}\s*$)/) || cleaned.match(/"newContent"\s*:\s*([\s\S]+?)(?:,\s*"summary"|\s*\})/);
+        if (codeMatch) {
+          let codeVal = codeMatch[1].trim();
+          if (codeVal.startsWith('"')) {
+            if (codeVal.endsWith('"') && !codeVal.endsWith('\\"')) {
+              codeVal = codeVal.slice(1, -1);
+            } else {
+              codeVal = codeVal.slice(1);
+            }
+          }
+          codeVal = codeVal.replace(/\\r\\n/g, "\n").replace(/\\n/g, "\n").replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+          result = {
+            thought: thoughtMatch ? thoughtMatch[1] : "Parsed via resilient parser",
+            targetFile: targetMatch ? targetMatch[1] : null,
+            newContent: codeVal,
+            summary: summaryMatch ? summaryMatch[1] : "Patch synthesized"
+          };
+        }
+
+        // Truncated JSON recovery: if "newContent": " started but didn't finish cleanly
+        if (!result) {
+          const truncatedCodeMatch = cleaned.match(/"newContent"\s*:\s*"([\s\S]*)/);
+          if (truncatedCodeMatch) {
+            let rawCode = truncatedCodeMatch[1];
+            // Strip trailing unclosed JSON characters
+            rawCode = rawCode.replace(/"\s*,?\s*\}?\s*$/, "");
+            rawCode = rawCode.replace(/\\r\\n/g, "\n").replace(/\\n/g, "\n").replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+            if (rawCode.trim().length > 20) {
+              result = {
+                thought: thoughtMatch ? thoughtMatch[1] : "Recovered from truncated token stream",
+                targetFile: targetMatch ? targetMatch[1] : null,
+                newContent: rawCode,
+                summary: summaryMatch ? summaryMatch[1] : "Recovered synthesized application"
+              };
+            }
+          }
+        }
+
+        // Direct HTML fence or standalone HTML recovery
+        if (!result) {
+          const htmlFenceMatch = cleaned.match(/```(?:html|xml)?\s*([\s\S]*?)```/i);
+          if (htmlFenceMatch && htmlFenceMatch[1].includes("<html")) {
+            result = {
+              thought: "Direct HTML fence extraction",
+              targetFile: targetMatch ? targetMatch[1] : null,
+              newContent: htmlFenceMatch[1].trim(),
+              summary: "Direct HTML artifact extracted"
+            };
+          }
+        }
+
+        if (!result && (cleaned.includes("<!DOCTYPE html>") || (cleaned.includes("<html") && cleaned.includes("</html>")))) {
+          const docStart = cleaned.indexOf("<!DOCTYPE html>") !== -1 ? cleaned.indexOf("<!DOCTYPE html>") : cleaned.indexOf("<html");
+          const docEnd = cleaned.lastIndexOf("</html>") !== -1 ? cleaned.lastIndexOf("</html>") + 7 : cleaned.length;
+          result = {
+            thought: "Extracted standalone HTML document",
+            targetFile: targetMatch ? targetMatch[1] : null,
+            newContent: cleaned.substring(docStart, docEnd).trim(),
+            summary: "Direct standalone web application"
+          };
+        }
       } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
     }
 
-    // Regex extraction fallback for code blocks with unescaped characters
-    try {
-      const thoughtMatch = cleaned.match(/"thought"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/);
-      const targetMatch = cleaned.match(/"targetFile"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/);
-      const summaryMatch = cleaned.match(/"summary"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/);
-      const codeMatch = cleaned.match(/"newContent"\s*:\s*([\s\S]+?)(?:,\s*"summary"|\s*\})/);
-      if (codeMatch) {
-        let codeVal = codeMatch[1].trim();
-        if (codeVal.startsWith('"') && codeVal.endsWith('"')) {
-          codeVal = codeVal.slice(1, -1).replace(/\\n/g, "\n").replace(/\\"/g, '"').replace(/\\\\/g, "\\");
-        }
-        return {
-          thought: thoughtMatch ? thoughtMatch[1] : "Parsed via resilient parser",
-          targetFile: targetMatch ? targetMatch[1] : null,
-          newContent: codeVal,
-          summary: summaryMatch ? summaryMatch[1] : "Patch synthesized"
-        };
+    if (result) {
+      if (result.newContent) {
+        result.newContent = this._sanitizeCodeContent(result.newContent);
       }
-    } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
+      if (result.code) {
+        result.code = this._sanitizeCodeContent(result.code);
+      }
+      return result;
+    }
 
     return null;
   }
@@ -163,19 +294,19 @@ class AstraExecutionEngine {
         systemPrompt: "You are GARUDA Astra/Pawan, an elite sovereign AI software architect created by Praveen Mahawar. You always output valid, clean JSON with zero conversational filler.",
         prompt,
         temperature: options.temperature || 0.1,
-        maxTokens: options.maxTokens || 2048
+        maxTokens: options.maxTokens || 8192
       });
-      if (cascadeResult && cascadeResult.text) {
+      if (cascadeResult && cascadeResult.success && !cascadeResult.isFallback && cascadeResult.text) {
         return cascadeResult.text;
       }
     } catch (err) {
       console.warn("[Astra/Pawan] Cascade note:", err.message);
     }
 
-    // 1. Try Groq (Superfast 120B / 27B)
+    // 1. Try Groq (Superfast 120B / 27B / Llama 3.3)
     const groqKey = process.env.GROQ_API_KEY;
     if (groqKey) {
-      const groqModels = [options.model || "openai/gpt-oss-120b", "qwen/qwen3.8-27b", "groq/compound"];
+      const groqModels = [options.model || "openai/gpt-oss-120b", "qwen/qwen3.8-27b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"];
       for (const m of groqModels) {
         try {
           const controller = new AbortController();
@@ -210,10 +341,10 @@ class AstraExecutionEngine {
       }
     }
 
-    // 2. Try Google Gemini (2.5-flash & 2.5-pro)
+    // 2. Try Google Gemini (2.0-flash, 1.5-flash & 1.5-pro)
     const geminiKey = process.env.GEMINI_API_KEY;
     if (geminiKey) {
-      const geminiModels = ["gemini-2.5-flash", "gemini-2.5-pro"];
+      const geminiModels = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-2.5-flash", "gemini-1.5-pro"];
       for (const gm of geminiModels) {
         try {
           const controller = new AbortController();
@@ -516,9 +647,22 @@ Output ONLY the JSON object.`;
   /**
    * Layered Syntax and execution validation (JS/TS/JSX, JSON, deep HTML inline scripts & CSS)
    */
-  validateFile(relPath) {
+  validateFile(relPath, inMemoryContent = null) {
     const fullPath = path.isAbsolute(relPath) ? relPath : path.join(this.rootDir, relPath);
-    if (!fs.existsSync(fullPath)) return { valid: false, error: "File does not exist", stderr: "File does not exist" };
+    if (!fs.existsSync(fullPath)) {
+      if (inMemoryContent) {
+        const inMemResult = this.validator.validateContent(inMemoryContent, relPath);
+        return {
+          valid: inMemResult.valid,
+          exitCode: inMemResult.exitCode || 0,
+          sha256: inMemResult.sha256 || crypto.createHash("sha256").update(inMemoryContent, "utf8").digest("hex"),
+          stderr: inMemResult.error || (inMemResult.errors ? inMemResult.errors.join(" | ") : ""),
+          error: inMemResult.error || null,
+          engine: inMemResult.engine || "in-memory-validator"
+        };
+      }
+      return { valid: false, error: "File does not exist", stderr: "File does not exist" };
+    }
 
     const valResult = this.validator.validateFile(fullPath);
     return {
@@ -537,7 +681,6 @@ Output ONLY the JSON object.`;
   applyPatch(relPath, newContent, options = {}) {
     const fullPath = path.isAbsolute(relPath) ? relPath : path.join(this.rootDir, relPath);
     const dir = path.dirname(fullPath);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
     const beforeSha = this._computeSha256(fullPath);
 
@@ -562,32 +705,59 @@ Output ONLY the JSON object.`;
         };
       }
 
-      fs.writeFileSync(fullPath, patchResult.newContent, "utf8");
-      const afterSha = this._computeSha256(fullPath);
+      try {
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(fullPath, patchResult.newContent, "utf8");
+        const afterSha = this._computeSha256(fullPath);
+        return {
+          success: true,
+          path: relPath,
+          beforeSha,
+          afterSha,
+          bytesWritten: Buffer.byteLength(patchResult.newContent, "utf8"),
+          method: patchResult.method,
+          patchSuccess: true
+        };
+      } catch (writeErr) {
+        const afterSha = crypto.createHash("sha256").update(patchResult.newContent, "utf8").digest("hex");
+        return {
+          success: true,
+          path: relPath,
+          beforeSha,
+          afterSha,
+          bytesWritten: Buffer.byteLength(patchResult.newContent, "utf8"),
+          method: patchResult.method + "_in_memory",
+          patchSuccess: true,
+          readOnlyEnvironment: true
+        };
+      }
+    }
 
+    // 2. Full Content Application Mode (with in-memory fallback for read-only cloud filesystems)
+    try {
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(fullPath, newContent, "utf8");
+      const afterSha = this._computeSha256(fullPath);
       return {
         success: true,
         path: relPath,
         beforeSha,
         afterSha,
-        bytesWritten: Buffer.byteLength(patchResult.newContent, "utf8"),
-        method: patchResult.method,
-        patchSuccess: true
+        bytesWritten: Buffer.byteLength(newContent, "utf8"),
+        method: "full_content"
+      };
+    } catch (writeErr) {
+      const afterSha = crypto.createHash("sha256").update(newContent, "utf8").digest("hex");
+      return {
+        success: true,
+        path: relPath,
+        beforeSha,
+        afterSha,
+        bytesWritten: Buffer.byteLength(newContent, "utf8"),
+        method: "full_content_in_memory",
+        readOnlyEnvironment: true
       };
     }
-
-    // 2. Full Content Application Mode
-    fs.writeFileSync(fullPath, newContent, "utf8");
-    const afterSha = this._computeSha256(fullPath);
-
-    return {
-      success: true,
-      path: relPath,
-      beforeSha,
-      afterSha,
-      bytesWritten: Buffer.byteLength(newContent, "utf8"),
-      method: "full_content"
-    };
   }
 
   /**
@@ -812,7 +982,8 @@ Output ONLY the JSON object.`;
     });
 
     // 3. Autonomous Validation & Self-Healing Loop
-    let validation = this.validateFile(appliedFile);
+    let currentNewContent = parsedPlan.newContent;
+    let validation = this.validateFile(appliedFile, currentNewContent);
     let healCycle = 0;
 
     while (!validation.valid && healCycle < this.maxHealCycles) {
@@ -845,6 +1016,7 @@ Output ONLY the JSON object.`;
         if (healJsonMatch) {
           const healParsed = JSON.parse(healJsonMatch[0]);
           if (healParsed.newContent) {
+            currentNewContent = healParsed.newContent;
             this.applyPatch(appliedFile, healParsed.newContent);
             trajectory.push({
               step: "SELF_HEAL_PATCH_APPLIED",
@@ -857,7 +1029,7 @@ Output ONLY the JSON object.`;
         trajectory.push({ step: "SELF_HEAL_LLM_ERROR", error: err.message });
       }
 
-      validation = this.validateFile(appliedFile);
+      validation = this.validateFile(appliedFile, currentNewContent);
     }
 
     let rollbackExecuted = false;

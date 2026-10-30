@@ -526,6 +526,7 @@ export default function PawanCodingStudio() {
       fetchHistory();
       pawanSpeak("Praveen ji, task completed successfully! Verified code is ready on screen.");
     } catch (err) {
+      setResult(null);
       const errMsg = err.message || "Autonomous execution failed";
       setError(errMsg);
       pawanSpeak("Praveen ji, execution note: " + errMsg.replace(/https?:\/\/\S+/g, "").slice(0, 75));
@@ -698,6 +699,7 @@ export default function PawanCodingStudio() {
     
     setLoading(true);
     setError(null);
+    setResult(null);
     pawanSpeak("Order confirmed. Synthesizing verified application code.");
 
     try {
@@ -747,6 +749,7 @@ export default function PawanCodingStudio() {
 
       pawanSpeak("Praveen ji, application code is verified and ready on screen!");
     } catch (err) {
+      setResult(null);
       setError(err.message);
       pawanSpeak("Execution error occurred. Check screen details.");
     } finally {
