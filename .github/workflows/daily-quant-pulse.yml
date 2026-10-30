@@ -1,0 +1,34 @@
+name: GARUDA Daily Quant Market Pulse
+
+on:
+  schedule:
+    # 03:45 UTC = 09:15 AM IST (NSE Opening Bell) • Monday through Friday
+    - cron: '45 3 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  market-pulse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Dispatch Morning Market Intelligence to Founder Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_FOUNDER_CHAT_ID: ${{ secrets.TELEGRAM_FOUNDER_CHAT_ID }}
+        run: |
+          node scripts/dispatch-daily-quant-pulse.js

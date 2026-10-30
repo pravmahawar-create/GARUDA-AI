@@ -12,19 +12,22 @@ class TelegramQuantNotifier {
     this.chatId = process.env.TELEGRAM_FOUNDER_CHAT_ID;
   }
 
-  async sendMessage(text) {
+  async sendMessage(text, useMarkdown = true) {
     if (!this.botToken || !this.chatId) {
       console.log('[TelegramQuantNotifier] Tokens not configured, simulated log:\n', text);
       return { success: false, reason: 'Tokens not set' };
     }
 
     return new Promise((resolve) => {
-      const postData = JSON.stringify({
+      const payload = {
         chat_id: this.chatId,
         text,
-        parse_mode: 'Markdown',
         disable_web_page_preview: true
-      });
+      };
+      if (useMarkdown) {
+        payload.parse_mode = 'Markdown';
+      }
+      const postData = JSON.stringify(payload);
 
       const req = https.request({
         hostname: 'api.telegram.org',
@@ -40,6 +43,10 @@ class TelegramQuantNotifier {
         res.on('end', () => {
           try {
             const parsed = JSON.parse(data);
+            if (!parsed.ok && useMarkdown && parsed.description && /can't parse|entity|markdown/i.test(parsed.description)) {
+              console.warn('[TelegramQuantNotifier] Markdown entity error, auto-retrying with robust plain text:', parsed.description);
+              return this.sendMessage(text, false).then(resolve);
+            }
             resolve({ success: parsed.ok, result: parsed });
           } catch (e) {
             resolve({ success: false, error: e.message });

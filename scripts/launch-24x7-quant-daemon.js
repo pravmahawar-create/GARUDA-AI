@@ -46,7 +46,7 @@ async function main() {
     daemon.start();
 
     // Schedule Daily Market Pulse at 09:15 AM IST (NSE Opening Bell)
-    let lastPulseDate = new Date().toDateString();
+    let lastPulseDate = null;
 
     setInterval(async () => {
       try {

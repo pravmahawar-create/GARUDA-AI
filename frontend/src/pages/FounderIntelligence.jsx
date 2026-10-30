@@ -818,7 +818,13 @@ export default function FounderIntelligence() {
             </div>
           )}
 
-          <div style={styles.inputBar}>
+          <form
+            style={styles.inputBar}
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!busy && input.trim()) send();
+            }}
+          >
             <input
               ref={inputRef}
               className="fi-input fi-cmd"
@@ -827,12 +833,22 @@ export default function FounderIntelligence() {
               disabled={busy}
               placeholder={meetingMode ? "Meeting — customer ya founder ka sawaal…" : selectedClient ? `${selectedClient.displayName} context — founder request…` : "Founder request likho…"}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && send()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  if (!busy && input.trim()) send();
+                }
+              }}
             />
-            <button className="fi-cmd" style={{ ...styles.sendBtn, opacity: busy ? 0.5 : 1 }} onClick={() => send()} disabled={busy}>
+            <button
+              type="submit"
+              className="fi-cmd"
+              style={{ ...styles.sendBtn, opacity: busy || !input.trim() ? 0.5 : 1 }}
+              disabled={busy || !input.trim()}
+            >
               ➤
             </button>
-          </div>
+          </form>
         </main>
 
         <aside className={`fi-right fi-scroll ${styles.right} ${panelOpen ? "open" : ""}`}>

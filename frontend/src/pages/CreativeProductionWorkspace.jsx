@@ -225,10 +225,33 @@ export default function CreativeProductionWorkspace(){
         {/* COMMAND — Natural language front door */}
         <div style={{background:PANEL, border:`1px solid ${BORDER}`, borderRadius:12, padding:"1rem", marginBottom:"1rem"}}>
           <div style={{fontSize:"0.78rem", color:GOLD, fontWeight:800, letterSpacing:"0.06em", marginBottom:"0.4rem"}}>COMMAND — Natural language (Hindi / English / Hinglish)</div>
-          <div style={{display:"flex", gap:"0.6rem"}}>
-            <input value={command} onChange={e=>setCommand(e.target.value)} onKeyDown={e=> e.key==="Enter" && handleCommand()} placeholder='e.g., “Is raw footage ko is song ke beat pe 60 second ka cinematic reel bana” / “Create a premium poster for GARUDA”' style={{flex:1, background:"rgba(0,0,0,0.55)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:8, color:"#fff", padding:"0.7rem 0.9rem", fontSize:"0.9rem"}} />
-            <button onClick={handleCommand} style={{background:`linear-gradient(135deg, #d4af37, #b8860b)`, color:"#000", border:"none", borderRadius:8, padding:"0.7rem 1.1rem", fontWeight:800, cursor:"pointer"}}>Tell GARUDA →</button>
-          </div>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              if (command.trim()) handleCommand();
+            }}
+            style={{display:"flex", gap:"0.6rem"}}
+          >
+            <input
+              value={command}
+              onChange={e=>setCommand(e.target.value)}
+              onKeyDown={e=> {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  if (command.trim()) handleCommand();
+                }
+              }}
+              placeholder='e.g., “Is raw footage ko is song ke beat pe 60 second ka cinematic reel bana” / “Create a premium poster for GARUDA”'
+              style={{flex:1, background:"rgba(0,0,0,0.55)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:8, color:"#fff", padding:"0.7rem 0.9rem", fontSize:"0.9rem"}}
+            />
+            <button
+              type="submit"
+              disabled={!command.trim()}
+              style={{background:`linear-gradient(135deg, #d4af37, #b8860b)`, color:"#000", border:"none", borderRadius:8, padding:"0.7rem 1.1rem", fontWeight:800, cursor: command.trim() ? "pointer" : "not-allowed", opacity: command.trim() ? 1 : 0.6}}
+            >
+              Tell GARUDA →
+            </button>
+          </form>
           <div style={{fontSize:"0.7rem", color:"#64748b", marginTop:"0.35rem"}}>Routed via <code>creativeIntentRouter</code> → Director/Editor → existing engines. No new brain.</div>
         </div>
 

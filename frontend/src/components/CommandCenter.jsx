@@ -231,11 +231,23 @@ export default function CommandCenter({
       </div>
 
       {/* Composer Input */}
-      <div className="composer" style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
+      <form
+        className="composer"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (question.trim() && !loading) onSend();
+        }}
+        style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}
+      >
         <input
           value={question}
           onChange={(event) => onQuestionChange(event.target.value)}
-          onKeyDown={(event) => event.key === "Enter" && onSend()}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              if (question.trim() && !loading) onSend();
+            }
+          }}
           placeholder="Submit directive or command to GARUDA (e.g. Inspect the repository...)"
           style={{
             flex: 1,
@@ -249,8 +261,12 @@ export default function CommandCenter({
           }}
         />
         <button
-          onClick={onSend}
-          disabled={loading}
+          type="submit"
+          onClick={(e) => {
+            e.preventDefault();
+            if (question.trim() && !loading) onSend();
+          }}
+          disabled={loading || !question.trim()}
           style={{
             background: "linear-gradient(135deg, #d4af37 0%, #aa820a 100%)",
             color: "#000",
@@ -258,13 +274,13 @@ export default function CommandCenter({
             borderRadius: "8px",
             padding: "0.75rem 1.4rem",
             fontWeight: "bold",
-            cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading ? 0.7 : 1
+            cursor: loading || !question.trim() ? "not-allowed" : "pointer",
+            opacity: loading || !question.trim() ? 0.7 : 1
           }}
         >
           {loading ? "Processing..." : "Submit Mission"}
         </button>
-      </div>
+      </form>
     </motion.section>
   );
 }

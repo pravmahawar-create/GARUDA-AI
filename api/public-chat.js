@@ -43,6 +43,7 @@ function buildSystemPrompt() {
     "- When the user expresses a business or project need, understand their problem and guide them toward the right solution architecture.",
     "- NEVER output your internal reasoning or chain-of-thought. Do not write 'We need to', 'I should', or meta-commentary about instructions. Output ONLY the final spoken answer directly.",
     "- Reply in the same language the user uses. If they write in Hinglish, reply in Hinglish.",
+    "- GRAND SOVEREIGN TOUR GUIDE LAW: If the user asks for a tour, wants to see around, asks what GARUDA is, says 'tour karao', 'dikhao kya hai', 'museum', 'walkthrough', or wants to explore, act like a world-class, charismatic, high-prestige Royal Tech Tour Guide / Master Curator of GARUDA OS. Take them on a step-by-step grand walkthrough of PAWAN Coding Studio (/pawan), Alpha-Quant Market Sniper (/quant), GARUDA AAHAR (/aahar), Political War Room (/war-room), and Vidya Studio (/scholar), complete with clickable markdown links, inspiring storytelling, and clear next steps.",
     "- Be warm, honest, and clear. Never invent facts, prices, or policies you are not sure about. If unsure, say so and suggest a safe next step.",
     "- Keep responses reasonably concise and easy to read.",
     "ENTERPRISE AI SOLUTION ARCHITECT CORE PROTOCOL (GOVERNED BY FOUNDER PRAVEEN MAHAWAR):",
@@ -121,8 +122,38 @@ function generateLocalFallback(message = "") {
   if (/consultation|praveen|founder|call|meeting/i.test(clean)) {
     return "### 📞 Schedule Executive Consultation with Founder Praveen Mahawar\n\nFounder Praveen Mahawar conducts private architectural briefings for high-value clients and enterprise decision-makers.\n\nTo schedule your consultation:\n1. **Share your project scope, target region, and timeline right here**.\n2. We will compile your forensic dossier and alert Founder Praveen's private executive channel immediately.\n3. You can also connect via official email: **praveen@garudaos.in** or visit our platform matrix at `https://www.garudaos.in/enterprise`.";
   }
+  if (/tour|guide|museum|walkthrough|dikhao|ghumao|show\s*around|explore/i.test(clean)) {
+    return `### 🏛️ Welcome to GARUDA OS — The Grand Sovereign Walkthrough
+
+Namaste! Main hoon aapka Royal Tech Tour Guide. Founder Praveen Mahawar ne is mainframe ko ek 1,000-engineer titan workforce ke barabar build kiya hai.
+
+Aaiye, main aapko hamare Kingdom ke 5 sabse shaktishaali Grand Wings ka tour karwata hoon:
+
+1. ⚡ **Wing 1: PAWAN Autonomous Coding Studio** ([Open Pawan Studio](https://www.garudaos.in/pawan))
+   - Natural language se verified production software, mobile APKs, aur single-file apps synthesize karta hai sub-second latency me.
+
+2. 📈 **Wing 2: Alpha-Quant Market Sniper (U12 Finance)** ([Explore Alpha Quant](https://www.garudaos.in/quant))
+   - 24/7 Multi-Asset radar jo NIFTY 50 options, India VIX, high-growth crypto gems, aur penny moonshots ko mathematically scan karta hai.
+
+3. 🥗 **Wing 3: GARUDA AAHAR Clinical Sanctuary** ([Visit Aahar Sanctuary](https://www.garudaos.in/aahar))
+   - Bharat ka pehla 100% religiously quarantined multi-diet health engine (Pure Veg, Sattvic, Jain, Vegan) jo concurrent chronic bimariyon ko clinically reverse karta hai.
+
+4. 🛡️ **Wing 4: Defense & Political War Room** ([Access War Room](https://www.garudaos.in/war-room))
+   - Chunav prabandhan aur enterprise decision-makers ke liye ground-level telemetry aur 0% fabricated intelligence.
+
+5. 🎓 **Wing 5: Sovereign Vidya Studio** ([Enter Vidya Studio](https://www.garudaos.in/scholar))
+   - PhD scholars aur engineers ke liye academic research, LaTeX derivations, aur publication-ready thesis synthesis.
+
+---
+👉 **Aap sabse pehle kis wing me jana chahenge?** Ya seedhe Founder Praveen Mahawar se private strategy meeting schedule karna chahte hain?`;
+  }
   if (/who\s*are\s*you|what\s*is\s*garuda|what\s*can\s*you\s*do/i.test(clean)) {
-    return "I am the Senior AI Solution Architect for GARUDA AI OS, founded and governed by Praveen Mahawar. I design, scope, and deploy enterprise-grade autonomous AI systems, 1,000-agent fleets, custom SaaS MVPs, and defense-grade war rooms across political, industrial, real estate, healthcare, and educational domains. What operational challenge are we solving today?";
+    return `### 🦅 Welcome to GARUDA OS — Sovereign AI Operating System
+Main GARUDA AI ka Senior Solution Architect hoon, jisko Founder Praveen Mahawar ne govern aur design kiya hai.
+
+Main aapka personal **Tour Guide** bhi hoon! Agar aap hamare 15 Universes, live war rooms aur super-agent studios ka grand walkthrough dekhna chahte hain, toh bas bolen **"Tour karao"** ya **"Show me around"**!
+
+Aap kis operational challenge par kaam kar rahe hain?`;
   }
   return "I am the GARUDA AI Solution Architect, operating under Founder Praveen Mahawar. I can architect your system topology, scope deliverables across our 7 sovereign enterprise sectors, or schedule an executive briefing with Founder Praveen. What is your primary objective?";
 }

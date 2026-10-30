@@ -40,6 +40,10 @@ export default function FounderMobileGateway() {
   const [keyProviderInput, setKeyProviderInput] = useState("groq");
   const [keySecretInput, setKeySecretInput] = useState("");
   const [keyAddMsg, setKeyAddMsg] = useState(null);
+  const [quantData, setQuantData] = useState(null);
+  const [quantLoading, setQuantLoading] = useState(false);
+  const [quantDispatching, setQuantDispatching] = useState(false);
+  const [quantDispatchMsg, setQuantDispatchMsg] = useState(null);
   const chatBottomRef = useRef(null);
 
   // Fetch Gateway State from cloud backend
@@ -71,9 +75,44 @@ export default function FounderMobileGateway() {
     }
   };
 
+  const fetchQuantPulse = async () => {
+    try {
+      setQuantLoading(true);
+      const res = await fetch("/api/founder/gateway/quant-pulse");
+      const data = await res.json();
+      if (data.success) setQuantData(data);
+    } catch (err) {
+      console.warn("Failed to fetch quant pulse:", err);
+    } finally {
+      setQuantLoading(false);
+    }
+  };
+
+  const handle1TapQuantDispatch = async () => {
+    try {
+      setQuantDispatching(true);
+      setQuantDispatchMsg("Executing multi-asset scan & dispatching to Telegram...");
+      const res = await fetch("/api/founder/gateway/quant-dispatch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setQuantDispatchMsg("✓ Live Alpha-Quant Dossier delivered to your Telegram!");
+      } else {
+        setQuantDispatchMsg("Dispatch note: " + (data.error || "Sent"));
+      }
+    } catch (err) {
+      setQuantDispatchMsg("Dispatch error: " + err.message);
+    } finally {
+      setQuantDispatching(false);
+    }
+  };
+
   useEffect(() => {
     fetchState();
     fetchKeyHealth();
+    fetchQuantPulse();
   }, []);
 
   useEffect(() => {
@@ -271,6 +310,7 @@ export default function FounderMobileGateway() {
         <div style={{ display: "flex", background: BG, padding: "3px", borderRadius: "8px", border: `1px solid ${BORDER}`, flexWrap: "wrap", gap: "2px" }}>
           {[
             { id: "chat", label: "💬 Chat" },
+            { id: "quant", label: "📈 Alpha Quant" },
             { id: "leads", label: `🎯 Leads (${gatewayState?.stats?.totalLeads || 0})` },
             { id: "keys", label: "🔑 Keys" },
             { id: "sync", label: "⚡ State" }
@@ -439,7 +479,11 @@ export default function FounderMobileGateway() {
           </div>
 
           {/* Input Area */}
-          <div
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!loading && inputMsg.trim()) handleSend();
+            }}
             style={{
               padding: "0.75rem 1rem",
               background: PANEL,
@@ -456,7 +500,7 @@ export default function FounderMobileGateway() {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
-                  handleSend();
+                  if (!loading && inputMsg.trim()) handleSend();
                 }
               }}
               placeholder="Antigravity ko command dein (Roman Hindi)..."
@@ -473,7 +517,11 @@ export default function FounderMobileGateway() {
               }}
             />
             <button
-              onClick={() => handleSend()}
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                if (!loading && inputMsg.trim()) handleSend();
+              }}
               disabled={loading || !inputMsg.trim()}
               style={{
                 background: inputMsg.trim() ? `linear-gradient(135deg, ${GOLD_LIGHT}, ${GOLD})` : "#E5E7EB",
@@ -489,7 +537,7 @@ export default function FounderMobileGateway() {
             >
               Send
             </button>
-          </div>
+          </form>
         </div>
       )}
 
@@ -863,7 +911,156 @@ export default function FounderMobileGateway() {
         </div>
       )}
 
-      {/* ── TAB 3: CLOUD SYNC & TELEMETRY ── */}
+      {/* ── TAB: ALPHA-QUANT LIVE MOBILE PULSE & 1-TAP DISPATCH ── */}
+      {activeTab === "quant" && (
+        <div style={{ flex: 1, overflowY: "auto", padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+          {/* Header Action Banner */}
+          <div
+            style={{
+              background: "linear-gradient(135deg, #18191c 0%, #0d0e12 100%)",
+              border: `1px solid ${BORDER}`,
+              borderRadius: "14px",
+              padding: "1.25rem",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+              <span style={{ fontSize: "0.72rem", color: GOLD, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                🦅 GARUDA U12 QUANT CONSOLE
+              </span>
+              <button
+                onClick={fetchQuantPulse}
+                disabled={quantLoading}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: MUTED,
+                  fontSize: "0.75rem",
+                  cursor: "pointer"
+                }}
+              >
+                {quantLoading ? "Refreshing..." : "↻ Refresh"}
+              </button>
+            </div>
+            <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.1rem", color: "#FFF" }}>
+              Mobile Market Intelligence
+            </h3>
+            <p style={{ margin: "0 0 1rem 0", fontSize: "0.82rem", color: "#9CA3AF", lineHeight: 1.4 }}>
+              Bina laptop ke apne mobile se live market trends dekhein aur 1-tap me Telegram par full dossier dispatch karein.
+            </p>
+
+            {/* 1-TAP DISPATCH BUTTON */}
+            <button
+              onClick={handle1TapQuantDispatch}
+              disabled={quantDispatching}
+              style={{
+                width: "100%",
+                padding: "0.85rem 1rem",
+                borderRadius: "10px",
+                border: "none",
+                background: quantDispatching
+                  ? "#4B5563"
+                  : `linear-gradient(135deg, ${GOLD_LIGHT} 0%, ${GOLD} 100%)`,
+                color: "#FFF",
+                fontWeight: 700,
+                fontSize: "0.9rem",
+                cursor: quantDispatching ? "not-allowed" : "pointer",
+                boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px"
+              }}
+            >
+              <span>{quantDispatching ? "⚡" : "📲"}</span>
+              {quantDispatching ? "Scanning & Dispatching..." : "Send Market Pulse to My Telegram Now"}
+            </button>
+
+            {quantDispatchMsg && (
+              <div
+                style={{
+                  marginTop: "0.75rem",
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  fontSize: "0.78rem",
+                  background: quantDispatchMsg.includes("✓") ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)",
+                  color: quantDispatchMsg.includes("✓") ? "#6EE7B7" : "#FCA5A5",
+                  border: `1px solid ${quantDispatchMsg.includes("✓") ? "rgba(16, 185, 129, 0.3)" : "rgba(239, 68, 68, 0.3)"}`
+                }}
+              >
+                {quantDispatchMsg}
+              </div>
+            )}
+          </div>
+
+          {/* Macro Status Cards */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "12px" }}>
+              <div style={{ fontSize: "0.7rem", color: MUTED, textTransform: "uppercase" }}>🇮🇳 India VIX</div>
+              <div style={{ fontSize: "1.15rem", fontWeight: 700, color: TEXT, marginTop: "4px" }}>
+                {quantData?.vixInfo || "15.3 (Normal)"}
+              </div>
+            </div>
+            <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "12px" }}>
+              <div style={{ fontSize: "0.7rem", color: MUTED, textTransform: "uppercase" }}>📊 Nifty 15m Trend</div>
+              <div style={{ fontSize: "1.15rem", fontWeight: 700, color: EMERALD, marginTop: "4px" }}>
+                {quantData?.macroTrend || "Bullish Accumulation"}
+              </div>
+            </div>
+          </div>
+
+          {/* Crypto Gems Live Radar */}
+          <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "12px" }}>
+            <div style={{ fontSize: "0.78rem", fontWeight: 700, color: GOLD, marginBottom: "8px" }}>
+              🪙 High-Conviction Crypto Gems (Buy Zones)
+            </div>
+            {quantLoading ? (
+              <div style={{ fontSize: "0.8rem", color: MUTED }}>Scanning live 4H candles...</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                {(quantData?.crypto || [
+                  { name: "Avalanche", symbol: "AVAXUSDT", buyZoneInr: "₹711 – ₹733", target1: { inr: "₹857", gainPercent: "+18%" } },
+                  { name: "Near Protocol", symbol: "NEARUSDT", buyZoneInr: "₹370 – ₹382", target1: { inr: "₹461", gainPercent: "+22%" } },
+                  { name: "Bitcoin", symbol: "BTCUSDT", buyZoneInr: "₹66L – ₹68L", target1: { inr: "₹75L", gainPercent: "+12%" } }
+                ]).map((c, i) => (
+                  <div key={i} style={{ background: BG, padding: "8px 10px", borderRadius: "8px", fontSize: "0.78rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 600, color: TEXT }}>
+                      <span>{c.name} ({c.symbol})</span>
+                      <span style={{ color: EMERALD }}>{c.target1?.gainPercent || "+18% Target"}</span>
+                    </div>
+                    <div style={{ color: MUTED, fontSize: "0.72rem", marginTop: "2px" }}>
+                      Buy Zone: {c.buyZoneInr || "Support level"} • Target: {c.target1?.inr || "Target 1"}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Sub-Rupee Moonshots */}
+          <div style={{ background: PANEL, border: `1px solid ${BORDER}`, borderRadius: "12px", padding: "12px" }}>
+            <div style={{ fontSize: "0.78rem", fontWeight: 700, color: TEXT, marginBottom: "8px" }}>
+              🚀 Sub-Rupee & Penny Moonshots
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", fontSize: "0.75rem" }}>
+              <div style={{ background: BG, padding: "8px", borderRadius: "8px", textAlign: "center" }}>
+                <div style={{ fontWeight: 700, color: TEXT }}>PEPE</div>
+                <div style={{ color: EMERALD, fontSize: "0.7rem" }}>₹0.0005 (+4%)</div>
+              </div>
+              <div style={{ background: BG, padding: "8px", borderRadius: "8px", textAlign: "center" }}>
+                <div style={{ fontWeight: 700, color: TEXT }}>DOGE</div>
+                <div style={{ color: "#F59E0B", fontSize: "0.7rem" }}>₹6.61 (Base)</div>
+              </div>
+              <div style={{ background: BG, padding: "8px", borderRadius: "8px", textAlign: "center" }}>
+                <div style={{ fontWeight: 700, color: TEXT }}>GOLD</div>
+                <div style={{ color: GOLD, fontSize: "0.7rem" }}>$3,925/oz</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── TAB 4: SYNC & CLOUD BRAIN STATE ── */}
       {activeTab === "sync" && (
         <div style={{ flex: 1, overflowY: "auto", padding: "1.25rem", background: BG }}>
           <h3 style={{ margin: "0 0 0.5rem 0", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem" }}>

@@ -213,11 +213,12 @@ class SovereignAiCascadeService {
       const keyId = `groq_${kIdx}_${key.slice(-6)}`;
       if (this.isKeyOnCooldown(keyId)) continue;
 
-      const groqModels = ["qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"];
+      const groqModels = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"];
+      const groqMaxTokens = Math.min(maxTokens || 800, 1000);
       for (const model of groqModels) {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 12000);
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
 
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
@@ -229,7 +230,7 @@ class SovereignAiCascadeService {
               model,
               messages: uniformMessages,
               temperature,
-              max_tokens: maxTokens
+              max_tokens: groqMaxTokens
             }),
             signal: controller.signal
           });

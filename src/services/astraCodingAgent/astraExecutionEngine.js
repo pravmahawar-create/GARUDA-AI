@@ -294,7 +294,7 @@ class AstraExecutionEngine {
         systemPrompt: "You are GARUDA Astra/Pawan, an elite sovereign AI software architect created by Praveen Mahawar. You always output valid, clean JSON with zero conversational filler.",
         prompt,
         temperature: options.temperature || 0.1,
-        maxTokens: options.maxTokens || 8192
+        maxTokens: options.maxTokens || 1000
       });
       if (cascadeResult && cascadeResult.success && !cascadeResult.isFallback && cascadeResult.text) {
         return cascadeResult.text;
@@ -495,17 +495,15 @@ Return ONLY a valid JSON object matching this schema:
 
 Output ONLY the JSON object.`;
 
-    // 1. Try Gemini with multimodal support (2.5-flash & 2.5-pro)
-    if (geminiKey) {
+    // 1. Multimodal Path: If an image was attached, use Gemini Vision with tight timeout
+    if (attachmentPart && geminiKey) {
       const visionModels = ["gemini-2.5-flash", "gemini-2.5-pro"];
       for (const vm of visionModels) {
         try {
-          const parts = [];
-          if (attachmentPart) parts.push(attachmentPart);
-          parts.push({ text: consultPrompt });
+          const parts = [attachmentPart, { text: consultPrompt }];
 
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 25000);
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
 
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${vm}:generateContent?key=${geminiKey}`, {
             method: "POST",
@@ -533,11 +531,8 @@ Output ONLY the JSON object.`;
           }
         } catch (err) {}
       }
-    }
 
-    // 2. Multimodal Fallback Protection
-    // If an image was provided and Gemini endpoints blipped, NEVER pass image-less prompt to text-only model!
-    if (attachmentPart) {
+      // If an image was provided and Gemini endpoints blipped, NEVER pass image-less prompt to text-only model!
       return {
         success: true,
         consultation: {
@@ -555,9 +550,9 @@ Output ONLY the JSON object.`;
       };
     }
 
-    // 3. Multi-Provider Cascade for text consultation
+    // 2. High-Speed Sovereign Cascade for text consultation (Sub-second Groq/Cerebras execution)
     try {
-      const text = await this.callLLM(consultPrompt);
+      const text = await this.callLLM(consultPrompt, { maxTokens: 800 });
       if (text) {
         const parsed = this.parseLlmJson(text);
         if (parsed) {

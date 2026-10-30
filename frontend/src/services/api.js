@@ -60,6 +60,8 @@ export async function askRag(question, threadId = null, history = [], founderApp
   if (!promptText) return { success: false, answer: "" };
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
     const res = await fetch(`${API_BASE}/api/mother/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -68,8 +70,10 @@ export async function askRag(question, threadId = null, history = [], founderApp
         threadId,
         history,
         founderApproved: founderApproved === true
-      })
+      }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
 
     if (!res.ok) throw new Error("Chat request failed");
 

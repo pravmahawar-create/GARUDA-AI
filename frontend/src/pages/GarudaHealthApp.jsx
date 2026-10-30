@@ -5654,7 +5654,11 @@ export default function GarudaHealthApp() {
             )}
 
             {/* Chat Input Bar (Cleanly Floating Above Bottom Nav with Mic) */}
-            <div
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (inputText.trim()) handleSendMessage();
+              }}
               style={{
                 flexShrink: 0,
                 display: "flex",
@@ -5672,7 +5676,12 @@ export default function GarudaHealthApp() {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    if (inputText.trim()) handleSendMessage();
+                  }
+                }}
                 placeholder={t.chat.placeholder}
                 style={{
                   flex: 1,
@@ -5713,7 +5722,11 @@ export default function GarudaHealthApp() {
 
               {/* Send Button */}
               <button
-                onClick={() => handleSendMessage()}
+                type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (inputText.trim()) handleSendMessage();
+                }}
                 style={{
                   background: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
                   color: "#FFFFFF",
@@ -5727,7 +5740,7 @@ export default function GarudaHealthApp() {
               >
                 {t.labels.ask}
               </button>
-            </div>
+            </form>
           </div>
         )}
       </main>

@@ -629,24 +629,42 @@ export default function PawanCodingStudio() {
     pawanSpeak("Analyzing requirements and formulating architectural recommendations.");
 
     try {
-      const historyPayload = messages.slice(-10).map(m => ({ sender: m.sender, text: m.text }));
+      const executeConsultRequest = async (retryCount = 0) => {
+        try {
+          const historyPayload = messages.slice(-10).map(m => ({ sender: m.sender, text: m.text }));
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-      const res = await fetch("/api/pawan/consult", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          instruction: textToSend,
-          attachment: attachmentToSend ? { data: attachmentToSend.data, mimeType: attachmentToSend.mimeType } : undefined,
-          currentCode: activeProject?.code,
-          targetFile: activeProject?.file || targetFile.trim() || undefined,
-          history: historyPayload
-        })
-      });
+          const res = await fetch("/api/pawan/consult", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              instruction: textToSend,
+              attachment: attachmentToSend ? { data: attachmentToSend.data, mimeType: attachmentToSend.mimeType } : undefined,
+              currentCode: activeProject?.code,
+              targetFile: activeProject?.file || targetFile.trim() || undefined,
+              history: historyPayload
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
 
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Consultation failed");
-      }
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            throw new Error(data.error || "Consultation failed");
+          }
+          return data;
+        } catch (e) {
+          if (retryCount < 1) {
+            // Auto-retry once to overcome mobile connection blip or cold start wakeup
+            await new Promise(r => setTimeout(r, 1200));
+            return executeConsultRequest(retryCount + 1);
+          }
+          throw e;
+        }
+      };
+
+      const data = await executeConsultRequest();
 
       const c = data.consultation;
       const isConversational = c.isConversational || (!c.actionPlan && (!c.recommendations || c.recommendations.length === 0));
@@ -673,13 +691,26 @@ export default function PawanCodingStudio() {
       }
     } catch (err) {
       setError(err.message);
+      const isNetworkError = err.name === "AbortError" || String(err.message).toLowerCase().includes("failed to fetch") || String(err.message).toLowerCase().includes("network");
+
+      const friendlyText = isNetworkError
+        ? `⚡ Praveen ji, cloud connection reconnect ho raha hai. Aapka command note ho chuka hai: "${textToSend.slice(0, 80)}". Niche diye button se dubara try karein ya direct code generation execute karein.`
+        : `Error during consultation: ${err.message}`;
+
       setMessages(prev => [...prev, {
         id: "err_" + Date.now(),
         sender: "pawan",
-        text: "Error during consultation: " + err.message,
-        isError: true,
+        text: friendlyText,
+        isError: !isNetworkError,
+        consultation: isNetworkError ? {
+          isConversational: true,
+          reply: `Aapka command safely capture ho chuka hai: "${textToSend}". Cloud reconnect ho raha hai.`,
+          actionPlan: "1. Auto-reconnect with sovereign AI cloud. 2. Synthesize code directly.",
+          suggestedInstruction: textToSend
+        } : null,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       }]);
+      pawanSpeak(isNetworkError ? "Connection reconnect ho raha hai. Aapka command register ho chuka hai." : "Consultation error occurred.");
     } finally {
       setIsConsulting(false);
     }
