@@ -240,11 +240,19 @@ export default function PawanCodingStudio() {
         return;
       }
 
-      // 2. Check if founder token is saved in localStorage
+      // 2. Validate saved founder token on backend if present
       const savedToken = localStorage.getItem("garuda_founder_token");
-      if (savedToken && (savedToken === "praveen_garuda_core" || savedToken === "founder_sovereign_auth")) {
-        setIsFounder(true);
-        return;
+      if (savedToken) {
+        try {
+          const verifyRes = await fetch(`/api/pawan/verify-founder-token?token=${encodeURIComponent(savedToken)}`);
+          const verifyData = await verifyRes.json();
+          if (verifyData.authorized === true) {
+            setIsFounder(true);
+            return;
+          } else {
+            localStorage.removeItem("garuda_founder_token");
+          }
+        } catch {}
       }
 
       // 3. Server session verification
@@ -260,18 +268,33 @@ export default function PawanCodingStudio() {
     }
   };
 
-  const handleVerifyFounderPasskey = (e) => {
+  const handleVerifyFounderPasskey = async (e) => {
     e?.preventDefault();
     setPasskeyError("");
     const clean = founderPasskeyInput.trim();
-    if (clean === "praveen_garuda_core" || clean === "founder9098" || clean === "garuda2026") {
-      localStorage.setItem("garuda_founder_token", "praveen_garuda_core");
-      setIsFounder(true);
-      setShowFounderPasskeyModal(false);
-      setFounderPasskeyInput("");
-      pawanSpeak("Founder Praveen authenticated. Internal sovereign controls active.");
-    } else {
-      setPasskeyError("Galat Passkey! Founder access restricted.");
+    if (!clean) return;
+
+    try {
+      const res = await fetch("/api/pawan/verify-founder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passkey: clean })
+      });
+      const data = await res.json();
+
+      if (res.ok && data.authorized === true) {
+        if (data.token) {
+          localStorage.setItem("garuda_founder_token", data.token);
+        }
+        setIsFounder(true);
+        setShowFounderPasskeyModal(false);
+        setFounderPasskeyInput("");
+        pawanSpeak(data.message || "Founder Praveen authenticated. Internal sovereign controls active.");
+      } else {
+        setPasskeyError(data.error || "Galat Passkey! Founder access restricted.");
+      }
+    } catch (err) {
+      setPasskeyError("Verification error: " + err.message);
     }
   };
 
@@ -2065,11 +2088,18 @@ export default function PawanCodingStudio() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   {result.trajectory?.map((t, idx) => (
                     <div key={idx} style={{ background: "#110f0b", padding: "8px 12px", borderRadius: "6px", border: "1px solid #24201a", fontSize: "0.8rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ color: "#d4af37", fontWeight: "800" }}>
-                        Step {idx + 1}: {t.step}
-                      </span>
-                      <span style={{ color: "#e7e5e4" }}>
-                        {t.summary || t.instruction || t.file || "Completed"}
+                      <div>
+                        <span style={{ color: "#d4af37", fontWeight: "800", marginRight: "8px" }}>
+                          Step {idx + 1}: {t.step}
+                        </span>
+                        {t.timestamp && (
+                          <span style={{ color: "#64748b", fontSize: "0.72rem" }}>
+                            [{new Date(t.timestamp).toLocaleTimeString()}]
+                          </span>
+                        )}
+                      </div>
+                      <span style={{ color: "#e7e5e4", textAlign: "right", fontSize: "0.78rem" }}>
+                        {t.provider ? `${t.provider} (${t.model || 'model'})` : (t.summary || t.instruction || t.file || (t.durationMs ? `${t.durationMs}ms` : "Completed"))}
                       </span>
                     </div>
                   ))}

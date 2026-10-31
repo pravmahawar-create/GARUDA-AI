@@ -198,11 +198,21 @@ class SovereignAiCascadeService {
             const text = parts.map(p => p.text || "").join("").trim();
             if (text && text.trim()) {
               const providerName = `gemini:${model}[k${kIdx + 1}]`;
+              const usage = data.usageMetadata;
+              const tokens = usage ? {
+                promptTokens: typeof usage.promptTokenCount === "number" ? usage.promptTokenCount : "UNKNOWN",
+                completionTokens: typeof usage.candidatesTokenCount === "number" ? usage.candidatesTokenCount : "UNKNOWN",
+                totalTokens: typeof usage.totalTokenCount === "number" ? usage.totalTokenCount : "UNKNOWN"
+              } : "UNKNOWN";
+
               this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
               return {
                 success: true,
                 text: text.trim(),
-                provider: providerName,
+                provider: "google-gemini",
+                providerKeyId: providerName,
+                model,
+                tokens,
                 latencyMs: Date.now() - startTime,
                 cascadeAttempts
               };
@@ -269,11 +279,21 @@ class SovereignAiCascadeService {
             const text = choice?.message?.content;
             if (text && text.trim()) {
               const providerName = `groq:${model}[k${kIdx + 1}]`;
+              const usage = data.usage;
+              const tokens = usage ? {
+                promptTokens: typeof usage.prompt_tokens === "number" ? usage.prompt_tokens : "UNKNOWN",
+                completionTokens: typeof usage.completion_tokens === "number" ? usage.completion_tokens : "UNKNOWN",
+                totalTokens: typeof usage.total_tokens === "number" ? usage.total_tokens : "UNKNOWN"
+              } : "UNKNOWN";
+
               this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
               return {
                 success: true,
                 text: text.trim(),
-                provider: providerName,
+                provider: "groq",
+                providerKeyId: providerName,
+                model,
+                tokens,
                 latencyMs: Date.now() - startTime,
                 cascadeAttempts
               };
@@ -341,11 +361,21 @@ class SovereignAiCascadeService {
             const text = choice?.message?.content;
             if (text && text.trim()) {
               const providerName = `cerebras:${model}[k${kIdx + 1}]`;
+              const usage = data.usage;
+              const tokens = usage ? {
+                promptTokens: typeof usage.prompt_tokens === "number" ? usage.prompt_tokens : "UNKNOWN",
+                completionTokens: typeof usage.completion_tokens === "number" ? usage.completion_tokens : "UNKNOWN",
+                totalTokens: typeof usage.total_tokens === "number" ? usage.total_tokens : "UNKNOWN"
+              } : "UNKNOWN";
+
               this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
               return {
                 success: true,
                 text: text.trim(),
-                provider: providerName,
+                provider: "cerebras",
+                providerKeyId: providerName,
+                model,
+                tokens,
                 latencyMs: Date.now() - startTime,
                 cascadeAttempts
               };
@@ -416,11 +446,21 @@ class SovereignAiCascadeService {
             const text = choice?.message?.content;
             if (text && text.trim()) {
               const providerName = `nvidia:${model}[k${kIdx + 1}]`;
+              const usage = data.usage;
+              const tokens = usage ? {
+                promptTokens: typeof usage.prompt_tokens === "number" ? usage.prompt_tokens : "UNKNOWN",
+                completionTokens: typeof usage.completion_tokens === "number" ? usage.completion_tokens : "UNKNOWN",
+                totalTokens: typeof usage.total_tokens === "number" ? usage.total_tokens : "UNKNOWN"
+              } : "UNKNOWN";
+
               this.stats.providerSuccesses[providerName] = (this.stats.providerSuccesses[providerName] || 0) + 1;
               return {
                 success: true,
                 text: text.trim(),
-                provider: providerName,
+                provider: "nvidia",
+                providerKeyId: providerName,
+                model,
+                tokens,
                 latencyMs: Date.now() - startTime,
                 cascadeAttempts
               };

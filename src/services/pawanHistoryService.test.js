@@ -3,18 +3,27 @@ const fs = require("fs");
 const path = require("path");
 const { describe, it, before, after } = require("node:test");
 
+const TEST_FILE = path.join(__dirname, "..", "..", "data", "test-pawan-history.jsonl");
+process.env.PAWAN_HISTORY_DATA_FILE = TEST_FILE;
+process.env.PAWAN_HISTORY_COLLECTION = "test_pawan_interactions";
+
 const pawanHistoryService = require("./pawanHistoryService");
 
 describe("GARUDA Pawan History Service — Persistent Dual-Tier", () => {
-  const TEST_FILE = pawanHistoryService.DATA_FILE;
-
   before(async () => {
-    // Ensure clean state before tests
-    try { await pawanHistoryService.clearHistory(); } catch {}
+    // Ensure clean test file before tests
+    try {
+      if (fs.existsSync(TEST_FILE)) fs.unlinkSync(TEST_FILE);
+      await pawanHistoryService.clearHistory({ forceFounderConfirmation: true });
+    } catch {}
   });
 
   after(async () => {
-    try { await pawanHistoryService.clearHistory(); } catch {}
+    // Clean up test file after tests
+    try {
+      await pawanHistoryService.clearHistory({ forceFounderConfirmation: true });
+      if (fs.existsSync(TEST_FILE)) fs.unlinkSync(TEST_FILE);
+    } catch {}
   });
 
   it("should record and retrieve consultation interaction accurately", async () => {

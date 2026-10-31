@@ -16,6 +16,7 @@ const { spawn, execSync } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
+const isWin = process.platform === "win32";
 
 class TerminalToolEngine {
   constructor(options = {}) {
@@ -52,7 +53,18 @@ class TerminalToolEngine {
       "dir",
       "ls",
       "type",
-      "cat"
+      "cat",
+      "python",
+      "python3",
+      "py",
+      "powershell",
+      "pwsh",
+      "ffmpeg",
+      "gradle",
+      "gradlew",
+      "./gradlew",
+      ".\\gradlew",
+      "adb"
     ];
   }
 

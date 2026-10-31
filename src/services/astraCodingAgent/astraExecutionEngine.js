@@ -76,6 +76,9 @@ class AstraExecutionEngine {
       }
     }
     this.workspaces = new Map();
+    this.lastInferenceTelemetry = null;
+    const { featurePreservationEngine } = require("./featurePreservationEngine");
+    this.preservationEngine = options.preservationEngine || featurePreservationEngine;
     this._ensureAuditDir();
   }
 
@@ -284,9 +287,11 @@ class AstraExecutionEngine {
   }
 
   /**
-   * High-speed Multi-Provider LLM Caller
+   * High-speed Multi-Provider LLM Caller with End-to-End Observability
    */
   async callLLM(prompt, options = {}) {
+    const startTime = Date.now();
+
     // 0. Primary Sovereign AI Multi-Provider Cascade (Vault Sync + Gemini Primary Failover)
     try {
       const cascade = require("../sovereignAiCascadeService");
@@ -297,6 +302,14 @@ class AstraExecutionEngine {
         maxTokens: options.maxTokens || 4096
       });
       if (cascadeResult && cascadeResult.success && !cascadeResult.isFallback && cascadeResult.text) {
+        this.lastInferenceTelemetry = {
+          provider: cascadeResult.provider || "google-gemini",
+          model: cascadeResult.model || "gemini-2.5-flash",
+          tokens: cascadeResult.tokens || "UNKNOWN",
+          latencyMs: cascadeResult.latencyMs || (Date.now() - startTime),
+          cascadeAttempts: cascadeResult.cascadeAttempts || [],
+          timestamp: new Date().toISOString()
+        };
         return cascadeResult.text;
       }
     } catch (err) {
@@ -340,7 +353,21 @@ class AstraExecutionEngine {
             }
             const parts = candidate?.content?.parts || [];
             const text = parts.map(p => p.text || "").join("").trim();
-            if (text) return text;
+            if (text) {
+              const usage = data.usageMetadata;
+              this.lastInferenceTelemetry = {
+                provider: "google-gemini",
+                model: gm,
+                tokens: usage ? {
+                  promptTokens: typeof usage.promptTokenCount === "number" ? usage.promptTokenCount : "UNKNOWN",
+                  completionTokens: typeof usage.candidatesTokenCount === "number" ? usage.candidatesTokenCount : "UNKNOWN",
+                  totalTokens: typeof usage.totalTokenCount === "number" ? usage.totalTokenCount : "UNKNOWN"
+                } : "UNKNOWN",
+                latencyMs: Date.now() - startTime,
+                timestamp: new Date().toISOString()
+              };
+              return text;
+            }
           }
         } catch (err) {}
       }
@@ -380,7 +407,21 @@ class AstraExecutionEngine {
             const choice = data.choices?.[0];
             if (choice?.finish_reason === "length") continue; // Truncated
             const text = choice?.message?.content;
-            if (text) return text;
+            if (text) {
+              const usage = data.usage;
+              this.lastInferenceTelemetry = {
+                provider: "groq",
+                model: m,
+                tokens: usage ? {
+                  promptTokens: typeof usage.prompt_tokens === "number" ? usage.prompt_tokens : "UNKNOWN",
+                  completionTokens: typeof usage.completion_tokens === "number" ? usage.completion_tokens : "UNKNOWN",
+                  totalTokens: typeof usage.total_tokens === "number" ? usage.total_tokens : "UNKNOWN"
+                } : "UNKNOWN",
+                latencyMs: Date.now() - startTime,
+                timestamp: new Date().toISOString()
+              };
+              return text;
+            }
           }
         } catch (err) {}
       }
@@ -416,20 +457,68 @@ class AstraExecutionEngine {
         if (res.ok) {
           const data = await res.json();
           const text = data.choices?.[0]?.message?.content;
-          if (text) return text;
+          if (text) {
+            const usage = data.usage;
+            this.lastInferenceTelemetry = {
+              provider: "nvidia",
+              model: "meta/llama-3.1-70b-instruct",
+              tokens: usage ? {
+                promptTokens: typeof usage.prompt_tokens === "number" ? usage.prompt_tokens : "UNKNOWN",
+                completionTokens: typeof usage.completion_tokens === "number" ? usage.completion_tokens : "UNKNOWN",
+                totalTokens: typeof usage.total_tokens === "number" ? usage.total_tokens : "UNKNOWN"
+              } : "UNKNOWN",
+              latencyMs: Date.now() - startTime,
+              timestamp: new Date().toISOString()
+            };
+            return text;
+          }
         }
       } catch (err) {}
     }
 
+    this.lastInferenceTelemetry = {
+      provider: "NONE",
+      model: "NONE",
+      tokens: "UNKNOWN",
+      latencyMs: Date.now() - startTime,
+      error: "ALL_PROVIDERS_EXHAUSTED",
+      timestamp: new Date().toISOString()
+    };
     return null;
   }
 
   /**
    * Consultative Brain: Analyze requirements, paper sketches, or PDFs and propose recommendations
    */
-  async consultOnTask({ instruction, attachment, currentCode, targetFile, history }) {
+  async consultOnTask({ instruction, attachment, currentCode, targetFile, history, sessionId, projectId }) {
     const geminiKey = process.env.GEMINI_API_KEY;
     const groqKey = process.env.GROQ_API_KEY;
+    const currentSessionId = sessionId || "default_session";
+    const currentProjectId = projectId || "global";
+
+    // 1. Persistent Memory & Directive Retrieval
+    let persistentMemoryContext = "";
+    try {
+      const { pawanMemoryService } = require("../pawanMemoryService");
+      const mem = pawanMemoryService.retrieveContext({
+        query: instruction || "Hello",
+        projectId: currentProjectId,
+        limit: 3
+      });
+      if (mem && mem.contextText) {
+        persistentMemoryContext = mem.contextText;
+      }
+
+      // Record User Turn into Persistent Conversation Memory
+      if (instruction) {
+        pawanMemoryService.storeConversationTurn({
+          sessionId: currentSessionId,
+          role: "user",
+          text: instruction,
+          projectId: currentProjectId
+        });
+      }
+    } catch {}
 
     let attachmentPart = null;
     if (attachment && attachment.data && attachment.mimeType) {
@@ -465,6 +554,7 @@ class AstraExecutionEngine {
     }
 
     const consultPrompt = `You are GARUDA PAWAN, an elite sovereign AI Software Architect & Senior Technology Partner created by Praveen Mahawar.
+${persistentMemoryContext}
 ${conversationMemoryContext}
 Current User Query / Task: "${instruction || "Hello"}"
 ${codeSnippet}
@@ -565,26 +655,47 @@ Output ONLY the JSON object.`;
       if (text) {
         const parsed = this.parseLlmJson(text);
         if (parsed) {
+          try {
+            const { pawanMemoryService } = require("../pawanMemoryService");
+            pawanMemoryService.storeConversationTurn({
+              sessionId: currentSessionId,
+              role: "pawan",
+              text: parsed.reply || parsed.observation || "Consultation delivered",
+              projectId: currentProjectId
+            });
+          } catch {}
           return { success: true, consultation: parsed };
         }
       }
     } catch (err) {}
 
     // 4. Autonomous Sovereign Fallback (Prevents 500 error / broken UI on LLM latency/quota blips)
+    const fallbackConsultation = {
+      thought: "Conversational fallback active — upstream LLM latency mitigated",
+      isConversational: true,
+      reply: `Ji, mai aapki baat samajh gaya hoon ("${(instruction || 'Namaste').slice(0, 100)}"). Batayein, kya screen ya naya component synthesize karna hai? Mai turant code build kar dunga.`,
+      observation: (instruction || "Conversational requirement registered").slice(0, 200),
+      recommendations: ["Direct App Synthesis", "Component Refactor"],
+      risksAndLoopholes: [],
+      actionPlan: "Ready to synthesize production code upon confirmation",
+      suggestedInstruction: instruction || "Build application",
+      targetFile: targetFile || "public/app.html",
+      isExistingRefactor: !!currentCode
+    };
+
+    try {
+      const { pawanMemoryService } = require("../pawanMemoryService");
+      pawanMemoryService.storeConversationTurn({
+        sessionId: currentSessionId,
+        role: "pawan",
+        text: fallbackConsultation.reply,
+        projectId: currentProjectId
+      });
+    } catch {}
+
     return {
       success: true,
-      consultation: {
-        thought: "Conversational fallback active — upstream LLM latency mitigated",
-        isConversational: true,
-        reply: `Ji, mai aapki baat samajh gaya hoon ("${(instruction || 'Namaste').slice(0, 100)}"). Batayein, kya screen ya naya component synthesize karna hai? Mai turant code build kar dunga.`,
-        observation: (instruction || "Conversational requirement registered").slice(0, 200),
-        recommendations: ["Direct App Synthesis", "Component Refactor"],
-        risksAndLoopholes: [],
-        actionPlan: "Ready to synthesize production code upon confirmation",
-        suggestedInstruction: instruction || "Build application",
-        targetFile: targetFile || "public/app.html",
-        isExistingRefactor: !!currentCode
-      }
+      consultation: fallbackConsultation
     };
   }
 
@@ -823,19 +934,56 @@ Output ONLY the JSON object.`;
   }
 
   /**
-   * Autonomous ReAct Coding Loop (Execute -> Validate -> Self-Heal)
+   * Autonomous ReAct Coding Loop with End-to-End Observability & Persistent Memory Integration
    */
   async executeTask(instruction, context = {}) {
-    const taskId = `ASTRA-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+    const startedAt = new Date().toISOString();
+    const startTimeMs = Date.now();
+    const taskId = context.taskId || `ASTRA-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+    const requestId = context.requestId || `REQ-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+    const executionId = context.executionId || `EXEC-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+    const projectId = context.projectId || "pawan-default";
     const trajectory = [];
 
+    // 1. Lifecycle Step: TASK_CREATED
     trajectory.push({
-      step: "INSPECTION",
-      timestamp: new Date().toISOString(),
-      instruction
+      step: "TASK_CREATED",
+      timestamp: startedAt,
+      taskId,
+      requestId,
+      executionId,
+      instruction,
+      targetFile: context.targetFile || null
     });
 
-    // 1. Check target file or search codebase
+    // 2. Lifecycle Step: TASK_STARTED
+    trajectory.push({
+      step: "TASK_STARTED",
+      timestamp: new Date().toISOString(),
+      taskId,
+      executionId
+    });
+
+    // Emit Task Started to Event Nervous System
+    try {
+      const { garudaEventService } = require("../garudaEventService");
+      const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("../garudaEventTypes");
+      garudaEventService.emitEvent({
+        eventType: GARUDA_EVENT_TYPES.PAWAN_TASK_STARTED,
+        entityType: GARUDA_ENTITY_TYPES.PAWAN_TASK,
+        entityId: taskId,
+        projectId,
+        metadata: {
+          taskId,
+          requestId,
+          executionId,
+          instruction: (instruction || "").slice(0, 200),
+          targetFile: context.targetFile || null
+        }
+      });
+    } catch {}
+
+    // Check target file or search codebase
     let targetFile = context.targetFile;
     if (!targetFile && context.searchQuery) {
       const found = this.reconnaissance(context.searchQuery, 3);
@@ -857,7 +1005,41 @@ Existing code is provided above. You MUST preserve all existing working features
       }
     }
 
-    // 1.5. Pre-execution Intelligence Retrieval (Phase 5.4-A & B)
+    // 3. Pre-execution Memory & Continuous Learning Retrieval
+    let memoryPromptAddendum = "";
+    try {
+      const { pawanMemoryService } = require("../pawanMemoryService");
+      const { pawanLearningEngine } = require("../pawanLearningEngine");
+
+      const memResult = pawanMemoryService.retrieveContext({
+        query: instruction,
+        projectId,
+        limit: 4
+      });
+      if (memResult && memResult.contextText) {
+        memoryPromptAddendum += memResult.contextText;
+        trajectory.push({
+          step: "MEMORY_RETRIEVED",
+          timestamp: new Date().toISOString(),
+          memoryCount: memResult.items.length
+        });
+      }
+
+      const applicableLessons = pawanLearningEngine.getApplicableLessons(instruction, targetFile, projectId);
+      if (applicableLessons && applicableLessons.length > 0) {
+        const lessonLines = applicableLessons
+          .map(l => `• Avoid Anti-Pattern: ${l.antiPattern} | Recommended: ${l.solutionSummary}`)
+          .join("\n");
+        memoryPromptAddendum += `\nAPPLICABLE ARCHITECTURAL LESSONS FROM PREVIOUS EXECUTIONS:\n${lessonLines}\n`;
+        trajectory.push({
+          step: "LESSONS_APPLIED",
+          timestamp: new Date().toISOString(),
+          lessonsCount: applicableLessons.length
+        });
+      }
+    } catch {}
+
+    // Legacy Intelligence Retrieval (Phase 5.4-A & B)
     let activeRules = [];
     try {
       if (this.intelligence && this.intelligence.retrieve) {
@@ -871,15 +1053,14 @@ Existing code is provided above. You MUST preserve all existing working features
           });
         }
       }
-    } catch (intelErr) {
-      // Non-blocking
-    }
+    } catch {}
 
-    // 2. Call LLM to formulate plan and code
+    // 4. Formulate Prompt & Lifecycle Step: AI_INFERENCE_STARTED
     const prompt = `Task: ${instruction}
 Target File: ${targetFile || "public/app.html"}
 ${modeDirective}
 ${fileContext}
+${memoryPromptAddendum}
 You are an expert autonomous software engineer.
 CRITICAL PREVIEW & RUNTIME LAWS:
 1. If target file is an HTML file or web app, the code MUST be 100% self-contained, complete, and immediately runnable in an iframe preview.
@@ -895,6 +1076,12 @@ You must return a JSON object formatted strictly as:
 }
 Output ONLY the JSON object.`;
 
+    trajectory.push({
+      step: "AI_INFERENCE_STARTED",
+      timestamp: new Date().toISOString(),
+      promptLength: prompt.length
+    });
+
     let parsedPlan = null;
     let llmResponse = null;
 
@@ -905,6 +1092,13 @@ Output ONLY the JSON object.`;
         targetFile,
         newContent: context.code,
         summary: context.summary || "Direct patch application"
+      };
+      this.lastInferenceTelemetry = {
+        provider: "direct_injection",
+        model: "direct",
+        tokens: "UNKNOWN",
+        latencyMs: 0,
+        timestamp: new Date().toISOString()
       };
     } else {
       // Multimodal image-guided execution if attachment is present
@@ -928,8 +1122,22 @@ Output ONLY the JSON object.`;
           if (res.ok) {
             const d = await res.json();
             llmResponse = d.candidates?.[0]?.content?.parts?.[0]?.text || null;
+            const usage = d.usageMetadata;
+            this.lastInferenceTelemetry = {
+              provider: "google-gemini",
+              model: "gemini-2.5-flash",
+              tokens: usage ? {
+                promptTokens: typeof usage.promptTokenCount === "number" ? usage.promptTokenCount : "UNKNOWN",
+                completionTokens: typeof usage.candidatesTokenCount === "number" ? usage.candidatesTokenCount : "UNKNOWN",
+                totalTokens: typeof usage.totalTokenCount === "number" ? usage.totalTokenCount : "UNKNOWN"
+              } : "UNKNOWN",
+              latencyMs: Date.now() - startTimeMs,
+              timestamp: new Date().toISOString()
+            };
           }
-        } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
+        } catch (err) {
+          console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0, 80));
+        }
       }
 
       if (!llmResponse) {
@@ -939,11 +1147,71 @@ Output ONLY the JSON object.`;
       parsedPlan = this.parseLlmJson(llmResponse);
     }
 
+    // 5. Lifecycle Step: AI_INFERENCE_COMPLETED
+    trajectory.push({
+      step: "AI_INFERENCE_COMPLETED",
+      timestamp: new Date().toISOString(),
+      provider: this.lastInferenceTelemetry?.provider || "UNKNOWN",
+      model: this.lastInferenceTelemetry?.model || "UNKNOWN",
+      tokens: this.lastInferenceTelemetry?.tokens || "UNKNOWN",
+      latencyMs: this.lastInferenceTelemetry?.latencyMs || 0
+    });
+
     if (!parsedPlan || !parsedPlan.newContent) {
+      const completedAt = new Date().toISOString();
+      const durationMs = Date.now() - startTimeMs;
+      const errorMsg = "Could not synthesize executable code patch from LLM (Inference timeout or invalid format). Please retry.";
+
+      trajectory.push({
+        step: "TASK_FAILED",
+        timestamp: completedAt,
+        durationMs,
+        error: errorMsg
+      });
+
+      try {
+        const { garudaEventService } = require("../garudaEventService");
+        const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("../garudaEventTypes");
+        garudaEventService.emitEvent({
+          eventType: GARUDA_EVENT_TYPES.PAWAN_TASK_FAILED,
+          entityType: GARUDA_ENTITY_TYPES.PAWAN_TASK,
+          entityId: taskId,
+          projectId,
+          status: "FAILED",
+          metadata: {
+            taskId,
+            requestId,
+            executionId,
+            error: errorMsg,
+            durationMs,
+            provider: this.lastInferenceTelemetry?.provider || "UNKNOWN"
+          }
+        });
+      } catch {}
+
       const errResult = {
+        requestId,
         taskId,
+        executionId,
+        startedAt,
+        completedAt,
+        durationMs,
         success: false,
-        error: "Could not synthesize executable code patch from LLM (Inference timeout or invalid format). Please retry.",
+        error: errorMsg,
+        inference: this.lastInferenceTelemetry || { provider: "UNKNOWN", model: "UNKNOWN", tokens: "UNKNOWN", latencyMs: 0 },
+        telemetry: {
+          requestId,
+          taskId,
+          executionId,
+          startedAt,
+          completedAt,
+          durationMs,
+          provider: this.lastInferenceTelemetry?.provider || "UNKNOWN",
+          model: this.lastInferenceTelemetry?.model || "UNKNOWN",
+          latencyMs: this.lastInferenceTelemetry?.latencyMs || 0,
+          tokens: this.lastInferenceTelemetry?.tokens || "UNKNOWN",
+          status: "FAILED"
+        },
         trajectory
       };
       this._logAudit(errResult);
@@ -969,10 +1237,40 @@ Output ONLY the JSON object.`;
         allowMultiple: context.allowMultiple
       });
       if (!patchMeta.success) {
+        const completedAt = new Date().toISOString();
+        const durationMs = Date.now() - startTimeMs;
+        const errorMsg = `Surgical patch failed: ${patchMeta.error}`;
+
+        trajectory.push({
+          step: "TASK_FAILED",
+          timestamp: completedAt,
+          durationMs,
+          error: errorMsg
+        });
+
         const errResult = {
+          requestId,
           taskId,
+          executionId,
+          startedAt,
+          completedAt,
+          durationMs,
           success: false,
-          error: `Surgical patch failed: ${patchMeta.error}`,
+          error: errorMsg,
+          inference: this.lastInferenceTelemetry || { provider: "UNKNOWN", model: "UNKNOWN", tokens: "UNKNOWN", latencyMs: 0 },
+          telemetry: {
+            requestId,
+            taskId,
+            executionId,
+            startedAt,
+            completedAt,
+            durationMs,
+            provider: this.lastInferenceTelemetry?.provider || "UNKNOWN",
+            model: this.lastInferenceTelemetry?.model || "UNKNOWN",
+            latencyMs: this.lastInferenceTelemetry?.latencyMs || 0,
+            tokens: this.lastInferenceTelemetry?.tokens || "UNKNOWN",
+            status: "FAILED"
+          },
           trajectory
         };
         this._logAudit(errResult);
@@ -982,6 +1280,15 @@ Output ONLY the JSON object.`;
       patchMeta = this.applyPatch(appliedFile, parsedPlan.newContent);
     }
 
+    // 6. Lifecycle Step: CODE_GENERATED & PATCH_APPLIED
+    trajectory.push({
+      step: "CODE_GENERATED",
+      timestamp: new Date().toISOString(),
+      file: appliedFile,
+      codeLength: (parsedPlan.newContent || "").length,
+      summary: parsedPlan.summary
+    });
+
     trajectory.push({
       step: "PATCH_APPLIED",
       file: appliedFile,
@@ -990,29 +1297,84 @@ Output ONLY the JSON object.`;
       sha256: patchMeta.afterSha
     });
 
-    // 3. Autonomous Validation & Self-Healing Loop
+    // 7. Autonomous Validation & Self-Healing Loop: VALIDATION_STARTED
+    trajectory.push({
+      step: "VALIDATION_STARTED",
+      timestamp: new Date().toISOString(),
+      file: appliedFile
+    });
+
     let currentNewContent = parsedPlan.newContent;
     let validation = this.validateFile(appliedFile, currentNewContent);
+    let preservation = { passed: true, preservationRatio: 100, violations: [] };
+
+    // Programmatic Feature Preservation Check
+    if (preSnapshot.exists && preSnapshot.content) {
+      try {
+        preservation = this.preservationEngine.evaluatePreservation(
+          preSnapshot.content,
+          currentNewContent,
+          { fileType: path.extname(appliedFile), userIntent: instruction }
+        );
+        if (!preservation.passed) {
+          trajectory.push({
+            step: "PRESERVATION_VIOLATION_DETECTED",
+            timestamp: new Date().toISOString(),
+            violations: preservation.violations,
+            preservationRatio: preservation.preservationRatio
+          });
+        }
+      } catch {}
+    }
+
     let healCycle = 0;
 
-    while (!validation.valid && healCycle < this.maxHealCycles) {
+    while ((!validation.valid || !preservation.passed) && healCycle < this.maxHealCycles) {
       healCycle++;
+      const combinedIssues = [];
+      if (!validation.valid) combinedIssues.push(`Validation Error: ${validation.stderr || validation.error}`);
+      if (!preservation.passed) combinedIssues.push(`Feature Preservation Violation (Do NOT erase existing elements!): ${preservation.violations.join(" | ")}`);
+
       trajectory.push({
         step: "VALIDATION_FAILED",
         cycle: healCycle,
-        stderr: validation.stderr || validation.error
+        stderr: combinedIssues.join(" | ")
       });
+
+      trajectory.push({
+        step: "SELF_HEAL_STARTED",
+        timestamp: new Date().toISOString(),
+        cycle: healCycle,
+        stderr: combinedIssues.join(" | ")
+      });
+
+      // Emit Self-Heal Cycle Event
+      try {
+        const { garudaEventService } = require("../garudaEventService");
+        const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("../garudaEventTypes");
+        garudaEventService.emitEvent({
+          eventType: GARUDA_EVENT_TYPES.PAWAN_SELF_HEAL_CYCLE,
+          entityType: GARUDA_ENTITY_TYPES.PAWAN_TASK,
+          entityId: taskId,
+          projectId,
+          metadata: {
+            taskId,
+            cycle: healCycle,
+            stderr: String(combinedIssues.join(" | ")).slice(0, 300)
+          }
+        });
+      } catch {}
 
       // Self-heal prompt to LLM
       const healPrompt = `GARUDA Astra Self-Healing Engine (Cycle ${healCycle}/${this.maxHealCycles})
 File: ${appliedFile}
-Validation Error:
-${validation.stderr || validation.error}
+Validation & Preservation Issues:
+${combinedIssues.join("\n")}
 
-Fix the error completely.
+Fix the errors completely. You MUST PRESERVE all existing elements, functions, inputs, and structure while applying the alteration.
 Return JSON:
 {
-  "thought": "Why it failed and how to fix",
+  "thought": "Why it failed and how to fix while preserving existing features",
   "targetFile": "${appliedFile}",
   "newContent": "complete corrected code",
   "summary": "Fix applied"
@@ -1039,30 +1401,83 @@ Output ONLY the JSON object.`;
       }
 
       validation = this.validateFile(appliedFile, currentNewContent);
+      if (preSnapshot.exists && preSnapshot.content) {
+        try {
+          preservation = this.preservationEngine.evaluatePreservation(
+            preSnapshot.content,
+            currentNewContent,
+            { fileType: path.extname(appliedFile), userIntent: instruction }
+          );
+        } catch {}
+      }
+
+      trajectory.push({
+        step: "SELF_HEAL_COMPLETED",
+        timestamp: new Date().toISOString(),
+        cycle: healCycle,
+        success: validation.valid && preservation.passed
+      });
     }
 
     let rollbackExecuted = false;
-    // Automated Rollback if all healing cycles exhausted and file is still invalid
-    if (!validation.valid && preSnapshot.exists && preSnapshot.content !== null) {
+    // Automated Rollback if all healing cycles exhausted and file is still invalid or features deleted
+    if ((!validation.valid || !preservation.passed) && preSnapshot.exists && preSnapshot.content !== null) {
       fs.writeFileSync(fullAppliedPath, preSnapshot.content, "utf8");
       rollbackExecuted = true;
       trajectory.push({
         step: "AUTOMATED_ROLLBACK",
         file: appliedFile,
-        reason: `Validation failed after ${healCycle} self-healing cycles. Restored original state to prevent repository corruption.`,
+        reason: `Validation or preservation failed after ${healCycle} self-healing cycles. Restored original state to prevent repository corruption.`,
         restoredSha256: preSnapshot.sha256
       });
     }
 
-    const isSuccess = validation.valid;
+    const isSuccess = validation.valid && preservation.passed;
     let finalCode = parsedPlan.newContent;
     try {
       if (fs.existsSync(fullAppliedPath)) {
         finalCode = fs.readFileSync(fullAppliedPath, "utf8");
       }
-    } catch (err) { console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0,80)); }
+    } catch (err) {
+      console.warn("[auto-recovery] suppressed error in astraExecutionEngine.js:", String(err.message).slice(0, 80));
+    }
 
-    // 4. Reviewer System & Learning Promotion (Phase 5.4-A, B, D, E, F, G)
+    // 8. Lifecycle Step: VALIDATION_COMPLETED
+    trajectory.push({
+      step: "VALIDATION_COMPLETED",
+      timestamp: new Date().toISOString(),
+      valid: validation.valid,
+      sha256: validation.sha256 || patchMeta.afterSha
+    });
+
+    // 9. Lifecycle Step: ARTIFACT_CREATED
+    const finalSha256 = validation.sha256 || patchMeta.afterSha;
+    trajectory.push({
+      step: "ARTIFACT_CREATED",
+      timestamp: new Date().toISOString(),
+      file: appliedFile,
+      sha256: finalSha256,
+      bytesWritten: patchMeta.bytesWritten
+    });
+
+    try {
+      const { garudaEventService } = require("../garudaEventService");
+      const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("../garudaEventTypes");
+      garudaEventService.emitEvent({
+        eventType: GARUDA_EVENT_TYPES.PAWAN_ARTIFACT_GENERATED,
+        entityType: GARUDA_ENTITY_TYPES.PAWAN_ARTIFACT,
+        entityId: taskId,
+        projectId,
+        metadata: {
+          taskId,
+          file: appliedFile,
+          sha256: finalSha256,
+          bytesWritten: patchMeta.bytesWritten
+        }
+      });
+    } catch {}
+
+    // Reviewer System & Learning Promotion (Phase 5.4-A, B, D, E, F, G)
     let reviewerResult = null;
     let reviewVerdict = "ALL_APPROVED";
     if (isSuccess && this.intelligence && this.intelligence.runSelectiveReview) {
@@ -1105,22 +1520,129 @@ Output ONLY the JSON object.`;
           tags: ["astra", "coding", "verified-task"],
           relatedFiles: [appliedFile]
         });
-      } catch (promoErr) {
-        // Graceful suppression
-      }
+      } catch {}
     }
 
+    const completedAt = new Date().toISOString();
+    const durationMs = Date.now() - startTimeMs;
+
+    // 10. Lifecycle Step: TASK_COMPLETED / TASK_FAILED
+    trajectory.push({
+      step: isSuccess ? "TASK_COMPLETED" : "TASK_FAILED",
+      timestamp: completedAt,
+      durationMs,
+      success: isSuccess
+    });
+
+    // Emit Task Completed/Failed Event
+    try {
+      const { garudaEventService } = require("../garudaEventService");
+      const { GARUDA_EVENT_TYPES, GARUDA_ENTITY_TYPES } = require("../garudaEventTypes");
+      garudaEventService.emitEvent({
+        eventType: isSuccess ? GARUDA_EVENT_TYPES.PAWAN_TASK_COMPLETED : GARUDA_EVENT_TYPES.PAWAN_TASK_FAILED,
+        entityType: GARUDA_ENTITY_TYPES.PAWAN_TASK,
+        entityId: taskId,
+        projectId,
+        status: isSuccess ? "COMPLETED" : "FAILED",
+        metadata: {
+          taskId,
+          requestId,
+          executionId,
+          success: isSuccess,
+          file: appliedFile,
+          durationMs,
+          sha256: finalSha256,
+          provider: this.lastInferenceTelemetry?.provider || "UNKNOWN",
+          model: this.lastInferenceTelemetry?.model || "UNKNOWN",
+          tokens: this.lastInferenceTelemetry?.tokens || "UNKNOWN"
+        }
+      });
+    } catch {}
+
+    // Continuous Learning Engine: record outcome and synthesize reusable lesson
+    try {
+      const { pawanLearningEngine } = require("../pawanLearningEngine");
+      pawanLearningEngine.recordExecutionOutcome({
+        taskId,
+        requestId,
+        executionId,
+        projectId,
+        instruction,
+        file: appliedFile,
+        success: isSuccess,
+        healCyclesRun: healCycle,
+        durationMs,
+        validation,
+        code: finalCode,
+        sha256: finalSha256,
+        inference: this.lastInferenceTelemetry
+      });
+    } catch {}
+
+    // Episodic Memory Logging
+    try {
+      const { pawanMemoryService } = require("../pawanMemoryService");
+      pawanMemoryService.recordEpisode({
+        taskId,
+        executionId,
+        instruction,
+        problem: isSuccess ? null : (validation.error || validation.stderr),
+        solution: parsedPlan.summary,
+        result: isSuccess ? `Verified output in ${appliedFile}` : "Validation failed",
+        failed: !isSuccess,
+        learned: healCycle > 0 ? `Self-healed in ${healCycle} cycles` : "Clean execution",
+        projectId,
+        metadata: { durationMs, sha256: finalSha256 }
+      });
+    } catch {}
+
     const finalResult = {
+      requestId,
       taskId,
+      executionId,
       success: isSuccess,
+      startedAt,
+      completedAt,
+      durationMs,
       file: appliedFile,
       code: finalCode,
       thought: parsedPlan.thought,
-      sha256: validation.sha256 || patchMeta.afterSha,
+      sha256: finalSha256,
       healCyclesRun: healCycle,
       summary: parsedPlan.summary,
       bytesWritten: patchMeta.bytesWritten,
       validation,
+      inference: this.lastInferenceTelemetry || {
+        provider: "UNKNOWN",
+        model: "UNKNOWN",
+        tokens: "UNKNOWN",
+        latencyMs: 0
+      },
+      artifact: {
+        file: appliedFile,
+        sha256: finalSha256,
+        bytesWritten: patchMeta.bytesWritten,
+        exists: fs.existsSync(fullAppliedPath)
+      },
+      preview: {
+        type: appliedFile.endsWith(".html") ? "html" : "source",
+        available: fs.existsSync(fullAppliedPath)
+      },
+      telemetry: {
+        requestId,
+        taskId,
+        executionId,
+        startedAt,
+        completedAt,
+        durationMs,
+        provider: this.lastInferenceTelemetry?.provider || "UNKNOWN",
+        model: this.lastInferenceTelemetry?.model || "UNKNOWN",
+        latencyMs: this.lastInferenceTelemetry?.latencyMs || 0,
+        tokens: this.lastInferenceTelemetry?.tokens || "UNKNOWN",
+        healCycles: healCycle,
+        sha256: finalSha256,
+        status: isSuccess ? "COMPLETED" : "FAILED"
+      },
       reviewerResult: reviewerResult ? {
         verdict: reviewVerdict,
         reviewerCount: reviewerResult.reviewerCount || 0

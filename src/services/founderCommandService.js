@@ -1097,6 +1097,66 @@ class FounderCommandService {
       marketIntelligenceSection = { available: false, truthClassification: "UNKNOWN", error: err.message };
     }
 
+    // 14. PAWAN ASTRA AUTONOMOUS CODING, OBSERVABILITY & MEMORY SECTION
+    let pawanAstraSection;
+    try {
+      const { astraExecutionEngine } = require("./astraCodingAgent/astraExecutionEngine");
+      const { pawanMemoryService } = require("./pawanMemoryService");
+      const { pawanLearningEngine } = require("./pawanLearningEngine");
+
+      const recentAudit = astraExecutionEngine.getAuditHistory(50);
+      const memorySnapshot = pawanMemoryService.getMemorySnapshot();
+      const learningMetrics = pawanLearningEngine.getLearningMetrics();
+
+      const totalExecutions = recentAudit.length;
+      const successfulExecutions = recentAudit.filter(a => a.success).length;
+      const failedExecutions = recentAudit.filter(a => !a.success).length;
+      const selfHealedExecutions = recentAudit.filter(a => a.healCyclesRun > 0).length;
+
+      let totalTokensKnown = 0;
+      let totalTokensUnknownCount = 0;
+      const providersUsed = {};
+
+      for (const item of recentAudit) {
+        const inf = item.inference || item.telemetry || {};
+        const p = inf.provider || "UNKNOWN";
+        providersUsed[p] = (providersUsed[p] || 0) + 1;
+
+        const tok = inf.tokens;
+        if (tok && typeof tok.totalTokens === "number") {
+          totalTokensKnown += tok.totalTokens;
+        } else {
+          totalTokensUnknownCount++;
+        }
+      }
+
+      pawanAstraSection = {
+        available: true,
+        status: totalExecutions > 0 ? "ONLINE_ACTIVE" : "STANDBY",
+        totalExecutions,
+        successfulExecutions,
+        failedExecutions,
+        selfHealedExecutions,
+        successRate: totalExecutions > 0 ? Math.round((successfulExecutions / totalExecutions) * 100) : 100,
+        tokenMetrics: {
+          knownTokensTotal: totalTokensKnown,
+          unreportedTokensCount: totalTokensUnknownCount,
+          accountingMethod: "VERIFIED_TRUTH_UNKNOWN_IF_OMITTED"
+        },
+        providersUsed,
+        lastExecution: recentAudit[0] || null,
+        memory: memorySnapshot,
+        learning: learningMetrics,
+        truthClassification: "LIVE_PERSISTED"
+      };
+    } catch (err) {
+      pawanAstraSection = {
+        available: false,
+        truthClassification: "UNKNOWN",
+        error: err.message
+      };
+    }
+
     return {
       generatedAt,
       freshness: "REALTIME",
@@ -1115,7 +1175,8 @@ class FounderCommandService {
         performanceMarketing: performanceMarketingSection.available,
         clientOnboarding: clientOnboardingSection.available,
         learning: learningSection.available,
-        marketIntelligence: marketIntelligenceSection.available
+        marketIntelligence: marketIntelligenceSection.available,
+        pawanAstra: pawanAstraSection.available
       },
       partialErrors: partialErrors.length > 0 ? partialErrors : null,
       system: systemSection,
@@ -1131,7 +1192,8 @@ class FounderCommandService {
       performanceMarketing: performanceMarketingSection,
       clientOnboarding: clientOnboardingSection,
       learning: learningSection,
-      marketIntelligence: marketIntelligenceSection
+      marketIntelligence: marketIntelligenceSection,
+      pawanAstra: pawanAstraSection
     };
   }
 }

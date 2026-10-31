@@ -1144,6 +1144,64 @@ export default function HighCommandCenter({ onLogout }) {
                   </>
                 )}
 
+                {/* PAWAN ASTRA AUTONOMOUS CODING & PERSISTENT MEMORY */}
+                <div className="hcc-section-head">
+                  <h2 className="hcc-section-title">🦅 PAWAN ASTRA — Coding & Persistent Memory Engine</h2>
+                  <span className="hcc-section-badge">{snapshot.pawanAstra?.available ? "Observability Live" : "Standby"}</span>
+                </div>
+
+                {snapshot.pawanAstra?.available && (
+                  <div className="hcc-card-item" style={{ marginBottom: 16 }}>
+                    <div className="hcc-card-top">
+                      <h3 className="hcc-card-title">Live Execution Telemetry & Learning</h3>
+                      <span className="hcc-card-badge" style={{ background: "rgba(16,185,129,0.15)", color: "var(--hcc-emerald)" }}>
+                        {snapshot.pawanAstra.status}
+                      </span>
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 8, margin: "12px 0" }}>
+                      <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--hcc-text-muted)" }}>Total Executions</span>
+                        <div style={{ fontWeight: 600, color: "var(--hcc-cyan)" }}>{snapshot.pawanAstra.totalExecutions || 0}</div>
+                      </div>
+                      <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--hcc-text-muted)" }}>Success Rate</span>
+                        <div style={{ fontWeight: 600, color: "var(--hcc-emerald)" }}>{snapshot.pawanAstra.successRate || 100}%</div>
+                      </div>
+                      <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--hcc-text-muted)" }}>Self-Heal Cycles</span>
+                        <div style={{ fontWeight: 600, color: "var(--hcc-amber)" }}>{snapshot.pawanAstra.selfHealedExecutions || 0}</div>
+                      </div>
+                      <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--hcc-purple, #c084fc)" }}>Persistent Memories</span>
+                        <div style={{ fontWeight: 600, color: "var(--hcc-purple, #c084fc)" }}>{snapshot.pawanAstra.memory?.persistentMemoriesCount || 0}</div>
+                      </div>
+                      <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--hcc-text-muted)" }}>Learned Lessons</span>
+                        <div style={{ fontWeight: 600, color: "var(--hcc-gold-400, #fbbf24)" }}>{snapshot.pawanAstra.learning?.totalLessons || 0}</div>
+                      </div>
+                      <div style={{ background: "rgba(255,255,255,0.03)", padding: 8, borderRadius: 6 }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--hcc-text-muted)" }}>Known Tokens</span>
+                        <div style={{ fontWeight: 600, color: "var(--hcc-text-main)" }}>{snapshot.pawanAstra.tokenMetrics?.knownTokensTotal?.toLocaleString() || 0}</div>
+                      </div>
+                    </div>
+
+                    {snapshot.pawanAstra.lastExecution && (
+                      <div style={{ marginTop: 10, padding: "8px 10px", background: "rgba(0,0,0,0.25)", borderRadius: 6, fontSize: "0.78rem" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", color: "var(--hcc-text-muted)", marginBottom: 4 }}>
+                          <span>Last Task: <strong>{snapshot.pawanAstra.lastExecution.taskId}</strong></span>
+                          <span style={{ color: snapshot.pawanAstra.lastExecution.success ? "var(--hcc-emerald)" : "var(--hcc-rose)" }}>
+                            {snapshot.pawanAstra.lastExecution.success ? "COMPLETED" : "FAILED"}
+                          </span>
+                        </div>
+                        <div style={{ color: "var(--hcc-text-dim)" }}>
+                          File: <code>{snapshot.pawanAstra.lastExecution.file || "N/A"}</code> | Duration: {snapshot.pawanAstra.lastExecution.durationMs || 0}ms | SHA: {snapshot.pawanAstra.lastExecution.sha256 ? `${snapshot.pawanAstra.lastExecution.sha256.slice(0, 12)}...` : "N/A"}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* SUBSYSTEM AVAILABILITY */}
                 <div className="hcc-section-head">
                   <h2 className="hcc-section-title">Subsystem Isolation</h2>

@@ -15,7 +15,26 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/webhook/:path*", "destination": "https://garuda-ai-xfif.onrender.com/api/webhook/:path*" },
+    {
+      "source": "/api/pawan/:path*",
+      "destination": "https://garuda-ai-xfif.onrender.com/api/pawan/:path*"
+    },
+    {
+      "source": "/api/pawan",
+      "destination": "https://garuda-ai-xfif.onrender.com/api/pawan"
+    },
+    {
+      "source": "/api/astra/:path*",
+      "destination": "https://garuda-ai-xfif.onrender.com/api/astra/:path*"
+    },
+    {
+      "source": "/api/astra",
+      "destination": "https://garuda-ai-xfif.onrender.com/api/astra"
+    },
+    {
+      "source": "/api/webhook/:path*",
+      "destination": "https://garuda-ai-xfif.onrender.com/api/webhook/:path*"
+    },
     {
       "source": "/api/auth/:path*",
       "destination": "/api/auth?path=:path*"
@@ -120,7 +139,6 @@
       "source": "/api/:path*",
       "destination": "https://garuda-ai-xfif.onrender.com/api/:path*"
     },
-
     {
       "source": "/war-room",
       "destination": "/war-room/index.html"

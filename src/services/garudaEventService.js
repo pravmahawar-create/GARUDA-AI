@@ -75,6 +75,10 @@ class GarudaEventService extends EventEmitter {
   /**
    * Emits and persists a standardized immutable GARUDA lifecycle event.
    */
+  async emitEvent(eventData = {}) {
+    return this.emitGarudaEvent(eventData);
+  }
+
   async emitGarudaEvent(eventData = {}) {
     if (!eventData || typeof eventData !== "object") {
       throw new Error("Invalid event data: object required");
@@ -343,6 +347,8 @@ class GarudaEventService extends EventEmitter {
 const garudaEventService = new GarudaEventService();
 garudaEventService.GARUDA_EVENT_TYPES = GARUDA_EVENT_TYPES;
 garudaEventService.GARUDA_ENTITY_TYPES = GARUDA_ENTITY_TYPES;
+garudaEventService.garudaEventService = garudaEventService;
 
 module.exports = garudaEventService;
+module.exports.garudaEventService = garudaEventService;
 module.exports.GarudaEventService = GarudaEventService;

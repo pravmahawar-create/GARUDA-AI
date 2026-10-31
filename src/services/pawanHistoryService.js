@@ -8,13 +8,22 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
-const DATA_FILE = path.join(__dirname, "..", "..", "data", "pawan-history.jsonl");
+const DEFAULT_DATA_FILE = path.join(__dirname, "..", "..", "data", "pawan-history.jsonl");
+
+function getDataFile() {
+  return process.env.PAWAN_HISTORY_DATA_FILE || DEFAULT_DATA_FILE;
+}
+
+function getCollectionName() {
+  return process.env.PAWAN_HISTORY_COLLECTION || "pawan_interactions";
+}
 
 function ensureDataFile() {
   try {
-    const dir = path.dirname(DATA_FILE);
+    const filePath = getDataFile();
+    const dir = path.dirname(filePath);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, "", "utf8");
+    if (!fs.existsSync(filePath)) fs.writeFileSync(filePath, "", "utf8");
   } catch {}
 }
 
@@ -38,7 +47,8 @@ function getCollection() {
   try {
     const mongoose = require("mongoose");
     if (!isMongoReady()) return null;
-    const col = mongoose.connection.collection("pawan_interactions");
+    const colName = getCollectionName();
+    const col = mongoose.connection.collection(colName);
     return col;
   } catch {
     return null;
@@ -73,8 +83,8 @@ async function recordInteraction(data = {}) {
   // Tier 2: Always append to jsonl (atomic append)
   try {
     ensureDataFile();
-    // Atomic append: write to tmp then append is not needed for single line, but use sync append + fsync
-    fs.appendFileSync(DATA_FILE, JSON.stringify(doc) + "\n", "utf8");
+    const filePath = getDataFile();
+    fs.appendFileSync(filePath, JSON.stringify(doc) + "\n", "utf8");
   } catch (e) {
     console.warn("[pawanHistory] file append failed:", e.message);
   }
@@ -99,8 +109,9 @@ async function getRecentHistory(limit = 50) {
   // Fallback: read jsonl
   try {
     ensureDataFile();
-    if (!fs.existsSync(DATA_FILE)) return [];
-    const lines = fs.readFileSync(DATA_FILE, "utf8").split("\n").filter(Boolean);
+    const filePath = getDataFile();
+    if (!fs.existsSync(filePath)) return [];
+    const lines = fs.readFileSync(filePath, "utf8").split("\n").filter(Boolean);
     const all = [];
     for (const line of lines) {
       try { all.push(JSON.parse(line)); } catch {}
@@ -112,17 +123,37 @@ async function getRecentHistory(limit = 50) {
   }
 }
 
-async function clearHistory() {
-  // Clear both tiers (Founder-only caller must gate)
+async function clearHistory(options = {}) {
+  const targetFile = getDataFile();
+  const isDefaultFile = targetFile === DEFAULT_DATA_FILE;
+
+  // Anti-Wiping Safety Guard: Never clear production history unless explicit force option is provided
+  if (isDefaultFile && !options.forceFounderConfirmation && process.env.NODE_ENV === "production") {
+    console.warn("[pawanHistory] Refusing to clear production history without forceFounderConfirmation flag.");
+    return { cleared: false, reason: "PRODUCTION_GUARD_ACTIVE" };
+  }
+
+  // Clear both tiers
   try {
     const col = getCollection();
     if (col) await col.deleteMany({});
   } catch {}
   try {
     ensureDataFile();
-    fs.writeFileSync(DATA_FILE, "", "utf8");
+    fs.writeFileSync(targetFile, "", "utf8");
   } catch {}
   return { cleared: true };
 }
 
-module.exports = { recordInteraction, getRecentHistory, clearHistory, detectDevice, DATA_FILE };
+module.exports = {
+  recordInteraction,
+  getRecentHistory,
+  clearHistory,
+  detectDevice,
+  getDataFile,
+  getCollectionName,
+  DEFAULT_DATA_FILE,
+  get DATA_FILE() {
+    return getDataFile();
+  }
+};

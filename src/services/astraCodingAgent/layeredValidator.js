@@ -145,7 +145,25 @@ class LayeredValidator {
       }
     }
 
-    // 3. Validate inline <style> tags (brace balance check)
+    // 3. Extract and Validate all inline event handlers (e.g. onclick="...", onsubmit="...")
+    const inlineEventRegex = /\b(on(?:click|submit|change|input|keydown|keyup|keypress|load|error|mouseenter|mouseleave|focus|blur))\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
+    let eventMatch;
+    let eventIndex = 0;
+    while ((eventMatch = inlineEventRegex.exec(htmlContent)) !== null) {
+      eventIndex++;
+      const eventName = eventMatch[1];
+      const eventCode = eventMatch[2] !== undefined ? eventMatch[2] : eventMatch[3];
+      // Skip empty or trivial handlers
+      if (!eventCode || !eventCode.trim() || eventCode.trim() === "void(0)") continue;
+
+      const wrappedCode = `function __inline_event_${eventName}_${eventIndex}__() { ${eventCode}\n}`;
+      const eventVal = this.validateJavaScript(wrappedCode, `${filename}#${eventName}-${eventIndex}.js`);
+      if (!eventVal.valid) {
+        errors.push(`Inline Event '${eventName}' [Handler #${eventIndex}]: ${eventVal.error}`);
+      }
+    }
+
+    // 4. Validate inline <style> tags (brace balance & unclosed comment check)
     const styleRegex = /<style\b[^>]*>([\s\S]*?)<\/style>/gi;
     let styleMatch;
     let styleIndex = 0;
@@ -156,6 +174,29 @@ class LayeredValidator {
       let closeBraces = (styleBody.match(/\}/g) || []).length;
       if (openBraces !== closeBraces) {
         errors.push(`Style #${styleIndex}: Unbalanced CSS braces ({: ${openBraces}, }: ${closeBraces})`);
+      }
+      // Check for unclosed comments
+      const openComments = (styleBody.match(/\/\*/g) || []).length;
+      const closeComments = (styleBody.match(/\*\//g) || []).length;
+      if (openComments !== closeComments) {
+        errors.push(`Style #${styleIndex}: Unclosed CSS comment block`);
+      }
+    }
+
+    // 5. Static DOM Reference Verification (getElementById checks)
+    const definedIds = new Set();
+    const idRegex = /\bid=["']([a-zA-Z0-9_\-]+)["']/gi;
+    let idM;
+    while ((idM = idRegex.exec(htmlContent)) !== null) {
+      definedIds.add(idM[1]);
+    }
+
+    const getElRegex = /document\.getElementById\s*\(\s*["']([a-zA-Z0-9_\-]+)["']\s*\)/g;
+    let elM;
+    while ((elM = getElRegex.exec(htmlContent)) !== null) {
+      const queriedId = elM[1];
+      if (!definedIds.has(queriedId)) {
+        errors.push(`Static DOM Reference Error: document.getElementById('${queriedId}') referenced in script, but no HTML element possesses id='${queriedId}'`);
       }
     }
 
