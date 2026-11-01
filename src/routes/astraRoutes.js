@@ -558,7 +558,7 @@ router.get("/mobile-logs", (req, res) => {
  * GET /api/pawan/memory
  * Retrieve persistent memories or query by relevance
  */
-router.get("/pawan/memory", (req, res) => {
+const handleGetMemory = (req, res) => {
   try {
     const { pawanMemoryService } = require("../services/pawanMemoryService");
     const { q, projectId, type, limit } = req.query;
@@ -588,13 +588,15 @@ router.get("/pawan/memory", (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
-});
+};
+router.get("/pawan/memory", handleGetMemory);
+router.get("/memory", handleGetMemory);
 
 /**
  * POST /api/pawan/memory
  * Store a persistent directive, decision, or preference
  */
-router.post("/pawan/memory", (req, res) => {
+const handlePostMemory = (req, res) => {
   try {
     const { pawanMemoryService } = require("../services/pawanMemoryService");
     const { content, type, projectId, importance, tags, isGlobal, metadata } = req.body || {};
@@ -617,13 +619,15 @@ router.post("/pawan/memory", (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
-});
+};
+router.post("/pawan/memory", handlePostMemory);
+router.post("/memory", handlePostMemory);
 
 /**
  * DELETE /api/pawan/memory/:id
  * Delete a specific persistent memory item
  */
-router.delete("/pawan/memory/:id", (req, res) => {
+const handleDeleteMemory = (req, res) => {
   try {
     const { pawanMemoryService } = require("../services/pawanMemoryService");
     const result = pawanMemoryService.deletePersistentMemory(req.params.id);
@@ -631,13 +635,15 @@ router.delete("/pawan/memory/:id", (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
-});
+};
+router.delete("/pawan/memory/:id", handleDeleteMemory);
+router.delete("/memory/:id", handleDeleteMemory);
 
 /**
  * GET /api/pawan/lessons
  * Retrieve continuous learning lessons and metrics
  */
-router.get("/pawan/lessons", (req, res) => {
+const handleGetLessons = (req, res) => {
   try {
     const { pawanLearningEngine } = require("../services/pawanLearningEngine");
     const { instruction, targetFile, projectId } = req.query;
@@ -652,13 +658,15 @@ router.get("/pawan/lessons", (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
-});
+};
+router.get("/pawan/lessons", handleGetLessons);
+router.get("/lessons", handleGetLessons);
 
 /**
  * GET /api/pawan/telemetry/stats
  * Complete execution telemetry metrics, token accounting, and provider reliability
  */
-router.get("/pawan/telemetry/stats", (req, res) => {
+const handleGetTelemetryStats = (req, res) => {
   try {
     const recentAudit = engine.getAuditHistory(100);
     const { pawanMemoryService } = require("../services/pawanMemoryService");
@@ -712,13 +720,15 @@ router.get("/pawan/telemetry/stats", (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
-});
+};
+router.get("/pawan/telemetry/stats", handleGetTelemetryStats);
+router.get("/telemetry/stats", handleGetTelemetryStats);
 
 /**
  * GET /api/pawan/execute/stream
  * Real-time SSE stream for live execution trajectory observability
  */
-router.get("/pawan/execute/stream", (req, res) => {
+const handleExecuteStream = (req, res) => {
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
@@ -747,7 +757,9 @@ router.get("/pawan/execute/stream", (req, res) => {
   req.on("close", () => {
     garudaEventService.removeListener("*", onGarudaEvent);
   });
-});
+};
+router.get("/pawan/execute/stream", handleExecuteStream);
+router.get("/execute/stream", handleExecuteStream);
 
 // ──────────────────────────────────────────────────────────────────────────
 // CLOUD-FIRST EXECUTION QUEUE & WORKER ENDPOINTS

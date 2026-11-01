@@ -376,7 +376,7 @@ class AstraExecutionEngine {
     // 2. SECONDARY FALLBACK: Groq (Llama 3.3 70B, GPT-OSS 120B)
     const groqKey = process.env.GROQ_API_KEY;
     if (groqKey) {
-      const groqModels = [options.model || "openai/gpt-oss-120b", "llama-3.3-70b-versatile", "qwen/qwen3.8-27b", "llama-3.1-8b-instant"];
+      const groqModels = [options.model || "openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"];
       for (const m of groqModels) {
         try {
           const controller = new AbortController();
@@ -412,6 +412,61 @@ class AstraExecutionEngine {
               this.lastInferenceTelemetry = {
                 provider: "groq",
                 model: m,
+                tokens: usage ? {
+                  promptTokens: typeof usage.prompt_tokens === "number" ? usage.prompt_tokens : "UNKNOWN",
+                  completionTokens: typeof usage.completion_tokens === "number" ? usage.completion_tokens : "UNKNOWN",
+                  totalTokens: typeof usage.total_tokens === "number" ? usage.total_tokens : "UNKNOWN"
+                } : "UNKNOWN",
+                latencyMs: Date.now() - startTime,
+                timestamp: new Date().toISOString()
+              };
+              return text;
+            }
+          }
+        } catch (err) {}
+      }
+    }
+
+    // 2.5 SECONDARY FALLBACK: Cerebras Wafer-Scale (Qwen 2.5 27B / GPT-OSS 120B - 2,000 tok/s)
+    const cerebrasKey = process.env.CEREBRAS_API_KEY;
+    if (cerebrasKey) {
+      const cerebrasModels = ["qwen-3.8-27b", "gpt-oss-120b"];
+      for (const cm of cerebrasModels) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 20000);
+          const res = await fetch("https://api.cerebras.ai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${cerebrasKey}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model: cm,
+              messages: [
+                {
+                  role: "system",
+                  content: "You are GARUDA Astra/Pawan, an elite sovereign AI software architect created by Praveen Mahawar. You always output valid, clean JSON with zero conversational filler."
+                },
+                { role: "user", content: prompt }
+              ],
+              temperature: 0.1,
+              max_tokens: options.maxTokens || 4096
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const data = await res.json();
+            const choice = data.choices?.[0];
+            if (choice?.finish_reason === "length") continue;
+            const text = choice?.message?.content;
+            if (text) {
+              const usage = data.usage;
+              this.lastInferenceTelemetry = {
+                provider: "cerebras",
+                model: cm,
                 tokens: usage ? {
                   promptTokens: typeof usage.prompt_tokens === "number" ? usage.prompt_tokens : "UNKNOWN",
                   completionTokens: typeof usage.completion_tokens === "number" ? usage.completion_tokens : "UNKNOWN",

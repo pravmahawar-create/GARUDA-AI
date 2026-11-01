@@ -42,6 +42,20 @@ class SovereignAiCascadeService {
 
       if (data && data[0] && data[0].message) {
         const vault = JSON.parse(data[0].message);
+        if (vault.geminiKey) {
+          const list = this.runtimeKeys.get("gemini") || [];
+          if (!list.includes(vault.geminiKey)) {
+            list.push(vault.geminiKey);
+            this.runtimeKeys.set("gemini", list);
+          }
+        }
+        if (vault.cerebrasKey) {
+          const list = this.runtimeKeys.get("cerebras") || [];
+          if (!list.includes(vault.cerebrasKey)) {
+            list.push(vault.cerebrasKey);
+            this.runtimeKeys.set("cerebras", list);
+          }
+        }
         if (vault.groqKey) {
           const list = this.runtimeKeys.get("groq") || [];
           if (!list.includes(vault.groqKey)) {
@@ -241,12 +255,12 @@ class SovereignAiCascadeService {
       const keyId = `groq_${kIdx}_${key.slice(-6)}`;
       if (this.isKeyOnCooldown(keyId)) continue;
 
-      const groqModels = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile", "qwen/qwen3.8-27b"];
-      const groqMaxTokens = Math.min(maxTokens || 800, 1000);
+      const groqModels = ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"];
+      const groqMaxTokens = Math.min(maxTokens || 4096, 4096);
       for (const model of groqModels) {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 8000);
+          const timeoutId = setTimeout(() => controller.abort(), 20000);
 
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
