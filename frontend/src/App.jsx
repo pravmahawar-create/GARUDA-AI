@@ -2,62 +2,62 @@ import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
-import Home from "./pages/Home";
-import FounderLogin from "./pages/FounderLogin";
-import CustomerDashboard from "./pages/CustomerDashboard";
-import CustomerAuthForm from "./pages/CustomerAuthForm";
-import Login from "./pages/Login";
-import PublicLanding from "./pages/PublicLanding";
-import PublicChat from "./pages/PublicChat";
-import PayLink from "./pages/PayLink";
-import Signup from "./pages/Signup";
-import DemoLaunch from "./pages/DemoLaunch";
-import FounderWorkspace from "./pages/FounderWorkspace";
-import RevenueDepartment from "./pages/RevenueDepartment";
-import ProposalPortal from "./pages/ProposalPortal";
-import ServiceLanding from "./pages/ServiceLanding";
-import FounderAcquisitionCockpit from "./pages/FounderAcquisitionCockpit";
-import WhatIsGarudaAI from "./pages/WhatIsGarudaAI";
-import GuidesIndex from "./pages/GuidesIndex";
-import GuideArticle from "./pages/GuideArticle";
-import HighCommandCenter from "./pages/HighCommandCenter";
-import GrowthCommandCenter from "./pages/GrowthCommandCenter";
-import ScholarStudio from "./pages/ScholarStudio";
-import CreativeStudio from "./pages/CreativeStudio";
-import CreativeProductionWorkspace from "./pages/CreativeProductionWorkspace";
-import ContentStudio from "./pages/ContentStudio";
-import BrandStudio from "./pages/BrandStudio";
-import DigitalPresenceStudio from "./pages/DigitalPresenceStudio";
-import EntertainmentStudio from "./pages/EntertainmentStudio";
-import FounderKingdomAccess from "./pages/FounderKingdomAccess";
-import InvestorExperience from "./pages/InvestorExperience";
-import BotVerseStudio from "./pages/BotVerseStudio";
-import MagicDelegationPortal from "./pages/MagicDelegationPortal";
-import AstraCodingStudio from "./pages/AstraCodingStudio";
-import PawanCodingStudio from "./pages/PawanCodingStudio";
-import KidsVoiceApp from "./pages/KidsVoiceApp";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import FounderProfile from "./pages/FounderProfile";
-import GarudaDostRozgar from "./pages/GarudaDostRozgar";
-import BoilerplateStore from "./pages/BoilerplateStore";
-import PricingPage from "./pages/PricingPage";
-import GarudaVsLinux from "./pages/GarudaVsLinux";
-import SovereignEnterpriseMatrix from "./pages/SovereignEnterpriseMatrix";
-import CaseStudies from "./pages/CaseStudies";
-import GarudaCyberTycoon from "./pages/GarudaCyberTycoon";
-import FounderQuantCommand from "./pages/FounderQuantCommand";
-import FounderIntelligence from "./pages/FounderIntelligence";
-import GarudaHealthApp from "./pages/GarudaHealthApp";
-import CyberShieldDashboard from "./pages/CyberShieldDashboard";
-import GarudaBilling from "./pages/GarudaBilling";
-import FintechGatewayDemo from "./pages/FintechGatewayDemo";
-import ConstituencyWarRoom from "./pages/ConstituencyWarRoom";
-import BoothCadrePWA from "./pages/BoothCadrePWA";
-import LeadLeakAudit from "./pages/LeadLeakAudit";
-import SolutionsHub from "./pages/SolutionsHub";
-import SolutionDetail from "./pages/SolutionDetail";
-import VyaparOS from "./pages/VyaparOS";
+const Home = React.lazy(() => import("./pages/Home"));
+const FounderLogin = React.lazy(() => import("./pages/FounderLogin"));
+const CustomerDashboard = React.lazy(() => import("./pages/CustomerDashboard"));
+const CustomerAuthForm = React.lazy(() => import("./pages/CustomerAuthForm"));
+const Login = React.lazy(() => import("./pages/Login"));
+const PublicLanding = React.lazy(() => import("./pages/PublicLanding"));
+const PublicChat = React.lazy(() => import("./pages/PublicChat"));
+const PayLink = React.lazy(() => import("./pages/PayLink"));
+const Signup = React.lazy(() => import("./pages/Signup"));
+const DemoLaunch = React.lazy(() => import("./pages/DemoLaunch"));
+const FounderWorkspace = React.lazy(() => import("./pages/FounderWorkspace"));
+const RevenueDepartment = React.lazy(() => import("./pages/RevenueDepartment"));
+const ProposalPortal = React.lazy(() => import("./pages/ProposalPortal"));
+const ServiceLanding = React.lazy(() => import("./pages/ServiceLanding"));
+const FounderAcquisitionCockpit = React.lazy(() => import("./pages/FounderAcquisitionCockpit"));
+const WhatIsGarudaAI = React.lazy(() => import("./pages/WhatIsGarudaAI"));
+const GuidesIndex = React.lazy(() => import("./pages/GuidesIndex"));
+const GuideArticle = React.lazy(() => import("./pages/GuideArticle"));
+const HighCommandCenter = React.lazy(() => import("./pages/HighCommandCenter"));
+const GrowthCommandCenter = React.lazy(() => import("./pages/GrowthCommandCenter"));
+const ScholarStudio = React.lazy(() => import("./pages/ScholarStudio"));
+const CreativeStudio = React.lazy(() => import("./pages/CreativeStudio"));
+const CreativeProductionWorkspace = React.lazy(() => import("./pages/CreativeProductionWorkspace"));
+const ContentStudio = React.lazy(() => import("./pages/ContentStudio"));
+const BrandStudio = React.lazy(() => import("./pages/BrandStudio"));
+const DigitalPresenceStudio = React.lazy(() => import("./pages/DigitalPresenceStudio"));
+const EntertainmentStudio = React.lazy(() => import("./pages/EntertainmentStudio"));
+const FounderKingdomAccess = React.lazy(() => import("./pages/FounderKingdomAccess"));
+const InvestorExperience = React.lazy(() => import("./pages/InvestorExperience"));
+const BotVerseStudio = React.lazy(() => import("./pages/BotVerseStudio"));
+const MagicDelegationPortal = React.lazy(() => import("./pages/MagicDelegationPortal"));
+const AstraCodingStudio = React.lazy(() => import("./pages/AstraCodingStudio"));
+const PawanCodingStudio = React.lazy(() => import("./pages/PawanCodingStudio"));
+const KidsVoiceApp = React.lazy(() => import("./pages/KidsVoiceApp"));
+const PrivacyPolicy = React.lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = React.lazy(() => import("./pages/TermsOfService"));
+const FounderProfile = React.lazy(() => import("./pages/FounderProfile"));
+const GarudaDostRozgar = React.lazy(() => import("./pages/GarudaDostRozgar"));
+const BoilerplateStore = React.lazy(() => import("./pages/BoilerplateStore"));
+const PricingPage = React.lazy(() => import("./pages/PricingPage"));
+const GarudaVsLinux = React.lazy(() => import("./pages/GarudaVsLinux"));
+const SovereignEnterpriseMatrix = React.lazy(() => import("./pages/SovereignEnterpriseMatrix"));
+const CaseStudies = React.lazy(() => import("./pages/CaseStudies"));
+const GarudaCyberTycoon = React.lazy(() => import("./pages/GarudaCyberTycoon"));
+const FounderQuantCommand = React.lazy(() => import("./pages/FounderQuantCommand"));
+const FounderIntelligence = React.lazy(() => import("./pages/FounderIntelligence"));
+const GarudaHealthApp = React.lazy(() => import("./pages/GarudaHealthApp"));
+const CyberShieldDashboard = React.lazy(() => import("./pages/CyberShieldDashboard"));
+const GarudaBilling = React.lazy(() => import("./pages/GarudaBilling"));
+const FintechGatewayDemo = React.lazy(() => import("./pages/FintechGatewayDemo"));
+const ConstituencyWarRoom = React.lazy(() => import("./pages/ConstituencyWarRoom"));
+const BoothCadrePWA = React.lazy(() => import("./pages/BoothCadrePWA"));
+const LeadLeakAudit = React.lazy(() => import("./pages/LeadLeakAudit"));
+const SolutionsHub = React.lazy(() => import("./pages/SolutionsHub"));
+const SolutionDetail = React.lazy(() => import("./pages/SolutionDetail"));
+const VyaparOS = React.lazy(() => import("./pages/VyaparOS"));
 import { initAttribution } from "./utils/attribution";
 
 
@@ -233,6 +233,7 @@ function AppRoutes() {
   );
 
   return (
+    <React.Suspense fallback={<div style={{ minHeight: "100vh", background: "#030712", color: "#d4af37", display: "grid", placeItems: "center", fontFamily: "sans-serif" }}>GARUDA load ho raha hai…</div>}>
     <Routes>
       <Route path="/" element={publicLanding} />
       <Route path="/what-is-garuda-ai" element={<WhatIsGarudaAI />} />
@@ -363,6 +364,7 @@ function AppRoutes() {
       <Route path="*" element={publicLanding} />
 
     </Routes>
+    </React.Suspense>
 
   );
 }

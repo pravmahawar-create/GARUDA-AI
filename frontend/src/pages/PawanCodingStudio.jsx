@@ -77,6 +77,15 @@ export default function PawanCodingStudio() {
   const [intakeRepo, setIntakeRepo] = useState("");
   const [intakeSubmitted, setIntakeSubmitted] = useState(false);
 
+  const founderRequestHeaders = () => {
+    const headers = { "Content-Type": "application/json" };
+    try {
+      const token = localStorage.getItem("garuda_founder_token");
+      if (token) headers.Authorization = `Bearer ${token}`;
+    } catch {}
+    return headers;
+  };
+
   // 🎙️ Voice & Conversational States
   const [isListening, setIsListening] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(false);
@@ -244,7 +253,9 @@ export default function PawanCodingStudio() {
       const savedToken = localStorage.getItem("garuda_founder_token");
       if (savedToken) {
         try {
-          const verifyRes = await fetch(`/api/pawan/verify-founder-token?token=${encodeURIComponent(savedToken)}`);
+          const verifyRes = await fetch("/api/pawan/verify-founder-token", {
+            headers: { Authorization: `Bearer ${savedToken}` }
+          });
           const verifyData = await verifyRes.json();
           if (verifyData.authorized === true) {
             setIsFounder(true);
@@ -511,7 +522,7 @@ export default function PawanCodingStudio() {
     try {
       const res = await fetch("/api/pawan/execute", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: founderRequestHeaders(),
         body: JSON.stringify({
           instruction: instruction.trim(),
           targetFile: targetFile.trim() || activeProject?.file || undefined,
@@ -610,7 +621,11 @@ export default function PawanCodingStudio() {
     if (!file) return;
 
     try {
+      const maxAttachmentBytes = 2.5 * 1024 * 1024;
+      if (file.size > maxAttachmentBytes) throw new Error("File size 2.5 MB se kam rakhein.");
       const { data, size, isImage } = await compressImageIfNeeded(file);
+      const encodedBytes = Math.max(0, Math.floor(data.length * 0.75));
+      if (encodedBytes > maxAttachmentBytes) throw new Error("Compressed attachment 2.5 MB se badi hai. Chhoti image/PDF try karein.");
       setActiveAttachment({
         name: file.name,
         size: (size / 1024).toFixed(1) + " KB",
@@ -620,7 +635,8 @@ export default function PawanCodingStudio() {
       });
       pawanSpeak("Document attached: " + file.name);
     } catch (err) {
-      console.error("Attachment compression error:", err);
+      setError(err.message || "Attachment read nahi ho paaya.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -652,12 +668,11 @@ export default function PawanCodingStudio() {
     pawanSpeak("Analyzing requirements and formulating architectural recommendations.");
 
     try {
-      const executeConsultRequest = async (retryCount = 0) => {
+      const executeConsultRequest = async () => {
+        const historyPayload = messages.slice(-10).map(m => ({ sender: m.sender, text: m.text }));
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 40000);
         try {
-          const historyPayload = messages.slice(-10).map(m => ({ sender: m.sender, text: m.text }));
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 20000);
-
           const res = await fetch("/api/pawan/consult", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -670,20 +685,11 @@ export default function PawanCodingStudio() {
             }),
             signal: controller.signal
           });
-          clearTimeout(timeoutId);
-
           const data = await res.json();
-          if (!res.ok || !data.success) {
-            throw new Error(data.error || "Consultation failed");
-          }
+          if (!res.ok || !data.success) throw new Error(data.error || "Consultation failed");
           return data;
-        } catch (e) {
-          if (retryCount < 1) {
-            // Auto-retry once to overcome mobile connection blip or cold start wakeup
-            await new Promise(r => setTimeout(r, 1200));
-            return executeConsultRequest(retryCount + 1);
-          }
-          throw e;
+        } finally {
+          clearTimeout(timeoutId);
         }
       };
 
@@ -714,10 +720,12 @@ export default function PawanCodingStudio() {
       }
     } catch (err) {
       setError(err.message);
+      setInstruction(textToSend);
+      if (attachmentToSend) setActiveAttachment(attachmentToSend);
       const isNetworkError = err.name === "AbortError" || String(err.message).toLowerCase().includes("failed to fetch") || String(err.message).toLowerCase().includes("network");
 
       const friendlyText = isNetworkError
-        ? `⚡ Praveen ji, cloud connection reconnect ho raha hai. Aapka command note ho chuka hai: "${textToSend.slice(0, 80)}". Niche diye button se dubara try karein ya direct code generation execute karein.`
+        ? `⚡ Pawan ka response time out ya disconnect ho gaya. Request server tak pahunchi thi ya nahi confirm nahi kar sakta; please ek baar dobara try karein.`
         : `Error during consultation: ${err.message}`;
 
       setMessages(prev => [...prev, {
@@ -759,7 +767,7 @@ export default function PawanCodingStudio() {
     try {
       const res = await fetch("/api/pawan/execute", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: founderRequestHeaders(),
         body: JSON.stringify({
           instruction: instrToUse,
           targetFile: fileToUse,
@@ -822,7 +830,7 @@ export default function PawanCodingStudio() {
     try {
       const res = await fetch("/api/pawan/build-apk", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: founderRequestHeaders(),
         body: JSON.stringify({
           code: codeToBuild,
           targetFile: activeProject?.file || result?.file,

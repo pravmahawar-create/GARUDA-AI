@@ -15,6 +15,7 @@ class SovereignAiCascadeService {
     this.keyCooldowns = new Map(); // keyId -> { until: timestamp, reason: string }
     this.runtimeKeys = new Map();  // provider -> array of keys
     this._lastVaultSync = 0;
+    this._lastVaultSyncSucceeded = false;
     this.stats = {
       totalRequests: 0,
       failoversTriggered: 0,
@@ -26,52 +27,41 @@ class SovereignAiCascadeService {
    * Automatically fetch active keys from Supabase Cloud Vault if environment variables are missing
    */
   async syncKeysFromVault() {
-    if (this._lastVaultSync && Date.now() - this._lastVaultSync < 180000) return;
+    const retryAfterMs = this._lastVaultSyncSucceeded ? 180000 : 5000;
+    if (this._lastVaultSync && Date.now() - this._lastVaultSync < retryAfterMs) return false;
     this._lastVaultSync = Date.now();
     try {
       const { createClient } = require("@supabase/supabase-js");
-      const SUPABASE_URL = process.env.SUPABASE_URL || "https://gcifzzuyswrcwvkcfqbr.supabase.co";
-      const SUPABASE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || "sb_publishable_uYLXTH4M1PFyem5pQSMJtQ_7YqZ2rFp";
+      const SUPABASE_URL = process.env.SUPABASE_URL;
+      const SUPABASE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
+      if (!SUPABASE_URL || !SUPABASE_KEY) return false;
       const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-      const { data } = await supabase.from("leads")
+      const { data, error } = await supabase.from("leads")
         .select("message")
         .eq("email", "system-ai-keys-sync@garudaos.in")
         .order("id", { ascending: false })
-        .limit(1);
+        .limit(1)
+        .abortSignal(AbortSignal.timeout(1800));
+      if (error) throw error;
 
       if (data && data[0] && data[0].message) {
         const vault = JSON.parse(data[0].message);
-        if (vault.geminiKey) {
-          const list = this.runtimeKeys.get("gemini") || [];
-          if (!list.includes(vault.geminiKey)) {
-            list.push(vault.geminiKey);
-            this.runtimeKeys.set("gemini", list);
-          }
-        }
-        if (vault.cerebrasKey) {
-          const list = this.runtimeKeys.get("cerebras") || [];
-          if (!list.includes(vault.cerebrasKey)) {
-            list.push(vault.cerebrasKey);
-            this.runtimeKeys.set("cerebras", list);
-          }
-        }
-        if (vault.groqKey) {
-          const list = this.runtimeKeys.get("groq") || [];
-          if (!list.includes(vault.groqKey)) {
-            list.push(vault.groqKey);
-            this.runtimeKeys.set("groq", list);
-          }
-        }
-        if (vault.nvidiaKey) {
-          const list = this.runtimeKeys.get("nvidia") || [];
-          if (!list.includes(vault.nvidiaKey)) {
-            list.push(vault.nvidiaKey);
-            this.runtimeKeys.set("nvidia", list);
-          }
+        for (const provider of ["gemini", "groq", "cerebras", "nvidia"]) {
+          const singular = vault[`${provider}Key`];
+          const plural = vault[`${provider}Keys`];
+          const values = [...(Array.isArray(plural) ? plural : (typeof plural === "string" ? plural.split(/[,;\s]+/) : [])), singular]
+            .filter((value) => typeof value === "string" && value.trim());
+          const list = this.runtimeKeys.get(provider) || [];
+          for (const value of values) if (!list.includes(value.trim())) list.push(value.trim());
+          if (list.length) this.runtimeKeys.set(provider, list);
         }
       }
+      this._lastVaultSyncSucceeded = true;
+      return true;
     } catch (e) {}
+    this._lastVaultSyncSucceeded = false;
+    return false;
   }
 
   /**
@@ -146,7 +136,7 @@ class SovereignAiCascadeService {
   /**
    * 1-Tap Cascade Completion Engine
    */
-  async generateCompletion({ messages, prompt, systemPrompt, temperature = 0.3, maxTokens = 800 }) {
+  async generateCompletion({ messages, prompt, systemPrompt, temperature = 0.3, maxTokens = 800, maxDurationMs = 30000 }) {
     this.stats.totalRequests++;
     const startTime = Date.now();
     const cascadeAttempts = [];
@@ -161,7 +151,9 @@ class SovereignAiCascadeService {
     }
 
     let { cerebrasKeys, groqKeys, nvidiaKeys, geminiKeys } = this.getAllKeys();
-    if (groqKeys.length === 0) {
+    // The vault is a fallback source for any missing provider, even when another
+    // provider is already configured locally.
+    if (groqKeys.length === 0 || cerebrasKeys.length === 0 || nvidiaKeys.length === 0 || geminiKeys.length === 0) {
       await this.syncKeysFromVault();
       const updated = this.getAllKeys();
       cerebrasKeys = updated.cerebrasKeys;
@@ -170,20 +162,26 @@ class SovereignAiCascadeService {
       geminiKeys = updated.geminiKeys;
     }
 
-    // ── TIER 0: GOOGLE GEMINI PRO & FLASH (PRIMARY SOVEREIGN ENGINE - 8,192 TOKENS) ──
+    const overallDeadline = startTime + maxDurationMs;
+
+    // Each provider gets a bounded slice so a slow primary cannot consume the
+    // whole request budget before Groq, Cerebras, and NVIDIA get a failover try.
+    const geminiDeadline = Math.min(overallDeadline, Date.now() + 11000);
+    // ── TIER 0: GOOGLE GEMINI (PRIMARY SOVEREIGN ENGINE) ──
     for (let kIdx = 0; kIdx < geminiKeys.length; kIdx++) {
       const key = geminiKeys[kIdx];
       const keyId = `gemini_${kIdx}_${key.slice(-6)}`;
       if (this.isKeyOnCooldown(keyId)) continue;
 
-      const geminiModels = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest", "gemini-1.5-flash"];
+      const geminiModels = [...new Set([process.env.GARUDA_GEMINI_MODEL || "gemini-2.5-flash", "gemini-2.5-flash-lite"])];
       const promptText = uniformMessages.map(m => `${m.role}: ${m.content}`).join("\n\n");
-      const geminiMaxTokens = Math.max(maxTokens || 2048, 4096);
+      const geminiMaxTokens = Math.min(Math.max(Number(maxTokens) || 800, 64), 8192);
 
       for (const model of geminiModels) {
+        if (Date.now() >= geminiDeadline) break;
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 20000);
+          const timeoutId = setTimeout(() => controller.abort(), Math.min(9000, geminiDeadline - Date.now()));
 
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
             method: "POST",
@@ -249,18 +247,20 @@ class SovereignAiCascadeService {
       }
     }
 
-    // ── TIER 1: GROQ HIGH-SPEED CLOUD (Line-up through all keys & models) ──
+    const groqDeadline = Math.min(overallDeadline, Date.now() + 7000);
+    // ── TIER 1: GROQ HIGH-SPEED CLOUD ──
     for (let kIdx = 0; kIdx < groqKeys.length; kIdx++) {
       const key = groqKeys[kIdx];
       const keyId = `groq_${kIdx}_${key.slice(-6)}`;
       if (this.isKeyOnCooldown(keyId)) continue;
 
-      const groqModels = ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"];
+      const groqModels = ["qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"];
       const groqMaxTokens = Math.min(maxTokens || 4096, 4096);
       for (const model of groqModels) {
+        if (Date.now() >= groqDeadline) break;
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 20000);
+          const timeoutId = setTimeout(() => controller.abort(), Math.min(6000, groqDeadline - Date.now()));
 
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
@@ -332,7 +332,8 @@ class SovereignAiCascadeService {
       }
     }
 
-    // ── TIER 2: CEREBRAS WAFER-SCALE ULTRA-SPEED ENGINE (2,000 tok/s) ──
+    const cerebrasDeadline = Math.min(overallDeadline, Date.now() + 6000);
+    // ── TIER 2: CEREBRAS ULTRA-SPEED ENGINE ──
     for (let kIdx = 0; kIdx < (cerebrasKeys || []).length; kIdx++) {
       const key = cerebrasKeys[kIdx];
       const keyId = `cerebras_${kIdx}_${key.slice(-6)}`;
@@ -340,9 +341,10 @@ class SovereignAiCascadeService {
 
       const cerebrasModels = ["qwen-3.8-27b", "gpt-oss-120b"];
       for (const model of cerebrasModels) {
+        if (Date.now() >= cerebrasDeadline) break;
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 12000);
+          const timeoutId = setTimeout(() => controller.abort(), Math.min(5000, cerebrasDeadline - Date.now()));
 
           const res = await fetch("https://api.cerebras.ai/v1/chat/completions", {
             method: "POST",
@@ -412,22 +414,20 @@ class SovereignAiCascadeService {
       }
     }
 
-    // ── TIER 3: NVIDIA NIM ENTERPRISE GPU CLOUD (Auto-Failover) ──
+    const nvidiaDeadline = Math.min(overallDeadline, Date.now() + 5000);
+    // ── TIER 3: NVIDIA NIM DEEP-REASONING FALLBACK ──
     for (let kIdx = 0; kIdx < nvidiaKeys.length; kIdx++) {
       const key = nvidiaKeys[kIdx];
       const keyId = `nvidia_${kIdx}_${key.slice(-6)}`;
       if (this.isKeyOnCooldown(keyId)) continue;
 
-      const nvidiaModels = [
-        "meta/llama-3.2-11b-vision-instruct",
-        "meta/llama-3.2-90b-vision-instruct",
-        "nvidia/llama-3.1-nemotron-70b-instruct"
-      ];
+      const nvidiaModels = ["deepseek-ai/deepseek-v4-flash", "meta/llama-3.3-70b-instruct", "mistralai/mistral-large-3-675b-instruct-2512"];
 
       for (const model of nvidiaModels) {
+        if (Date.now() >= nvidiaDeadline) break;
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 14000);
+          const timeoutId = setTimeout(() => controller.abort(), Math.min(4000, nvidiaDeadline - Date.now()));
 
           const res = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
             method: "POST",
@@ -520,19 +520,8 @@ class SovereignAiCascadeService {
       current.push(key.trim());
       this.runtimeKeys.set(p, current);
     }
-    // Also persist to Supabase vault asynchronously
-    try {
-      const { createClient } = require("@supabase/supabase-js");
-      const SUPABASE_URL = process.env.SUPABASE_URL || "https://gcifzzuyswrcwvkcfqbr.supabase.co";
-      const SUPABASE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || "sb_publishable_uYLXTH4M1PFyem5pQSMJtQ_7YqZ2rFp";
-      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-      const updatePayload = {};
-      if (p === "groq") updatePayload.groqKey = key.trim();
-      if (p === "nvidia") updatePayload.nvidiaKey = key.trim();
-      if (p === "gemini") updatePayload.geminiKey = key.trim();
-      updatePayload.updatedAt = new Date().toISOString();
-      supabase.from("leads").update({ message: JSON.stringify(updatePayload), reply_snippet: "KEY_UPDATED" }).eq("email", "system-ai-keys-sync@garudaos.in").then(() => {});
-    } catch {}
+    // The current Supabase leads.message vault format is plain JSON. Keep new
+    // keys in memory rather than silently persisting credentials unencrypted.
     return { success: true, provider: p, totalKeys: current.length };
   }
 
@@ -540,7 +529,7 @@ class SovereignAiCascadeService {
    * Health report of all configured and runtime keys
    */
   getHealthReport() {
-    const { groqKeys, nvidiaKeys, geminiKeys } = this.getAllKeys();
+    const { groqKeys, cerebrasKeys, nvidiaKeys, geminiKeys } = this.getAllKeys();
 
     const checkStatus = (keys, prefix) => keys.map((k, i) => {
       const keyId = `${prefix}_${i}_${k.slice(-6)}`;
@@ -551,8 +540,9 @@ class SovereignAiCascadeService {
         provider: prefix,
         index: i + 1,
         masked: `${k.slice(0, 6)}...${k.slice(-4)}`,
-        status: isCool ? "COOLDOWN_EXHAUSTED" : "ACTIVE_ONLINE",
-        reason: isCool ? cd.reason : "Healthy",
+        status: isCool ? "COOLDOWN" : "CONFIGURED",
+        reachability: "NOT_PROBED",
+        reason: isCool ? cd.reason : "Configured; provider reachability has not been tested",
         cooldownRemainingSeconds: isCool ? Math.round((cd.until - Date.now()) / 1000) : 0
       };
     });
@@ -562,6 +552,7 @@ class SovereignAiCascadeService {
       stats: this.stats,
       lineup: {
         groq: checkStatus(groqKeys, "groq"),
+        cerebras: checkStatus(cerebrasKeys, "cerebras"),
         nvidia: checkStatus(nvidiaKeys, "nvidia"),
         gemini: checkStatus(geminiKeys, "gemini")
       }

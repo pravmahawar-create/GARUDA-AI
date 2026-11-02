@@ -13,6 +13,31 @@ const { AstraExecutionEngine } = require("../services/astraCodingAgent/astraExec
 
 const engine = new AstraExecutionEngine();
 
+const FOUNDER_TOKEN_TTL_MS = 12 * 60 * 60 * 1000;
+function hasFounderExecutionAccess(req) {
+  if (req.garudaContext?.isFounderApproved) return true;
+  // Local development remains usable without requiring a production credential.
+  if (process.env.NODE_ENV !== "production" && ["localhost", "127.0.0.1", "::1"].includes(req.hostname)) return true;
+
+  const authHeader = String(req.headers.authorization || "");
+  const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+  const match = token.match(/^gs_(\d+)\.([A-Za-z0-9_-]+)$/);
+  const secret = process.env.FOUNDER_SESSION_SECRET;
+  if (!match || !secret) return false;
+
+  const issuedAt = Number(match[1]);
+  if (!Number.isFinite(issuedAt) || issuedAt > Date.now() || Date.now() - issuedAt > FOUNDER_TOKEN_TTL_MS) return false;
+  const expected = crypto.createHmac("sha256", secret).update(`founder_${issuedAt}`).digest("base64url");
+  if (match[2].length !== expected.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(match[2]), Buffer.from(expected));
+}
+
+function requireFounderExecutionAccess(req, res) {
+  if (hasFounderExecutionAccess(req)) return true;
+  res.status(403).json({ success: false, error: "Founder authentication required for code execution." });
+  return false;
+}
+
 function getAdbPath() {
   const localApp = process.env.LOCALAPPDATA || "C:\\Users\\hp\\AppData\\Local";
   const defaultPath = path.join(localApp, "Android", "Sdk", "platform-tools", "adb.exe");
@@ -37,6 +62,7 @@ function getLocalIp() {
  */
 async function handleExecuteRequest(req, res) {
   try {
+    if (!requireFounderExecutionAccess(req, res)) return;
     const { instruction, targetFile, searchQuery, code, currentCode, summary, attachment, sessionId } = req.body || {};
     if (!instruction) return res.status(400).json({ success: false, error: "instruction is required" });
 
@@ -142,10 +168,11 @@ router.post("/verify-founder", (req, res) => {
       process.env.GARUDA_FOUNDER_KEY,
       process.env.FOUNDER_SECRET,
       process.env.FOUNDER_SESSION_SECRET,
-      process.env.FOUNDER_ACCESS_PASSWORD,
-      "praveen_garuda_core",
-      "garuda_founder_secret_key_2026"
+      process.env.FOUNDER_ACCESS_PASSWORD
     ].filter(Boolean);
+    if (!validSecrets.length || !process.env.FOUNDER_SESSION_SECRET) {
+      return res.status(503).json({ success: false, error: "Founder authentication is not configured on this server." });
+    }
 
     let isAuthorized = false;
     for (const secret of validSecrets) {
@@ -164,7 +191,7 @@ router.post("/verify-founder", (req, res) => {
     }
 
     // Issue cryptographically signed session token
-    const serverSecret = process.env.FOUNDER_SESSION_SECRET || "garuda_sovereign_fallback_secret_2026";
+    const serverSecret = process.env.FOUNDER_SESSION_SECRET;
     const issuedAt = Date.now();
     const signature = crypto.createHmac("sha256", serverSecret).update(`founder_${issuedAt}`).digest("base64url");
     const sessionToken = `gs_${issuedAt}.${signature}`;
@@ -193,7 +220,12 @@ router.get("/verify-founder-token", (req, res) => {
 
   const [prefixAndIssued, signature] = token.split(".");
   const issuedAt = prefixAndIssued ? prefixAndIssued.replace(/^gs_/, "") : "";
-  const serverSecret = process.env.FOUNDER_SESSION_SECRET || "garuda_sovereign_fallback_secret_2026";
+  const serverSecret = process.env.FOUNDER_SESSION_SECRET;
+  if (!serverSecret) return res.json({ success: false, authorized: false });
+  const issuedAtMs = Number(issuedAt);
+  if (!Number.isFinite(issuedAtMs) || issuedAtMs > Date.now() || Date.now() - issuedAtMs > FOUNDER_TOKEN_TTL_MS) {
+    return res.json({ success: false, authorized: false });
+  }
   const expectedSig = crypto.createHmac("sha256", serverSecret).update(`founder_${issuedAt}`).digest("base64url");
 
   if (signature && expectedSig && signature.length === expectedSig.length) {
@@ -264,6 +296,7 @@ router.delete("/pawan/history", async (req, res) => {
  */
 router.post("/build-apk", async (req, res) => {
   try {
+    if (!requireFounderExecutionAccess(req, res)) return;
     const { code, targetFile, appName } = req.body;
     let actualCode = code;
     if (!actualCode && targetFile) {
@@ -468,6 +501,7 @@ router.get("/status", (req, res) => {
   });
 });
 
+
 router.get("/history", handleHistoryRequest);
 
 /**
@@ -475,6 +509,7 @@ router.get("/history", handleHistoryRequest);
  * Inspect a file with line numbers and SHA-256
  */
 router.post("/inspect", (req, res) => {
+  if (!requireFounderExecutionAccess(req, res)) return;
   const { filePath } = req.body;
   if (!filePath) return res.status(400).json({ success: false, error: "filePath required" });
   const inspect = engine.inspectFile(filePath);
@@ -776,6 +811,7 @@ pawanCloudQueue.startWorker();
  */
 function handleQueueEnqueue(req, res) {
   try {
+    if (!requireFounderExecutionAccess(req, res)) return;
     const payload = req.body || {};
     const result = pawanCloudQueue.enqueueTask(payload);
     if (!result.success) {

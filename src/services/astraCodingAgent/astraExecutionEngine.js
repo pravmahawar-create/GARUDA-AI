@@ -98,6 +98,37 @@ class AstraExecutionEngine {
     }
   }
 
+  _resolveProjectPath(filePath) {
+    if (typeof filePath !== "string" || !filePath.trim()) throw new Error("A project-relative target file is required.");
+    const root = path.resolve(this.rootDir);
+    const resolved = path.isAbsolute(filePath) ? path.resolve(filePath) : path.resolve(root, filePath);
+    const relative = path.relative(root, resolved);
+    if (!relative) throw new Error("Target must name a file inside the active GARUDA project root.");
+    if (relative === ".." || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
+      throw new Error("Target file must stay inside the active GARUDA project root.");
+    }
+    const segments = relative.split(path.sep);
+    const sensitiveTarget = segments.some((segment) => {
+      const name = segment.toLowerCase();
+      return name === ".git" || name === "node_modules" || name === ".env" ||
+        (/^\.env\./.test(name) && name !== ".env.example") ||
+        /\.(pem|key|p12|pfx)$/i.test(name) || /^(secrets?|credentials?)$/i.test(name);
+    });
+    if (sensitiveTarget) throw new Error("Target is inside a protected secrets or dependency path.");
+
+    // Reject symlinked parents that would redirect a project-relative path
+    // outside the project boundary.
+    const rootReal = fs.existsSync(root) ? fs.realpathSync(root) : root;
+    let ancestor = resolved;
+    while (!fs.existsSync(ancestor) && ancestor !== path.dirname(ancestor)) ancestor = path.dirname(ancestor);
+    const ancestorReal = fs.realpathSync(ancestor);
+    const realRelative = path.relative(rootReal, ancestorReal);
+    if (realRelative === ".." || realRelative.startsWith(`..${path.sep}`) || path.isAbsolute(realRelative)) {
+      throw new Error("Target file resolves outside the active GARUDA project root.");
+    }
+    return resolved;
+  }
+
   _logAudit(entry) {
     this._ensureAuditDir();
     const payload = {
@@ -311,6 +342,21 @@ class AstraExecutionEngine {
           timestamp: new Date().toISOString()
         };
         return cascadeResult.text;
+      }
+      // The shared cascade already tried every configured provider. Re-running
+      // the legacy provider loops repeats slow network failures and can leave
+      // the original browser request open after the UI has timed out.
+      if (cascadeResult) {
+        this.lastInferenceTelemetry = {
+          provider: cascadeResult.provider || "NONE",
+          model: cascadeResult.model || "NONE",
+          tokens: cascadeResult.tokens || "UNKNOWN",
+          latencyMs: cascadeResult.latencyMs || (Date.now() - startTime),
+          cascadeAttempts: cascadeResult.cascadeAttempts || [],
+          error: "ALL_PROVIDERS_EXHAUSTED",
+          timestamp: new Date().toISOString()
+        };
+        return null;
       }
     } catch (err) {
       console.warn("[Astra/Pawan] Cascade note:", err.message);
@@ -651,13 +697,13 @@ Output ONLY the JSON object.`;
 
     // 1. Multimodal Path: If an image was attached, use Gemini Vision with tight timeout
     if (attachmentPart && geminiKey) {
-      const visionModels = ["gemini-2.5-flash", "gemini-2.5-pro"];
+      const visionModels = ["gemini-2.5-flash"];
       for (const vm of visionModels) {
         try {
           const parts = [attachmentPart, { text: consultPrompt }];
 
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 8000);
+          const timeoutId = setTimeout(() => controller.abort(), 12000);
 
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${vm}:generateContent?key=${geminiKey}`, {
             method: "POST",
@@ -686,22 +732,8 @@ Output ONLY the JSON object.`;
         } catch (err) {}
       }
 
-      // If an image was provided and Gemini endpoints blipped, NEVER pass image-less prompt to text-only model!
-      return {
-        success: true,
-        consultation: {
-          thought: "Multimodal image received and registered in PAWAN Vision Gateway",
-          isConversational: true,
-          reply: "Praveen ji, aapki image PAWAN engine me safely receive ho gayi hai! Gemini multimodal stream active hai. Boliye, is visual layout ya mockup ke hisab se kya feature build karna hai?",
-          observation: "Visual asset / UI diagram accepted by PAWAN Vision Gateway.",
-          recommendations: ["1-Tap Screen Synthesis", "Component Refactor"],
-          risksAndLoopholes: [],
-          actionPlan: "Ready to synthesize production code for this design",
-          suggestedInstruction: "Synthesize full interactive interface based on this visual asset",
-          targetFile: targetFile || "public/app.html",
-          isExistingRefactor: !!currentCode
-        }
-      };
+      // Never claim a visual was analyzed when the vision provider failed.
+      return { success: false, error: "Visual analysis is temporarily unavailable. Please retry in a moment." };
     }
 
     // 2. High-Speed Sovereign Cascade for text consultation (Sub-second Groq/Cerebras execution)
@@ -724,34 +756,7 @@ Output ONLY the JSON object.`;
       }
     } catch (err) {}
 
-    // 4. Autonomous Sovereign Fallback (Prevents 500 error / broken UI on LLM latency/quota blips)
-    const fallbackConsultation = {
-      thought: "Conversational fallback active — upstream LLM latency mitigated",
-      isConversational: true,
-      reply: `Ji, mai aapki baat samajh gaya hoon ("${(instruction || 'Namaste').slice(0, 100)}"). Batayein, kya screen ya naya component synthesize karna hai? Mai turant code build kar dunga.`,
-      observation: (instruction || "Conversational requirement registered").slice(0, 200),
-      recommendations: ["Direct App Synthesis", "Component Refactor"],
-      risksAndLoopholes: [],
-      actionPlan: "Ready to synthesize production code upon confirmation",
-      suggestedInstruction: instruction || "Build application",
-      targetFile: targetFile || "public/app.html",
-      isExistingRefactor: !!currentCode
-    };
-
-    try {
-      const { pawanMemoryService } = require("../pawanMemoryService");
-      pawanMemoryService.storeConversationTurn({
-        sessionId: currentSessionId,
-        role: "pawan",
-        text: fallbackConsultation.reply,
-        projectId: currentProjectId
-      });
-    } catch {}
-
-    return {
-      success: true,
-      consultation: fallbackConsultation
-    };
+    return { success: false, error: "AI providers are temporarily unavailable. Your message was not analyzed; please retry shortly." };
   }
 
   /**
@@ -793,7 +798,7 @@ Output ONLY the JSON object.`;
    * Inspect file with line numbers
    */
   inspectFile(relPath, maxLines = 150) {
-    const fullPath = path.join(this.rootDir, relPath);
+    const fullPath = this._resolveProjectPath(relPath);
     if (!fs.existsSync(fullPath)) return { error: "File not found", path: relPath };
     try {
       const content = fs.readFileSync(fullPath, "utf8");
@@ -818,7 +823,7 @@ Output ONLY the JSON object.`;
    * Layered Syntax and execution validation (JS/TS/JSX, JSON, deep HTML inline scripts & CSS)
    */
   validateFile(relPath, inMemoryContent = null) {
-    const fullPath = path.isAbsolute(relPath) ? relPath : path.join(this.rootDir, relPath);
+    const fullPath = this._resolveProjectPath(relPath);
     if (!fs.existsSync(fullPath)) {
       if (inMemoryContent) {
         const inMemResult = this.validator.validateContent(inMemoryContent, relPath);
@@ -849,7 +854,7 @@ Output ONLY the JSON object.`;
    * Apply code modifications safely: supports surgical Search/Replace blocks or full rewrite
    */
   applyPatch(relPath, newContent, options = {}) {
-    const fullPath = path.isAbsolute(relPath) ? relPath : path.join(this.rootDir, relPath);
+    const fullPath = this._resolveProjectPath(relPath);
     const dir = path.dirname(fullPath);
 
     const beforeSha = this._computeSha256(fullPath);
@@ -1172,7 +1177,8 @@ Output ONLY the JSON object.`;
             body: JSON.stringify({
               contents: [{ role: "user", parts }],
               generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
-            })
+            }),
+            signal: AbortSignal.timeout(15000)
           });
           if (res.ok) {
             const d = await res.json();
@@ -1195,7 +1201,7 @@ Output ONLY the JSON object.`;
         }
       }
 
-      if (!llmResponse) {
+      if (!llmResponse && !(context.attachment && context.attachment.data)) {
         llmResponse = await this.callLLM(prompt);
       }
 
@@ -1215,7 +1221,9 @@ Output ONLY the JSON object.`;
     if (!parsedPlan || !parsedPlan.newContent) {
       const completedAt = new Date().toISOString();
       const durationMs = Date.now() - startTimeMs;
-      const errorMsg = "Could not synthesize executable code patch from LLM (Inference timeout or invalid format). Please retry.";
+      const errorMsg = context.attachment?.data
+        ? "Visual code synthesis failed because the configured vision provider did not return a usable result. Please retry shortly."
+        : "Could not synthesize executable code patch from the configured AI providers. Please retry shortly.";
 
       trajectory.push({
         step: "TASK_FAILED",
@@ -1274,7 +1282,7 @@ Output ONLY the JSON object.`;
     }
 
     const appliedFile = parsedPlan.targetFile || targetFile || "src/astra_output.js";
-    const fullAppliedPath = path.isAbsolute(appliedFile) ? appliedFile : path.join(this.rootDir, appliedFile);
+    const fullAppliedPath = this._resolveProjectPath(appliedFile);
 
     // Pre-patch snapshot for rollback protection
     const preSnapshot = {

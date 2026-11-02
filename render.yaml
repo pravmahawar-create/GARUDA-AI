@@ -27,6 +27,30 @@ services:
         sync: false
       - key: GROQ_API_KEY
         sync: false
+      - key: GROQ_API_KEYS
+        sync: false
+      - key: CEREBRAS_API_KEY
+        sync: false
+      - key: CEREBRAS_API_KEYS
+        sync: false
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: NVIDIA_API_KEYS
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEYS
+        sync: false
+      - key: GARUDA_GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: FOUNDER_ACCESS_PASSWORD
+        sync: false
+      - key: FOUNDER_SESSION_SECRET
+        sync: false
       - key: TELEGRAM_BOT_TOKEN
         sync: false
       - key: TELEGRAM_FOUNDER_CHAT_ID

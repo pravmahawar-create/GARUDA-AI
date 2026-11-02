@@ -64,7 +64,9 @@ app.use("/api/", globalLimiter);
 
 app.use("/api/webhook", webhookLimiter, require("./routes/webhookRoutes"));
 app.use(express.json({
-  limit: "1mb",
+  // Pawan sends compressed images/PDFs as base64 JSON. Keep this below the
+  // Vercel rewrite payload ceiling while allowing useful design attachments.
+  limit: "4mb",
   verify: (req, _res, buffer) => {
     req.rawBody = buffer.toString("utf8");
   }
