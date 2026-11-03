@@ -61,7 +61,7 @@ export default function FounderWorkspace({ onLogout }) {
       return;
     }
     if (label.includes("PAWAN") || label.includes("Astra")) {
-      navigate("/pawan");
+      navigate("/founder/pawan");
       return;
     }
     if (label === "Sales Cockpit") {

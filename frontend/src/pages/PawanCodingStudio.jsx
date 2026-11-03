@@ -42,7 +42,7 @@ const CODING_TEMPLATES = [
   }
 ];
 
-export default function PawanCodingStudio() {
+export default function PawanCodingStudio({ founderSessionActive = false }) {
   const navigate = useNavigate();
   const [instruction, setInstruction] = useState("");
   const [targetFile, setTargetFile] = useState("");
@@ -51,7 +51,7 @@ export default function PawanCodingStudio() {
   const [error, setError] = useState(null);
   const [history, setHistory] = useState([]);
   const [statusInfo, setStatusInfo] = useState(null);
-  const [isFounder, setIsFounder] = useState(false); // Secure: visitor mode by default, requires localhost or passkey
+  const [isFounder, setIsFounder] = useState(founderSessionActive === true); // Founder dashboard passes its verified session
   const [showGateModal, setShowGateModal] = useState(false);
   const [commercialTier, setCommercialTier] = useState("starter"); // 'starter' (999) | 'business' (2499) | 'enterprise' (4999)
   const [turnCount, setTurnCount] = useState(0);
@@ -238,6 +238,12 @@ export default function PawanCodingStudio() {
 
   const checkAuthSession = async () => {
     try {
+      // /founder/pawan is rendered only with the app's server-verified session.
+      // Carry it through so the studio does not race a second auth request.
+      if (founderSessionActive === true) {
+        setIsFounder(true);
+        return;
+      }
       // 1. Check if running on localhost / internal dev
       const isLocalHost = typeof window !== "undefined" && (
         window.location.hostname === "localhost" ||
@@ -275,9 +281,17 @@ export default function PawanCodingStudio() {
         setIsFounder(false);
       }
     } catch {
+      if (founderSessionActive === true) {
+        setIsFounder(true);
+        return;
+      }
       setIsFounder(false); // DEFAULT TO FALSE! Never grant founder mode on error!
     }
   };
+
+  useEffect(() => {
+    if (founderSessionActive === true) setIsFounder(true);
+  }, [founderSessionActive]);
 
   const handleVerifyFounderPasskey = async (e) => {
     e?.preventDefault();

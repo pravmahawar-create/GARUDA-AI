@@ -288,7 +288,7 @@ function AppRoutes() {
       <Route path="/delegate" element={<MagicDelegationPortal />} />
       <Route path="/delegate/:token" element={<MagicDelegationPortal />} />
       <Route path="/pawan" element={<PawanCodingStudio />} />
-      <Route path="/founder/pawan" element={<PawanCodingStudio />} />
+      <Route path="/founder/pawan" element={<PawanCodingStudio founderSessionActive={authenticated === true} />} />
       <Route path="/kids-play" element={<KidsVoiceApp />} />
       <Route path="/kids-app" element={<KidsVoiceApp />} />
       <Route path="/astra" element={<Navigate to="/pawan" replace />} />
