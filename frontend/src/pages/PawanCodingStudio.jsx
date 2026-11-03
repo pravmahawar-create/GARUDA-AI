@@ -79,6 +79,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
 
   const founderRequestHeaders = async () => {
     const headers = { "Content-Type": "application/json" };
+    let tokenError = null;
     try {
       const response = await fetch("/api/auth/pawan-token", {
         method: "POST",
@@ -86,16 +87,33 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
         headers: { "Content-Type": "application/json" },
         body: "{}"
       });
-      const session = await response.json();
+      const session = await response.json().catch(() => ({}));
       if (response.ok && session.success && session.token) {
         headers.Authorization = `Bearer ${session.token}`;
         return headers;
       }
-    } catch {}
+      if (response.status === 401) {
+        tokenError = "Founder session required. Please sign in to Founder Workspace (/founder/access) first.";
+      } else if (response.status === 503) {
+        tokenError = "Founder authentication is not configured on the server.";
+      } else if (session.message) {
+        tokenError = session.message;
+      }
+    } catch (e) {
+      tokenError = `Failed to obtain founder token: ${e.message}`;
+    }
     try {
       const token = localStorage.getItem("garuda_founder_token");
-      if (token) headers.Authorization = `Bearer ${token}`;
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+        return headers;
+      }
     } catch {}
+    if (tokenError) {
+      const err = new Error(tokenError);
+      err.isAuthError = true;
+      throw err;
+    }
     return headers;
   };
 
@@ -588,7 +606,10 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
       pawanSpeak("Praveen ji, task completed successfully! Verified code is ready on screen.");
     } catch (err) {
       setResult(null);
-      const errMsg = err.message || "Autonomous execution failed";
+      let errMsg = err.message || "Autonomous execution failed";
+      if (err.name === "TypeError" && errMsg.includes("Failed to fetch")) {
+        errMsg = "Network connection failed (/api/pawan/execute). Render backend may be waking up from cold start (~30-45s) or offline. Please wait a moment and retry.";
+      }
       setError(errMsg);
       pawanSpeak("Praveen ji, execution note: " + errMsg.replace(/https?:\/\/\S+/g, "").slice(0, 75));
     } finally {
@@ -839,7 +860,11 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
       pawanSpeak("Praveen ji, application code is verified and ready on screen!");
     } catch (err) {
       setResult(null);
-      setError(err.message);
+      let errMsg = err.message || "Autonomous execution failed";
+      if (err.name === "TypeError" && errMsg.includes("Failed to fetch")) {
+        errMsg = "Network connection failed (/api/pawan/execute). Render backend may be waking up from cold start (~30-45s) or offline. Please wait a moment and retry.";
+      }
+      setError(errMsg);
       pawanSpeak("Execution error occurred. Check screen details.");
     } finally {
       setLoading(false);

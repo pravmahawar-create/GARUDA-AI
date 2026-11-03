@@ -371,11 +371,11 @@ export default function InvestorExperience() {
       speechLines: [
         "Welcome. Before Praveen explains what GARUDA is, I would prefer to introduce myself.",
         "I am GARUDA — an autonomous AI Operating System engineered for governed business automation, custom software execution, and multi-agent workflows.",
-        "Praveen built me because the world does not need another superficial chatbot wrapper. Modern businesses need an intelligence that can actually build, test, govern, and execute verified work in the physical reality of software."
+        "Praveen built me to give businesses an intelligence that can actually build, test, govern, and execute verified work across real software systems."
       ],
       keyPoints: [
         "Founded & engineered by Praveen Mahawar",
-        "Autonomous AI Operating System, not a chatbot wrapper",
+        "Autonomous AI Operating System with direct execution tooling",
         "Bridges intelligence directly to execution, databases, and QA validation"
       ],
       suggestedFollowUp: "differentiation_and_truth"
@@ -498,7 +498,7 @@ export default function InvestorExperience() {
     let match = {
       topic: "general_inquiry",
       title: "GARUDA Sovereign Intelligence",
-      answer: "I am GARUDA, an autonomous AI Operating System founded by Praveen Mahawar. I operate across 27 specialized execution universes under strict Anti-Fabrication Law. You can ask me about my architecture, why I am different from prompt wrappers, or ask me to demonstrate my verified capabilities live.",
+      answer: "I am GARUDA, an autonomous AI Operating System founded by Praveen Mahawar. I operate across 27 specialized execution universes under strict Anti-Fabrication Law. You can ask me about my architecture, core capabilities, or ask me to demonstrate verified execution live.",
       demonstrationAvailable: true,
       suggestedDemo: "creative_artifact"
     };
@@ -523,7 +523,7 @@ export default function InvestorExperience() {
       match = {
         topic: "why_different",
         title: "Why is GARUDA Different?",
-        answer: "Unlike API wrappers that only generate conversational text strings, GARUDA bridges intelligence to physical software execution, multi-agent pipelines, database persistence, and regression test suites.",
+        answer: "GARUDA integrates intelligence with direct software execution, multi-agent pipelines, database persistence, and automated regression test suites.",
         demonstrationAvailable: true,
         suggestedDemo: "repo_architecture"
       };
@@ -603,7 +603,7 @@ export default function InvestorExperience() {
       match = {
         topic: "hindi_identity_and_differentiation",
         title: "GARUDA Identity & Differentiation",
-        answer: "Main GARUDA hoon — Praveen Mahawar dwara engineered ek autonomous sovereign AI Operating System. Duniya ke baaki AI systems sirf prompt-and-response text wrappers hain, jabki GARUDA intelligence ko direct code execution, multi-agent pipelines, file systems, aur SHA-256 cryptographic evidence seals se connect karta hai.",
+        answer: "Main GARUDA hoon — Praveen Mahawar dwara engineered ek autonomous sovereign AI Operating System. GARUDA intelligence ko direct code execution, multi-agent pipelines, file systems, aur SHA-256 cryptographic evidence seals se connect karta hai.",
         demonstrationAvailable: true,
         suggestedDemo: "creative_artifact"
       };
@@ -1380,10 +1380,10 @@ export default function InvestorExperience() {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
                   <h2 style={{ fontSize: "1.4rem", fontWeight: 800, color: PALETTE.gold, margin: 0 }}>
-                    ⚡ Why Invest in GARUDA: The Sovereign Execution Moat
+                    ⚡ Architecture & Execution Capabilities
                   </h2>
                   <span style={{ fontSize: "0.75rem", color: PALETTE.gold, border: `1px solid ${PALETTE.gold}`, padding: "0.25rem 0.75rem", borderRadius: "12px", fontWeight: 700 }}>
-                    COMPETITIVE MOAT
+                    CORE ARCHITECTURE
                   </span>
                 </div>
 
@@ -1391,7 +1391,7 @@ export default function InvestorExperience() {
                   <div style={{ background: PALETTE.cardBg, border: "1px solid rgba(245, 158, 11, 0.3)", borderRadius: "10px", padding: "1.25rem" }}>
                     <div style={{ color: PALETTE.gold, fontWeight: 800, fontSize: "0.85rem" }}>SHOW &gt; TELL DOCTRINE</div>
                     <p style={{ fontSize: "0.85rem", color: PALETTE.textMuted, marginTop: "0.5rem", lineHeight: "1.5" }}>
-                      While LLM wrappers generate conversational text strings, GARUDA connects intelligence directly to real compilers, file systems, and automated test runners.
+                      GARUDA connects intelligence directly to compilers, local file systems, and automated test runners.
                     </p>
                   </div>
                   <div style={{ background: PALETTE.cardBg, border: "1px solid rgba(56, 189, 248, 0.3)", borderRadius: "10px", padding: "1.25rem" }}>

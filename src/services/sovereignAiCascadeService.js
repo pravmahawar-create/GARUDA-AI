@@ -166,14 +166,14 @@ class SovereignAiCascadeService {
 
     // Each provider gets a bounded slice so a slow primary cannot consume the
     // whole request budget before Groq, Cerebras, and NVIDIA get a failover try.
-    const geminiDeadline = Math.min(overallDeadline, Date.now() + 11000);
+    const geminiDeadline = Math.min(overallDeadline, Date.now() + 14000);
     // ── TIER 0: GOOGLE GEMINI (PRIMARY SOVEREIGN ENGINE) ──
     for (let kIdx = 0; kIdx < geminiKeys.length; kIdx++) {
       const key = geminiKeys[kIdx];
       const keyId = `gemini_${kIdx}_${key.slice(-6)}`;
       if (this.isKeyOnCooldown(keyId)) continue;
 
-      const geminiModels = [...new Set([process.env.GARUDA_GEMINI_MODEL || "gemini-2.5-flash", "gemini-2.5-flash-lite"])];
+      const geminiModels = [...new Set([process.env.GARUDA_GEMINI_MODEL || "gemini-2.5-flash"])];
       const promptText = uniformMessages.map(m => `${m.role}: ${m.content}`).join("\n\n");
       const geminiMaxTokens = Math.min(Math.max(Number(maxTokens) || 800, 64), 8192);
 
@@ -181,7 +181,7 @@ class SovereignAiCascadeService {
         if (Date.now() >= geminiDeadline) break;
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), Math.min(9000, geminiDeadline - Date.now()));
+          const timeoutId = setTimeout(() => controller.abort(), Math.min(12000, geminiDeadline - Date.now()));
 
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
             method: "POST",

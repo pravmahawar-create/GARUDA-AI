@@ -1,4 +1,5 @@
 {
+  "installCommand": "npm ci --prefer-offline --no-audit --no-fund",
   "buildCommand": "npm run build",
   "outputDirectory": "frontend/dist",
   "framework": "vite",
@@ -532,8 +533,12 @@
       "destination": "/demos/:path*"
     },
     {
-      "source": "/:match*",
-      "destination": "/"
+      "source": "/(chat|login|signup|app|pawan|founder|command-center|command|high-command|growth|revenue|scholar|creative|content|brand|digital-presence|entertainment|play|bot-verse|delegate|kids-play|health|aahar|wellness|garuda-aahar|cybershield|fintech-gateway|war-room|booth-cadre|audit|solutions|vyapar-os|pricing|billing|case-studies|about|dost|starter|experience|guides|services)/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(chat|login|signup|app|pawan|founder|command-center|command|high-command|growth|revenue|scholar|creative|content|brand|digital-presence|entertainment|play|bot-verse|delegate|kids-play|health|aahar|wellness|garuda-aahar|cybershield|fintech-gateway|war-room|booth-cadre|audit|solutions|vyapar-os|pricing|billing|case-studies|about|dost|starter|experience|guides|services)",
+      "destination": "/index.html"
     }
   ]
 }

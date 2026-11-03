@@ -1,3 +1,10 @@
+// 🚫 DISABLED BY FOUNDER MANDATE: Autonomous LinkedIn posting is strictly prohibited until explicit authorization.
+console.warn("🚫 [GARUDA GOVERNANCE] scripts/execute-sridhar-trojan.js is DISABLED by Founder Mandate. Automated LinkedIn commenting is halted.");
+if (require.main === module) {
+  process.exit(0);
+}
+module.exports = { executeSridharTrojan: async () => { throw new Error("Script disabled by Founder Mandate"); } };
+
 const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs");
