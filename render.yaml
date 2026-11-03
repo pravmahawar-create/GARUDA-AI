@@ -49,6 +49,7 @@ services:
         sync: false
       - key: FOUNDER_ACCESS_PASSWORD
         sync: false
+      # Must match Vercel's value so Render can verify short-lived Pawan founder assertions.
       - key: FOUNDER_SESSION_SECRET
         sync: false
       - key: TELEGRAM_BOT_TOKEN

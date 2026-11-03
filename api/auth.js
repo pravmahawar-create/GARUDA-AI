@@ -113,6 +113,18 @@ function sessionHandler(req, res) {
   return res.status(200).json({ authenticated: hasValidSession(req) });
 }
 
+// Validate the browser's HttpOnly founder cookie at Vercel, then issue a
+// short-lived bearer assertion for Pawan's separate Render API.
+function pawanTokenHandler(req, res) {
+  if (req.method !== "POST") return res.status(405).json({ success: false, message: "Method not allowed" });
+  if (!hasValidSession(req)) return res.status(401).json({ success: false, message: "Founder session required" });
+
+  const issuedAt = Date.now();
+  const expiresAt = issuedAt + 5 * 60 * 1000;
+  const signature = sign(`founder_${issuedAt}`);
+  return res.status(200).json({ success: true, token: `gp_${issuedAt}.${signature}`, expiresAt });
+}
+
 function logoutHandler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ success: false, message: "Method not allowed" });
   clearSession(res);
@@ -166,6 +178,7 @@ async function managePasswordHandler(req, res) {
 const HANDLERS = {
   login: loginHandler,
   session: sessionHandler,
+  "pawan-token": pawanTokenHandler,
   logout: logoutHandler,
   status: statusHandler,
   "manage-password": managePasswordHandler

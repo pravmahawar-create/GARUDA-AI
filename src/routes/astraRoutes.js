@@ -22,15 +22,18 @@ function hasFounderExecutionAccess(req) {
 
   const authHeader = String(req.headers.authorization || "");
   const token = authHeader.replace(/^Bearer\s+/i, "").trim();
-  const match = token.match(/^gs_(\d+)\.([A-Za-z0-9_-]+)$/);
+  const match = token.match(/^(gs|gp)_(\d+)\.([A-Za-z0-9_-]+)$/);
   const secret = process.env.FOUNDER_SESSION_SECRET;
   if (!match || !secret) return false;
 
-  const issuedAt = Number(match[1]);
-  if (!Number.isFinite(issuedAt) || issuedAt > Date.now() || Date.now() - issuedAt > FOUNDER_TOKEN_TTL_MS) return false;
+  const tokenKind = match[1];
+  const issuedAt = Number(match[2]);
+  const signature = match[3];
+  const ttlMs = tokenKind === "gp" ? 5 * 60 * 1000 : FOUNDER_TOKEN_TTL_MS;
+  if (!Number.isFinite(issuedAt) || issuedAt > Date.now() || Date.now() - issuedAt > ttlMs) return false;
   const expected = crypto.createHmac("sha256", secret).update(`founder_${issuedAt}`).digest("base64url");
-  if (match[2].length !== expected.length) return false;
-  return crypto.timingSafeEqual(Buffer.from(match[2]), Buffer.from(expected));
+  if (signature.length !== expected.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
 }
 
 function requireFounderExecutionAccess(req, res) {

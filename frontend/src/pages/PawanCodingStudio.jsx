@@ -77,8 +77,21 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
   const [intakeRepo, setIntakeRepo] = useState("");
   const [intakeSubmitted, setIntakeSubmitted] = useState(false);
 
-  const founderRequestHeaders = () => {
+  const founderRequestHeaders = async () => {
     const headers = { "Content-Type": "application/json" };
+    try {
+      const response = await fetch("/api/auth/pawan-token", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: "{}"
+      });
+      const session = await response.json();
+      if (response.ok && session.success && session.token) {
+        headers.Authorization = `Bearer ${session.token}`;
+        return headers;
+      }
+    } catch {}
     try {
       const token = localStorage.getItem("garuda_founder_token");
       if (token) headers.Authorization = `Bearer ${token}`;
@@ -536,7 +549,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
     try {
       const res = await fetch("/api/pawan/execute", {
         method: "POST",
-        headers: founderRequestHeaders(),
+        headers: await founderRequestHeaders(),
         body: JSON.stringify({
           instruction: instruction.trim(),
           targetFile: targetFile.trim() || activeProject?.file || undefined,
@@ -781,7 +794,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
     try {
       const res = await fetch("/api/pawan/execute", {
         method: "POST",
-        headers: founderRequestHeaders(),
+        headers: await founderRequestHeaders(),
         body: JSON.stringify({
           instruction: instrToUse,
           targetFile: fileToUse,
@@ -844,7 +857,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
     try {
       const res = await fetch("/api/pawan/build-apk", {
         method: "POST",
-        headers: founderRequestHeaders(),
+        headers: await founderRequestHeaders(),
         body: JSON.stringify({
           code: codeToBuild,
           targetFile: activeProject?.file || result?.file,
