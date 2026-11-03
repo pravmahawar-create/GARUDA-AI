@@ -226,6 +226,29 @@ class LayeredValidator {
     const ext = path.extname(filePath).toLowerCase();
     const sha256 = computeSha256(content);
 
+    // 🛡️ GARUDA 100% Anti-Fabrication Law: Reject Lazy Placeholders & Incomplete Code Stubs
+    if (typeof content === "string") {
+      const lazyPatterns = [
+        /placeholder for existing elements/i,
+        /add your (?:logic|code|implementation|calculation|elements|inputs) here/i,
+        /implement (?:your|the) (?:logic|calculation|functionality) here/i,
+        /\/\/\s*todo:\s*(?:add|implement|fill)/i,
+        /\/\*\s*add your.*?here\s*\*\//i
+      ];
+      for (const pattern of lazyPatterns) {
+        if (pattern.test(content)) {
+          return {
+            valid: false,
+            exitCode: 1,
+            error: `GARUDA 100% Anti-Fabrication Law: Lazy placeholder detected (${pattern}). All functions, formulas, and UI logic must be 100% complete and fully written out with zero stubs.`,
+            sha256,
+            path: filePath,
+            engine: "anti-lazy-guardrail"
+          };
+        }
+      }
+    }
+
     if ([".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"].includes(ext)) {
       const res = this.validateJavaScript(content, filePath);
       return { ...res, sha256, path: filePath };

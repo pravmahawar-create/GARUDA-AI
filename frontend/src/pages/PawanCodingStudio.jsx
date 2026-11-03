@@ -4,13 +4,39 @@ import { useNavigate } from "react-router-dom";
 const SpeechRec = typeof window !== "undefined" ? (window.SpeechRecognition || window.webkitSpeechRecognition) : null;
 const PAYMENT_URL = "https://razorpay.me/@garudaosincompany";
 
+// 🏛️ Canonical Claude-Code Inspired Luxury Palette
+const T = {
+  bg: "#FBFBF9",             // Claude warm porcelain / ivory canvas
+  bgSubtle: "#F4F3EE",       // Subtle warm stone
+  panel: "#FFFFFF",          // Pure white card surfaces
+  panelSubtle: "#FAF9F5",    // Soft warm tint
+  border: "#E7E5E0",         // Ultra-crisp fine stone border
+  borderHover: "#D6D3CC",    // Slightly deeper stone on hover
+  text: "#18181B",           // Deep graphite text (maximum legibility)
+  textMuted: "#52525B",      // Refined slate
+  textSubtle: "#71717A",     // Gentle tertiary text
+  accent: "#C48B28",         // GARUDA Sovereign warm amber
+  accentHover: "#B45309",    // Rich amber
+  accentLight: "#FEF3C7",    // Soft amber tint
+  accentBorder: "#FDE68A",   // Gentle amber border
+  claudeTerracotta: "#D97706",// Claude signature warm terracotta
+  emerald: "#059669",        // Status emerald
+  emeraldLight: "#ECFDF5",   // Status emerald tint
+  emeraldBorder: "#A7F3D0",  // Status emerald border
+  codeBg: "#18181B",         // High-contrast clean dark slate for code viewer
+  codeText: "#F4F4F5",       // Crisp white code text
+  shadowSm: "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+  shadowMd: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)",
+  shadowLg: "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05)"
+};
+
 const CODING_TEMPLATES = [
   {
     icon: "🩺",
     title: "AI Clinic Receptionist",
     category: "Healthcare Triage PWA",
     targetFile: "public/clinic_receptionist.html",
-    instruction: "Build a complete, dark-theme Doctor & AI Clinic Receptionist PWA with 24/7 symptom triage, urgency flagging (Emergency/Urgent/Normal), automated appointment slot booking, and WhatsApp confirmation CTA."
+    instruction: "Build a complete, modern Doctor & AI Clinic Receptionist PWA with 24/7 symptom triage, urgency flagging (Emergency/Urgent/Normal), automated appointment slot booking, interactive fee calculator, and WhatsApp confirmation CTA."
   },
   {
     icon: "🛍️",
@@ -31,7 +57,7 @@ const CODING_TEMPLATES = [
     title: "Sovereign Micro-SaaS",
     category: "Next-Gen SaaS MVP",
     targetFile: "public/saas_starter.html",
-    instruction: "Build a high-converting cybernetic SaaS landing page with interactive pricing tiers, live product feature sandbox, customer testimonials, and instant Razorpay/Stripe checkout modal."
+    instruction: "Build a high-converting SaaS landing page with interactive pricing tiers, live product feature sandbox, customer testimonials, and instant Razorpay checkout modal."
   },
   {
     icon: "🌾",
@@ -51,15 +77,16 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
   const [error, setError] = useState(null);
   const [history, setHistory] = useState([]);
   const [statusInfo, setStatusInfo] = useState(null);
-  const [isFounder, setIsFounder] = useState(founderSessionActive === true); // Founder dashboard passes its verified session
+  const [isFounder, setIsFounder] = useState(founderSessionActive === true);
   const [showGateModal, setShowGateModal] = useState(false);
-  const [commercialTier, setCommercialTier] = useState("starter"); // 'starter' (999) | 'business' (2499) | 'enterprise' (4999)
+  const [commercialTier, setCommercialTier] = useState("starter");
   const [turnCount, setTurnCount] = useState(0);
   const [pendingPlan, setPendingPlan] = useState(null);
   const [showFounderPasskeyModal, setShowFounderPasskeyModal] = useState(false);
   const [founderPasskeyInput, setFounderPasskeyInput] = useState("");
   const [passkeyError, setPasskeyError] = useState("");
-  const [activeTab, setActiveTab] = useState("code"); // 'code' | 'preview' | 'mobile' | 'trajectory' | 'proof'
+  const [activeTab, setActiveTab] = useState("preview"); // 'preview' | 'code' | 'mobile' | 'trajectory' | 'proof'
+  const [mobileViewTab, setMobileViewTab] = useState("chat"); // 'chat' | 'output' (on small screens)
   const [codeCopied, setCodeCopied] = useState(false);
   const [previewViewport, setPreviewViewport] = useState("desktop"); // 'desktop' | 'mobile'
   const [previewKey, setPreviewKey] = useState(0);
@@ -77,28 +104,6 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
   const [intakeRepo, setIntakeRepo] = useState("");
   const [intakeSubmitted, setIntakeSubmitted] = useState(false);
 
-  const founderRequestHeaders = async () => {
-    const headers = { "Content-Type": "application/json" };
-    try {
-      const response = await fetch("/api/auth/pawan-token", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: "{}"
-      });
-      const session = await response.json();
-      if (response.ok && session.success && session.token) {
-        headers.Authorization = `Bearer ${session.token}`;
-        return headers;
-      }
-    } catch {}
-    try {
-      const token = localStorage.getItem("garuda_founder_token");
-      if (token) headers.Authorization = `Bearer ${token}`;
-    } catch {}
-    return headers;
-  };
-
   // 🎙️ Voice & Conversational States
   const [isListening, setIsListening] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(false);
@@ -106,7 +111,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
   const [voiceStatus, setVoiceStatus] = useState("");
   const recognitionRef = useRef(null);
 
-  // 💬 Consultative Brain, Attachments & Chat States (Persistent Memory)
+  // 💬 Consultative Brain, Attachments & Chat States
   const [studioMode, setStudioMode] = useState("discuss"); // 'discuss' | 'execute'
   const [messages, setMessages] = useState(() => {
     try {
@@ -120,13 +125,13 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
       {
         id: "welcome",
         sender: "pawan",
-        text: "नमस्ते! मैं गरुड़ पवन हूँ — आपका Autonomous Software Architect। आप जो भी नया ऐप या फीचर बनाना चाहते हैं, मुझे बताइए या फोटो/डॉक्यूमेंट अटैच कीजिए। मैं पहले आपको Pro Architecture Plan दूँगा, और फिर पुष्टि होने पर कोड करूँगा!",
+        text: "नमस्ते! मैं गरुड़ पवन हूँ — आपका Autonomous Software Architect। आप जो भी नया ऐप या फीचर बनाना चाहते हैं, बताइए। मैं पहले आपको Pro Architecture Plan दूँगा, और फिर एक क्लिक में कोड करूँगा!",
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       }
     ];
   });
   const [activeAttachment, setActiveAttachment] = useState(null);
-  const [activeProject, setActiveProject] = useState(null); // { file, code, version, summary }
+  const [activeProject, setActiveProject] = useState(null);
   const [isConsulting, setIsConsulting] = useState(false);
   const [apkBuilding, setApkBuilding] = useState(false);
   const [apkDownloadUrl, setApkDownloadUrl] = useState(null);
@@ -136,80 +141,59 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
   const [showAppsFleet, setShowAppsFleet] = useState(false);
   const [showAuditTrail, setShowAuditTrail] = useState(false);
   const fileInputRef = useRef(null);
-
   const chatBottomRef = useRef(null);
 
   const [pawanHistorySynced, setPawanHistorySynced] = useState(false);
   const [pawanHistoryCount, setPawanHistoryCount] = useState(0);
 
-  const fetchPawanHistoryAndRehydrate = async () => {
+  const founderRequestHeaders = async () => {
+    const headers = { "Content-Type": "application/json" };
+    let tokenError = null;
     try {
-      const res = await fetch("/api/pawan/history?limit=50");
+      const response = await fetch("/api/auth/pawan-token", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: "{}"
+      });
+      const session = await response.json().catch(() => ({}));
+      if (response.ok && session.success && session.token) {
+        headers.Authorization = `Bearer ${session.token}`;
+        return headers;
+      }
+      if (response.status === 401) {
+        tokenError = "Founder session required. Please sign in to Founder Workspace (/founder/access) first.";
+      } else if (response.status === 503) {
+        tokenError = "Founder authentication is not configured on the server.";
+      } else if (session.message) {
+        tokenError = session.message;
+      }
+    } catch (e) {
+      tokenError = `Failed to obtain founder token: ${e.message}`;
+    }
+    try {
+      const token = localStorage.getItem("garuda_founder_token");
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+        return headers;
+      }
+    } catch {}
+    if (tokenError) {
+      const err = new Error(tokenError);
+      err.isAuthError = true;
+      throw err;
+    }
+    return headers;
+  };
+
+  const fetchPawanHistory = async () => {
+    try {
+      const res = await fetch("/api/pawan/history?limit=30");
       const data = await res.json();
-      if (data.success && Array.isArray(data.history) && data.history.length > 0) {
+      if (data.success && Array.isArray(data.history)) {
         setPawanHistorySynced(true);
         setPawanHistoryCount(data.history.length);
-        // Rehydrate chat messages from persistent history (cross-device)
-        const rehydrated = [];
-        // History is desc sorted, reverse to chronological for chat
-        const chronological = [...data.history].reverse();
-        for (const h of chronological) {
-          if (h.type === "consultation" && h.instruction) {
-            rehydrated.push({
-              id: `hist_u_${h.id}`,
-              sender: "user",
-              text: h.instruction,
-              timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-              device: h.device,
-            });
-            if (h.consultation) {
-              const c = h.consultation;
-              rehydrated.push({
-                id: `hist_p_${h.id}`,
-                sender: "pawan",
-                text: c.reply || c.observation || "Restored consultation",
-                consultation: c,
-                timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-                device: h.device,
-              });
-            }
-          } else if (h.type === "execution" && h.instruction) {
-            rehydrated.push({
-              id: `hist_u_${h.id}`,
-              sender: "user",
-              text: h.instruction,
-              timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-              device: h.device,
-            });
-            if (h.executionResult) {
-              rehydrated.push({
-                id: `hist_p_${h.id}`,
-                sender: "pawan",
-                text: `✓ Restored execution for ${h.executionResult.file || "task"} (SHA: ${(h.executionResult.sha256 || "").slice(0, 8)}...)`,
-                timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-                device: h.device,
-              });
-            }
-          } else if (h.type === "apk_build") {
-            rehydrated.push({
-              id: `hist_p_${h.id}`,
-              sender: "pawan",
-              text: `📦 Restored APK build — ${h.executionResult?.file || "app"} (SHA: ${(h.executionResult?.sha256 || "").slice(0, 8)}...)`,
-              timestamp: new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-              device: h.device,
-            });
-          }
-        }
-        if (rehydrated.length > 0) {
-          setMessages(prev => {
-            // Keep welcome if no other messages, otherwise append rehydrated after welcome
-            const welcome = prev.find(m => m.id === "welcome");
-            const others = prev.filter(m => m.id !== "welcome");
-            // Avoid duplicating if already rehydrated
-            if (others.length > 1) return prev;
-            return [...(welcome ? [welcome] : []), ...rehydrated, ...others];
-          });
-        }
+        setHistory(data.history);
       }
     } catch {}
   };
@@ -217,7 +201,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
   useEffect(() => {
     fetchStatus();
     fetchHistory();
-    fetchPawanHistoryAndRehydrate();
+    fetchPawanHistory();
     fetchMobileStatus();
     checkAuthSession();
     if (SpeechRec) {
@@ -240,7 +224,6 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
     } catch {}
   }, []);
 
-
   useEffect(() => {
     try {
       if (messages && messages.length > 0) {
@@ -249,15 +232,16 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
     } catch {}
   }, [messages]);
 
+  useEffect(() => {
+    chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isConsulting]);
+
   const checkAuthSession = async () => {
     try {
-      // /founder/pawan is rendered only with the app's server-verified session.
-      // Carry it through so the studio does not race a second auth request.
       if (founderSessionActive === true) {
         setIsFounder(true);
         return;
       }
-      // 1. Check if running on localhost / internal dev
       const isLocalHost = typeof window !== "undefined" && (
         window.location.hostname === "localhost" ||
         window.location.hostname === "127.0.0.1" ||
@@ -267,8 +251,6 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
         setIsFounder(true);
         return;
       }
-
-      // 2. Validate saved founder token on backend if present
       const savedToken = localStorage.getItem("garuda_founder_token");
       if (savedToken) {
         try {
@@ -284,8 +266,6 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
           }
         } catch {}
       }
-
-      // 3. Server session verification
       const res = await fetch("/api/auth/session", { credentials: "same-origin" });
       const data = await res.json();
       if (data.authenticated === true) {
@@ -298,7 +278,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
         setIsFounder(true);
         return;
       }
-      setIsFounder(false); // DEFAULT TO FALSE! Never grant founder mode on error!
+      setIsFounder(false);
     }
   };
 
@@ -368,7 +348,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch("/api/pawan/history?limit=10");
+      const res = await fetch("/api/pawan/history?limit=15");
       const data = await res.json();
       if (data.success) setHistory(data.history || []);
     } catch {}
@@ -422,12 +402,9 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>${activeProject?.file || result?.file || "GARUDA Live Application"}</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #000; color: #fff; font-family: system-ui, -apple-system, sans-serif; overflow-x: hidden; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-stone-900 text-stone-100 min-h-screen">
   ${codeToRun}
 </body>
 </html>`;
@@ -445,21 +422,6 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
     }
   };
 
-  const getAppPreviewUrl = (filePath) => {
-    if (!filePath) return "";
-    const p = filePath.toLowerCase();
-    if (p.includes("cloth-gst")) return "/cloth-gst.html";
-    if (p.includes("billing")) return "/app";
-    if (p.includes("kids")) return "/kids-play";
-    if (p.includes("investor")) return "/investor";
-    if (p.includes("botverse") || p.includes("bot-verse")) return "/bot-verse";
-    if (p.includes("whatisgaruda")) return "/what-is-garuda-ai";
-    if (p.includes("command")) return "/command-center";
-    return "";
-  };
-
-
-  // 🔊 PAWAN Natural Speech (Streams Google Natural Voice with Web Speech fallback)
   const pawanSpeak = (text) => {
     if (voiceMuted || typeof window === "undefined" || !text) return;
     try {
@@ -478,7 +440,6 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
     } catch {}
   };
 
-  // 🎙️ Toggle Voice Listening
   const toggleVoiceInput = () => {
     if (!SpeechRec) {
       alert("Voice recognition is supported in Chrome or Edge browser.");
@@ -500,8 +461,8 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
 
       recognition.onstart = () => {
         setIsListening(true);
-        setVoiceStatus("🎙️ Listening for task instruction... Speak now.");
-        pawanSpeak("नमस्ते प्रवीण जी! मैं गरुड़ पवन हूँ। आदेश दीजिए, आज क्या कोड करना है?");
+        setVoiceStatus("🎙️ Listening... Speak your prompt now.");
+        pawanSpeak("नमस्ते प्रवीण जी! मैं गरुड़ पवन हूँ। आदेश दीजिए, क्या कोड करना है?");
       };
 
       recognition.onresult = (event) => {
@@ -543,8 +504,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
 
     setLoading(true);
     setError(null);
-    setResult(null);
-    pawanSpeak("Pawan has initiated the task. Analyzing codebase and synthesizing verified patch.");
+    pawanSpeak("Pawan has initiated the task. Synthesizing verified patch.");
 
     try {
       const res = await fetch("/api/pawan/execute", {
@@ -583,14 +543,18 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
       try {
         localStorage.setItem("garuda_pawan_active_project", JSON.stringify(newProj));
       } catch {}
-      setActiveTab("code");
+      setActiveTab("preview"); // Switch to preview automatically so user sees the result!
+      setMobileViewTab("output");
       fetchHistory();
-      pawanSpeak("Praveen ji, task completed successfully! Verified code is ready on screen.");
+      pawanSpeak("Task completed successfully! App is running live on screen.");
     } catch (err) {
       setResult(null);
-      const errMsg = err.message || "Autonomous execution failed";
+      let errMsg = err.message || "Autonomous execution failed";
+      if (err.name === "TypeError" && errMsg.includes("Failed to fetch")) {
+        errMsg = "Network connection failed (/api/pawan/execute). Render backend may be waking up. Please retry shortly.";
+      }
       setError(errMsg);
-      pawanSpeak("Praveen ji, execution note: " + errMsg.replace(/https?:\/\/\S+/g, "").slice(0, 75));
+      pawanSpeak("Execution note: " + errMsg.replace(/https?:\/\/\S+/g, "").slice(0, 75));
     } finally {
       setLoading(false);
     }
@@ -726,7 +690,6 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
       const isConversational = c.isConversational || (!c.actionPlan && (!c.recommendations || c.recommendations.length === 0));
       let messageText = c.reply || c.observation || "Ji boliye, kya develop karna hai?";
 
-      // Commercial Scoping Notice after 3 questions for external visitors
       if (!isFounder && turnCount >= 2 && !isConversational) {
         messageText += "\n\n💳 **Commercial Scoping Update:** Requirements scoped. Application code synthesis unlock karne ke liye amount confirmation token confirm karein.";
       }
@@ -752,7 +715,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
       const isNetworkError = err.name === "AbortError" || String(err.message).toLowerCase().includes("failed to fetch") || String(err.message).toLowerCase().includes("network");
 
       const friendlyText = isNetworkError
-        ? `⚡ Pawan ka response time out ya disconnect ho gaya. Request server tak pahunchi thi ya nahi confirm nahi kar sakta; please ek baar dobara try karein.`
+        ? `⚡ Pawan ka response timeout ho gaya. Ek baar dobara try karein.`
         : `Error during consultation: ${err.message}`;
 
       setMessages(prev => [...prev, {
@@ -768,7 +731,7 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
         } : null,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       }]);
-      pawanSpeak(isNetworkError ? "Connection reconnect ho raha hai. Aapka command register ho chuka hai." : "Consultation error occurred.");
+      pawanSpeak(isNetworkError ? "Connection reconnect ho raha hai." : "Consultation error occurred.");
     } finally {
       setIsConsulting(false);
     }
@@ -778,7 +741,6 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
     const fileToUse = suggestedFile || activeProject?.file || targetFile || "public/app.html";
     const instrToUse = suggestedInstruction || instruction;
 
-    // Commercial Paywall Gate for Public Visitors
     if (!isFounder) {
       setPendingPlan({ instruction: instrToUse, targetFile: fileToUse });
       setShowGateModal(true);
@@ -788,7 +750,6 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
     
     setLoading(true);
     setError(null);
-    setResult(null);
     pawanSpeak("Order confirmed. Synthesizing verified application code.");
 
     try {
@@ -825,13 +786,14 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
       try {
         localStorage.setItem("garuda_pawan_active_project", JSON.stringify(newProj));
       } catch {}
-      setActiveTab("code");
+      setActiveTab("preview");
+      setMobileViewTab("output");
       fetchHistory();
 
       setMessages(prev => [...prev, {
         id: "exec_" + Date.now(),
         sender: "pawan",
-        text: `✓ Code built and verified for ${resData.file}! Ready for instant mobile testing.`,
+        text: `✓ Code built and verified for ${resData.file}! Live preview is running on the right.`,
         codeResult: resData,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       }]);
@@ -839,7 +801,11 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
       pawanSpeak("Praveen ji, application code is verified and ready on screen!");
     } catch (err) {
       setResult(null);
-      setError(err.message);
+      let errMsg = err.message || "Autonomous execution failed";
+      if (err.name === "TypeError" && errMsg.includes("Failed to fetch")) {
+        errMsg = "Network connection failed (/api/pawan/execute). Render backend may be waking up. Please retry shortly.";
+      }
+      setError(errMsg);
       pawanSpeak("Execution error occurred. Check screen details.");
     } finally {
       setLoading(false);
@@ -849,11 +815,11 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
   const handleBuildApk = async () => {
     const codeToBuild = activeProject?.code || result?.code;
     if (!codeToBuild) {
-      alert("Please generate or enter application code first before packaging for mobile / APK.");
+      alert("Please generate application code first before packaging for mobile.");
       return;
     }
     setApkBuilding(true);
-    pawanSpeak("Packaging mobile application, generating PWA manifest and compiling bundle.");
+    pawanSpeak("Packaging mobile application and compiling bundle.");
     try {
       const res = await fetch("/api/pawan/build-apk", {
         method: "POST",
@@ -935,11 +901,10 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
   };
 
   const handleCopyCode = () => {
-
     if (!result?.code) return;
     navigator.clipboard.writeText(result.code);
     setCodeCopied(true);
-    setTimeout(() => setCodeCopied(false), 3000);
+    setTimeout(() => setCodeCopied(false), 2500);
   };
 
   const handleIntakeSubmit = async (e) => {
@@ -963,563 +928,816 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
         })
       });
       setIntakeSubmitted(true);
-      pawanSpeak("Your project scope has been transmitted to Founder Praveen Mahawar.");
     } catch {
-      setIntakeSubmitted(true);
+      alert("Unable to transmit scoping request right now.");
     }
   };
 
   return (
-    <div style={{ minHeight: "100dvh", height: "100dvh", background: "radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.08) 0%, #060503 60%, #030201 100%)", color: "#f8fafc", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", display: "flex", flexDirection: "column", padding: "0", maxWidth: "500px", margin: "0 auto", overscrollBehavior: "none", WebkitOverflowScrolling: "touch" }}>
+    <div style={{
+      minHeight: "100dvh",
+      height: "100dvh",
+      background: T.bg,
+      color: T.text,
+      fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      display: "flex",
+      flexDirection: "column",
+      overflow: "hidden",
+      overscrollBehavior: "none",
+      WebkitFontSmoothing: "antialiased"
+    }}>
+
+      {/* Global CSS for Claude Code Clean Aesthetics & Scrollbars */}
       <style>{`
-        @media (max-width: 768px) {
-          .pawan-header { flex-direction: column !important; align-items: flex-start !important; }
-          .pawan-controls { width: 100%; justify-content: flex-start !important; }
-          .pawan-controls button { flex: 1 1 auto; min-height: 44px; font-size: 0.8rem !important; }
-          .pawan-templates { gap: 0.5rem !important; }
-          .pawan-templates button { min-width: 140px !important; max-width: 160px !important; }
-          .pawan-chat { max-height: 50vh !important; min-height: 280px !important; }
-          .pawan-input-grid { grid-template-columns: 1fr !important; }
-          .pawan-action-buttons { flex-direction: column !important; }
-          .pawan-action-buttons button { width: 100% !important; min-height: 44px; justify-content: center; }
+        * { box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #D6D3CC; border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #A8A29E; }
+        .claude-card {
+          background: ${T.panel};
+          border: 1px solid ${T.border};
+          box-shadow: ${T.shadowSm};
+          transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
-        @media (max-width: 480px) {
-          h1 { font-size: 1.4rem !important; }
-          .pawan-container { padding: 1rem 0.75rem !important; }
+        .claude-card:hover {
+          border-color: ${T.borderHover};
+        }
+        .claude-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 0.82rem;
+          transition: all 0.16s ease;
+          cursor: pointer;
+        }
+        .claude-btn:active {
+          transform: scale(0.98);
+        }
+        @media (max-width: 1023px) {
+          .desktop-split-view {
+            display: none !important;
+          }
+          .mobile-view {
+            display: flex !important;
+          }
+        }
+        @media (min-width: 1024px) {
+          .desktop-split-view {
+            display: grid !important;
+          }
+          .mobile-view {
+            display: none !important;
+          }
         }
       `}</style>
-      <div className="pawan-container" style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", flex: 1, paddingTop: "env(safe-area-inset-top, 0)", paddingBottom: "env(safe-area-inset-bottom, 0)" }}>
-        
-        {/* Top Header & Brand Bar - Fixed on Mobile */}
-        <div className="pawan-header" style={{ position: "sticky", top: 0, zIndex: 40, background: "radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.08) 0%, #060503 60%, #030201 100%)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(212, 175, 55, 0.2)", padding: "0.8rem 0 1rem", marginBottom: "1rem", flexShrink: 0 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", maxWidth: "1200px", margin: "0 auto" }}>
+
+      {/* ========================================================================= */}
+      {/* 🏛️ TOP HEADER: CLAUDE CODE EXECUTIVE BRAND BAR (ANCHORED & SYMMETRICAL)    */}
+      {/* ========================================================================= */}
+      <header style={{
+        flexShrink: 0,
+        background: T.panel,
+        borderBottom: `1px solid ${T.border}`,
+        padding: "0.75rem 1.5rem",
+        zIndex: 50
+      }}>
+        <div style={{
+          maxWidth: "1600px",
+          margin: "0 auto",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "1rem"
+        }}>
+          {/* Brand Identity */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
+            <div style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "10px",
+              background: `linear-gradient(135deg, ${T.accentLight} 0%, #FDE68A 100%)`,
+              border: `1px solid ${T.accentBorder}`,
+              display: "grid",
+              placeItems: "center",
+              fontSize: "1.2rem",
+              boxShadow: T.shadowSm
+            }}>
+              🦅
+            </div>
             <div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(212, 175, 55, 0.1)", border: "1px solid rgba(212, 175, 55, 0.35)", borderRadius: "999px", padding: "3px 12px", marginBottom: "0.4rem" }}>
-                <span style={{ fontSize: "0.85rem" }}>🦅</span>
-                <span style={{ color: "#fbbf24", fontWeight: "800", fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                  GARUDA PAWAN • Autonomous Coding Studio
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span style={{ fontSize: "1.02rem", fontWeight: "800", color: T.text, letterSpacing: "-0.01em" }}>
+                  PAWAN
+                </span>
+                <span style={{
+                  fontSize: "0.68rem",
+                  fontWeight: "700",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  color: T.accent,
+                  background: T.accentLight,
+                  border: `1px solid ${T.accentBorder}`,
+                  padding: "1px 7px",
+                  borderRadius: "6px"
+                }}>
+                  Studio
+                </span>
+                <span style={{
+                  fontSize: "0.7rem",
+                  color: T.emerald,
+                  fontWeight: "700",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px"
+                }}>
+                  <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: T.emerald }}></span>
+                  Ready
                 </span>
               </div>
-
-              <h1 style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: "800", margin: "0.2rem 0", color: "#ffffff", letterSpacing: "-0.02em" }}>
-                PAWAN Autonomous Code & Repair Studio
-              </h1>
-              <p style={{ margin: 0, color: "#d4af37", fontSize: "0.85rem", fontWeight: "600" }}>
-                “As Fast as Wind • Smooth & Powerful” — Closed-Loop ReAct Engine with Real-Time Syntax Repair & SHA-256 Audit Trail
-              </p>
-              <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "0.3rem" }}>
-                Founder: <strong>Praveen Mahawar</strong> • Voice-Guided Closed Loop • Multi-Model Synthesis
-              </div>
-              {pawanHistorySynced && (
-                <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.35)", color: "#6ee7b7", fontSize: "0.7rem", fontWeight: "700", padding: "3px 10px", borderRadius: "999px", marginTop: "6px" }}>
-                  <span>🔄</span> Synced with Cloud Database — {pawanHistoryCount} interactions restored (mobile + desktop)
-                </div>
-              )}
-            </div>
-
-            {/* Controls */}
-            <div className="pawan-controls" style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
-              <button
-                type="button"
-                onClick={() => setShowAppsFleet(true)}
-                style={{
-                  background: "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(99,102,241,0.25) 100%)",
-                  border: "1px solid #d4af37",
-                  color: "#fef08a",
-                  padding: "6px 14px",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontSize: "0.75rem",
-                  fontWeight: "800",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.4rem",
-                  boxShadow: "0 0 12px rgba(212,175,55,0.2)"
-                }}
-              >
-                <span>📱</span> Apps Made by Pawan
-                <span style={{ background: "#d4af37", color: "#000", padding: "1px 6px", borderRadius: "999px", fontSize: "0.68rem", fontWeight: "900" }}>Fleet</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setVoiceMuted(!voiceMuted)}
-                style={{ background: voiceMuted ? "#1c1917" : "rgba(212, 175, 55, 0.12)", border: `1px solid ${voiceMuted ? "#44403c" : "#d4af37"}`, color: voiceMuted ? "#a8a29e" : "#fbbf24", padding: "6px 12px", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "700" }}
-              >
-                {voiceMuted ? "🔇 Voice Muted" : "🔊 Voice Active"}
-              </button>
-
-              <button
-                type="button"
-                onClick={handleClearChatMemory}
-                title="Conversation memory reset karke naya project shuru karein"
-                style={{ background: "#1c1917", border: "1px solid #44403c", color: "#cbd5e1", padding: "6px 12px", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "700" }}
-              >
-                🧹 Reset Memory
-              </button>
-
-              {isFounder ? (
-                <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{
-                    background: "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(245,158,11,0.2) 100%)",
-                    border: "1px solid #d4af37",
-                    color: "#fef08a",
-                    padding: "6px 12px",
-                    borderRadius: "6px",
-                    fontSize: "0.75rem",
-                    fontWeight: "800"
-                  }}>
-                    👑 Founder Workspace (Internal)
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleFounderLock}
-                    title="Lock Founder Access"
-                    style={{ background: "#1c1917", border: "1px solid #44403c", color: "#a8a29e", padding: "6px 8px", borderRadius: "6px", cursor: "pointer", fontSize: "0.72rem" }}
-                  >
-                    🔒 Lock
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setShowFounderPasskeyModal(true)}
-                  style={{
-                    background: "#1c1917",
-                    border: "1px solid #44403c",
-                    color: "#94a3b8",
-                    padding: "6px 12px",
-                    borderRadius: "6px",
-                    fontSize: "0.75rem",
-                    fontWeight: "800",
-                    cursor: "pointer"
-                  }}
-                >
-                  🛡️ Sovereign Scoping Mode
-                </button>
-              )}
-
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "4px 10px", borderRadius: "6px", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.35)", fontSize: "0.72rem", color: "#34d399", fontWeight: "800" }}>
-                <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#10b981", display: "inline-block" }}></span>
-                ONLINE
+              <div style={{ fontSize: "0.75rem", color: T.textMuted, marginTop: "1px" }}>
+                Autonomous Software Architect • Closed-Loop ReAct Engine
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Main Workspace Layout - Flex Column for Mobile */}
-        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0, gap: "1rem" }}>
-          
-          {/* ================================================================= */}
-          {/* 🦅 PAWAN SOVEREIGN CONSULTATIVE CHATBOX & EXECUTION CONSOLE       */}
-          {/* ================================================================= */}
-          <div style={{ background: "#080705", border: "1px solid rgba(212, 175, 55, 0.35)", borderRadius: "14px", padding: "1rem", boxShadow: "0 15px 40px rgba(0,0,0,0.7)", display: "flex", flexDirection: "column", flex: 1, minHeight: 0, overflow: "hidden" }}>
-            
-            {/* Top Mode Switcher & Active Project Indicator - Sticky */}
-            <div style={{ position: "sticky", top: 0, zIndex: 20, background: "#080705", borderBottom: "1px solid rgba(212, 175, 55, 0.2)", paddingBottom: "0.8rem", marginBottom: "0.8rem", flexShrink: 0 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.8rem" }}>
-                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          {/* Center: Active Project Pill (If any) */}
+          {activeProject && (
+            <div style={{
+              display: "none",
+              alignItems: "center",
+              gap: "0.5rem",
+              background: T.bgSubtle,
+              border: `1px solid ${T.border}`,
+              padding: "4px 12px",
+              borderRadius: "999px",
+              fontSize: "0.75rem",
+              color: T.text
+            }} className="md:flex">
+              <span style={{ color: T.textSubtle }}>Active:</span>
+              <strong style={{ fontFamily: "ui-monospace, monospace" }}>{activeProject.file}</strong>
+              <span style={{ background: T.border, color: T.text, padding: "1px 6px", borderRadius: "4px", fontSize: "0.68rem" }}>
+                v{activeProject.version}
+              </span>
+              <button
+                type="button"
+                onClick={() => setActiveProject(null)}
+                title="Start fresh project"
+                style={{ background: "transparent", border: "none", color: T.textSubtle, cursor: "pointer", padding: "0 2px" }}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {/* Right Header Actions */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <button
+              type="button"
+              onClick={() => setShowAppsFleet(true)}
+              className="claude-btn"
+              style={{
+                background: T.bgSubtle,
+                border: `1px solid ${T.border}`,
+                color: T.text,
+                padding: "6px 12px",
+                fontSize: "0.75rem"
+              }}
+            >
+              <span>📱</span> Fleet ({CODING_TEMPLATES.length})
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowAuditTrail(!showAuditTrail)}
+              className="claude-btn"
+              style={{
+                background: showAuditTrail ? T.panelSubtle : T.panel,
+                border: `1px solid ${T.border}`,
+                color: T.textMuted,
+                padding: "6px 12px",
+                fontSize: "0.75rem"
+              }}
+            >
+              <span>📜</span> History ({history.length})
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setVoiceMuted(!voiceMuted)}
+              className="claude-btn"
+              title={voiceMuted ? "Unmute Voice" : "Mute Voice"}
+              style={{
+                background: T.panel,
+                border: `1px solid ${T.border}`,
+                color: voiceMuted ? T.textSubtle : T.accent,
+                padding: "6px 10px",
+                fontSize: "0.75rem"
+              }}
+            >
+              {voiceMuted ? "🔇" : "🔊"}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleClearChatMemory}
+              className="claude-btn"
+              title="Reset conversation memory"
+              style={{
+                background: T.panel,
+                border: `1px solid ${T.border}`,
+                color: T.textSubtle,
+                padding: "6px 10px",
+                fontSize: "0.75rem"
+              }}
+            >
+              🧹
+            </button>
+
+            {isFounder ? (
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                <span style={{
+                  background: T.accentLight,
+                  border: `1px solid ${T.accentBorder}`,
+                  color: T.accentHover,
+                  padding: "5px 10px",
+                  borderRadius: "6px",
+                  fontSize: "0.75rem",
+                  fontWeight: "700"
+                }}>
+                  👑 Founder
+                </span>
+                <button
+                  type="button"
+                  onClick={handleFounderLock}
+                  title="Lock Founder Mode"
+                  style={{ background: "transparent", border: "none", color: T.textSubtle, cursor: "pointer", padding: "4px 6px" }}
+                >
+                  🔒
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowFounderPasskeyModal(true)}
+                className="claude-btn"
+                style={{
+                  background: T.panel,
+                  border: `1px solid ${T.border}`,
+                  color: T.textMuted,
+                  padding: "5px 10px",
+                  fontSize: "0.75rem"
+                }}
+              >
+                Founder Access
+              </button>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Top Navigation Tabs (Only visible on small screens) */}
+      <div className="mobile-view" style={{
+        display: "none",
+        flexShrink: 0,
+        background: T.panel,
+        borderBottom: `1px solid ${T.border}`,
+        padding: "0.4rem 1rem",
+        gap: "0.5rem"
+      }}>
+        <button
+          type="button"
+          onClick={() => setMobileViewTab("chat")}
+          style={{
+            flex: 1,
+            padding: "8px",
+            borderRadius: "6px",
+            border: mobileViewTab === "chat" ? `1px solid ${T.accent}` : `1px solid ${T.border}`,
+            background: mobileViewTab === "chat" ? T.accentLight : T.panel,
+            color: mobileViewTab === "chat" ? T.accentHover : T.textMuted,
+            fontWeight: "700",
+            fontSize: "0.82rem",
+            cursor: "pointer"
+          }}
+        >
+          💬 Chat & Plan
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileViewTab("output")}
+          style={{
+            flex: 1,
+            padding: "8px",
+            borderRadius: "6px",
+            border: mobileViewTab === "output" ? `1px solid ${T.emerald}` : `1px solid ${T.border}`,
+            background: mobileViewTab === "output" ? T.emeraldLight : T.panel,
+            color: mobileViewTab === "output" ? T.emerald : T.textMuted,
+            fontWeight: "700",
+            fontSize: "0.82rem",
+            cursor: "pointer"
+          }}
+        >
+          👁️ Live App & Code {result ? "• Ready" : ""}
+        </button>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 🖥️ MAIN STUDIO BODY: TWO-COLUMN SYMMETRICAL WORKSPACE ON DESKTOP           */}
+      {/* ========================================================================= */}
+      <main style={{
+        flex: 1,
+        minHeight: 0,
+        maxWidth: "1600px",
+        margin: "0 auto",
+        width: "100%",
+        padding: "1rem 1.5rem",
+        display: "grid",
+        gridTemplateColumns: "1fr 1.15fr",
+        gap: "1.25rem",
+        overflow: "hidden"
+      }} className="desktop-split-view">
+
+        {/* ----------------------------------------------------------------------- */}
+        {/* LEFT COLUMN: THE CONVERSATIONAL ARCHITECT & PROMPT TERMINAL             */}
+        {/* ----------------------------------------------------------------------- */}
+        <section className="claude-card" style={{
+          borderRadius: "14px",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0,
+          overflow: "hidden"
+        }}>
+          {/* Subheader: Mode & 1-Tap Blueprint Pills */}
+          <div style={{
+            padding: "0.75rem 1rem",
+            background: T.panelSubtle,
+            borderBottom: `1px solid ${T.border}`,
+            flexShrink: 0
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+              <div style={{ display: "flex", gap: "0.4rem" }}>
                 <button
                   type="button"
                   onClick={() => setStudioMode("discuss")}
                   style={{
-                    padding: "7px 14px",
-                    borderRadius: "8px",
-                    border: studioMode === "discuss" ? "1px solid #d4af37" : "1px solid #292524",
-                    background: studioMode === "discuss" ? "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(245,158,11,0.15) 100%)" : "#14120c",
-                    color: studioMode === "discuss" ? "#fef08a" : "#a8a29e",
-                    fontWeight: "800",
-                    fontSize: "0.82rem",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.4rem"
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    border: studioMode === "discuss" ? `1px solid ${T.accent}` : `1px solid ${T.border}`,
+                    background: studioMode === "discuss" ? T.panel : "transparent",
+                    color: studioMode === "discuss" ? T.text : T.textSubtle,
+                    fontWeight: "700",
+                    fontSize: "0.75rem",
+                    cursor: "pointer"
                   }}
                 >
-                  <span>💬</span> Samvaad (Discuss & Plan)
+                  💬 Samvaad (Plan First)
                 </button>
-
                 <button
                   type="button"
                   onClick={() => setStudioMode("execute")}
                   style={{
-                    padding: "7px 14px",
-                    borderRadius: "8px",
-                    border: studioMode === "execute" ? "1px solid #10b981" : "1px solid #292524",
-                    background: studioMode === "execute" ? "rgba(16, 185, 129, 0.15)" : "#14120c",
-                    color: studioMode === "execute" ? "#6ee7b7" : "#a8a29e",
-                    fontWeight: "800",
-                    fontSize: "0.82rem",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.4rem"
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    border: studioMode === "execute" ? `1px solid ${T.emerald}` : `1px solid ${T.border}`,
+                    background: studioMode === "execute" ? T.panel : "transparent",
+                    color: studioMode === "execute" ? T.emerald : T.textSubtle,
+                    fontWeight: "700",
+                    fontSize: "0.75rem",
+                    cursor: "pointer"
                   }}
                 >
-                  <span>⚡</span> Direct Code Execution
+                  ⚡ Direct Execute
                 </button>
               </div>
+              <span style={{ fontSize: "0.7rem", color: T.textSubtle }}>
+                {studioMode === "discuss" ? "Structured Roadmap" : "Instant Code Synthesis"}
+              </span>
+            </div>
 
-              {/* Active Project Continuity Memory Indicator */}
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                {activeProject ? (
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(56, 189, 248, 0.12)", border: "1px solid rgba(56, 189, 248, 0.35)", padding: "4px 10px", borderRadius: "6px", fontSize: "0.75rem", color: "#38bdf8" }}>
-                    <span>📌 Active App:</span>
-                    <strong>{activeProject.file}</strong>
-                    <span style={{ background: "#0369a1", color: "#fff", padding: "1px 5px", borderRadius: "4px", fontSize: "0.68rem" }}>v{activeProject.version}</span>
-                    <button
-                      type="button"
-                      onClick={() => setActiveProject(null)}
-                      title="Clear active project to start fresh"
-                      style={{ background: "transparent", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "0.75rem", padding: "0 2px" }}
-                    >
-                      ✕ New
-                    </button>
+            {/* Blueprint Horizontal Chips */}
+            <div style={{
+              display: "flex",
+              gap: "0.5rem",
+              overflowX: "auto",
+              paddingBottom: "2px",
+              scrollbarWidth: "none"
+            }}>
+              {CODING_TEMPLATES.map((tpl, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    setInstruction(tpl.instruction);
+                    setTargetFile(tpl.targetFile);
+                    setStudioMode("discuss");
+                  }}
+                  style={{
+                    flex: "0 0 auto",
+                    background: instruction === tpl.instruction ? T.accentLight : T.panel,
+                    border: instruction === tpl.instruction ? `1px solid ${T.accentBorder}` : `1px solid ${T.border}`,
+                    borderRadius: "6px",
+                    padding: "4px 8px",
+                    cursor: "pointer",
+                    fontSize: "0.72rem",
+                    color: T.text,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px"
+                  }}
+                >
+                  <span>{tpl.icon}</span>
+                  <span style={{ fontWeight: "600" }}>{tpl.title}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Conversational Stream: Clean White Chat Body */}
+          <div style={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: "auto",
+            padding: "1rem",
+            background: T.bg,
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.85rem"
+          }}>
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignSelf: m.sender === "user" ? "flex-end" : "flex-start",
+                  maxWidth: m.consultation ? "100%" : "88%",
+                  width: m.consultation ? "100%" : "auto"
+                }}
+              >
+                {/* Message Header */}
+                <div style={{
+                  fontSize: "0.68rem",
+                  color: T.textSubtle,
+                  marginBottom: "3px",
+                  alignSelf: m.sender === "user" ? "flex-end" : "flex-start",
+                  display: "flex",
+                  gap: "6px"
+                }}>
+                  <strong style={{ color: m.sender === "user" ? T.text : T.claudeTerracotta }}>
+                    {m.sender === "user" ? "Praveen Mahawar" : "PAWAN"}
+                  </strong>
+                  <span>{m.timestamp}</span>
+                </div>
+
+                {/* User Message Bubble */}
+                {m.sender === "user" && (
+                  <div style={{
+                    background: T.panel,
+                    color: T.text,
+                    border: `1px solid ${T.border}`,
+                    padding: "10px 14px",
+                    borderRadius: "12px 12px 2px 12px",
+                    fontSize: "0.86rem",
+                    lineHeight: 1.5,
+                    boxShadow: T.shadowSm
+                  }}>
+                    {m.attachment && (
+                      <div style={{
+                        marginBottom: "6px",
+                        padding: "6px 8px",
+                        background: T.bgSubtle,
+                        borderRadius: "6px",
+                        border: `1px solid ${T.border}`,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}>
+                        {m.attachment.isImage ? (
+                          <img src={m.attachment.data} alt="thumb" style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px" }} />
+                        ) : (
+                          <span style={{ fontSize: "1.2rem" }}>📄</span>
+                        )}
+                        <span style={{ fontSize: "0.75rem", fontWeight: "600" }}>{m.attachment.name}</span>
+                      </div>
+                    )}
+                    {m.text}
                   </div>
-                ) : (
-                  <span style={{ fontSize: "0.72rem", color: "#78716c" }}>
-                    ✨ Mode: Fresh Architecture
-                  </span>
                 )}
-              </div>
-            </div>
 
-            {/* ⚡ Beautiful Production Coding Templates Gallery */}
-            <div style={{ marginBottom: "1rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                <span style={{ fontSize: "0.75rem", fontWeight: "800", color: "#f59e0b", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                  ⚡ 1-Tap Production Coding Templates:
-                </span>
-                <span style={{ fontSize: "0.68rem", color: "#78716c" }}>Click to auto-load blueprint</span>
-              </div>
-              <div className="pawan-templates" style={{ display: "flex", gap: "0.6rem", overflowX: "auto", paddingBottom: "4px", WebkitOverflowScrolling: "touch" }}>
-                {CODING_TEMPLATES.map((tpl, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => {
-                      setInstruction(tpl.instruction);
-                      setTargetFile(tpl.targetFile);
-                      setStudioMode("discuss");
-                    }}
-                    style={{
-                      flex: "0 0 auto",
-                      background: instruction === tpl.instruction ? "rgba(245, 158, 11, 0.2)" : "#090d16",
-                      border: instruction === tpl.instruction ? "1px solid #f59e0b" : "1px solid #1e293b",
-                      borderRadius: "8px",
-                      padding: "8px 12px",
-                      cursor: "pointer",
-                      textAlign: "left",
-                      minWidth: "160px",
-                      maxWidth: "200px",
-                      transition: "all 0.2s ease"
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "3px" }}>
-                      <span style={{ fontSize: "1rem" }}>{tpl.icon}</span>
-                      <span style={{ fontSize: "0.78rem", fontWeight: "800", color: "#f3f4f6", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tpl.title}</span>
-                    </div>
-                    <div style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{tpl.category}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Conversational Stream - Scrollable Chat Area */}
-            {studioMode === "discuss" && (
-              <div style={{ flex: 1, overflowY: "auto", padding: "12px", background: "#040302", borderRadius: "10px", border: "1px solid #1c1917", display: "flex", flexDirection: "column", gap: "1rem", minHeight: 0, WebkitOverflowScrolling: "touch" }}>
-                {messages.map((m) => (
-                  <div
-                    key={m.id}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignSelf: m.sender === "user" ? "flex-end" : "flex-start",
-                      maxWidth: "92%",
-                      width: m.consultation ? "100%" : "auto"
-                    }}
-                  >
-                    {/* Message Header */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "4px", alignSelf: m.sender === "user" ? "flex-end" : "flex-start" }}>
-                      <span style={{ fontSize: "0.72rem", fontWeight: "700", color: m.sender === "user" ? "#93c5fd" : "#f59e0b" }}>
-                        {m.sender === "user" ? "👤 Praveen Mahawar" : "🦅 PAWAN Sovereign Architect"}
-                      </span>
-                      <span style={{ fontSize: "0.65rem", color: "#78716c" }}>{m.timestamp}</span>
-                    </div>
-
-                    {/* User Message Bubble */}
-                    {m.sender === "user" && (
-                      <div style={{ background: "#1e293b", color: "#f8fafc", padding: "10px 14px", borderRadius: "12px 12px 2px 12px", fontSize: "0.88rem", lineHeight: 1.5, border: "1px solid #334155" }}>
-                        {m.attachment && (
-                          <div style={{ marginBottom: "8px", padding: "6px 8px", background: "#0f172a", borderRadius: "6px", border: "1px solid #334155", display: "flex", alignItems: "center", gap: "8px" }}>
-                            {m.attachment.isImage ? (
-                              <img src={m.attachment.data} alt="attachment" style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "4px" }} />
-                            ) : (
-                              <span style={{ fontSize: "1.4rem" }}>📄</span>
-                            )}
-                            <div style={{ fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                              <strong>{m.attachment.name}</strong> ({m.attachment.size})
-                            </div>
+                {/* Pawan Message / Consultation Cards */}
+                {m.sender === "pawan" && (
+                  <div>
+                    {m.consultation && m.consultation.actionPlan ? (
+                      <div style={{
+                        background: T.panel,
+                        border: `1px solid ${T.border}`,
+                        borderRadius: "10px",
+                        padding: "12px 14px",
+                        boxShadow: T.shadowSm,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px"
+                      }}>
+                        {/* Observation */}
+                        {(m.consultation.reply || m.consultation.observation) && (
+                          <div style={{ fontSize: "0.86rem", color: T.text, lineHeight: 1.5 }}>
+                            {m.consultation.reply || m.consultation.observation}
                           </div>
                         )}
+
+                        {/* Recommendations */}
+                        {m.consultation.recommendations?.length > 0 && (
+                          <div style={{
+                            background: T.emeraldLight,
+                            border: `1px solid ${T.emeraldBorder}`,
+                            borderRadius: "8px",
+                            padding: "8px 12px"
+                          }}>
+                            <div style={{ fontSize: "0.75rem", fontWeight: "700", color: T.emerald, marginBottom: "3px" }}>
+                              Key Recommendations:
+                            </div>
+                            <ul style={{ margin: 0, paddingLeft: "1.1rem", fontSize: "0.8rem", color: "#065F46", lineHeight: 1.45 }}>
+                              {m.consultation.recommendations.map((rec, i) => (
+                                <li key={i}>{rec}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Action Plan */}
+                        <div style={{
+                          background: T.panelSubtle,
+                          border: `1px solid ${T.border}`,
+                          borderRadius: "8px",
+                          padding: "10px"
+                        }}>
+                          <div style={{ fontSize: "0.75rem", fontWeight: "700", color: T.textMuted, marginBottom: "4px" }}>
+                            Execution Blueprint:
+                          </div>
+                          <div style={{ fontSize: "0.82rem", color: T.text, whiteSpace: "pre-line", lineHeight: 1.45 }}>
+                            {m.consultation.actionPlan}
+                          </div>
+
+                          {/* 1-Click Action Buttons */}
+                          <div style={{ display: "flex", gap: "8px", marginTop: "10px", flexWrap: "wrap" }}>
+                            <button
+                              type="button"
+                              disabled={loading}
+                              onClick={() => handleExecuteFromPlan(m.consultation.suggestedInstruction, m.consultation.targetFile)}
+                              className="claude-btn"
+                              style={{
+                                background: loading ? T.textSubtle : T.accent,
+                                color: "#FFFFFF",
+                                border: "none",
+                                padding: "7px 14px",
+                                fontSize: "0.78rem"
+                              }}
+                            >
+                              <span>{loading ? "⚡" : (isFounder ? "🚀" : "💳")}</span>
+                              {loading ? "Synthesizing..." : (isFounder ? "Execute Plan (कोड निष्पादित करें)" : "Confirm & Unlock Code")}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setInstruction(m.consultation.suggestedInstruction || "");
+                                setTargetFile(m.consultation.targetFile || "");
+                              }}
+                              className="claude-btn"
+                              style={{
+                                background: T.panel,
+                                color: T.textMuted,
+                                border: `1px solid ${T.border}`,
+                                padding: "7px 12px",
+                                fontSize: "0.78rem"
+                              }}
+                            >
+                              ✏️ Tweak Plan
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleRequestMarketQuote(m.consultation.suggestedInstruction || m.consultation.actionPlan)}
+                              className="claude-btn"
+                              style={{
+                                background: T.panel,
+                                color: T.accent,
+                                border: `1px solid ${T.border}`,
+                                padding: "7px 12px",
+                                fontSize: "0.78rem"
+                              }}
+                            >
+                              📊 Feasibility Report
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{
+                        background: T.panel,
+                        color: T.text,
+                        border: `1px solid ${T.border}`,
+                        padding: "10px 14px",
+                        borderRadius: "12px 12px 12px 2px",
+                        fontSize: "0.86rem",
+                        lineHeight: 1.5,
+                        boxShadow: T.shadowSm
+                      }}>
                         {m.text}
                       </div>
                     )}
-
-                    {/* Pawan Consultative Message Cards */}
-                    {m.sender === "pawan" && (
-                      <div>
-                        {m.consultation && m.consultation.actionPlan ? (
-                          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                            {/* Summary / Thought Bubble */}
-                            {(m.consultation.reply || m.consultation.observation) && (
-                              <div style={{ background: "#181511", color: "#fef08a", padding: "12px 14px", borderRadius: "12px 12px 12px 2px", fontSize: "0.88rem", lineHeight: 1.5, border: "1px solid rgba(212, 175, 55, 0.35)" }}>
-                                {m.consultation.reply || m.consultation.observation}
-                              </div>
-                            )}
-
-                            {/* Recommendations (Only if provided) */}
-                            {m.consultation.recommendations?.length > 0 && (
-                              <div style={{ background: "rgba(6, 78, 59, 0.2)", border: "1px solid rgba(16, 185, 129, 0.4)", borderRadius: "10px", padding: "10px 14px" }}>
-                                <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#34d399", textTransform: "uppercase", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-                                  <span>💡</span> Key Recommendations
-                                </div>
-                                <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.83rem", color: "#d1fae5", lineHeight: 1.5 }}>
-                                  {m.consultation.recommendations.map((rec, idx) => (
-                                    <li key={idx} style={{ marginBottom: "2px" }}>{rec}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-
-                            {/* Risks & Loopholes (Only if provided) */}
-                            {m.consultation.risksAndLoopholes?.length > 0 && (
-                              <div style={{ background: "rgba(127, 29, 29, 0.2)", border: "1px solid rgba(239, 68, 68, 0.4)", borderRadius: "10px", padding: "10px 14px" }}>
-                                <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#f87171", textTransform: "uppercase", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-                                  <span>⚠️</span> Key Risks
-                                </div>
-                                <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.83rem", color: "#fee2e2", lineHeight: 1.5 }}>
-                                  {m.consultation.risksAndLoopholes.map((risk, idx) => (
-                                    <li key={idx} style={{ marginBottom: "2px" }}>{risk}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-
-                            {/* Execution Plan & 1-Click Execution */}
-                            <div style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(245,158,11,0.08) 100%)", border: "1px solid rgba(212, 175, 55, 0.45)", borderRadius: "10px", padding: "14px" }}>
-                              <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#fbbf24", textTransform: "uppercase", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
-                                <span>🚀</span> Action Roadmap
-                              </div>
-                              <div style={{ fontSize: "0.84rem", color: "#fef08a", lineHeight: 1.5, marginBottom: "12px", whiteSpace: "pre-line" }}>
-                                {m.consultation.actionPlan}
-                              </div>
-
-                              {/* Action Footer Buttons */}
-                              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center", paddingTop: "8px", borderTop: "1px dashed rgba(212, 175, 55, 0.3)" }}>
-                                <button
-                                  type="button"
-                                  disabled={loading}
-                                  onClick={() => handleExecuteFromPlan(m.consultation.suggestedInstruction, m.consultation.targetFile)}
-                                  style={{
-                                    background: loading ? "#44403c" : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                                    color: "#ffffff",
-                                    border: "none",
-                                    padding: "8px 16px",
-                                    borderRadius: "8px",
-                                    fontWeight: "900",
-                                    fontSize: "0.82rem",
-                                    cursor: loading ? "wait" : "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "6px",
-                                    boxShadow: "0 0 15px rgba(16, 185, 129, 0.3)"
-                                  }}
-                                >
-                                  <span>{loading ? "⚡" : (isFounder ? "🚀" : "💳")}</span>
-                                  {loading ? "Building Code..." : (isFounder ? "Execute This Plan (कोड निष्पादित करें)" : "Confirm & Unlock App Code (₹999 / ₹2,499)")}
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setInstruction(m.consultation.suggestedInstruction || "");
-                                    setTargetFile(m.consultation.targetFile || "");
-                                  }}
-                                  style={{
-                                    background: "#1c1917",
-                                    color: "#fef08a",
-                                    border: "1px solid #44403c",
-                                    padding: "8px 12px",
-                                    borderRadius: "8px",
-                                    fontWeight: "700",
-                                    fontSize: "0.78rem",
-                                    cursor: "pointer"
-                                  }}
-                                >
-                                  ✏️ Tweak / Alter Plan
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={() => handleRequestMarketQuote(m.consultation.suggestedInstruction || m.consultation.actionPlan)}
-                                  style={{
-                                    background: "linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(245,158,11,0.2) 100%)",
-                                    color: "#fef08a",
-                                    border: "1px solid #d4af37",
-                                    padding: "8px 12px",
-                                    borderRadius: "8px",
-                                    fontWeight: "800",
-                                    fontSize: "0.78rem",
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "4px"
-                                  }}
-                                >
-                                  📊 Market Rate &amp; Feasibility Report
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        ) : m.marketQuote ? (
-                          <div style={{ background: "#0B0F19", border: "1px solid #D4AF37", borderRadius: "12px", padding: "16px", color: "#F8FAFC", maxWidth: "600px" }}>
-                            <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(212, 175, 55, 0.15)", border: "1px solid rgba(212, 175, 55, 0.35)", padding: "3px 10px", borderRadius: "999px", fontSize: "0.72rem", color: "#FEF08A", fontWeight: "800", marginBottom: "8px" }}>
-                              <span>🏛️</span> {m.marketQuote.formalGreeting} • MARKET FEASIBILITY REPORT
-                            </div>
-                            <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "#FFFFFF", margin: "0 0 4px 0" }}>
-                              {m.marketQuote.proposedApp}
-                            </h3>
-                            <p style={{ color: "#94A3B8", fontSize: "0.8rem", margin: "0 0 12px 0", lineHeight: 1.4 }}>
-                              {m.marketQuote.scopeSummary}
-                            </p>
-
-                            {/* Price Comparison Block */}
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", background: "#050811", border: "1px solid #1E293B", borderRadius: "8px", padding: "12px", marginBottom: "12px" }}>
-                              <div>
-                                <div style={{ fontSize: "0.72rem", color: "#64748B", textTransform: "uppercase", fontWeight: "700" }}>Traditional Agencies:</div>
-                                <div style={{ fontSize: "1.1rem", fontWeight: "700", color: "#94A3B8", textDecoration: m.marketQuote.allowDiscount ? "line-through" : "none" }}>
-                                  ₹{m.marketQuote.pricing.marketStandardPrice.toLocaleString("en-IN")}
-                                </div>
-                                <div style={{ fontSize: "0.68rem", color: "#64748B" }}>6-8 Weeks Delivery</div>
-                              </div>
-                              <div>
-                                <div style={{ fontSize: "0.72rem", color: "#34D399", textTransform: "uppercase", fontWeight: "800" }}>GARUDA Sovereign Rate:</div>
-                                <div style={{ fontSize: "1.25rem", fontWeight: "900", color: "#FEF08A" }}>
-                                  ₹{m.marketQuote.pricing.garudaStandardPrice.toLocaleString("en-IN")}
-                                </div>
-                                <div style={{ fontSize: "0.68rem", color: m.marketQuote.allowDiscount ? "#34D399" : "#F59E0B", fontWeight: "700" }}>
-                                  {m.marketQuote.allowDiscount ? "🔥 30% Efficiency Discount Applied" : "🔒 Baseline Resource Tier (No Discount)"}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Governance & Upfront Options */}
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "12px" }}>
-                              <div style={{ background: "#070D18", border: "1px solid #1E293B", borderRadius: "6px", padding: "10px" }}>
-                                <div style={{ fontSize: "0.75rem", fontWeight: "800", color: "#38BDF8" }}>50/50 Milestone Plan</div>
-                                <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "#FFFFFF", marginTop: "2px" }}>
-                                  Kickoff: ₹{m.marketQuote.pricing.milestonePlan.kickoff50.toLocaleString("en-IN")}
-                                </div>
-                                <div style={{ fontSize: "0.68rem", color: "#94A3B8", marginTop: "2px" }}>50% strictly on verified delivery</div>
-                              </div>
-                              <div style={{ background: "#070D18", border: "1px solid #10B981", borderRadius: "6px", padding: "10px" }}>
-                                <div style={{ fontSize: "0.75rem", fontWeight: "800", color: "#34D399" }}>100% Upfront VIP Bonus</div>
-                                <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "#FEF08A", marginTop: "2px" }}>
-                                  ₹{m.marketQuote.pricing.upfrontPlan.price.toLocaleString("en-IN")}
-                                </div>
-                                <div style={{ fontSize: "0.68rem", color: "#34D399", marginTop: "2px" }}>
-                                  {m.marketQuote.allowDiscount ? "Extra 5% Principal OFF (Total 35% Savings)" : "Full priority allocation"}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Free Inclusions */}
-                            <div style={{ background: "#050811", borderRadius: "6px", padding: "8px 10px", marginBottom: "12px", border: "1px solid #1E293B" }}>
-                              <div style={{ fontSize: "0.7rem", color: "#D4AF37", fontWeight: "800", textTransform: "uppercase", marginBottom: "4px" }}>🎁 FREE BUILT-IN SOVEREIGN VALUE:</div>
-                              <div style={{ fontSize: "0.72rem", color: "#CBD5E1", display: "flex", flexDirection: "column", gap: "2px" }}>
-                                {m.marketQuote.freeValueAdditions.map((item, i) => (
-                                  <div key={i}>✓ {item}</div>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* Sasti vs Premium Audit Toggle */}
-                            <div style={{ marginBottom: "12px" }}>
-                              <button
-                                type="button"
-                                onClick={() => setShowComparisonFor(showComparisonFor === m.id ? null : m.id)}
-                                style={{ background: "transparent", border: "none", color: "#38BDF8", fontSize: "0.75rem", fontWeight: "700", cursor: "pointer", textDecoration: "underline", padding: 0 }}
-                              >
-                                {showComparisonFor === m.id ? "▲ Sasti vs Premium vs GARUDA Audit Chhupayein" : "▼ Sasti Website vs Premium vs GARUDA Audit Dekhein"}
-                              </button>
-                              {showComparisonFor === m.id && (
-                                <div style={{ marginTop: "8px", background: "#050811", border: "1px solid #1E293B", borderRadius: "6px", padding: "8px", fontSize: "0.72rem", overflowX: "auto" }}>
-                                  {m.marketQuote.technicalComparison.map((comp, idx) => (
-                                    <div key={idx} style={{ padding: "6px 0", borderBottom: "1px solid #141D2F" }}>
-                                      <div style={{ color: "#FEF08A", fontWeight: "700" }}>{comp.parameter}</div>
-                                      <div style={{ color: "#F87171" }}>❌ Sasti Site: {comp.sastiSite}</div>
-                                      <div style={{ color: "#94A3B8" }}>🏢 Agency Build: {comp.premiumAgency}</div>
-                                      <div style={{ color: "#34D399", fontWeight: "700" }}>🦅 GARUDA Sovereign: {comp.garudaSovereign}</div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Interactive Negotiation & Counter-Offer Box */}
-                            <div style={{ background: "#0E1526", border: "1px solid #3730A3", borderRadius: "8px", padding: "10px" }}>
-                              <div style={{ fontSize: "0.75rem", fontWeight: "800", color: "#A5B4FC", marginBottom: "4px" }}>
-                                🤝 Budget Negotiation &amp; Counter-Offer:
-                              </div>
-                              <div style={{ fontSize: "0.7rem", color: "#94A3B8", marginBottom: "8px" }}>
-                                GARUDA rate client-friendly aur negotiable hai. Apna budget propose karein:
-                              </div>
-                              <div style={{ display: "flex", gap: "6px" }}>
-                                <input
-                                  type="text"
-                                  placeholder="e.g. 50000"
-                                  value={counterOffers[m.id] || ""}
-                                  onChange={(e) => setCounterOffers({ ...counterOffers, [m.id]: e.target.value })}
-                                  style={{ flex: 1, background: "#050811", border: "1px solid #334155", borderRadius: "4px", padding: "6px 10px", color: "#fff", fontSize: "0.8rem" }}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => handleNegotiateQuote(m.marketQuote, counterOffers[m.id])}
-                                  style={{ background: "#6366F1", color: "#fff", border: "none", padding: "6px 14px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
-                                >
-                                  Negotiate
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div style={{ background: "#181511", color: "#fef08a", padding: "10px 14px", borderRadius: "12px 12px 12px 2px", fontSize: "0.88rem", lineHeight: 1.5, border: "1px solid rgba(212, 175, 55, 0.25)" }}>
-                            {m.text}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
-
-                {isConsulting && (
-                  <div style={{ alignSelf: "flex-start", padding: "10px 14px", background: "#181511", borderRadius: "10px", border: "1px solid #d4af37", color: "#fef08a", fontSize: "0.82rem", display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ animation: "spin 1s linear infinite" }}>⚙️</span> Pawan is analyzing requirements and structuring recommendations...
                   </div>
                 )}
-                <div ref={chatBottomRef} />
+              </div>
+            ))}
+
+            {isConsulting && (
+              <div style={{
+                alignSelf: "flex-start",
+                padding: "8px 12px",
+                background: T.panel,
+                border: `1px solid ${T.border}`,
+                borderRadius: "8px",
+                fontSize: "0.8rem",
+                color: T.textMuted,
+                display: "flex",
+                alignItems: "center",
+                gap: "6px"
+              }}>
+                <span style={{ animation: "spin 1s linear infinite" }}>⚙️</span>
+                Pawan is analyzing architecture & designing blueprint...
+              </div>
+            )}
+            <div ref={chatBottomRef} />
+          </div>
+
+          {/* Prompt Dock: Claude Code Clean Textarea & Actions */}
+          <div style={{
+            flexShrink: 0,
+            background: T.panel,
+            borderTop: `1px solid ${T.border}`,
+            padding: "0.85rem 1rem"
+          }}>
+            {/* Attachment preview if active */}
+            {activeAttachment && (
+              <div style={{
+                marginBottom: "8px",
+                padding: "6px 10px",
+                background: T.bgSubtle,
+                border: `1px solid ${T.border}`,
+                borderRadius: "6px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                fontSize: "0.78rem"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span>📎</span>
+                  <strong>{activeAttachment.name}</strong>
+                  <span style={{ color: T.textSubtle }}>({activeAttachment.size})</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRemoveAttachment}
+                  style={{ background: "transparent", border: "none", color: "#DC2626", cursor: "pointer", fontWeight: "700" }}
+                >
+                  ✕
+                </button>
               </div>
             )}
 
-            {/* Voice Status Alert */}
-            {voiceStatus && (
-              <div style={{ marginBottom: "0.8rem", padding: "8px 12px", background: "rgba(245, 158, 11, 0.12)", border: "1px solid rgba(245, 158, 11, 0.4)", borderRadius: "6px", fontSize: "0.8rem", color: "#fef08a", fontWeight: "700" }}>
-                {voiceStatus}
+            <form onSubmit={studioMode === "discuss" ? (e) => { e.preventDefault(); handleConsult(); } : handleExecute}>
+              <div style={{ position: "relative" }}>
+                <textarea
+                  rows="3"
+                  value={instruction}
+                  onChange={(e) => setInstruction(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      if (studioMode === "discuss") handleConsult();
+                      else handleExecute();
+                    }
+                  }}
+                  placeholder={
+                    studioMode === "discuss"
+                      ? "Describe your app idea or attach photo/PDF (e.g. 'Build an executive real-time profit & ROI calculator with sliders')..."
+                      : "Direct coding task describe karein..."
+                  }
+                  style={{
+                    width: "100%",
+                    background: T.bg,
+                    border: `1px solid ${T.border}`,
+                    borderRadius: "8px",
+                    padding: "10px 12px",
+                    color: T.text,
+                    fontSize: "0.88rem",
+                    lineHeight: 1.5,
+                    resize: "none",
+                    outline: "none",
+                    fontFamily: "inherit",
+                    transition: "border-color 0.15s ease"
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = T.accent}
+                  onBlur={(e) => e.target.style.borderColor = T.border}
+                />
               </div>
-            )}
 
-            {/* Hidden Attachment File Input (Camera & PDF picker) */}
+              {/* Bottom Row inside Prompt Dock */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px", flexWrap: "wrap", gap: "6px" }}>
+                <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="claude-btn"
+                    title="Attach image or PDF"
+                    style={{
+                      background: activeAttachment ? T.accentLight : T.bgSubtle,
+                      border: `1px solid ${T.border}`,
+                      color: activeAttachment ? T.accentHover : T.textMuted,
+                      padding: "6px 10px",
+                      fontSize: "0.75rem"
+                    }}
+                  >
+                    <span>📷</span> Camera / Doc
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={toggleVoiceInput}
+                    className="claude-btn"
+                    style={{
+                      background: isListening ? "#FEE2E2" : T.bgSubtle,
+                      border: `1px solid ${isListening ? "#FCA5A5" : T.border}`,
+                      color: isListening ? "#DC2626" : T.textMuted,
+                      padding: "6px 10px",
+                      fontSize: "0.75rem"
+                    }}
+                  >
+                    <span>{isListening ? "⏹️" : "🎙️"}</span>
+                    {isListening ? "Listening..." : "Mic"}
+                  </button>
+
+                  <input
+                    type="text"
+                    value={targetFile}
+                    onChange={(e) => setTargetFile(e.target.value)}
+                    placeholder={activeProject?.file ? `File: ${activeProject.file}` : "Target file (optional)"}
+                    style={{
+                      background: T.bgSubtle,
+                      border: `1px solid ${T.border}`,
+                      borderRadius: "6px",
+                      padding: "5px 8px",
+                      fontSize: "0.75rem",
+                      color: T.text,
+                      width: "140px",
+                      fontFamily: "ui-monospace, monospace",
+                      outline: "none"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  {studioMode === "discuss" ? (
+                    <button
+                      type="submit"
+                      disabled={isConsulting || (!instruction.trim() && !activeAttachment)}
+                      className="claude-btn"
+                      style={{
+                        background: isConsulting ? T.border : T.accent,
+                        color: "#FFFFFF",
+                        border: "none",
+                        padding: "7px 16px",
+                        fontSize: "0.82rem"
+                      }}
+                    >
+                      <span>{isConsulting ? "⚙️" : "💬"}</span>
+                      {isConsulting ? "Planning..." : "Ask Pawan ↵"}
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={loading || !instruction.trim()}
+                      className="claude-btn"
+                      style={{
+                        background: loading ? T.border : T.emerald,
+                        color: "#FFFFFF",
+                        border: "none",
+                        padding: "7px 16px",
+                        fontSize: "0.82rem"
+                      }}
+                    >
+                      <span>{loading ? "⚡" : "🚀"}</span>
+                      {loading ? "Building..." : "Run Code ↵"}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </form>
+
             <input
               type="file"
               ref={fileInputRef}
@@ -1528,1179 +1746,927 @@ export default function PawanCodingStudio({ founderSessionActive = false }) {
               style={{ display: "none" }}
               onChange={handleAttachmentSelect}
             />
+          </div>
+        </section>
 
-            {/* Attachment Preview Chip (If Selected) */}
-            {activeAttachment && (
-              <div style={{ marginBottom: "8px", padding: "8px 12px", background: "rgba(56, 189, 248, 0.1)", border: "1px solid rgba(56, 189, 248, 0.35)", borderRadius: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  {activeAttachment.isImage ? (
-                    <img src={activeAttachment.data} alt="thumb" style={{ width: "32px", height: "32px", objectFit: "cover", borderRadius: "4px" }} />
-                  ) : (
-                    <span style={{ fontSize: "1.2rem" }}>📄</span>
-                  )}
-                  <div style={{ fontSize: "0.8rem", color: "#e2e8f0" }}>
-                    <strong>{activeAttachment.name}</strong> <span style={{ color: "#94a3b8" }}>({activeAttachment.size})</span>
-                  </div>
-                </div>
+        {/* ----------------------------------------------------------------------- */}
+        {/* RIGHT COLUMN: THE STUDIO DECK (LIVE PREVIEW, CODE VIEWER & APK)          */}
+        {/* ----------------------------------------------------------------------- */}
+        <section className="claude-card" style={{
+          borderRadius: "14px",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0,
+          overflow: "hidden"
+        }}>
+          {/* Deck Tab Header */}
+          <div style={{
+            padding: "0.75rem 1rem",
+            background: T.panelSubtle,
+            borderBottom: `1px solid ${T.border}`,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexShrink: 0
+          }}>
+            {/* Tabs */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              <button
+                type="button"
+                onClick={() => setActiveTab("preview")}
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "6px",
+                  border: activeTab === "preview" ? `1px solid ${T.emeraldBorder}` : "1px solid transparent",
+                  background: activeTab === "preview" ? T.panel : "transparent",
+                  color: activeTab === "preview" ? T.emerald : T.textMuted,
+                  fontWeight: "700",
+                  fontSize: "0.78rem",
+                  cursor: "pointer"
+                }}
+              >
+                👁️ Live App Preview
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("code")}
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "6px",
+                  border: activeTab === "code" ? `1px solid ${T.border}` : "1px solid transparent",
+                  background: activeTab === "code" ? T.panel : "transparent",
+                  color: activeTab === "code" ? T.text : T.textMuted,
+                  fontWeight: "700",
+                  fontSize: "0.78rem",
+                  cursor: "pointer"
+                }}
+              >
+                📜 Code Viewer
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("mobile");
+                  fetchMobileStatus();
+                }}
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "6px",
+                  border: activeTab === "mobile" ? `1px solid ${T.border}` : "1px solid transparent",
+                  background: activeTab === "mobile" ? T.panel : "transparent",
+                  color: activeTab === "mobile" ? T.text : T.textMuted,
+                  fontWeight: "700",
+                  fontSize: "0.78rem",
+                  cursor: "pointer"
+                }}
+              >
+                📱 Mobile Bridge
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("trajectory")}
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "6px",
+                  border: activeTab === "trajectory" ? `1px solid ${T.border}` : "1px solid transparent",
+                  background: activeTab === "trajectory" ? T.panel : "transparent",
+                  color: activeTab === "trajectory" ? T.text : T.textMuted,
+                  fontWeight: "700",
+                  fontSize: "0.78rem",
+                  cursor: "pointer"
+                }}
+              >
+                ⚡ Steps
+              </button>
+            </div>
+
+            {/* Quick Action Buttons on Active Deck */}
+            {result && (
+              <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
                 <button
                   type="button"
-                  onClick={handleRemoveAttachment}
-                  style={{ background: "transparent", border: "none", color: "#f87171", cursor: "pointer", fontWeight: "800", fontSize: "0.85rem" }}
+                  onClick={handleLaunchLiveApp}
+                  className="claude-btn"
+                  title="Open app in fullscreen window"
+                  style={{
+                    background: T.emeraldLight,
+                    border: `1px solid ${T.emeraldBorder}`,
+                    color: T.emerald,
+                    padding: "4px 8px",
+                    fontSize: "0.72rem"
+                  }}
                 >
-                  ✕ Remove
+                  ↗ Fullscreen
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCopyCode}
+                  className="claude-btn"
+                  style={{
+                    background: T.panel,
+                    border: `1px solid ${T.border}`,
+                    color: T.text,
+                    padding: "4px 8px",
+                    fontSize: "0.72rem"
+                  }}
+                >
+                  {codeCopied ? "✓ Copied" : "📋 Copy"}
+                </button>
+
+                <button
+                  type="button"
+                  disabled={apkBuilding}
+                  onClick={handleBuildApk}
+                  className="claude-btn"
+                  style={{
+                    background: T.panel,
+                    border: `1px solid ${T.border}`,
+                    color: T.accent,
+                    padding: "4px 8px",
+                    fontSize: "0.72rem"
+                  }}
+                >
+                  📦 {apkBuilding ? "Packaging..." : "APK"}
                 </button>
               </div>
             )}
+          </div>
 
-            {/* Input Textarea & Smart Action Bar - Fixed at Bottom on Mobile */}
-            <form onSubmit={studioMode === "discuss" ? (e) => { e.preventDefault(); handleConsult(); } : handleExecute} style={{ flexShrink: 0, position: "sticky", bottom: 0, background: "#080705", borderTop: "1px solid rgba(212, 175, 55, 0.2)", paddingTop: "0.8rem", marginTop: "auto", zIndex: 30 }}>
-              <div style={{ position: "relative", marginBottom: "0.8rem" }}>
-                <textarea
-                  rows="3"
-                  value={instruction}
-                  onChange={(e) => setInstruction(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      if (studioMode === "discuss") {
-                        handleConsult();
-                      } else {
-                        handleExecute();
-                      }
-                    }
-                  }}
-                  placeholder={
-                    studioMode === "discuss"
-                      ? "Pawan se requirement discuss karein ya photo/PDF upload karke sujhav maangein (jaise: 'Client ko accounts sell karne ke liye app chahiye, batao kya-kya zaroori hai')..."
-                      : "Direct coding task describe karein (e.g. 'Add a trade discount toggle to cloth-gst.html')..."
-                  }
-                  style={{
-                    width: "100%",
-                    boxSizing: "border-box",
-                    background: "#030201",
-                    border: "1px solid rgba(212, 175, 55, 0.35)",
-                    borderRadius: "10px",
-                    padding: "14px",
-                    color: "#ffffff",
-                    fontSize: "16px",
-                    resize: "none",
-                    outline: "none",
-                    lineHeight: 1.5,
-                    fontFamily: "inherit"
-                  }}
-                />
+          {/* Deck Content Area */}
+          <div style={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: "auto",
+            padding: "1rem",
+            background: T.bgSubtle,
+            display: "flex",
+            flexDirection: "column"
+          }}>
+            {error && (
+              <div style={{
+                background: "#FEF2F2",
+                border: "1px solid #FCA5A5",
+                borderRadius: "8px",
+                padding: "10px 14px",
+                color: "#991B1B",
+                fontSize: "0.82rem",
+                marginBottom: "1rem"
+              }}>
+                <strong>Execution Note:</strong> {error}
               </div>
+            )}
 
-              {/* Action Bar (Camera, Voice, File, Send) */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.8rem" }}>
-                
-                {/* Left: Camera/Attachment + Voice Mic + Target File */}
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+            {/* TAB 1: LIVE APP PREVIEW */}
+            {activeTab === "preview" && (
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+                {/* Viewport bar */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                  <div style={{ display: "flex", gap: "4px" }}>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewViewport("desktop")}
+                      style={{
+                        padding: "3px 8px",
+                        borderRadius: "4px",
+                        border: `1px solid ${previewViewport === "desktop" ? T.borderHover : T.border}`,
+                        background: previewViewport === "desktop" ? T.panel : "transparent",
+                        color: T.text,
+                        fontSize: "0.72rem",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
+                    >
+                      🖥️ Desktop
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewViewport("mobile")}
+                      style={{
+                        padding: "3px 8px",
+                        borderRadius: "4px",
+                        border: `1px solid ${previewViewport === "mobile" ? T.borderHover : T.border}`,
+                        background: previewViewport === "mobile" ? T.panel : "transparent",
+                        color: T.text,
+                        fontSize: "0.72rem",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
+                    >
+                      📱 Mobile (375px)
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    title="Upload photo from camera or PDF document"
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.4rem",
-                      padding: "8px 12px",
-                      borderRadius: "8px",
-                      background: activeAttachment ? "rgba(56, 189, 248, 0.2)" : "#14120c",
-                      border: `1px solid ${activeAttachment ? "#38bdf8" : "#292524"}`,
-                      color: activeAttachment ? "#7dd3fc" : "#cbd5e1",
-                      fontSize: "0.8rem",
-                      fontWeight: "700",
-                      cursor: "pointer"
-                    }}
+                    onClick={() => setPreviewKey(k => k + 1)}
+                    style={{ background: "transparent", border: "none", color: T.textSubtle, fontSize: "0.72rem", cursor: "pointer" }}
                   >
-                    <span>📷</span> Camera / PDF
+                    🔄 Reload Preview
                   </button>
+                </div>
 
-                  <button
-                    type="button"
-                    onClick={toggleVoiceInput}
+                {/* The Iframe Sandbox Container */}
+                <div style={{
+                  flex: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "stretch",
+                  minHeight: "450px",
+                  background: previewViewport === "mobile" ? T.panelSubtle : T.panel,
+                  borderRadius: "10px",
+                  border: `1px solid ${T.border}`,
+                  overflow: "hidden",
+                  boxShadow: T.shadowSm
+                }}>
+                  <iframe
+                    key={previewKey}
+                    srcDoc={result?.code || activeProject?.code || `<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#FBFBF9] text-stone-800 flex items-center justify-center min-h-screen p-8 font-sans">
+  <div class="text-center max-w-md">
+    <div class="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center text-3xl mx-auto mb-4 shadow-sm">
+      🦅
+    </div>
+    <h3 class="text-lg font-bold text-stone-900 mb-1">PAWAN Live Simulation Studio</h3>
+    <p class="text-xs text-stone-500 leading-relaxed mb-4">
+      Aapka application code generate hone par yahan live running app appear hoga.
+    </p>
+    <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
+      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+      Awaiting Next Command
+    </div>
+  </div>
+</body>
+</html>`}
+                    title="Live Simulation Studio"
+                    sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.4rem",
-                      padding: "8px 12px",
-                      borderRadius: "8px",
-                      background: isListening ? "#b91c1c" : "#14120c",
-                      border: `1px solid ${isListening ? "#ef4444" : "rgba(212, 175, 55, 0.4)"}`,
-                      color: isListening ? "#ffffff" : "#fbbf24",
-                      fontSize: "0.8rem",
-                      fontWeight: "800",
-                      cursor: "pointer"
-                    }}
-                  >
-                    <span>{isListening ? "⏹️" : "🎙️"}</span>
-                    {isListening ? "Listening..." : "Voice Mic"}
-                  </button>
-
-                  {/* Target File (Optional) */}
-                  <input
-                    type="text"
-                    value={targetFile}
-                    onChange={(e) => setTargetFile(e.target.value)}
-                    placeholder={activeProject?.file ? `Editing: ${activeProject.file}` : "Target file (optional)"}
-                    style={{
-                      background: "#030201",
-                      border: "1px solid #292524",
-                      borderRadius: "6px",
-                      padding: "7px 10px",
-                      color: "#f8fafc",
-                      fontSize: "0.78rem",
-                      outline: "none",
-                      fontFamily: "ui-monospace, monospace",
-                      width: "160px"
+                      width: previewViewport === "mobile" ? "375px" : "100%",
+                      height: "100%",
+                      minHeight: "500px",
+                      border: previewViewport === "mobile" ? `8px solid #27272A` : "none",
+                      borderRadius: previewViewport === "mobile" ? "24px" : "0",
+                      background: "#FFFFFF",
+                      margin: previewViewport === "mobile" ? "12px auto" : "0"
                     }}
                   />
                 </div>
+              </div>
+            )}
 
-                {/* Right: Submit Button (Discuss / Run) */}
-                <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
-                  {studioMode === "discuss" ? (
-                    <button
-                      type="submit"
-                      disabled={isConsulting || (!instruction.trim() && !activeAttachment)}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                        padding: "9px 20px",
-                        background: isConsulting ? "#292524" : "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)",
-                        color: "#050402",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontWeight: "900",
-                        fontSize: "0.85rem",
-                        cursor: isConsulting ? "wait" : "pointer",
-                        boxShadow: "0 2px 15px rgba(212, 175, 55, 0.3)",
-                        letterSpacing: "0.02em"
-                      }}
-                    >
-                      <span>{isConsulting ? "⚙️" : "💬"}</span>
-                      {isConsulting ? "Analyzing..." : "Ask Pawan / Plan ↵"}
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      disabled={loading || !instruction.trim()}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                        padding: "9px 20px",
-                        background: loading ? "#292524" : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                        color: "#ffffff",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontWeight: "900",
-                        fontSize: "0.85rem",
-                        cursor: loading ? "wait" : "pointer",
-                        boxShadow: "0 2px 15px rgba(16, 185, 129, 0.3)",
-                        letterSpacing: "0.02em"
-                      }}
-                    >
-                      <span>{loading ? "⚡" : "🚀"}</span>
-                      {loading ? "Synthesizing..." : "Run Code ↵"}
-                    </button>
-                  )}
+            {/* TAB 2: CODE VIEWER */}
+            {activeTab === "code" && (
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+                <div style={{
+                  padding: "6px 12px",
+                  background: T.panel,
+                  border: `1px solid ${T.border}`,
+                  borderBottom: "none",
+                  borderTopLeftRadius: "8px",
+                  borderTopRightRadius: "8px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "0.75rem",
+                  color: T.textMuted
+                }}>
+                  <strong style={{ fontFamily: "ui-monospace, monospace" }}>{result?.file || activeProject?.file || "public/app.html"}</strong>
+                  <span>{result?.code ? `${result.code.split("\n").length} lines` : "Empty"}</span>
                 </div>
+                <pre style={{
+                  margin: 0,
+                  flex: 1,
+                  background: T.codeBg,
+                  color: T.codeText,
+                  padding: "1rem",
+                  borderBottomLeftRadius: "8px",
+                  borderBottomRightRadius: "8px",
+                  fontSize: "0.82rem",
+                  fontFamily: "ui-monospace, Consolas, Monaco, monospace",
+                  lineHeight: 1.55,
+                  overflowX: "auto",
+                  maxHeight: "600px"
+                }}>
+                  <code>{result?.code || activeProject?.code || "// No code generated yet. Enter prompt on the left to synthesize."}</code>
+                </pre>
               </div>
-            </form>
+            )}
 
-            {/* Clean Distraction-Free Status Bar */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.8rem", paddingTop: "0.6rem", borderTop: "1px solid #14120c", fontSize: "0.72rem", color: "#78716c", flexWrap: "wrap", gap: "0.5rem" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                <span style={{ color: "#d4af37" }}>⚡ Pro-Tip:</span>
-                <span>Boliye ya type kijiye — Pawan architecture plan karega, syntax verify karega aur phone par live test dega.</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowAppsFleet(true)}
-                style={{ background: "transparent", border: "none", color: "#38bdf8", cursor: "pointer", fontSize: "0.72rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "0.3rem" }}
-              >
-                <span>📱 Apps Built by Pawan</span>
-                <span style={{ textDecoration: "underline" }}>View Fleet ➔</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Execution Error Banner */}
-          {error && (
-            <div style={{ background: "rgba(185, 28, 28, 0.15)", border: "1px solid #dc2626", padding: "1rem", borderRadius: "8px", color: "#fca5a5", fontSize: "0.85rem" }}>
-              <strong>Execution Error:</strong> {error}
-            </div>
-          )}
-
-          {/* ================================================================= */}
-          {/* THE REAL RESULT VIEWER: CODE, LIVE PREVIEW, MOBILE DEBUGGER       */}
-          {/* ================================================================= */}
-          {result && (
-            <div style={{ background: "#080705", border: "2px solid #d4af37", borderRadius: "12px", padding: "1.5rem", boxShadow: "0 15px 40px rgba(0,0,0,0.8)" }}>
-              {/* Result Header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.8rem", borderBottom: "1px solid rgba(212, 175, 55, 0.2)", paddingBottom: "0.8rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                  <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "rgba(16, 185, 129, 0.2)", border: "1px solid #10b981", display: "grid", placeItems: "center", fontSize: "1.1rem" }}>
-                    ✓
-                  </div>
+            {/* TAB 3: MOBILE BRIDGE */}
+            {activeTab === "mobile" && (
+              <div style={{
+                background: T.panel,
+                border: `1px solid ${T.border}`,
+                borderRadius: "10px",
+                padding: "1.2rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem"
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
-                    <h3 style={{ margin: 0, fontSize: "1.05rem", color: "#75f4ab", fontWeight: "900", letterSpacing: "-0.01em" }}>
-                      TASK COMPLETED • CODE VERIFIED
-                    </h3>
-                    <div style={{ fontSize: "0.75rem", color: "#d4af37", marginTop: "2px", fontFamily: "monospace" }}>
-                      Target: <strong>{result.file}</strong> • Task ID: {result.taskId}
-                    </div>
+                    <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "700", color: T.text }}>
+                      📱 USB & Wi-Fi Mobile Device Bridge
+                    </h4>
+                    <p style={{ margin: "2px 0 0", fontSize: "0.75rem", color: T.textMuted }}>
+                      Plug phone via USB or connect to Wi-Fi to test and debug live on device.
+                    </p>
                   </div>
-                </div>
-
-                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
                   <button
                     type="button"
-                    onClick={handleLaunchLiveApp}
-                    style={{
-                      background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                      color: "#ffffff",
-                      border: "none",
-                      padding: "7px 14px",
-                      borderRadius: "6px",
-                      fontWeight: "800",
-                      fontSize: "0.78rem",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.4rem",
-                      boxShadow: "0 0 15px rgba(16, 185, 129, 0.3)"
-                    }}
+                    onClick={fetchMobileStatus}
+                    disabled={mobileLoading}
+                    className="claude-btn"
+                    style={{ background: T.bgSubtle, border: `1px solid ${T.border}`, padding: "4px 10px", fontSize: "0.72rem" }}
                   >
-                    <span>📲</span> Test Live on Mobile ➔
+                    {mobileLoading ? "Checking..." : "🔄 Refresh"}
                   </button>
-
-                  <button
-                    type="button"
-                    disabled={apkBuilding}
-                    onClick={handleBuildApk}
-                    style={{
-                      background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
-                      color: "#ffffff",
-                      border: "none",
-                      padding: "7px 14px",
-                      borderRadius: "6px",
-                      fontWeight: "800",
-                      fontSize: "0.78rem",
-                      cursor: apkBuilding ? "wait" : "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.4rem",
-                      boxShadow: "0 0 15px rgba(99, 102, 241, 0.3)"
-                    }}
-                  >
-                    <span>📦</span> {apkBuilding ? "Packaging APK..." : "Download APK / Package"}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleCopyCode}
-                    style={{
-                      background: codeCopied ? "#10b981" : "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)",
-                      color: "#000",
-                      border: "none",
-                      padding: "7px 14px",
-                      borderRadius: "6px",
-                      fontWeight: "800",
-                      fontSize: "0.78rem",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.4rem"
-                    }}
-                  >
-                    <span>{codeCopied ? "✓" : "📋"}</span>
-                    {codeCopied ? "Copied!" : "Copy Code"}
-                  </button>
-
-                  <span style={{ background: "#14120c", border: "1px solid rgba(212,175,55,0.3)", color: "#fef08a", padding: "5px 10px", borderRadius: "6px", fontSize: "0.72rem", fontWeight: "700" }}>
-                    Self-Heal Cycles: {result.healCyclesRun}
-                  </span>
                 </div>
-              </div>
 
-              {/* Summary Note */}
-              {result.summary && (
-                <div style={{ background: "rgba(212, 175, 55, 0.06)", border: "1px solid rgba(212, 175, 55, 0.2)", padding: "10px 14px", borderRadius: "6px", marginBottom: "1rem", fontSize: "0.82rem", color: "#fef08a", lineHeight: 1.5 }}>
-                  <strong>💡 Architectural Summary:</strong> {result.summary}
-                </div>
-              )}
-
-              {/* Result Tabs Navigation */}
-              <div style={{ display: "flex", gap: "0.4rem", marginBottom: "1rem", borderBottom: "1px solid #14120c", paddingBottom: "0.4rem", overflowX: "auto" }}>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("code")}
-                  style={{
-                    padding: "7px 14px",
-                    borderRadius: "6px",
-                    border: activeTab === "code" ? "1px solid #d4af37" : "1px solid transparent",
-                    background: activeTab === "code" ? "rgba(212, 175, 55, 0.15)" : "transparent",
-                    color: activeTab === "code" ? "#fef08a" : "#94a3b8",
-                    fontWeight: "800",
-                    fontSize: "0.8rem",
-                    cursor: "pointer"
-                  }}
-                >
-                  📜 Code Viewer
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("preview")}
-                  style={{
-                    padding: "7px 14px",
-                    borderRadius: "6px",
-                    border: activeTab === "preview" ? "1px solid #10b981" : "1px solid transparent",
-                    background: activeTab === "preview" ? "rgba(16, 185, 129, 0.15)" : "transparent",
-                    color: activeTab === "preview" ? "#6ee7b7" : "#94a3b8",
-                    fontWeight: "800",
-                    fontSize: "0.8rem",
-                    cursor: "pointer"
-                  }}
-                >
-                  👁️ In-Studio Preview
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveTab("mobile");
-                    fetchMobileStatus();
-                  }}
-                  style={{
-                    padding: "7px 14px",
-                    borderRadius: "6px",
-                    border: activeTab === "mobile" ? "1px solid #38bdf8" : "1px solid transparent",
-                    background: activeTab === "mobile" ? "rgba(56, 189, 248, 0.15)" : "transparent",
-                    color: activeTab === "mobile" ? "#7dd3fc" : "#94a3b8",
-                    fontWeight: "800",
-                    fontSize: "0.8rem",
-                    cursor: "pointer"
-                  }}
-                >
-                  📱 Mobile Debugger
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("trajectory")}
-                  style={{
-                    padding: "7px 14px",
-                    borderRadius: "6px",
-                    border: activeTab === "trajectory" ? "1px solid #d4af37" : "1px solid transparent",
-                    background: activeTab === "trajectory" ? "rgba(212, 175, 55, 0.15)" : "transparent",
-                    color: activeTab === "trajectory" ? "#fef08a" : "#94a3b8",
-                    fontWeight: "800",
-                    fontSize: "0.8rem",
-                    cursor: "pointer"
-                  }}
-                >
-                  ⚡ Execution Steps
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("proof")}
-                  style={{
-                    padding: "7px 14px",
-                    borderRadius: "6px",
-                    border: activeTab === "proof" ? "1px solid #d4af37" : "1px solid transparent",
-                    background: activeTab === "proof" ? "rgba(212, 175, 55, 0.15)" : "transparent",
-                    color: activeTab === "proof" ? "#fef08a" : "#94a3b8",
-                    fontWeight: "800",
-                    fontSize: "0.8rem",
-                    cursor: "pointer"
-                  }}
-                >
-                  🔒 SHA-256 Proof
-                </button>
-              </div>
-
-              {/* TAB 1: CODE VIEWER */}
-              {activeTab === "code" && (
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#110f0b", padding: "8px 12px", borderTopLeftRadius: "6px", borderTopRightRadius: "6px", border: "1px solid #24201a", borderBottom: "none" }}>
-                    <span style={{ fontSize: "0.75rem", color: "#d4af37", fontFamily: "ui-monospace, monospace", fontWeight: "700" }}>
-                      📁 {result.file}
-                    </span>
-                    <span style={{ fontSize: "0.7rem", color: "#a8a29e" }}>
-                      {result.code ? `${result.code.split("\n").length} Lines` : "File Updated"}
-                    </span>
-                  </div>
-                  <pre style={{ margin: 0, padding: "14px", background: "#030201", border: "1px solid #24201a", borderBottomLeftRadius: "6px", borderBottomRightRadius: "6px", color: "#f8fafc", fontSize: "0.82rem", fontFamily: "ui-monospace, Consolas, Monaco, monospace", lineHeight: 1.5, overflowX: "auto", maxHeight: "440px", whiteSpace: "pre" }}>
-                    <code>{result.code || "// Code patched directly to " + result.file + "\n// Inspect file in editor."}</code>
-                  </pre>
-                </div>
-              )}
-
-              {/* TAB 2: LIVE APP PREVIEW (IN-STUDIO SIMULATOR) */}
-              {activeTab === "preview" && (
-                <div style={{ background: "#030201", border: "1px solid #24201a", borderRadius: "8px", padding: "0.8rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem", flexWrap: "wrap", gap: "0.5rem" }}>
-                    <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
-                      <span style={{ fontSize: "0.75rem", color: "#d4af37", fontWeight: "700" }}>Simulator:</span>
-                      <button
-                        type="button"
-                        onClick={() => setPreviewViewport("desktop")}
-                        style={{ background: previewViewport === "desktop" ? "rgba(212,175,55,0.2)" : "#14120c", border: "1px solid #38332b", color: previewViewport === "desktop" ? "#fef08a" : "#94a3b8", padding: "3px 8px", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer", fontWeight: "700" }}
-                      >
-                        🖥️ Desktop (Full)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPreviewViewport("mobile")}
-                        style={{ background: previewViewport === "mobile" ? "rgba(56,189,248,0.2)" : "#14120c", border: "1px solid #38332b", color: previewViewport === "mobile" ? "#7dd3fc" : "#94a3b8", padding: "3px 8px", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer", fontWeight: "700" }}
-                      >
-                        📱 Mobile (375px)
-                      </button>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem" }}>
+                  <div style={{
+                    background: T.bgSubtle,
+                    border: `1px solid ${mobileStatus?.connected ? T.emeraldBorder : T.border}`,
+                    borderRadius: "8px",
+                    padding: "10px"
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+                      <span>{mobileStatus?.connected ? "🟢" : "🔌"}</span>
+                      <strong style={{ fontSize: "0.8rem", color: mobileStatus?.connected ? T.emerald : T.text }}>
+                        {mobileStatus?.connected ? "USB Phone Connected" : "No USB Device Detected"}
+                      </strong>
                     </div>
-
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                      <button
-                        type="button"
-                        onClick={() => setPreviewKey((k) => k + 1)}
-                        style={{ background: "#14120c", border: "1px solid #38332b", color: "#cbd5e1", padding: "3px 8px", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer" }}
-                      >
-                        🔄 Reload
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleLaunchLiveApp}
-                        style={{ background: "rgba(16,185,129,0.15)", border: "1px solid #10b981", color: "#6ee7b7", padding: "3px 8px", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer", fontWeight: "700" }}
-                      >
-                        🔗 Open Fullscreen
-                      </button>
-                    </div>
-                  </div>
-
-                  <div style={{ display: "flex", justifyContent: "center", background: "#080705", padding: "0.8rem", borderRadius: "6px", border: "1px solid #1a1712", minHeight: "440px" }}>
-                    <iframe
-                      key={previewKey}
-                      srcDoc={result?.code || activeProject?.code || "<!DOCTYPE html><html><body style='background:#030712;color:#fbbf24;display:grid;place-items:center;height:100vh;font-family:sans-serif;margin:0;'><div style='text-align:center;'><h3>GARUDA Live Studio</h3><p style='color:#94a3b8;font-size:0.85rem;'>Code banne ke baad app ya game yahan live chalega.</p></div></body></html>"}
-                      title="Live App Preview"
-                      sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"
-                      style={{
-                        width: previewViewport === "mobile" ? "375px" : "100%",
-                        height: "500px",
-                        border: previewViewport === "mobile" ? "6px solid #334155" : "1px solid #1e293b",
-                        borderRadius: previewViewport === "mobile" ? "20px" : "4px",
-                        background: "#030712"
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* TAB 3: MOBILE DEBUGGER (ADB & WI-FI REMOTE LINK) */}
-              {activeTab === "mobile" && (
-                <div style={{ background: "#030201", border: "1px solid #24201a", borderRadius: "8px", padding: "1.2rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.6rem", borderBottom: "1px solid #14120c", paddingBottom: "0.6rem" }}>
-                    <div>
-                      <h4 style={{ margin: 0, fontSize: "0.92rem", color: "#38bdf8", fontWeight: "800" }}>
-                        📱 Mobile Device Debugger & Remote Bridge
-                      </h4>
-                      <p style={{ margin: "2px 0 0", fontSize: "0.72rem", color: "#94a3b8" }}>
-                        Plug your phone via USB or connect to same Wi-Fi to test and debug live on your mobile.
-                      </p>
+                    <div style={{ fontSize: "0.72rem", color: T.textSubtle }}>
+                      {mobileStatus?.connected ? `Device: ${mobileStatus.devices[0]?.model || mobileStatus.devices[0]?.id}` : "Connect phone via USB and enable USB debugging"}
                     </div>
                     <button
                       type="button"
-                      onClick={fetchMobileStatus}
-                      disabled={mobileLoading}
-                      style={{ background: "#14120c", border: "1px solid #38bdf8", color: "#7dd3fc", padding: "5px 12px", borderRadius: "5px", fontSize: "0.72rem", fontWeight: "800", cursor: "pointer" }}
+                      onClick={handleMobileReverse}
+                      className="claude-btn"
+                      style={{ marginTop: "8px", width: "100%", background: T.accent, color: "#fff", border: "none", padding: "6px", fontSize: "0.75rem" }}
                     >
-                      {mobileLoading ? "Checking..." : "🔄 Refresh Devices"}
+                      ⚡ Activate Phone Reverse Bridge
+                    </button>
+                    {mobileReverseMsg && (
+                      <div style={{ marginTop: "4px", fontSize: "0.7rem", color: T.accent }}>{mobileReverseMsg}</div>
+                    )}
+                  </div>
+
+                  <div style={{ background: T.bgSubtle, border: `1px solid ${T.border}`, borderRadius: "8px", padding: "10px" }}>
+                    <div style={{ fontSize: "0.8rem", fontWeight: "700", color: T.text, marginBottom: "4px" }}>
+                      📶 Wi-Fi Mirror URL
+                    </div>
+                    <div style={{ display: "flex", gap: "4px", marginTop: "6px" }}>
+                      <input
+                        type="text"
+                        readOnly
+                        value={mobileStatus?.wifiUrl || (typeof window !== "undefined" ? window.location.origin : "https://www.garudaos.in")}
+                        style={{ flex: 1, background: T.panel, border: `1px solid ${T.border}`, borderRadius: "4px", padding: "4px 8px", fontSize: "0.75rem" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const url = mobileStatus?.wifiUrl || window.location.origin;
+                          navigator.clipboard.writeText(url);
+                          alert("Mirror URL copied!");
+                        }}
+                        className="claude-btn"
+                        style={{ background: T.panel, border: `1px solid ${T.border}`, padding: "4px 8px", fontSize: "0.72rem" }}
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                    <span style={{ fontSize: "0.75rem", fontWeight: "700", color: T.textMuted }}>ADB Logcat Stream:</span>
+                    <button
+                      type="button"
+                      onClick={fetchMobileLogs}
+                      style={{ background: "transparent", border: "none", color: T.accent, fontSize: "0.72rem", cursor: "pointer" }}
+                    >
+                      Fetch Logs
                     </button>
                   </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "0.8rem", marginBottom: "1rem" }}>
-                    
-                    {/* USB Cable Status */}
-                    <div style={{ background: "#080a10", border: `1px solid ${mobileStatus?.connected ? "#10b981" : "#24201a"}`, borderRadius: "8px", padding: "1rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
-                        <span style={{ fontSize: "1.1rem" }}>{mobileStatus?.connected ? "🟢" : "🔌"}</span>
-                        <div>
-                          <div style={{ fontSize: "0.8rem", fontWeight: "800", color: mobileStatus?.connected ? "#34d399" : "#cbd5e1" }}>
-                            {mobileStatus?.connected ? "USB Phone Connected!" : "No USB Device Detected"}
-                          </div>
-                          <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                            {mobileStatus?.connected ? `Model: ${mobileStatus.devices[0]?.model || mobileStatus.devices[0]?.id}` : "Plug phone via USB cable and enable 'USB Debugging'"}
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={handleMobileReverse}
-                        style={{
-                          width: "100%",
-                          marginTop: "0.6rem",
-                          background: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
-                          color: "#ffffff",
-                          border: "none",
-                          padding: "8px",
-                          borderRadius: "6px",
-                          fontSize: "0.75rem",
-                          fontWeight: "800",
-                          cursor: "pointer"
-                        }}
-                      >
-                        ⚡ Activate Phone Device Bridge
-                      </button>
-
-                      {mobileReverseMsg && (
-                        <div style={{ marginTop: "0.5rem", fontSize: "0.72rem", color: "#fef08a", background: "rgba(245,158,11,0.1)", padding: "5px 8px", borderRadius: "4px" }}>
-                          {mobileReverseMsg}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Mobile Mirror Link */}
-                    <div style={{ background: "#080a10", border: "1px solid #24201a", borderRadius: "8px", padding: "1rem" }}>
-                      <div style={{ fontSize: "0.8rem", fontWeight: "800", color: "#fef08a", marginBottom: "0.2rem" }}>
-                        📶 Mobile Device Mirror Link
-                      </div>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginBottom: "0.6rem" }}>
-                        Open this link on your phone's browser for instant live testing:
-                      </div>
-
-                      <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }}>
-                        <input
-                          type="text"
-                          readOnly
-                          value={mobileStatus?.wifiUrl || (typeof window !== "undefined" ? window.location.origin : "https://www.garudaos.in")}
-                          style={{ flex: 1, background: "#02040a", border: "1px solid #334155", borderRadius: "4px", padding: "6px 8px", color: "#38bdf8", fontSize: "0.75rem", fontFamily: "monospace" }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const url = mobileStatus?.wifiUrl || window.location.origin;
-                            navigator.clipboard.writeText(url);
-                            alert("Mobile mirror URL copied!");
-                          }}
-                          style={{ background: "#14120c", border: "1px solid #38bdf8", color: "#7dd3fc", padding: "6px 10px", borderRadius: "4px", fontSize: "0.72rem", fontWeight: "700", cursor: "pointer" }}
-                        >
-                          Copy
-                        </button>
-                      </div>
-
-                      <div style={{ marginTop: "0.8rem", fontSize: "0.68rem", color: "#a8a29e" }}>
-                        💡 Chrome DevTools: Open <code>chrome://inspect/#devices</code> in laptop Chrome to inspect phone DOM & console.
-                      </div>
-                    </div>
-
-                  </div>
-
-                  {/* Mobile Logs */}
-                  <div style={{ borderTop: "1px solid #14120c", paddingTop: "0.8rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                      <span style={{ fontSize: "0.75rem", fontWeight: "800", color: "#d4af37" }}>
-                        ADB Error Logcat Stream:
-                      </span>
-                      <button
-                        type="button"
-                        onClick={fetchMobileLogs}
-                        style={{ background: "#14120c", border: "1px solid #38332b", color: "#cbd5e1", padding: "3px 8px", borderRadius: "4px", fontSize: "0.7rem", cursor: "pointer" }}
-                      >
-                        Fetch Phone Logs
-                      </button>
-                    </div>
-
-                    <pre style={{ margin: 0, padding: "8px", background: "#02040a", border: "1px solid #1a1712", borderRadius: "4px", color: "#f87171", fontSize: "0.7rem", fontFamily: "monospace", maxHeight: "120px", overflowY: "auto", whiteSpace: "pre-wrap" }}>
-                      {mobileLogs || "// Click 'Fetch Phone Logs' to inspect device error output."}
-                    </pre>
-                  </div>
+                  <pre style={{
+                    margin: 0,
+                    padding: "8px",
+                    background: T.codeBg,
+                    color: "#F87171",
+                    borderRadius: "6px",
+                    fontSize: "0.7rem",
+                    maxHeight: "100px",
+                    overflowY: "auto"
+                  }}>
+                    {mobileLogs || "// Device error log stream will appear here."}
+                  </pre>
                 </div>
-              )}
-
-              {/* TAB 4: TRAJECTORY */}
-              {activeTab === "trajectory" && (
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  {result.trajectory?.map((t, idx) => (
-                    <div key={idx} style={{ background: "#110f0b", padding: "8px 12px", borderRadius: "6px", border: "1px solid #24201a", fontSize: "0.8rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <div>
-                        <span style={{ color: "#d4af37", fontWeight: "800", marginRight: "8px" }}>
-                          Step {idx + 1}: {t.step}
-                        </span>
-                        {t.timestamp && (
-                          <span style={{ color: "#64748b", fontSize: "0.72rem" }}>
-                            [{new Date(t.timestamp).toLocaleTimeString()}]
-                          </span>
-                        )}
-                      </div>
-                      <span style={{ color: "#e7e5e4", textAlign: "right", fontSize: "0.78rem" }}>
-                        {t.provider ? `${t.provider} (${t.model || 'model'})` : (t.summary || t.instruction || t.file || (t.durationMs ? `${t.durationMs}ms` : "Completed"))}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* TAB 5: PROOF */}
-              {activeTab === "proof" && (
-                <div style={{ background: "#030201", padding: "1rem", borderRadius: "6px", border: "1px solid #24201a" }}>
-                  <div style={{ fontSize: "0.75rem", color: "#d4af37", fontWeight: "800", marginBottom: "0.3rem" }}>
-                    Cryptographic Integrity Proof (SHA-256):
-                  </div>
-                  <code style={{ fontSize: "0.8rem", color: "#75f4ab", wordBreak: "break-all", fontFamily: "monospace" }}>
-                    {result.sha256}
-                  </code>
-                  <div style={{ marginTop: "0.8rem", fontSize: "0.72rem", color: "#a8a29e", lineHeight: 1.5 }}>
-                    This cryptographic digest certifies that code was written to local disk and passed syntax verification.
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Audit History Log (Collapsible for Clean Distraction-Free Console) */}
-          <div style={{ background: "#080705", border: "1px solid rgba(212, 175, 55, 0.2)", borderRadius: "12px", padding: "1rem 1.4rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                <span style={{ fontSize: "0.8rem", color: "#d4af37", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                  📜 Execution Audit Trail
-                </span>
-                <span style={{ background: "#1c1917", color: "#a8a29e", padding: "2px 8px", borderRadius: "999px", fontSize: "0.68rem" }}>
-                  {history.length} runs recorded
-                </span>
               </div>
-              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                <button
-                  type="button"
-                  onClick={fetchHistory}
-                  style={{ background: "#14120c", border: "1px solid rgba(212, 175, 55, 0.3)", color: "#fef08a", padding: "4px 10px", borderRadius: "4px", fontSize: "0.7rem", cursor: "pointer", fontWeight: "700" }}
-                >
-                  Refresh
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAuditTrail(!showAuditTrail)}
-                  style={{ background: "#14120c", border: "1px solid #334155", color: "#cbd5e1", padding: "4px 10px", borderRadius: "4px", fontSize: "0.7rem", cursor: "pointer", fontWeight: "700" }}
-                >
-                  {showAuditTrail ? "Hide Log ▲" : "Inspect Log ▼"}
-                </button>
-              </div>
-            </div>
+            )}
 
-            {showAuditTrail && (
-              <div style={{ marginTop: "1rem", borderTop: "1px solid #1c1917", paddingTop: "0.8rem" }}>
-                {history.length === 0 ? (
-                  <div style={{ color: "#78716c", fontSize: "0.8rem", textAlign: "center", padding: "1rem" }}>
-                    No execution audit logs found. Run your first task above.
+            {/* TAB 4: TRAJECTORY */}
+            {activeTab === "trajectory" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                {result?.trajectory?.map((t, idx) => (
+                  <div key={idx} style={{
+                    background: T.panel,
+                    border: `1px solid ${T.border}`,
+                    borderRadius: "6px",
+                    padding: "8px 12px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    fontSize: "0.78rem"
+                  }}>
+                    <div>
+                      <strong style={{ color: T.accent, marginRight: "6px" }}>Step {idx + 1}:</strong>
+                      <span>{t.step}</span>
+                    </div>
+                    <span style={{ color: T.textSubtle, fontSize: "0.72rem" }}>
+                      {t.summary || t.provider || t.instruction || (t.durationMs ? `${t.durationMs}ms` : "")}
+                    </span>
                   </div>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                    {history.map((item, idx) => (
-                      <div key={idx} style={{ background: "#030201", border: "1px solid #1a1712", borderRadius: "6px", padding: "10px 12px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.4rem" }}>
-                        <div>
-                          <div style={{ fontSize: "0.82rem", fontWeight: "800", color: "#ffffff" }}>
-                            {item.file || item.instruction || item.taskId}
-                          </div>
-                          <div style={{ fontSize: "0.72rem", color: "#a8a29e", marginTop: "2px" }}>
-                            {item.timestamp ? new Date(item.timestamp).toLocaleString("en-IN") : "Recent"} • {item.summary || "Task executed"}
-                          </div>
-                        </div>
-                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                          <span style={{ fontSize: "0.72rem", fontWeight: "800", color: item.success ? "#34d399" : "#f87171", background: item.success ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)", padding: "2px 6px", borderRadius: "4px" }}>
-                            {item.success ? "✓ Passed" : "✕ Failed"}
-                          </span>
-                          {item.sha256 && (
-                            <span style={{ fontSize: "0.68rem", color: "#78716c", fontFamily: "monospace" }}>
-                              {item.sha256.substring(0, 10)}...
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                ))}
               </div>
             )}
           </div>
+        </section>
 
-        </div>
+      </main>
 
-        {/* ================================================================= */}
-        {/* 📱 APPS MADE BY PAWAN • SOVEREIGN APPLICATION FLEET DRAWER        */}
-        {/* ================================================================= */}
-        {showAppsFleet && (
-          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", zIndex: 99999, display: "flex", justifyContent: "flex-end" }}>
-            <div style={{ width: "100%", maxWidth: "600px", height: "100%", background: "#080705", borderLeft: "2px solid #d4af37", boxShadow: "-20px 0 50px rgba(0,0,0,0.9)", display: "flex", flexDirection: "column", overflowY: "auto", padding: "1.8rem" }}>
-              
-              {/* Drawer Header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "1px solid rgba(212,175,55,0.25)", paddingBottom: "1.2rem", marginBottom: "1.5rem" }}>
-                <div>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.4)", borderRadius: "999px", padding: "2px 10px", fontSize: "0.7rem", color: "#fef08a", fontWeight: "800", marginBottom: "0.4rem" }}>
-                    <span>🦅</span> GARUDA PAWAN FLEET
+      {/* ========================================================================= */}
+      {/* 📱 MOBILE VIEW COMPONENT CONTAINER (SINGLE-COLUMN CARD DECK)              */}
+      {/* ========================================================================= */}
+      <div className="mobile-view" style={{
+        display: "none",
+        flex: 1,
+        minHeight: 0,
+        flexDirection: "column",
+        padding: "0.75rem",
+        overflowY: "auto"
+      }}>
+        {mobileViewTab === "chat" ? (
+          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            {/* Same clean chat stream */}
+            <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "0.75rem", paddingBottom: "1rem" }}>
+              {messages.map((m) => (
+                <div key={m.id} style={{ display: "flex", flexDirection: "column", alignSelf: m.sender === "user" ? "flex-end" : "flex-start", maxWidth: "90%" }}>
+                  <div style={{ fontSize: "0.68rem", color: T.textSubtle, marginBottom: "2px" }}>
+                    {m.sender === "user" ? "Praveen Mahawar" : "PAWAN"}
                   </div>
-                  <h2 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "#ffffff", letterSpacing: "-0.01em" }}>
-                    Apps Built by PAWAN
-                  </h2>
-                  <p style={{ margin: "4px 0 0", fontSize: "0.78rem", color: "#a8a29e" }}>
-                    Autonomous ReAct synthesis • 1-Tap Android PWA/APK • Hot OTA Self-Healing
-                  </p>
+                  <div style={{
+                    background: m.sender === "user" ? T.panel : T.panelSubtle,
+                    border: `1px solid ${T.border}`,
+                    padding: "8px 12px",
+                    borderRadius: m.sender === "user" ? "12px 12px 2px 12px" : "12px 12px 12px 2px",
+                    fontSize: "0.85rem",
+                    lineHeight: 1.45
+                  }}>
+                    {m.text}
+                    {m.consultation?.actionPlan && (
+                      <button
+                        type="button"
+                        onClick={() => handleExecuteFromPlan(m.consultation.suggestedInstruction, m.consultation.targetFile)}
+                        className="claude-btn"
+                        style={{ marginTop: "8px", width: "100%", background: T.accent, color: "#fff", border: "none", padding: "6px" }}
+                      >
+                        🚀 Execute Plan Now
+                      </button>
+                    )}
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Mobile Bottom Input */}
+            <form onSubmit={studioMode === "discuss" ? (e) => { e.preventDefault(); handleConsult(); } : handleExecute} style={{ flexShrink: 0, background: T.panel, border: `1px solid ${T.border}`, borderRadius: "10px", padding: "8px" }}>
+              <textarea
+                rows="2"
+                value={instruction}
+                onChange={(e) => setInstruction(e.target.value)}
+                placeholder="Message Pawan..."
+                style={{ width: "100%", background: "transparent", border: "none", outline: "none", fontSize: "0.88rem", resize: "none" }}
+              />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "4px" }}>
                 <button
                   type="button"
-                  onClick={() => setShowAppsFleet(false)}
-                  style={{ background: "#1c1917", border: "1px solid #44403c", color: "#e7e5e4", width: "32px", height: "32px", borderRadius: "8px", fontSize: "1rem", cursor: "pointer", display: "grid", placeItems: "center" }}
+                  onClick={toggleVoiceInput}
+                  style={{ background: isListening ? "#FEE2E2" : "transparent", border: "none", color: isListening ? "#DC2626" : T.textMuted, cursor: "pointer", fontSize: "1rem" }}
                 >
-                  ✕
+                  🎙️
                 </button>
-              </div>
-
-              {/* Active Session App (if any) */}
-              {activeProject && (
-                <div style={{ background: "linear-gradient(135deg, rgba(56,189,248,0.12) 0%, rgba(3,105,161,0.15) 100%)", border: "1px solid #38bdf8", borderRadius: "10px", padding: "1rem", marginBottom: "1.2rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
-                    <span style={{ fontSize: "0.7rem", fontWeight: "800", color: "#38bdf8", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                      ● Active Project in Studio
-                    </span>
-                    <span style={{ background: "#0284c7", color: "#fff", padding: "2px 6px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: "800" }}>
-                      v{activeProject.version}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "#ffffff", marginBottom: "0.4rem" }}>
-                    {activeProject.file}
-                  </div>
-                  <p style={{ margin: "0 0 0.8rem", fontSize: "0.75rem", color: "#cbd5e1", lineHeight: 1.4 }}>
-                    {activeProject.summary || "Synthesized application currently in local session memory."}
-                  </p>
-                  <div style={{ display: "flex", gap: "0.5rem" }}>
-                    <button
-                      type="button"
-                      onClick={handleLaunchLiveApp}
-                      style={{ flex: 1, background: "#0284c7", color: "#fff", border: "none", padding: "8px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
-                    >
-                      🚀 Test Live on Mobile
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowAppsFleet(false);
-                        handleBuildApk();
-                      }}
-                      style={{ flex: 1, background: "rgba(212,175,55,0.2)", border: "1px solid #d4af37", color: "#fef08a", padding: "8px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
-                    >
-                      📦 1-Tap APK Package
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Fleet List */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                
-                {/* App 1: Cloth Wholesale MIS */}
-                <div style={{ background: "#0d0b08", border: "1px solid rgba(212,175,55,0.25)", borderRadius: "10px", padding: "1.1rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                    <div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                        <span style={{ fontSize: "1.2rem" }}>🧵</span>
-                        <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "#fef08a" }}>
-                          Cloth Wholesale 2-Device Lock GST MIS
-                        </h3>
-                      </div>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "2px" }}>
-                        Wholesale Textile B2B • Security Hardened • PWA/APK Live
-                      </div>
-                    </div>
-                    <span style={{ background: "rgba(16,185,129,0.15)", border: "1px solid #10b981", color: "#6ee7b7", padding: "2px 8px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: "800" }}>
-                      Production Ready
-                    </span>
-                  </div>
-                  <p style={{ margin: "0 0 0.8rem", fontSize: "0.75rem", color: "#d6d3d1", lineHeight: 1.5 }}>
-                    Real-time saree/fabric invoice generation, wholesale slab calculations, multi-rate GST, printable thermal receipts, and 2-device cryptographic hardware binding.
-                  </p>
-                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                    <a
-                      href="/cloth-gst.html"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ flex: "1 1 140px", textAlign: "center", background: "#10b981", color: "#000", textDecoration: "none", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800" }}
-                    >
-                      🚀 Launch Web App
-                    </a>
-                    <a
-                      href="/apps/cloth-gst-calculator/"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ flex: "1 1 140px", textAlign: "center", background: "#14120c", border: "1px solid #d4af37", color: "#fef08a", textDecoration: "none", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800" }}
-                    >
-                      📲 1-Tap Mobile PWA/APK
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowAppsFleet(false);
-                        setStudioMode("discuss");
-                        handleConsult("Cloth wholesale business ke liye 2-device lock wala MIS app banana hai. Slabs aur invoice breakdown ki recommendations do.");
-                      }}
-                      style={{ background: "#14120c", border: "1px solid #334155", color: "#cbd5e1", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "700", cursor: "pointer" }}
-                    >
-                      ✏️ Alter in Pawan
-                    </button>
-                  </div>
-                </div>
-
-                {/* App 2: Field Sourcing MIS */}
-                <div style={{ background: "#0d0b08", border: "1px solid rgba(212,175,55,0.25)", borderRadius: "10px", padding: "1.1rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                    <div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                        <span style={{ fontSize: "1.2rem" }}>💼</span>
-                        <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "#fef08a" }}>
-                          Field Agent Account Sourcing MIS
-                        </h3>
-                      </div>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "2px" }}>
-                        FinTech & Agent Workforce • Anti-Fraud Architecture
-                      </div>
-                    </div>
-                    <span style={{ background: "rgba(99,102,241,0.15)", border: "1px solid #6366f1", color: "#a5b4fc", padding: "2px 8px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: "800" }}>
-                      Architecture Spec
-                    </span>
-                  </div>
-                  <p style={{ margin: "0 0 0.8rem", fontSize: "0.75rem", color: "#d6d3d1", lineHeight: 1.5 }}>
-                    Field agent lead intake with anti-fraud IMEI lock, slab-based 10%-40% daily payout calculator, customer KYC verification, and encrypted daily audit ledger.
-                  </p>
-                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowAppsFleet(false);
-                        setStudioMode("discuss");
-                        handleConsult("Client ko accounts selling ke liye app chahiye jisme ladke account layenge aur per-day % commission milega. Iska best structure aur anti-fraud logic suggest karo.");
-                      }}
-                      style={{ flex: 1, background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)", color: "#000", border: "none", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800", cursor: "pointer" }}
-                    >
-                      💬 Discuss & Synthesize in Studio
-                    </button>
-                  </div>
-                </div>
-
-                {/* App 3: GARUDA DOST Rozgar Portal */}
-                <div style={{ background: "#0d0b08", border: "1px solid rgba(212,175,55,0.25)", borderRadius: "10px", padding: "1.1rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                    <div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                        <span style={{ fontSize: "1.2rem" }}>🌱</span>
-                        <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "#fef08a" }}>
-                          GARUDA DOST • Zero-Travel Rozgar Gateway
-                        </h3>
-                      </div>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "2px" }}>
-                        Village Youth & Community Livelihood • Direct UPI
-                      </div>
-                    </div>
-                    <span style={{ background: "rgba(16,185,129,0.15)", border: "1px solid #10b981", color: "#6ee7b7", padding: "2px 8px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: "800" }}>
-                      Live Gateway
-                    </span>
-                  </div>
-                  <p style={{ margin: "0 0 0.8rem", fontSize: "0.75rem", color: "#d6d3d1", lineHeight: 1.5 }}>
-                    Zero-advance public enrollment platform for rural youth, housewives, and zero-experience partners. Earn 10%-40% transparent commissions on software leads.
-                  </p>
-                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                    <a
-                      href="/dost"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ flex: 1, textAlign: "center", background: "#10b981", color: "#000", textDecoration: "none", padding: "7px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "800" }}
-                    >
-                      🚀 Open Live Portal (/dost)
-                    </a>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Drawer Footer Notice */}
-              <div style={{ marginTop: "auto", paddingTop: "1.5rem", borderTop: "1px solid rgba(212,175,55,0.15)", fontSize: "0.72rem", color: "#78716c", textAlign: "center" }}>
-                🔒 100% Anti-Fabrication Law • Real Code • SHA-256 Verified
-              </div>
-
-            </div>
-          </div>
-        )}
-
-        {/* Commercial Access & Amount Confirmation Gate Modal */}
-        {showGateModal && (
-          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", zIndex: 10000, padding: "1.5rem" }}>
-            <div style={{ background: "#0b0a07", border: "2px solid #d4af37", borderRadius: "16px", maxWidth: "600px", width: "100%", padding: "2rem", boxShadow: "0 20px 50px rgba(0,0,0,0.9)", position: "relative" }}>
-              <button
-                onClick={() => setShowGateModal(false)}
-                style={{ position: "absolute", top: "1rem", right: "1rem", background: "none", border: "none", color: "#a8a29e", fontSize: "1.2rem", cursor: "pointer" }}
-              >
-                ✕
-              </button>
-
-              <div style={{ textAlign: "center", marginBottom: "1.2rem" }}>
-                <div style={{ fontSize: "2.2rem", marginBottom: "0.4rem" }}>🦅💳</div>
-                <h2 style={{ fontSize: "1.35rem", fontWeight: "900", color: "#ffffff", margin: "0 0 0.4rem" }}>
-                  Confirm Amount to Synthesize Application
-                </h2>
-                <p style={{ fontSize: "0.82rem", color: "#d6d3d1", margin: 0, lineHeight: 1.5 }}>
-                  PAWAN consultative scoping complete. Code generation & APK/PWA packaging require commercial token confirmation. Free seva band — Choose your plan to unlock instant code synthesis.
-                </p>
-              </div>
-
-              {pendingPlan && (
-                <div style={{ background: "rgba(212, 175, 55, 0.08)", border: "1px dashed rgba(212, 175, 55, 0.4)", borderRadius: "8px", padding: "10px 14px", marginBottom: "1.2rem", fontSize: "0.78rem", color: "#fef08a" }}>
-                  <strong>Scoped Task:</strong> {pendingPlan.instruction?.slice(0, 140)}...
-                </div>
-              )}
-
-              {/* 3 Commercial Tiers */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.6rem", marginBottom: "1.2rem" }}>
-                <div
-                  onClick={() => setCommercialTier("starter")}
-                  style={{
-                    background: commercialTier === "starter" ? "rgba(212, 175, 55, 0.18)" : "#14120c",
-                    border: `1px solid ${commercialTier === "starter" ? "#d4af37" : "#333"}`,
-                    borderRadius: "8px",
-                    padding: "10px 8px",
-                    cursor: "pointer",
-                    textAlign: "center"
-                  }}
-                >
-                  <div style={{ fontSize: "0.7rem", color: "#a8a29e", fontWeight: "700" }}>MICRO-APP</div>
-                  <div style={{ fontSize: "1.1rem", fontWeight: "900", color: "#34d399", margin: "3px 0" }}>₹999</div>
-                  <div style={{ fontSize: "0.68rem", color: "#cbd5e1" }}>Billing / Single Screen Tool</div>
-                </div>
-
-                <div
-                  onClick={() => setCommercialTier("business")}
-                  style={{
-                    background: commercialTier === "business" ? "rgba(212, 175, 55, 0.18)" : "#14120c",
-                    border: `1px solid ${commercialTier === "business" ? "#d4af37" : "#333"}`,
-                    borderRadius: "8px",
-                    padding: "10px 8px",
-                    cursor: "pointer",
-                    textAlign: "center"
-                  }}
-                >
-                  <div style={{ fontSize: "0.7rem", color: "#fef08a", fontWeight: "800" }}>POPULAR</div>
-                  <div style={{ fontSize: "1.1rem", fontWeight: "900", color: "#fbbf24", margin: "3px 0" }}>₹2,499</div>
-                  <div style={{ fontSize: "0.68rem", color: "#cbd5e1" }}>Full Business Dashboard</div>
-                </div>
-
-                <div
-                  onClick={() => setCommercialTier("enterprise")}
-                  style={{
-                    background: commercialTier === "enterprise" ? "rgba(212, 175, 55, 0.18)" : "#14120c",
-                    border: `1px solid ${commercialTier === "enterprise" ? "#d4af37" : "#333"}`,
-                    borderRadius: "8px",
-                    padding: "10px 8px",
-                    cursor: "pointer",
-                    textAlign: "center"
-                  }}
-                >
-                  <div style={{ fontSize: "0.7rem", color: "#a8a29e", fontWeight: "700" }}>ENTERPRISE</div>
-                  <div style={{ fontSize: "1.1rem", fontWeight: "900", color: "#38bdf8", margin: "3px 0" }}>₹4,999</div>
-                  <div style={{ fontSize: "0.68rem", color: "#cbd5e1" }}>Custom AI Architecture</div>
-                </div>
-              </div>
-
-              {/* Instant Payment Confirmation Button */}
-              <div style={{ marginBottom: "1.2rem" }}>
-                <a
-                  href={`https://www.garudaos.in/chat?ref=pawan-order&amount=${commercialTier === "starter" ? "999" : (commercialTier === "business" ? "2499" : "4999")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    display: "block",
-                    textAlign: "center",
-                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                    color: "#ffffff",
-                    fontWeight: "900",
-                    fontSize: "0.9rem",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    textDecoration: "none",
-                    boxShadow: "0 4px 15px rgba(16, 185, 129, 0.4)"
-                  }}
-                >
-                  💳 Confirm & Pay {commercialTier === "starter" ? "₹999" : (commercialTier === "business" ? "₹2,499" : "₹4,999")} via UPI / Card &rarr;
-                </a>
-              </div>
-
-              {/* Direct Scoping Form */}
-              {!intakeSubmitted ? (
-                <form onSubmit={handleIntakeSubmit} style={{ borderTop: "1px dashed #333", paddingTop: "1rem" }}>
-                  <div style={{ fontSize: "0.8rem", fontWeight: "800", color: "#d4af37", marginBottom: "0.6rem" }}>
-                    Ya apna Scoping Details Founder Praveen ke desk ko bhejein:
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: "0.6rem" }}>
-                    <input
-                      type="text"
-                      placeholder="Your Name"
-                      value={intakeName}
-                      onChange={(e) => setIntakeName(e.target.value)}
-                      style={{ background: "#050402", border: "1px solid #333", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.8rem" }}
-                    />
-                    <input
-                      type="text"
-                      placeholder="WhatsApp Mobile Number"
-                      value={intakePhone}
-                      onChange={(e) => setIntakePhone(e.target.value)}
-                      style={{ background: "#050402", border: "1px solid #333", borderRadius: "6px", padding: "8px 10px", color: "#fff", fontSize: "0.8rem" }}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    style={{ width: "100%", background: "#1c1917", border: "1px solid #44403c", color: "#ffffff", padding: "9px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer" }}
-                  >
-                    Transmit Scoping Request &rarr;
-                  </button>
-                </form>
-              ) : (
-                <div style={{ textAlign: "center", padding: "1rem", background: "rgba(16, 185, 129, 0.1)", borderRadius: "8px" }}>
-                  <div style={{ color: "#34d399", fontWeight: "800", fontSize: "0.9rem" }}>✓ Scoping Request Transmitted!</div>
-                  <div style={{ color: "#cbd5e1", fontSize: "0.78rem", marginTop: "4px" }}>Praveen Mahawar's desk will connect with you on WhatsApp shortly.</div>
-                </div>
-              )}
-
-              {/* Founder Passkey Shortcut */}
-              <div style={{ marginTop: "1rem", textAlign: "center" }}>
-                <button
-                  type="button"
-                  onClick={() => { setShowGateModal(false); setShowFounderPasskeyModal(true); }}
-                  style={{ background: "none", border: "none", color: "#78716c", fontSize: "0.72rem", cursor: "pointer", textDecoration: "underline" }}
-                >
-                  Founder Praveen? Unlock via Internal Passkey
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Founder Passkey Verification Modal */}
-        {showFounderPasskeyModal && (
-          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "grid", placeItems: "center", zIndex: 10001, padding: "1.5rem" }}>
-            <div style={{ background: "#0b0a07", border: "2px solid #d4af37", borderRadius: "16px", maxWidth: "420px", width: "100%", padding: "2rem", boxShadow: "0 20px 50px rgba(0,0,0,0.9)", position: "relative" }}>
-              <button
-                onClick={() => { setShowFounderPasskeyModal(false); setPasskeyError(""); }}
-                style={{ position: "absolute", top: "1rem", right: "1rem", background: "none", border: "none", color: "#a8a29e", fontSize: "1.2rem", cursor: "pointer" }}
-              >
-                ✕
-              </button>
-              <div style={{ textAlign: "center", marginBottom: "1.2rem" }}>
-                <div style={{ fontSize: "2.2rem", marginBottom: "0.4rem" }}>👑🔑</div>
-                <h2 style={{ fontSize: "1.25rem", fontWeight: "900", color: "#fef08a", margin: "0 0 0.3rem" }}>
-                  Founder Praveen Workspace Access
-                </h2>
-                <p style={{ fontSize: "0.8rem", color: "#a8a29e", margin: 0 }}>
-                  Internal sovereign authentication for Founder Praveen Mahawar.
-                </p>
-              </div>
-              <form onSubmit={handleVerifyFounderPasskey}>
-                <input
-                  type="password"
-                  required
-                  placeholder="Enter Founder Passkey"
-                  value={founderPasskeyInput}
-                  onChange={(e) => setFounderPasskeyInput(e.target.value)}
-                  style={{ width: "100%", boxSizing: "border-box", background: "#050402", border: "1px solid #d4af37", borderRadius: "8px", padding: "10px 14px", color: "#fff", fontSize: "0.9rem", marginBottom: "0.8rem" }}
-                />
-                {passkeyError && (
-                  <div style={{ color: "#ef4444", fontSize: "0.75rem", marginBottom: "0.8rem", fontWeight: "700" }}>
-                    {passkeyError}
-                  </div>
-                )}
                 <button
                   type="submit"
-                  style={{ width: "100%", background: "linear-gradient(135deg, #d4af37 0%, #b8860b 100%)", border: "none", color: "#000", padding: "10px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "900", cursor: "pointer" }}
+                  disabled={loading || !instruction.trim()}
+                  className="claude-btn"
+                  style={{ background: T.accent, color: "#fff", border: "none", padding: "5px 14px", fontSize: "0.78rem" }}
                 >
-                  Verify & Unlock Founder Mode
+                  {loading ? "..." : "Send ↵"}
                 </button>
-              </form>
+              </div>
+            </form>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            {/* Mobile preview screen */}
+            <div style={{ flex: 1, background: T.panel, borderRadius: "10px", border: `1px solid ${T.border}`, overflow: "hidden" }}>
+              <iframe
+                srcDoc={result?.code || activeProject?.code || "<h3 style='padding:20px;text-align:center;'>Enter prompt in Chat tab to see app here</h3>"}
+                title="Mobile Preview"
+                sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin"
+                style={{ width: "100%", height: "100%", minHeight: "450px", border: "none" }}
+              />
             </div>
+            {result && (
+              <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={handleLaunchLiveApp}
+                  className="claude-btn"
+                  style={{ flex: 1, background: T.emerald, color: "#fff", border: "none", padding: "8px", fontSize: "0.8rem" }}
+                >
+                  📲 Test Fullscreen
+                </button>
+                <button
+                  type="button"
+                  onClick={handleBuildApk}
+                  className="claude-btn"
+                  style={{ flex: 1, background: T.accent, color: "#fff", border: "none", padding: "8px", fontSize: "0.8rem" }}
+                >
+                  📦 APK
+                </button>
+              </div>
+            )}
           </div>
         )}
+      </div>
 
-        {/* 📱 PAWAN 1-TAP APK & PWA SUPERPOWER MODAL */}
-        {apkModalData && (
-          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 99999, padding: "1rem" }}>
-            <div style={{ background: "#0B0F19", border: "1px solid #D4AF37", borderRadius: "16px", maxWidth: "520px", width: "100%", padding: "1.8rem", color: "#F8FAFC", boxShadow: "0 25px 60px rgba(0,0,0,0.9)", position: "relative" }}>
+      {/* ========================================================================= */}
+      {/* 📜 MODAL: EXECUTION AUDIT HISTORY DRAWER (CLEAN & ISOLATED)               */}
+      {/* ========================================================================= */}
+      {showAuditTrail && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.4)",
+          backdropFilter: "blur(4px)",
+          zIndex: 1000,
+          display: "flex",
+          justifyContent: "flex-end"
+        }}>
+          <div style={{
+            width: "100%",
+            maxWidth: "520px",
+            height: "100%",
+            background: T.panel,
+            borderLeft: `1px solid ${T.border}`,
+            boxShadow: T.shadowLg,
+            display: "flex",
+            flexDirection: "column",
+            padding: "1.5rem"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", borderBottom: `1px solid ${T.border}`, paddingBottom: "0.75rem" }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "700", color: T.text }}>
+                  📜 Execution History & Memory
+                </h3>
+                <div style={{ fontSize: "0.75rem", color: T.textMuted, marginTop: "2px" }}>
+                  {history.length} verified runs in cloud database
+                </div>
+              </div>
               <button
                 type="button"
-                onClick={() => setApkModalData(null)}
-                style={{ position: "absolute", top: "16px", right: "16px", background: "transparent", border: "none", color: "#94A3B8", fontSize: "1.2rem", cursor: "pointer" }}
+                onClick={() => setShowAuditTrail(false)}
+                style={{ background: "transparent", border: "none", fontSize: "1.2rem", cursor: "pointer", color: T.textSubtle }}
               >
                 ✕
               </button>
+            </div>
 
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "3px 10px", borderRadius: "999px", background: "rgba(212, 175, 55, 0.15)", border: "1px solid rgba(212, 175, 55, 0.35)", fontSize: "0.72rem", color: "#FEF08A", fontWeight: "800", marginBottom: "0.8rem" }}>
-                <span>📱</span> PILLAR 1: PAWAN MOBILE SUPERPOWER
+            <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "8px" }}>
+              {history.length === 0 ? (
+                <div style={{ textAlign: "center", color: T.textSubtle, padding: "2rem", fontSize: "0.82rem" }}>
+                  No execution logs recorded yet.
+                </div>
+              ) : (
+                history.map((item, idx) => (
+                  <div key={idx} style={{
+                    background: T.bgSubtle,
+                    border: `1px solid ${T.border}`,
+                    borderRadius: "8px",
+                    padding: "10px 12px"
+                  }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <strong style={{ fontSize: "0.82rem", color: T.text }}>
+                        {item.file || item.instruction?.slice(0, 40) || item.taskId}
+                      </strong>
+                      <span style={{
+                        fontSize: "0.68rem",
+                        fontWeight: "700",
+                        padding: "2px 6px",
+                        borderRadius: "4px",
+                        background: item.success ? T.emeraldLight : "#FEE2E2",
+                        color: item.success ? T.emerald : "#DC2626"
+                      }}>
+                        {item.success ? "Passed" : "Failed"}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: "0.75rem", color: T.textMuted, lineHeight: 1.4 }}>
+                      {item.summary || item.thought?.slice(0, 80) || "Task completed."}
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "6px", fontSize: "0.7rem", color: T.textSubtle }}>
+                      <span>{item.timestamp ? new Date(item.timestamp).toLocaleTimeString() : "Recent"}</span>
+                      {item.code && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setResult({
+                              file: item.file || "public/app.html",
+                              code: item.code,
+                              summary: item.summary,
+                              taskId: item.taskId
+                            });
+                            setActiveProject({
+                              file: item.file || "public/app.html",
+                              code: item.code,
+                              version: 1,
+                              summary: item.summary
+                            });
+                            setActiveTab("preview");
+                            setShowAuditTrail(false);
+                          }}
+                          style={{ background: "transparent", border: "none", color: T.accent, cursor: "pointer", fontWeight: "700" }}
+                        >
+                          Load in Studio ➔
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 📱 MODAL: APPS MADE BY PAWAN FLEET DRAWER                                  */}
+      {/* ========================================================================= */}
+      {showAppsFleet && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.4)",
+          backdropFilter: "blur(4px)",
+          zIndex: 1000,
+          display: "flex",
+          justifyContent: "flex-end"
+        }}>
+          <div style={{
+            width: "100%",
+            maxWidth: "540px",
+            height: "100%",
+            background: T.panel,
+            borderLeft: `1px solid ${T.border}`,
+            boxShadow: T.shadowLg,
+            display: "flex",
+            flexDirection: "column",
+            padding: "1.5rem"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", borderBottom: `1px solid ${T.border}`, paddingBottom: "0.75rem" }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: T.text }}>
+                  📱 Apps Built by PAWAN Fleet
+                </h3>
+                <div style={{ fontSize: "0.75rem", color: T.textMuted, marginTop: "2px" }}>
+                  Autonomous ReAct synthesis • PWA/APK Live
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAppsFleet(false)}
+                style={{ background: "transparent", border: "none", fontSize: "1.2rem", cursor: "pointer", color: T.textSubtle }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px" }}>
+              {/* App 1: Cloth MIS */}
+              <div style={{ background: T.bgSubtle, border: `1px solid ${T.border}`, borderRadius: "8px", padding: "12px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                  <strong style={{ fontSize: "0.85rem", color: T.text }}>🧵 Cloth Wholesale 2-Device Lock GST MIS</strong>
+                  <span style={{ fontSize: "0.68rem", background: T.emeraldLight, color: T.emerald, padding: "2px 6px", borderRadius: "4px", fontWeight: "700" }}>Production Ready</span>
+                </div>
+                <p style={{ margin: "0 0 8px", fontSize: "0.75rem", color: T.textMuted }}>
+                  Saree/fabric invoice generation, wholesale slabs, multi-rate GST, thermal receipts.
+                </p>
+                <div style={{ display: "flex", gap: "6px" }}>
+                  <a href="/cloth-gst.html" target="_blank" rel="noreferrer" className="claude-btn" style={{ background: T.emerald, color: "#fff", textDecoration: "none", padding: "5px 10px", fontSize: "0.72rem" }}>
+                    🚀 Launch Web App
+                  </a>
+                  <a href="/apps/cloth-gst-calculator/" target="_blank" rel="noreferrer" className="claude-btn" style={{ background: T.panel, border: `1px solid ${T.border}`, color: T.text, textDecoration: "none", padding: "5px 10px", fontSize: "0.72rem" }}>
+                    📲 PWA / Mobile
+                  </a>
+                </div>
               </div>
 
-              <h2 style={{ fontSize: "1.3rem", fontWeight: "800", margin: "0 0 0.4rem 0", color: "#FFFFFF" }}>
-                {apkModalData.appName}
-              </h2>
-              <p style={{ margin: "0 0 1.2rem 0", color: "#94A3B8", fontSize: "0.82rem", lineHeight: 1.5 }}>
-                {apkModalData.message}
-              </p>
-
-              {/* QR Code and Quick Install Section */}
-              <div style={{ display: "flex", gap: "1.2rem", alignItems: "center", background: "#050811", border: "1px solid #1E293B", borderRadius: "12px", padding: "1rem", marginBottom: "1.2rem", flexWrap: "wrap" }}>
-                <div style={{ background: "#FFFFFF", padding: "8px", borderRadius: "8px", display: "inline-block" }}>
-                  <img src={apkModalData.qrUrl} alt="Scan to Install" style={{ width: "120px", height: "120px", display: "block" }} />
+              {/* App 2: DOST Portal */}
+              <div style={{ background: T.bgSubtle, border: `1px solid ${T.border}`, borderRadius: "8px", padding: "12px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                  <strong style={{ fontSize: "0.85rem", color: T.text }}>🌱 GARUDA DOST • Rozgar Gateway</strong>
+                  <span style={{ fontSize: "0.68rem", background: T.emeraldLight, color: T.emerald, padding: "2px 6px", borderRadius: "4px", fontWeight: "700" }}>Live Gateway</span>
                 </div>
-                <div style={{ flex: "1 1 200px" }}>
-                  <div style={{ fontSize: "0.85rem", fontWeight: "800", color: "#FEF08A", marginBottom: "4px" }}>
-                    📷 Scan with Mobile Camera
-                  </div>
-                  <div style={{ fontSize: "0.76rem", color: "#94A3B8", lineHeight: 1.4, marginBottom: "10px" }}>
-                    Scan QR code with your Android phone to instantly open and install to home screen with 1 tap.
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => window.open(apkModalData.previewUrl, "_blank")}
-                    style={{ background: "linear-gradient(135deg, #10B981 0%, #059669 100%)", color: "#FFFFFF", border: "none", padding: "8px 14px", borderRadius: "6px", fontSize: "0.78rem", fontWeight: "800", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
-                  >
-                    <span>🚀</span> Open Mobile PWA
-                  </button>
-                </div>
-              </div>
-
-              {/* Direct Download Actions */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginBottom: "1.2rem" }}>
-                <a
-                  href={apkModalData.downloadUrl}
-                  download
-                  style={{ background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)", color: "#FFFFFF", padding: "10px 14px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "800", textDecoration: "none", textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem", boxShadow: "0 4px 14px rgba(99, 102, 241, 0.3)" }}
-                >
-                  <span>📦</span> Download Bundle (.zip)
+                <p style={{ margin: "0 0 8px", fontSize: "0.75rem", color: T.textMuted }}>
+                  Public enrollment platform for youth and housewives. Earn transparent commissions on software leads.
+                </p>
+                <a href="/dost" target="_blank" rel="noreferrer" className="claude-btn" style={{ display: "inline-block", background: T.panel, border: `1px solid ${T.border}`, color: T.text, textDecoration: "none", padding: "5px 10px", fontSize: "0.72rem" }}>
+                  🚀 Open Portal (/dost)
                 </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(apkModalData.previewUrl);
-                    alert("Mobile link copied: " + apkModalData.previewUrl);
-                  }}
-                  style={{ background: "#1E293B", color: "#E2E8F0", border: "1px solid #334155", padding: "10px 14px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}
-                >
-                  <span>📋</span> Copy Mobile URL
-                </button>
-              </div>
-
-              {/* Anti-Fabrication SHA-256 Proof */}
-              <div style={{ background: "#050811", border: "1px solid #1E293B", borderRadius: "8px", padding: "8px 12px", fontSize: "0.72rem", color: "#64748B", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                <span style={{ color: "#D4AF37", fontWeight: "700" }}>SHA-256: </span>
-                {apkModalData.sha256}
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-      </div>
+      {/* ========================================================================= */}
+      {/* 👑 MODAL: FOUNDER PASSKEY MODAL (CLEAN & ELEGANT)                          */}
+      {/* ========================================================================= */}
+      {showFounderPasskeyModal && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.45)",
+          backdropFilter: "blur(4px)",
+          display: "grid",
+          placeItems: "center",
+          zIndex: 10001,
+          padding: "1rem"
+        }}>
+          <div style={{
+            background: T.panel,
+            border: `1px solid ${T.border}`,
+            borderRadius: "14px",
+            maxWidth: "400px",
+            width: "100%",
+            padding: "1.75rem",
+            boxShadow: T.shadowLg,
+            position: "relative"
+          }}>
+            <button
+              onClick={() => { setShowFounderPasskeyModal(false); setPasskeyError(""); }}
+              style={{ position: "absolute", top: "1rem", right: "1rem", background: "none", border: "none", color: T.textSubtle, fontSize: "1.2rem", cursor: "pointer" }}
+            >
+              ✕
+            </button>
+            <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+              <div style={{ fontSize: "2rem", marginBottom: "4px" }}>👑🔑</div>
+              <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: T.text, margin: "0 0 4px" }}>
+                Founder Workspace Access
+              </h3>
+              <p style={{ fontSize: "0.78rem", color: T.textMuted, margin: 0 }}>
+                Internal sovereign authentication for Founder Praveen Mahawar.
+              </p>
+            </div>
+            <form onSubmit={handleVerifyFounderPasskey}>
+              <input
+                type="password"
+                required
+                placeholder="Enter Founder Passkey"
+                value={founderPasskeyInput}
+                onChange={(e) => setFounderPasskeyInput(e.target.value)}
+                style={{
+                  width: "100%",
+                  background: T.bg,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: "8px",
+                  padding: "10px 12px",
+                  color: T.text,
+                  fontSize: "0.88rem",
+                  marginBottom: "8px",
+                  outline: "none"
+                }}
+              />
+              {passkeyError && (
+                <div style={{ color: "#DC2626", fontSize: "0.75rem", marginBottom: "8px", fontWeight: "600" }}>
+                  {passkeyError}
+                </div>
+              )}
+              <button
+                type="submit"
+                className="claude-btn"
+                style={{
+                  width: "100%",
+                  background: T.accent,
+                  color: "#FFFFFF",
+                  border: "none",
+                  padding: "10px",
+                  fontSize: "0.85rem"
+                }}
+              >
+                Verify & Unlock Founder Mode
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 📦 MODAL: 1-TAP APK & MOBILE DOWNLOAD MODAL                                */}
+      {/* ========================================================================= */}
+      {apkModalData && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.45)",
+          backdropFilter: "blur(4px)",
+          display: "grid",
+          placeItems: "center",
+          zIndex: 10002,
+          padding: "1rem"
+        }}>
+          <div style={{
+            background: T.panel,
+            border: `1px solid ${T.border}`,
+            borderRadius: "14px",
+            maxWidth: "480px",
+            width: "100%",
+            padding: "1.75rem",
+            boxShadow: T.shadowLg,
+            position: "relative"
+          }}>
+            <button
+              type="button"
+              onClick={() => setApkModalData(null)}
+              style={{ position: "absolute", top: "1rem", right: "1rem", background: "none", border: "none", color: T.textSubtle, fontSize: "1.2rem", cursor: "pointer" }}
+            >
+              ✕
+            </button>
+            <div style={{ marginBottom: "1rem" }}>
+              <div style={{ fontSize: "0.72rem", color: T.accent, fontWeight: "700", textTransform: "uppercase" }}>
+                📱 Mobile Superpower
+              </div>
+              <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: T.text, margin: "2px 0 4px" }}>
+                {apkModalData.appName}
+              </h3>
+              <p style={{ margin: 0, color: T.textMuted, fontSize: "0.8rem" }}>
+                {apkModalData.message}
+              </p>
+            </div>
+
+            {apkModalData.qrUrl && (
+              <div style={{ display: "flex", gap: "1rem", alignItems: "center", background: T.bgSubtle, padding: "12px", borderRadius: "10px", marginBottom: "1rem" }}>
+                <img src={apkModalData.qrUrl} alt="Scan QR" style={{ width: "100px", height: "100px", borderRadius: "6px", background: "#fff", padding: "4px" }} />
+                <div style={{ fontSize: "0.78rem", color: T.textMuted, lineHeight: 1.4 }}>
+                  Scan with Android camera to open and install to home screen instantly.
+                </div>
+              </div>
+            )}
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+              <a
+                href={apkModalData.downloadUrl}
+                download
+                className="claude-btn"
+                style={{ background: T.accent, color: "#fff", textDecoration: "none", padding: "9px", fontSize: "0.8rem" }}
+              >
+                📦 Download Bundle (.zip)
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(apkModalData.previewUrl);
+                  alert("Mobile link copied!");
+                }}
+                className="claude-btn"
+                style={{ background: T.panel, border: `1px solid ${T.border}`, color: T.text, padding: "9px", fontSize: "0.8rem" }}
+              >
+                📋 Copy Mobile Link
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
-  </div>
   );
 }
-
