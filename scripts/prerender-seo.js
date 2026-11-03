@@ -25,11 +25,11 @@ const googleToken = (process.env.VITE_GOOGLE_SITE_VERIFICATION || process.env.GO
 const bingToken = (process.env.VITE_BING_SITE_VERIFICATION || process.env.BING_SITE_VERIFICATION || "").trim();
 
 if (googleToken) {
-  baseTemplate = baseTemplate.replace("REPLACE_WITH_SEARCH_CONSOLE_TOKEN", googleToken);
+  baseTemplate = baseTemplate.replace("</head>", `  <meta name="google-site-verification" content="${googleToken}" />\n</head>`);
   console.log("✔ Injected real Google Search Console verification token into base template");
 }
 if (bingToken) {
-  baseTemplate = baseTemplate.replace("REPLACE_WITH_BING_WEBMASTER_TOKEN", bingToken);
+  baseTemplate = baseTemplate.replace("</head>", `  <meta name="msvalidate.01" content="${bingToken}" />\n</head>`);
   console.log("✔ Injected real Bing Webmaster Tools verification token into base template");
 }
 
@@ -37,8 +37,8 @@ const ROUTES = [
   {
     path: "/",
     filePaths: [path.join(DIST_DIR, "index.html")],
-    title: "GARUDA AI Operating System | Custom AI & Software Engineering",
-    description: "GARUDA is an autonomous AI Operating System delivering custom AI systems, web applications, SaaS MVPs, automated workflows, and enterprise software worldwide.",
+    title: "GARUDA OS • AI Operating System, Business Automation & Custom Software",
+    description: "GARUDA OS provides enterprise AI workflow automation, custom AI agents, full-stack SaaS MVPs, and multi-rail fintech orchestration. Founded by Praveen Mahawar.",
     canonical: "https://www.garudaos.in/",
     h1: "One Command. Infinite Intelligence.",
     eyebrow: "AI OPERATING SYSTEM FOR BUSINESSES & PROFESSIONALS",

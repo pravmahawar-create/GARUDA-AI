@@ -58,6 +58,7 @@ const LeadLeakAudit = React.lazy(() => import("./pages/LeadLeakAudit"));
 const SolutionsHub = React.lazy(() => import("./pages/SolutionsHub"));
 const SolutionDetail = React.lazy(() => import("./pages/SolutionDetail"));
 const VyaparOS = React.lazy(() => import("./pages/VyaparOS"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
 import { initAttribution } from "./utils/attribution";
 
 
@@ -361,7 +362,10 @@ function AppRoutes() {
       <Route path="/vyapar" element={<Navigate to="/vyapar-os" replace />} />
       <Route path="/gaddi-hub" element={<Navigate to="/vyapar-os" replace />} />
       <Route path="/gaddi" element={<Navigate to="/vyapar-os" replace />} />
-      <Route path="*" element={publicLanding} />
+      {/* Payment and Billing Aliases */}
+      <Route path="/payment" element={<Navigate to="/pricing" replace />} />
+      <Route path="/pay" element={<Navigate to="/pricing" replace />} />
+      <Route path="*" element={<NotFound />} />
 
     </Routes>
     </React.Suspense>
