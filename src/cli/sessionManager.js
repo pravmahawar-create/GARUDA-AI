@@ -54,8 +54,15 @@ class SessionManager {
 
     // Sanitize any potential secret values before writing to disk
     const sanitized = JSON.parse(JSON.stringify(session, (key, value) => {
-      if (typeof key === "string" && (key.includes("KEY") || key.includes("SECRET") || key.includes("TOKEN") || key.includes("PASSWORD"))) {
+      if (typeof key === "string" && (key.toUpperCase().includes("KEY") || key.toUpperCase().includes("SECRET") || key.toUpperCase().includes("TOKEN") || key.toUpperCase().includes("PASSWORD"))) {
         return "[REDACTED]";
+      }
+      if (typeof value === "string") {
+        return value
+          .replace(/AIzaSy[A-Za-z0-9_\-]{10,}/g, "[REDACTED]")
+          .replace(/gsk_[A-Za-z0-9_\-]{10,}/g, "[REDACTED]")
+          .replace(/ghp_[A-Za-z0-9_\-]{10,}/g, "[REDACTED]")
+          .replace(/Bearer\s+[A-Za-z0-9_\-\.]{10,}/gi, "Bearer [REDACTED]");
       }
       return value;
     }));

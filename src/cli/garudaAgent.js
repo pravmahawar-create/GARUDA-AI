@@ -15,6 +15,15 @@ const os = require("os");
 const crypto = require("crypto");
 const { execSync } = require("child_process");
 
+// Modular Enterprise Engines Integration
+const security = require("./security");
+const toolParser = require("./toolParser");
+const contextManager = require("./contextManager");
+const diffEngine = require("./diffEngine");
+const sessionManager = require("./sessionManager");
+const taskPlanner = require("./taskPlanner");
+const selfHealing = require("./selfHealing");
+
 // Set Process & Terminal Window Title to GARUDA
 try {
   process.title = "GARUDA";
@@ -115,7 +124,7 @@ NEVER fabricate or hallucinate metrics, file lines, or JSON. Always call the rea
 
 // Tool Implementations
 class ToolRunner {
-  static runCommand(cmd) {
+  static runCommand(cmd, options = {}) {
     if (!cmd || !cmd.trim()) return "Error: No command provided.";
     
     const cleanCmd = cmd.trim();
@@ -128,12 +137,16 @@ class ToolRunner {
       }
     }
 
-    // Strict Governance Guard
-    const forbidden = ["git commit", "git push", "vercel deploy", "render deploy", "git branch -D main"];
-    for (const f of forbidden) {
-      if (cleanCmd.toLowerCase().includes(f)) {
-        return `⚠️ GARUDA SOVEREIGN GATEKEEPER: Execution of '${cleanCmd}' blocked. Git commit, push, and production deployments strictly require explicit prior command (aadesh) from Founder Praveen Mahawar.`;
-      }
+    // Strict Security & Governance Classification
+    const risk = security.classifyCommand(cleanCmd);
+    if (risk.level === "FOUNDER_ONLY") {
+      return `⚠️ GARUDA SOVEREIGN GATEKEEPER: Execution of '${cleanCmd}' blocked. ${risk.reason}`;
+    }
+    if (risk.level === "BLOCKED") {
+      return `🛡️ GARUDA SECURITY BLOCK: Command '${cleanCmd}' is forbidden. ${risk.reason}`;
+    }
+    if (risk.level === "CONFIRM_REQUIRED" && !options.approved && !options.autoApprove) {
+      return `⚠️ GARUDA APPROVAL REQUIRED: Command '${cleanCmd}' requires confirmation. Reason: ${risk.reason}`;
     }
 
     try {
@@ -141,21 +154,26 @@ class ToolRunner {
         cwd: ROOT_DIR,
         shell: "powershell.exe",
         encoding: "utf8",
-        timeout: 45000,
-        maxBuffer: 5 * 1024 * 1024
+        timeout: options.timeout || 45000,
+        maxBuffer: 10 * 1024 * 1024
       });
       const trimmed = output.trim();
-      return trimmed.length > 4000 ? trimmed.slice(0, 4000) + "\n...[truncated]" : trimmed || "(Command completed with exit code 0 and no output)";
+      return trimmed.length > 8000 ? trimmed.slice(0, 8000) + "\n...[truncated]" : trimmed || "(Command completed with exit code 0 and no output)";
     } catch (err) {
-      const stdout = err.stdout ? String(err.stdout).slice(0, 2000) : "";
-      const stderr = err.stderr ? String(err.stderr).slice(0, 2000) : "";
+      const stdout = err.stdout ? String(err.stdout).slice(0, 3000) : "";
+      const stderr = err.stderr ? String(err.stderr).slice(0, 3000) : "";
       return `Command failed (Exit code: ${err.status || 1}):\nSTDOUT: ${stdout}\nSTDERR: ${stderr || err.message}`;
     }
   }
 
-  static viewFile(filePath, startLine = 1, endLine = 150) {
+  static viewFile(filePath, startLine = 1, endLine = 800) {
     if (!filePath) return "Error: filePath required.";
-    const resolved = path.isAbsolute(filePath) ? filePath : path.resolve(ROOT_DIR, filePath);
+    let resolved;
+    try {
+      resolved = security.resolveSafeRepositoryPath(filePath, ROOT_DIR);
+    } catch (err) {
+      return `🛡️ GARUDA SECURITY BLOCK: Path traversal blocked - ${err.message}`;
+    }
     if (!fs.existsSync(resolved)) return `Error: File not found: ${filePath}`;
 
     try {
@@ -173,9 +191,23 @@ class ToolRunner {
 
   static writeFile(filePath, content) {
     if (!filePath || content === undefined) return "Error: filePath and content required.";
-    const resolved = path.isAbsolute(filePath) ? filePath : path.resolve(ROOT_DIR, filePath);
+    let resolved;
+    try {
+      resolved = security.resolveSafeRepositoryPath(filePath, ROOT_DIR);
+    } catch (err) {
+      return `🛡️ GARUDA SECURITY BLOCK: Path traversal blocked - ${err.message}`;
+    }
 
     try {
+      // Atomic backup if file exists
+      if (fs.existsSync(resolved)) {
+        const backupsDir = path.join(ROOT_DIR, ".garuda", "backups");
+        fs.mkdirSync(backupsDir, { recursive: true });
+        const baseName = path.basename(resolved);
+        const backupFile = path.join(backupsDir, `${baseName}.${Date.now()}.${crypto.randomBytes(3).toString("hex")}.bak`);
+        fs.copyFileSync(resolved, backupFile);
+      }
+
       fs.mkdirSync(path.dirname(resolved), { recursive: true });
       fs.writeFileSync(resolved, content, "utf8");
       const sha256 = crypto.createHash("sha256").update(content).digest("hex");
@@ -189,7 +221,12 @@ class ToolRunner {
     if (!filePath || targetContent === undefined || replacementContent === undefined) {
       return "Error: filePath, targetContent, and replacementContent required.";
     }
-    const resolved = path.isAbsolute(filePath) ? filePath : path.resolve(ROOT_DIR, filePath);
+    let resolved;
+    try {
+      resolved = security.resolveSafeRepositoryPath(filePath, ROOT_DIR);
+    } catch (err) {
+      return `🛡️ GARUDA SECURITY BLOCK: Path traversal blocked - ${err.message}`;
+    }
     if (!fs.existsSync(resolved)) return `Error: File not found: ${filePath}`;
 
     try {
@@ -197,17 +234,31 @@ class ToolRunner {
       if (!original.includes(targetContent)) {
         return `Error: targetContent not found in ${filePath}. Check exact whitespace and linebreaks.`;
       }
+
+      // Backup before edit
+      const backupsDir = path.join(ROOT_DIR, ".garuda", "backups");
+      fs.mkdirSync(backupsDir, { recursive: true });
+      const baseName = path.basename(resolved);
+      const backupFile = path.join(backupsDir, `${baseName}.${Date.now()}.${crypto.randomBytes(3).toString("hex")}.bak`);
+      fs.copyFileSync(resolved, backupFile);
+
       const updated = original.replace(targetContent, replacementContent);
       fs.writeFileSync(resolved, updated, "utf8");
-      const sha256 = crypto.createHash("sha256").update(updated).digest("hex");
-      return `✅ File edited successfully: ${filePath}\nSHA-256: ${sha256}`;
+      const diff = diffEngine.generateUnifiedDiff(original, updated, filePath);
+      const terminalDiff = diffEngine.renderTerminalDiff(diff);
+      return `✅ File edited successfully: ${filePath}\nSHA-256: ${diff.newSha256}\n${terminalDiff}`;
     } catch (err) {
       return `Error editing file: ${err.message}`;
     }
   }
 
   static listDir(dirPath = "") {
-    const resolved = path.isAbsolute(dirPath) ? dirPath : path.resolve(ROOT_DIR, dirPath);
+    let resolved;
+    try {
+      resolved = security.resolveSafeRepositoryPath(dirPath || ".", ROOT_DIR);
+    } catch (err) {
+      return `🛡️ GARUDA SECURITY BLOCK: Path traversal blocked - ${err.message}`;
+    }
     if (!fs.existsSync(resolved)) return `Error: Directory not found: ${dirPath}`;
 
     try {
@@ -337,6 +388,8 @@ class ToolRunner {
       `${C.bright}${C.cyan}INSTANT LOCAL COMMANDS (0ms Latency, 100% Offline):${C.reset}`,
       `  ${C.green}status${C.reset}          Live system health, memory synapses, and production status.`,
       `  ${C.green}doctor${C.reset}          Run full forensic diagnostic health checkup of hardware, keys & engines.`,
+      `  ${C.green}network${C.reset}         Test external cloud endpoints (Groq, Gemini, Portal) latency & health.`,
+      `  ${C.green}dashboard${C.reset}       Show live GARUDA Mission Intelligence Dashboard and active workforce.`,
       `  ${C.green}review <file>${C.reset}   Run deep AST static security & code quality review on any file.`,
       `  ${C.green}find <query>${C.reset}    Lightning-fast repository file discovery.`,
       `  ${C.green}version${C.reset}         Show GARUDA OS version, architecture, and core agent lineage.`,
@@ -415,6 +468,37 @@ class ToolRunner {
       `📂 [GARUDA Repository Finder] Found ${results.length} matches for '${query}':`,
       ...results.map(r => `  ${r.isDir ? "📁" : "📄"} ${r.path}`)
     ].join("\n");
+  }
+
+  static async networkDoctor() {
+    const endpoints = [
+      { name: "Groq LPU Engine", url: "https://api.groq.com/openai/v1/models", key: process.env.GROQ_API_KEY, header: "Authorization", prefix: "Bearer " },
+      { name: "Google Gemini Cloud", url: "https://generativelanguage.googleapis.com/v1beta/models?key=" + (process.env.GEMINI_API_KEY || "") },
+      { name: "GARUDA OS Portal", url: "https://www.garudaos.in" }
+    ];
+
+    const lines = [
+      `🌐 GARUDA NETWORK & CLOUD DIAGNOSTICS`,
+      `Founder: Praveen Mahawar | Standard: 100% Anti-Fabrication Law\n`
+    ];
+
+    for (const ep of endpoints) {
+      const t0 = Date.now();
+      try {
+        const headers = {};
+        if (ep.key && ep.header) headers[ep.header] = ep.prefix + ep.key;
+        const res = await fetch(ep.url, { headers, signal: AbortSignal.timeout(6000) });
+        const latency = Date.now() - t0;
+        const icon = res.ok ? "🟢" : "🟡";
+        lines.push(`  ${icon} ${ep.name.padEnd(22)} HTTP ${res.status} | Latency: ${latency}ms | Status: ${res.ok ? "ONLINE" : "DEGRADED"}`);
+      } catch (err) {
+        const latency = Date.now() - t0;
+        lines.push(`  🔴 ${ep.name.padEnd(22)} ERROR: ${err.message} (${latency}ms)`);
+      }
+    }
+
+    lines.push(`\nDiagnosis: All registered endpoints tested with native sub-second HTTP probes.`);
+    return lines.join("\n");
   }
 }
 
@@ -495,6 +579,27 @@ function dispatchCommand(input) {
     return { type: "print", output: ToolRunner.findFiles(query) };
   }
 
+  // 9. Network Diagnostics: network, --network
+  if (["/network", "network", "--network", "-n", "ping", "netcheck", "--diagnose-network"].includes(lower)) {
+    return { type: "async_print", fn: ToolRunner.networkDoctor };
+  }
+
+  // 10. Mission Intelligence Dashboard: dashboard, --dashboard
+  if (["/dashboard", "dashboard", "--dashboard", "-d", "missions"].includes(lower)) {
+    return {
+      type: "print",
+      output: () => {
+        const { MissionDashboard } = require("../dashboard/missionDashboard");
+        const dash = new MissionDashboard();
+        const history = dash.getExecutionHistory(5);
+        if (history.length === 0) {
+          return "🦅 GARUDA MISSION DASHBOARD: No active missions recorded yet. Run a mission with 'garuda \"<objective>\"'.";
+        }
+        return dash.renderAsciiDashboard(history[0].missionId);
+      }
+    };
+  }
+
   return null;
 }
 
@@ -530,9 +635,44 @@ function localSovereignEngine(userMessage, conversationHistory) {
 
 // Multi-Tier Resilient LLM Caller
 async function callAgentLLM(conversation) {
-  // Tier 1: Groq LPUs (Sub-Second Latency, High Reliability)
+  // Tier 1: Google Gemini (High Reasoning, Exact Tool-Calling & Large Context)
+  if (GEMINI_API_KEY) {
+    const geminiModels = ["gemini-2.5-flash", "gemini-1.5-flash"];
+    for (const gm of geminiModels) {
+      try {
+        const contents = conversation.map(msg => ({
+          role: msg.role === "assistant" ? "model" : "user",
+          parts: [{ text: msg.content }]
+        }));
+
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${gm}:generateContent?key=${GEMINI_API_KEY}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: {
+              parts: [{ text: SYSTEM_PROMPT }]
+            },
+            contents,
+            generationConfig: {
+              temperature: 0.2,
+              maxOutputTokens: 16384
+            }
+          }),
+          signal: AbortSignal.timeout(60000)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text && text.trim().length > 0) return text;
+        }
+      } catch (_) {}
+    }
+  }
+
+  // Tier 2: Groq LPUs (Sub-Second Latency Cloud Fallback)
   if (GROQ_API_KEY) {
-    const groqModels = ["qwen/qwen3.8-27b", "openai/gpt-oss-20b", "openai/gpt-oss-120b"];
+    const groqModels = ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile"];
     for (const m of groqModels) {
       try {
         const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -549,7 +689,7 @@ async function callAgentLLM(conversation) {
             ],
             temperature: 0.2
           }),
-          signal: AbortSignal.timeout(15000)
+          signal: AbortSignal.timeout(20000)
         });
 
         if (res.ok) {
@@ -563,46 +703,15 @@ async function callAgentLLM(conversation) {
     }
   }
 
-  // Tier 2: Google Gemini (Multimodal Cloud with Quota Interception)
-  if (GEMINI_API_KEY) {
-    try {
-      const contents = conversation.map(msg => ({
-        role: msg.role === "assistant" ? "model" : "user",
-        parts: [{ text: msg.content }]
-      }));
-
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: SYSTEM_PROMPT }]
-          },
-          contents,
-          generationConfig: {
-            temperature: 0.2,
-            maxOutputTokens: 2500
-          }
-        }),
-        signal: AbortSignal.timeout(10000)
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text && text.trim().length > 0) return text;
-      }
-    } catch (_) {}
-  }
-
   // Fallback to null (signals runAgentTurn to use localSovereignEngine)
   return null;
 }
 
 // Agentic Execution Loop
-async function runAgentTurn(userMessage, conversationHistory, onLog = console.log) {
+async function runAgentTurn(userMessage, conversationHistory, onLog = console.log, options = {}) {
+  const logFn = typeof onLog === "function" ? onLog : () => {};
   conversationHistory.push({ role: "user", content: userMessage });
-  let maxSteps = 8;
+  let maxSteps = options.maxSteps || 25;
   let step = 0;
 
   while (step < maxSteps) {
@@ -616,66 +725,72 @@ async function runAgentTurn(userMessage, conversationHistory, onLog = console.lo
       return localResult;
     }
 
-    // Check for tool action
-    const actionMatch = responseText.match(/<action\s+name=["']([^"']+)["']>([\s\S]*?)<\/action>/i);
-    const thoughtMatch = responseText.match(/<thought>([\s\S]*?)<\/thought>/i);
+    // Parse multi-action or single-action using toolParser
+    const actions = toolParser.parseActions(responseText);
+    const thoughts = toolParser.parseThoughts(responseText);
 
-    if (thoughtMatch && onLog) {
-      onLog(`${C.dim}💭 [GARUDA Reason] ${thoughtMatch[1].trim()}${C.reset}`);
+    if (thoughts && thoughts.length > 0) {
+      thoughts.forEach(t => logFn(`${C.dim}💭 [GARUDA Reason] ${t}${C.reset}`));
     }
 
-    if (!actionMatch) {
+    if (!actions || actions.length === 0) {
       // Final response (no tools invoked)
       const cleanResponse = sanitizeResponse(responseText);
       conversationHistory.push({ role: "assistant", content: cleanResponse });
       return cleanResponse;
     }
 
-    const toolName = actionMatch[1].trim();
-    const toolParamsRaw = actionMatch[2].trim();
-    const toolParams = parseToolParams(toolParamsRaw);
+    const observations = [];
 
-    onLog(`${C.gold}⚡ [GARUDA Tool] ${toolName}${C.reset}(${C.cyan}${JSON.stringify(toolParams)}${C.reset})`);
+    for (const act of actions) {
+      const toolName = act.name;
+      const toolParams = act.params || {};
 
-    let toolResult = "";
-    switch (toolName) {
-      case "run_command":
-        toolResult = ToolRunner.runCommand(toolParams.cmd || toolParams.command || toolParams.raw);
-        break;
-      case "view_file":
-        toolResult = ToolRunner.viewFile(toolParams.filePath || toolParams.file, toolParams.startLine, toolParams.endLine);
-        break;
-      case "write_file":
-        toolResult = ToolRunner.writeFile(toolParams.filePath || toolParams.file, toolParams.content);
-        break;
-      case "edit_file":
-        toolResult = ToolRunner.editFile(toolParams.filePath || toolParams.file, toolParams.targetContent, toolParams.replacementContent);
-        break;
-      case "list_dir":
-        toolResult = ToolRunner.listDir(toolParams.dirPath || toolParams.path || toolParams.dir || "");
-        break;
-      case "system_status":
-        toolResult = ToolRunner.systemStatus();
-        break;
-      case "system_doctor":
-        toolResult = ToolRunner.systemDoctor();
-        break;
-      case "code_review":
-        toolResult = ToolRunner.codeReview(toolParams.filePath || toolParams.file);
-        break;
-      case "find_files":
-        toolResult = ToolRunner.findFiles(toolParams.query || toolParams.keyword || "");
-        break;
-      default:
-        toolResult = `Error: Unknown tool '${toolName}'.`;
-        break;
+      logFn(`${C.gold}⚡ [GARUDA Tool] ${toolName}${C.reset}(${C.cyan}${JSON.stringify(toolParams)}${C.reset})`);
+
+      let toolResult = "";
+      switch (toolName) {
+        case "run_command":
+          toolResult = ToolRunner.runCommand(toolParams.cmd || toolParams.command || toolParams.raw, options);
+          break;
+        case "view_file":
+          toolResult = ToolRunner.viewFile(toolParams.filePath || toolParams.file, toolParams.startLine, toolParams.endLine);
+          break;
+        case "write_file":
+          toolResult = ToolRunner.writeFile(toolParams.filePath || toolParams.file, toolParams.content);
+          break;
+        case "edit_file":
+          toolResult = ToolRunner.editFile(toolParams.filePath || toolParams.file, toolParams.targetContent, toolParams.replacementContent);
+          break;
+        case "list_dir":
+          toolResult = ToolRunner.listDir(toolParams.dirPath || toolParams.path || toolParams.dir || "");
+          break;
+        case "system_status":
+          toolResult = ToolRunner.systemStatus();
+          break;
+        case "system_doctor":
+          toolResult = ToolRunner.systemDoctor();
+          break;
+        case "code_review":
+          toolResult = ToolRunner.codeReview(toolParams.filePath || toolParams.file);
+          break;
+        case "find_files":
+          toolResult = ToolRunner.findFiles(toolParams.query || toolParams.keyword || "");
+          break;
+        default:
+          toolResult = `Error: Unknown tool '${toolName}'.`;
+          break;
+      }
+
+      const truncated = contextManager.truncateToolOutput(toolResult);
+      observations.push(`<observation tool="${toolName}">\n${truncated}\n</observation>`);
     }
 
     // Append tool interaction to context
     conversationHistory.push({ role: "assistant", content: responseText });
     conversationHistory.push({
       role: "user",
-      content: `<observation tool="${toolName}">\n${toolResult}\n</observation>\nBased on this tool result, continue the task or give final answer in natural Roman Hindi (Hinglish).`
+      content: observations.join("\n\n") + "\nBased on these tool results, continue the task or give final answer in natural Roman Hindi (Hinglish)."
     });
   }
 
@@ -694,14 +809,21 @@ function printBanner() {
   console.log(`${C.bright}Namaste Praveen ji! Mai GARUDA hoon.${C.reset}`);
   console.log(`Aapka sovereign inhouse coding agent taiyar hai.`);
   console.log(`Bataiye, aaj kis project, feature ya bug par kaam karna hai?\n`);
-  console.log(`${C.dim}Commands: status, doctor, review <file>, find <query>, version, help, clear, exit${C.reset}\n`);
+  console.log(`${C.dim}Commands: status, doctor, review <file>, find <query>, version, help, clear, exit, --resume${C.reset}\n`);
 }
 
 // Interactive REPL
-async function startRepl() {
+async function startRepl(existingSession = null) {
   printBanner();
 
-  const conversationHistory = [];
+  const sm = new sessionManager.SessionManager();
+  const session = existingSession || sm.createSession();
+  const conversationHistory = session.messages || [];
+
+  if (existingSession) {
+    console.log(`${C.gold}🦅 [GARUDA Session] Resumed session ${session.id} with ${conversationHistory.length} messages.${C.reset}\n`);
+  }
+
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -721,7 +843,9 @@ async function startRepl() {
     const dispatched = dispatchCommand(input);
     if (dispatched) {
       if (dispatched.type === "exit") {
-        console.log(`\n${C.gold}🦅 GARUDA Console exiting. Jai Hind Praveen ji!${C.reset}\n`);
+        session.messages = conversationHistory;
+        sm.saveSession(session);
+        console.log(`\n${C.gold}🦅 GARUDA Console exiting. Session saved: ${session.id}. Jai Hind Praveen ji!${C.reset}\n`);
         process.exit(0);
       }
       if (dispatched.type === "clear") {
@@ -731,7 +855,15 @@ async function startRepl() {
         return;
       }
       if (dispatched.type === "print") {
-        console.log("\n" + dispatched.output + "\n");
+        const out = typeof dispatched.output === "function" ? dispatched.output() : dispatched.output;
+        console.log("\n" + out + "\n");
+        rl.prompt();
+        return;
+      }
+      if (dispatched.type === "async_print") {
+        console.log(`\n${C.dim}⏳ [Testing network endpoints...]${C.reset}`);
+        const out = await dispatched.fn();
+        console.log("\n" + out + "\n");
         rl.prompt();
         return;
       }
@@ -741,10 +873,13 @@ async function startRepl() {
 
     try {
       const answer = await runAgentTurn(input, conversationHistory, (log) => console.log(log));
+      session.messages = conversationHistory;
+      sm.saveSession(session);
       console.log(`\n${C.bright}${C.cyan}🦅 GARUDA:${C.reset}\n${answer}\n`);
     } catch (err) {
-      // Safe fallback: never show fatal crash stack in front of client
       const fallback = localSovereignEngine(input, conversationHistory);
+      session.messages = conversationHistory;
+      sm.saveSession(session);
       console.log(`\n${C.bright}${C.cyan}🦅 GARUDA:${C.reset}\n${fallback}\n`);
     }
 
@@ -752,14 +887,85 @@ async function startRepl() {
   });
 
   rl.on("close", () => {
+    session.messages = conversationHistory;
+    sm.saveSession(session);
     console.log(`\n${C.gold}🦅 GARUDA session closed.${C.reset}`);
     process.exit(0);
   });
 }
 
+// Autonomous Multi-Agent Mission Runner
+async function runAutonomousMission(objective, options = {}) {
+  const { TeamOrchestrator } = require("../motherCore/workforce/TeamOrchestrator");
+  const { MissionDashboard } = require("../dashboard/missionDashboard");
+
+  const orchestrator = new TeamOrchestrator({
+    maxConcurrency: options.maxConcurrency || 3,
+    onProgress: options.onLog || (() => {})
+  });
+
+  const teamSize = options.teamSize || 5;
+  const { mission, workforce } = orchestrator.planMission(objective, teamSize);
+
+  const dashboard = new MissionDashboard();
+  dashboard.createMission({
+    missionId: mission.missionId,
+    objective: mission.objective,
+    teamSize: workforce.size
+  });
+
+  for (const [role, ag] of workforce.entries()) {
+    dashboard.registerAgent(mission.missionId, {
+      agentId: ag.id,
+      name: ag.name,
+      role: ag.role,
+      model: ag.preferredModel
+    });
+  }
+
+  for (const t of mission.tasks.values()) {
+    dashboard.assignTask(mission.missionId, {
+      taskId: t.id,
+      title: t.title,
+      role: t.assignedRole,
+      dependencies: t.dependencies
+    });
+  }
+
+  const outcome = await orchestrator.executeMission(mission, workforce);
+
+  for (const t of outcome.tasks) {
+    dashboard.updateTaskStatus(mission.missionId, t.id, t.status, {
+      output: t.output,
+      error: t.error
+    });
+  }
+
+  dashboard.aggregateResults(mission.missionId);
+  const asciiBoard = dashboard.renderAsciiDashboard(mission.missionId);
+  console.log("\n" + asciiBoard + "\n");
+
+  return outcome.finalReport;
+}
+
 // Main CLI Entry
 async function main() {
   const args = process.argv.slice(2);
+  const sm = new sessionManager.SessionManager();
+
+  if (args.includes("--resume") || args.includes("-r")) {
+    const recent = sm.getMostRecentSession();
+    if (recent) {
+      console.log(`\n${C.gold}🦅 [GARUDA Resume] Resuming previous session ${recent.id} (${recent.messages.length} messages)...${C.reset}\n`);
+      await startRepl(recent);
+      return;
+    } else {
+      console.log(`\n${C.yellow}⚠️ No previous session found. Starting fresh session.${C.reset}\n`);
+      await startRepl();
+      return;
+    }
+  }
+
   if (args.length > 0) {
     const singleTask = args.join(" ").trim();
     
@@ -767,7 +973,14 @@ async function main() {
     const dispatched = dispatchCommand(singleTask);
     if (dispatched) {
       if (dispatched.type === "print") {
-        console.log("\n" + dispatched.output + "\n");
+        const out = typeof dispatched.output === "function" ? dispatched.output() : dispatched.output;
+        console.log("\n" + out + "\n");
+        process.exitCode = 0;
+        return;
+      }
+      if (dispatched.type === "async_print") {
+        const out = await dispatched.fn();
+        console.log("\n" + out + "\n");
         process.exitCode = 0;
         return;
       }
@@ -777,16 +990,40 @@ async function main() {
       }
     }
 
-    // 2. Agentic Task Execution
+    // 2. Multi-Agent Team Orchestration Check
+    const isMultiAgent = args.includes("--team") || args.includes("--mission") || args.includes("--orchestrate") ||
+      /(?:coordinate|workforce|required agents|multi-agent|team of agents|build.*module.*tests|analytics module)/i.test(singleTask);
+
+    if (isMultiAgent) {
+      console.log(`\n${C.gold}🦅 [MOTHER BRAIN] Initializing Autonomous Intelligence Workforce...${C.reset}\n`);
+      const cleanObjective = singleTask.replace(/^--(?:team|mission|orchestrate)\s*/i, "").trim();
+      try {
+        const report = await runAutonomousMission(cleanObjective);
+        console.log(`\n${C.bright}${C.cyan}🦅 GARUDA MOTHER BRAIN:${C.reset}\n${report}\n`);
+        process.exitCode = 0;
+        return;
+      } catch (err) {
+        console.error(`\n${C.red}✖ Mother Brain Execution Error: ${err.message}${C.reset}`);
+        process.exitCode = 1;
+        return;
+      }
+    }
+
+    // 3. Agentic Task Execution
     console.log(`\n${C.gold}🦅 [GARUDA Execution] Running task: "${singleTask}"${C.reset}\n`);
-    const history = [];
+    const session = sm.createSession();
+    const history = session.messages || [];
     try {
       const result = await runAgentTurn(singleTask, history, (log) => console.log(log));
+      session.messages = history;
+      sm.saveSession(session);
       console.log(`\n${C.bright}${C.cyan}🦅 GARUDA:${C.reset}\n${result}\n`);
       process.exitCode = 0;
       return;
     } catch (err) {
       const fallbackResult = localSovereignEngine(singleTask, history);
+      session.messages = history;
+      sm.saveSession(session);
       console.log(`\n${C.bright}${C.cyan}🦅 GARUDA:${C.reset}\n${fallbackResult}\n`);
       process.exitCode = 0;
       return;
@@ -803,4 +1040,18 @@ if (require.main === module) {
   });
 }
 
-module.exports = { main, runAgentTurn, ToolRunner, dispatchCommand, localSovereignEngine };
+module.exports = {
+  main,
+  runAgentTurn,
+  runAutonomousMission,
+  ToolRunner,
+  dispatchCommand,
+  localSovereignEngine,
+  security,
+  toolParser,
+  contextManager,
+  diffEngine,
+  sessionManager,
+  taskPlanner,
+  selfHealing
+};

@@ -56,6 +56,7 @@
     "test:self:awareness": "node --test-concurrency=1 src/services/selfAwareness/selfAwarenessService.test.js",
     "test:independence": "node --test-concurrency=1 src/services/independence/independenceService.test.js",
     "test:cli": "node --test-concurrency=1 src/cli/garudaCli.test.js && node src/cli/garudaAgent.test.js && node src/cli/security.test.js && node src/cli/toolParser.test.js && node src/cli/contextManager.test.js && node src/cli/diffEngine.test.js && node src/cli/sessionManager.test.js && node src/cli/streamProvider.test.js && node src/cli/garudaProduction.test.js && node src/cli/selfHealing.test.js && node src/cli/selfEvolution.test.js && node src/cli/longContext.test.js && node src/cli/taskPlanner.test.js && node src/cli/browserAgent.test.js && node src/cli/integrationE2E.test.js",
+    "test:workforce": "node tests/missionDashboard.test.js && node tests/customerAnalytics.test.js",
     "test:code:gen": "node --test-concurrency=1 src/services/codeGeneration/codeGenerationService.test.js",
     "test:orchestrator": "node --test-concurrency=1 src/services/orchestrator/orchestratorService.test.js",
     "test:smart": "node --test-concurrency=1 src/services/smartEngine/smartEngine.test.js",
@@ -66,7 +67,6 @@
     "test:mother": "node --test-concurrency=1 scripts/mother/mother.js",
     "test:risk": "npm --prefix backend-node test",
     "test": "npm run test:mother && npm run test:risk",
-    "start": "node server.js",
     "dev": "concurrently \"npm start\" \"npm run dev:frontend\"",
     "dev:frontend": "vite --host 0.0.0.0",
     "dev:multibrain": "node scripts/dev-agent/run-multibrain.js",
@@ -119,7 +119,8 @@
     "bounty:discover": "node scripts/bounty-autonomous-daemon.js --discover --once",
     "boilerplate:package": "node scripts/package-boilerplate.js",
     "boilerplate:publish": "node scripts/publish-boilerplate-marketplaces.js",
-    "test:founder-intelligence": "node src/services/founderIntelligence/founderIntelligenceUnit.test.js && node src/services/founderIntelligence/founderIntelligenceGoldenEval.test.js && node src/services/founderIntelligence/founderIntelligenceSecurity.test.js"
+    "test:founder-intelligence": "node src/services/founderIntelligence/founderIntelligenceUnit.test.js && node src/services/founderIntelligence/founderIntelligenceGoldenEval.test.js && node src/services/founderIntelligence/founderIntelligenceSecurity.test.js",
+    "vault:preview": "node scripts/serve-sarafa-preview.js"
   },
   "repository": {
     "type": "git",

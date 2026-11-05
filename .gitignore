@@ -29,6 +29,7 @@ test-output.txt
 test-revenue.txt
 test_orig.txt
 
+.garuda/
 .garuda_*
 *.backup
 *.backup.js
