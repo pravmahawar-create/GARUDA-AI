@@ -1,0 +1,45 @@
+name: GARUDA Autonomous 1-Hour Cloud Flywheel
+
+on:
+  schedule:
+    # Runs every hour at minute 0 (24x7 in GitHub cloud)
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  flywheel-sprint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Dependencies
+        run: npm install --production
+
+      - name: Execute Autonomous Outreach Sprint
+        env:
+          GARUDA_EMAIL_HOST: ${{ secrets.GARUDA_EMAIL_HOST || 'smtp.zoho.in' }}
+          GARUDA_EMAIL_PORT: ${{ secrets.GARUDA_EMAIL_PORT || '465' }}
+          GARUDA_EMAIL_USER: ${{ secrets.GARUDA_EMAIL_USER || 'praveen@garudaos.in' }}
+          GARUDA_EMAIL_PASS: ${{ secrets.GARUDA_EMAIL_PASS }}
+          GARUDA_EMAIL_FROM_NAME: "Praveen Mahawar | Founder, GARUDA-AI"
+        run: |
+          node scripts/radar/autonomous-flywheel-daemon.js
+
+      - name: Sync Flywheel Audit Logs Back to Repo
+        run: |
+          git config --global user.name "GARUDA Autonomous Worker"
+          git config --global user.email "bot@garudaos.in"
+          git add reports/autonomous-flywheel-dispatches.jsonl data/radar/autonomous-flywheel-state.json
+          git commit -m "chore(flywheel): sync autonomous cloud dispatch state [skip ci]" || echo "No state changes to commit"
+          git push || echo "Push skipped or not permitted"

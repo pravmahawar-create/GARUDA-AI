@@ -288,3 +288,22 @@ Immediately following the completion of any task, bug fix, deployment, or operat
    - Before any commit or deployment touching SEO/AEO feeds:
      - Local verification: `npm run build` and `node scripts/governance/verify-vercel-functions.js` must exit with 0.
      - Post-deployment verification: Automated HTTP probe via `curl.exe` to confirm `HTTP 200 OK` on `https://www.garudaos.in/llms.txt` and `https://www.garudaos.in/llms-full.txt`.
+
+## 15. The Sovereign Zero-Bounce, Strict Pre-Flight Email Verification & Founder Peace Covenant (Permanent Founder Mandate)
+*Founder Mandate: "Sabhi ko mail bhejne se pehle check karo ki email sahi hai ki nahi, fake ya unrelated emails par mail nahi karna, mera poora inbox mail not delivered se bhara pada hai. Jo 71 leads hain unko filter karke mail bhejo, and next order me jo bhi bot/agents lagein unko bolo ki khud se inn parameters par sabkuch check karein aur mails bhejein, aur ye sab chhoti-chhoti baaton ke liye mujhe disturb na karein."*
+
+1. **Mandatory 4-Tier Pre-Flight Email Verification Law ("Zero-Bounce Mandate")**:
+   - **Tier 1 (Syntax Integrity)**: Strict RFC 5322 validation. Reject any malformed, truncated, or concatenated email strings (e.g., strings missing `.com`, containing trailing punctuation, or missing `@`).
+   - **Tier 2 (Authoritative DNS MX Resolution)**: Before dispatching any email, execute a live DNS query against authoritative public resolvers (`8.8.8.8`, `1.1.1.1`) to verify active `MX` mail exchanger records. If the domain has zero MX records or NXDOMAIN, dispatch is strictly aborted with `ABORTED_NO_MX`.
+   - **Tier 3 (Anti-Guessing & Anti-Fabrication Rule)**: Under NO circumstances shall any agent guess, hallucinate, or construct unverified placeholder emails (e.g., guessing `hiring@`, `contact@`, `admin@` without explicit public proof). If a prospect's direct email is not explicitly discovered and verified, do NOT dispatch an email. Use alternative verified channels or quarantine the lead.
+   - **Tier 4 (Decision-Maker Relevancy Check)**: Ensure the recipient is directly tied to the project, contract, or buying decision (Founders, CTOs, Engineering Leads, Marketing Heads). Never dispatch mass spam blasts to unverified scrapings.
+
+2. **Autonomous End-to-End Execution Standard (The "Zero-Disturb" Covenant)**:
+   - All agents, subagents, and automated workers are mandated to independently verify parameters, validate data pipelines, handle retries, and execute workflows from start to finish.
+   - Do NOT interrupt or disturb Founder Praveen with routine debugging queries, missing parameter confirmations, or trivial operational updates.
+   - Protect Founder Praveen's physical health, heart vitality, and mental peace at all costs. Escalate ONLY when a qualified high-value client explicitly agrees to a deal, requests a live contract call, or in a critical system emergency.
+
+3. **Autonomous Inbox Hygiene & Bounce Purge Standard**:
+   - Any bounce notification ("Mail Delivery Subsystem", "Delivery Status Notification (Failure)", "Undelivered Mail Returned to Sender") is considered an architectural failure of the pre-flight verification layer.
+   - The system must actively purge and clean bounce clutter from the inbox so that Founder Praveen only sees high-value incoming prospect conversations and clean correspondence.
+
