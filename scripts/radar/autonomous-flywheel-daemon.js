@@ -1,11 +1,11 @@
 /**
- * 🦅 GARUDA Autonomous 1-Hour Outbound Flywheel Daemon
- * Mission: Continuous, zero-spam, precision client hunting for early-stage AI startups.
+ * 🦅 GARUDA Autonomous Outbound Flywheel Daemon (Render Cloud 24x7 / CLI)
+ * Mission: Continuous, zero-spam, precision client hunting for early-stage AI startups & agencies.
  * Governance:
  *  - Rule 15: Zero-Bounce, Strict Pre-Flight MX Verification Engine
- *  - Executive Visual Standard | Founder Privacy Shield
- *  - Duplicate Suppression: Never hits the same prospect twice.
- *  - Non-stop loop mode or single-sprint execution.
+ *  - Executive Visual Standard | Founder Privacy Shield (Zero personal phone number)
+ *  - Multi-Source Duplicate Suppression: Checks all dispatch logs & DB before touching SMTP
+ *  - Non-stop loop daemon mode (--daemon) on Render or single-sprint execution
  */
 
 const nodemailer = require("nodemailer");
@@ -18,18 +18,58 @@ const { verifyEmail } = require("../governance/verify-email-preflight");
 
 const LOG_FILE = path.join(__dirname, "../../reports/autonomous-flywheel-dispatches.jsonl");
 const STATE_FILE = path.join(__dirname, "../../data/radar/autonomous-flywheel-state.json");
+const QUEUE_FILE = path.join(__dirname, "../../data/radar/flywheel_target_queue.json");
+
+// Multi-source log paths for rigorous deduplication
+const AUX_LOG_FILES = [
+  path.join(__dirname, "../../reports/foreign-ai-startups-dispatch-log.json"),
+  path.join(__dirname, "../../data/radar/zoho_outreach_dispatched.jsonl"),
+  path.join(__dirname, "../../data/agency-whitelabel-dispatch-log.json"),
+  path.join(__dirname, "../../reports/databricks-csi-email-evidence.json")
+];
 
 function loadDispatchedSet() {
   const set = new Set();
+
+  // 1. Primary flywheel log
   if (fs.existsSync(LOG_FILE)) {
-    const lines = fs.readFileSync(LOG_FILE, "utf8").split("\n").filter(Boolean);
-    for (const line of lines) {
+    try {
+      const lines = fs.readFileSync(LOG_FILE, "utf8").split("\n").filter(Boolean);
+      for (const line of lines) {
+        try {
+          const item = JSON.parse(line);
+          if (item.target) set.add(item.target.toLowerCase().trim());
+        } catch (e) {}
+      }
+    } catch (e) {}
+  }
+
+  // 2. Aux logs
+  for (const auxFile of AUX_LOG_FILES) {
+    if (fs.existsSync(auxFile)) {
       try {
-        const item = JSON.parse(line);
-        if (item.target) set.add(item.target.toLowerCase());
+        const raw = fs.readFileSync(auxFile, "utf8");
+        if (auxFile.endsWith(".jsonl")) {
+          const lines = raw.split("\n").filter(Boolean);
+          for (const line of lines) {
+            try {
+              const item = JSON.parse(line);
+              const target = item.target || item.to || item.recipient;
+              if (target) set.add(target.toLowerCase().trim());
+            } catch (e) {}
+          }
+        } else {
+          const parsed = JSON.parse(raw);
+          const list = Array.isArray(parsed) ? parsed : [parsed];
+          for (const item of list) {
+            const target = item.target || item.to || item.recipient;
+            if (target) set.add(target.toLowerCase().trim());
+          }
+        }
       } catch (e) {}
     }
   }
+
   return set;
 }
 
@@ -43,8 +83,63 @@ function loadState() {
 }
 
 function saveState(state) {
-  fs.mkdirSync(path.dirname(STATE_FILE), { recursive: true });
-  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2), "utf8");
+  try {
+    fs.mkdirSync(path.dirname(STATE_FILE), { recursive: true });
+    fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2), "utf8");
+  } catch (e) {
+    console.warn("⚠️ Failed to write flywheel state:", e.message);
+  }
+}
+
+// Built-in verified high-intent target pool
+const BASE_CANDIDATE_POOL = [
+  {
+    key: "assume_ai",
+    to: "hello@assume-ai.com",
+    company: "AssumeAI Team",
+    subject: "Contract AI Engineering Bench — Production Agentic Pipelines",
+    headline: "Scalable Engineering Bench for Claude Skills & SME Automations",
+    body: "<p>Hi AssumeAI Engineering Team,</p><p>We are a sovereign AI systems engineering practice specializing in high-throughput agent orchestration, Supabase/Vercel pipelines, and deterministic error-handling. Available for immediate sprint support to accelerate your SME deployment roadmap.</p>"
+  },
+  {
+    key: "nesting_navigator",
+    to: "founders@nestingnavigator.com",
+    company: "Nesting Navigator",
+    subject: "Conversational Financial AI Platform Architecture — GARUDA-AI",
+    headline: "Autonomous Financial Agents & Next.js Full-Stack Architecture",
+    body: "<p>Hello Nesting Navigator Founders,</p><p>Saw your mission building an AI-guided conversational financial platform. We build full-duplex conversational agents, local vector retrieval, and deterministic financial workflows with zero-hallucination guardrails.</p>"
+  },
+  {
+    key: "schbang_digital",
+    to: "info@schbang.com",
+    company: "Schbang Digital",
+    subject: "White-Label AI Engineering Partner — 48h Turnaround — GARUDA-AI",
+    headline: "Autonomous Edge AI Bot Delivery for Enterprise Agency Retainers",
+    body: "<p>Hi Schbang Leadership Team,</p><p>We operate as a silent, high-velocity white-label AI engineering partner for premier agencies. We architect and deploy custom conversational agents, lead qualification pipelines, and edge PWAs under your NDA with 48-hour turnarounds.</p>"
+  },
+  {
+    key: "watconsult_digital",
+    to: "contact@watconsult.com",
+    company: "WATConsult",
+    subject: "Sub-200ms Conversational Agent Worktrees — Agency White-Label",
+    headline: "Production React/Node AI Widgets with Zero Agency Dev Overhead",
+    body: "<p>Hi WATConsult Strategy Team,</p><p>We provide enterprise-ready conversational booking and lead capture engines with verified sub-second latency. Available to power your enterprise client retainers without expanding internal hiring overhead.</p>"
+  }
+];
+
+function getCandidatePool() {
+  const pool = [...BASE_CANDIDATE_POOL];
+  if (fs.existsSync(QUEUE_FILE)) {
+    try {
+      const customQueue = JSON.parse(fs.readFileSync(QUEUE_FILE, "utf8"));
+      if (Array.isArray(customQueue)) {
+        pool.push(...customQueue);
+      }
+    } catch (e) {
+      console.warn("⚠️ Failed to parse custom queue file:", e.message);
+    }
+  }
+  return pool;
 }
 
 async function runFlywheelSprint() {
@@ -58,28 +153,10 @@ async function runFlywheelSprint() {
   console.log("===============================================================\n");
 
   const alreadyDispatched = loadDispatchedSet();
-  console.log(`[STATE] Historical dispatched targets: ${alreadyDispatched.size}`);
+  console.log(`[STATE] Historical suppressed targets: ${alreadyDispatched.size}`);
 
-  // Pool of high-intent, direct startup opportunities
-  // In addition to the first 3 dispatched, here is the verified queue
-  const CANDIDATE_POOL = [
-    {
-      key: "assume_ai",
-      to: "hello@assume-ai.com",
-      company: "AssumeAI Team",
-      subject: "Contract AI Engineering Bench — Production Agentic Pipelines",
-      headline: "Scalable Engineering Bench for Claude Skills & SME Automations",
-      body: "<p>Hi AssumeAI Engineering Team,</p><p>We are a sovereign AI systems engineering practice specializing in high-throughput agent orchestration, Supabase/Vercel pipelines, and deterministic error-handling. Available for immediate sprint support to accelerate your SME deployment roadmap.</p>"
-    },
-    {
-      key: "nesting_navigator",
-      to: "founders@nestingnavigator.com",
-      company: "Nesting Navigator",
-      subject: "Conversational Financial AI Platform Architecture — GARUDA-AI",
-      headline: "Autonomous Financial Agents & Next.js Full-Stack Architecture",
-      body: "<p>Hello Nesting Navigator Founders,</p><p>Saw your mission building an AI-guided conversational financial platform. We build full-duplex conversational agents, local vector retrieval, and deterministic financial workflows with zero-hallucination guardrails.</p>"
-    }
-  ];
+  const candidates = getCandidatePool();
+  console.log(`[QUEUE] Total candidates in registry: ${candidates.length}`);
 
   const host = process.env.GARUDA_EMAIL_HOST || "smtp.zoho.in";
   const port = parseInt(process.env.GARUDA_EMAIL_PORT || "465", 10);
@@ -87,7 +164,8 @@ async function runFlywheelSprint() {
   const pass = process.env.GARUDA_EMAIL_PASS;
 
   if (!pass) {
-    console.error("❌ Missing GARUDA_EMAIL_PASS in environment.");
+    console.warn("⚠️ [FLYWHEEL] Missing GARUDA_EMAIL_PASS in environment. Skipping email dispatch cycle (warm-idle).");
+    saveState(state);
     return;
   }
 
@@ -99,8 +177,14 @@ async function runFlywheelSprint() {
   });
 
   let dispatchedInThisSprint = 0;
+  const SPRINT_MAX_DISPATCH = parseInt(process.env.GARUDA_FLYWHEEL_MAX_PER_SPRINT || "2", 10);
 
-  for (const item of CANDIDATE_POOL) {
+  for (const item of candidates) {
+    if (dispatchedInThisSprint >= SPRINT_MAX_DISPATCH) {
+      console.log(`[RATE-LIMIT] Reached per-sprint batch limit (${SPRINT_MAX_DISPATCH}). Pausing until next cycle.`);
+      break;
+    }
+
     const cleanEmail = item.to.toLowerCase().trim();
 
     if (alreadyDispatched.has(cleanEmail)) {
@@ -163,7 +247,13 @@ async function runFlywheelSprint() {
         timestamp: new Date().toISOString()
       };
 
-      fs.appendFileSync(LOG_FILE, JSON.stringify(record) + "\n", "utf8");
+      try {
+        fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
+        fs.appendFileSync(LOG_FILE, JSON.stringify(record) + "\n", "utf8");
+      } catch (logErr) {
+        console.warn("⚠️ Failed to append to log file:", logErr.message);
+      }
+
       alreadyDispatched.add(cleanEmail);
       dispatchedInThisSprint++;
       state.totalDispatched++;
@@ -176,15 +266,18 @@ async function runFlywheelSprint() {
   console.log(`\n✔ Sprint complete. Dispatched in this run: ${dispatchedInThisSprint}. Total lifetime: ${state.totalDispatched}`);
 }
 
-// Check arguments
+// Check execution mode
 const isDaemon = process.argv.includes("--daemon");
+const intervalMs = Number(process.env.GARUDA_FLYWHEEL_INTERVAL_MS) || 3600 * 1000;
 
 if (isDaemon) {
-  console.log("🦅 STARTING 1-HOUR CONTINUOUS FLYWHEEL DAEMON (Interval: 3600s)...");
+  console.log(`🦅 STARTING CONTINUOUS CLOUD FLYWHEEL DAEMON (Interval: ${intervalMs / 1000}s)...`);
   runFlywheelSprint().catch(console.error);
   setInterval(() => {
     runFlywheelSprint().catch(console.error);
-  }, 3600 * 1000);
+  }, intervalMs);
 } else {
   runFlywheelSprint().catch(console.error);
 }
+
+module.exports = { runFlywheelSprint, loadDispatchedSet, loadState };

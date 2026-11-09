@@ -1,9 +1,11 @@
 name: GARUDA Autonomous 1-Hour Cloud Flywheel
 
 on:
-  schedule:
-    # Runs every hour at minute 0 (24x7 in GitHub cloud)
-    - cron: '0 * * * *'
+  # Primary 24x7 autonomous flywheel is shifted to Render (server.js).
+  # GitHub Actions cron disabled to prevent double-dispatch and ephemeral state resets.
+  # Manual trigger enabled via workflow_dispatch.
+  # schedule:
+  #   - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -40,6 +42,6 @@ jobs:
         run: |
           git config --global user.name "GARUDA Autonomous Worker"
           git config --global user.email "bot@garudaos.in"
-          git add reports/autonomous-flywheel-dispatches.jsonl data/radar/autonomous-flywheel-state.json
+          git add -f reports/autonomous-flywheel-dispatches.jsonl data/radar/autonomous-flywheel-state.json 2>/dev/null || true
           git commit -m "chore(flywheel): sync autonomous cloud dispatch state [skip ci]" || echo "No state changes to commit"
           git push || echo "Push skipped or not permitted"

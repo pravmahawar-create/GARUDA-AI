@@ -1,4 +1,22 @@
 node_modules/
+*/node_modules/
+.chrome-profile/
+.chrome-profile*/
+dist/
+build/
+*/dist/
+*/build/
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*tokens*.json
+*cookies*.json
+*session*.json
+*credential*.json
+*.key
+*.pem
 .env
 .env.local
 .env.*.local
@@ -11,6 +29,7 @@ test-output.txt
 test-revenue.txt
 test_orig.txt
 
+.garuda/
 .garuda_*
 *.backup
 *.backup.js
@@ -29,6 +48,10 @@ data/*
 !data/performance-marketing-buyers.json
 !data/deep-marketing-leads.json
 !data/boilerplate-store-manifest.json
+!data/radar/
+!data/radar/**
+!reports/
+!reports/**
 !data/bounty-targets.txt
 !data/bounty-scan-memory.json
 !data/agency-whitelabel-targets.json

@@ -284,5 +284,46 @@ if (String(process.env.GARUDA_KEEPALIVE ?? "true").toLowerCase() !== "false") {
         } else {
             console.log("[GARUDA] Alpha-Quant Sniper daemon idle — set GARUDA_QUANT_SNIPER=true to enable");
         }
+
+        // ── Autonomous 09:15 AM IST Cloud Quant Pulse Scheduler (Render Cloud 24x7) ──
+        try {
+            const { defaultCloudScheduler } = require("./src/services/alphaQuant/quantCloudScheduler");
+            defaultCloudScheduler.start();
+            console.log("[GARUDA] 🦅 Autonomous 09:15 AM IST Alpha-Quant Cloud Scheduler armed.");
+        } catch (e) {
+            console.error("[GARUDA] Cloud Quant Scheduler boot failed:", e.message);
+        }
+
+        // ── 24/7 Autonomous Outbound Flywheel Daemon (Render Cloud 24x7) ──
+        const flywheelEnabled = String(process.env.GARUDA_FLYWHEEL_DAEMON ?? "true").toLowerCase() === "true";
+        if (flywheelEnabled) {
+            try {
+                const { spawn } = require("child_process");
+                const path = require("path");
+                const flywheelDaemonPath = path.join(__dirname, "scripts", "radar", "autonomous-flywheel-daemon.js");
+                let flywheelRestartCount = 0;
+                const spawnFlywheel = () => {
+                    const child = spawn("node", [flywheelDaemonPath, "--daemon"], {
+                        stdio: "inherit",
+                        detached: false,
+                        env: process.env
+                    });
+                    child._spawnAt = Date.now();
+                    console.log(`[GARUDA] 🦅 24/7 Autonomous Flywheel Daemon spawned on Render Cloud (PID ${child.pid}, restart #${flywheelRestartCount})`);
+                    child.on("error", e => console.error("[GARUDA] Autonomous Flywheel spawn failed:", e.message));
+                    child.on("exit", (code, signal) => {
+                        const uptimeSec = ((Date.now() - child._spawnAt)/1000).toFixed(0);
+                        console.log(`[GARUDA] Autonomous Flywheel exited code ${code} signal ${signal} uptime ${uptimeSec}s — auto-restart in 60s`);
+                        flywheelRestartCount++;
+                        setTimeout(spawnFlywheel, 60000);
+                    });
+                    return child;
+                };
+                // Initial warm up delay (45s) after server boot
+                setTimeout(spawnFlywheel, 45000);
+            } catch (e) { console.error("[GARUDA] Autonomous Flywheel boot failed:", e.message); }
+        } else {
+            console.log("[GARUDA] Autonomous Flywheel idle — set GARUDA_FLYWHEEL_DAEMON=true to enable");
+        }
     });
 })();
