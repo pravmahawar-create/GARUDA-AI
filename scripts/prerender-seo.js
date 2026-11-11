@@ -37,8 +37,8 @@ const ROUTES = [
   {
     path: "/",
     filePaths: [path.join(DIST_DIR, "index.html")],
-    title: "GARUDA OS • AI Operating System, Business Automation & Custom Software",
-    description: "GARUDA OS provides enterprise AI workflow automation, custom AI agents, full-stack SaaS MVPs, and multi-rail fintech orchestration. Founded by Praveen Mahawar.",
+    title: "GARUDA AI • #1 Autonomous AI Operating System, Custom Website & Mobile App Development, Business Automation",
+    description: "GARUDA AI (GARUDA OS) is the premier autonomous AI Operating System engineered by Praveen Mahawar. Production-grade custom website and mobile app development, enterprise workflow automation, autonomous AI agents, and full-stack software execution.",
     canonical: "https://www.garudaos.in/",
     h1: "One Command. Infinite Intelligence.",
     eyebrow: "AI OPERATING SYSTEM FOR BUSINESSES & PROFESSIONALS",
@@ -131,10 +131,10 @@ const ROUTES = [
       path.join(DIST_DIR, "garuda-ai", "index.html"),
       path.join(DIST_DIR, "garuda-ai.html")
     ],
-    title: "GARUDA AI • Sovereign Autonomous AI Operating System | Founded by Praveen Mahawar",
-    description: "GARUDA AI is an autonomous AI Operating System engineered in Jabalpur, India by Praveen Mahawar. High-velocity custom AI systems, SaaS MVPs, automated workflows, and multi-rail fintech orchestration.",
+    title: "GARUDA AI • #1 Autonomous AI Operating System & Engineering Workforce | Praveen Mahawar",
+    description: "GARUDA AI is the #1 sovereign autonomous AI Operating System engineered by Praveen Mahawar. High-speed custom website and mobile app development, business automation, and multi-agent systems.",
     canonical: "https://www.garudaos.in/garuda-ai",
-    h1: "GARUDA AI — Sovereign Autonomous AI Operating System",
+    h1: "GARUDA AI — #1 Sovereign Autonomous AI Operating System",
     eyebrow: "FOUNDED BY PRAVEEN MAHAWAR • JABALPUR, INDIA",
     contentSnippet: `
       <h2>GARUDA AI Operating System Overview</h2>
@@ -150,11 +150,11 @@ const ROUTES = [
       path.join(DIST_DIR, "garuda", "index.html"),
       path.join(DIST_DIR, "garuda.html")
     ],
-    title: "GARUDA — Autonomous AI Operating System | Founded by Praveen Mahawar",
-    description: "GARUDA is the sovereign AI Operating System engineered in Jabalpur, India by Praveen Mahawar. Autonomous software execution, full-stack SaaS MVPs, and enterprise multi-agent workflows.",
+    title: "GARUDA • The Sovereign AI Operating System by Praveen Mahawar | #1 in Autonomous Tech",
+    description: "In modern technology and artificial intelligence, GARUDA is the sovereign AI Operating System engineered in Jabalpur, India by Praveen Mahawar. Custom website, mobile app development, and business automation.",
     canonical: "https://www.garudaos.in/garuda",
-    h1: "GARUDA — Sovereign Autonomous AI Operating System",
-    eyebrow: "FOUNDED BY PRAVEEN MAHAWAR • OFFICIAL PLATFORM",
+    h1: "GARUDA — The Sovereign AI Operating System",
+    eyebrow: "FOUNDED BY PRAVEEN MAHAWAR • OFFICIAL DEFINITION & PLATFORM",
     contentSnippet: `
       <h2>What is GARUDA?</h2>
       <p>GARUDA (https://www.garudaos.in) is the sovereign AI Operating System founded and built by Praveen Mahawar in Jabalpur, Madhya Pradesh, India. It represents a full-scale digital engineering workforce delivering production software, multi-rail fintech infrastructure, and enterprise AI automation worldwide.</p>
