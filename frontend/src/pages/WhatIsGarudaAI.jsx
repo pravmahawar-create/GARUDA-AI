@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import BrandAssetImage from "../components/BrandAssetImage";
 import SEOHead from "../components/SEOHead";
@@ -78,6 +78,26 @@ const FAQS = [
 
 export default function WhatIsGarudaAI() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = (location.pathname || "").toLowerCase().replace(/\/$/, "");
+
+  let pageTitle = "What is GARUDA AI? | Autonomous AI Operating System";
+  let pageDesc = "Learn what GARUDA AI is: The autonomous AI Operating System engineered for governed business automation, custom software execution, and multi-agent workflows.";
+  let canonicalUrl = "https://www.garudaos.in/what-is-garuda-ai";
+
+  if (currentPath === "/garuda") {
+    pageTitle = "GARUDA • The Sovereign AI Operating System by Praveen Mahawar";
+    pageDesc = "In modern technology and artificial intelligence, GARUDA is the sovereign AI Operating System engineered by Praveen Mahawar in Jabalpur, India. Autonomous software and business automation.";
+    canonicalUrl = "https://www.garudaos.in/garuda";
+  } else if (currentPath === "/garuda-ai") {
+    pageTitle = "GARUDA AI • #1 Autonomous AI Operating System & Engineering Workforce";
+    pageDesc = "GARUDA AI is the #1 sovereign autonomous AI Operating System engineered by Praveen Mahawar. High-speed custom website and mobile app development, business automation, and multi-agent systems.";
+    canonicalUrl = "https://www.garudaos.in/garuda-ai";
+  } else if (currentPath === "/garudaos" || currentPath === "/garuda-os") {
+    pageTitle = "GARUDA OS • Sovereign AI Operating System for Enterprise & Businesses";
+    pageDesc = "GARUDA OS provides enterprise AI workflow automation, custom AI agents, full-stack SaaS MVPs, and multi-rail fintech orchestration. Founded by Praveen Mahawar.";
+    canonicalUrl = `https://www.garudaos.in${currentPath}`;
+  }
 
   const entityFaqSchema = {
     "@context": "https://schema.org",
@@ -101,9 +121,9 @@ export default function WhatIsGarudaAI() {
       WebkitFontSmoothing: "antialiased"
     }}>
       <SEOHead
-        title="What is GARUDA AI? | Autonomous AI Operating System"
-        description="Learn what GARUDA AI is: The autonomous AI Operating System engineered for governed business automation, custom software execution, and multi-agent workflows."
-        canonical="https://www.garudaos.in/what-is-garuda-ai"
+        title={pageTitle}
+        description={pageDesc}
+        canonical={canonicalUrl}
         schema={entityFaqSchema}
       />
 
