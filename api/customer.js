@@ -382,6 +382,203 @@ async function customerProposalsHandler(req, res) {
   return res.status(200).json({ success: true, proposals });
 }
 
+async function leadHandler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, message: "Method not allowed" });
+  }
+
+  try {
+    const body = req.body || {};
+    const leadData = body.data || body;
+
+    // 1. Strict Server-side input validation
+    const name = String(leadData.name || "").trim().replace(/<[^>]*>/g, "").slice(0, 80);
+    const rawPhone = String(leadData.phone || "").trim().slice(0, 20);
+    const digitsOnly = rawPhone.replace(/\D/g, "");
+    const age = parseInt(leadData.age, 10);
+    const plan = String(leadData.plan || leadData.service || "General Advisory").trim().replace(/<[^>]*>/g, "").slice(0, 120);
+    const consent = Boolean(leadData.consent === true || leadData.consent === "true" || leadData.consentGiven === true);
+    const source = String(leadData.source || "garudaos.in/insurance").trim().slice(0, 100);
+
+    if (!name || name.length < 2) {
+      return res.status(400).json({ success: false, message: "Valid full name is required (at least 2 characters)." });
+    }
+
+    if (!digitsOnly || digitsOnly.length < 8 || digitsOnly.length > 15) {
+      return res.status(400).json({ success: false, message: "Valid mobile/WhatsApp number is required (8-15 digits)." });
+    }
+
+    if (isNaN(age) || age < 18 || age > 85) {
+      return res.status(400).json({ success: false, message: "Age must be between 18 and 85." });
+    }
+
+    // 2. Deterministic Idempotency Key (Content-Hash SHA-256)
+    // Combines: digitsOnly + normalized plan + submissionWindow (client submissionId or calendar date)
+    // Ensures: Same submission session / rapid retries share the exact same key.
+    // Genuinely new enquiries (different plan, new session, or future date) produce a distinct key.
+    const submissionWindow = String(
+      leadData.submissionId ||
+      leadData.enquiryId ||
+      leadData.idempotencyKey ||
+      new Date().toISOString().slice(0, 10)
+    ).trim();
+
+    const idempotencyKey = crypto
+      .createHash("sha256")
+      .update(`${digitsOnly}::${plan.toLowerCase()}::${submissionWindow}`)
+      .digest("hex");
+
+    const supabase = supabaseAdminClient() || supabaseClient();
+
+    // 3. Construct structured payload preserving all enquiry metadata
+    const structuredPayload = {
+      service: "insurance-advisory",
+      provider: "Aditya Birla Sun Life Insurance (ABSLI)",
+      productInterest: plan,
+      age,
+      consentGiven: consent,
+      idempotencyKey,
+      submissionWindow,
+      notes: [],
+      quotationStatus: "AWAITING_CONSULTATION",
+      capturedAt: new Date().toISOString()
+    };
+
+    const insertRecord = {
+      first_name: name,
+      phone: digitsOnly,
+      email: leadData.email ? String(leadData.email).trim().toLowerCase().slice(0, 100) : null,
+      source,
+      message: JSON.stringify(structuredPayload),
+      status: "new",
+      idempotency_key: idempotencyKey
+    };
+
+    // 4. PERSIST TO SUPABASE POSTGRESQL WITH DATABASE-LEVEL ATOMICITY
+    let { data: insertedRow, error: insertError } = await supabase
+      .from("leads")
+      .insert(insertRecord)
+      .select("id, captured_at")
+      .single();
+
+    // Safe Schema cache fallback: if column hasn't been added yet via migration, fall back cleanly
+    if (insertError && insertError.message && insertError.message.includes("idempotency_key") && insertError.message.includes("schema cache")) {
+      console.warn("[CustomerRouter] NOTICE: 'idempotency_key' column pending Supabase migration. Falling back to base schema insert.");
+      delete insertRecord.idempotency_key;
+      const fallback = await supabase
+        .from("leads")
+        .insert(insertRecord)
+        .select("id, captured_at")
+        .single();
+      insertedRow = fallback.data;
+      insertError = fallback.error;
+    }
+
+    if (insertError || !insertedRow) {
+      // 5. Handle PostgreSQL unique-conflict response (SQLSTATE 23505)
+      const isUniqueViolation = Boolean(
+        insertError && (
+          insertError.code === "23505" ||
+          insertError.code === 23505 ||
+          /23505/i.test(insertError.message || "") ||
+          /duplicate key/i.test(insertError.message || "") ||
+          /unique constraint/i.test(insertError.message || "") ||
+          /already exists/i.test(insertError.details || "")
+        )
+      );
+
+      if (isUniqueViolation) {
+        // Database-level atomic duplicate constraint caught (SQLSTATE 23505)
+        // Retrieve the existing canonical lead ID from Supabase (with micro-retry loop for concurrent commits)
+        try {
+          let canonicalRow = null;
+          for (let attempt = 0; attempt < 5; attempt++) {
+            const { data: cRow } = await supabase
+              .from("leads")
+              .select("id, captured_at")
+              .eq("idempotency_key", idempotencyKey)
+              .order("id", { ascending: true })
+              .limit(1)
+              .maybeSingle();
+            if (cRow && cRow.id) {
+              canonicalRow = cRow;
+              break;
+            }
+            await new Promise(resolve => setTimeout(resolve, 80));
+          }
+
+          const canonicalId = canonicalRow?.id;
+          const leadId = canonicalId ? `lead_absli_sb_${canonicalId}` : `lead_absli_sb_canonical`;
+
+          // Strict Rule 6: Zero WhatsApp/notification side effects on conflict/retry
+          return res.status(200).json({
+            success: true,
+            idempotent: true,
+            leadId,
+            message: "Your enquiry is already recorded. Our advisor will reach out shortly."
+          });
+        } catch (queryErr) {
+          console.warn("[CustomerRouter] Canonical lead retrieval notice:", queryErr.message);
+          return res.status(200).json({
+            success: true,
+            idempotent: true,
+            leadId: "lead_absli_sb_canonical",
+            message: "Your enquiry is already recorded. Our advisor will reach out shortly."
+          });
+        }
+      }
+
+      console.error("[CustomerRouter] Supabase lead insertion failure:", insertError?.message);
+      // Founder Mandate: Never report a successful enquiry that was not saved.
+      return res.status(503).json({
+        success: false,
+        message: "Database persistence temporarily unavailable. Please connect directly via WhatsApp."
+      });
+    }
+
+    const leadId = `lead_absli_sb_${insertedRow.id}`;
+
+    // 5. Offline development fallback (Write to data/leads.json ONLY in local development for real enquiries)
+    if (process.env.NODE_ENV !== "production" && !process.env.VERCEL && !leadData.test && !source.includes("test")) {
+      try {
+        const fs = require("fs");
+        const path = require("path");
+        const leadsFile = path.join(__dirname, "..", "data", "leads.json");
+        if (fs.existsSync(leadsFile)) {
+          const fileData = JSON.parse(fs.readFileSync(leadsFile, "utf8"));
+          if (Array.isArray(fileData.leads)) {
+            fileData.leads.push({
+              id: leadId,
+              supabaseId: insertedRow.id,
+              name,
+              phone: digitsOnly,
+              age,
+              service: "insurance-advisory",
+              provider: "Aditya Birla Sun Life Insurance (ABSLI)",
+              productInterest: plan,
+              source,
+              consentGiven: consent,
+              status: "new",
+              governanceStatus: "AWAITING_ADVISOR_CONTACT",
+              idempotencyKey,
+              capturedAt: insertedRow.captured_at || new Date().toISOString()
+            });
+            fs.writeFileSync(leadsFile, JSON.stringify(fileData, null, 2), "utf8");
+          }
+        }
+      } catch (_) {}
+    }
+
+    return res.status(201).json({
+      success: true,
+      leadId,
+      message: "ABSLI insurance enquiry persisted successfully to Supabase."
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Internal server error processing enquiry." });
+  }
+}
+
 const HANDLERS = {
   conversations: conversationsHandler,
   demo: demoSignInHandler,
@@ -391,16 +588,30 @@ const HANDLERS = {
   session: sessionHandler,
   signup: signupHandler,
   projects: projectsHandler,
-  proposals: customerProposalsHandler
+  proposals: customerProposalsHandler,
+  lead: leadHandler,
+  leads: leadHandler,
+  insurance: leadHandler
 };
 
 module.exports = async function customerRouter(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-garuda-test");
+  if (req.method === "OPTIONS") return res.status(200).end();
+
   const pathFromQuery = String(req.query && req.query.path ? req.query.path : "");
   const pathFromUrl = String(req.path || req.url || "").replace(/^\/api\/customer\/?/, "").replace(/^\//, "").split(/[/?]/)[0];
-  const path = (pathFromQuery || pathFromUrl || "session").toLowerCase();
+  let path = (pathFromQuery || pathFromUrl || "session").toLowerCase();
+
+  // If request body explicitly indicates an insurance lead or lead submission
+  if (req.method === "POST" && (req.body?.type === "insurance_lead" || req.body?.service === "insurance-advisory")) {
+    path = "lead";
+  }
+
   const handler = HANDLERS[path] || HANDLERS.session;
 
-  if (req.method === "POST" && ["signup", "login", "logout", "demo"].includes(path)) {
+  if (req.method === "POST" && ["signup", "login", "logout", "demo", "lead", "leads", "insurance"].includes(path)) {
     return handler(req, res);
   }
   return handler(req, res);

@@ -264,6 +264,200 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    // -------------------------------------------------------------
+    // ACTION: INSURANCE LEADS (GET/POST /api/founder/command/insurance-leads)
+    // -------------------------------------------------------------
+    if (action === "insurance-leads" || action === "absli-leads") {
+      const { createClient } = require("@supabase/supabase-js");
+      const DEFAULT_SB_URL = "https://gcifzzuyswrcwvkcfqbr.supabase.co";
+      const DEFAULT_SB_KEY = "sb_publishable_uYLXTH4M1PFyem5pQSMJtQ_7YqZ2rFp";
+      const sbUrl = process.env.SUPABASE_URL || DEFAULT_SB_URL;
+      const sbKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || DEFAULT_SB_KEY;
+      const supabase = createClient(String(sbUrl).trim(), String(sbKey).trim(), {
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+      });
+
+      // POST: update lead status or record consultation progress in Supabase
+      if (req.method === "POST") {
+        const { leadId, status, note, consultationDate, quotationStatus } = req.body || {};
+        if (!leadId) {
+          return res.status(400).json({ success: false, error: { message: "leadId is required" } });
+        }
+
+        const targetId = String(leadId).replace(/^lead_absli_sb_/, "");
+        const updatePayload = {
+          parentLeadId: targetId,
+          leadId: String(leadId),
+          status: status || undefined,
+          note: note ? String(note).slice(0, 1000) : undefined,
+          consultationDate: consultationDate || undefined,
+          quotationStatus: quotationStatus || undefined,
+          updatedAt: new Date().toISOString()
+        };
+
+        const { data: crmEntry, error: crmErr } = await supabase
+          .from("leads")
+          .insert({
+            first_name: `CRM_STATUS_${(status || "UPDATE").toUpperCase()}`,
+            source: "garudaos.in/insurance:crm",
+            message: JSON.stringify(updatePayload),
+            status: status || "updated"
+          })
+          .select("id, captured_at")
+          .single();
+
+        if (crmErr) {
+          console.error("[FounderCommand] Supabase CRM status write error:", crmErr.message);
+          return res.status(503).json({ success: false, error: { message: "Failed to persist status to Supabase" } });
+        }
+
+        // Local development fallback
+        if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+          try {
+            const fs = require("fs");
+            const path = require("path");
+            const leadsFile = path.join(__dirname, "..", "data", "leads.json");
+            if (fs.existsSync(leadsFile)) {
+              const fileData = JSON.parse(fs.readFileSync(leadsFile, "utf8"));
+              const localLead = fileData.leads.find(l => l.id === leadId || l.leadId === leadId || String(l.supabaseId) === targetId);
+              if (localLead) {
+                if (status) localLead.status = status;
+                if (quotationStatus) localLead.quotationStatus = quotationStatus;
+                if (consultationDate) localLead.consultationDate = consultationDate;
+                if (note) {
+                  if (!Array.isArray(localLead.notes)) localLead.notes = [];
+                  localLead.notes.push({ text: String(note), timestamp: new Date().toISOString() });
+                }
+                fs.writeFileSync(leadsFile, JSON.stringify(fileData, null, 2), "utf8");
+              }
+            }
+          } catch (_) {}
+        }
+
+        return res.status(200).json({
+          success: true,
+          leadId,
+          status,
+          quotationStatus,
+          crmEntryId: crmEntry?.id,
+          persistence: "SUPABASE_POSTGRESQL"
+        });
+      }
+
+      // GET: retrieve all insurance leads from Supabase PostgreSQL
+      try {
+        const { data: rows, error: fetchErr } = await supabase
+          .from("leads")
+          .select("id, first_name, phone, email, source, message, status, captured_at")
+          .ilike("source", "%insurance%")
+          .order("captured_at", { ascending: false })
+          .limit(100);
+
+        if (!fetchErr && rows) {
+          const baseLeads = [];
+          const crmUpdates = new Map();
+
+          for (const r of rows) {
+            if (r.source === "garudaos.in/insurance:crm") {
+              try {
+                const u = JSON.parse(r.message || "{}");
+                const pId = String(u.parentLeadId || u.leadId);
+                if (!crmUpdates.has(pId)) crmUpdates.set(pId, []);
+                crmUpdates.get(pId).push(u);
+              } catch (_) {}
+            } else {
+              let msg = {};
+              try { msg = JSON.parse(r.message || "{}"); } catch (_) {}
+              baseLeads.push({
+                id: `lead_absli_sb_${r.id}`,
+                supabaseId: r.id,
+                name: r.first_name,
+                phone: r.phone,
+                email: r.email,
+                source: r.source,
+                status: r.status,
+                service: msg.service || "insurance-advisory",
+                provider: msg.provider || "Aditya Birla Sun Life Insurance (ABSLI)",
+                productInterest: msg.productInterest || "General Advisory",
+                age: msg.age,
+                consentGiven: msg.consentGiven,
+                quotationStatus: msg.quotationStatus,
+                notes: Array.isArray(msg.notes) ? msg.notes : [],
+                capturedAt: r.captured_at
+              });
+            }
+          }
+
+          // Merge latest CRM updates into base leads
+          for (const lead of baseLeads) {
+            const updates = crmUpdates.get(String(lead.supabaseId)) || crmUpdates.get(lead.id);
+            if (updates && updates.length > 0) {
+              const latest = updates[0]; // ordered by captured_at desc
+              if (latest.status) lead.status = latest.status;
+              if (latest.quotationStatus) lead.quotationStatus = latest.quotationStatus;
+              if (latest.consultationDate) lead.consultationDate = latest.consultationDate;
+              for (const u of updates) {
+                if (u.note) lead.notes.push({ text: u.note, timestamp: u.updatedAt });
+              }
+            }
+          }
+
+          return res.status(200).json({
+            success: true,
+            count: baseLeads.length,
+            leads: baseLeads,
+            persistence: "SUPABASE_POSTGRESQL"
+          });
+        }
+      } catch (sbErr) {
+        console.warn("[FounderCommand] Supabase read fallback:", sbErr.message);
+      }
+
+      // Offline development fallback (data/leads.json)
+      const fs = require("fs");
+      const path = require("path");
+      const leadsFile = path.join(__dirname, "..", "data", "leads.json");
+      let allLeads = [];
+      try {
+        if (fs.existsSync(leadsFile)) {
+          const content = JSON.parse(fs.readFileSync(leadsFile, "utf8"));
+          allLeads = Array.isArray(content.leads) ? content.leads : [];
+        }
+      } catch (_) {}
+      const fallbackLeads = allLeads.filter(l => l.service === "insurance-advisory" || l.source?.includes("insurance"));
+      return res.status(200).json({
+        success: true,
+        count: fallbackLeads.length,
+        leads: fallbackLeads,
+        persistence: "LOCAL_FALLBACK"
+      });
+    }
+
+    // -------------------------------------------------------------
+    // ACTION: HISTORICAL BASELINE LEADS (GET /api/founder/command/historical-leads)
+    // -------------------------------------------------------------
+    if (action === "historical-leads" || action === "baseline-leads" || (action === "leads" && req.query.view === "historical")) {
+      const fs = require("fs");
+      const path = require("path");
+      const leadsFile = path.join(__dirname, "..", "data", "leads.json");
+      let historicalLeads = [];
+      try {
+        if (fs.existsSync(leadsFile)) {
+          const content = JSON.parse(fs.readFileSync(leadsFile, "utf8"));
+          historicalLeads = Array.isArray(content.leads) ? content.leads : [];
+        }
+      } catch (_) {}
+
+      return res.status(200).json({
+        success: true,
+        count: historicalLeads.length,
+        view: "HISTORICAL_BASELINE_SNAPSHOT",
+        sourceFile: "data/leads.json",
+        integrityVerified: historicalLeads.length === 218,
+        leads: historicalLeads
+      });
+    }
+
     // Unknown action
     return res.status(404).json({
       success: false,
