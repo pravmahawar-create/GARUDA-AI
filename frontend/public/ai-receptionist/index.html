@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>24/7 WhatsApp AI Receptionist & Clinic Lead Conversion Engine • GARUDA OS</title>
+  <meta name="description" content="Convert 2.5x more patient appointments and customer leads with GARUDA 60-second WhatsApp AI Receptionist. 24/7 instant triage, booking calendar sync, and zero missed calls.">
+  <meta name="keywords" content="WhatsApp AI bot, AI receptionist for clinics, WhatsApp appointment booking, automated dental clinic receptionist, AI lead converter, WhatsApp business automation">
+  <link rel="canonical" href="https://www.garudaos.in/ai-receptionist">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.garudaos.in/ai-receptionist">
+  <meta property="og:title" content="24/7 WhatsApp AI Receptionist • GARUDA OS">
+  <meta property="og:description" content="Eliminate missed leads with 60-second WhatsApp response. Instant appointment booking and automated patient triage.">
+  <meta property="og:image" content="https://www.garudaos.in/garuda-sigil.png">
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://www.garudaos.in/ai-receptionist#software",
+        "name": "GARUDA 24/7 WhatsApp AI Receptionist",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Cloud / WhatsApp Business API",
+        "url": "https://www.garudaos.in/ai-receptionist",
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "INR",
+          "price": "14999",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "62"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How fast does the WhatsApp AI Receptionist reply to inquiries?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The AI bot responds in under 30 to 60 seconds, 24/7, answering customer questions, pricing queries, and booking appointments automatically."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does it require my phone to stay switched on with internet?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The system runs on cloud servers via the official WhatsApp Business Cloud API with 99.9% uptime, completely independent of your personal phone."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07090e;
+      --card: #0d121f;
+      --border: #1f293d;
+      --emerald: #10b981;
+      --indigo: #6366f1;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.6; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+    
+    header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(16px); background: rgba(7, 9, 14, 0.85); border-bottom: 1px solid var(--border); padding: 16px 0; }
+    .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-weight: 800; font-size: 18px; color: #fff; text-decoration: none; }
+    .brand span { color: var(--emerald); }
+
+    .hero { padding: 60px 0 40px; text-align: center; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.12); border: 1px solid var(--emerald); color: #34d399; padding: 6px 16px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; }
+    .hero h1 { font-size: 40px; font-weight: 800; line-height: 1.25; margin-bottom: 20px; background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 70%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 17px; color: var(--text-muted); max-width: 720px; margin: 0 auto 36px; }
+
+    /* Interactive WhatsApp Chat Simulator */
+    .sim-container { background: #0b0f19; border: 1px solid #1e293b; border-radius: 20px; padding: 24px; max-width: 500px; margin: 0 auto 56px; box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.7); }
+    .sim-header { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 14px; margin-bottom: 16px; }
+    .sim-avatar { width: 44px; height: 44px; border-radius: 50%; background: #065f46; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .sim-title { font-weight: 800; font-size: 15px; color: #fff; }
+    .sim-status { font-size: 11px; color: #34d399; display: flex; align-items: center; gap: 4px; font-weight: 600; }
+    .sim-chat { display: flex; flex-direction: column; gap: 12px; min-height: 280px; max-height: 340px; overflow-y: auto; padding: 8px 4px; }
+    .msg { max-width: 82%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.45; }
+    .msg-user { align-self: flex-end; background: #065f46; color: #ecfdf5; border-bottom-right-radius: 2px; }
+    .msg-bot { align-self: flex-start; background: #1e293b; color: #f1f5f9; border-bottom-left-radius: 2px; }
+    .msg-time { font-size: 10px; opacity: 0.7; margin-top: 4px; text-align: right; }
+    .sim-controls { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .sim-btn { background: #1e293b; border: 1px solid #334155; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .sim-btn:hover { background: #334155; color: #fff; border-color: var(--emerald); }
+
+    /* Highlights Grid */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 60px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; }
+    .card h3 { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: #fff; }
+    .card p { font-size: 14px; color: var(--text-muted); }
+
+    /* CTA */
+    .cta { background: linear-gradient(135deg, #064e3b 0%, #0f172a 100%); border: 1px solid #059669; border-radius: 16px; padding: 40px 24px; text-align: center; margin-bottom: 60px; }
+    .cta h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+    .cta p { color: #cbd5e1; font-size: 15px; margin-bottom: 28px; }
+    .btn-main { display: inline-flex; align-items: center; gap: 8px; background: var(--emerald); color: #022c22; font-weight: 800; font-size: 15px; padding: 14px 32px; border-radius: 10px; text-decoration: none; transition: transform 0.15s; }
+    .btn-main:hover { transform: scale(1.02); }
+
+    footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; font-size: 13px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav-inner">
+      <a href="/" class="brand">GARUDA <span>OS</span> // CONVERSION</a>
+      <span style="font-size:11px; font-weight:700; color:#34d399; background:rgba(16,185,129,0.15); padding:4px 10px; border-radius:999px;">Cloud Bot Live</span>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <section class="hero">
+      <div class="badge">⚡ 60-Second Lead Conversion Engine</div>
+      <h1>Never Lose Another Client to Slow Response.<br>24/7 Autonomous WhatsApp Receptionist.</h1>
+      <p>60% of clinic and business leads drop off if not replied to within 5 minutes. GARUDA's WhatsApp AI answers inquiries, verifies patient slots, and confirms bookings instantly 24/7.</p>
+    </section>
+
+    <!-- Interactive Simulator -->
+    <div class="sim-container">
+      <div class="sim-header">
+        <div class="sim-avatar">🤖</div>
+        <div>
+          <div class="sim-title">Apex Dental & Aesthetic Clinic (AI Bot)</div>
+          <div class="sim-status">● Online & Responding in &lt;10s</div>
+        </div>
+      </div>
+
+      <div class="sim-chat" id="chat">
+        <div class="msg msg-bot">
+          Hello! Welcome to Apex Clinic. How can I assist you today? We offer Root Canals, Teeth Whitening, and Orthodontic Consultations.
+          <div class="msg-time">Just now</div>
+        </div>
+      </div>
+
+      <div class="sim-controls">
+        <button class="sim-btn" onclick="sendSim('How much does teeth whitening cost?')">💰 Ask Pricing</button>
+        <button class="sim-btn" onclick="sendSim('Can I book an appointment tomorrow evening?')">📅 Book Slot</button>
+        <button class="sim-btn" onclick="sendSim('Do you accept dental insurance/TPA?')">🛡️ Check Insurance</button>
+      </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="grid">
+      <div class="card">
+        <h3>⚡ Sub-60s Instant Response</h3>
+        <p>Eliminate the 15-30 minute human delay. Patient inquiries from Meta Ads, Google, or your website are answered in under 60 seconds.</p>
+      </div>
+      <div class="card">
+        <h3>📅 2-Way Calendar Booking</h3>
+        <p>Direct sync with Google Calendar, Cliniko, Practo, or your CRM. Slots are locked automatically without double-booking.</p>
+      </div>
+      <div class="card">
+        <h3>🛡️ Zero Hallucinations</h3>
+        <p>Grounded strictly in your clinic’s treatment menu, price slabs, and operating hours. Never makes false medical claims.</p>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <section class="cta">
+      <h2>Deploy for Your Clinic or Business in 48 Hours</h2>
+      <p>Full turnkey setup: WhatsApp Cloud API onboarding, custom knowledge base, and live booking sync.</p>
+      <a href="mailto:praveen@garudaos.in?subject=Setup%20WhatsApp%20AI%20Receptionist" class="btn-main">
+        Schedule 30-Min Demo & Setup →
+      </a>
+      <div style="margin-top:14px; font-size:12px; color:#94a3b8;">
+        Official Corporate Email: praveen@garudaos.in
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>GARUDA OS // Autonomous Business Automation Systems</p>
+      <p style="margin-top:6px;">Official Platform: <a href="https://www.garudaos.in" style="color:#34d399; text-decoration:none;">garudaos.in</a></p>
+    </div>
+  </footer>
+
+  <script>
+    function sendSim(text) {
+      const chat = document.getElementById('chat');
+      
+      // User message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg msg-user';
+      userMsg.innerHTML = text + '<div class="msg-time">Just now</div>';
+      chat.appendChild(userMsg);
+      chat.scrollTop = chat.scrollHeight;
+
+      // Bot typing & reply
+      setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'msg msg-bot';
+        let reply = "";
+        if (text.includes('Pricing')) {
+          reply = "Our professional Laser Teeth Whitening is ₹6,500 (includes polishing & initial shade scan). Would you like to schedule an assessment?";
+        } else if (text.includes('Book')) {
+          reply = "Tomorrow evening we have open slots at 5:30 PM and 6:45 PM with Dr. Sharma. Which time suits you best?";
+        } else {
+          reply = "Yes! We accept all major TPA cashless insurance cards (HDFC ERGO, Star Health, ICICI Lombard, Medi Assist). Please bring your policy card during visit.";
+        }
+        botMsg.innerHTML = reply + '<div class="msg-time">Just now</div>';
+        chat.appendChild(botMsg);
+        chat.scrollTop = chat.scrollHeight;
+      }, 700);
+    }
+  </script>
+</body>
+</html>

@@ -444,6 +444,14 @@
       "destination": "/index.html"
     },
     {
+      "source": "/insurance",
+      "destination": "/insurance/index.html"
+    },
+    {
+      "source": "/ai-receptionist",
+      "destination": "/ai-receptionist/index.html"
+    },
+    {
       "source": "/audit",
       "destination": "/audit/index.html"
     },
