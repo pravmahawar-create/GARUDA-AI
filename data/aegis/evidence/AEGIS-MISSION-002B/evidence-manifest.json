@@ -1,0 +1,367 @@
+{
+  "totalArtifacts": 45,
+  "manifestSignature": "9f649313a25cc15ee5c0629198c4ce0755409f0a85b74553f92d5f8ea4f28499",
+  "generatedAt": "2026-11-16T12:22:28.292Z",
+  "artifacts": [
+    {
+      "name": "screen_TRUTH-01_turn1_1794831604254.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_TRUTH-01_turn1_1794831604254.png",
+      "sizeBytes": 59324,
+      "sha256": "b0bcf6a15211d3d71f86428f08d412e68fbe4e42d0073bfd63f015866ccb8c16",
+      "capturedAt": "2026-11-16T12:20:04.257Z"
+    },
+    {
+      "name": "dom_TRUTH-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_TRUTH-01_turn1.html",
+      "sizeBytes": 32286,
+      "sha256": "378a7cee66b8bc7e4a4a78bbb4c0c584dc6f7b4416a13debd45710ff1aed7024",
+      "capturedAt": "2026-11-16T12:20:04.262Z"
+    },
+    {
+      "name": "transcript_TRUTH-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_TRUTH-01.json",
+      "sizeBytes": 11404,
+      "sha256": "f18f24e191b92cac2ccae69880f61f4bfd964d68c1f3fdc08e04e47918aa1488",
+      "capturedAt": "2026-11-16T12:20:14.781Z"
+    },
+    {
+      "name": "screen_TRUTH-02_turn1_1794831622112.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_TRUTH-02_turn1_1794831622112.png",
+      "sizeBytes": 39835,
+      "sha256": "790379c065d61936f2e6017bd4e8d3207b4408e420450bfc79a1b78080eb9422",
+      "capturedAt": "2026-11-16T12:20:22.114Z"
+    },
+    {
+      "name": "dom_TRUTH-02_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_TRUTH-02_turn1.html",
+      "sizeBytes": 32112,
+      "sha256": "7b600ffa1b39f506f1c8ed99549447f1cb914b588c0459575b0d52555142da22",
+      "capturedAt": "2026-11-16T12:20:22.118Z"
+    },
+    {
+      "name": "transcript_TRUTH-02.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_TRUTH-02.json",
+      "sizeBytes": 6974,
+      "sha256": "03fd4382528cc7738c28a726b2bfd0e896aedf2fb9646e7da6321190b768a799",
+      "capturedAt": "2026-11-16T12:20:23.655Z"
+    },
+    {
+      "name": "screen_PRICE-01_turn1_1794831628646.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_PRICE-01_turn1_1794831628646.png",
+      "sizeBytes": 39300,
+      "sha256": "391aab1cd13406461bb4a606918cb2b1a4a453e2ca2facc9d7f267a0ad81e05a",
+      "capturedAt": "2026-11-16T12:20:28.648Z"
+    },
+    {
+      "name": "dom_PRICE-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_PRICE-01_turn1.html",
+      "sizeBytes": 33675,
+      "sha256": "be7b1cd89eeb15505127d7a5c70d8be80a6695ec4f5d83fb0a523df7bb6b407a",
+      "capturedAt": "2026-11-16T12:20:28.652Z"
+    },
+    {
+      "name": "transcript_PRICE-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_PRICE-01.json",
+      "sizeBytes": 11539,
+      "sha256": "b0fc44fd28a6c1dd5b97b6e8825662cfeba3d380f57ac98d0cf23c50fe084680",
+      "capturedAt": "2026-11-16T12:20:34.308Z"
+    },
+    {
+      "name": "screen_MISSING-01_turn1_1794831640149.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_MISSING-01_turn1_1794831640149.png",
+      "sizeBytes": 38778,
+      "sha256": "1b11b6001d7878a5cdae2f77d6fb491e7f19912c7255174b2ad0cd3484fba84d",
+      "capturedAt": "2026-11-16T12:20:40.151Z"
+    },
+    {
+      "name": "dom_MISSING-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_MISSING-01_turn1.html",
+      "sizeBytes": 36930,
+      "sha256": "20dbbe21fc84fea194d2a04814ad246a73a838ccf8275352cbeebad7f35f182c",
+      "capturedAt": "2026-11-16T12:20:40.159Z"
+    },
+    {
+      "name": "transcript_MISSING-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_MISSING-01.json",
+      "sizeBytes": 6713,
+      "sha256": "75f2a19509cff3969ba6c5a8c27f4ef31c53eb474e3591b10078ff8dbf4d756f",
+      "capturedAt": "2026-11-16T12:20:41.125Z"
+    },
+    {
+      "name": "screen_INJECT-01_turn1_1794831648045.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_INJECT-01_turn1_1794831648045.png",
+      "sizeBytes": 31969,
+      "sha256": "ccf8db10b2a1b84e27c64bdc6a98660fc145e3f60e1b17c64ef1520986261b2e",
+      "capturedAt": "2026-11-16T12:20:48.047Z"
+    },
+    {
+      "name": "dom_INJECT-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_INJECT-01_turn1.html",
+      "sizeBytes": 38617,
+      "sha256": "47cae4b560996dbcb9d8a36f7832ffd9f34d8eb84240b26deac5303479828781",
+      "capturedAt": "2026-11-16T12:20:48.051Z"
+    },
+    {
+      "name": "transcript_INJECT-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_INJECT-01.json",
+      "sizeBytes": 6632,
+      "sha256": "10ac0249998aea62979d73402c24c25ece2a94bb8453b0edc5279cdff8671d24",
+      "capturedAt": "2026-11-16T12:20:48.783Z"
+    },
+    {
+      "name": "screen_PRIV-02_turn1_1794831655536.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_PRIV-02_turn1_1794831655536.png",
+      "sizeBytes": 38702,
+      "sha256": "324755b0592046c9eb5b5e816dc30c0f17c383d3a4a5b101b1b1cff9339802f0",
+      "capturedAt": "2026-11-16T12:20:55.537Z"
+    },
+    {
+      "name": "dom_PRIV-02_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_PRIV-02_turn1.html",
+      "sizeBytes": 40409,
+      "sha256": "b2c2174f855b5222b86b2ac4539525fc3ae75229c1dd07672aa036a0e1e9ee25",
+      "capturedAt": "2026-11-16T12:20:55.541Z"
+    },
+    {
+      "name": "transcript_PRIV-02.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_PRIV-02.json",
+      "sizeBytes": 6621,
+      "sha256": "386ea6148a9917e78af0e74c1ec4966605d48f881a337ec0e28bb1b70fa3cc6c",
+      "capturedAt": "2026-11-16T12:20:56.429Z"
+    },
+    {
+      "name": "screen_LEAD-01_turn1_1794831662253.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_LEAD-01_turn1_1794831662253.png",
+      "sizeBytes": 60119,
+      "sha256": "a4ebf3f6ac360572c7cf10bd8c7e6a25f819578102227263a1dcb2ed7e8008a0",
+      "capturedAt": "2026-11-16T12:21:02.255Z"
+    },
+    {
+      "name": "dom_LEAD-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_LEAD-01_turn1.html",
+      "sizeBytes": 42568,
+      "sha256": "d7f57a74db344167f6e650813b792c2b54496e3e98ca0f6a9edc96fdf6f37b94",
+      "capturedAt": "2026-11-16T12:21:02.259Z"
+    },
+    {
+      "name": "transcript_LEAD-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_LEAD-01.json",
+      "sizeBytes": 13511,
+      "sha256": "f85ccdeed31b1212730b60add9e3c5c2534d83ae2e54b98029a3e175c9d32f85",
+      "capturedAt": "2026-11-16T12:21:09.925Z"
+    },
+    {
+      "name": "screen_LEAD-02_turn1_1794831675529.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_LEAD-02_turn1_1794831675529.png",
+      "sizeBytes": 44816,
+      "sha256": "ba231ac3f94e6cd905c879465f3f633fcb3716efe7440ea7855baabb290c71d6",
+      "capturedAt": "2026-11-16T12:21:15.530Z"
+    },
+    {
+      "name": "dom_LEAD-02_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_LEAD-02_turn1.html",
+      "sizeBytes": 45657,
+      "sha256": "8d81c5c1c0134c31d3a4c04b437e0574b548f53c1d30c121a6360bc0db28ffb8",
+      "capturedAt": "2026-11-16T12:21:15.535Z"
+    },
+    {
+      "name": "transcript_LEAD-02.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_LEAD-02.json",
+      "sizeBytes": 7102,
+      "sha256": "8fabe95b4a829fe22083babd01882a73b7cbf94ac0485a23e0233406b0c18f56",
+      "capturedAt": "2026-11-16T12:21:16.223Z"
+    },
+    {
+      "name": "screen_APPT-01_turn1_1794831683911.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_APPT-01_turn1_1794831683911.png",
+      "sizeBytes": 62414,
+      "sha256": "03bf0db3d12e8ebef866fc62200b9c14e9a130bbb640fac0d6affe98755925a7",
+      "capturedAt": "2026-11-16T12:21:23.912Z"
+    },
+    {
+      "name": "dom_APPT-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_APPT-01_turn1.html",
+      "sizeBytes": 51646,
+      "sha256": "565cb42f7601945d25172ecfa3d78d4e670f971610c42caa194857cc00b9805a",
+      "capturedAt": "2026-11-16T12:21:23.922Z"
+    },
+    {
+      "name": "transcript_APPT-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_APPT-01.json",
+      "sizeBytes": 7654,
+      "sha256": "513a66924445935417acfd5c98a53a8bd610da400ebcbe15a13b5ed9b13ec194",
+      "capturedAt": "2026-11-16T12:21:24.594Z"
+    },
+    {
+      "name": "screen_HANDOFF-01_turn1_1794831690698.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_HANDOFF-01_turn1_1794831690698.png",
+      "sizeBytes": 39814,
+      "sha256": "707c5b1c49f3908a49364bd81b3580a9c935e14c569ad162d3574413924ebee6",
+      "capturedAt": "2026-11-16T12:21:30.700Z"
+    },
+    {
+      "name": "dom_HANDOFF-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_HANDOFF-01_turn1.html",
+      "sizeBytes": 48867,
+      "sha256": "2a975025133dfc2a8464ac8eece1c0d8c4601fb9ff1685a53885836a732d49ae",
+      "capturedAt": "2026-11-16T12:21:30.709Z"
+    },
+    {
+      "name": "transcript_HANDOFF-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_HANDOFF-01.json",
+      "sizeBytes": 7057,
+      "sha256": "f89cb14ccd43d19d28df465f92e6151029264eb51d7b41e8470cae286b02939e",
+      "capturedAt": "2026-11-16T12:21:31.310Z"
+    },
+    {
+      "name": "screen_SAFETY-01_turn1_1794831699826.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_SAFETY-01_turn1_1794831699826.png",
+      "sizeBytes": 69989,
+      "sha256": "93eb640a309fc50b21f2461958267a6d0d4b2b66411d088824e9607475e88893",
+      "capturedAt": "2026-11-16T12:21:39.827Z"
+    },
+    {
+      "name": "dom_SAFETY-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_SAFETY-01_turn1.html",
+      "sizeBytes": 51270,
+      "sha256": "df08211d9576e511b19f4bbfbda122ee67b5a1dacca0f812d96476cc752a7e0f",
+      "capturedAt": "2026-11-16T12:21:39.836Z"
+    },
+    {
+      "name": "transcript_SAFETY-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_SAFETY-01.json",
+      "sizeBytes": 8131,
+      "sha256": "8d4e32ca0852eab7e4cda54aecc73a778cb4002c7bb9621023b0966bb8fd58f6",
+      "capturedAt": "2026-11-16T12:21:40.455Z"
+    },
+    {
+      "name": "screen_MEM-01_turn1_1794831706861.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_MEM-01_turn1_1794831706861.png",
+      "sizeBytes": 56899,
+      "sha256": "0d24ca1dc890a10b1d13cc198546b38bba11dbcfac90668bd0f08c483bf3e1ac",
+      "capturedAt": "2026-11-16T12:21:46.862Z"
+    },
+    {
+      "name": "dom_MEM-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_MEM-01_turn1.html",
+      "sizeBytes": 52505,
+      "sha256": "5e6bb65ca7591b95813dd68f75550754eeb142992e9a37b60f9d2b5ab1453184",
+      "capturedAt": "2026-11-16T12:21:46.872Z"
+    },
+    {
+      "name": "transcript_MEM-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_MEM-01.json",
+      "sizeBytes": 17659,
+      "sha256": "84d1be6d17950bd5d5b593556d477080fe6f6df444b5e0825ced6f49aa297f1a",
+      "capturedAt": "2026-11-16T12:21:58.608Z"
+    },
+    {
+      "name": "screen_TOOL-01_turn1_1794831724879.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_TOOL-01_turn1_1794831724879.png",
+      "sizeBytes": 35357,
+      "sha256": "4f35ecff28e9c124e32e123ba2a5eeb657a7e742023962bf60118e3e557ec2ae",
+      "capturedAt": "2026-11-16T12:22:04.880Z"
+    },
+    {
+      "name": "dom_TOOL-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_TOOL-01_turn1.html",
+      "sizeBytes": 52253,
+      "sha256": "b4de3928933885104641589bb52ed9d6d06668b8713f9832ccc15cb95c7ec25b",
+      "capturedAt": "2026-11-16T12:22:04.890Z"
+    },
+    {
+      "name": "transcript_TOOL-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_TOOL-01.json",
+      "sizeBytes": 6562,
+      "sha256": "f66ba813cd1a05bf46d00f583e0659b7b73e8e87c38e1f6e97c63d54f18ebf50",
+      "capturedAt": "2026-11-16T12:22:06.710Z"
+    },
+    {
+      "name": "screen_ERR-01_turn1_1794831733440.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_ERR-01_turn1_1794831733440.png",
+      "sizeBytes": 39028,
+      "sha256": "4694767c07217dca3643a1cf333b4e8a855644615134f28a176cf4afb8c4b3b9",
+      "capturedAt": "2026-11-16T12:22:13.442Z"
+    },
+    {
+      "name": "dom_ERR-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_ERR-01_turn1.html",
+      "sizeBytes": 52257,
+      "sha256": "77ee2bb4c47d931db53fbbad81d409814193ecb99a92cc202ec9df6a136a513f",
+      "capturedAt": "2026-11-16T12:22:13.446Z"
+    },
+    {
+      "name": "transcript_ERR-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_ERR-01.json",
+      "sizeBytes": 6537,
+      "sha256": "d3ddd0fb8bde2a87b3b2789b942ccf1e322d75856c7137f90d864ee90511d045",
+      "capturedAt": "2026-11-16T12:22:14.336Z"
+    },
+    {
+      "name": "screen_TERM-01_turn1_1794831739975.png",
+      "type": "screenshot_png",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\screen_TERM-01_turn1_1794831739975.png",
+      "sizeBytes": 28757,
+      "sha256": "21e1a9ca8afe3929210a7a26fc99a97d06197f31b50b54c5ced5068528b87212",
+      "capturedAt": "2026-11-16T12:22:19.976Z"
+    },
+    {
+      "name": "dom_TERM-01_turn1.html",
+      "type": "dom_html",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\dom_TERM-01_turn1.html",
+      "sizeBytes": 52077,
+      "sha256": "0939dc354a1bca9f1efd910b2ed4cad4aed0b181698457396d5b7f27683df151",
+      "capturedAt": "2026-11-16T12:22:19.985Z"
+    },
+    {
+      "name": "transcript_TERM-01.json",
+      "type": "transcript_json",
+      "path": "D:\\GARUDA-AI\\data\\aegis\\evidence\\AEGIS-MISSION-002B\\transcript_TERM-01.json",
+      "sizeBytes": 10978,
+      "sha256": "dcbb98416bd5886f02689d34f28f02da48bc428b05a086b527dd488c71616425",
+      "capturedAt": "2026-11-16T12:22:28.101Z"
+    }
+  ]
+}
