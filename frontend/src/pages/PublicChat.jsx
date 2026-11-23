@@ -408,7 +408,7 @@ export default function PublicChat() {
                     setActiveConversationId(id);
                     refreshConversations();
                   }}
-                  placeholder="Describe your payment requirements, corridors, or treasury challenges to the AI Architect..."
+                  placeholder={isFintechTopic ? "Describe your payment requirements, corridors, or treasury challenges to the AI Architect..." : "Describe your project requirements, target market, or operational bottlenecks..."}
                   minHeight={0}
                 />
               </div>

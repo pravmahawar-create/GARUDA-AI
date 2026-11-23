@@ -17,7 +17,9 @@ import { DEMO_CONFIG } from "../features/vyapar/vyaparDemoData";
 import "../features/vyapar/vyaparResponsive.css";
 
 export default function VyaparOS() {
-  const [activeTab, setActiveTab] = useState("executive");
+  const initialTab = new URLSearchParams(window.location.search).get("tab") || 
+                     (window.location.hash ? window.location.hash.replace("#", "") : "executive");
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedHotelForShowcase, setSelectedHotelForShowcase] = useState("hotel1");
 

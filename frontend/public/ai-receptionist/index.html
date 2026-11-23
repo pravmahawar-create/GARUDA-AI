@@ -121,6 +121,40 @@
     .btn-main:hover { transform: scale(1.02); }
 
     footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; font-size: 13px; color: var(--text-muted); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-card {
+      background: #0d121f;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 32px 28px;
+      max-width: 460px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 18px;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%; width: 32px; height: 32px;
+      color: #94a3b8; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .modal-close:hover { color: #fff; background: rgba(16, 185, 129, 0.2); border-color: #10b981; }
   </style>
 </head>
 <body>
@@ -184,15 +218,57 @@
     <section class="cta">
       <h2>Deploy for Your Clinic or Business in 48 Hours</h2>
       <p>Full turnkey setup: WhatsApp Cloud API onboarding, custom knowledge base, and live booking sync.</p>
-      <a href="mailto:praveen@garudaos.in?subject=Setup%20WhatsApp%20AI%20Receptionist" class="btn-main">
+      <button type="button" onclick="openDemoModal()" class="btn-main" style="cursor:pointer; border:none;">
         Schedule 30-Min Demo & Setup →
-      </a>
+      </button>
       <div style="margin-top:14px; font-size:12px; color:#94a3b8;">
         Official Corporate Email: praveen@garudaos.in
       </div>
     </section>
 
   </main>
+
+  <!-- Demo Booking Modal -->
+  <div id="demoModal" class="modal-overlay" style="display:none;" onclick="handleOverlayClick(event)">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeDemoModal()">✕</button>
+      <div style="font-size:12px; font-weight:800; color:#10b981; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px;">GARUDA AI RECEPTIONIST</div>
+      <h3 style="font-size:22px; font-weight:800; margin-bottom:8px; color:#fff;">Schedule Live Demo & Architecture Scope</h3>
+      <p style="font-size:13px; color:#94a3b8; margin-bottom:20px;">See a personalized 60-second WhatsApp AI simulation for your clinic or business.</p>
+
+      <form id="demoForm" action="javascript:void(0);" onsubmit="handleDemoSubmit(event)">
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Your Name *</label>
+          <input type="text" id="demoName" required placeholder="Dr. Rahul Verma / Owner" style="width:100%; padding:11px 14px; background:#07090e; border:1px solid #1e293b; border-radius:8px; color:#fff; font-size:14px; outline:none;">
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">WhatsApp / Mobile Number *</label>
+          <input type="tel" id="demoPhone" required placeholder="e.g. 9876543210" pattern="[0-9+\s\-]{8,15}" style="width:100%; padding:11px 14px; background:#07090e; border:1px solid #1e293b; border-radius:8px; color:#fff; font-size:14px; outline:none;">
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Clinic / Business Name & City</label>
+          <input type="text" id="demoBusiness" placeholder="e.g. Apex Dental Clinic, Mumbai" style="width:100%; padding:11px 14px; background:#07090e; border:1px solid #1e293b; border-radius:8px; color:#fff; font-size:14px; outline:none;">
+        </div>
+
+        <button type="submit" id="btnDemoSubmit" class="btn-main" style="width:100%; justify-content:center; padding:14px; font-size:15px; cursor:pointer; border:none;">
+          ⚡ Request WhatsApp AI Bot Demo
+        </button>
+      </form>
+
+      <div id="demoSuccess" style="display:none; text-align:center; padding:24px 10px;">
+        <div style="font-size:42px; margin-bottom:12px;">✅</div>
+        <h4 style="font-size:20px; font-weight:800; color:#34d399; margin-bottom:8px;">Demo Request Received!</h4>
+        <p style="font-size:14px; color:#cbd5e1; line-height:1.6; margin-bottom:20px;">
+          Thank you, <strong id="successDemoName"></strong>. GARUDA OS engineering team will reach out on WhatsApp to set up your test sandbox within 60 minutes.
+        </p>
+        <a href="https://www.garudaos.in/chat?ref=receptionist-demo" target="_blank" class="btn-main" style="display:inline-flex; justify-content:center; padding:10px 20px; font-size:13px; text-decoration:none;">
+          💬 Chat Live on GARUDA OS Platform
+        </a>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <div class="container">
@@ -202,6 +278,68 @@
   </footer>
 
   <script>
+    function openDemoModal() {
+      document.getElementById('demoModal').style.display = 'flex';
+      document.getElementById('demoForm').style.display = 'block';
+      document.getElementById('demoSuccess').style.display = 'none';
+    }
+
+    function closeDemoModal() {
+      document.getElementById('demoModal').style.display = 'none';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target.id === 'demoModal') closeDemoModal();
+    }
+
+    function handleDemoSubmit(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      const name = document.getElementById('demoName').value.trim();
+      const phone = document.getElementById('demoPhone').value.trim();
+      const business = document.getElementById('demoBusiness').value.trim();
+
+      if (!name || !phone) return false;
+
+      // 1. Instant UI switch
+      document.getElementById('demoForm').style.display = 'none';
+      document.getElementById('successDemoName').innerText = name;
+      document.getElementById('demoSuccess').style.display = 'block';
+
+      const leadData = {
+        name,
+        phone,
+        business,
+        source: 'garudaos.in/ai-receptionist',
+        createdAt: new Date().toISOString()
+      };
+
+      // 2. Safe local storage
+      try {
+        const existing = JSON.parse(localStorage.getItem('garuda_receptionist_leads') || '[]');
+        existing.push(leadData);
+        localStorage.setItem('garuda_receptionist_leads', JSON.stringify(existing));
+      } catch(err) {}
+
+      // 3. Asynchronous non-blocking network sync
+      if (window.location.protocol.startsWith('http')) {
+        try {
+          fetch('/api/customer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'receptionist_demo_lead',
+              data: leadData
+            })
+          }).catch(function() {});
+        } catch(err) {}
+      }
+
+      return false;
+    }
     function sendSim(text) {
       const chat = document.getElementById('chat');
       

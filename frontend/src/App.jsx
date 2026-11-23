@@ -52,6 +52,7 @@ const GarudaHealthApp = React.lazy(() => import("./pages/GarudaHealthApp"));
 const CyberShieldDashboard = React.lazy(() => import("./pages/CyberShieldDashboard"));
 const GarudaBilling = React.lazy(() => import("./pages/GarudaBilling"));
 const FintechGatewayDemo = React.lazy(() => import("./pages/FintechGatewayDemo"));
+const FintechMerchantPortal = React.lazy(() => import("./pages/FintechMerchantPortal"));
 const ConstituencyWarRoom = React.lazy(() => import("./pages/ConstituencyWarRoom"));
 const BoothCadrePWA = React.lazy(() => import("./pages/BoothCadrePWA"));
 const LeadLeakAudit = React.lazy(() => import("./pages/LeadLeakAudit"));
@@ -343,6 +344,10 @@ function AppRoutes() {
       <Route path="/fintech-gateway" element={<FintechGatewayDemo />} />
       <Route path="/gateway-demo" element={<FintechGatewayDemo />} />
       <Route path="/fintech" element={<FintechGatewayDemo />} />
+      <Route path="/merchant" element={<FintechMerchantPortal />} />
+      <Route path="/terminal" element={<FintechMerchantPortal />} />
+      <Route path="/portal" element={<FintechMerchantPortal />} />
+      <Route path="/fintech-portal" element={<FintechMerchantPortal />} />
       {/* GARUDA Live Constituency Intelligence War Room & Commercial Command */}
       <Route path="/war-room" element={<ConstituencyWarRoom />} />
       <Route path="/constituency" element={<Navigate to="/war-room" replace />} />
