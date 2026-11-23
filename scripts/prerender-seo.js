@@ -320,6 +320,33 @@ const ROUTES = [
     `
   },
   {
+    path: "/merchant",
+    filePaths: [
+      path.join(DIST_DIR, "merchant", "index.html"),
+      path.join(DIST_DIR, "merchant.html"),
+      path.join(DIST_DIR, "terminal", "index.html"),
+      path.join(DIST_DIR, "terminal.html"),
+      path.join(DIST_DIR, "portal", "index.html")
+    ],
+    title: "Fintech Merchant Terminal • Sovereign Treasury War Room | GARUDA OS",
+    description: "Enterprise treasury command terminal with 30-second auto-sweep, dynamic NPCI Mode-02 UPI intent, 1930 Cyber Fraud freeze defense, and iGaming performance marketing matrix.",
+    canonical: "https://www.garudaos.in/merchant",
+    h1: "Fintech Merchant Terminal & Treasury War Room",
+    eyebrow: "SOVEREIGN FINTECH INFRASTRUCTURE • RAIPUR NODE 01",
+    contentSnippet: `
+      <h2>Zero-Custody Merchant Treasury War Room & Auto-Sweep Gateway</h2>
+      <p>GARUDA Merchant Terminal orchestrates corporate collection nodes, dynamic NPCI Mode-02 UPI intent triggers, and 30-second automated bank sweeps directly into merchant master ICICI/Yes Bank vaults with zero intermediary fund custody.</p>
+      <h3>Core Defense & Performance Architecture:</h3>
+      <ul>
+        <li>30-Second Corporate Auto-Sweep: Resting balance on collection VAN nodes remains exactly ₹0.00.</li>
+        <li>1930 Cyber Fraud Isolation: 5-second siren alert isolates rogue player sub-nodes while keeping the master vault 100% active.</li>
+        <li>Section 65B Electronic Court Dossier: Automated BSA 2023 evidence certificates preventing unlawful account freezes.</li>
+        <li>₹10,000/Day iGaming Performance Ad Matrix: Multi-rail traffic acquisition across Adult Networks (ExoClick 40%), Telegram PBNs (35%), and Meta Reels with Keitaro Anti-Bot Cloaker (25%).</li>
+      </ul>
+      <p><a href="/merchant">Launch Merchant Terminal</a> | <a href="/chat?topic=merchant-terminal">Connect Banking Rails</a></p>
+    `
+  },
+  {
     path: "/services/custom-ai-development",
     filePaths: [
       path.join(DIST_DIR, "services", "custom-ai-development", "index.html"),
