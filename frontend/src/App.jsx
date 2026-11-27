@@ -53,12 +53,14 @@ const CyberShieldDashboard = React.lazy(() => import("./pages/CyberShieldDashboa
 const GarudaBilling = React.lazy(() => import("./pages/GarudaBilling"));
 const FintechGatewayDemo = React.lazy(() => import("./pages/FintechGatewayDemo"));
 const FintechMerchantPortal = React.lazy(() => import("./pages/FintechMerchantPortal"));
+const EnterpriseFintechApp = React.lazy(() => import("./pages/EnterpriseFintechApp"));
 const ConstituencyWarRoom = React.lazy(() => import("./pages/ConstituencyWarRoom"));
 const BoothCadrePWA = React.lazy(() => import("./pages/BoothCadrePWA"));
 const LeadLeakAudit = React.lazy(() => import("./pages/LeadLeakAudit"));
 const SolutionsHub = React.lazy(() => import("./pages/SolutionsHub"));
 const SolutionDetail = React.lazy(() => import("./pages/SolutionDetail"));
 const VyaparOS = React.lazy(() => import("./pages/VyaparOS"));
+const ProjectAyeshaExperience = React.lazy(() => import("./pages/ProjectAyeshaExperience"));
 import { initAttribution } from "./utils/attribution";
 
 
@@ -70,6 +72,10 @@ function AppRoutes() {
   const [customer, setCustomer] = useState(null);
 
   useEffect(() => {
+    // Project Ayesha Privacy Guardrail: Zero third-party tracking
+    if (window.location.pathname.startsWith("/experience/ayesha")) {
+      return;
+    }
     initAttribution();
     // GA4 auto-inject if VITE_GA4_ID is configured
     const gaId = import.meta.env.VITE_GA4_ID;
@@ -248,6 +254,8 @@ function AppRoutes() {
       <Route path="/scholar" element={<ScholarStudio />} />
       <Route path="/vidya" element={<ScholarStudio />} />
       <Route path="/research" element={<ScholarStudio />} />
+      {/* Project Ayesha — Private Dedicated Experience */}
+      <Route path="/experience/ayesha" element={<ProjectAyeshaExperience />} />
 
       {/* Ring 3 Canonical — Creative Production OS (website-first) */}
       <Route path="/creative" element={<CreativeProductionWorkspace />} />
@@ -344,10 +352,13 @@ function AppRoutes() {
       <Route path="/fintech-gateway" element={<FintechGatewayDemo />} />
       <Route path="/gateway-demo" element={<FintechGatewayDemo />} />
       <Route path="/fintech" element={<FintechGatewayDemo />} />
-      <Route path="/merchant" element={<FintechMerchantPortal />} />
-      <Route path="/terminal" element={<FintechMerchantPortal />} />
-      <Route path="/portal" element={<FintechMerchantPortal />} />
-      <Route path="/fintech-portal" element={<FintechMerchantPortal />} />
+      <Route path="/merchant" element={<EnterpriseFintechApp />} />
+      <Route path="/mercent" element={<EnterpriseFintechApp />} />
+      <Route path="/terminal" element={<EnterpriseFintechApp />} />
+      <Route path="/portal" element={<EnterpriseFintechApp />} />
+      <Route path="/fintech-portal" element={<EnterpriseFintechApp />} />
+      <Route path="/merchant-classic" element={<FintechMerchantPortal />} />
+      <Route path="/mercent-classic" element={<FintechMerchantPortal />} />
       {/* GARUDA Live Constituency Intelligence War Room & Commercial Command */}
       <Route path="/war-room" element={<ConstituencyWarRoom />} />
       <Route path="/constituency" element={<Navigate to="/war-room" replace />} />

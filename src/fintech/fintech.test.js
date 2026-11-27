@@ -531,16 +531,26 @@ async function runAll() {
     const fee = feeEngine.calculateFees({
       amount: 500000,
       currency: "USD",
-      clearingRail: "FEDWIRE"
+      clearingRail: "FEDWIRE",
+      merchantContract: { saasRate: 0.0015, contractVersion: "LEGACY-CUSTOM-015" }
     });
 
     assert.strictEqual(fee.grossAmount.value, 500000);
     assert.strictEqual(fee.grossAmount.status, VALUE_STATUS.LIVE);
-    assert.strictEqual(fee.garudaSaaSFee.value, 750); // 0.15% of 500k
+    assert.strictEqual(fee.garudaSaaSFee.value, 750); // Explicit custom 0.15% contract test
     assert.strictEqual(fee.garudaSaaSFee.status, VALUE_STATUS.CONTRACTUAL);
     assert.strictEqual(fee.bankFee.status, VALUE_STATUS.ESTIMATED);
     assert.strictEqual(fee.railFee.status, VALUE_STATUS.ESTIMATED);
     assert.strictEqual(fee.merchantNetProceeds.value, 500000 - 15 - 12 - 750);
+
+    // Default contractual rate must be strictly 2.00% (200 bps)
+    const defaultFee = feeEngine.calculateFees({
+      amount: 500000,
+      currency: "INR",
+      clearingRail: "RTGS"
+    });
+    assert.strictEqual(defaultFee.garudaSaaSFee.ratePercent, 2);
+    assert.strictEqual(defaultFee.garudaSaaSFee.value, 10000);
   });
 
   // =========================================================================
@@ -548,12 +558,42 @@ async function runAll() {
   // =========================================================================
   console.log("\n--- 8. Zero-Custody End-to-End Orchestration Test ---");
 
-  const orchService = new FintechOrchestrationService();
-  const fuelTank = new FuelTankService();
+  const { BILLING_MODES, CommercialAgreementService } = require("./commercialAgreementService");
+  const { RECEIPT_PURPOSES, VerifiedBankReceiptRegistry } = require("./bankReceiptVerifier");
+  const receiptReg8 = new VerifiedBankReceiptRegistry();
+  const agService8 = new CommercialAgreementService();
+  const fuelTank = new FuelTankService({ bankReceiptRegistry: receiptReg8 });
+  const orchService = new FintechOrchestrationService({ fuelTank, agreementService: agService8 });
 
   await runTest("Complete Zero-Custody flow: Buyer -> Bank Rail -> Merchant Account (Zero GARUDA Custody)", async () => {
-    // Step 1: Pre-fund merchant software fuel balance ($10,000 for IT maintenance)
-    fuelTank.topUp("merch_emaar", 10000, { invoiceRef: "INV-SAAS-2026" });
+    // Register & founder-approve custom 0.15% enterprise contract for Emaar test case
+    agService8.createAgreement({
+      tenantId: "default_tenant",
+      merchantId: "merch_emaar",
+      merchantLegalName: "Emaar Properties PJSC",
+      contractVersion: "EMAAR-CONTRACT-015",
+      billingMode: BILLING_MODES.PREPAID,
+      commissionRate: 0.0015,
+      founderApproval: { isFounderApproved: true, activateImmediately: true, signedRef: "MSA-EMAAR-015" }
+    });
+
+    // Step 1: Ingest authenticated bank receipt & pre-fund merchant software fuel balance ($10,000 for IT maintenance)
+    const feedSecret = "test_feed_secret_emaar_01";
+    const feedBody = JSON.stringify({ invoiceRef: "INV-SAAS-2026", amount: 10000 });
+    const feedSig = crypto.createHmac("sha256", feedSecret).update(feedBody).digest("hex");
+    const rec8 = receiptReg8.ingestAuthenticatedReceipt({
+      rawFeedPayload: feedBody,
+      feedSignatureHeader: feedSig,
+      feedSecretKey: feedSecret,
+      tenantId: "default_tenant",
+      merchantId: "merch_emaar",
+      purpose: RECEIPT_PURPOSES.FUEL_TANK_TOPUP,
+      bankTransactionRef: "INV-SAAS-2026",
+      payerCorporateAccount: "AE290860000009841029481",
+      amount: 10000,
+      currency: "USD"
+    });
+    fuelTank.topUp("merch_emaar", 10000, { invoiceRef: "INV-SAAS-2026", bankReceiptId: rec8.bankReceiptId });
     assert.strictEqual(fuelTank.getBalance("merch_emaar"), 10000);
 
     // Step 2: Create Payment Intent for $500,000 villa booking

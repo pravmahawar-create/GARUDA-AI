@@ -117,6 +117,7 @@ app.use("/api/capabilities", require("./routes/capabilityRoutes"));
 app.use("/api/affiliate-pilot", require("./routes/affiliateRoutes"));
 app.use("/api/public-chat", require("./routes/publicChatRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoutes"));
+app.use("/api/track", require("./routes/trackingRoutes"));
 // Retail Dukandaar Merchant Billing (Cement + Steel, GST verify, Voice, OCR, STT)
 app.use("/api/merchant-billing", require("./routes/billingRoutes"));
 // Backward-compatibility router dispatch for legacy merchant endpoints under /api/billing
@@ -135,6 +136,8 @@ app.use("/api/installment", require("./routes/installmentRoutes"));
 app.get("/kist", (req, res) => res.redirect("/apps/kist/"));
 // GARUDA Sovereign Payment Orchestration & Treasury Infrastructure (V2.0)
 app.use("/api/fintech", require("./routes/fintechOrchestrationRoutes"));
+// GARUDA Merchant Operations Terminal API (Legal Eligibility, BSA Sec 63 Evidence & Growth Attribution)
+app.use("/api/merchant", require("./routes/merchantOpsRoutes"));
 // GARUDA Live Constituency Intelligence War Room & Commercial Command
 app.use("/api/war-room", require("./routes/warRoomRoutes"));
 
@@ -178,6 +181,8 @@ app.use("/api/boilerplate", require("./routes/boilerplateRoutes"));
 app.use("/api/marketplace", require("./routes/marketplaceRoutes"));
 // GARUDA Autonomous — single pane status + trigger (no daily manual)
   app.use("/api/autonomous", require("./routes/autonomousRoutes"));
+  // GARUDA AEGIS — Autonomous External AI Agent Evaluation System
+  app.use("/api/aegis", require("./routes/aegisRoutes"));
   app.use("/api/feedback", (req, res) => require("./routes/feedbackDashboardRoute")(req, res));
   app.use("/api/brain", (req, res) => require("./routes/garudaBrainRoute")(req, res));
   app.use("/api/site-audit", (req, res) => require("./routes/siteAuditRoute")(req, res));
@@ -270,8 +275,9 @@ app.get("/api/telegram/knowledge", async (req, res) => {
 app.post("/api/telegram/knowledge/seed", async (req, res) => {
   try {
     const dryRun = req.query.dryRun === "true";
-    if (!dryRun && req.get("x-garuda-founder-approved") !== "true") {
-      return res.status(403).json({ ok: false, error: "Founder approval required for non-dry-run knowledge seed" });
+    const { isVerifiedFounderRequest } = require("./middleware/founderAuthHelper");
+    if (!dryRun && !(await isVerifiedFounderRequest(req))) {
+      return res.status(403).json({ ok: false, error: "Verified Platform Founder authentication required for non-dry-run knowledge seed" });
     }
     const result = await abslKnowledgeSeedService.seedAbslKnowledge({ dryRun });
     return res.json({ ok: true, data: result });

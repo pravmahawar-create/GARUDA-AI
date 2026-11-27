@@ -4,6 +4,8 @@
  * Spec: GARUDA-FINTECH-SPEC-V2.0 Section 15 & 18
  */
 
+const { toMinorUnits, fromMinorUnits, computeBpsFeeMinor } = require("./persistenceRepository");
+
 const VALUE_STATUS = Object.freeze({
   LIVE: "LIVE",
   CONTRACTUAL: "CONTRACTUAL",
@@ -11,11 +13,14 @@ const VALUE_STATUS = Object.freeze({
   UNKNOWN: "UNKNOWN"
 });
 
+const DEFAULT_SAAS_RATE = 0.02; // 2.00% (200 bps) Founder-Approved Standard Commercial Rate
+const DEFAULT_SAAS_BPS = 200;
+
 class DynamicFeeEngine {
   /**
-   * Calculates detailed fee breakdown for a transaction
+   * Calculates detailed fee breakdown for a transaction using minor-unit integer precision
    * @param {object} params
-   * @returns {object} Full fee breakdown with itemized statuses
+   * @returns {object} Full fee breakdown with itemized statuses and contract audit metadata
    */
   calculateFees({
     amount,
@@ -67,6 +72,12 @@ class DynamicFeeEngine {
         bankFee = 0.10;
         expectedLatency = "Instant (Real-Time Gross Settlement)";
         break;
+      case "UPI":
+      case "UPI_MODE_02":
+        railFee = 0.00;
+        bankFee = 0.00;
+        expectedLatency = "Instant (< 5 Seconds)";
+        break;
       case "SWIFT":
       default:
         railFee = 35.00;
@@ -78,13 +89,21 @@ class DynamicFeeEngine {
     // 2. Foreign Exchange (FX) Spread Estimation (0 for same currency)
     const fxCost = 0.00; // Same currency domestic clearing rail
 
-    // 3. Contractual GARUDA SaaS Fee (e.g. 0.15% = 0.0015)
-    const saasRate = merchantContract.saasRate || 0.0015;
-    const garudaSaaSFee = Math.round((grossAmount * saasRate) * 100) / 100;
+    // 3. Contractual GARUDA Software Orchestration Fee (Default 2.00% = 200 bps; configurable only via signed contract)
+    const hasCustomRate = merchantContract && merchantContract.saasRate !== undefined && merchantContract.saasRate !== null;
+    const saasRate = hasCustomRate ? Number(merchantContract.saasRate) : DEFAULT_SAAS_RATE;
+    const rateBps = Math.round(saasRate * 10000);
+    const contractVersion = (merchantContract && merchantContract.contractVersion) || "RAIPUR-PILOT-STD-200BPS-V1";
 
-    // 4. Statutory Taxes (VAT / GST on the software fee, if applicable)
-    const taxRate = merchantContract.taxRate || 0.00;
-    const taxes = Math.round((garudaSaaSFee * taxRate) * 100) / 100;
+    const grossMinor = toMinorUnits(grossAmount);
+    const garudaFeeMinor = computeBpsFeeMinor(grossMinor, rateBps);
+    const garudaSaaSFee = fromMinorUnits(garudaFeeMinor);
+
+    // 4. Statutory Taxes (VAT / GST on the GARUDA software fee)
+    const taxRate = merchantContract.taxRate ? Number(merchantContract.taxRate) : 0.00;
+    const taxBps = Math.round(taxRate * 10000);
+    const taxesMinor = computeBpsFeeMinor(garudaFeeMinor, taxBps);
+    const taxes = fromMinorUnits(taxesMinor);
 
     // Total Cost
     const totalDeductedCost = Math.round((railFee + bankFee + fxCost + garudaSaaSFee + taxes) * 100) / 100;
@@ -95,12 +114,19 @@ class DynamicFeeEngine {
       bankFee: { value: bankFee, currency, status: railStatus },
       railFee: { value: railFee, currency, status: railStatus },
       fxCost: { value: fxCost, currency, status: VALUE_STATUS.ESTIMATED },
-      garudaSaaSFee: { value: garudaSaaSFee, ratePercent: saasRate * 100, currency, status: VALUE_STATUS.CONTRACTUAL },
+      garudaSaaSFee: {
+        value: garudaSaaSFee,
+        ratePercent: Number((rateBps / 100).toFixed(4)),
+        rateBps,
+        contractVersion,
+        currency,
+        status: VALUE_STATUS.CONTRACTUAL
+      },
       taxes: { value: taxes, currency, status: VALUE_STATUS.ESTIMATED },
       totalCost: { value: totalDeductedCost, currency, status: VALUE_STATUS.ESTIMATED },
       merchantNetProceeds: { value: merchantNetProceeds, currency, status: VALUE_STATUS.ESTIMATED },
       expectedSettlementWindow: expectedLatency,
-      disclaimer: "Interbank and rail fees are estimates based on standard bank clearing tariffs. Final net credit reflects actual receiving institution ledger settlement."
+      disclaimer: "GARUDA charges a B2B software orchestration licensing fee only (separate from bank/rail settlement). Interbank fees are estimates."
     };
   }
 }

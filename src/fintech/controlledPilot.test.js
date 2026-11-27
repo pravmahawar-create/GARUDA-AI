@@ -168,11 +168,29 @@ async function runAll() {
   });
 
   await runTest("3.2 Invariant: Ring-fenced SaaS Fuel Tank is distinct from transaction principal", () => {
+    const { FuelTankService } = require("./fuelTankService");
+    const { RECEIPT_PURPOSES, VerifiedBankReceiptRegistry } = require("./bankReceiptVerifier");
+    const reg = new VerifiedBankReceiptRegistry();
+    const tank = new FuelTankService({ bankReceiptRegistry: reg });
     const merchantId = "merch_escrow_ringfence_test";
-    defaultFuelTank.topUp(merchantId, 500, "tx_saas_license_01");
+    const feedSec = "ringfence_feed_sec_01";
+    const body = JSON.stringify({ tx: "tx_saas_license_01", amount: 500 });
+    const sig = crypto.createHmac("sha256", feedSec).update(body).digest("hex");
+    const rcpt = reg.ingestAuthenticatedReceipt({
+      rawFeedPayload: body,
+      feedSignatureHeader: sig,
+      feedSecretKey: feedSec,
+      tenantId: "default_tenant",
+      merchantId,
+      purpose: RECEIPT_PURPOSES.FUEL_TANK_TOPUP,
+      bankTransactionRef: "tx_saas_license_01",
+      payerCorporateAccount: "HDFC-CORP-RINGFENCE",
+      amount: 500
+    });
+    tank.topUp(merchantId, 500, { invoiceRef: "tx_saas_license_01", bankReceiptId: rcpt.bankReceiptId });
 
     // SaaS fuel balance exists for software maintenance
-    assert.strictEqual(defaultFuelTank.getBalance(merchantId), 500);
+    assert.strictEqual(tank.getBalance(merchantId), 500);
 
     // Attempting to route commercial buyer payment principal into SaaS fuel credits must fail
     assert.throws(
@@ -273,8 +291,41 @@ async function runAll() {
   });
 
   // 11. Duplicate Webhook Event Interception
+  const { BILLING_MODES, CommercialAgreementService } = require("./commercialAgreementService");
+  const { FuelTankService } = require("./fuelTankService");
+  const { RECEIPT_PURPOSES, VerifiedBankReceiptRegistry } = require("./bankReceiptVerifier");
+
+  function setupStrictPilotEnv(merchantId, legalName, account) {
+    const ag = new CommercialAgreementService();
+    const reg = new VerifiedBankReceiptRegistry();
+    const fuel = new FuelTankService({ bankReceiptRegistry: reg });
+    ag.createAgreement({
+      tenantId: "default_tenant",
+      merchantId,
+      merchantLegalName: legalName,
+      billingMode: BILLING_MODES.PREPAID,
+      founderApproval: { isFounderApproved: true, activateImmediately: true, signedRef: `MSA-${merchantId}` }
+    });
+    const fSec = "pilot_feed_sec_01";
+    const fBody = JSON.stringify({ merchantId, amount: 50000 });
+    const fSig = crypto.createHmac("sha256", fSec).update(fBody).digest("hex");
+    const r = reg.ingestAuthenticatedReceipt({
+      rawFeedPayload: fBody,
+      feedSignatureHeader: fSig,
+      feedSecretKey: fSec,
+      tenantId: "default_tenant",
+      merchantId,
+      purpose: RECEIPT_PURPOSES.FUEL_TANK_TOPUP,
+      bankTransactionRef: `FUEL-${merchantId}`,
+      payerCorporateAccount: account,
+      amount: 50000
+    });
+    fuel.topUp(merchantId, 50000, { bankReceiptId: r.bankReceiptId });
+    return new FintechOrchestrationService({ fuelTank: fuel, agreementService: ag });
+  }
+
   await runTest("4.11 Scenario 11: Duplicate Webhook Event Interception in Orchestrator", async () => {
-    const orchestrator = new FintechOrchestrationService();
+    const orchestrator = setupStrictPilotEnv("m_dup_01", "Luxury Realty LLC", "AE860860000009999999999");
     const intent = await orchestrator.createPaymentIntent({
       merchantId: "m_dup_01",
       merchantLegalName: "Luxury Realty LLC",
@@ -323,7 +374,7 @@ async function runAll() {
 
   // 12. Out-of-order Webhook
   await runTest("4.12 Scenario 12: Handles settlement webhook with valid payment instruction", async () => {
-    const orchestrator = new FintechOrchestrationService();
+    const orchestrator = setupStrictPilotEnv("m_ooo_01", "Tech Global FZE", "AE860860000008888888888");
     const intent = await orchestrator.createPaymentIntent({
       merchantId: "m_ooo_01",
       merchantLegalName: "Tech Global FZE",
@@ -364,7 +415,7 @@ async function runAll() {
   console.log("\n--- 5. Deterministic Idempotency Across Lifecycle ---");
 
   await runTest("5.1 Re-submitting payment intent with same idempotencyKey returns identical intent", async () => {
-    const orchestrator = new FintechOrchestrationService();
+    const orchestrator = setupStrictPilotEnv("merch_idem_01", "Sovereign Trading Corp", "AE860860000001111111111");
     const idemKey = "idem_key_commercial_invoice_9001";
 
     const intent1 = await orchestrator.createPaymentIntent({

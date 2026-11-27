@@ -15,9 +15,21 @@ class AuditTamperingError extends Error {
 }
 
 class ForensicAuditLogger {
-  constructor() {
+  constructor(options = {}) {
     this.logs = []; // Append-only audit chain
     this.genesisHash = "0000000000000000000000000000000000000000000000000000000000000000";
+    this.repository = options.repository || null;
+    if (this.repository && typeof this.repository.registerStateStore === "function") {
+      this.repository.registerStateStore("auditLogger", this);
+    }
+  }
+
+  exportSnapshot() {
+    return [...this.logs];
+  }
+
+  hydrateSnapshot(logs = []) {
+    this.logs = (logs || []).map((l) => Object.freeze({ ...l }));
   }
 
   _computePayloadHash(payload) {

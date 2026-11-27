@@ -32,8 +32,13 @@ registry.set(wioAdapter.providerId, wioAdapter);
 registry.set(iciciAdapter.providerId, iciciAdapter);
 registry.set(modulrAdapter.providerId, modulrAdapter);
 
+const PROVIDER_ALIASES = Object.freeze({
+  mock_bank: "mock_sovereign_bank"
+});
+
 function getProvider(providerId) {
-  const provider = registry.get(providerId);
+  const canonicalId = PROVIDER_ALIASES[providerId] || providerId;
+  const provider = registry.get(canonicalId);
   if (!provider) {
     throw new Error(`UNKNOWN_PROVIDER: No payment adapter registered for ID "${providerId}"`);
   }
