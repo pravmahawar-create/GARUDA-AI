@@ -16,7 +16,19 @@ class AlphaQuantDaemon {
     this.marketDataFeed = new MarketDataFeed();
     this.minConfidenceThreshold = options.minConfidenceThreshold || 78; // 78% Institutional threshold
     this.scorer = new ConfluenceScorer({ minConfidenceThreshold: this.minConfidenceThreshold });
-    this.paperEngine = new PaperTradingEngine(options.initialCapital || 100000);
+
+    // Fail-Closed RiskSentinel Governance
+    const { defaultRiskSentinel } = require('./risk/alphaRiskSentinel');
+    this.riskSentinel = options.riskSentinel !== undefined ? options.riskSentinel : defaultRiskSentinel;
+    if (!this.riskSentinel && !options.allowUnsafeTestWithoutSentinel) {
+      throw new Error('[AlphaQuantDaemon] Startup refused: RiskSentinel is mandatory for production execution.');
+    }
+
+    this.paperEngine = new PaperTradingEngine(options.initialCapital || 100000, {
+      riskSentinel: this.riskSentinel,
+      accountId: options.accountId || 'ALPHA_QUANT_DAEMON_ACCOUNT',
+      allowUnsafeTestWithoutSentinel: options.allowUnsafeTestWithoutSentinel
+    });
     this.notifier = new TelegramQuantNotifier();
     this.symbols = options.symbols || DEFAULT_SYMBOLS;
     this.sendTelegramAlerts = options.sendTelegramAlerts || false;

@@ -139,6 +139,15 @@ router.post("/quant-dispatch", async (req, res) => {
 });
 
 /**
+ * 🦅 GARUDA Cloud Worker Mobile Command Desk Integration (Mission B006)
+ */
+try {
+  router.use("/worker", require("./cloudWorkerRoutes").router);
+} catch (e) {
+  console.warn("[GARUDA Gateway Warning] CloudWorkerRoutes unavailable:", e.message);
+}
+
+/**
  * GET /api/founder/gateway/health
  * Sub-second status probe
  */

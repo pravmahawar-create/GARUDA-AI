@@ -10,19 +10,37 @@ const path = require('path');
 const LEDGER_PATH = path.join(__dirname, '..', '..', '..', 'data', 'garuda-alpha-quant-ledger.json');
 
 class PaperTradingEngine {
-  constructor(initialCapital = 100000) {
+  constructor(initialCapital = 100000, options = {}) {
     this.initialCapital = initialCapital;
     this.maxRiskPerTradePercent = 0.015; // 1.5% max risk per trade (₹1,500 on ₹1L)
     this.slippagePercent = 0.0004; // 0.04% realistic slippage
     this.chargesPercent = 0.0003; // 0.03% STT + exchange turnover fees
     this.intradayLeverage = 5; // 5x MIS leverage (20% margin required)
+    this.allowUnsafeTestWithoutSentinel = options.allowUnsafeTestWithoutSentinel === true;
+
+    if (options.riskSentinel !== undefined) {
+      this.riskSentinel = options.riskSentinel;
+    } else if (this.allowUnsafeTestWithoutSentinel) {
+      this.riskSentinel = null;
+    } else {
+      const { defaultRiskSentinel } = require('./risk/alphaRiskSentinel');
+      this.riskSentinel = defaultRiskSentinel;
+    }
+
+    this.accountId = options.accountId || 'DEFAULT_PAPER_ACCOUNT';
+    this.ledgerPath = options.ledgerPath || LEDGER_PATH;
     this.loadLedger();
+  }
+
+  setRiskSentinel(sentinel, accountId = 'DEFAULT_PAPER_ACCOUNT') {
+    this.riskSentinel = sentinel;
+    this.accountId = accountId;
   }
 
   loadLedger() {
     try {
-      if (fs.existsSync(LEDGER_PATH)) {
-        const raw = fs.readFileSync(LEDGER_PATH, 'utf8');
+      if (this.ledgerPath && fs.existsSync(this.ledgerPath)) {
+        const raw = fs.readFileSync(this.ledgerPath, 'utf8');
         const data = JSON.parse(raw);
         this.wallet = data.wallet || {
           initialCapital: this.initialCapital,
@@ -63,7 +81,8 @@ class PaperTradingEngine {
 
   saveLedger() {
     try {
-      const dir = path.dirname(LEDGER_PATH);
+      if (!this.ledgerPath) return;
+      const dir = path.dirname(this.ledgerPath);
       if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
       const data = {
@@ -73,7 +92,7 @@ class PaperTradingEngine {
         openPositions: this.openPositions,
         closedTrades: this.closedTrades
       };
-      fs.writeFileSync(LEDGER_PATH, JSON.stringify(data, null, 2), 'utf8');
+      fs.writeFileSync(this.ledgerPath, JSON.stringify(data, null, 2), 'utf8');
     } catch (e) {
       console.error('[PaperTradingEngine] Error saving ledger:', e.message);
     }
@@ -82,7 +101,50 @@ class PaperTradingEngine {
   /**
    * Evaluate and execute a high-probability signal
    */
-  processSignal(signal, symbol, symbolName) {
+  processSignal(signal, symbol, symbolName, marketContext = {}) {
+    // 0. Independent Risk Sentinel Authority Veto (Non-Bypassable Law)
+    if (!this.riskSentinel) {
+      if (!this.allowUnsafeTestWithoutSentinel) {
+        return {
+          executed: false,
+          vetoedBySentinel: true,
+          status: 'REJECTED',
+          code: 'FAIL_CLOSED_NO_SENTINEL',
+          error: 'FAIL_CLOSED_NO_SENTINEL',
+          reason: 'CRITICAL SECURITY VETO: Production execution halted. Order placement forbidden without independent RiskSentinel authorization.'
+        };
+      }
+    } else {
+      const proposedOrder = {
+        symbol,
+        symbolName,
+        action: signal.action,
+        direction: signal.direction,
+        price: signal.price,
+        stopLoss: signal.stopLoss,
+        target1: signal.target1,
+        target2: signal.target2,
+        score: signal.score,
+        idempotencyKey: signal.idempotencyKey || `SIG-${symbol}-${Date.now()}`
+      };
+      const context = {
+        currentPrice: signal.price,
+        timestamp: signal.time ? new Date(signal.time).getTime() : Date.now(),
+        adxCanTrade: signal.adxCanTrade !== undefined ? signal.adxCanTrade : true,
+        ...marketContext
+      };
+      const auth = this.riskSentinel.authorizeOrder(this.accountId, proposedOrder, context);
+      if (auth.status !== 'AUTHORIZED') {
+        return {
+          executed: false,
+          vetoedBySentinel: true,
+          status: auth.status,
+          code: auth.code,
+          reason: `RiskSentinel VETO: [${auth.status}] (${auth.code}) ${auth.reason || auth.code}`
+        };
+      }
+    }
+
     if (!signal.isQualified || signal.score < 75) {
       return { executed: false, reason: `Confidence score ${signal.score}% is below 75% threshold` };
     }

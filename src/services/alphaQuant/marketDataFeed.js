@@ -5,6 +5,8 @@
  */
 
 const https = require('https');
+const { SuperTrendEngine } = require('./math/superTrendEngine');
+const { ADXRegimeEngine } = require('./math/adxRegimeEngine');
 
 // Top liquid Nifty 50 securities for high-probability trading
 const DEFAULT_SYMBOLS = [
@@ -338,6 +340,13 @@ class MarketDataFeed {
   }
 
   /**
+   * Calculate Wilder SuperTrend (7, 3) using deterministic SuperTrendEngine
+   */
+  calculateSuperTrend(candles, period = 7, multiplier = 3) {
+    return SuperTrendEngine.calculateSuperTrend(candles, period, multiplier);
+  }
+
+  /**
    * Enrich raw candles with full technical indicators
    */
   enrichIndicators(candles) {
@@ -356,23 +365,38 @@ class MarketDataFeed {
     const vwap = this.calculateVWAP(candles);
     const atr = this.calculateATR(candles, 14);
     const adx = this.calculateADX(candles, 14);
+    const supertrendResults = this.calculateSuperTrend(candles, 7, 3);
+    const adxRegimeResults = ADXRegimeEngine.calculateADX(candles, 14, 22);
 
-    return candles.map((c, i) => ({
-      ...c,
-      ema9: ema9[i],
-      ema21: ema21[i],
-      ema50: ema50[i],
-      ema200: ema200[i],
-      rsi: rsi[i],
-      macd: macdLine[i],
-      macdSignal: signalLine[i],
-      macdHist: histogram[i],
-      volumeSMA: volumeSMA[i],
-      volumeRatio: volumeSMA[i] && volumeSMA[i] > 0 ? Number((c.volume / volumeSMA[i]).toFixed(2)) : 1.0,
-      vwap: vwap[i],
-      atr: atr[i],
-      adx: adx[i]
-    }));
+    return candles.map((c, i) => {
+      const st = supertrendResults[i] || {};
+      const adxObj = adxRegimeResults[i] || {};
+
+      return {
+        ...c,
+        ema9: ema9[i],
+        ema21: ema21[i],
+        ema50: ema50[i],
+        ema200: ema200[i],
+        rsi: rsi[i],
+        macd: macdLine[i],
+        macdSignal: signalLine[i],
+        macdHist: histogram[i],
+        volumeSMA: volumeSMA[i],
+        volumeRatio: volumeSMA[i] && volumeSMA[i] > 0 ? Number((c.volume / volumeSMA[i]).toFixed(2)) : 1.0,
+        vwap: vwap[i],
+        atr: atr[i],
+        adx: adxObj.adx !== undefined && adxObj.adx !== null ? adxObj.adx : adx[i],
+        plusDI: adxObj.plusDI,
+        minusDI: adxObj.minusDI,
+        adxRegime: adxObj.regime,
+        adxCanTrade: adxObj.canTrade,
+        supertrend: st.value !== undefined ? st.value : null,
+        supertrendDirection: st.direction || 'NEUTRAL',
+        supertrendUpper: st.upperBand !== undefined ? st.upperBand : null,
+        supertrendLower: st.lowerBand !== undefined ? st.lowerBand : null
+      };
+    });
   }
 
   /**
@@ -512,6 +536,8 @@ class MarketDataFeed {
 
 module.exports = {
   MarketDataFeed,
+  SuperTrendEngine,
+  ADXRegimeEngine,
   DEFAULT_SYMBOLS,
   HEAVYWEIGHT_SYMBOLS,
   BENCHMARK_SYMBOL

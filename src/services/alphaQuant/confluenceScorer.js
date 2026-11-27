@@ -237,20 +237,19 @@ class ConfluenceScorer {
       bearScore += 8;
     }
 
-    // Factor 6: ADX Trend Strength & Anti-Chop Guard (Max 15 pts)
+    // Factor 6: ADX Trend Strength & Anti-Chop Guard (Hard Veto if ADX < 22)
     const adx = currentCandle.adx;
-    if (adx != null) {
-      if (adx >= 25) {
-        bullScore += 15;
-        bearScore += 15;
-        bullFactors.push(`Strong Directional Trend (ADX: ${adx} ≥ 25)`);
-        bearFactors.push(`Strong Directional Trend (ADX: ${adx} ≥ 25)`);
-      } else if (adx < 20) {
-        bullScore -= 25;
-        bearScore -= 25;
-        bullFactors.push(`Low Trend Strength (ADX: ${adx} < 20) — Sideways Chop Risk`);
-        bearFactors.push(`Low Trend Strength (ADX: ${adx} < 20) — Sideways Chop Risk`);
-      }
+    const isChop = (adx != null && adx < 22) || currentCandle.adxCanTrade === false;
+    if (isChop) {
+      bullScore = 0;
+      bearScore = 0;
+      bullFactors.push(`HARD VETO: Market in Consolidation Chop (ADX: ${adx ?? 'WARMUP'} < 22) — Entry Forbidden`);
+      bearFactors.push(`HARD VETO: Market in Consolidation Chop (ADX: ${adx ?? 'WARMUP'} < 22) — Entry Forbidden`);
+    } else if (adx != null && adx >= 25) {
+      bullScore += 15;
+      bearScore += 15;
+      bullFactors.push(`Strong Directional Trend (ADX: ${adx} ≥ 25)`);
+      bearFactors.push(`Strong Directional Trend (ADX: ${adx} ≥ 25)`);
     }
 
     // Deduct penalty if overextended, weak wick, or opposing Nifty tide

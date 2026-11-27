@@ -99,6 +99,17 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
+const safeRoute = (modPath, name = modPath) => {
+  try {
+    return require(modPath);
+  } catch (err) {
+    console.warn(`[GARUDA Route Warning] Optional module ${name} failed to load: ${err.message}`);
+    const r = express.Router();
+    r.all("*", (req, res) => res.status(503).json({ success: false, error: "Service temporarily unavailable", module: name }));
+    return r;
+  }
+};
+
 app.use("/api/mother", require("./routes/motherAgentRoutes"));
 app.use("/api/intelligence", require("./routes/intelligenceRoutes"));
 app.use("/api/founder-intelligence", require("./routes/founderIntelligenceRoutes"));
@@ -109,7 +120,7 @@ app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/opportunities", require("./routes/opportunityRoutes"));
 app.use("/api/insurance-leads", require("./routes/insuranceLeadRoutes"));
 app.use("/api/revenue", require("./routes/revenueRoutes"));
-app.use("/api/finance/quant", require("./routes/financeQuantRoutes"));
+app.use("/api/finance/quant", safeRoute("./routes/financeQuantRoutes", "/api/finance/quant"));
 app.use("/api/income-goals", require("./routes/incomeGoalRoutes"));
 app.use("/api/discovery", require("./routes/discoveryRoutes"));
 app.use("/api/review-queue", require("./routes/permissionReviewRoutes"));
@@ -117,7 +128,7 @@ app.use("/api/capabilities", require("./routes/capabilityRoutes"));
 app.use("/api/affiliate-pilot", require("./routes/affiliateRoutes"));
 app.use("/api/public-chat", require("./routes/publicChatRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoutes"));
-app.use("/api/track", require("./routes/trackingRoutes"));
+app.use("/api/track", safeRoute("./routes/trackingRoutes", "/api/track"));
 // Retail Dukandaar Merchant Billing (Cement + Steel, GST verify, Voice, OCR, STT)
 app.use("/api/merchant-billing", require("./routes/billingRoutes"));
 // Backward-compatibility router dispatch for legacy merchant endpoints under /api/billing
@@ -182,7 +193,7 @@ app.use("/api/marketplace", require("./routes/marketplaceRoutes"));
 // GARUDA Autonomous — single pane status + trigger (no daily manual)
   app.use("/api/autonomous", require("./routes/autonomousRoutes"));
   // GARUDA AEGIS — Autonomous External AI Agent Evaluation System
-  app.use("/api/aegis", require("./routes/aegisRoutes"));
+  app.use("/api/aegis", safeRoute("./routes/aegisRoutes", "/api/aegis"));
   app.use("/api/feedback", (req, res) => require("./routes/feedbackDashboardRoute")(req, res));
   app.use("/api/brain", (req, res) => require("./routes/garudaBrainRoute")(req, res));
   app.use("/api/site-audit", (req, res) => require("./routes/siteAuditRoute")(req, res));

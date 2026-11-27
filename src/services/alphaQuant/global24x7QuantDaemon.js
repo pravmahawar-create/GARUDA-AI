@@ -38,8 +38,19 @@ class Global24x7QuantDaemon {
     // Universal Scorer
     this.scorer = new ConfluenceScorer({ minConfidenceThreshold: this.minConfidenceThreshold });
 
-    // Unified 24/7 Paper Trading Engine
-    this.paperEngine = new PaperTradingEngine(this.initialCapital);
+    // Fail-Closed RiskSentinel Governance
+    const { defaultRiskSentinel } = require('./risk/alphaRiskSentinel');
+    this.riskSentinel = options.riskSentinel !== undefined ? options.riskSentinel : defaultRiskSentinel;
+    if (!this.riskSentinel && !options.allowUnsafeTestWithoutSentinel) {
+      throw new Error('[Global24x7QuantDaemon] Startup refused: RiskSentinel is mandatory for production execution.');
+    }
+
+    // Unified 24/7 Paper Trading Engine with RiskSentinel Authority
+    this.paperEngine = new PaperTradingEngine(this.initialCapital, {
+      riskSentinel: this.riskSentinel,
+      accountId: options.accountId || 'GLOBAL_24X7_QUANT_ACCOUNT',
+      allowUnsafeTestWithoutSentinel: options.allowUnsafeTestWithoutSentinel
+    });
     this.notifier = new TelegramQuantNotifier();
 
     this.isRunning = false;

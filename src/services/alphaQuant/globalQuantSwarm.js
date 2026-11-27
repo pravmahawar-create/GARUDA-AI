@@ -29,10 +29,29 @@ class GlobalQuantSwarm {
     // Universal Scorer
     this.scorer = new ConfluenceScorer({ minConfidenceThreshold: this.minConfidenceThreshold });
 
-    // Multi-Asset Paper Engines
-    this.indiaPaper = new PaperTradingEngine(this.initialCapital);
-    this.cryptoPaper = new PaperTradingEngine(this.initialCapital);
-    this.forexPaper = new PaperTradingEngine(this.initialCapital);
+    // Fail-Closed RiskSentinel Governance
+    const { defaultRiskSentinel } = require('./risk/alphaRiskSentinel');
+    this.riskSentinel = options.riskSentinel !== undefined ? options.riskSentinel : defaultRiskSentinel;
+    if (!this.riskSentinel && !options.allowUnsafeTestWithoutSentinel) {
+      throw new Error('[GlobalQuantSwarm] Startup refused: RiskSentinel is mandatory for production execution.');
+    }
+
+    // Multi-Asset Paper Engines with RiskSentinel Authority
+    this.indiaPaper = new PaperTradingEngine(this.initialCapital, {
+      riskSentinel: this.riskSentinel,
+      accountId: 'SWARM_INDIA_EQUITY',
+      allowUnsafeTestWithoutSentinel: options.allowUnsafeTestWithoutSentinel
+    });
+    this.cryptoPaper = new PaperTradingEngine(this.initialCapital, {
+      riskSentinel: this.riskSentinel,
+      accountId: 'SWARM_CRYPTO_24X7',
+      allowUnsafeTestWithoutSentinel: options.allowUnsafeTestWithoutSentinel
+    });
+    this.forexPaper = new PaperTradingEngine(this.initialCapital, {
+      riskSentinel: this.riskSentinel,
+      accountId: 'SWARM_FOREX_24X5',
+      allowUnsafeTestWithoutSentinel: options.allowUnsafeTestWithoutSentinel
+    });
 
     this.notifier = new TelegramQuantNotifier();
   }
