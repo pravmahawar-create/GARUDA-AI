@@ -1,0 +1,431 @@
+/**
+ * 🦅 GARUDA OS — MISSION PA-001 (PROJECT AYESHA)
+ * Design System: Glossy Cinematic Romantic Atmosphere — Widescreen & Mobile Responsive
+ * Palette: Midnight Sapphire Blue (#0B132B), Rose Pink (#F472B6), Deep Crimson (#9B111E), Champagne Gold (#D6A84F), Warm Ivory (#FAF5EE)
+ * Compliance: Praveen 1-Shot Perfection Standard (Rule 7) — Full Laptop & Mobile Parity
+ */
+
+:root {
+  --ayesha-sapphire-dark: #070D1E;
+  --ayesha-sapphire-card: #0F172A;
+  --ayesha-sapphire-surface: #1E293B;
+  --ayesha-rose-pink: #F472B6;
+  --ayesha-rose-glow: rgba(244, 114, 182, 0.3);
+  --ayesha-crimson: #9B111E;
+  --ayesha-crimson-glow: rgba(155, 17, 30, 0.4);
+  --ayesha-gold: #D6A84F;
+  --ayesha-gold-primary: #C48B28;
+  --ayesha-gold-glow: rgba(214, 168, 79, 0.35);
+  --ayesha-ivory: #FAF5EE;
+  --ayesha-ivory-muted: #D1D5DB;
+  --ayesha-slate: #94A3B8;
+  --ayesha-glass-bg: rgba(15, 23, 42, 0.82);
+  --ayesha-border-gloss: linear-gradient(135deg, rgba(214, 168, 79, 0.45) 0%, rgba(244, 114, 182, 0.3) 50%, rgba(155, 17, 30, 0.4) 100%);
+}
+
+/* 1. Root Container Lock */
+.ayesha-root {
+  height: 100dvh;
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden;
+  position: relative;
+  background: var(--ayesha-sapphire-dark);
+  background-image: 
+    radial-gradient(ellipse at 15% 10%, rgba(244, 114, 182, 0.16) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 90%, rgba(155, 17, 30, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(15, 23, 42, 0.95) 0%, var(--ayesha-sapphire-dark) 100%);
+  color: var(--ayesha-ivory);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 2. Top Anchored Header (Widescreen Fluid) */
+.ayesha-header {
+  flex-shrink: 0;
+  height: 64px;
+  background: var(--ayesha-glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(214, 168, 79, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 40;
+}
+
+.ayesha-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.ayesha-sigil {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ayesha-gold) 0%, var(--ayesha-rose-pink) 100%);
+  box-shadow: 0 0 16px var(--ayesha-gold-glow);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  color: var(--ayesha-sapphire-dark);
+  font-weight: 800;
+}
+
+.ayesha-title {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--ayesha-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ayesha-header-badge {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(214, 168, 79, 0.14);
+  border: 1px solid rgba(214, 168, 79, 0.4);
+  color: var(--ayesha-gold);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* 3. Middle Scrollable Body (Laptop Expansive & Fluid) */
+.ayesha-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  padding: 2.5rem 1.5rem 140px 1.5rem;
+  width: 100%;
+}
+
+.ayesha-content-wrapper {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+/* 4. Luxury Chapter Card (Widescreen 2-Column Grid) */
+.ayesha-chapter-card {
+  background: rgba(15, 23, 42, 0.75);
+  border-radius: 20px;
+  border: 1px solid rgba(214, 168, 79, 0.25);
+  box-shadow: 
+    0 24px 50px -12px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 2.2rem;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Desktop Widescreen Layout */
+@media (min-width: 960px) {
+  .ayesha-chapter-card {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3rem;
+    padding: 2.5rem 3rem;
+  }
+
+  .ayesha-chapter-card.reverse-grid {
+    grid-template-columns: 1fr 1.1fr;
+  }
+  .ayesha-chapter-card.reverse-grid .ayesha-media-wrap {
+    order: 2;
+  }
+}
+
+.ayesha-chapter-card:hover {
+  border-color: rgba(244, 114, 182, 0.4);
+  box-shadow: 
+    0 30px 60px -10px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(244, 114, 182, 0.15);
+}
+
+/* Chapter Text Content Column */
+.ayesha-card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ayesha-chapter-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.ayesha-chapter-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.16em;
+  color: var(--ayesha-gold);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ayesha-chapter-date {
+  font-size: 0.8rem;
+  color: var(--ayesha-rose-pink);
+  background: rgba(244, 114, 182, 0.14);
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid rgba(244, 114, 182, 0.3);
+  font-weight: 600;
+}
+
+.ayesha-chapter-heading {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 0.5rem 0;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #FFFFFF 30%, var(--ayesha-ivory) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ayesha-chapter-subtitle {
+  font-size: 0.95rem;
+  color: var(--ayesha-gold);
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.ayesha-chapter-prose {
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--ayesha-ivory-muted);
+  margin-bottom: 1.5rem;
+}
+
+.ayesha-quote-box {
+  margin: 1.25rem 0;
+  padding: 1.1rem 1.4rem;
+  background: rgba(11, 19, 43, 0.7);
+  border-left: 4px solid var(--ayesha-rose-pink);
+  border-radius: 0 12px 12px 0;
+  font-style: italic;
+  color: var(--ayesha-ivory);
+  font-size: 1rem;
+  line-height: 1.65;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+/* 5. Grand Media Frame (Full Widescreen View) */
+.ayesha-media-wrap {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 16 / 11;
+  background: #040814;
+  border: 1px solid rgba(214, 168, 79, 0.3);
+  box-shadow: 
+    0 20px 45px -10px rgba(0, 0, 0, 0.85),
+    inset 0 0 25px rgba(11, 19, 43, 0.8);
+  cursor: pointer;
+  transition: transform 0.4s ease, border-color 0.4s ease;
+}
+
+.ayesha-media-wrap:hover {
+  border-color: var(--ayesha-gold);
+}
+
+.ayesha-media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ayesha-media-wrap:hover .ayesha-media-img {
+  transform: scale(1.03);
+}
+
+.ayesha-media-badge {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(7, 13, 30, 0.9);
+  border: 1px solid rgba(214, 168, 79, 0.4);
+  color: var(--ayesha-gold);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  z-index: 2;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* 6. Agent Persona Card */
+.ayesha-agent-bubble {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: rgba(11, 19, 43, 0.65);
+  border: 1px solid rgba(214, 168, 79, 0.2);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+}
+
+.ayesha-agent-avatar {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(214, 168, 79, 0.15);
+  border: 1px solid rgba(214, 168, 79, 0.35);
+  display: grid;
+  place-items: center;
+}
+
+.ayesha-agent-content {
+  flex: 1;
+}
+
+.ayesha-agent-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ayesha-gold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.ayesha-agent-text {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--ayesha-ivory-muted);
+}
+
+/* 7. Bottom Anchored Controls Bar */
+.ayesha-footer-bar {
+  flex-shrink: 0;
+  height: 70px;
+  background: var(--ayesha-glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(214, 168, 79, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 50;
+  gap: 1.5rem;
+}
+
+.ayesha-audio-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(214, 168, 79, 0.12);
+  border: 1px solid rgba(214, 168, 79, 0.35);
+  color: var(--ayesha-gold);
+  padding: 0.55rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ayesha-audio-btn:hover {
+  background: rgba(214, 168, 79, 0.22);
+  border-color: var(--ayesha-gold);
+  transform: translateY(-1px);
+}
+
+.ayesha-audio-btn.playing {
+  background: rgba(244, 114, 182, 0.2);
+  border-color: var(--ayesha-rose-pink);
+  color: var(--ayesha-rose-pink);
+  box-shadow: 0 0 15px var(--ayesha-rose-glow);
+}
+
+/* Chapter Progress Bar Dots */
+.ayesha-progress-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding: 0.25rem;
+}
+
+.ayesha-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(214, 168, 79, 0.25);
+  border: 1px solid rgba(214, 168, 79, 0.4);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ayesha-dot.active {
+  width: 24px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--ayesha-rose-pink) 0%, var(--ayesha-gold) 100%);
+  box-shadow: 0 0 12px var(--ayesha-gold-glow);
+}
+
+/* Resting View */
+.ayesha-resting-state {
+  height: 100dvh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: var(--ayesha-sapphire-dark);
+}
+
+.ayesha-resting-card {
+  max-width: 480px;
+  background: var(--ayesha-sapphire-card);
+  border: 1px solid rgba(214, 168, 79, 0.3);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+}
+
+.ayesha-resting-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
+  color: #FFFFFF;
+  margin-bottom: 0.75rem;
+}
+
+.ayesha-resting-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ayesha-ivory-muted);
+}
